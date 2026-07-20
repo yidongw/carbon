@@ -610,7 +610,7 @@ function DateKanbanSchedule() {
     return [
       {
         accessorKey: "salesOrderId",
-        header: "Sales Order",
+        header: t`Sales Order`,
         filter: {
           type: "static",
           options: salesOrders.map((so) => ({
@@ -621,7 +621,7 @@ function DateKanbanSchedule() {
       },
       {
         accessorKey: "assignee",
-        header: "Assignee",
+        header: t`Assignee`,
         filter: {
           type: "static",
           options: people.map((p) => ({
@@ -632,7 +632,7 @@ function DateKanbanSchedule() {
       },
       {
         accessorKey: "tag",
-        header: "Tag",
+        header: t`Tag`,
         filter: {
           type: "static",
           options: availableTags.map((tag) => ({
@@ -642,7 +642,7 @@ function DateKanbanSchedule() {
         }
       }
     ];
-  }, [salesOrders, people, availableTags]);
+  }, [salesOrders, people, availableTags, t]);
 
   const parsedDate = parseDate(currentDate);
   const todayDate = toCalendarDate(now(timezone));

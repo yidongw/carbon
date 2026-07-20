@@ -105,7 +105,7 @@ const OperatorsTable = memo(
     const columns = useMemo<ColumnDef<Operator>[]>(
       () => [
         {
-          header: "Operator",
+          header: t`Operator`,
           cell: ({ row }) => (
             <EmployeeAvatar
               size="sm"
@@ -124,7 +124,7 @@ const OperatorsTable = memo(
         },
         {
           accessorKey: "firstName",
-          header: "First Name",
+          header: t`First Name`,
           cell: (item) => item.getValue(),
           meta: {
             icon: <LuUserCheck />
@@ -132,7 +132,7 @@ const OperatorsTable = memo(
         },
         {
           accessorKey: "lastName",
-          header: "Last Name",
+          header: t`Last Name`,
           cell: (item) => item.getValue(),
           meta: {
             icon: <LuUserCheck />
@@ -140,7 +140,7 @@ const OperatorsTable = memo(
         },
         {
           id: "employeeTypeId",
-          header: "Employee Type",
+          header: t`Employee Type`,
           cell: ({ row }) => (
             <Enumerable
               value={
@@ -154,21 +154,21 @@ const OperatorsTable = memo(
         },
         {
           accessorKey: "active",
-          header: "Active",
+          header: t`Active`,
           cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
           meta: {
             filter: {
               type: "static" as const,
               options: [
-                { value: "true", label: "Active" },
-                { value: "false", label: "Inactive" }
+                { value: "true", label: t`Active` },
+                { value: "false", label: t`Inactive` }
               ]
             },
             icon: <LuToggleRight />
           }
         }
       ],
-      [employeeTypesById]
+      [employeeTypesById, t]
     );
 
     const renderContextMenu = useCallback(

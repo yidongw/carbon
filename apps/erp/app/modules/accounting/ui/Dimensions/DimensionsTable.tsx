@@ -1,4 +1,5 @@
 import { Badge, MenuIcon, MenuItem } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
@@ -22,6 +23,7 @@ type DimensionsTableProps = {
 };
 
 const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
+  const { t } = useLingui();
   const [params] = useUrlParams();
   const navigate = useNavigate();
   const permissions = usePermissions();
@@ -30,7 +32,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
     const defaultColumns: ColumnDef<Dimension>[] = [
       {
         accessorKey: "name",
-        header: "Name",
+        header: t`Name`,
         cell: ({ row }) => (
           <Hyperlink to={`${row.original.id}?${params.toString()}`}>
             {row.original.name}
@@ -42,7 +44,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
       },
       {
         accessorKey: "entityType",
-        header: "Entity Type",
+        header: t`Entity Type`,
         cell: (item) => <Enumerable value={item.getValue<string>()} />,
         meta: {
           filter: {
@@ -57,7 +59,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
       },
       {
         id: "valuesCount",
-        header: "Values",
+        header: t`Values`,
         cell: ({ row }) => {
           if (row.original.entityType === "Custom") {
             const values =
@@ -82,7 +84,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
       }
     ];
     return defaultColumns;
-  }, [params]);
+  }, [params, t]);
 
   const renderContextMenu = useCallback(
     (row: Dimension) => {
