@@ -192,6 +192,17 @@ export async function unlinkIdentity(
     await serviceRole.from("user").update({ email: null }).eq("id", userId);
   }
 
+  // Keep the `user.phone` contact field in sync with the phone auth method:
+  // clear it once no phone identity remains (mirror of the email clear above).
+  if (type === "phone") {
+    const phoneRemains = identities.some(
+      (i) => i.type === "phone" && i.value !== value
+    );
+    if (!phoneRemains) {
+      await serviceRole.from("user").update({ phone: null }).eq("id", userId);
+    }
+  }
+
   return { success: true };
 }
 

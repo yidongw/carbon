@@ -1,4 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { ActionFunctionArgs } from "react-router";
 
 // Bulk / inline update for the Employees (permissions) list table. The editable
@@ -41,16 +42,38 @@ export async function action({ request }: ActionFunctionArgs) {
         .update({ employeeTypeId: value })
         .in("id", ids as string[])
         .eq("companyId", companyId);
-    case "locationId":
-      return await client
-        .from("employeeJob")
-        .update({
-          locationId: value ? value : null,
-          updatedBy: userId,
-          updatedAt: new Date().toISOString()
-        })
+    case "locationId": {
+      // Upsert (not update) so employees missing an `employeeJob` row — e.g.
+      // phone-invited or legacy users — still get their location set instead of
+      // the update silently affecting 0 rows. Validate the ids belong to this
+      // company's employees first (RLS-scoped), then upsert via service role
+      // since inserting an employeeJob needs the people_create policy.
+      const employees = await client
+        .from("employee")
+        .select("id")
         .in("id", ids as string[])
         .eq("companyId", companyId);
+      if (employees.error) {
+        return { error: employees.error, data: null };
+      }
+      const validIds = employees.data.map((e) => e.id);
+      if (validIds.length === 0) {
+        return { data: null, error: null };
+      }
+      const now = new Date().toISOString();
+      return await getCarbonServiceRole()
+        .from("employeeJob")
+        .upsert(
+          validIds.map((id) => ({
+            id,
+            companyId,
+            locationId: value ? value : null,
+            updatedBy: userId,
+            updatedAt: now
+          })),
+          { onConflict: "id,companyId" }
+        );
+    }
     default:
       return { error: { message: "Invalid field" }, data: null };
   }

@@ -16,6 +16,7 @@ import {
   LuMapPin,
   LuNetwork,
   LuPencil,
+  LuPhone,
   LuToggleRight,
   LuUser,
   LuUserCheck
@@ -168,15 +169,23 @@ const EmployeesTable = memo(
         },
         {
           accessorKey: "email",
-          header: t`Email or Phone`,
-          // Phone-only invitees have no email — show their phone so they aren't
-          // blank. `phone` isn't in the generated view types until db:types runs.
-          cell: (item) =>
-            item.getValue<string | null>() ||
-            (item.row.original as { phone?: string | null }).phone ||
-            "",
+          header: t`Email`,
+          // Email and phone mirror the user's linked auth methods (see
+          // userIdentity) — kept in sync when methods are added/removed.
+          cell: (item) => item.getValue<string | null>() || "",
           meta: {
             icon: <LuMail />
+          }
+        },
+        {
+          id: "phone",
+          header: t`Phone`,
+          // `phone` isn't in the generated view types until db:types runs, so
+          // read it off the row via a cast instead of an accessorKey.
+          cell: ({ row }) =>
+            (row.original as { phone?: string | null }).phone || "",
+          meta: {
+            icon: <LuPhone />
           }
         },
         {
