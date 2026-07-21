@@ -393,7 +393,7 @@ function KanbanSchedule() {
     return [
       {
         accessorKey: "workCenterId",
-        header: "Work Center",
+        header: t`Work Center`,
         filter: {
           type: "static",
           options: columns.map((col) => ({
@@ -404,8 +404,8 @@ function KanbanSchedule() {
       },
       {
         accessorKey: "processId",
-        header: "Process",
-        pluralHeader: "Processes",
+        header: t`Process`,
+        pluralHeader: t`Processes`,
         filter: {
           type: "static",
           options: processes.map((p) => ({
@@ -416,7 +416,7 @@ function KanbanSchedule() {
       },
       {
         accessorKey: "salesOrderId",
-        header: "Sales Order",
+        header: t`Sales Order`,
         filter: {
           type: "static",
           options: salesOrders.map((so) => ({
@@ -427,7 +427,7 @@ function KanbanSchedule() {
       },
       {
         accessorKey: "assignee",
-        header: "Assignee",
+        header: t`Assignee`,
         filter: {
           type: "static",
           options: people.map((p) => ({
@@ -438,7 +438,7 @@ function KanbanSchedule() {
       },
       {
         accessorKey: "tag",
-        header: "Tag",
+        header: t`Tag`,
         filter: {
           type: "static",
           options: availableTags.map((tag) => ({
@@ -448,7 +448,7 @@ function KanbanSchedule() {
         }
       }
     ];
-  }, [columns, processes, salesOrders, people, availableTags]);
+  }, [columns, processes, salesOrders, people, availableTags, t]);
 
   return (
     <div className="flex flex-col h-full max-h-full  overflow-auto relative">

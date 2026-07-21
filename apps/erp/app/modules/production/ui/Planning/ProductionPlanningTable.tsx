@@ -230,7 +230,9 @@ const ProductionPlanningTable = ({
           accessorKey: weekKey,
           header: () => (
             <VStack spacing={0}>
-              <div>{isCurrentWeek ? "Present Week" : `Week ${weekNumber}`}</div>
+              <div>
+                {isCurrentWeek ? t`Present Week` : t`Week ${weekNumber}`}
+              </div>
               <div className="text-xs text-muted-foreground">
                 {dateFormatter.format(startDate)} -{" "}
                 {dateFormatter.format(endDate)}
