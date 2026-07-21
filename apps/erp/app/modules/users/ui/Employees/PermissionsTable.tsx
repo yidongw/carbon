@@ -18,6 +18,7 @@ import {
   LuMail,
   LuMailCheck,
   LuPencil,
+  LuPhone,
   LuShield,
   LuToggleRight,
   LuUser,
@@ -133,7 +134,9 @@ const PermissionsTable = memo(
         },
         {
           accessorKey: "email",
-          header: t`Email or Phone`,
+          header: t`Email`,
+          // Email and phone mirror the user's linked auth methods (see
+          // userIdentity) — kept in sync when methods are added/removed.
           cell: (item) => {
             const email = item.getValue<string>();
             if (email?.endsWith("@console.internal")) {
@@ -143,16 +146,21 @@ const PermissionsTable = memo(
                 </Badge>
               );
             }
-            // Phone-only invitees have no email — show their phone instead.
-            // `phone` isn't in the generated view types until db:types runs.
-            return (
-              email ||
-              (item.row.original as { phone?: string | null }).phone ||
-              ""
-            );
+            return email || "";
           },
           meta: {
             icon: <LuMail />
+          }
+        },
+        {
+          id: "phone",
+          header: t`Phone`,
+          // `phone` isn't in the generated view types until db:types runs, so
+          // read it off the row via a cast instead of an accessorKey.
+          cell: ({ row }) =>
+            (row.original as { phone?: string | null }).phone || "",
+          meta: {
+            icon: <LuPhone />
           }
         },
         {
