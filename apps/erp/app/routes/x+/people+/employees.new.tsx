@@ -137,9 +137,9 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     await sendEmail({
-      from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
+      from: `Jilio <no-reply@${RESEND_DOMAIN}>`,
       to: email,
-      subject: `You have been invited to join ${company.data?.name} on Carbon`,
+      subject: `You have been invited to join ${company.data?.name} on Jilio`,
       headers: {
         "X-Entity-Ref-ID": nanoid()
       },
@@ -158,28 +158,7 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  await sendEmail({
-    from: `Jilio <no-reply@${RESEND_DOMAIN}>`,
-    to: email,
-    subject: `You have been invited to join ${company.data?.name} on Jilio`,
-    headers: {
-      "X-Entity-Ref-ID": nanoid()
-    },
-    html: await render(
-      InviteEmail({
-        invitedByEmail: user.data.email ?? "",
-        invitedByName: user.data.fullName ?? "",
-        email,
-        name: `${firstName} ${lastName}`.trim(),
-        companyName: company.data.name,
-        inviteLink: `${getAppUrl()}/invite/${result.code}`,
-        ip,
-        location
-      })
-    )
-  });
-
-  if (modal) {
+  if (isOverlay) {
     return data(
       {
         ok: true as const,
