@@ -293,6 +293,9 @@ msgstr "累计周期（周）"
 msgid "Accumulation Period:"
 msgstr "累计周期:"
 
+msgid "Acquisition Cost"
+msgstr "获取成本"
+
 msgid "Action Items"
 msgstr "待处理事项"
 
@@ -1185,6 +1188,9 @@ msgstr "资产类别"
 msgid "Asset Classes"
 msgstr "资产类别"
 
+msgid "Asset ID"
+msgstr "资产ID"
+
 msgid "Assets"
 msgstr "资产"
 
@@ -1438,6 +1444,9 @@ msgstr "BOM + BOP"
 
 msgid "BOM synced successfully"
 msgstr "BOM同步成功"
+
+msgid "Book Depreciation"
+msgstr "计提折旧"
 
 msgid "Boolean"
 msgstr "布尔值"
@@ -3546,7 +3555,7 @@ msgid "Edit Inspection Document"
 msgstr "编辑检验文件"
 
 msgid "Edit Invite"
-msgstr ""
+msgstr "编辑邀请"
 
 msgid "Edit Item Group"
 msgstr "编辑物品组"
@@ -3767,9 +3776,6 @@ msgstr "邮件链接无效或已过期"
 msgid "Email notifications not configured"
 msgstr "电子邮件通知未配置"
 
-msgid "Email or Phone"
-msgstr "电子邮件或电话"
-
 msgid "Emails"
 msgstr "电子邮件"
 
@@ -3916,6 +3922,9 @@ msgstr "实体"
 
 msgid "Entity is {status}"
 msgstr "实体是{status}"
+
+msgid "Entity Type"
+msgstr "实体类型"
 
 msgid "EORI"
 msgstr "EORI"
@@ -6199,6 +6208,9 @@ msgstr "30天账期"
 msgid "Net 60"
 msgstr "60天账期"
 
+msgid "Net Book Value"
+msgstr "净值"
+
 msgid "Net Change"
 msgstr "净变额"
 
@@ -7388,6 +7400,9 @@ msgstr "非常适合低成本评估"
 msgid "Period"
 msgstr "期间"
 
+msgid "Period End"
+msgstr "期末"
+
 msgid "Permanently Delete"
 msgstr "永久删除"
 
@@ -7571,6 +7586,9 @@ msgstr "邮政编码"
 msgid "Posted"
 msgstr "已发布"
 
+msgid "Posted At"
+msgstr "发布于"
+
 msgid "Posted By"
 msgstr "发布者"
 
@@ -7600,6 +7618,9 @@ msgstr "前缀"
 
 msgid "Prepaid/ Pro forma"
 msgstr "预付/定金"
+
+msgid "Present Week"
+msgstr "现周"
 
 msgid "Prev"
 msgstr "上一页"
@@ -8658,6 +8679,9 @@ msgstr "规则类型"
 
 msgid "Rules"
 msgstr "规则"
+
+msgid "Run ID"
+msgstr "运行ID"
 
 msgid "Run Matching"
 msgstr "运行匹配"
@@ -9972,6 +9996,9 @@ msgstr "表格"
 msgid "Table actions"
 msgstr "表操作"
 
+msgid "Tag"
+msgstr "标签"
+
 msgid "Tag size"
 msgstr "标签尺寸"
 
@@ -10033,6 +10060,9 @@ msgstr "税费及运费"
 
 msgid "Tax Amount"
 msgstr "税额"
+
+msgid "Tax Depreciation"
+msgstr "税折旧"
 
 msgid "Tax ID"
 msgstr "纳税人识别号"
@@ -10857,6 +10887,9 @@ msgstr "值"
 msgid "Value source by surface"
 msgstr "表面值源"
 
+msgid "Values"
+msgstr "值"
+
 msgid "Variances"
 msgstr "差异"
 
@@ -11174,6 +11207,9 @@ msgstr "微信登录"
 
 msgid "Wednesday"
 msgstr "星期三"
+
+msgid "Week {weekNumber}"
+msgstr "第{weekNumber}周"
 
 msgid "Weekly"
 msgstr "每周"

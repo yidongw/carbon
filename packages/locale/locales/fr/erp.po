@@ -292,6 +292,9 @@ msgstr "Période d'accumulation (semaines)"
 msgid "Accumulation Period:"
 msgstr "Période d'accumulation :"
 
+msgid "Acquisition Cost"
+msgstr "Coût d'acquisition"
+
 msgid "Action Items"
 msgstr "Éléments d'action"
 
@@ -1184,6 +1187,9 @@ msgstr "Classe d'actif"
 msgid "Asset Classes"
 msgstr "Classes d'actifs"
 
+msgid "Asset ID"
+msgstr "ID d'actif"
+
 msgid "Assets"
 msgstr "Actif"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM synchronisé avec succès"
+
+msgid "Book Depreciation"
+msgstr "Limiter la dépréciation"
 
 msgid "Boolean"
 msgstr "Vérité"
@@ -3545,7 +3554,7 @@ msgid "Edit Inspection Document"
 msgstr "Modifier le document d'inspection"
 
 msgid "Edit Invite"
-msgstr ""
+msgstr "Modifier l'invitation"
 
 msgid "Edit Item Group"
 msgstr "Modifier le groupe d'articles"
@@ -3766,9 +3775,6 @@ msgstr "Lien par e-mail invalide ou expiré"
 msgid "Email notifications not configured"
 msgstr "Les notifications par e-mail ne sont pas configurées"
 
-msgid "Email or Phone"
-msgstr "E-mail ou téléphone"
-
 msgid "Emails"
 msgstr "E-mails"
 
@@ -3915,6 +3921,9 @@ msgstr "Entité"
 
 msgid "Entity is {status}"
 msgstr "L'entité est {status}"
+
+msgid "Entity Type"
+msgstr "Type d'entité"
 
 msgid "EORI"
 msgstr "EORI"
@@ -6198,6 +6207,9 @@ msgstr "Net 30"
 msgid "Net 60"
 msgstr "Net 60"
 
+msgid "Net Book Value"
+msgstr "Valeur Nette Comptable"
+
 msgid "Net Change"
 msgstr "Changement net"
 
@@ -7387,6 +7399,9 @@ msgstr "Parfait pour une évaluation à faible coût"
 msgid "Period"
 msgstr "Période"
 
+msgid "Period End"
+msgstr "Fin de période"
+
 msgid "Permanently Delete"
 msgstr "Supprimer définitivement"
 
@@ -7570,6 +7585,9 @@ msgstr "Code postal"
 msgid "Posted"
 msgstr "Publié"
 
+msgid "Posted At"
+msgstr "Date de publication"
+
 msgid "Posted By"
 msgstr "Publié par"
 
@@ -7599,6 +7617,9 @@ msgstr "Préfixe"
 
 msgid "Prepaid/ Pro forma"
 msgstr "Prépayé/ Pro forma"
+
+msgid "Present Week"
+msgstr "Semaine en cours"
 
 msgid "Prev"
 msgstr "Précédent"
@@ -8657,6 +8678,9 @@ msgstr "Type de règle"
 
 msgid "Rules"
 msgstr "Règles"
+
+msgid "Run ID"
+msgstr "ID de l'exécution"
 
 msgid "Run Matching"
 msgstr "Exécuter le matching"
@@ -9971,6 +9995,9 @@ msgstr "Tableau"
 msgid "Table actions"
 msgstr "Actions du tableau"
 
+msgid "Tag"
+msgstr "étiquette"
+
 msgid "Tag size"
 msgstr "Taille de l'étiquette"
 
@@ -10032,6 +10059,9 @@ msgstr "Taxes et Expédition"
 
 msgid "Tax Amount"
 msgstr "Montant de la taxe"
+
+msgid "Tax Depreciation"
+msgstr "Amortissement fiscal"
 
 msgid "Tax ID"
 msgstr "Numéro d'identification fiscale"
@@ -10856,6 +10886,9 @@ msgstr "Valeur"
 msgid "Value source by surface"
 msgstr "Source de valeur par surface"
 
+msgid "Values"
+msgstr "Valeurs"
+
 msgid "Variances"
 msgstr "Variances"
 
@@ -11173,6 +11206,9 @@ msgstr "Connexion WeChat"
 
 msgid "Wednesday"
 msgstr "Mercredi"
+
+msgid "Week {weekNumber}"
+msgstr "Semaine {weekNumber}"
 
 msgid "Weekly"
 msgstr "Hebdomadaire"

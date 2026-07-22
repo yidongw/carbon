@@ -292,6 +292,9 @@ msgstr "Período de Acumulação (Semanas)"
 msgid "Accumulation Period:"
 msgstr "Período de Acumulação:"
 
+msgid "Acquisition Cost"
+msgstr "Custo de Aquisição"
+
 msgid "Action Items"
 msgstr "Itens de Ação"
 
@@ -1184,6 +1187,9 @@ msgstr "Classe de Ativo"
 msgid "Asset Classes"
 msgstr "Classes de Ativos"
 
+msgid "Asset ID"
+msgstr "ID do Ativo"
+
 msgid "Assets"
 msgstr "Ativos"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM sincronizado com sucesso"
+
+msgid "Book Depreciation"
+msgstr "Amortização do Livro"
 
 msgid "Boolean"
 msgstr "Verdadeiro"
@@ -3545,7 +3554,7 @@ msgid "Edit Inspection Document"
 msgstr "Edite o Documento de Inspeção"
 
 msgid "Edit Invite"
-msgstr ""
+msgstr "Editar Convite"
 
 msgid "Edit Item Group"
 msgstr "Editar Grupo de Itens"
@@ -3766,9 +3775,6 @@ msgstr "O link do email é inválido ou expirou"
 msgid "Email notifications not configured"
 msgstr "Notificações de email não configuradas"
 
-msgid "Email or Phone"
-msgstr "E-mail ou telefone"
-
 msgid "Emails"
 msgstr "E-mails"
 
@@ -3915,6 +3921,9 @@ msgstr "Entidade"
 
 msgid "Entity is {status}"
 msgstr "Entidade é {status}"
+
+msgid "Entity Type"
+msgstr "Tipo de Entidade"
 
 msgid "EORI"
 msgstr "EORI"
@@ -6198,6 +6207,9 @@ msgstr "Net 30"
 msgid "Net 60"
 msgstr "Net 60"
 
+msgid "Net Book Value"
+msgstr "Valor Líquido de Livros"
+
 msgid "Net Change"
 msgstr "Mudança Bruta"
 
@@ -7387,6 +7399,9 @@ msgstr "Perfeito para avaliação de baixo custo"
 msgid "Period"
 msgstr "Período"
 
+msgid "Period End"
+msgstr "Fim do Período"
+
 msgid "Permanently Delete"
 msgstr "Eliminar Permanentemente"
 
@@ -7570,6 +7585,9 @@ msgstr "Código Postal"
 msgid "Posted"
 msgstr "Lançado"
 
+msgid "Posted At"
+msgstr "Data de Publicação"
+
 msgid "Posted By"
 msgstr "Postado Por"
 
@@ -7599,6 +7617,9 @@ msgstr "Prefixo"
 
 msgid "Prepaid/ Pro forma"
 msgstr "Pré-pago/ Pro forma"
+
+msgid "Present Week"
+msgstr "Semana Atual"
 
 msgid "Prev"
 msgstr "Anterior"
@@ -8657,6 +8678,9 @@ msgstr "Tipo de Regra"
 
 msgid "Rules"
 msgstr "Regras"
+
+msgid "Run ID"
+msgstr "ID de Execução"
 
 msgid "Run Matching"
 msgstr "Executar Ajuste"
@@ -9971,6 +9995,9 @@ msgstr "Tabela"
 msgid "Table actions"
 msgstr "Ações da tabela"
 
+msgid "Tag"
+msgstr "Etiqueta"
+
 msgid "Tag size"
 msgstr "Tamanho da etiqueta"
 
@@ -10032,6 +10059,9 @@ msgstr "Imposto e Envio"
 
 msgid "Tax Amount"
 msgstr "Valor do Imposto"
+
+msgid "Tax Depreciation"
+msgstr "Aba Atenção"
 
 msgid "Tax ID"
 msgstr "ID Fiscal"
@@ -10856,6 +10886,9 @@ msgstr "Valor"
 msgid "Value source by surface"
 msgstr "Fonte de valor por superfície"
 
+msgid "Values"
+msgstr "Valores"
+
 msgid "Variances"
 msgstr "Variações"
 
@@ -11173,6 +11206,9 @@ msgstr "Entrada com WeChat"
 
 msgid "Wednesday"
 msgstr "Quarta-feira"
+
+msgid "Week {weekNumber}"
+msgstr "Semana {weekNumber}"
 
 msgid "Weekly"
 msgstr "Semanal"

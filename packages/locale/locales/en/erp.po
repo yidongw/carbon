@@ -292,6 +292,9 @@ msgstr "Accumulation Period (Weeks)"
 msgid "Accumulation Period:"
 msgstr "Accumulation Period:"
 
+msgid "Acquisition Cost"
+msgstr "Acquisition Cost"
+
 msgid "Action Items"
 msgstr "Action Items"
 
@@ -1184,6 +1187,9 @@ msgstr "Asset Class"
 msgid "Asset Classes"
 msgstr "Asset Classes"
 
+msgid "Asset ID"
+msgstr "Asset ID"
+
 msgid "Assets"
 msgstr "Assets"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM synced successfully"
+
+msgid "Book Depreciation"
+msgstr "Book Depreciation"
 
 msgid "Boolean"
 msgstr "Boolean"
@@ -3766,9 +3775,6 @@ msgstr "Email link is invalid or has expired"
 msgid "Email notifications not configured"
 msgstr "Email notifications not configured"
 
-msgid "Email or Phone"
-msgstr "Email or Phone"
-
 msgid "Emails"
 msgstr "Emails"
 
@@ -3915,6 +3921,9 @@ msgstr "Entity"
 
 msgid "Entity is {status}"
 msgstr "Entity is {status}"
+
+msgid "Entity Type"
+msgstr "Entity Type"
 
 msgid "EORI"
 msgstr "EORI"
@@ -6198,6 +6207,9 @@ msgstr "Net 30"
 msgid "Net 60"
 msgstr "Net 60"
 
+msgid "Net Book Value"
+msgstr "Net Book Value"
+
 msgid "Net Change"
 msgstr "Net Change"
 
@@ -7387,6 +7399,9 @@ msgstr "Perfect for low-cost evaluation"
 msgid "Period"
 msgstr "Period"
 
+msgid "Period End"
+msgstr "Period End"
+
 msgid "Permanently Delete"
 msgstr "Permanently Delete"
 
@@ -7570,6 +7585,9 @@ msgstr "Postal Code"
 msgid "Posted"
 msgstr "Posted"
 
+msgid "Posted At"
+msgstr "Posted At"
+
 msgid "Posted By"
 msgstr "Posted By"
 
@@ -7599,6 +7617,9 @@ msgstr "Prefix"
 
 msgid "Prepaid/ Pro forma"
 msgstr "Prepaid/ Pro forma"
+
+msgid "Present Week"
+msgstr "Present Week"
 
 msgid "Prev"
 msgstr "Prev"
@@ -8657,6 +8678,9 @@ msgstr "Rule Type"
 
 msgid "Rules"
 msgstr "Rules"
+
+msgid "Run ID"
+msgstr "Run ID"
 
 msgid "Run Matching"
 msgstr "Run Matching"
@@ -9971,6 +9995,9 @@ msgstr "Table"
 msgid "Table actions"
 msgstr "Table actions"
 
+msgid "Tag"
+msgstr "Tag"
+
 msgid "Tag size"
 msgstr "Tag size"
 
@@ -10032,6 +10059,9 @@ msgstr "Tax & Shipping"
 
 msgid "Tax Amount"
 msgstr "Tax Amount"
+
+msgid "Tax Depreciation"
+msgstr "Tax Depreciation"
 
 msgid "Tax ID"
 msgstr "Tax ID"
@@ -10856,6 +10886,9 @@ msgstr "Value"
 msgid "Value source by surface"
 msgstr "Value source by surface"
 
+msgid "Values"
+msgstr "Values"
+
 msgid "Variances"
 msgstr "Variances"
 
@@ -11173,6 +11206,9 @@ msgstr "WeChat sign-in"
 
 msgid "Wednesday"
 msgstr "Wednesday"
+
+msgid "Week {weekNumber}"
+msgstr "Week {weekNumber}"
 
 msgid "Weekly"
 msgstr "Weekly"

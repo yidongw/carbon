@@ -292,6 +292,9 @@ msgstr "संचय अवधि (सप्ताह)"
 msgid "Accumulation Period:"
 msgstr "संचय अवधि:"
 
+msgid "Acquisition Cost"
+msgstr "क्रय मूल्य"
+
 msgid "Action Items"
 msgstr "कार्य आइटम"
 
@@ -1184,6 +1187,9 @@ msgstr "संपत्ति कक्ष"
 msgid "Asset Classes"
 msgstr "अधिकार कक्षा"
 
+msgid "Asset ID"
+msgstr "असेट आईडी"
+
 msgid "Assets"
 msgstr "सम्पत्ति"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM सफलतापूर्वक सिंक हो गया"
+
+msgid "Book Depreciation"
+msgstr "देरिवेशन बुक करें"
 
 msgid "Boolean"
 msgstr "मान"
@@ -3545,7 +3554,7 @@ msgid "Edit Inspection Document"
 msgstr "संपादन तर्कसंगति प्रदर्शनी"
 
 msgid "Edit Invite"
-msgstr ""
+msgstr "इत्याधीन आमंत्रित करें"
 
 msgid "Edit Item Group"
 msgstr "आइटम ग्रुप संपादित करें"
@@ -3766,9 +3775,6 @@ msgstr "ईमेल लिंक कैसे है या समाप्त 
 msgid "Email notifications not configured"
 msgstr "ईमेल सूचनाएं कॉन्फ़िगर नहीं की गई हैं"
 
-msgid "Email or Phone"
-msgstr "ईमेल या फ़ोन"
-
 msgid "Emails"
 msgstr "ईमेल"
 
@@ -3915,6 +3921,9 @@ msgstr "इकाई"
 
 msgid "Entity is {status}"
 msgstr "Entity {status} है"
+
+msgid "Entity Type"
+msgstr "संदर्भ प्रकार"
 
 msgid "EORI"
 msgstr "ईआरआई"
@@ -6198,6 +6207,9 @@ msgstr "नेट 30"
 msgid "Net 60"
 msgstr "नेट 60"
 
+msgid "Net Book Value"
+msgstr "नेट बुक मूल्य"
+
 msgid "Net Change"
 msgstr "नेट बदलाव"
 
@@ -7387,6 +7399,9 @@ msgstr "कम लागत मूल्यांकन के लिए बि�
 msgid "Period"
 msgstr "अवधि"
 
+msgid "Period End"
+msgstr "परिस्थिति की अंतर्गत"
+
 msgid "Permanently Delete"
 msgstr "स्थायी रूप से हटाएं"
 
@@ -7570,6 +7585,9 @@ msgstr "पिन कोड"
 msgid "Posted"
 msgstr "पोस्ट किया गया"
 
+msgid "Posted At"
+msgstr "पोस्ट किया गया समय"
+
 msgid "Posted By"
 msgstr "द्वारा पोस्ट किया गया"
 
@@ -7599,6 +7617,9 @@ msgstr "उपसर्ग"
 
 msgid "Prepaid/ Pro forma"
 msgstr "प्रीपेड/ प्रो फ़ॉर्म"
+
+msgid "Present Week"
+msgstr "परिचालित ब्याहत"
 
 msgid "Prev"
 msgstr "पिछला"
@@ -8657,6 +8678,9 @@ msgstr "नियम प्रकार"
 
 msgid "Rules"
 msgstr "नियम"
+
+msgid "Run ID"
+msgstr "रन आईडी"
 
 msgid "Run Matching"
 msgstr "सामान्य रन"
@@ -9971,6 +9995,9 @@ msgstr "तालिका"
 msgid "Table actions"
 msgstr "तालिका क्रियाएं"
 
+msgid "Tag"
+msgstr "टैग"
+
 msgid "Tag size"
 msgstr "टैग आकार"
 
@@ -10032,6 +10059,9 @@ msgstr "कर और पोषण"
 
 msgid "Tax Amount"
 msgstr "कर राशि"
+
+msgid "Tax Depreciation"
+msgstr "कर बहाल"
 
 msgid "Tax ID"
 msgstr "टैक्स आईडी"
@@ -10856,6 +10886,9 @@ msgstr "मान"
 msgid "Value source by surface"
 msgstr "सतह द्वारा मूल्य स्रोत"
 
+msgid "Values"
+msgstr "मूल्यांकन"
+
 msgid "Variances"
 msgstr "अनियमितताएं"
 
@@ -11173,6 +11206,9 @@ msgstr "WeChat से साइन-इन"
 
 msgid "Wednesday"
 msgstr "बुधवार"
+
+msgid "Week {weekNumber}"
+msgstr "सप्ताह {weekNumber}"
 
 msgid "Weekly"
 msgstr "साप्ताहिक"

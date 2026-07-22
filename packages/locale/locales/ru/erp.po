@@ -292,6 +292,9 @@ msgstr "Период накопления (недели)"
 msgid "Accumulation Period:"
 msgstr "Период накопления:"
 
+msgid "Acquisition Cost"
+msgstr "Стоимость приобретения"
+
 msgid "Action Items"
 msgstr "Элементы действия"
 
@@ -1184,6 +1187,9 @@ msgstr "Класс активов"
 msgid "Asset Classes"
 msgstr "Классы активов"
 
+msgid "Asset ID"
+msgstr "Идентификатор активаси"
+
 msgid "Assets"
 msgstr "Активы"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM успешно синхронизирован"
+
+msgid "Book Depreciation"
+msgstr "Запланировать амортизацию"
 
 msgid "Boolean"
 msgstr "Действителен"
@@ -3545,7 +3554,7 @@ msgid "Edit Inspection Document"
 msgstr "Редактировать документ проверки"
 
 msgid "Edit Invite"
-msgstr ""
+msgstr "Изменить приглашение"
 
 msgid "Edit Item Group"
 msgstr "Редактировать группу товаров"
@@ -3766,9 +3775,6 @@ msgstr "Ссылка на электронную почту недействит
 msgid "Email notifications not configured"
 msgstr "Уведомления по электронной почте не настроены"
 
-msgid "Email or Phone"
-msgstr "Электронная почта или телефон"
-
 msgid "Emails"
 msgstr "Письма"
 
@@ -3915,6 +3921,9 @@ msgstr "Сущность"
 
 msgid "Entity is {status}"
 msgstr "Сущность имеет статус {status}"
+
+msgid "Entity Type"
+msgstr "Тип сущности"
 
 msgid "EORI"
 msgstr "ОЭРИ"
@@ -6198,6 +6207,9 @@ msgstr "В течение ровно 30 дней"
 msgid "Net 60"
 msgstr "Чистая прибыль 60"
 
+msgid "Net Book Value"
+msgstr "Нетто балансовая стоимость"
+
 msgid "Net Change"
 msgstr "Сеть изменения"
 
@@ -7387,6 +7399,9 @@ msgstr "Идеально для недорогой оценки"
 msgid "Period"
 msgstr "Период"
 
+msgid "Period End"
+msgstr "Конец периода"
+
 msgid "Permanently Delete"
 msgstr "Окончательно удалить"
 
@@ -7570,6 +7585,9 @@ msgstr "Почтовый индекс"
 msgid "Posted"
 msgstr "Опубликовано"
 
+msgid "Posted At"
+msgstr "Дата публикации"
+
 msgid "Posted By"
 msgstr "Опубликовано"
 
@@ -7599,6 +7617,9 @@ msgstr "Префикс"
 
 msgid "Prepaid/ Pro forma"
 msgstr "Предоплаченная/ Проформа"
+
+msgid "Present Week"
+msgstr "Текущая неделя"
 
 msgid "Prev"
 msgstr "Пред"
@@ -8657,6 +8678,9 @@ msgstr "Тип правила"
 
 msgid "Rules"
 msgstr "Рулы"
+
+msgid "Run ID"
+msgstr "ID запуска"
 
 msgid "Run Matching"
 msgstr "Запустить соответствование"
@@ -9971,6 +9995,9 @@ msgstr "Таблица"
 msgid "Table actions"
 msgstr "Действия таблицы"
 
+msgid "Tag"
+msgstr "Тег"
+
 msgid "Tag size"
 msgstr "Размер ярлыка"
 
@@ -10032,6 +10059,9 @@ msgstr "Налог и доставка"
 
 msgid "Tax Amount"
 msgstr "Сумма налога"
+
+msgid "Tax Depreciation"
+msgstr "Амортизация налога"
 
 msgid "Tax ID"
 msgstr "Налоговый ID"
@@ -10856,6 +10886,9 @@ msgstr "Значение"
 msgid "Value source by surface"
 msgstr "Источник значения по поверхности"
 
+msgid "Values"
+msgstr "Значения"
+
 msgid "Variances"
 msgstr "Отклонения"
 
@@ -11173,6 +11206,9 @@ msgstr "Вход через WeChat"
 
 msgid "Wednesday"
 msgstr "Среда"
+
+msgid "Week {weekNumber}"
+msgstr "Неделя {weekNumber}"
 
 msgid "Weekly"
 msgstr "Еженедельно"
