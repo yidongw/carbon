@@ -107,26 +107,27 @@ export async function action({ request }: ActionFunctionArgs) {
         .eq("id", existingInvite.data.createdBy)
         .single();
 
-    await sendEmail({
-      from: `Jilio <no-reply@${RESEND_DOMAIN}>`,
-      to: user.data.email ?? "",
-      subject: `You have been invited to join ${company.data?.name} on Jilio`,
-      headers: {
-        "X-Entity-Ref-ID": nanoid()
-      },
-      html: await render(
-        InviteEmail({
-          invitedByEmail: inviter.data?.email ?? user.data.email ?? "",
-          invitedByName: inviter.data?.fullName ?? "",
-          email: user.data.email ?? "",
-          name: user.data.fullName ?? "",
-          companyName: company.data.name,
-          inviteLink: `${getAppUrl()}/invite/${refreshed.data.code}`,
-          ip,
-          location
-        })
-      )
-    });
+      await sendEmail({
+        from: `Jilio <no-reply@${RESEND_DOMAIN}>`,
+        to: inviteEmail,
+        subject: `You have been invited to join ${company.data?.name} on Jilio`,
+        headers: {
+          "X-Entity-Ref-ID": nanoid()
+        },
+        html: await render(
+          InviteEmail({
+            invitedByEmail: inviter.data?.email ?? inviteEmail,
+            invitedByName: inviter.data?.fullName ?? "",
+            email: inviteEmail,
+            name: user.data.fullName ?? "",
+            companyName: company.data.name,
+            inviteLink: `${getAppUrl()}/invite/${refreshed.data.code}`,
+            ip,
+            location
+          })
+        )
+      });
+    }
 
     return data(
       {},
