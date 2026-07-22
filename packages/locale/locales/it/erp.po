@@ -292,6 +292,9 @@ msgstr "Periodo di Accumulo (Settimane)"
 msgid "Accumulation Period:"
 msgstr "Periodo di Accumulo:"
 
+msgid "Acquisition Cost"
+msgstr "Costo di Acquisizione"
+
 msgid "Action Items"
 msgstr "Elementi di azione"
 
@@ -1184,6 +1187,9 @@ msgstr "Classe di asset"
 msgid "Asset Classes"
 msgstr "Classi di attivo"
 
+msgid "Asset ID"
+msgstr "ID del bene"
+
 msgid "Assets"
 msgstr "Assets"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM sincronizzato con successo"
+
+msgid "Book Depreciation"
+msgstr "Valutazione di Depreciazione"
 
 msgid "Boolean"
 msgstr "Verbo"
@@ -3544,6 +3553,9 @@ msgstr "Modifica Festività"
 msgid "Edit Inspection Document"
 msgstr "Modifica documento di verifica"
 
+msgid "Edit Invite"
+msgstr "Modifica Invito"
+
 msgid "Edit Item Group"
 msgstr "Modifica Gruppo Articoli"
 
@@ -3763,9 +3775,6 @@ msgstr "Il collegamento email è invalido o scaduto"
 msgid "Email notifications not configured"
 msgstr "Notifiche email non configurate"
 
-msgid "Email or Phone"
-msgstr "Email o telefono"
-
 msgid "Emails"
 msgstr "Email"
 
@@ -3912,6 +3921,9 @@ msgstr "Entità"
 
 msgid "Entity is {status}"
 msgstr "L'entità è {status}"
+
+msgid "Entity Type"
+msgstr "Tipo Entità"
 
 msgid "EORI"
 msgstr "EORI"
@@ -6195,6 +6207,9 @@ msgstr "Netto 30"
 msgid "Net 60"
 msgstr "Netto 60"
 
+msgid "Net Book Value"
+msgstr "Valore Netto di Libro"
+
 msgid "Net Change"
 msgstr "Cambio netto"
 
@@ -7384,6 +7399,9 @@ msgstr "Perfetto per una valutazione a basso costo"
 msgid "Period"
 msgstr "Periodo"
 
+msgid "Period End"
+msgstr "Fine periodo"
+
 msgid "Permanently Delete"
 msgstr "Elimina definitivamente"
 
@@ -7567,6 +7585,9 @@ msgstr "Codice Postale"
 msgid "Posted"
 msgstr "Registrato"
 
+msgid "Posted At"
+msgstr "Data di pubblicazione"
+
 msgid "Posted By"
 msgstr "Pubblicato da"
 
@@ -7596,6 +7617,9 @@ msgstr "Prefisso"
 
 msgid "Prepaid/ Pro forma"
 msgstr "Prepagato/ Pro forma"
+
+msgid "Present Week"
+msgstr "Settimana Corrente"
 
 msgid "Prev"
 msgstr "Prec"
@@ -8654,6 +8678,9 @@ msgstr "Tipo di Regola"
 
 msgid "Rules"
 msgstr "Regole"
+
+msgid "Run ID"
+msgstr "ID esecuzione"
 
 msgid "Run Matching"
 msgstr "Esegui matching"
@@ -9968,6 +9995,9 @@ msgstr "Tabella"
 msgid "Table actions"
 msgstr "Azioni tabella"
 
+msgid "Tag"
+msgstr "Etichetta"
+
 msgid "Tag size"
 msgstr "Dimensione etichetta"
 
@@ -10029,6 +10059,9 @@ msgstr "Imposta e Spedizione"
 
 msgid "Tax Amount"
 msgstr "Importo Imposta"
+
+msgid "Tax Depreciation"
+msgstr "Decredito fiscale"
 
 msgid "Tax ID"
 msgstr "Codice Fiscale"
@@ -10853,6 +10886,9 @@ msgstr "Valore"
 msgid "Value source by surface"
 msgstr "Fonte valore per superficie"
 
+msgid "Values"
+msgstr "Valori"
+
 msgid "Variances"
 msgstr "Svariazioni"
 
@@ -11170,6 +11206,9 @@ msgstr "Accesso con WeChat"
 
 msgid "Wednesday"
 msgstr "Mercoledì"
+
+msgid "Week {weekNumber}"
+msgstr "Settimana {weekNumber}"
 
 msgid "Weekly"
 msgstr "Settimanale"

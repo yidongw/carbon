@@ -668,6 +668,112 @@ export async function createEmployeeAccount(
   return { success: true, code, userId };
 }
 
+export async function updateEmployeeInvite(
+  client: SupabaseClient<Database>,
+  {
+    userId,
+    email,
+    phone,
+    employeeType,
+    companyId,
+    currentEmail,
+    currentPhone
+  }: {
+    userId: string;
+    email?: string;
+    phone?: string;
+    employeeType: string;
+    companyId: string;
+    currentEmail: string | null;
+    currentPhone: string | null;
+  }
+): Promise<
+  { success: false; message: string } | { success: true; newEmailCode?: string }
+> {
+  const serviceRole = getCarbonServiceRole();
+
+  const employeeTypePermissions = await getPermissionsByEmployeeType(
+    client,
+    employeeType
+  );
+  if (employeeTypePermissions.error) {
+    return { success: false, message: employeeTypePermissions.error.message };
+  }
+  const permissions = makePermissionsFromEmployeeType(employeeTypePermissions);
+
+  const employeeUpdate = await client
+    .from("employee")
+    .update({ employeeTypeId: employeeType })
+    .eq("id", userId)
+    .eq("companyId", companyId);
+  if (employeeUpdate.error) {
+    return { success: false, message: employeeUpdate.error.message };
+  }
+
+  const orFilter = [
+    currentEmail ? `email.eq.${currentEmail}` : null,
+    currentPhone ? `phone.eq.${currentPhone}` : null
+  ]
+    .filter(Boolean)
+    .join(",");
+
+  if (!orFilter) {
+    return { success: false, message: "No pending invite found" };
+  }
+
+  const existingInvite = await serviceRole
+    .from("invite")
+    .select("id")
+    .or(orFilter)
+    .eq("companyId", companyId)
+    .is("acceptedAt", null)
+    .is("revokedAt", null)
+    .limit(1)
+    .maybeSingle();
+
+  if (existingInvite.error || !existingInvite.data) {
+    return { success: false, message: "No pending invite found" };
+  }
+
+  const normalizedPhone = phone ? toE164Phone(phone) : null;
+  const isEmailChanged = email && email !== currentEmail;
+  const newCode = isEmailChanged ? crypto.randomUUID() : undefined;
+
+  const inviteUpdate = await serviceRole
+    .from("invite")
+    .update({
+      email: email ?? null,
+      phone: normalizedPhone,
+      permissions,
+      ...(newCode ? { code: newCode } : {})
+    } as any)
+    .eq("id", existingInvite.data.id);
+
+  if (inviteUpdate.error) {
+    return { success: false, message: inviteUpdate.error.message };
+  }
+
+  const userUpdate = await serviceRole
+    .from("user")
+    .update({ email: email ?? null, phone: normalizedPhone } as any)
+    .eq("id", userId);
+
+  if (userUpdate.error) {
+    return { success: false, message: userUpdate.error.message };
+  }
+
+  await serviceRole.auth.admin
+    .updateUserById(userId, {
+      ...(email ? { email, email_confirm: true } : {}),
+      ...(normalizedPhone ? { phone: normalizedPhone } : {})
+    })
+    .catch((err) => {
+      console.warn("[update-invite] auth admin update non-fatal:", err);
+    });
+
+  return { success: true, newEmailCode: newCode };
+}
+
 export async function createSupplierAccount(
   client: SupabaseClient<Database>,
   {

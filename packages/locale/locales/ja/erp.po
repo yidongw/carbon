@@ -292,6 +292,9 @@ msgstr "蓄積期間（週）"
 msgid "Accumulation Period:"
 msgstr "蓄積期間:"
 
+msgid "Acquisition Cost"
+msgstr "取得コスト"
+
 msgid "Action Items"
 msgstr "アクション項目"
 
@@ -1184,6 +1187,9 @@ msgstr "資産クラス"
 msgid "Asset Classes"
 msgstr "資産クラス"
 
+msgid "Asset ID"
+msgstr "資産ID"
+
 msgid "Assets"
 msgstr "アセット"
 
@@ -1437,6 +1443,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOMが正常に同期されました"
+
+msgid "Book Depreciation"
+msgstr "減価償却を計上"
 
 msgid "Boolean"
 msgstr "かつ"
@@ -3544,6 +3553,9 @@ msgstr "休日を編集"
 msgid "Edit Inspection Document"
 msgstr "検査文書編集"
 
+msgid "Edit Invite"
+msgstr "招待編集"
+
 msgid "Edit Item Group"
 msgstr "アイテムグループを編集"
 
@@ -3763,9 +3775,6 @@ msgstr "メールリンクが無効または期限切れです"
 msgid "Email notifications not configured"
 msgstr "メール通知が設定されていません"
 
-msgid "Email or Phone"
-msgstr "メールまたは電話"
-
 msgid "Emails"
 msgstr "メール"
 
@@ -3912,6 +3921,9 @@ msgstr "エンティティ"
 
 msgid "Entity is {status}"
 msgstr "エンティティは {status} です"
+
+msgid "Entity Type"
+msgstr "エンティ티タイプ"
 
 msgid "EORI"
 msgstr "EORI"
@@ -6195,6 +6207,9 @@ msgstr "30日以内"
 msgid "Net 60"
 msgstr "ネット60"
 
+msgid "Net Book Value"
+msgstr "残余価値"
+
 msgid "Net Change"
 msgstr "ネット変更"
 
@@ -7384,6 +7399,9 @@ msgstr "低コスト評価に最適"
 msgid "Period"
 msgstr "期間"
 
+msgid "Period End"
+msgstr "期末日"
+
 msgid "Permanently Delete"
 msgstr "完全に削除"
 
@@ -7567,6 +7585,9 @@ msgstr "郵便番号"
 msgid "Posted"
 msgstr "転記済み"
 
+msgid "Posted At"
+msgstr "投稿日時"
+
 msgid "Posted By"
 msgstr "投稿者"
 
@@ -7596,6 +7617,9 @@ msgstr "プレフィックス"
 
 msgid "Prepaid/ Pro forma"
 msgstr "プリペイド/プロフォーマ"
+
+msgid "Present Week"
+msgstr "現在の週"
 
 msgid "Prev"
 msgstr "前へ"
@@ -8654,6 +8678,9 @@ msgstr "ルールタイプ"
 
 msgid "Rules"
 msgstr "かん律"
+
+msgid "Run ID"
+msgstr "実行ID"
 
 msgid "Run Matching"
 msgstr "マッチング実行"
@@ -9968,6 +9995,9 @@ msgstr "テーブル"
 msgid "Table actions"
 msgstr "テーブルアクション"
 
+msgid "Tag"
+msgstr "タグ"
+
 msgid "Tag size"
 msgstr "タグサイズ"
 
@@ -10029,6 +10059,9 @@ msgstr "税金 & 配送"
 
 msgid "Tax Amount"
 msgstr "税額"
+
+msgid "Tax Depreciation"
+msgstr "税減価"
 
 msgid "Tax ID"
 msgstr "税務ID"
@@ -10853,6 +10886,9 @@ msgstr "値"
 msgid "Value source by surface"
 msgstr "表面による値源"
 
+msgid "Values"
+msgstr "値"
+
 msgid "Variances"
 msgstr "変動"
 
@@ -11170,6 +11206,9 @@ msgstr "WeChatでサインイン"
 
 msgid "Wednesday"
 msgstr "水曜日"
+
+msgid "Week {weekNumber}"
+msgstr "週 {weekNumber}"
 
 msgid "Weekly"
 msgstr "毎週"

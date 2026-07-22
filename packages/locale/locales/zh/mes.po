@@ -27,14 +27,12 @@ msgstr "{0} 个活跃"
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
-#. (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} complete"
 msgstr "{0} / {1} 已完成"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
-#. (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} completed"
 msgstr "{0} / {1} 已完成"
@@ -120,14 +118,10 @@ msgstr "确定要删除此步骤吗？"
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
 msgstr "确定要删除此考勤记录吗？此操作无法撤销。"
 
-msgid ""
-"Are you sure you want to end all production events? This will end all active"
-" operations without completing or finishing them."
+msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
 msgstr "确定要结束所有生产事件吗？这将终止所有活跃工序，而不会完成它们。"
 
-msgid ""
-"Are you sure you want to finish this operation? This will end all active "
-"production events for this operation."
+msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
 msgstr "您确定要完成此操作吗？这将结束此操作的所有正在进行的生产事件。"
 
 msgid "Are you sure you want to leave this page?"
@@ -204,14 +198,10 @@ msgstr "分包工单"
 msgid "Bundles"
 msgstr "分包"
 
-msgid ""
-"But don't worry. You can use the forgot password flow to request a new magic"
-" link."
+msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
 
-msgid ""
-"By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy "
-"Policy.</1>"
+msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "登录即表示您同意<0>服务条款</0>和<1>隐私政策。</1>"
 
 msgid "Camera unavailable — use manual selection below."
@@ -444,12 +434,9 @@ msgstr "拖放文件到此处，或点击选择文件"
 msgid "Dragging {0} cancelled."
 msgstr "拖拽 {0} 已取消。"
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(
-#. operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime(
-#. convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime(
-#. convertDateStringToIsoString(item.dueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "截止 {0}"
 
@@ -958,9 +945,7 @@ msgstr "没有库存"
 msgid "No time entries for this week"
 msgstr "本周无考勤记录"
 
-msgid ""
-"No warehouse stock is on record for this item. You can still pick it — on-"
-"hand will go negative until the count is reconciled."
+msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
 
 msgid "No work centers are blocked"
@@ -991,8 +976,7 @@ msgstr "最旧"
 msgid "Only {0} available"
 msgstr "仅 {0} 可用"
 
-msgid ""
-"Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。"
 
 msgid "Open"
@@ -1442,9 +1426,7 @@ msgstr "选择序列号"
 msgid "Select Serial Number {0}"
 msgstr "选择序列号 {0}"
 
-msgid ""
-"Select the operation to go back to. All operations from that point to the "
-"current operation will be redone."
+msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
 msgstr "选择要返回的操作。从该操作到当前操作的所有操作都将重新执行。"
 
 msgid "Send"
@@ -1591,15 +1573,10 @@ msgid "That QR code isn't a bundle ticket"
 msgstr "该二维码不是分包标签"
 
 #. placeholder {0}: operation.operationQuantity
-msgid ""
-"The completed quantity for this operation is less than the required quantity"
-" of {0}."
+msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
-msgid ""
-"There are serial or batch tracked materials on the bill of material that "
-"have not been fully issued. Completing without issuing may result in "
-"incorrect traceability records."
+msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
 msgid "This lot is expired and can't be picked."
@@ -1611,9 +1588,7 @@ msgstr "此操作已被删除"
 msgid "This Period"
 msgstr "本期"
 
-msgid ""
-"This process is assigned to someone else. Taking over stops their running "
-"clock."
+msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "该工序已分配给他人。接手将停止其正在计时的工时。"
 
 msgid "Thumbnail"
@@ -1776,12 +1751,8 @@ msgid "You belong to more than one company. Pick where to work."
 msgstr "您属于多个公司。请选择工作所在的公司。"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-msgid ""
-"You clocked in at {0}. You can edit your clock-out time below or acknowledge"
-" that you're still working."
+msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确认您仍在工作。"
 
-msgid ""
-"You've been clocked in for {hoursElapsed} hours. Did you forget to clock "
-"out?"
+msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"

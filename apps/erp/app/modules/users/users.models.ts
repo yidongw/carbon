@@ -122,6 +122,30 @@ export const resendInviteValidator = z.object({
     .min(1, { message: "Users are required" })
 });
 
+export const updateInviteValidator = z
+  .object({
+    userId: z.string().min(1, "User ID is required"),
+    email: zfd.text(z.string().email("Must be a valid email").optional()),
+    phone: zfd.text(
+      z
+        .string()
+        .regex(/^1[3-9]\d{9}$/, "Must be a valid phone number")
+        .optional()
+    ),
+    employeeType: z.string().min(1, { message: "Employee type is required" })
+  })
+  .superRefine((data, ctx) => {
+    if (!data.email && !data.phone) {
+      for (const path of ["email", "phone"] as const) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Email or phone number is required",
+          path: [path]
+        });
+      }
+    }
+  });
+
 export const revokeInviteValidator = z.object({
   users: z
     .array(z.string().min(1, { message: "Invalid user id" }))
