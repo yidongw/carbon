@@ -1,5 +1,5 @@
 import type { Database } from "@carbon/database";
-import { ERP_URL, MES_URL } from "@carbon/env";
+import { ERP_URL, getMESUrl } from "@carbon/env";
 import type { ProductLabelItem } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -68,7 +68,7 @@ export async function buildBundleTicketItem(
   return {
     id: bundle.id!,
     readableId: bundle.jobReadableId ?? bundle.id!,
-    bundleUrl: `${MES_URL ?? ""}/x/bundle/${bundle.id}`,
+    bundleUrl: `${getMESUrl()}/x/bundle/${bundle.id}`,
     styleReadableId:
       bundle.readableIdWithRevision ||
       bundle.itemName ||
