@@ -1,8 +1,14 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { renderBundleTicketsToBuffer } from "@carbon/documents/pdf";
+import {
+  renderBundleTicketsToBuffer,
+  tagPageSizeFromInches
+} from "@carbon/documents/pdf";
+import { labelSizes } from "@carbon/utils";
 import type { LoaderFunctionArgs } from "react-router";
 import { getBundleTicketLabels } from "~/modules/production";
 import { getCompany } from "~/modules/settings";
+
+const DEFAULT_TAG_ID = "bundleTag40x80mm";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -25,6 +31,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
   }
 
+  const size =
+    labelSizes.find((s) => s.id === url.searchParams.get("labelSize")) ??
+    labelSizes.find((s) => s.id === DEFAULT_TAG_ID);
+  const pageSize = tagPageSizeFromInches(
+    size?.width ?? 1.5748,
+    size?.height ?? 3.1496
+  );
+
   const [company, labels] = await Promise.all([
     getCompany(client, companyId),
     getBundleTicketLabels(client, companyId, ids)
@@ -34,11 +48,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return new Response("No valid bundle work orders found", { status: 404 });
   }
 
-  const body = await renderBundleTicketsToBuffer(labels);
+  const showBorder = url.searchParams.get("border") === "1";
+  const body = await renderBundleTicketsToBuffer(labels, pageSize, showBorder);
 
   const companyName = company.data?.name ?? "Carbon";
   const headers = new Headers({
     "Content-Type": "application/pdf",
+    // Don't cache — the label layout/fonts change often during setup and a
+    // stale cached PDF looks like "nothing changed" after a redeploy.
+    "Cache-Control": "no-store, must-revalidate",
     "Content-Disposition": `inline; filename="${companyName} - Bundle Tickets.pdf"`
   });
 

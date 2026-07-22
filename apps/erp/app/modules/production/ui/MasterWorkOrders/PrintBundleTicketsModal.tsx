@@ -83,17 +83,18 @@ const PrintBundleTicketsModal = ({
     [printable]
   );
 
-  // Print straight from the browser: open a print-sized HTML page (one tag per
-  // page) and let the browser's print dialog target the tag printer — works
-  // with any OS printer, including a Bluetooth-paired one, no print server.
+  // Print straight from the browser: open the server-generated PDF, sized
+  // exactly to the tag (one ticket per page), in a new tab. A real PDF at the
+  // tag dimensions prints and saves at true size on any OS printer or "Save as
+  // PDF" — unlike an HTML page, whose size the print dialog silently overrides.
+  // Opening it in its own tab keeps the PDF (and its URL) visible so it can be
+  // reviewed/shared before printing; print from the viewer (Cmd/Ctrl+P).
   const handlePrintBrowser = useCallback(() => {
     if (checkedIds.length === 0) return;
-    window.open(
-      path.to.file.bundleWorkOrderLabelsHtml(checkedIds, {
-        labelSize: tagSize
-      }),
-      "_blank"
-    );
+    const url = path.to.file.bundleWorkOrderLabelsPdf(checkedIds, {
+      labelSize: tagSize
+    });
+    window.open(url, "_blank");
     onClose();
   }, [checkedIds, tagSize, onClose]);
 

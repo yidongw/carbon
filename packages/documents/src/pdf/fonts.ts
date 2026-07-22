@@ -68,7 +68,16 @@ const CJK_FAMILY = "Noto Sans SC";
 const CJK_FONT_URL_REGULAR =
   process.env.CJK_FONT_URL_REGULAR ??
   "https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf";
-const CJK_FONT_URL_BOLD = process.env.CJK_FONT_URL_BOLD ?? CJK_FONT_URL_REGULAR;
+// Real weighted faces — the variable TTF ignores fontWeight in react-pdf (700
+// renders identical to 400), so weighted text needs separate files or it prints
+// thin/faint on a 1-bit thermal printer. Medium is used for the tag fields (bold
+// looked too heavy); these SC subset OTFs subset fine (only used glyphs embed).
+const CJK_FONT_URL_MEDIUM =
+  process.env.CJK_FONT_URL_MEDIUM ??
+  "https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/SubsetOTF/SC/NotoSansSC-Medium.otf";
+const CJK_FONT_URL_BOLD =
+  process.env.CJK_FONT_URL_BOLD ??
+  "https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/SubsetOTF/SC/NotoSansSC-Bold.otf";
 
 let cjkResult: string | null = null;
 let cjkInFlight: Promise<string> | null = null;
@@ -96,6 +105,7 @@ export async function ensureCJKFont(): Promise<string> {
         family: CJK_FAMILY,
         fonts: [
           { src: CJK_FONT_URL_REGULAR },
+          { src: CJK_FONT_URL_MEDIUM, fontWeight: 500 },
           { src: CJK_FONT_URL_BOLD, fontWeight: 700 }
         ]
       });
