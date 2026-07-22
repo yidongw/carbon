@@ -39,7 +39,8 @@ export function tagPageSizeFromInches(
 async function render(
   labels: BundleTicketLabel[],
   fontFamily: string,
-  pageSize: BundleTicketPageSize
+  pageSize: BundleTicketPageSize,
+  showBorder: boolean
 ): Promise<Buffer> {
   const stream = await renderToStream(
     <BundleTicketPDF
@@ -47,6 +48,7 @@ async function render(
       fontFamily={fontFamily}
       pageWidth={pageSize.width}
       pageHeight={pageSize.height}
+      showBorder={showBorder}
     />
   );
   return streamToBuffer(stream);
@@ -61,14 +63,15 @@ async function render(
  */
 export async function renderBundleTicketsToBuffer(
   labels: BundleTicketLabel[],
-  pageSize: BundleTicketPageSize = DEFAULT_BUNDLE_TAG_SIZE
+  pageSize: BundleTicketPageSize = DEFAULT_BUNDLE_TAG_SIZE,
+  showBorder = false
 ): Promise<Buffer> {
   const fontFamily = await ensureCJKFont();
   try {
-    return await render(labels, fontFamily, pageSize);
+    return await render(labels, fontFamily, pageSize, showBorder);
   } catch (err) {
     if (fontFamily === "Helvetica") throw err;
     console.error("Bundle ticket CJK render failed; falling back:", err);
-    return render(labels, "Helvetica", pageSize);
+    return render(labels, "Helvetica", pageSize, showBorder);
   }
 }

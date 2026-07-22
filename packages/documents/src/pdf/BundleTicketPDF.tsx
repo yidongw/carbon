@@ -1,5 +1,4 @@
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
-import { createTw } from "react-pdf-tailwind";
 import { generateQRCode } from "../qr/qr-code";
 
 /** One garment bundle ticket (扎标). */
@@ -41,120 +40,212 @@ interface BundleTicketPDFProps {
   /** Tag page height in points. Defaults to 80mm. */
   pageHeight?: number;
   /**
-   * Top dead-zone in mm reserved for the tag's hang hole (these garment tags
-   * have a ~15×8mm punch at the top center) — nothing prints there.
+   * Diagnostic: draw the page edge (solid) and the printable area excluding the
+   * bottom hole reserve (dashed), to check placement against the physical tag.
    */
-  holeReserveMm?: number;
+  showBorder?: boolean;
 }
 
 const MM_TO_PT = 72 / 25.4;
 const DEFAULT_WIDTH = 40 * MM_TO_PT;
 const DEFAULT_HEIGHT = 80 * MM_TO_PT;
-const DEFAULT_HOLE_RESERVE_MM = 14;
+// The hanging punch hole / tear-off line is at the BOTTOM (tail) of these tags.
+// The hole is a FIXED physical size on the stock (not proportional), so reserve
+// a fixed blank strip at the bottom regardless of tag height.
+const TOP_FRACTION = 0.0375;
+const HOLE_RESERVE_MM = 16;
+const ROW_GAP_MM = 0.7;
 
-const makeTw = (fontFamily: string) =>
-  createTw({
-    theme: {
-      fontFamily: { sans: [fontFamily] },
-      extend: {
-        colors: { gray: { 300: "#d1d5db", 500: "#7d7d7d" } }
-      }
-    }
-  });
+type Field = [string, string | number | null | undefined];
+const present = (fields: Field[]) =>
+  fields.filter(([, v]) => v !== null && v !== undefined && v !== "");
+
+/** Left column: style / color / size / qty. */
+function leftRows(label: BundleTicketLabel) {
+  return present([
+    ["款号: ", label.styleReadableId],
+    ["颜色: ", label.colorName],
+    ["尺码: ", label.sizeCode],
+    ["数量: ", label.quantity]
+  ]);
+}
+
+/** Right column: everything else (customer / work center / bundle counts). */
+function rightRows(label: BundleTicketLabel) {
+  return present([
+    ["客户: ", label.customerName],
+    ["车间: ", label.workCenterName],
+    ["扎号: ", label.sequence],
+    ["总扎: ", label.totalBundles],
+    ["总裁: ", label.totalCut]
+  ]);
+}
 
 /**
  * Garment bundle tickets — one ticket per page, sized to the physical tag
  * (default 40×80mm portrait), so each prints as a single label on a thermal
- * tag roll via the printer driver.
+ * tag roll via the printer driver. Layout scales with the tag: a small top
+ * margin, the field list, the QR + id centered in the space below it, and a
+ * blank reserve at the bottom for the hang hole / tear-off line.
  */
 const BundleTicketPDF = ({
   labels,
   fontFamily = "Helvetica",
   pageWidth = DEFAULT_WIDTH,
   pageHeight = DEFAULT_HEIGHT,
-  holeReserveMm = DEFAULT_HOLE_RESERVE_MM
+  showBorder = false
 }: BundleTicketPDFProps) => {
-  const tw = makeTw(fontFamily);
-  // Scale type / QR / spacing to the tag so it reads well from a 30mm tag up to
-  // a 50mm one (reference = 40mm wide).
-  const scale = pageWidth / DEFAULT_WIDTH;
-  const pad = Math.max(4, 6 * scale);
-  // Keep the hang-hole zone at the top clear.
-  const topReserve = holeReserveMm * MM_TO_PT;
-  const labelFont = Math.max(4.5, 7 * scale);
-  const valueFont = Math.max(5, 8 * scale);
-  const idFont = Math.max(4, 6 * scale);
-  const rowGap = Math.max(0.5, 1.5 * scale);
-  const qrSize = Math.min(pageWidth - 2 * pad, pageHeight * 0.34);
-
-  const Field = ({
-    label,
-    value
-  }: {
-    label: string;
-    value: string | number | null | undefined;
-  }) => {
-    if (value === null || value === undefined || value === "") return null;
-    return (
-      <View style={{ ...tw("flex flex-row"), marginBottom: rowGap }}>
-        <Text style={{ ...tw("text-gray-500"), fontSize: labelFont }}>
-          {label}
-        </Text>
-        <Text
-          style={{ ...tw("flex-1"), fontSize: valueFont, fontWeight: "bold" }}
-        >
-          {value}
-        </Text>
-      </View>
-    );
-  };
+  const heightMm = pageHeight / MM_TO_PT;
+  const widthMm = pageWidth / MM_TO_PT;
+  const topMm = heightMm * TOP_FRACTION;
+  const holeMm = HOLE_RESERVE_MM;
+  const contentMm = heightMm - topMm - holeMm;
+  // QR capped by both the width and the printable height so it never balloons
+  // on a narrow tag nor crowds out the id.
+  const qrPt = Math.min(widthMm * 0.55, contentMm * 0.3) * MM_TO_PT;
+  const sidePadPt = 2 * MM_TO_PT;
 
   return (
     <Document>
-      {labels.map((label) => (
-        <Page
-          key={label.id}
-          size={[pageWidth, pageHeight]}
-          style={{
-            fontFamily,
-            paddingTop: topReserve,
-            paddingBottom: pad,
-            paddingLeft: pad,
-            paddingRight: pad,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
-          }}
-        >
-          <View style={tw("flex flex-col")}>
-            <Field label="款号: " value={label.styleReadableId} />
-            <Field label="客户: " value={label.customerName} />
-            <Field label="颜色: " value={label.colorName} />
-            <Field label="尺码: " value={label.sizeCode} />
-            <Field label="数量: " value={label.quantity} />
-            <Field label="车间: " value={label.workCenterName} />
-            <Field label="扎号: " value={label.sequence} />
-            <Field label="总扎: " value={label.totalBundles} />
-            <Field label="总裁: " value={label.totalCut} />
-          </View>
+      {labels.map((label) => {
+        const left = leftRows(label);
+        const right = rightRows(label);
+        // Two columns, so the field block is as tall as the taller column.
+        // Target ~42% of the printable height (fewer rows than a single list,
+        // so the QR gets more room); generous line factor for the medium face.
+        const maxRows = Math.max(1, left.length, right.length);
+        const perRowMm =
+          (contentMm * 0.42 - (maxRows - 1) * ROW_GAP_MM) / maxRows;
+        const valueFont = Math.max(
+          5,
+          Math.min(11, (perRowMm * MM_TO_PT) / 1.5)
+        );
+        // Key and value share the same size so they sit on the same line and
+        // align cleanly, including when a long value wraps.
+        const labelFont = valueFont;
+        const idFont = Math.max(4.5, valueFont * 0.62);
 
-          <View style={tw("flex flex-col items-center")}>
-            <Image
-              src={generateQRCode(label.bundleUrl, qrSize / 72)}
-              style={{ width: qrSize, height: qrSize, objectFit: "contain" }}
-            />
-            <Text
+        const renderRows = (rows: Field[]) =>
+          rows.map(([k, v]) => (
+            <View
+              key={k}
               style={{
-                ...tw("text-center"),
-                fontSize: idFont,
-                color: "#7d7d7d"
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "flex-start",
+                marginBottom: ROW_GAP_MM * MM_TO_PT
               }}
             >
-              {label.readableId || label.id}
-            </Text>
-          </View>
-        </Page>
-      ))}
+              <Text
+                style={{
+                  fontSize: labelFont,
+                  fontWeight: 500,
+                  color: "#000000"
+                }}
+              >
+                {k}
+              </Text>
+              <Text
+                style={{
+                  fontSize: valueFont,
+                  fontWeight: 500,
+                  color: "#000000",
+                  flex: 1
+                }}
+              >
+                {v}
+              </Text>
+            </View>
+          ));
+
+        return (
+          <Page
+            key={label.id}
+            size={[pageWidth, pageHeight]}
+            wrap={false}
+            style={{
+              fontFamily,
+              paddingTop: topMm * MM_TO_PT,
+              paddingBottom: holeMm * MM_TO_PT,
+              paddingLeft: sidePadPt,
+              paddingRight: sidePadPt,
+              display: "flex",
+              flexDirection: "column"
+            }}
+          >
+            {showBorder && (
+              <>
+                <View
+                  fixed
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: pageWidth,
+                    height: pageHeight,
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: "#000000"
+                  }}
+                />
+                <View
+                  fixed
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: pageWidth,
+                    height: (heightMm - holeMm) * MM_TO_PT,
+                    borderWidth: 0.8,
+                    borderStyle: "dashed",
+                    borderColor: "#e00000"
+                  }}
+                />
+              </>
+            )}
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <View
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                {renderRows(left)}
+              </View>
+              <View style={{ width: 2 * MM_TO_PT }} />
+              <View
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                {renderRows(right)}
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                paddingTop: 2 * MM_TO_PT
+              }}
+            >
+              <Image
+                src={generateQRCode(label.bundleUrl, qrPt / MM_TO_PT)}
+                style={{ width: qrPt, height: qrPt, objectFit: "contain" }}
+              />
+              <Text
+                style={{
+                  fontSize: idFont,
+                  fontWeight: 500,
+                  color: "#000000",
+                  textAlign: "center",
+                  marginTop: 0.5 * MM_TO_PT
+                }}
+              >
+                {label.readableId || label.id}
+              </Text>
+            </View>
+          </Page>
+        );
+      })}
     </Document>
   );
 };

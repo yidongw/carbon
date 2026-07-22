@@ -304,10 +304,15 @@ export const path = {
         generatePath(`${file}/kanban/${id}/${action}.png`),
       bundleWorkOrderQrCode: (id: string) =>
         generatePath(`${file}/bundle-work-order/${id}.png`),
-      bundleWorkOrderLabelsPdf: (ids: string | string[]) => {
+      bundleWorkOrderLabelsPdf: (
+        ids: string | string[],
+        { labelSize }: { labelSize?: string } = {}
+      ) => {
         const idString = Array.isArray(ids) ? ids.join(",") : ids;
+        const params = new URLSearchParams({ ids: idString });
+        if (labelSize) params.set("labelSize", labelSize);
         return generatePath(
-          `${file}/bundle-work-order/labels.pdf?ids=${idString}`
+          `${file}/bundle-work-order/labels.pdf?${params.toString()}`
         );
       },
       bundleWorkOrderLabelsHtml: (
