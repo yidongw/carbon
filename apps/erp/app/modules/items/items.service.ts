@@ -1641,7 +1641,7 @@ export async function getStyles(
 
   if (args.search) {
     query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCode.ilike.%${args.search}%,colorName.ilike.%${args.search}%`
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCodes.ilike.%${args.search}%,colorNames.ilike.%${args.search}%,sizeCodes.ilike.%${args.search}%`
     );
   }
 
