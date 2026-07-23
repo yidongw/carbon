@@ -10,12 +10,15 @@ import { ProductionQuantityReportCardHeader } from "./ProductionQuantityReportCa
 export function ProductionQuantityReportCard({
   report,
   configurationParameters,
+  optionLabels,
   canEdit,
   onEdit,
   onHistory
 }: {
   report: ProductionQuantityReportWithLines;
   configurationParameters?: ConfigurationParameter[] | null;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
   canEdit: boolean;
   onEdit: () => void;
   onHistory: () => void;
@@ -82,6 +85,7 @@ export function ProductionQuantityReportCard({
             key={line.id}
             line={line}
             configurationParameters={configurationParameters}
+            optionLabels={optionLabels}
           />
         ))}
         {report.notes ? (

@@ -144,13 +144,19 @@ export function getConfigTableRows(configuration: unknown): ConfigTableRow[] {
 
 export function formatConfigRowLabel(
   row: ConfigTableRow,
-  columns: ConfigColumn[]
+  columns: ConfigColumn[],
+  /** Display label per list-option value (e.g. color code -> color name). The
+   * stored value stays the code; only the shown text changes. */
+  optionLabels?: Record<string, string>
 ): string {
   const descriptorColumns = columns.filter((col) => col.type !== "quantity");
   const quantityColumns = columns.filter((col) => col.type === "quantity");
 
   const descriptorParts = descriptorColumns
-    .map((col) => String(row[col.key] ?? "").trim())
+    .map((col) => {
+      const value = String(row[col.key] ?? "").trim();
+      return value ? (optionLabels?.[value] ?? value) : value;
+    })
     .filter(Boolean);
 
   if (quantityColumns.length === 0) {
@@ -183,14 +189,15 @@ export function formatConfigRowLabel(
 export function formatConfigRowLabels(
   configuration: unknown,
   parameters: ConfigurationParameterColumnsInput[],
-  defaultQuantityLabel: string
+  defaultQuantityLabel: string,
+  optionLabels?: Record<string, string>
 ): string[] {
   const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
   const rows = getConfigTableRows(configuration);
 
   return rows
     .filter((row) => hasConfigRowValue(row, columns))
-    .map((row) => formatConfigRowLabel(row, columns));
+    .map((row) => formatConfigRowLabel(row, columns, optionLabels));
 }
 
 export type ConfigRowDisplayPart = {
@@ -200,14 +207,20 @@ export type ConfigRowDisplayPart = {
 
 export function getConfigRowDisplayPart(
   row: ConfigTableRow,
-  columns: ConfigColumn[]
+  columns: ConfigColumn[],
+  /** Display label per list-option value (e.g. color code -> color name). The
+   * stored value stays the code; only the shown text changes. */
+  optionLabels?: Record<string, string>
 ): ConfigRowDisplayPart {
   const descriptorColumns = columns.filter((col) => col.type !== "quantity");
   const quantityColumns = columns.filter((col) => col.type === "quantity");
 
   const descriptor =
     descriptorColumns
-      .map((col) => String(row[col.key] ?? "").trim())
+      .map((col) => {
+        const value = String(row[col.key] ?? "").trim();
+        return value ? (optionLabels?.[value] ?? value) : value;
+      })
       .filter(Boolean)
       .join(", ") || null;
 
@@ -228,14 +241,15 @@ export function getConfigRowDisplayPart(
 export function getConfigRowDisplayParts(
   configuration: unknown,
   parameters: ConfigurationParameterColumnsInput[],
-  defaultQuantityLabel: string
+  defaultQuantityLabel: string,
+  optionLabels?: Record<string, string>
 ): ConfigRowDisplayPart[] {
   const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
   const rows = getConfigTableRows(configuration);
 
   return rows
     .filter((row) => hasConfigRowValue(row, columns))
-    .map((row) => getConfigRowDisplayPart(row, columns));
+    .map((row) => getConfigRowDisplayPart(row, columns, optionLabels));
 }
 
 export type ReportedTargetCell = {

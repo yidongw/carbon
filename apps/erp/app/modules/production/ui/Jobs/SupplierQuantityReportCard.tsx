@@ -12,6 +12,7 @@ import { SupplierQuantityReportCardHeader } from "./SupplierQuantityReportCardHe
 export function SupplierQuantityReportCard({
   report,
   configurationParameters,
+  optionLabels,
   canEdit,
   onEdit,
   onHistory,
@@ -20,6 +21,8 @@ export function SupplierQuantityReportCard({
 }: {
   report: JobOperationSupplierQuantityReportWithLines;
   configurationParameters?: ConfigurationParameter[] | null;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
   canEdit: boolean;
   onEdit: () => void;
   onHistory: () => void;
@@ -128,6 +131,7 @@ export function SupplierQuantityReportCard({
             key={line.id}
             line={line}
             configurationParameters={configurationParameters}
+            optionLabels={optionLabels}
           />
         ))}
         {report.notes ? (

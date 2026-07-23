@@ -74,6 +74,7 @@ function groupInvalidatedLines(
 export function ProductionQuantityReportHistoryDrawer({
   reportId,
   configurationParameters,
+  optionLabels,
   linesApiPath,
   supplierId,
   reportCreatedBy,
@@ -82,6 +83,8 @@ export function ProductionQuantityReportHistoryDrawer({
 }: {
   reportId: string;
   configurationParameters?: ConfigurationParameter[] | null;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
   linesApiPath?: string;
   supplierId?: string | null;
   reportCreatedBy?: string | null;
@@ -204,6 +207,7 @@ export function ProductionQuantityReportHistoryDrawer({
                             key={line.id}
                             line={line}
                             configurationParameters={configurationParameters}
+                            optionLabels={optionLabels}
                           />
                         ))}
                       </div>
