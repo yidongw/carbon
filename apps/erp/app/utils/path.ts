@@ -343,7 +343,7 @@ export const path = {
       workCenters: `${api}/resources/work-centers`,
       paymentTerms: `${api}/accounting/payment-terms`,
       shippingMethods: `${api}/inventory/shipping-methods`,
-      templates: `${api}/items/templates`
+      templates: `${api}/items/templates`,
       workCentersByLocation: (id: string) =>
         generatePath(`${api}/resources/work-centers?location=${id}`)
     },
@@ -2872,8 +2872,8 @@ export const path = {
 } as const;
 
 export const onboardingSequence = [
+  path.to.onboarding.theme,
   path.to.onboarding.user,
-  path.to.onboarding.company
   path.to.onboarding.company,
   path.to.onboarding.industry,
   path.to.onboarding.plan
