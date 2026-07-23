@@ -15,6 +15,7 @@ import {
   Tr,
   useEscape,
   useMount,
+  useOutsideClick,
   VStack
 } from "@carbon/react";
 import { clamp } from "@carbon/utils";
@@ -35,7 +36,12 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import type { CSSProperties, ReactElement, ReactNode } from "react";
+import type {
+  CSSProperties,
+  MutableRefObject,
+  ReactElement,
+  ReactNode
+} from "react";
 import {
   Fragment,
   useCallback,
@@ -61,6 +67,7 @@ import type {
   EditableTableCellComponent,
   Position
 } from "~/components/Editable";
+import { useUrlParams } from "~/hooks";
 import { useSavedViews } from "~/hooks/useSavedViews";
 import type { fieldMappings } from "~/modules/shared";
 import {
@@ -76,7 +83,7 @@ import {
 import type { ColumnFilter } from "./components/Filter/types";
 import { useFilters } from "./components/Filter/useFilters";
 import type { ColumnSizeMap } from "./types";
-import { getAccessorKey, updateNestedProperty } from "./utils";
+import { buildColumnMaps, getAccessorKey, updateNestedProperty } from "./utils";
 
 interface TableProps<T extends object> {
   columns: ColumnDef<T>[];
@@ -94,12 +101,20 @@ interface TableProps<T extends object> {
   }[];
   primaryAction?: ReactNode;
   filterActions?: ReactNode;
+  // Optional controls rendered in the toolbar row next to the search/filter
+  // (e.g. quick filter toggles that write their own `filter` URL params).
+  headerActions?: ReactNode;
   table?: string;
   title?: string;
+  // Optional node rendered immediately after the title (e.g. a status badge).
+  titleBadge?: ReactNode;
   // Render the header row (title, primary action, search/filter/sort toolbar).
   // Set false to embed a bare table (e.g. inside a modal that has its own header).
   withHeader?: boolean;
   withInlineEditing?: boolean;
+  // When true, the table starts in edit mode and the Edit/Lock toggle is hidden
+  // (editing is always on — e.g. a Draft document that is inherently editable).
+  forceEditMode?: boolean;
   withPagination?: boolean;
   withSavedView?: boolean;
   withSearch?: boolean;
@@ -107,6 +122,8 @@ interface TableProps<T extends object> {
   withSimpleSorting?: boolean;
   sort?: ReactNode;
   getRowId?: (originalRow: T, index: number) => string;
+  // Optional per-row class (e.g. to highlight rows that failed validation).
+  getRowClassName?: (originalRow: T) => string | undefined;
   rowSelection?: RowSelectionState;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   onSelectedRowsChange?: (selectedRows: T[]) => void;
@@ -245,10 +262,13 @@ const Table = <T extends object>({
   importCSV,
   primaryAction,
   filterActions,
+  headerActions,
   table: tableName,
   title,
+  titleBadge,
   withHeader = true,
   withInlineEditing = false,
+  forceEditMode = false,
   withPagination = true,
   withSavedView = false,
   withSearch = true,
@@ -256,6 +276,7 @@ const Table = <T extends object>({
   withSimpleSorting = true,
   sort,
   getRowId,
+  getRowClassName,
   rowSelection: controlledRowSelection,
   onRowSelectionChange,
   onSelectedRowsChange,
@@ -296,6 +317,9 @@ const Table = <T extends object>({
     ? controlledRowSelection
     : internalRowSelection;
   const setRowSelection = onRowSelectionChange ?? setInternalRowSelection;
+
+  // Anchor row (by id) for shift-click range selection.
+  const selectionAnchorRef = useRef<string | null>(null);
 
   /* Clear row selection when data changes. Skip when rows have stable ids
      (getRowId) or selection is controlled — the selection survives data
@@ -426,24 +450,27 @@ const Table = <T extends object>({
   /* Sorting */
   const { isSorted, toggleSortByAscending, toggleSortByDescending } = useSort();
 
-  const columnAccessors = useMemo(
-    () =>
-      columns.reduce<Record<string, string>>((acc, column) => {
-        const accessorKey: string | undefined = getAccessorKey(column);
-        if (accessorKey?.includes("_"))
-          throw new Error(
-            `Invalid accessorKey ${accessorKey}. Cannot contain '_'`
-          );
-        if (accessorKey && column.header && typeof column.header === "string") {
-          return {
-            ...acc,
-            [accessorKey]: translateLabel(column.header)
-          };
-        }
-        return acc;
-      }, {}),
+  const {
+    accessors: columnAccessors,
+    exportValues,
+    sortKeyToLabel,
+    exportOnlyColumns
+  } = useMemo(
+    () => buildColumnMaps(columns, translateLabel),
     [columns, translateLabel]
   );
+
+  // Export-only columns must never render in the grid. Force them hidden in the
+  // table state without mutating the stored columnVisibility (so saved-view
+  // state stays correct). The CSV side reads the same `exportOnlyColumns` list
+  // (passed to Download) to include them regardless of visibility — both halves
+  // are driven by the one `meta.exportOnly` flag, not by visibility coincidence.
+  const effectiveColumnVisibility = useMemo(() => {
+    if (!exportOnlyColumns.length) return columnVisibility;
+    const next = { ...columnVisibility };
+    for (const id of exportOnlyColumns) next[id] = false;
+    return next;
+  }, [columnVisibility, exportOnlyColumns]);
 
   const internalColumns = useMemo(() => {
     let result: ColumnDef<T>[] = [];
@@ -458,7 +485,7 @@ const Table = <T extends object>({
       );
     }
     if (withSelectableRows) {
-      result.push(...getRowSelectionColumn<T>());
+      result.push(...getRowSelectionColumn<T>(selectionAnchorRef));
     }
     result.push(...columns);
     if (renderContextMenu) {
@@ -486,7 +513,7 @@ const Table = <T extends object>({
       return String(index);
     },
     state: {
-      columnVisibility,
+      columnVisibility: effectiveColumnVisibility,
       columnOrder,
       columnPinning,
       rowSelection
@@ -539,9 +566,17 @@ const Table = <T extends object>({
     }
   }, [rowSelection, onSelectedRowsChange]);
 
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(forceEditMode);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedCell, setSelectedCell] = useState<Position>(null);
+
+  // forceEditMode follows the document's state (e.g. Rectify flips a Posted
+  // count back to Draft via revalidation, without remounting the table) — and
+  // the Edit/Lock toggle is hidden while it's set, so a stale editMode would
+  // strand the table with no way to recover. Keep them in sync.
+  useEffect(() => {
+    setEditMode(forceEditMode);
+  }, [forceEditMode]);
 
   /* Aggregate Functions */
   const [columnAggregates, setColumnAggregates] = useState<
@@ -560,6 +595,21 @@ const Table = <T extends object>({
   useEscape(() => {
     setIsEditing(false);
     focusOnSelectedCell();
+  });
+
+  // Clicking outside the table clears the selected cell (and ends any edit). A
+  // cell's editable input commits on blur first, so the value is saved before
+  // this runs. Portaled dropdowns (e.g. a cell's combobox popover) render
+  // outside the container but belong to an active edit — ignore clicks in them.
+  useOutsideClick({
+    ref: tableContainerRef,
+    enabled: selectedCell != null,
+    handler: (e) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("[data-radix-popper-content-wrapper]")) return;
+      setIsEditing(false);
+      setSelectedCell(null);
+    }
   });
 
   const onSelectedCellChange = useCallback(
@@ -603,18 +653,17 @@ const Table = <T extends object>({
     (row: number, column: number) => {
       // ignore row select checkbox column
       if (column === -1) return;
-      if (
-        selectedCell?.row === row &&
-        selectedCell?.column === column &&
-        isColumnEditable(column)
-      ) {
+      // Editable cells enter edit mode on a single click (the editable input
+      // then auto-focuses and selects its text), instead of select-then-click.
+      if (isColumnEditable(column)) {
+        onSelectedCellChange({ row, column });
         setIsEditing(true);
         return;
       }
       setIsEditing(false);
       onSelectedCellChange({ row, column });
     },
-    [selectedCell, isColumnEditable, onSelectedCellChange]
+    [isColumnEditable, onSelectedCellChange]
   );
 
   const finishEditing = useCallback(() => setIsEditing(false), []);
@@ -627,10 +676,24 @@ const Table = <T extends object>({
     [table]
   );
 
+  // Excel-like keyboard model, attached in the CAPTURE phase so navigation
+  // keys are handled before the cell editor sees them (react-aria's
+  // NumberField swallows Enter without propagation and steps the value on
+  // ArrowUp/Down — capture lets the table own those keys while editing).
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   const onKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (!selectedCell) return;
+      // Don't hijack keys aimed at a portaled overlay (a cell editor's
+      // combobox/date popover, a row context menu) — those own their keys.
+      if (event.nativeEvent.isComposing) return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.closest(
+          "[data-radix-popper-content-wrapper],[role=menu],[role=listbox],[role=dialog]"
+        )
+      )
+        return;
 
       const { code, shiftKey } = event;
 
@@ -697,8 +760,25 @@ const Table = <T extends object>({
         return [x1, y1];
       };
 
+      // Commit any in-flight edit before navigating away. Editors commit
+      // their value on blur — without this, the navigation's preventDefault
+      // keeps focus on the input until it unmounts and the blur never fires,
+      // silently dropping the typed value.
+      const commitActiveEdit = () => {
+        if (
+          isEditing &&
+          document.activeElement instanceof HTMLElement &&
+          document.activeElement !== document.body
+        ) {
+          document.activeElement.blur();
+        }
+      };
+
       if (code in commandCodes) {
         event.preventDefault();
+        // Keep the key away from the editor entirely (react-aria would
+        // otherwise run its own Enter commit on the input).
+        if (isEditing) event.stopPropagation();
 
         if (
           !isEditing &&
@@ -713,6 +793,9 @@ const Table = <T extends object>({
         let direction = commandCodes[code];
         if (shiftKey) direction = [-direction[0], -direction[1]];
         const [x1, y1] = navigate(direction, code === "Tab");
+
+        commitActiveEdit();
+
         setSelectedCell({
           row: y1,
           column: x1
@@ -721,10 +804,12 @@ const Table = <T extends object>({
           setIsEditing(false);
         }
       } else if (code in navigationCodes) {
-        // arrow key navigation should't work if we're editing
-        if (isEditing) return;
         event.preventDefault();
+        // Excel-like: while editing, an arrow commits the edit and moves the
+        // selection — it must not step the value or move the text cursor.
+        if (isEditing) event.stopPropagation();
         const [x1, y1] = navigate(navigationCodes[code], code === "Tab");
+        commitActiveEdit();
         setIsEditing(false);
         setSelectedCell({
           row: y1,
@@ -763,14 +848,14 @@ const Table = <T extends object>({
   const filters = useMemo(
     () =>
       columns.reduce<ColumnFilter[]>((acc, column) => {
-        if (
-          column.meta?.filter &&
-          column.header &&
+        const header =
           typeof column.header === "string"
-        ) {
+            ? column.header
+            : column.meta?.filterHeader;
+        if (column.meta?.filter && header) {
           const filter: ColumnFilter = {
             accessorKey: getAccessorKey(column) ?? column.id!,
-            header: column.header,
+            header,
             pluralHeader: column.meta.pluralHeader,
             filter: column.meta.filter,
             icon: column.meta.icon
@@ -932,12 +1017,23 @@ const Table = <T extends object>({
 
   const location = useLocation();
   const navigation = useNavigation();
+  const [params] = useUrlParams();
   const { hasFilters, clearFilters } = useFilters();
   const isRevalidatingCurrentRoute = useSpinDelay(
     navigation.state === "loading" &&
       navigation.location?.pathname === location.pathname,
     { delay: 300 }
   );
+
+  // Genuinely-empty table: no rows and nothing narrowing them
+  // (filters/sorts/search). Single source of truth — passed to TableHeader so
+  // the top toolbar and the bottom pagination footer hide together, leaving only
+  // the title bar + primary action.
+  const isTableEmpty =
+    data.length === 0 &&
+    !hasFilters &&
+    params.getAll("sort").filter(Boolean).length === 0 &&
+    !params.get("search")?.trim();
 
   return (
     <VStack
@@ -952,6 +1048,9 @@ const Table = <T extends object>({
       <TableHeader
         featuredColumns={featuredColumns}
         columnAccessors={columnAccessors}
+        exportValues={exportValues}
+        exportOnlyColumns={exportOnlyColumns}
+        sortKeyToLabel={sortKeyToLabel}
         columnOrder={columnOrder}
         columnPinning={columnPinning}
         columnVisibility={columnVisibility}
@@ -960,9 +1059,11 @@ const Table = <T extends object>({
         data={data}
         editMode={editMode}
         filters={filters}
+        isEmpty={isTableEmpty}
         importCSV={importCSV}
         pagination={pagination}
         primaryAction={primaryAction}
+        headerActions={headerActions}
         renderActions={renderActions}
         selectedRows={selectedRows}
         setFeaturedColumns={setFeaturedColumns}
@@ -971,7 +1072,9 @@ const Table = <T extends object>({
         setEditMode={setEditMode}
         table={tableName}
         title={title}
+        titleBadge={titleBadge}
         withInlineEditing={withInlineEditing}
+        forceEditMode={forceEditMode}
         withPagination={withPagination}
         withSavedView={withSavedView}
         withSearch={withSearch}
@@ -1071,7 +1174,7 @@ const Table = <T extends object>({
           "hidden md:block w-full h-full overflow-x-auto [contain:inline-size] [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
         )}
         ref={tableContainerRef}
-        onKeyDown={editMode ? onKeyDown : undefined}
+        onKeyDownCapture={editMode ? onKeyDown : undefined}
       >
         <div className="flex max-w-full h-full">
           {rows.length === 0 ? (
@@ -1154,7 +1257,9 @@ const Table = <T extends object>({
                         accessorKey &&
                         !accessorKey.endsWith(".id") &&
                         header.column.columnDef.enableSorting !== false;
-                      const sorted = isSorted(accessorKey ?? "");
+                      const sortKey =
+                        header.column.columnDef.meta?.sortBy ?? accessorKey;
+                      const sorted = isSorted(sortKey ?? "");
 
                       return (
                         <Th
@@ -1215,7 +1320,7 @@ const Table = <T extends object>({
                                   >
                                     <DropdownMenuRadioItem
                                       onClick={() =>
-                                        toggleSortByAscending(accessorKey!)
+                                        toggleSortByAscending(sortKey!)
                                       }
                                       value="1"
                                     >
@@ -1224,7 +1329,7 @@ const Table = <T extends object>({
                                     </DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem
                                       onClick={() =>
-                                        toggleSortByDescending(accessorKey!)
+                                        toggleSortByDescending(sortKey!)
                                       }
                                       value="-1"
                                     >
@@ -1287,9 +1392,10 @@ const Table = <T extends object>({
                       onCellUpdate={onCellUpdate}
                       onFinishEditing={finishEditing}
                       onClick={handleRowClick}
-                      className={
-                        canExpandRow ? "cursor-pointer" : undefined
-                      }
+                      className={cn(
+                        canExpandRow && "cursor-pointer",
+                        getRowClassName?.(row.original)
+                      )}
                     />
                   );
 
@@ -1359,12 +1465,14 @@ const Table = <T extends object>({
           )}
         </div>
       </div>
-      {withPagination && <Pagination {...pagination} />}
+      {withPagination && !isTableEmpty && <Pagination {...pagination} />}
     </VStack>
   );
 };
 
-function getRowSelectionColumn<T>(): ColumnDef<T>[] {
+function getRowSelectionColumn<T>(
+  anchorRef: MutableRefObject<string | null>
+): ColumnDef<T>[] {
   return [
     {
       id: "Select",
@@ -1379,16 +1487,45 @@ function getRowSelectionColumn<T>(): ColumnDef<T>[] {
           {...{
             checked: table.getIsAllRowsSelected(),
             indeterminate: table.getIsSomeRowsSelected(),
-            onChange: table.getToggleAllRowsSelectedHandler()
+            onChange: (checked: boolean) => {
+              table.toggleAllRowsSelected(checked);
+              anchorRef.current = null;
+            }
           }}
         />
       ),
-      cell: ({ row }) => (
+      cell: ({ row, table }) => (
         <IndeterminateCheckbox
           {...{
             checked: row.getIsSelected(),
             indeterminate: row.getIsSomeSelected(),
-            onChange: row.getToggleSelectedHandler()
+            onChange: (checked: boolean, shiftKey: boolean) => {
+              const rows = table.getRowModel().rows;
+              const clickedIndex = rows.findIndex((r) => r.id === row.id);
+              const anchorIndex =
+                anchorRef.current == null
+                  ? -1
+                  : rows.findIndex((r) => r.id === anchorRef.current);
+
+              if (shiftKey && anchorIndex !== -1 && clickedIndex !== -1) {
+                const start = Math.min(anchorIndex, clickedIndex);
+                const end = Math.max(anchorIndex, clickedIndex);
+                table.setRowSelection((prev) => {
+                  const next = { ...prev };
+                  for (let i = start; i <= end; i++) {
+                    const id = rows[i].id;
+                    if (checked) next[id] = true;
+                    else delete next[id];
+                  }
+                  return next;
+                });
+                // Keep the anchor fixed so the range can be re-dragged.
+                return;
+              }
+
+              row.toggleSelected(checked);
+              anchorRef.current = row.id;
+            }
           }}
         />
       )

@@ -1,4 +1,5 @@
 import { Status } from "@carbon/react";
+import { PURCHASING_RFQ_STATUS_COLOR_MAP } from "@carbon/utils";
 import type { purchasingRfqStatusType } from "../../purchasing.models";
 
 type PurchasingRFQStatusProps = {
@@ -10,28 +11,15 @@ const PurchasingRFQStatus = ({
   status,
   iconOnly
 }: PurchasingRFQStatusProps) => {
-  switch (status) {
-    case "Draft":
-      return (
-        <Status color="gray" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "Requested":
-      return (
-        <Status color="green" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "Closed":
-      return (
-        <Status color="red" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    default:
-      return null;
-  }
+  if (!status) return null;
+  const color = PURCHASING_RFQ_STATUS_COLOR_MAP[status];
+  if (!color) return null;
+
+  return (
+    <Status color={color} iconOnly={iconOnly}>
+      {status}
+    </Status>
+  );
 };
 
 export default PurchasingRFQStatus;

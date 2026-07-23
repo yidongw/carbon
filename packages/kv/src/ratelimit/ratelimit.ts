@@ -77,26 +77,34 @@ export class Ratelimit {
       }
     }
 
-    // Apply timeout
-    const response = this.limiter().limit(this.ctx, key, opts?.rate);
+    // Fail open on any Redis error — a cache outage must not block auth.
+    try {
+      const response = this.limiter().limit(this.ctx, key, opts?.rate);
 
-    if (this.timeout > 0) {
-      const timeoutPromise = new Promise<RatelimitResponse>((resolve) => {
-        setTimeout(() => {
-          resolve({
-            success: true,
-            limit: 0,
-            remaining: 0,
-            reset: 0,
-            pending: Promise.resolve()
-          });
-        }, this.timeout);
-      });
+      if (this.timeout > 0) {
+        const timeoutPromise = new Promise<RatelimitResponse>((resolve) => {
+          setTimeout(() => {
+            resolve(this.failOpen());
+          }, this.timeout);
+        });
 
-      return Promise.race([response, timeoutPromise]);
+        return await Promise.race([response, timeoutPromise]);
+      }
+
+      return await response;
+    } catch {
+      return this.failOpen();
     }
+  }
 
-    return response;
+  private failOpen(): RatelimitResponse {
+    return {
+      success: true,
+      limit: 0,
+      remaining: 0,
+      reset: 0,
+      pending: Promise.resolve()
+    };
   }
 
   /**
@@ -126,12 +134,21 @@ export class Ratelimit {
         throw new Error("Unexpected reset value of 0");
       }
 
+      // Wait until the window resets (or the deadline), then retry. A window
+      // boundary already having passed (wait <= 0) is a reason to retry
+      // immediately, not to give up — only the deadline ends the loop. The
+      // previous `wait <= 0` early-return made this flaky under real timers:
+      // for the sliding window `reset` is the end of the current window, so if
+      // time crossed that boundary between `limit()` and here, `wait` went
+      // negative and we bailed with `success: false` after a single attempt.
       const wait = Math.min(res.reset, deadline) - Date.now();
-      if (wait <= 0 || Date.now() >= deadline) {
-        return res;
+      if (wait > 0) {
+        await new Promise((r) => setTimeout(r, wait));
       }
 
-      await new Promise((r) => setTimeout(r, wait));
+      if (Date.now() >= deadline) {
+        return res;
+      }
     }
   }
 
@@ -143,7 +160,12 @@ export class Ratelimit {
     identifier: string
   ): Promise<{ remaining: number; reset: number; limit: number }> {
     const key = this.getKey(identifier);
-    return this.limiter().getRemaining(this.ctx, key);
+    try {
+      return await this.limiter().getRemaining(this.ctx, key);
+    } catch {
+      // Redis down: report no known usage rather than throwing.
+      return { remaining: 0, reset: 0, limit: 0 };
+    }
   }
 
   /**
@@ -152,7 +174,11 @@ export class Ratelimit {
    */
   async resetUsedTokens(identifier: string): Promise<void> {
     const key = this.getKey(identifier);
-    return this.limiter().resetTokens(this.ctx, key);
+    try {
+      return await this.limiter().resetTokens(this.ctx, key);
+    } catch {
+      // Redis down: nothing to reset, don't throw.
+    }
   }
 
   private getKey(identifier: string): string {

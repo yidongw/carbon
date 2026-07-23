@@ -29,7 +29,11 @@ import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, ToolSummary } from "~/modules/items";
 import {
+  changeOrderOpenStatuses,
+  findChangeOrdersForItem,
   getItemFiles,
+  getItemSupersededBy,
+  getItemSupersession,
   getMakeMethodById,
   getMakeMethods,
   getMethodTree,
@@ -43,12 +47,14 @@ import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
 import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";
 import { ToolHeader, ToolProperties } from "~/modules/items/ui/Tools";
 import { getTagsList } from "~/modules/shared";
-import type { Handle } from "~/utils/handle";
+import { detailBreadcrumb, type Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
 export const handle: Handle = {
-  breadcrumb: msg`Tools`,
-  to: path.to.tools,
+  breadcrumb: detailBreadcrumb(
+    { breadcrumb: msg`Tools`, to: path.to.tools },
+    (data) => data?.toolSummary?.readableIdWithRevision
+  ),
   module: "items"
 };
 
@@ -61,11 +67,27 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [toolSummary, supplierParts, pickMethods, tags] = await Promise.all([
+  const [
+    toolSummary,
+    supplierParts,
+    pickMethods,
+    tags,
+    supersession,
+    supersededBy,
+    openChangeOrders
+  ] = await Promise.all([
     getTool(client, itemId, companyId),
     getSupplierParts(client, itemId, companyId),
     getPickMethods(client, itemId, companyId),
-    getTagsList(client, companyId, "tool")
+    getTagsList(client, companyId, "tool"),
+    getItemSupersession(client, itemId, companyId),
+    getItemSupersededBy(client, itemId, companyId),
+    // Locks manual version/revision creation while a CO owns this tool
+    findChangeOrdersForItem(client, {
+      itemId,
+      companyId,
+      statuses: changeOrderOpenStatuses
+    })
   ]);
 
   if (toolSummary.error) {
@@ -112,13 +134,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     toolSummary: toolSummary.data,
+    supersession: supersession.data,
+    supersededBy: supersededBy.data ?? [],
     files: getItemFiles(client, itemId, companyId),
     supplierParts: supplierParts.data ?? [],
     pickMethods: pickMethods.data ?? [],
     makeMethods: getMakeMethods(client, itemId, companyId),
     tags: tags.data ?? [],
     usedIn: getPartUsedIn(client, itemId, companyId),
-    methodTree
+    methodTree,
+    openChangeOrders: openChangeOrders.data ?? []
   };
 }
 

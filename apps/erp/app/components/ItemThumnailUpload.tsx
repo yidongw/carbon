@@ -9,14 +9,17 @@ import { LuCloudUpload } from "react-icons/lu";
 import { useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
 import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
+
 export function ItemThumbnailUpload({
   path,
   itemId,
-  modelId
+  modelId,
+  isReadOnly = false
 }: {
   path?: string | null;
   itemId: string;
   modelId?: string | null;
+  isReadOnly?: boolean;
 }) {
   const { t } = useLingui();
   const { company } = useUser();

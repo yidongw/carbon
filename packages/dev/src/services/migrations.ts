@@ -135,11 +135,23 @@ export async function applyMigrations(
   const dbUrl = `postgresql://supabase_admin:postgres@localhost:${dbPort}/postgres`;
   const args = ["migration", "up", "--include-all", "--db-url", dbUrl];
   const cwd = join(root, "packages/database");
-  const r = await execa("supabase", args, {
-    cwd,
-    reject: false,
-    preferLocal: true
-  });
+
+  // Retry up to 3 times on deadlock — background services (PostgREST,
+  // Realtime) hold catalog locks that race with CREATE POLICY / ALTER TABLE.
+  const MAX_RETRIES = 3;
+  const execOpts = { cwd, reject: false, preferLocal: true };
+  // Inferred from the call so `r` is the string-encoded result (not execa's
+  // buffer overload) and is definitely assigned after the loop.
+  let r = await execa("supabase", args, execOpts);
+  for (let attempt = 1; attempt < MAX_RETRIES && r.exitCode !== 0; attempt++) {
+    const output = `${r.stderr ?? ""}\n${r.stdout ?? ""}`;
+    if (!/deadlock detected/i.test(output)) break;
+    log.warn(
+      `deadlock during migration (attempt ${attempt}/${MAX_RETRIES}) — retrying in 3s`
+    );
+    await sleep(3000);
+    r = await execa("supabase", args, execOpts);
+  }
   if (r.exitCode !== 0) {
     const output = `${r.stderr ?? ""}\n${r.stdout ?? ""}`;
     // Auto-repair: DB has migration versions not present locally (stale from
@@ -154,8 +166,7 @@ export async function applyMigrations(
           preferLocal: true
         });
         if (retry.exitCode === 0) {
-          const applied = /Applying migration/i.test(retry.stdout ?? "");
-          return { applied };
+          return { applied: didApplyMigrations(retry) };
         }
         process.stderr.write(retry.stderr?.toString() ?? "");
         process.stdout.write(retry.stdout?.toString() ?? "");
@@ -168,10 +179,14 @@ export async function applyMigrations(
     process.stdout.write(r.stdout?.toString() ?? "");
     throw new Error(`supabase ${args.join(" ")} failed (exit ${r.exitCode})`);
   }
-  // supabase prints "Applying migration <ts>_<name>.sql..." per applied
-  // migration; absent that, the schema was already current.
-  const applied = /Applying migration/i.test(r.stdout ?? "");
-  return { applied };
+  return { applied: didApplyMigrations(r) };
+}
+
+// supabase prints "Applying migration <ts>_<name>.sql..." per applied
+// migration — on STDERR (stdout says "Local database is up to date." even
+// while applying), so both streams must be checked.
+function didApplyMigrations(r: { stdout?: string; stderr?: string }): boolean {
+  return /Applying migration/i.test(`${r.stderr ?? ""}\n${r.stdout ?? ""}`);
 }
 
 // Find migration versions in DB that have no corresponding local file and
@@ -215,6 +230,31 @@ async function repairStaleMigrations(
   );
 
   return stale.length;
+}
+
+// ---------------------------------------------------------------------------
+// Config row (pg_net push targets)
+// ---------------------------------------------------------------------------
+
+// The singleton "config" row is what SECURITY DEFINER functions
+// (wake_event_queue, webhook_insert/update/delete) read to POST to edge
+// functions via pg_net. Without it those pushes silently no-op, so the
+// event-queue wake and local webhooks never fire in dev. `apiUrl` must be the
+// in-network Kong URL — pg_net runs inside the postgres container, which
+// can't reach host ports.
+export async function ensureConfigRow(
+  dbPort: number,
+  anonKey: string
+): Promise<void> {
+  await withClient(dbPort, (c) =>
+    c.query(
+      `INSERT INTO "config" ("id", "apiUrl", "anonKey")
+       VALUES (TRUE, 'http://kong:8000', $1)
+       ON CONFLICT ("id") DO UPDATE
+         SET "apiUrl" = EXCLUDED."apiUrl", "anonKey" = EXCLUDED."anonKey"`,
+      [anonKey]
+    )
+  );
 }
 
 // ---------------------------------------------------------------------------

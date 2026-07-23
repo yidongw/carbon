@@ -6,6 +6,8 @@ declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   interface ColumnMeta<TData extends unknown, TValue> {
     filter?: ColumnFilterData;
+    // Filter dropdown/chip label when `header` is JSX instead of a string.
+    filterHeader?: string;
     pluralHeader?: string;
     icon?: ReactElement;
     renderTotal?: boolean;
@@ -29,6 +31,21 @@ declare module "@tanstack/react-table" {
     cardRowNavLabel?: string;
     /** Extra classes applied to the table cell (`Td`). */
     cellClassName?: string;
+    // CSV value for this column, given the full row. Overrides the raw-accessor
+    // read in Download.tsx. Use when the displayed value is derived/composite, or
+    // when the accessorKey is an id whose name lives in another row field.
+    exportValue?: (row: TData) => string | number | boolean | null | undefined;
+    // Export-only column: never rendered in the grid (Table force-hides it), but
+    // still emitted to the CSV via `exportValue`. Use for values that belong in
+    // the export but not the on-screen table (e.g. a tokenized download link).
+    // Pair with `filterHeader` to supply the CSV heading, since `header` is
+    // typically left blank to keep the column out of the column-visibility menu.
+    exportOnly?: boolean;
+    // Server-sort column override. When set, the sort UI writes `?sort=<sortBy>:dir`
+    // instead of using the accessorKey. Use when a column must sort by a different
+    // field than its accessor (e.g. accessor `supplierTypeId`, sort by `type`).
+    // Must name a real column on the view.
+    sortBy?: string;
   }
 }
 

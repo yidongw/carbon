@@ -35,5 +35,7 @@ export type Permission = {
 export type Result = {
   success: boolean;
   message?: string;
+  // Optional secondary line for the toast (e.g. the underlying error detail).
+  description?: string;
   flash?: "success" | "error";
 };

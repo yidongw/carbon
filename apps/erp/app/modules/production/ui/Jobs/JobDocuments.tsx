@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Card,
   CardAction,
@@ -26,7 +27,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
-import { convertKbToString } from "@carbon/utils";
+import {
+  convertKbToString,
+  isModelRawDownloadable,
+  MODEL_RAW_KEEP_MAX_BYTES
+} from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
@@ -51,6 +56,8 @@ import type { ModelUpload } from "~/types";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
+
+const logger = getLogger("erp", "production", "job-documents");
 
 const useJobDocuments = ({
   jobId,
@@ -121,7 +128,7 @@ const useJobDocuments = ({
         return;
       }
 
-      const url = path.to.file.previewFile(`private/${model.modelPath}`);
+      const url = path.to.file.previewFile(`temp-staging/${model.modelPath}`);
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -135,7 +142,7 @@ const useJobDocuments = ({
         document.body.removeChild(a);
       } catch (error) {
         toast.error(t`Error downloading file`);
-        console.error(error);
+        logger.error("Failed to process file operation", { error });
       }
     },
 
@@ -162,7 +169,7 @@ const useJobDocuments = ({
         document.body.removeChild(a);
       } catch (error) {
         toast.error(t`Error downloading file`);
-        console.error(error);
+        logger.error("Failed to process file operation", { error });
       }
     },
 
@@ -316,7 +323,7 @@ const useJobDocuments = ({
         revalidator.revalidate();
       } catch (error) {
         toast.error(t`Error moving file`);
-        console.error(error);
+        logger.error("Failed to process file operation", { error });
       }
     },
     [carbon, itemId, getPath, revalidator, t]
@@ -495,7 +502,8 @@ const JobDocuments = ({
                 </Tr>
               </Thead>
               <Tbody>
-                {modelUpload?.modelName && (
+                {modelUpload?.modelName &&
+                  (modelUpload.modelSize ?? 0) <= MODEL_RAW_KEEP_MAX_BYTES && (
                   <Tr>
                     <Td>
                       <HStack>
@@ -537,11 +545,13 @@ const JobDocuments = ({
                                 <Trans>View</Trans>
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => downloadModel(modelUpload)}
-                            >
-                              Download
-                            </DropdownMenuItem>
+                            {isModelRawDownloadable(modelUpload.modelPath) && (
+                              <DropdownMenuItem
+                                onClick={() => downloadModel(modelUpload)}
+                              >
+                                Download
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem
                               destructive
                               disabled={!canDelete || isReadOnly}

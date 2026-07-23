@@ -158,6 +158,9 @@ export async function flash(request: Request, result: Result) {
   if (typeof result.success === "boolean") {
     session.flash("success", result.success);
     session.flash("message", result.message);
+    if (result.description) {
+      session.flash("description", result.description);
+    }
     if (result.flash) {
       session.flash("flash", result.flash);
     }
@@ -194,6 +197,7 @@ export async function getSessionFlash(request: Request) {
   const result: Result = {
     success: session.get("success") === true,
     message: session.get("message"),
+    description: session.get("description"),
     flash: session.get("flash") as "success" | "error" | undefined
   };
 
@@ -330,7 +334,10 @@ export async function updateCompanySession(
   const authSession = await getAuthSession(request);
 
   if (authSession !== undefined) {
-    await redis.del(getPermissionCacheKey(authSession?.userId!));
+    // Fire-and-forget cache invalidation. If Redis is down, @carbon/kv fails
+    // soft and this resolves null — benign: a stale permission cache entry (if
+    // any) simply expires on its own TTL, and the session cookie is still returned.
+    redis.del(getPermissionCacheKey(authSession?.userId!));
     session.set(SESSION_KEY, {
       ...authSession,
       companyId,

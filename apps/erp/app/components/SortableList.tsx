@@ -107,7 +107,7 @@ function SortableListItem<T>({
           value={item}
           className={cn(
             "relative z-auto grow",
-            "h-full rounded-md bg-muted/40",
+            "h-full rounded-md bg-accent/30 dark:bg-background/40",
             "border border-border rounded-lg ",
             !dragHandle && !isExpanded && !isReadOnly && "cursor-grab",
             isHighlighted && "border-2 border-primary",
@@ -321,7 +321,7 @@ function SortableList<T extends Item>({
           values={items}
           // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
           onReorder={isReadOnly ? () => {} : onReorder}
-          className="flex flex-col"
+          className="flex flex-col gap-2"
         >
           {items?.map((item, index) =>
             renderItem({

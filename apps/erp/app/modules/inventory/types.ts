@@ -1,7 +1,11 @@
 import type { Database } from "@carbon/database";
 import type {
   getBatchProperties,
+  getInventoryCountLines,
+  getInventoryCounts,
   getInventoryItems,
+  getInventoryValuation,
+  getInventoryValuationTieOut,
   getItemLedgerPage,
   getKanbans,
   getReceiptLines,
@@ -11,6 +15,7 @@ import type {
   getShipments,
   getShipmentTracking,
   getShippingMethods,
+  getStockMovements,
   getStockTransferLines,
   getStockTransfers,
   getTrackedEntities,
@@ -26,6 +31,14 @@ export type InventoryItem = NonNullable<
   Awaited<ReturnType<typeof getInventoryItems>>["data"]
 >[number];
 
+export type InventoryValuationRow = NonNullable<
+  Awaited<ReturnType<typeof getInventoryValuation>>["data"]
+>[number];
+
+export type InventoryTieOutRow = NonNullable<
+  Awaited<ReturnType<typeof getInventoryValuationTieOut>>["data"]
+>[number];
+
 export type ItemLedger = NonNullable<
   Awaited<ReturnType<typeof getItemLedgerPage>>["data"]
 >[number];
@@ -36,6 +49,14 @@ export type ItemTracking = NonNullable<
 
 export type Kanban = NonNullable<
   Awaited<ReturnType<typeof getKanbans>>["data"]
+>[number];
+
+export type InventoryCount = NonNullable<
+  Awaited<ReturnType<typeof getInventoryCounts>>["data"]
+>[number];
+
+export type InventoryCountLine = NonNullable<
+  Awaited<ReturnType<typeof getInventoryCountLines>>["data"]
 >[number];
 
 export type Receipt = NonNullable<
@@ -56,6 +77,10 @@ export type ReceiptSourceDocument =
 
 export type Shipment = NonNullable<
   Awaited<ReturnType<typeof getShipments>>["data"]
+>[number];
+
+export type StockMovement = NonNullable<
+  Awaited<ReturnType<typeof getStockMovements>>["data"]
 >[number];
 
 export type ShipmentLine = NonNullable<

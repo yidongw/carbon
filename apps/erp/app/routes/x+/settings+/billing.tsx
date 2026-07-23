@@ -8,6 +8,7 @@ import {
   validationError,
   validator
 } from "@carbon/form";
+import { getLogger } from "@carbon/logger";
 import {
   Button,
   Card,
@@ -42,6 +43,8 @@ import { PlanSelector } from "~/components/PlanSelector";
 import { getCompany, getCompanyPlan, getPlans } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+
+const logger = getLogger("erp", "billing");
 
 export const handle: Handle = {
   breadcrumb: msg`Payment`,
@@ -232,7 +235,7 @@ export async function action({ request }: ActionFunctionArgs) {
       });
       return redirect(billingPortalUrl, 301);
     } catch (err) {
-      console.error("Failed to get billing portal URL:", err);
+      logger.error("Failed to get billing portal URL", { error: err });
       return data(
         {},
         await flash(request, error("Failed to access billing portal"))
@@ -268,7 +271,7 @@ export async function action({ request }: ActionFunctionArgs) {
         )
       );
     } catch (err) {
-      console.error("Failed to transfer ownership:", err);
+      logger.error("Failed to transfer ownership", { error: err });
       return data(
         {},
         await flash(request, error("Failed to transfer ownership"))

@@ -1,4 +1,7 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Button,
   cn,
   DropdownMenu,
@@ -43,12 +46,13 @@ import {
 } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { Supplier } from "~/modules/purchasing/types";
-import type { MethodItemType } from "~/modules/shared";
-import { methodItemType } from "~/modules/shared";
+import type { ItemType } from "~/modules/shared";
+import { itemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import type { PurchaseInvoice, PurchaseInvoiceLine } from "../../types";
 import DeletePurchaseInvoiceLine from "./DeletePurchaseInvoiceLine";
+import MapExtractedInvoiceLinesModal from "./MapExtractedInvoiceLinesModal";
 import PurchaseInvoiceLineForm from "./PurchaseInvoiceLineForm";
 
 export default function PurchaseInvoiceExplorer() {
@@ -66,7 +70,7 @@ export default function PurchaseInvoiceExplorer() {
 
   const purchaseInvoiceLineInitialValues = {
     invoiceId: invoiceId,
-    invoiceLineType: "Item" as MethodItemType,
+    invoiceLineType: "Item" as ItemType,
     purchaseQuantity: 1,
     locationId:
       purchaseInvoiceData?.purchaseInvoice?.locationId ??
@@ -80,6 +84,7 @@ export default function PurchaseInvoiceExplorer() {
 
   const newPurchaseInvoiceLineDisclosure = useDisclosure();
   const deleteLineDisclosure = useDisclosure();
+  const mapLinesDisclosure = useDisclosure();
   const [deleteLine, setDeleteLine] = useState<PurchaseInvoiceLine | null>(
     null
   );
@@ -104,6 +109,9 @@ export default function PurchaseInvoiceExplorer() {
   });
 
   const lines = purchaseInvoiceData?.purchaseInvoiceLines ?? [];
+  const unmappedLines = lines.filter(
+    (line) => !line.itemId && line.invoiceLineType === "Comment"
+  );
   const canReorder =
     !isDisabled && permissions.can("update", "invoicing") && lines.length > 1;
 
@@ -119,6 +127,30 @@ export default function PurchaseInvoiceExplorer() {
           className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
+          {unmappedLines.length > 0 && !editMode.isEditing && (
+            <div className="p-2 border-b">
+              <Alert variant="warning">
+                <AlertTitle>
+                  <Trans>Unmapped Extracted Lines</Trans>
+                </AlertTitle>
+                <AlertDescription className="mt-1">
+                  <Trans>
+                    You have {unmappedLines.length} lines extracted from a PDF
+                    that are not mapped to any inventory items.
+                  </Trans>
+                  <div className="mt-2">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={mapLinesDisclosure.onOpen}
+                    >
+                      <Trans>Map Lines Now</Trans>
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
           {lines.length > 0 ? (
             editMode.isEditing ? (
               <ReorderableLineList<PurchaseInvoiceLine>
@@ -219,6 +251,15 @@ export default function PurchaseInvoiceExplorer() {
         <DeletePurchaseInvoiceLine
           line={deleteLine!}
           onCancel={onDeleteCancel}
+        />
+      )}
+      {mapLinesDisclosure.isOpen && (
+        <MapExtractedInvoiceLinesModal
+          invoiceId={invoiceId}
+          supplierId={
+            purchaseInvoiceData?.purchaseInvoice?.supplierId ?? undefined
+          }
+          onClose={mapLinesDisclosure.onClose}
         />
       )}
     </>
@@ -334,14 +375,14 @@ function PurchaseInvoiceLineItem({
                   <Trans>Delete Line</Trans>
                 </DropdownMenuItem>
                 {/* @ts-expect-error */}
-                {methodItemType.includes(line.invoiceLineType ?? "") && (
+                {itemType.includes(line.invoiceLineType ?? "") && (
                   <DropdownMenuItem
                     asChild
                     onClick={(e) => e.stopPropagation()}
                   >
                     <Link
                       to={getLinkToItemDetails(
-                        line.invoiceLineType as MethodItemType,
+                        line.invoiceLineType as ItemType,
                         line.itemId!
                       )}
                     >

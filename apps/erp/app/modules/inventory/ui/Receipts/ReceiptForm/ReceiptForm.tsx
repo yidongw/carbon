@@ -19,7 +19,7 @@ import {
   LuTrash,
   LuTruck
 } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { Link, useNavigation, useParams } from "react-router";
 import type { z } from "zod";
 import { DocumentHeader, PrintButton } from "~/components";
 import { useAuditLog } from "~/components/AuditLog";
@@ -75,6 +75,7 @@ const ReceiptForm = ({
   const { company } = useUser();
   const permissions = usePermissions();
   const { t } = useLingui();
+  const navigation = useNavigation();
   const {
     locationId,
     sourceDocuments,
@@ -114,6 +115,10 @@ const ReceiptForm = ({
     routeData?.receipt?.sourceDocument === "Purchase Order" &&
     routeData?.receipt?.sourceDocumentId &&
     permissions.can("create", "invoicing");
+
+  const isInvoicing =
+    navigation.state !== "idle" &&
+    navigation.location?.pathname === path.to.newPurchaseInvoice;
 
   return (
     <>
@@ -190,7 +195,8 @@ const ReceiptForm = ({
                 />
                 <Button
                   variant={canInvoice ? "primary" : "secondary"}
-                  isDisabled={!canInvoice}
+                  isDisabled={!canInvoice || isInvoicing}
+                  isLoading={isInvoicing}
                   leftIcon={<LuCreditCard />}
                   asChild
                 >
@@ -201,10 +207,15 @@ const ReceiptForm = ({
                   </Link>
                 </Button>
                 <Button
-                  variant={canPost && !isPosted ? "primary" : "secondary"}
+                  variant={
+                    canPost && !isPosted && !isVoided ? "primary" : "secondary"
+                  }
                   onClick={postModal.onOpen}
                   isDisabled={
-                    !canPost || isPosted || !permissions.is("employee")
+                    !canPost ||
+                    isPosted ||
+                    isVoided ||
+                    !permissions.is("employee")
                   }
                   leftIcon={<LuCheckCheck />}
                 >
@@ -232,6 +243,7 @@ const ReceiptForm = ({
                 <Select
                   name="sourceDocument"
                   label={t`Source Document`}
+                  termId="receipt-source-document"
                   options={receiptSourceDocumentType.map((v) => ({
                     label: v,
                     value: v
@@ -248,6 +260,7 @@ const ReceiptForm = ({
                 <Combobox
                   name="sourceDocumentId"
                   label={t`Source Document ID`}
+                  termId="receipt-source-document-id"
                   options={sourceDocuments.map((d) => ({
                     label: d.name,
                     value: d.id
@@ -257,6 +270,7 @@ const ReceiptForm = ({
                 <Input
                   name="externalDocumentId"
                   label={t`External Reference`}
+                  termId="receipt-external-reference"
                   isDisabled={isPosted}
                 />
                 <CustomFormFields table="receipt" />

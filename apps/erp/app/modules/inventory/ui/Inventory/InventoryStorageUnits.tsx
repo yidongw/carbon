@@ -269,7 +269,9 @@ const InventoryStorageUnits = ({
                 <Tr key={index}>
                   <Td>
                     {storageUnits.find((s) => s.value === item.storageUnitId)
-                      ?.label || item.storageUnitId}
+                      ?.label ||
+                      item.storageUnitName ||
+                      item.storageUnitId}
                   </Td>
 
                   <Td>
@@ -380,6 +382,10 @@ const InventoryStorageUnits = ({
               <ModalBody>
                 <Hidden name="itemId" />
                 {isEditing && <Hidden name="originalStorageUnitId" />}
+                <Hidden
+                  name="requiresSerialTracking"
+                  value={isSerial ? "true" : "false"}
+                />
 
                 <VStack spacing={2}>
                   <Location name="locationId" label={t`Location`} isReadOnly />
@@ -392,6 +398,7 @@ const InventoryStorageUnits = ({
                   <Select
                     name="adjustmentType"
                     label={t`Adjustment Type`}
+                    termId="inventory-adjustment-type"
                     options={
                       isEditing && (isSerial || isBatch)
                         ? [
@@ -427,11 +434,17 @@ const InventoryStorageUnits = ({
                       <Input
                         name="readableId"
                         label={isSerial ? t`Serial Number` : t`Batch Number`}
+                        termId={
+                          isSerial
+                            ? "inventory-adjustment-serial-number"
+                            : "inventory-adjustment-batch-number"
+                        }
                       />
                       {showExpirationField && (
                         <DatePicker
                           name="expirationDate"
                           label={t`Expiration Date`}
+                          termId="inventory-adjustment-expiration-date"
                         />
                       )}
                     </>

@@ -7,12 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   IconButton,
+  Status,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
+  LuGitPullRequestArrow,
   LuPanelLeft,
   LuPanelRight,
   LuTrash
@@ -30,6 +32,8 @@ import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import type { PartSummary } from "../../types";
+import { CreateChangeOrderModal } from "../ChangeOrder";
+import { getItemLifecycleStatus } from "../Item/ItemSupersessionForm";
 import { usePartNavigation } from "./usePartNavigation";
 
 function PartTopbarLeft({ itemId }: { itemId: string }) {
@@ -37,14 +41,26 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
   const permissions = usePermissions();
   const { company } = useUser();
   const deleteModal = useDisclosure();
+  const changeOrderModal = useDisclosure();
   const { trigger: auditLogTrigger, drawer: auditLogDrawer } = useAuditLog({
     entityType: "item",
     entityId: itemId,
     companyId: company.id,
     variant: "dropdown"
   });
-  const routeData = useRouteData<{ partSummary: PartSummary }>(
-    path.to.part(itemId)
+  const routeData = useRouteData<{
+    partSummary: PartSummary;
+    supersession: {
+      supersessionMode:
+        | "Consume First"
+        | "Prefer New"
+        | "Stock Only"
+        | "No Stock";
+    } | null;
+  }>(path.to.part(itemId));
+
+  const lifecycleStatus = getItemLifecycleStatus(
+    routeData?.supersession?.supersessionMode
   );
   const readableId = routeData?.partSummary?.readableIdWithRevision ?? "";
 
@@ -55,6 +71,11 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
           {readableId}
         </DetailTopbarId>
         <Copy text={readableId} />
+        {lifecycleStatus && (
+          <Status color={lifecycleStatus.color}>
+            {lifecycleStatus.label}
+          </Status>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -66,6 +87,14 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {auditLogTrigger}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={!permissions.can("create", "parts")}
+              onClick={changeOrderModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuGitPullRequestArrow />} />
+              <Trans>Create Change Order</Trans>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={
@@ -82,6 +111,12 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
         </DropdownMenu>
       </DetailTopbarContent>
       {auditLogDrawer}
+      {changeOrderModal.isOpen && (
+        <CreateChangeOrderModal
+          itemId={itemId}
+          onClose={changeOrderModal.onClose}
+        />
+      )}
       {deleteModal.isOpen && (
         <ConfirmDelete
           action={path.to.deleteItem(itemId)}

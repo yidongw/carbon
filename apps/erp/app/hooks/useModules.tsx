@@ -2,6 +2,7 @@ import { useRouteData } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import {
   LuBox,
+  LuCreditCard,
   LuCrown,
   LuFactory,
   LuFiles,
@@ -48,7 +49,7 @@ function useModuleDefinitions(): ModuleDefinition[] {
       key: "accounting",
       permission: "accounting",
       name: t`Accounting`,
-      to: path.to.chartOfAccounts,
+      to: path.to.accounting,
       icon: LuLandmark
     },
     {
@@ -64,6 +65,13 @@ function useModuleDefinitions(): ModuleDefinition[] {
       name: t`Inventory`,
       to: path.to.inventoryQuantities,
       icon: LuBox
+    },
+    {
+      key: "invoicing",
+      permission: "invoicing",
+      name: t`Invoicing`,
+      to: path.to.invoicing,
+      icon: LuCreditCard
     },
     {
       key: "parts",
@@ -126,7 +134,8 @@ function useModuleDefinitions(): ModuleDefinition[] {
       name: t`Shop Floor`,
       to: path.to.external.mes,
       icon: LuTvMinimalPlay,
-      role: "employee"
+      role: "employee",
+      external: true
     }
   ];
 }

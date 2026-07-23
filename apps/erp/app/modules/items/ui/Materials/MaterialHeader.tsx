@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   IconButton,
+  Status,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -30,6 +31,7 @@ import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import type { Material } from "../../types";
+import { getItemLifecycleStatus } from "../Item/ItemSupersessionForm";
 import { useMaterialNavigation } from "./useMaterialNavigation";
 
 function MaterialTopbarLeft({ itemId }: { itemId: string }) {
@@ -43,8 +45,19 @@ function MaterialTopbarLeft({ itemId }: { itemId: string }) {
     companyId: company.id,
     variant: "dropdown"
   });
-  const routeData = useRouteData<{ materialSummary: Material }>(
-    path.to.material(itemId)
+  const routeData = useRouteData<{
+    materialSummary: Material;
+    supersession: {
+      supersessionMode:
+        | "Consume First"
+        | "Prefer New"
+        | "Stock Only"
+        | "No Stock";
+    } | null;
+  }>(path.to.material(itemId));
+
+  const lifecycleStatus = getItemLifecycleStatus(
+    routeData?.supersession?.supersessionMode
   );
   const readableId = routeData?.materialSummary?.readableIdWithRevision ?? "";
 
@@ -55,6 +68,11 @@ function MaterialTopbarLeft({ itemId }: { itemId: string }) {
           {readableId}
         </DetailTopbarId>
         <Copy text={readableId} />
+        {lifecycleStatus && (
+          <Status color={lifecycleStatus.color}>
+            {lifecycleStatus.label}
+          </Status>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton

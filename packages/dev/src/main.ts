@@ -1,9 +1,11 @@
 import { defineCommand, runMain } from "citty";
 import { copy, envSync } from "./commands/copy.js";
 import { down } from "./commands/down.js";
+import { initWorktree } from "./commands/init.js";
 import { listWorktrees } from "./commands/list.js";
 import { migrate } from "./commands/migrate.js";
 import { newWorktree } from "./commands/new.js";
+import { reload } from "./commands/reload.js";
 import { removeWorktreeCmd } from "./commands/remove.js";
 import { reset } from "./commands/reset.js";
 import { status } from "./commands/status.js";
@@ -35,6 +37,12 @@ const main = defineCommand({
           description:
             "Spawn ERP/MES dev servers (use --no-apps for services-only boot)"
         },
+        all: {
+          type: "boolean",
+          default: false,
+          description:
+            "Launch all apps without the interactive picker (implies erp+mes)"
+        },
         pull: {
           type: "boolean",
           default: false,
@@ -52,6 +60,23 @@ const main = defineCommand({
           default: true,
           description:
             "Use portless .dev URLs (use --no-portless for localhost mode)"
+        },
+        run: {
+          type: "string",
+          description:
+            "Boot apps, wait until reachable, run this command, then tear the stack down (scopes the stack's lifetime to the command — for headless/CI use)"
+        },
+        volumes: {
+          type: "boolean",
+          default: false,
+          description:
+            "With --run, also remove Docker volumes on teardown (headless: don't leak data volumes across dispatches)"
+        },
+        minimal: {
+          type: "boolean",
+          default: false,
+          description:
+            "Skip non-essential services (Studio, Postgres-Meta, Inbucket) to reduce memory footprint (useful for headless/CI builds)"
         }
       },
       run: ({ args }) =>
@@ -59,14 +84,32 @@ const main = defineCommand({
           migrate: args.migrate !== false,
           regen: args.regen !== false,
           apps: args.apps !== false,
+          all: args.all === true,
           pull: args.pull === true,
           borrow: args.borrow === true,
-          portless: args.portless !== false
+          portless: args.portless !== false,
+          run: typeof args.run === "string" ? args.run : undefined,
+          volumes: args.volumes === true,
+          minimal: args.minimal === true
         })
     }),
     down: defineCommand({
       meta: { description: "Stop the compose stack (volumes preserved)" },
-      run: () => down()
+      args: {
+        volumes: {
+          type: "boolean",
+          default: false,
+          description: "Also remove Docker volumes (the stack's data is wiped)"
+        },
+        purge: {
+          type: "boolean",
+          default: false,
+          description:
+            "Full teardown for archive/removal: remove volumes, flush redis, and release the port slot"
+        }
+      },
+      run: ({ args }) =>
+        down({ volumes: args.volumes === true, purge: args.purge === true })
     }),
     reset: defineCommand({
       meta: { description: "Wipe volumes + flush redis db, then `up`" },
@@ -75,6 +118,21 @@ const main = defineCommand({
     status: defineCommand({
       meta: { description: "Show port assignment + container health" },
       run: () => status()
+    }),
+    reload: defineCommand({
+      meta: {
+        description:
+          "Recreate specific compose services to apply docker-compose/.env.local edits (memory, env, image, ports) WITHOUT restarting the app dev servers — `crbn reload <service...>` (e.g. storage kong)"
+      },
+      args: {
+        service: {
+          type: "positional",
+          required: true,
+          description: "Service name(s) to recreate, e.g. storage kong"
+        }
+      },
+      run: ({ rawArgs }) =>
+        reload(rawArgs.filter((a) => a && !a.startsWith("-")))
     }),
     migrate: defineCommand({
       meta: {
@@ -99,18 +157,61 @@ const main = defineCommand({
         args.force ? reset() : migrate({ regen: args.regen !== false })
     }),
     new: defineCommand({
-      meta: { description: "Interactive: create a worktree on a fresh branch" },
+      meta: {
+        description:
+          "Create a worktree on a fresh branch (interactive, or non-interactive with --yes)"
+      },
       args: {
         branch: {
           type: "positional",
           required: false,
           description: "Branch name (pre-fills the prompt)"
+        },
+        base: {
+          type: "string",
+          description:
+            "Base ref to branch from (with --yes; defaults to origin/main)"
+        },
+        dir: {
+          type: "string",
+          description: "Worktree directory name (with --yes; default derived)"
+        },
+        "copy-env": {
+          type: "boolean",
+          default: true,
+          description:
+            "Copy .env from the current checkout (--no-copy-env to skip)"
+        },
+        yes: {
+          type: "boolean",
+          default: false,
+          description:
+            "Non-interactive: skip prompts, use flags/defaults (base defaults to origin/main)"
         }
       },
       run: ({ args }) =>
         newWorktree({
-          branch: typeof args.branch === "string" ? args.branch : undefined
+          branch: typeof args.branch === "string" ? args.branch : undefined,
+          base: typeof args.base === "string" ? args.base : undefined,
+          dir: typeof args.dir === "string" ? args.dir : undefined,
+          copyEnv: args["copy-env"] !== false,
+          yes: args.yes === true
         })
+    }),
+    init: defineCommand({
+      meta: {
+        description:
+          "Provision the current worktree (slug + env sync + skills) to match a `crbn checkout`"
+      },
+      args: {
+        "copy-env": {
+          type: "boolean",
+          default: true,
+          description:
+            "Sync .env from the main checkout (--no-copy-env to skip)"
+        }
+      },
+      run: ({ args }) => initWorktree({ copyEnv: args["copy-env"] !== false })
     }),
     list: defineCommand({
       meta: { description: "List worktrees with stack status" },

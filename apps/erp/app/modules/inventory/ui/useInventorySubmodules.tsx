@@ -1,6 +1,9 @@
 import { useLingui } from "@lingui/react/macro";
 import {
+  LuArrowDownUp,
   LuArrowRightLeft,
+  LuChartBar,
+  LuClipboardCheck,
   LuClipboardList,
   LuHandCoins,
   LuListChecks,
@@ -27,6 +30,12 @@ export default function useInventorySubmodules() {
     {
       name: t`Manage`,
       routes: [
+        {
+          name: t`Inventory Count`,
+          to: path.to.inventoryCounts,
+          icon: <LuClipboardCheck />,
+          table: "inventoryCount"
+        },
         {
           name: t`Picking Lists`,
           to: path.to.pickingLists,
@@ -68,6 +77,13 @@ export default function useInventorySubmodules() {
           icon: <LuScanQrCode />
         },
         {
+          name: t`Movements`,
+          to: path.to.stockMovements,
+          role: "employee",
+          icon: <LuArrowDownUp />,
+          table: "itemLedger"
+        },
+        {
           name: t`Quantities`,
           to: path.to.inventoryQuantities,
           role: "employee",
@@ -85,7 +101,19 @@ export default function useInventorySubmodules() {
           to: path.to.traceability,
           role: "employee",
           icon: <LuNetwork />
-        }
+        },
+        // Valuation exposes unit costs and GL balances — gated on accounting
+        // view, not just the employee role (spec: grill Q6).
+        ...(permissions.can("view", "accounting")
+          ? [
+              {
+                name: t`Valuation`,
+                to: path.to.inventoryValuation,
+                role: "employee" as const,
+                icon: <LuChartBar />
+              }
+            ]
+          : [])
       ]
     },
     {

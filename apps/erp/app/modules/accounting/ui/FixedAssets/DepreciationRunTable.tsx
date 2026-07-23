@@ -1,6 +1,6 @@
 import { MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
 import { formatDate } from "@carbon/utils";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -81,7 +81,7 @@ const DepreciationRunTable = memo(
             onClick={() => navigate(path.to.depreciationRun(row.id))}
           >
             <MenuIcon icon={<LuEye />} />
-            View Run
+            <Trans>View Run</Trans>
           </MenuItem>
           {row.status === "Draft" && (
             <MenuItem
@@ -93,7 +93,7 @@ const DepreciationRunTable = memo(
               }}
             >
               <MenuIcon icon={<LuTrash />} />
-              Delete
+              <Trans>Delete</Trans>
             </MenuItem>
           )}
         </>
@@ -109,14 +109,14 @@ const DepreciationRunTable = memo(
           count={count}
           primaryAction={primaryAction}
           renderContextMenu={renderContextMenu}
-          title="Depreciation"
+          title={t`Depreciation`}
         />
         {selectedRun && (
           <ConfirmDelete
             action={path.to.deleteDepreciationRun(selectedRun.id)}
             isOpen={deleteModal.isOpen}
             name={selectedRun.depreciationRunId}
-            text={`Are you sure you want to delete ${selectedRun.depreciationRunId}? This cannot be undone.`}
+            text={t`Are you sure you want to delete ${selectedRun.depreciationRunId}? This cannot be undone.`}
             onCancel={() => {
               deleteModal.onClose();
               setSelectedRun(null);

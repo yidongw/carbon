@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Badge,
   Card,
@@ -51,6 +52,8 @@ import { stripSpecialCharacters } from "~/utils/string";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 import type { Opportunity } from "../../types";
 import { useOptimisticDocumentDrag } from "../SalesRFQ/useOptimiticDocumentDrag";
+
+const logger = getLogger("erp", "opportunitydocuments");
 
 type OpportunityDocumentsProps = {
   attachments: FileObject[];
@@ -384,7 +387,7 @@ export const useOpportunityDocuments = ({
         document.body.removeChild(a);
       } catch (error) {
         toast.error(t`Error downloading file`);
-        console.error(error);
+        logger.error("Error", { error: error });
       }
     },
     [getPath, t]

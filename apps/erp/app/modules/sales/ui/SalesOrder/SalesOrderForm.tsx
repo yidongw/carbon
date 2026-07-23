@@ -96,7 +96,7 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
       const { data, error } = await carbon
         ?.from("customer")
         .select(
-          "currencyCode, salesContactId, customerShipping!customerId(shippingCustomerLocationId)"
+          "currencyCode, salesContactId, customerShipping!customerShipping_customerId_fkey(shippingCustomerLocationId)"
         )
         .eq("id", newValue.value)
         .single();
@@ -108,7 +108,7 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
           currencyCode: data.currencyCode ?? undefined,
           customerContactId: data.salesContactId ?? undefined,
           customerLocationId:
-            data.customerShipping?.shippingCustomerLocationId ?? undefined
+            data.customerShipping?.[0]?.shippingCustomerLocationId ?? undefined
         }));
       }
     } else {
@@ -171,7 +171,11 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
                 label={t`Customer`}
                 onChange={onCustomerChange}
               />
-              <Input name="customerReference" label={t`Customer PO Number`} />
+              <Input
+                name="customerReference"
+                label={t`Customer PO Number`}
+                termId="customer-document-reference"
+              />
 
               <CustomerContact
                 name="customerContactId"
@@ -213,6 +217,7 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
                 label={t`Requested Date`}
                 helperText={t`The date the customer expects to receive the goods`}
                 isDisabled={isCustomer}
+                termId="sales-order-requested-date"
               />
 
               <DatePicker
@@ -220,9 +225,14 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
                 label={t`Promised Date`}
                 helperText={t`The date the customer expects to receive the goods`}
                 isDisabled={isCustomer}
+                termId="sales-order-promised-date"
               />
 
-              <Location name="locationId" label={t`Shipping Location`} />
+              <Location
+                name="locationId"
+                label={t`Shipping Location`}
+                termId="sales-order-fulfillment-location"
+              />
 
               <Employee name="salesPersonId" label={t`Sales Person`} />
 

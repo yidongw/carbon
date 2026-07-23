@@ -267,11 +267,33 @@ export const documentSectionPlacementSchema = z.enum([
   "footer"
 ]);
 
+/** Default registration number shown in the footer when none is configured. */
+export const DEFAULT_REGISTRATION_NUMBER = "{company.taxId}";
+
+export const DEFAULT_FOOTER_OPTIONS = {
+  showRegistrationLine: true,
+  registrationNumber: DEFAULT_REGISTRATION_NUMBER
+} as const;
+
+/** Registration-line config carried by a footer section. */
+export const footerOptionsSchema = z.object({
+  /** Show the "{company} is registered in {country}" line. */
+  showRegistrationLine: z.boolean().default(true),
+  /**
+   * Free-text registration number appended as "Company Registration Number
+   * {value}". Supports `{token}` merge fields (e.g. `{company.taxId}`).
+   */
+  registrationNumber: z.string().default(DEFAULT_REGISTRATION_NUMBER)
+});
+
 /**
- * Layout config carried by a header section — logo + which company fields show.
- * Global: the header is one shared section reused across every document.
+ * Config carried by a shared section. Header sections store layout (logo +
+ * which company fields show); footer sections store the registration line.
+ * Global: sections are reused across every document, so this config is too.
  */
-export const sectionConfigSchema = headerOptionsSchema.partial();
+export const sectionConfigSchema = headerOptionsSchema
+  .partial()
+  .merge(footerOptionsSchema.partial());
 
 export const documentSectionSchema = z.object({
   name: z.string().min(1),
@@ -303,17 +325,13 @@ export const themeSchema = z.object({
   text: z.string().regex(HEX_COLOR).default(DEFAULT_THEME.text)
 });
 
-/**
- * Document body fonts. "Inter" is registered in Template; the rest are the
- * react-pdf built-in PDF standard fonts (no registration needed).
- */
+// Body fonts offered in the editor. Helvetica/Times/Courier are PDF built-ins; the
+// rest are bundled (see pdf/fonts.ts).
 export const DOCUMENT_FONTS = [
-  // Inter is registered in Template; Helvetica/Times/Courier are PDF built-ins.
   { value: "Inter", label: "Inter", kind: "Sans" },
   { value: "Helvetica", label: "Helvetica", kind: "Sans" },
   { value: "Times-Roman", label: "Times", kind: "Serif" },
   { value: "Courier", label: "Courier", kind: "Mono" },
-  // Google fonts — registered on demand at render (see pdf/fonts.ts).
   { value: "Roboto", label: "Roboto", kind: "Sans" },
   { value: "Open Sans", label: "Open Sans", kind: "Sans" },
   { value: "Lato", label: "Lato", kind: "Sans" },
@@ -325,7 +343,7 @@ export const DOCUMENT_FONTS = [
 
 export type DocumentFont = (typeof DOCUMENT_FONTS)[number]["value"];
 
-/** Document-level settings (font + footer page numbers + registration line). */
+/** Document-level settings (font + footer page numbers). */
 export const DEFAULT_DOCUMENT_SETTINGS = {
   fontFamily: "Inter",
   showPageNumbers: true,
@@ -352,6 +370,11 @@ export const documentSettingsSchema = z.object({
   showPageNumbers: z.boolean().default(true),
   /** "pageOfTotal" → "Page 1 of 3"; "page" → "Page 1". */
   pageNumberFormat: z.enum(["pageOfTotal", "page"]).default("pageOfTotal"),
+  /**
+   * Legacy per-template toggle for the footer registration line. The footer
+   * section's config (`sectionConfigSchema.showRegistrationLine`) takes
+   * precedence when set — edit it via the footer section modal.
+   */
   showRegistrationLine: z.boolean().default(true)
 });
 
@@ -367,6 +390,19 @@ export const documentTemplateTypeSchema = z.enum([
   "issue",
   "trackingLabel"
 ]);
+
+/**
+ * Doc types whose PDFs render the footer registration line (via
+ * `resolveRegistrationLine`). Add a type here when its PDF adopts it — the
+ * footer section modal derives its helper text from this list.
+ */
+export const REGISTRATION_LINE_DOCUMENT_TYPES: DocumentTemplateType[] = [
+  "salesInvoice",
+  "salesOrder",
+  "purchaseOrder",
+  "quote",
+  "packingSlip"
+];
 
 /**
  * Schema version of the stored template JSON. Bump when the block/theme shape
@@ -399,7 +435,7 @@ export interface ResolvedSection {
   name: string;
   placement: DocumentSectionPlacement;
   content: JSONContent;
-  /** Header layout config (logo, which fields show). Header sections only. */
+  /** Header layout (logo, which fields show) or footer registration line. */
   config?: SectionConfig;
   /** True for code-provided system sections — shown read-only in the library. */
   builtIn?: boolean;
@@ -449,6 +485,7 @@ export type SpacerBlock = Extract<DocumentBlock, { type: "spacer" }>;
 export type TermsBlock = Extract<DocumentBlock, { type: "terms" }>;
 export type HeaderBlock = Extract<DocumentBlock, { type: "header" }>;
 export type HeaderOptions = z.infer<typeof headerOptionsSchema>;
+export type FooterOptions = z.infer<typeof footerOptionsSchema>;
 export type SectionConfig = z.infer<typeof sectionConfigSchema>;
 export type LineItemsBlock = Extract<DocumentBlock, { type: "lineItems" }>;
 export type LineItemsOptions = z.infer<typeof lineItemsOptionsSchema>;

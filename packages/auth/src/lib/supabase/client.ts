@@ -13,7 +13,22 @@ const RETRYABLE_STATUS = new Set([500, 502, 503, 504, 512, 408, 524]);
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+// Storage object writes (uploads) must NOT go through the retry/timeout wrapper:
+// re-sending a multi-GB PUT on a 5xx is wasteful, and the 25s per-attempt timeout
+// would abort any legitimately long upload. Fail fast — pass straight through and
+// honor only the caller's own signal.
+const isStorageUpload = (input: RequestInfo | URL, init?: RequestInit) => {
+  const method = (
+    init?.method ?? (input instanceof Request ? input.method : "GET")
+  ).toUpperCase();
+  if (method !== "POST" && method !== "PUT") return false;
+  const url = input instanceof Request ? input.url : String(input);
+  return url.includes("/storage/v1/object/");
+};
+
 const fetchWithRetry: typeof fetch = async (input, init) => {
+  if (isStorageUpload(input, init)) return fetch(input, init);
+
   let lastError: unknown;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     const timeoutSignal = AbortSignal.timeout(PER_ATTEMPT_TIMEOUT_MS);
@@ -60,26 +75,24 @@ export const getCarbonClient = (
   return client;
 };
 
-export const getCarbonAPIKeyClient = (apiKey: string) => {
-  const client = createClient<Database, "public">(
-    SUPABASE_URL!,
-    SUPABASE_ANON_KEY!,
-    {
-      global: {
-        fetch: fetchWithRetry,
-        headers: {
-          "carbon-key": apiKey
-        }
+export const getCarbonAPIKeyClient = (
+  apiKey: string
+): SupabaseClient<Database, "public"> => {
+  const client = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    global: {
+      fetch: fetchWithRetry,
+      headers: {
+        "carbon-key": apiKey
       }
     }
-  );
+  });
 
   return client;
 };
 
 export const createCarbonWithAuthGetter = (
   store: MutableRefObject<StoreApi<{ accessToken: string }>>
-) => {
+): SupabaseClient<Database, "public"> => {
   return createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
     auth: {
       autoRefreshToken: false,
@@ -96,7 +109,9 @@ export const createCarbonWithAuthGetter = (
   });
 };
 
-export const getCarbon = (accessToken?: string) => {
+export const getCarbon = (
+  accessToken?: string
+): SupabaseClient<Database, "public"> => {
   return getCarbonClient(SUPABASE_ANON_KEY!, accessToken);
 };
 

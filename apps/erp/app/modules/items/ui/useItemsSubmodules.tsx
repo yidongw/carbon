@@ -5,16 +5,20 @@ import {
   LuAxis3D,
   LuBeef,
   LuDessert,
+  LuGitPullRequestArrow,
   LuGlassWater,
   LuGroup,
   LuHammer,
+  LuHeadphones,
   LuLayoutTemplate,
+  LuListChecks,
   LuPalette,
   LuPizza,
   LuPuzzle,
   LuRuler,
   LuShapes,
-  LuShirt
+  LuShirt,
+  LuTags
 } from "react-icons/lu";
 import { useCompanySettings, usePermissions } from "~/hooks";
 import { useSavedViews } from "~/hooks/useSavedViews";
@@ -29,7 +33,7 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
   const { addSavedViewsToRoutes } = useSavedViews();
   const itemsRoutes: AuthenticatedRouteGroup[] = [
     {
-      name: t`Manage`,
+      name: t`Items`,
       routes: [
         {
           name: t`Styles`,
@@ -61,6 +65,12 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
           table: "consumable"
         },
         {
+          name: t`Services`,
+          to: path.to.services,
+          icon: <LuHeadphones />,
+          table: "service"
+        },
+        {
           name: t`Templates`,
           to: path.to.templates,
           icon: <LuLayoutTemplate />
@@ -80,6 +90,29 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
           name: t`Sizes`,
           to: path.to.styleSizes,
           icon: <LuRuler />,
+          role: "employee"
+        }
+      ]
+    },
+    {
+      name: t`Change Orders`,
+      routes: [
+        {
+          name: t`Change Orders`,
+          to: path.to.changeOrders,
+          icon: <LuGitPullRequestArrow />,
+          table: "changeOrder"
+        },
+        {
+          name: t`Change Order Types`,
+          to: path.to.changeOrderTypes,
+          icon: <LuTags />,
+          role: "employee"
+        },
+        {
+          name: t`Change Order Actions`,
+          to: path.to.changeOrderRequiredActions,
+          icon: <LuListChecks />,
           role: "employee"
         }
       ]

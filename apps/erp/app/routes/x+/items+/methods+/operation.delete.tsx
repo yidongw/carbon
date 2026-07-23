@@ -1,10 +1,12 @@
+import { success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { deleteMethodOperation } from "~/modules/items";
+import { checkRevisionLock } from "~/modules/items/items.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     delete: "parts"
   });
 
@@ -20,7 +22,22 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const { error } = await deleteMethodOperation(client, id);
+  // Release-lock gate: enforce -> block; warn -> proceed + flash; off -> no-op.
+  const lock = await checkRevisionLock(client, {
+    kind: "operation",
+    id,
+    companyId
+  });
+  if (!lock.ok) {
+    return data(
+      { success: false, error: lock.message },
+      {
+        status: 400
+      }
+    );
+  }
+
+  const { error } = await client.from("methodOperation").delete().eq("id", id);
 
   if (error) {
     return data(
@@ -29,6 +46,10 @@ export async function action({ request }: ActionFunctionArgs) {
         status: 400
       }
     );
+  }
+
+  if (lock.warn) {
+    return data({ success: true }, await flash(request, success(lock.message)));
   }
 
   return { success: true };

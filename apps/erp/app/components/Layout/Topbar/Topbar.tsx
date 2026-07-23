@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router";
 import { usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import AvatarMenu from "../../AvatarMenu";
+import AskDocs from "./AskDocs";
 import Breadcrumbs from "./Breadcrumbs";
 import CreateMenu from "./CreateMenu";
 import Notifications from "./Notifications";
@@ -53,9 +54,14 @@ const Topbar = () => {
           className="flex flex-1 items-center min-w-0 overflow-visible"
         />
       </div>
-      <HStack spacing={1} className="flex-shrink-0 py-2">
-        {permissions.is("employee") ? <Search /> : null}
-        <div className="hidden md:block">
+      <div className="flex justify-center">
+        {permissions.is("employee") ? <Search /> : <div />}
+      </div>
+      <HStack spacing={1} className="flex-1 justify-end py-2">
+        <div className="hidden sm:block">
+          <AskDocs />
+        </div>
+        <div className="hidden sm:block">
           <Suggestion />
         </div>
         <CreateMenu

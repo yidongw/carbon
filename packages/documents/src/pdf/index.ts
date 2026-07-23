@@ -1,7 +1,12 @@
 import type { BundleTicketLabel } from "./BundleTicketPDF";
 import BundleTicketPDF from "./BundleTicketPDF";
 import { Footer } from "./components";
-import { ensureCJKFont, ensureFont } from "./fonts";
+import {
+  ensureCJKFont,
+  ensureFont,
+  getSafeFontFamily,
+  registerDocumentFonts
+} from "./fonts";
 import IssuePDF from "./IssuePDF";
 import { SAMPLE_ISSUE } from "./issue.samples";
 import JobTravelerPDF, { JobTravelerPageContent } from "./JobTravelerPDF";
@@ -30,6 +35,7 @@ export {
   ensureCJKFont,
   ensureFont,
   Footer,
+  getSafeFontFamily,
   IssuePDF,
   JobTravelerPageContent,
   JobTravelerPDF,
@@ -38,6 +44,7 @@ export {
   ProductLabelPDF,
   PurchaseOrderPDF,
   QuotePDF,
+  registerDocumentFonts,
   renderBundleTicketsToBuffer,
   tagPageSizeFromInches,
   SalesInvoicePDF,

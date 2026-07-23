@@ -17,6 +17,7 @@ import {
   LuEllipsisVertical,
   LuExternalLink,
   LuFile,
+  LuGitPullRequestArrow,
   LuLoaderCircle,
   LuPanelLeft,
   LuPanelRight,
@@ -69,6 +70,21 @@ function IssueTopbarLeft({ id }: { id: string }) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            <DropdownMenuItem
+              disabled={!permissions.can("create", "parts")}
+              asChild
+            >
+              <Link
+                to={`${
+                  path.to.newChangeOrder
+                }?sourceType=nonConformance&sourceId=${id}&name=${encodeURIComponent(
+                  routeData?.nonConformance?.nonConformanceId ?? ""
+                )}`}
+              >
+                <DropdownMenuIcon icon={<LuGitPullRequestArrow />} />
+                <Trans>Create Change Order</Trans>
+              </Link>
+            </DropdownMenuItem>
             {routeData?.suppliers?.map((s) => {
               if (!s.externalLinkId) return null;
               const supplier = suppliers.find((sup) => sup.id === s.supplierId);

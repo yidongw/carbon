@@ -2,6 +2,7 @@
 import { useCarbon } from "@carbon/auth";
 import type { Database } from "@carbon/database";
 import { Input, ValidatedForm } from "@carbon/form";
+import { getLogger } from "@carbon/logger";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -187,6 +188,8 @@ import {
   useProductionEventActivityMessage,
   useRelativeCreatedUpdatedText
 } from "./productionQuantityLabels";
+
+const logger = getLogger("erp", "production", "job-bill-of-process");
 
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
@@ -487,7 +490,10 @@ const JobBillOfProcess = ({
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { carbon, accessToken } = useCarbon();
   const sortOrderFetcher = useFetcher<{}>();
-  const deleteOperationFetcher = useFetcher<{ success: boolean }>();
+  const deleteOperationFetcher = useFetcher<{
+    success: boolean;
+    error?: string;
+  }>();
   const permissions = usePermissions();
   const { openOverlay } = useOverlay();
   const revalidator = useRevalidator();
@@ -495,6 +501,13 @@ const JobBillOfProcess = ({
     id: userId,
     company: { id: companyId }
   } = useUser();
+
+  useEffect(() => {
+    const result = deleteOperationFetcher.data;
+    if (result && !result.success && result.error) {
+      toast.error(result.error);
+    }
+  }, [deleteOperationFetcher.data]);
 
   const [params] = useUrlParams();
   const selected = params.get("selectedOperation");
@@ -1637,9 +1650,11 @@ function StepsForm({
                       isDisabled={isDisabled}
                       dragControls={dragControls}
                       itemMentions={itemMentions}
-                      className={
-                        index === sortOrder.length - 1 ? "border-none" : ""
-                      }
+                      className={cn(
+                        index === 0 && "rounded-t-lg",
+                        index === sortOrder.length - 1 &&
+                          "rounded-b-lg border-none"
+                      )}
                     />
                   )}
                 </DraggableStepItem>
@@ -1777,7 +1792,7 @@ function StepsListItem({
   if (!id) return null;
 
   return (
-    <div className={cn("border-b p-6", className)}>
+    <div className={cn("border-b p-6 bg-card", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
           action={path.to.jobOperationStep(id)}
@@ -2014,8 +2029,10 @@ function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
   const { formatRelativeTime } = useDateFormatter();
   if (
     !attribute.jobOperationStepRecord ||
-    !Array.isArray(attribute.jobOperationStepRecord)
+    !Array.isArray(attribute.jobOperationStepRecord) ||
+    attribute.jobOperationStepRecord.length === 0
   ) {
+    // No records yet — don't render the empty bordered box (it shows as a stray line).
     return null;
   }
 
@@ -3511,7 +3528,10 @@ function ToolsForm({
                 key={t.id}
                 tool={t}
                 operationId={operationId}
-                className={index === tools.length - 1 ? "border-none" : ""}
+                className={cn(
+                  index === 0 && "rounded-t-lg",
+                  index === tools.length - 1 && "rounded-b-lg border-none"
+                )}
               />
             ))}
         </div>
@@ -3550,7 +3570,7 @@ function OperationChat({ jobOperationId }: { jobOperationId: string }) {
       .order("createdAt", { ascending: true });
 
     if (error) {
-      console.error(error);
+      logger.error("Failed to update job bill of process", { error });
       return;
     }
     setMessages(data);
@@ -3613,7 +3633,7 @@ function OperationChat({ jobOperationId }: { jobOperationId: string }) {
       });
 
       if (!response.ok) {
-        console.error("Failed to notify user");
+        logger.error("Failed to notify user");
       }
     },
     5000,

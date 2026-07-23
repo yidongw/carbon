@@ -59,17 +59,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const typeParam = url.searchParams.get("type");
-  const supportedItemTypes = [
-    "Part",
-    "Material",
-    "Tool",
-    "Consumable"
-  ] as const;
-  const type = (supportedItemTypes as readonly string[]).includes(
-    typeParam ?? ""
-  )
-    ? (typeParam as (typeof supportedItemTypes)[number])
-    : "Part";
+  // Own-key check: `in` also accepts inherited keys, so e.g. ?type=toString
+  // would pass and crash on the destructure below.
+  const type =
+    typeParam && Object.prototype.hasOwnProperty.call(typeConfig, typeParam)
+      ? (typeParam as keyof typeof typeConfig)
+      : "Part";
 
   const { tagTable, getSummary } = typeConfig[type];
   const needsMakeMethods = type === "Part" || type === "Tool";

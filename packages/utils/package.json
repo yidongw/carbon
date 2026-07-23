@@ -25,7 +25,9 @@
     "vitest": "catalog:"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./favicon": "./src/favicon.ts",
+    "./status-colors": "./src/status-colors.ts"
   },
   "private": true,
   "scripts": {

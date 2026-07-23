@@ -39,6 +39,7 @@ import { useEffect, useMemo, useState } from "react";
 import { LuBox, LuChevronRight, LuLandmark, LuReceipt } from "react-icons/lu";
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
+import { ItemLifecycleBadge } from "~/components";
 import {
   Account,
   ConversionFactor,
@@ -52,6 +53,7 @@ import {
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
+import { itemTypeLabel } from "~/components/Form/itemTypeLabel";
 import {
   useCurrencyFormatter,
   usePercentFormatter,
@@ -65,7 +67,11 @@ import {
   isPurchaseOrderLocked,
   purchaseOrderLineValidator
 } from "~/modules/purchasing";
-import { type MethodItemType, resolveSupplierPrice } from "~/modules/shared";
+import {
+  type ItemType,
+  itemType,
+  resolveSupplierPrice
+} from "~/modules/shared";
 import type { action } from "~/routes/x+/purchase-order+/$orderId.$lineId.details";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -80,12 +86,28 @@ type PurchaseOrderLineFormProps = {
   onClose?: () => void;
 };
 
+const getLineSubtotal = (
+  unitPrice: number,
+  quantity: number,
+  shippingCost: number
+) => unitPrice * quantity + shippingCost;
+
+const getLineTaxPercent = (
+  unitPrice: number,
+  quantity: number,
+  shippingCost: number,
+  taxAmount: number
+) => {
+  const subtotal = getLineSubtotal(unitPrice, quantity, shippingCost);
+  return subtotal > 0 ? taxAmount / subtotal : 0;
+};
+
 const PurchaseOrderLineForm = ({
   initialValues,
   type,
   onClose
 }: PurchaseOrderLineFormProps) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
   const [items] = useItems();
@@ -103,8 +125,8 @@ const PurchaseOrderLineForm = ({
     routeData?.purchaseOrder?.purchaseOrderType === "Outside Processing";
   const isLocked = isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
 
-  const [itemType, setItemType] = useState<MethodItemType>(
-    initialValues.purchaseOrderLineType as MethodItemType
+  const [lineType, setLineType] = useState<ItemType>(
+    initialValues.purchaseOrderLineType as ItemType
   );
   const [locationId, setLocationId] = useState(initialValues.locationId);
   const [itemData, setItemData] = useState<{
@@ -140,23 +162,21 @@ const PurchaseOrderLineForm = ({
     supplierShippingCost: initialValues.supplierShippingCost ?? 0,
     supplierTaxAmount: initialValues.supplierTaxAmount ?? 0,
     supplierUnitPrice: initialValues.supplierUnitPrice ?? 0,
-    taxPercent:
-      (initialValues.supplierUnitPrice ?? 0) *
-        (initialValues.purchaseQuantity ?? 1) +
-        (initialValues.supplierShippingCost ?? 0) >
-      0
-        ? (initialValues.supplierTaxAmount ?? 0) /
-          ((initialValues.supplierUnitPrice ?? 0) *
-            (initialValues.purchaseQuantity ?? 1) +
-            (initialValues.supplierShippingCost ?? 0))
-        : 0
+    taxPercent: getLineTaxPercent(
+      initialValues.supplierUnitPrice ?? 0,
+      initialValues.purchaseQuantity ?? 1,
+      initialValues.supplierShippingCost ?? 0,
+      initialValues.supplierTaxAmount ?? 0
+    )
   });
 
   // update tax amount when quantity or unit price changes
   useEffect(() => {
-    const subtotal =
-      itemData.supplierUnitPrice * itemData.purchaseQuantity +
-      itemData.supplierShippingCost;
+    const subtotal = getLineSubtotal(
+      itemData.supplierUnitPrice,
+      itemData.purchaseQuantity,
+      itemData.supplierShippingCost
+    );
     if (itemData.taxPercent !== 0) {
       setItemData((d) => ({
         ...d,
@@ -198,22 +218,20 @@ const PurchaseOrderLineForm = ({
     supplierUnitPrice: initialValues.supplierUnitPrice ?? 0,
     supplierShippingCost: initialValues.supplierShippingCost ?? 0,
     supplierTaxAmount: initialValues.supplierTaxAmount ?? 0,
-    taxPercent:
-      (initialValues.supplierUnitPrice ?? 0) *
-        (initialValues.purchaseQuantity ?? 1) +
-        (initialValues.supplierShippingCost ?? 0) >
-      0
-        ? (initialValues.supplierTaxAmount ?? 0) /
-          ((initialValues.supplierUnitPrice ?? 0) *
-            (initialValues.purchaseQuantity ?? 1) +
-            (initialValues.supplierShippingCost ?? 0))
-        : 0
+    taxPercent: getLineTaxPercent(
+      initialValues.supplierUnitPrice ?? 0,
+      initialValues.purchaseQuantity ?? 1,
+      initialValues.supplierShippingCost ?? 0,
+      initialValues.supplierTaxAmount ?? 0
+    )
   });
 
   useEffect(() => {
-    const subtotal =
-      indirectData.supplierUnitPrice * indirectData.purchaseQuantity +
-      indirectData.supplierShippingCost;
+    const subtotal = getLineSubtotal(
+      indirectData.supplierUnitPrice,
+      indirectData.purchaseQuantity,
+      indirectData.supplierShippingCost
+    );
     if (indirectData.taxPercent !== 0) {
       setIndirectData((d) => ({
         ...d,
@@ -301,9 +319,9 @@ const PurchaseOrderLineForm = ({
   const currencyFormatter = useCurrencyFormatter();
   const percentFormatter = usePercentFormatter();
 
-  const onTypeChange = (t: MethodItemType | "Item") => {
-    if (t === itemType) return;
-    setItemType(t as MethodItemType);
+  const onTypeChange = (t: ItemType | "Item") => {
+    if (t === lineType) return;
+    setLineType(t as ItemType);
     setItemData({
       itemId: "",
       conversionFactor: 1,
@@ -326,14 +344,13 @@ const PurchaseOrderLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) throw new Error("Carbon client not found");
-    switch (itemType) {
+    switch (lineType) {
       // @ts-expect-error
       case "Item":
       case "Consumable":
       case "Material":
       case "Part":
       case "Tool":
-      // @ts-expect-error
       case "Service":
       // @ts-expect-error
       case "Fixture":
@@ -368,8 +385,10 @@ const PurchaseOrderLineForm = ({
         const initialQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
         const leadTime = item?.data?.itemReplenishment?.leadTime ?? 0;
         const baseFallback =
-          (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
-          exchangeRate;
+          supplierPart?.data?.unitPrice !== null &&
+          supplierPart?.data?.unitPrice !== undefined
+            ? supplierPart.data.unitPrice / exchangeRate
+            : (itemCost?.unitCost ?? 0);
 
         const breaks = supplierPart?.data?.id
           ? await getSupplierPartPriceBreaks(carbon, supplierPart.data.id)
@@ -410,13 +429,13 @@ const PurchaseOrderLineForm = ({
         });
 
         if (item.data?.type) {
-          setItemType(item.data.type as MethodItemType);
+          setLineType(item.data.type as ItemType);
         }
 
         break;
       default:
         throw new Error(
-          `Invalid purchase order line type: ${itemType} is not implemented`
+          `Invalid purchase order line type: ${lineType} is not implemented`
         );
     }
   };
@@ -441,6 +460,13 @@ const PurchaseOrderLineForm = ({
       storageUnitId: storageUnit?.data?.defaultStorageUnitId ?? ""
     }));
   };
+
+  const collapsedTaxPercent = getLineTaxPercent(
+    initialValues?.supplierUnitPrice ?? 0,
+    initialValues?.purchaseQuantity ?? 1,
+    initialValues?.supplierShippingCost ?? 0,
+    initialValues?.supplierTaxAmount ?? 0
+  );
 
   return (
     <>
@@ -488,14 +514,26 @@ const PurchaseOrderLineForm = ({
                           "text-muted-foreground"
                       )}
                     >
-                      {isEditing
-                        ? isFixedAsset
-                          ? initialValues.assetReadableId || "Fixed Asset"
-                          : isGLAccount
-                            ? indirectData.description || "G/L Account"
-                            : getItemReadableId(items, itemData?.itemId) ||
-                              "..."
-                        : t`New Purchase Order Line`}
+                      {isEditing ? (
+                        isFixedAsset ? (
+                          initialValues.assetReadableId || "Fixed Asset"
+                        ) : isGLAccount ? (
+                          indirectData.description || "G/L Account"
+                        ) : (
+                          <span className="inline-flex items-center gap-2">
+                            {getItemReadableId(items, itemData?.itemId) ||
+                              "..."}
+                            <ItemLifecycleBadge
+                              mode={
+                                items.find((i) => i.id === itemData?.itemId)
+                                  ?.supersessionMode
+                              }
+                            />
+                          </span>
+                        )
+                      ) : (
+                        t`New Purchase Order Line`
+                      )}
                     </ModalCardTitle>
                     <ModalCardDescription>
                       {isOutsideProcessing ? (
@@ -521,13 +559,9 @@ const PurchaseOrderLineForm = ({
                               )}{" "}
                               {initialValues?.purchaseUnitOfMeasureCode}
                             </Badge>
-                            {/* @ts-expect-error TS2339 */}
-                            {initialValues?.taxPercent > 0 ? (
+                            {collapsedTaxPercent > 0 ? (
                               <Badge variant="red">
-                                {percentFormatter.format(
-                                  /* @ts-expect-error TS2339 */
-                                  initialValues?.taxPercent ?? 0
-                                )}{" "}
+                                {percentFormatter.format(collapsedTaxPercent)}{" "}
                                 Tax
                               </Badge>
                             ) : null}
@@ -569,7 +603,7 @@ const PurchaseOrderLineForm = ({
                   />
 
                   <TabsContent value="item">
-                    <Hidden name="purchaseOrderLineType" value={itemType} />
+                    <Hidden name="purchaseOrderLineType" value={lineType} />
                     <Hidden
                       name="inventoryUnitOfMeasureCode"
                       value={itemData?.inventoryUom}
@@ -578,8 +612,9 @@ const PurchaseOrderLineForm = ({
                       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
                         <Item
                           name="itemId"
-                          label={itemType}
-                          type={itemType}
+                          label={i18n._(itemTypeLabel(lineType))}
+                          type={lineType}
+                          validItemTypes={[...itemType]}
                           locationId={locationId}
                           replenishmentSystem={
                             isOutsideProcessing ? undefined : "Buy"
@@ -600,6 +635,7 @@ const PurchaseOrderLineForm = ({
                         <InputControlled
                           name="supplierPartId"
                           label={t`Supplier Part Number`}
+                          termId="supplier-part-id"
                           value={itemData.supplierPartId}
                           onChange={(value) =>
                             setItemData((d) => ({
@@ -616,6 +652,7 @@ const PurchaseOrderLineForm = ({
                         <DatePicker
                           name="requiredDate"
                           label={t`Required Date`}
+                          termId="purchase-order-line-required-date"
                           value={itemData?.requiredDate ?? undefined}
                           onChange={(date) => {
                             setItemData((d) => ({
@@ -654,7 +691,7 @@ const PurchaseOrderLineForm = ({
                           "Tool",
                           "Service",
                           "Fixture"
-                        ].includes(itemType) && (
+                        ].includes(lineType) && (
                           <>
                             <UnitOfMeasure
                               name="purchaseUnitOfMeasureCode"
@@ -671,6 +708,7 @@ const PurchaseOrderLineForm = ({
                             />
                             <ConversionFactor
                               name="conversionFactor"
+                              termId="conversion-factor"
                               purchasingCode={itemData.purchaseUom}
                               inventoryCode={itemData.inventoryUom}
                               value={itemData.conversionFactor}
@@ -708,11 +746,12 @@ const PurchaseOrderLineForm = ({
                           "Tool",
                           "Consumable",
                           "Fixture"
-                        ].includes(itemType) &&
+                        ].includes(lineType) &&
                           !isOutsideProcessing && (
                             <Location
                               name="locationId"
                               label={t`Delivery Location`}
+                              termId="purchase-order-line-delivery-location"
                               value={locationId}
                               onChange={onLocationChange}
                             />
@@ -720,16 +759,16 @@ const PurchaseOrderLineForm = ({
                         {[
                           "Item",
                           "Part",
-                          "Service",
                           "Material",
                           "Tool",
                           "Consumable",
                           "Fixture"
-                        ].includes(itemType) &&
+                        ].includes(lineType) &&
                           !isOutsideProcessing && (
                             <StorageUnit
                               name="storageUnitId"
                               label={t`Storage Unit`}
+                              termId="purchase-order-line-storage-unit"
                               locationId={locationId}
                               value={itemData.storageUnitId ?? undefined}
                               onChange={(newValue) => {
@@ -793,6 +832,7 @@ const PurchaseOrderLineForm = ({
                           <NumberControlled
                             name="supplierShippingCost"
                             label={t`Shipping`}
+                            termId="purchase-order-line-shipping"
                             minValue={0}
                             value={itemData.supplierShippingCost}
                             formatOptions={{
@@ -878,12 +918,14 @@ const PurchaseOrderLineForm = ({
                               <Account
                                 name="accountId"
                                 label={t`GL Account`}
+                                termId="purchase-indirect-gl-account"
                                 classes={["Expense"]}
                                 isOptional={false}
                               />
                               <CostCenter
                                 name="costCenterId"
                                 label={t`Cost Center`}
+                                termId="cost-center"
                                 isOptional
                               />
                             </>
@@ -892,6 +934,7 @@ const PurchaseOrderLineForm = ({
                               <Combobox
                                 name="assetId"
                                 label={t`Fixed Asset`}
+                                termId="purchase-order-line-fixed-asset"
                                 isOptional={false}
                                 options={assetOptions}
                                 value={indirectData.assetId}
@@ -941,6 +984,7 @@ const PurchaseOrderLineForm = ({
                           <DatePicker
                             name="requiredDate"
                             label={t`Required Date`}
+                            termId="purchase-order-line-required-date"
                             value={indirectData.requiredDate ?? undefined}
                             onChange={(date) => {
                               setIndirectData((d) => ({
@@ -1038,6 +1082,7 @@ const PurchaseOrderLineForm = ({
                             <NumberControlled
                               name="supplierShippingCost"
                               label={t`Shipping`}
+                              termId="purchase-order-line-shipping"
                               minValue={0}
                               value={indirectData.supplierShippingCost}
                               formatOptions={{
@@ -1181,6 +1226,7 @@ function JobOperationSelect(initialValues: { jobId?: string }) {
       <Combobox
         name="jobId"
         label={t`Job`}
+        termId="purchase-order-line-outside-processing-job"
         options={jobOptions}
         onChange={(value) => {
           if (value) {
@@ -1191,6 +1237,7 @@ function JobOperationSelect(initialValues: { jobId?: string }) {
       <Combobox
         name="jobOperationId"
         label={t`Operation`}
+        termId="purchase-order-line-outside-processing-operation"
         options={jobOperationOptions}
       />
     </>

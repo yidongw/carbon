@@ -5,6 +5,7 @@ import {
   TextAreaControlled,
   ValidatedForm
 } from "@carbon/form";
+import { getLogger } from "@carbon/logger";
 import {
   Badge,
   BadgeCloseButton,
@@ -24,13 +25,15 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
 import React, { Suspense, useEffect, useRef, useState } from "react";
-import { LuImage } from "react-icons/lu";
+import { LuImage, LuMegaphone } from "react-icons/lu";
 import { useFetcher, useLocation } from "react-router";
 import { useUser } from "~/hooks";
 import { suggestionValidator } from "~/modules/shared";
 import type { action } from "~/routes/x+/resources+/suggestions.new";
 import { path } from "~/utils/path";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
+
+const logger = getLogger("erp", "suggestion");
 
 const Picker = React.lazy(() => import("@emoji-mart/react"));
 
@@ -100,7 +103,7 @@ const Suggestion = () => {
       });
 
       if (imageUpload.error) {
-        console.error(imageUpload.error);
+        logger.error(imageUpload.error);
         uploadToast.error(t`Failed to upload image`);
         return;
       }
@@ -124,7 +127,11 @@ const Suggestion = () => {
   return (
     <Popover>
       <PopoverTrigger ref={popoverTriggerRef} asChild>
-        <Button variant="secondary" className="hover:scale-100">
+        <Button
+          variant="secondary"
+          className="hover:scale-100"
+          leftIcon={<LuMegaphone />}
+        >
           <Trans>Suggestion</Trans>
         </Button>
       </PopoverTrigger>

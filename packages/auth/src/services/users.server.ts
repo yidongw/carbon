@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { redis } from "@carbon/kv";
+import { getLogger } from "@carbon/logger";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCarbonServiceRole } from "../lib/supabase/client.server";
 import type { Permission, Result } from "../types";
@@ -10,6 +11,13 @@ import {
   isValidCachedClaims,
   makePermissionsFromClaims
 } from "./users";
+
+const log = getLogger("auth");
+
+// TTL for the cached permission claims. Bounds staleness if an invalidation
+// (company switch / deactivation) fails to delete the key — the cache heals
+// itself on expiry. 1 hour, matching the auth package's other short-lived keys.
+const PERMISSION_CACHE_TTL_SECONDS = 3600;
 
 export async function getUserByEmail(email: string) {
   return getCarbonServiceRole()
@@ -41,7 +49,7 @@ export async function getUserClaims(userId: string, companyId: string) {
       }
     }
   } catch (e) {
-    console.error("Failed to get claims from redis", e);
+    log.error("Failed to get claims from redis", { error: e });
   } finally {
     // if we don't have permissions from redis, get them from the database
     if (!claims) {
@@ -51,8 +59,8 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error) {
-        console.error(rawClaims);
+      if (rawClaims.error || rawClaims.data === null) {
+        log.error("Failed to get claims", { rawClaims });
         throw new Error("Failed to get claims");
       }
 
@@ -66,8 +74,23 @@ export async function getUserClaims(userId: string, companyId: string) {
         claims = { permissions: {}, role: null };
       }
 
-      // store claims in redis
-      await redis.set(getPermissionCacheKey(userId), JSON.stringify(claims));
+      // store claims in redis — best-effort. A null/failed write (Redis down,
+      // fail-soft via @carbon/kv withResilience) must not abort the in-flight
+      // request; we already have the claims from the DB.
+      try {
+        await redis.set(
+          getPermissionCacheKey(userId),
+          JSON.stringify(claims),
+          "EX",
+          PERMISSION_CACHE_TTL_SECONDS
+        );
+      } catch (e) {
+        log.error("Failed to cache claims in redis", { error: e });
+      }
+
+      if (!claims) {
+        throw new Error("Failed to get claims");
+      }
     }
 
     return claims;

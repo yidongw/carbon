@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { forwardRef, useId, useMemo, useRef, useState } from "react";
 import { FaRegSquare, FaSquareCheck } from "react-icons/fa6";
 import { LuCirclePlus, LuSettings2, LuX } from "react-icons/lu";
@@ -35,6 +35,7 @@ export type MultiSelectProps = Omit<
   isReadOnly?: boolean;
   isClearable?: boolean;
   placeholder?: string;
+  emptyMessage?: ReactNode;
   onChange: (selected: string[]) => void;
   itemHeight?: number;
   maxPreview?: number;
@@ -55,6 +56,7 @@ const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
       isReadOnly,
       isClearable,
       placeholder,
+      emptyMessage,
       onChange,
       className,
       itemHeight = 40,
@@ -186,17 +188,23 @@ const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
           </PopoverTrigger>
           <PopoverContent
             align="end"
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
             className="min-w-[var(--radix-popover-trigger-width)] p-1"
           >
-            <VirtualizedCommand
-              options={options}
-              value={value}
-              onChange={onChange}
-              itemHeight={itemHeight}
-              setOpen={setOpen}
-              search={search}
-              setSearch={setSearch}
-            />
+            {emptyMessage && options.length === 0 ? (
+              emptyMessage
+            ) : (
+              <VirtualizedCommand
+                options={options}
+                value={value}
+                onChange={onChange}
+                itemHeight={itemHeight}
+                setOpen={setOpen}
+                search={search}
+                setSearch={setSearch}
+              />
+            )}
           </PopoverContent>
         </Popover>
         {isClearable && !isReadOnly && value.length > 0 && (
@@ -271,7 +279,7 @@ function VirtualizedCommand({
       <CommandEmpty>{t`No option found.`}</CommandEmpty>
       <div
         ref={parentRef}
-        className="overflow-auto pt-1"
+        className="overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent pt-1"
         style={{
           height: `${Math.min(filteredOptions.length, 6) * itemHeight + 4}px`
         }}
@@ -315,19 +323,19 @@ function VirtualizedCommand({
               >
                 <div className="flex items-center justify-start gap-2">
                   {isSelected ? (
-                    <FaSquareCheck className="mr-1.5 text-primary" />
+                    <FaSquareCheck className="mr-1.5 text-primary shrink-0" />
                   ) : (
-                    <FaRegSquare className="mr-1.5 text-muted-foreground" />
+                    <FaRegSquare className="mr-1.5 text-muted-foreground shrink-0" />
                   )}
                   {option.helper ? (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                       <p className="line-clamp-1">{option.label}</p>
                       <p className="text-xs text-muted-foreground line-clamp-1">
                         {option.helper}
                       </p>
                     </div>
                   ) : (
-                    <span className="line-clamp-1">{option.label}</span>
+                    <span className="line-clamp-1 min-w-0">{option.label}</span>
                   )}
                 </div>
               </CommandItem>

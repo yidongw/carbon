@@ -45,9 +45,14 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
-import { useNextItemId, usePermissions, useUser } from "~/hooks";
+import { ModelUploadProgress } from "~/components/ModelUploadProgress";
+import {
+  useModelUpload,
+  useNextItemId,
+  usePermissions,
+  useUser
+} from "~/hooks";
 import { path } from "~/utils/path";
-import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 import {
   itemReplenishmentSystems,
   itemTrackingTypes,
@@ -80,6 +85,7 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
   const [modelFile, setModelFile] = useState<File | null>(null);
 
   const { carbon } = useCarbon();
+  const { upload, runUpload } = useModelUpload();
   const {
     company: { id: companyId }
   } = useUser();
@@ -94,18 +100,10 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
     const fileExtension = file.name.split(".").pop();
     const fileName = `${companyId}/models/${modelId}.${fileExtension}`;
 
-    const uploadToast = createUploadToast({
-      id: `model-${modelId}-${file.name}`,
-      label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
-    });
-
-    const [fileUpload, recordInsert] = await Promise.all([
-      uploadToStorageWithProgress(carbon, {
-        bucket: "private",
-        path: fileName,
-        file,
-        onProgress: uploadToast.onProgress
-      }),
+    // Resumable (TUS) upload — a standard buffered upload times out on multi-GB
+    // CAD files. Runs in parallel with the record insert.
+    const [{ error: uploadError }, recordInsert] = await Promise.all([
+      runUpload({ bucket: "temp-staging", path: fileName, file }),
       carbon.from("modelUpload").insert({
         id: modelId,
         modelPath: fileName,
@@ -116,10 +114,9 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
       })
     ]);
 
-    if (fileUpload.error || recordInsert.error) {
-      uploadToast.error(t`Failed to upload model`);
+    if (uploadError || recordInsert.error) {
+      toast.error(t`Failed to upload model`);
     } else {
-      uploadToast.dismiss();
       setModelUploadId(modelId);
       setModelFile(file);
       toast.success(t`Uploaded model`);
@@ -313,6 +310,7 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                 <Select
                   name="replenishmentSystem"
                   label={t`Replenishment System`}
+                  termId="replenishment-system"
                   options={itemReplenishmentSystemOptions}
                   onChange={(newValue) => {
                     setReplenishmentSystem(newValue?.value ?? "Buy");
@@ -326,11 +324,13 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                 <Select
                   name="itemTrackingType"
                   label={t`Tracking Type`}
+                  termId="item-tracking-type"
                   options={itemTrackingTypeOptions}
                 />
                 <DefaultMethodType
                   name="defaultMethodType"
                   label={t`Default Method Type`}
+                  termId="item-default-method-type"
                   replenishmentSystem={replenishmentSystem}
                   value={defaultMethodType}
                   onChange={(newValue) =>
@@ -347,6 +347,7 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                   <ItemPostingGroup
                     name="postingGroupId"
                     label={t`Item Group`}
+                    termId="item-group"
                     isClearable
                   />
                 )}
@@ -365,7 +366,12 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                   />
                 )}
                 {!isEditing && replenishmentSystem !== "Buy" && (
-                  <Number name="lotSize" label={t`Batch Size`} minValue={0} />
+                  <Number
+                    name="lotSize"
+                    label={t`Batch Size`}
+                    minValue={0}
+                    termId="part-batch-size"
+                  />
                 )}
 
                 <ItemStorageFields />
@@ -391,7 +397,13 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                   }`}
                 >
                   <input id="model-upload" {...getInputProps()} />
-                  {modelFile ? (
+                  {upload !== null ? (
+                    <ModelUploadProgress
+                      percent={upload.percent}
+                      uploaded={upload.uploaded}
+                      total={upload.total}
+                    />
+                  ) : modelFile ? (
                     <>
                       <p className="text-sm font-semibold text-card-foreground">
                         {modelFile.name}

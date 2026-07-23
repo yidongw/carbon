@@ -107,7 +107,7 @@ const MaintenanceSchedulesTable = memo(
           )
         },
         {
-          accessorKey: "workCenter",
+          accessorKey: "workCenterName",
           header: t`Work Center`,
           cell: ({ row }) => <Enumerable value={row.original.workCenterName} />,
           meta: {

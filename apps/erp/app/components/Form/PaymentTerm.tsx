@@ -9,6 +9,7 @@ import type { getPaymentTermsList } from "~/modules/accounting";
 import PaymentTermForm from "~/modules/accounting/ui/PaymentTerms/PaymentTermForm";
 import { path } from "~/utils/path";
 import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
+import { useEmptyState } from "./emptyStates";
 
 type PaymentTermSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
   inline?: boolean;
@@ -31,11 +32,16 @@ const PaymentTerm = (props: PaymentTermSelectProps) => {
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
+  const emptyMessage = useEmptyState("paymentTerm", {
+    onCreate: () => newPaymentTermModal.onOpen()
+  });
+
   return permissions.can("create", "accounting") ? (
     <>
       <CreatableCombobox
         ref={triggerRef}
         options={options}
+        emptyMessage={emptyMessage}
         {...props}
         inline={props.inline ? PaymentTermPreview : undefined}
         label={props?.label ?? "Payment Term"}
@@ -65,6 +71,7 @@ const PaymentTerm = (props: PaymentTermSelectProps) => {
   ) : (
     <Combobox
       options={options}
+      emptyMessage={emptyMessage}
       {...props}
       inline={props.inline ? PaymentTermPreview : undefined}
       label={props?.label ?? "Payment Term"}

@@ -20,6 +20,7 @@ import type { JSONContent } from "@carbon/react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { z } from "zod";
 import { seedStyleReference } from "~/modules/items";
+import type { plmReleaseControl as plmReleaseControlOptions } from "~/modules/items/items.models";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { interpolateSequenceDate } from "~/utils/string";
@@ -218,6 +219,14 @@ export async function getEmployeeCompanies(
     })),
     error: null
   };
+}
+
+export async function getIndustries(client: SupabaseClient<Database>) {
+  return client
+    .from("industry")
+    .select("id, name, description, iconName")
+    .eq("active", true)
+    .order("sortOrder");
 }
 
 export async function getCompany(
@@ -793,9 +802,21 @@ export async function seedCompany(
   client: SupabaseClient<Database>,
   companyId: string,
   userId: string,
-  parentCompanyId?: string,
+  // Accepts either the legacy positional parentCompanyId string or an options
+  // object ({ parentCompanyId, identityOnly }); identityOnly (backup-restore
+  // onboarding) seeds only identity/reference rows and skips the style seed.
+  parentCompanyIdOrOpts?:
+    | string
+    | { parentCompanyId?: string; identityOnly?: boolean },
   language?: string
 ) {
+  const opts =
+    typeof parentCompanyIdOrOpts === "string"
+      ? { parentCompanyId: parentCompanyIdOrOpts, identityOnly: false }
+      : (parentCompanyIdOrOpts ?? {});
+  const parentCompanyId = opts.parentCompanyId;
+  const identityOnly = opts.identityOnly ?? false;
+
   const result = await client.rpc("seed_company", {
     company_id: companyId,
     user_id: userId,
@@ -805,15 +826,18 @@ export async function seedCompany(
 
   // Seed the standard apparel colors + sizes (color names localized) for every
   // company, regardless of which creation path ran. Non-fatal — the company is
-  // usable without them.
-  const [colorSeed, sizeSeed] = await seedStyleReference(
-    client,
-    companyId,
-    userId,
-    language
-  );
-  if (colorSeed.error || sizeSeed.error) {
-    console.error(colorSeed.error ?? sizeSeed.error);
+  // usable without them. Skipped for identity-only seeds (a backup will bring
+  // its own reference data).
+  if (!identityOnly) {
+    const [colorSeed, sizeSeed] = await seedStyleReference(
+      client,
+      companyId,
+      userId,
+      language
+    );
+    if (colorSeed.error || sizeSeed.error) {
+      console.error(colorSeed.error ?? sizeSeed.error);
+    }
   }
 
   return result;
@@ -1096,6 +1120,17 @@ export async function updateMetricSettings(
   return client
     .from("companySettings")
     .update(sanitize({ useMetric }))
+    .eq("id", companyId);
+}
+
+export async function updatePlmReleaseControlSetting(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  plmReleaseControl: (typeof plmReleaseControlOptions)[number]
+) {
+  return client
+    .from("companySettings")
+    .update(sanitize({ plmReleaseControl }))
     .eq("id", companyId);
 }
 

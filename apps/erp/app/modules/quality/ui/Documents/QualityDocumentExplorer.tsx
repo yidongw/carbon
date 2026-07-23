@@ -7,6 +7,7 @@ import {
   Submit,
   ValidatedForm
 } from "@carbon/form";
+import { getLogger } from "@carbon/logger";
 import type { JSONContent } from "@carbon/react";
 import {
   Button,
@@ -66,6 +67,8 @@ import { qualityDocumentStepValidator } from "~/modules/quality/quality.models";
 import { procedureStepType } from "~/modules/shared";
 import { getPrivateUrl, path } from "~/utils/path";
 import type { QualityDocument, QualityDocumentStep } from "../../types";
+
+const logger = getLogger("erp", "qualitydocumentexplorer");
 
 export default function QualityDocumentExplorer() {
   const prettifyShortcut = usePrettifyShortcut();
@@ -485,7 +488,7 @@ function QualityDocumentStepForm({
       }
       return {} as JSONContent;
     } catch (e) {
-      console.error("Error parsing description:", e);
+      logger.error("Error parsing description", { error: e });
       return {} as JSONContent;
     }
   });

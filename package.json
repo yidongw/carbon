@@ -5,11 +5,13 @@
     "@lingui/cli": "catalog:",
     "@react-router/dev": "catalog:",
     "@types/aws-lambda": "8.10.152",
-    "@typescript/native-preview": "7.0.0-dev.20260409.1",
+    "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "cli-table3": "^0.6.5",
     "csv-parse": "5.6.0",
     "execa": "^8.0.1",
     "husky": "8.0.3",
+    "linguito": "^0.5.2",
     "lint-staged": "16.4.0",
     "npm-run-all": "catalog:",
     "pofile": "^1.1.4",
@@ -23,7 +25,7 @@
     "vite-plugin-babel-macros": "catalog:"
   },
   "lint-staged": {
-    "(apps|packages)/**/*.{js,ts,jsx,tsx}": [
+    "(apps|packages|docs)/**/*.{js,ts,jsx,tsx}": [
       "biome check --write --no-errors-on-unmatched"
     ],
     "*.json": [
@@ -45,6 +47,7 @@
     "db:migrate:check": "node scripts/check-migration-timestamps.mjs",
     "db:seed": "turbo run db:seed --no-cache",
     "db:seed:dev": "pnpm --filter @carbon/database db:seed:dev --",
+    "db:seed:change-orders": "pnpm --filter @carbon/database seed:change-orders --",
     "db:types": "tsx scripts/generate-db-types.ts",
     "deploy": "turbo run deploy",
     "dev": "crbn up --no-portless",
@@ -53,6 +56,7 @@
     "dev:packages": "turbo run dev --filter=./packages/*",
     "dev:starter": "turbo run dev --filter=./apps/starter --filter=./packages/",
     "format": "biome format --write",
+    "generate:agent-kb": "tsx scripts/generate-agent-kb.ts",
     "generate:mcp": "tsx scripts/generate-mcp.ts",
     "generate:swagger": "tsx scripts/generate-swagger-docs.ts && pnpm exec biome format ./packages/database/src/swagger-docs-schema.ts --write --files-max-size=5000000",
     "generate:types": "tsx scripts/generate-db-types.ts",
@@ -63,7 +67,9 @@
     "lingui:extract:raw": "tsx scripts/gen-seed-display-names.ts && lingui extract --clean",
     "lingui:clean": "node ./scripts/strip-po-headers.mjs",
     "novu:sync": "pnpm dlx novu@latest sync --bridge-url https://app.carbon.ms/api/novu --secret-key $NOVU_SECRET_KEY --api-url https://api.novu.co",
-    "prepare": "pnpm exec husky install",
+    "postinstall": "pnpm --filter @carbon/documents build",
+    "install-skills": "bash .ai/scripts/install-skills.sh",
+    "prepare": "pnpm exec husky install; if [ -f .ai/scripts/install-skills.sh ]; then bash .ai/scripts/install-skills.sh; fi",
     "test": "turbo run test",
     "tool:new": "tsx scripts/create-tool.ts",
     "translate": "pnpm run lingui:extract:raw && node scripts/translate-po.mjs && pnpm run lingui:clean",
@@ -74,7 +80,8 @@
   "workspaces": [
     "apps/*",
     "ci",
-    "examples/*",
+    "docs",
+    "contrib/building/examples/*",
     "packages/*"
   ],
   "packageManager": "pnpm@10.33.4",
@@ -107,6 +114,7 @@
       "core-js",
       "esbuild",
       "protobufjs",
+      "sharp",
       "supabase"
     ],
     "patchedDependencies": {

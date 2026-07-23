@@ -1,6 +1,7 @@
 import type { ComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure, useMount } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type {
@@ -9,6 +10,7 @@ import type {
 } from "~/modules/items";
 import MaterialFinishForm from "~/modules/items/ui/MaterialFinishes/MaterialFinishForm";
 import { path } from "~/utils/path";
+import { useEmptyState } from "./emptyStates";
 
 type MaterialFinishSelectProps = Omit<
   ComboboxProps,
@@ -29,6 +31,7 @@ const MaterialFinishPreview = (
 };
 
 const MaterialFinish = (props: MaterialFinishSelectProps) => {
+  const { t } = useLingui();
   const materialFinishesLoader =
     useFetcher<Awaited<ReturnType<typeof getMaterialFinishList>>>();
 
@@ -72,6 +75,11 @@ const MaterialFinish = (props: MaterialFinishSelectProps) => {
     props.onChange?.(finish as MaterialFinishType | null);
   };
 
+  const emptyMessage = useEmptyState(
+    "materialFinish",
+    props.substanceId ? { onCreate: () => newFinishModal.onOpen() } : undefined
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -79,9 +87,16 @@ const MaterialFinish = (props: MaterialFinishSelectProps) => {
         options={options}
         {...props}
         disabled={props.disabled || !props.substanceId}
+        helperText={
+          props.helperText ??
+          (!props.inline && !props.substanceId
+            ? t`Select a substance first to see available options`
+            : undefined)
+        }
         inline={props?.inline ? MaterialFinishPreview : undefined}
         isOptional={props?.isOptional ?? true}
         label={props?.label ?? "Finish"}
+        emptyMessage={emptyMessage}
         onChange={onChange}
         onCreateOption={(option) => {
           newFinishModal.onOpen();

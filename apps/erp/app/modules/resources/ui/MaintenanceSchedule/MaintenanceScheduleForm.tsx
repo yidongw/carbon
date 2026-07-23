@@ -170,11 +170,16 @@ const MaintenanceScheduleForm = ({
               <Hidden name="type" value={type} />
               <VStack spacing={4}>
                 <Input name="name" label={t`Schedule Name`} />
-                <WorkCenter name="workCenterId" label={t`Work Center`} />
+                <WorkCenter
+                  name="workCenterId"
+                  label={t`Work Center`}
+                  termId="work-center"
+                />
                 <Location name="locationId" label={t`Location`} />
                 <Select
                   name="frequency"
                   label={t`Frequency`}
+                  termId="maintenance-schedule-frequency"
                   options={maintenanceFrequency.map((freq) => ({
                     value: freq,
                     label: getMaintenanceFrequencyLabel(freq)
@@ -198,9 +203,14 @@ const MaintenanceScheduleForm = ({
                 <Number
                   name="estimatedDuration"
                   label={t`Estimated Duration (minutes)`}
+                  termId="maintenance-schedule-estimated-duration"
                   minValue={0}
                 />
-                <Procedure name="procedureId" />
+                <Procedure
+                  name="procedureId"
+                  label={t`Procedure`}
+                  termId="maintenance-schedule-procedure"
+                />
                 <Boolean name="active" label={t`Active`} />
                 <DailyScheduleOptions />
               </VStack>

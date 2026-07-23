@@ -1,4 +1,5 @@
 import { useControlField, useField } from "@carbon/form";
+import type { TermId } from "@carbon/glossary";
 import {
   Button,
   CommandTrigger,
@@ -8,6 +9,7 @@ import {
   FormHelperText,
   FormLabel,
   HStack,
+  LabelWithHelp,
   Modal,
   ModalBody,
   ModalContent,
@@ -40,6 +42,7 @@ enum ConversionDirection {
 type ConversionFactorProps = {
   name: string;
   label?: string;
+  termId?: TermId;
   inventoryCode?: string;
   purchasingCode?: string;
   isReadOnly?: boolean;
@@ -57,6 +60,7 @@ const ConversionFactor = forwardRef<
     {
       name,
       label,
+      termId,
       isRequired,
       isReadOnly,
       helperText,
@@ -193,7 +197,7 @@ const ConversionFactor = forwardRef<
       <FormControl isInvalid={!!error} isRequired={isRequired}>
         {resolvedLabel && (
           <FormLabel htmlFor={name} isOptional={resolvedIsOptional}>
-            {resolvedLabel}
+            <LabelWithHelp termId={termId}>{resolvedLabel}</LabelWithHelp>
           </FormLabel>
         )}
         <input

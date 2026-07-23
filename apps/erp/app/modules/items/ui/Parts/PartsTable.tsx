@@ -31,6 +31,7 @@ import {
   LuBookMarked,
   LuCalendar,
   LuCheck,
+  LuFactory,
   LuGitPullRequestArrow,
   LuGroup,
   LuLayoutTemplate,
@@ -38,6 +39,7 @@ import {
   LuPencil,
   LuTag,
   LuTrash,
+  LuTruck,
   LuUser
 } from "react-icons/lu";
 import { RxCodesandboxLogo } from "react-icons/rx";
@@ -46,6 +48,7 @@ import { Link, useFetcher, useNavigate } from "react-router";
 import {
   EmployeeAvatar,
   Hyperlink,
+  ItemLifecycleBadge,
   ItemThumbnail,
   MethodIcon,
   New,
@@ -165,8 +168,22 @@ const PartsTable = memo(
                 className="min-w-0"
               >
                 <VStack spacing={0} className="min-w-0">
-                  <span className="w-full truncate">
+                  <span className="w-full truncate flex items-center gap-1.5">
                     {row.original.readableIdWithRevision}
+                    <ItemLifecycleBadge
+                      mode={
+                        (
+                          row.original as {
+                            supersessionMode?:
+                              | "Consume First"
+                              | "Prefer New"
+                              | "Stock Only"
+                              | "No Stock"
+                              | null;
+                          }
+                        ).supersessionMode
+                      }
+                    />
                   </span>
                   <div className="w-full truncate text-muted-foreground text-xs">
                     {row.original.name}
@@ -642,6 +659,18 @@ const PartsTable = memo(
               </MenuSub>
             )}
             <MenuItem
+              disabled={!permissions.can("create", "parts")}
+              onClick={() =>
+                fetcher.submit(null, {
+                  method: "post",
+                  action: path.to.newChangeOrderFromItem(row.id!)
+                })
+              }
+            >
+              <MenuIcon icon={<LuGitPullRequestArrow />} />
+              <Trans>Create Change Order</Trans>
+            </MenuItem>
+            <MenuItem
               destructive
               disabled={!permissions.can("delete", "parts")}
               onClick={() => {
@@ -655,7 +684,7 @@ const PartsTable = memo(
           </>
         );
       };
-    }, [deleteItemModal, navigate, permissions, t]);
+    }, [deleteItemModal, fetcher, navigate, permissions, t]);
 
     return (
       <>

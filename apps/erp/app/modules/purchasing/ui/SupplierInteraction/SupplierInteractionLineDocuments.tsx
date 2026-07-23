@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Card,
   CardAction,
@@ -44,6 +45,8 @@ import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 
+const logger = getLogger("erp", "supplierinteractionlinedocuments");
+
 type SupportedDocument =
   | "Purchasing Request for Quote"
   | "Supplier Quote"
@@ -66,8 +69,8 @@ const useSupplierInteractionLineDocuments = ({
   const { company } = useUser();
   const submit = useSubmit();
 
-  const canDelete = permissions.can("delete", "sales");
-  const canUpdate = permissions.can("update", "sales");
+  const canDelete = permissions.can("delete", "purchasing");
+  const canUpdate = permissions.can("update", "purchasing");
 
   const getPath = useCallback(
     (file: { name: string }) => {
@@ -113,7 +116,7 @@ const useSupplierInteractionLineDocuments = ({
         document.body.removeChild(a);
       } catch (error) {
         toast.error(t`Error downloading file`);
-        console.error(error);
+        logger.error("Error", { error: error });
       }
     },
     [getPath, t]
@@ -425,7 +428,7 @@ const SupplierInteractionLineDocumentForm = ({
 
   return (
     <File
-      isDisabled={!permissions.can("update", "sales")}
+      isDisabled={!permissions.can("update", "purchasing")}
       leftIcon={<LuUpload />}
       onChange={uploadFiles}
       multiple

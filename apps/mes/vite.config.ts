@@ -32,6 +32,14 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         "react-icons",
         "react-phone-number-input",
         "tailwind-merge",
+        /**
+         * @react-three/fiber v8 (inlined via @carbon/viewer) default-imports
+         * its nested zustand v3, while the app uses zustand v5 (no default
+         * export). Externalizing zustand merges both into one bare import that
+         * resolves to v5 at runtime and crashes the server at module load.
+         * Bundling it lets each importer keep its own version.
+         */
+        "zustand",
       ],
     },
     server: {
@@ -43,7 +51,8 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         ".w.modal.host",
         ".w.modal.dev",
         ".dev",
-        ".localhost"
+        ".localhost",
+        "host.docker.internal"
       ],
     },
     plugins: [
@@ -55,10 +64,9 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     resolve: {
       tsconfigPaths: true,
       alias: {
-        "@carbon/utils": path.resolve(
-          __dirname,
-          "../../packages/utils/src/index.ts"
-        ),
+        // Directory (not index.ts) so subpath imports like
+        // `@carbon/utils/favicon` resolve to `src/favicon.ts`.
+        "@carbon/utils": path.resolve(__dirname, "../../packages/utils/src"),
         "@carbon/form": path.resolve(
           __dirname,
           "../../packages/form/src/index.tsx"

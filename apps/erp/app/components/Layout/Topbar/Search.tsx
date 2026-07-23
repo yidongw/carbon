@@ -514,12 +514,12 @@ function useGroupedSubmodules() {
     people,
     production,
     resources,
-    settings
+    settings,
+    "my account": account
   };
 
   const ungroupedSubmodules: Record<string, { links: Route[] }> = {
-    documents,
-    "my account": account
+    documents
   };
 
   const shortcuts = modules.reduce<
@@ -531,19 +531,16 @@ function useGroupedSubmodules() {
       const groups = groupedSubmodules[moduleName].groups;
       acc = {
         ...acc,
-        [module.name]: groups.flatMap((group) =>
-          group.routes.map((route) => ({
+        [module.name]: groups
+          .flatMap((group) => group.routes)
+          .map((route) => ({
             to: route.to,
             name: route.name,
             icon: module.icon,
             iconElement: route.icon
           }))
-        )
       };
-    } else if (
-      moduleName in ungroupedSubmodules ||
-      moduleName === "my account"
-    ) {
+    } else if (moduleName in ungroupedSubmodules) {
       acc = {
         ...acc,
         [module.name]: ungroupedSubmodules[moduleName].links.map((link) => ({

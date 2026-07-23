@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
   ScrollArea
 } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { memo, useMemo, useRef } from "react";
 import {
   LuChevronDown,
@@ -21,7 +22,8 @@ import {
 import { useNavigate } from "react-router";
 import type { FlatTree, FlatTreeItem } from "~/components/TreeView";
 import { LevelLine, TreeView, useTree } from "~/components/TreeView";
-import { useRealtime, useSettings } from "~/hooks";
+import { useRealtime, useSettings, useUrlParams } from "~/hooks";
+import { path } from "~/utils/path";
 import type { Chart } from "../../types";
 
 type ChartOfAccountsTreeProps = {
@@ -100,11 +102,33 @@ function formatCurrency(value: number): string {
 
 const ChartOfAccountsTree = memo(
   ({ data, search }: ChartOfAccountsTreeProps) => {
+    const { t } = useLingui();
     useRealtime("journal");
     const settings = useSettings();
     const accountingEnabled = (settings as any).accountingEnabled ?? false;
     const parentRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
+    const [params] = useUrlParams();
+
+    const openLedger = (accountId: string) => {
+      const nextParams = new URLSearchParams(params);
+      nextParams.delete("offset");
+      const qs = nextParams.toString();
+      const to = path.to.chartOfAccountsLedger(accountId);
+      navigate(qs ? `${to}?${qs}` : to);
+    };
+
+    // Radix closes the portalled menu on select, after which the native click
+    // lands on the row underneath and fires its onClick (opening the ledger).
+    // Suppress that one phantom row click so the chosen menu action wins.
+    const suppressRowClickRef = useRef(false);
+    const runMenuAction = (action: () => void) => {
+      suppressRowClickRef.current = true;
+      window.setTimeout(() => {
+        suppressRowClickRef.current = false;
+      }, 300);
+      action();
+    };
 
     const filtered = useMemo(
       () => filterAccounts(data, search),
@@ -129,9 +153,13 @@ const ChartOfAccountsTree = memo(
     return (
       <ScrollArea className="h-[calc(100dvh-var(--header-height)-61px)] w-full">
         <div className="sticky top-0 z-10 flex h-11 items-center pr-4 text-sm font-medium text-foreground/80 border-b border-border bg-card">
-          <div className="flex-1 px-4">Account</div>
+          <div className="flex-1 px-4">
+            <Trans>Account</Trans>
+          </div>
           {accountingEnabled && (
-            <span className="w-32 text-right px-4">Balance</span>
+            <span className="w-32 text-right px-4">
+              {params.get("startDate") ? t`Net Change` : t`Balance`}
+            </span>
           )}
         </div>
         <TreeView<Chart>
@@ -146,6 +174,10 @@ const ChartOfAccountsTree = memo(
             const account = node.data;
             const isGroup = account.isGroup;
             const isExpanded = state.expanded;
+            // Activity within the selected period (= the drawer's Net Change).
+            // With no startDate the range starts at inception, so this is the
+            // cumulative balance — the classic chart of accounts view.
+            const balance = account.netChange ?? 0;
 
             return (
               <div
@@ -157,11 +189,15 @@ const ChartOfAccountsTree = memo(
                   isGroup && "font-semibold"
                 )}
                 onClick={() => {
+                  if (suppressRowClickRef.current) {
+                    suppressRowClickRef.current = false;
+                    return;
+                  }
                   selectNode(node.id, false);
                   if (isGroup) {
                     toggleExpandNode(node.id);
                   } else {
-                    navigate(account.id as string);
+                    openLedger(account.id as string);
                   }
                 }}
               >
@@ -215,11 +251,23 @@ const ChartOfAccountsTree = memo(
                 </div>
 
                 {/* Balance */}
-                {accountingEnabled && (
-                  <span className="w-32 text-right tabular-nums shrink-0 text-muted-foreground">
-                    {formatCurrency(account.balance ?? 0)}
-                  </span>
-                )}
+                {accountingEnabled &&
+                  (isGroup ? (
+                    <span className="w-32 text-right tabular-nums shrink-0 text-muted-foreground">
+                      {formatCurrency(balance)}
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-32 text-right tabular-nums shrink-0 text-muted-foreground hover:text-foreground hover:underline underline-offset-2 decoration-border"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openLedger(account.id as string);
+                      }}
+                    >
+                      {formatCurrency(balance)}
+                    </button>
+                  ))}
 
                 {/* Actions menu */}
                 <DropdownMenu>
@@ -236,50 +284,70 @@ const ChartOfAccountsTree = memo(
                       <>
                         {!account.isSystem && (
                           <DropdownMenuItem
-                            onClick={() => navigate(account.id as string)}
+                            onClick={() =>
+                              runMenuAction(() =>
+                                navigate(account.id as string)
+                              )
+                            }
                           >
                             <LuPencil className="mr-2 h-4 w-4" />
-                            Edit Group
+                            <Trans>Edit Group</Trans>
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
                           onClick={() =>
-                            navigate(`new-group?parentId=${account.id}`)
+                            runMenuAction(() =>
+                              navigate(`new-group?parentId=${account.id}`)
+                            )
                           }
                         >
                           <LuFolderPlus className="mr-2 h-4 w-4" />
-                          Add Group
+                          <Trans>Add Group</Trans>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => navigate(`new?parentId=${account.id}`)}
+                          onClick={() =>
+                            runMenuAction(() =>
+                              navigate(`new?parentId=${account.id}`)
+                            )
+                          }
                         >
                           <LuFilePlus className="mr-2 h-4 w-4" />
-                          Add Account
+                          <Trans>Add Account</Trans>
                         </DropdownMenuItem>
                         {!account.isSystem && (
                           <DropdownMenuItem
                             className="text-destructive"
-                            onClick={() => navigate(`delete/${account.id}`)}
+                            onClick={() =>
+                              runMenuAction(() =>
+                                navigate(`delete/${account.id}`)
+                              )
+                            }
                           >
                             <LuTrash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            <Trans>Delete</Trans>
                           </DropdownMenuItem>
                         )}
                       </>
                     ) : (
                       <>
                         <DropdownMenuItem
-                          onClick={() => navigate(account.id as string)}
+                          onClick={() =>
+                            runMenuAction(() => navigate(account.id as string))
+                          }
                         >
                           <LuPencil className="mr-2 h-4 w-4" />
-                          Edit
+                          <Trans>Edit</Trans>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-destructive"
-                          onClick={() => navigate(`delete/${account.id}`)}
+                          onClick={() =>
+                            runMenuAction(() =>
+                              navigate(`delete/${account.id}`)
+                            )
+                          }
                         >
                           <LuTrash2 className="mr-2 h-4 w-4" />
-                          Delete
+                          <Trans>Delete</Trans>
                         </DropdownMenuItem>
                       </>
                     )}

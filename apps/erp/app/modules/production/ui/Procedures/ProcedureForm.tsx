@@ -1,5 +1,6 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Button,
   HStack,
   ModalDrawer,
   ModalDrawerBody,
@@ -10,7 +11,7 @@ import {
   ModalDrawerTitle,
   VStack
 } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
@@ -64,7 +65,11 @@ const ProcedureForm = ({
           >
             <ModalDrawerHeader>
               <ModalDrawerTitle>
-                {type === "copy" ? "Copy" : "New"} Procedure
+                {type === "copy" ? (
+                  <Trans>Copy Procedure</Trans>
+                ) : (
+                  <Trans>New Procedure</Trans>
+                )}
               </ModalDrawerTitle>
             </ModalDrawerHeader>
             <ModalDrawerBody>
@@ -81,12 +86,13 @@ const ProcedureForm = ({
                 {type === "new" && <Input name="name" label={t`Name`} />}
                 <Number
                   name="version"
-                  label={type === "copy" ? "New Version" : "Version"}
+                  label={type === "copy" ? t`New Version` : t`Version`}
+                  termId="procedure-version"
                   minValue={0}
                   helperText={
                     type === "copy"
-                      ? "The new version number of the procedure"
-                      : "The version of the new procedure"
+                      ? t`The new version number of the procedure`
+                      : t`The version of the new procedure`
                   }
                 />
                 {type === "new" && (
@@ -100,8 +106,11 @@ const ProcedureForm = ({
                   isLoading={fetcher.state !== "idle"}
                   isDisabled={fetcher.state !== "idle" || isDisabled}
                 >
-                  Save
+                  <Trans>Save</Trans>
                 </Submit>
+                <Button size="md" variant="solid" onClick={() => onClose()}>
+                  <Trans>Cancel</Trans>
+                </Button>
               </HStack>
             </ModalDrawerFooter>
           </ValidatedForm>

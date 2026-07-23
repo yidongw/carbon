@@ -13,27 +13,30 @@ export type BomChild = {
   itemId: string;
   quantity: number;
   methodType: MethodType;
+  // Set when this child was substituted by supersession (the original/old item).
+  redirectedFromItemId?: string;
+};
+
+type DemandContributorBase = {
+  parentItemId: string;
+  quantity: number;
+  // The discontinued part this demand was redirected from, if any.
+  redirectedFromItemId?: string;
 };
 
 export type DemandContributor =
-  | {
+  | (DemandContributorBase & {
       sourceType: "Job Material";
       jobId: string;
-      parentItemId: string;
-      quantity: number;
-    }
-  | {
+    })
+  | (DemandContributorBase & {
       sourceType: "Sales Order";
       salesOrderLineId: string;
-      parentItemId: string;
-      quantity: number;
-    }
-  | {
+    })
+  | (DemandContributorBase & {
       sourceType: "Demand Projection";
       demandProjectionId: string;
-      parentItemId: string;
-      quantity: number;
-    };
+    });
 
 export type BomExplosionInput = {
   grossDemand: Map<string, number>;
@@ -213,6 +216,10 @@ export function explodeBom(input: BomExplosionInput): BomExplosionOutput {
               childContributors.push({
                 ...pc,
                 quantity: pc.quantity * child.quantity,
+                // A substituted child carries the old part it replaced so the
+                // demand can be shown as "redirected from <old part>".
+                redirectedFromItemId:
+                  child.redirectedFromItemId ?? pc.redirectedFromItemId,
               });
             }
             demandContributors.set(childKey, childContributors);

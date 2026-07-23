@@ -485,7 +485,6 @@ const QuoteBillOfMaterial = ({
         onToggleItem={onToggleItem}
         onRemoveItem={onRemoveItem}
         handleDrag={onCloseOnDrag}
-        className="my-2 "
         renderExtra={(item) => (
           <div key={`${isOpen}`}>
             <motion.button
@@ -981,6 +980,7 @@ function MaterialForm({
               }));
             }}
             replenishmentSystem={itemData.itemReplenishmentSystem}
+            termId="method-type"
           />
           <StorageUnit
             name="storageUnitId"
@@ -1050,6 +1050,7 @@ function MaterialForm({
                 quoteOperationId: newValue?.value as string
               }));
             }}
+            termId="operation"
           />
         </div>
       </div>

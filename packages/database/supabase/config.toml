@@ -1,6 +1,7 @@
 # NOTE: For local dev, only `project_id` and `[functions.*]` sections are
 # authoritative. Runtime services (db/api/auth/storage/studio/inbucket/realtime)
-# are managed by docker-compose.dev.yml (see scripts/dev/cli.ts). The other
+# are managed by packages/dev/docker/docker-compose.dev.yml (via the crbn CLI,
+# packages/dev/src). The other
 # sections here are kept for `supabase functions deploy` and reference parity
 # with what `supabase start` used to provide.
 
@@ -67,7 +68,10 @@ port = 54324
 [storage]
 enabled = true
 # The maximum file size allowed (e.g. "5MB", "500KB").
-file_size_limit = "50MiB"
+# Must be >= the largest app-level limit (CAD_MODEL_UPLOAD = 512MB in
+# packages/utils FILE_SIZE_LIMIT_MB); otherwise Storage 413s CAD uploads the UI
+# accepts. Per-type limits are enforced client-side and per-bucket.
+file_size_limit = "2500MB"
 
 [auth]
 enabled = true
@@ -189,6 +193,16 @@ enabled = true
 verify_jwt = true
 entrypoint = "./functions/post-picking/index.ts"
 
+[functions.post-inventory-count]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/post-inventory-count/index.ts"
+
+[functions.post-inventory-adjustment]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/post-inventory-adjustment/index.ts"
+
 
 [functions.transcription]
 enabled = true
@@ -199,6 +213,11 @@ entrypoint = "./functions/transcription/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/transcription/*.html" ]
+
+[functions.event-wake]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/event-wake/index.ts"
 
 [functions.embedding]
 enabled = true

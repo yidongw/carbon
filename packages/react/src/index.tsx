@@ -179,6 +179,7 @@ import {
 } from "./InputOTP";
 import { Kbd } from "./Kbd";
 import { Label } from "./Label";
+import { LabelWithHelp } from "./LabelWithHelp";
 import { Loading } from "./Loading";
 import { LoadingBars } from "./LoadingBars";
 import {
@@ -236,7 +237,6 @@ import {
   ModalDrawerTypeProvider,
   useModalDrawerType
 } from "./ModalDrawer";
-import { ModelViewer } from "./ModelViewer";
 import type { MultiSelectProps } from "./MultiSelect";
 import { MultiSelect } from "./MultiSelect";
 import type { NumberFieldProps } from "./Number";
@@ -343,6 +343,7 @@ import {
   usePickOrderOptions
 } from "./TrackedEntityPicker";
 import { TruncatedTooltipText } from "./TruncatedTooltipText";
+import { TVColorBars } from "./TVColorBars";
 import { cn } from "./utils/cn";
 import { copyToClipboard } from "./utils/dom";
 import { getValidChildren, reactNodeToString } from "./utils/react";
@@ -483,6 +484,7 @@ export {
   InputRightElement,
   Kbd,
   Label,
+  LabelWithHelp,
   Loading,
   LoadingBars,
   Menu,
@@ -531,7 +533,6 @@ export {
   ModalPortal,
   ModalTitle,
   ModalTrigger,
-  ModelViewer,
   MultiSelect,
   NumberDecrementStepper,
   NumberField,
@@ -623,6 +624,7 @@ export {
   TooltipProvider,
   TooltipTrigger,
   Tr,
+  TVColorBars,
   VStack,
   buttonVariants,
   cn,

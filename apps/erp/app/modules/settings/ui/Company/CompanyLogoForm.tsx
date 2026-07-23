@@ -1,4 +1,5 @@
 import { SUPABASE_URL, useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Avatar,
   Button,
@@ -21,6 +22,7 @@ import {
 } from "~/utils/upload";
 
 const STORAGE_URL_PREFIX = `${SUPABASE_URL}/storage/v1/object/public/public/`;
+const logger = getLogger("erp", "settings", "company-logo");
 
 const toStoragePath = (urlOrPath: string | null): string | null => {
   if (!urlOrPath) return null;
@@ -134,7 +136,7 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
-          console.error("Image resize error:", error);
+          logger.error("Image resize error", { error });
           uploadToast.error(t`Failed to resize image: ${errorMessage}`);
           return;
         }
@@ -154,7 +156,7 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
 
       if (imageUpload.error) {
         const errorMessage = imageUpload.error.message || "Unknown error";
-        console.error("Upload error:", imageUpload.error);
+        logger.error("Upload error", { error: imageUpload.error });
         uploadToast.error(t`Failed to upload logo: ${errorMessage}`);
         return;
       }
@@ -168,7 +170,9 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
             .from("public")
             .remove([previousStoragePath])
             .catch((cleanupError) => {
-              console.warn("Old logo cleanup failed:", cleanupError);
+              logger.warning("Old logo cleanup failed", {
+                error: cleanupError
+              });
             });
         }
         uploadToast.dismiss();
@@ -188,7 +192,7 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
 
       if (imageDelete.error) {
         const errorMessage = imageDelete.error.message || "Unknown error";
-        console.error("Delete error:", imageDelete.error);
+        logger.error("Delete error", { error: imageDelete.error });
         toast.error(t`Failed to remove image: ${errorMessage}`);
         return;
       }

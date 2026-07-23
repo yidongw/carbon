@@ -1,5 +1,5 @@
 import { MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -25,34 +25,6 @@ type AssetClassesTableProps = {
   primaryAction?: ReactNode;
 };
 
-function formatBookDepreciation(row: FixedAssetClassListItem): string {
-  const method = row.depreciationMethod;
-  const life = row.usefulLifeMonths;
-  const residual = row.residualValuePercent;
-
-  const years = life ? Math.round((life / 12) * 10) / 10 : null;
-  const lifeStr = years ? `${years}yr` : "";
-  const residualStr =
-    residual && Number(residual) > 0 ? `, ${residual}% residual` : "";
-
-  return `${method}, ${lifeStr}${residualStr}`;
-}
-
-function formatTaxDepreciation(row: FixedAssetClassListItem): string {
-  const method = (row as any).taxDepreciationMethod;
-  if (!method) return "Same as Book";
-
-  if (method === "MACRS") {
-    const cls = (row as any).macrsPropertyClass;
-    return cls ? `MACRS ${cls}-Year` : "MACRS";
-  }
-
-  const life = (row as any).taxUsefulLifeMonths;
-  const years = life ? Math.round((life / 12) * 10) / 10 : null;
-  const lifeStr = years ? `, ${years}yr` : "";
-  return `${method}${lifeStr}`;
-}
-
 const AssetClassesTable = memo(
   ({
     data,
@@ -68,6 +40,34 @@ const AssetClassesTable = memo(
     const deleteModal = useDisclosure();
 
     const columns = useMemo<ColumnDef<FixedAssetClassListItem>[]>(() => {
+      const formatBookDepreciation = (row: FixedAssetClassListItem): string => {
+        const method = row.depreciationMethod;
+        const life = row.usefulLifeMonths;
+        const residual = row.residualValuePercent;
+
+        const years = life ? Math.round((life / 12) * 10) / 10 : null;
+        const lifeStr = years ? t`${years}yr` : "";
+        const residualStr =
+          residual && Number(residual) > 0 ? t`, ${residual}% residual` : "";
+
+        return `${method}, ${lifeStr}${residualStr}`;
+      };
+
+      const formatTaxDepreciation = (row: FixedAssetClassListItem): string => {
+        const method = (row as any).taxDepreciationMethod;
+        if (!method) return t`Same as Book`;
+
+        if (method === "MACRS") {
+          const cls = (row as any).macrsPropertyClass;
+          return cls ? t`MACRS ${cls}-Year` : "MACRS";
+        }
+
+        const life = (row as any).taxUsefulLifeMonths;
+        const years = life ? Math.round((life / 12) * 10) / 10 : null;
+        const lifeStr = years ? t`, ${years}yr` : "";
+        return `${method}${lifeStr}`;
+      };
+
       const cols: ColumnDef<FixedAssetClassListItem>[] = [
         {
           accessorKey: "name",
@@ -116,7 +116,7 @@ const AssetClassesTable = memo(
             onClick={() => navigate(path.to.assetClass(row.id))}
           >
             <MenuIcon icon={<LuPencil />} />
-            Edit Asset Class
+            <Trans>Edit Asset Class</Trans>
           </MenuItem>
           <MenuItem
             disabled={!permissions.can("delete", "accounting")}
@@ -127,7 +127,7 @@ const AssetClassesTable = memo(
             }}
           >
             <MenuIcon icon={<LuTrash />} />
-            Delete Asset Class
+            <Trans>Delete Asset Class</Trans>
           </MenuItem>
         </>
       ),
@@ -142,14 +142,14 @@ const AssetClassesTable = memo(
           count={count}
           primaryAction={primaryAction}
           renderContextMenu={renderContextMenu}
-          title="Asset Classes"
+          title={t`Asset Classes`}
         />
         {selectedClass && (
           <ConfirmDelete
             action={path.to.deleteAssetClass(selectedClass.id)}
             isOpen={deleteModal.isOpen}
             name={selectedClass.name}
-            text={`Are you sure you want to delete the asset class: ${selectedClass.name}? This cannot be undone.`}
+            text={t`Are you sure you want to delete the asset class: ${selectedClass.name}? This cannot be undone.`}
             onCancel={() => {
               deleteModal.onClose();
               setSelectedClass(null);

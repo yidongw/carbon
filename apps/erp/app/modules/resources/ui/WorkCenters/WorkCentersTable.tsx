@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Alert,
   AlertDescription,
@@ -57,6 +58,8 @@ const WORK_CENTER_UPDATE = {
   action: path.to.bulkUpdateWorkCenter,
   idKey: "ids" as const
 };
+
+const logger = getLogger("erp", "workcenterstable");
 
 type WorkCentersTableProps = {
   data: WorkCenter[];
@@ -448,7 +451,7 @@ function DeleteWorkCenterModal({
       .eq("workCenterId", workCenter.id!)
       .eq("companyId", company?.id);
     if (error) {
-      console.error(error);
+      logger.error(error);
     }
 
     if (data) {

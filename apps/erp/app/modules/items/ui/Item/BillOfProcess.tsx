@@ -68,7 +68,12 @@ import {
   LuTriangleAlert,
   LuX
 } from "react-icons/lu";
-import { useFetcher, useFetchers, useSearchParams } from "react-router";
+import {
+  useFetcher,
+  useFetchers,
+  useParams,
+  useSearchParams
+} from "react-router";
 import { z } from "zod";
 import {
   DirectionAwareTabs,
@@ -142,6 +147,8 @@ import type {
   ConfigurationRule,
   MakeMethod
 } from "../../types";
+import type { ReleaseLockProps } from "./ReleaseLockAlert";
+import ReleaseLockAlert, { getReleaseLockFlags } from "./ReleaseLockAlert";
 
 type Operation = z.infer<typeof methodOperationValidator> & {
   workInstruction: JSONContent | null;
@@ -170,7 +177,8 @@ type BillOfProcessProps = {
   parameters?: ConfigurationParameter[];
   tags: { name: string }[];
   configurationRuleBindings: ConfigurationRuleBindings;
-};
+  selectedMaterialId?: string;
+} & ReleaseLockProps;
 
 type PendingWorkInstructions = {
   [key: string]: JSONContent;
@@ -220,16 +228,26 @@ const BillOfProcess = ({
   operations: initialOperations,
   parameters,
   tags,
-  configurationRuleBindings
+  configurationRuleBindings,
+  selectedMaterialId,
+  revisionStatus,
+  releaseControl
 }: BillOfProcessProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
   const styleProcessLabel = useStyleProcessLabel();
   const [searchParams] = useSearchParams();
-  const materialId = searchParams.get("materialId");
+  const { materialId: paramMaterialId } = useParams();
+  const materialId =
+    selectedMaterialId ?? searchParams.get("materialId") ?? paramMaterialId;
+  const { isProductionRevision, isReleaseLocked } = getReleaseLockFlags({
+    revisionStatus,
+    releaseControl
+  });
   const isReadOnly =
     permissions.can("update", "parts") === false ||
-    makeMethod.status !== "Draft";
+    makeMethod.status !== "Draft" ||
+    isReleaseLocked;
 
   const makeMethodId = makeMethod.id;
 
@@ -874,6 +892,9 @@ const BillOfProcess = ({
         </CardAction>
       </HStack>
       <CardContent>
+        {isProductionRevision && (
+          <ReleaseLockAlert isLocked={isReleaseLocked} className="mb-4" />
+        )}
         <SortableList
           isReadOnly={isReadOnly}
           items={items}
@@ -1229,6 +1250,7 @@ function OperationForm({
             <WorkCenter
               name="workCenterId"
               label={t`Work Center`}
+              termId="work-center"
               isOptional
               processId={processData.processId}
               isConfigured={rulesByField.has(key("workCenterId"))}
@@ -1636,7 +1658,7 @@ function AttributesForm({
       )}
 
       {steps.length > 0 && (
-        <div className="border bg-card rounded-lg">
+        <div className="border rounded-lg">
           <Reorder.Group
             axis="y"
             values={sortOrder}
@@ -1661,9 +1683,11 @@ function AttributesForm({
                       typeOptions={typeOptions}
                       isDisabled={isDisabled}
                       dragControls={dragControls}
-                      className={
-                        index === sortOrder.length - 1 ? "border-none" : ""
-                      }
+                      className={cn(
+                        index === 0 && "rounded-t-lg",
+                        index === sortOrder.length - 1 &&
+                          "rounded-b-lg border-none"
+                      )}
                       configurable={configurable}
                       rulesByField={rulesByField}
                       onConfigure={onConfigure}
@@ -1814,7 +1838,7 @@ function AttributesListItem({
       rulesByField.has(getFieldKey(`attribute:${id}:maxValue`, operationId)));
 
   return (
-    <div className={cn("border-b p-6", className)}>
+    <div className={cn("border-b p-6 bg-card", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
           action={methodBindings.urls.methodOperationStep(id)}
@@ -2511,7 +2535,10 @@ function ToolsForm({
                 methodBindings={methodBindings}
                 tool={t}
                 operationId={operationId}
-                className={index === tools.length - 1 ? "border-none" : ""}
+                className={cn(
+                  index === 0 && "rounded-t-lg",
+                  index === tools.length - 1 && "rounded-b-lg border-none"
+                )}
                 isDisabled={isDisabled}
               />
             ))}

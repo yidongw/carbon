@@ -6,12 +6,14 @@ import type { DatePickerProps } from "@react-types/datepicker";
 import type { ReactNode } from "react";
 import { useRef } from "react";
 import { LuBan, LuCalendarClock, LuInfo } from "react-icons/lu";
+import { cn } from "..";
 import { Button } from "../Button";
 import { HStack } from "../HStack";
 import { IconButton } from "../IconButton";
 import { InputGroup } from "../Input";
 import {
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverFooter,
   PopoverTrigger
@@ -27,6 +29,7 @@ const DatePicker = (
     isPreviewInline?: boolean;
     helperText?: string;
     closeOnSelect?: boolean;
+    size?: "sm" | "md" | "lg";
   }
 ) => {
   const { t } = useLingui();
@@ -95,20 +98,43 @@ const DatePicker = (
               <InputGroup
                 {...groupProps}
                 ref={ref}
+                size={props.size}
                 className="w-full inline-flex"
                 isDisabled={props.isDisabled || props.isReadOnly}
               >
-                <div className="flex w-full px-4 py-2">
-                  <DateField {...fieldProps} />
+                <div
+                  className={
+                    props.size === "sm"
+                      ? "flex w-full items-center px-3 py-1"
+                      : "flex w-full px-4 py-2"
+                  }
+                >
+                  <DateField {...fieldProps} size={props.size} />
                   {state.isInvalid && (
                     <LuBan className="!text-destructive-foreground absolute right-[12px] top-[12px]" />
                   )}
                 </div>
-                <div className="flex-shrink-0 -mt-px">
-                  <PopoverTrigger tabIndex={-1}>
-                    <FieldButton {...buttonProps} isPressed={state.isOpen} />
-                  </PopoverTrigger>
-                </div>
+                {/* Anchor (not Trigger) so the calendar button isn't wrapped
+                    in a second <button>; the popover open state is driven by
+                    react-aria's buttonProps on FieldButton. */}
+                {/* -mt/-mr let the button overlay the group's own 1px border
+                    exactly — without -mr-px its rounded corner sits 1px inside
+                    the group's corner and both edges show. The sm field is
+                    shorter, so the button needs a deeper pull-up. */}
+                <PopoverAnchor asChild>
+                  <div
+                    className={cn(
+                      "flex-shrink-0 -mr-px",
+                      props.size === "sm" ? "mt-[-3px]" : "-mt-px"
+                    )}
+                  >
+                    <FieldButton
+                      {...buttonProps}
+                      size={props.size}
+                      isPressed={state.isOpen}
+                    />
+                  </div>
+                </PopoverAnchor>
               </InputGroup>
             </>
           )}

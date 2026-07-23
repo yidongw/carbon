@@ -14,6 +14,7 @@ import {
 } from "@carbon/auth/users.server";
 import type { Database, Json } from "@carbon/database";
 import { redis } from "@carbon/kv";
+import { getLogger } from "@carbon/logger";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { redirect } from "react-router";
@@ -32,6 +33,8 @@ import { getPermissionsByEmployeeType } from "~/modules/users";
 import type { Result } from "~/types";
 import { path } from "~/utils/path";
 import { insertEmployeeJob } from "../people/people.service";
+
+const logger = getLogger("erp", "users");
 
 export async function acceptInvite(
   serviceRole: SupabaseClient<Database>,
@@ -112,7 +115,7 @@ export async function acceptInvite(
   ]);
 
   if (activate.error) {
-    console.error(activate.error);
+    logger.error("Failed to activate invite", { error: activate.error });
     await rollbackInvite(serviceRole, {
       userId: user.data.id,
       companyId: invite.data.companyId
@@ -121,7 +124,7 @@ export async function acceptInvite(
   }
 
   if (addUser.error) {
-    console.error(addUser.error);
+    logger.error("Failed to add user to company", { error: addUser.error });
     await rollbackInvite(serviceRole, {
       userId: user.data.id,
       companyId: invite.data.companyId
@@ -130,7 +133,9 @@ export async function acceptInvite(
   }
 
   if (setPermissions.error) {
-    console.error(setPermissions.error);
+    logger.error("Failed to set user permissions", {
+      error: setPermissions.error
+    });
     await rollbackInvite(serviceRole, {
       userId: user.data.id,
       companyId: invite.data.companyId
@@ -980,7 +985,7 @@ export async function getUserClaims(userId: string, companyId: string) {
       }
     }
   } catch (e) {
-    console.error("Failed to get claims from redis", e);
+    logger.error("Failed to get claims from redis", { error: e });
   } finally {
     // if we don't have permissions from redis, get them from the database
     if (!claims) {
@@ -990,8 +995,8 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error) {
-        console.error(rawClaims);
+      if (rawClaims.error || rawClaims.data === null) {
+        logger.error("Failed to get claims", { error: rawClaims.error });
         throw new Error("Failed to get claims");
       }
 
@@ -1235,10 +1240,9 @@ export async function createConsoleOperator(
 
   if (companyLink.error) {
     // Non-critical — operator still works without this
-    console.error(
-      "Failed to link console operator to company:",
-      companyLink.error
-    );
+    logger.error("Failed to link console operator to company", {
+      error: companyLink.error
+    });
   }
 
   return {
@@ -1357,10 +1361,9 @@ export async function convertConsoleOperatorToUser(
       });
 
       if (inviteResult.error) {
-        console.error(
-          "Failed to create invite for converted operator:",
-          inviteResult.error
-        );
+        logger.error("Failed to create invite for converted operator", {
+          error: inviteResult.error
+        });
       }
     }
   }

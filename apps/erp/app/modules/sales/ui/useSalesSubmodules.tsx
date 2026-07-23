@@ -1,7 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import {
   LuBan,
-  LuCreditCard,
   LuGlobe,
   LuLayoutDashboard,
   LuList,
@@ -61,13 +60,6 @@ export default function useSalesSubmodules() {
           to: path.to.salesOrders,
           icon: <RiProgress8Line />,
           table: "salesOrder"
-        },
-        {
-          name: t`Invoices`,
-          to: path.to.salesInvoices,
-          icon: <LuCreditCard />,
-          permission: "invoicing",
-          table: "salesInvoice"
         },
         {
           name: t`Portals`,

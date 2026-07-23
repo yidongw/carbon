@@ -9,6 +9,7 @@ import {
 import { labelSizes } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { plmReleaseControl } from "~/modules/items/items.models";
 import { DataType } from "~/modules/shared";
 import { optionalRequiredStringArray } from "~/utils/zodFields";
 
@@ -66,9 +67,8 @@ export const apiKeyValidator = z.object({
   )
 });
 
-const company = {
+const companyAddress = {
   name: z.string().min(1, { message: "Name is required" }),
-  taxId: zfd.text(z.string().optional()),
   addressLine1: z.string().min(1, { message: "Address is required" }),
   addressLine2: zfd.text(z.string().optional()),
   city: z.string().min(1, { message: "City is required" }),
@@ -76,15 +76,30 @@ const company = {
   postalCode: z.string().min(1, { message: "Postal Code is required" }),
   countryCode: z.string().min(1, { message: "Country is required" }),
   baseCurrencyCode: zfd.text(z.string()),
+  website: zfd.text(z.string().optional())
+};
+
+const company = {
+  ...companyAddress,
+  taxId: zfd.text(z.string().optional()),
   phone: zfd.text(z.string().optional()),
   fax: zfd.text(z.string().optional()),
   email: zfd.text(z.string().optional()),
-  website: zfd.text(z.string().optional()),
   vatNumber: zfd.text(z.string().optional()),
   eori: zfd.text(z.string().optional())
 };
 
 export const companyValidator = z.object(company);
+
+// The onboarding company step collects only the address; the industry choice
+// comes from the dedicated industry step that follows.
+export const addressValidator = z.object({
+  ...companyAddress,
+  next: z.string().min(1, { message: "Next is required" })
+});
+
+// Onboarding-only: the industry fields live on the company row but are not part
+// of the general company validator (kept off the settings forms).
 export const onboardingCompanyValidator = z.object({
   ...company,
   // Address is not collected during onboarding; it can be filled in later.
@@ -94,6 +109,8 @@ export const onboardingCompanyValidator = z.object({
   stateProvince: z.string().default(""),
   postalCode: z.string().default(""),
   countryCode: z.string().default(""),
+  industryId: zfd.text(z.string().optional()),
+  customIndustryDescription: z.string().optional(),
   next: z.string().min(1, { message: "Next is required" })
 });
 
@@ -137,6 +154,10 @@ export const jobCompletedValidator = z.object({
 
 export const kanbanOutputValidator = z.object({
   kanbanOutput: z.enum(kanbanOutputTypes)
+});
+
+export const plmReleaseControlValidator = z.object({
+  plmReleaseControl: z.enum(plmReleaseControl)
 });
 
 export const purchasePriceUpdateTimingValidator = z.object({

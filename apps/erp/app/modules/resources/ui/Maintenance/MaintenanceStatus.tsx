@@ -1,4 +1,5 @@
 import { Status } from "@carbon/react";
+import { MAINTENANCE_DISPATCH_STATUS_COLOR_MAP } from "@carbon/utils";
 import { useMaintenanceDispatchStatusLabel } from "~/modules/production/productionLabels";
 import type { maintenanceDispatchStatus } from "../../resources.models";
 
@@ -16,43 +17,16 @@ function MaintenanceStatus({
   const getMaintenanceDispatchStatusLabel = useMaintenanceDispatchStatusLabel();
 
   if (!status) return null;
+  const color = MAINTENANCE_DISPATCH_STATUS_COLOR_MAP[status];
+  if (!color) return null;
 
   const label = getMaintenanceDispatchStatusLabel(status);
 
-  switch (status) {
-    case "Open":
-      return (
-        <Status color="gray" className={className} iconOnly={iconOnly}>
-          {label}
-        </Status>
-      );
-    case "Assigned":
-      return (
-        <Status color="yellow" className={className} iconOnly={iconOnly}>
-          {label}
-        </Status>
-      );
-    case "In Progress":
-      return (
-        <Status color="blue" className={className} iconOnly={iconOnly}>
-          {label}
-        </Status>
-      );
-    case "Completed":
-      return (
-        <Status color="green" className={className} iconOnly={iconOnly}>
-          {label}
-        </Status>
-      );
-    case "Cancelled":
-      return (
-        <Status color="red" className={className} iconOnly={iconOnly}>
-          {label}
-        </Status>
-      );
-    default:
-      return null;
-  }
+  return (
+    <Status color={color} className={className} iconOnly={iconOnly}>
+      {label}
+    </Status>
+  );
 }
 
 export default MaintenanceStatus;

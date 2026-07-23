@@ -1,6 +1,6 @@
 import { error } from "@carbon/auth";
-import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { getLogger } from "@carbon/logger";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -46,6 +46,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 }
 
+const logger = getLogger("erp", "tags");
+
 export async function action({ request }: ActionFunctionArgs) {
   // Applies a record's tag selection (called by the inline <Tags> field across
   // the app). Distinct from the management page above, which is GET-only.
@@ -67,7 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
     .in(getIdField(table as string), ids as string[]);
 
   if (result.error) {
-    console.error(result.error);
+    logger.error(result.error);
   }
 
   return result;

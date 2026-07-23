@@ -11,6 +11,7 @@ import type {
 } from "~/modules/sales";
 import CustomerLocationForm from "~/modules/sales/ui/Customer/CustomerLocationForm";
 import { path } from "~/utils/path";
+import { useEmptyState } from "./emptyStates";
 
 type CustomerLocationSelectProps = Omit<
   ComboboxProps,
@@ -30,7 +31,10 @@ const CustomerLocationPreview = (
   return <span>{location.label}</span>;
 };
 
-const CustomerLocation = (props: CustomerLocationSelectProps) => {
+const CustomerLocation = ({
+  customer,
+  ...props
+}: CustomerLocationSelectProps) => {
   const { t } = useLingui();
   const customerLocationsFetcher =
     useFetcher<Awaited<ReturnType<typeof getCustomerLocations>>>();
@@ -41,12 +45,10 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
-    if (props?.customer) {
-      customerLocationsFetcher.load(
-        path.to.api.customerLocations(props.customer)
-      );
+    if (customer) {
+      customerLocationsFetcher.load(path.to.api.customerLocations(customer));
     }
-  }, [props.customer]);
+  }, [customer]);
 
   const options = useMemo(
     () =>
@@ -74,6 +76,11 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
     props.onChange?.(location as CustomerLocationType | null);
   };
 
+  const emptyMessage = useEmptyState(
+    "customerLocation",
+    customer ? { onCreate: () => newLocationModal.onOpen() } : undefined
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -83,6 +90,7 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
         inline={props?.inline ? CustomerLocationPreview : undefined}
         label={props?.label ?? t`Customer Location`}
         placeholder={props?.placeholder ?? t`Select`}
+        emptyMessage={emptyMessage}
         onChange={onChange}
         onCreateOption={(option) => {
           newLocationModal.onOpen();
@@ -91,14 +99,28 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
       />
       {newLocationModal.isOpen && (
         <CustomerLocationForm
-          customerId={props.customer!}
+          customerId={customer!}
           type="modal"
           onClose={() => {
             setCreated("");
             newLocationModal.onClose();
+            // Reload the per-customer fetcher so a just-created location appears.
+            if (customer) {
+              customerLocationsFetcher.load(
+                path.to.api.customerLocations(customer)
+              );
+            }
             triggerRef.current?.click();
           }}
-          initialValues={{ name: created }}
+          initialValues={{
+            name: created,
+            addressLine1: "",
+            addressLine2: "",
+            city: "",
+            stateProvince: "",
+            postalCode: "",
+            countryCode: ""
+          }}
         />
       )}
     </>

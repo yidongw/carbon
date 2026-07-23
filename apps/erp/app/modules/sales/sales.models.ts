@@ -8,11 +8,13 @@ import {
 } from "../production/operationType";
 import {
   incoterms,
+  itemType,
   methodItemType,
   methodOperationOrders,
   methodType,
   operationTypes,
-  standardFactorType
+  standardFactorType,
+  taxExemptionReasons
 } from "../shared";
 
 export const KPIs = [
@@ -81,19 +83,6 @@ export const customerValidator = z.object({
   website: zfd.text(z.string().optional())
   // defaultCc: z.array(z.string().email()).default([])
 });
-
-export const taxExemptionReasons = [
-  "Resale",
-  "Government",
-  "Nonprofit",
-  "Agriculture",
-  "Industrial",
-  "Export",
-  "Medical",
-  "Educational",
-  "Religious",
-  "Other"
-] as const;
 
 export const customerTaxValidator = z
   .object({
@@ -342,6 +331,7 @@ export const quoteLineCategoryMarkupsValidator = z
 export const quoteLineValidator = z.object({
   id: zfd.text(z.string().optional()),
   quoteId: z.string(),
+  itemType: z.enum(itemType).optional(),
   itemId: z.string().min(1, { message: "Part is required" }),
   status: z.enum(quoteLineStatusType, {
     errorMap: () => ({ message: "Status is required" })
@@ -416,18 +406,6 @@ export const quoteMaterialValidator = z
     },
     {
       message: "Material ID is required",
-      path: ["itemId"]
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.itemType === "Tool") {
-        return !!data.itemId;
-      }
-      return true;
-    },
-    {
-      message: "Tool ID is required",
       path: ["itemId"]
     }
   )
@@ -673,7 +651,7 @@ export const quoteShipmentValidator = z.object({
 
 export const salesOrderLineType = [
   "Part",
-  // "Service",
+  "Service",
   "Material",
   "Tool",
   "Consumable",
@@ -758,8 +736,8 @@ export const salesOrderShipmentValidator = z
       return true;
     },
     {
-      message: "Drop shipment requires supplier and location",
-      path: ["dropShipment"] // path of error
+      message: "Drop shipment requires customer and location",
+      path: ["customerLocationId"]
     }
   );
 
@@ -780,11 +758,17 @@ export const salesOrderLineValidator = z
     description: zfd.text(z.string().optional()),
     itemId: zfd.text(z.string().optional()),
     locationId: z.string().min(0, { message: "Location is required" }),
-    methodType: z
-      .enum(methodType, {
-        errorMap: () => ({ message: "Method is required" })
-      })
-      .optional(),
+    // Wrapped in zfd.text so an empty-string submission (the form always posts a
+    // hidden methodType) coerces to undefined instead of failing the enum check.
+    // Requiredness is enforced conditionally by the refine below, which exempts
+    // Comment and Fixed Asset lines.
+    methodType: zfd.text(
+      z
+        .enum(methodType, {
+          errorMap: () => ({ message: "Method is required" })
+        })
+        .optional()
+    ),
     modelUploadId: zfd.text(z.string().optional()),
     promisedDate: zfd.text(z.string().optional()),
     saleQuantity: zfd.numeric(z.number().optional()),
@@ -921,6 +905,10 @@ export const salesRfqLineValidator = z.object({
   modelUploadId: zfd.text(z.string().optional())
 });
 
+// The `convert` edge function derives every financial field (net unit price,
+// shipping, add-ons) from the canonical quoteLinePrice rows server-side. These
+// money fields are UI/display only and are NOT trusted as an input to quote
+// conversion — only `quantity` (the selected quantity break) is authoritative.
 export const selectedLineSchema = z.object({
   addOn: z.number().optional(),
   convertedAddOn: z.number().optional(),
@@ -930,7 +918,7 @@ export const selectedLineSchema = z.object({
   convertedShippingCost: z.number(),
   leadTime: z.number(),
   netUnitPrice: z.number(),
-  quantity: z.number(),
+  quantity: z.number().min(0),
   shippingCost: z.number()
 });
 

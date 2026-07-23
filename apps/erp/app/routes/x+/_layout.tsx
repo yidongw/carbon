@@ -13,6 +13,11 @@ import {
 } from "@carbon/auth/session.server";
 import { getPendingInvitesForUser } from "@carbon/auth/users.server";
 import { isAuditLogEnabled } from "@carbon/database/audit";
+import {
+  detectImplementationSignals,
+  getImplementationCheckStates,
+  getImplementationHub
+} from "@carbon/onboarding/server";
 import type { PrintingSettings } from "@carbon/printing";
 import { getPrinterRoutes } from "@carbon/printing";
 import { PrintingProvider } from "@carbon/printing/ui";
@@ -48,6 +53,7 @@ import { PlanRenewalBanner } from "~/components/PlanRenewalBanner";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
+import { AgentRoot } from "~/modules/agent/ui/AgentRoot";
 import { getOpenClockEntry } from "~/modules/people";
 import {
   getCompanies,
@@ -86,6 +92,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
     currentUrl.pathname.startsWith("/x/settings") ||
     currentUrl.pathname.startsWith("/refresh-session") ||
     currentUrl.pathname.startsWith("/x/acknowledge") ||
+    currentUrl.pathname.startsWith("/x/get-started") ||
     currentUrl.pathname.startsWith("/x/shared/views")
   ) {
     return true;
@@ -132,7 +139,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     modulePreferences,
     printerRoutes,
     supplierApprovalRequired,
-    mesOnly
+    mesOnly,
+    implementationHub,
+    implementationCheckStates
   ] = await Promise.all([
     getCompanies(client, userId),
     getEmployeeCompanies(client, userId),
@@ -149,7 +158,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     getModulePreferences(client, userId, companyId),
     getPrinterRoutes(client, companyId),
     isApprovalRequired(client, "supplier", companyId),
-    isMesOnlyEmployee(userId, companyId)
+    isMesOnlyEmployee(userId, companyId),
+    getImplementationHub(client, companyId),
+    getImplementationCheckStates(client, companyId)
   ]);
 
   // Block ERP access for MES-only workers (shop-floor employee types). They can
@@ -291,6 +302,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
   }
 
+  // Only probe product signals when the company is actually enrolled, so the
+  // home card + nav badge count gates the same way the hub page does.
+  const implementationSignals = implementationHub.data
+    ? await detectImplementationSignals(client, companyId)
+    : null;
+
   return data({
     demo,
     realCompanyId,
@@ -316,6 +333,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     savedViews: savedViews.data ?? [],
     printerRoutes: printerRoutes.data ?? [],
     supplierApprovalRequired,
+    implementationHub: implementationHub.data ?? null,
+    implementationCheckStates: implementationCheckStates.data ?? [],
+    implementationSignals,
     openClockEntry: companySettings.data?.timeCardEnabled
       ? getOpenClockEntry(client, userId, companyId)
       : null
@@ -434,6 +454,7 @@ export default function AuthenticatedRoute() {
                         </Await>
                       </Suspense>
                     )}
+                    <AgentRoot />
                     <OverlayHost />
                     <FloatingChat />
                   </TooltipProvider>

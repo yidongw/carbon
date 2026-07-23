@@ -1,8 +1,10 @@
+import type { TermId } from "@carbon/glossary";
 import type { TextareaProps } from "@carbon/react";
 import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  LabelWithHelp,
   Textarea as TextAreaBase
 } from "@carbon/react";
 import type { ChangeEvent } from "react";
@@ -13,9 +15,11 @@ import { useFormStateContext } from "../internal/formStateContext";
 type FormTextArea = TextareaProps & {
   name: string;
   label?: string;
+  termId?: TermId;
   size?: "sm" | "md" | "lg";
   characterLimit?: number;
   isRequired?: boolean;
+  isOptional?: boolean;
   isDisabled?: boolean;
 };
 
@@ -24,9 +28,11 @@ const TextArea = forwardRef<HTMLTextAreaElement, FormTextArea>(
     {
       name,
       label,
+      termId,
       size,
       characterLimit,
       isRequired,
+      isOptional,
       isDisabled: isDisabledProp,
       ...rest
     },
@@ -44,7 +50,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, FormTextArea>(
     const [characterCount, setCharacterCount] = useState(
       defaultValue?.length ?? 0
     );
-    const resolvedIsOptional = isRequired ? false : (fieldIsOptional ?? false);
+    const resolvedIsOptional =
+      isOptional ?? (isRequired ? false : (fieldIsOptional ?? false));
 
     const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
       if (characterLimit) setCharacterCount(e.target.value.length);
@@ -54,7 +61,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, FormTextArea>(
       <FormControl isInvalid={!!error} isRequired={isRequired}>
         {label && (
           <FormLabel htmlFor={name} isOptional={resolvedIsOptional}>
-            {label}
+            <LabelWithHelp termId={termId}>{label}</LabelWithHelp>
           </FormLabel>
         )}
         <TextAreaBase

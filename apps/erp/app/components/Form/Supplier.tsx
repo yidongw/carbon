@@ -6,6 +6,7 @@ import { useSupplierApprovalRequired, useUser } from "~/hooks";
 import { SupplierForm } from "~/modules/purchasing/ui/Supplier";
 import { useSuppliers } from "~/stores";
 import SupplierAvatar from "../SupplierAvatar";
+import { useEmptyState } from "./emptyStates";
 
 type SupplierSelectProps = Omit<
   CreatableComboboxProps,
@@ -14,6 +15,8 @@ type SupplierSelectProps = Omit<
   inline?: boolean;
   allowedSuppliers?: string[];
   onlyApproved?: boolean;
+  /** When creating a new supplier, pre-fill this currency instead of the company base currency */
+  defaultCurrencyCode?: string;
 };
 
 const SupplierPreview = (
@@ -26,6 +29,7 @@ const SupplierPreview = (
 const Supplier = ({
   allowedSuppliers,
   onlyApproved,
+  defaultCurrencyCode,
   ...props
 }: SupplierSelectProps) => {
   const supplierApprovalRequired = useSupplierApprovalRequired();
@@ -48,11 +52,16 @@ const Supplier = ({
 
   const { company } = useUser();
 
+  const emptyMessage = useEmptyState("supplier", {
+    onCreate: () => newSuppliersModal.onOpen()
+  });
+
   return (
     <>
       <CreatableCombobox
         ref={triggerRef}
         options={options}
+        emptyMessage={emptyMessage}
         {...props}
         label={props?.label ?? "Supplier"}
         inline={props?.inline ? SupplierPreview : undefined}
@@ -71,7 +80,7 @@ const Supplier = ({
           }}
           initialValues={{
             name: created,
-            currencyCode: company.baseCurrencyCode,
+            currencyCode: defaultCurrencyCode ?? company.baseCurrencyCode,
             supplierStatus: supplierApprovalRequired ? "Pending" : undefined
           }}
         />

@@ -32,6 +32,7 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
+import { itemTypeLabel } from "~/components/Form/itemTypeLabel";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
 import type {
@@ -44,6 +45,7 @@ import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type { jobStatus } from "../../production.models";
 import {
   bulkJobValidator,
+  deadlineRequiresDueDate,
   deadlineTypes,
   isJobLocked,
   jobValidator
@@ -68,13 +70,21 @@ type JobFormProps = {
 
 const JobForm = ({ initialValues }: JobFormProps) => {
   const permissions = usePermissions();
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
   const { company } = useUser();
   const { carbon } = useCarbon();
   const [type, setType] = useState<MethodItemType>(
     initialValues.itemType ?? "Item"
   );
+  const [deadlineType, setDeadlineType] = useState<string>(
+    initialValues.deadlineType ?? ""
+  );
+  const [bulkDeadlineType, setBulkDeadlineType] = useState<string>(
+    initialValues.deadlineType ?? ""
+  );
+  const showDueDate = deadlineRequiresDueDate(deadlineType);
+  const showBulkDueDate = deadlineRequiresDueDate(bulkDeadlineType);
 
   const isLocked = isJobLocked(initialValues.status);
   const isDisabled = isLocked;
@@ -363,7 +373,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
                       <Item
                         name="itemId"
-                        label={type}
+                        label={i18n._(itemTypeLabel(type))}
                         type={type}
                         value={itemData.itemId}
                         locationId={initialValues.locationId ?? undefined}
@@ -406,6 +416,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       <NumberControlled
                         name="scrapQuantity"
                         label={t`Estimated Scrap Quantity`}
+                        termId="job-estimated-scrap-quantity"
                         value={itemData.scrapQuantity}
                         onChange={(value) =>
                           setItemData((prev) => ({
@@ -420,14 +431,20 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
                       <Location name="locationId" label={t`Location`} />
 
-                      <DatePicker
-                        name="dueDate"
-                        label={t`Due Date`}
-                        isDisabled={isCustomer}
-                      />
+                      {showDueDate && (
+                        <DatePicker
+                          name="dueDate"
+                          label={t`Due Date`}
+                          isDisabled={isCustomer}
+                        />
+                      )}
                       <Select
                         name="deadlineType"
                         label={t`Deadline Type`}
+                        termId="job-deadline-type"
+                        onChange={(option) =>
+                          setDeadlineType(option?.value ?? "")
+                        }
                         options={deadlineTypes.map((d) => ({
                           value: d,
                           label: (
@@ -511,7 +528,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       >
                         <Item
                           name="itemId"
-                          label={type}
+                          label={i18n._(itemTypeLabel(type))}
                           type={type}
                           value={itemData.itemId}
                           locationId={initialValues.locationId ?? undefined}
@@ -555,6 +572,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         <NumberControlled
                           name="scrapQuantityPerJob"
                           label={t`Scrap Quantity Per Job`}
+                          termId="job-bulk-scrap-quantity-per-job"
                           value={itemData.scrapQuantity}
                           onChange={(value) =>
                             setItemData((prev) => ({
@@ -565,22 +583,32 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           minValue={0}
                         />
 
-                        <DatePicker
-                          name="dueDateOfFirstJob"
-                          label={t`Due Date of First Job`}
-                          isDisabled={isCustomer}
-                        />
+                        {showBulkDueDate && (
+                          <>
+                            <DatePicker
+                              name="dueDateOfFirstJob"
+                              label={t`Due Date of First Job`}
+                              termId="job-bulk-due-date-first"
+                              isDisabled={isCustomer}
+                            />
 
-                        <DatePicker
-                          name="dueDateOfLastJob"
-                          label={t`Due Date of Last Job`}
-                          isDisabled={isCustomer}
-                        />
+                            <DatePicker
+                              name="dueDateOfLastJob"
+                              label={t`Due Date of Last Job`}
+                              termId="job-bulk-due-date-last"
+                              isDisabled={isCustomer}
+                            />
+                          </>
+                        )}
 
                         <Location name="locationId" label={t`Location`} />
                         <Select
                           name="deadlineType"
                           label={t`Deadline Type`}
+                          termId="job-deadline-type"
+                          onChange={(option) =>
+                            setBulkDeadlineType(option?.value ?? "")
+                          }
                           options={deadlineTypes.map((d) => ({
                             value: d,
                             label: (

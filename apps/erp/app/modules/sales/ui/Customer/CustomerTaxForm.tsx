@@ -10,7 +10,7 @@ import {
   HStack
 } from "@carbon/react";
 import { isEoriCountry } from "@carbon/utils";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useCallback, useState } from "react";
 import { LuPaperclip } from "react-icons/lu";
@@ -19,8 +19,9 @@ import { FileDropzone } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { Boolean, Hidden, Input, Select, Submit } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
+import { taxExemptionReasons } from "~/modules/shared";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
-import { customerTaxValidator, taxExemptionReasons } from "../../sales.models";
+import { customerTaxValidator } from "../../sales.models";
 
 type CustomerTaxFormProps = {
   initialValues: z.infer<typeof customerTaxValidator> & {
@@ -71,7 +72,7 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
         setCertificatePath(result.data!.path);
       }
     },
-    [carbon, companyId]
+    [carbon, companyId, t]
   );
 
   return (
@@ -82,7 +83,9 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
     >
       <Card>
         <CardHeader>
-          <CardTitle>Tax Information</CardTitle>
+          <CardTitle>
+            <Trans>Tax Information</Trans>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Hidden name="customerId" />
@@ -92,17 +95,18 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
             value={certificatePath}
           />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
-            <Input name="taxId" label="Tax ID" />
-            <Input name="vatNumber" label="VAT Number" />
+            <Input name="taxId" label={t`Tax ID`} />
+            <Input name="vatNumber" label={t`VAT Number`} termId="vat-number" />
             {isEoriCountry(company.countryCode) ? (
-              <Input name="eori" label="EORI" />
+              <Input name="eori" label={t`EORI`} termId="eori" />
             ) : (
               <div />
             )}
             <div className="col-span-3">
               <Boolean
                 name="taxExempt"
-                label="Tax Exempt"
+                label={t`Tax Exempt`}
+                termId="tax-exempt"
                 onChange={(value) => setTaxExempt(value)}
               />
             </div>
@@ -110,13 +114,14 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
               <>
                 <Select
                   name="taxExemptionReason"
-                  label="Exemption Reason"
+                  label={t`Exemption Reason`}
                   options={taxExemptionReasonOptions}
                   placeholder={t`Select Reason`}
+                  isRequired
                 />
                 <Input
                   name="taxExemptionCertificateNumber"
-                  label="Certificate Number"
+                  label={t`Certificate Number`}
                 />
               </>
             )}
@@ -125,7 +130,7 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
             <div className="mt-4 flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <label className="text-xs font-medium text-muted-foreground">
-                  Exemption Certificate
+                  <Trans>Exemption Certificate</Trans>
                 </label>
                 {certificatePath && (
                   <Button
@@ -139,7 +144,7 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      View Certificate
+                      <Trans>View Certificate</Trans>
                     </a>
                   </Button>
                 )}
@@ -157,7 +162,9 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
         </CardContent>
         <CardFooter>
           <HStack>
-            <Submit isDisabled={isDisabled}>Save</Submit>
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
           </HStack>
         </CardFooter>
       </Card>

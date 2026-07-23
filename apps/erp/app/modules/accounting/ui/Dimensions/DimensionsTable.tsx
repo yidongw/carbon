@@ -1,5 +1,5 @@
 import { Badge, MenuIcon, MenuItem } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
@@ -76,7 +76,11 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
               </div>
             );
           }
-          return <Badge variant="gray">Inherited</Badge>;
+          return (
+            <Badge variant="gray">
+              <Trans>Inherited</Trans>
+            </Badge>
+          );
         },
         meta: {
           icon: <LuShapes />
@@ -97,7 +101,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
             }}
           >
             <MenuIcon icon={<LuPencil />} />
-            Edit Dimension
+            <Trans>Edit Dimension</Trans>
           </MenuItem>
           <MenuItem
             disabled={!permissions.can("delete", "accounting")}
@@ -108,7 +112,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
             }}
           >
             <MenuIcon icon={<LuTrash />} />
-            Delete Dimension
+            <Trans>Delete Dimension</Trans>
           </MenuItem>
         </>
       );
@@ -123,11 +127,11 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
       count={count}
       primaryAction={
         permissions.can("create", "accounting") && (
-          <New label="Dimension" to={`new?${params.toString()}`} />
+          <New label={t`Dimension`} to={`new?${params.toString()}`} />
         )
       }
       renderContextMenu={renderContextMenu}
-      title="Dimensions"
+      title={t`Dimensions`}
     />
   );
 });

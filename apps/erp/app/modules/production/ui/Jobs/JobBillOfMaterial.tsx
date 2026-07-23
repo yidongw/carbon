@@ -46,7 +46,12 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useFetchers, useParams } from "react-router";
 import type { z } from "zod";
-import { MethodIcon, MethodItemTypeIcon, TrackingTypeIcon } from "~/components";
+import {
+  ItemLifecycleBadge,
+  MethodIcon,
+  MethodItemTypeIcon,
+  TrackingTypeIcon
+} from "~/components";
 import {
   DefaultMethodType,
   Hidden,
@@ -139,6 +144,9 @@ function makeItem(
       <VStack spacing={0} className="py-1 cursor-pointer">
         <div className="flex items-center gap-2 group">
           <h3 className="font-semibold truncate">{itemReadableId ?? ""}</h3>
+          <ItemLifecycleBadge
+            mode={items.find((i) => i.id === material.itemId)?.supersessionMode}
+          />
           {material.itemId && material.itemType && (
             <Link
               to={getLinkToItemDetails(material.itemType, material.itemId)}
@@ -473,7 +481,6 @@ const JobBillOfMaterial = ({
         onToggleItem={onToggleItem}
         onRemoveItem={onRemoveItem}
         handleDrag={onCloseOnDrag}
-        className="my-2 "
         renderExtra={(item) => (
           <div key={`${isOpen}`}>
             <motion.button
@@ -960,6 +967,7 @@ function MaterialForm({
           <DefaultMethodType
             name="methodType"
             label={t`Method Type`}
+            termId="method-type"
             value={itemData.methodType}
             onChange={(value) => {
               setItemData((d) => ({
@@ -1033,6 +1041,7 @@ function MaterialForm({
           <Select
             name="jobOperationId"
             label={t`Operation`}
+            termId="operation"
             isClearable
             options={jobOperations.map((o) => ({
               value: o.id!,

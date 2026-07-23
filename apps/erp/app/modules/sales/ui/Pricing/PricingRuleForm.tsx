@@ -15,9 +15,9 @@ import {
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import {
+  LuBlocks,
   LuBoxes,
   LuLayers,
-  LuPackage,
   LuSquareUser,
   LuUsers,
   LuUsersRound
@@ -107,6 +107,7 @@ const PricingRuleForm = ({ initialValues, onClose }: PricingRuleFormProps) => {
                 <Select
                   name="ruleType"
                   label={t`Rule Type`}
+                  termId="pricing-rule-type"
                   options={pricingRuleTypes.map((rt) => ({
                     label: rt,
                     value: rt
@@ -115,6 +116,7 @@ const PricingRuleForm = ({ initialValues, onClose }: PricingRuleFormProps) => {
                 <Select
                   name="amountType"
                   label={t`Amount Type`}
+                  termId="pricing-rule-amount-type"
                   options={pricingRuleAmountTypes.map((at) => ({
                     label: at,
                     value: at
@@ -223,7 +225,7 @@ const PricingRuleForm = ({ initialValues, onClose }: PricingRuleFormProps) => {
                       value: "item",
                       title: t`Specific Items`,
                       description: t`Target one or more items.`,
-                      icon: <LuPackage />
+                      icon: <LuBlocks />
                     },
                     {
                       value: "group",
@@ -263,14 +265,22 @@ const PricingRuleForm = ({ initialValues, onClose }: PricingRuleFormProps) => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 w-full">
-                  <Number name="minQuantity" label={t`Min Qty`} />
-                  <Number name="maxQuantity" label={t`Max Qty`} />
+                  <Number
+                    name="minQuantity"
+                    label={t`Min Qty`}
+                    termId="pricing-rule-quantity-range"
+                  />
+                  <Number
+                    name="maxQuantity"
+                    label={t`Max Qty`}
+                    termId="pricing-rule-quantity-range"
+                  />
                 </div>
 
                 <Number
                   name="priority"
                   label={t`Priority`}
-                  helperText={t`Higher priority wins ties and applies first for markups`}
+                  termId="pricing-rule-priority"
                   minValue={0}
                   step={1}
                 />

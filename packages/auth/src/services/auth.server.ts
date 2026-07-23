@@ -24,6 +24,7 @@ import { getCarbonServiceRole } from "../lib/supabase/client.server";
 import type { AuthSession } from "../types";
 import { path } from "../utils/path";
 import { error } from "../utils/result";
+import { isCarbonOwnedCompany } from "./company.server";
 import { getCanonicalAuthEmail } from "./identity.server";
 import {
   destroyAuthSession,
@@ -313,7 +314,10 @@ export async function requirePermissions(
             .eq("id", companyId)
             .single();
 
-          if (planData?.planId === Plan.Starter) {
+          if (
+            planData?.planId === Plan.Starter &&
+            !(await isCarbonOwnedCompany(companyId))
+          ) {
             throw new Response(
               "API access requires the Business plan and above. Please upgrade your plan to use API keys.",
               { status: 403 }

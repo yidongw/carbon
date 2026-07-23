@@ -334,7 +334,11 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
           );
         },
         meta: {
-          icon: <LuFactory />
+          icon: <LuFactory />,
+          exportValue: (row) => {
+            const jobs = (row.jobs ?? []) as SalesOrderJob[];
+            return jobs.map((job) => job.jobId).join(", ");
+          }
         }
       },
       {
@@ -451,7 +455,7 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       },
       {
         accessorKey: "paymentTermId",
-        header: t`Payment Method`,
+        header: t`Payment Terms`,
         cell: editableCell<SalesOrder>({
           kind: "picker",
           field: "paymentTermId",
@@ -602,9 +606,6 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
         }}
         defaultColumnVisibility={{
           receiptPromisedDate: false,
-          shippingMethodName: false,
-          shippingTermName: false,
-          paymentTermName: false,
           dropShipment: false,
           createdBy: false,
           createdAt: false,

@@ -117,7 +117,7 @@ const IntercompanyTransactionTable = memo(
         columns={columns}
         count={count}
         primaryAction={primaryAction}
-        title="Intercompany Transactions"
+        title={t`Intercompany Transactions`}
       />
     );
   }

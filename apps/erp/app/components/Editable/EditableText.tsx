@@ -1,6 +1,6 @@
 import { Input } from "@carbon/react";
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
-import type { FocusEvent, KeyboardEvent } from "react";
+import type { FocusEvent } from "react";
 import type { EditableTableCellComponentProps } from "~/components/Editable";
 
 const EditableText =
@@ -36,16 +36,9 @@ const EditableText =
         });
     };
 
-    const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-      // only run the update if they click enter
-      if (event.key === "Enter" || event.key === "Tab") {
-        if (event.currentTarget.value !== value) {
-          updateText(event.currentTarget.value);
-        }
-      }
-    };
-
-    // run update if focus is lost
+    // Blur is the single commit path: the containers (Table/Grid) blur the
+    // input before navigating on Tab/Enter, and click-away blurs natively. A
+    // keydown commit on top of this would double-fire the mutation.
     const onBlur = (event: FocusEvent<HTMLInputElement>) => {
       if (event.currentTarget.value !== value) {
         updateText(event.currentTarget.value);
@@ -56,10 +49,10 @@ const EditableText =
       <Input
         autoFocus
         defaultValue={value as string}
-        className="border-0 rounded-none w-full"
+        className="border-0 rounded-none w-full shadow-none"
         size="sm"
+        onFocus={(e) => e.currentTarget.select()}
         onBlur={onBlur}
-        onKeyDown={onKeyDown}
       />
     );
   };

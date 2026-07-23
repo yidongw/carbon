@@ -1,4 +1,6 @@
 import { Status } from "@carbon/react";
+import { FIXED_ASSET_STATUS_COLOR_MAP } from "@carbon/utils";
+import { useLingui } from "@lingui/react/macro";
 import type { fixedAssetStatuses } from "../../accounting.models";
 
 type FixedAssetStatusProps = {
@@ -6,18 +8,19 @@ type FixedAssetStatusProps = {
 };
 
 const FixedAssetStatus = ({ status }: FixedAssetStatusProps) => {
-  switch (status) {
-    case "Draft":
-      return <Status color="gray">{status}</Status>;
-    case "Active":
-      return <Status color="green">{status}</Status>;
-    case "Fully Depreciated":
-      return <Status color="yellow">{status}</Status>;
-    case "Disposed":
-      return <Status color="red">{status}</Status>;
-    default:
-      return null;
-  }
+  const { t } = useLingui();
+  if (!status) return null;
+  const color = FIXED_ASSET_STATUS_COLOR_MAP[status];
+  if (!color) return null;
+
+  const labels: Record<(typeof fixedAssetStatuses)[number], string> = {
+    Draft: t`Draft`,
+    Active: t`Active`,
+    "Fully Depreciated": t`Fully Depreciated`,
+    Disposed: t`Disposed`
+  };
+
+  return <Status color={color}>{labels[status]}</Status>;
 };
 
 export default FixedAssetStatus;

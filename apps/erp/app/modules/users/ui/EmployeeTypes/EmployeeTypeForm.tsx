@@ -150,12 +150,14 @@ const EmployeeTypeForm = ({ initialValues }: EmployeeTypeFormProps) => {
                 <PermissionMatrix
                   matrix={mesMatrix}
                   label={t`Default Permissions`}
+                  termId="employee-type-default-permissions"
                   isDisabled
                 />
               ) : (
                 <PermissionMatrix
                   matrix={matrix}
                   label={t`Default Permissions`}
+                  termId="employee-type-default-permissions"
                 />
               )}
             </div>

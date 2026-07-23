@@ -1,11 +1,13 @@
 import { useLingui } from "@lingui/react/macro";
 import { useMemo } from "react";
 import {
+  LuBlocks,
   LuBox,
   LuCircleCheck,
   LuClipboardCheck,
   LuCreditCard,
   LuCrown,
+  LuDatabase,
   LuFactory,
   LuFileText,
   LuHistory,
@@ -18,7 +20,6 @@ import {
   LuPrinter,
   LuSheet,
   LuShoppingCart,
-  LuSquareStack,
   LuTags,
   LuUsers,
   LuWebhook,
@@ -30,7 +31,10 @@ import { useFlags } from "~/hooks/useFlags";
 import type { AuthenticatedRouteGroup, Role } from "~/types";
 import { path } from "~/utils/path";
 
-const internalOnlyRoutes = new Set<string>([path.to.companies]);
+const internalOnlyRoutes = new Set<string>([
+  path.to.companies,
+  path.to.backups
+]);
 
 export default function useSettingsSubmodules() {
   const { t } = useLingui();
@@ -104,7 +108,7 @@ export default function useSettingsSubmodules() {
             name: t`Items`,
             to: path.to.itemsSettings,
             role: "employee",
-            icon: <LuSquareStack />
+            icon: <LuBlocks />
           },
           {
             name: t`People`,
@@ -170,6 +174,12 @@ export default function useSettingsSubmodules() {
             to: path.to.auditLog,
             role: "employee",
             icon: <LuHistory />
+          },
+          {
+            name: t`Backups`,
+            to: path.to.backups,
+            role: "employee",
+            icon: <LuDatabase />
           },
           {
             name: t`Custom Fields`,

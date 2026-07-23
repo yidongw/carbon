@@ -1,9 +1,12 @@
+import { getLogger } from "@carbon/logger";
 import { toast } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback } from "react";
 import { useUser } from "~/hooks";
 import type { Job, StorageItem } from "~/services/types";
 import { path } from "~/utils/path";
+
+const log = getLogger("mes", "job-operation");
 
 export function useFiles(job: Job) {
   const { t } = useLingui();
@@ -48,7 +51,7 @@ export function useFiles(job: Job) {
         document.body.removeChild(a);
       } catch (error) {
         toast.error(t`Error downloading file`);
-        console.error(error);
+        log.error("Error downloading file", { error });
       }
     },
     [getFilePath, t]
@@ -75,7 +78,7 @@ export function useFiles(job: Job) {
         document.body.removeChild(a);
       } catch (error) {
         toast.error(t`Error downloading file`);
-        console.error(error);
+        log.error("Error downloading file", { error });
       }
     },
     [t]

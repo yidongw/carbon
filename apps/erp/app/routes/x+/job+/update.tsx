@@ -1,6 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { trigger } from "@carbon/jobs";
+import { getLogger } from "@carbon/logger";
 import type { ActionFunctionArgs } from "react-router";
 import {
   calculateJobPriority,
@@ -10,6 +11,8 @@ import {
 } from "~/modules/production";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
+
+const logger = getLogger("erp", "update");
 
 export async function action({ request }: ActionFunctionArgs) {
   const { client, companyId, userId } = await requirePermissions(request, {
@@ -233,7 +236,7 @@ export async function action({ request }: ActionFunctionArgs) {
           userId
         });
         if (recalculate.error) {
-          console.error(recalculate.error);
+          logger.error(recalculate.error);
           return recalculate;
         }
       }

@@ -1,5 +1,5 @@
 import { MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -174,7 +174,7 @@ const FixedAssetsTable = memo(
               onClick={() => navigate(path.to.fixedAsset(row.id))}
             >
               <MenuIcon icon={<LuPencil />} />
-              {isDraft ? "Edit Asset" : "View Asset"}
+              {isDraft ? <Trans>Edit Asset</Trans> : <Trans>View Asset</Trans>}
             </MenuItem>
             {isDraft && (
               <MenuItem
@@ -186,7 +186,7 @@ const FixedAssetsTable = memo(
                 }}
               >
                 <MenuIcon icon={<LuTrash />} />
-                Delete Asset
+                <Trans>Delete Asset</Trans>
               </MenuItem>
             )}
           </>
@@ -210,7 +210,7 @@ const FixedAssetsTable = memo(
             action={path.to.deleteFixedAsset(selectedAsset.id)}
             isOpen={deleteModal.isOpen}
             name={selectedAsset.fixedAssetId}
-            text={`Are you sure you want to delete ${selectedAsset.fixedAssetId}? This cannot be undone.`}
+            text={t`Are you sure you want to delete ${selectedAsset.fixedAssetId}? This cannot be undone.`}
             onCancel={() => {
               deleteModal.onClose();
               setSelectedAsset(null);

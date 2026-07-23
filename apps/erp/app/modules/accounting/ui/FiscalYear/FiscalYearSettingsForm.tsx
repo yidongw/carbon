@@ -1,5 +1,6 @@
 import { ValidatedForm } from "@carbon/form";
-import { Button, HStack } from "@carbon/react";
+import type { TermId } from "@carbon/glossary";
+import { Button, HStack, LabelWithHelp } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
@@ -14,14 +15,18 @@ type FiscalYearSettingsField = {
   name: string;
   label: string;
   description: string;
+  termId: TermId;
+  locked: boolean;
 };
 
 type FiscalYearSettingsFormProps = {
   initialValues: z.infer<typeof fiscalYearSettingsValidator>;
+  fiscalStartLocked?: boolean;
 };
 
 const FiscalYearSettingsForm = ({
-  initialValues
+  initialValues,
+  fiscalStartLocked = false
 }: FiscalYearSettingsFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -36,15 +41,19 @@ const FiscalYearSettingsForm = ({
       {
         name: "startMonth",
         label: t`Start of Fiscal Year`,
-        description: t`This is the month your fiscal year starts.`
+        description: t`This is the month your fiscal year starts.`,
+        termId: "fiscal-year-start",
+        locked: fiscalStartLocked
       },
       {
         name: "taxStartMonth",
         label: t`Start of Tax Year`,
-        description: t`This is the month your tax year starts.`
+        description: t`This is the month your tax year starts.`,
+        termId: "fiscal-year-tax-start",
+        locked: false
       }
     ],
-    [t]
+    [t, fiscalStartLocked]
   );
 
   return (
@@ -85,11 +94,21 @@ const FiscalYearSettingsForm = ({
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-medium text-foreground mb-1">
-                    {field.label}
+                    <LabelWithHelp variant="inline" termId={field.termId}>
+                      {field.label}
+                    </LabelWithHelp>
                   </h3>
                   <p className="text-xs text-muted-foreground">
                     {field.description}
                   </p>
+                  {field.locked && (
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      <Trans>
+                        Fixed once accounting periods have been posted to or
+                        closed. Delete all open periods to change it.
+                      </Trans>
+                    </p>
+                  )}
                 </div>
                 <div className="flex-shrink-0 w-64">
                   <Select
@@ -99,6 +118,7 @@ const FiscalYearSettingsForm = ({
                       value: month
                     }))}
                     size="sm"
+                    isReadOnly={field.locked}
                   />
                 </div>
               </div>

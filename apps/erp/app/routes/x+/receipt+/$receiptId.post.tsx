@@ -8,11 +8,15 @@ import {
   isBlocked
 } from "@carbon/ee/storage-rules.server";
 import { trigger } from "@carbon/jobs";
+import { getLogger } from "@carbon/logger";
 import { getCachedPrinterConfig } from "@carbon/printing/printing.server";
+import { getOverReceiptViolations } from "@carbon/utils";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { reconcileReceiptSerialEntities } from "~/modules/inventory";
 import { path } from "~/utils/path";
+
+const logger = getLogger("erp", "receiptid-post");
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const { client, companyId, userId } = await requirePermissions(request, {
@@ -32,7 +36,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { data: lines } = await serviceRole
     .from("receiptLine")
     .select(
-      "id, itemId, storageUnitId, receivedQuantity, locationId, receiptId, requiresSerialTracking"
+      "id, itemId, storageUnitId, receivedQuantity, locationId, receiptId, requiresSerialTracking, lineId, conversionFactor"
     )
     .eq("receiptId", receiptId)
     .eq("companyId", companyId);
@@ -43,9 +47,22 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // fire here too.
   const { data: receiptForSurface } = await serviceRole
     .from("receipt")
-    .select("sourceDocument")
+    .select("sourceDocument, status")
     .eq("id", receiptId)
+    .eq("companyId", companyId)
     .single();
+
+  // A voided receipt has already been reversed — re-posting would duplicate
+  // ledger entries, cost layers and journal lines. Block it before mutating
+  // any state (the route flips status to "Pending" below, which is why this
+  // guard lives here and not in the edge function).
+  if (receiptForSurface?.status === "Voided") {
+    throw redirect(
+      path.to.receipt(receiptId),
+      await flash(request, error(null, "Cannot post a voided receipt"))
+    );
+  }
+
   const surfaces: ("receipt" | "warehouseTransfer")[] = ["receipt"];
   if (receiptForSurface?.sourceDocument === "Inbound Transfer") {
     surfaces.push("warehouseTransfer");
@@ -94,6 +111,39 @@ export async function action({ request, params }: ActionFunctionArgs) {
     Object.assign(allRuleNames, ruleNames);
   }
 
+  // Check over-receipt against the live PO lines rather than the receipt's
+  // outstanding-quantity snapshot so concurrent receipts are counted.
+  if (receiptForSurface?.sourceDocument === "Purchase Order") {
+    const purchaseOrderLineIds = [
+      ...new Set(
+        (lines ?? [])
+          .map((l) => l.lineId)
+          .filter((id): id is string => Boolean(id))
+      )
+    ];
+    if (purchaseOrderLineIds.length > 0) {
+      const { data: purchaseOrderLines } = await serviceRole
+        .from("purchaseOrderLine")
+        .select(
+          "id, purchaseQuantity, quantityReceived, item(readableIdWithRevision)"
+        )
+        .in("id", purchaseOrderLineIds)
+        .eq("companyId", companyId);
+
+      const overReceipt = getOverReceiptViolations(
+        lines ?? [],
+        (purchaseOrderLines ?? []).map((line) => ({
+          id: line.id,
+          purchaseQuantity: line.purchaseQuantity,
+          quantityReceived: line.quantityReceived,
+          itemReadableId: line.item?.readableIdWithRevision
+        }))
+      );
+      allViolations.push(...overReceipt.violations);
+      Object.assign(allRuleNames, overReceipt.ruleNames);
+    }
+  }
+
   const deduped = dedupeViolations(allViolations);
   if (deduped.length > 0 && isBlocked(deduped, acknowledged)) {
     return {
@@ -114,12 +164,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
     lines: lines ?? []
   });
 
+  // Make the transition to Pending atomic with the voided guard above: the
+  // early check and this update are separated by rule evaluation + reconcile,
+  // so a concurrent void could slip in between. Conditioning the write on the
+  // status still not being "Voided" (and detecting a zero-row match) closes
+  // that race — a voided receipt won't be flipped back to Pending and reposted.
   const setPendingState = await client
     .from("receipt")
     .update({
       status: "Pending"
     })
-    .eq("id", receiptId);
+    .eq("id", receiptId)
+    .eq("companyId", companyId)
+    .neq("status", "Voided")
+    .select("id");
 
   if (setPendingState.error) {
     throw redirect(
@@ -128,6 +186,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
         request,
         error(setPendingState.error, "Failed to post receipt")
       )
+    );
+  }
+
+  if (!setPendingState.data?.length) {
+    throw redirect(
+      path.to.receipt(receiptId),
+      await flash(request, error(null, "Cannot post a voided receipt"))
     );
   }
 
@@ -190,7 +255,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
 
       if (leadTimeUpdate.error) {
-        console.error(
+        logger.error(
           "Failed to update lead time on receipt posting:",
           leadTimeUpdate.error
         );
@@ -223,7 +288,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         }
       }
     } catch (e) {
-      console.error("Auto-print failed:", e);
+      logger.error("Auto-print failed", { error: e });
     }
   } catch (thrown) {
     // Re-throw redirects — don't swallow them

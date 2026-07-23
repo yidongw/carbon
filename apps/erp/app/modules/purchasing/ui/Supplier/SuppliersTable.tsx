@@ -145,6 +145,8 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
         }),
         meta: {
           icon: <LuShapes />,
+          sortBy: "type",
+          exportValue: (row) => row.type,
           filter: {
             type: "static",
             options: supplierTypes?.map((type) => ({

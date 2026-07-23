@@ -7,6 +7,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import {
+  getCompanyHasOpenCredits,
   getPurchaseInvoice,
   getPurchaseInvoiceDelivery,
   getPurchaseInvoiceLines,
@@ -19,12 +20,14 @@ import {
   getSupplierInteraction,
   getSupplierInteractionDocuments
 } from "~/modules/purchasing/purchasing.service";
-import type { Handle } from "~/utils/handle";
+import { detailBreadcrumb, type Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
 export const handle: Handle = {
-  breadcrumb: msg`Invoices`,
-  to: path.to.purchaseInvoices
+  breadcrumb: detailBreadcrumb(
+    { breadcrumb: msg`Purchasing Invoices`, to: path.to.invoicingPurchasing },
+    (data) => data?.purchaseInvoice?.invoiceId
+  )
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -44,7 +47,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (purchaseInvoice.error) {
     throw redirect(
-      path.to.purchaseInvoices,
+      path.to.invoicingPurchasing,
       await flash(
         request,
         error(purchaseInvoice.error, "Failed to load purchase invoice")
@@ -52,7 +55,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const [supplier, interaction, files] = await Promise.all([
+  const [supplier, interaction, files, orgHasCredits] = await Promise.all([
     purchaseInvoice.data?.supplierId
       ? getSupplier(client, purchaseInvoice.data.supplierId)
       : null,
@@ -61,7 +64,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       client,
       companyId,
       purchaseInvoice.data.supplierInteractionId!
-    )
+    ),
+    getCompanyHasOpenCredits(client, companyId, "purchase")
   ]);
 
   return {
@@ -70,7 +74,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     purchaseInvoiceDelivery: purchaseInvoiceDelivery.data,
     files,
     interaction: interaction.data,
-    supplier: supplier?.data ?? null
+    supplier: supplier?.data ?? null,
+    orgHasCredits
   };
 }
 

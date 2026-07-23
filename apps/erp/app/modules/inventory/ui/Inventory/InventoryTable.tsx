@@ -14,6 +14,7 @@ import { useNumberFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
+  LuBlocks,
   LuBookMarked,
   LuBox,
   LuBoxes,
@@ -27,7 +28,6 @@ import {
   LuLoaderCircle,
   LuMoveDown,
   LuMoveUp,
-  LuPackage,
   LuPaintBucket,
   LuPuzzle,
   LuRuler,
@@ -62,7 +62,7 @@ import {
 import type { action as mrpAction } from "~/routes/api+/mrp";
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
-import { itemTypes } from "../../inventory.models";
+import { inventoryItemTypes } from "../../inventory.models";
 import type { InventoryItem } from "../../types";
 
 type InventoryTableProps = {
@@ -150,7 +150,7 @@ const InventoryTable = memo(
               formatNumber(row.original.quantityOnHand)
             ),
           meta: {
-            icon: <LuPackage />,
+            icon: <LuBlocks />,
             renderTotal: true,
             formatter: formatNumber
           }
@@ -269,7 +269,7 @@ const InventoryTable = memo(
         },
         {
           accessorKey: "quantityOnProductionDemand",
-          header: t`On Jobs`,
+          header: t`On Production Demand`,
           cell: ({ row }) =>
             formatNumber(row.original.quantityOnProductionDemand),
           meta: {
@@ -418,9 +418,11 @@ const InventoryTable = memo(
                 materialSubstanceId,
                 materialFormId
               ),
+              // The `materialType` column holds the type's name, not its id, so
+              // the filter value must be the name to match.
               transform: (data: { id: string; name: string }[] | null) =>
-                data?.map(({ id, name }) => ({
-                  value: id,
+                data?.map(({ name }) => ({
+                  value: name,
                   label: name
                 })) ?? []
             }
@@ -439,7 +441,7 @@ const InventoryTable = memo(
           meta: {
             filter: {
               type: "static",
-              options: itemTypes.map((type) => ({
+              options: inventoryItemTypes.map((type) => ({
                 label: (
                   <HStack spacing={2}>
                     <MethodItemTypeIcon type={type} />
@@ -457,8 +459,7 @@ const InventoryTable = memo(
           header: t`Tags`,
           cell: ({ row }) => (
             <HStack spacing={0} className="gap-1">
-              {/* @ts-expect-error TS2339 */}
-              {(row.original.tags || []).map((tag) => (
+              {(row.original.tags ?? []).map((tag) => (
                 <Badge key={tag} variant="secondary">
                   {tag}
                 </Badge>
@@ -652,7 +653,7 @@ const InventoryTable = memo(
             />
             <mrpFetcher.Form method="post" action={path.to.api.mrp(locationId)}>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button
                     type="submit"
                     variant="secondary"

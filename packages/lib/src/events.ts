@@ -16,7 +16,11 @@ export type Events = {
     data: {
       event: NotificationEvent;
       companyId: string;
-      documentId: string;
+      // At least one of documentId / documentIds is required. Digest-capable
+      // events pass documentIds (one notification covering several documents);
+      // the primary/link id is documentId ?? documentIds[0].
+      documentId?: string;
+      documentIds?: string[];
       recipient:
         | { type: "user"; userId: string }
         | { type: "group"; groupIds: string[] }
@@ -53,6 +57,50 @@ export type Events = {
         | { filename: string; path: string }
       >;
       companyId: string;
+      // Recurring notification emails only: after the provider accepts the
+      // send, the send-email function bumps the delivery counters for these.
+      tracking?: {
+        event: NotificationEvent;
+        userId: string;
+        documentIds: string[];
+      };
+    };
+  };
+
+  // Assembly model conversion (CAD → GLB + assembly graph)
+  "carbon/assembly-convert": {
+    data: {
+      modelUploadId: string;
+      companyId: string;
+      userId: string;
+    };
+  };
+
+  // Assembly motion planning (collision-free removal paths + sequence)
+  "carbon/assembly-plan": {
+    data: {
+      modelUploadId: string;
+      companyId: string;
+      userId: string;
+      // When set (the user clicked "Re-run Motion Planning" on an instruction
+      // that already has steps), the planner runs in order-preserving mode: it
+      // takes the existing step order as fixed (options.sequence) and recomputes
+      // each step's motion to avoid collision with parts from earlier steps, then
+      // updates the step motions in place. Mutually exclusive with reordering.
+      reMotionFor?: string;
+      // Fresh regenerate: re-detect groups from scratch. When set, the worker
+      // sends only USER-authored units to the planner (auto-detected swarm units
+      // are excluded) so detection re-runs — WITHOUT deleting the materialized
+      // `assemblyUnit` rows up front. The rows are swapped atomically when the
+      // new plan's steps are generated, so a failed/late generate leaves the old
+      // grouped state intact instead of stranding the model ungrouped.
+      reDetectUnits?: boolean;
+      // A pre-created `assemblyPlanJob` row (status Queued) the worker should
+      // adopt instead of inserting its own. User-facing triggers create the row
+      // synchronously so the UI reflects "planning" immediately — the worker's
+      // own insert only lands after event pickup, and a page revalidation in
+      // that gap would see no running job and never start polling.
+      planJobId?: string;
     };
   };
 
@@ -61,6 +109,108 @@ export type Events = {
     data: {
       modelId: string;
       companyId: string;
+    };
+  };
+
+  // Eager model optimisation on upload (mesh inputs → compact optimised GLB)
+  "carbon/assembler-job-done": {
+    data: {
+      /** The assembler job id the waiting run matches on. */
+      jobId: string;
+      /** Terminal public status: succeeded | failed | canceled. */
+      status: string;
+      result: unknown;
+      stats: unknown;
+      error: { code?: string; message?: string } | null;
+    };
+  };
+  "carbon/model-optimize": {
+    data: {
+      modelUploadId: string;
+      companyId: string;
+      userId: string;
+      // format is derived from the stored file inside the job, not passed here.
+    };
+  };
+
+  // Compact the retained raw (STEP → BinXCAF `.xbf.zst`, mesh → `.{ext}.zst`)
+  // so it never lingers as the fat upload. Fired after model-optimize settles
+  // (success, already-optimized, or failure) — decoupled so an optimize
+  // failure can't strand a fat raw for the prune to delete.
+  "carbon/model-compact": {
+    data: {
+      modelUploadId: string;
+      companyId: string;
+    };
+  };
+
+  // Company backup export — snapshot all company-scoped rows (and
+  // optionally storage files) into a gzipped backup in the company bucket
+  "carbon/company-export": {
+    data: {
+      companyId: string;
+      userId: string;
+      label?: string;
+      includeStorage: "none" | "all";
+    };
+  };
+
+  // Company backup import — two-phase: rows are inserted alongside an
+  // externalIntegrationMapping ledger (integration = 'company-backup'),
+  // then the user finalizes (keeps) or reverts (deletes) the run
+  "carbon/company-import": {
+    data: {
+      companyId: string;
+      userId: string;
+      filePath: string;
+      mode: "preserve" | "reseed";
+      importRunId: string;
+      /** Delete the revert ledger as soon as the import commits (no pending
+       *  review step). Used by onboarding-from-template. */
+      autoFinalize?: boolean;
+      /** Set when the source is an onboarding demo template. The template's
+       *  storage assets live once per workspace at `_templates/<industryId>/`
+       *  (uploaded at deploy), so the import REFERENCES them instead of copying
+       *  files into `{companyId}/` — storage path columns are rewritten to the
+       *  shared prefix and no per-company file upload happens. Absent for real
+       *  backups, which stay self-contained (files embedded + copied). */
+      templateIndustryId?: string;
+    };
+  };
+
+  // In-place restore — replace a company's own data with one of its backups.
+  // Three-step: snapshot current state to a hidden _pre-restore file, WIPE the
+  // company's companyId-scoped data, then load the backup (ids preserved). A
+  // marker row (integration = 'company-restore') holds the snapshot path so the
+  // restore can be kept or reverted. Distinct from carbon/company-import, which
+  // is additive (reseed/onboarding) and never wipes.
+  "carbon/company-restore": {
+    data: {
+      companyId: string;
+      userId: string;
+      /** The backup to restore (in this company's bucket, `exports/…`). */
+      filePath: string;
+      restoreRunId: string;
+      /** Whether to also load the backup's bundled files. Data always loads. */
+      includeStorage: "none" | "all";
+      label?: string;
+    };
+  };
+
+  // Keep an in-place restore — drop the hidden pre-restore snapshot + marker.
+  "carbon/company-restore-finalize": {
+    data: {
+      companyId: string;
+      restoreRunId: string;
+    };
+  };
+
+  // Undo an in-place restore — wipe again and reload the pre-restore snapshot,
+  // returning the company to its pre-restore state, then drop snapshot + marker.
+  "carbon/company-restore-revert": {
+    data: {
+      companyId: string;
+      restoreRunId: string;
     };
   };
 
@@ -192,7 +342,8 @@ export type Events = {
     };
   };
 
-  // Event queue processing (PGMQ consumer)
+  // Wake event for the PGMQ drainer (event-queue). Pushed by the database via
+  // the event-wake edge function whenever events are enqueued or pending.
   "carbon/event-queue.process": {
     data: Record<string, never>;
   };
@@ -414,6 +565,14 @@ export type Events = {
           items: Array<Record<string, unknown>>;
         };
       };
+    };
+  };
+
+  // Document extraction (PDF auto-fill)
+  "carbon/extract-document": {
+    data: {
+      documentExtractionId: string;
+      companyId: string;
     };
   };
 };

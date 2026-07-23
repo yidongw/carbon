@@ -116,17 +116,33 @@ export const tablesWithTags = [
   "job",
   "material",
   "part",
+  "service",
   "suggestion",
   "tool"
 ];
 
+// Item types that can appear as a BOM/method material component. Tool and
+// Service are intentionally excluded — tools attach to operations
+// (methodOperationTool) and services are billable activities bought or
+// performed; neither is ever consumed as a component. "Style" is our garment
+// fork's configurable make item and can appear as a component.
 export const methodItemType = [
   "Style",
   "Part",
   "Material",
-  "Tool",
   "Consumable"
-  // "Service",
+] as const;
+
+// Item types that can appear as a top-level quote/sales-order/purchase-order/
+// invoice line. Tools and services are bought and sold even though neither is
+// a method component, so this is wider than methodItemType.
+export const itemType = [
+  "Style",
+  "Part",
+  "Material",
+  "Tool",
+  "Consumable",
+  "Service"
 ] as const;
 
 export const months = [
@@ -159,6 +175,19 @@ export const sourcingType = [
   "Specified",
   "Drop Ship",
   "Ship from Inventory"
+] as const;
+
+export const taxExemptionReasons = [
+  "Resale",
+  "Government",
+  "Nonprofit",
+  "Agriculture",
+  "Industrial",
+  "Export",
+  "Medical",
+  "Educational",
+  "Religious",
+  "Other"
 ] as const;
 
 export const validMethodTypesByReplenishment: Record<
@@ -205,12 +234,6 @@ export const processTypes = [
   "Outside",
   "Inside and Outside"
 ] as const;
-
-export const feedbackValidator = z.object({
-  feedback: z.string().min(1, { message: "" }),
-  attachmentPath: z.string().optional(),
-  location: z.string()
-});
 
 export const suggestionValidator = z.object({
   suggestion: z.string().min(1, { message: "Suggestion is required" }),

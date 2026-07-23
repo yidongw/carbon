@@ -1,4 +1,5 @@
-import { cn } from "@carbon/react";
+import { Button, cn } from "@carbon/react";
+import { Trans } from "@lingui/react/macro";
 import type { ComponentProps, PropsWithChildren } from "react";
 import { LuPanelRight } from "react-icons/lu";
 import type { LinkProps } from "react-router";
@@ -22,7 +23,19 @@ const Hyperlink = ({
     >
       {children}
       {props.to && props.to !== "#" && (
-        <LuPanelRight className="hidden md:block h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/50 transition-colors duration-150 group-hover/hyperlink:text-foreground" />
+        <Button
+          rightIcon={<LuPanelRight />}
+          variant="secondary"
+          // pointer-events-none so clicks fall through to the anchor: a plain
+          // click navigates in-tab, a Cmd/Ctrl (or middle) click opens a new tab.
+          // A real <button> here would otherwise swallow the anchor's native
+          // modifier-click behavior and always open in the same tab.
+          className="flex-shrink-0 opacity-0 transition-opacity duration-200 group-hover/hyperlink:opacity-100 no-underline pointer-events-none"
+          size="sm"
+          tabIndex={-1}
+        >
+          <Trans>Open</Trans>
+        </Button>
       )}
     </Link>
   ) : (

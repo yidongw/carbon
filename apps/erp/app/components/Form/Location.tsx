@@ -11,6 +11,7 @@ import LocationForm from "~/modules/resources/ui/Locations/LocationForm";
 import { path } from "~/utils/path";
 import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 import { Enumerable } from "../Enumerable";
+import { useEmptyState } from "./emptyStates";
 
 type LocationSelectProps = Omit<
   CreatableComboboxProps,
@@ -37,6 +38,10 @@ const Location = ({ inline = false, ...props }: LocationSelectProps) => {
 
   const { company } = useUser();
 
+  const emptyMessage = useEmptyState("location", {
+    onCreate: () => newLocationModal.onOpen()
+  });
+
   return (
     <>
       <CreatableCombobox
@@ -45,6 +50,7 @@ const Location = ({ inline = false, ...props }: LocationSelectProps) => {
           value: o.value,
           label: <Enumerable value={o.label} />
         }))}
+        emptyMessage={emptyMessage}
         {...props}
         label={props?.label ?? "Location"}
         inline={inline ? LocationPreview : undefined}

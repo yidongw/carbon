@@ -1,4 +1,5 @@
 import { Status } from "@carbon/react";
+import { PURCHASE_ORDER_STATUS_COLOR_MAP } from "@carbon/utils";
 import type { purchaseOrderStatusType } from "~/modules/purchasing";
 
 type PurchasingStatusProps = {
@@ -7,50 +8,15 @@ type PurchasingStatusProps = {
 };
 
 const PurchasingStatus = ({ status, iconOnly }: PurchasingStatusProps) => {
-  switch (status) {
-    case "Draft":
-      return (
-        <Status color="gray" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "Planned":
-    case "To Review":
-    case "Needs Approval":
-      return (
-        <Status color="yellow" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "To Receive":
-    case "To Receive and Invoice":
-      return (
-        <Status color="orange" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "To Invoice":
-      return (
-        <Status color="blue" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "Completed":
-      return (
-        <Status color="green" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    case "Closed":
-    case "Rejected":
-      return (
-        <Status color="red" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
-    default:
-      return null;
-  }
+  if (!status) return null;
+  const color = PURCHASE_ORDER_STATUS_COLOR_MAP[status];
+  if (!color) return null;
+
+  return (
+    <Status color={color} iconOnly={iconOnly}>
+      {status}
+    </Status>
+  );
 };
 
 export default PurchasingStatus;

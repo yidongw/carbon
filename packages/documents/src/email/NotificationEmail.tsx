@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   Heading,
+  Hr,
   Link,
   Preview,
   Section,
@@ -11,13 +12,27 @@ import {
 import { Logo } from "./components/Logo";
 import { EmailThemeProvider, getEmailThemeClasses } from "./components/Theme";
 
+// Structurally compatible with `NotificationDetail` from `@carbon/notifications`
+// (kept local so the email package needn't depend on the notifications package).
+interface NotificationDetail {
+  label: string;
+  value: string;
+}
+
 interface Props {
   preview?: string;
   heading?: string;
   message?: string;
+  // The bare record identifier (e.g. "J00105"). When present it's rendered as
+  // the prominent line in the callout instead of the full `message` sentence —
+  // the heading already supplies the action ("Job assigned to you").
+  reference?: string;
   recipientName?: string;
   ctaLabel?: string;
   ctaUrl?: string;
+  details?: NotificationDetail[];
+  // When set, renders the "Manage notification settings" footer.
+  settingsUrl?: string;
 }
 
 // Dark-mode-aware styles. Backgrounds are intentionally set via CSS classes
@@ -167,19 +182,24 @@ const notificationStyles = `
   }
 `;
 
+// Content props get no sample defaults — fabricated data must never reach a
+// real recipient. Sample data lives in the preview fixtures.
 export const NotificationEmail = ({
-  preview = "Job J-1024 assigned to you",
-  heading = "Job assigned to you",
-  message = "Job J-1024 assigned to you",
-  recipientName = "Huckleberry",
+  preview,
+  heading,
+  message,
+  reference,
+  recipientName,
   ctaLabel = "View details",
-  ctaUrl = "https://app.carbon.ms/x/job/1234567890"
+  ctaUrl,
+  details,
+  settingsUrl
 }: Props) => {
   const themeClasses = getEmailThemeClasses();
 
   return (
     <EmailThemeProvider
-      preview={<Preview>{preview}</Preview>}
+      preview={preview ? <Preview>{preview}</Preview> : undefined}
       additionalHeadContent={<style>{notificationStyles}</style>}
     >
       <Body
@@ -238,13 +258,67 @@ export const NotificationEmail = ({
               <tr>
                 <td style={{ verticalAlign: "middle" }}>
                   <Text
-                    className={`text-[15px] leading-[24px] m-0 ${themeClasses.text}`}
+                    className={`text-[15px] leading-[24px] m-0 font-medium ${themeClasses.text}`}
                   >
-                    {message}
+                    {reference ?? message}
                   </Text>
                 </td>
               </tr>
             </table>
+
+            {details && details.length > 0 && (
+              <>
+                <div
+                  className="nf-divider"
+                  style={{
+                    borderTopColor: "#ececef",
+                    borderTopStyle: "solid",
+                    borderTopWidth: 1,
+                    marginBottom: 14,
+                    marginTop: 14
+                  }}
+                />
+                <table
+                  role="presentation"
+                  cellPadding={0}
+                  cellSpacing={0}
+                  width="100%"
+                  style={{ borderCollapse: "collapse", width: "100%" }}
+                >
+                  {details.map((detail, index) => (
+                    <tr key={`${detail.label}-${index}`}>
+                      <td
+                        style={{
+                          paddingBottom: index === details.length - 1 ? 0 : 8,
+                          paddingRight: 12,
+                          verticalAlign: "top",
+                          whiteSpace: "nowrap"
+                        }}
+                      >
+                        <Text
+                          className={`text-[13px] leading-[20px] m-0 nf-fallback ${themeClasses.mutedText}`}
+                        >
+                          {detail.label}
+                        </Text>
+                      </td>
+                      <td
+                        style={{
+                          paddingBottom: index === details.length - 1 ? 0 : 8,
+                          textAlign: "right",
+                          verticalAlign: "top"
+                        }}
+                      >
+                        <Text
+                          className={`text-[13px] leading-[20px] m-0 font-medium ${themeClasses.text}`}
+                        >
+                          {detail.value}
+                        </Text>
+                      </td>
+                    </tr>
+                  ))}
+                </table>
+              </>
+            )}
           </Section>
 
           {ctaUrl && (
@@ -286,15 +360,23 @@ export const NotificationEmail = ({
             </>
           )}
 
-          {/* <Hr className={`my-[32px] nf-divider ${themeClasses.border}`} />
-
-          <Text
-            className={`text-[12px] leading-[18px] m-0 nf-fallback ${themeClasses.mutedText}`}
-          >
-            You're receiving this email because you have email notifications
-            enabled on your Carbon account. You can manage your preferences from
-            your account settings.
-          </Text> */}
+          {settingsUrl && (
+            <>
+              <Hr className={`my-[32px] nf-divider ${themeClasses.border}`} />
+              <Text
+                className={`text-[12px] leading-[18px] m-0 nf-fallback ${themeClasses.mutedText}`}
+              >
+                You&apos;re receiving this email because you have email
+                notifications enabled on your Carbon account.{" "}
+                <Link
+                  href={settingsUrl}
+                  className={`${themeClasses.mutedText} underline nf-fallback`}
+                >
+                  Manage notification settings
+                </Link>
+              </Text>
+            </>
+          )}
         </Container>
       </Body>
     </EmailThemeProvider>

@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: it\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -26,12 +27,14 @@ msgstr "{0} Attivi"
 msgid "{0} of {1}"
 msgstr "{0} di {1}"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} complete"
 msgstr "{0} di {1} completati"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} completed"
 msgstr "{0} di {1} completati"
@@ -76,7 +79,9 @@ msgid "Add & Issue"
 msgstr "Aggiungi e Preleva"
 
 msgid "Add a printer in the printing settings to print labels directly."
-msgstr "Aggiungi una stampante nelle impostazioni di stampa per stampare etichette direttamente."
+msgstr ""
+"Aggiungi una stampante nelle impostazioni di stampa per stampare etichette "
+"direttamente."
 
 msgid "Add Inventory"
 msgstr "Aggiungi Inventario"
@@ -115,13 +120,23 @@ msgid "Are you sure you want to delete this step?"
 msgstr "Sei sicuro di voler eliminare questa fase?"
 
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
-msgstr "Sei sicuro di voler eliminare questo cartellino? Questa azione non può essere annullata."
+msgstr ""
+"Sei sicuro di voler eliminare questo cartellino? Questa azione non può "
+"essere annullata."
 
-msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
-msgstr "Sei sicuro di voler terminare tutti gli eventi di produzione? Questo terminerà tutte le operazioni attive senza completarle o finalizzarle."
+msgid ""
+"Are you sure you want to end all production events? This will end all active"
+" operations without completing or finishing them."
+msgstr ""
+"Sei sicuro di voler terminare tutti gli eventi di produzione? Questo "
+"terminerà tutte le operazioni attive senza completarle o finalizzarle."
 
-msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
-msgstr "Sei sicuro di voler completare questa operazione? Questo terminerà tutti i prodotti in corso per questa operazione."
+msgid ""
+"Are you sure you want to finish this operation? This will end all active "
+"production events for this operation."
+msgstr ""
+"Sei sicuro di voler completare questa operazione? Questo terminerà tutti i "
+"prodotti in corso per questa operazione."
 
 msgid "Are you sure you want to leave this page?"
 msgstr "Sei sicuro di voler lasciare questa pagina?"
@@ -197,11 +212,19 @@ msgstr "Ordini di lavoro aggregati"
 msgid "Bundles"
 msgstr "Fasci"
 
-msgid "But don't worry. You can use the forgot password flow to request a new magic link."
-msgstr "Ma non preoccuparti. Puoi utilizzare il flusso password dimenticata per richiedere un nuovo magic link."
+msgid ""
+"But don't worry. You can use the forgot password flow to request a new magic"
+" link."
+msgstr ""
+"Ma non preoccuparti. Puoi utilizzare il flusso password dimenticata per "
+"richiedere un nuovo magic link."
 
-msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
-msgstr "Effettuando l'accesso, accetti i <0>Termini di Servizio</0> e l'<1>Informativa sulla Privacy.</1>"
+msgid ""
+"By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy "
+"Policy.</1>"
+msgstr ""
+"Effettuando l'accesso, accetti i <0>Termini di Servizio</0> e "
+"l'<1>Informativa sulla Privacy.</1>"
 
 msgid "Camera unavailable — use manual selection below."
 msgstr "Fotocamera non disponibile — usa la selezione manuale qui sotto."
@@ -433,9 +456,12 @@ msgstr "Trascina e rilascia un file qui, o clicca per selezionare un file"
 msgid "Dragging {0} cancelled."
 msgstr "Trascinamento di {0} annullato."
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(
+#. operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "Scadenza {0}"
 
@@ -944,8 +970,13 @@ msgstr "NESSUN-stock"
 msgid "No time entries for this week"
 msgstr "Nessuna registrazione oraria per questa settimana"
 
-msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
-msgstr "Non ci sono dati di magazzino registrati per questo articolo. Puoi comunque prenderlo - il saldo attuale diventerà negativo fino a quando non verranno effettuate le rettifiche."
+msgid ""
+"No warehouse stock is on record for this item. You can still pick it — on-"
+"hand will go negative until the count is reconciled."
+msgstr ""
+"Non ci sono dati di magazzino registrati per questo articolo. Puoi comunque "
+"prenderlo - il saldo attuale diventerà negativo fino a quando non verranno "
+"effettuate le rettifiche."
 
 msgid "No work centers are blocked"
 msgstr "Nessun centro di lavoro bloccato"
@@ -975,8 +1006,11 @@ msgstr "Vecchio per primo"
 msgid "Only {0} available"
 msgstr "Solo {0} disponibili"
 
-msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
-msgstr "Ops. Non dovresti vedere questa pagina. In futuro sarà una pagina di destinazione."
+msgid ""
+"Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgstr ""
+"Ops. Non dovresti vedere questa pagina. In futuro sarà una pagina di "
+"destinazione."
 
 msgid "Open"
 msgstr "Aperto"
@@ -1317,10 +1351,12 @@ msgid "Scan a bundle ticket to take the job and start working."
 msgstr "Scansiona un'etichetta del pacco per prendere il lavoro e iniziare."
 
 msgid "Scan a finished bundle to report the quantity you completed"
-msgstr "Scansiona un pacco completato per registrare la quantità che hai completato"
+msgstr ""
+"Scansiona un pacco completato per registrare la quantità che hai completato"
 
 msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Scansiona un pacco completato per registrare la quantità che hai completato."
+msgstr ""
+"Scansiona un pacco completato per registrare la quantità che hai completato."
 
 msgid "Scan batch number"
 msgstr "Scani il numero di lote"
@@ -1425,8 +1461,12 @@ msgstr "Seleziona Numero di Serie"
 msgid "Select Serial Number {0}"
 msgstr "Seleziona il Numero di Serie {0}"
 
-msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
-msgstr "Seleziona l'operazione da cui tornare indietro. Tutt'e operazioni da quel punto fino all'operazione corrente saranno ripetute."
+msgid ""
+"Select the operation to go back to. All operations from that point to the "
+"current operation will be redone."
+msgstr ""
+"Seleziona l'operazione da cui tornare indietro. Tutt'e operazioni da quel "
+"punto fino all'operazione corrente saranno ripetute."
 
 msgid "Send"
 msgstr "Invia"
@@ -1572,11 +1612,21 @@ msgid "That QR code isn't a bundle ticket"
 msgstr "Quel codice QR non è un'etichetta del pacco"
 
 #. placeholder {0}: operation.operationQuantity
-msgid "The completed quantity for this operation is less than the required quantity of {0}."
-msgstr "La quantità completata per questa operazione è inferiore alla quantità richiesta di {0}."
+msgid ""
+"The completed quantity for this operation is less than the required quantity"
+" of {0}."
+msgstr ""
+"La quantità completata per questa operazione è inferiore alla quantità "
+"richiesta di {0}."
 
-msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
-msgstr "Ci sono materiali tracciati per numero di serie o lotto nella distinta base che non sono stati completamente prelevati. Completare senza prelevare potrebbe causare registrazioni di tracciabilità errate."
+msgid ""
+"There are serial or batch tracked materials on the bill of material that "
+"have not been fully issued. Completing without issuing may result in "
+"incorrect traceability records."
+msgstr ""
+"Ci sono materiali tracciati per numero di serie o lotto nella distinta base "
+"che non sono stati completamente prelevati. Completare senza prelevare "
+"potrebbe causare registrazioni di tracciabilità errate."
 
 msgid "This lot is expired and can't be picked."
 msgstr "Questa partita è scaduta e non può essere selezionata."
@@ -1587,8 +1637,12 @@ msgstr "Questa operazione è stata eliminata"
 msgid "This Period"
 msgstr "Periodo attuale"
 
-msgid "This process is assigned to someone else. Taking over stops their running clock."
-msgstr "Questo processo è assegnato a un'altra persona. Subentrando si ferma il suo cronometro in corso."
+msgid ""
+"This process is assigned to someone else. Taking over stops their running "
+"clock."
+msgstr ""
+"Questo processo è assegnato a un'altra persona. Subentrando si ferma il suo "
+"cronometro in corso."
 
 msgid "Thumbnail"
 msgstr "Miniatura"
@@ -1750,8 +1804,28 @@ msgid "You belong to more than one company. Pick where to work."
 msgstr "Appartieni a più di una compagnia. Scegli dove lavorare."
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
-msgstr "Hai timbrato l'ingresso alle {0}. Puoi modificare l'orario di uscita qui sotto o confermare che stai ancora lavorando."
+msgid ""
+"You clocked in at {0}. You can edit your clock-out time below or acknowledge"
+" that you're still working."
+msgstr ""
+"Hai timbrato l'ingresso alle {0}. Puoi modificare l'orario di uscita qui "
+"sotto o confermare che stai ancora lavorando."
 
-msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
-msgstr "Sei timbrato in ingresso da {hoursElapsed} ore. Hai dimenticato di timbrare l'uscita?"
+msgid ""
+"You've been clocked in for {hoursElapsed} hours. Did you forget to clock "
+"out?"
+msgstr ""
+"Sei timbrato in ingresso da {hoursElapsed} ore. Hai dimenticato di timbrare "
+"l'uscita?"
+
+msgid "Complete All"
+msgstr "Completa tutto"
+
+msgid "Learn more"
+msgstr "Per saperne di più"
+
+msgid "No matches. Type to create one."
+msgstr "Nessuna corrispondenza. Digita per crearne una."
+
+msgid "What is {translatedTerm}?"
+msgstr "Cos'è {translatedTerm}?"

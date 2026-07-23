@@ -1,6 +1,7 @@
 import type { ComboboxProps } from "@carbon/form";
-import { CreatableCombobox } from "@carbon/form";
+import { CreatableCombobox, FieldEmptyState } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef } from "react";
 import { useFetcher } from "react-router";
 import type {
@@ -10,6 +11,7 @@ import type {
 import { SupplierProcessForm } from "~/modules/purchasing/ui/Supplier";
 import { useSuppliers } from "~/stores";
 import { path } from "~/utils/path";
+import { useEmptyState } from "./emptyStates";
 
 type SupplierProcessSelectProps = Omit<ComboboxProps, "options"> & {
   processId?: string;
@@ -35,6 +37,19 @@ const SupplierProcess = ({
     };
   });
 
+  const { t } = useLingui();
+  const supplierProcessEmptyMessage = useEmptyState("supplierProcess", {
+    onCreate: () => newSupplierProcessModal.onOpen()
+  });
+  const emptyMessage = processId ? (
+    supplierProcessEmptyMessage
+  ) : (
+    <FieldEmptyState
+      title={t`No process selected`}
+      description={t`Select a process first to choose its supplier.`}
+    />
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -43,6 +58,7 @@ const SupplierProcess = ({
         {...props}
         // @ts-ignore
         label={props?.label ?? "Work Center"}
+        emptyMessage={emptyMessage}
         onCreateOption={(option) => {
           newSupplierProcessModal.onOpen();
         }}
@@ -76,10 +92,13 @@ export const useSupplierProcesses = (args: { processId?: string }) => {
   const fetcher =
     useFetcher<Awaited<ReturnType<typeof getSupplierProcessesByProcess>>>();
 
+  // An empty processId would build a URL with an empty segment that matches no
+  // route — the resulting 404 bubbles to the root error boundary.
   useEffect(() => {
-    if (!processId) return;
-    fetcher.load(path.to.api.supplierProcesses(processId));
-  }, [processId, fetcher.load]);
+    if (processId) {
+      fetcher.load(path.to.api.supplierProcesses(processId));
+    }
+  }, [processId]);
 
   const supplierProcesses = useMemo(
     () => (fetcher.data?.data ? fetcher.data?.data : []),
@@ -97,9 +116,10 @@ export const useSupplierProcessesBySupplier = (args: {
     useFetcher<Awaited<ReturnType<typeof getSupplierProcessesBySupplier>>>();
 
   useEffect(() => {
-    if (!supplierId) return;
-    fetcher.load(path.to.api.supplierProcessesBySupplier(supplierId));
-  }, [supplierId, fetcher.load]);
+    if (supplierId) {
+      fetcher.load(path.to.api.supplierProcessesBySupplier(supplierId));
+    }
+  }, [supplierId]);
 
   const supplierProcesses = useMemo(
     () => (fetcher.data?.data ? fetcher.data?.data : []),

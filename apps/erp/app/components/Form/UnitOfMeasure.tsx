@@ -13,6 +13,7 @@ import UnitOfMeasureForm from "~/modules/items/ui/UnitOfMeasure/UnitOfMeasureFor
 import { path } from "~/utils/path";
 import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 import { Enumerable } from "../Enumerable";
+import { useEmptyState } from "./emptyStates";
 
 type UnitOfMeasureSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
   inline?: boolean;
@@ -37,6 +38,10 @@ const UnitOfMeasure = (props: UnitOfMeasureSelectProps) => {
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
+  const emptyMessage = useEmptyState("unitOfMeasure", {
+    onCreate: () => newUnitOfMeasureModal.onOpen()
+  });
+
   return (
     <>
       <CreatableCombobox
@@ -45,6 +50,7 @@ const UnitOfMeasure = (props: UnitOfMeasureSelectProps) => {
         {...props}
         inline={props.inline ? UnitOfMeasurePreview : undefined}
         label={props?.label ?? t`Unit of Measure`}
+        emptyMessage={emptyMessage}
         onCreateOption={(option) => {
           newUnitOfMeasureModal.onOpen();
           setCreated(option);

@@ -10,6 +10,7 @@ import SupplierTypeForm from "~/modules/purchasing/ui/SupplierTypes/SupplierType
 
 import { path } from "~/utils/path";
 import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
+import { useEmptyState } from "./emptyStates";
 
 type SupplierTypeSelectProps = Omit<ComboboxProps, "options">;
 
@@ -19,6 +20,10 @@ const SupplierType = (props: SupplierTypeSelectProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   const options = useSupplierTypes();
+
+  const emptyMessage = useEmptyState("supplierType", {
+    onCreate: () => newSupplierTypeModal.onOpen()
+  });
 
   return (
     <>
@@ -30,6 +35,7 @@ const SupplierType = (props: SupplierTypeSelectProps) => {
             label: <Enumerable value={o.label} />
           })) ?? []
         }
+        emptyMessage={emptyMessage}
         {...props}
         label={props?.label ?? "SupplierType"}
         onCreateOption={(option) => {

@@ -1,6 +1,7 @@
 import type { Result } from "@carbon/auth";
 import { useCarbon } from "@carbon/auth";
 import type { Database } from "@carbon/database";
+import { getLogger } from "@carbon/logger";
 import type { JSONContent } from "@carbon/react";
 import {
   Badge,
@@ -24,7 +25,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  ModelViewer,
   ScrollArea,
   Separator,
   SidebarTrigger,
@@ -54,8 +54,12 @@ import {
   convertDateStringToIsoString,
   convertKbToString,
   formatDurationMilliseconds,
-  getItemReadableId
+  getItemReadableId,
+  MODEL_RAW_KEEP_MAX_BYTES
 } from "@carbon/utils";
+import { ModelPreview } from "@carbon/viewer/model-preview";
+import { OptimizeProgress } from "@carbon/viewer/optimize-progress";
+import { useOptimizedModel } from "@carbon/viewer/use-optimized-model";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { Suspense, useEffect, useMemo, useState } from "react";
@@ -126,7 +130,7 @@ import type {
   TrackedInput
 } from "~/services/types";
 import { useItems } from "~/stores";
-import { path } from "~/utils/path";
+import { getPrivateUrl, getRawModelUrl, path } from "~/utils/path";
 import ItemThumbnail from "../ItemThumbnail";
 import { OperationChat } from "./components/Chat";
 import { ConfirmPickupModal } from "./components/ConfirmPickupModal";
@@ -154,6 +158,8 @@ import {
 import { TableSkeleton } from "./components/TableSkeleton";
 import { useFiles } from "./hooks/useFiles";
 import { useOperation } from "./hooks/useOperation";
+
+const log = getLogger("mes", "job-operation");
 
 type JobOperationProps = {
   assignee?: string | null;
@@ -430,6 +436,22 @@ export const JobOperation = ({
         }
       : null;
 
+  const modelPath = operation.itemModelPath ?? job.modelPath ?? null;
+  // Prefer the authoritative id (mirrors the modelPath precedence) over deriving
+  // it from the path — legacy paths whose basename isn't the id would otherwise
+  // resolve a phantom id and 404 the artifacts/reoptimise lookups.
+  const modelUploadId = operation.itemModelId ?? job.modelId ?? null;
+  const {
+    artifacts,
+    awaitingModel: modelPending,
+    showOptimizeProgress,
+    optimizeQueued,
+    retry: onModelRetry,
+    retryLabel: modelRetryLabel,
+    cancel: onModelCancel,
+    actionBusy: modelActionBusy
+  } = useOptimizedModel({ modelPath, modelUploadId, companyId });
+
   const fetcher = useFetcher<Result>();
 
   // Lazy creation of Inspection steps for non-conformance actions
@@ -486,9 +508,9 @@ export const JobOperation = ({
           });
         }
       } catch (error) {
-        console.error(
-          "Failed to create inspection steps for non-conformance actions:",
-          error
+        log.error(
+          "Failed to create inspection steps for non-conformance actions",
+          { error }
         );
       }
     }
@@ -2007,6 +2029,7 @@ export const JobOperation = ({
                             locationId={locationId}
                             context="workCenter"
                             workCenterId={operation.workCenterId ?? undefined}
+                            size="lg"
                             fileRoutes={{
                               pdf: path.to.file.operationLabelsPdf,
                               zpl: path.to.file.operationLabelsZpl
@@ -2069,6 +2092,7 @@ export const JobOperation = ({
                                     workCenterId={
                                       operation.workCenterId ?? undefined
                                     }
+                                    size="lg"
                                     fileRoutes={{
                                       pdf: path.to.file.trackedEntityLabelPdf,
                                       zpl: path.to.file.trackedEntityLabelZpl
@@ -2107,16 +2131,55 @@ export const JobOperation = ({
           </ScrollArea>
         </TabsContent>
         <TabsContent value="model">
-          <div className="w-full h-[calc(100dvh-var(--header-height)*2)] p-0">
-            <ModelViewer
-              file={null}
-              key={`model-${operation.itemModelPath ?? job.modelPath}`}
-              url={`/file/preview/private/${
-                operation.itemModelPath ?? job.modelPath
-              }`}
-              mode={mode}
-              className="rounded-none"
-            />
+          <div className="relative w-full h-[calc(100dvh-var(--header-height)*2)] p-0">
+            {modelPath ? (
+              <ModelPreview
+                key={modelPath}
+                awaitingModel={modelPending}
+                optimizedUrl={
+                  artifacts?.optimizedModelPath
+                    ? getPrivateUrl(artifacts.optimizedModelPath)
+                    : null
+                }
+                glbUrl={
+                  artifacts?.glbPath ? getPrivateUrl(artifacts.glbPath) : null
+                }
+                lodUrl={
+                  artifacts?.lodPath ? getPrivateUrl(artifacts.lodPath) : null
+                }
+                rawUrl={
+                  artifacts?.rawPath &&
+                  (artifacts.size ?? 0) <= MODEL_RAW_KEEP_MAX_BYTES
+                    ? getRawModelUrl(artifacts.rawBucket, artifacts.rawPath)
+                    : null
+                }
+                thumbnailUrl={
+                  artifacts?.thumbnailPath
+                    ? getPrivateUrl(artifacts.thumbnailPath)
+                    : null
+                }
+                mode={mode}
+                className="rounded-none"
+                onRetry={onModelRetry}
+                retryLabel={modelRetryLabel}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <p className="text-sm text-muted-foreground">
+                  No 3D model attached
+                </p>
+              </div>
+            )}
+            {showOptimizeProgress && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/95 p-6">
+                <OptimizeProgress
+                  key={`${modelPath}:${artifacts?.optimizeStatus}`}
+                  queued={optimizeQueued}
+                  onCancel={onModelCancel}
+                  cancelling={modelActionBusy}
+                />
+              </div>
+            )}
           </div>
         </TabsContent>
         <TabsContent value="procedure" className="flex flex-grow">

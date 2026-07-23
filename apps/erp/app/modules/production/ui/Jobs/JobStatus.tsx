@@ -1,30 +1,17 @@
 import { Status } from "@carbon/react";
+import { JOB_STATUS_COLOR_MAP } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback } from "react";
 import type { jobStatus } from "../../production.models";
 import { useJobStatusLabel } from "./jobLabels";
+
+export { JOB_STATUS_COLOR_MAP } from "@carbon/utils";
 
 type JobStatusProps = {
   status?: (typeof jobStatus)[number] | null;
   className?: string;
   iconOnly?: boolean;
 };
-
-export const JOB_STATUS_COLOR_MAP: Record<
-  (typeof jobStatus)[number],
-  "gray" | "yellow" | "blue" | "orange" | "green" | "red"
-> = {
-  Draft: "gray",
-  Planned: "yellow",
-  Ready: "blue",
-  "In Progress": "orange",
-  Paused: "orange",
-  "Due Today": "orange",
-  Completed: "green",
-  Closed: "gray",
-  Overdue: "red",
-  Cancelled: "red"
-} as const;
 
 // Display text mirrors the badge label, mapping "Ready" -> "Released" while
 // keeping every status translated. Shared so filter options can render the same

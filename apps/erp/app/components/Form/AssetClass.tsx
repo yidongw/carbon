@@ -8,6 +8,7 @@ import AssetClassForm from "~/modules/accounting/ui/FixedAssets/AssetClassForm";
 import type { loader as newAssetClassLoader } from "~/routes/x+/accounting+/asset-classes.new";
 import { path } from "~/utils/path";
 import { Enumerable } from "../Enumerable";
+import { useEmptyState } from "./emptyStates";
 
 type AssetClassSelectProps = Omit<
   CreatableComboboxProps,
@@ -37,6 +38,13 @@ const AssetClass = ({ inline = false, ...props }: AssetClassSelectProps) => {
   const taxDepreciationEnabled =
     defaultsFetcher.data?.taxDepreciationEnabled ?? false;
 
+  const emptyMessage = useEmptyState("assetClass", {
+    onCreate: () => {
+      defaultsFetcher.load(path.to.newAssetClass);
+      newAssetClassModal.onOpen();
+    }
+  });
+
   return (
     <>
       <CreatableCombobox
@@ -45,6 +53,7 @@ const AssetClass = ({ inline = false, ...props }: AssetClassSelectProps) => {
           value: o.value,
           label: <Enumerable value={o.label} />
         }))}
+        emptyMessage={emptyMessage}
         {...props}
         label={props?.label ?? "Asset Class"}
         inline={inline ? AssetClassPreview : undefined}
@@ -74,9 +83,10 @@ const AssetClass = ({ inline = false, ...props }: AssetClassSelectProps) => {
               defaults?.accumulatedDepreciationAccount ?? "",
             depreciationExpenseAccountId:
               defaults?.assetDepreciationExpenseAccount ?? "",
-            writeOffAccountId: defaults?.assetGainsAndLossesAccount ?? "",
-            writeDownAccountId: defaults?.assetGainsAndLossesAccount ?? "",
-            disposalAccountId: defaults?.assetGainsAndLossesAccount ?? ""
+            writeOffAccountId: defaults?.assetLossOnDisposalAccount ?? "",
+            writeDownAccountId: defaults?.assetLossOnDisposalAccount ?? "",
+            gainOnDisposalAccountId: defaults?.assetGainOnDisposalAccount ?? "",
+            lossOnDisposalAccountId: defaults?.assetLossOnDisposalAccount ?? ""
           }}
         />
       )}

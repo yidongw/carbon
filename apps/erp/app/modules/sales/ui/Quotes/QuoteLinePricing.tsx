@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Button,
   Card,
@@ -42,6 +43,7 @@ import {
   LuTrash
 } from "react-icons/lu";
 import { useFetcher, useParams } from "react-router";
+import EditableNumberCell from "~/components/EditableNumberCell";
 import {
   useCurrencyFormatter,
   usePermissions,
@@ -62,6 +64,8 @@ import type {
   QuotationLine,
   QuotationPrice
 } from "../../types";
+
+const logger = getLogger("erp", "sales", "quote-line-pricing");
 
 const categoryLabels: Record<CostCategoryKey, string> = {
   materialCost: "Material",
@@ -231,7 +235,9 @@ const QuoteLinePricing = ({
         .eq("id", lineId);
 
       if (costUpdate?.error) {
-        console.error(costUpdate.error);
+        logger.error("Failed to update quote line pricing", {
+          error: costUpdate.error
+        });
         toast.error(t`Failed to update quote line`);
       }
     },
@@ -264,7 +270,9 @@ const QuoteLinePricing = ({
         .eq("id", lineId);
 
       if (costUpdate?.error) {
-        console.error(costUpdate.error);
+        logger.error("Failed to update quote line pricing", {
+          error: costUpdate.error
+        });
         toast.error("Failed to update quote line");
       }
     },
@@ -292,7 +300,9 @@ const QuoteLinePricing = ({
         .eq("id", lineId);
 
       if (costUpdate?.error) {
-        console.error(costUpdate.error);
+        logger.error("Failed to update quote line pricing", {
+          error: costUpdate.error
+        });
         toast.error("Failed to update quote line");
       }
     },
@@ -408,7 +418,9 @@ const QuoteLinePricing = ({
         .single();
 
       if (costUpdate?.error) {
-        console.error(costUpdate.error);
+        logger.error("Failed to update quote line pricing", {
+          error: costUpdate.error
+        });
         toast.error(t`Failed to update item cost`);
       }
     },
@@ -434,22 +446,29 @@ const QuoteLinePricing = ({
           [quantity]: {
             ...prev.prices[quantity],
             categoryMarkups: newMarkups,
+            priceSource: "system",
             unitPrice
           }
         }
       }));
 
+      // Editing a per-category markup is explicit cost-plus intent: the row
+      // goes back to system pricing so BOM changes reprice it from these
+      // markups.
       const priceUpdate = await carbon
         ?.from("quoteLinePrice")
         .update({
           categoryMarkups: newMarkups,
+          priceSource: "system",
           unitPrice
         })
         .eq("quoteLineId", lineId)
         .eq("quantity", quantity);
 
       if (priceUpdate?.error) {
-        console.error(priceUpdate.error);
+        logger.error("Failed to update quote line pricing", {
+          error: priceUpdate.error
+        });
         toast.error(t`Failed to update category markups`);
       }
     },
@@ -493,7 +512,16 @@ const QuoteLinePricing = ({
         // Round the value to the precision of the quote line
         roundedValue = Number(value.toFixed(unitPricePrecision));
       }
-      newPrices[quantity] = { ...newPrices[quantity], [key]: roundedValue };
+      newPrices[quantity] = {
+        ...newPrices[quantity],
+        [key]: roundedValue,
+        // A direct price / virtual-markup edit makes this a manual price:
+        // priceSource 'manual' tells every recalc to preserve it, and clearing
+        // the stored per-category markups keeps the display consistent.
+        ...(key === "unitPrice"
+          ? { categoryMarkups: {}, priceSource: "manual" }
+          : {})
+      };
 
       setEditableFields((prev) => ({
         ...prev,
@@ -505,13 +533,18 @@ const QuoteLinePricing = ({
           ?.from("quoteLinePrice")
           .update({
             [key]: roundedValue,
+            ...(key === "unitPrice"
+              ? { categoryMarkups: {}, priceSource: "manual" }
+              : {}),
             quoteLineId: lineId,
             quantity
           })
           .eq("quoteLineId", lineId)
           .eq("quantity", quantity);
         if (update?.error) {
-          console.error(update.error);
+          logger.error("Failed to update quote line pricing", {
+            error: update.error
+          });
           toast.error("Failed to update quote line");
         }
       } else {
@@ -522,7 +555,9 @@ const QuoteLinePricing = ({
         });
 
         if (insert?.error) {
-          console.error(insert.error);
+          logger.error("Failed to update quote line pricing", {
+            error: insert.error
+          });
           toast.error(t`Failed to insert quote line`);
         }
       }
@@ -718,7 +753,7 @@ const QuoteLinePricing = ({
                     key={quantity.toString()}
                     className="group-hover:bg-muted/50"
                   >
-                    <NumberField
+                    <EditableNumberCell
                       value={leadTime}
                       formatOptions={{
                         style: "unit",
@@ -726,19 +761,11 @@ const QuoteLinePricing = ({
                         unitDisplay: "long"
                       }}
                       minValue={0}
-                      onChange={(value) => {
-                        if (Number.isFinite(value) && value !== leadTime) {
-                          onUpdatePrice("leadTime", quantity, value);
-                        }
-                      }}
-                    >
-                      <NumberInput
-                        className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                        isDisabled={!isEditable}
-                        size="sm"
-                        min={0}
-                      />
-                    </NumberField>
+                      isEditable={isEditable}
+                      onChange={(value) =>
+                        onUpdatePrice("leadTime", quantity, value)
+                      }
+                    />
                   </Td>
                 );
               })}
@@ -764,29 +791,16 @@ const QuoteLinePricing = ({
                     </Td>
                   ) : (
                     <Td key={index} className="group-hover:bg-muted/50">
-                      <NumberField
+                      <EditableNumberCell
                         value={editableFields.unitCost}
                         formatOptions={{
                           style: "currency",
                           currency: baseCurrency
                         }}
                         minValue={0}
-                        onChange={(value) => {
-                          if (
-                            Number.isFinite(value) &&
-                            value !== editableFields.unitCost
-                          ) {
-                            onUpdateCost(value);
-                          }
-                        }}
-                      >
-                        <NumberInput
-                          className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                          isDisabled={!isEditable}
-                          size="sm"
-                          min={0}
-                        />
-                      </NumberField>
+                        isEditable={isEditable}
+                        onChange={(value) => onUpdateCost(value)}
+                      />
                     </Td>
                   );
                 })}
@@ -817,29 +831,22 @@ const QuoteLinePricing = ({
                   return (
                     <Td key={quantity.toString()}>
                       {cost > 0 ? (
-                        <NumberField
+                        <EditableNumberCell
                           value={markup}
                           formatOptions={{
                             style: "percent",
                             maximumFractionDigits: 2
                           }}
-                          onChange={(value) => {
-                            if (Number.isFinite(value) && value !== markup) {
-                              onUpdatePrice(
-                                "unitPrice",
-                                quantity,
-                                cost * (1 + value)
-                              );
-                            }
-                          }}
-                        >
-                          <NumberInput
-                            className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                            isDisabled={!isEditable}
-                            size="sm"
-                            min={0}
-                          />
-                        </NumberField>
+                          minValue={0}
+                          isEditable={isEditable}
+                          onChange={(value) =>
+                            onUpdatePrice(
+                              "unitPrice",
+                              quantity,
+                              cost * (1 + value)
+                            )
+                          }
+                        />
                       ) : (
                         <span className="text-muted-foreground">-</span>
                       )}
@@ -890,34 +897,22 @@ const QuoteLinePricing = ({
                             <Td key={quantity.toString()}>
                               {categoryCost > 0 ? (
                                 <VStack spacing={0}>
-                                  <NumberField
+                                  <EditableNumberCell
                                     value={markupValue / 100}
                                     formatOptions={{
                                       style: "percent",
                                       maximumFractionDigits: 2
                                     }}
                                     minValue={0}
-                                    onChange={(value) => {
-                                      const percent = value * 100;
-                                      if (
-                                        Number.isFinite(percent) &&
-                                        percent !== markupValue
-                                      ) {
-                                        onUpdateCategoryMarkup(
-                                          category,
-                                          quantity,
-                                          percent
-                                        );
-                                      }
-                                    }}
-                                  >
-                                    <NumberInput
-                                      className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                                      isDisabled={!isEditable}
-                                      size="sm"
-                                      min={0}
-                                    />
-                                  </NumberField>
+                                    isEditable={isEditable}
+                                    onChange={(value) =>
+                                      onUpdateCategoryMarkup(
+                                        category,
+                                        quantity,
+                                        value * 100
+                                      )
+                                    }
+                                  />
                                   <span className="text-xs text-muted-foreground">
                                     {unitPriceFormatter.format(categoryCost)}
                                   </span>
@@ -943,7 +938,7 @@ const QuoteLinePricing = ({
                 const price = editableFields.prices[quantity]?.unitPrice;
                 return (
                   <Td key={quantity.toString()}>
-                    <NumberField
+                    <EditableNumberCell
                       value={price}
                       formatOptions={{
                         style: "currency",
@@ -951,19 +946,11 @@ const QuoteLinePricing = ({
                         maximumFractionDigits: unitPricePrecision
                       }}
                       minValue={0}
-                      onChange={(value) => {
-                        if (Number.isFinite(value) && value !== price) {
-                          onUpdatePrice("unitPrice", quantity, value);
-                        }
-                      }}
-                    >
-                      <NumberInput
-                        className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                        isDisabled={!isEditable}
-                        size="sm"
-                        min={0}
-                      />
-                    </NumberField>
+                      isEditable={isEditable}
+                      onChange={(value) =>
+                        onUpdatePrice("unitPrice", quantity, value)
+                      }
+                    />
                   </Td>
                 );
               })}
@@ -981,7 +968,7 @@ const QuoteLinePricing = ({
 
                 return (
                   <Td key={index}>
-                    <NumberField
+                    <EditableNumberCell
                       value={discount}
                       formatOptions={{
                         style: "percent",
@@ -989,18 +976,11 @@ const QuoteLinePricing = ({
                       }}
                       minValue={0}
                       maxValue={1}
-                      onChange={(value) => {
-                        if (Number.isFinite(value) && value !== discount) {
-                          onUpdatePrice("discountPercent", quantity, value);
-                        }
-                      }}
-                    >
-                      <NumberInput
-                        className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                        isDisabled={!isEditable}
-                        size="sm"
-                      />
-                    </NumberField>
+                      isEditable={isEditable}
+                      onChange={(value) =>
+                        onUpdatePrice("discountPercent", quantity, value)
+                      }
+                    />
                   </Td>
                 );
               })}
@@ -1098,26 +1078,18 @@ const QuoteLinePricing = ({
                   editableFields.prices[quantity]?.shippingCost;
                 return (
                   <Td key={quantity.toString()}>
-                    <NumberField
+                    <EditableNumberCell
                       value={shippingCost}
                       formatOptions={{
                         style: "currency",
                         currency: baseCurrency
                       }}
                       minValue={0}
-                      onChange={(value) => {
-                        if (Number.isFinite(value) && value !== shippingCost) {
-                          onUpdatePrice("shippingCost", quantity, value);
-                        }
-                      }}
-                    >
-                      <NumberInput
-                        className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                        isDisabled={!isEditable}
-                        size="sm"
-                        min={0}
-                      />
-                    </NumberField>
+                      isEditable={isEditable}
+                      onChange={(value) =>
+                        onUpdatePrice("shippingCost", quantity, value)
+                      }
+                    />
                   </Td>
                 );
               })}
@@ -1204,32 +1176,18 @@ const QuoteLinePricing = ({
                       return (
                         <Td key={quantity.toString()}>
                           <VStack spacing={0}>
-                            <NumberField
-                              defaultValue={amount}
+                            <EditableNumberCell
+                              value={amount}
                               formatOptions={{
                                 style: "currency",
                                 currency: baseCurrency
                               }}
-                              onChange={(value) => {
-                                if (
-                                  Number.isFinite(value) &&
-                                  value !== amount
-                                ) {
-                                  onUpdateChargeAmount(
-                                    chargeId,
-                                    quantity,
-                                    value
-                                  );
-                                }
-                              }}
-                            >
-                              <NumberInput
-                                className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                                size="sm"
-                                isDisabled={!isEditable}
-                                min={0}
-                              />
-                            </NumberField>
+                              minValue={0}
+                              isEditable={isEditable}
+                              onChange={(value) =>
+                                onUpdateChargeAmount(chargeId, quantity, value)
+                              }
+                            />
                           </VStack>
                         </Td>
                       );
@@ -1305,29 +1263,23 @@ const QuoteLinePricing = ({
                 const taxPercent = editableFields.taxPercent;
                 return (
                   <Td key={index} className="group-hover:bg-muted/50">
-                    <NumberField
+                    <EditableNumberCell
                       value={taxPercent}
                       formatOptions={{
                         style: "percent",
                         maximumFractionDigits: 2
                       }}
+                      minValue={0}
+                      isEditable={isEditable}
                       onChange={(value) => {
-                        if (Number.isFinite(value) && value !== taxPercent) {
-                          setEditableFields((prev) => ({
-                            ...prev,
-                            taxPercent: value
-                          }));
+                        setEditableFields((prev) => ({
+                          ...prev,
+                          taxPercent: value
+                        }));
 
-                          // TODO: handle mutation
-                        }
+                        // TODO: handle mutation
                       }}
-                    >
-                      <NumberInput
-                        className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                        isDisabled={!isEditable}
-                        size="sm"
-                      />
-                    </NumberField>
+                    />
                   </Td>
                 );
               })}

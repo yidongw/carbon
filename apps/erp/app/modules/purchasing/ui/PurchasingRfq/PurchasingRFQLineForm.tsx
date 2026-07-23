@@ -39,7 +39,7 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
-import type { MethodItemType } from "~/modules/shared/types";
+import type { ItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/purchasing-rfq+/$rfqId.$lineId.details";
 import { path } from "~/utils/path";
 import {
@@ -51,7 +51,7 @@ import DeletePurchasingRFQLine from "./DeletePurchasingRFQLine";
 
 type PurchasingRFQLineFormProps = {
   initialValues: z.infer<typeof purchasingRfqLineValidator> & {
-    itemType: MethodItemType;
+    itemType: ItemType;
   };
   type?: "card" | "modal";
   onClose?: () => void;
@@ -80,9 +80,7 @@ const PurchasingRFQLineForm = ({
 
   const isEditing = initialValues.id !== undefined;
 
-  const [itemType, setItemType] = useState<MethodItemType>(
-    initialValues.itemType
-  );
+  const [itemType, setItemType] = useState<ItemType>(initialValues.itemType);
   const [itemData, setItemData] = useState<{
     itemId: string;
     itemReadableId: string;
@@ -126,7 +124,7 @@ const PurchasingRFQLineForm = ({
 
     setItemData(newItemData);
     if (item.data?.type) {
-      setItemType(item.data.type as MethodItemType);
+      setItemType(item.data.type as ItemType);
     }
   };
 
@@ -205,7 +203,9 @@ const PurchasingRFQLineForm = ({
                 <Hidden name="order" />
                 <Hidden
                   name="inventoryUnitOfMeasureCode"
-                  value={itemData?.inventoryUom}
+                  value={
+                    itemData?.inventoryUom || itemData?.purchaseUom || "EA"
+                  }
                 />
                 <VStack>
                   <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
@@ -224,7 +224,7 @@ const PurchasingRFQLineForm = ({
                           onItemChange(value?.value as string);
                         }}
                         onTypeChange={(type) => {
-                          setItemType(type as MethodItemType);
+                          setItemType(type as ItemType);
                           setItemData({
                             ...itemData,
                             itemId: "",
@@ -244,6 +244,7 @@ const PurchasingRFQLineForm = ({
                       <UnitOfMeasure
                         name="purchaseUnitOfMeasureCode"
                         label={t`Purchase Unit of Measure`}
+                        termId="item-purchasing-uom"
                         value={itemData.purchaseUom}
                         onChange={(newValue) =>
                           setItemData((d) => ({
@@ -254,6 +255,7 @@ const PurchasingRFQLineForm = ({
                       />
                       <ConversionFactor
                         name="conversionFactor"
+                        termId="conversion-factor"
                         purchasingCode={itemData.purchaseUom}
                         inventoryCode={itemData.inventoryUom}
                         value={itemData.conversionFactor}
@@ -271,6 +273,7 @@ const PurchasingRFQLineForm = ({
                       <ArrayNumeric
                         name="quantity"
                         label={t`Quantity`}
+                        termId="quantity-breaks"
                         defaults={[1, 25, 50, 100]}
                         isDisabled={isLocked}
                       />

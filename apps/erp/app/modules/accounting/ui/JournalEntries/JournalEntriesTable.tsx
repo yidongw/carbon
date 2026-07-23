@@ -1,6 +1,6 @@
 import { HStack, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
 import { formatDate } from "@carbon/utils";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -229,7 +229,7 @@ const JournalEntriesTable = memo(
               }}
             >
               <MenuIcon icon={<LuPencil />} />
-              {isDraft ? "Edit Journal Entry" : "View Journal Entry"}
+              {isDraft ? t`Edit Journal Entry` : t`View Journal Entry`}
             </MenuItem>
             <MenuItem
               disabled={!isDraft || !permissions.can("delete", "accounting")}
@@ -240,12 +240,12 @@ const JournalEntriesTable = memo(
               }}
             >
               <MenuIcon icon={<LuTrash />} />
-              Delete Journal Entry
+              <Trans>Delete Journal Entry</Trans>
             </MenuItem>
           </>
         );
       },
-      [deleteModal, navigate, permissions]
+      [deleteModal, navigate, permissions, t]
     );
 
     return (
@@ -264,7 +264,7 @@ const JournalEntriesTable = memo(
             action={path.to.deleteJournalEntry(selectedEntry.id.toString())}
             isOpen={deleteModal.isOpen}
             name={selectedEntry.journalEntryId ?? ""}
-            text={`Are you sure you want to delete ${selectedEntry.journalEntryId}?`}
+            text={t`Are you sure you want to delete ${selectedEntry.journalEntryId}?`}
             onCancel={() => {
               deleteModal.onClose();
               setSelectedEntry(null);

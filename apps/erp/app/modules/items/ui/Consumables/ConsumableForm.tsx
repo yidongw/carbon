@@ -170,12 +170,14 @@ const ConsumableForm = ({
                 <Select
                   name="itemTrackingType"
                   label={t`Tracking Type`}
+                  termId="item-tracking-type"
                   options={itemTrackingTypeOptions}
                 />
 
                 <DefaultMethodType
                   name="defaultMethodType"
                   label={t`Default Method Type`}
+                  termId="item-default-method-type"
                   replenishmentSystem="Buy"
                   value={defaultMethodType}
                   onChange={(newValue) =>
@@ -190,6 +192,7 @@ const ConsumableForm = ({
                   <ItemPostingGroup
                     name="postingGroupId"
                     label={t`Item Group`}
+                    termId="item-group"
                     isClearable
                   />
                 )}

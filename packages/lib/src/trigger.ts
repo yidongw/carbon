@@ -8,7 +8,15 @@ import { inngest } from "./inngest/client.ts";
  */
 const taskToEvent = {
   "accounting-backfill": "carbon/accounting-backfill",
+  "assembly-convert": "carbon/assembly-convert",
+  "assembly-plan": "carbon/assembly-plan",
+  "company-export": "carbon/company-export",
+  "company-import": "carbon/company-import",
+  "company-restore": "carbon/company-restore",
+  "company-restore-finalize": "carbon/company-restore-finalize",
+  "company-restore-revert": "carbon/company-restore-revert",
   "model-thumbnail": "carbon/model-thumbnail",
+  "model-optimize": "carbon/model-optimize",
   notify: "carbon/notify",
   onboard: "carbon/onboard",
   "paperless-parts": "carbon/paperless-parts",
@@ -28,7 +36,8 @@ const taskToEvent = {
   "sync-issue-from-jira": "carbon/jira-sync",
   "sync-issue-from-linear": "carbon/linear-sync",
   "update-permissions": "carbon/update-permissions",
-  "user-admin": "carbon/user-admin"
+  "user-admin": "carbon/user-admin",
+  "extract-document": "carbon/extract-document"
 } as const;
 
 type TaskMap = typeof taskToEvent;

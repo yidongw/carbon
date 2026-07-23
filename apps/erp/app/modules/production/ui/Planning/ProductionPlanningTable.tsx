@@ -27,11 +27,11 @@ import {
   useTransition
 } from "react";
 import {
+  LuBlocks,
   LuBookMarked,
   LuBox,
   LuCircleCheck,
   LuCirclePlay,
-  LuPackage,
   LuSquareChartGantt
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
@@ -45,7 +45,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { usePermissions } from "~/hooks";
-import { itemTypes } from "~/modules/inventory/inventory.models";
+import { inventoryItemTypes } from "~/modules/inventory/inventory.models";
 import { itemReorderingPolicies } from "~/modules/items/items.models";
 import {
   clearOrdersCache,
@@ -249,6 +249,15 @@ const ProductionPlanningTable = ({
                 {numberFormatter.format(value)}
               </span>
             );
+          },
+          meta: {
+            filterHeader: isCurrentWeek
+              ? t`Present Week`
+              : t`Week ${weekNumber}`,
+            exportValue: (row: ProductionPlanningItem) => {
+              const value = row[weekKey] as number | undefined;
+              return value === undefined ? null : value;
+            }
           }
         };
       }
@@ -297,7 +306,13 @@ const ProductionPlanningTable = ({
               )?.label ?? null
             }
           />
-        )
+        ),
+        meta: {
+          filterHeader: t`Unit of Measure`,
+          exportValue: (row: ProductionPlanningItem) =>
+            unitOfMeasures.find((uom) => uom.value === row.unitOfMeasureCode)
+              ?.label ?? null
+        }
       },
       {
         accessorKey: "reorderingPolicy",
@@ -334,7 +349,7 @@ const ProductionPlanningTable = ({
         header: t`On Hand`,
         cell: ({ row }) => numberFormatter.format(row.original.quantityOnHand),
         meta: {
-          icon: <LuPackage />,
+          icon: <LuBlocks />,
           renderTotal: true
         }
       },
@@ -366,7 +381,7 @@ const ProductionPlanningTable = ({
         meta: {
           filter: {
             type: "static",
-            options: itemTypes
+            options: inventoryItemTypes
               .filter((t) => ["Part", "Tool"].includes(t))
               .map((type) => ({
                 label: (
@@ -453,7 +468,6 @@ const ProductionPlanningTable = ({
   );
 
   const defaultColumnVisibility = {
-    active: false,
     type: false
   };
 
@@ -484,7 +498,7 @@ const ProductionPlanningTable = ({
             />
             <mrpFetcher.Form method="post" action={path.to.api.mrp(locationId)}>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button
                     type="submit"
                     variant="secondary"

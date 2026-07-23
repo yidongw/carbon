@@ -5,8 +5,6 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   HStack,
@@ -19,6 +17,9 @@ import { useEffect, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import {
   LuCheckCheck,
+  LuCircleCheck,
+  LuCircleX,
+  LuDollarSign,
   LuEllipsisVertical,
   LuFile,
   LuPanelLeft,
@@ -37,12 +38,12 @@ import {
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
-import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { usePermissions, useRouteData, useSettings, useUser } from "~/hooks";
 import { ShipmentStatus } from "~/modules/inventory/ui/Shipments";
 import type { SalesInvoice, SalesInvoiceLine } from "~/modules/invoicing";
-import { salesInvoiceStatusType } from "~/modules/invoicing";
+import { isInvoicePayable } from "~/modules/invoicing";
+import { getPayInvoiceHref } from "~/modules/invoicing/ui/Payment/PaymentForm";
 import type { action } from "~/routes/x+/sales-invoice+/$invoiceId.post";
-import type { action as statusAction } from "~/routes/x+/sales-invoice+/$invoiceId.status";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import SalesInvoicePostModal from "./SalesInvoicePostModal";
@@ -64,7 +65,6 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
   });
 
   const postFetcher = useFetcher<typeof action>();
-  const statusFetcher = useFetcher<typeof statusAction>();
 
   const { carbon } = useCarbon();
   const [linesNotAssociatedWithSO, setLinesNotAssociatedWithSO] = useState<
@@ -81,12 +81,28 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
     salesInvoice: SalesInvoice;
     salesInvoiceLines: SalesInvoiceLine[];
     defaultCc: string[];
+    orgHasCredits: boolean;
   }>(path.to.salesInvoice(invoiceId));
 
   if (!routeData?.salesInvoice) throw new Error("salesInvoice not found");
   const { salesInvoice } = routeData;
   const isPosted = salesInvoice.postingDate !== null;
   const isVoided = salesInvoice.status === "Voided";
+
+  // Manual Mark as Paid is the settled signal for companies without
+  // accounting; with accounting enabled invoices settle only via payments.
+  // baseStatus is the stored salesInvoice.status (the view's status column is
+  // derived from settlements, so a settlement-paid invoice stays untouched).
+  const settings = useSettings();
+  const accountingEnabled =
+    (settings as { accountingEnabled?: boolean }).accountingEnabled ?? false;
+  const baseStatus = (salesInvoice as { baseStatus?: string | null })
+    .baseStatus;
+  const statusFetcher = useFetcher<{}>();
+  const canToggleManualPaid =
+    !accountingEnabled && isPosted && permissions.can("update", "invoicing");
+  const canMarkPaid = canToggleManualPaid && baseStatus === "Submitted";
+  const canMarkUnpaid = canToggleManualPaid && baseStatus === "Paid";
 
   const [relatedDocs, setRelatedDocs] = useState<{
     salesOrders: { id: string; readableId: string }[];
@@ -167,17 +183,22 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
     postingModal.onOpen();
   };
 
-  const handleStatusChange = (status: string) => {
-    statusFetcher.submit(
-      { status },
-      { method: "post", action: path.to.salesInvoiceStatus(invoiceId) }
-    );
-  };
-
-  const IS_PAYMENT_DROPDOWN_DISABLED =
-    ["Voided", "Draft", "Pending"].includes(salesInvoice.status ?? "") ||
-    !permissions.can("update", "invoicing");
-
+  // Status is derived from invoiceSettlement rows, except base-status 'Paid',
+  // which is the manual/legacy/Xero "settled" signal. Companies without
+  // accounting can toggle it via Mark as Paid / Mark as Unpaid below; the
+  // status route rejects manual 'Paid' when accounting is enabled.
+  // "Receive Payment" launches the payment form pre-filled for this
+  // invoice — NetSuite's Accept Payment pattern. Hidden once the
+  // invoice is fully settled, voided, or pre-posting.
+  const canReceivePayment =
+    isInvoicePayable(salesInvoice.status, salesInvoice.balance) &&
+    permissions.can("create", "invoicing");
+  const receivePaymentHref = getPayInvoiceHref({
+    side: "ar",
+    partyId: salesInvoice.customerId,
+    invoiceId,
+    balance: salesInvoice.balance
+  });
   return (
     <>
       <DetailTopbarContent>
@@ -197,6 +218,46 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {auditLogTrigger}
+            {canMarkPaid && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  disabled={statusFetcher.state !== "idle"}
+                  onClick={() =>
+                    statusFetcher.submit(
+                      { status: "Paid" },
+                      {
+                        method: "post",
+                        action: path.to.salesInvoiceStatus(invoiceId)
+                      }
+                    )
+                  }
+                >
+                  <DropdownMenuIcon icon={<LuCircleCheck />} />
+                  <Trans>Mark as Paid</Trans>
+                </DropdownMenuItem>
+              </>
+            )}
+            {canMarkUnpaid && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  disabled={statusFetcher.state !== "idle"}
+                  onClick={() =>
+                    statusFetcher.submit(
+                      { status: "Submitted" },
+                      {
+                        method: "post",
+                        action: path.to.salesInvoiceStatus(invoiceId)
+                      }
+                    )
+                  }
+                >
+                  <DropdownMenuIcon icon={<LuCircleX />} />
+                  <Trans>Mark as Unpaid</Trans>
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <a
@@ -256,26 +317,16 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
               <DropdownMenuIcon icon={<LuCheckCheck />} />
               <Trans>Post</Trans>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {IS_PAYMENT_DROPDOWN_DISABLED ? (
-              <DropdownMenuItem disabled>
-                <Trans>Payment</Trans>
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuRadioGroup
-                value={salesInvoice.status ?? "Draft"}
-                onValueChange={handleStatusChange}
-              >
-                {salesInvoiceStatusType
-                  .filter(
-                    (status) => !["Draft", "Pending", "Voided"].includes(status)
-                  )
-                  .map((status) => (
-                    <DropdownMenuRadioItem key={status} value={status}>
-                      <SalesInvoiceStatus status={status} />
-                    </DropdownMenuRadioItem>
-                  ))}
-              </DropdownMenuRadioGroup>
+            {canReceivePayment && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={receivePaymentHref}>
+                    <DropdownMenuIcon icon={<LuDollarSign />} />
+                    <Trans>Payment</Trans>
+                  </Link>
+                </DropdownMenuItem>
+              </>
             )}
             {isPosted && (
               <>

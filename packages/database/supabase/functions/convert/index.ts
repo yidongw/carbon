@@ -13,9 +13,30 @@ import { corsHeaders } from "../lib/headers.ts";
 import { requirePermissions } from "../lib/supabase.ts";
 import { Database } from "../lib/types.ts";
 import { getNextSequence } from "../shared/get-next-sequence.ts";
+import { getRemainingQuantityToInvoice } from "../shared/short-close.ts";
 
 const pool = getConnectionPool(2);
 const db = getDatabaseClient<DB>(pool);
+
+// Supabase/PostgREST caps a single response at 1000 rows. Page through with
+// .range() so large reads (e.g. a quote's lines × quantity-break prices) are
+// not silently truncated.
+async function fetchAllRows<T>(
+  makeQuery: (
+    from: number,
+    to: number
+  ) => PromiseLike<{ data: T[] | null; error: unknown }>
+): Promise<{ data: T[]; error: unknown }> {
+  const pageSize = 1000;
+  const all: T[] = [];
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await makeQuery(from, from + pageSize - 1);
+    if (error) return { data: all, error };
+    if (data && data.length > 0) all.push(...data);
+    if (!data || data.length < pageSize) break;
+  }
+  return { data: all, error: null };
+}
 
 const payloadValidator = z.discriminatedUnion("type", [
   z.object({
@@ -36,19 +57,23 @@ const payloadValidator = z.discriminatedUnion("type", [
     companyId: z.string(),
     userId: z.string(),
     purchaseOrderNumber: z.string().optional(),
+    // Only `quantity` is trusted (it selects a quantity break). Every financial
+    // field is derived server-side from quoteLinePrice in the handler; the money
+    // fields below are accepted-but-ignored for backward compatibility with
+    // existing clients that still send them.
     selectedLines: z.record(
       z.string(),
       z.object({
-        quantity: z.number(),
-        netUnitPrice: z.number(),
-        convertedNetUnitPrice: z.number(),
-        addOn: z.number(),
-        convertedAddOn: z.number(),
+        quantity: z.number().min(0),
+        netUnitPrice: z.number().optional(),
+        convertedNetUnitPrice: z.number().optional(),
+        addOn: z.number().optional(),
+        convertedAddOn: z.number().optional(),
         taxableAddOn: z.number().optional(),
         convertedTaxableAddOn: z.number().optional(),
-        shippingCost: z.number(),
-        convertedShippingCost: z.number(),
-        leadTime: z.number(),
+        shippingCost: z.number().optional(),
+        convertedShippingCost: z.number().optional(),
+        leadTime: z.number().optional(),
       })
     ),
     digitalQuoteAcceptedBy: z.string().optional(),
@@ -268,13 +293,16 @@ serve(async (req: Request) => {
         if (!purchaseOrderDelivery.data)
           throw new Error("Purchase order delivery not found");
 
+        // Short-closed lines ("Stop Receiving") only bill what was received,
+        // so quantities go through getRemainingQuantityToInvoice rather than
+        // the generated quantityToInvoice column (ordered - invoiced).
         const uninvoicedLines = purchaseOrderLines?.data?.reduce<
           (typeof purchaseOrderLines)["data"]
         >((acc, line) => {
           if (
-            line?.quantityToInvoice &&
-            line.quantityToInvoice > 0 &&
-            !line.invoicedComplete
+            line &&
+            !line.invoicedComplete &&
+            getRemainingQuantityToInvoice(line) > 0
           ) {
             acc.push(line);
           }
@@ -289,16 +317,36 @@ serve(async (req: Request) => {
         }
 
         const uninvoicedSubtotal = uninvoicedLines.reduce((acc, line) => {
-          if (
-            line?.quantityToInvoice &&
-            line.unitPrice &&
-            line.quantityToInvoice > 0
-          ) {
-            acc += line.quantityToInvoice * line.unitPrice;
+          if (line?.unitPrice) {
+            acc += getRemainingQuantityToInvoice(line) * line.unitPrice;
           }
 
           return acc;
         }, 0);
+
+        // Flat header/line amounts (shipping, tax) must not be duplicated
+        // when a PO is invoiced in multiple partial invoices: the header
+        // shipping goes on the first (non-voided) invoice only, and flat
+        // line amounts are prorated by the fraction being invoiced.
+        const priorInvoiceLines = await client
+          .from("purchaseInvoiceLine")
+          .select("id, purchaseInvoice!inner(status)")
+          .eq("purchaseOrderId", purchaseOrderId)
+          .eq("companyId", companyId)
+          .neq("purchaseInvoice.status", "Voided")
+          .limit(1);
+        const hasPriorInvoice = (priorInvoiceLines.data?.length ?? 0) > 0;
+
+        const uninvoicedFraction = (line: {
+          purchaseQuantity: number | null;
+          quantityReceived: number | null;
+          quantityInvoiced: number | null;
+          receivedComplete: boolean | null;
+        }) => {
+          const ordered = line.purchaseQuantity ?? 0;
+          if (ordered <= 0) return 1;
+          return Math.min(getRemainingQuantityToInvoice(line) / ordered, 1);
+        };
 
         let purchaseInvoiceId = "";
 
@@ -331,7 +379,6 @@ serve(async (req: Request) => {
               totalDiscount: 0,
               totalAmount: uninvoicedSubtotal ?? 0,
               totalTax: 0,
-              balance: uninvoicedSubtotal ?? 0,
               companyId,
               createdBy: userId,
             })
@@ -347,8 +394,9 @@ serve(async (req: Request) => {
             .values({
               id: purchaseInvoiceId,
               locationId: purchaseOrderDelivery.data.locationId,
-              supplierShippingCost:
-                purchaseOrderDelivery.data.supplierShippingCost ?? 0,
+              supplierShippingCost: hasPriorInvoice
+                ? 0
+                : purchaseOrderDelivery.data.supplierShippingCost ?? 0,
               shippingMethodId: purchaseOrderDelivery.data.shippingMethodId,
               shippingTermId: purchaseOrderDelivery.data.shippingTermId,
               incoterm: purchaseOrderDelivery.data.incoterm,
@@ -371,10 +419,12 @@ serve(async (req: Request) => {
               costCenterId: line.costCenterId,
               assetId: line.assetId,
               description: line.description,
-              quantity: line.quantityToInvoice,
+              quantity: getRemainingQuantityToInvoice(line),
               supplierUnitPrice: line.supplierUnitPrice ?? 0,
-              supplierShippingCost: line.supplierShippingCost ?? 0,
-              supplierTaxAmount: line.supplierTaxAmount ?? 0,
+              supplierShippingCost:
+                (line.supplierShippingCost ?? 0) * uninvoicedFraction(line),
+              supplierTaxAmount:
+                (line.supplierTaxAmount ?? 0) * uninvoicedFraction(line),
               purchaseUnitOfMeasureCode: line.purchaseUnitOfMeasureCode,
               inventoryUnitOfMeasureCode: line.inventoryUnitOfMeasureCode,
               conversionFactor: line.conversionFactor,
@@ -408,22 +458,75 @@ serve(async (req: Request) => {
           digitalQuoteAcceptedBy,
           digitalQuoteAcceptedByEmail,
         } = payload;
-        const [quote, quoteLines, quotePayment, quoteShipping, company] =
-          await Promise.all([
-            client.from("quote").select("*").eq("id", id).single(),
-            client.from("quoteLine").select("*").eq("quoteId", id),
-            client.from("quotePayment").select("*").eq("id", id).single(),
-            client.from("quoteShipment").select("*").eq("id", id).single(),
-            client.from("company").select("*").eq("id", companyId).single(),
-          ]);
+        const [
+          quote,
+          quoteLines,
+          quoteLinePrices,
+          quotePayment,
+          quoteShipping,
+          company,
+        ] = await Promise.all([
+          client.from("quote").select("*").eq("id", id).single(),
+          fetchAllRows((from, to) =>
+            client.from("quoteLine").select("*").eq("quoteId", id).range(from, to)
+          ),
+          fetchAllRows((from, to) =>
+            client
+              .from("quoteLinePrice")
+              .select("*")
+              .eq("quoteId", id)
+              .range(from, to)
+          ),
+          client.from("quotePayment").select("*").eq("id", id).single(),
+          client.from("quoteShipment").select("*").eq("id", id).single(),
+          client.from("company").select("*").eq("id", companyId).single(),
+        ]);
 
         if (quote.error) throw new Error(`Quote with id ${id} not found`);
         if (quoteLines.error)
           throw new Error(`Quote Lines with id ${id} not found`);
+        if (quoteLinePrices.error)
+          throw new Error(`Quote line prices with id ${id} not found`);
         if (quotePayment.error)
           throw new Error(`Quote payment with id ${id} not found`);
         if (quoteShipping.error)
           throw new Error(`Quote shipping with id ${id} not found`);
+
+        // SECURITY: every financial field on the resulting sales order line is
+        // derived here from the canonical quoteLinePrice rows, keyed by
+        // (quoteLineId, quantity). The digital-quote accept endpoint is
+        // unauthenticated, so the client `selectedLines` payload is trusted only
+        // as a selection of quantity break — never as a source of prices. Do not
+        // read money fields (netUnitPrice, shippingCost, addOn, …) from it.
+        const canonicalPriceByLineQty = new Map<
+          string,
+          NonNullable<typeof quoteLinePrices.data>[number]
+        >();
+        for (const price of quoteLinePrices.data ?? []) {
+          canonicalPriceByLineQty.set(
+            `${price.quoteLineId}:${price.quantity}`,
+            price
+          );
+        }
+
+        const computeAddOns = (
+          additionalCharges: unknown,
+          quantity: number
+        ): { addOn: number; taxableAddOn: number } => {
+          const charges =
+            (additionalCharges as Record<
+              string,
+              { amounts?: Record<string, number>; taxable?: boolean }
+            > | null) ?? {};
+          let addOn = 0;
+          let taxableAddOn = 0;
+          for (const charge of Object.values(charges)) {
+            const amount = Number(charge?.amounts?.[quantity] ?? 0) || 0;
+            addOn += amount;
+            if (charge?.taxable !== false) taxableAddOn += amount;
+          }
+          return { addOn, taxableAddOn };
+        };
 
         let insertedSalesOrderId = "";
         await db.transaction().execute(async (trx) => {
@@ -443,7 +546,23 @@ serve(async (req: Request) => {
               selectedLines[line.id].quantity === 0
           );
 
-          const salesOrderStatus = "To Ship and Invoice";
+          // Only the selected lines become sales order lines below.
+          const selectedQuoteLines = quoteLines.data.filter(
+            (line) =>
+              line.id &&
+              selectedLines &&
+              line.id in selectedLines &&
+              selectedLines[line.id].quantity > 0
+          );
+
+          // Services are never shipped — a service-only order goes straight to
+          // "To Invoice" so it isn't stuck waiting on a shipment that can't happen.
+          const hasShippableLine = selectedQuoteLines.some(
+            (line) => line.itemType !== "Service"
+          );
+          const salesOrderStatus = hasShippableLine
+            ? "To Ship and Invoice"
+            : "To Invoice";
 
           const salesOrder = await trx
             .insertInto("salesOrder")
@@ -501,14 +620,6 @@ serve(async (req: Request) => {
             })
             .execute();
 
-          const selectedQuoteLines = quoteLines.data.filter(
-            (line) =>
-              line.id &&
-              selectedLines &&
-              line.id in selectedLines &&
-              selectedLines[line.id].quantity > 0
-          );
-
           const pickMethodDefaultsByLineId = new Map<string, string | null>();
           await Promise.all(
             selectedQuoteLines.map(async (line) => {
@@ -534,12 +645,25 @@ serve(async (req: Request) => {
 
           const salesOrderLineInserts: Database["public"]["Tables"]["salesOrderLine"]["Insert"][] =
             selectedQuoteLines.map((line) => {
+              const selectedQuantity = selectedLines![line.id!].quantity;
+              const price = canonicalPriceByLineQty.get(
+                `${line.id}:${selectedQuantity}`
+              );
+              if (!price) {
+                throw new Error(
+                  `No quote price found for line ${line.id} at quantity ${selectedQuantity}`
+                );
+              }
+              const { addOn, taxableAddOn } = computeAddOns(
+                line.additionalCharges,
+                price.quantity
+              );
               return {
                 id: line.id,
                 salesOrderId: insertedSalesOrderId,
                 salesOrderLineType: line.itemType as "Part",
-                addOnCost: selectedLines![line.id!].taxableAddOn ?? selectedLines![line.id!].addOn,
-                nonTaxableAddOnCost: (selectedLines![line.id!].addOn ?? 0) - (selectedLines![line.id!].taxableAddOn ?? selectedLines![line.id!].addOn ?? 0),
+                addOnCost: taxableAddOn,
+                nonTaxableAddOnCost: addOn - taxableAddOn,
                 description: line.description,
                 itemId: line.itemId,
                 locationId: line.locationId ?? quote.data.locationId,
@@ -547,14 +671,13 @@ serve(async (req: Request) => {
                 storageUnitId: pickMethodDefaultsByLineId.get(line.id!) ?? null,
                 internalNotes: line.internalNotes,
                 externalNotes: line.externalNotes,
-                saleQuantity: selectedLines![line.id!].quantity,
+                saleQuantity: price.quantity,
                 status: "Ordered",
                 unitOfMeasureCode: line.unitOfMeasureCode,
-                unitPrice: selectedLines![line.id!].netUnitPrice,
+                unitPrice: price.netUnitPrice ?? 0,
                 promisedDate: format(
                   new Date(
-                    Date.now() +
-                      selectedLines![line.id!].leadTime * 24 * 60 * 60 * 1000
+                    Date.now() + (price.leadTime ?? 0) * 24 * 60 * 60 * 1000
                   ),
                   "yyyy-MM-dd"
                 ),
@@ -562,7 +685,7 @@ serve(async (req: Request) => {
                 companyId,
                 exchangeRate: quote.data.exchangeRate ?? 1,
                 taxPercent: line.taxPercent,
-                shippingCost: selectedLines![line.id!].shippingCost,
+                shippingCost: price.shippingCost ?? 0,
                 sortOrder: line.sortOrder ?? 1,
               };
             });
@@ -587,7 +710,12 @@ serve(async (req: Request) => {
           const newQuoteStatus: "Ordered" | "Partial" = hasZeroQuantityLines
             ? "Partial"
             : "Ordered";
-          await trx
+          // Atomic guard: only convert a quote that is still "Sent". Both the
+          // internal "convert to order" flow and the unauthenticated digital
+          // quote accept run from "Sent" only. If a concurrent or replayed
+          // request already converted it, 0 rows update here and the throw rolls
+          // the whole transaction back — no duplicate sales order is committed.
+          const quoteStatusUpdate = await trx
             .updateTable("quote")
             .set({
               status: newQuoteStatus,
@@ -595,7 +723,14 @@ serve(async (req: Request) => {
               digitalQuoteAcceptedByEmail: digitalQuoteAcceptedByEmail ?? null,
             })
             .where("id", "=", quote.data.id)
-            .execute();
+            .where("status", "=", "Sent")
+            .executeTakeFirst();
+
+          if (Number(quoteStatusUpdate.numUpdatedRows ?? 0) === 0) {
+            throw new Error(
+              `Quote ${quote.data.id} is no longer in a convertible state`
+            );
+          }
 
           const customerPartSeen = new Set<string>();
           const customerPartToItemInserts = quoteLines.data
@@ -737,7 +872,6 @@ serve(async (req: Request) => {
               totalDiscount: 0,
               totalAmount: uninvoicedSubtotal ?? 0,
               totalTax: 0,
-              balance: uninvoicedSubtotal ?? 0,
               companyId,
               createdBy: userId,
             })
@@ -1326,7 +1460,6 @@ serve(async (req: Request) => {
               totalDiscount: 0,
               totalAmount: uninvoicedSubtotal ?? 0,
               totalTax: 0,
-              balance: uninvoicedSubtotal ?? 0,
               companyId,
               createdBy: userId,
             })

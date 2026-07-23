@@ -1,11 +1,15 @@
+import { getLogger } from "@carbon/logger";
 import { cn, Td } from "@carbon/react";
 import type { Cell as CellType, Column } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import type { CSSProperties } from "react";
 import { memo, useState } from "react";
+import { LuPencil } from "react-icons/lu";
 import type { EditableTableCellComponent } from "~/components/Editable";
 import { useMovingCellRef } from "~/hooks";
 import { getAccessorKey } from "../utils";
+
+const logger = getLogger("erp", "cell");
 
 type CellProps<T> = {
   cell: CellType<T, unknown>;
@@ -66,17 +70,28 @@ const Cell = <T extends object>({
       ? (cell.column.columnDef.meta.cellClassName as string | undefined)
       : undefined;
 
+  // Inline-editable cells render as plain text until clicked; surface a subtle
+  // pencil on hover so users can tell the value is editable.
+  const showEditAffordance =
+    isEditMode && hasEditableTableCellComponent && !isSelected;
+
   return (
     <Td
       className={cn(
-        "relative py-2 whitespace-nowrap text-sm outline-none max-w-[30dvw] truncate",
+        "group/cell relative py-2 whitespace-nowrap text-sm outline-none max-w-[30dvw] truncate",
         cell.column.id === "Select" ? "px-2" : "px-4",
         cellClassName,
         wasEdited && "bg-yellow-100 dark:bg-yellow-900",
         isEditMode && !hasEditableTableCellComponent && "bg-muted/50",
         isEditMode && "border-border border-r",
         hasError && "ring-inset ring-2 ring-red-500",
-        isSelected && "!ring-inset !ring-2 !ring-ring",
+        // Selection is always visible (Excel-like), or keyboard navigation
+        // has no landmark. Editable cells get the full-strength ring +
+        // background; read-only cells a muted ring so the selection doesn't
+        // signal "you can type here".
+        isSelected && "!ring-inset !ring-2",
+        isSelected &&
+          (hasEditableTableCellComponent ? "!ring-ring" : "!ring-ring/40"),
         isSelected && hasEditableTableCellComponent && "!bg-background",
         isPinned && "bg-card transition-[left] duration-200"
       )}
@@ -102,7 +117,7 @@ const Cell = <T extends object>({
                 row: cell.row.original,
                 onUpdate: onUpdate
                   ? onUpdate
-                  : () => console.error("No update function provided"),
+                  : () => logger.error("No update function provided"),
                 onError: () => {
                   setHasError(true);
                 },
@@ -113,6 +128,12 @@ const Cell = <T extends object>({
       ) : (
         <div ref={ref}>
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          {showEditAffordance && (
+            <LuPencil
+              aria-hidden
+              className="pointer-events-none absolute right-1.5 top-1/2 size-3 -translate-y-1/2 text-muted-foreground opacity-0 transition-opacity duration-150 group-hover/cell:opacity-60"
+            />
+          )}
         </div>
       )}
     </Td>

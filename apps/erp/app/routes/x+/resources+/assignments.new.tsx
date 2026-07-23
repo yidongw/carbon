@@ -3,11 +3,13 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
+import { getLogger } from "@carbon/logger";
 import { NotificationEvent } from "@carbon/notifications";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData, useNavigate } from "react-router";
 import {
+  getTrainingAssignments,
   getTrainingsList,
   TrainingAssignmentForm,
   trainingAssignmentValidator,
@@ -16,6 +18,8 @@ import {
 import type { TrainingListItem } from "~/modules/resources/types";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+
+const logger = getLogger("erp", "assignments-new");
 
 export const handle: Handle = {
   breadcrumb: msg`New Assignment`,
@@ -59,6 +63,22 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { trainingId, groupIds } = validation.data;
 
+  // One assignment per training — duplicates double every employee in the status views
+  const existing = await getTrainingAssignments(client, companyId, trainingId);
+  if (existing.data && existing.data.length > 0) {
+    // 200 on purpose: a 4xx response skips revalidation and the toast never shows
+    return data(
+      { error: "This training is already assigned" },
+      await flash(
+        request,
+        error(
+          null,
+          "This training is already assigned. Edit the existing assignment to add more groups or people."
+        )
+      )
+    );
+  }
+
   const result = await upsertTrainingAssignment(client, {
     trainingId,
     groupIds,
@@ -94,7 +114,9 @@ export async function action({ request }: ActionFunctionArgs) {
         from: userId
       });
     } catch (err) {
-      console.error("Failed to send training assignment notifications", err);
+      logger.error("Failed to send training assignment notifications", {
+        error: err
+      });
     }
   }
 

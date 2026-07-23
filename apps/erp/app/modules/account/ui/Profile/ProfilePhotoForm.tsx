@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import {
   Badge,
   Button,
@@ -13,6 +14,8 @@ import { Avatar } from "~/components";
 import { path } from "~/utils/path";
 import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
 import type { Account } from "../../types";
+
+const logger = getLogger("erp", "profilephotoform");
 
 const maxSizeMB = 10;
 
@@ -87,7 +90,7 @@ const ProfilePhotoForm = ({ user }: ProfilePhotoFormProps) => {
           type: resolvedType
         });
       } catch (error) {
-        console.error(error);
+        logger.error("Error", { error: error });
         const errorMessage =
           error instanceof Error ? error.message : "Failed to resize image";
         uploadToast.error(errorMessage);
@@ -102,7 +105,7 @@ const ProfilePhotoForm = ({ user }: ProfilePhotoFormProps) => {
         });
 
       if (imageUpload.error) {
-        console.error(imageUpload.error);
+        logger.error("Error", { error: imageUpload.error });
         const errorMessage =
           imageUpload.error.message || "Failed to upload image to storage";
         uploadToast.error(errorMessage);

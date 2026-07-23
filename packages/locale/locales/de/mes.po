@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: de\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -26,12 +27,14 @@ msgstr "{0} Aktiv"
 msgid "{0} of {1}"
 msgstr "{0} von {1}"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} complete"
 msgstr "{0} von {1} abgeschlossen"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} completed"
 msgstr "{0} von {1} abgeschlossen"
@@ -49,7 +52,9 @@ msgid "{failed} of {0} tickets failed"
 msgstr "{failed} von {0} Tickets fehlgeschlagen"
 
 msgid "A consumed batch or serial is now past its expiry date."
-msgstr "Ein verbrauchtes Batch oder Seriennummer ist jetzt über seine Gültigkeitsdauer hinaus."
+msgstr ""
+"Ein verbrauchtes Batch oder Seriennummer ist jetzt über seine "
+"Gültigkeitsdauer hinaus."
 
 msgid "About"
 msgstr "Über"
@@ -76,7 +81,9 @@ msgid "Add & Issue"
 msgstr "Hinzufügen & Ausgeben"
 
 msgid "Add a printer in the printing settings to print labels directly."
-msgstr "Fügen Sie eine Druckersetzung in den Druckeinstellungen hinzu, um Etiketten direkt zu drucken."
+msgstr ""
+"Fügen Sie eine Druckersetzung in den Druckeinstellungen hinzu, um Etiketten "
+"direkt zu drucken."
 
 msgid "Add Inventory"
 msgstr "Bestand hinzufügen"
@@ -115,13 +122,23 @@ msgid "Are you sure you want to delete this step?"
 msgstr "Möchten Sie diesen Schritt wirklich löschen?"
 
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
-msgstr "Möchten Sie diese Zeitkarte wirklich löschen? Dies kann nicht rückgängig gemacht werden."
+msgstr ""
+"Möchten Sie diese Zeitkarte wirklich löschen? Dies kann nicht rückgängig "
+"gemacht werden."
 
-msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
-msgstr "Möchten Sie wirklich alle Produktionsereignisse beenden? Dadurch werden alle aktiven Arbeitsgänge beendet, ohne sie abzuschließen."
+msgid ""
+"Are you sure you want to end all production events? This will end all active"
+" operations without completing or finishing them."
+msgstr ""
+"Möchten Sie wirklich alle Produktionsereignisse beenden? Dadurch werden alle"
+" aktiven Arbeitsgänge beendet, ohne sie abzuschließen."
 
-msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
-msgstr "Bist du sicher, dass du diese Operation abschließen möchtest? Dies wird alle aktiven Produktionsereignisse für diese Operation beenden."
+msgid ""
+"Are you sure you want to finish this operation? This will end all active "
+"production events for this operation."
+msgstr ""
+"Bist du sicher, dass du diese Operation abschließen möchtest? Dies wird alle"
+" aktiven Produktionsereignisse für diese Operation beenden."
 
 msgid "Are you sure you want to leave this page?"
 msgstr "Sind Sie sicher, dass Sie diese Seite verlassen wollen?"
@@ -197,11 +214,19 @@ msgstr "Bundel Werkzeugeingenreden"
 msgid "Bundles"
 msgstr "Pakete"
 
-msgid "But don't worry. You can use the forgot password flow to request a new magic link."
-msgstr "Aber machen Sie sich keine Sorgen. Sie können den Passwort-Zurücksetzen-Ablauf verwenden, um einen neuen Magic Link anzufordern."
+msgid ""
+"But don't worry. You can use the forgot password flow to request a new magic"
+" link."
+msgstr ""
+"Aber machen Sie sich keine Sorgen. Sie können den Passwort-Zurücksetzen-"
+"Ablauf verwenden, um einen neuen Magic Link anzufordern."
 
-msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
-msgstr "Mit der Anmeldung stimmen Sie den <0>Nutzungsbedingungen</0> und der <1>Datenschutzrichtlinie</1> zu."
+msgid ""
+"By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy "
+"Policy.</1>"
+msgstr ""
+"Mit der Anmeldung stimmen Sie den <0>Nutzungsbedingungen</0> und der "
+"<1>Datenschutzrichtlinie</1> zu."
 
 msgid "Camera unavailable — use manual selection below."
 msgstr "Kamera nicht verfügbar – bitte unten manuell auswählen."
@@ -433,9 +458,12 @@ msgstr "Datei hierher ziehen oder klicken, um eine Datei auszuwählen"
 msgid "Dragging {0} cancelled."
 msgstr "Ziehen von {0} abgebrochen."
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(
+#. operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "Fällig {0}"
 
@@ -566,7 +594,9 @@ msgid "Green"
 msgstr "Grün"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
-msgstr "Haben Sie ein technisches Problem? Kontaktieren Sie den <0>Carbon Support.</0>"
+msgstr ""
+"Haben Sie ein technisches Problem? Kontaktieren Sie den <0>Carbon "
+"Support.</0>"
 
 msgid "Helper information"
 msgstr "Hilfsvorinformation"
@@ -659,10 +689,13 @@ msgid "Join"
 msgstr "Teilen Sie sich"
 
 msgid "Join a company you've been invited to, or pick one."
-msgstr "Joин eine Firma, zu der Sie eingeladen wurden, oder wählen Sie eine aus."
+msgstr ""
+"Joин eine Firma, zu der Sie eingeladen wurden, oder wählen Sie eine aus."
 
 msgid "Keep the completed quantity and give a reason for the rest."
-msgstr "Bleiben Sie bei der abgeschlossenen Menge und geben Sie einen Grund für den Rest an."
+msgstr ""
+"Bleiben Sie bei der abgeschlossenen Menge und geben Sie einen Grund für den "
+"Rest an."
 
 msgid "Khaki"
 msgstr "Khaki"
@@ -944,8 +977,13 @@ msgstr "Kein Lagerbestand"
 msgid "No time entries for this week"
 msgstr "Keine Zeiteinträge für diese Woche"
 
-msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
-msgstr "Es gibt keine Lagerbestände für dieses Artikelnummer auf dem Record. Sie können es trotzdem auswählen – der verfügbare Bestand wird negativ gehen, bis die Reconciliation durchgeführt ist."
+msgid ""
+"No warehouse stock is on record for this item. You can still pick it — on-"
+"hand will go negative until the count is reconciled."
+msgstr ""
+"Es gibt keine Lagerbestände für dieses Artikelnummer auf dem Record. Sie "
+"können es trotzdem auswählen – der verfügbare Bestand wird negativ gehen, "
+"bis die Reconciliation durchgeführt ist."
 
 msgid "No work centers are blocked"
 msgstr "Keine Arbeitsplätze sind blockiert"
@@ -975,8 +1013,11 @@ msgstr "Alte zuerst"
 msgid "Only {0} available"
 msgstr "Nur {0} verfügbar"
 
-msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
-msgstr "Hoppla. Diese Seite sollten Sie nicht sehen. Sie wird künftig eine Startseite sein."
+msgid ""
+"Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgstr ""
+"Hoppla. Diese Seite sollten Sie nicht sehen. Sie wird künftig eine "
+"Startseite sein."
 
 msgid "Open"
 msgstr "Offen"
@@ -1100,7 +1141,8 @@ msgid "Planned"
 msgstr "Geplant"
 
 msgid "Please record all steps for this operation before closing."
-msgstr "Bitte erfassen Sie alle Schritte für diesen Arbeitsgang vor dem Abschluss."
+msgstr ""
+"Bitte erfassen Sie alle Schritte für diesen Arbeitsgang vor dem Abschluss."
 
 msgid "Please select an item"
 msgstr "Bitte wählen Sie einen Artikel aus"
@@ -1317,10 +1359,12 @@ msgid "Scan a bundle ticket to take the job and start working."
 msgstr "Bündelticket scannen, um den Auftrag zu übernehmen und zu beginnen."
 
 msgid "Scan a finished bundle to report the quantity you completed"
-msgstr "Fertiges Bündel scannen, um die von dir fertiggestellte Menge zu melden"
+msgstr ""
+"Fertiges Bündel scannen, um die von dir fertiggestellte Menge zu melden"
 
 msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Fertiges Bündel scannen, um die von dir fertiggestellte Menge zu melden."
+msgstr ""
+"Fertiges Bündel scannen, um die von dir fertiggestellte Menge zu melden."
 
 msgid "Scan batch number"
 msgstr "Scannen Sie den Batchnummer"
@@ -1425,8 +1469,12 @@ msgstr "Seriennummer auswählen"
 msgid "Select Serial Number {0}"
 msgstr "Wählen Sie Seriennummer {0}"
 
-msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
-msgstr "Wählen Sie die Operation, um zurückschrittend fortzufahren. Ab dieser Operation bis zur aktuellen werden alle Schritte neu durchgeführt."
+msgid ""
+"Select the operation to go back to. All operations from that point to the "
+"current operation will be redone."
+msgstr ""
+"Wählen Sie die Operation, um zurückschrittend fortzufahren. Ab dieser "
+"Operation bis zur aktuellen werden alle Schritte neu durchgeführt."
 
 msgid "Send"
 msgstr "Senden"
@@ -1572,11 +1620,21 @@ msgid "That QR code isn't a bundle ticket"
 msgstr "Dieser QR-Code ist kein Bündelticket"
 
 #. placeholder {0}: operation.operationQuantity
-msgid "The completed quantity for this operation is less than the required quantity of {0}."
-msgstr "Die abgeschlossene Menge für diesen Arbeitsgang ist geringer als die erforderliche Menge von {0}."
+msgid ""
+"The completed quantity for this operation is less than the required quantity"
+" of {0}."
+msgstr ""
+"Die abgeschlossene Menge für diesen Arbeitsgang ist geringer als die "
+"erforderliche Menge von {0}."
 
-msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
-msgstr "Es gibt serien- oder chargenverfolgte Materialien in der Stückliste, die noch nicht vollständig ausgegeben wurden. Ein Abschluss ohne Ausgabe kann zu fehlerhaften Rückverfolgbarkeitsdaten führen."
+msgid ""
+"There are serial or batch tracked materials on the bill of material that "
+"have not been fully issued. Completing without issuing may result in "
+"incorrect traceability records."
+msgstr ""
+"Es gibt serien- oder chargenverfolgte Materialien in der Stückliste, die "
+"noch nicht vollständig ausgegeben wurden. Ein Abschluss ohne Ausgabe kann zu"
+" fehlerhaften Rückverfolgbarkeitsdaten führen."
 
 msgid "This lot is expired and can't be picked."
 msgstr "Dieser Lote ist abgelaufen und kann nicht ausgewählt werden."
@@ -1587,8 +1645,12 @@ msgstr "Diese Operation wurde gelöscht"
 msgid "This Period"
 msgstr "Dieser Zeitraum"
 
-msgid "This process is assigned to someone else. Taking over stops their running clock."
-msgstr "Dieser Arbeitsgang ist jemand anderem zugewiesen. Beim Übernehmen wird dessen laufende Zeiterfassung gestoppt."
+msgid ""
+"This process is assigned to someone else. Taking over stops their running "
+"clock."
+msgstr ""
+"Dieser Arbeitsgang ist jemand anderem zugewiesen. Beim Übernehmen wird "
+"dessen laufende Zeiterfassung gestoppt."
 
 msgid "Thumbnail"
 msgstr "Vorschaubild"
@@ -1723,7 +1785,8 @@ msgid "We've sent a verification code to {verifyEmail}"
 msgstr "Wir haben einen Verifizierungscode an {verifyEmail} gesendet"
 
 msgid "We've sent you a magic link to sign in to your account."
-msgstr "Wir haben Ihnen einen Magic Link zur Anmeldung an Ihrem Konto gesendet."
+msgstr ""
+"Wir haben Ihnen einen Magic Link zur Anmeldung an Ihrem Konto gesendet."
 
 msgid "Welcome"
 msgstr "Willkommen"
@@ -1747,11 +1810,32 @@ msgid "Yellow"
 msgstr "Gelb"
 
 msgid "You belong to more than one company. Pick where to work."
-msgstr "Sie gehören mehreren Unternehmen an. Wählen Sie, wo Sie arbeiten möchten."
+msgstr ""
+"Sie gehören mehreren Unternehmen an. Wählen Sie, wo Sie arbeiten möchten."
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
-msgstr "Sie haben sich um {0} eingestempelt. Sie können Ihre Ausstempelzeit unten bearbeiten oder bestätigen, dass Sie noch arbeiten."
+msgid ""
+"You clocked in at {0}. You can edit your clock-out time below or acknowledge"
+" that you're still working."
+msgstr ""
+"Sie haben sich um {0} eingestempelt. Sie können Ihre Ausstempelzeit unten "
+"bearbeiten oder bestätigen, dass Sie noch arbeiten."
 
-msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
-msgstr "Sie sind seit {hoursElapsed} Stunden eingestempelt. Haben Sie vergessen auszustempeln?"
+msgid ""
+"You've been clocked in for {hoursElapsed} hours. Did you forget to clock "
+"out?"
+msgstr ""
+"Sie sind seit {hoursElapsed} Stunden eingestempelt. Haben Sie vergessen "
+"auszustempeln?"
+
+msgid "Complete All"
+msgstr "Alles abschließen"
+
+msgid "Learn more"
+msgstr "Erfahren Sie mehr"
+
+msgid "No matches. Type to create one."
+msgstr "Keine Übereinstimmungen. Geben Sie etwas ein, um einen zu erstellen."
+
+msgid "What is {translatedTerm}?"
+msgstr "{translatedTerm} ist was?"

@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { getLogger } from "@carbon/logger";
 import { File } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
@@ -8,6 +9,8 @@ import { useSubmit } from "react-router";
 import { useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
+
+const logger = getLogger("erp", "documentcreateform");
 
 const DocumentCreateForm = () => {
   const { t } = useLingui();
@@ -37,7 +40,7 @@ const DocumentCreateForm = () => {
       });
 
       if (fileUpload.error) {
-        console.error(fileUpload.error);
+        logger.error(fileUpload.error);
         uploadToast.error(t`Failed to upload file`);
         return;
       }

@@ -1,4 +1,3 @@
-import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
   Card,
@@ -8,12 +7,9 @@ import {
   CardHeader,
   CardTitle,
   cn,
-  toast,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
-import { flushSync } from "react-dom";
 import type { z } from "zod";
 import {
   Customer,
@@ -28,10 +24,12 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
+import { PdfExtractor } from "~/components/Form/PdfExtractor";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
 import { isSalesRfqLocked, salesRfqValidator } from "../../sales.models";
 import type { SalesRFQ } from "../../types";
+import { useSalesRfqAutoFill } from "./useSalesRfqAutoFill";
 
 type SalesRFQFormValues = z.infer<typeof salesRfqValidator>;
 
@@ -42,16 +40,6 @@ type SalesRFQFormProps = {
 const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const { carbon } = useCarbon();
-  const [customer, setCustomer] = useState<{
-    id: string | undefined;
-    customerContactId: string | undefined;
-    customerLocationId: string | undefined;
-  }>({
-    id: initialValues.customerId,
-    customerContactId: initialValues.customerContactId,
-    customerLocationId: initialValues.customerLocationId
-  });
   const isEditing = initialValues.id !== undefined;
   const isCustomer = permissions.is("customer");
 
@@ -64,57 +52,23 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
     initialValues.status ?? ""
   );
 
-  const onCustomerChange = async (
-    newValue: {
-      value: string | undefined;
-    } | null
-  ) => {
-    if (!carbon) {
-      toast.error(t`Carbon client not found`);
-      return;
-    }
-
-    if (newValue?.value) {
-      flushSync(() => {
-        setCustomer({
-          id: newValue?.value,
-          customerContactId: undefined,
-          customerLocationId: undefined
-        });
-      });
-
-      const { data, error } = await carbon
-        ?.from("customer")
-        .select(
-          "salesContactId, customerShipping!customerId(shippingCustomerLocationId)"
-        )
-        .eq("id", newValue.value)
-        .single();
-      if (error) {
-        toast.error(t`Error fetching customer data`);
-      } else {
-        setCustomer((prev) => ({
-          ...prev,
-          customerContactId: data.salesContactId ?? undefined,
-          customerLocationId:
-            data.customerShipping?.shippingCustomerLocationId ?? undefined
-        }));
-      }
-    } else {
-      setCustomer({
-        id: undefined,
-        customerContactId: undefined,
-        customerLocationId: undefined
-      });
-    }
-  };
+  const {
+    customer,
+    currentValues,
+    formKey,
+    extractedLineItems,
+    extractedStoragePath,
+    handleExtractionComplete,
+    onCustomerChange
+  } = useSalesRfqAutoFill(initialValues);
 
   return (
     <Card>
       <ValidatedForm
+        key={formKey}
         method="post"
         validator={salesRfqValidator}
-        defaultValues={initialValues}
+        defaultValues={currentValues}
         isDisabled={isEditing && isLocked}
       >
         <CardHeader>
@@ -133,6 +87,18 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
         </CardHeader>
         <CardContent>
           {isEditing && <Hidden name="rfqId" />}
+          <input
+            type="hidden"
+            name="extractedLineItems"
+            value={JSON.stringify(extractedLineItems)}
+          />
+          {extractedStoragePath && (
+            <input
+              type="hidden"
+              name="extractedStoragePath"
+              value={extractedStoragePath}
+            />
+          )}
           <VStack>
             <div
               className={cn(
@@ -156,7 +122,11 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
                 label={t`Customer`}
                 onChange={onCustomerChange}
               />
-              <Input name="customerReference" label={t`Customer RFQ`} />
+              <Input
+                name="customerReference"
+                label={t`Customer RFQ`}
+                termId="customer-document-reference"
+              />
               <CustomerContact
                 name="customerContactId"
                 label={t`Purchasing Contact`}
@@ -167,6 +137,7 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
                 name="customerEngineeringContactId"
                 label={t`Engineering Contact`}
                 customer={customer.id}
+                value={customer.customerEngineeringContactId}
               />
               <CustomerLocation
                 name="customerLocationId"
@@ -177,18 +148,33 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
               <DatePicker
                 name="rfqDate"
                 label={t`RFQ Date`}
+                helperText={t`The date you received this RFQ from the customer. Defaults to today.`}
                 isDisabled={isCustomer}
+                termId="rfq-date"
               />
               <DatePicker
                 name="expirationDate"
                 label={t`Due Date`}
+                helperText={t`The deadline to send your quote to the customer.`}
                 isDisabled={isCustomer}
+                termId="sales-rfq-expiration-date"
               />
-              <Location name="locationId" label={t`RFQ Location`} />
+              <Location
+                name="locationId"
+                label={t`RFQ Location`}
+                termId="rfq-receiving-location"
+              />
               <Employee name="salesPersonId" label={t`Sales Person`} />
               <CustomFormFields table="salesRfq" />
             </div>
           </VStack>
+          <PdfExtractor
+            documentType="salesRfq"
+            sourceDocument="Request for Quote"
+            sourceDocumentId={initialValues.id}
+            label={t`RFQ`}
+            onExtractionComplete={handleExtractionComplete}
+          />
         </CardContent>
         <CardFooter>
           <Submit

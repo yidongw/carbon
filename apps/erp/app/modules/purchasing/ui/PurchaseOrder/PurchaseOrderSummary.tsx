@@ -80,6 +80,9 @@ const LineItems = ({
         const isGlAccount = line.purchaseOrderLineType === "G/L Account";
         const isFixedAsset = line.purchaseOrderLineType === "Fixed Asset";
         const isIndirect = isGlAccount || isFixedAsset;
+        const isReceivable = !isGlAccount && (line.purchaseQuantity ?? 0) > 0;
+        const quantityReceived = line.quantityReceived ?? 0;
+        const quantityInvoiced = line.quantityInvoiced ?? 0;
         const itemReadableId = isGlAccount
           ? line.description || t`Indirect Expense`
           : isFixedAsset
@@ -231,7 +234,7 @@ const LineItems = ({
                         <Trans>Quantity</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>
                             {line.purchaseQuantity}{" "}
                             {
@@ -257,12 +260,60 @@ const LineItems = ({
                         </VStack>
                       </Td>
                     </Tr>
+                    {isReceivable && (
+                      <Tr>
+                        <Td>Received</Td>
+                        <Td className="text-right">
+                          <VStack spacing={0} className="items-end">
+                            <span>
+                              {quantityReceived} of {line.purchaseQuantity}{" "}
+                              {
+                                unitOfMeasures.find(
+                                  (uom) =>
+                                    uom.value === line.purchaseUnitOfMeasureCode
+                                )?.label
+                              }
+                            </span>
+                            {!line.receivedComplete &&
+                              (line.quantityToReceive ?? 0) > 0 && (
+                                <span className="text-muted-foreground text-xs">
+                                  {line.quantityToReceive} remaining
+                                </span>
+                              )}
+                          </VStack>
+                        </Td>
+                      </Tr>
+                    )}
+                    {(line.purchaseQuantity ?? 0) > 0 && (
+                      <Tr>
+                        <Td>Invoiced</Td>
+                        <Td className="text-right">
+                          <VStack spacing={0} className="items-end">
+                            <span>
+                              {quantityInvoiced} of {line.purchaseQuantity}{" "}
+                              {
+                                unitOfMeasures.find(
+                                  (uom) =>
+                                    uom.value === line.purchaseUnitOfMeasureCode
+                                )?.label
+                              }
+                            </span>
+                            {!line.invoicedComplete &&
+                              (line.quantityToInvoice ?? 0) > 0 && (
+                                <span className="text-muted-foreground text-xs">
+                                  {line.quantityToInvoice} remaining
+                                </span>
+                              )}
+                          </VStack>
+                        </Td>
+                      </Tr>
+                    )}
                     <Tr>
                       <Td>
                         <Trans>Unit Price</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(line.unitPrice ?? 0)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -279,7 +330,7 @@ const LineItems = ({
                         <Trans>Extended Price</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(lineTotal)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -299,7 +350,7 @@ const LineItems = ({
                         </Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(line.taxAmount ?? 0)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -317,7 +368,7 @@ const LineItems = ({
                         <Trans>Shipping</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>
                             {formatter.format(line.shippingCost ?? 0)}
                           </span>
@@ -337,7 +388,7 @@ const LineItems = ({
                         <Trans>Total</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(total)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -423,8 +474,8 @@ const PurchaseOrderSummary = ({
     }, 0) ?? 0;
 
   const shippingCost =
-    (routeData?.purchaseOrderDelivery?.supplierShippingCost ?? 0) *
-    (routeData?.purchaseOrder?.exchangeRate ?? 1);
+    (routeData?.purchaseOrderDelivery?.supplierShippingCost ?? 0) /
+    (routeData?.purchaseOrder?.exchangeRate || 1);
 
   const supplierShippingCost =
     routeData?.purchaseOrderDelivery?.supplierShippingCost ?? 0;

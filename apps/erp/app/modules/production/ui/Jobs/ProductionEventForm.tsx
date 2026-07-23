@@ -16,6 +16,7 @@ import {
   parseAbsolute,
   toCalendarDateTime
 } from "@internationalized/date";
+import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -37,6 +38,7 @@ type ProductionEventFormProps = {
     label: string;
     value: string;
     helperText?: string;
+    processId?: string | null;
   }[];
 };
 
@@ -45,9 +47,22 @@ const ProductionEventForm = ({
   operationOptions
 }: ProductionEventFormProps) => {
   const permissions = usePermissions();
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const navigate = useNavigate();
+
+  const eventTypeOptions = [
+    { label: i18n._(msg`Labor`), value: "Labor" },
+    { label: i18n._(msg`Machine`), value: "Machine" },
+    { label: i18n._(msg`Setup`), value: "Setup" }
+  ];
   const onClose = () => navigate(-1);
+
+  const [jobOperationId, setJobOperationId] = useState(
+    initialValues.jobOperationId ?? ""
+  );
+  const processId =
+    operationOptions.find((option) => option.value === jobOperationId)
+      ?.processId ?? undefined;
 
   const [startTime, setStartTime] = useState(
     toCalendarDateTime(
@@ -81,7 +96,11 @@ const ProductionEventForm = ({
         >
           <DrawerHeader>
             <DrawerTitle>
-              {isEditing ? "Edit Production Event" : "Create Production Event"}
+              {isEditing ? (
+                <Trans>Edit Production Event</Trans>
+              ) : (
+                <Trans>Create Production Event</Trans>
+              )}
             </DrawerTitle>
           </DrawerHeader>
           <DrawerBody>
@@ -91,22 +110,22 @@ const ProductionEventForm = ({
               <Select
                 name="jobOperationId"
                 label={t`Operation`}
+                termId="operation"
                 options={operationOptions ?? []}
+                onChange={(value) => setJobOperationId(value?.value ?? "")}
               />
               <Employee name="employeeId" label={t`Employee`} />
               <WorkCenter
                 name="workCenterId"
                 label={t`Work Center`}
-                processId={initialValues.jobOperationId}
+                termId="work-center"
+                processId={processId}
               />
               <Select
                 name="type"
                 label={t`Event Type`}
-                options={[
-                  { label: "Labor", value: "Labor" },
-                  { label: "Machine", value: "Machine" },
-                  { label: "Setup", value: "Setup" }
-                ]}
+                termId="production-event-type"
+                options={eventTypeOptions}
               />
               <DateTimePicker
                 name="startTime"
@@ -129,7 +148,7 @@ const ProductionEventForm = ({
                 <Trans>Save</Trans>
               </Submit>
               <Button variant="solid" onClick={onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
             </HStack>
           </DrawerFooter>

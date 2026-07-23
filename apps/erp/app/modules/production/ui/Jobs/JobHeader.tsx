@@ -37,13 +37,13 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { type MutableRefObject, useMemo, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import {
+  LuBlocks,
   LuCheckCheck,
   LuCircleCheck,
   LuCirclePause,
   LuCirclePlay,
   LuCircleStop,
   LuEllipsisVertical,
-  LuPackage,
   LuPanelLeft,
   LuPanelRight,
   LuQrCode,
@@ -1038,7 +1038,7 @@ export function JobCompleteModal({
                 {hasLeftover && (
                   <>
                     <Alert>
-                      <LuPackage />
+                      <LuBlocks />
                       <AlertTitle>
                         <Trans>Leftover Parts Detected</Trans>
                       </AlertTitle>

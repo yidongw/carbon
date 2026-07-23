@@ -29,9 +29,12 @@ import {
   TimeTypeIcon,
   TrackingTypeIcon
 } from "./Icons";
+import { ItemLifecycleBadge } from "./ItemLifecycleBadge";
 import ItemThumbnail from "./ItemThumbnail";
 import Location from "./Location";
+import MetricCard from "./MetricCard";
 import New from "./New";
+import PeriodSelector from "./PeriodSelector";
 import { PillSegmentedControl } from "./PillSegmentedControl";
 import RealtimeDataProvider from "./RealtimeDataProvider";
 import {
@@ -70,15 +73,18 @@ export {
   FilesIconView,
   FilesViewModeToggle,
   Hyperlink,
+  ItemLifecycleBadge,
   ItemThumbnail,
   Location,
   MethodBadge,
   MethodIcon,
   MethodItemTypeIcon,
+  MetricCard,
   ModuleIcon,
   New,
   PillSegmentedControl,
   OperationStatusIcon,
+  PeriodSelector,
   PrintButton,
   RealtimeDataProvider,
   ReorderableSection,

@@ -1,6 +1,7 @@
 import type { ComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure, useMount } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type {
@@ -9,6 +10,7 @@ import type {
 } from "~/modules/items";
 import MaterialGradeForm from "~/modules/items/ui/MaterialGrades/MaterialGradeForm";
 import { path } from "~/utils/path";
+import { useEmptyState } from "./emptyStates";
 
 type MaterialGradeSelectProps = Omit<
   ComboboxProps,
@@ -29,6 +31,7 @@ const MaterialGradePreview = (
 };
 
 const MaterialGrade = (props: MaterialGradeSelectProps) => {
+  const { t } = useLingui();
   const materialGradesLoader =
     useFetcher<Awaited<ReturnType<typeof getMaterialGradeList>>>();
 
@@ -68,6 +71,11 @@ const MaterialGrade = (props: MaterialGradeSelectProps) => {
     props.onChange?.(grade as MaterialGradeType | null);
   };
 
+  const emptyMessage = useEmptyState(
+    "materialGrade",
+    props.substanceId ? { onCreate: () => newGradeModal.onOpen() } : undefined
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -75,9 +83,16 @@ const MaterialGrade = (props: MaterialGradeSelectProps) => {
         options={options}
         {...props}
         disabled={props.disabled || !props.substanceId}
+        helperText={
+          props.helperText ??
+          (!props.inline && !props.substanceId
+            ? t`Select a substance first to see available options`
+            : undefined)
+        }
         inline={props?.inline ? MaterialGradePreview : undefined}
         isOptional={props?.isOptional ?? true}
         label={props?.label ?? "Grade"}
+        emptyMessage={emptyMessage}
         onChange={onChange}
         onCreateOption={(option) => {
           newGradeModal.onOpen();

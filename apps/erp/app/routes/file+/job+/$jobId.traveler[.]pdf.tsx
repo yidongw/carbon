@@ -3,6 +3,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import {
   ensureFont,
   Footer,
+  getSafeFontFamily,
   JobTravelerPageContent
 } from "@carbon/documents/pdf";
 import {
@@ -11,6 +12,7 @@ import {
   resolveTemplate,
   toDocumentTemplate
 } from "@carbon/documents/template";
+import { getLogger } from "@carbon/logger";
 import type { JSONContent } from "@carbon/react";
 import {
   flattenTree,
@@ -19,7 +21,6 @@ import {
 } from "@carbon/utils";
 import {
   Document,
-  Font,
   Page,
   renderToStream,
   StyleSheet
@@ -38,6 +39,8 @@ import {
 } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
 
+const logger = getLogger("erp", "job-traveler", "pdf");
+
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { companyId } = await requirePermissions(request, {});
   const { locale } = getPreferenceHeaders(request);
@@ -50,7 +53,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   // Get the job first
   const job = await getJob(serviceRole, jobId);
   if (job.error || !job.data) {
-    console.error(job.error);
+    logger.error("Failed to load job", { error: job.error });
     throw new Error("Failed to load job");
   }
 
@@ -67,13 +70,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     .order("createdAt", { ascending: true });
 
   if (jobMakeMethods.error || !jobMakeMethods.data) {
-    console.error(jobMakeMethods.error);
+    logger.error("Failed to load jobMakeMethods", {
+      error: jobMakeMethods.error
+    });
     throw new Error("Failed to load job make methods");
   }
 
   const company = await getCompany(serviceRole, job.data.companyId ?? "");
   if (company.error) {
-    console.error(company.error);
+    logger.error("Failed to load company", { error: company.error });
     throw new Error("Failed to load company");
   }
 
@@ -110,14 +115,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       ]);
 
       if (operations.error || !operations.data) {
-        console.error(operations.error);
+        logger.error("Failed to load operations", { error: operations.error });
         throw new Error(
           `Failed to load operations for make method ${makeMethod.id}`
         );
       }
 
       if (item.error || !item.data) {
-        console.error(item.error);
+        logger.error("Failed to load item", { error: item.error });
         throw new Error(`Failed to load item for make method ${makeMethod.id}`);
       }
 
@@ -186,35 +191,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     : undefined;
   const showFooter = resolved.footerSectionId !== null;
 
-  // Register fonts (same as Template component)
-  Font.register({
-    family: "Inter",
-    fonts: [
-      {
-        src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZhrib2Bg-4.ttf"
-      },
-      {
-        src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfMZhrib2Bg-4.ttf",
-        fontWeight: 300
-      },
-      {
-        src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fMZhrib2Bg-4.ttf",
-        fontWeight: 500
-      },
-      {
-        src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-        fontWeight: 700
-      },
-      {
-        src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuBWYMZhrib2Bg-4.ttf",
-        fontWeight: 900
-      }
-    ]
-  });
-
   const styles = StyleSheet.create({
     body: {
-      fontFamily: resolved.settings.fontFamily,
+      fontFamily: getSafeFontFamily(resolved.settings.fontFamily),
       padding: "20px 40px 50px 40px",
       color: "#000000",
       backgroundColor: "#FFFFFF"

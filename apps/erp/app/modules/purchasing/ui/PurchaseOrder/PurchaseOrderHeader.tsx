@@ -39,6 +39,7 @@ import {
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
+import Confirm from "~/components/Modals/Confirm/Confirm";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -107,7 +108,8 @@ function PurchaseOrderTopbarLeft({ orderId }: { orderId: string }) {
   const hasApprovalRequest = !!routeData?.approvalRequest;
   const canApprove = routeData?.canApprove ?? false;
   const isLocked = isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
-  const { receipts, invoices, shipments } = usePurchaseOrderRelatedDocuments(
+  const { receipts, invoices, shipments } =
+    usePurchaseOrderRelatedDocuments(
     routeData?.purchaseOrder?.supplierInteractionId ?? "",
     routeData?.purchaseOrder?.purchaseOrderType === "Outside Processing"
   );
@@ -121,6 +123,7 @@ function PurchaseOrderTopbarLeft({ orderId }: { orderId: string }) {
 
   const finalizeDisclosure = useDisclosure();
   const deleteModal = useDisclosure();
+  const cancelModal = useDisclosure();
   const [approvalDecision, setApprovalDecision] =
     useState<ApprovalDecision | null>(null);
 
@@ -354,15 +357,7 @@ function PurchaseOrderTopbarLeft({ orderId }: { orderId: string }) {
                 statusFetcher.state !== "idle" ||
                 !permissions.can("delete", "purchasing")
               }
-              onClick={() => {
-                statusFetcher.submit(
-                  { status: "Closed" },
-                  {
-                    method: "post",
-                    action: path.to.purchaseOrderStatus(orderId)
-                  }
-                );
-              }}
+              onClick={cancelModal.onOpen}
             >
               <DropdownMenuIcon icon={<LuCircleStop />} />
               <Trans>Cancel</Trans>
@@ -407,6 +402,20 @@ function PurchaseOrderTopbarLeft({ orderId }: { orderId: string }) {
             deleteModal.onClose();
           }}
         />
+      )}
+      {cancelModal.isOpen && (
+        <Confirm
+          action={path.to.purchaseOrderStatus(orderId)}
+          title={t`Cancel Purchase Order`}
+          text={t`Are you sure you want to cancel ${routeData?.purchaseOrder?.purchaseOrderId ?? "this purchase order"}? This will close the order.`}
+          confirmText={t`Cancel Order`}
+          confirmVariant="destructive"
+          cancelText={t`Back`}
+          onCancel={cancelModal.onClose}
+          onSubmit={cancelModal.onClose}
+        >
+          <input type="hidden" name="status" value="Closed" />
+        </Confirm>
       )}
       {approvalDecision && routeData?.approvalRequest?.id && (
         <PurchaseOrderApprovalModal

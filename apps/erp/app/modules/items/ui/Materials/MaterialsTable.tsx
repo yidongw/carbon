@@ -31,6 +31,7 @@ import {
   LuCalendar,
   LuCheck,
   LuExpand,
+  LuFactory,
   LuGitPullRequestArrow,
   LuGlassWater,
   LuGroup,
@@ -42,6 +43,7 @@ import {
   LuStar,
   LuTag,
   LuTrash,
+  LuTruck,
   LuUser
 } from "react-icons/lu";
 import { RxCodesandboxLogo } from "react-icons/rx";
@@ -50,6 +52,7 @@ import { Link, useFetcher, useNavigate } from "react-router";
 import {
   EmployeeAvatar,
   Hyperlink,
+  ItemLifecycleBadge,
   ItemThumbnail,
   MethodIcon,
   New,
@@ -135,7 +138,23 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
             />
             <Hyperlink to={path.to.material(row.original.id!)}>
               <VStack spacing={0}>
-                {row.original.readableId}
+                <span className="flex items-center gap-1.5">
+                  {row.original.readableId}
+                  <ItemLifecycleBadge
+                    mode={
+                      (
+                        row.original as {
+                          supersessionMode?:
+                            | "Consume First"
+                            | "Prefer New"
+                            | "Stock Only"
+                            | "No Stock"
+                            | null;
+                        }
+                      ).supersessionMode
+                    }
+                  />
+                </span>
                 <div className="w-full truncate text-muted-foreground text-xs">
                   {row.original.name}
                 </div>
@@ -415,6 +434,43 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
         }
       },
       {
+        accessorKey: "mpn",
+        header: t`Manufacturer Part Number`,
+        cell: (item) => (
+          <div className="max-w-[200px] truncate">
+            {item.getValue<string>()}
+          </div>
+        ),
+        meta: {
+          filter: {
+            type: "fetcher",
+            endpoint: path.to.api.itemMpns,
+            transform: (data: string[] | null) =>
+              data?.map((mpn) => ({ value: mpn, label: mpn })) ?? []
+          },
+          icon: <LuFactory />
+        }
+      },
+      {
+        accessorKey: "supplierIds",
+        header: t`Supplier Part Numbers`,
+        cell: ({ row }) => (
+          <HStack spacing={0} className="gap-1">
+            {row.original.supplierIds
+              ?.split(",")
+              .filter(Boolean)
+              .map((supplierPartId) => (
+                <Badge key={supplierPartId} variant="secondary">
+                  {supplierPartId}
+                </Badge>
+              ))}
+          </HStack>
+        ),
+        meta: {
+          icon: <LuTruck />
+        }
+      },
+      {
         accessorKey: "active",
         header: t`Active`,
         cell: editableCell<Material>({
@@ -638,7 +694,7 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
             <MenuSub>
               <MenuSubTrigger>
                 <MenuIcon icon={<LuGitPullRequestArrow />} />
-                <Trans>Versions</Trans>
+                <Trans>Revisions</Trans>
               </MenuSubTrigger>
               <MenuSubContent>
                 {revisions.map((revision) => (

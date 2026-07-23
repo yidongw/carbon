@@ -10,7 +10,7 @@ import {
   HStack
 } from "@carbon/react";
 import { isEoriCountry } from "@carbon/utils";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useCallback, useState } from "react";
 import { LuPaperclip } from "react-icons/lu";
@@ -19,7 +19,7 @@ import { FileDropzone } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { Boolean, Hidden, Input, Select, Submit } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
-import { taxExemptionReasons } from "~/modules/sales/sales.models";
+import { taxExemptionReasons } from "~/modules/shared";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 import { supplierTaxValidator } from "../../purchasing.models";
 
@@ -66,13 +66,13 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
       });
 
       if (result.error) {
-        uploadToast.error("Failed to upload certificate");
+        uploadToast.error(t`Failed to upload certificate`);
       } else {
         uploadToast.dismiss();
         setCertificatePath(result.data!.path);
       }
     },
-    [carbon, companyId]
+    [carbon, companyId, t]
   );
 
   return (
@@ -83,7 +83,9 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
     >
       <Card>
         <CardHeader>
-          <CardTitle>Tax Information</CardTitle>
+          <CardTitle>
+            <Trans>Tax Information</Trans>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Hidden name="supplierId" />
@@ -93,10 +95,10 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
             value={certificatePath}
           />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
-            <Input name="taxId" label="Tax ID" />
-            <Input name="vatNumber" label="VAT Number" />
+            <Input name="taxId" label={t`Tax ID`} />
+            <Input name="vatNumber" label={t`VAT Number`} termId="vat-number" />
             {isEoriCountry(company.countryCode) ? (
-              <Input name="eori" label="EORI" />
+              <Input name="eori" label={t`EORI`} termId="eori" />
             ) : (
               <div />
             )}
@@ -104,7 +106,8 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
             <div className="col-span-3">
               <Boolean
                 name="taxExempt"
-                label="Tax Exempt"
+                label={t`Tax Exempt`}
+                termId="tax-exempt"
                 bordered
                 onChange={setTaxExempt}
               />
@@ -113,13 +116,13 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
               <>
                 <Select
                   name="taxExemptionReason"
-                  label="Exemption Reason"
+                  label={t`Exemption Reason`}
                   options={taxExemptionReasonOptions}
                   placeholder={t`Select Reason`}
                 />
                 <Input
                   name="taxExemptionCertificateNumber"
-                  label="Certificate Number"
+                  label={t`Certificate Number`}
                 />
               </>
             )}
@@ -128,7 +131,7 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
             <div className="mt-4 flex flex-col gap-2">
               <div className="flex items-end gap-2">
                 <label className="text-xs font-medium text-muted-foreground">
-                  Exemption Certificate
+                  <Trans>Exemption Certificate</Trans>
                 </label>
                 {certificatePath && (
                   <Button
@@ -142,7 +145,7 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      View Certificate
+                      <Trans>View Certificate</Trans>
                     </a>
                   </Button>
                 )}
@@ -160,7 +163,9 @@ const SupplierTaxForm = ({ initialValues }: SupplierTaxFormProps) => {
         </CardContent>
         <CardFooter>
           <HStack>
-            <Submit isDisabled={isDisabled}>Save</Submit>
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
           </HStack>
         </CardFooter>
       </Card>

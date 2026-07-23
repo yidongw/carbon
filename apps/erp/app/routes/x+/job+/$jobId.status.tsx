@@ -2,6 +2,7 @@ import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
+import { getLogger } from "@carbon/logger";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import {
@@ -13,6 +14,8 @@ import {
 } from "~/modules/production";
 import { triggerJobRelease } from "~/modules/production/production.server";
 import { path, requestReferrer } from "~/utils/path";
+
+const logger = getLogger("erp", "jobid-status");
 
 type StatusActionData = {
   success: boolean;
@@ -201,7 +204,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         payload: { success: true, status }
       });
     } catch (err) {
-      console.error(err);
+      logger.error("Error", { error: err });
       return respondWithFlash(request, {
         stay,
         jobId: id,

@@ -1,4 +1,5 @@
 import { Status } from "@carbon/react";
+import { STOCK_TRANSFER_STATUS_COLOR_MAP } from "@carbon/utils";
 import { Trans } from "@lingui/react/macro";
 import type { stockTransferStatusType } from "~/modules/inventory";
 
@@ -11,28 +12,30 @@ const StockTransferStatus = ({
   status,
   iconOnly
 }: StockTransferStatusProps) => {
+  if (!status) return null;
+  const color = STOCK_TRANSFER_STATUS_COLOR_MAP[status];
   switch (status) {
     case "Draft":
       return (
-        <Status color="gray" iconOnly={iconOnly}>
+        <Status color={color} iconOnly={iconOnly}>
           <Trans>Draft</Trans>
         </Status>
       );
     case "Released":
       return (
-        <Status color="orange" iconOnly={iconOnly}>
+        <Status color={color} iconOnly={iconOnly}>
           <Trans>Released</Trans>
         </Status>
       );
     case "In Progress":
       return (
-        <Status color="blue" iconOnly={iconOnly}>
+        <Status color={color} iconOnly={iconOnly}>
           <Trans>In Progress</Trans>
         </Status>
       );
     case "Completed":
       return (
-        <Status color="green" iconOnly={iconOnly}>
+        <Status color={color} iconOnly={iconOnly}>
           <Trans>Completed</Trans>
         </Status>
       );

@@ -31,7 +31,7 @@ const New = ({ label, to, variant = "primary" }: NewProps) => {
 
   return (
     <Tooltip>
-      <TooltipTrigger>
+      <TooltipTrigger asChild>
         <Button
           asChild
           leftIcon={<LuCirclePlus />}
