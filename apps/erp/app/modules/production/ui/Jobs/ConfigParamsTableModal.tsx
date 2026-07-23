@@ -678,6 +678,7 @@ export function ConfigParamsTableLocalModal({
             parameters={data.parameters}
             initialRows={initialRows}
             referenceByRowIndex={referenceByRowIndex}
+            optionLabels={data.colorNames}
             splitMode={splitMode}
             jobDisplayId={jobDisplayId ?? data.itemReadableId}
             isEditingReport={isEditingReport}
