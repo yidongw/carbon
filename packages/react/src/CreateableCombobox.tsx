@@ -162,6 +162,12 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
           </PopoverTrigger>
           <PopoverContent
             align="start"
+            // The popover portals outside the dialog subtree, so a modal
+            // Drawer/Modal's scroll lock (react-remove-scroll) otherwise swallows
+            // wheel/touch and the list can't scroll. Stop propagation so the
+            // popover's own scroll container handles it (matches GroupedCreatableCombobox).
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
             className="min-w-[var(--radix-popover-trigger-width)] max-w-[min(560px,calc(100vw-2rem))] p-1"
             style={{
               width: dropdownContentWidthCh
@@ -281,7 +287,9 @@ function VirtualizedCommand({
       <CommandGroup>
         <div
           ref={parentRef}
-          className="overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+          className="overflow-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           style={{
             height: `${Math.min(filteredOptions.length, 6) * itemHeight + 4}px`
           }}
