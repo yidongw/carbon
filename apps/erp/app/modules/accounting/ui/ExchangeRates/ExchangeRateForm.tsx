@@ -37,7 +37,6 @@ import {
 } from "@carbon/react/Chart";
 import { useLingui } from "@lingui/react/macro";
 import { json2csv } from "json-2-csv";
-import { useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo, useState } from "react";
 import { LuDownload } from "react-icons/lu";
 import { useNavigate } from "react-router";
