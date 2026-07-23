@@ -5,6 +5,7 @@ import {
   flashMiddleware,
   flashResultContext
 } from "@carbon/auth/middleware/flash.server";
+import { cookieDomainMigrationMiddleware } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
 import { LocaleProvider, resolveLanguage } from "@carbon/locale";
 import {
@@ -43,7 +44,7 @@ import Tailwind from "~/styles/tailwind.css?url";
 import type { Route } from "./+types/root";
 import { getTheme } from "./services/theme.server";
 
-export const middleware = [flashMiddleware];
+export const middleware = [flashMiddleware, cookieDomainMigrationMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
 export const links: Route.LinksFunction = () => [
