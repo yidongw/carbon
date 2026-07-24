@@ -107,13 +107,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     .maybeSingle();
 
   // Garment bundles carry a color/size — surface it in the report modal.
-  const bundle = job.data?.id
-    ? await serviceRole
-        .from("bundleWorkOrders")
-        .select("colorCode, colorName, sizeCode")
-        .eq("jobId", job.data.id)
-        .maybeSingle()
-    : { data: null };
+  // A bundle job (or its parent master job) tracks output by reporting
+  // quantities, not by the start/stop production clock, so we also detect the
+  // master job to hide the start button for both.
+  const [bundle, master] = await Promise.all([
+    job.data?.id
+      ? serviceRole
+          .from("bundleWorkOrders")
+          .select("colorCode, colorName, sizeCode")
+          .eq("jobId", job.data.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    job.data?.id
+      ? serviceRole
+          .from("masterWorkOrders")
+          .select("id")
+          .eq("jobId", job.data.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null })
+  ]);
 
   const inventoryShelfLife = (companySettings.data?.inventoryShelfLife ??
     null) as { expiredEntityPolicy?: ExpiredEntityPolicy } | null;
@@ -144,6 +156,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     events: events.data ?? [],
     assignee: operationAssignee.data?.assignee ?? null,
     bundle: bundle.data ?? null,
+    isMasterJob: !!master.data,
     canManageProduction,
     productionQuantities: quantities.data ?? [],
     quantities: quantities.data ?? [],
@@ -189,6 +202,7 @@ export default function OperationRoute() {
   const {
     assignee,
     bundle,
+    isMasterJob,
     canManageProduction,
     events,
     expiredEntityPolicy,
@@ -212,6 +226,7 @@ export default function OperationRoute() {
       key={`job-operation-${operationId}`}
       assignee={assignee}
       bundle={bundle}
+      isMasterJob={isMasterJob}
       canManageProduction={canManageProduction}
       events={events}
       expiredEntityPolicy={expiredEntityPolicy}

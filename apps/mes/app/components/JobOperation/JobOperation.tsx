@@ -162,6 +162,7 @@ type JobOperationProps = {
     colorName: string | null;
     sizeCode: string | null;
   } | null;
+  isMasterJob?: boolean;
   canManageProduction?: boolean;
   events: ProductionEvent[];
   expiredEntityPolicy?: "Warn" | "Block" | "BlockWithOverride";
@@ -263,6 +264,7 @@ function PickedBadge({
 export const JobOperation = ({
   assignee,
   bundle,
+  isMasterJob = false,
   canManageProduction = false,
   events,
   expiredEntityPolicy = "Block",
@@ -288,6 +290,10 @@ export const JobOperation = ({
   const trackedEntityId = trackedEntityParam ?? trackedEntities[0]?.id;
 
   const parentIsSerial = method?.requiresSerialTracking;
+
+  // Bundle jobs (and their parent master job) report output via quantities
+  // rather than the start/stop production clock, so hide the start controls.
+  const hideStartControls = !!bundle || isMasterJob;
   const parentIsBatch = method?.requiresBatchTracking;
 
   const serialIndex =
@@ -2478,26 +2484,32 @@ export const JobOperation = ({
                 )}
               </div>
 
-              <WorkTypeToggle
-                active={active}
-                operation={operation}
-                value={eventType}
-                onChange={setEventType}
-              />
+              {!hideStartControls && (
+                <>
+                  <WorkTypeToggle
+                    active={active}
+                    operation={operation}
+                    value={eventType}
+                    onChange={setEventType}
+                  />
 
-              <StartStopButton
-                eventType={eventType as (typeof productionEventType)[number]}
-                job={job}
-                operation={operation}
-                setupProductionEvent={setupProductionEvent}
-                laborProductionEvent={laborProductionEvent}
-                machineProductionEvent={machineProductionEvent}
-                isTrackedActivity={
-                  method?.requiresSerialTracking === true ||
-                  method?.requiresBatchTracking === true
-                }
-                trackedEntityId={trackedEntityId}
-              />
+                  <StartStopButton
+                    eventType={
+                      eventType as (typeof productionEventType)[number]
+                    }
+                    job={job}
+                    operation={operation}
+                    setupProductionEvent={setupProductionEvent}
+                    laborProductionEvent={laborProductionEvent}
+                    machineProductionEvent={machineProductionEvent}
+                    isTrackedActivity={
+                      method?.requiresSerialTracking === true ||
+                      method?.requiresBatchTracking === true
+                    }
+                    trackedEntityId={trackedEntityId}
+                  />
+                </>
+              )}
               <div className="flex flex-row md:flex-col items-center gap-2 justify-center">
                 <IconButtonWithTooltip
                   disabled={
@@ -2666,81 +2678,84 @@ export const JobOperation = ({
             <div className="flex flex-row max-[360px]:flex-col items-stretch">
               {(!assignee || assignee === userId) && (
                 <div className="flex flex-row items-center gap-2 px-3 py-2 shrink-0 border-r max-[360px]:border-r-0 max-[360px]:border-b">
-                  {[
-                    operation.setupDuration > 0,
-                    operation.laborDuration > 0,
-                    operation.machineDuration > 0
-                  ].filter(Boolean).length > 1 && (
-                    <div className="flex flex-col gap-1">
-                      {operation.setupDuration > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setEventType("Setup")}
-                          className={cn(
-                            "text-xs px-2 py-0.5 rounded border transition-colors relative",
-                            eventType === "Setup"
-                              ? "bg-foreground text-background border-foreground"
-                              : "border-border text-muted-foreground"
-                          )}
-                        >
-                          {active.setup && (
-                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
-                          )}
-                          <Trans>Setup</Trans>
-                        </button>
-                      )}
-                      {operation.laborDuration > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setEventType("Labor")}
-                          className={cn(
-                            "text-xs px-2 py-0.5 rounded border transition-colors relative",
-                            eventType === "Labor"
-                              ? "bg-foreground text-background border-foreground"
-                              : "border-border text-muted-foreground"
-                          )}
-                        >
-                          {active.labor && (
-                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
-                          )}
-                          <Trans>Labor</Trans>
-                        </button>
-                      )}
-                      {operation.machineDuration > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setEventType("Machine")}
-                          className={cn(
-                            "text-xs px-2 py-0.5 rounded border transition-colors relative",
-                            eventType === "Machine"
-                              ? "bg-foreground text-background border-foreground"
-                              : "border-border text-muted-foreground"
-                          )}
-                        >
-                          {active.machine && (
-                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
-                          )}
-                          <Trans>Machine</Trans>
-                        </button>
-                      )}
-                    </div>
+                  {!hideStartControls &&
+                    [
+                      operation.setupDuration > 0,
+                      operation.laborDuration > 0,
+                      operation.machineDuration > 0
+                    ].filter(Boolean).length > 1 && (
+                      <div className="flex flex-col gap-1">
+                        {operation.setupDuration > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setEventType("Setup")}
+                            className={cn(
+                              "text-xs px-2 py-0.5 rounded border transition-colors relative",
+                              eventType === "Setup"
+                                ? "bg-foreground text-background border-foreground"
+                                : "border-border text-muted-foreground"
+                            )}
+                          >
+                            {active.setup && (
+                              <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
+                            )}
+                            <Trans>Setup</Trans>
+                          </button>
+                        )}
+                        {operation.laborDuration > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setEventType("Labor")}
+                            className={cn(
+                              "text-xs px-2 py-0.5 rounded border transition-colors relative",
+                              eventType === "Labor"
+                                ? "bg-foreground text-background border-foreground"
+                                : "border-border text-muted-foreground"
+                            )}
+                          >
+                            {active.labor && (
+                              <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
+                            )}
+                            <Trans>Labor</Trans>
+                          </button>
+                        )}
+                        {operation.machineDuration > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setEventType("Machine")}
+                            className={cn(
+                              "text-xs px-2 py-0.5 rounded border transition-colors relative",
+                              eventType === "Machine"
+                                ? "bg-foreground text-background border-foreground"
+                                : "border-border text-muted-foreground"
+                            )}
+                          >
+                            {active.machine && (
+                              <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
+                            )}
+                            <Trans>Machine</Trans>
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  {!hideStartControls && (
+                    <StartStopButton
+                      compact
+                      eventType={
+                        eventType as (typeof productionEventType)[number]
+                      }
+                      job={job}
+                      operation={operation}
+                      setupProductionEvent={setupProductionEvent}
+                      laborProductionEvent={laborProductionEvent}
+                      machineProductionEvent={machineProductionEvent}
+                      isTrackedActivity={
+                        method?.requiresSerialTracking === true ||
+                        method?.requiresBatchTracking === true
+                      }
+                      trackedEntityId={trackedEntityId}
+                    />
                   )}
-                  <StartStopButton
-                    compact
-                    eventType={
-                      eventType as (typeof productionEventType)[number]
-                    }
-                    job={job}
-                    operation={operation}
-                    setupProductionEvent={setupProductionEvent}
-                    laborProductionEvent={laborProductionEvent}
-                    machineProductionEvent={machineProductionEvent}
-                    isTrackedActivity={
-                      method?.requiresSerialTracking === true ||
-                      method?.requiresBatchTracking === true
-                    }
-                    trackedEntityId={trackedEntityId}
-                  />
                   <IconButtonWithTooltip
                     compact
                     disabled={
