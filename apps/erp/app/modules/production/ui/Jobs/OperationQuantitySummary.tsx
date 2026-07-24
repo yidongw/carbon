@@ -21,6 +21,8 @@ import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 type OperationQuantitySummaryProps = {
   summary: OperationQuantitySummary | null;
   configurationParameters?: ConfigurationParameter[] | null;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
 };
 
 function formatTotal(value: number) {
@@ -31,7 +33,8 @@ function formatTotal(value: number) {
 
 function useConfigParts(
   configurations: unknown[],
-  configurationParameters: ConfigurationParameter[] | null | undefined
+  configurationParameters: ConfigurationParameter[] | null | undefined,
+  optionLabels: Record<string, string> | undefined
 ) {
   const { t } = useLingui();
 
@@ -48,9 +51,9 @@ function useConfigParts(
       columns
     );
     return merged
-      .map((row) => getConfigRowDisplayPart(row, columns))
+      .map((row) => getConfigRowDisplayPart(row, columns, optionLabels))
       .filter((part) => part.descriptor || part.quantities.length > 0);
-  }, [configurations, configurationParameters, t]);
+  }, [configurations, configurationParameters, optionLabels, t]);
 }
 
 function OperationTotalBadge({
@@ -107,19 +110,23 @@ function OperationTotalBadge({
 
 export function OperationQuantitySummaryView({
   summary,
-  configurationParameters
+  configurationParameters,
+  optionLabels
 }: OperationQuantitySummaryProps) {
   const productionParts = useConfigParts(
     summary?.productionConfigurations ?? [],
-    configurationParameters
+    configurationParameters,
+    optionLabels
   );
   const scrapParts = useConfigParts(
     summary?.scrapConfigurations ?? [],
-    configurationParameters
+    configurationParameters,
+    optionLabels
   );
   const reworkParts = useConfigParts(
     summary?.reworkConfigurations ?? [],
-    configurationParameters
+    configurationParameters,
+    optionLabels
   );
 
   if (!summary) return null;

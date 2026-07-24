@@ -18,7 +18,8 @@ function getProductionQuantityBadgeVariant(type: string) {
 
 export function ProductionQuantityLineBreakdown({
   line,
-  configurationParameters
+  configurationParameters,
+  optionLabels
 }: {
   line: {
     type: string;
@@ -27,6 +28,8 @@ export function ProductionQuantityLineBreakdown({
     scrapReason?: { name: string | null } | null;
   };
   configurationParameters?: ConfigurationParameter[] | null;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
 }) {
   const { t } = useLingui();
   const parts =
@@ -34,7 +37,8 @@ export function ProductionQuantityLineBreakdown({
       ? getConfigRowDisplayParts(
           line.configuration,
           configurationParameters,
-          t`Quantities`
+          t`Quantities`,
+          optionLabels
         )
       : [];
 
