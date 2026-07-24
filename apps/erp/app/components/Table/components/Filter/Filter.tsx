@@ -33,7 +33,7 @@ export type FilterProps = Omit<
 
 const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ({ filters, trigger = "button", ...props }, ref) => {
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
     const {
       clearFilters,
       getFilter,
@@ -81,16 +81,16 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [fetcher.data, activeFilter]);
 
-    const translate = useCallback((value: string) => i18n._(value), [i18n]);
-
     const columnFilters = useMemo(
       () =>
         filters.map((f) => ({
           value: f.accessorKey,
-          label: translate(f.header),
+          // f.header is already localized at column-definition time; passing it
+          // back through i18n._() logs "Uncompiled message detected".
+          label: f.header,
           icon: f.icon
         })),
-      [filters, translate]
+      [filters]
     );
 
     const availableFilters = useMemo(
@@ -260,7 +260,7 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <span>{option.label}</span>
                               {option.helperText && (
                                 <p className="text-xs text-muted-foreground truncate">
-                                  {translate(option.helperText)}
+                                  {option.helperText}
                                 </p>
                               )}
                             </VStack>

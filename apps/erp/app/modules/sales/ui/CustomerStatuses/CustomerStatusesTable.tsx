@@ -10,6 +10,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { path } from "~/utils/path";
+import { translateIfKnown } from "~/utils/translateIfKnown";
 import type { CustomerStatus } from "../../types";
 
 type CustomerStatusesTableProps = {
@@ -25,7 +26,7 @@ const CustomerStatusesTable = memo(
     const permissions = usePermissions();
 
     const translateStatus = useCallback(
-      (value: string) => i18n._(value),
+      (value: string) => translateIfKnown(i18n, value),
       [i18n]
     );
 

@@ -68,7 +68,7 @@ type ActiveFilterProps = {
 };
 
 const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
-  const { t, i18n } = useLingui();
+  const { t } = useLingui();
   const { hasFilter, removeKey, toggleFilter } = useFilters();
 
   const [open, setOpen] = useState(false);
@@ -118,38 +118,32 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
     }
   }, [fetcher.data, filter.filter.type]);
 
+  // Headers and option labels are already localized at column-definition time
+  // (t`…` / i18n._(msg`…`)) or are raw data values; re-running i18n._() on them
+  // logs "Uncompiled message detected", so render the resolved strings directly.
   const makeLabel = (v: string) => {
     const values = v.split(",");
     if (values.length > 1) {
       const labels = values.map((val) => {
         const node = options.find((o) => o.value === val)?.label ?? "";
-        return typeof node === "string"
-          ? translate(node)
-          : reactNodeToString(node);
+        return typeof node === "string" ? node : reactNodeToString(node);
       });
       if (labels.every(Boolean)) {
         return labels.join(", ");
       }
       return `${values.length} ${
-        filter.pluralHeader
-          ? translate(filter.pluralHeader)
-          : `${translate(filter.header)}s`
+        filter.pluralHeader ? filter.pluralHeader : `${filter.header}s`
       }`;
     }
     if (filter.filter.type === "custom" && filter.filter.getLabel) {
       const node = filter.filter.getLabel(v);
       if (node == null) return v;
-      return typeof node === "string"
-        ? translate(node)
-        : reactNodeToString(node);
+      return typeof node === "string" ? node : reactNodeToString(node);
     }
     const node = options.find((o) => o.value === v)?.label ?? "";
-    const label =
-      typeof node === "string" ? translate(node) : reactNodeToString(node);
+    const label = typeof node === "string" ? node : reactNodeToString(node);
     return label || v;
   };
-
-  const translate = (text: string) => i18n._(text);
 
   return (
     <HStack spacing={0} className="shrink-0">
@@ -159,7 +153,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
         size="sm"
         variant="secondary"
       >
-        {translate(filter.header)}
+        {filter.header}
       </Button>
       <Button className="rounded-none border-l-0" size="sm" variant="secondary">
         {operator === "eq" ? (
@@ -244,11 +238,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
                     >
                       <HStack spacing={2}>
                         <Checkbox isChecked={isChecked} tabIndex={-1} />
-                        <span>
-                          {typeof option.label === "string"
-                            ? translate(option.label)
-                            : option.label}
-                        </span>
+                        <span>{option.label}</span>
                       </HStack>
                     </CommandItem>
                   );

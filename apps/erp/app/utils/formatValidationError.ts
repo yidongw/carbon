@@ -40,7 +40,10 @@ export const validationErrorMessages: Record<string, MessageDescriptor> = {
 export function formatValidationError(error: string, i18n: I18n) {
   const descriptor = validationErrorMessages[error];
   if (descriptor) return i18n._(descriptor);
-  return i18n._(error);
+  // Unmapped validator strings are raw English literals that were never
+  // extracted into the catalog, so i18n._(error) can't translate them and only
+  // logs "Uncompiled message detected". Return the raw string unchanged.
+  return error;
 }
 
 export function useFormatValidationError() {

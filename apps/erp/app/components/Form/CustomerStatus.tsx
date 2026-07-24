@@ -12,6 +12,7 @@ import type {
 } from "~/modules/sales";
 import CustomerStatusForm from "~/modules/sales/ui/CustomerStatuses/CustomerStatusForm";
 import { path } from "~/utils/path";
+import { translateIfKnown } from "~/utils/translateIfKnown";
 
 type CustomerStatusSelectProps = Omit<ComboboxProps, "options">;
 
@@ -30,7 +31,7 @@ const CustomerStatus = (props: CustomerStatusSelectProps) => {
         options={
           options.map((o) => ({
             value: o.value,
-            label: <Enumerable value={i18n._(o.label)} />
+            label: <Enumerable value={translateIfKnown(i18n, o.label)} />
           })) ?? []
         }
         {...props}

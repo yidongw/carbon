@@ -39,6 +39,7 @@ import { useCompanySettings, useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
+import { translateIfKnown } from "~/utils/translateIfKnown";
 import type { Customer, CustomerStatus } from "../../types";
 
 // Customer inline edits go through the shared customer bulk-update action.
@@ -67,7 +68,7 @@ const CustomersTable = memo(
     );
 
     const translateStatus = useCallback(
-      (value: string) => i18n._(value),
+      (value: string) => translateIfKnown(i18n, value),
       [i18n]
     );
 
