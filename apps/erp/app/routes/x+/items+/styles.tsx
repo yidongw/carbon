@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Outlet, redirect, useLoaderData, useLocation } from "react-router";
 import { getItemPostingGroupsList, getStyles } from "~/modules/items";
 import { StylesTable } from "~/modules/items/ui/Styles";
 import { getTagsList } from "~/modules/shared";
@@ -59,6 +59,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function StylesSearchRoute() {
+  // React bails out of re-rendering this route subtree on search/filter/sort
+  // navigations even though React Router's loaderData has already updated — the
+  // store notifies and router.state.loaderData is fresh, but this component
+  // never re-renders, so the list stays frozen on the previous result.
+  // Subscribing to the location forces a re-render on every navigation so the
+  // fresh loaderData reaches the table.
+  useLocation();
+
   const { count, styles, tags, itemPostingGroups } =
     useLoaderData<typeof loader>();
 
