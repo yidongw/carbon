@@ -86,6 +86,7 @@ type HeaderProps<T> = {
   withInlineEditing: boolean;
   withPagination: boolean;
   withSearch: boolean;
+  searchReloadDocument?: boolean;
   withSelectableRows: boolean;
   sort?: ReactNode;
   filterActions?: ReactNode;
@@ -117,6 +118,7 @@ const TableHeader = <T extends object>({
   withPagination,
   withSavedView,
   withSearch,
+  searchReloadDocument,
   withSelectableRows,
   sort,
   filterActions
@@ -306,7 +308,12 @@ const TableHeader = <T extends object>({
               </DropdownMenu>
             )}
           {withSearch && (
-            <SearchFilter param="search" size="sm" placeholder={t`Search`} />
+            <SearchFilter
+              param="search"
+              size="sm"
+              placeholder={t`Search`}
+              reloadDocument={searchReloadDocument}
+            />
           )}
           {!!filters?.length && <Filter filters={filters} />}
           {filterActions}
