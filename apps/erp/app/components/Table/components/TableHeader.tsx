@@ -123,7 +123,7 @@ const TableHeader = <T extends object>({
   sort,
   filterActions
 }: HeaderProps<T>) => {
-  const { t, i18n } = useLingui();
+  const { t } = useLingui();
   const [params, setParams] = useUrlParams();
   const currentFilters = params.getAll("filter").filter(Boolean);
   const currentSorts = params.getAll("sort").filter(Boolean);
@@ -148,11 +148,10 @@ const TableHeader = <T extends object>({
   }, [fetcher.state, fetcher.data?.success]);
 
   const { currentView, hasView } = useSavedViews();
-  const translateText = (value: string | undefined) => {
-    if (!value) return value;
-    return i18n._(value);
-  };
-  const viewTitle = translateText(currentView?.name ?? title);
+  // title is already localized at the call site (t`…`) and a saved view's name
+  // is raw user data; neither should go through i18n._() (which would log
+  // "Uncompiled message detected"). Use the resolved string directly.
+  const viewTitle = currentView?.name ?? title;
   // const viewDescription = currentView?.description ?? "";
   const savedViewFormValidator = useMemo(
     () =>
