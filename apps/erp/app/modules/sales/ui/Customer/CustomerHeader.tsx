@@ -34,6 +34,7 @@ import { ConfirmDelete } from "~/components/Modals";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import type { action } from "~/routes/x+/settings+/tags";
 import { path } from "~/utils/path";
+import { translateIfKnown } from "~/utils/translateIfKnown";
 import type { CustomerDetail, CustomerStatus } from "../../types";
 
 const CustomerHeader = () => {
@@ -131,7 +132,9 @@ const CustomerHeader = () => {
                 </CardAttributeLabel>
                 <CardAttributeValue>
                   {customerStatus ? (
-                    <Enumerable value={i18n._(customerStatus)} />
+                    <Enumerable
+                      value={translateIfKnown(i18n, customerStatus)}
+                    />
                   ) : (
                     "-"
                   )}
