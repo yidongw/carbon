@@ -103,6 +103,9 @@ interface TableProps<T extends object> {
   withPagination?: boolean;
   withSavedView?: boolean;
   withSearch?: boolean;
+  // Apply the search via a full-document navigation instead of client-side
+  // routing. See SearchFilter's `reloadDocument`. Used by /x/items/styles.
+  searchReloadDocument?: boolean;
   withSelectableRows?: boolean;
   withSimpleSorting?: boolean;
   sort?: ReactNode;
@@ -252,6 +255,7 @@ const Table = <T extends object>({
   withPagination = true,
   withSavedView = false,
   withSearch = true,
+  searchReloadDocument = false,
   withSelectableRows = false,
   withSimpleSorting = true,
   sort,
@@ -949,36 +953,37 @@ const Table = <T extends object>({
       )}
     >
       {withHeader && (
-      <TableHeader
-        featuredColumns={featuredColumns}
-        columnAccessors={columnAccessors}
-        columnOrder={columnOrder}
-        columnPinning={columnPinning}
-        columnVisibility={columnVisibility}
-        columns={table.getAllLeafColumns()}
-        compact={compact}
-        data={data}
-        editMode={editMode}
-        filters={filters}
-        importCSV={importCSV}
-        pagination={pagination}
-        primaryAction={primaryAction}
-        renderActions={renderActions}
-        selectedRows={selectedRows}
-        setFeaturedColumns={setFeaturedColumns}
-        onPinnedReorder={handlePinnedReorder}
-        setColumnOrder={setColumnOrder}
-        setEditMode={setEditMode}
-        table={tableName}
-        title={title}
-        withInlineEditing={withInlineEditing}
-        withPagination={withPagination}
-        withSavedView={withSavedView}
-        withSearch={withSearch}
-        withSelectableRows={withSelectableRows}
-        sort={sort}
-        filterActions={filterActions}
-      />
+        <TableHeader
+          featuredColumns={featuredColumns}
+          columnAccessors={columnAccessors}
+          columnOrder={columnOrder}
+          columnPinning={columnPinning}
+          columnVisibility={columnVisibility}
+          columns={table.getAllLeafColumns()}
+          compact={compact}
+          data={data}
+          editMode={editMode}
+          filters={filters}
+          importCSV={importCSV}
+          pagination={pagination}
+          primaryAction={primaryAction}
+          renderActions={renderActions}
+          selectedRows={selectedRows}
+          setFeaturedColumns={setFeaturedColumns}
+          onPinnedReorder={handlePinnedReorder}
+          setColumnOrder={setColumnOrder}
+          setEditMode={setEditMode}
+          table={tableName}
+          title={title}
+          withInlineEditing={withInlineEditing}
+          withPagination={withPagination}
+          withSavedView={withSavedView}
+          withSearch={withSearch}
+          searchReloadDocument={searchReloadDocument}
+          withSelectableRows={withSelectableRows}
+          sort={sort}
+          filterActions={filterActions}
+        />
       )}
 
       {/* Mobile card view */}
@@ -1261,8 +1266,7 @@ const Table = <T extends object>({
                   const canExpandRow =
                     !!renderExpandedRow &&
                     (!getRowCanExpand || getRowCanExpand(row.original));
-                  const isRowExpanded =
-                    canExpandRow && expandedRows[row.index];
+                  const isRowExpanded = canExpandRow && expandedRows[row.index];
                   const handleRowClick = canExpandRow
                     ? () => toggleRowExpanded(row.index)
                     : undefined;
@@ -1287,9 +1291,7 @@ const Table = <T extends object>({
                       onCellUpdate={onCellUpdate}
                       onFinishEditing={finishEditing}
                       onClick={handleRowClick}
-                      className={
-                        canExpandRow ? "cursor-pointer" : undefined
-                      }
+                      className={canExpandRow ? "cursor-pointer" : undefined}
                     />
                   );
 
