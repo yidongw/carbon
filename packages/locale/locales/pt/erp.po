@@ -1808,6 +1808,9 @@ msgstr "Recolher Custos"
 msgid "Collapse features table"
 msgstr "Colapsar tabela de características"
 
+msgid "Collapse row"
+msgstr ""
+
 msgid "Collapse subtree"
 msgstr "Recolher subárvore"
 
@@ -4071,6 +4074,9 @@ msgstr "Expandir Custos"
 
 msgid "Expand features table"
 msgstr "Expandar tabela de funcionalidades"
+
+msgid "Expand row"
+msgstr ""
 
 msgid "Expand subtree"
 msgstr "Expandir subárvore"

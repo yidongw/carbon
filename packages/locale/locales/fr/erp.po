@@ -1808,6 +1808,9 @@ msgstr "Réduire les coûts"
 msgid "Collapse features table"
 msgstr "Réduire le tableau de fonctionnalités"
 
+msgid "Collapse row"
+msgstr ""
+
 msgid "Collapse subtree"
 msgstr "Réduire le sous-arbre"
 
@@ -4071,6 +4074,9 @@ msgstr "Développer les coûts"
 
 msgid "Expand features table"
 msgstr "Étendre le tableau des fonctionnalités"
+
+msgid "Expand row"
+msgstr ""
 
 msgid "Expand subtree"
 msgstr "Développer le sous-arbre"

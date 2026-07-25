@@ -1809,6 +1809,9 @@ msgstr "折叠成本"
 msgid "Collapse features table"
 msgstr "折叠功能表"
 
+msgid "Collapse row"
+msgstr ""
+
 msgid "Collapse subtree"
 msgstr "折叠子树"
 
@@ -4072,6 +4075,9 @@ msgstr "展开成本"
 
 msgid "Expand features table"
 msgstr "展开功能表"
+
+msgid "Expand row"
+msgstr ""
 
 msgid "Expand subtree"
 msgstr "展开子树"

@@ -1808,6 +1808,9 @@ msgstr "Comprimi Costi"
 msgid "Collapse features table"
 msgstr "Collapse tabella caratteristiche"
 
+msgid "Collapse row"
+msgstr ""
+
 msgid "Collapse subtree"
 msgstr "Comprimi sottostruttura"
 
@@ -4071,6 +4074,9 @@ msgstr "Espandi Costi"
 
 msgid "Expand features table"
 msgstr "Espandi tabella caratteristiche"
+
+msgid "Expand row"
+msgstr ""
 
 msgid "Expand subtree"
 msgstr "Espandi sottostruttura"

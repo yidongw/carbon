@@ -1808,6 +1808,9 @@ msgstr "Свернуть затраты"
 msgid "Collapse features table"
 msgstr "Свернуть таблицу функций"
 
+msgid "Collapse row"
+msgstr ""
+
 msgid "Collapse subtree"
 msgstr "Свернуть поддерево"
 
@@ -4071,6 +4074,9 @@ msgstr "Развернуть затраты"
 
 msgid "Expand features table"
 msgstr "Расширенная таблица функций"
+
+msgid "Expand row"
+msgstr ""
 
 msgid "Expand subtree"
 msgstr "Развернуть поддерево"
