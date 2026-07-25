@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
   toast,
   useDisclosure,
+  useHydrated,
   VStack
 } from "@carbon/react";
 import {
@@ -447,7 +448,15 @@ const JobsTable = memo(
       deleteModal.onClose();
     };
 
-    const todaysDate = useMemo(() => today(getLocalTimeZone()), []);
+    // today(getLocalTimeZone()) reads the wall clock/timezone during render, so
+    // the server (UTC) and client (local) can land on different dates and break
+    // hydration. Compute it only after mount; the Due Today / Overdue markers
+    // below are gated on it so server + first client render omit them (match).
+    const hydrated = useHydrated();
+    const todaysDate = useMemo(
+      () => (hydrated ? today(getLocalTimeZone()) : null),
+      [hydrated]
+    );
 
     const customColumns = useCustomColumns<Job>("job");
     const columns = useMemo<ColumnDef<Job>[]>(() => {
@@ -614,12 +623,16 @@ const JobsTable = memo(
                   "Paused"
                 ].includes(status ?? "") && (
                   <>
-                    {dueDate && isSameDay(parseDate(dueDate), todaysDate) && (
-                      <JobStatus status="Due Today" />
-                    )}
-                    {dueDate && parseDate(dueDate) < todaysDate && (
-                      <JobStatus status="Overdue" />
-                    )}
+                    {dueDate &&
+                      todaysDate &&
+                      isSameDay(parseDate(dueDate), todaysDate) && (
+                        <JobStatus status="Due Today" />
+                      )}
+                    {dueDate &&
+                      todaysDate &&
+                      parseDate(dueDate) < todaysDate && (
+                        <JobStatus status="Overdue" />
+                      )}
                   </>
                 )}
               </HStack>
