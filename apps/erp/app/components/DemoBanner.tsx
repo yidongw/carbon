@@ -1,3 +1,4 @@
+import { useHydrated } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { LuBuilding2, LuCalendarPlus, LuFlaskConical } from "react-icons/lu";
@@ -89,10 +90,16 @@ function daysLeft(expiresAt: string | null): number {
  */
 export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
   const { t } = useLingui();
+  // Only the "in the demo" branch derives its text/structure from daysLeft()
+  // (which reads Date.now()); the server (UTC) and client can disagree at a day
+  // boundary. Render that branch client-only to avoid a hydration mismatch. The
+  // other branches carry no wall-clock and keep server-rendering normally.
+  const hydrated = useHydrated();
 
   let content: ReactNode;
 
   if (demo?.isCurrent) {
+    if (!hydrated) return null;
     const days = daysLeft(demo.expiresAt);
     content =
       days <= 0 ? (

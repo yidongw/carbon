@@ -1,4 +1,4 @@
-import { cn } from "@carbon/react";
+import { cn, useHydrated } from "@carbon/react";
 import { getLocalTimeZone } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
 import type { ComponentProps } from "react";
@@ -16,7 +16,10 @@ export default function AppIndexRoute() {
     [modules, settingsModule]
   );
   const { locale } = useLocale();
-  const date = new Date();
+  // Reading the clock/timezone here diverges between the server (UTC) and the
+  // client, so only render the formatted date after hydration to avoid a
+  // hydration mismatch. Server + first client render show nothing.
+  const hydrated = useHydrated();
 
   const formatter = useMemo(
     () =>
@@ -29,7 +32,7 @@ export default function AppIndexRoute() {
   return (
     <div className="p-8 w-full h-full bg-muted">
       <Greeting size="h3" />
-      <Subheading>{formatter.format(date)}</Subheading>
+      <Subheading>{hydrated ? formatter.format(new Date()) : null}</Subheading>
       <Hr />
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-6 mb-8">
         {allModules.map((module) => (

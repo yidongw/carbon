@@ -1,3 +1,4 @@
+import { useHydrated } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { Link } from "react-router";
 import { AppBanner } from "~/components/AppBanner";
@@ -16,7 +17,11 @@ export function PlanRenewalBanner({
   annualPlan: { termEndsAt: string | null; status: string } | null;
 }) {
   const { t } = useLingui();
-  if (!annualPlan) return null;
+  // daysLeft() reads Date.now() during render; gate on hydration so the server
+  // and first client render agree (both render nothing) and the day-count/
+  // expired branch is computed only on the client.
+  const hydrated = useHydrated();
+  if (!annualPlan || !hydrated) return null;
 
   const left = daysLeft(annualPlan.termEndsAt);
   const expired = annualPlan.status === "Inactive" || left <= 0;

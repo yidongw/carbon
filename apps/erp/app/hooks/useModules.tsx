@@ -1,3 +1,4 @@
+import { resolveLanguage } from "@carbon/locale";
 import { useRouteData } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import {
@@ -134,6 +135,7 @@ function useModuleDefinitions(): ModuleDefinition[] {
 const PINNED_MODULES = new Set(["settings"]);
 
 export function useModules() {
+  const { i18n } = useLingui();
   const permissions = usePermissions();
   const modules = useModuleDefinitions();
 
@@ -146,7 +148,14 @@ export function useModules() {
     (m) => !PINNED_MODULES.has(m.key)
   );
 
-  const alphabetical = permitted.sort((a, b) => a.name.localeCompare(b.name));
+  // Sort using the active app locale explicitly. localeCompare() with no locale
+  // uses the JS runtime default (Node server = en-US, browser = the user's
+  // locale), which orders translated names (e.g. Chinese) differently on server
+  // vs client and breaks hydration (React #418 across the whole nav).
+  const language = resolveLanguage(i18n.locale);
+  const alphabetical = permitted.sort((a, b) =>
+    a.name.localeCompare(b.name, language)
+  );
 
   if (modulePreferences.length === 0) {
     return alphabetical;
@@ -178,6 +187,7 @@ export function useSettingsModule() {
 }
 
 export function useAllModules() {
+  const { i18n } = useLingui();
   const permissions = usePermissions();
   const modules = useModuleDefinitions();
 
@@ -186,9 +196,11 @@ export function useAllModules() {
   }>(path.to.authenticatedRoot);
 
   const modulePreferences = routeData?.modulePreferences ?? [];
+  // See useModules: sort with the active locale so server and client agree.
+  const language = resolveLanguage(i18n.locale);
   const permitted = filterByPermissions(modules, permissions)
     .filter((m) => !PINNED_MODULES.has(m.key))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => a.name.localeCompare(b.name, language));
 
   const prefMap = new Map(modulePreferences.map((p) => [p.module, p]));
 
