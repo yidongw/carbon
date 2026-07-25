@@ -211,7 +211,7 @@ export const SelectBase = forwardRef<HTMLButtonElement, SelectBaseProps>(
                 )}
               </span>
             ) : (
-              <div>
+              <div className="min-w-0 truncate">
                 <SelectValue placeholder={placeholder} />
                 {isLoading && (
                   <div className="absolute top-3 right-2">

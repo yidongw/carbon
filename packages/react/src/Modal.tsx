@@ -44,12 +44,12 @@ ModalOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const ModalContentVariants = cva(
   cn(
     "px-0 pt-6",
-    "relative z-50 grid w-full border dark:border-none gap-4 shadow-md dark:shadow-sm duration-200",
+    "relative z-50 grid grid-cols-1 w-full max-w-[calc(100vw-2rem)] border dark:border-none gap-4 shadow-md dark:shadow-sm duration-200",
     "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
     "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
     "data-[state=closed]:slide-out-to-left-[0%] data-[state=closed]:slide-out-to-top-[0%",
     "data-[state=open]:slide-in-from-left-[0%] data-[state=open]:slide-in-from-top-[0%]",
-    "sm:rounded-xl md:w-full",
+    "rounded-xl md:w-full",
     "bg-background focus-visible:outline-none focus-visible:ring-0",
     "dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]"
   ),
@@ -59,10 +59,10 @@ const ModalContentVariants = cva(
         tiny: `sm:align-middle sm:w-full sm:max-w-xs`,
         small: `sm:align-middle sm:w-full sm:max-w-sm`,
         medium: `sm:align-middle sm:w-full sm:max-w-lg`,
-        large: `sm:align-middle sm:w-full max-w-xl`,
-        xlarge: `sm:align-middle sm:w-full max-w-3xl`,
-        xxlarge: `sm:align-middle sm:w-full max-w-6xl`,
-        xxxlarge: `sm:align-middle sm:w-full max-w-7xl`
+        large: `sm:align-middle sm:w-full sm:max-w-xl`,
+        xlarge: `sm:align-middle sm:w-full sm:max-w-3xl`,
+        xxlarge: `sm:align-middle sm:w-full sm:max-w-6xl`,
+        xxxlarge: `sm:align-middle sm:w-full sm:max-w-7xl`
       }
     },
     defaultVariants: {

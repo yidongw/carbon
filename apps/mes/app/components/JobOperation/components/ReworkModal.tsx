@@ -10,7 +10,6 @@ import {
 import {
   Button,
   Checkbox,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -319,22 +318,20 @@ export function ReworkModal({
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <HStack>
-              <Button variant="secondary" size="lg" onClick={onClose}>
-                <Trans>Cancel</Trans>
-              </Button>
-              <Button
-                type="submit"
-                size="lg"
-                isDisabled={
-                  fetcher.state !== "idle" ||
-                  (parentIsSerial && serialQuantity === 0)
-                }
-                isLoading={fetcher.state !== "idle"}
-              >
-                <Trans>Create Rework</Trans>
-              </Button>
-            </HStack>
+            <Button variant="secondary" size="lg" onClick={onClose}>
+              <Trans>Cancel</Trans>
+            </Button>
+            <Button
+              type="submit"
+              size="lg"
+              isDisabled={
+                fetcher.state !== "idle" ||
+                (parentIsSerial && serialQuantity === 0)
+              }
+              isLoading={fetcher.state !== "idle"}
+            >
+              <Trans>Create Rework</Trans>
+            </Button>
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>
