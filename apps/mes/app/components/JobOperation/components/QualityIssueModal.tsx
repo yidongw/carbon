@@ -2,7 +2,6 @@ import type { Result } from "@carbon/auth";
 import { Hidden, Select, Submit, TextArea, ValidatedForm } from "@carbon/form";
 import {
   Button,
-  HStack,
   Modal,
   ModalBody,
   ModalContent,
@@ -111,14 +110,12 @@ export function QualityIssueModal({
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <HStack>
-              <Button variant="secondary" size="lg" onClick={onClose}>
-                <Trans>Cancel</Trans>
-              </Button>
-              <Submit size="lg" isLoading={fetcher.state !== "idle"}>
-                <Trans>Create Issue</Trans>
-              </Submit>
-            </HStack>
+            <Button variant="secondary" size="lg" onClick={onClose}>
+              <Trans>Cancel</Trans>
+            </Button>
+            <Submit size="lg" isLoading={fetcher.state !== "idle"}>
+              <Trans>Create Issue</Trans>
+            </Submit>
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>

@@ -9,7 +9,6 @@ import {
 import type { JSONContent } from "@carbon/react";
 import {
   Button,
-  HStack,
   Label,
   Modal,
   ModalBody,
@@ -273,12 +272,10 @@ export function MaintenanceDispatch({
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <HStack>
-              <Button variant="secondary" size="lg" onClick={handleClose}>
-                Cancel
-              </Button>
-              <Submit size="lg">Create Dispatch</Submit>
-            </HStack>
+            <Button variant="secondary" size="lg" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Submit size="lg">Create Dispatch</Submit>
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>
