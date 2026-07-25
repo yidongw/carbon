@@ -91,23 +91,26 @@ const Columns = <T extends object>({
 
   return (
     <Drawer>
-      <DrawerTrigger>
-        <Tooltip>
-          <TooltipTrigger asChild>
+      {/* Both triggers merge onto the single IconButton via asChild — nesting
+          the Drawer/Tooltip triggers around a button (without asChild) renders
+          <button><button> which is invalid HTML and breaks hydration. */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DrawerTrigger asChild>
             <IconButton
               aria-label={t`Columns`}
               title={t`Columns`}
               variant="ghost"
               icon={<LuColumns2 />}
             />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>
-              <Trans>Column visibility and order</Trans>
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </DrawerTrigger>
+          </DrawerTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>
+            <Trans>Column visibility and order</Trans>
+          </p>
+        </TooltipContent>
+      </Tooltip>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>
