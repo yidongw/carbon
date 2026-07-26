@@ -110,7 +110,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 // Keep the brand name out of the translatable string so a rebrand (e.g.
 // "Carbon" -> "Jilio") never desyncs the catalogs. The msgid stays
 // "Welcome to {appName}"; only this literal changes per fork.
-const appName = "Carbon";
+const appName = "Jilio";
 
 const fade = {
   initial: { opacity: 0 },
