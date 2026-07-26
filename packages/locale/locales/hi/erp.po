@@ -11228,8 +11228,8 @@ msgstr "भारित औसत"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "पिछले साल की भारित औसत लागत जो चालान पोस्ट किए जाने पर गणना की जाती है"
 
-msgid "Welcome to Carbon"
-msgstr "कार्बन में आपका स्वागत है"
+msgid "Welcome to {appName}"
+msgstr "{appName} में आपका स्वागत है"
 
 msgid "When"
 msgstr "कब"

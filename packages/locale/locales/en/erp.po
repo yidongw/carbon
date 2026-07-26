@@ -11228,8 +11228,8 @@ msgstr "Weighted Average"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "Weighted average cost over last year calculated when the invoice is posted"
 
-msgid "Welcome to Carbon"
-msgstr "Welcome to Carbon"
+msgid "Welcome to {appName}"
+msgstr "Welcome to {appName}"
 
 msgid "When"
 msgstr "When"

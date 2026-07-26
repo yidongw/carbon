@@ -11229,8 +11229,8 @@ msgstr "加权平均"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "上一年度平均成本在发票记账时计算"
 
-msgid "Welcome to Carbon"
-msgstr "欢迎使用 Carbon"
+msgid "Welcome to {appName}"
+msgstr "欢迎使用 {appName}"
 
 msgid "When"
 msgstr "当"

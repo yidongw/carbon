@@ -11228,8 +11228,8 @@ msgstr "Средневзвешенное значение"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "Средневзвешенная стоимость за последний год, рассчитанная при проводке счета"
 
-msgid "Welcome to Carbon"
-msgstr "Добро пожаловать в Carbon"
+msgid "Welcome to {appName}"
+msgstr "Добро пожаловать в {appName}"
 
 msgid "When"
 msgstr "Когда"
