@@ -62,6 +62,7 @@
     "dompurify": "catalog:",
     "jose": "catalog:",
     "nanoid": "catalog:",
+    "react-dom": "catalog:",
     "zustand": "catalog:"
   }
 }
