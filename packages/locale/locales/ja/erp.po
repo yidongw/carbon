@@ -1808,6 +1808,9 @@ msgstr "コストを折りたたむ"
 msgid "Collapse features table"
 msgstr "FEATURES を折りたたむ"
 
+msgid "Collapse row"
+msgstr "行を折りたたむ"
+
 msgid "Collapse subtree"
 msgstr "サブツリーを折りたたむ"
 
@@ -4071,6 +4074,9 @@ msgstr "コストを展開"
 
 msgid "Expand features table"
 msgstr "機能表を展開"
+
+msgid "Expand row"
+msgstr "行を展開"
 
 msgid "Expand subtree"
 msgstr "サブツリーを展開"

@@ -9,14 +9,16 @@ import {
 } from "~/services/bundle.service";
 import { path } from "~/utils/path";
 
-type ScanIntent = "pickup" | "report";
+type ScanIntent = "view" | "pickup" | "report";
 
 /**
  * Bundle scan resolver — a bundle has no page of its own. Resolve it to its
- * current operation and redirect to the operation page, opening the right
- * overlay for scans:
+ * current operation and redirect to the operation page. Scanning the label QR
+ * (which carries no `intent`) just *views* the operation; claiming/reporting is
+ * explicit opt-in:
+ *   - (no intent)      → operation page, read-only (default for a plain scan)
  *   - `?intent=report` → operation page with the record-quantity overlay
- *   - `?intent=pickup`  → operation page (confirm-pickup overlay unless it's
+ *   - `?intent=pickup` → operation page (confirm-pickup overlay unless it's
  *     already ours)
  * A bundle with no open operation goes to the job's process graph. Reached only
  * via QR scan / the scan pages; the bundle list links straight to the job page.
@@ -26,10 +28,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { bundleWorkOrderId } = params;
   if (!bundleWorkOrderId) throw new Error("Missing bundle work order id");
 
+  const rawIntent = new URL(request.url).searchParams.get("intent");
   const intent: ScanIntent =
-    new URL(request.url).searchParams.get("intent") === "report"
+    rawIntent === "report"
       ? "report"
-      : "pickup";
+      : rawIntent === "pickup"
+        ? "pickup"
+        : "view";
 
   const bundle = await getBundleForScan(client, bundleWorkOrderId, companyId);
   if (bundle.error || !bundle.data?.jobId) {
@@ -50,13 +55,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(`${path.to.operation(cur.id)}?record=complete`);
   }
 
-  // Pickup: already ours → straight to the operation page; otherwise the
-  // confirm-pickup overlay handles picking up / taking over.
-  throw redirect(
-    cur.assignee === userId
-      ? path.to.operation(cur.id)
-      : `${path.to.operation(cur.id)}?pickup=confirm`
-  );
+  if (intent === "pickup") {
+    // Already ours → straight to the operation page; otherwise the
+    // confirm-pickup overlay handles picking up / taking over.
+    throw redirect(
+      cur.assignee === userId
+        ? path.to.operation(cur.id)
+        : `${path.to.operation(cur.id)}?pickup=confirm`
+    );
+  }
+
+  // Default (plain QR scan): view the operation, read-only. No take-over.
+  throw redirect(path.to.operation(cur.id));
 }
 
 export default function BundleScanResolver() {

@@ -1808,6 +1808,9 @@ msgstr "Kosten ausblenden"
 msgid "Collapse features table"
 msgstr "Zusammenfassung der Funktions-tabelle"
 
+msgid "Collapse row"
+msgstr "Zeile einklappen"
+
 msgid "Collapse subtree"
 msgstr "Teilbaum einklappen"
 
@@ -4071,6 +4074,9 @@ msgstr "Kosten erweitern"
 
 msgid "Expand features table"
 msgstr "Erweiterung der Funktions-Tabelle"
+
+msgid "Expand row"
+msgstr "Zeile ausklappen"
 
 msgid "Expand subtree"
 msgstr "Unterstruktur erweitern"

@@ -1808,6 +1808,9 @@ msgstr "Contraer Costos"
 msgid "Collapse features table"
 msgstr "Collapse tabla de características"
 
+msgid "Collapse row"
+msgstr "Contraer fila"
+
 msgid "Collapse subtree"
 msgstr "Contraer subárbol"
 
@@ -4071,6 +4074,9 @@ msgstr "Expandir Costos"
 
 msgid "Expand features table"
 msgstr "Expande la tabla de características"
+
+msgid "Expand row"
+msgstr "Expandir fila"
 
 msgid "Expand subtree"
 msgstr "Expandir subárbol"

@@ -1808,6 +1808,9 @@ msgstr "Collapse Costs"
 msgid "Collapse features table"
 msgstr "Collapse features table"
 
+msgid "Collapse row"
+msgstr "Collapse row"
+
 msgid "Collapse subtree"
 msgstr "Collapse subtree"
 
@@ -4071,6 +4074,9 @@ msgstr "Expand Costs"
 
 msgid "Expand features table"
 msgstr "Expand features table"
+
+msgid "Expand row"
+msgstr "Expand row"
 
 msgid "Expand subtree"
 msgstr "Expand subtree"

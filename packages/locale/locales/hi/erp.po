@@ -1808,6 +1808,9 @@ msgstr "लागत को संक्षिप्त करें"
 msgid "Collapse features table"
 msgstr "फीचर्स टेबल को पिटाएं"
 
+msgid "Collapse row"
+msgstr "पंक्ति संक्षिप्त करें"
+
 msgid "Collapse subtree"
 msgstr "सबट्री को संक्षिप्त करें"
 
@@ -4071,6 +4074,9 @@ msgstr "लागत विस्तृत करें"
 
 msgid "Expand features table"
 msgstr "फीचर्स टेबल को विस्तार करें"
+
+msgid "Expand row"
+msgstr "पंक्ति विस्तृत करें"
 
 msgid "Expand subtree"
 msgstr "सबट्री को विस्तृत करें"
