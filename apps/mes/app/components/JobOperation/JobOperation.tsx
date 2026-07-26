@@ -758,6 +758,37 @@ export const JobOperation = ({
                 <Card>
                   <CardHeader className="flex flex-row items-center gap-2 justify-between">
                     <CardTitle>
+                      <Trans>Assignee</Trans>
+                    </CardTitle>
+                    <LuSquareUser className="h-3 w-3 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="flex flex-row items-center justify-between gap-2">
+                    {assignee ? (
+                      <EmployeeAvatar employeeId={assignee} />
+                    ) : (
+                      <span className="text-muted-foreground">
+                        <Trans>Unassigned</Trans>
+                      </span>
+                    )}
+                    {assignee !== userId && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<LuHardHat />}
+                        onClick={openPickupOverlay}
+                      >
+                        {assignee ? (
+                          <Trans>Take over</Trans>
+                        ) : (
+                          <Trans>Pick up</Trans>
+                        )}
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center gap-2 justify-between">
+                    <CardTitle>
                       <Trans>Completed</Trans>
                     </CardTitle>
                     <FaCheck className="h-3 w-3 text-emerald-500" />
@@ -824,37 +855,6 @@ export const JobOperation = ({
                         <Trans>Review</Trans>
                       </Link>
                     </Button>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center gap-2 justify-between">
-                    <CardTitle>
-                      <Trans>Assignee</Trans>
-                    </CardTitle>
-                    <LuSquareUser className="h-3 w-3 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent className="flex flex-row items-center justify-between gap-2">
-                    {assignee ? (
-                      <EmployeeAvatar employeeId={assignee} />
-                    ) : (
-                      <span className="text-muted-foreground">
-                        <Trans>Unassigned</Trans>
-                      </span>
-                    )}
-                    {assignee !== userId && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        leftIcon={<LuHardHat />}
-                        onClick={openPickupOverlay}
-                      >
-                        {assignee ? (
-                          <Trans>Take over</Trans>
-                        ) : (
-                          <Trans>Pick up</Trans>
-                        )}
-                      </Button>
-                    )}
                   </CardContent>
                 </Card>
                 <Card>
