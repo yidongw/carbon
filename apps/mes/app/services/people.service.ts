@@ -2,6 +2,26 @@ import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { sanitize } from "~/utils/supabase";
 
+// Whether the user's employee type is "MES only" for this company. Such users
+// are shop-floor workers (or console operators): they may use the MES but are
+// blocked from the ERP. They must be passed the service role because the
+// employeeType RLS policy requires the users_update permission, which MES-only
+// workers do not have.
+export async function isMesOnlyEmployee(
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string
+) {
+  const result = await client
+    .from("employee")
+    .select("...employeeType!inner(mesOnly)")
+    .eq("id", userId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  return result.data?.mesOnly ?? false;
+}
+
 export async function getOpenClockEntry(
   client: SupabaseClient<Database>,
   employeeId: string,
