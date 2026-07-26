@@ -7,7 +7,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   HStack,
-  toast,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -23,7 +22,6 @@ import {
 } from "~/components/Form";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { usePermissions, useUser } from "~/hooks";
-import type { ConfigurationParameter } from "~/modules/items/types";
 import { deadlineTypes, masterWorkOrderValidator } from "~/modules/production";
 import {
   toConfigTableValue,
@@ -33,6 +31,7 @@ import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";
 import { useDeadlineTypeLabel } from "~/modules/production/ui/Jobs/jobLabels";
 import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import { useItems } from "~/stores";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 
 type MasterWorkOrderFormProps = {
@@ -46,20 +45,24 @@ const MasterWorkOrderForm = ({
   action
 }: MasterWorkOrderFormProps) => {
   const permissions = usePermissions();
-  const { company, defaults } = useUser();
+  const { defaults } = useUser();
   const { carbon } = useCarbon();
   const { t } = useLingui();
   const configModal = useConfigTableModal();
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
+  const [items] = useItems();
 
   const isDisabled = !permissions.can("create", "production");
 
   const [itemId, setItemId] = useState(initialValues.itemId ?? "");
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
-  const [configurationParameters, setConfigurationParameters] = useState<{
-    parameters: ConfigurationParameter[];
-    groups: unknown[];
-  } | null>(null);
+  // Whether the selected style needs a config table. Seeded from the preloaded
+  // items store so the quantity's config trigger shows instantly on selection.
+  const [hasConfigurationParameters, setHasConfigurationParameters] = useState(
+    () =>
+      items.find((i) => i.id === (initialValues.itemId ?? ""))
+        ?.requiresConfiguration ?? false
+  );
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(null);
   const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
     string[]
@@ -71,39 +74,26 @@ const MasterWorkOrderForm = ({
     setConfigTableRows(null);
     setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
-    setConfigurationParameters(null);
-    if (!nextItemId || !carbon || !company.id) return;
+    if (!nextItemId) {
+      setHasConfigurationParameters(false);
+      return;
+    }
 
+    // Preloaded flag from the items store — instant, no round-trip.
+    const known = items.find((i) => i.id === nextItemId)?.requiresConfiguration;
+    if (known !== undefined) {
+      setHasConfigurationParameters(known);
+      return;
+    }
+
+    // Fallback for items not yet in the store (e.g. created this session).
+    if (!carbon) return;
     const manufacturing = await carbon
       .from("itemReplenishment")
       .select("requiresConfiguration")
       .eq("itemId", nextItemId)
       .single();
-
-    if (manufacturing.data?.requiresConfiguration) {
-      const [parameters, groups] = await Promise.all([
-        carbon
-          .from("configurationParameter")
-          .select("*")
-          .eq("itemId", nextItemId)
-          .eq("companyId", company.id)
-          // Order so the derived "primary" param (Size) drives the columns.
-          .order("sortOrder", { ascending: true, nullsFirst: false }),
-        carbon
-          .from("configurationParameterGroup")
-          .select("*")
-          .eq("itemId", nextItemId)
-          .eq("companyId", company.id)
-      ]);
-      if (parameters.error || groups.error) {
-        toast.error(t`Failed to load configuration parameters`);
-        return;
-      }
-      setConfigurationParameters({
-        parameters: (parameters.data ?? []) as ConfigurationParameter[],
-        groups: groups.data ?? []
-      });
-    }
+    setHasConfigurationParameters(!!manufacturing.data?.requiresConfiguration);
   };
 
   const applyConfig = (data: unknown) => {
@@ -161,7 +151,7 @@ const MasterWorkOrderForm = ({
               isReadOnly={configTableTotal > 0}
               onChange={setQuantity}
               configTableTotal={configTableTotal}
-              hasConfigurationParameters={!!configurationParameters}
+              hasConfigurationParameters={hasConfigurationParameters}
               onOpenConfigTable={openConfigTable}
             />
             <Location name="locationId" label={t`Location`} />

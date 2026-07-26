@@ -107,10 +107,14 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
         replenishmentSystem: string;
         active: boolean;
         itemTrackingType: string;
+        itemReplenishment:
+          | { requiresConfiguration: boolean }
+          | { requiresConfiguration: boolean }[]
+          | null;
       }>(
         carbon,
         "item",
-        "id, readableIdWithRevision, unitOfMeasureCode, name, type, replenishmentSystem, active, itemTrackingType",
+        "id, readableIdWithRevision, unitOfMeasureCode, name, type, replenishmentSystem, active, itemTrackingType, itemReplenishment(requiresConfiguration)",
         (query) =>
           query
             .eq("companyId", companyId)
@@ -168,15 +172,29 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
 
     hydratedFromServer = true;
 
+    // Flatten the embedded itemReplenishment into a top-level flag so pickers can
+    // read `requiresConfiguration` directly off each item.
+    const itemsData = (items.data ?? []).map(
+      ({ itemReplenishment, ...rest }) => {
+        const replenishment = Array.isArray(itemReplenishment)
+          ? itemReplenishment[0]
+          : itemReplenishment;
+        return {
+          ...rest,
+          requiresConfiguration: replenishment?.requiresConfiguration ?? false
+        };
+      }
+    );
+
     // @ts-ignore
-    setItems(items.data ?? []);
+    setItems(itemsData);
     setSuppliers(suppliers.data ?? []);
     setCustomers(customers.data ?? []);
     // @ts-ignore
     setPeople(people.data ?? []);
 
     await Promise.all([
-      idb.setItem("items", items.data),
+      idb.setItem("items", itemsData),
       idb.setItem("suppliers", suppliers.data),
       idb.setItem("customers", customers.data),
       idb.setItem("people", people.data)
