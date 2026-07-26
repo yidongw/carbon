@@ -67,16 +67,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // every "MES only" shop-floor worker has it by default, so we also exclude
   // MES-only employees. Workers can still see the list; the buttons are hidden
   // and the action route rejects them.
-  let hasProductionUpdate = false;
-  try {
-    await requirePermissions(request, { update: "production" });
-    hasProductionUpdate = true;
-  } catch {
-    hasProductionUpdate = false;
-  }
-  const canApprove =
-    hasProductionUpdate &&
-    !(await isMesOnlyEmployee(serviceRole, userId, companyId));
+  const [hasProductionUpdate, isMesOnly] = await Promise.all([
+    requirePermissions(request, { update: "production" })
+      .then(() => true)
+      .catch(() => false),
+    isMesOnlyEmployee(serviceRole, userId, companyId)
+  ]);
+  const canApprove = hasProductionUpdate && !isMesOnly;
 
   // A deep link from the operation page ("待审批" card) arrives as
   // ?jobOperationId=X. Translate it into the page's own job + process filters so
