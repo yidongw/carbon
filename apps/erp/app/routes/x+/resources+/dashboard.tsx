@@ -39,7 +39,7 @@ import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useDateFormatter, useNumberFormatter } from "@react-aria/i18n";
 import type { DateRange } from "@react-types/datepicker";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuArrowUpRight,
   LuCalendarClock,
@@ -52,7 +52,7 @@ import {
   LuWrench
 } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData } from "react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { DateSelect, Empty, Hyperlink } from "~/components";
 import { CSVLink } from "~/components/CSVLink";
@@ -109,8 +109,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
         .limit(10)
     ]);
 
-  // Deferred promise for Assigned to Me
-  const assignedToMe = client
+  // Resolved (not deferred): deferring made the whole route stream as a
+  // Suspense boundary, and the dashboard's mount-time fetcher updates
+  // interrupted its hydration (React #421).
+  const assignedToMe = await client
     .from("maintenanceDispatch")
     .select(
       "id, maintenanceDispatchId, status, source, priority, workCenterId, createdAt"
@@ -684,26 +686,14 @@ export default function MaintenanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="min-h-[200px]">
-            <Suspense fallback={<Loading isLoading />}>
-              <Await
-                resolve={assignedToMe}
-                errorElement={
-                  <div>
-                    <Trans>Error loading assigned dispatches</Trans>
-                  </div>
-                }
-              >
-                {(dispatches) =>
-                  dispatches.length > 0 ? (
-                    <DispatchTable data={dispatches} />
-                  ) : (
-                    <div className="flex justify-center items-center h-full">
-                      <Empty />
-                    </div>
-                  )
-                }
-              </Await>
-            </Suspense>
+            {((dispatches) =>
+              dispatches.length > 0 ? (
+                <DispatchTable data={dispatches} />
+              ) : (
+                <div className="flex justify-center items-center h-full">
+                  <Empty />
+                </div>
+              ))(assignedToMe)}
           </CardContent>
         </Card>
       </div>

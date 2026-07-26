@@ -39,7 +39,7 @@ import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useDateFormatter, useNumberFormatter } from "@react-aria/i18n";
 import type { DateRange } from "@react-types/datepicker";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuArrowUpRight,
   LuChevronDown,
@@ -54,7 +54,7 @@ import {
   RiProgress8Line
 } from "react-icons/ri";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData } from "react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { CustomerAvatar, DateSelect, Empty, Hyperlink } from "~/components";
 import { CSVLink } from "~/components/CSVLink";
@@ -93,38 +93,43 @@ export async function loader({ request }: LoaderFunctionArgs) {
     view: "sales"
   });
 
-  const [openSalesOrders, openQuotes, openRFQs] = await Promise.all([
-    client
-      .from("salesOrder")
-      .select("id, salesOrderId, status, customerId, assignee, createdAt", {
-        count: "exact"
-      })
-      .in("status", OPEN_SALES_ORDER_STATUSES)
-      .eq("companyId", companyId)
-      .limit(10),
-    client
-      .from("quote")
-      .select("id, quoteId, status, customerId, assignee, createdAt", {
-        count: "exact"
-      })
-      .in("status", OPEN_QUOTE_STATUSES)
-      .eq("companyId", companyId)
-      .limit(10),
-    client
-      .from("salesRfq")
-      .select("id, rfqId, status, customerId, assignee, createdAt", {
-        count: "exact"
-      })
-      .in("status", OPEN_RFQ_STATUSES)
-      .eq("companyId", companyId)
-      .limit(10)
-  ]);
+  const [openSalesOrders, openQuotes, openRFQs, assignedToMe] =
+    await Promise.all([
+      client
+        .from("salesOrder")
+        .select("id, salesOrderId, status, customerId, assignee, createdAt", {
+          count: "exact"
+        })
+        .in("status", OPEN_SALES_ORDER_STATUSES)
+        .eq("companyId", companyId)
+        .limit(10),
+      client
+        .from("quote")
+        .select("id, quoteId, status, customerId, assignee, createdAt", {
+          count: "exact"
+        })
+        .in("status", OPEN_QUOTE_STATUSES)
+        .eq("companyId", companyId)
+        .limit(10),
+      client
+        .from("salesRfq")
+        .select("id, rfqId, status, customerId, assignee, createdAt", {
+          count: "exact"
+        })
+        .in("status", OPEN_RFQ_STATUSES)
+        .eq("companyId", companyId)
+        .limit(10),
+      getSalesDocumentsAssignedToMe(client, userId, companyId)
+    ]);
 
   return {
     openSalesOrders: openSalesOrders,
     openQuotes: openQuotes,
     openRFQs: openRFQs,
-    assignedToMe: getSalesDocumentsAssignedToMe(client, userId, companyId)
+    // Resolved (not deferred) to avoid streaming the whole route as a Suspense
+    // boundary — the dashboard's mount-time fetcher updates interrupted its
+    // hydration (React #421). Runs in parallel above, so no added latency.
+    assignedToMe: assignedToMe
   };
 }
 
@@ -708,69 +713,57 @@ export default function SalesDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="min-h-[200px]">
-            <Suspense fallback={<Loading isLoading />}>
-              <Await
-                resolve={assignedToMe}
-                errorElement={
-                  <div>
-                    <Trans>Error loading assigned documents</Trans>
-                  </div>
-                }
-              >
-                {(assignedDocs) =>
-                  assignedDocs.length > 0 ? (
-                    <Table>
-                      <Thead>
-                        <Tr>
-                          <Th>
-                            <Trans>Document</Trans>
-                          </Th>
-                          <Th>
-                            <Trans>Status</Trans>
-                          </Th>
-                          <Th>
-                            <Trans>Customer</Trans>
-                          </Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {assignedDocs.map((doc) => {
-                          switch (doc.type) {
-                            case "salesOrder":
-                              return (
-                                <SalesOrderDocumentRow
-                                  key={doc.id}
-                                  doc={doc as unknown as SalesOrder}
-                                />
-                              );
-                            case "quote":
-                              return (
-                                <QuoteDocumentRow
-                                  key={doc.id}
-                                  doc={doc as unknown as Quotation}
-                                />
-                              );
-                            case "rfq":
-                              return (
-                                <RfqDocumentRow
-                                  key={doc.id}
-                                  doc={doc as unknown as SalesRFQ}
-                                />
-                              );
-                            default:
-                              return null;
-                          }
-                        })}
-                      </Tbody>
-                    </Table>
-                  ) : (
-                    <div className="flex justify-center items-center h-full">
-                      <Empty />
-                    </div>
-                  )
-                }
-              </Await>
-            </Suspense>
+            {((assignedDocs) =>
+              assignedDocs.length > 0 ? (
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>
+                        <Trans>Document</Trans>
+                      </Th>
+                      <Th>
+                        <Trans>Status</Trans>
+                      </Th>
+                      <Th>
+                        <Trans>Customer</Trans>
+                      </Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {assignedDocs.map((doc) => {
+                      switch (doc.type) {
+                        case "salesOrder":
+                          return (
+                            <SalesOrderDocumentRow
+                              key={doc.id}
+                              doc={doc as unknown as SalesOrder}
+                            />
+                          );
+                        case "quote":
+                          return (
+                            <QuoteDocumentRow
+                              key={doc.id}
+                              doc={doc as unknown as Quotation}
+                            />
+                          );
+                        case "rfq":
+                          return (
+                            <RfqDocumentRow
+                              key={doc.id}
+                              doc={doc as unknown as SalesRFQ}
+                            />
+                          );
+                        default:
+                          return null;
+                      }
+                    })}
+                  </Tbody>
+                </Table>
+              ) : (
+                <div className="flex justify-center items-center h-full">
+                  <Empty />
+                </div>
+              ))(assignedToMe)}
           </CardContent>
         </Card>
       </div>

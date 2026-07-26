@@ -38,7 +38,7 @@ import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import type { DateRange } from "@react-types/datepicker";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuArrowUpRight,
   LuCalendarClock,
@@ -53,7 +53,7 @@ import {
   LuShieldX
 } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData } from "react-router";
 import {
   Bar,
   BarChart,
@@ -230,7 +230,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .limit(10)
   ]);
 
-  const assignedToMe = client
+  // Resolved (not deferred): deferring made the whole route stream as a
+  // Suspense boundary, and the dashboard's mount-time fetcher updates
+  // interrupted its hydration (React #421).
+  const assignedToMe = await client
     .from("issues")
     .select("id, nonConformanceId, name, status, priority")
     .eq("companyId", companyId)
@@ -929,32 +932,14 @@ export default function QualityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="min-h-[200px]">
-            <Suspense
-              fallback={
-                <div className="p-4 text-muted-foreground">
-                  <Trans>Loading...</Trans>
+            {((assignedIssues) =>
+              assignedIssues.length > 0 ? (
+                <IssueTable data={assignedIssues} />
+              ) : (
+                <div className="flex justify-center items-center h-full">
+                  <Empty />
                 </div>
-              }
-            >
-              <Await
-                resolve={assignedToMe}
-                errorElement={
-                  <div>
-                    <Trans>Error loading assigned issues</Trans>
-                  </div>
-                }
-              >
-                {(assignedIssues) =>
-                  assignedIssues.length > 0 ? (
-                    <IssueTable data={assignedIssues} />
-                  ) : (
-                    <div className="flex justify-center items-center h-full">
-                      <Empty />
-                    </div>
-                  )
-                }
-              </Await>
-            </Suspense>
+              ))(assignedToMe)}
           </CardContent>
         </Card>
       </div>

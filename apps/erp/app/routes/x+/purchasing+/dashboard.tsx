@@ -44,7 +44,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useDateFormatter, useNumberFormatter } from "@react-aria/i18n";
 import type { DateRange } from "@react-types/datepicker";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuArrowUpRight,
   LuChevronDown,
@@ -57,7 +57,7 @@ import {
   LuPackageSearch
 } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData } from "react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { DateSelect, Empty, Hyperlink, SupplierAvatar } from "~/components";
 import { CSVLink } from "~/components/CSVLink";
@@ -188,7 +188,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : { data: [], error: null }
   ]);
 
-  const assignedToMePromise = getPurchasingDocumentsAssignedToMe(
+  // Resolved (not deferred): deferring made the whole route stream as a
+  // Suspense boundary, and the dashboard's mount-time fetcher updates
+  // interrupted its hydration (React #421).
+  const assignedToMe = await getPurchasingDocumentsAssignedToMe(
     client,
     userId,
     companyId
@@ -200,7 +203,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     openPurchaseInvoices: openPurchaseInvoices,
     purchaseOrdersNeedingApproval: purchaseOrdersNeedingApproval,
     suppliersNeedingApproval: suppliersNeedingApproval,
-    assignedToMe: assignedToMePromise
+    assignedToMe: assignedToMe
   };
 }
 
@@ -718,28 +721,13 @@ export default function PurchaseDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="min-h-[200px]">
-            <Suspense fallback={<Loading isLoading />}>
-              <Await
-                resolve={assignedToMe}
-                errorElement={
-                  <div>
-                    <Trans>Error loading assigned documents</Trans>
-                  </div>
-                }
-              >
-                {(assignedDocs) => (
-                  <AssignedDocumentsTable
-                    assignedDocs={assignedDocs}
-                    purchaseOrdersNeedingApproval={
-                      purchaseOrdersNeedingApproval.data ?? []
-                    }
-                    suppliersNeedingApproval={
-                      suppliersNeedingApproval.data ?? []
-                    }
-                  />
-                )}
-              </Await>
-            </Suspense>
+            <AssignedDocumentsTable
+              assignedDocs={assignedToMe}
+              purchaseOrdersNeedingApproval={
+                purchaseOrdersNeedingApproval.data ?? []
+              }
+              suppliersNeedingApproval={suppliersNeedingApproval.data ?? []}
+            />
           </CardContent>
         </Card>
       </div>
