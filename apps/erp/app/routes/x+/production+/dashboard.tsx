@@ -46,7 +46,7 @@ import {
 import { now, toCalendarDateTime } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { DateRange } from "@react-types/datepicker";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuArrowUpRight,
@@ -59,7 +59,7 @@ import {
 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData } from "react-router";
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import {
   CustomerAvatar,
@@ -103,7 +103,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     view: "production"
   });
 
-  const [activeJobs, assignedJobs, workCenters] = await Promise.all([
+  const [activeJobs, assignedJobs, workCenters, events] = await Promise.all([
     client
       .from("job")
       .select("id,status,assignee")
@@ -114,14 +114,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .select("id,status,assignee")
       .eq("companyId", companyId)
       .eq("assignee", userId),
-    getWorkCentersListWithBlockingStatus(client, companyId)
+    getWorkCentersListWithBlockingStatus(client, companyId),
+    getActiveProductionEvents(client, companyId)
   ]);
 
   return {
     activeJobs: activeJobs.data?.length ?? 0,
     assignedJobs: assignedJobs.data?.length ?? 0,
     workCenters: workCenters.data ?? [],
-    events: getActiveProductionEvents(client, companyId)
+    // Resolved (not deferred): streaming this made the whole route a Suspense
+    // boundary, and the dashboard's mount-time updates (fetcher/realtime)
+    // interrupted its hydration -> React #421. It runs in parallel above, so
+    // there is no added latency.
+    events: events.data ?? []
   };
 }
 
@@ -615,17 +620,11 @@ export default function ProductionDashboard() {
       </div>
 
       <div className="w-full">
-        <Suspense fallback={null}>
-          <Await resolve={events}>
-            {(resolvedEvents) => (
-              <WorkCenterCards
-                events={resolvedEvents.data ?? []}
-                // @ts-expect-error TS2322 - TODO: fix type
-                workCenters={workCenters}
-              />
-            )}
-          </Await>
-        </Suspense>
+        <WorkCenterCards
+          events={events}
+          // @ts-expect-error TS2322 - TODO: fix type
+          workCenters={workCenters}
+        />
       </div>
     </div>
   );
