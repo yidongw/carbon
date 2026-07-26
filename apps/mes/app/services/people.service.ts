@@ -1,3 +1,4 @@
+import { requirePermissions } from "@carbon/auth/auth.server";
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { sanitize } from "~/utils/supabase";
@@ -20,6 +21,29 @@ export async function isMesOnlyEmployee(
     .maybeSingle();
 
   return result.data?.mesOnly ?? false;
+}
+
+// Whether the current user may approve production reports — used both to gate
+// the Report Approvals buttons and to decide whether a report the user files is
+// auto-approved (payment period set immediately) rather than left pending.
+//
+// The rule is: has the production_update permission AND is NOT an "MES only"
+// employee. production_update alone is insufficient because every MES-only
+// shop-floor worker has it by default, so their reports must still go through a
+// manager's approval instead of being auto-approved.
+export async function canApproveProductionReports(
+  request: Request,
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string
+) {
+  const [hasProductionUpdate, isMesOnly] = await Promise.all([
+    requirePermissions(request, { update: "production" })
+      .then(() => true)
+      .catch(() => false),
+    isMesOnlyEmployee(client, userId, companyId)
+  ]);
+  return hasProductionUpdate && !isMesOnly;
 }
 
 export async function getOpenClockEntry(

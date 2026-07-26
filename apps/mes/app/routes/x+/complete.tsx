@@ -12,6 +12,7 @@ import {
   finishJobOperation,
   insertProductionQuantity
 } from "~/services/operations.service";
+import { canApproveProductionReports } from "~/services/people.service";
 import { path } from "~/utils/path";
 
 /**
@@ -79,16 +80,18 @@ async function autoPrintFirstOperationLabel({
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, companyId, userId } = await requirePermissions(request, {});
+  const serviceRole = await getCarbonServiceRole();
 
-  // Managers with production_update auto-approve their own entries by setting
-  // the payment period immediately. Employees leave it null (pending approval).
-  let canAutoApprove = false;
-  try {
-    await requirePermissions(request, { update: "production" });
-    canAutoApprove = true;
-  } catch {
-    canAutoApprove = false;
-  }
+  // Managers auto-approve their own entries by setting the payment period
+  // immediately; shop-floor workers leave it null (pending approval). Note this
+  // must be more than production_update — every MES-only worker has that — so it
+  // matches the Report Approvals gate exactly.
+  const canAutoApprove = await canApproveProductionReports(
+    request,
+    serviceRole,
+    userId,
+    companyId
+  );
 
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -102,8 +105,6 @@ export async function action({ request }: ActionFunctionArgs) {
   if (validation.error) {
     return validationError(validation.error);
   }
-
-  const serviceRole = await getCarbonServiceRole();
 
   // Get current job operation to check if operation will be finished
   const jobOperation = await serviceRole

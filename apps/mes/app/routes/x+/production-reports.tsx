@@ -47,7 +47,10 @@ import {
   insertScrapQuantity,
   invalidateProductionQuantity
 } from "~/services/operations.service";
-import { isMesOnlyEmployee } from "~/services/people.service";
+import {
+  canApproveProductionReports,
+  isMesOnlyEmployee
+} from "~/services/people.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 
@@ -62,18 +65,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const serviceRole = getCarbonServiceRole();
 
-  // Approving/disapproving requires BOTH the production_update permission AND an
-  // ERP-capable employee type. production_update alone is insufficient because
-  // every "MES only" shop-floor worker has it by default, so we also exclude
-  // MES-only employees. Workers can still see the list; the buttons are hidden
-  // and the action route rejects them.
-  const [hasProductionUpdate, isMesOnly] = await Promise.all([
-    requirePermissions(request, { update: "production" })
-      .then(() => true)
-      .catch(() => false),
-    isMesOnlyEmployee(serviceRole, userId, companyId)
-  ]);
-  const canApprove = hasProductionUpdate && !isMesOnly;
+  // Workers can see the list, but only managers may approve/disapprove: the
+  // buttons are hidden here and the action route rejects them.
+  const canApprove = await canApproveProductionReports(
+    request,
+    serviceRole,
+    userId,
+    companyId
+  );
 
   // A deep link from the operation page ("待审批" card) arrives as
   // ?jobOperationId=X. Translate it into the page's own job + process filters so

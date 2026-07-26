@@ -9,6 +9,7 @@ import {
   insertReworkQuantity,
   insertScrapQuantity
 } from "~/services/operations.service";
+import { canApproveProductionReports } from "~/services/people.service";
 
 /** Non-negative integer from a form value; anything invalid becomes 0. */
 function toCount(value: FormDataEntryValue | null): number {
@@ -25,15 +26,17 @@ function toCount(value: FormDataEntryValue | null): number {
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, companyId, userId } = await requirePermissions(request, {});
+  const serviceRole = getCarbonServiceRole();
 
-  // Managers with production_update auto-approve their finished entries.
-  let canAutoApprove = false;
-  try {
-    await requirePermissions(request, { update: "production" });
-    canAutoApprove = true;
-  } catch {
-    canAutoApprove = false;
-  }
+  // Managers auto-approve their finished entries; shop-floor workers leave them
+  // pending. Must be more than production_update — every MES-only worker has
+  // that — so it matches the Report Approvals gate exactly.
+  const canAutoApprove = await canApproveProductionReports(
+    request,
+    serviceRole,
+    userId,
+    companyId
+  );
 
   const formData = await request.formData();
   const jobOperationId = String(formData.get("jobOperationId") ?? "");
@@ -57,7 +60,6 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const serviceRole = getCarbonServiceRole();
   const now = new Date();
 
   // When a report completes the operation, the finish-to-inventory trigger uses
