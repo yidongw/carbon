@@ -1809,7 +1809,7 @@ msgid "Collapse features table"
 msgstr "Zusammenfassung der Funktions-tabelle"
 
 msgid "Collapse row"
-msgstr ""
+msgstr "Zeile einklappen"
 
 msgid "Collapse subtree"
 msgstr "Teilbaum einklappen"
@@ -4076,7 +4076,7 @@ msgid "Expand features table"
 msgstr "Erweiterung der Funktions-Tabelle"
 
 msgid "Expand row"
-msgstr ""
+msgstr "Zeile ausklappen"
 
 msgid "Expand subtree"
 msgstr "Unterstruktur erweitern"

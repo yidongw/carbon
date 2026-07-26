@@ -1809,7 +1809,7 @@ msgid "Collapse features table"
 msgstr "Zwiń tabelę funkcji"
 
 msgid "Collapse row"
-msgstr ""
+msgstr "Zwiń wiersz"
 
 msgid "Collapse subtree"
 msgstr "Zwiń poddrzewo"
@@ -4076,7 +4076,7 @@ msgid "Expand features table"
 msgstr "Rozwiń tabelę funkcji"
 
 msgid "Expand row"
-msgstr ""
+msgstr "Rozwiń wiersz"
 
 msgid "Expand subtree"
 msgstr "Rozwiń poddrzewo"

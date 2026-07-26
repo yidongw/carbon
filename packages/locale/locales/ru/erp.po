@@ -1809,7 +1809,7 @@ msgid "Collapse features table"
 msgstr "Свернуть таблицу функций"
 
 msgid "Collapse row"
-msgstr ""
+msgstr "Свернуть строку"
 
 msgid "Collapse subtree"
 msgstr "Свернуть поддерево"
@@ -4076,7 +4076,7 @@ msgid "Expand features table"
 msgstr "Расширенная таблица функций"
 
 msgid "Expand row"
-msgstr ""
+msgstr "Развернуть строку"
 
 msgid "Expand subtree"
 msgstr "Развернуть поддерево"

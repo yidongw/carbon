@@ -1810,7 +1810,7 @@ msgid "Collapse features table"
 msgstr "折叠功能表"
 
 msgid "Collapse row"
-msgstr ""
+msgstr "折叠行"
 
 msgid "Collapse subtree"
 msgstr "折叠子树"
@@ -4077,7 +4077,7 @@ msgid "Expand features table"
 msgstr "展开功能表"
 
 msgid "Expand row"
-msgstr ""
+msgstr "展开行"
 
 msgid "Expand subtree"
 msgstr "展开子树"

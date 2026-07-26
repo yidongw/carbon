@@ -1809,7 +1809,7 @@ msgid "Collapse features table"
 msgstr "Collapse tabla de características"
 
 msgid "Collapse row"
-msgstr ""
+msgstr "Contraer fila"
 
 msgid "Collapse subtree"
 msgstr "Contraer subárbol"
@@ -4076,7 +4076,7 @@ msgid "Expand features table"
 msgstr "Expande la tabla de características"
 
 msgid "Expand row"
-msgstr ""
+msgstr "Expandir fila"
 
 msgid "Expand subtree"
 msgstr "Expandir subárbol"
