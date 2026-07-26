@@ -11228,8 +11228,8 @@ msgstr "Gewichteter Durchschnitt"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "Gewichteter Durchschnittskostenwert des letzten Jahres, berechnet wenn die Rechnung gebucht wird"
 
-msgid "Welcome to Carbon"
-msgstr "Willkommen bei Carbon"
+msgid "Welcome to {appName}"
+msgstr "Willkommen bei {appName}"
 
 msgid "When"
 msgstr "Wann"

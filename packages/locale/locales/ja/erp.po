@@ -11228,8 +11228,8 @@ msgstr "加重平均"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "請求書が転記されるときに計算された過去1年間の加重平均コスト"
 
-msgid "Welcome to Carbon"
-msgstr "Carbonへようこそ"
+msgid "Welcome to {appName}"
+msgstr "{appName}へようこそ"
 
 msgid "When"
 msgstr "いつ"

@@ -11228,8 +11228,8 @@ msgstr "Promedio Ponderado"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "Costo promedio ponderado del último año calculado cuando se registra la factura"
 
-msgid "Welcome to Carbon"
-msgstr "Bienvenido a Carbon"
+msgid "Welcome to {appName}"
+msgstr "Bienvenido a {appName}"
 
 msgid "When"
 msgstr "Cuándo"

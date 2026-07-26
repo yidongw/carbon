@@ -11228,8 +11228,8 @@ msgstr "Średnia ważona"
 msgid "Weighted average cost over last year calculated when the invoice is posted"
 msgstr "Średni ważony koszt z ostatniego roku obliczony podczas księgowania faktury"
 
-msgid "Welcome to Carbon"
-msgstr "Witaj w Carbon"
+msgid "Welcome to {appName}"
+msgstr "Witaj w {appName}"
 
 msgid "When"
 msgstr "Kiedy"
