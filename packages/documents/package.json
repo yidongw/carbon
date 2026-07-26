@@ -11,6 +11,7 @@
     "cookie": "catalog:",
     "dompurify": "catalog:",
     "nanoid": "catalog:",
+    "react-dom": "catalog:",
     "react-icons": "catalog:",
     "react-pdf-tailwind": "2.3.0",
     "sst": "catalog:",
