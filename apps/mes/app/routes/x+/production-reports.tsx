@@ -47,6 +47,10 @@ import {
   insertScrapQuantity,
   invalidateProductionQuantity
 } from "~/services/operations.service";
+import {
+  canApproveProductionReports,
+  isMesOnlyEmployee
+} from "~/services/people.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 
@@ -57,20 +61,18 @@ function toCount(value: FormDataEntryValue | null): number {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { companyId } = await requirePermissions(request, {});
-
-  // Only managers/admins (production_update) may approve or disapprove. Workers
-  // can still see the list, but the action buttons are hidden and the action
-  // route rejects them.
-  let canApprove = false;
-  try {
-    await requirePermissions(request, { update: "production" });
-    canApprove = true;
-  } catch {
-    canApprove = false;
-  }
+  const { companyId, userId } = await requirePermissions(request, {});
 
   const serviceRole = getCarbonServiceRole();
+
+  // Workers can see the list, but only managers may approve/disapprove: the
+  // buttons are hidden here and the action route rejects them.
+  const canApprove = await canApproveProductionReports(
+    request,
+    serviceRole,
+    userId,
+    companyId
+  );
 
   // A deep link from the operation page ("待审批" card) arrives as
   // ?jobOperationId=X. Translate it into the page's own job + process filters so
@@ -143,12 +145,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  // requirePermissions throws (redirects to login) for workers without
-  // production_update, so only managers/admins reach the mutations below.
   const { companyId, userId } = await requirePermissions(request, {
     update: "production"
   });
   const serviceRole = getCarbonServiceRole();
+
+  // Mirror the loader's visibility rule server-side: "MES only" shop-floor
+  // workers can view but not approve/disapprove (production_update alone can't
+  // gate them — every MES worker has it by default).
+  if (await isMesOnlyEmployee(serviceRole, userId, companyId)) {
+    return { success: false };
+  }
 
   const formData = await request.formData();
   const intent = formData.get("intent");

@@ -1,6 +1,50 @@
+import { requirePermissions } from "@carbon/auth/auth.server";
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { sanitize } from "~/utils/supabase";
+
+// Whether the user's employee type is "MES only" for this company. Such users
+// are shop-floor workers (or console operators): they may use the MES but are
+// blocked from the ERP. They must be passed the service role because the
+// employeeType RLS policy requires the users_update permission, which MES-only
+// workers do not have.
+export async function isMesOnlyEmployee(
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string
+) {
+  const result = await client
+    .from("employee")
+    .select("...employeeType!inner(mesOnly)")
+    .eq("id", userId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  return result.data?.mesOnly ?? false;
+}
+
+// Whether the current user may approve production reports — used both to gate
+// the Report Approvals buttons and to decide whether a report the user files is
+// auto-approved (payment period set immediately) rather than left pending.
+//
+// The rule is: has the production_update permission AND is NOT an "MES only"
+// employee. production_update alone is insufficient because every MES-only
+// shop-floor worker has it by default, so their reports must still go through a
+// manager's approval instead of being auto-approved.
+export async function canApproveProductionReports(
+  request: Request,
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string
+) {
+  const [hasProductionUpdate, isMesOnly] = await Promise.all([
+    requirePermissions(request, { update: "production" })
+      .then(() => true)
+      .catch(() => false),
+    isMesOnlyEmployee(client, userId, companyId)
+  ]);
+  return hasProductionUpdate && !isMesOnly;
+}
 
 export async function getOpenClockEntry(
   client: SupabaseClient<Database>,
