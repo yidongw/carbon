@@ -383,13 +383,19 @@ async function insertStyleRecord(
   }
 ) {
   const styleClient = client as any;
-  const result = await styleClient.from("style").insert({
-    id: args.readableId,
-    itemId: args.itemId,
-    companyId: args.companyId,
-    createdBy: args.userId,
-    customFields: args.customFields ?? null
-  });
+  // The item-insert interceptor (sync_create_style_related_records) already
+  // created the base style row, so upsert (rather than insert) to fill in the
+  // remaining fields without colliding on the (id, companyId) primary key.
+  const result = await styleClient.from("style").upsert(
+    {
+      id: args.readableId,
+      itemId: args.itemId,
+      companyId: args.companyId,
+      createdBy: args.userId,
+      customFields: args.customFields ?? null
+    },
+    { onConflict: "id,companyId" }
+  );
 
   if (result.error) throw result.error;
 }
