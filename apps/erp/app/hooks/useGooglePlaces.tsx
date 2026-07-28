@@ -3,6 +3,32 @@ import { useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useCallback, useRef, useState } from "react";
 
+// Google Places (places.googleapis.com) is unreachable in some regions (e.g.
+// blocked by the GFW in mainland China). Without a timeout every keystroke hangs
+// for ~10s; once we detect it's unreachable we stop trying for the rest of the
+// session so the address field silently degrades to a plain text input.
+const PLACES_TIMEOUT_MS = 4000;
+let placesUnavailable = false;
+
+async function fetchWithTimeout(url: string, options?: RequestInit) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), PLACES_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+// A thrown AbortError (timeout) or TypeError (network/blocked) means we couldn't
+// reach Google at all — as opposed to a real API error (bad key, 4xx response).
+function isConnectivityError(err: unknown): boolean {
+  return (
+    (err instanceof DOMException && err.name === "AbortError") ||
+    err instanceof TypeError
+  );
+}
+
 interface PlaceSuggestion {
   placeId: string;
   text: string;
@@ -46,8 +72,9 @@ export const useGooglePlaces = () => {
 
   const getSuggestions = useCallback(
     async (input: string) => {
-      if (!GOOGLE_PLACES_API_KEY) {
-        setError(t`Google Places API key not configured`);
+      if (!GOOGLE_PLACES_API_KEY || placesUnavailable) {
+        // Silently degrade to a plain text field — no error, no hang.
+        setSuggestions([]);
         return;
       }
 
@@ -66,7 +93,7 @@ export const useGooglePlaces = () => {
       setError(null);
 
       try {
-        const response = await fetch(
+        const response = await fetchWithTimeout(
           "https://places.googleapis.com/v1/places:autocomplete",
           {
             method: "POST",
@@ -105,11 +132,17 @@ export const useGooglePlaces = () => {
 
         setSuggestions(placeSuggestions);
       } catch (err) {
-        console.error("Google Places API error:", err);
-        setError(
-          err instanceof Error ? err.message : t`Failed to fetch suggestions`
-        );
         setSuggestions([]);
+        if (isConnectivityError(err)) {
+          // Blocked/unreachable region — stop trying for the rest of the session.
+          placesUnavailable = true;
+          setError(null);
+        } else {
+          console.error("Google Places API error:", err);
+          setError(
+            err instanceof Error ? err.message : t`Failed to fetch suggestions`
+          );
+        }
       } finally {
         setLoading(false);
       }
@@ -181,8 +214,7 @@ export const useGooglePlaces = () => {
   const getPlaceDetails = async (
     placeId: string
   ): Promise<AddressComponents | null> => {
-    if (!GOOGLE_PLACES_API_KEY) {
-      setError(t`Google Places API key not configured`);
+    if (!GOOGLE_PLACES_API_KEY || placesUnavailable) {
       return null;
     }
 
@@ -190,7 +222,7 @@ export const useGooglePlaces = () => {
     setError(null);
 
     try {
-      const response = await fetch(
+      const response = await fetchWithTimeout(
         `https://places.googleapis.com/v1/places/${placeId}?sessionToken=${sessionTokenRef.current}`,
         {
           headers: {
@@ -212,10 +244,15 @@ export const useGooglePlaces = () => {
 
       return parseAddressComponents(data.addressComponents);
     } catch (err) {
-      console.error("Google Places API error:", err);
-      setError(
-        err instanceof Error ? err.message : t`Failed to fetch place details`
-      );
+      if (isConnectivityError(err)) {
+        placesUnavailable = true;
+        setError(null);
+      } else {
+        console.error("Google Places API error:", err);
+        setError(
+          err instanceof Error ? err.message : t`Failed to fetch place details`
+        );
+      }
       return null;
     } finally {
       setLoading(false);

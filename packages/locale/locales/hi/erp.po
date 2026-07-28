@@ -4788,9 +4788,6 @@ msgstr "शुभ प्रभात, {0}"
 msgid "Google"
 msgstr "Google"
 
-msgid "Google Places API key not configured"
-msgstr "Google Places API key कॉन्फ़िगर नहीं है"
-
 msgid "GR/IR Clearing"
 msgstr "GR/IR साफ़ करना"
 

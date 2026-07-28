@@ -4789,9 +4789,6 @@ msgstr "早上好，{0}"
 msgid "Google"
 msgstr "Google"
 
-msgid "Google Places API key not configured"
-msgstr "Google 地图 API 密钥未配置"
-
 msgid "GR/IR Clearing"
 msgstr "GR/IR 清算"
 

@@ -3584,8 +3584,6 @@ msgstr ""
 msgid "Good morning, {0}"
 msgstr ""
 
-msgid "Google Places API key not configured"
-msgstr ""
 
 msgid "Grade"
 msgstr ""

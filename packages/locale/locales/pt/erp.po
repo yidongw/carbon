@@ -4788,9 +4788,6 @@ msgstr "Bom dia, {0}"
 msgid "Google"
 msgstr "Google"
 
-msgid "Google Places API key not configured"
-msgstr "Chave da API do Google Places não configurada"
-
 msgid "GR/IR Clearing"
 msgstr "Limpeza de GR/IR"
 
