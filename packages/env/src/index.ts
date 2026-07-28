@@ -9,6 +9,7 @@ declare global {
       CARBON_API_URL: string;
       CLOUDFLARE_TURNSTILE_SITE_KEY: string;
       CONTROLLED_ENVIRONMENT: string;
+      DISABLE_VERCEL_ANALYTICS: string;
       ERP_URL: string;
       JIRA_CLIENT_ID: string;
       MES_URL: string;
@@ -221,6 +222,13 @@ const itarEnvironment = getEnv("CONTROLLED_ENVIRONMENT", {
 });
 
 export const CONTROLLED_ENVIRONMENT = parseBoolean(itarEnvironment, false);
+
+// Set to true to skip loading @vercel/analytics (vitals.vercel-insights.com is
+// blocked in mainland China and otherwise hangs the page for China users).
+export const DISABLE_VERCEL_ANALYTICS = parseBoolean(
+  getEnv("DISABLE_VERCEL_ANALYTICS", { isRequired: false, isSecret: false }),
+  false
+);
 
 export const ONSHAPE_CLIENT_ID = getEnv("ONSHAPE_CLIENT_ID", {
   isRequired: false
@@ -506,6 +514,7 @@ export function getBrowserEnv() {
     CARBON_EDITION,
     CLOUDFLARE_TURNSTILE_SITE_KEY,
     CONTROLLED_ENVIRONMENT,
+    DISABLE_VERCEL_ANALYTICS,
     DEFAULT_LANGUAGE,
     ERP_URL,
     GOOGLE_PLACES_API_KEY,

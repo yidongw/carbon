@@ -1,4 +1,9 @@
-import { CONTROLLED_ENVIRONMENT, error, getBrowserEnv } from "@carbon/auth";
+import {
+  CONTROLLED_ENVIRONMENT,
+  DISABLE_VERCEL_ANALYTICS,
+  error,
+  getBrowserEnv
+} from "@carbon/auth";
 import { flashClientMiddleware } from "@carbon/auth/middleware/flash.client";
 import {
   flashHeadersContext,
@@ -115,6 +120,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     CARBON_API_URL,
     CLOUDFLARE_TURNSTILE_SITE_KEY,
     CONTROLLED_ENVIRONMENT,
+    DISABLE_VERCEL_ANALYTICS,
     ERP_URL,
     GOOGLE_PLACES_API_KEY,
     JIRA_CLIENT_ID,
@@ -143,6 +149,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         CARBON_EDITION,
         CLOUDFLARE_TURNSTILE_SITE_KEY,
         CONTROLLED_ENVIRONMENT,
+        DISABLE_VERCEL_ANALYTICS,
         DEFAULT_LANGUAGE,
         ERP_URL,
         GOOGLE_PLACES_API_KEY,
@@ -259,7 +266,7 @@ export function Document({
         <Toaster position="bottom-right" visibleToasts={5} />
         <ScrollRestoration />
         <Scripts />
-        {!CONTROLLED_ENVIRONMENT && <Analytics />}
+        {!CONTROLLED_ENVIRONMENT && !DISABLE_VERCEL_ANALYTICS && <Analytics />}
       </body>
     </html>
   );
