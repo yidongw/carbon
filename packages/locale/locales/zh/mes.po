@@ -1347,6 +1347,9 @@ msgstr "废料"
 msgid "Scrap Reason"
 msgstr "报废原因"
 
+msgid "Reworked"
+msgstr "已返工"
+
 msgid "Scrapped"
 msgstr "已报废"
 

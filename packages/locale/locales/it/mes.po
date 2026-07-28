@@ -1346,6 +1346,9 @@ msgstr "Rifiuto"
 msgid "Scrap Reason"
 msgstr "Motivo Scarto"
 
+msgid "Reworked"
+msgstr "Rilavorato"
+
 msgid "Scrapped"
 msgstr "Scartato"
 

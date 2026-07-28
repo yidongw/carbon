@@ -1346,6 +1346,9 @@ msgstr "Défaut"
 msgid "Scrap Reason"
 msgstr "Motif de rebut"
 
+msgid "Reworked"
+msgstr "Retravaillé"
+
 msgid "Scrapped"
 msgstr "Rebuté"
 

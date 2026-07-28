@@ -1346,6 +1346,9 @@ msgstr "Scrap"
 msgid "Scrap Reason"
 msgstr "Scrap Reason"
 
+msgid "Reworked"
+msgstr "Reworked"
+
 msgid "Scrapped"
 msgstr "Scrapped"
 

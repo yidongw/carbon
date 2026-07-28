@@ -1346,6 +1346,9 @@ msgstr "Отходы"
 msgid "Scrap Reason"
 msgstr "Причина брака"
 
+msgid "Reworked"
+msgstr "Переработано"
+
 msgid "Scrapped"
 msgstr "Списано в брак"
 

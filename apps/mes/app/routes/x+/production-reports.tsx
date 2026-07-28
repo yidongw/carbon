@@ -42,10 +42,11 @@ import { TopbarActions } from "~/components/TopbarActions";
 import { useUrlParams } from "~/hooks";
 import {
   approveProductionQuantity,
-  getPendingProductionQuantities,
+  getPendingProductionReports,
   insertReworkQuantity,
   insertScrapQuantity,
-  invalidateProductionQuantity
+  invalidateProductionQuantity,
+  setReportQuantity
 } from "~/services/operations.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -97,10 +98,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
-  const reports = await getPendingProductionQuantities(serviceRole, companyId);
+  // Each row is a pending Production report enriched with the rework / scrap
+  // reported in the same submission (the lines sharing its reportId), so it
+  // shows its own numbers rather than the operation's running total.
+  const reports = await getPendingProductionReports(serviceRole, companyId);
 
   if (reports.error) {
-    console.error("getPendingProductionQuantities error:", reports.error);
+    console.error("getPendingProductionReports error:", reports.error);
   }
 
   // Resolve labels for any active job/process filters so their chips render
@@ -173,12 +177,15 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (intent === "disapprove") {
-    // The manager corrects the good count and accounts for the shortfall as
-    // rework / scrap (the rest is simply left unfinished).
+    // The manager corrects the three reported numbers directly: the good count,
+    // plus the report's rework and scrap totals.
     const completed = toCount(formData.get("completed"));
     const rework = toCount(formData.get("rework"));
     const scrap = toCount(formData.get("scrap"));
     const jobOperationId = String(formData.get("jobOperationId") ?? "");
+    // The rework / scrap corrections are reconciled under this report so they
+    // show up as its own numbers.
+    const reportId = String(formData.get("reportId") ?? "").trim() || null;
     const employeeId =
       String(formData.get("employeeId") ?? "").trim() || userId;
     const now = new Date();
@@ -205,25 +212,47 @@ export async function action({ request }: ActionFunctionArgs) {
       if (res.error) return { success: false };
     }
 
-    // The shortfall reasons become their own rework / scrap rows (defect
-    // tracking; not part of the payroll "pending" scope).
-    if (rework > 0 && jobOperationId) {
-      await insertReworkQuantity(serviceRole, {
-        jobOperationId,
-        quantity: rework,
+    // Set the report's rework / scrap to the corrected totals. When the report
+    // is grouped (has a reportId) we reconcile its existing rework/scrap lines;
+    // otherwise fall back to plain inserts keyed to the operation.
+    if (jobOperationId && reportId) {
+      await setReportQuantity(serviceRole, {
         companyId,
-        createdBy: userId,
-        employeeId
-      });
-    }
-    if (scrap > 0 && jobOperationId) {
-      await insertScrapQuantity(serviceRole, {
+        reportId,
         jobOperationId,
-        quantity: scrap,
-        companyId,
+        employeeId,
         createdBy: userId,
-        employeeId
+        type: "Rework",
+        quantity: rework
       });
+      await setReportQuantity(serviceRole, {
+        companyId,
+        reportId,
+        jobOperationId,
+        employeeId,
+        createdBy: userId,
+        type: "Scrap",
+        quantity: scrap
+      });
+    } else if (jobOperationId) {
+      if (rework > 0) {
+        await insertReworkQuantity(serviceRole, {
+          jobOperationId,
+          quantity: rework,
+          companyId,
+          createdBy: userId,
+          employeeId
+        });
+      }
+      if (scrap > 0) {
+        await insertScrapQuantity(serviceRole, {
+          jobOperationId,
+          quantity: scrap,
+          companyId,
+          createdBy: userId,
+          employeeId
+        });
+      }
     }
 
     return { success: true };
@@ -239,6 +268,11 @@ type PendingReport = {
   createdAt: string;
   employeeId: string | null;
   jobOperationId: string | null;
+  reportId: string | null;
+  // The rework / scrap reported in the same submission (share this reportId).
+  // Enriched by the loader; absent on the raw service row.
+  rework?: number;
+  scrap?: number;
   jobOperation: {
     id: string;
     description: string | null;
@@ -283,28 +317,18 @@ function ApprovalModal({
   const submitted = useRef(false);
   const isSubmitting = fetcher.state !== "idle";
 
-  // The reported quantity is the ceiling; the manager keeps the good count and
-  // allocates the shortfall to rework / scrap (the rest is left unfinished).
+  // Disapprove lets the manager correct the three reported numbers directly.
+  // They start at what was reported (completed = the production quantity,
+  // rework / scrap = what came in with this report).
   const total = report.quantity;
   const [completed, setCompleted] = useState(total);
-  const [rework, setRework] = useState(0);
-  const [scrap, setScrap] = useState(0);
+  const [rework, setRework] = useState(report.rework ?? 0);
+  const [scrap, setScrap] = useState(report.scrap ?? 0);
 
   const clamp = (n: number, max: number) =>
     Math.max(0, Math.min(max, Number.isFinite(n) ? Math.floor(n) : 0));
-  const shortfall = total - completed;
-  const notFinished = Math.max(0, shortfall - rework - scrap);
 
-  const updateCompleted = (n: number) => {
-    const c = clamp(n, total);
-    setCompleted(c);
-    const nextShortfall = total - c;
-    if (rework + scrap > nextShortfall) {
-      const r = Math.min(rework, nextShortfall);
-      setRework(r);
-      setScrap(Math.min(scrap, nextShortfall - r));
-    }
-  };
+  const updateCompleted = (n: number) => setCompleted(clamp(n, total));
 
   useEffect(() => {
     if (submitted.current && fetcher.state === "idle") {
@@ -339,6 +363,11 @@ function ApprovalModal({
                 name="employeeId"
                 value={report.employeeId ?? ""}
               />
+              <input
+                type="hidden"
+                name="reportId"
+                value={report.reportId ?? ""}
+              />
               <input type="hidden" name="completed" value={completed} />
               <input type="hidden" name="rework" value={rework} />
               <input type="hidden" name="scrap" value={scrap} />
@@ -353,7 +382,7 @@ function ApprovalModal({
                 <Trans>Approve this reported production quantity.</Trans>
               ) : (
                 <Trans>
-                  Keep the completed quantity and give a reason for the rest.
+                  Correct the completed, rework and scrap quantities.
                 </Trans>
               )}
             </ModalDescription>
@@ -392,14 +421,32 @@ function ApprovalModal({
               </VStack>
 
               {isApprove ? (
-                <HStack className="justify-between w-full text-sm">
-                  <span className="text-muted-foreground">
-                    <Trans>Quantity</Trans>
-                  </span>
-                  <span className="font-medium tabular-nums">
-                    {report.quantity}
-                  </span>
-                </HStack>
+                <VStack spacing={2} className="text-sm">
+                  <HStack className="justify-between w-full">
+                    <span className="text-muted-foreground">
+                      <Trans>Quantity</Trans>
+                    </span>
+                    <span className="font-medium tabular-nums">
+                      {report.quantity}
+                    </span>
+                  </HStack>
+                  <HStack className="justify-between w-full">
+                    <span className="text-muted-foreground">
+                      <Trans>Rework</Trans>
+                    </span>
+                    <span className="font-medium tabular-nums">
+                      {report.rework ?? 0}
+                    </span>
+                  </HStack>
+                  <HStack className="justify-between w-full">
+                    <span className="text-muted-foreground">
+                      <Trans>Scrap</Trans>
+                    </span>
+                    <span className="font-medium tabular-nums">
+                      {report.scrap ?? 0}
+                    </span>
+                  </HStack>
+                </VStack>
               ) : (
                 <div className="flex w-full flex-col gap-4 rounded-lg border border-border p-4">
                   <div className="flex flex-col gap-2">
@@ -445,37 +492,18 @@ function ApprovalModal({
                     </div>
                   </div>
 
-                  {shortfall > 0 && (
-                    <div className="flex flex-col gap-3 border-t border-border pt-4">
-                      <span className="text-xs text-muted-foreground">
-                        {t`Reason for the remaining ${shortfall}`}
-                      </span>
-                      <div className="grid grid-cols-2 gap-3">
-                        <ReasonField
-                          label={t`Rework`}
-                          value={rework}
-                          onChange={(n) =>
-                            setRework(clamp(n, shortfall - scrap))
-                          }
-                        />
-                        <ReasonField
-                          label={t`Scrap`}
-                          value={scrap}
-                          onChange={(n) =>
-                            setScrap(clamp(n, shortfall - rework))
-                          }
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          <Trans>Not finished yet</Trans>
-                        </span>
-                        <span className="font-medium tabular-nums">
-                          {notFinished}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                  <div className="grid grid-cols-2 gap-3 border-t border-border pt-4">
+                    <ReasonField
+                      label={t`Rework`}
+                      value={rework}
+                      onChange={(n) => setRework(Math.max(0, n))}
+                    />
+                    <ReasonField
+                      label={t`Scrap`}
+                      value={scrap}
+                      onChange={(n) => setScrap(Math.max(0, n))}
+                    />
+                  </div>
                 </div>
               )}
             </VStack>
@@ -737,6 +765,12 @@ export default function ProductionReportsRoute() {
                     <Trans>Quantity</Trans>
                   </Th>
                   <Th>
+                    <Trans>Rework</Trans>
+                  </Th>
+                  <Th>
+                    <Trans>Scrap</Trans>
+                  </Th>
+                  <Th>
                     <Trans>Reported</Trans>
                   </Th>
                   {canApprove && (
@@ -783,6 +817,12 @@ export default function ProductionReportsRoute() {
                       </Td>
                       <Td className="font-medium tabular-nums">
                         {report.quantity}
+                      </Td>
+                      <Td className="tabular-nums text-muted-foreground">
+                        {report.rework ?? 0}
+                      </Td>
+                      <Td className="tabular-nums text-muted-foreground">
+                        {report.scrap ?? 0}
                       </Td>
                       <Td className="text-muted-foreground">
                         {formatDateTime(report.createdAt)}

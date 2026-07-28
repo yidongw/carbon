@@ -1346,6 +1346,9 @@ msgstr "Skrepe"
 msgid "Scrap Reason"
 msgstr "Przyczyna odrzutu"
 
+msgid "Reworked"
+msgstr "Poprawione"
+
 msgid "Scrapped"
 msgstr "Odrzucone"
 
