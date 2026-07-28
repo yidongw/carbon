@@ -72,6 +72,11 @@ export async function action({ request }: ActionFunctionArgs) {
     .eq("id", jobOperationId)
     .eq("companyId", companyId);
 
+  // Finished / rework / scrap from one submission share a single report, so the
+  // approvals view can show each report's own rework & scrap. The first line
+  // inserted creates the report; the rest attach to its reportId.
+  let submissionReportId: string | null = null;
+
   if (finished > 0) {
     const insert = await insertProductionQuantity(client, {
       jobOperationId,
@@ -88,6 +93,7 @@ export async function action({ request }: ActionFunctionArgs) {
         await flash(request, error(insert.error, "Failed to report quantity"))
       );
     }
+    submissionReportId = insert.data?.[0]?.reportId ?? null;
     // Auto-issue materials for the finished quantity (mirrors /x/complete).
     await serviceRole.functions.invoke("issue", {
       body: {
@@ -106,7 +112,8 @@ export async function action({ request }: ActionFunctionArgs) {
       quantity: rework,
       employeeId,
       companyId,
-      createdBy: userId
+      createdBy: userId,
+      reportId: submissionReportId
     });
     if (insert.error) {
       return data(
@@ -114,6 +121,8 @@ export async function action({ request }: ActionFunctionArgs) {
         await flash(request, error(insert.error, "Failed to report rework"))
       );
     }
+    submissionReportId =
+      submissionReportId ?? insert.data?.[0]?.reportId ?? null;
   }
 
   if (scrap > 0) {
@@ -122,7 +131,8 @@ export async function action({ request }: ActionFunctionArgs) {
       quantity: scrap,
       employeeId,
       companyId,
-      createdBy: userId
+      createdBy: userId,
+      reportId: submissionReportId
     });
     if (insert.error) {
       return data(

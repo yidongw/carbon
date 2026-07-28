@@ -1346,6 +1346,9 @@ msgstr "Resíduo"
 msgid "Scrap Reason"
 msgstr "Motivo do Refugo"
 
+msgid "Reworked"
+msgstr "Retrabalhado"
+
 msgid "Scrapped"
 msgstr "Refugado"
 

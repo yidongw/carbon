@@ -696,7 +696,7 @@ export async function getPendingProductionQuantities(
   let query = (client as any)
     .from("productionQuantity")
     .select(
-      `id, quantity, type, createdAt, employeeId, createdBy, notes, jobOperationId,
+      `id, quantity, type, createdAt, employeeId, createdBy, notes, jobOperationId, reportId,
        jobOperation!inner(id, description, jobId,
          process:processId(name),
          job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
@@ -712,6 +712,80 @@ export async function getPendingProductionQuantities(
   }
 
   return query.order("createdAt", { ascending: false });
+}
+
+/**
+ * Sum the Rework / Scrap quantities that belong to each of the given reports.
+ * A single worker submission (finished + rework + scrap) links all three
+ * quantity lines under one `reportId`, so this returns the rework/scrap that
+ * accompanied each pending Production report — not the operation's running
+ * total. Invalidated lines are excluded.
+ */
+export async function getReworkScrapByReport(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  reportIds: string[]
+) {
+  const totals = new Map<string, { rework: number; scrap: number }>();
+  if (reportIds.length === 0) return totals;
+
+  const { data } = await (client as any)
+    .from("productionQuantity")
+    .select("reportId, type, quantity")
+    .eq("companyId", companyId)
+    .in("type", ["Rework", "Scrap"])
+    .in("reportId", reportIds)
+    .is("invalidatedAt", null);
+
+  for (const row of (data ?? []) as {
+    reportId: string | null;
+    type: "Rework" | "Scrap";
+    quantity: number | null;
+  }[]) {
+    if (!row.reportId) continue;
+    const entry = totals.get(row.reportId) ?? { rework: 0, scrap: 0 };
+    if (row.type === "Rework") entry.rework += row.quantity ?? 0;
+    else entry.scrap += row.quantity ?? 0;
+    totals.set(row.reportId, entry);
+  }
+
+  return totals;
+}
+
+/**
+ * Pending Production reports awaiting approval, each enriched with the rework /
+ * scrap reported in the same submission (the lines sharing its reportId). One
+ * call for the approvals view: the pending query plus the rework/scrap rollup.
+ */
+export async function getPendingProductionReports(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  const pending = await getPendingProductionQuantities(client, companyId);
+  if (pending.error) {
+    return { data: [], error: pending.error };
+  }
+
+  const rows = (pending.data ?? []) as (Record<string, unknown> & {
+    reportId: string | null;
+  })[];
+  const reportIds = Array.from(
+    new Set(
+      rows.map((r) => r.reportId).filter((id): id is string => Boolean(id))
+    )
+  );
+  const reworkScrap = await getReworkScrapByReport(
+    client,
+    companyId,
+    reportIds
+  );
+
+  const data = rows.map((r) => {
+    const totals = r.reportId ? reworkScrap.get(r.reportId) : undefined;
+    return { ...r, rework: totals?.rework ?? 0, scrap: totals?.scrap ?? 0 };
+  });
+
+  return { data, error: null };
 }
 
 /**
@@ -1091,39 +1165,50 @@ async function createReportAndQuantity(
     scrapReasonId?: string | null;
     paymentYear?: number | null;
     paymentMonth?: number | null;
+    // When set, this quantity line is attached to an existing report (so the
+    // finished / rework / scrap of one submission share a single reportId)
+    // instead of creating a new report of its own.
+    reportId?: string | null;
   }
 ) {
-  const { data: operation, error: operationError } = await client
-    .from("jobOperation")
-    .select("jobId")
-    .eq("id", args.jobOperationId)
-    .single();
+  let reportId = args.reportId ?? null;
 
-  if (operationError || !operation?.jobId) {
-    return {
-      data: null,
-      error:
-        operationError ??
-        new Error(`Could not resolve job for operation ${args.jobOperationId}`)
-    };
-  }
+  if (!reportId) {
+    const { data: operation, error: operationError } = await client
+      .from("jobOperation")
+      .select("jobId")
+      .eq("id", args.jobOperationId)
+      .single();
 
-  const { data: report, error: reportError } = await client
-    .from("productionQuantityReport")
-    .insert({
-      companyId: args.companyId,
-      jobId: operation.jobId,
-      jobOperationId: args.jobOperationId,
-      employeeId: args.employeeId,
-      originalQuantity: args.quantity,
-      notes: args.notes ?? null,
-      createdBy: args.createdBy
-    })
-    .select("id")
-    .single();
+    if (operationError || !operation?.jobId) {
+      return {
+        data: null,
+        error:
+          operationError ??
+          new Error(
+            `Could not resolve job for operation ${args.jobOperationId}`
+          )
+      };
+    }
 
-  if (reportError || !report) {
-    return { data: null, error: reportError };
+    const { data: report, error: reportError } = await client
+      .from("productionQuantityReport")
+      .insert({
+        companyId: args.companyId,
+        jobId: operation.jobId,
+        jobOperationId: args.jobOperationId,
+        employeeId: args.employeeId,
+        originalQuantity: args.quantity,
+        notes: args.notes ?? null,
+        createdBy: args.createdBy
+      })
+      .select("id")
+      .single();
+
+    if (reportError || !report) {
+      return { data: null, error: reportError };
+    }
+    reportId = report.id;
   }
 
   return client
@@ -1132,7 +1217,7 @@ async function createReportAndQuantity(
       sanitize({
         companyId: args.companyId,
         jobOperationId: args.jobOperationId,
-        reportId: report.id,
+        reportId,
         type: args.type,
         quantity: args.quantity,
         notes: args.notes ?? null,
@@ -1153,6 +1238,7 @@ export async function insertReworkQuantity(
     companyId: string;
     createdBy: string;
     employeeId: string;
+    reportId?: string | null;
   }
 ) {
   return createReportAndQuantity(client, {
@@ -1162,7 +1248,8 @@ export async function insertReworkQuantity(
     employeeId: data.employeeId,
     createdBy: data.createdBy,
     quantity: data.quantity,
-    notes: data.notes ?? null
+    notes: data.notes ?? null,
+    reportId: data.reportId ?? null
   });
 }
 
@@ -1198,6 +1285,7 @@ export async function insertScrapQuantity(
     companyId: string;
     createdBy: string;
     employeeId: string;
+    reportId?: string | null;
   }
 ) {
   return createReportAndQuantity(client, {
@@ -1208,8 +1296,80 @@ export async function insertScrapQuantity(
     createdBy: data.createdBy,
     quantity: data.quantity,
     notes: data.notes ?? null,
-    scrapReasonId: data.scrapReasonId ?? null
+    scrapReasonId: data.scrapReasonId ?? null,
+    reportId: data.reportId ?? null
   });
+}
+
+/**
+ * Set the total Rework or Scrap recorded under a report to an exact value
+ * (used when a manager corrects the reported numbers while disapproving). Any
+ * existing non-invalidated line of that type under the report is invalidated
+ * and, when the target is greater than zero, replaced with a single line — so
+ * the operation's stored totals recompute cleanly. No-ops when the total is
+ * already the requested value.
+ */
+export async function setReportQuantity(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    reportId: string;
+    jobOperationId: string;
+    employeeId: string;
+    createdBy: string;
+    type: "Rework" | "Scrap";
+    quantity: number;
+  }
+) {
+  const target = Math.max(0, Math.floor(args.quantity));
+
+  const { data: existing } = await (client as any)
+    .from("productionQuantity")
+    .select("id, quantity")
+    .eq("companyId", args.companyId)
+    .eq("reportId", args.reportId)
+    .eq("type", args.type)
+    .is("invalidatedAt", null);
+
+  const rows = (existing ?? []) as { id: string; quantity: number | null }[];
+  const currentSum = rows.reduce(
+    (sum, r) => sum + (Number(r.quantity) || 0),
+    0
+  );
+  if (currentSum === target) return { error: null };
+
+  const now = new Date().toISOString();
+  for (const row of rows) {
+    const inv = await client
+      .from("productionQuantity")
+      .update({
+        invalidatedAt: now,
+        invalidatedBy: args.createdBy,
+        updatedBy: args.createdBy,
+        updatedAt: now
+      })
+      .eq("id", row.id)
+      .eq("companyId", args.companyId)
+      .is("invalidatedAt", null);
+    if (inv.error) return inv;
+  }
+
+  if (target > 0) {
+    const ins = await client.from("productionQuantity").insert(
+      sanitize({
+        companyId: args.companyId,
+        jobOperationId: args.jobOperationId,
+        reportId: args.reportId,
+        type: args.type,
+        quantity: target,
+        employeeId: args.employeeId,
+        createdBy: args.createdBy
+      })
+    );
+    if (ins.error) return ins;
+  }
+
+  return { error: null };
 }
 
 export async function endProductionEvent(

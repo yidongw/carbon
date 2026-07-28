@@ -1346,6 +1346,9 @@ msgstr "Abfall"
 msgid "Scrap Reason"
 msgstr "Ausschussgrund"
 
+msgid "Reworked"
+msgstr "Nachgearbeitet"
+
 msgid "Scrapped"
 msgstr "Ausschuss"
 

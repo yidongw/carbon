@@ -1346,6 +1346,9 @@ msgstr "स्क्रॅप"
 msgid "Scrap Reason"
 msgstr "स्क्रैप कारण"
 
+msgid "Reworked"
+msgstr "पुनः कार्य किया गया"
+
 msgid "Scrapped"
 msgstr "स्क्रैप किया गया"
 

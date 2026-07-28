@@ -1346,6 +1346,9 @@ msgstr "Residuo"
 msgid "Scrap Reason"
 msgstr "Motivo de desperdicio"
 
+msgid "Reworked"
+msgstr "Reprocesado"
+
 msgid "Scrapped"
 msgstr "Descartado"
 
