@@ -4,33 +4,33 @@
 # $3 is 1 for branch checkout (including `git worktree add`), 0 for file checkout.
 [ "$3" = "1" ] || exit 0
 
-# Find the primary worktree (first entry in `git worktree list`).
-main=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
-
+# A worktree needs a COMPLETE install, not just the root-level bins. The old
+# approach symlinked node_modules to the primary worktree, which exposed
+# root-hoisted bins (lint-staged/tsx/lingui) but left every package's own
+# node_modules missing — so per-package tools like `tsgo` (typecheck) failed in
+# any new worktree. Include tsgo in the check so an incomplete install is caught.
 has_required_bins() {
   [ -x "$1/node_modules/.bin/lint-staged" ] &&
     [ -x "$1/node_modules/.bin/tsx" ] &&
-    [ -x "$1/node_modules/.bin/lingui" ]
+    [ -x "$1/node_modules/.bin/lingui" ] &&
+    [ -x "$1/node_modules/.bin/tsgo" ]
 }
 
-# Ensure the primary worktree has a complete install with the binaries hooks need.
-if ! has_required_bins "$main"; then
-  echo "→ node_modules incomplete in $main — running pnpm install..."
-  (cd "$main" && pnpm install --frozen-lockfile)
-fi
-
-# If this worktree already has a complete install (real install or symlink), keep it.
+# Already complete (real install) — nothing to do. Fast path on ordinary
+# branch switches once a worktree has been set up.
 if has_required_bins "."; then
   exit 0
 fi
 
-# Replace incomplete local node_modules with a symlink to the primary worktree.
-if [ -e "node_modules" ] && [ ! -L "node_modules" ]; then
+# Drop any leftover symlink or partial node_modules from the previous strategy.
+if [ -L "node_modules" ]; then
+  rm node_modules
+elif [ -e "node_modules" ] && ! has_required_bins "."; then
   rm -rf node_modules
 fi
 
-# If a stale symlink is present, remove it before recreating.
-[ -L "node_modules" ] && rm node_modules
-
-ln -s "$main/node_modules" node_modules
-echo "→ symlinked node_modules from $main"
+# Do a real install so the worktree is self-contained (root + per-package
+# node_modules, plus downloaded native binaries like tsgo). pnpm hard-links from
+# the global store, so this is fast and space-efficient.
+echo "→ node_modules incomplete — running pnpm install --frozen-lockfile..."
+pnpm install --frozen-lockfile
