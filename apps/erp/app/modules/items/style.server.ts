@@ -114,7 +114,7 @@ export async function getStyleColorContext(
       from "style" s
       join "styleColorAssignment" sca on sca."styleId" = s."id" and sca."companyId" = s."companyId"
       join "styleColor" sc on sc."id" = sca."styleColorId"
-      where s."itemId" = ${itemId}
+      where s."id" = ${itemId}
         and s."companyId" = ${companyId}
       order by sc."colorCode"
       limit 1
@@ -376,20 +376,19 @@ async function insertStyleRecord(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   args: {
     readableId: string;
-    itemId: string;
     companyId: string;
     userId: string;
     customFields?: Json;
   }
 ) {
   const styleClient = client as any;
-  // The item-insert interceptor (sync_create_style_related_records) already
-  // created the base style row, so upsert (rather than insert) to fill in the
-  // remaining fields without colliding on the (id, companyId) primary key.
+  // style is keyed by id (= item.readableId), shared across revisions. The
+  // item-insert interceptor (sync_create_style_related_records) already created
+  // the base row, so upsert to fill in the remaining fields without colliding
+  // on the (id, companyId) primary key.
   const result = await styleClient.from("style").upsert(
     {
       id: args.readableId,
-      itemId: args.itemId,
       companyId: args.companyId,
       createdBy: args.userId,
       customFields: args.customFields ?? null
@@ -445,7 +444,7 @@ async function insertStyleSizeAssignments(
 async function updateStyleRecord(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   args: {
-    itemId: string;
+    styleId: string;
     companyId: string;
     userId: string;
     customFields?: Json;
@@ -460,7 +459,7 @@ async function updateStyleRecord(
       updatedBy: args.userId,
       updatedAt
     })
-    .eq("itemId", args.itemId)
+    .eq("id", args.styleId)
     .eq("companyId", args.companyId);
 
   if (result.error) throw result.error;
@@ -498,7 +497,6 @@ export async function upsertStyle(
     try {
       await insertStyleRecord(client, {
         readableId: style.id,
-        itemId,
         companyId: style.companyId,
         userId: style.createdBy,
         customFields: style.customFields
@@ -646,7 +644,7 @@ export async function upsertStyle(
 
   try {
     await updateStyleRecord(client, {
-      itemId: style.id,
+      styleId: style.id,
       companyId,
       userId: style.updatedBy,
       customFields: style.customFields
