@@ -1,5 +1,4 @@
 import type { Json } from "@carbon/database";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { sql } from "kysely";
 import type { z } from "zod";
 import { getDatabaseClient } from "~/services/database.server";
@@ -17,20 +16,15 @@ import {
   STYLE_SYSTEM_OPERATION_TAG
 } from "./styleMethod.service";
 
-type StylePayload =
-  | (z.infer<typeof styleValidator> & {
-      companyId: string;
-      createdBy: string;
-      customFields?: Json;
-      styleColorIds: string[];
-      styleSizeIds: string[];
-    })
-  | (z.infer<typeof styleValidator> & {
-      updatedBy: string;
-      customFields?: Json;
-      styleColorIds: string[];
-      styleSizeIds: string[];
-    });
+// upsertStyle only creates styles — style editing does not route through it
+// (updates go through items.service.ts / the MCP tool). Create payload only.
+type StylePayload = z.infer<typeof styleValidator> & {
+  companyId: string;
+  createdBy: string;
+  customFields?: Json;
+  styleColorIds: string[];
+  styleSizeIds: string[];
+};
 
 type StyleSummary = {
   active: boolean | null;
@@ -96,38 +90,6 @@ export async function getStyle(
     return {
       data: null,
       error: toError(error, "Failed to load style")
-    };
-  }
-}
-
-export async function getStyleColorContext(
-  itemId: string,
-  companyId: string
-): Promise<{
-  data: { itemId: string; colorCode: string } | null;
-  error: Error | null;
-}> {
-  try {
-    const db = getDatabaseClient();
-    const result = await sql<{ itemId: string; colorCode: string }>`
-      select s."id" as "itemId", sc."colorCode"
-      from "style" s
-      join "styleColorAssignment" sca on sca."styleId" = s."id" and sca."companyId" = s."companyId"
-      join "styleColor" sc on sc."id" = sca."styleColorId"
-      where s."itemId" = ${itemId}
-        and s."companyId" = ${companyId}
-      order by sc."colorCode"
-      limit 1
-    `.execute(db);
-
-    return {
-      data: result.rows[0] ?? null,
-      error: null
-    };
-  } catch (error) {
-    return {
-      data: null,
-      error: toError(error, "Failed to load style color context")
     };
   }
 }
@@ -376,20 +338,25 @@ async function insertStyleRecord(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   args: {
     readableId: string;
-    itemId: string;
     companyId: string;
     userId: string;
     customFields?: Json;
   }
 ) {
   const styleClient = client as any;
-  const result = await styleClient.from("style").insert({
-    id: args.readableId,
-    itemId: args.itemId,
-    companyId: args.companyId,
-    createdBy: args.userId,
-    customFields: args.customFields ?? null
-  });
+  // style is keyed by id (= item.readableId), shared across revisions. The
+  // item-insert interceptor (sync_create_style_related_records) already created
+  // the base row, so upsert to fill in the remaining fields without colliding
+  // on the (id, companyId) primary key.
+  const result = await styleClient.from("style").upsert(
+    {
+      id: args.readableId,
+      companyId: args.companyId,
+      createdBy: args.userId,
+      customFields: args.customFields ?? null
+    },
+    { onConflict: "id,companyId" }
+  );
 
   if (result.error) throw result.error;
 }
@@ -436,30 +403,6 @@ async function insertStyleSizeAssignments(
   if (result.error) throw result.error;
 }
 
-async function updateStyleRecord(
-  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
-  args: {
-    itemId: string;
-    companyId: string;
-    userId: string;
-    customFields?: Json;
-  }
-) {
-  const updatedAt = today(getLocalTimeZone()).toString();
-  const styleClient = client as any;
-  const result = await styleClient
-    .from("style")
-    .update({
-      customFields: args.customFields ?? null,
-      updatedBy: args.userId,
-      updatedAt
-    })
-    .eq("itemId", args.itemId)
-    .eq("companyId", args.companyId);
-
-  if (result.error) throw result.error;
-}
-
 export async function upsertStyle(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   style: StylePayload
@@ -492,7 +435,6 @@ export async function upsertStyle(
     try {
       await insertStyleRecord(client, {
         readableId: style.id,
-        itemId,
         companyId: style.companyId,
         userId: style.createdBy,
         customFields: style.customFields
@@ -604,170 +546,10 @@ export async function upsertStyle(
     return { data: { id: itemId }, error: null };
   }
 
-  const itemUpdate = {
-    id: style.id,
-    name: style.name,
-    description: style.description,
-    replenishmentSystem: style.replenishmentSystem,
-    defaultMethodType: style.defaultMethodType,
-    itemTrackingType: style.itemTrackingType,
-    unitOfMeasureCode: style.unitOfMeasureCode,
-    active: true,
-    modelUploadId: style.modelUploadId,
-    thumbnailPath: style.thumbnailPath
+  // Unreachable: StylePayload is create-only (see the type above); style edits
+  // are handled elsewhere. Kept as a guard so the function stays total.
+  return {
+    data: null,
+    error: new Error("upsertStyle only supports creating a style")
   };
-
-  const updateItem = await client
-    .from("item")
-    .update({
-      ...sanitize(itemUpdate),
-      updatedAt: today(getLocalTimeZone()).toString()
-    })
-    .eq("id", style.id);
-
-  if (updateItem.error) return updateItem;
-
-  const styleCompany = await client
-    .from("item")
-    .select("companyId")
-    .eq("id", style.id)
-    .single();
-  if (styleCompany.error) return styleCompany;
-  const companyId = styleCompany.data.companyId;
-  if (!companyId) {
-    return { data: null, error: new Error("Style company not found") };
-  }
-
-  try {
-    await updateStyleRecord(client, {
-      itemId: style.id,
-      companyId,
-      userId: style.updatedBy,
-      customFields: style.customFields
-    });
-    // Replace color assignments
-    const styleClient = client as any;
-    await styleClient
-      .from("styleColorAssignment")
-      .delete()
-      .eq("styleId", style.id)
-      .eq("companyId", companyId);
-    if (style.styleColorIds.length > 0) {
-      await insertStyleColorAssignments(client, {
-        styleId: style.id,
-        companyId,
-        userId: style.updatedBy,
-        styleColorIds: style.styleColorIds
-      });
-    }
-    // Replace size assignments
-    await styleClient
-      .from("styleSizeAssignment")
-      .delete()
-      .eq("styleId", style.id)
-      .eq("companyId", companyId);
-    if (style.styleSizeIds.length > 0) {
-      await insertStyleSizeAssignments(client, {
-        styleId: style.id,
-        companyId,
-        userId: style.updatedBy,
-        styleSizeIds: style.styleSizeIds
-      });
-    }
-    await syncStyleConfigurationParameters(client, {
-      itemId: style.id,
-      companyId,
-      userId: style.updatedBy,
-      styleColorIds: style.styleColorIds,
-      styleSizeIds: style.styleSizeIds
-    });
-  } catch (error) {
-    return {
-      data: null,
-      error: toError(error, "Failed to update style")
-    };
-  }
-
-  const [pickMethod, shelfLife] = await Promise.all([
-    upsertItemDefaultPickMethod(client, {
-      itemId: style.id,
-      userId: style.updatedBy,
-      storageUnitId: style.defaultStorageUnitId
-    }),
-    upsertItemShelfLife(client, {
-      itemId: style.id,
-      userId: style.updatedBy,
-      mode: style.shelfLifeMode,
-      days: style.shelfLifeDays,
-      triggerProcessId: style.shelfLifeTriggerProcessId,
-      triggerTiming: style.shelfLifeTriggerTiming,
-      calculateFromBom: style.shelfLifeCalculateFromBom
-    })
-  ]);
-
-  if (pickMethod.error) {
-    return {
-      data: null,
-      error: new Error(`Style pick method failed: ${pickMethod.error.message}`)
-    };
-  }
-  if (shelfLife.error) {
-    return {
-      data: null,
-      error: new Error(`Style shelf life failed: ${shelfLife.error.message}`)
-    };
-  }
-
-  const styleMethod = await ensureStyleMethodScaffoldWithDb({
-    itemId: style.id,
-    companyId,
-    userId: style.updatedBy
-  });
-  if (styleMethod.error) {
-    return {
-      data: null,
-      error: new Error(
-        `Style method scaffold failed: ${styleMethod.error.message}`
-      )
-    };
-  }
-
-  if (style.replenishmentSystem !== "Buy") {
-    const itemReplenishmentUpdate = await client
-      .from("itemReplenishment")
-      .update({ lotSize: style.lotSize })
-      .eq("itemId", style.id);
-
-    if (itemReplenishmentUpdate.error) {
-      return {
-        data: null,
-        error: new Error(
-          `Style replenishment update failed: ${itemReplenishmentUpdate.error.message}`
-        )
-      };
-    }
-  }
-
-  // Only update fields that were explicitly submitted — undefined means the
-  // edit form doesn't include that control, and sanitize() would turn it to
-  // null, wiping the stored value.
-  const costUpdate: Record<string, unknown> = {};
-  if (style.postingGroupId !== undefined) {
-    costUpdate.itemPostingGroupId = style.postingGroupId;
-  }
-  if (style.replenishmentSystem !== "Make" && style.unitCost !== undefined) {
-    costUpdate.unitCost = style.unitCost;
-  }
-  if (Object.keys(costUpdate).length > 0) {
-    const itemCostUpdate = await client
-      .from("itemCost")
-      .update(costUpdate)
-      .eq("itemId", style.id);
-
-    if (itemCostUpdate.error) {
-      console.error(itemCostUpdate.error);
-    }
-  }
-
-  return { data: { id: style.id }, error: null };
 }

@@ -625,7 +625,6 @@ export type Database = {
           createdBy: string
           customFields: Json | null
           id: string
-          itemId: string
           tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
@@ -636,7 +635,6 @@ export type Database = {
           createdBy: string
           customFields?: Json | null
           id: string
-          itemId: string
           tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
@@ -647,7 +645,6 @@ export type Database = {
           createdBy?: string
           customFields?: Json | null
           id?: string
-          itemId?: string
           tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
@@ -715,55 +712,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "consumables"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "item"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "materials"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "parts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "styles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "style_itemId_fkey"
-            columns: ["itemId"]
-            isOneToOne: true
-            referencedRelation: "tools"
-            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "style_updatedBy_fkey"

@@ -3592,7 +3592,6 @@ export async function upsertStyle(
     const [styleInsert, itemCostUpdate] = await Promise.all([
       styleClient.from("style").upsert({
         id: style.id,
-        itemId,
         companyId: style.companyId,
         createdBy: style.createdBy,
         customFields: style.customFields
