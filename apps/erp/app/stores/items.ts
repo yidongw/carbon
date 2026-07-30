@@ -13,6 +13,11 @@ export type Item = ListItem & {
   active: boolean;
   quantityOnHand?: number;
   quantityByLocation?: Record<string, number>;
+  // Whether the item's manufacturing setup requires a configuration table (color/
+  // size matrix, etc). Preloaded here so item pickers can show the config-quantity
+  // trigger instantly instead of waiting on a per-selection query. `undefined`
+  // means "not yet known" (e.g. an item inserted via realtime after hydration).
+  requiresConfiguration?: boolean;
 };
 
 const $itemsStore = atom<Item[]>([]);

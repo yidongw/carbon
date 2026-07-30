@@ -12,7 +12,6 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  toast,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -34,11 +33,8 @@ import {
 } from "~/components/Form";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
-import type {
-  ConfigurationParameter,
-  ConfigurationParameterGroup
-} from "~/modules/items/types";
 import type { MethodItemType } from "~/modules/shared";
+import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type { jobStatus } from "../../production.models";
@@ -72,6 +68,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
   const { company } = useUser();
   const { carbon } = useCarbon();
+  const [items] = useItems();
   const [type, setType] = useState<MethodItemType>(
     initialValues.itemType ?? "Item"
   );
@@ -118,10 +115,13 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   });
 
   const { openOverlay } = useOverlay();
-  const [configurationParameters, setConfigurationParameters] = useState<{
-    parameters: ConfigurationParameter[];
-    groups: ConfigurationParameterGroup[];
-  } | null>(null);
+  // Whether the selected style needs a config table. Seeded from the preloaded
+  // items store so the quantity's config trigger shows instantly on selection.
+  const [hasConfigurationParameters, setHasConfigurationParameters] = useState(
+    () =>
+      items.find((i) => i.id === (initialValues.itemId ?? ""))
+        ?.requiresConfiguration ?? false
+  );
   const [configTableRows, setConfigTableRows] = useState<
     Record<string, any>[] | null
   >(null);
@@ -185,6 +185,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
     setItemData((prev) => ({ ...prev, jobCount: 1 }));
+    // Preloaded flag from the items store — instant, no round-trip. Corrected
+    // below by the itemReplenishment fetch for items not yet in the store.
+    setHasConfigurationParameters(
+      items.find((i) => i.id === itemId)?.requiresConfiguration ?? false
+    );
     const [item, manufacturing] = await Promise.all([
       carbon
         .from("item")
@@ -224,32 +229,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
       setType(item.data.type as MethodItemType);
     }
 
-    if (manufacturing.data?.requiresConfiguration) {
-      const [parameters, groups] = await Promise.all([
-        carbon
-          .from("configurationParameter")
-          .select("*")
-          .eq("itemId", itemId)
-          .eq("companyId", company.id),
-        carbon
-          .from("configurationParameterGroup")
-          .select("*")
-          .eq("itemId", itemId)
-          .eq("companyId", company.id)
-      ]);
-
-      if (parameters.error || groups.error) {
-        toast.error(t`Failed to load configuration parameters`);
-        return;
-      }
-
-      setConfigurationParameters({
-        parameters: parameters.data ?? [],
-        groups: groups.data ?? []
-      });
-    } else {
-      setConfigurationParameters(null);
-    }
+    setHasConfigurationParameters(!!manufacturing.data?.requiresConfiguration);
   };
 
   const configModal = useConfigTableModal();
@@ -400,7 +380,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         }
                         configTableTotal={configTableTotal}
                         minValue={0}
-                        hasConfigurationParameters={!!configurationParameters}
+                        hasConfigurationParameters={hasConfigurationParameters}
                         onOpenConfigTable={() => openConfigTable("single")}
                       />
                       <NumberControlled
@@ -548,7 +528,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           isReadOnly={configTableTotal > 0}
                           configTableTotal={configTableTotal}
                           minValue={0}
-                          hasConfigurationParameters={!!configurationParameters}
+                          hasConfigurationParameters={hasConfigurationParameters}
                           onOpenConfigTable={() => openConfigTable("bulk")}
                         />
 
