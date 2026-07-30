@@ -37,3 +37,23 @@ export const getPreferenceHeaders = (request: Request) => {
     locale
   };
 };
+
+/**
+ * Build a `Content-Disposition` header value that is safe for filenames with
+ * non-Latin-1 characters (e.g. a company name with CJK characters).
+ *
+ * HTTP header values are ByteStrings (0–255), so putting a CJK filename
+ * straight into `filename="…"` throws `Cannot convert argument to a ByteString`
+ * when the `Headers` object is constructed, 500-ing the route. Per RFC 6266 we
+ * emit both an ASCII-only `filename` fallback and a percent-encoded
+ * `filename*=UTF-8''…`, which modern browsers prefer — so the download keeps its
+ * real (Unicode) name while the header stays Latin-1.
+ */
+export function contentDisposition(
+  filename: string,
+  type: "inline" | "attachment" = "inline"
+): string {
+  const ascii = filename.replace(/[^\x20-\x7E]/g, "_").replace(/["\\]/g, "'");
+  const encoded = encodeURIComponent(filename);
+  return `${type}; filename="${ascii}"; filename*=UTF-8''${encoded}`;
+}

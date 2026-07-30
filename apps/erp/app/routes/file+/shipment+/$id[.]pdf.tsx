@@ -8,7 +8,7 @@ import {
   toDocumentTemplate
 } from "@carbon/documents/template";
 import type { JSONContent } from "@carbon/react";
-import { getPreferenceHeaders } from "@carbon/utils";
+import { contentDisposition, getPreferenceHeaders } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { LoaderFunctionArgs } from "react-router";
 import { getPaymentTerm } from "~/modules/accounting";
@@ -215,7 +215,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const headers = new Headers({
         "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
+        "Content-Disposition": contentDisposition(
+          `${company.data.name} - ${shipment.data.shipmentId}.pdf`
+        )
       });
       return new Response(new Uint8Array(body), { status: 200, headers });
     }
@@ -336,7 +338,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const headers = new Headers({
         "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
+        "Content-Disposition": contentDisposition(
+          `${company.data.name} - ${shipment.data.shipmentId}.pdf`
+        )
       });
       return new Response(new Uint8Array(body), { status: 200, headers });
     }
@@ -452,7 +456,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const poHeaders = new Headers({
         "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
+        "Content-Disposition": contentDisposition(
+          `${company.data.name} - ${shipment.data.shipmentId}.pdf`
+        )
       });
       return new Response(new Uint8Array(poBody), {
         status: 200,
@@ -563,7 +569,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const transferHeaders = new Headers({
         "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
+        "Content-Disposition": contentDisposition(
+          `${company.data.name} - ${shipment.data.shipmentId}.pdf`
+        )
       });
       return new Response(new Uint8Array(transferBody), {
         status: 200,

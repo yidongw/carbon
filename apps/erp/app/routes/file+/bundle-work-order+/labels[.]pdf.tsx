@@ -3,7 +3,7 @@ import {
   renderBundleTicketsToBuffer,
   tagPageSizeFromInches
 } from "@carbon/documents/pdf";
-import { labelSizes } from "@carbon/utils";
+import { contentDisposition, labelSizes } from "@carbon/utils";
 import type { LoaderFunctionArgs } from "react-router";
 import { getBundleTicketLabels } from "~/modules/production";
 import { getCompany } from "~/modules/settings";
@@ -57,7 +57,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // Don't cache — the label layout/fonts change often during setup and a
     // stale cached PDF looks like "nothing changed" after a redeploy.
     "Cache-Control": "no-store, must-revalidate",
-    "Content-Disposition": `inline; filename="${companyName} - Bundle Tickets.pdf"`
+    "Content-Disposition": contentDisposition(
+      `${companyName} - Bundle Tickets.pdf`
+    )
   });
 
   return new Response(new Uint8Array(body), { status: 200, headers });
