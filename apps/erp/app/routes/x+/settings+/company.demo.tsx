@@ -1,11 +1,11 @@
-import { assertIsPost } from "@carbon/auth";
+import { assertIsPost, CarbonEdition } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { setCompanyId } from "@carbon/auth/company.server";
 import { updateCompanySession } from "@carbon/auth/session.server";
 import { redis } from "@carbon/kv";
 import { resolveLanguage } from "@carbon/locale";
-import { getPreferenceHeaders } from "@carbon/utils";
+import { Edition, getPreferenceHeaders } from "@carbon/utils";
 import { getLocalTimeZone } from "@internationalized/date";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
@@ -57,6 +57,13 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (!companyId) {
+    // Creating a demo company is a cloud-only action. Switching to an existing
+    // demo (handled above) is allowed in every edition — the demo company
+    // itself isn't cloud-only, only its creation is.
+    if (CarbonEdition !== Edition.Cloud) {
+      throw redirect(path.to.authenticatedRoot);
+    }
+
     const demoExpiresAt = new Date(
       Date.now() + DEMO_ACCESS_DAYS * 24 * 60 * 60 * 1000
     ).toISOString();
