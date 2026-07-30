@@ -31,6 +31,7 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
+import { useConfigurableItems } from "~/components/Form/Item";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
 import type { MethodItemType } from "~/modules/shared";
@@ -69,6 +70,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const { company } = useUser();
   const { carbon } = useCarbon();
   const [items] = useItems();
+  // Company-scoped list of configurable styles, served via the service role so it
+  // works for every employee — the itemReplenishment table itself is gated by
+  // `parts_view`, which production-only users lack.
+  const configurableItemIds = useConfigurableItems();
   const [type, setType] = useState<MethodItemType>(
     initialValues.itemType ?? "Item"
   );
@@ -115,13 +120,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   });
 
   const { openOverlay } = useOverlay();
-  // Whether the selected style needs a config table. Seeded from the preloaded
-  // items store so the quantity's config trigger shows instantly on selection.
-  const [hasConfigurationParameters, setHasConfigurationParameters] = useState(
-    () =>
-      items.find((i) => i.id === (initialValues.itemId ?? ""))
-        ?.requiresConfiguration ?? false
-  );
   const [configTableRows, setConfigTableRows] = useState<
     Record<string, any>[] | null
   >(null);
@@ -132,6 +130,13 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const [configTableMode, setConfigTableMode] = useState<"single" | "bulk">(
     "single"
   );
+
+  // Whether the selected style needs a config table. Seeded instantly from the
+  // preloaded items store (parts users) and corrected by the configurable-items
+  // endpoint so the trigger also shows for production-only users.
+  const hasConfigurationParameters =
+    (items.find((i) => i.id === itemData.itemId)?.requiresConfiguration ??
+      false) || configurableItemIds.includes(itemData.itemId);
 
   const isCustomer = permissions.is("customer");
   const isEditing = initialValues.id !== undefined;
@@ -185,11 +190,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
     setItemData((prev) => ({ ...prev, jobCount: 1 }));
-    // Preloaded flag from the items store — instant, no round-trip. Corrected
-    // below by the itemReplenishment fetch for items not yet in the store.
-    setHasConfigurationParameters(
-      items.find((i) => i.id === itemId)?.requiresConfiguration ?? false
-    );
     const [item, manufacturing] = await Promise.all([
       carbon
         .from("item")
@@ -201,7 +201,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         .single(),
       carbon
         .from("itemReplenishment")
-        .select("lotSize, leadTime, scrapPercentage, requiresConfiguration")
+        .select("lotSize, leadTime, scrapPercentage")
         .eq("itemId", itemId)
         .single()
     ]);
@@ -228,8 +228,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     if (item.data?.type) {
       setType(item.data.type as MethodItemType);
     }
-
-    setHasConfigurationParameters(!!manufacturing.data?.requiresConfiguration);
   };
 
   const configModal = useConfigTableModal();
