@@ -97,7 +97,7 @@ const StyleProperties = () => {
         | "description"
         | "replenishmentSystem"
         | "unitOfMeasureCode"
-        | "partId",
+        | "styleId",
       value: string | null
     ) => {
       const formData = new FormData();
@@ -239,7 +239,7 @@ const StyleProperties = () => {
                 size="sm"
                 value={routeData.styleSummary.readableId ?? ""}
                 onBlur={(e) => {
-                  onUpdate("partId", e.target.value ?? null);
+                  onUpdate("styleId", e.target.value ?? null);
                 }}
                 className="text-muted-foreground"
               />
