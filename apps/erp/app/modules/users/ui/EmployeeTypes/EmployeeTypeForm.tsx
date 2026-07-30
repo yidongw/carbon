@@ -31,7 +31,8 @@ const MES_DISPLAY_PERMISSIONS: Record<string, CompanyPermission> = {
   Production: { view: true, create: true, update: true, delete: false },
   Inventory: { view: true, create: true, update: true, delete: false },
   Quality: { view: true, create: true, update: true, delete: false },
-  Items: { view: true, create: false, update: false, delete: false },
+  // Keyed by the PascalCase enum module; rendered as "Items" in the matrix.
+  Parts: { view: true, create: false, update: false, delete: false },
   Resources: { view: true, create: false, update: false, delete: false },
   People: { view: true, create: false, update: false, delete: false },
   Documents: { view: true, create: false, update: false, delete: false }

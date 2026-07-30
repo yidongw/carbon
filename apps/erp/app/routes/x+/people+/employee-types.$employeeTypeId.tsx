@@ -9,12 +9,16 @@ import {
   employeeTypePermissionsValidator,
   employeeTypeValidator,
   getEmployeeType,
+  getModules,
   getPermissionsByEmployeeType,
   MES_PERMISSIONS,
   upsertEmployeeType,
   upsertEmployeeTypePermissions
 } from "~/modules/users";
-import { makeCompanyPermissionsFromEmployeeType } from "~/modules/users/users.server";
+import {
+  makeCompanyPermissionsFromEmployeeType,
+  makeEmptyPermissionsFromModules
+} from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -26,17 +30,28 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { employeeTypeId } = params;
   if (!employeeTypeId) throw notFound("employeeTypeId not found");
 
-  const [employeeType, employeeTypePermissions] = await Promise.all([
+  const [employeeType, employeeTypePermissions, modules] = await Promise.all([
     getEmployeeType(client, employeeTypeId),
-    getPermissionsByEmployeeType(client, employeeTypeId)
+    getPermissionsByEmployeeType(client, employeeTypeId),
+    getModules(client)
   ]);
+
+  // Render the full module catalog (all-false), then overlay this type's stored
+  // permissions. Otherwise the matrix only shows modules that already have a row,
+  // so a type seeded with a subset (e.g. an MES type) can never be granted the
+  // missing modules — including Items (`parts`). Both maps key by the PascalCase
+  // module name, so a shallow overlay merges cleanly.
+  const stored = makeCompanyPermissionsFromEmployeeType(
+    employeeTypePermissions.data ?? [],
+    companyId
+  );
 
   return {
     employeeType: employeeType?.data,
-    employeeTypePermissions: makeCompanyPermissionsFromEmployeeType(
-      employeeTypePermissions.data ?? [],
-      companyId
-    )
+    employeeTypePermissions: {
+      ...makeEmptyPermissionsFromModules(modules.data ?? []),
+      ...stored
+    }
   };
 }
 

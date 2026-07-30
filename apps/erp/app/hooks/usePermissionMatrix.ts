@@ -60,8 +60,15 @@ const ALL_ACTIONS: readonly PermissionAction[] = [
   "delete"
 ] as const;
 
-/** Modules that should be hidden from all permission UIs */
+/**
+ * Modules hidden from all permission UIs. `items` is a dead permission — the item
+ * domain is gated by the `parts` claim (surfaced in the matrix as "Items"), while
+ * the `Items`/`items` module value is a legacy enum leftover that gates nothing.
+ * Matched case-insensitively because it arrives both lowercase (`items`, from
+ * claims) and as the PascalCase enum (`Items`, from employeeTypePermission).
+ */
 const HIDDEN_MODULES = new Set(["items", "timecards"]);
+const isHiddenModule = (mod: string) => HIDDEN_MODULES.has(mod.toLowerCase());
 
 // ---------------------------------------------------------------------------
 // Hook
@@ -269,7 +276,7 @@ export function fromCompanyPermissions(
   const state: Record<string, boolean> = {};
   const modules: ModuleDefinition = {};
   for (const [mod, perm] of Object.entries(permissions)) {
-    if (HIDDEN_MODULES.has(mod)) continue;
+    if (isHiddenModule(mod)) continue;
     const actions: PermissionAction[] = ["view", "create", "update", "delete"];
     modules[mod] = actions;
     for (const action of actions) {
@@ -305,7 +312,7 @@ export function fromEmployeeTypePermissions(
   const state: Record<string, boolean> = {};
   const modules: ModuleDefinition = {};
   for (const [mod, data] of Object.entries(permissions)) {
-    if (HIDDEN_MODULES.has(mod)) continue;
+    if (isHiddenModule(mod)) continue;
     const actions: PermissionAction[] = ["view", "create", "update", "delete"];
     modules[mod] = actions;
     for (const action of actions) {
