@@ -176,6 +176,7 @@ function LocationSection({
   printerRouteMap: Map<string, string>;
   onUpdate: (data: AssignmentUpdate) => void;
 }) {
+  const { t } = useLingui();
   const defaultPrinterId = assignment?.defaultPrinterRouteId ?? null;
   const defaultPrinterName = defaultPrinterId
     ? (printerRouteMap.get(defaultPrinterId) ?? null)
@@ -196,19 +197,19 @@ function LocationSection({
     },
     {
       context: "shipping",
-      label: "Shipping",
+      label: t`Shipping`,
       icon: <LuTruck />,
       explicit: assignment?.shipping ?? null
     },
     {
       context: "receiving",
-      label: "Receiving",
+      label: t`Receiving`,
       icon: <LuHandCoins />,
       explicit: assignment?.receiving ?? null
     },
     {
       context: "inventory",
-      label: "Inventory",
+      label: t`Inventory`,
       icon: <LuPackage />,
       explicit: assignment?.inventory ?? null
     },
@@ -283,6 +284,7 @@ function AssignmentRow({
   onPrinterChange: (printerRouteId: string) => void;
   onAutoPrintChange: (autoPrint: boolean) => void;
 }) {
+  const { t } = useLingui();
   const displayState = printerRouteId
     ? ("assigned" as const)
     : inheritedName
@@ -291,9 +293,9 @@ function AssignmentRow({
 
   const placeholder =
     displayState === "inherited"
-      ? `inherits ${inheritedName}`
+      ? t`inherits ${inheritedName}`
       : displayState === "missing"
-        ? "No printer"
+        ? t`No printer`
         : undefined;
 
   return (
@@ -329,7 +331,9 @@ function AssignmentRow({
             checked={autoPrint}
             onCheckedChange={onAutoPrintChange}
           />
-          <span className="text-xs text-muted-foreground">Auto-print</span>
+          <span className="text-xs text-muted-foreground">
+            <Trans>Auto-print</Trans>
+          </span>
         </div>
       </div>
     </div>

@@ -1250,6 +1250,9 @@ msgstr "Вложение"
 msgid "Attachments"
 msgstr "Приложения"
 
+msgid "Attempts"
+msgstr "Попытки"
+
 msgid "Attribute"
 msgstr "Атрибут"
 
@@ -1283,6 +1286,9 @@ msgstr "Журналы аудита"
 msgid "Authentication Error"
 msgstr "Ошибка аутентификации"
 
+msgid "Auto"
+msgstr "Авто"
+
 msgid "Auto Release"
 msgstr "Автоматический выпуск"
 
@@ -1294,6 +1300,9 @@ msgstr "Автоматический запуск задания"
 
 msgid "Auto-generated QR Code"
 msgstr "Автоматически созданный QR-код"
+
+msgid "Auto-print"
+msgstr "Автопечать"
 
 msgid "Automatic Cost Updates"
 msgstr "Автоматическое обновление затрат"
@@ -4027,6 +4036,9 @@ msgstr "Оценки и фактические значения"
 msgid "Estimator"
 msgstr "Сметчик"
 
+msgid "Event ID"
+msgstr "ID события"
+
 msgid "Event Type"
 msgstr "Тип события"
 
@@ -4168,6 +4180,9 @@ msgstr "Внешняя ссылка"
 
 msgid "Fail"
 msgstr "Не пройти"
+
+msgid "Failed"
+msgstr "Ошибка"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create consumable: {0}"
@@ -4752,6 +4767,9 @@ msgstr "Сгенерированные ID отключены"
 msgid "Generated IDs are enabled"
 msgstr "Сгенерированные ID включены"
 
+msgid "Generating"
+msgstr "Создание"
+
 msgid "Get Method"
 msgstr "Получить метод"
 
@@ -5021,6 +5039,9 @@ msgstr "Наследовать от материалов"
 
 msgid "Inherited from parent"
 msgstr "Наследуется из родителя"
+
+msgid "inherits {inheritedName}"
+msgstr "наследует {inheritedName}"
 
 msgid "Inputs"
 msgstr "Входы"
@@ -6752,6 +6773,9 @@ msgstr "Нет цен для выбранного количества"
 msgid "No pricing options found"
 msgstr "Нет доступных вариантов цен"
 
+msgid "No printer"
+msgstr "Нет принтера"
+
 msgid "No printer configured"
 msgstr "Нет настроенной принтера"
 
@@ -8041,6 +8065,9 @@ msgstr "Ежеквартально"
 msgid "Question"
 msgstr "Вопрос"
 
+msgid "Queued"
+msgstr "В очереди"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "{0} ярлыков поставлено в очередь на печать"
@@ -8177,6 +8204,9 @@ msgstr "Получено от"
 
 msgid "Received Qty"
 msgstr "Полученное кол-во"
+
+msgid "Receiving"
+msgstr "Приёмка"
 
 msgid "Receiving Location"
 msgstr "Место получения"

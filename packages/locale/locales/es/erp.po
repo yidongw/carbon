@@ -1250,6 +1250,9 @@ msgstr "Adjunto"
 msgid "Attachments"
 msgstr "Adjuntos"
 
+msgid "Attempts"
+msgstr "Intentos"
+
 msgid "Attribute"
 msgstr "Atributo"
 
@@ -1283,6 +1286,9 @@ msgstr "Registros de Auditoría"
 msgid "Authentication Error"
 msgstr "Error de autenticación"
 
+msgid "Auto"
+msgstr "Automático"
+
 msgid "Auto Release"
 msgstr "Liberación Automática"
 
@@ -1294,6 +1300,9 @@ msgstr "Iniciar Trabajo Automáticamente"
 
 msgid "Auto-generated QR Code"
 msgstr "Código QR generado automáticamente"
+
+msgid "Auto-print"
+msgstr "Impresión automática"
 
 msgid "Automatic Cost Updates"
 msgstr "Actualización Automática de Costos"
@@ -4027,6 +4036,9 @@ msgstr "Estimaciones vs Reales"
 msgid "Estimator"
 msgstr "Estimador"
 
+msgid "Event ID"
+msgstr "ID de evento"
+
 msgid "Event Type"
 msgstr "Tipo de Evento"
 
@@ -4168,6 +4180,9 @@ msgstr "Referencia Externa"
 
 msgid "Fail"
 msgstr "Fallar"
+
+msgid "Failed"
+msgstr "Fallido"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create consumable: {0}"
@@ -4752,6 +4767,9 @@ msgstr "Los IDs generados están deshabilitados"
 msgid "Generated IDs are enabled"
 msgstr "Los IDs generados están habilitados"
 
+msgid "Generating"
+msgstr "Generando"
+
 msgid "Get Method"
 msgstr "Obtener Método"
 
@@ -5021,6 +5039,9 @@ msgstr "Heredar de Materiales"
 
 msgid "Inherited from parent"
 msgstr "Herencia desde el padre"
+
+msgid "inherits {inheritedName}"
+msgstr "hereda {inheritedName}"
 
 msgid "Inputs"
 msgstr "Entradas"
@@ -6752,6 +6773,9 @@ msgstr "Sin precios para la cantidad seleccionada"
 msgid "No pricing options found"
 msgstr "No se encontraron opciones de precios"
 
+msgid "No printer"
+msgstr "Sin impresora"
+
 msgid "No printer configured"
 msgstr "Sin impresora configurada"
 
@@ -8041,6 +8065,9 @@ msgstr "Trimestral"
 msgid "Question"
 msgstr "Pregunta"
 
+msgid "Queued"
+msgstr "En cola"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "{0} etiquetas en cola para imprimir"
@@ -8177,6 +8204,9 @@ msgstr "Recibido Por"
 
 msgid "Received Qty"
 msgstr "Cantidad Recibida"
+
+msgid "Receiving"
+msgstr "Recepción"
 
 msgid "Receiving Location"
 msgstr "Ubicación de Recepción"
