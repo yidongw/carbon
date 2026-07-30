@@ -220,7 +220,7 @@ const StyleProperties = () => {
             </Tooltip>
           </HStack>
         </HStack>
-        <VStack spacing={1} className="pt-2">
+        <VStack spacing={2}>
           <ValidatedForm
             defaultValues={{
               styleId:
@@ -229,7 +229,7 @@ const StyleProperties = () => {
             validator={z.object({
               styleId: z.string()
             })}
-            className="w-full -mt-2"
+            className="w-full"
           >
             <span className="text-sm">
               <InputControlled
@@ -252,7 +252,7 @@ const StyleProperties = () => {
             validator={z.object({
               name: z.string()
             })}
-            className="w-full -mt-2"
+            className="w-full"
           >
             <span className="text-xs text-muted-foreground">
               <InputControlled
