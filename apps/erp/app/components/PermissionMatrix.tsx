@@ -19,6 +19,40 @@ const PermissionMatrix = ({
 }: PermissionMatrixProps) => {
   const { t } = useLingui();
   const resolvedLabel = label ?? t`Permissions`;
+
+  // Translated display names for permission modules. `parts` is surfaced as
+  // "Items" — its claim (`parts_*`) gates the whole item domain, and the app
+  // labels it "Items" everywhere else (nav, /x/items/* routes). Case-insensitive
+  // lookup: keys arrive lowercase (claims / api-key modules) or PascalCase
+  // (employeeTypePermission). Falls back to a capitalized key for anything new.
+  const moduleLabels: Record<string, string> = {
+    accounting: t`Accounting`,
+    documents: t`Documents`,
+    inventory: t`Inventory`,
+    invoicing: t`Invoicing`,
+    parts: t`Items`,
+    people: t`People`,
+    printing: t`Printing`,
+    production: t`Production`,
+    purchasing: t`Purchasing`,
+    quality: t`Quality`,
+    resources: t`Resources`,
+    sales: t`Sales`,
+    settings: t`Settings`,
+    users: t`Users`
+  };
+  const moduleLabel = (mod: string) =>
+    moduleLabels[mod.toLowerCase()] ?? capitalize(mod);
+
+  const actionLabels: Record<string, string> = {
+    view: t`View`,
+    create: t`Create`,
+    update: t`Update`,
+    delete: t`Delete`
+  };
+  const actionLabel = (action: string) =>
+    actionLabels[action.toLowerCase()] ?? capitalize(action);
+
   const {
     modules,
     actions,
@@ -61,7 +95,7 @@ const PermissionMatrix = ({
               {actions.map((action) => (
                 <Th key={action} className="w-[80px] text-center">
                   <div className="flex flex-col items-center gap-1">
-                    <span>{capitalize(action)}</span>
+                    <span>{actionLabel(action)}</span>
                   </div>
                 </Th>
               ))}
@@ -78,7 +112,7 @@ const PermissionMatrix = ({
                       onCheckedChange={() => toggleRow(mod)}
                     />
                     <span className="text-sm font-medium">
-                      {capitalize(mod)}
+                      {moduleLabel(mod)}
                     </span>
                   </div>
                 </Td>

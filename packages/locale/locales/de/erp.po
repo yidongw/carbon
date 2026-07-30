@@ -5238,6 +5238,9 @@ msgstr "Fakturierte Status"
 msgid "Invoices"
 msgstr "Rechnungen"
 
+msgid "Invoicing"
+msgstr "Rechnungsstellung"
+
 msgid "is"
 msgstr "ist"
 

@@ -5238,6 +5238,9 @@ msgstr "चालान किए गए स्थितियां"
 msgid "Invoices"
 msgstr "चालान"
 
+msgid "Invoicing"
+msgstr "बिलिंग"
+
 msgid "is"
 msgstr "है"
 

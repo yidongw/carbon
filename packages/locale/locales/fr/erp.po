@@ -5238,6 +5238,9 @@ msgstr "Statuts facturés"
 msgid "Invoices"
 msgstr "Factures"
 
+msgid "Invoicing"
+msgstr "Facturation"
+
 msgid "is"
 msgstr "est"
 

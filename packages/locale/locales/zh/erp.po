@@ -5239,6 +5239,9 @@ msgstr "已开票状态"
 msgid "Invoices"
 msgstr "发票"
 
+msgid "Invoicing"
+msgstr "开票"
+
 msgid "is"
 msgstr "是"
 

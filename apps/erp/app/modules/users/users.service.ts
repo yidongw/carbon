@@ -333,7 +333,9 @@ export const MES_PERMISSIONS: {
     permission: { view: true, create: true, update: true, delete: false }
   },
   {
-    name: "items",
+    // `parts` is the real item-domain permission (surfaced in the UI as "Items").
+    // MES/console workers need read access to items and their make-methods.
+    name: "parts",
     permission: { view: true, create: false, update: false, delete: false }
   },
   {

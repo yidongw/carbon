@@ -1369,7 +1369,9 @@ export async function updateConsoleSetting(
             view: true
           },
           {
-            module: "Items",
+            // `Parts` is the real item-domain permission (shown as "Items" in the
+            // UI); MES/console workers need read access to items and make-methods.
+            module: "Parts",
             create: false,
             update: false,
             delete: false,

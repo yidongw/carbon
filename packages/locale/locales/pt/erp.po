@@ -5238,6 +5238,9 @@ msgstr "Estados Faturados"
 msgid "Invoices"
 msgstr "Faturas"
 
+msgid "Invoicing"
+msgstr "Faturamento"
+
 msgid "is"
 msgstr "é"
 

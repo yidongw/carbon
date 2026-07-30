@@ -5238,6 +5238,9 @@ msgstr "請求済みステータス"
 msgid "Invoices"
 msgstr "請求書"
 
+msgid "Invoicing"
+msgstr "請求"
+
 msgid "is"
 msgstr "です"
 
