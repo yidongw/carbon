@@ -517,6 +517,70 @@ export async function action({ request }: ActionFunctionArgs) {
 
         return itemUpdates;
       }
+    case "styleId": {
+      if (items.length > 1) {
+        return {
+          error: { message: "Cannot update multiple items" },
+          data: null
+        };
+      }
+      const [styleItem] = items as string[];
+      const styleData = await client
+        .from("item")
+        .select("readableId, type")
+        .eq("id", styleItem)
+        .eq("type", "Style")
+        .eq("companyId", companyId)
+        .single();
+
+      if (styleData.error) {
+        return styleData;
+      }
+      if (styleData.data?.type !== "Style") {
+        return { error: { message: "Item is not a style" }, data: null };
+      }
+
+      const currentStyleId = styleData.data?.readableId;
+
+      const relatedStyles = await client
+        .from("item")
+        .select("id")
+        .eq("readableId", currentStyleId)
+        .eq("type", "Style")
+        .eq("companyId", companyId);
+      if (relatedStyles.error) {
+        return relatedStyles;
+      }
+      const relatedStyleIds = relatedStyles.data?.map((item) => item.id);
+      if (relatedStyleIds) {
+        const [styleItemUpdates, styleUpdate] = await Promise.all([
+          client
+            .from("item")
+            .update({
+              readableId: value as string,
+              updatedBy: userId,
+              updatedAt: new Date().toISOString()
+            })
+            .in("id", relatedStyleIds as string[])
+            .eq("companyId", companyId),
+          client
+            .from("style")
+            .update({
+              id: value as string,
+              updatedBy: userId,
+              updatedAt: new Date().toISOString()
+            })
+            .eq("id", currentStyleId)
+            .eq("companyId", companyId)
+        ]);
+        if (styleUpdate.error) {
+          return styleUpdate;
+        }
+
+        return styleItemUpdates;
+      }
+      return { data: null, error: null };
+    }
     case "templateId": {
       if (items.length !== 1) {
         return {
