@@ -5238,6 +5238,9 @@ msgstr "Статусы счетов"
 msgid "Invoices"
 msgstr "Счета"
 
+msgid "Invoicing"
+msgstr "Выставление счетов"
+
 msgid "is"
 msgstr "это"
 

@@ -5238,6 +5238,9 @@ msgstr "Invoiced Statuses"
 msgid "Invoices"
 msgstr "Invoices"
 
+msgid "Invoicing"
+msgstr "Invoicing"
+
 msgid "is"
 msgstr "is"
 
