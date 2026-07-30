@@ -300,9 +300,10 @@ const StyleProperties = () => {
         </h3>
         <div className="flex flex-wrap gap-2">
           {(routeData.styleSummary.styleSizeBadges ?? []).map((size) => (
-            <Badge key={size.id} variant="secondary">
-              {size.sizeCode}
-              {size.sizeName ? ` - ${size.sizeName}` : ""}
+            <Badge key={size.id} variant="secondary" title={size.sizeCode}>
+              {size.sizeName && size.sizeName !== size.sizeCode
+                ? `${size.sizeCode} - ${size.sizeName}`
+                : size.sizeCode}
             </Badge>
           ))}
           {(routeData.styleSummary.styleSizeBadges ?? []).length === 0 && (
