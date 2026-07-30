@@ -80,13 +80,12 @@ const MasterWorkOrderForm = ({
     }
 
     // Preloaded flag from the items store — instant, no round-trip.
-    const known = items.find((i) => i.id === nextItemId)?.requiresConfiguration;
-    if (known !== undefined) {
-      setHasConfigurationParameters(known);
-      return;
-    }
+    setHasConfigurationParameters(
+      items.find((i) => i.id === nextItemId)?.requiresConfiguration ?? false
+    );
 
-    // Fallback for items not yet in the store (e.g. created this session).
+    // Correct against the source of truth: covers items missing from the store
+    // (e.g. created this session) and config toggled on since hydration.
     if (!carbon) return;
     const manufacturing = await carbon
       .from("itemReplenishment")
