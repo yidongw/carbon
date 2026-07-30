@@ -1,4 +1,5 @@
-import { useHydrated } from "@carbon/react";
+import { useEdition, useHydrated } from "@carbon/react";
+import { Edition } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { LuBuilding2, LuCalendarPlus, LuFlaskConical } from "react-icons/lu";
@@ -70,6 +71,7 @@ export type DemoState = {
 type DemoBannerProps = {
   demo: DemoState;
   realCompanyId: string | null;
+  hasPaidPlan: boolean;
 };
 
 function daysLeft(expiresAt: string | null): number {
@@ -88,13 +90,27 @@ function daysLeft(expiresAt: string | null): number {
  *  - not in demo, has demo → explore the demo
  *  - not in demo, no demo  → try the demo
  */
-export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
+export function DemoBanner({
+  demo,
+  realCompanyId,
+  hasPaidPlan
+}: DemoBannerProps) {
   const { t } = useLingui();
+  const edition = useEdition();
+  // Creating a demo ("Try the demo") is a cloud-only action, so that CTA is
+  // gated below. Existing-demo states (explore / in the demo) render in every
+  // edition — the demo company itself isn't cloud-only, only its creation is.
+  const isCloud = edition === Edition.Cloud;
   // Only the "in the demo" branch derives its text/structure from daysLeft()
   // (which reads Date.now()); the server (UTC) and client can disagree at a day
   // boundary. Render that branch client-only to avoid a hydration mismatch. The
   // other branches carry no wall-clock and keep server-rendering normally.
   const hydrated = useHydrated();
+
+  // A company that has already paid doesn't need the demo nudge. (When you're in
+  // the demo, the current company has no paid plan, so this is false and the
+  // "switch back" banner still shows.)
+  if (hasPaidPlan) return null;
 
   let content: ReactNode;
 
@@ -147,6 +163,8 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
       </>
     );
   } else {
+    // No demo yet: the only action is to create one, which is cloud-only.
+    if (!isCloud) return null;
     content = (
       <>
         {companyIcon}

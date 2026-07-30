@@ -277,10 +277,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // One-time annual plan renewal banner data (rendered only near/after expiry).
   let annualPlan: { termEndsAt: string | null; status: string } | null = null;
+  // Whether this company has an active paid plan — a paying company doesn't get
+  // the demo nudge banner. Mirrors billing.tsx's `hasPlan` (subscription OR a
+  // purchased one-time term).
+  let hasPaidPlan = false;
   {
     const { data: cp } = await client
       .from("companyPlan")
-      .select("paymentMode, termEndsAt, stripeSubscriptionStatus")
+      .select(
+        "paymentMode, termEndsAt, stripeSubscriptionStatus, stripeSubscriptionId"
+      )
       .eq("id", companyId)
       .maybeSingle();
     if (cp?.paymentMode === "one_time") {
@@ -289,12 +295,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
         status: cp.stripeSubscriptionStatus
       };
     }
+    hasPaidPlan = Boolean(
+      cp?.stripeSubscriptionId ||
+        (cp?.paymentMode === "one_time" && cp?.termEndsAt)
+    );
   }
 
   return data({
     demo,
     realCompanyId,
     annualPlan,
+    hasPaidPlan,
     session: {
       accessToken,
       expiresIn,
@@ -331,7 +342,8 @@ export default function AuthenticatedRoute() {
     printerRoutes,
     demo,
     realCompanyId,
-    annualPlan
+    annualPlan,
+    hasPaidPlan
   } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const { training, dismiss } = useTrainingPanel();
@@ -395,7 +407,11 @@ export default function AuthenticatedRoute() {
                           "padding-left 0.35s ease-out, padding-right 0.35s ease-out"
                       }}
                     >
-                      <DemoBanner demo={demo} realCompanyId={realCompanyId} />
+                      <DemoBanner
+                        demo={demo}
+                        realCompanyId={realCompanyId}
+                        hasPaidPlan={hasPaidPlan}
+                      />
                       <PlanRenewalBanner annualPlan={annualPlan} />
                       {demo?.isCurrent && (
                         <DemoSeedTrigger
