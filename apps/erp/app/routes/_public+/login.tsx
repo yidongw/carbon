@@ -26,7 +26,10 @@ import {
   setPkceCookie
 } from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
-import { sendVerificationCode } from "@carbon/auth/verification.server";
+import {
+  sendVerificationEmail,
+  storeVerificationCode
+} from "@carbon/auth/verification.server";
 import { AUTH_PROVIDERS } from "@carbon/env";
 import { Hidden, Submit, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
@@ -50,6 +53,7 @@ import {
   browserSupportsWebAuthn,
   startAuthentication
 } from "@simplewebauthn/browser";
+import { waitUntil } from "@vercel/functions";
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -120,6 +124,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 function isWeChatUA(request: Request) {
   return /MicroMessenger/i.test(request.headers.get("user-agent") ?? "");
+}
+
+// Persist the verification code (which must succeed) and then fire the email in
+// the background via `waitUntil`, so the user reaches /verify immediately
+// instead of waiting on the ~1.5s Resend round-trip. The code is already in
+// Redis, so /verify works as soon as the email arrives. Returns false only when
+// the code couldn't be stored — the one failure worth surfacing synchronously.
+async function dispatchVerificationCode(email: string): Promise<boolean> {
+  let verificationCode: string;
+  try {
+    verificationCode = await storeVerificationCode(email);
+  } catch (e) {
+    console.error("Failed to store verification code:", e);
+    return false;
+  }
+  waitUntil(sendVerificationEmail(email, verificationCode));
+  return true;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -217,7 +238,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     // Code-based login (default): email a verification code and send the user to
     // /verify, which signs them straight into the app.
-    const verificationSent = await sendVerificationCode(email);
+    const verificationSent = await dispatchVerificationCode(email);
 
     if (!verificationSent) {
       return error(null, "Failed to send verification code");
@@ -227,7 +248,7 @@ export async function action({ request }: ActionFunctionArgs) {
   } else if (CarbonEdition === Edition.Enterprise) {
     return { success: false, message: "User record not found" };
   } else {
-    const verificationSent = await sendVerificationCode(email);
+    const verificationSent = await dispatchVerificationCode(email);
 
     if (!verificationSent) {
       return error(null, "Failed to send verification code");
