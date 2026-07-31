@@ -10150,6 +10150,9 @@ msgstr "Текст"
 msgid "Text size"
 msgstr "Размер текста"
 
+msgid "Text Size"
+msgstr "Размер текста"
+
 msgid "That WeChat is already linked to another account"
 msgstr "Этот WeChat уже привязан к другому аккаунту"
 

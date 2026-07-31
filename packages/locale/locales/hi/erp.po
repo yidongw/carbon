@@ -10150,6 +10150,9 @@ msgstr "पाठ"
 msgid "Text size"
 msgstr "साइज़ ऑफ़ टेक्स्ट"
 
+msgid "Text Size"
+msgstr "टेक्स्ट का आकार"
+
 msgid "That WeChat is already linked to another account"
 msgstr "वह WeChat पहले से ही किसी अन्य खाते से लिंक है"
 
