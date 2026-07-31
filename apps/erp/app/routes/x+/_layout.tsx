@@ -115,42 +115,45 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const client = getCarbon(accessToken);
 
-  // Parallelize all requests
-  const [
-    companies,
-    employeeCompaniesResult,
-    stripeCustomer,
-    customFields,
-    integrations,
-    companySettings,
-    savedViews,
-    user,
-    claims,
-    groups,
-    defaults,
-    auditLogEnabled,
-    modulePreferences,
-    printerRoutes,
-    supplierApprovalRequired,
-    mesOnly
-  ] = await Promise.all([
-    getCompanies(client, userId),
+  // A login lands here with no companyId cookie and, for a multi-company user,
+  // gets bounced to the company picker below. To avoid loading (and then
+  // discarding) the entire company workspace on that bounce, the queries are
+  // split: a small "gate" batch decides MES-redirect / invalid-session / picker,
+  // and the rest of the workspace loads concurrently but is only awaited once we
+  // know we're staying on this company.
+  const chosenCompanyId = getCompanyId(request);
+
+  const gateResults = Promise.all([
     getEmployeeCompanies(client, userId),
+    getUser(client, userId),
+    getUserClaims(userId, companyId),
+    getUserGroups(client, userId),
+    isMesOnlyEmployee(userId, companyId)
+  ]);
+
+  // Fire the workspace queries now so the common "already in a company" path is
+  // not slowed, but don't await them yet — a bounce to the picker or MES discards
+  // them instead of blocking on them. (They run against the session company
+  // either way, exactly as before.)
+  const workspaceResults = Promise.all([
+    getCompanies(client, userId),
     getStripeCustomerByCompanyId(companyId, userId),
     getCustomFieldsSchemas(client, { companyId }),
     getCompanyIntegrations(client, companyId),
     getCompanySettings(client, companyId),
     getSavedViews(client, userId, companyId),
-    getUser(client, userId),
-    getUserClaims(userId, companyId),
-    getUserGroups(client, userId),
     getUserDefaults(client, userId, companyId),
     isAuditLogEnabled(client, companyId),
     getModulePreferences(client, userId, companyId),
     getPrinterRoutes(client, companyId),
-    isApprovalRequired(client, "supplier", companyId),
-    isMesOnlyEmployee(userId, companyId)
+    isApprovalRequired(client, "supplier", companyId)
   ]);
+  // We may bail (throw redirect) before awaiting these; keep a rejection from
+  // going unhandled. The normal path still awaits + surfaces errors below.
+  workspaceResults.catch(() => undefined);
+
+  const [employeeCompaniesResult, user, claims, groups, mesOnly] =
+    await gateResults;
 
   // Block ERP access for MES-only workers (shop-floor employee types). They can
   // use the MES but not the office app, and are not billed as a seat.
@@ -178,9 +181,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // the "has chosen this session" marker — set only by the picker / company
   // switch and cleared on logout. Until it's present, force the picker so we
   // never silently serve the alphabetically-first company.
-  if (hasMultipleCompanies && !getCompanyId(request)) {
+  if (hasMultipleCompanies && !chosenCompanyId) {
     throw redirectToPicker();
   }
+
+  const [
+    companies,
+    stripeCustomer,
+    customFields,
+    integrations,
+    companySettings,
+    savedViews,
+    defaults,
+    auditLogEnabled,
+    modulePreferences,
+    printerRoutes,
+    supplierApprovalRequired
+  ] = await workspaceResults;
 
   let company = companies.data?.find((c) => c.companyId === companyId);
 
