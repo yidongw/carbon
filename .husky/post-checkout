@@ -22,15 +22,24 @@ if has_required_bins "."; then
   exit 0
 fi
 
-# Drop any leftover symlink or partial node_modules from the previous strategy.
-if [ -L "node_modules" ]; then
-  rm node_modules
-elif [ -e "node_modules" ] && ! has_required_bins "."; then
+# Drop any leftover node_modules symlinks from the previous symlink-based
+# strategy. That strategy could symlink the repo root AND every workspace
+# package's node_modules to the primary worktree, so clean up both — otherwise
+# `pnpm install` follows a package symlink and writes into the PRIMARY worktree's
+# node_modules instead of this one.
+[ -L "node_modules" ] && rm node_modules
+for nm in $(find apps packages examples ci -maxdepth 2 -name node_modules -type l 2>/dev/null); do
+  rm "$nm"
+done
+
+# Drop a partial (non-symlink) root install too, so pnpm starts from a clean slate.
+if [ -e "node_modules" ] && ! has_required_bins "."; then
   rm -rf node_modules
 fi
 
 # Do a real install so the worktree is self-contained (root + per-package
 # node_modules, plus downloaded native binaries like tsgo). pnpm hard-links from
-# the global store, so this is fast and space-efficient.
+# the global store, and --prefer-offline avoids needless network, so this is fast
+# and space-efficient.
 echo "→ node_modules incomplete — running pnpm install --frozen-lockfile..."
-pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile --prefer-offline
