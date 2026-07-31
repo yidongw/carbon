@@ -1,7 +1,8 @@
-import { cn } from "@carbon/react";
+import { cn, Modal, ModalClose, ModalContent } from "@carbon/react";
 import { cva } from "class-variance-authority";
+import type { MouseEvent } from "react";
 import { useState } from "react";
-import { LuSquareStack } from "react-icons/lu";
+import { LuSquareStack, LuX } from "react-icons/lu";
 import type { MethodItemType } from "~/modules/shared";
 import { getPrivateUrl } from "~/utils/path";
 import { MethodItemTypeIcon } from "./Icons";
@@ -10,6 +11,8 @@ interface ItemThumbnailProps {
   thumbnailPath?: string | null;
   type?: MethodItemType;
   size?: "sm" | "md" | "lg" | "xl";
+  /** When true (default), clicking the thumbnail opens a large preview modal. */
+  enlarge?: boolean;
 }
 
 const containerVariants = cva(
@@ -117,16 +120,20 @@ const getCoverScale = (img: HTMLImageElement) => {
 const ItemThumbnail = ({
   thumbnailPath,
   type,
-  size = "md"
+  size = "md",
+  enlarge = true
 }: ItemThumbnailProps) => {
   const [coverScale, setCoverScale] = useState(1);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
-  return thumbnailPath ? (
-    <div className={containerVariants({ size })}>
+  const url = thumbnailPath ? getPrivateUrl(thumbnailPath) : null;
+
+  if (url) {
+    const image = (
       <img
         alt="thumbnail"
         className="absolute inset-0 size-full object-cover object-center"
-        src={getPrivateUrl(thumbnailPath)}
+        src={url}
         style={{
           transform: coverScale === 1 ? undefined : `scale(${coverScale})`,
           transformOrigin: "center"
@@ -135,8 +142,55 @@ const ItemThumbnail = ({
           setCoverScale(getCoverScale(event.currentTarget));
         }}
       />
-    </div>
-  ) : (
+    );
+
+    if (!enlarge) {
+      return <div className={containerVariants({ size })}>{image}</div>;
+    }
+
+    return (
+      <>
+        <button
+          type="button"
+          className={cn(
+            containerVariants({ size }),
+            "cursor-zoom-in transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          )}
+          aria-label="View full image"
+          onClick={(event: MouseEvent<HTMLButtonElement>) => {
+            event.stopPropagation();
+            event.preventDefault();
+            setPreviewOpen(true);
+          }}
+        >
+          {image}
+        </button>
+        <Modal open={previewOpen} onOpenChange={setPreviewOpen}>
+          <ModalContent
+            withCloseButton={false}
+            className="w-auto max-w-[95vw] p-0 pt-0 sm:w-auto sm:max-w-[95vw] md:w-auto border-none bg-transparent shadow-none dark:shadow-none"
+          >
+            <div className="relative" onClick={(event) => event.stopPropagation()}>
+              <img
+                alt="thumbnail"
+                className="max-h-[90vh] max-w-[95vw] w-auto h-auto rounded-lg object-contain shadow-lg"
+                src={url}
+              />
+              <ModalClose
+                type="button"
+                aria-label="Close"
+                className="absolute right-2 top-2 flex items-center justify-center rounded-full bg-black/60 p-2 text-white outline-none transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white"
+              >
+                <LuX className="h-4 w-4" />
+              </ModalClose>
+            </div>
+          </ModalContent>
+        </Modal>
+      </>
+    );
+  }
+
+  return (
     <div
       className={cn(containerVariants({ size }), placeholderVariants({ size }))}
     >
