@@ -1,4 +1,11 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type FoundDevice,
+  isNativeApp,
+  onDeviceFound,
+  testLabel,
+  xprinter
+} from "~/utils/nativePrinter";
 
 // Standalone Web Bluetooth diagnostic page for thermal (ESC/POS) printers.
 // No auth, no app chrome — meant to be opened on a phone (Android Chrome, or
@@ -42,7 +49,146 @@ const PRINTER_NAME_PREFIXES = [
 
 type BleChar = any; // Web Bluetooth types aren't in the DOM lib here.
 
+// Inside the native Jilio iOS shell we use the Xprinter BLE plugin instead of
+// Web Bluetooth; on the plain web we fall back to the Web Bluetooth diagnostic.
 export default function PrintTest() {
+  const [native] = useState(() => isNativeApp());
+  return native ? <NativePrinterPanel /> : <WebBluetoothPanel />;
+}
+
+function NativePrinterPanel() {
+  const [lines, setLines] = useState<string[]>([]);
+  const [devices, setDevices] = useState<FoundDevice[]>([]);
+  const [connectedId, setConnectedId] = useState<string>("");
+  const [scanning, setScanning] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const unsubRef = useRef<null | (() => void)>(null);
+
+  const log = useCallback((m: string) => setLines((prev) => [...prev, m]), []);
+
+  useEffect(() => {
+    return () => {
+      unsubRef.current?.();
+      xprinter()
+        .stopScan()
+        .catch(() => {});
+    };
+  }, []);
+
+  const scan = useCallback(async () => {
+    setDevices([]);
+    setLines([]);
+    setBusy(true);
+    try {
+      unsubRef.current?.();
+      unsubRef.current = await onDeviceFound((d) => {
+        setDevices((prev) => {
+          const next = prev.filter((p) => p.id !== d.id);
+          next.push(d);
+          // Strongest signal first — the printer you're standing next to.
+          next.sort((a, b) => b.rssi - a.rssi);
+          return next;
+        });
+      });
+      await xprinter().startScan();
+      setScanning(true);
+      log("扫描中…把手机靠近打印机,信号最强的排最前。");
+    } catch (e: any) {
+      log(`扫描错误: ${e?.message || e}`);
+    } finally {
+      setBusy(false);
+    }
+  }, [log]);
+
+  const connect = useCallback(
+    async (d: FoundDevice) => {
+      setBusy(true);
+      try {
+        await xprinter()
+          .stopScan()
+          .catch(() => {});
+        setScanning(false);
+        log(`连接 ${d.name || d.id}…`);
+        const r = await xprinter().connect({ id: d.id });
+        setConnectedId(d.id);
+        log(`✅ 已连接: ${r.name || d.name || d.id}`);
+      } catch (e: any) {
+        log(`连接失败: ${e?.message || e}`);
+      } finally {
+        setBusy(false);
+      }
+    },
+    [log]
+  );
+
+  const print = useCallback(async () => {
+    setBusy(true);
+    try {
+      log("发送测试标签…");
+      const { printLabel } = await import("~/utils/nativePrinter");
+      await printLabel(testLabel());
+      log("✅ 已发送,打印机应出一张标签。");
+    } catch (e: any) {
+      log(`打印错误: ${e?.message || e}`);
+    } finally {
+      setBusy(false);
+    }
+  }, [log]);
+
+  return (
+    <div style={wrap}>
+      <h1 style={{ fontSize: 20, marginBottom: 4 }}>打印机测试(原生)</h1>
+      <p style={{ fontSize: 13, color: "#555", marginTop: 0 }}>
+        运行在 Jilio App 内,使用 Xprinter BLE 插件。
+      </p>
+
+      <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
+        <button onClick={scan} disabled={busy} style={btnStyle(busy)}>
+          {scanning ? "重新扫描" : "扫描打印机"}
+        </button>
+        <button
+          onClick={print}
+          disabled={busy || !connectedId}
+          style={btnStyle(busy || !connectedId)}
+        >
+          打印测试标签
+        </button>
+      </div>
+
+      {devices.length > 0 && (
+        <div style={{ margin: "8px 0" }}>
+          {devices.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => connect(d)}
+              disabled={busy}
+              style={{
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                padding: "10px 12px",
+                marginBottom: 6,
+                borderRadius: 8,
+                border:
+                  d.id === connectedId ? "2px solid #2563eb" : "1px solid #ccc",
+                background: "#fff"
+              }}
+            >
+              <b>{d.name || "(未命名设备)"}</b> · 信号 {d.rssi}
+              {d.id === connectedId ? " · 🟢已连接" : ""}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <pre style={logStyle}>
+        {lines.length ? lines.join("\n") : "日志会显示在这里…"}
+      </pre>
+    </div>
+  );
+}
+
+function WebBluetoothPanel() {
   const [lines, setLines] = useState<string[]>([]);
   const [deviceName, setDeviceName] = useState<string>("");
   const [connected, setConnected] = useState(false);
@@ -303,3 +449,26 @@ function btnStyle(disabled: boolean, color = "#2563eb"): React.CSSProperties {
     cursor: disabled ? "not-allowed" : "pointer"
   };
 }
+
+const wrap: React.CSSProperties = {
+  fontFamily: "system-ui, sans-serif",
+  maxWidth: 560,
+  margin: "0 auto",
+  padding: 16,
+  color: "#111",
+  background: "#fff",
+  minHeight: "100vh"
+};
+
+const logStyle: React.CSSProperties = {
+  background: "#0b0b0b",
+  color: "#3fef7f",
+  padding: 12,
+  borderRadius: 8,
+  fontSize: 12,
+  whiteSpace: "pre-wrap",
+  wordBreak: "break-all",
+  minHeight: 200,
+  maxHeight: "50vh",
+  overflow: "auto"
+};
