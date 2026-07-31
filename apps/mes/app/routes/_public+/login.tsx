@@ -109,6 +109,29 @@ function isWeChatUA(request: Request) {
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
+
+  const formData = await request.formData();
+
+  // Dev-only bypass sign-in short-circuit. These emails come from the
+  // DEV_BYPASS_EMAIL allowlist (unset in deployed environments), so there is
+  // nothing to rate-limit against — and running the redis rate-limit round-trip
+  // first just makes local sign-in slow (it races a 5s timeout when redis is
+  // unreachable). Skip straight to minting the session.
+  const bypassEmail = (formData.get("email") as string | null)?.trim() ?? "";
+  if (isBypassEmail(bypassEmail)) {
+    const bypassUser = await getUserByEmail(bypassEmail);
+    if (bypassUser.data?.active) {
+      const authSession = await signInWithBypassEmail(bypassEmail);
+      if (authSession) {
+        const redirectTo = formData.get("redirectTo") as string | null;
+        const sessionCookie = await setAuthSession(request, { authSession });
+        return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+          headers: [["Set-Cookie", sessionCookie]]
+        });
+      }
+    }
+  }
+
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
   const ratelimit = new Ratelimit({
     redis,
@@ -124,8 +147,6 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const formData = await request.formData();
-
   const validation = await validator(magicLinkValidator).validate(formData);
   if (validation.error) {
     return error(validation.error, "Invalid email address");
@@ -133,16 +154,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { email, redirectTo } = validation.data;
   const user = await getUserByEmail(email);
-
-  if (isBypassEmail(email) && user.data?.active) {
-    const authSession = await signInWithBypassEmail(email);
-    if (authSession) {
-      const sessionCookie = await setAuthSession(request, { authSession });
-      return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-        headers: [["Set-Cookie", sessionCookie]]
-      });
-    }
-  }
 
   if (user.data && user.data.active) {
     if (LOGIN_METHOD === "magic-link") {
