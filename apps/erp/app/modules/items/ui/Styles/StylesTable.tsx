@@ -27,7 +27,11 @@ import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
-import type { ItemPostingGroupListItem } from "~/modules/items";
+import type {
+  getStyleColorList,
+  getStyleSizeList,
+  ItemPostingGroupListItem
+} from "~/modules/items";
 import type { getTemplatesList } from "~/modules/items/template.service";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
@@ -53,6 +57,38 @@ const StylesTable = memo(
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { formatDate } = useDateFormatter();
+
+    const canAddColorsSizes = permissions.can("update", "parts");
+    // Load the company's colors/sizes once for the whole table so the inline
+    // add pickers in every row share a single fetch (each cell filters out the
+    // options already assigned to that style).
+    const colorListFetcher =
+      useFetcher<Awaited<ReturnType<typeof getStyleColorList>>>();
+    const sizeListFetcher =
+      useFetcher<Awaited<ReturnType<typeof getStyleSizeList>>>();
+    useMount(() => {
+      if (!canAddColorsSizes) return;
+      colorListFetcher.load(path.to.api.styleColors);
+      sizeListFetcher.load(path.to.api.styleSizes);
+    });
+    const colorOptions = useMemo(
+      () =>
+        (colorListFetcher.data?.data ?? []).map((color) => ({
+          value: color.id,
+          label: color.colorName || color.colorCode,
+          helper: color.colorCode
+        })),
+      [colorListFetcher.data?.data]
+    );
+    const sizeOptions = useMemo(
+      () =>
+        (sizeListFetcher.data?.data ?? []).map((size) => ({
+          value: size.id,
+          label: size.sizeCode,
+          helper: size.sizeName
+        })),
+      [sizeListFetcher.data?.data]
+    );
 
     const deleteItemModal = useDisclosure();
     const [selectedItem, setSelectedItem] = useState<Style | null>(null);
@@ -110,7 +146,10 @@ const StylesTable = memo(
         translateReplenishment,
         translateMethodType,
         translateTrackingType,
-        i18n
+        i18n,
+        canAddColorsSizes,
+        colorOptions,
+        sizeOptions
       });
       return [...defaultColumns, ...customColumns];
     }, [
@@ -123,7 +162,10 @@ const StylesTable = memo(
       translateReplenishment,
       translateMethodType,
       translateTrackingType,
-      i18n
+      i18n,
+      canAddColorsSizes,
+      colorOptions,
+      sizeOptions
     ]);
 
     const fetcher = useFetcher<typeof action>();
