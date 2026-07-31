@@ -24,6 +24,22 @@ const OPTIONAL_SERVICES = [
   "device_information"
 ];
 
+// Common name prefixes for BLE thermal printers, used to narrow the chooser.
+const PRINTER_NAME_PREFIXES = [
+  "Printer",
+  "BlueTooth",
+  "InnerPrinter",
+  "MTP",
+  "MPT",
+  "PT-",
+  "GP-",
+  "XP-",
+  "RPP",
+  "POS",
+  "TP-",
+  "JP-"
+];
+
 type BleChar = any; // Web Bluetooth types aren't in the DOM lib here.
 
 export default function PrintTest() {
@@ -42,79 +58,96 @@ export default function PrintTest() {
   const supported =
     typeof navigator !== "undefined" && "bluetooth" in navigator;
 
-  const connect = useCallback(async () => {
-    setLines([]);
-    writeCharRef.current = null;
-    setConnected(false);
-    setBusy(true);
-    try {
-      const bt = (navigator as any).bluetooth;
-      log("弹出设备选择框，选择你的打印机…");
-      const device = await bt.requestDevice({
-        acceptAllDevices: true,
-        optionalServices: OPTIONAL_SERVICES
-      });
-      setDeviceName(device.name || device.id || "(未命名设备)");
-      log(`选中: ${device.name || "(未命名)"}  id=${device.id}`);
+  const connect = useCallback(
+    async (filtered: boolean) => {
+      setLines([]);
+      writeCharRef.current = null;
+      setConnected(false);
+      setBusy(true);
+      try {
+        const bt = (navigator as any).bluetooth;
+        const options = filtered
+          ? {
+              // Only show devices that advertise a known printer service OR
+              // whose name looks like a printer. Narrows a crowded chooser.
+              filters: [
+                ...OPTIONAL_SERVICES.filter((s) => s.includes("-")).map(
+                  (s) => ({ services: [s] })
+                ),
+                ...PRINTER_NAME_PREFIXES.map((p) => ({ namePrefix: p }))
+              ],
+              optionalServices: OPTIONAL_SERVICES
+            }
+          : { acceptAllDevices: true, optionalServices: OPTIONAL_SERVICES };
+        log(
+          filtered
+            ? "只列出疑似打印机（按服务/名字过滤）…"
+            : "弹出设备选择框，选择你的打印机…"
+        );
+        const device = await bt.requestDevice(options);
+        setDeviceName(device.name || device.id || "(未命名设备)");
+        log(`选中: ${device.name || "(未命名)"}  id=${device.id}`);
 
-      device.addEventListener?.("gattserverdisconnected", () => {
-        setConnected(false);
-        log("⚠️ 设备已断开");
-      });
+        device.addEventListener?.("gattserverdisconnected", () => {
+          setConnected(false);
+          log("⚠️ 设备已断开");
+        });
 
-      log("正在连接 GATT…");
-      const server = await device.gatt.connect();
-      log("✅ GATT 已连接，正在枚举服务…");
+        log("正在连接 GATT…");
+        const server = await device.gatt.connect();
+        log("✅ GATT 已连接，正在枚举服务…");
 
-      const services = await server.getPrimaryServices();
-      log(`发现 ${services.length} 个服务`);
+        const services = await server.getPrimaryServices();
+        log(`发现 ${services.length} 个服务`);
 
-      let firstWritable: BleChar | null = null;
-      for (const service of services) {
-        log(`service: ${service.uuid}`);
-        let chars: BleChar[] = [];
-        try {
-          chars = await service.getCharacteristics();
-        } catch (e) {
-          log(`  (无法读取特征: ${e})`);
-          continue;
-        }
-        for (const c of chars) {
-          const p = c.properties || {};
-          const flags = [
-            p.write && "write",
-            p.writeWithoutResponse && "writeNoResp",
-            p.notify && "notify",
-            p.read && "read"
-          ]
-            .filter(Boolean)
-            .join(",");
-          log(`  char: ${c.uuid} [${flags || "?"}]`);
-          if (!firstWritable && (p.write || p.writeWithoutResponse)) {
-            firstWritable = c;
+        let firstWritable: BleChar | null = null;
+        for (const service of services) {
+          log(`service: ${service.uuid}`);
+          let chars: BleChar[] = [];
+          try {
+            chars = await service.getCharacteristics();
+          } catch (e) {
+            log(`  (无法读取特征: ${e})`);
+            continue;
+          }
+          for (const c of chars) {
+            const p = c.properties || {};
+            const flags = [
+              p.write && "write",
+              p.writeWithoutResponse && "writeNoResp",
+              p.notify && "notify",
+              p.read && "read"
+            ]
+              .filter(Boolean)
+              .join(",");
+            log(`  char: ${c.uuid} [${flags || "?"}]`);
+            if (!firstWritable && (p.write || p.writeWithoutResponse)) {
+              firstWritable = c;
+            }
           }
         }
-      }
 
-      if (firstWritable) {
-        writeCharRef.current = firstWritable;
-        setConnected(true);
-        log(`✅ 找到可写特征: ${firstWritable.uuid}`);
-        log("现在可以点「打印测试小票」了。");
-      } else {
-        log("❌ 没找到可写特征，这台设备可能不是标准 ESC/POS BLE 打印机。");
+        if (firstWritable) {
+          writeCharRef.current = firstWritable;
+          setConnected(true);
+          log(`✅ 找到可写特征: ${firstWritable.uuid}`);
+          log("现在可以点「打印测试小票」了。");
+        } else {
+          log("❌ 没找到可写特征，这台设备可能不是标准 ESC/POS BLE 打印机。");
+        }
+      } catch (e: any) {
+        log(`错误: ${e?.message || e}`);
+        if (e?.name === "NotFoundError") {
+          log(
+            "提示: 若列表里没有你的打印机 —— 先把打印机关机重开、并退出厂商 App(BLE 被连接时不广播)。"
+          );
+        }
+      } finally {
+        setBusy(false);
       }
-    } catch (e: any) {
-      log(`错误: ${e?.message || e}`);
-      if (e?.name === "NotFoundError") {
-        log(
-          "提示: 若列表里没有你的打印机 —— 先把打印机关机重开、并退出厂商 App(BLE 被连接时不广播)。"
-        );
-      }
-    } finally {
-      setBusy(false);
-    }
-  }, [log]);
+    },
+    [log]
+  );
 
   const printTest = useCallback(async () => {
     const ch = writeCharRef.current;
@@ -196,12 +229,21 @@ export default function PrintTest() {
 
       <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
         <button
-          onClick={connect}
+          onClick={() => connect(true)}
           disabled={!supported || busy}
           style={btnStyle(!supported || busy)}
         >
-          {busy ? "…" : "扫描并连接"}
+          {busy ? "…" : "只找打印机"}
         </button>
+        <button
+          onClick={() => connect(false)}
+          disabled={!supported || busy}
+          style={btnStyle(!supported || busy, "#555")}
+        >
+          扫描全部
+        </button>
+      </div>
+      <div style={{ display: "flex", gap: 8, margin: "0 0 12px" }}>
         <button
           onClick={printTest}
           disabled={!connected || busy}
@@ -249,7 +291,7 @@ export default function PrintTest() {
   );
 }
 
-function btnStyle(disabled: boolean): React.CSSProperties {
+function btnStyle(disabled: boolean, color = "#2563eb"): React.CSSProperties {
   return {
     flex: 1,
     padding: "12px 16px",
@@ -257,7 +299,7 @@ function btnStyle(disabled: boolean): React.CSSProperties {
     borderRadius: 8,
     border: "none",
     color: "#fff",
-    background: disabled ? "#aaa" : "#2563eb",
+    background: disabled ? "#aaa" : color,
     cursor: disabled ? "not-allowed" : "pointer"
   };
 }
