@@ -2076,6 +2076,7 @@ export const path = {
         table
       )}&name=${encodeURIComponent(name)}`,
     theme: `${x}/account/theme`,
+    textSize: `${x}/account/text-size`,
     timecards: `${x}/timecards`,
     tool: (id: string) => generatePath(`${x}/tool/${id}`),
     toolCosting: (id: string) => generatePath(`${x}/tool/${id}/costing`),

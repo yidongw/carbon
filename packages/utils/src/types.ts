@@ -13,6 +13,19 @@ export const modeValidator = z.object({
   mode: z.enum(["light", "dark", "system"])
 });
 
+// Website text size, expressed as the root `font-size` percentage applied to
+// `<html>`. Because the app is fully rem-based (Tailwind v4, no base font-size
+// override), scaling the root font-size proportionally scales the entire UI —
+// text and spacing alike — like the browser's own zoom, but crisp and
+// persisted per user. Shared between ERP and MES via a cross-app cookie.
+export const TEXT_SIZES = ["90", "100", "110", "120", "130"] as const;
+export type TextSize = (typeof TEXT_SIZES)[number];
+export const DEFAULT_TEXT_SIZE: TextSize = "100";
+
+export const textSizeValidator = z.object({
+  textSize: z.enum(TEXT_SIZES)
+});
+
 export enum Plan {
   Starter = "STARTER",
   Business = "BUSINESS",

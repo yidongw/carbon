@@ -25,11 +25,12 @@ import {
   useEdition,
   useMode
 } from "@carbon/react";
-import { Edition, themes } from "@carbon/utils";
+import { DEFAULT_TEXT_SIZE, Edition, TEXT_SIZES, themes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { useCallback, useMemo, useState } from "react";
 import {
+  LuALargeSmall,
   LuBuilding2,
   LuCheck,
   LuCreditCard,
@@ -51,6 +52,7 @@ import {
   useRouteData,
   useUser
 } from "~/hooks";
+import { useTextSize } from "~/hooks/useTextSize";
 import { useTheme } from "~/hooks/useTheme";
 import type { Company } from "~/modules/settings";
 import type { action } from "~/root";
@@ -135,6 +137,13 @@ const AvatarMenu = () => {
 
   const optimisticTheme = selectedTheme ?? serverTheme;
 
+  const textSize = useTextSize();
+  const onTextSizeChange = (value: string) => {
+    const formData = new FormData();
+    formData.append("textSize", value);
+    fetcher.submit(formData, { method: "post", action: path.to.textSize });
+  };
+
   const itarDisclosure = useDisclosure();
 
   return (
@@ -204,6 +213,33 @@ const AvatarMenu = () => {
                       <div className="w-4 h-4 rounded-full mr-2 bg-[var(--theme-primary)]" />
                       {t.label}
                     </div>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <DropdownMenuIcon icon={<LuALargeSmall />} />
+              <Trans>Text Size</Trans>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup
+                value={textSize}
+                onValueChange={onTextSizeChange}
+              >
+                {TEXT_SIZES.map((size) => (
+                  <DropdownMenuRadioItem
+                    key={size}
+                    value={size}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <span>{size}%</span>
+                    {size === DEFAULT_TEXT_SIZE ? (
+                      <span className="ml-2 text-muted-foreground">
+                        <Trans>Default</Trans>
+                      </span>
+                    ) : null}
                   </DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>

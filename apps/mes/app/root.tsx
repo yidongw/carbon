@@ -21,8 +21,13 @@ import {
   TooltipProvider,
   useMode
 } from "@carbon/react";
-import type { Theme } from "@carbon/utils";
-import { getPreferenceHeaders, modeValidator, themes } from "@carbon/utils";
+import type { TextSize, Theme } from "@carbon/utils";
+import {
+  DEFAULT_TEXT_SIZE,
+  getPreferenceHeaders,
+  modeValidator,
+  themes
+} from "@carbon/utils";
 import { I18nProvider } from "@react-aria/i18n";
 import { Analytics } from "@vercel/analytics/react";
 import type React from "react";
@@ -43,6 +48,7 @@ import {
 } from "react-router";
 import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 import { getMode, setMode } from "~/services/mode.server";
+import { getTextSize } from "~/services/textSize.server";
 import Background from "~/styles/background.css?url";
 import NProgress from "~/styles/nprogress.css?url";
 import Tailwind from "~/styles/tailwind.css?url";
@@ -138,6 +144,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       },
       mode: getMode(request),
       theme: getTheme(request),
+      textSize: getTextSize(request),
       preferences,
       linguiCatalog,
       result: context.get(flashResultContext)
@@ -180,13 +187,15 @@ function Document({
   title = "Carbon",
   lang = "en",
   mode = "light",
-  theme = "zinc"
+  theme = "zinc",
+  textSize = DEFAULT_TEXT_SIZE
 }: {
   children: React.ReactNode;
   title?: string;
   lang?: string;
   mode?: "light" | "dark";
   theme?: string;
+  textSize?: TextSize;
 }) {
   const selectedTheme = themes.find((t) => t.name === theme) as
     | Theme
@@ -210,10 +219,12 @@ function Document({
     });
   }
 
-  // Combine the styles with proper selectors
+  // Combine the styles with proper selectors. `fontSize` on <html> scales the
+  // whole rem-based UI (text + spacing) to the user's chosen text size.
   const themeStyle = {
     ...(mode === "dark" ? darkVars : lightVars),
-    "--radius": "0.675rem"
+    "--radius": "0.675rem",
+    fontSize: `${textSize}%`
   } as React.CSSProperties;
 
   return (
@@ -247,6 +258,7 @@ export default function App() {
   const loaderData = useLoaderData<typeof loader>();
   const env = loaderData?.env ?? {};
   const theme = loaderData?.theme ?? "zinc";
+  const textSize = loaderData?.textSize ?? DEFAULT_TEXT_SIZE;
   const prefs = loaderData?.preferences;
   const linguiCatalog = loaderData?.linguiCatalog;
   const appLanguage = resolveLanguage(prefs.locale);
@@ -259,7 +271,12 @@ export default function App() {
       <LocaleProvider locale={appLanguage} catalog={linguiCatalog}>
         <I18nProvider locale={prefs.locale}>
           <TooltipProvider delayDuration={200}>
-            <Document mode={mode} theme={theme} lang={appLanguage}>
+            <Document
+              mode={mode}
+              theme={theme}
+              textSize={textSize}
+              lang={appLanguage}
+            >
               <Outlet />
               <script
                 dangerouslySetInnerHTML={{
