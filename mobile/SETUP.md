@@ -29,44 +29,35 @@ without rebuilding the app.
 
 ## One-time Xcode wiring (the parts that must be done in the GUI)
 
-Open the project:
+**The Xcode project is already fully wired and compile-verified.** The SDK,
+plugin, bridging header, search paths, `-ObjC`, and the `libPrinterSDK.a` +
+`CoreBluetooth.framework` links are committed in `project.pbxproj`. A device
+build (`xcodebuild -scheme App -sdk iphoneos`, no signing) succeeds. So you do
+**not** need to add files or change build settings by hand.
+
+The only things left require your Apple Developer account:
 
 ```bash
 cd mobile
 npx cap open ios      # opens ios/App/App.xcodeproj in Xcode
 ```
 
-Then in Xcode:
+1. **Signing & Capabilities** → select your **Team**. Bundle id defaults to
+   `xyz.jilio.erp` (change if it collides with an existing app id on your
+   account).
+2. **Run on a real device.** The vendored `.a` is `arm64 + x86_64` and will
+   *not* link in the Apple-Silicon **simulator** — use a physical iPhone/iPad.
 
-1. **Add the SDK + plugin files to the App target.** In the Project Navigator,
-   right-click the `App` group → *Add Files to "App"…* → select
-   `App/PrinterSDK`, `App/XprinterPlugin.swift`, `App/XprinterPlugin.m`,
-   `App/App-Bridging-Header.h`. Check *Add to target: App*. When Xcode offers to
-   create an Objective-C bridging header, say **No** (we ship our own).
+On first launch iOS asks for Bluetooth permission. Then in `/print-test`
+(inside the app): scan → pick the printer (sorted by signal) → print a test
+label.
 
-2. **Build Settings** (target App):
-   - *Objective-C Bridging Header* → `App/App-Bridging-Header.h`
-   - *Header Search Paths* → add `$(SRCROOT)/App/PrinterSDK/Headers`
-   - *Library Search Paths* → add `$(SRCROOT)/App/PrinterSDK`
-   - *Other Linker Flags* → add `-ObjC`
+### Command-line build note
 
-3. **Build Phases → Link Binary With Libraries** → `+` →
-   - `libPrinterSDK.a` (choose *Add Other…* if not listed)
-   - `CoreBluetooth.framework`
-
-4. **Signing & Capabilities** → select your **Team**; set the **Bundle
-   Identifier** (default `xyz.jilio.erp` — must be unique to your account).
-
-5. **Run on a real device.** The vendored `.a` is `arm64 + x86_64`; it will *not*
-   link in the Apple-Silicon **simulator**. Use a physical iPhone/iPad.
-
-On first launch iOS will ask for Bluetooth permission. Then: scan → pick the
-printer (sorted by signal) → print.
-
-> Note: `XprinterPlugin.swift` was authored against the SDK headers without a
-> compiler in the loop. If Xcode flags a delegate method signature (Swift's
-> import of the Objective-C `XBLEManagerDelegate`), accept its fix-it — the
-> selectors are correct, only the Swift spelling may differ.
+Build with `-scheme App`, not `-target App` — the latter fails with
+`CapApp-SPM.modulemap not found` because it skips generating the Capacitor SPM
+module maps. Xcode's GUI Run button always uses the scheme, so this only bites
+CLI builds.
 
 ## Distribute via TestFlight
 

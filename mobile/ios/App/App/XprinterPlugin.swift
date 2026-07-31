@@ -95,7 +95,7 @@ public class XprinterPlugin: CAPPlugin, XBLEManagerDelegate {
             return
         }
         let packageSize = call.getInt("packageSize") ?? 512
-        ble.sendData(data, withPackageSize: UInt(packageSize)) { success, _, _, _, error in
+        ble.send(data, withPackageSize: UInt(packageSize)) { success, _, _, _, error in
             if success {
                 call.resolve(["ok": true])
             } else {
@@ -106,9 +106,9 @@ public class XprinterPlugin: CAPPlugin, XBLEManagerDelegate {
 
     // MARK: - XBLEManagerDelegate
 
-    public func xbleDiscoverPeripheral(_ peripheral: CBPeripheral!,
-                                       advertisementData: [AnyHashable: Any]!,
-                                       RSSI: NSNumber!) {
+    public func xbleDiscover(_ peripheral: CBPeripheral!,
+                             advertisementData: [AnyHashable: Any]!,
+                             rssi RSSI: NSNumber!) {
         guard let peripheral = peripheral else { return }
         let id = peripheral.identifier.uuidString
         peripherals[id] = peripheral
@@ -120,13 +120,13 @@ public class XprinterPlugin: CAPPlugin, XBLEManagerDelegate {
         ])
     }
 
-    public func xbleConnectPeripheral(_ peripheral: CBPeripheral!) {
+    public func xbleConnect(_ peripheral: CBPeripheral!) {
         connectCall?.resolve(["ok": true, "name": peripheral?.name ?? ""])
         connectCall?.keepAlive = false
         connectCall = nil
     }
 
-    public func xbleFailToConnectPeripheral(_ peripheral: CBPeripheral!, error: Error!) {
+    public func xbleFail(toConnect peripheral: CBPeripheral!, error: Error!) {
         connectCall?.reject(error?.localizedDescription ?? "Failed to connect")
         connectCall?.keepAlive = false
         connectCall = nil
