@@ -113,6 +113,14 @@ All check `getCachedPrinterConfig(...).autoPrint` (default true) before triggeri
 
 Dedupe is handled inside the print-job task (30-second window on auto jobs per sourceDocumentId).
 
+## Bundle Ticket Printing (production)
+
+`PrintBundleTicketsModal` (`apps/erp/app/modules/production/ui/MasterWorkOrders/PrintBundleTicketsModal.tsx`) — per-bundle checklist + tag-size (`labelSizes` starting `bundleTag*`) + destination (Browser vs configured print servers from `usePrinting().printerRoutes`). Browser path opens the server PDF `path.to.file.bundleWorkOrderLabelsPdf(ids, { labelSize })` (route `file+/bundle-work-order+/labels[.]pdf.tsx`, one ticket/page); print-server path POSTs one `{ sourceDocument: "BundleWorkOrder", sourceDocumentId, locationId, printerRouteId }` per bundle to `path.to.manualPrint` (`x+/print.tsx`).
+
+Opened from:
+- `BundleWorkOrdersTable` toolbar `primaryAction` ("Print Tickets" / "Print N Tickets" on row selection) — standalone `x/production/bundle-work-orders` page.
+- `MasterWorkOrderBundlesOverlay` footer button (next to Close) — the master-WO bundles overlay renders `BundleWorkOrdersTable` with `withHeader={false}`, which hides the table toolbar (and thus its Print button), so the overlay surfaces the same modal from its own footer (added PR #253).
+
 ## Cleanup
 
 In `packages/jobs/src/inngest/functions/scheduled/cleanup.ts`: completed jobs > 30 days deleted, failed jobs > 90 days deleted.
