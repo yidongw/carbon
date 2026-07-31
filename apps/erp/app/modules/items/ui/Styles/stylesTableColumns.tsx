@@ -33,6 +33,8 @@ import {
   itemReplenishmentSystems,
   itemTrackingTypes
 } from "../../items.models";
+import type { StyleOption } from "./AddStyleOptionButton";
+import AddStyleOptionButton from "./AddStyleOptionButton";
 import { defaultStylesTableSharedColumnKeys } from "./stylesTableConfig";
 
 export const STYLE_ITEM_UPDATE = {
@@ -56,6 +58,9 @@ export type BuildStylesTableColumnsArgs = {
   translateMethodType: (value: string) => string;
   translateTrackingType: (value: string) => string;
   i18n: I18n;
+  canAddColorsSizes: boolean;
+  colorOptions: StyleOption[];
+  sizeOptions: StyleOption[];
 };
 
 export function buildDefaultStylesTableColumns({
@@ -67,7 +72,10 @@ export function buildDefaultStylesTableColumns({
   translateReplenishment,
   translateMethodType,
   translateTrackingType,
-  i18n
+  i18n,
+  canAddColorsSizes,
+  colorOptions,
+  sizeOptions
 }: BuildStylesTableColumnsArgs): ColumnDef<Style>[] {
   const itemPostingGroupOptions = itemPostingGroups.map((group) => ({
     value: group.id,
@@ -286,18 +294,22 @@ export function buildDefaultStylesTableColumns({
           colorCode: string;
           colorName: string;
         }>;
-        if (!Array.isArray(colors) || colors.length === 0) return null;
+        const list = Array.isArray(colors) ? colors : [];
         return (
           <HStack spacing={1} className="flex-wrap">
-            {colors.map((color) => (
-              <Badge
-                key={color.id}
-                variant="outline"
-                title={color.colorCode}
-              >
+            {list.map((color) => (
+              <Badge key={color.id} variant="outline" title={color.colorCode}>
                 {color.colorName || color.colorCode}
               </Badge>
             ))}
+            {canAddColorsSizes && row.original.id && (
+              <AddStyleOptionButton
+                itemId={row.original.id}
+                kind="color"
+                assignedIds={list.map((color) => color.id)}
+                options={colorOptions}
+              />
+            )}
           </HStack>
         );
       },
@@ -314,10 +326,10 @@ export function buildDefaultStylesTableColumns({
           sizeCode: string;
           sizeName: string;
         }>;
-        if (!Array.isArray(sizes) || sizes.length === 0) return null;
+        const list = Array.isArray(sizes) ? sizes : [];
         return (
           <HStack spacing={1} className="flex-wrap">
-            {sizes.map((size) => (
+            {list.map((size) => (
               <Badge
                 key={size.id}
                 variant="outline"
@@ -327,6 +339,14 @@ export function buildDefaultStylesTableColumns({
                 {size.sizeCode}
               </Badge>
             ))}
+            {canAddColorsSizes && row.original.id && (
+              <AddStyleOptionButton
+                itemId={row.original.id}
+                kind="size"
+                assignedIds={list.map((size) => size.id)}
+                options={sizeOptions}
+              />
+            )}
           </HStack>
         );
       },

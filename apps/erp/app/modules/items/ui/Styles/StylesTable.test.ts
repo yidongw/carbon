@@ -53,7 +53,10 @@ describe("defaultStylesTableSharedColumnKeys", () => {
           typeof descriptor === "string"
             ? descriptor
             : (descriptor.message ?? descriptor.id ?? "")
-      } as never
+      } as never,
+      canAddColorsSizes: false,
+      colorOptions: [],
+      sizeOptions: []
     });
 
     const headers = columns.map((column) => column.header);

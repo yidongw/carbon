@@ -1486,6 +1486,8 @@ export const path = {
     notificationSettings: `${x}/account/notifications`,
     part: (id: string) => generatePath(`${x}/part/${id}`),
     style: (id: string) => generatePath(`${x}/style/${id}`),
+    addStyleColorsSizes: (id: string) =>
+      generatePath(`${x}/style/${id}/add-colors-sizes`),
     itemProperties: (id: string) => generatePath(`${x}/items/${id}/properties`),
     partCosting: (id: string) => generatePath(`${x}/part/${id}/costing`),
     partDetails: (id: string) => generatePath(`${x}/part/${id}/details`),
