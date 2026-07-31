@@ -1250,6 +1250,9 @@ msgstr "Anlage"
 msgid "Attachments"
 msgstr "Anhänge"
 
+msgid "Attempts"
+msgstr "Versuche"
+
 msgid "Attribute"
 msgstr "Attribut"
 
@@ -1283,6 +1286,9 @@ msgstr "Audit-Protokolle"
 msgid "Authentication Error"
 msgstr "Authentifizierungsfehler"
 
+msgid "Auto"
+msgstr "Auto"
+
 msgid "Auto Release"
 msgstr "Automatische Freigabe"
 
@@ -1294,6 +1300,9 @@ msgstr "Auftrag automatisch starten"
 
 msgid "Auto-generated QR Code"
 msgstr "Automatisch generierter QR-Code"
+
+msgid "Auto-print"
+msgstr "Autom. Druck"
 
 msgid "Automatic Cost Updates"
 msgstr "Automatische Kostenaktualisierungen"
@@ -4027,6 +4036,9 @@ msgstr "Schätzungen vs. Ist-Werte"
 msgid "Estimator"
 msgstr "Schätzer"
 
+msgid "Event ID"
+msgstr "Ereignis-ID"
+
 msgid "Event Type"
 msgstr "Ereignistyp"
 
@@ -4167,6 +4179,9 @@ msgid "External Reference"
 msgstr "Externe Referenz"
 
 msgid "Fail"
+msgstr "Fehlgeschlagen"
+
+msgid "Failed"
 msgstr "Fehlgeschlagen"
 
 #. placeholder {0}: fetcher.data.error.message
@@ -4752,6 +4767,9 @@ msgstr "Generierte IDs sind deaktiviert"
 msgid "Generated IDs are enabled"
 msgstr "Generierte IDs sind aktiviert"
 
+msgid "Generating"
+msgstr "Wird generiert"
+
 msgid "Get Method"
 msgstr "Methode abrufen"
 
@@ -5021,6 +5039,9 @@ msgstr "Von Materialien erben"
 
 msgid "Inherited from parent"
 msgstr "Erbt von der Elternstufe"
+
+msgid "inherits {inheritedName}"
+msgstr "erbt {inheritedName}"
 
 msgid "Inputs"
 msgstr "Eingaben"
@@ -6755,6 +6776,9 @@ msgstr "Keine Preisgestaltung für die ausgewählte Menge"
 msgid "No pricing options found"
 msgstr "Keine Preisoptionen gefunden"
 
+msgid "No printer"
+msgstr "Kein Drucker"
+
 msgid "No printer configured"
 msgstr "Keine Druckerkonfiguration"
 
@@ -8044,6 +8068,9 @@ msgstr "Vierteljährlich"
 msgid "Question"
 msgstr "Frage"
 
+msgid "Queued"
+msgstr "In Warteschlange"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "{0} Tickets zum Drucken eingereiht"
@@ -8180,6 +8207,9 @@ msgstr "Empfangen von"
 
 msgid "Received Qty"
 msgstr "Empfangene Menge"
+
+msgid "Receiving"
+msgstr "Wareneingang"
 
 msgid "Receiving Location"
 msgstr "Empfangsort"

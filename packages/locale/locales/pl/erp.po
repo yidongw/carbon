@@ -1250,6 +1250,9 @@ msgstr "Załącznik"
 msgid "Attachments"
 msgstr "Przylopek"
 
+msgid "Attempts"
+msgstr "Próby"
+
 msgid "Attribute"
 msgstr "Atrybut"
 
@@ -1283,6 +1286,9 @@ msgstr "Dzienniki audytu"
 msgid "Authentication Error"
 msgstr "Błąd uwierzytelniania"
 
+msgid "Auto"
+msgstr "Automatyczny"
+
 msgid "Auto Release"
 msgstr "Automatyczne zwolnienie"
 
@@ -1294,6 +1300,9 @@ msgstr "Automatyczne uruchomienie zadania"
 
 msgid "Auto-generated QR Code"
 msgstr "Automatycznie generowany kod QR"
+
+msgid "Auto-print"
+msgstr "Autodruk"
 
 msgid "Automatic Cost Updates"
 msgstr "Automatyczne Aktualizacje Kosztów"
@@ -4027,6 +4036,9 @@ msgstr "Szacunki vs Rzeczywistość"
 msgid "Estimator"
 msgstr "Estymator"
 
+msgid "Event ID"
+msgstr "Identyfikator zdarzenia"
+
 msgid "Event Type"
 msgstr "Typ zdarzenia"
 
@@ -4167,6 +4179,9 @@ msgid "External Reference"
 msgstr "Odniesienie zewnętrzne"
 
 msgid "Fail"
+msgstr "Nie powiodło się"
+
+msgid "Failed"
 msgstr "Nie powiodło się"
 
 #. placeholder {0}: fetcher.data.error.message
@@ -4752,6 +4767,9 @@ msgstr "Wygenerowane identyfikatory są wyłączone"
 msgid "Generated IDs are enabled"
 msgstr "Wygenerowane identyfikatory są włączone"
 
+msgid "Generating"
+msgstr "Generowanie"
+
 msgid "Get Method"
 msgstr "Pobierz metodę"
 
@@ -5021,6 +5039,9 @@ msgstr "Dziedzicz z Materiałów"
 
 msgid "Inherited from parent"
 msgstr "Przekazało się z rodzica"
+
+msgid "inherits {inheritedName}"
+msgstr "dziedziczy {inheritedName}"
 
 msgid "Inputs"
 msgstr "Wprowadzenia"
@@ -6755,6 +6776,9 @@ msgstr "Brak cen dla wybranej ilości"
 msgid "No pricing options found"
 msgstr "Nie znaleziono opcji cenowych"
 
+msgid "No printer"
+msgstr "Brak drukarki"
+
 msgid "No printer configured"
 msgstr "Brak skonfigurowanej drukarki"
 
@@ -8044,6 +8068,9 @@ msgstr "Kwartalnie"
 msgid "Question"
 msgstr "Pytanie"
 
+msgid "Queued"
+msgstr "W kolejce"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "Dodano {0} etykiet do kolejki druku"
@@ -8180,6 +8207,9 @@ msgstr "Otrzymane od"
 
 msgid "Received Qty"
 msgstr "Otrzymana Ilość"
+
+msgid "Receiving"
+msgstr "Przyjęcie"
 
 msgid "Receiving Location"
 msgstr "Lokalizacja odbioru"

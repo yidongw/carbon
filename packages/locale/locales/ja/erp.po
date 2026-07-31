@@ -1250,6 +1250,9 @@ msgstr "添付ファイル"
 msgid "Attachments"
 msgstr "添付ファイル"
 
+msgid "Attempts"
+msgstr "試行回数"
+
 msgid "Attribute"
 msgstr "属性"
 
@@ -1283,6 +1286,9 @@ msgstr "監査ログ"
 msgid "Authentication Error"
 msgstr "認証エラー"
 
+msgid "Auto"
+msgstr "自動"
+
 msgid "Auto Release"
 msgstr "自動リリース"
 
@@ -1294,6 +1300,9 @@ msgstr "自動ジョブ開始"
 
 msgid "Auto-generated QR Code"
 msgstr "自動生成されたQRコード"
+
+msgid "Auto-print"
+msgstr "自動印刷"
 
 msgid "Automatic Cost Updates"
 msgstr "自動的成本更新"
@@ -4027,6 +4036,9 @@ msgstr "見積もり対実績"
 msgid "Estimator"
 msgstr "見積者"
 
+msgid "Event ID"
+msgstr "イベントID"
+
 msgid "Event Type"
 msgstr "イベントタイプ"
 
@@ -4168,6 +4180,9 @@ msgstr "外部参照"
 
 msgid "Fail"
 msgstr "不合格"
+
+msgid "Failed"
+msgstr "失敗"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create consumable: {0}"
@@ -4752,6 +4767,9 @@ msgstr "生成されたIDは無効です"
 msgid "Generated IDs are enabled"
 msgstr "生成されたIDが有効です"
 
+msgid "Generating"
+msgstr "生成中"
+
 msgid "Get Method"
 msgstr "メソッドを取得"
 
@@ -5021,6 +5039,9 @@ msgstr "材料から継承"
 
 msgid "Inherited from parent"
 msgstr "親から継承"
+
+msgid "inherits {inheritedName}"
+msgstr "{inheritedName} を継承"
 
 msgid "Inputs"
 msgstr "入力"
@@ -6755,6 +6776,9 @@ msgstr "選択した数量の価格設定がありません"
 msgid "No pricing options found"
 msgstr "価格オプションが見つかりません"
 
+msgid "No printer"
+msgstr "プリンターなし"
+
 msgid "No printer configured"
 msgstr "プリンターが設定されていません"
 
@@ -8044,6 +8068,9 @@ msgstr "四半期"
 msgid "Question"
 msgstr "質問"
 
+msgid "Queued"
+msgstr "待機中"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "{0} 枚のチケットを印刷キューに追加しました"
@@ -8180,6 +8207,9 @@ msgstr "受け取った人"
 
 msgid "Received Qty"
 msgstr "受け取り数量"
+
+msgid "Receiving"
+msgstr "入荷"
 
 msgid "Receiving Location"
 msgstr "受取場所"

@@ -1250,6 +1250,9 @@ msgstr "संलग्नक"
 msgid "Attachments"
 msgstr "प्रारूपों"
 
+msgid "Attempts"
+msgstr "प्रयास"
+
 msgid "Attribute"
 msgstr "विशेषता"
 
@@ -1283,6 +1286,9 @@ msgstr "ऑडिट लॉग्स"
 msgid "Authentication Error"
 msgstr "प्रमाणीकरण त्रुटि"
 
+msgid "Auto"
+msgstr "स्वतः"
+
 msgid "Auto Release"
 msgstr "ऑटो रिलीज़"
 
@@ -1294,6 +1300,9 @@ msgstr "ऑटो स्टार्ट जॉब"
 
 msgid "Auto-generated QR Code"
 msgstr "स्वचालित रूप से उत्पन्न QR कोड"
+
+msgid "Auto-print"
+msgstr "स्वतः प्रिंट"
 
 msgid "Automatic Cost Updates"
 msgstr "स्वचालित लागत अपडेट"
@@ -4027,6 +4036,9 @@ msgstr "अनुमान बनाम वास्तविक"
 msgid "Estimator"
 msgstr "अनुमानकर्ता"
 
+msgid "Event ID"
+msgstr "इवेंट आईडी"
+
 msgid "Event Type"
 msgstr "ईवेंट प्रकार"
 
@@ -4167,6 +4179,9 @@ msgid "External Reference"
 msgstr "बाहरी संदर्भ"
 
 msgid "Fail"
+msgstr "विफल"
+
+msgid "Failed"
 msgstr "विफल"
 
 #. placeholder {0}: fetcher.data.error.message
@@ -4752,6 +4767,9 @@ msgstr "जेनरेट की गई आईडी अक्षम हैं"
 msgid "Generated IDs are enabled"
 msgstr "जेनरेट की गई आईडी सक्षम हैं"
 
+msgid "Generating"
+msgstr "बना रहे हैं"
+
 msgid "Get Method"
 msgstr "विधि प्राप्त करें"
 
@@ -5021,6 +5039,9 @@ msgstr "सामग्री से विरासत में प्रा�
 
 msgid "Inherited from parent"
 msgstr "प्रिंटल द्वारा इनहरेट किया.get_app()"
+
+msgid "inherits {inheritedName}"
+msgstr "{inheritedName} इनहेरिट करता है"
 
 msgid "Inputs"
 msgstr "इनपुट्स"
@@ -6755,6 +6776,9 @@ msgstr "चयनित मात्रा के लिए कोई मूल�
 msgid "No pricing options found"
 msgstr "कोई मूल्य निर्धारण विकल्प नहीं मिला"
 
+msgid "No printer"
+msgstr "कोई प्रिंटर नहीं"
+
 msgid "No printer configured"
 msgstr "निर्वहन डाटा संकल्पित नहीं है"
 
@@ -8044,6 +8068,9 @@ msgstr "त्रैमासिक"
 msgid "Question"
 msgstr "प्रश्न"
 
+msgid "Queued"
+msgstr "कतार में"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "{0} टिकट प्रिंटिंग के लिए कतारबद्ध किए गए"
@@ -8180,6 +8207,9 @@ msgstr "द्वारा प्राप्त"
 
 msgid "Received Qty"
 msgstr "प्राप्त मात्रा"
+
+msgid "Receiving"
+msgstr "प्राप्ति"
 
 msgid "Receiving Location"
 msgstr "प्राप्ति स्थान"

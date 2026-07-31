@@ -47,34 +47,13 @@ const statusConfig: Record<
   {
     variant: "yellow" | "blue" | "green" | "red" | "purple";
     icon: React.ReactNode;
-    label: string;
   }
 > = {
-  generating: {
-    variant: "purple",
-    icon: <LuLoader className="size-3" />,
-    label: "Generating"
-  },
-  queued: {
-    variant: "yellow",
-    icon: <LuClock className="size-3" />,
-    label: "Queued"
-  },
-  printing: {
-    variant: "blue",
-    icon: <LuPrinter className="size-3" />,
-    label: "Printing"
-  },
-  completed: {
-    variant: "green",
-    icon: <LuCircleCheck className="size-3" />,
-    label: "Completed"
-  },
-  failed: {
-    variant: "red",
-    icon: <LuCircleX className="size-3" />,
-    label: "Failed"
-  }
+  generating: { variant: "purple", icon: <LuLoader className="size-3" /> },
+  queued: { variant: "yellow", icon: <LuClock className="size-3" /> },
+  printing: { variant: "blue", icon: <LuPrinter className="size-3" /> },
+  completed: { variant: "green", icon: <LuCircleCheck className="size-3" /> },
+  failed: { variant: "red", icon: <LuCircleX className="size-3" /> }
 };
 
 const ExpandedRowContent = memo(({ job }: { job: PrintJob }) => {
@@ -82,50 +61,68 @@ const ExpandedRowContent = memo(({ job }: { job: PrintJob }) => {
     <div className="px-6 py-4">
       <div className="grid grid-cols-4 gap-4 mb-4 text-sm">
         <div>
-          <span className="text-muted-foreground">Printer URL</span>
+          <span className="text-muted-foreground">
+            <Trans>Printer URL</Trans>
+          </span>
           <div className="font-mono text-xs break-all">{job.printerUrl}</div>
         </div>
         <div>
-          <span className="text-muted-foreground">Source Document</span>
+          <span className="text-muted-foreground">
+            <Trans>Source Document</Trans>
+          </span>
           <div className="font-mono text-xs">
             {job.sourceDocumentReadableId ?? job.sourceDocumentId}
           </div>
         </div>
         <div>
-          <span className="text-muted-foreground">Attempts</span>
+          <span className="text-muted-foreground">
+            <Trans>Attempts</Trans>
+          </span>
           <div className="font-mono text-xs">{job.attempts}</div>
         </div>
         <div>
-          <span className="text-muted-foreground">Completed At</span>
+          <span className="text-muted-foreground">
+            <Trans>Completed At</Trans>
+          </span>
           <div className="font-mono text-xs">
             {job.completedAt ? formatDateTime(job.completedAt) : "—"}
           </div>
         </div>
         <div>
-          <span className="text-muted-foreground">Event ID</span>
+          <span className="text-muted-foreground">
+            <Trans>Event ID</Trans>
+          </span>
           <div className="font-mono text-xs">{job.id}</div>
         </div>
         <div>
-          <span className="text-muted-foreground">Created At</span>
+          <span className="text-muted-foreground">
+            <Trans>Created At</Trans>
+          </span>
           <div className="font-mono text-xs">
             {formatDateTime(job.createdAt)}
           </div>
         </div>
         <div>
-          <span className="text-muted-foreground">Updated At</span>
+          <span className="text-muted-foreground">
+            <Trans>Updated At</Trans>
+          </span>
           <div className="font-mono text-xs">
             {job.updatedAt ? formatDateTime(job.updatedAt) : "—"}
           </div>
         </div>
         <div>
-          <span className="text-muted-foreground">Created By</span>
+          <span className="text-muted-foreground">
+            <Trans>Created By</Trans>
+          </span>
           <div className="font-mono text-xs">{job.createdBy}</div>
         </div>
       </div>
 
       {job.error && (
         <div>
-          <h4 className="text-sm font-medium mb-2">Error</h4>
+          <h4 className="text-sm font-medium mb-2">
+            <Trans>Error</Trans>
+          </h4>
           <pre className="text-xs font-mono bg-red-500/10 text-red-500 p-3 rounded-md whitespace-pre-wrap">
             {job.error}
           </pre>
@@ -252,6 +249,17 @@ const PrintJobsTable = memo(({ jobs, count }: PrintJobsTableProps) => {
     }
   }, [fetcher.data]);
 
+  const statusLabels = useMemo<Record<string, string>>(
+    () => ({
+      generating: t`Generating`,
+      queued: t`Queued`,
+      printing: t`Printing`,
+      completed: t`Completed`,
+      failed: t`Failed`
+    }),
+    [t]
+  );
+
   const columns = useMemo<ColumnDef<PrintJob>[]>(
     () => [
       {
@@ -266,7 +274,9 @@ const PrintJobsTable = memo(({ jobs, count }: PrintJobsTableProps) => {
             >
               <HStack className="gap-1">
                 {config?.icon}
-                <span>{config?.label ?? row.original.status}</span>
+                <span>
+                  {statusLabels[row.original.status] ?? row.original.status}
+                </span>
               </HStack>
             </Badge>
           );
@@ -275,11 +285,11 @@ const PrintJobsTable = memo(({ jobs, count }: PrintJobsTableProps) => {
           filter: {
             type: "static",
             options: [
-              { label: "Generating", value: "generating" },
-              { label: "Queued", value: "queued" },
-              { label: "Printing", value: "printing" },
-              { label: "Completed", value: "completed" },
-              { label: "Failed", value: "failed" }
+              { label: statusLabels.generating, value: "generating" },
+              { label: statusLabels.queued, value: "queued" },
+              { label: statusLabels.printing, value: "printing" },
+              { label: statusLabels.completed, value: "completed" },
+              { label: statusLabels.failed, value: "failed" }
             ]
           }
         }
@@ -308,13 +318,13 @@ const PrintJobsTable = memo(({ jobs, count }: PrintJobsTableProps) => {
           filter: {
             type: "static",
             options: [
-              { label: "Receipt", value: "receipt" },
-              { label: "Shipment", value: "shipment" },
-              { label: "Operation", value: "operation" },
-              { label: "Job", value: "job" },
-              { label: "Item", value: "item" },
-              { label: "Kanban", value: "kanban" },
-              { label: "Split", value: "split" }
+              { label: t`Receipt`, value: "receipt" },
+              { label: t`Shipment`, value: "shipment" },
+              { label: t`Operation`, value: "operation" },
+              { label: t`Job`, value: "job" },
+              { label: t`Item`, value: "item" },
+              { label: t`Kanban`, value: "kanban" },
+              { label: t`Split`, value: "split" }
             ]
           }
         }
@@ -349,9 +359,9 @@ const PrintJobsTable = memo(({ jobs, count }: PrintJobsTableProps) => {
           filter: {
             type: "static",
             options: [
-              { label: "Auto", value: "auto" },
-              { label: "Manual", value: "manual" },
-              { label: "Reprint", value: "reprint" }
+              { label: t`Auto`, value: "auto" },
+              { label: t`Manual`, value: "manual" },
+              { label: t`Reprint`, value: "reprint" }
             ]
           }
         }
@@ -369,7 +379,7 @@ const PrintJobsTable = memo(({ jobs, count }: PrintJobsTableProps) => {
         }
       }
     ],
-    [t]
+    [t, statusLabels]
   );
 
   const renderExpandedRow = useCallback(

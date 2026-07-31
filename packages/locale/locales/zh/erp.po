@@ -1251,6 +1251,9 @@ msgstr "附件"
 msgid "Attachments"
 msgstr "附件"
 
+msgid "Attempts"
+msgstr "尝试次数"
+
 msgid "Attribute"
 msgstr "属性"
 
@@ -1284,6 +1287,9 @@ msgstr "审计日志"
 msgid "Authentication Error"
 msgstr "认证错误"
 
+msgid "Auto"
+msgstr "自动"
+
 msgid "Auto Release"
 msgstr "自动释放"
 
@@ -1295,6 +1301,9 @@ msgstr "自动启动工作"
 
 msgid "Auto-generated QR Code"
 msgstr "自动生成的二维码"
+
+msgid "Auto-print"
+msgstr "自动打印"
 
 msgid "Automatic Cost Updates"
 msgstr "自动成本更新"
@@ -4028,6 +4037,9 @@ msgstr "估算 vs 实际"
 msgid "Estimator"
 msgstr "估算器"
 
+msgid "Event ID"
+msgstr "事件 ID"
+
 msgid "Event Type"
 msgstr "事件类型"
 
@@ -4168,6 +4180,9 @@ msgid "External Reference"
 msgstr "外部参考"
 
 msgid "Fail"
+msgstr "失败"
+
+msgid "Failed"
 msgstr "失败"
 
 #. placeholder {0}: fetcher.data.error.message
@@ -4753,6 +4768,9 @@ msgstr "生成的ID已禁用"
 msgid "Generated IDs are enabled"
 msgstr "生成的ID已启用"
 
+msgid "Generating"
+msgstr "生成中"
+
 msgid "Get Method"
 msgstr "获取方法"
 
@@ -5022,6 +5040,9 @@ msgstr "从材料继承"
 
 msgid "Inherited from parent"
 msgstr "继承自父级"
+
+msgid "inherits {inheritedName}"
+msgstr "继承 {inheritedName}"
 
 msgid "Inputs"
 msgstr "输入"
@@ -6756,6 +6777,9 @@ msgstr "选择的数量无定价"
 msgid "No pricing options found"
 msgstr "未找到定价选项"
 
+msgid "No printer"
+msgstr "无打印机"
+
 msgid "No printer configured"
 msgstr "未配置打印机"
 
@@ -8045,6 +8069,9 @@ msgstr "每季度"
 msgid "Question"
 msgstr "问题"
 
+msgid "Queued"
+msgstr "排队中"
+
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
 msgstr "已将 {0} 张标签加入打印队列"
@@ -8181,6 +8208,9 @@ msgstr "接收人"
 
 msgid "Received Qty"
 msgstr "接收数量"
+
+msgid "Receiving"
+msgstr "收货"
 
 msgid "Receiving Location"
 msgstr "接收位置"
