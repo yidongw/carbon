@@ -10151,6 +10151,9 @@ msgstr "文本"
 msgid "Text size"
 msgstr "字体大小"
 
+msgid "Text Size"
+msgstr "字体大小"
+
 msgid "That WeChat is already linked to another account"
 msgstr "该微信已绑定到其他账号"
 

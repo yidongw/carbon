@@ -23,8 +23,13 @@ import {
   useMode,
   useMount
 } from "@carbon/react";
-import type { Theme } from "@carbon/utils";
-import { getPreferenceHeaders, modeValidator, themes } from "@carbon/utils";
+import type { TextSize, Theme } from "@carbon/utils";
+import {
+  DEFAULT_TEXT_SIZE,
+  getPreferenceHeaders,
+  modeValidator,
+  themes
+} from "@carbon/utils";
 import { I18nProvider } from "@react-aria/i18n";
 import { QueryClient } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
@@ -47,8 +52,10 @@ import {
 } from "react-router";
 import SonnerStyle from "sonner/dist/styles.css?url";
 import { NavigationProgress } from "~/components/NavigationProgress";
+import { useTextSize } from "~/hooks/useTextSize";
 import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 import { getMode, setMode } from "~/services/mode.server";
+import { getTextSize } from "~/services/textSize.server";
 import Background from "~/styles/background.css?url";
 import NProgress from "~/styles/nprogress.css?url";
 import Tailwind from "~/styles/tailwind.css?url";
@@ -169,6 +176,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       mode: getMode(request),
       preferences: getPreferenceHeaders(request),
       result: context.get(flashResultContext),
+      textSize: getTextSize(request),
       theme: getTheme(request)
     },
     {
@@ -209,13 +217,15 @@ export function Document({
   title = "Carbon",
   lang = "en",
   mode = "light",
-  theme = "zinc"
+  theme = "zinc",
+  textSize = DEFAULT_TEXT_SIZE
 }: {
   children: React.ReactNode;
   title?: string;
   lang?: string;
   mode?: "light" | "dark";
   theme?: string;
+  textSize?: TextSize;
 }) {
   const selectedTheme = themes.find((t) => t.name === theme) as
     | Theme
@@ -239,10 +249,12 @@ export function Document({
     });
   }
 
-  // Combine the styles with proper selectors
+  // Combine the styles with proper selectors. `fontSize` on <html> scales the
+  // whole rem-based UI (text + spacing) to the user's chosen text size.
   const themeStyle = {
     ...(mode === "light" ? lightVars : darkVars),
-    "--radius": "0.675rem"
+    "--radius": "0.675rem",
+    fontSize: `${textSize}%`
   } as React.CSSProperties;
 
   return (
@@ -280,6 +292,7 @@ export default function App() {
   const linguiCatalog = loaderData?.linguiCatalog;
   const appLanguage = resolveLanguage(prefs.locale);
   const mode = useMode();
+  const textSize = useTextSize();
 
   useMount(() => {
     // Flash toasts from full-page redirects (e.g. OAuth callbacks) don't fire
@@ -310,7 +323,12 @@ export default function App() {
       <LocaleProvider locale={appLanguage} catalog={linguiCatalog}>
         <I18nProvider locale={prefs.locale}>
           <TooltipProvider delayDuration={200}>
-            <Document mode={mode} theme={theme} lang={appLanguage}>
+            <Document
+              mode={mode}
+              theme={theme}
+              textSize={textSize}
+              lang={appLanguage}
+            >
               <NavigationProgress />
               <Outlet />
               <script
