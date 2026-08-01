@@ -1730,6 +1730,9 @@ importers:
       '@carbon/lib':
         specifier: workspace:*
         version: link:../lib
+      '@carbon/locale':
+        specifier: workspace:*
+        version: link:../locale
       '@carbon/react':
         specifier: workspace:*
         version: link:../react
@@ -2610,6 +2613,9 @@ importers:
       '@internationalized/date':
         specifier: 'catalog:'
         version: 3.12.0
+      '@lingui/core':
+        specifier: 'catalog:'
+        version: 5.9.4(@lingui/babel-plugin-lingui-macro@5.9.4(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)
       '@lingui/react':
         specifier: 'catalog:'
         version: 5.9.4(@lingui/babel-plugin-lingui-macro@5.9.4(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react@18.3.1)

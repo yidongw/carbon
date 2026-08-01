@@ -1758,3 +1758,6 @@ msgstr "Вы отметили приход в {0}. Вы можете измен�
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Вы на смене уже {hoursElapsed} часов. Вы забыли отметить уход?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Ваша компания использует бесплатный тариф (только чтение). Перейдите на платный тариф, чтобы вносить изменения."

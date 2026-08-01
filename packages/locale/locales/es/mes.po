@@ -1758,3 +1758,6 @@ msgstr "Registró su entrada a las {0}. Puede editar su hora de salida a continu
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Ha estado registrado durante {hoursElapsed} horas. ¿Olvidó registrar la salida?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Tu empresa está en el plan gratuito (solo lectura). Mejora tu plan para hacer cambios."

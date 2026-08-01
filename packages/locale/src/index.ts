@@ -7,4 +7,4 @@ export {
   resolveLanguage,
   supportedLanguages
 } from "./config";
-export { LocaleProvider } from "./i18n";
+export { getActiveI18n, LocaleProvider } from "./i18n";

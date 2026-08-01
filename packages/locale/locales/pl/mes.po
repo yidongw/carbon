@@ -1758,3 +1758,6 @@ msgstr "Zalogowałeś się o {0}. Możesz edytować czas zakończenia zmiany pon
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Jesteś zalogowany od {hoursElapsed} godzin. Czy zapomniałeś zakończyć zmianę?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Twoja firma korzysta z planu darmowego (tylko do odczytu). Przejdź na wyższy plan, aby wprowadzać zmiany."

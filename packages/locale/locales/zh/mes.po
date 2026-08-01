@@ -1759,3 +1759,6 @@ msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确�
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "您的公司正在使用免费方案（只读）。升级后即可进行更改。"

@@ -4,6 +4,7 @@ import {
   getCarbon,
   getMESUrl
 } from "@carbon/auth";
+import { isCompanyReadOnly } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -146,7 +147,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     isAuditLogEnabled(client, companyId),
     getModulePreferences(client, userId, companyId),
     getPrinterRoutes(client, companyId),
-    isApprovalRequired(client, "supplier", companyId)
+    isApprovalRequired(client, "supplier", companyId),
+    isCompanyReadOnly(companyId, userId)
   ]);
   // We may bail (throw redirect) before awaiting these; keep a rejection from
   // going unhandled. The normal path still awaits + surfaces errors below.
@@ -196,7 +198,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     auditLogEnabled,
     modulePreferences,
     printerRoutes,
-    supplierApprovalRequired
+    supplierApprovalRequired,
+    readOnly
   ] = await workspaceResults;
 
   let company = companies.data?.find((c) => c.companyId === companyId);
@@ -323,6 +326,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     realCompanyId,
     annualPlan,
     hasPaidPlan,
+    readOnly,
     session: {
       accessToken,
       expiresIn,

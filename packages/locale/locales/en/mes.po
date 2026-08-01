@@ -1758,3 +1758,6 @@ msgstr "You clocked in at {0}. You can edit your clock-out time below or acknowl
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Your company is on the free plan (read-only). Upgrade to make changes."
