@@ -1758,3 +1758,6 @@ msgstr "Sie haben sich um {0} eingestempelt. Sie können Ihre Ausstempelzeit unt
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Sie sind seit {hoursElapsed} Stunden eingestempelt. Haben Sie vergessen auszustempeln?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Ihr Unternehmen nutzt den kostenlosen Tarif (schreibgeschützt). Führen Sie ein Upgrade durch, um Änderungen vorzunehmen."

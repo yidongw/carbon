@@ -11485,3 +11485,6 @@ msgstr "ZPL（热敏标签）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL标签预览"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "您的公司正在使用免费方案（只读）。升级后即可进行更改。"

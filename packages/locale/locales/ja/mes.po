@@ -1758,3 +1758,6 @@ msgstr "{0} に出勤打刻しました。下記で退勤時間を編集する�
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "{hoursElapsed} 時間出勤中です。退勤打刻を忘れていませんか？"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "お客様の会社は無料プラン（読み取り専用）です。変更するにはアップグレードしてください。"

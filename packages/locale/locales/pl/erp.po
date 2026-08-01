@@ -11484,3 +11484,6 @@ msgstr "ZPL (Etykietka termiczna)"
 
 msgid "ZPL Label Preview"
 msgstr "Podgląd etykiety ZPL"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Twoja firma korzysta z planu darmowego (tylko do odczytu). Przejdź na wyższy plan, aby wprowadzać zmiany."

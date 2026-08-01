@@ -1758,3 +1758,6 @@ msgstr "Hai timbrato l'ingresso alle {0}. Puoi modificare l'orario di uscita qui
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Sei timbrato in ingresso da {hoursElapsed} ore. Hai dimenticato di timbrare l'uscita?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "La tua azienda è nel piano gratuito (sola lettura). Esegui l'upgrade per apportare modifiche."

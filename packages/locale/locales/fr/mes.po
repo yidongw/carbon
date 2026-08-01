@@ -1758,3 +1758,6 @@ msgstr "Vous avez pointé votre entrée à {0}. Vous pouvez modifier votre heure
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Vous êtes pointé depuis {hoursElapsed} heures. Avez-vous oublié de pointer la sortie ?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Votre entreprise est sur le forfait gratuit (lecture seule). Passez à un forfait supérieur pour effectuer des modifications."

@@ -1758,3 +1758,6 @@ msgstr "आप {0} पर क्लॉक इन हुए हैं। आप �
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "आप {hoursElapsed} घंटे के लिए क्लॉक इन हैं। क्या आप क्लॉक आउट करना भूल गए?"
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "आपकी कंपनी निःशुल्क योजना (केवल पढ़ने के लिए) पर है। बदलाव करने के लिए अपग्रेड करें।"
