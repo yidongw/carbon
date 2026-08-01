@@ -12,6 +12,7 @@ import { useLingui } from "@lingui/react/macro";
 import { useRef } from "react";
 import { LuCirclePlus } from "react-icons/lu";
 import { Link } from "react-router";
+import { useReadOnly } from "~/hooks/useReadOnly";
 
 type NewProps = {
   label?: string;
@@ -21,6 +22,7 @@ type NewProps = {
 
 const New = ({ label, to, variant = "primary" }: NewProps) => {
   const { t } = useLingui();
+  const readOnly = useReadOnly();
   const buttonRef = useRef<HTMLButtonElement>(null);
   useKeyboardShortcuts({
     n: (event: KeyboardEvent) => {
@@ -28,6 +30,11 @@ const New = ({ label, to, variant = "primary" }: NewProps) => {
       buttonRef.current?.click();
     }
   });
+
+  // Read-only free companies can't create anything; hide every New affordance
+  // uniformly here so call sites don't each have to guard it (the server blocks
+  // the create regardless). The `n` shortcut above no-ops since buttonRef is null.
+  if (readOnly) return null;
 
   return (
     <Tooltip>

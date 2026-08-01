@@ -19,6 +19,7 @@ import { useOnboarding } from "./useOnboarding";
 import { usePercentFormatter } from "./usePercentFormatter";
 import { usePermissions } from "./usePermissions";
 import { usePlanGate } from "./usePlanGate";
+import { useReadOnly } from "./useReadOnly";
 import { useRealtime } from "./useRealtime";
 import { useScrollPosition } from "./useScrollPosition";
 import { useSettings } from "./useSettings";
@@ -46,6 +47,7 @@ export {
   usePermissions,
   usePlanGate,
   usePrinting,
+  useReadOnly,
   useRealtime,
   useRouteData,
   useScrollPosition,
