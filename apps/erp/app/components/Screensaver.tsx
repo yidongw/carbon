@@ -14,25 +14,52 @@ import { path } from "~/utils/path";
 
 const DEFAULT_TIMEOUT_MS = 180_000;
 const WAKE_GRACE_MS = 600; // ignore interaction right after activating
+const MINUTES_KEY = "screensaver:minutes";
 
 // "/x/sales/dashboard" -> "sales" (mirrors getModule in PrimaryNavigation)
 const moduleSeg = (p: string) => p.split("/")?.[2];
 
-function readEnabled(): boolean {
+// Per-device override (localStorage, this browser only): minutes > 0 = on with
+// that timeout; 0 = off on this device; null/unset = fall back to kiosk default.
+// Read/written by the account "This Device" settings page.
+export function readScreensaverMinutes(): number | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.localStorage.getItem(MINUTES_KEY);
+  if (raw === null || raw === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
+export function writeScreensaverMinutes(minutes: number | null) {
+  if (typeof window === "undefined") return;
+  if (minutes === null) window.localStorage.removeItem(MINUTES_KEY);
+  else window.localStorage.setItem(MINUTES_KEY, String(minutes));
+}
+
+function kioskMode(): boolean {
   if (typeof window === "undefined") return false;
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("kiosk") === "1") return true;
+  if (new URLSearchParams(window.location.search).get("kiosk") === "1")
+    return true;
   const cap = (window as any).Capacitor;
   return !!cap?.isNativePlatform?.();
 }
 
+function readEnabled(): boolean {
+  // Explicit per-device setting wins (enables/disables regardless of kiosk).
+  const minutes = readScreensaverMinutes();
+  if (minutes !== null) return minutes > 0;
+  // Default: only in kiosk mode (native app or ?kiosk=1).
+  return kioskMode();
+}
+
 function readTimeoutMs(): number {
+  const minutes = readScreensaverMinutes();
+  if (minutes !== null && minutes > 0) return minutes * 60_000;
   if (typeof window === "undefined") return DEFAULT_TIMEOUT_MS;
   const fromUrl = new URLSearchParams(window.location.search).get("idle");
   if (fromUrl && Number(fromUrl) > 0)
     return Math.max(15, Number(fromUrl)) * 1000;
-  const stored = Number(localStorage.getItem("screensaver:timeoutMs"));
-  return stored > 0 ? stored : DEFAULT_TIMEOUT_MS;
+  return DEFAULT_TIMEOUT_MS;
 }
 
 export function Screensaver() {
