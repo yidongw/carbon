@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  buildTsplLabel,
   type FoundDevice,
   isNativeApp,
   onDeviceFound,
@@ -340,6 +341,39 @@ function WebBluetoothPanel() {
     }
   }, [log]);
 
+  // TSPL test label (for a label printer like the XP-D361B, ESC/POS above may
+  // not print correctly — labels want TSPL).
+  const printTspl = useCallback(async () => {
+    const ch = writeCharRef.current;
+    if (!ch) {
+      log("还没连接到可写特征。");
+      return;
+    }
+    setBusy(true);
+    try {
+      const tspl = buildTsplLabel(testLabel());
+      const data = new Uint8Array(tspl.length);
+      for (let i = 0; i < tspl.length; i++) data[i] = tspl.charCodeAt(i) & 0xff;
+      log(`发送 TSPL ${data.length} 字节…`);
+      const chunkSize = 100;
+      const useNoResponse = ch.properties?.writeWithoutResponse;
+      for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize);
+        if (useNoResponse && ch.writeValueWithoutResponse) {
+          await ch.writeValueWithoutResponse(chunk);
+        } else {
+          await ch.writeValue(chunk);
+        }
+        await new Promise((r) => setTimeout(r, 30));
+      }
+      log("✅ 已发送标签。");
+    } catch (e: any) {
+      log(`打印错误: ${e?.message || e}`);
+    } finally {
+      setBusy(false);
+    }
+  }, [log]);
+
   return (
     <div
       style={{
@@ -396,6 +430,13 @@ function WebBluetoothPanel() {
           style={btnStyle(!connected || busy)}
         >
           打印测试小票
+        </button>
+        <button
+          onClick={printTspl}
+          disabled={!connected || busy}
+          style={btnStyle(!connected || busy, "#7c3aed")}
+        >
+          打印测试标签(TSPL)
         </button>
       </div>
 
