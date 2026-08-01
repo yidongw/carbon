@@ -37,6 +37,7 @@ import {
   LuHouse,
   LuLanguages,
   LuLogOut,
+  LuMonitor,
   LuMoon,
   LuPalette,
   LuShieldCheck,
@@ -246,6 +247,12 @@ const AvatarMenu = () => {
             <Link to={path.to.profile}>
               <DropdownMenuIcon icon={<LuUser />} />
               <Trans>Account Settings</Trans>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to={path.to.accountDevice}>
+              <DropdownMenuIcon icon={<LuMonitor />} />
+              <Trans>This Device</Trans>
             </Link>
           </DropdownMenuItem>
           {canSwitchCompany ? (
