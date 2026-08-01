@@ -575,6 +575,7 @@ export const path = {
     abilities: `${x}/resources/abilities`,
     ability: (id: string) => generatePath(`${x}/resources/ability/${id}`),
     account: `${x}/account`,
+    accountDevice: `${x}/account/device`,
     accountPersonal: `${x}/account/personal`,
     accountPassword: `${x}/account/password`,
     accounting: `${x}/accounting`,
