@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -51,8 +52,17 @@ msgstr "Не удалось напечатать {failed} из {0} ярлыко�
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Затраченная партия или серия теперь вышла за дату истечения срока годности."
 
+msgid "A depreciation run already exists for this period"
+msgstr "Списание уже существует для этого периода"
+
 msgid "About"
 msgstr "О системе"
+
+msgid "Account created"
+msgstr "Счет создан"
+
+msgid "Account moved"
+msgstr "Счет перемещен"
 
 msgid "Account Settings"
 msgstr "Настройки аккаунта"
@@ -87,6 +97,9 @@ msgstr "Добавить новую запись"
 msgid "Add Spare Part"
 msgstr "Добавить запасную часть"
 
+msgid "Added colors and sizes"
+msgstr "Добавлены цвета и размеры"
+
 msgid "Adjust stock down"
 msgstr "Уменьшить запасы"
 
@@ -95,6 +108,30 @@ msgstr "Изменить запасы вверх"
 
 msgid "All"
 msgstr "Все"
+
+msgid "All active assets are already covered for this period"
+msgstr "Все активные активы уже покрыты на этот период"
+
+msgid "An approval request already exists for this supplier"
+msgstr "Уже существует запрос на одобрение для этого поставщика"
+
+msgid "Approval request not found"
+msgstr "Запрос на одобрение не найден"
+
+msgid "Approval request submitted"
+msgstr "Запрос на одобрение отправлен"
+
+msgid "Approval rule created"
+msgstr "Правило одобрения создано"
+
+msgid "Approval rule deleted successfully"
+msgstr "Правило одобрения успешно удалено"
+
+msgid "Approval rule not found"
+msgstr "Правило одобрения не найдено"
+
+msgid "Approval rule updated"
+msgstr "Правило одобрения обновлено"
 
 msgid "Approve"
 msgstr "Утвердить"
@@ -111,6 +148,9 @@ msgstr "одобрено"
 msgid "Approved"
 msgstr "Облашчenniy"
 
+msgid "Archive ID is required"
+msgstr "ID архива требуется"
+
 msgid "Are you sure you want to delete this step?"
 msgstr "Вы уверены, что хотите удалить этот шаг?"
 
@@ -126,6 +166,18 @@ msgstr "Вы действительно хотите завершить эту �
 msgid "Are you sure you want to leave this page?"
 msgstr "Вы действительно хотите покинуть эту страницу?"
 
+msgid "Asset class created"
+msgstr "Класс активы создан"
+
+msgid "Asset class updated"
+msgstr "Класс активась обновлен"
+
+msgid "Asset disposed successfully"
+msgstr "Актив успешно утилизирован"
+
+msgid "Asset registered successfully"
+msgstr "Активна зарегистирована успешно"
+
 msgid "Assigned"
 msgstr "Назначенные"
 
@@ -135,14 +187,50 @@ msgstr "Назначенные мне"
 msgid "Assignee"
 msgstr "Исполнитель"
 
+msgid "Assignment created successfully"
+msgstr "Назначение создано успешно"
+
+msgid "Assignment deleted successfully"
+msgstr "Успешно удалена задача"
+
+msgid "Assignment ID is required"
+msgstr "ID задачи требуется"
+
+msgid "Assignment rule created"
+msgstr "Правило назначения создано"
+
+msgid "Assignment rule deleted"
+msgstr "Правило назначения удалено"
+
+msgid "Assignment rule updated"
+msgstr "Правило назначения обновлено"
+
+msgid "Assignment updated successfully"
+msgstr "Присвоение обновлено успешно"
+
 msgid "Attach File"
 msgstr "Прикрепить файл"
+
+msgid "Attribute recorded successfully"
+msgstr "Атрибут успешно зарегистрирован"
+
+msgid "Audit logging disabled"
+msgstr "З记账审核禁用"
+
+msgid "Audit logging enabled"
+msgstr "Запись аудита включена"
 
 msgid "Authentication Error"
 msgstr "Ошибка аутентификации"
 
 msgid "available"
 msgstr "доступно"
+
+msgid "Bad request for next sequence"
+msgstr "Неверный запрос для следующей последовательности"
+
+msgid "Bad request for rolling back sequence"
+msgstr "Некорректный запрос для отката последовательности"
 
 msgid "Batch"
 msgstr "Лот"
@@ -173,6 +261,9 @@ msgstr "Блокирующие"
 msgid "Blue"
 msgstr "Синий"
 
+msgid "Bot verification failed. Please try again."
+msgstr "Проверка бота не прошла. Пожалуйста, попробуйте снова."
+
 msgid "Brown"
 msgstr "Коричневый"
 
@@ -191,6 +282,9 @@ msgstr "Browser"
 msgid "Bundle"
 msgstr "Пакет"
 
+msgid "Bundle not found"
+msgstr "Бандл не найден"
+
 msgid "Bundle Work Orders"
 msgstr "Сборка Заказов на Производство"
 
@@ -202,6 +296,9 @@ msgstr "Но не волнуйтесь. Вы можете использоват
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Выполняя вход, вы соглашаетесь с <0>Условиями использования</0> и <1>Политикой конфиденциальности.</1>"
+
+msgid "Calibration record created"
+msgstr "Запись калибровки создана"
 
 msgid "Camera unavailable — use manual selection below."
 msgstr "Камера недоступна — выберите вручную ниже."
@@ -217,6 +314,51 @@ msgstr "Отменено"
 
 msgid "Cancelled"
 msgstr "Отменено"
+
+msgid "Cannot delete a posted receipt"
+msgstr "Невозможно удалить отраженную поступкуณiya"
+
+msgid "Cannot delete a posted shipment"
+msgstr "Невозможно удалить отгруженную поставку"
+
+msgid "Cannot edit a protected customer type"
+msgstr "Невозможно редактировать защищенный тип клиента"
+
+msgid "Cannot edit a protected supplier type"
+msgstr "Невозможно редактировать защищенный тип поставщика"
+
+msgid "Cannot edit global material grade"
+msgstr "Невозможно редактировать глобальную материальную степень твердости"
+
+msgid "Cannot edit global material shape"
+msgstr "Невозможно редактировать глобальную форму материала"
+
+msgid "Cannot edit global material substance"
+msgstr "Невозможно редактировать глобальный материал"
+
+msgid "Cannot edit global material type"
+msgstr "Невозможно редактировать глобальный тип материала"
+
+msgid "Cannot edit global style color"
+msgstr "Невозможно редактировать глобальный стиль цвета"
+
+msgid "Cannot edit global style size"
+msgstr "Невозможно редактировать глобальный стиль размера"
+
+msgid "Cannot finish operation"
+msgstr "Невозможно завершить операцию"
+
+msgid "Cannot modify a locked picking list. Reopen it first."
+msgstr "Невозможно изменить закрытый список выдачи. Сначала его нужно открыть."
+
+msgid "Cannot reprint a job that is still generating"
+msgstr "Невозможно повторно вывести работу, которая все еще генерируется"
+
+msgid "Cannot start operation"
+msgstr "Невозможно начать операцию"
+
+msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
+msgstr "Невозможно обновить статус черновой покупательской накладной. Сначала опубликуйте накладную."
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Канvaн, отображающий модель в 3D-&viewере"
@@ -263,9 +405,15 @@ msgstr "Отметить приход"
 msgid "Clock Out"
 msgstr "Отметить уход"
 
+msgid "Clocked in"
+msgstr "Отмечен как пришедший"
+
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "На смене с {0}"
+
+msgid "Clocked out"
+msgstr "Отметка о выходе"
 
 msgid "Collapse"
 msgstr "Свернуть"
@@ -293,8 +441,17 @@ msgstr "Столбец: {0}"
 msgid "Columns"
 msgstr "Столбцы"
 
+msgid "Comment saved"
+msgstr "Комментарий сохранен"
+
 msgid "Company"
 msgstr "Компания"
+
+msgid "Company not found"
+msgstr "Компания не найдена"
+
+msgid "Company ownership has been transferred successfully"
+msgstr "Передача собственности компании выполнена успешно"
 
 msgid "Complete"
 msgstr "Завершить"
@@ -311,11 +468,23 @@ msgstr "Консоль"
 msgid "Console Mode"
 msgstr "Режим консоли"
 
+msgid "Console operator created successfully"
+msgstr "Оператор консоли создан успешно"
+
+msgid "Console Operator employee type not found. Run the migration."
+msgstr "Тип сотрудника консольного оператора не найден. Запустите миграцию."
+
 msgid "Consumed expired"
 msgstr "Потреблено истекшее"
 
 msgid "Continue with WeChat"
 msgstr "Продолжить с ВКонтакте"
+
+msgid "Contractor created"
+msgstr "Контрактант создан"
+
+msgid "Contractor updated"
+msgstr "Контракт обновлен"
 
 msgid "Copied!"
 msgstr "Копировано!"
@@ -325,6 +494,15 @@ msgstr "Копировать"
 
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
+
+msgid "Correct the completed, rework and scrap quantities."
+msgstr "Измените количество исправленных, переработанных и брака."
+
+msgid "Cost center created"
+msgstr "Централизованный расход создан"
+
+msgid "Cost center updated"
+msgstr "Централизованный расход обновлен"
 
 msgid "Create"
 msgstr "Создать"
@@ -344,6 +522,15 @@ msgstr "Создать质量问题"
 msgid "Create Rework"
 msgstr "Создать повторную обработку"
 
+msgid "Created company"
+msgstr "Создана компания"
+
+msgid "Created maintenance dispatch"
+msgstr "Созданеи ремонтный вызов"
+
+msgid "Created webhook"
+msgstr "Создан вебхук"
+
 msgid "Current process"
 msgstr "Текущая операция"
 
@@ -352,6 +539,30 @@ msgstr "Сейчас"
 
 msgid "Customer"
 msgstr "Заказчик"
+
+msgid "Customer address updated"
+msgstr "Адрес клиента обновлен"
+
+msgid "Customer contact created"
+msgstr "Контакт клиента создан"
+
+msgid "Customer contact updated"
+msgstr "Контакт клиента обновлен"
+
+msgid "Customer invited"
+msgstr "Клиент приглашен"
+
+msgid "Customer location created"
+msgstr "Локация клиента создана"
+
+msgid "Customer portal created"
+msgstr "Портал для клиентов создан"
+
+msgid "Customer status created"
+msgstr "Статус клиента создан"
+
+msgid "Customer type created"
+msgstr "Тип клиента создан"
 
 msgid "Dark Mode"
 msgstr "Тёмная тема"
@@ -374,6 +585,9 @@ msgstr "Хранилище по умолчанию"
 msgid "Delete"
 msgstr "Удалить"
 
+msgid "Delete failed"
+msgstr "Удаление не удалось"
+
 msgid "Delete step"
 msgstr "Удалить шаг"
 
@@ -383,6 +597,33 @@ msgstr "Удалить шаг"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Удалить табель ({0})"
+
+msgid "Deleted attribute value"
+msgstr "Удаленное значение атрибута"
+
+msgid "Deleted warehouse transfer line"
+msgstr "Удаленная складская транзакция"
+
+msgid "Demand forecasts created successfully"
+msgstr "Прогнозы спроса созданы успешно"
+
+msgid "Demand forecasts updated successfully"
+msgstr "Прогнозы спроса обновлены успешно"
+
+msgid "Demand projections deleted successfully"
+msgstr "Проjections успешно удалены"
+
+msgid "Department created"
+msgstr "Отдел создан"
+
+msgid "Department updated"
+msgstr "Отдел обновлен"
+
+msgid "Depreciation run created"
+msgstr "Запуск амортизации создан"
+
+msgid "Depreciation run posted"
+msgstr "Запланирована амортизация"
 
 msgid "Describe the problem..."
 msgstr "Опишите проблему..."
@@ -395,6 +636,9 @@ msgstr "Описание"
 
 msgid "Details"
 msgstr "Детали"
+
+msgid "Dimension created"
+msgstr "Диаметр создан"
 
 msgid "Dimensions"
 msgstr "Размеры"
@@ -451,11 +695,20 @@ msgstr "Дублирующийся серийный номер"
 msgid "Duration"
 msgstr "Длительность"
 
+msgid "Each line must have an account"
+msgstr "Каждая линия должна иметь счет"
+
+msgid "Each line must have either a debit or credit amount"
+msgstr "Каждая строка должна содержать либо дебетовую, либо кредитную сумму"
+
 msgid "Earned"
 msgstr "Получено"
 
 msgid "Edit"
 msgstr "Редактировать"
+
+msgid "Elimination entries generated"
+msgstr "Удаление записей, сгенерированных"
 
 msgid "Email"
 msgstr "Электронная почта"
@@ -466,6 +719,9 @@ msgstr "Электронная почта"
 msgid "Employee"
 msgstr "Сотрудник"
 
+msgid "Employee type created"
+msgstr "Тип сотрудника создан"
+
 msgid "Employees"
 msgstr "Сотрудники"
 
@@ -475,21 +731,141 @@ msgstr "Пустые рабочие центры"
 msgid "End Operations"
 msgstr "Завершить операции"
 
+msgid "Enter a quantity greater than zero"
+msgstr "Введите количество больше нуля"
+
 #. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
 msgstr "Введите PIN для {0}"
 
+msgid "Entry added"
+msgstr "Запись добавлена"
+
+msgid "Entry deleted"
+msgstr "Запись удалена"
+
+msgid "Entry updated"
+msgstr "Запись обновлена"
+
 msgid "Error"
 msgstr "Ошибка"
+
+msgid "Error creating note"
+msgstr "Ошибка создания заметки"
+
+msgid "Error deleting note"
+msgstr "Ошибка при удалении заметки"
 
 msgid "Error downloading file"
 msgstr "Ошибка загрузки файла"
 
+msgid "Error loading accounts"
+msgstr "Ошибка загрузки счетов"
+
+msgid "Error loading assignment"
+msgstr "Ошибка загрузки назначения"
+
+msgid "Error loading assignment status"
+msgstr "Ошибка загрузки статуса назначения"
+
+msgid "Error loading attribute categories"
+msgstr "Ошибка загрузки категорий атрибутов"
+
+msgid "Error loading console operators"
+msgstr "Ошибка загрузки консольных операторов"
+
+msgid "Error loading employee types"
+msgstr "Ошибка загрузки типов сотрудников"
+
+msgid "Error loading employees"
+msgstr "Ошибка загрузки сотрудников"
+
+msgid "Error loading issues"
+msgstr "Ошибка загрузки задач"
+
+msgid "Error loading item groups"
+msgstr "Ошибка загрузки групп элементов"
+
+msgid "Error loading material dimensions"
+msgstr "Ошибка загрузки размеров материала"
+
+msgid "Error loading material forms"
+msgstr "Ошибка загрузки форм материала"
+
+msgid "Error loading material substances"
+msgstr "Ошибка загрузки вещественных значений"
+
+msgid "Error loading material types"
+msgstr "Ошибка загрузки типов материалов"
+
+msgid "Error loading people"
+msgstr "Ошибка загрузки людей"
+
+msgid "Error loading picking lists"
+msgstr "Ошибка загрузки списков выбора"
+
+msgid "Error loading receipts"
+msgstr "Ошибка загрузки чеков"
+
+msgid "Error loading shipments"
+msgstr "Ошибка загрузки отгрузок"
+
+msgid "Error loading shipping methods"
+msgstr "Ошибка загрузки способов доставки"
+
+msgid "Error loading stock transfers"
+msgstr "Ошибка загрузки перемещений складских единиц"
+
+msgid "Error loading storage types"
+msgstr "Ошибка загрузки типов хранения"
+
+msgid "Error loading style colors"
+msgstr "Ошибка загрузки стилевых цветов"
+
+msgid "Error loading style sizes"
+msgstr "Ошибка загрузки размеров стилей"
+
+msgid "Error loading supplier types"
+msgstr "Ошибка загрузки типов поставщиков"
+
+msgid "Error loading suppliers"
+msgstr "Ошибка загрузки поставщиков"
+
+msgid "Error loading tags"
+msgstr "Ошибка загрузки тегов"
+
+msgid "Error loading tracked entities"
+msgstr "Ошибка загрузки отслеживаемых сущностей"
+
+msgid "Error loading training"
+msgstr "Ошибка загрузки тренинга"
+
+msgid "Error loading training assignments"
+msgstr "Ошибка загрузки тренировочных задач"
+
+msgid "Error loading trainings"
+msgstr "Ошибка загрузки тренингов"
+
+msgid "Error loading warehouse transfers"
+msgstr "Ошибка загрузки перемещений склада"
+
 msgid "Estimated"
 msgstr "План"
 
+msgid "Event saved"
+msgstr "Событие сохранено"
+
+msgid "Event started"
+msgstr "Событие началось"
+
+msgid "Event stopped"
+msgstr "Событие остановлено"
+
 msgid "Expand"
 msgstr "Расширить"
+
+msgid "Expiration date updated"
+msgstr "Дата истечения обновлена"
 
 msgid "Expired"
 msgstr "Истёк"
@@ -503,17 +879,2801 @@ msgstr "Истекает {date}"
 msgid "Expiring first"
 msgstr "Истекающий первый"
 
+msgid "Failed to accept lot"
+msgstr "Не удалось принять лот"
+
+msgid "Failed to activate gauge"
+msgstr "Не удалось активировать шкалу"
+
+msgid "Failed to activate process"
+msgstr "Не удалось активировать процесс"
+
+msgid "Failed to activate work center"
+msgstr "Не удалось активировать рабочий центр"
+
+msgid "Failed to add colors and sizes"
+msgstr "Не удалось добавить цвета и размеры"
+
+msgid "Failed to add entry"
+msgstr "Не удалось добавить запись"
+
+msgid "Failed to add spare part"
+msgstr "Не удалось добавить запасную часть"
+
+msgid "Failed to assign"
+msgstr "Не удалось назначить"
+
+msgid "Failed to assign rule"
+msgstr "Не удалось назначить правило"
+
+msgid "Failed to assign suppliers"
+msgstr "Не удалось назначить поставщиков"
+
+msgid "Failed to cancel RFQ"
+msgstr "Не удалось отменить заявку на ценообразование"
+
 msgid "Failed to complete inventory adjustment"
 msgstr "Не удалось выполнить корректировку запасов"
+
+msgid "Failed to complete job"
+msgstr "Не удалось завершить задачу"
+
+msgid "Failed to complete maintenance"
+msgstr "Не удалось завершить обслуживание"
+
+msgid "Failed to convert quote to order"
+msgstr "Не удалось преобразовать заявку в заказ"
+
+msgid "Failed to convert rework"
+msgstr "Не удалось преобразовать повторную обработку"
+
+msgid "Failed to convert RFQ"
+msgstr "Не удалось преобразовать РФК"
+
+msgid "Failed to create API key"
+msgstr "Не удалось создать API ключ"
+
+msgid "Failed to create asset class"
+msgstr "Не удалось создать класс активов"
+
+msgid "Failed to create assignment"
+msgstr "Не удалось создать назначение"
+
+msgid "Failed to create attribute"
+msgstr "Не удалось создать атрибут"
+
+msgid "Failed to create attribute category"
+msgstr "Не удалось создать категорию атрибутов"
+
+msgid "Failed to create auth session"
+msgstr "Не удалось создать сессию аутентификации"
+
+msgid "Failed to create company"
+msgstr "Не удалось создать компанию"
+
+msgid "Failed to create contractor"
+msgstr "Не удалось создать контрактора"
+
+msgid "Failed to create cost center."
+msgstr "Не удалось создать центра затрат."
+
+msgid "Failed to create customer location"
+msgstr "Не удалось создать местоположение клиента"
+
+msgid "Failed to create customer portal"
+msgstr "Не удалось создать портал для клиента"
+
+msgid "Failed to create department."
+msgstr "Не удалось создать отдел."
+
+msgid "Failed to create depreciation run"
+msgstr "Не удалось создать амортизационную кампанию"
+
+msgid "Failed to create dimension"
+msgstr "Не удалось создать размерность"
+
+msgid "Failed to create document"
+msgstr "Не удалось создать документ"
+
+msgid "Failed to create employee job record"
+msgstr "Не удалось создать запись о должности сотрудника"
+
+msgid "Failed to create fixed asset"
+msgstr "Не удалось создать фиксированную актива"
+
+msgid "Failed to create group"
+msgstr "Не удалось создать группу"
+
+msgid "Failed to create headquarters location"
+msgstr "Не удалось создать головное местоположение"
+
+msgid "Failed to create holiday."
+msgstr "Не удалось создать отпуск."
+
+msgid "Failed to create IC transaction"
+msgstr "Не удалось создать транзакцию IC"
+
+msgid "Failed to create inspection document"
+msgstr "Не удалось создать документ проверки"
+
+msgid "Failed to create invite link"
+msgstr "Не удалось создать ссылку на приглашение"
+
+msgid "Failed to create journal entry"
+msgstr "Не удалось создать запись в журнале"
+
+msgid "Failed to create location."
+msgstr "Не удалось создать местоположение."
+
+msgid "Failed to create maintenance dispatch"
+msgstr "Не удалось создать исправлениеMaintenance"
+
+msgid "Failed to create maintenance schedule"
+msgstr "Не удалось создать план обслуживания"
+
+msgid "Failed to create master work order"
+msgstr "Не удалось создать основную производственную заказку"
+
+msgid "Failed to create parameter"
+msgstr "Не удалось создать параметр"
+
+msgid "Failed to create part"
+msgstr "Не удалось создать деталь"
+
+msgid "Failed to create partner"
+msgstr "Не удалось создать партнера"
+
+msgid "Failed to create price override"
+msgstr "Не удалось создать перекрытие цены"
+
+msgid "Failed to create pricing rule"
+msgstr "Не удалось создать правило ценообразования"
+
+msgid "Failed to create process."
+msgstr "Не удалось создать процесс."
+
+msgid "Failed to create purchase invoice"
+msgstr "Не удалось создать покупную накладную"
+
+msgid "Failed to create purchase invoice line."
+msgstr "Не удалось создать строку покупательской накладной."
+
+msgid "Failed to create purchase order"
+msgstr "Не удалось создать закупочную заявку"
+
+msgid "Failed to create purchase order line."
+msgstr "Не удалось создать строку закупочного заказа."
+
+msgid "Failed to create quality issue"
+msgstr "Не удалось создать质量问题"
+
+msgid "Failed to create quality issue tasks"
+msgstr "Не удалось создать задачи по качественным вопросам"
+
+msgid "Failed to create question"
+msgstr "Не удалось создать вопрос"
+
+msgid "Failed to create quote line method."
+msgstr "Не удалось создать метод строки запроса цитаты."
+
+msgid "Failed to create quote line."
+msgstr "Не удалось создать строку запроса цены."
+
+msgid "Failed to create receipt"
+msgstr "Не удалось создать приход"
+
+msgid "Failed to create repeat depreciation run"
+msgstr "Не удалось создать повторную амортизационную запись"
+
+msgid "Failed to create reprint"
+msgstr "Не удалось создать переиздание"
+
+msgid "Failed to create required action"
+msgstr "Не удалось создать необходимое действие"
+
+msgid "Failed to create risk"
+msgstr "Не удалось создать риск"
+
+msgid "Failed to create rule"
+msgstr "Не удалось создать правило"
+
+msgid "Failed to create sales invoice"
+msgstr "Не удалось создать счет на продажу"
+
+msgid "Failed to create sales invoice line."
+msgstr "Не удалось создать строку продажного счета."
+
+msgid "Failed to create sales order"
+msgstr "Не удалось создать заказ на продажу"
+
+msgid "Failed to create sales order line."
+msgstr "Не удалось создать строку продажного заказа."
+
+msgid "Failed to create shift"
+msgstr "Не удалось создать смену"
+
+msgid "Failed to create shipment"
+msgstr "Не удалось создать отгрузку"
+
+msgid "Failed to create step"
+msgstr "Не удалось создать шаг"
+
+msgid "Failed to create stock transfer"
+msgstr "Не удалось создать передачу складских остатков"
+
+msgid "Failed to create supplier location"
+msgstr "Не удалось создать местоположение поставщика"
+
+msgid "Failed to create supplier process"
+msgstr "Не удалось создать процесс поставщика"
+
+msgid "Failed to create tag"
+msgstr "Не удалось создать тег"
+
+msgid "Failed to create template"
+msgstr "Не удалось создать шаблон"
+
+msgid "Failed to create timecard"
+msgstr "Не удалось создать карточку времени"
+
+msgid "Failed to create training"
+msgstr "Не удалось создать тренинг"
+
+msgid "Failed to create user account"
+msgstr "Не удалось создать учетную запись пользователя"
+
+msgid "Failed to create user from WeChat"
+msgstr "Не удалось создать пользователя из WeChat"
+
+msgid "Failed to create warehouse transfer"
+msgstr "Не удалось создать перемещение склада"
+
+msgid "Failed to create webhook"
+msgstr "Не удалось создать вебхук"
+
+msgid "Failed to create WeChat session"
+msgstr "Не удалось создать сеанс WeChat"
+
+msgid "Failed to create work center"
+msgstr "Не удалось создать рабочий центр"
+
+msgid "Failed to deactivate attribute"
+msgstr "Не удалось деактивировать атрибут"
+
+msgid "Failed to deactivate attribute category"
+msgstr "Не удалось деактивировать категорию атрибутов"
+
+msgid "Failed to deactivate employee"
+msgstr "Не удалось деактивировать сотрудника"
+
+msgid "Failed to deactivate gauge"
+msgstr "Не удалось деактивировать шкалу"
+
+msgid "Failed to deactivate process"
+msgstr "Не удалось деактивировать процесс"
+
+msgid "Failed to deactivate user"
+msgstr "Не удалось деактивировать пользователя"
+
+msgid "Failed to deactivate users"
+msgstr "Не удалось деактивировать пользователей"
+
+msgid "Failed to delete account"
+msgstr "Не удалось удалить аккаунт"
+
+msgid "Failed to delete API key"
+msgstr "Не удалось удалить API ключ"
+
+msgid "Failed to delete approval rule"
+msgstr "Не удалось удалить правило одобрения"
+
+msgid "Failed to delete asset class"
+msgstr "Не удалось удалить класс активов"
+
+msgid "Failed to delete assignment"
+msgstr "Не удалось удалить назначение"
+
+msgid "Failed to delete association"
+msgstr "Не удалось удалить связь"
+
+msgid "Failed to delete attribute value"
+msgstr "Не удалось удалить значение атрибута"
+
+msgid "Failed to delete contractor"
+msgstr "Не удалось удалить контрагента"
+
+msgid "Failed to delete cost center"
+msgstr "Не удалось удалить центр затрат"
+
+msgid "Failed to delete custom field"
+msgstr "Не удалось удалить пользовательское поле"
+
+msgid "Failed to delete customer contact"
+msgstr "Не удалось удалить контакт клиента"
+
+msgid "Failed to delete customer part"
+msgstr "Не удалось удалить клиентскую деталь"
+
+msgid "Failed to delete customer status"
+msgstr "Не удалось удалить статус клиента"
+
+msgid "Failed to delete customer type"
+msgstr "Не удалось удалить тип клиента"
+
+msgid "Failed to delete department"
+msgstr "Не удалось удалить отдел"
+
+msgid "Failed to delete depreciation run"
+msgstr "Не удалось удалить амортизационную кампанию"
+
+msgid "Failed to delete dimension"
+msgstr "Не удалось удалить размерность"
+
+msgid "Failed to delete document"
+msgstr "Не удалось удалить документ"
+
+msgid "Failed to delete employee type"
+msgstr "Не удалось удалить тип сотрудника"
+
+msgid "Failed to delete entry"
+msgstr "Не удалось удалить запись"
+
+msgid "Failed to delete event"
+msgstr "Не удалось удалить событие"
+
+msgid "Failed to delete fixed asset"
+msgstr "Не удалось удалить фиксатуру"
+
+msgid "Failed to delete gauge"
+msgstr "Не удалось удалить штатив"
+
+msgid "Failed to delete gauge calibration record"
+msgstr "Не удалось удалить запись о калибровке гауся"
+
+msgid "Failed to delete group"
+msgstr "Не удалось удалить группу"
+
+msgid "Failed to delete holiday"
+msgstr "Не удалось удалить праздничный день"
+
+msgid "Failed to delete inspection document"
+msgstr "Не удалось удалить документ проверки"
+
+msgid "Failed to delete issue"
+msgstr "Не удалось удалить проблему"
+
+msgid "Failed to delete issue workflow"
+msgstr "Не удалось удалить рабочий процесс задачи"
+
+msgid "Failed to delete item group"
+msgstr "Не удалось удалить группу элементов"
+
+msgid "Failed to delete job"
+msgstr "Не удалось удалить задачу"
+
+msgid "Failed to delete job material"
+msgstr "Не удалось удалить материал задачи"
+
+msgid "Failed to delete job operation attribute"
+msgstr "Не удалось удалить атрибут операции задачи"
+
+msgid "Failed to delete job operation parameter"
+msgstr "Не удалось удалить параметр операции задачи"
+
+msgid "Failed to delete job operation tool"
+msgstr "Не удалось удалить инструмент операции задачи"
+
+msgid "Failed to delete journal entry"
+msgstr "Не удалось удалить запись журнала"
+
+msgid "Failed to delete kanban"
+msgstr "Не удалось удалить канбан"
+
+msgid "Failed to delete line"
+msgstr "Не удалось удалить строку"
+
+msgid "Failed to delete location"
+msgstr "Не удалось удалить местоположение"
+
+msgid "Failed to delete material dimension"
+msgstr "Не удалось удалить материалную меру"
+
+msgid "Failed to delete material finish"
+msgstr "Не удалось удалить окончание материала"
+
+msgid "Failed to delete material form"
+msgstr "Не удалось удалить материал форму"
+
+msgid "Failed to delete material grade"
+msgstr "Не удалось удалить материал"
+
+msgid "Failed to delete material substance"
+msgstr "Не удалось удалить сырье"
+
+msgid "Failed to delete material type"
+msgstr "Не удалось удалить тип материала"
+
+msgid "Failed to delete method material"
+msgstr "Не удалось удалить метод материала"
+
+msgid "Failed to delete method operation parameter"
+msgstr "Не удалось удалить параметр операции метода"
+
+msgid "Failed to delete method operation step"
+msgstr "Не удалось удалить метод операции шаг"
+
+msgid "Failed to delete method operation tool"
+msgstr "Не удалось удалить метод операции инструмента"
+
+msgid "Failed to delete parameter"
+msgstr "Не удалось удалить параметр"
+
+msgid "Failed to delete partner"
+msgstr "Не удалось удалить партнера"
+
+msgid "Failed to delete passkey"
+msgstr "Не удалось удалить пропускной ключ"
+
+msgid "Failed to delete payment term"
+msgstr "Не удалось удалить условия оплаты"
+
+msgid "Failed to delete picking list"
+msgstr "Не удалось удалить списки выдачи"
+
+msgid "Failed to delete price override"
+msgstr "Не удалось удалить перекрытие цены"
+
+msgid "Failed to delete pricing rule"
+msgstr "Не удалось удалить правило ценообразования"
+
+msgid "Failed to delete printer route"
+msgstr "Не удалось удалить маршрут принтера"
+
+msgid "Failed to delete procedure"
+msgstr "Не удалось удалить процедуру"
+
+msgid "Failed to delete purchase invoice"
+msgstr "Не удалось удалить покупательскую накладную"
+
+msgid "Failed to delete purchase invoice line"
+msgstr "Не удалось удалить строку покупательской накладной"
+
+msgid "Failed to delete purchase order line"
+msgstr "Не удалось удалить строку закупочного заказа"
+
+msgid "Failed to delete quality document"
+msgstr "Не удалось удалить документ качества"
+
+msgid "Failed to delete quantity"
+msgstr "Не удалось удалить количество"
+
+msgid "Failed to delete quantity report"
+msgstr "Не удалось удалить отчет о количестве"
+
+msgid "Failed to delete question"
+msgstr "Не удалось удалить вопрос"
+
+msgid "Failed to delete quote line"
+msgstr "Не удалось удалить строку запроса"
+
+msgid "Failed to delete quote material"
+msgstr "Не удалось удалить материал запроса цен"
+
+msgid "Failed to delete quote operation step"
+msgstr "Не удалось удалить этап цитаты"
+
+msgid "Failed to delete quote operation tool"
+msgstr "Не удалось удалить инструмент цитаты"
+
+msgid "Failed to delete required action"
+msgstr "Не удалось удалить требуемое действие"
+
+msgid "Failed to delete RFQ line"
+msgstr "Не удалось удалить строку запроса на цитирование"
+
+msgid "Failed to delete rule"
+msgstr "Не удалось удалить правило"
+
+msgid "Failed to delete sales invoice"
+msgstr "Не удалось удалить продажную накладную"
+
+msgid "Failed to delete sales invoice line"
+msgstr "Не удалось удалить строку счета на продажи"
+
+msgid "Failed to delete sales order line"
+msgstr "Не удалось удалить строку продажного заказа"
+
+msgid "Failed to delete section"
+msgstr "Не удалось удалить раздел"
+
+msgid "Failed to delete shift"
+msgstr "Не удалось удалить смену"
+
+msgid "Failed to delete shipping method"
+msgstr "Не удалось удалить способ доставки"
+
+msgid "Failed to delete step"
+msgstr "Не удалось удалить шаг"
+
+msgid "Failed to delete stock transfer"
+msgstr "Не удалось удалить передачу складских остатков"
+
+msgid "Failed to delete storage type"
+msgstr "Не удалось удалить тип хранения"
+
+msgid "Failed to delete storage unit"
+msgstr "Не удалось удалить складскую единицу"
+
+msgid "Failed to delete style color"
+msgstr "Не удалось удалить стиль цвета"
+
+msgid "Failed to delete style size"
+msgstr "Не удалось удалить стиль размера"
+
+msgid "Failed to delete subsidiary"
+msgstr "Не удалось удалить дочернюю компанию"
+
+msgid "Failed to delete suggestion"
+msgstr "Не удалось удалить предложение"
+
+msgid "Failed to delete supplier contact"
+msgstr "Не удалось удалить контакт поставщика"
+
+msgid "Failed to delete supplier process"
+msgstr "Не удалось удалить процесс поставщика"
+
+msgid "Failed to delete supplier type"
+msgstr "Не удалось удалить тип поставщика"
+
+msgid "Failed to delete tag"
+msgstr "Не удалось удалить метку"
+
+msgid "Failed to delete template"
+msgstr "Не удалось удалить шаблон"
+
+msgid "Failed to delete timecard"
+msgstr "Не удалось удалить запись о времени"
+
+msgid "Failed to delete training"
+msgstr "Не удалось удалить тренировку"
+
+msgid "Failed to delete unit of measure"
+msgstr "Не удалось удалить единицу измерения"
+
+msgid "Failed to delete view"
+msgstr "Не удалось удалить представление"
+
+msgid "Failed to delete warehouse transfer"
+msgstr "Не удалось удалить перемещение склада"
+
+msgid "Failed to delete warehouse transfer line"
+msgstr "Не удалось удалить строку перемещения склада"
+
+msgid "Failed to delete webhook"
+msgstr "Не удалось удалить вебхук"
+
+msgid "Failed to disable audit logging"
+msgstr "Не удалось отключить аудиторский логgings"
+
+msgid "Failed to disconnect integration"
+msgstr "Не удалось отключить интеграцию"
+
+msgid "Failed to duplicate price list"
+msgstr "Не удалось дублировать список цен"
+
+msgid "Failed to duplicate pricing rule"
+msgstr "Не удалось дублировать правило ценообразования"
+
+msgid "Failed to duplicate purchase order"
+msgstr "Не удалось дублировать заказ на покупку"
+
+msgid "Failed to duplicate purchase order: missing id"
+msgstr "Не удалось дублировать заказ по покупке: отсутствует id"
+
+msgid "Failed to enable audit logging"
+msgstr "Не удалось включить аудиторский логgingsetu"
+
+msgid "Failed to end event"
+msgstr "Не удалось завершить событие"
+
+msgid "Failed to end maintenance event"
+msgstr "Не удалось завершить событие технического обслуживания"
 
 msgid "Failed to end operations"
 msgstr "Не удалось завершить операции"
 
+msgid "Failed to ensure pick method exists"
+msgstr "Не удалось убедиться, что метод выбора существует"
+
+msgid "Failed to exchange WeChat code"
+msgstr "Не удалось обменять код WeChat"
+
+msgid "Failed to favorite purchase order"
+msgstr "Не удалось добавить заказ на покупку в избранное"
+
+msgid "Failed to favorite Quote"
+msgstr "Не удалось добавить报价为收藏"
+
+msgid "Failed to favorite rfq"
+msgstr "Не удалось добавить запрос на поставку в избранное"
+
+msgid "Failed to favorite sales order"
+msgstr "Не удалось добавить заказ на продажу в избранное"
+
+msgid "Failed to fetch accounts"
+msgstr "Не удалось получить счета"
+
 msgid "Failed to fetch active operations"
 msgstr "Не удалось загрузить активные операции"
 
+msgid "Failed to fetch assets"
+msgstr "Не удалось получить активы"
+
+msgid "Failed to fetch attribute"
+msgstr "Не удалось получить атрибут"
+
+msgid "Failed to fetch attribute categories"
+msgstr "Не удалось получить категории атрибутов"
+
+msgid "Failed to fetch attribute category"
+msgstr "Не удалось получить категорию атрибута"
+
+msgid "Failed to fetch consumables"
+msgstr "Не удалось получить расходные материалы"
+
+msgid "Failed to fetch custom fields"
+msgstr "Не удалось получить пользовательские поля"
+
+msgid "Failed to fetch customer contacts"
+msgstr "Не удалось получить контактные данные клиента"
+
+msgid "Failed to fetch customer locations"
+msgstr "Не удалось получить местоположения клиентов"
+
+msgid "Failed to fetch customers"
+msgstr "Не удалось получить клиентов"
+
+msgid "Failed to fetch cutting completions"
+msgstr "Не удалось получить завершения резки"
+
+msgid "Failed to fetch documents"
+msgstr "Не удалось получить документы"
+
+msgid "Failed to fetch inventory items"
+msgstr "Не удалось получить статьи склада"
+
+msgid "Failed to fetch item"
+msgstr "Не удалось получить элемент"
+
+msgid "Failed to fetch job"
+msgstr "Не удалось получить задание"
+
+msgid "Failed to fetch job events"
+msgstr "Не удалось получить события задачи"
+
+msgid "Failed to fetch job make method"
+msgstr "Не удалось получить метод производства задачи"
+
+msgid "Failed to fetch job materials"
+msgstr "Не удалось получить материалы задания"
+
+msgid "Failed to fetch job operation"
+msgstr "Не удалось получить операцию работы"
+
+msgid "Failed to fetch job operation step records"
+msgstr "Не удалось получить записи шагов операцийJobs"
+
+msgid "Failed to fetch job operations"
+msgstr "Не удалось получить операции работы"
+
+msgid "Failed to fetch jobs"
+msgstr "Не удалось получить задачи"
+
+msgid "Failed to fetch kanbans"
+msgstr "Не удалось получить канбаны"
+
+msgid "Failed to fetch materials"
+msgstr "Не удалось получить материалы"
+
+msgid "Failed to fetch method materials"
+msgstr "Не удалось получить методы материалов"
+
+msgid "Failed to fetch method operations"
+msgstr "Не удалось получить методы операций"
+
+msgid "Failed to fetch modules"
+msgstr "Не удалось получить модули"
+
+msgid "Failed to fetch operation"
+msgstr "Не удалось получить операцию"
+
+msgid "Failed to fetch parts"
+msgstr "Не удалось получить детали"
+
+msgid "Failed to fetch planning items"
+msgstr "Не удалось получить планируемые элементы"
+
+msgid "Failed to fetch purchase invoices"
+msgstr "Не удалось получить покупательные накладные"
+
+msgid "Failed to fetch purchase orders"
+msgstr "Не удалось получить заказы на покупку"
+
+msgid "Failed to fetch quotes"
+msgstr "Не удалось получить цитаты"
+
+msgid "Failed to fetch RFQs"
+msgstr "Не удалось получить заявки на цену"
+
+msgid "Failed to fetch risks"
+msgstr "Не удалось получить риски"
+
+msgid "Failed to fetch run lines"
+msgstr "Не удалось получить строки запуска"
+
+msgid "Failed to fetch sales invoices"
+msgstr "Не удалось получить счета на продажу"
+
+msgid "Failed to fetch sales orders"
+msgstr "Не удалось получить заказы на продажу"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Не удалось получить единицы хранения"
+
+msgid "Failed to fetch styles"
+msgstr "Не удалось загрузить стили"
+
+msgid "Failed to fetch supplier contacts"
+msgstr "Не удалось получить контакты поставщиков"
+
+msgid "Failed to fetch supplier locations"
+msgstr "Не удалось получить местоположения поставщиков"
+
+msgid "Failed to fetch supplier quantities"
+msgstr "Не удалось получить количество поставщиков"
+
+msgid "Failed to fetch suppliers"
+msgstr "Не удалось получить поставщиков"
+
+msgid "Failed to fetch templates"
+msgstr "Не удалось получить шаблоны"
+
+msgid "Failed to fetch tools"
+msgstr "Не удалось получить инструменты"
+
+msgid "Failed to fetch unscheduled jobs"
+msgstr "Не удалось получить несCHEDULED задачИ"
+
+msgid "Failed to fetch work center"
+msgstr "Не удалось получить цех"
+
+msgid "Failed to fetch work centers"
+msgstr "Не удалось получить рабочие центры"
+
+msgid "Failed to finalize purchase order"
+msgstr "Не удалось завершить заказ на покупку"
+
+msgid "Failed to finalize quote"
+msgstr "Не удалось окончить заявку"
+
+msgid "Failed to finalize supplier quote"
+msgstr "Не удалось окончить заявку поставщика"
+
+msgid "Failed to find quote line"
+msgstr "Не удалось найти строку цитаты"
+
+msgid "Failed to finish operation"
+msgstr "Не удалось завершить операцию"
+
+msgid "Failed to generate download URL"
+msgstr "Не удалось сгенерировать ссылку для загрузки"
+
+msgid "Failed to generate elimination entries"
+msgstr "Не удалось сгенерировать записи для устранения"
+
+msgid "Failed to generate PDF"
+msgstr "Не удалось сгенерировать PDF"
+
+msgid "Failed to generate picking list"
+msgstr "Не удалось сгенерировать список выдачи"
+
+msgid "Failed to get a category id"
+msgstr "Не удалось получить идентификатор категории"
+
+msgid "Failed to get a customer contact id"
+msgstr "Не удалось получить идентификатор контактного лица клиента"
+
+msgid "Failed to get a customer location id"
+msgstr "Не удалось получить идентификатор местоположения клиента"
+
+msgid "Failed to get a customer portal id"
+msgstr "Не удалось получить идентификатор портала клиента"
+
+msgid "Failed to get a dimension id"
+msgstr "Не удалось получить идентификатор размера"
+
+msgid "Failed to get a dispatch id"
+msgstr "Не удалось получить номер распоряжения"
+
+msgid "Failed to get a failure mode id"
+msgstr "Не удалось получить идентификатор режима неисправности"
+
+msgid "Failed to get a kanban id"
+msgstr "Не удалось получить идентификатор канбана"
+
+msgid "Failed to get a material type id"
+msgstr "Не удалось получить идентификатор типа материала"
+
+msgid "Failed to get a schedule id"
+msgstr "Не удалось получить идентификатор расписания"
+
+msgid "Failed to get a storage type id"
+msgstr "Не удалось получить идентификатор типа хранения"
+
+msgid "Failed to get a storageUnit id"
+msgstr "Не удалось получить идентификатор хранилища"
+
+msgid "Failed to get a style color id"
+msgstr "Не удалось получить идентификатор цвета стиля"
+
+msgid "Failed to get a style size id"
+msgstr "Не удалось получить идентификатор размера стиля"
+
+msgid "Failed to get a supplier contact id"
+msgstr "Не удалось получить идентификатор контактного лица поставщика"
+
+msgid "Failed to get a supplier location id"
+msgstr "Не удалось получить идентификатор местоположения поставщика"
+
+msgid "Failed to get a work center id"
+msgstr "Не удалось получить идентификатор рабочего центра"
+
+msgid "Failed to get account"
+msgstr "Не удалось получить учетную запись"
+
+msgid "Failed to get accounting period"
+msgstr "Не удалось получить период бухгалтерского учета"
+
+msgid "Failed to get an account id"
+msgstr "Не удалось получить идентификатор аккаунта"
+
+msgid "Failed to get an attribute id"
+msgstr "Не удалось получить идентификатор атрибута"
+
+msgid "Failed to get an customer status id"
+msgstr "Не удалось получить статус клиента"
+
+msgid "Failed to get an customer type id"
+msgstr "Не удалось получить тип клиента ID"
+
+msgid "Failed to get an employee type id"
+msgstr "Не удалось получить идентификатор типа сотрудника"
+
+msgid "Failed to get an gauge id"
+msgstr "Не удалось получить идентификатор гауся"
+
+msgid "Failed to get an group id"
+msgstr "Не удалось получить идентификатор группы"
+
+msgid "Failed to get an id"
+msgstr "Не удалось получить идентификатор"
+
+msgid "Failed to get an issue type id"
+msgstr "Не удалось получить идентификатор типа проблемы"
+
+msgid "Failed to get an item group id"
+msgstr "Не удалось получить идентификатор группы элементов"
+
+msgid "Failed to get an material dimension id"
+msgstr "Не удалось получить идентификатор размера материала"
+
+msgid "Failed to get an material finish id"
+msgstr "Не удалось получить идентификаторsurface finishing"
+
+msgid "Failed to get an material form id"
+msgstr "Не удалось получить идентификатор материала"
+
+msgid "Failed to get an material grade id"
+msgstr "Не удалось получить идентификатор материала"
+
+msgid "Failed to get an material substance id"
+msgstr "Не удалось получить идентификатор вещества материала"
+
+msgid "Failed to get an no quote reason id"
+msgstr "Не удалось получить идентификатор причины отсутствия цитаты"
+
+msgid "Failed to get an payment term id"
+msgstr "Не удалось получить идентификатор условия оплаты"
+
+msgid "Failed to get an receipt id"
+msgstr "Не удалось получить идентификатор чека"
+
+msgid "Failed to get an scrap reason id"
+msgstr "Не удалось получить идентификатор причины потери материала"
+
+msgid "Failed to get an shipment id"
+msgstr "Не удалось получить идентификатор поставки"
+
+msgid "Failed to get an shipping method id"
+msgstr "Не удалось получить идентификатор метода доставки"
+
+msgid "Failed to get an supplier type id"
+msgstr "Не удалось получить тип поставщика"
+
+msgid "Failed to get an unit of measure id"
+msgstr "Не удалось получить идентификатор единицы измерения"
+
+msgid "Failed to get asset"
+msgstr "Не удалось получить активный элемент"
+
+msgid "Failed to get asset class"
+msgstr "Не удалось получить класс активасии"
+
+msgid "Failed to get asset class id"
+msgstr "Не удалось получить идентификатор класса активов"
+
+msgid "Failed to get attribute"
+msgstr "Не удалось получить атрибут"
+
+msgid "Failed to get chart of accounts"
+msgstr "Не удалось получить счета баланса"
+
+msgid "Failed to get claims"
+msgstr "Не удалось получить претензии"
+
+msgid "Failed to get companies"
+msgstr "Не удалось получить компании"
+
+msgid "Failed to get company"
+msgstr "Не удалось получить компанию"
+
+msgid "Failed to get company ID"
+msgstr "Не удалось получить идентификатор компании"
+
+msgid "Failed to get company settings"
+msgstr "Не удалось получить настройки компании"
+
+msgid "Failed to get contractor"
+msgstr "Не удалось получить подрядчика"
+
+msgid "Failed to get contractor id"
+msgstr "Не удалось получить идентификатор подрядчика"
+
+msgid "Failed to get cost center"
+msgstr "Не удалось получить центр затрат"
+
+msgid "Failed to get cost center id"
+msgstr "Не удалось получить идентификатор центра затрат"
+
+msgid "Failed to get customer contact"
+msgstr "Не удалось получить контакт клиента"
+
+msgid "Failed to get customer contacts"
+msgstr "Не удалось получить контактные данные клиента"
+
+msgid "Failed to get customer location"
+msgstr "Не удалось получить местоположение клиента"
+
+msgid "Failed to get customer part"
+msgstr "Не удалось получить деталь клиента"
+
+msgid "Failed to get customer portal"
+msgstr "Не удалось получить портал клиента"
+
+msgid "Failed to get customer status"
+msgstr "Не удалось получить статус клиента"
+
+msgid "Failed to get customer type"
+msgstr "Не удалось получить тип клиента"
+
+msgid "Failed to get department"
+msgstr "Не удалось получить отдел"
+
+msgid "Failed to get department id"
+msgstr "Не удалось получить идентификатор отдела"
+
+msgid "Failed to get depreciation run"
+msgstr "Не удалось получить амортизационную расчётку"
+
+msgid "Failed to get depreciation run id"
+msgstr "Не удалось получить идентификатор разового списания"
+
+msgid "Failed to get dimension"
+msgstr "Не удалось получить размерность"
+
+msgid "Failed to get dispatch"
+msgstr "Не удалось получить расписание"
+
+msgid "Failed to get document"
+msgstr "Не удалось получить документ"
+
+msgid "Failed to get employee type"
+msgstr "Не удалось получить тип сотрудника"
+
+msgid "Failed to get entry id"
+msgstr "Не удалось получить ID записи"
+
+msgid "Failed to get failure mode"
+msgstr "Не удалось получить режим неисправности"
+
+msgid "Failed to get fiscal year settings"
+msgstr "Не удалось получить настройки финансового года"
+
+msgid "Failed to get fixed asset"
+msgstr "Не удалось получить актив ассет"
+
+msgid "Failed to get fixed asset id"
+msgstr "Не удалось получить идентификатор нематериального актива"
+
+msgid "Failed to get gauge type"
+msgstr "Не удалось получить тип гаусятеля"
+
+msgid "Failed to get group"
+msgstr "Не удалось получить группу"
+
+msgid "Failed to get holiday"
+msgstr "Не удалось получить праздничный день"
+
+msgid "Failed to get holiday id"
+msgstr "Не удалось получить идентификатор праздничного дня"
+
+msgid "Failed to get issue type"
+msgstr "Не удалось получить тип проблемы"
+
+msgid "Failed to get item group"
+msgstr "Не удалось получить группу элементов"
+
+msgid "Failed to get job data"
+msgstr "Не удалось получить данные задания"
+
+msgid "Failed to get job information"
+msgstr "Не удалось получить информацию о задании"
+
+msgid "Failed to get kanban"
+msgstr "Не удалось получить канбан"
+
+msgid "Failed to get location"
+msgstr "Не удалось получить местоположение"
+
+msgid "Failed to get location id"
+msgstr "Не удалось получить идентификатор местоположения"
+
+msgid "Failed to get location ID"
+msgstr "Не удалось получить идентификатор местоположения"
+
+msgid "Failed to get maintenance dispatch"
+msgstr "Не удалось получить плановое обслуживание"
+
+msgid "Failed to get maintenance schedule"
+msgstr "Не удалось получить план обслуживания"
+
+msgid "Failed to get material dimension"
+msgstr "Не удалось получить размер материала"
+
+msgid "Failed to get material finish"
+msgstr "Не удалось получить состояние поверхности материала"
+
+msgid "Failed to get material form"
+msgstr "Не удалось получить форму материала"
+
+msgid "Failed to get material grade"
+msgstr "Не удалось получить класс материала"
+
+msgid "Failed to get material make method"
+msgstr "Не удалось получить метод изготовления материала"
+
+msgid "Failed to get material substance"
+msgstr "Не удалось получить материал"
+
+msgid "Failed to get material type"
+msgstr "Не удалось получить тип материала"
+
+msgid "Failed to get modules"
+msgstr "Не удалось получить модули"
+
+msgid "Failed to get next sequence"
+msgstr "Не удалось получить следующую последовательность"
+
+msgid "Failed to get no quote reason"
+msgstr "Не удалось получить причину отсутствия цитаты"
+
+msgid "Failed to get outside operations"
+msgstr "Не удалось получить внешние операции"
+
+msgid "Failed to get parent account"
+msgstr "Не удалось получить родительскую учётную запись"
+
+msgid "Failed to get partner"
+msgstr "Не удалось получить партнера"
+
+msgid "Failed to get partner id"
+msgstr "Не удалось получить идентификатор партнера"
+
+msgid "Failed to get parts"
+msgstr "Не удалось получить детали"
+
+msgid "Failed to get payment term"
+msgstr "Не удалось получить условия оплаты"
+
+msgid "Failed to get price override"
+msgstr "Не удалось получить перекрытие цены"
+
+msgid "Failed to get price override id"
+msgstr "Не удалось получить ID перекрытия цены"
+
+msgid "Failed to get pricing rule"
+msgstr "Не удалось получить правило ценообразования"
+
+msgid "Failed to get pricing rule id"
+msgstr "Не удалось получить идентификатор правила ценообразования"
+
+msgid "Failed to get process"
+msgstr "Не удалось получить процесс"
+
+msgid "Failed to get process id"
+msgstr "Не удалось получить идентификатор процесса"
+
+msgid "Failed to get production projections"
+msgstr "Не удалось получить производственные прогнозы"
+
+msgid "Failed to get purchase invoice"
+msgstr "Не удалось получить покупательскую накладную"
+
+msgid "Failed to get purchase invoice line"
+msgstr "Не удалось получить строку покупательской накладной"
+
+msgid "Failed to get purchase order"
+msgstr "Не удалось получить заказ на покупку"
+
+msgid "Failed to get purchase order line"
+msgstr "Не удалось получить строку заказа на покупку"
+
+msgid "Failed to get quality issue sequence"
+msgstr "Не удалось получить последовательность качестваssue"
+
+msgid "Failed to get quote"
+msgstr "Не удалось получить оценку стоимости"
+
+msgid "Failed to get quote details"
+msgstr "Не удалось получить детали цитаты"
+
+msgid "Failed to get receipt"
+msgstr "Не удалось получить приход"
+
+msgid "Failed to get sales invoice line"
+msgstr "Не удалось получить строку продажного счета"
+
+msgid "Failed to get sales order"
+msgstr "Не удалось получить заказ на продажу"
+
+msgid "Failed to get sales order line"
+msgstr "Не удалось получить строку продажного заказа"
+
+msgid "Failed to get scrap reason"
+msgstr "Не удалось получить причину потери материала"
+
+msgid "Failed to get sequence"
+msgstr "Не удалось получить последовательность"
+
+msgid "Failed to get services"
+msgstr "Не удалось получить услуги"
+
+msgid "Failed to get shift"
+msgstr "Не удалось получить смену"
+
+msgid "Failed to get shift id"
+msgstr "Не удалось получить идентификатор смены"
+
+msgid "Failed to get shipment"
+msgstr "Не удалось получить отгрузку"
+
+msgid "Failed to get shipping method"
+msgstr "Не удалось получить метод доставки"
+
+msgid "Failed to get storage type"
+msgstr "Не удалось получить тип хранения"
+
+msgid "Failed to get storageUnit"
+msgstr "Не удалось получить storageUnit"
+
+msgid "Failed to get style color"
+msgstr "Не удалось получить цвет стиля"
+
+msgid "Failed to get style size"
+msgstr "Не удалось получить размер стиля"
+
+msgid "Failed to get subsidiary"
+msgstr "Не удалось получить филиал"
+
+msgid "Failed to get subsidiary id"
+msgstr "Не удалось получить ID дочерней компании"
+
+msgid "Failed to get suggestion"
+msgstr "Не удалось получить рекомендации"
+
+msgid "Failed to get supplier contact"
+msgstr "Не удалось получить контакт поставщика"
+
+msgid "Failed to get supplier contacts"
+msgstr "Не удалось получить контакты поставщика"
+
+msgid "Failed to get supplier location"
+msgstr "Не удалось получить местоположение поставщика"
+
+msgid "Failed to get supplier locations"
+msgstr "Не удалось получить местоположения поставщиков"
+
+msgid "Failed to get supplier processes"
+msgstr "Не удалось получить процессы поставщика"
+
+msgid "Failed to get supplier quote"
+msgstr "Не удалось получить цену от поставщика"
+
+msgid "Failed to get supplier quote line prices"
+msgstr "Не удалось получить цены строк поставщика"
+
+msgid "Failed to get supplier quote lines"
+msgstr "Не удалось получить строки предложения поставщика"
+
+msgid "Failed to get supplier type"
+msgstr "Не удалось получить тип поставщика"
+
+msgid "Failed to get tag"
+msgstr "Не удалось получить тег"
+
+msgid "Failed to get timecard"
+msgstr "Не удалось получить карточку времени"
+
+msgid "Failed to get unique values for custom field"
+msgstr "Не удалось получить уникальные значения для пользовательского поля"
+
+msgid "Failed to get unit of measure"
+msgstr "Не удалось получить единицу измерения"
+
+msgid "Failed to get user"
+msgstr "Не удалось получить пользователя"
+
+msgid "Failed to get user permissions"
+msgstr "Не удалось получить разрешения пользователя"
+
+msgid "Failed to get WeChat user info"
+msgstr "Не удалось получить информацию о пользователе WeChat"
+
+msgid "Failed to insert account"
+msgstr "Не удалось добавить учетную запись"
+
+msgid "Failed to insert consumable"
+msgstr "Не удалось вставить расходный материал"
+
+msgid "Failed to insert consumable inventory"
+msgstr "Не удалось вставить запасы сырья"
+
+msgid "Failed to insert cost center"
+msgstr "Не удалось вставить центра затрат"
+
+msgid "Failed to insert custom field"
+msgstr "Не удалось вставить пользовательское поле"
+
+msgid "Failed to insert customer"
+msgstr "Не удалось добавить клиента"
+
+msgid "Failed to insert customer status"
+msgstr "Не удалось вставить статус клиента"
+
+msgid "Failed to insert customer type"
+msgstr "Не удалось вставить тип клиента"
+
+msgid "Failed to insert department"
+msgstr "Не удалось вставить отдел"
+
+msgid "Failed to insert employee type"
+msgstr "Не удалось вставить тип сотрудника"
+
+msgid "Failed to insert employee type permissions"
+msgstr "Не удалось вставить разрешения типа сотрудника"
+
+msgid "Failed to insert failure mode"
+msgstr "Не удалось вставить режим неисправности"
+
+msgid "Failed to insert gauge"
+msgstr "Не удалось вставить гаугинг"
+
+msgid "Failed to insert gauge calibration record"
+msgstr "Не удалось вставить запись о калибровке гауся"
+
+msgid "Failed to insert gauge type"
+msgstr "Не удалось вставить тип гаусятеля"
+
+msgid "Failed to insert group"
+msgstr "Не удалось вставить группу"
+
+msgid "Failed to insert group members"
+msgstr "Не удалось добавить членов группы"
+
+msgid "Failed to insert issue"
+msgstr "Не удалось добавить проблему"
+
+msgid "Failed to insert issue type"
+msgstr "Не удалось вставить тип проблемы"
+
+msgid "Failed to insert issue workflow"
+msgstr "Не удалось вставить рабочий процесс проблемы"
+
+msgid "Failed to insert item group"
+msgstr "Не удалось вставить группу элементов"
+
+msgid "Failed to insert job"
+msgstr "Не удалось вставить задачу"
+
+msgid "Failed to insert job material"
+msgstr "Не удалось добавить материал задачи"
+
+msgid "Failed to insert job material make method"
+msgstr "Не удалось вставить метод материала задания"
+
+msgid "Failed to insert job operation"
+msgstr "Не удалось вставить операцию работы"
+
+msgid "Failed to insert job operation attribute"
+msgstr "Не удалось вставить атрибут операции задачи"
+
+msgid "Failed to insert job operation parameter"
+msgstr "Не удалось вставить параметр операции задачи"
+
+msgid "Failed to insert job operation tool"
+msgstr "Не удалось вставить инструмент операции задания"
+
+msgid "Failed to insert kanban"
+msgstr "Не удалось вставить канбан"
+
+msgid "Failed to insert line"
+msgstr "Не удалось вставить строку"
+
+msgid "Failed to insert material"
+msgstr "Не удалось вставить материал"
+
+msgid "Failed to insert material dimension"
+msgstr "Не удалось вставить параметры материала"
+
+msgid "Failed to insert material finish"
+msgstr "Не удалось вставить материал завершения"
+
+msgid "Failed to insert material form"
+msgstr "Не удалось вставить форму материала"
+
+msgid "Failed to insert material grade"
+msgstr "Не удалось вставить материал"
+
+msgid "Failed to insert material inventory"
+msgstr "Не удалось вставить запасы материала"
+
+msgid "Failed to insert material substance"
+msgstr "Не удалось вставить сырье"
+
+msgid "Failed to insert material type"
+msgstr "Не удалось вставить тип материала"
+
+msgid "Failed to insert method material"
+msgstr "Не удалось вставить метод материала"
+
+msgid "Failed to insert method operation"
+msgstr "Не удалось вставить метод операции"
+
+msgid "Failed to insert method operation parameter"
+msgstr "Не удалось вставить параметр операции метода"
+
+msgid "Failed to insert method operation step"
+msgstr "Не удалось вставить методическое операционное задание"
+
+msgid "Failed to insert method operation tool"
+msgstr "Не удалось вставить метод операции инструмент"
+
+msgid "Failed to insert model record"
+msgstr "Не удалось вставить запись модели"
+
+msgid "Failed to insert new version"
+msgstr "Не удалось вставить новую версию"
+
+msgid "Failed to insert no quote reason"
+msgstr "Не удалось вставить причину отсутствия цитаты"
+
+msgid "Failed to insert part"
+msgstr "Не удалось вставить деталь"
+
+msgid "Failed to insert part inventory"
+msgstr "Не удалось вставить запасы деталей"
+
+msgid "Failed to insert payment term"
+msgstr "Не удалось добавить условия оплаты"
+
+msgid "Failed to insert procedure"
+msgstr "Не удалось вставить процедуру"
+
+msgid "Failed to insert procedure parameter"
+msgstr "Не удалось вставить параметр процедуры"
+
+msgid "Failed to insert procedure step"
+msgstr "Не удалось вставить шаг процедуры"
+
+msgid "Failed to insert production event"
+msgstr "Не удалось вставить производственное событие"
+
+msgid "Failed to insert purchase invoice"
+msgstr "Не удалось вставить покупную накладную"
+
+msgid "Failed to insert purchase order"
+msgstr "Не удалось вставить заказ на покупку"
+
+msgid "Failed to insert quality document"
+msgstr "Не удалось вставить документ качества"
+
+msgid "Failed to insert quality document step"
+msgstr "Не удалось вставить шаг документа по качеству"
+
+msgid "Failed to insert quote"
+msgstr "Не удалось вставить цитату"
+
+msgid "Failed to insert quote material"
+msgstr "Не удалось вставить материал цитаты"
+
+msgid "Failed to insert quote material make method"
+msgstr "Не удалось вставить материал метод производства"
+
+msgid "Failed to insert quote operation"
+msgstr "Не удалось вставить операцию цитирования"
+
+msgid "Failed to insert quote operation parameter"
+msgstr "Не удалось вставить параметр операции цитирования"
+
+msgid "Failed to insert quote operation step"
+msgstr "Не удалось вставить шаг операции报价"
+
+msgid "Failed to insert quote operation tool"
+msgstr "Не удалось вставить инструмент операции цитаты"
+
+msgid "Failed to insert reviewer"
+msgstr "Не удалось добавить проверяющего"
+
+msgid "Failed to insert RFQ"
+msgstr "Не удалось вставить заявку на покупку"
+
+msgid "Failed to insert RFQ line"
+msgstr "Не удалось вставить строку заявки на поставку"
+
+msgid "Failed to insert sales invoice"
+msgstr "Не удалось вставить счет на продажу"
+
+msgid "Failed to insert sales order"
+msgstr "Не удалось вставить заказ на продажу"
+
+msgid "Failed to insert scrap reason"
+msgstr "Не удалось вставить причину потери материала"
+
+msgid "Failed to insert shipping method"
+msgstr "Не удалось добавить способ доставки"
+
+msgid "Failed to insert storage type"
+msgstr "Не удалось вставить тип хранения"
+
+msgid "Failed to insert storageUnit"
+msgstr "Не удалось добавить единицу хранения"
+
+msgid "Failed to insert style color"
+msgstr "Не удалось вставить стиль цвета"
+
+msgid "Failed to insert style inventory"
+msgstr "Не удалось вставить стиль инвентаризации"
+
+msgid "Failed to insert style size"
+msgstr "Не удалось вставить размер стиля"
+
+msgid "Failed to insert supplier quote"
+msgstr "Не удалось вставить поставщика报价"
+
+msgid "Failed to insert supplier type"
+msgstr "Не удалось вставить тип поставщика"
+
+msgid "Failed to insert template"
+msgstr "Не удалось вставить шаблон"
+
+msgid "Failed to insert tool"
+msgstr "Не удалось вставить инструмент"
+
+msgid "Failed to insert tool inventory"
+msgstr "Не удалось вставить инвентарь инструментов"
+
+msgid "Failed to insert training question"
+msgstr "Не удалось вставить вопрос для тренинга"
+
+msgid "Failed to insert unit of measure"
+msgstr "Не удалось вставить единицу измерения"
+
+msgid "Failed to install integration"
+msgstr "Не удалось установить интеграцию"
+
+msgid "Failed to issue material"
+msgstr "Не удалось выдать материал"
+
+msgid "Failed to issue materials"
+msgstr "Не удалось выдать материалы"
+
+msgid "Failed to link email"
+msgstr "Не удалось связать электронную почту"
+
+msgid "Failed to link quality issue to MES context"
+msgstr "Не удалось связать质量问题与MES上下文"
+
+msgid "Failed to load account"
+msgstr "Не удалось загрузить аккаунт"
+
+msgid "Failed to load any locations"
+msgstr "Не удалось загрузить ни одного местоположения"
+
+msgid "Failed to load api keys"
+msgstr "Не удалось загрузить API ключи"
+
+msgid "Failed to load applications"
+msgstr "Не удалось загрузить приложения"
+
+msgid "Failed to load approval rule"
+msgstr "Не удалось загрузить правило одобрения"
+
+msgid "Failed to load approval rules"
+msgstr "Не удалось загрузить правила одобрения"
+
+msgid "Failed to load attribute category"
+msgstr "Не удалось загрузить категорию атрибута"
+
+msgid "Failed to load balance sheet"
+msgstr "Не удалось загрузить балансовую ведомость"
+
+msgid "Failed to load bundle work orders"
+msgstr "Не удалось загрузить пакетыbynд工作订单"
+
+msgid "Failed to load companies"
+msgstr "Не удалось загрузить компании"
+
+msgid "Failed to load company"
+msgstr "Не удалось загрузить компанию"
+
+msgid "Failed to load company for purchase orders"
+msgstr "Не удалось загрузить компанию для закупочных заказов"
+
+msgid "Failed to load config. Please make sure a valid record exists in your public.config table."
+msgstr "Не удалось загрузить конфигурацию. Убедитесь, что в вашей таблице public.config существует допустимая запись."
+
+msgid "Failed to load consumable costing"
+msgstr "Не удалось загрузить затраты наsumeables"
+
+msgid "Failed to load consumable inventory"
+msgstr "Не удалось загрузить инвентарь расходных материалов"
+
+msgid "Failed to load consumable planning"
+msgstr "Не удалось загрузить план потребления"
+
+msgid "Failed to load consumable purchasing"
+msgstr "Не удалось загрузить приобретаемые материалы"
+
+msgid "Failed to load consumable quantities"
+msgstr "Не удалось загрузить количества расходных материалов"
+
+msgid "Failed to load consumable summary"
+msgstr "Не удалось загрузить Zusammenfassung.verbrauchter Materialien"
+
+msgid "Failed to load contractors"
+msgstr "Не удалось загрузить контрактёров"
+
+msgid "Failed to load cost centers"
+msgstr "Не удалось загрузить центры затрат"
+
+msgid "Failed to load customer payment terms"
+msgstr "Не удалось загрузить условия оплаты клиента"
+
+msgid "Failed to load customer shipping"
+msgstr "Не удалось загрузить данные о доставке клиента"
+
+msgid "Failed to load customer summary"
+msgstr "Не удалось загрузить сводную информацию о клиенте"
+
+msgid "Failed to load customer tax information"
+msgstr "Не удалось загрузить информацию о налоге для клиента"
+
+msgid "Failed to load default accounts"
+msgstr "Не удалось загрузить\"default\" аккаунты"
+
+msgid "Failed to load default location"
+msgstr "Не удалось загрузить начальную местоположение"
+
+msgid "Failed to load demand"
+msgstr "Не удалось загрузить спрос"
+
+msgid "Failed to load departments"
+msgstr "Не удалось загрузить отделы"
+
+msgid "Failed to load depreciation run"
+msgstr "Не удалось загрузить амортизационную кампанию"
+
+msgid "Failed to load document"
+msgstr "Не удалось загрузить документ"
+
+msgid "Failed to load employee summary"
+msgstr "Не удалось загрузить краткую информацию о сотруднике"
+
+msgid "Failed to load entity links"
+msgstr "Не удалось загрузить ссылки на сущности"
+
+msgid "Failed to load fixed asset"
+msgstr "Не удалось загрузить фиксированное имущество"
+
+msgid "Failed to load gauge"
+msgstr "Не удалось загрузить гаусску"
+
+msgid "Failed to load gauge calibration record"
+msgstr "Не удалось загрузить запись калибровки гауся"
+
+msgid "Failed to load group"
+msgstr "Не удалось загрузить группу"
+
+msgid "Failed to load group members"
+msgstr "Не удалось загрузить членов группы"
+
+msgid "Failed to load groups"
+msgstr "Не удалось загрузить группы"
+
+msgid "Failed to load holidays"
+msgstr "Не удалось загрузить праздничные дни"
+
+msgid "Failed to load income statement"
+msgstr "Не удалось загрузить баланс доходов"
+
+msgid "Failed to load inspection"
+msgstr "Не удалось загрузить проверку"
+
+msgid "Failed to load inspection document"
+msgstr "Не удалось загрузить документ проверки"
+
+msgid "Failed to load inspections"
+msgstr "Не удалось загрузить проверки"
+
+msgid "Failed to load integrations"
+msgstr "Не удалось загрузить интеграции"
+
+msgid "Failed to load invite links"
+msgstr "Не удалось загрузить ссылки на приглашения"
+
+msgid "Failed to load issue"
+msgstr "Не удалось загрузить задачу"
+
+msgid "Failed to load issue workflow"
+msgstr "Не удалось загрузить рабочий процесс задачи"
+
+msgid "Failed to load item"
+msgstr "Не удалось загрузить элемент"
+
+msgid "Failed to load item inventory activity"
+msgstr "Не удалось загрузить информацию о деятельности инвентаризации элементов"
+
+msgid "Failed to load item storage unit quantities"
+msgstr "Не удалось загрузить количество единиц хранения товаров"
+
+msgid "Failed to load job"
+msgstr "Не удалось загрузить задачу"
+
+msgid "Failed to load job make method"
+msgstr "Не удалось загрузить метод производства задачи"
+
+msgid "Failed to load job materials"
+msgstr "Не удалось загрузить материалы работы"
+
+msgid "Failed to load job operations"
+msgstr "Не удалось загрузить операции работы"
+
+msgid "Failed to load journal entry"
+msgstr "Не удалось загрузить запись журнала"
+
+msgid "Failed to load line"
+msgstr "Не удалось загрузить линию"
+
+msgid "Failed to load linked sales invoices"
+msgstr "Не удалось загрузить связанные счета на продажу"
+
+msgid "Failed to load locations"
+msgstr "Не удалось загрузить местоположения"
+
+msgid "Failed to load maintenance dispatch"
+msgstr "Не удалось загрузить плановое обслуживание"
+
+msgid "Failed to load maintenance schedules"
+msgstr "Не удалось загрузить планы обслуживания"
+
+msgid "Failed to load make method"
+msgstr "Не удалось загрузить метод производства"
+
+msgid "Failed to load master work orders"
+msgstr "Не удалось загрузить основные производственные заказы"
+
+msgid "Failed to load material costing"
+msgstr "Не удалось загрузить стоимость материала"
+
+msgid "Failed to load material inventory"
+msgstr "Не удалось загрузить инвентарь материалов"
+
+msgid "Failed to load material planning"
+msgstr "Не удалось загрузить планирование материалов"
+
+msgid "Failed to load material purchasing"
+msgstr "Не удалось загрузить закупку материала"
+
+msgid "Failed to load material quantities"
+msgstr "Не удалось загрузить количества материалов"
+
+msgid "Failed to load material summary"
+msgstr "Не удалось загрузить сводную информацию о материале"
+
+msgid "Failed to load method materials"
+msgstr "Не удалось загрузить методы материалов"
+
+msgid "Failed to load method operations"
+msgstr "Не удалось загрузить методы операций"
+
+msgid "Failed to load order"
+msgstr "Не удалось загрузить заказ"
+
+msgid "Failed to load order payment"
+msgstr "Не удалось загрузить оплату заказа"
+
+msgid "Failed to load order shipment"
+msgstr "Не удалось загрузить отгрузку заказа"
+
+msgid "Failed to load part costing"
+msgstr "Не удалось загрузить стоимость детали"
+
+msgid "Failed to load part inventory"
+msgstr "Не удалось загрузить инвентарь деталей"
+
+msgid "Failed to load part planning"
+msgstr "Не удалось загрузить планирование деталей"
+
+msgid "Failed to load part purchasing"
+msgstr "Не удалось загрузить закупку деталей"
+
+msgid "Failed to load part quantities"
+msgstr "Не удалось загрузить количества деталей"
+
+msgid "Failed to load part summary"
+msgstr "Не удалось загрузить Zusammenfassung компонента"
+
+msgid "Failed to load part unit sale price"
+msgstr "Не удалось загрузить цену на единицу продажи компонента"
+
+msgid "Failed to load partners"
+msgstr "Не удалось загрузить партнеров"
+
+msgid "Failed to load pick method"
+msgstr "Не удалось загрузить метод выбора"
+
+msgid "Failed to load picking list"
+msgstr "Не удалось загрузить список выбора"
+
+msgid "Failed to load picking list line"
+msgstr "Не удалось загрузить строку списка выбора"
+
+msgid "Failed to load picking list lines"
+msgstr "Не удалось загрузить строки списка выбора"
+
+msgid "Failed to load planning periods"
+msgstr "Не удалось загрузить планируемые периоды"
+
+msgid "Failed to load print job"
+msgstr "Не удалось загрузить задачу печати"
+
+msgid "Failed to load procedure"
+msgstr "Не удалось загрузить процедуру"
+
+msgid "Failed to load processes"
+msgstr "Не удалось загрузить процессы"
+
+msgid "Failed to load projection periods"
+msgstr "Не удалось загрузить периоды проекции"
+
+msgid "Failed to load public attributes"
+msgstr "Не удалось загрузить публичные атрибуты"
+
+msgid "Failed to load purchase invoice"
+msgstr "Не удалось загрузить покупную накладную"
+
+msgid "Failed to load purchase order"
+msgstr "Не удалось загрузить заказ на покупку"
+
+msgid "Failed to load purchase order line"
+msgstr "Не удалось загрузить строку заказа на покупку"
+
+msgid "Failed to load purchase order payment"
+msgstr "Не удалось загрузить оплату заказа покупки"
+
+msgid "Failed to load purchaseOrder"
+msgstr "Не удалось загрузить заказ на покупку"
+
+msgid "Failed to load purchasing RFQ summary"
+msgstr "Не удалось загрузить Zusammenfassung Angebotszusage"
+
+msgid "Failed to load quote"
+msgstr "Не удалось загрузить заявку"
+
+msgid "Failed to load quote make method"
+msgstr "Не удалось загрузить метод создания цитаты"
+
+msgid "Failed to load quote materials"
+msgstr "Не удалось загрузить материалы запроса"
+
+msgid "Failed to load quote operations"
+msgstr "Не удалось загрузить операции цитаты"
+
+msgid "Failed to load quote opportunity"
+msgstr "Не удалось загрузить возможность цитаты"
+
+msgid "Failed to load quote payment"
+msgstr "Не удалось загрузить данные по оплате заявки"
+
+msgid "Failed to load quote shipment"
+msgstr "Не удалось загрузить заявку на отгрузку"
+
+msgid "Failed to load receipt"
+msgstr "Не удалось загрузить приходную накладную"
+
+msgid "Failed to load report lines"
+msgstr "Не удалось загрузить строки отчета"
+
+msgid "Failed to load RFQ"
+msgstr "Не удалось загрузить заявку на цену"
+
+msgid "Failed to load RFQ lines"
+msgstr "Не удалось загрузить строки запроса цен"
+
+msgid "Failed to load RFQ suppliers"
+msgstr "Не удалось загрузить поставщиков предложений"
+
+msgid "Failed to load salary record"
+msgstr "Не удалось загрузить запись о зарплате"
+
+msgid "Failed to load sales invoice"
+msgstr "Не удалось загрузить продажную накладную"
+
+msgid "Failed to load sales invoice totals"
+msgstr "Не удалось загрузить суммы продажных накладных"
+
+msgid "Failed to load sales order"
+msgstr "Не удалось загрузить заказ на продажу"
+
+msgid "Failed to load sales order line"
+msgstr "Не удалось загрузить строку заказа на продажи"
+
+msgid "Failed to load sales order opportunity"
+msgstr "Не удалось загрузить возможность продажного заказа"
+
+msgid "Failed to load sales RFQ opportunity"
+msgstr "Не удалось загрузить предложение по продажам"
+
+msgid "Failed to load sales RFQ summary"
+msgstr "Не удалось загрузить Zusammenfassung Angebotsanfrage Verkauf"
+
+msgid "Failed to load salesOrder"
+msgstr "Не удалось загрузить销售订单"
+
+msgid "Failed to load shifts"
+msgstr "Не удалось загрузить смены"
+
+msgid "Failed to load shipment"
+msgstr "Не удалось загрузить отгрузку"
+
+msgid "Failed to load source run"
+msgstr "Не удалось загрузить исходную операцию"
+
+msgid "Failed to load stock transfer line or item storage unit quantities"
+msgstr "Не удалось загрузить количества строк перемещения складских мест или единиц хранения"
+
+msgid "Failed to load stock transfer line or stock transfer"
+msgstr "Не удалось загрузить строку передачи остатков или передачу остатков"
+
+msgid "Failed to load stockTransfer"
+msgstr "Не удалось загрузить.stockTransfer"
+
+msgid "Failed to load storage rules"
+msgstr "Не удалось загрузить правила хранения"
+
+msgid "Failed to load style costing"
+msgstr "Не удалось загрузить стиль ценообразования"
+
+msgid "Failed to load style inventory"
+msgstr "Не удалось загрузить инвентарь стилей"
+
+msgid "Failed to load style planning"
+msgstr "Не удалось загрузить стили планирования"
+
+msgid "Failed to load style quantities"
+msgstr "Не удалось загрузить стили化的数量"
+
+msgid "Failed to load style summary"
+msgstr "Не удалось загрузить сводку стилей"
+
+msgid "Failed to load style unit sale price"
+msgstr "Не удалось загрузить стили单价销售价格"
+
+msgid "Failed to load subsidiary"
+msgstr "Не удалось загрузить филиал"
+
+msgid "Failed to load suggestions"
+msgstr "Не удалось загрузить предложения"
+
+msgid "Failed to load supplier interaction record"
+msgstr "Не удалось загрузить запись взаимодействия с поставщиком"
+
+msgid "Failed to load supplier payment"
+msgstr "Не удалось загрузить платеж поставщика"
+
+msgid "Failed to load supplier payment terms"
+msgstr "Не удалось загрузить условия оплаты поставщика"
+
+msgid "Failed to load supplier quote"
+msgstr "Не удалось загрузить предложение поставщика"
+
+msgid "Failed to load supplier shipping"
+msgstr "Не удалось загрузить поставку от поставщика"
+
+msgid "Failed to load supplier summary"
+msgstr "Не удалось загрузить краткую информацию о поставщике"
+
+msgid "Failed to load supplier tax information"
+msgstr "Не удалось загрузить информацию о налогах поставщика"
+
+msgid "Failed to load timecard entries"
+msgstr "Не удалось загрузить записи с карточек времени"
+
+msgid "Failed to load tool costing"
+msgstr "Не удалось загрузить затраты на инструмент"
+
+msgid "Failed to load tool inventory"
+msgstr "Не удалось загрузить инвентарь инструментов"
+
+msgid "Failed to load tool planning"
+msgstr "Не удалось загрузить планирование инструмента"
+
+msgid "Failed to load tool purchasing"
+msgstr "Не удалось загрузить покупку инструмента"
+
+msgid "Failed to load tool quantities"
+msgstr "Не удалось загрузить количества инструментов"
+
+msgid "Failed to load tool summary"
+msgstr "Не удалось загрузить Zusammenfassung des Werkzeuges"
+
+msgid "Failed to load training"
+msgstr "Не удалось загрузить тренировку"
+
+msgid "Failed to load trial balance"
+msgstr "Не удалось загрузить пробную балансовую ведомость"
+
+msgid "Failed to load users"
+msgstr "Не удалось загрузить пользователей"
+
+msgid "Failed to load warehouse transfer"
+msgstr "Не удалось загрузить перемещение склада"
+
+msgid "Failed to load warehouse transfer line"
+msgstr "Не удалось загрузить строку перемещения склада"
+
+msgid "Failed to load warehouse transfer lines"
+msgstr "Не удалось загрузить строки перемещения склада"
+
+msgid "Failed to load webhook"
+msgstr "Не удалось загрузить вебхук"
+
+msgid "Failed to load webhooks"
+msgstr "Не удалось загрузить вебхуки"
+
+msgid "Failed to mark partial"
+msgstr "Не удалось отметить частичный"
+
+msgid "Failed to mark training complete"
+msgstr "Не удалось отметить обучение как завершенное"
+
+msgid "Failed to move account"
+msgstr "Не удалось переместить учетную запись"
+
+msgid "Failed to move entities"
+msgstr "Не удалось переместить элементы"
+
+msgid "Failed to move file"
+msgstr "Не удалось переместить файл"
+
+msgid "Failed to notify user"
+msgstr "Не удалось уведомить пользователя"
+
+msgid "Failed to parse claims"
+msgstr "Не удалось разобрать претензии"
+
+msgid "Failed to parse permissions"
+msgstr "Не удалось разобрать права доступа"
+
+msgid "Failed to parse procedure content"
+msgstr "Не удалось разобрать содержимое процедуры"
+
+msgid "Failed to parse quality document content"
+msgstr "Не удалось разобрать содержимое документа качества"
+
+msgid "Failed to parse training content"
+msgstr "Не удалось разобрать содержимое тренинга"
+
+msgid "Failed to parse updates"
+msgstr "Не удалось разобрать обновления"
+
+msgid "Failed to pick line"
+msgstr "Не удалось выбрать строку"
+
+msgid "Failed to pick up"
+msgstr "Не удалось выбрать"
+
+msgid "Failed to post asset disposal"
+msgstr "Не удалось опубликовать处置资产"
+
+msgid "Failed to post depreciation run"
+msgstr "Не удалось опубликовать процесс амортизации"
+
+msgid "Failed to post journal entry"
+msgstr "Не удалось записать журналEntries"
+
+msgid "Failed to post receipt"
+msgstr "Не удалось записать приход"
+
+msgid "Failed to post shipment"
+msgstr "Не удалось опубликовать отгрузку"
+
+msgid "Failed to reassign tracked entities"
+msgstr "Не удалось пере指派跟踪实体"
+
+msgid "Failed to recalculate dependencies"
+msgstr "Не удалось пересчитать зависимости"
+
+msgid "Failed to recalculate job make method requirements"
+msgstr "Не удалось пересчитать требования метода производства заказа"
+
+msgid "Failed to recalculate job operation dependencies"
+msgstr "Не удалось пересчитать зависимости операции задания"
+
+msgid "Failed to recalculate job requirements"
+msgstr "Не удалось пересчитать требования к работе"
+
+msgid "Failed to recalculate quote line prices"
+msgstr "Не удалось пересчитать цены строк оферты"
+
+msgid "Failed to receive a job id"
+msgstr "Не удалось получить идентификатор задачи"
+
+msgid "Failed to receive a job id to recalculate dependencies"
+msgstr "Не удалось получить идентификатор задачи для пересчета зависимостей"
+
+msgid "Failed to receive a new sort order"
+msgstr "Не удалось получить новый порядок сортировки"
+
+msgid "Failed to receive an operation id"
+msgstr "Не удалось получить идентификатор операции"
+
+msgid "Failed to record attribute"
+msgstr "Не удалось записать атрибут"
+
+msgid "Failed to record history"
+msgstr "Не удалось записать историю"
+
+msgid "Failed to record rework quantity"
+msgstr "Не удалось записать количество переработки"
+
+msgid "Failed to record scrap quantity"
+msgstr "Не удалось записать количество брака"
+
+msgid "Failed to refresh invite"
+msgstr "Не удалось обновить приглашение"
+
+msgid "Failed to register asset"
+msgstr "Не удалось зарегистрировать актив"
+
+msgid "Failed to reinvite users"
+msgstr "Не удалось повторно пригласить пользователей"
+
+msgid "Failed to reject lot"
+msgstr "Не удалось отклонить лот"
+
+msgid "Failed to release job"
+msgstr "Не удалось освободить задачу"
+
+msgid "Failed to remove customer account"
+msgstr "Не удалось удалить учетную запись клиента"
+
+msgid "Failed to remove item"
+msgstr "Не удалось удалить элемент"
+
+msgid "Failed to remove spare part"
+msgstr "Не удалось удалить запасную часть"
+
+msgid "Failed to remove supplier account"
+msgstr "Не удалось удалить аккаунт поставщика"
+
+msgid "Failed to remove user from company"
+msgstr "Не удалось удалить пользователя из компании"
+
+msgid "Failed to rename passkey"
+msgstr "Не удалось переименовать парасхему"
+
+msgid "Failed to report quantity"
+msgstr "Не удалось отчитаться о количестве"
+
+msgid "Failed to report rework"
+msgstr "Не удалось отчитаться о переработке"
+
+msgid "Failed to report scrap"
+msgstr "Не удалось отчитаться о браке"
+
+msgid "Failed to resolve Pull from Inventory prices"
+msgstr "Не удалось разрешитьPull из инвентаря цен"
+
+msgid "Failed to resolve Purchase to Order prices"
+msgstr "Не удалось разрешить цены закупки в заказ"
+
+msgid "Failed to restore document"
+msgstr "Не удалось восстановить документ"
+
+msgid "Failed to reverse journal entry"
+msgstr "Не удалось отменить журналEntries"
+
+msgid "Failed to review application"
+msgstr "Не удалось проверить заявку"
+
+msgid "Failed to revoke invite link"
+msgstr "Не удалось отозвать приглашения"
+
+msgid "Failed to revoke invites"
+msgstr "Не удалось отозвать приглашения"
+
+msgid "Failed to run IC matching"
+msgstr "Не удалось запустить проверку соответствия IC"
+
+msgid "Failed to save bundles"
+msgstr "Не удалось сохранить пакеты"
+
+msgid "Failed to save comment"
+msgstr "Не удалось сохранить комментарий"
+
+msgid "Failed to save demand forecasts"
+msgstr "Не удалось сохранить прогнозы спроса"
+
+msgid "Failed to save document layout"
+msgstr "Не удалось сохранить шаблон документа"
+
+msgid "Failed to save event"
+msgstr "Не удалось сохранить событие"
+
+msgid "Failed to save header"
+msgstr "Не удалось сохранить заголовок"
+
+msgid "Failed to save item"
+msgstr "Не удалось сохранить элемент"
+
+msgid "Failed to save journal entry"
+msgstr "Не удалось сохранить запись журнала"
+
+msgid "Failed to save passkey"
+msgstr "Не удалось сохранить пароль"
+
+msgid "Failed to save sample"
+msgstr "Не удалось сохранить образец"
+
+msgid "Failed to save sampling plan"
+msgstr "Не удалось сохранить план выборочной проверки"
+
+msgid "Failed to save section"
+msgstr "Не удалось сохранить раздел"
+
+msgid "Failed to search users"
+msgstr "Не удалось найти пользователей"
+
+msgid "Failed to seed company"
+msgstr "Не удалось инициализировать компанию"
+
+msgid "Failed to send email"
+msgstr "Не удалось отправить электронное письмо"
+
+msgid "Failed to send magic link"
+msgstr "Не удалось отправить магическую ссылку"
+
+msgid "Failed to send supplier quote"
+msgstr "Не удалось отправить предложение поставщику"
+
+msgid "Failed to send verification code"
+msgstr "Не удалось отправить код верификации"
+
+msgid "Failed to set job release date"
+msgstr "Не удалось установить дату выпуска задачи"
+
+msgid "Failed to sign in"
+msgstr "Не удалось войти в систему"
+
+msgid "Failed to sign in user"
+msgstr "Не удалось войти пользователю"
+
+msgid "Failed to split line"
+msgstr "Не удалось разделить линию"
+
+msgid "Failed to start checkout"
+msgstr "Не удалось запустить проверку"
+
+msgid "Failed to start event"
+msgstr "Не удалось запустить событие"
+
+msgid "Failed to start maintenance event"
+msgstr "Не удалось запустить событие технического обслуживания"
+
+msgid "Failed to stop event"
+msgstr "Не удалось остановить событие"
+
+msgid "Failed to sync procedure"
+msgstr "Не удалось синхронизировать процедуру"
+
+msgid "Failed to trigger rework"
+msgstr "Не удалось активировать повторную обработку"
+
+msgid "Failed to unassign rule"
+msgstr "Не удалось отозвать правило"
+
+msgid "Failed to update  operation attribute"
+msgstr "Не удалось обновить атрибут операции"
+
+msgid "Failed to update  operation parameter"
+msgstr "Не удалось обновить параметр операции"
+
+msgid "Failed to update  operation tool"
+msgstr "Не удалось обновить инструмент операции"
+
+msgid "Failed to update account"
+msgstr "Не удалось обновить учетную запись"
+
+msgid "Failed to update API key"
+msgstr "Не удалось обновить API ключ"
+
+msgid "Failed to update asset class"
+msgstr "Не удалось обновить класс активов"
+
+msgid "Failed to update assignment"
+msgstr "Не удалось обновить назначение"
+
+msgid "Failed to update attribute"
+msgstr "Не удалось обновить атрибут"
+
+msgid "Failed to update attribute category"
+msgstr "Не удалось обновить категорию атрибута"
+
+msgid "Failed to update attribute value"
+msgstr "Не удалось обновить значение атрибута"
+
+msgid "Failed to update avatar"
+msgstr "Не удалось обновить аватарку"
+
+msgid "Failed to update claims"
+msgstr "Не удалось обновить претензии"
+
+msgid "Failed to update company"
+msgstr "Не удалось обновить компанию"
+
+msgid "Failed to update configuration"
+msgstr "Не удалось обновить конфигурацию"
+
+msgid "Failed to update consumable"
+msgstr "Не удалось обновить расходный материал"
+
+msgid "Failed to update consumable costing"
+msgstr "Не удалось обновить затраты наsumeable"
+
+msgid "Failed to update consumable inventory"
+msgstr "Не удалось обновить запасы расходных материалов"
+
+msgid "Failed to update consumable planning"
+msgstr "Не удалось обновить планирование расходных материалов"
+
+msgid "Failed to update consumable purchasing"
+msgstr "Не удалось обновить закупку расходных материалов"
+
+msgid "Failed to update content"
+msgstr "Не удалось обновить содержимое"
+
+msgid "Failed to update cost center."
+msgstr "Не удалось обновить центр затрат."
+
+msgid "Failed to update custom field"
+msgstr "Не удалось обновить пользовательское поле"
+
+msgid "Failed to update customer"
+msgstr "Не удалось обновить клиента"
+
+msgid "Failed to update customer address"
+msgstr "Не удалось обновить адрес клиента"
+
+msgid "Failed to update customer contact"
+msgstr "Не удалось обновить контакт клиента"
+
+msgid "Failed to update customer part"
+msgstr "Не удалось обновить零件信息"
+
+msgid "Failed to update customer payment terms"
+msgstr "Не удалось обновить условия оплаты для клиента"
+
+msgid "Failed to update customer portal"
+msgstr "Не удалось обновить портал для клиентов"
+
+msgid "Failed to update customer shipping"
+msgstr "Не удалось обновить способ доставки клиента"
+
+msgid "Failed to update customer status"
+msgstr "Не удалось обновить статус клиента"
+
+msgid "Failed to update customer tax information"
+msgstr "Не удалось обновить информацию о налоге для клиента"
+
+msgid "Failed to update customer type"
+msgstr "Не удалось обновить тип клиента"
+
+msgid "Failed to update default accounts"
+msgstr "Не удалось обновить\"default\" аккаунты"
+
+msgid "Failed to update demand forecasts"
+msgstr "Не удалось обновить прогнозы спроса"
+
+msgid "Failed to update dimension"
+msgstr "Не удалось обновить размеренность"
+
+msgid "Failed to update dispatch status"
+msgstr "Не удалось обновить статус отгрузки"
+
+msgid "Failed to update document"
+msgstr "Не удалось обновить документ"
+
+msgid "Failed to update document labels"
+msgstr "Не удалось обновить метки документа"
+
+msgid "Failed to update due date"
+msgstr "Не удалось обновить дату окончания"
+
+msgid "Failed to update emoji"
+msgstr "Не удалось обновить эмодзи"
+
+msgid "Failed to update employee"
+msgstr "Не удалось обновить сотрудника"
+
+msgid "Failed to update employee type"
+msgstr "Не удалось обновить тип сотрудника"
+
+msgid "Failed to update employee type permissions"
+msgstr "Не удалось обновить разрешения для типа сотрудника"
+
+msgid "Failed to update entry"
+msgstr "Не удалось обновить запись"
+
+msgid "Failed to update exchange rate"
+msgstr "Не удалось обновить курс валют"
+
+msgid "Failed to update expiration date"
+msgstr "Не удалось обновить дату истечения срока действия"
+
+msgid "Failed to update failure mode"
+msgstr "Не удалось обновить режим неисправности"
+
+msgid "Failed to update fiscal year settings"
+msgstr "Не удалось обновить настройки финансового года"
+
+msgid "Failed to update fixed asset"
+msgstr "Не удалось обновить фиксированное актива"
+
+msgid "Failed to update gauge"
+msgstr "Не удалось обновить шкалу"
+
+msgid "Failed to update gauge calibration record"
+msgstr "Не удалось обновить запись калибровки гауся"
+
+msgid "Failed to update gauge type"
+msgstr "Не удалось обновить тип гауся"
+
+msgid "Failed to update group"
+msgstr "Не удалось обновить группу"
+
+msgid "Failed to update group members"
+msgstr "Не удалось обновить членов группы"
+
+msgid "Failed to update invite link expiration"
+msgstr "Не удалось обновить срок действия приглашения"
+
+msgid "Failed to update issue"
+msgstr "Не удалось обновить задачу"
+
+msgid "Failed to update issue status"
+msgstr "Не удалось обновить статус задачи"
+
+msgid "Failed to update issue type"
+msgstr "Не удалось обновить тип задачи"
+
+msgid "Failed to update issue workflow"
+msgstr "Не удалось обновить рабочий процесс задачи"
+
+msgid "Failed to update item"
+msgstr "Не удалось обновить элемент"
+
+msgid "Failed to update item group"
+msgstr "Не удалось обновить группу элементов"
+
+msgid "Failed to update job"
+msgstr "Не удалось обновить задачу"
+
+msgid "Failed to update job material"
+msgstr "Не удалось обновить материал работы"
+
+msgid "Failed to update job operation"
+msgstr "Не удалось обновить операцию работы"
+
+msgid "Failed to update job operation attribute"
+msgstr "Не удалось обновить атрибут операции задания"
+
+msgid "Failed to update job operation parameter"
+msgstr "Не удалось обновить параметр операции задания"
+
+msgid "Failed to update job operation tool"
+msgstr "Не удалось обновить инструмент операции задания"
+
+msgid "Failed to update job status"
+msgstr "Не удалось обновить статус задачи"
+
+msgid "Failed to update kanban"
+msgstr "Не удалось обновить канбан"
+
+msgid "Failed to update line"
+msgstr "Не удалось обновить строку"
+
+msgid "Failed to update maintenance schedule"
+msgstr "Не удалось обновить план обслуживания"
+
+msgid "Failed to update material"
+msgstr "Не удалось обновить материал"
+
+msgid "Failed to update material costing"
+msgstr "Не удалось обновить стоимость материала"
+
+msgid "Failed to update material form"
+msgstr "Не удалось обновить форму материала"
+
+msgid "Failed to update material grade"
+msgstr "Не удалось обновить класс материала"
+
+msgid "Failed to update material inventory"
+msgstr "Не удалось обновить запасы материала"
+
+msgid "Failed to update material planning"
+msgstr "Не удалось обновить планирование материала"
+
+msgid "Failed to update material purchasing"
+msgstr "Не удалось обновить закупку материала"
+
+msgid "Failed to update material substance"
+msgstr "Не удалось обновить вещественный материал"
+
+msgid "Failed to update material type"
+msgstr "Не удалось обновить тип материала"
+
+msgid "Failed to update method material"
+msgstr "Не удалось обновить метод материала"
+
+msgid "Failed to update method operation"
+msgstr "Не удалось обновить метод операции"
+
+msgid "Failed to update method operation parameter"
+msgstr "Не удалось обновить параметр операции метода"
+
+msgid "Failed to update method operation step"
+msgstr "Не удалось обновить метод операции шаг"
+
+msgid "Failed to update method operation tool"
+msgstr "Не удалось обновить метод операции инструментом"
+
+msgid "Failed to update no quote reason"
+msgstr "Не удалось обновить причину отсутствия цитаты"
+
+msgid "Failed to update order"
+msgstr "Не удалось обновить заказ"
+
+msgid "Failed to update original"
+msgstr "Не удалось обновить оригинальный"
+
+msgid "Failed to update parameter"
+msgstr "Не удалось обновить параметр"
+
+msgid "Failed to update part"
+msgstr "Не удалось обновить деталь"
+
+msgid "Failed to update part costing"
+msgstr "Не удалось обновить стоимость компонента"
+
+msgid "Failed to update part inventory"
+msgstr "Не удалось обновить запасы деталей"
+
+msgid "Failed to update part manufacturing"
+msgstr "Не удалось обновить производство детали"
+
+msgid "Failed to update part planning"
+msgstr "Не удалось обновить планирование деталей"
+
+msgid "Failed to update part purchasing"
+msgstr "Не удалось обновить закупку детали"
+
+msgid "Failed to update part sale price"
+msgstr "Не удалось обновить цену на деталь"
+
+msgid "Failed to update payment term"
+msgstr "Не удалось обновить условия оплаты"
+
+msgid "Failed to update picking list"
+msgstr "Не удалось обновить список выборки"
+
+msgid "Failed to update picking list status"
+msgstr "Не удалось обновить статус списка выборки"
+
+msgid "Failed to update price override"
+msgstr "Не удалось обновить перекрытие цены"
+
+msgid "Failed to update pricing rule"
+msgstr "Не удалось обновить правило ценообразования"
+
+msgid "Failed to update procedure parameter"
+msgstr "Не удалось обновить параметр процедуры"
+
+msgid "Failed to update procedure step"
+msgstr "Не удалось обновить шаг процедуры"
+
+msgid "Failed to update process completion"
+msgstr "Не удалось обновить процент выполнения процесса"
+
+msgid "Failed to update production event"
+msgstr "Не удалось обновить производственное событие"
+
+msgid "Failed to update profile"
+msgstr "Не удалось обновить профиль"
+
+msgid "Failed to update purchase invoice"
+msgstr "Не удалось обновить покупательскую накладную"
+
+msgid "Failed to update purchase invoice delivery"
+msgstr "Не удалось обновить поставку покупной накладной"
+
+msgid "Failed to update purchase invoice line"
+msgstr "Не удалось обновить строку покупательской накладной"
+
+msgid "Failed to update purchase invoice status"
+msgstr "Не удалось обновить статус покупочной накладной"
+
+msgid "Failed to update purchase order"
+msgstr "Не удалось обновить заказ на покупку"
+
+msgid "Failed to update purchase order delivery"
+msgstr "Не удалось обновить поставку заказа на покупку"
+
+msgid "Failed to update purchase order line"
+msgstr "Не удалось обновить строку заказа на покупку"
+
+msgid "Failed to update purchase order payment"
+msgstr "Не удалось обновить оплату заказа покупки"
+
+msgid "Failed to update purchasing order status"
+msgstr "Не удалось обновить статус закупочного заказа"
+
+msgid "Failed to update question"
+msgstr "Не удалось обновить вопрос"
+
+msgid "Failed to update quote"
+msgstr "Не удалось обновить заявку"
+
+msgid "Failed to update quote line"
+msgstr "Не удалось обновить строку цитаты"
+
+msgid "Failed to update quote material"
+msgstr "Не удалось обновить материал цитаты"
+
+msgid "Failed to update quote operation"
+msgstr "Не удалось обновить цитату операцию"
+
+msgid "Failed to update quote payment"
+msgstr "Не удалось обновить оплату заявки"
+
+msgid "Failed to update quote shipment"
+msgstr "Не удалось обновить поставку цитаты"
+
+msgid "Failed to update quote status"
+msgstr "Не удалось обновить статус цитаты"
+
+msgid "Failed to update receipt"
+msgstr "Не удалось обновить приход"
+
+msgid "Failed to update required action"
+msgstr "Не удалось обновить необходимое действие"
+
+msgid "Failed to update RFQ"
+msgstr "Не удалось обновить заявку на цену"
+
+msgid "Failed to update RFQ line"
+msgstr "Не удалось обновить строку заявки на поставку"
+
+msgid "Failed to update RFQ line with model"
+msgstr "Не удалось обновить строку заявки на поставку с учетом модели"
+
+msgid "Failed to update RFQ status"
+msgstr "Не удалось обновить статус заявки на поставку"
+
+msgid "Failed to update risk"
+msgstr "Не удалось обновить риск"
+
+msgid "Failed to update rule"
+msgstr "Не удалось обновить правило"
+
+msgid "Failed to update sales invoice"
+msgstr "Не удалось обновить счет на продажу"
+
+msgid "Failed to update sales invoice line"
+msgstr "Не удалось обновить строку счета на продажи"
+
+msgid "Failed to update sales invoice shipping"
+msgstr "Не удалось обновить отгрузку сales发票shipping"
+
+msgid "Failed to update sales invoice status"
+msgstr "Не удалось обновить статус продажного发票状态更新失败"
+
+msgid "Failed to update sales order line"
+msgstr "Не удалось обновить строку заказа на продажи"
+
+msgid "Failed to update sales order payment"
+msgstr "Не удалось обновить оплату заказа на продажи"
+
+msgid "Failed to update sales order shipment"
+msgstr "Не удалось обновить отгрузку продажного заказа"
+
+msgid "Failed to update sales order status"
+msgstr "Не удалось обновить статус заказа на продажи"
+
+msgid "Failed to update scrap reason"
+msgstr "Не удалось обновить причину потерь"
+
+msgid "Failed to update sequence"
+msgstr "Не удалось обновить последовательность"
+
+msgid "Failed to update shipment"
+msgstr "Не удалось обновить отгрузку"
+
+msgid "Failed to update shipping method"
+msgstr "Не удалось обновить способ доставки"
+
+msgid "Failed to update sort order"
+msgstr "Не удалось обновить порядок сортировки"
+
+msgid "Failed to update status"
+msgstr "Не удалось обновить статус"
+
+msgid "Failed to update step"
+msgstr "Не удалось обновить шаг"
+
+msgid "Failed to update storage type"
+msgstr "Не удалось обновить тип хранения"
+
+msgid "Failed to update storageUnit"
+msgstr "Не удалось обновить(storageUnit)"
+
+msgid "Failed to update style color"
+msgstr "Не удалось обновить цвет стиля"
+
+msgid "Failed to update style costing"
+msgstr "Не удалось обновить стиль затрат"
+
+msgid "Failed to update style inventory"
+msgstr "Не удалось обновить стиль инвентаря"
+
+msgid "Failed to update style planning"
+msgstr "Не удалось обновить стиль планирования"
+
+msgid "Failed to update style sale price"
+msgstr "Не удалось обновить стиль продажной цены"
+
+msgid "Failed to update style size"
+msgstr "Не удалось обновить размер стиля"
+
+msgid "Failed to update subsidiary"
+msgstr "Не удалось обновить филиал"
+
+msgid "Failed to update supplier"
+msgstr "Не удалось обновить поставщика"
+
+msgid "Failed to update supplier address"
+msgstr "Не удалось обновить адрес поставщика"
+
+msgid "Failed to update supplier contact"
+msgstr "Не удалось обновить контакт поставщика"
+
+msgid "Failed to update supplier payment terms"
+msgstr "Не удалось обновить условия оплаты поставщика"
+
+msgid "Failed to update supplier process"
+msgstr "Не удалось обновить процесс поставщика"
+
+msgid "Failed to update supplier quote status"
+msgstr "Не удалось обновить статус предложения поставщика"
+
+msgid "Failed to update supplier shipping"
+msgstr "Не удалось обновить поставку от поставщика"
+
+msgid "Failed to update supplier tax information"
+msgstr "Не удалось обновить информацию о налогах поставщика"
+
+msgid "Failed to update supplier type"
+msgstr "Не удалось обновить тип поставщика"
+
+msgid "Failed to update supplierQuote line"
+msgstr "Не удалось обновить строку предложения поставщика"
+
+msgid "Failed to update suppliers"
+msgstr "Не удалось обновить поставщиков"
+
+msgid "Failed to update task status"
+msgstr "Не удалось обновить статус задачи"
+
+msgid "Failed to update task supplier"
+msgstr "Не удалось обновить поставщика задачи"
+
+msgid "Failed to update timecard"
+msgstr "Не удалось обновить карточку времени"
+
+msgid "Failed to update tool"
+msgstr "Не удалось обновить инструмент"
+
+msgid "Failed to update tool costing"
+msgstr "Не удалось обновить затраты на инструмент"
+
+msgid "Failed to update tool inventory"
+msgstr "Не удалось обновить инвентарь инструментов"
+
+msgid "Failed to update tool manufacturing"
+msgstr "Не удалось обновить производство инструмента"
+
+msgid "Failed to update tool planning"
+msgstr "Не удалось обновить планирование инструмента"
+
+msgid "Failed to update tool purchasing"
+msgstr "Не удалось обновить закупку инструмента"
+
+msgid "Failed to update training question"
+msgstr "Не удалось обновить вопрос для обучения"
+
+msgid "Failed to update unit of measure"
+msgstr "Не удалось обновить единицу измерения"
+
+msgid "Failed to update user permissions"
+msgstr "Не удалось обновить права пользователя"
+
+msgid "Failed to update warehouse transfer"
+msgstr "Не удалось обновить перемещение склада"
+
+msgid "Failed to update warehouse transfer line"
+msgstr "Не удалось обновить строку перемещения склада"
+
+msgid "Failed to update warehouse transfer status"
+msgstr "Не удалось обновить статус перемещения склада"
+
+msgid "Failed to update webhook"
+msgstr "Не удалось обновить вебхук"
+
+msgid "Failed to update work center"
+msgstr "Не удалось обновить рабочий центр"
+
+msgid "Failed to upload file"
+msgstr "Не удалось загрузить файл"
 
 #. placeholder {0}: fileUpload.name
 msgid "Failed to upload file: {0}"
@@ -521,6 +3681,24 @@ msgstr "Не удалось загрузить файл: {0}"
 
 msgid "Failed to upload image"
 msgstr "Не удалось загрузить изображение"
+
+msgid "Failed to verify WeChat session"
+msgstr "Не удалось проверить сеанс WeChat"
+
+msgid "Failed to void purchase invoice"
+msgstr "Не удалось аннулировать покупную накладную"
+
+msgid "Failed to void receipt"
+msgstr "Не удалось аннулировать приёмку"
+
+msgid "Failed to void sales invoice"
+msgstr "Не удалось аннулировать продажную накладную"
+
+msgid "Failed to void shipment"
+msgstr "Не удалось аннулировать отгрузку"
+
+msgid "Failure mode created"
+msgstr "Фаилура создана"
 
 msgid "Feedback"
 msgstr "Обратная связь"
@@ -547,8 +3725,17 @@ msgstr "Завершить {0}"
 msgid "Finish Anyways"
 msgstr "Завершить всё равно"
 
+msgid "Finish created"
+msgstr "Завершить созданный"
+
 msgid "Fixed"
 msgstr "Исправлено"
+
+msgid "Fixed asset created"
+msgstr "Фиксированное актива создано"
+
+msgid "Fixed asset updated"
+msgstr "Дополнительное имущество обновлено"
 
 msgid "Forgot to Clock Out?"
 msgstr "Забыли отметить уход?"
@@ -559,11 +3746,23 @@ msgstr "Вернуться к операции"
 msgid "Gold"
 msgstr "Золотой"
 
+msgid "Grade created"
+msgstr "Уровень создан"
+
 msgid "Gray"
 msgstr "Серый"
 
 msgid "Green"
 msgstr "Зелёный"
+
+msgid "Group created"
+msgstr "Группа создана"
+
+msgid "Group not found"
+msgstr "Группа не найдена"
+
+msgid "Group updated successfully"
+msgstr "Группа успешно обновлена"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Возникла техническая проблема? Обратитесь в <0>службу поддержки Carbon.</0>"
@@ -577,6 +3776,12 @@ msgstr "Высший приоритет"
 msgid "History"
 msgstr "Истории"
 
+msgid "Holiday created"
+msgstr "Праздник создан"
+
+msgid "Holiday updated"
+msgstr "Отпуск обновлен"
+
 msgid "How many were actually picked?"
 msgstr "Сколько было фактическиpicked?"
 
@@ -585,6 +3790,9 @@ msgstr "Я понимаю и хочу завершить без выдачи"
 
 msgid "I'm Still Working"
 msgstr "Я ещё работаю"
+
+msgid "IC transaction created"
+msgstr "Транзакция IC создана"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "Идеи, предложения или проблемы с этой страницей?"
@@ -604,8 +3812,95 @@ msgstr "В работе"
 msgid "Increase"
 msgstr "Увеличить"
 
+msgid "Inspection document created"
+msgstr "Документ проверки создан"
+
+msgid "Inspection document deleted"
+msgstr "Документ проверки удален"
+
+msgid "Inspection id mismatch"
+msgstr "Несоответствие идентификатора проверки"
+
 msgid "Insufficient quantity"
 msgstr "Недостаточное количество"
+
+msgid "Invalid access token"
+msgstr "Недействительный токен доступа"
+
+msgid "Invalid action"
+msgstr "Недопустимое действие"
+
+msgid "Invalid action type"
+msgstr "Неверный тип действия"
+
+msgid "Invalid avatar path"
+msgstr "Неверный путь к аватару"
+
+msgid "Invalid callback form"
+msgstr "Неверная форма обратного вызова"
+
+msgid "Invalid email address"
+msgstr "Неверный адрес электронной почты"
+
+msgid "Invalid form data"
+msgstr "Неверные данные формы"
+
+msgid "Invalid invitation"
+msgstr "Недействительное приглашение"
+
+msgid "Invalid job configuration"
+msgstr "Неверная конфигурация задания"
+
+msgid "Invalid lines data"
+msgstr "Неверные данные по линиям"
+
+msgid "Invalid mode"
+msgstr "Неверный режим"
+
+msgid "Invalid operation"
+msgstr "Недопустимая операция"
+
+msgid "Invalid or expired verification code"
+msgstr "Неверный или истекший срок действия код подтверждения"
+
+msgid "Invalid payload"
+msgstr "Недопустимый груз"
+
+msgid "Invalid phone number"
+msgstr "Неверный номер телефона"
+
+msgid "Invalid plan"
+msgstr "Недействительный план"
+
+msgid "Invalid reprint request"
+msgstr "Недопустимая повторная заявка"
+
+msgid "Invalid request body"
+msgstr "Недопустимое тело запроса"
+
+msgid "Invalid reviewer"
+msgstr "Недопустимый проверяющий"
+
+msgid "Invalid session data"
+msgstr "Недействительные сессионные данные"
+
+msgid "Invalid split request"
+msgstr "Недопустимая запрос на разделение"
+
+msgid "Invalid state parameter"
+msgstr "Неверный параметр состояния"
+
+msgid "Invalid status"
+msgstr "Неверный статус"
+
+msgid "Invalid table"
+msgstr "Неверная таблица"
+
+msgid "Invalid task ID"
+msgstr "Неверный идентификатор задачи"
+
+msgid "Invalid verification code"
+msgstr "Неверный код верификации"
 
 msgid "Inventory adjustment completed"
 msgstr "Корректировка запасов выполнена"
@@ -618,6 +3913,18 @@ msgstr "Приглашение"
 
 msgid "Invitations"
 msgstr "Приглашения"
+
+msgid "Invite link created"
+msgstr "Ссылка для приглашения создана"
+
+msgid "Invite link expiration updated"
+msgstr "Срок действия ссылки на приглашение обновлен"
+
+msgid "Invite link revoked"
+msgstr "Ссылка на приглашение отозвана"
+
+msgid "Invite updated"
+msgstr "Пригласить обновленного"
 
 msgid "is"
 msgstr "равно"
@@ -637,8 +3944,20 @@ msgstr "Тип проблемы"
 msgid "Item"
 msgstr "Номенклатура"
 
+msgid "Item association not found"
+msgstr "Связь с элементом не найдена"
+
 msgid "Item Master"
 msgstr "Карточка номенклатуры"
+
+msgid "Item posting group created"
+msgstr "Группа записи элементов создана"
+
+msgid "Item removed and returned to inventory"
+msgstr "Позиция удалена и возвращена в инвентарь"
+
+msgid "Item saved"
+msgstr "Предмет сохранен"
 
 msgid "Items"
 msgstr "Позиции"
@@ -646,8 +3965,32 @@ msgstr "Позиции"
 msgid "Job"
 msgstr "Задание"
 
+msgid "Job cancelled"
+msgstr "Задача отменена"
+
+msgid "Job completed successfully"
+msgstr "Задача выполнена успешно"
+
 msgid "Job Details"
 msgstr "Детали задания"
+
+msgid "Job marked as planned"
+msgstr "Задача отмечена как запланированная"
+
+msgid "Job operation attribute updated"
+msgstr "Атрибут операции задания обновлен"
+
+msgid "Job operation is required"
+msgstr "Необходима операция работы"
+
+msgid "Job operation not found"
+msgstr "Задача операции не найдена"
+
+msgid "Job operation parameter updated"
+msgstr "Параметр операции задания обновлен"
+
+msgid "Job operation tool updated"
+msgstr "Задача операции обновлена"
 
 msgid "Job Traveler"
 msgstr "Маршрутный лист"
@@ -655,14 +3998,29 @@ msgstr "Маршрутный лист"
 msgid "Jobs"
 msgstr "Задания"
 
+msgid "Jobs created"
+msgstr "Созданные работы"
+
 msgid "Join"
 msgstr "Присоединиться"
 
 msgid "Join a company you've been invited to, or pick one."
 msgstr "Присоединитесь к компании, в которую вас пригласили, или выберите другую."
 
-msgid "Keep the completed quantity and give a reason for the rest."
-msgstr "Сохраните выполненную величину и укажите причину оставшейся части."
+msgid "Journal entry deleted"
+msgstr "Запись журнала удалена"
+
+msgid "Journal entry posted"
+msgstr "Запись журнала опубликована"
+
+msgid "Journal entry reversed"
+msgstr "Справка о переводе журнального за记"
+
+msgid "Journal entry saved"
+msgstr "Запись журнала сохранена"
+
+msgid "Kanban created"
+msgstr "Канбан создан"
 
 msgid "Khaki"
 msgstr "Хаки"
@@ -682,6 +4040,18 @@ msgstr "Оставить эту страницу"
 msgid "Let's build something"
 msgstr "Давайте создадим что-то"
 
+msgid "Line already picked"
+msgstr "Линия уже выбрана"
+
+msgid "Line created"
+msgstr "Линия создана"
+
+msgid "Line split"
+msgstr "Строка разделения"
+
+msgid "Line updated"
+msgstr "Линия обновлена"
+
 msgid "lines"
 msgstr "строки"
 
@@ -691,6 +4061,15 @@ msgstr "Ссылка"
 msgid "Linked"
 msgstr "Связано"
 
+msgid "Linked email"
+msgstr "Связанный электронный почтовый адрес"
+
+msgid "Linked phone"
+msgstr "Связанный телефон"
+
+msgid "Linked WeChat"
+msgstr "Связанный ВеiЧат"
+
 msgid "Loading item details..."
 msgstr "Загрузка данных номенклатуры..."
 
@@ -699,6 +4078,12 @@ msgstr "Загрузка..."
 
 msgid "Location"
 msgstr "Расположение"
+
+msgid "Location created"
+msgstr "Локация создана"
+
+msgid "Location updated"
+msgstr "Локация обновлена"
 
 msgid "Log Completed"
 msgstr "Записать готовые"
@@ -727,6 +4112,30 @@ msgstr "Записать брак для {0}"
 msgid "Login"
 msgstr "Вход"
 
+msgid "Lot accepted"
+msgstr "Лот принят"
+
+msgid "Lot marked partial"
+msgstr "Лот отмечен частичным"
+
+msgid "Lot rejected"
+msgstr "Лот отклонен"
+
+msgid "Lot rejected — NCR opened"
+msgstr "Лот отклонен — НКР создан"
+
+msgid "Lot rejected, but failed to create NCR"
+msgstr "Лот отклонен, но не удалось создать НКР"
+
+msgid "Lot rejected, but failed to create NCR tasks"
+msgstr "Лот отклонен, но не удалось создать задачи по НКР"
+
+msgid "Lot rejected, but failed to load it for NCR"
+msgstr "Лот отклонен, но не удалось загрузить его для НКР"
+
+msgid "Lot rejected. Configure at least one Issue Type and a default user location to auto-create an NCR."
+msgstr "Лот отклонен. Настройте хотя бы один тип проблемы и\"default\" местоположение пользователя для автоматической создания НКР."
+
 msgid "Low Priority"
 msgstr "Низкий приоритет"
 
@@ -736,17 +4145,35 @@ msgstr "Станок"
 msgid "Maintenance"
 msgstr "Обслуживание"
 
+msgid "Maintenance completed"
+msgstr "Поддержка завершена"
+
 msgid "Maintenance Completed"
 msgstr "Обслуживание завершено"
 
+msgid "Maintenance dispatch created"
+msgstr "Расписание технического обслуживания создано"
+
 msgid "Maintenance dispatches"
 msgstr "Распоряжения на обслуживание"
+
+msgid "Maintenance paused"
+msgstr "Поддержка приостановлена"
+
+msgid "Maintenance schedule created"
+msgstr "Расписание обслуживания создано"
+
+msgid "Maintenance started"
+msgstr "Поддержка началась"
 
 msgid "Manually add items to inventory"
 msgstr "Добавить номенклатуру на склад вручную"
 
 msgid "Manually remove items from inventory"
 msgstr "Списать номенклатуру со склада вручную"
+
+msgid "Manufacturing is blocked"
+msgstr "Производство заблокировано"
 
 msgid "Mark fixed"
 msgstr "Отметить исправленным"
@@ -760,11 +4187,17 @@ msgstr "Отметить нехватку"
 msgid "Master Order"
 msgstr "Основное производство"
 
+msgid "Master work order created"
+msgstr "Заказ производства создан"
+
 msgid "Master Work Orders"
 msgstr "Основные производственные заказы"
 
 msgid "matches"
 msgstr "соответствует"
+
+msgid "Material form created"
+msgstr "Форма материала создана"
 
 msgid "Materials"
 msgstr "Материалы"
@@ -775,8 +4208,38 @@ msgstr "Достигнуто максимальное количество за�
 msgid "Medium Priority"
 msgstr "Средний приоритет"
 
+msgid "Method operation parameter updated"
+msgstr "Параметр метода операции обновлен"
+
+msgid "Method operation step updated"
+msgstr "Шаг операции метода обновлен"
+
+msgid "Method operation tool updated"
+msgstr "Инструмент операции обновлен"
+
 msgid "Metric"
 msgstr "Метрическая"
+
+msgid "Missing code or state from WeChat"
+msgstr "Отсутствующий код или состояние из WeChat"
+
+msgid "Missing credentialId"
+msgstr "Отсутствует credentialId"
+
+msgid "Missing depreciation run ID"
+msgstr "Отсутствует идентификатор розыгрыша амортизации"
+
+msgid "Missing fields"
+msgstr "Отсутствуют поля"
+
+msgid "Missing operation"
+msgstr "Отсутствует операция"
+
+msgid "Missing parameters"
+msgstr "Отсутствуют параметры"
+
+msgid "Missing required fields"
+msgstr "Отсутствуют обязательные поля"
 
 msgid "Model"
 msgstr "Модель"
@@ -800,6 +4263,9 @@ msgstr "Переместить столбец: {0}"
 msgid "Move reworked units back into finished production."
 msgstr "Вернуть доработанные единицы в готовую продукцию."
 
+msgid "Moved entities"
+msgstr "Перемещенные элементы"
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "Должно быть < {maxValue} {unitOfMeasureCode}"
 
@@ -820,6 +4286,9 @@ msgstr "Имя"
 
 msgid "Navy"
 msgstr "Тёмно-синий"
+
+msgid "NCR closed"
+msgstr "Закрыто НКР"
 
 msgid "New"
 msgstr "Новое"
@@ -851,6 +4320,9 @@ msgstr "Нет активных нарядов на обслуживание"
 msgid "No active operations"
 msgstr "Нет активных операций"
 
+msgid "No active plan"
+msgstr "Нет активного плана"
+
 msgid "No approved completions this period"
 msgstr "Нет утвержденных completions за этот период"
 
@@ -869,14 +4341,26 @@ msgstr "Найдено нетracked объектов"
 msgid "No bundle work orders"
 msgstr "Нет пакетных производственных заказов"
 
+msgid "No depreciation to calculate for uncovered assets"
+msgstr "Нет амортизации для расчета для незакрытых активов"
+
 msgid "No dispatches assigned to you"
 msgstr "Нет нарядов, назначенных вам"
 
 msgid "No files"
 msgstr "Нет файлов"
 
+msgid "No forecast quantities provided"
+msgstr "Нет предоставленных прогнозных количеств"
+
 msgid "No Impact"
 msgstr "Без влияния"
+
+msgid "No invite record found for user"
+msgstr "Нет записи приглашения для пользователя"
+
+msgid "No line items found for this RFQ"
+msgstr "Нет строк заказа для этой заявки на покупку"
 
 msgid "No maintenance scheduled for today"
 msgstr "На сегодня обслуживание не запланировано"
@@ -907,6 +4391,9 @@ msgstr "Нет настроенной принтера"
 
 msgid "No production logs"
 msgstr "Нет производственных логов"
+
+msgid "No quote reason created"
+msgstr "Нет причины для безотметки"
 
 msgid "No recent operations"
 msgstr "Нет недавних операций"
@@ -941,6 +4428,9 @@ msgstr "Запасные части ещё не добавлены"
 msgid "No stock"
 msgstr "Нет запасов"
 
+msgid "No suppliers found for this RFQ"
+msgstr "Нет поставщиков для этой заявки на покупку"
+
 msgid "No time entries for this week"
 msgstr "Нет записей учёта времени за эту неделю"
 
@@ -952,6 +4442,15 @@ msgstr "Нет заблокированных рабочих центров"
 
 msgid "No work centers exist"
 msgstr "Рабочие центры отсутствуют"
+
+msgid "Non-conformance type created"
+msgstr "Тип несоответствия создан"
+
+msgid "Non-conformance workflow created"
+msgstr "Нвоздействие с несоответствием создано"
+
+msgid "Non-conformance workflow updated"
+msgstr "Функционал обработки несоответствий обновлен"
 
 msgid "Not finished yet"
 msgstr "Не завершено еще"
@@ -975,6 +4474,21 @@ msgstr "Самые старые первыми"
 msgid "Only {0} available"
 msgstr "Доступно только {0}"
 
+msgid "Only active assets can be sold"
+msgstr "Только активные актива можно продать"
+
+msgid "Only Active or Fully Depreciated assets can be disposed"
+msgstr "Только активные или полностью списанные активы могут быть выбраны для处置"
+
+msgid "Only Draft assets can be purchased"
+msgstr "Только черновые активы могут быть приобретены"
+
+msgid "Only Draft assets can be registered"
+msgstr "Только черновые активы могут быть зарегистрированы"
+
+msgid "Only posted runs can be repeated"
+msgstr "Только опубликованные запуски можно повторить"
+
 msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "Ой. Вы не должны видеть эту страницу. Со временем здесь будет главная страница."
 
@@ -990,6 +4504,12 @@ msgstr "Открыть выбор даты и времени"
 msgid "Open Jobs"
 msgstr "Открытые задачи"
 
+msgid "Operation finished successfully"
+msgstr "Операция завершена успешно"
+
+msgid "Operation not found"
+msgstr "Операция не найдена"
+
 msgid "Operations"
 msgstr "Операции"
 
@@ -1001,6 +4521,12 @@ msgstr "Операции завершены"
 
 msgid "Operations you are currently working on"
 msgstr "Операции, над которыми вы currently-working-on"
+
+msgid "Operator converted to full user. Invite email sent."
+msgstr "Оператор был преобразован в полного пользователя. Приглашение отправлено."
+
+msgid "Operator not found"
+msgstr "Оператор не найден"
 
 msgid "Operator Performed"
 msgstr "Выполнено оператором"
@@ -1026,8 +4552,29 @@ msgstr "Параметры"
 msgid "Part"
 msgstr "Деталь"
 
+msgid "Part group created"
+msgstr "Группа деталей создана"
+
+msgid "Partner created"
+msgstr "Партнер создан"
+
+msgid "Partner updated"
+msgstr "Партнер обновлен"
+
 msgid "Passed Inspection"
 msgstr "Контроль пройден"
+
+msgid "Passkey name must be 100 characters or fewer"
+msgstr "Имя парольной фразы должно содержать не более 100 символов"
+
+msgid "Passkey removed"
+msgstr "Пароль удален"
+
+msgid "Passkey renamed"
+msgstr "Пароль переименован"
+
+msgid "Passkeys are disabled"
+msgstr "Паспортные ключи отключены"
 
 msgid "Paste a link"
 msgstr "Вставьте ссылку"
@@ -1037,6 +4584,12 @@ msgstr "Пауза"
 
 msgid "Paused"
 msgstr "Приостановлено"
+
+msgid "Payment recorded successfully"
+msgstr "Платеж успешно зарегистрирован"
+
+msgid "Payment term created"
+msgstr "Срок оплаты создан"
 
 msgid "Pending"
 msgstr "Ожидание"
@@ -1049,6 +4602,9 @@ msgstr "Отсроченная оценка"
 
 msgid "Period"
 msgstr "Период"
+
+msgid "Permissions updated"
+msgstr "Правила доступа обновлены"
 
 msgid "Phone"
 msgstr "Телефон"
@@ -1084,6 +4640,9 @@ msgstr "Столбец {0} взят с позиции: {1} из {2}"
 msgid "Picking"
 msgstr "Выборка"
 
+msgid "Picking list deleted successfully"
+msgstr "Список выборки успешно удален"
+
 msgid "Picking lists to fulfill"
 msgstr "Списки выборки для выполнения"
 
@@ -1092,6 +4651,9 @@ msgstr "Взять задание по пачке"
 
 msgid "Pin Out"
 msgstr "Выход по PIN"
+
+msgid "PIN reset successfully"
+msgstr "Сброс PIN успешно"
 
 msgid "Pink"
 msgstr "Розовый"
@@ -1105,8 +4667,14 @@ msgstr "Пожалуйста, зафиксируйте все шаги этой 
 msgid "Please select an item"
 msgstr "Пожалуйста, выберите номенклатуру"
 
+msgid "Please sign in before linking WeChat"
+msgstr "Пожалуйста, войдите в систему перед связью с WeChat"
+
 msgid "Point the camera at the bundle ticket QR code"
 msgstr "Наведите камеру на QR-код ярлыка пачки"
+
+msgid "Posting date is required"
+msgstr "Дата постановки обязательна"
 
 msgid "Prev"
 msgstr "Назад"
@@ -1129,6 +4697,27 @@ msgstr "Предыдущий слайд"
 msgid "Previous Year"
 msgstr "Предыдущий год"
 
+msgid "Price override created"
+msgstr "Цена перезаписана"
+
+msgid "Price override deleted"
+msgstr "Цена отменена"
+
+msgid "Price override updated"
+msgstr "Цена перезаписана"
+
+msgid "Pricing rule created"
+msgstr "Правило ценообразования создано"
+
+msgid "Pricing rule deleted"
+msgstr "Правило ценообразования удалено"
+
+msgid "Pricing rule duplicated"
+msgstr "Правило ценообразования дублировано"
+
+msgid "Pricing rule updated"
+msgstr "Правило ценообразования обновлено"
+
 msgid "Print"
 msgstr "Печать"
 
@@ -1139,11 +4728,20 @@ msgstr "Печать ({0})"
 msgid "Print from this device"
 msgstr "Печать с этого устройства"
 
+msgid "Print job deleted"
+msgstr "Задача напечатана удалена"
+
+msgid "Print job ID required"
+msgstr "ID задачи печати требуется"
+
 msgid "Print Tickets"
 msgstr "Печать ярлыков"
 
 msgid "Print to"
 msgstr "Печатать на"
+
+msgid "Printer route deleted"
+msgstr "Принтерная дорога удалена"
 
 msgid "Printer Settings"
 msgstr "Настройки принтера"
@@ -1154,8 +4752,17 @@ msgstr "Приоритет"
 msgid "Procedure"
 msgstr "Процедура"
 
+msgid "Procedure created"
+msgstr "Предприятие создано"
+
 msgid "Process"
 msgstr "Процесс"
+
+msgid "Process completion created"
+msgstr "Завершение процесса создано"
+
+msgid "Process created"
+msgstr "Процесс создан"
 
 msgid "Process Parameters"
 msgstr "Параметры процесса"
@@ -1169,6 +4776,9 @@ msgstr "Произведено"
 msgid "production"
 msgstr "производство"
 
+msgid "Production event created"
+msgstr "Событие производства создано"
+
 msgid "Production Logs"
 msgstr "Логи производства"
 
@@ -1177,6 +4787,21 @@ msgstr "Прогресс"
 
 msgid "Properties"
 msgstr "Свойства"
+
+msgid "Purchase invoice voided"
+msgstr "Принудительно отменена закупочная накладная"
+
+msgid "Purchase order created"
+msgstr "Заказ на покупку создан"
+
+msgid "Purchase order finalized"
+msgstr "Заказ на покупку завершен"
+
+msgid "Purchase order not found"
+msgstr "Заказ не найден"
+
+msgid "Purchase order submitted for approval"
+msgstr "Заказ на покупку отправлен на审批"
 
 msgid "Purple"
 msgstr "Фиолетовый"
@@ -1189,6 +4814,9 @@ msgstr "Качественная проблема"
 
 msgid "Quality issue created"
 msgstr "Качественная проблема создана"
+
+msgid "QualityDocument created"
+msgstr "ДокументКачества создан"
 
 msgid "Quantity"
 msgstr "Количество"
@@ -1203,6 +4831,21 @@ msgstr "Количество взято на линию"
 msgid "Queued {0} tickets for printing"
 msgstr "{0} ярлыков поставлено в очередь на печать"
 
+msgid "Quote finalized successfully"
+msgstr "Цитата успешно завершена"
+
+msgid "Quote operation attribute updated"
+msgstr "Котированный операционный атрибут обновлен"
+
+msgid "Quote operation parameter updated"
+msgstr "Параметр операции обновлен"
+
+msgid "Quote operation tool updated"
+msgstr "Инструмент обновления операции заключен в кавычках"
+
+msgid "Rate limit exceeded"
+msgstr "Превышен лимит запросов"
+
 msgid "Ready"
 msgstr "Готово"
 
@@ -1214,6 +4857,9 @@ msgstr "Причина возврата"
 
 msgid "Reason for the remaining {shortfall}"
 msgstr "Причина для оставшихся {shortfall}"
+
+msgid "Receipt voided"
+msgstr "Отменена приемка"
 
 msgid "Recent"
 msgstr "Недавние"
@@ -1268,6 +4914,12 @@ msgstr "Удалить деталь"
 msgid "Remove Serial Number"
 msgstr "Удалить серийный номер"
 
+msgid "Removed login method"
+msgstr "Удален метод входа"
+
+msgid "Repeat depreciation run created"
+msgstr "Повторная вы Run раздражения создана"
+
 msgid "Report"
 msgstr "Отчёт"
 
@@ -1279,6 +4931,27 @@ msgstr "Отчёт по количеству"
 
 msgid "Reported"
 msgstr "Отправлено"
+
+msgid "Reprint job created"
+msgstr "Задача повторной печати создана"
+
+msgid "Request failed"
+msgstr "Запрос не удалось выполнить"
+
+msgid "Request succeeded"
+msgstr "Запрос выполнен успешно"
+
+msgid "Required action created successfully"
+msgstr "Действие создано успешно"
+
+msgid "Required action deleted successfully"
+msgstr "Действие успешно удалено"
+
+msgid "Required action not found"
+msgstr "Не найдена необходимая действие"
+
+msgid "Required action updated successfully"
+msgstr "Действие обновлено успешно"
 
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
@@ -1301,11 +4974,65 @@ msgstr "Переработка"
 msgid "Rework created successfully"
 msgstr "Доработка успешно создана"
 
+msgid "Rework quantity recorded successfully"
+msgstr "Количество переработки зарегистрировано успешно"
+
+msgid "Rework triggered successfully"
+msgstr "Переработка запущена успешно"
+
+msgid "RFQ cancelled"
+msgstr "Запрос на цитирование отменен"
+
+msgid "Risk created successfully"
+msgstr "Риск создан успешно"
+
+msgid "Risk updated successfully"
+msgstr "Риск успешно обновлен"
+
+msgid "Root accounts cannot be deleted"
+msgstr "Нельзя удалять корневые счета"
+
+msgid "Root accounts cannot be modified"
+msgstr "Нельзя изменять корневые счета"
+
+msgid "Rule assigned"
+msgstr "Правило назначено"
+
+msgid "Rule deleted"
+msgstr "Правило удалено"
+
+msgid "Rule id required"
+msgstr "ID правила необходим"
+
+msgid "Rule not found"
+msgstr "Правило не найдено"
+
+msgid "Rule unassigned"
+msgstr "Правило не назначено"
+
+msgid "Run is not in Draft status"
+msgstr "Работа не в черновом статусе"
+
+msgid "Sales invoice voided"
+msgstr "Продажная накладная аннулирована"
+
 msgid "Sales Order"
 msgstr "Заказ на продажу"
 
+msgid "Sales order created"
+msgstr "Заказ продаж создан"
+
+msgid "Sample recorded"
+msgstr "Запись выполнена"
+
+msgid "Sampling plan updated"
+msgstr "План выборочной проверки обновлен"
+
 msgid "Save"
 msgstr "Сохранить"
+
+msgid "Saved document layout"
+msgstr "Сохраненный шаблон документа"
 
 msgid "Scan"
 msgstr "Сканировать"
@@ -1343,11 +5070,14 @@ msgstr "отходы"
 msgid "Scrap"
 msgstr "Отходы"
 
+msgid "Scrap quantity recorded successfully"
+msgstr "Количество брака успешно зарегистрировано"
+
 msgid "Scrap Reason"
 msgstr "Причина брака"
 
-msgid "Reworked"
-msgstr "Переработано"
+msgid "Scrap reason created"
+msgstr "Причина потерь создана"
 
 msgid "Scrapped"
 msgstr "Списано в брак"
@@ -1375,6 +5105,12 @@ msgstr "Поиск операторов..."
 
 msgid "Search..."
 msgstr "Поиск..."
+
+msgid "Section deleted"
+msgstr "Секция удалена"
+
+msgid "Section saved"
+msgstr "Секция сохранена"
 
 msgid "Select"
 msgstr "Выбрать"
@@ -1453,6 +5189,9 @@ msgstr "Серийные номера"
 msgid "Serial Numbers"
 msgstr "Серийные номера"
 
+msgid "Session mismatch"
+msgstr "Сессия несоответствует"
+
 msgid "Set Clock Out"
 msgstr "Установить время ухода"
 
@@ -1464,6 +5203,18 @@ msgstr "Наладка"
 
 msgid "Share an idea or report a problem"
 msgstr "Поделитесь идейей или сообщите о проблеме"
+
+msgid "Shift created"
+msgstr "Смена создана"
+
+msgid "Shift updated"
+msgstr "Смена обновлена"
+
+msgid "Shipment voided"
+msgstr "Отменена поставка"
+
+msgid "Shipping method created"
+msgstr "Метод доставки создан"
 
 msgid "Short"
 msgstr "Короткий"
@@ -1492,6 +5243,9 @@ msgstr "Войти с телефона"
 msgid "Sign Out"
 msgstr "Выйти"
 
+msgid "Sign-in failed. Please try again."
+msgstr "Вход не успешен. Пожалуйста, попробуйте снова."
+
 msgid "Signed in as {stationName}"
 msgstr "Вход выполнен как {stationName}"
 
@@ -1504,11 +5258,23 @@ msgstr "Размер"
 msgid "Source"
 msgstr "Источник"
 
+msgid "Spare part added"
+msgstr "Запасная часть добавлена"
+
+msgid "Spare part removed and returned to inventory"
+msgstr "Запасной части удалены и вернутся в инвентарь"
+
 msgid "Spare Parts"
 msgstr "Запасные части"
 
 msgid "Spare Parts Used"
 msgstr "Использованные запасные части"
+
+msgid "Split failed"
+msgstr "Разделение не удалось"
+
+msgid "Split quantity too large"
+msgstr "Слишком большая разбиваемая величина"
 
 msgid "Start"
 msgstr "Старт"
@@ -1528,26 +5294,362 @@ msgstr "Статусы"
 msgid "Stay on this page"
 msgstr "Остаться на этой странице"
 
+msgid "Step deleted successfully"
+msgstr "Шаг успешно удален"
+
 msgid "Steps"
 msgstr "Шаги"
 
 msgid "Steps are missing"
 msgstr "Шаги не заполнены"
 
+msgid "Stock transfer is not in progress or released"
+msgstr "Трансфер складских мест не выполняется или не был опущен"
+
+msgid "Stock transfer line not found"
+msgstr "Линия передачи запасов не найдена"
+
 msgid "Stop all your active operations"
 msgstr "Остановить все активные операции"
+
+msgid "Storage type created"
+msgstr "Тип хранения создан"
+
+msgid "Storage type is in use; confirm cascade to delete"
+msgstr "Тип хранения используется; подтвердите цепочку для удаления"
 
 msgid "Storage Unit"
 msgstr "Единица хранения"
 
+msgid "Storage unit created"
+msgstr "Складская единица создана"
+
 msgid "Style"
 msgstr "Стиль"
+
+msgid "Style color created"
+msgstr "Цвет стиля создан"
+
+msgid "Style size created"
+msgstr "Размер стиля создан"
 
 msgid "Submit anonymously"
 msgstr "Отправить анонимно"
 
+msgid "Success. Please check back in a few moments."
+msgstr "Успешно. Пожалуйста, проверьте обновления через несколько минут."
+
+msgid "Successfully activate work center"
+msgstr "Успешно активировать рабочий центр"
+
+msgid "Successfully activated gauge"
+msgstr "Успешно активирован гауссметр"
+
+msgid "Successfully activated process"
+msgstr "Успешно активирован процесс"
+
+msgid "Successfully added invites to queue"
+msgstr "Успешно добавлены приглашения в очередь"
+
+msgid "Successfully converted quote to order"
+msgstr "Успешно переведено заявку в заказ"
+
+msgid "Successfully converted RFQ to quote"
+msgstr "Успешно преобразовано запрос на цитирование в Angebot"
+
+msgid "Successfully deactivated attribute"
+msgstr "Успешно деактивирован атрибут"
+
+msgid "Successfully deactivated attribute category"
+msgstr "Успешно деактивирована категория атрибутов"
+
+msgid "Successfully deactivated gauge"
+msgstr "Успешно деактивирован гауссен"
+
+msgid "Successfully deactivated process"
+msgstr "Успешно деактивирован процесс"
+
+msgid "Successfully deactivated work center"
+msgstr "Успешно деактивирован рабочий центр"
+
+msgid "Successfully deleted account"
+msgstr "Успешно удалена учетная запись"
+
+msgid "Successfully deleted API key"
+msgstr "Успешно удалена API ключ"
+
+msgid "Successfully deleted asset class"
+msgstr "Успешно удалена классификация активов"
+
+msgid "Successfully deleted association"
+msgstr "Успешно удалена ассоциация"
+
+msgid "Successfully deleted contractor"
+msgstr "Успешно удалён контрактёр"
+
+msgid "Successfully deleted cost center"
+msgstr "Успешно удалён централизованный расход"
+
+msgid "Successfully deleted custom field"
+msgstr "Успешно удалено пользовательское поле"
+
+msgid "Successfully deleted customer contact"
+msgstr "Успешно удалена контактная информация клиента"
+
+msgid "Successfully deleted customer location"
+msgstr "Успешно удалена клиентская локация"
+
+msgid "Successfully deleted customer part"
+msgstr "Успешно удалена клиентская деталь"
+
+msgid "Successfully deleted customer portal"
+msgstr "Успешно удалена Kundenportal"
+
+msgid "Successfully deleted customer status"
+msgstr "Успешно удалено состояние клиента"
+
+msgid "Successfully deleted customer type"
+msgstr "Успешно удалён тип клиента"
+
+msgid "Successfully deleted department"
+msgstr "Успешно удалено отделение"
+
+msgid "Successfully deleted depreciation run"
+msgstr "Успешно удалена амортизационная кампания"
+
+msgid "Successfully deleted dimension"
+msgstr "Успешно удалена размерность"
+
+msgid "Successfully deleted employee type"
+msgstr "Успешно удалён тип сотрудника"
+
+msgid "Successfully deleted event"
+msgstr "Успешно удалено событие"
+
+msgid "Successfully deleted failure mode"
+msgstr "Успешно удалено режим неисправности"
+
+msgid "Successfully deleted fixed asset"
+msgstr "Успешно удалено фиксированное актива"
+
+msgid "Successfully deleted gauge"
+msgstr "Успешно удалено штативное устройство"
+
+msgid "Successfully deleted gauge calibration record"
+msgstr "Успешно удалена запись о калибровке гауся"
+
+msgid "Successfully deleted group"
+msgstr "Успешно удалена группа"
+
+msgid "Successfully deleted holiday"
+msgstr "Успешно удалены праздничные дни"
+
+msgid "Successfully deleted issue"
+msgstr "Успешно удалена проблема"
+
+msgid "Successfully deleted issue workflow"
+msgstr "Успешно удалена рабочий процесс проблемы"
+
+msgid "Successfully deleted item"
+msgstr "Успешно удалена запись"
+
+msgid "Successfully deleted item group"
+msgstr "Успешно удалена группа элементов"
+
+msgid "Successfully deleted kanban"
+msgstr "Успешно удалено канбан"
+
+msgid "Successfully deleted line"
+msgstr "Успешно удалена строка"
+
+msgid "Successfully deleted location"
+msgstr "Успешно удалена локация"
+
+msgid "Successfully deleted maintenance dispatch"
+msgstr "Успешно удалена заявка на ремонт"
+
+msgid "Successfully deleted maintenance schedule"
+msgstr "Успешно удалена плановая проверка"
+
+msgid "Successfully deleted material dimension"
+msgstr "Успешно удалена материаловая размерность"
+
+msgid "Successfully deleted material finish"
+msgstr "Успешно удалено покрытие материала"
+
+msgid "Successfully deleted material form"
+msgstr "Успешно удалена форма материала"
+
+msgid "Successfully deleted material grade"
+msgstr "Успешно удалена материаловая группа"
+
+msgid "Successfully deleted material substance"
+msgstr "Успешно удалено сырье"
+
+msgid "Successfully deleted material type"
+msgstr "Успешно удалено тип материала"
+
+msgid "Successfully deleted noQuote reason"
+msgstr "Успешно удалена причина без кавычек"
+
+msgid "Successfully deleted parameter"
+msgstr "Успешно удалено параметр"
+
+msgid "Successfully deleted partner"
+msgstr "Успешно удалён партнёр"
+
+msgid "Successfully deleted payment term"
+msgstr "Успешно удалена штрафная ставка"
+
+msgid "Successfully deleted procedure"
+msgstr "Успешно удалена процедура"
+
+msgid "Successfully deleted purchase invoice line"
+msgstr "Успешно удалена строка покупочной накладной"
+
+msgid "Successfully deleted purchase order line"
+msgstr "Успешно удалена строка закупочного заказа"
+
+msgid "Successfully deleted quality document"
+msgstr "Успешно удалена质量管理文档"
+
+msgid "Successfully deleted quantity"
+msgstr "Успешно удалена量"
+
+msgid "Successfully deleted quantity report"
+msgstr "Успешно удалена отчетность по количеству"
+
+msgid "Successfully deleted question"
+msgstr "Успешно удалено вопрос"
+
+msgid "Successfully deleted receipt"
+msgstr "Успешно удалена приходка"
+
+msgid "Successfully deleted sales invoice line"
+msgstr "Успешно удалена строка сales发票行"
+
+msgid "Successfully deleted sales order line"
+msgstr "Успешно удалена строка продажного заказа"
+
+msgid "Successfully deleted scrap reason"
+msgstr "Успешно удалена причина списания"
+
+msgid "Successfully deleted shift"
+msgstr "Успешно удалена смена"
+
+msgid "Successfully deleted shipment"
+msgstr "Успешно удалена поставка"
+
+msgid "Successfully deleted shipping method"
+msgstr "Успешно удалена способ доставки"
+
+msgid "Successfully deleted step"
+msgstr "Успешно удалена стадия"
+
+msgid "Successfully deleted stock transfer"
+msgstr "Успешно удалена перемещение складских мест"
+
+msgid "Successfully deleted storage type"
+msgstr "Успешно удалено тип хранения"
+
+msgid "Successfully deleted style color"
+msgstr "Успешно удалена стиль цвет"
+
+msgid "Successfully deleted style size"
+msgstr "Успешно удалена стилевая размерность"
+
+msgid "Successfully deleted subsidiary"
+msgstr "Успешно удалена дочерняя компания"
+
+msgid "Successfully deleted supplier contact"
+msgstr "Успешно удалён контакт поставщика"
+
+msgid "Successfully deleted supplier location"
+msgstr "Успешно удалена поставка"
+
+msgid "Successfully deleted supplier type"
+msgstr "Успешно удалён тип поставщика"
+
+msgid "Successfully deleted tag"
+msgstr "Успешно удалена метка"
+
+msgid "Successfully deleted template"
+msgstr "Успешно удалена шаблон"
+
+msgid "Successfully deleted timecard"
+msgstr "Успешно удалена timesheet"
+
+msgid "Successfully deleted training"
+msgstr "Успешно удалена тренировка"
+
+msgid "Successfully deleted unit of measure"
+msgstr "Успешно удалена единица измерения"
+
+msgid "Successfully deleted webhook"
+msgstr "Успешно удалена вебхук"
+
+msgid "Successfully invited employee"
+msgstr "Успешно пригласили сотрудника"
+
+msgid "Successfully resent invite"
+msgstr "Успешно повторно отправлено приглашение"
+
+msgid "Successfully revoked invites"
+msgstr "Успешно отозваны приглашения"
+
+msgid "Successfully updated attribtue"
+msgstr "Успешно обновлен атрибут"
+
+msgid "Successfully updated exchange rate"
+msgstr "Успешно обновлена курсовая ставка"
+
+msgid "Successfully updated fiscal year settings"
+msgstr "Успешно обновлены настройки финансового года"
+
+msgid "Successfully updated job"
+msgstr "Успешно обновлено задание"
+
+msgid "Sucessfully deactivated customer"
+msgstr "Успешно деактивирован клиент"
+
+msgid "Sucessfully deactivated employee"
+msgstr "Успешно деактивирован сотрудник"
+
+msgid "Sucessfully deactivated supplier"
+msgstr "Успешно деактивирован поставщик"
+
 msgid "Suggestion"
 msgstr "Предложение"
+
+msgid "Supplier address updated"
+msgstr "Адрес поставщика обновлен"
+
+msgid "Supplier contact created"
+msgstr "Контакт поставщика создан"
+
+msgid "Supplier contact updated"
+msgstr "Контакт поставщика обновлен"
+
+msgid "Supplier deactivated"
+msgstr "Поставщик деактивирован"
+
+msgid "Supplier invited"
+msgstr "Поставщик приглашен"
+
+msgid "Supplier location created"
+msgstr "Локация поставщика создана"
+
+msgid "Supplier part updated"
+msgstr "Поставщик обновлен"
+
+msgid "Supplier quote finalized successfully"
+msgstr "Поставщикая оценка успешно завершена"
+
+msgid "Supplier quote sent successfully"
+msgstr "Поставщик отправил Angebot успешно"
+
+msgid "Supplier type created"
+msgstr "Тип поставщика создан"
 
 msgid "Support Required"
 msgstr "Требуется поддержка"
@@ -1558,8 +5660,14 @@ msgstr "Поверхностная площадь:"
 msgid "Switch Operator"
 msgstr "Сменить оператора"
 
+msgid "Table is required"
+msgstr "Таблица обязательна"
+
 msgid "Tag"
 msgstr "Тег"
+
+msgid "Tag created"
+msgstr "Тег создан"
 
 msgid "Tag size"
 msgstr "Размер ярлыка"
@@ -1570,6 +5678,15 @@ msgstr "Перенять"
 #. placeholder {0}: operation.itemReadableId
 msgid "Take over {0}"
 msgstr "Перенять {0}"
+
+msgid "Task ID is required"
+msgstr "ID задачи требуется"
+
+msgid "Task not found"
+msgstr "Задача не найдена"
+
+msgid "Template created"
+msgstr "Шаблон создан"
 
 msgid "That QR code isn't a bundle ticket"
 msgstr "Этот QR-код не является ярлыком пачки"
@@ -1602,6 +5719,18 @@ msgstr "Записи учёта времени"
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Time Worked: {0}"
 msgstr "Отработанное время: {0}"
+
+msgid "Timecard created"
+msgstr "Часовой карта создана"
+
+msgid "Timecard removed successfully"
+msgstr "Временная карточка успешно удалена"
+
+msgid "Timecard updated"
+msgstr "Часовой карта обновлена"
+
+msgid "Timecards are not enabled. To enable this feature, go to Settings → People to enable Timecards."
+msgstr "Часовые карточки не активированы. Для активации этой функции перейдите в Настройки → Люди и включите Часовые карточки."
 
 msgid "Today"
 msgstr "Сегодня"
@@ -1647,20 +5776,50 @@ msgstr "Общее время: {0}"
 msgid "Total: {0}"
 msgstr "Итого: {0}"
 
+msgid "Tracked entity not found"
+msgstr "Следимый объект не найден"
+
+msgid "Tracked entity scanned and transferred"
+msgstr "Отслеживаемый объект сканирован и передан"
+
 msgid "Tracking"
 msgstr "Отслеживание"
+
+msgid "Training created"
+msgstr "Обучение создано"
+
+msgid "Training ID is required"
+msgstr "ID тренинга требуется"
+
+msgid "Training marked as complete"
+msgstr "Обучение отмечено как завершенное"
 
 msgid "Type a message..."
 msgstr "Введите сообщение..."
 
+msgid "Type created"
+msgstr "Тип создан"
+
 msgid "Unassigned"
 msgstr "Не назначено"
+
+msgid "Unauthorized"
+msgstr "Недостаточно прав"
+
+msgid "Unauthorized: Cannot remove attribute"
+msgstr "Недоступно: не удается удалить атрибут"
+
+msgid "Unauthorized: Cannot update attribute"
+msgstr "Недоступно: не удается обновить атрибут"
 
 msgid "Unissued serial/batch materials"
 msgstr "Невыданные серийные/партионные материалы"
 
 msgid "unit"
 msgstr "Единица"
+
+msgid "Unit of measure created"
+msgstr "Единица измерения создана"
 
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -1678,11 +5837,359 @@ msgstr "Не сохраненные изменения"
 msgid "Update"
 msgstr "Обновить"
 
+msgid "Update failed"
+msgstr "Обновление не удалось"
+
 msgid "Update step"
 msgstr "Обновить шаг"
 
+msgid "Updated account"
+msgstr "Обновленная учетная запись"
+
+msgid "Updated API key"
+msgstr "Обновленный API ключ"
+
+msgid "Updated attribute category "
+msgstr "Обновленная атрибутная категория "
+
+msgid "Updated attribute value"
+msgstr "Обновленное значение атрибута"
+
+msgid "Updated company"
+msgstr "Обновленная компания"
+
+msgid "Updated consumable"
+msgstr "Обновленный расходник"
+
+msgid "Updated consumable costing"
+msgstr "Обновленные затраты наsumeables"
+
+msgid "Updated consumable inventory"
+msgstr "Обновленный инвентарь расходных материалов"
+
+msgid "Updated consumable planning"
+msgstr "Обновленное планирование расходных материалов"
+
+msgid "Updated consumable purchasing"
+msgstr "Обновлено приобретение расходных материалов"
+
+msgid "Updated customer"
+msgstr "Обновленный клиент"
+
+msgid "Updated customer payment terms"
+msgstr "Обновленные условия оплаты для клиента"
+
+msgid "Updated customer portal"
+msgstr "Обновленный портал для клиентов"
+
+msgid "Updated customer shipping"
+msgstr "Обновлено отгрузка клиента"
+
+msgid "Updated customer status"
+msgstr "Обновленный статус клиента"
+
+msgid "Updated customer tax information"
+msgstr "Обновленная информация о налогах для клиента"
+
+msgid "Updated customer type"
+msgstr "Обновленный тип клиента"
+
+msgid "Updated default accounts"
+msgstr "Обновлены\"default\" аккаунты"
+
+msgid "Updated dimension"
+msgstr "Обновленная длина"
+
+msgid "Updated dispatch status"
+msgstr "Обновленный статус поставки"
+
+msgid "Updated document"
+msgstr "Обновленный документ"
+
+msgid "Updated employee type"
+msgstr "Обновленный тип сотрудника"
+
+msgid "Updated exchange rate"
+msgstr "Обновленный курс обмена"
+
+msgid "Updated failure mode"
+msgstr "Обновленный режим неисправности"
+
+msgid "Updated gauge"
+msgstr "Обновленный гаUGE"
+
+msgid "Updated gauge type"
+msgstr "Обновленный тип гауся"
+
+msgid "Updated group"
+msgstr "Обновленная группа"
+
+msgid "Updated issue"
+msgstr "Обновленная проблема"
+
+msgid "Updated issue status"
+msgstr "Обновленное состояние проблемы"
+
+msgid "Updated issue type"
+msgstr "Обновленный тип проблемы"
+
+msgid "Updated item"
+msgstr "Обновленный элемент"
+
+msgid "Updated item group"
+msgstr "Обновленная группа элементов"
+
+msgid "Updated job"
+msgstr "Обновленная работа"
+
+msgid "Updated job status"
+msgstr "Обновленное состояние задачи"
+
+msgid "Updated kanban"
+msgstr "Обновлено канбан"
+
+msgid "Updated maintenance schedule"
+msgstr "Обновленный план обслуживания"
+
+msgid "Updated material"
+msgstr "Обновленный материал"
+
+msgid "Updated material costing"
+msgstr "Обновленная стоимость материала"
+
+msgid "Updated material form"
+msgstr "Обновленная форма материала"
+
+msgid "Updated material grade"
+msgstr "Обновленная марка материала"
+
+msgid "Updated material inventory"
+msgstr "Обновленный инвентарь материалов"
+
+msgid "Updated material planning"
+msgstr "Обновленное планирование материалов"
+
+msgid "Updated material purchasing"
+msgstr "Обновлено закупка материалов"
+
+msgid "Updated material substance"
+msgstr "Обновленный сырьевый материал"
+
+msgid "Updated material type"
+msgstr "Обновленный тип материала"
+
+msgid "Updated no quote reason"
+msgstr "Обновлено без причины"
+
+msgid "Updated order"
+msgstr "Обновленный заказ"
+
+msgid "Updated part"
+msgstr "Обновленная часть"
+
+msgid "Updated part costing"
+msgstr "Обновленная стоимость части"
+
+msgid "Updated part inventory"
+msgstr "Обновленный склад деталей"
+
+msgid "Updated part manufacturing"
+msgstr "Обновленная часть производства"
+
+msgid "Updated part planning"
+msgstr "Обновленное планирование комплектующих"
+
+msgid "Updated part purchasing"
+msgstr "Обновлено приобретение деталей"
+
+msgid "Updated part sale price"
+msgstr "Обновленная цена на деталь"
+
+msgid "Updated payment term"
+msgstr "Обновленный срок оплаты"
+
+msgid "Updated picking list"
+msgstr "Обновленный список выборки"
+
+msgid "Updated picking list status"
+msgstr "Обновленный статус списка выборки"
+
+msgid "Updated process completion"
+msgstr "Обновленное завершение процесса"
+
+msgid "Updated production event"
+msgstr "Обновленное производственное событие"
+
+msgid "Updated profile"
+msgstr "Обновленный профиль"
+
+msgid "Updated purchase invoice"
+msgstr "Обновленная закупочная накладная"
+
+msgid "Updated purchase invoice delivery"
+msgstr "Обновленная покупательская накладная на доставку"
+
+msgid "Updated purchase invoice status"
+msgstr "Обновленный статус покупочной накладной"
+
+msgid "Updated purchase order"
+msgstr "Обновленная закупочная заявка"
+
+msgid "Updated purchase order delivery"
+msgstr "Обновленная поставка заказа на покупку"
+
+msgid "Updated purchase order payment"
+msgstr "Обновленный платеж по закупочной订单已更新的采购订单付款"
+
+msgid "Updated purchasing order status"
+msgstr "Обновленный статус закупочного заказа"
+
+msgid "Updated quote"
+msgstr "Обновленная оферта"
+
+msgid "Updated quote line"
+msgstr "Обновленная строка цитаты"
+
+msgid "Updated quote payment"
+msgstr "Обновленный счет за поставку"
+
+msgid "Updated quote shipment"
+msgstr "Обновленная заявка на отгрузку"
+
+msgid "Updated quote status"
+msgstr "Обновленный статус цитаты"
+
+msgid "Updated receipt"
+msgstr "Обновленный приход"
+
+msgid "Updated RFQ"
+msgstr "Обновленное РФК"
+
+msgid "Updated RFQ status"
+msgstr "Обновленный статус запроса на цитирование"
+
+msgid "Updated sales invoice"
+msgstr "Обновленная продажная накладная"
+
+msgid "Updated sales invoice shipping"
+msgstr "Обновленный транспорт для продажной накладной"
+
+msgid "Updated sales invoice status"
+msgstr "Обновленный статус продажного чека"
+
+msgid "Updated sales order payment"
+msgstr "Обновленный платеж по продажному заказу"
+
+msgid "Updated sales order shipment"
+msgstr "Обновленная поставка заказа на продажу"
+
+msgid "Updated sales order status"
+msgstr "Обновленный статус продажного заказа"
+
+msgid "Updated scrap reason"
+msgstr "Обновленная причина потери материала"
+
+msgid "Updated sequence"
+msgstr "Обновлена последовательность"
+
+msgid "Updated shipment"
+msgstr "Обновленная поставка"
+
+msgid "Updated shipping method"
+msgstr "Обновленный способ доставки"
+
+msgid "Updated storage type"
+msgstr "Обновленный тип хранения"
+
+msgid "Updated storageUnit"
+msgstr "Обновленный(storageUnit)"
+
+msgid "Updated style color"
+msgstr "Обновленный стиль цвета"
+
+msgid "Updated style costing"
+msgstr "Обновленный стиль ценообразования"
+
+msgid "Updated style inventory"
+msgstr "Обновленный стиль инвентаря"
+
+msgid "Updated style planning"
+msgstr "Обновленный стиль планирования"
+
+msgid "Updated style sale price"
+msgstr "Обновленная стилистическая цена продажи"
+
+msgid "Updated style size"
+msgstr "Обновленный стиль размера"
+
+msgid "Updated subsidiary"
+msgstr "Обновлено подразделение"
+
 msgid "Updated successfully"
 msgstr "Успешно обновлено"
+
+msgid "Updated supplier"
+msgstr "Обновленный поставщик"
+
+msgid "Updated supplier payment terms"
+msgstr "Обновленные условия оплаты поставщиков"
+
+msgid "Updated supplier quote status"
+msgstr "Обновленный статус предложения поставщика"
+
+msgid "Updated supplier shipping"
+msgstr "Обновленные поставки поставщика"
+
+msgid "Updated supplier tax information"
+msgstr "Обновленная информация о поставщике по налогам"
+
+msgid "Updated supplier type"
+msgstr "Обновленный тип поставщика"
+
+msgid "Updated suppliers"
+msgstr "Обновленные поставщики"
+
+msgid "Updated task status"
+msgstr "Обновленное состояние задачи"
+
+msgid "Updated tool"
+msgstr "Обновленный инструмент"
+
+msgid "Updated tool costing"
+msgstr "Обновленная стоимость инструмента"
+
+msgid "Updated tool inventory"
+msgstr "Обновленный инвентарь инструментов"
+
+msgid "Updated tool manufacturing"
+msgstr "Обновлено производство инструментов"
+
+msgid "Updated tool planning"
+msgstr "Обновленное планирование инструмента"
+
+msgid "Updated tool purchasing"
+msgstr "Обновлено приобретение инструмента"
+
+msgid "Updated unit of measure"
+msgstr "Обновленная единица измерения"
+
+msgid "Updated warehouse transfer"
+msgstr "Обновленный складской транзит"
+
+msgid "Updated warehouse transfer line"
+msgstr "Обновленная перемещение склада"
+
+msgid "Updated warehouse transfer status"
+msgstr "Обновленный статус передачи склада"
+
+msgid "Updated webhook"
+msgstr "Обновленный вебхук"
+
+msgid "Updated work center "
+msgstr "Обновленный рабочий центр "
+
+msgid "Updating user permissions"
+msgstr "Обновление прав пользователя"
 
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
@@ -1697,6 +6204,18 @@ msgstr "Использовать другой email"
 
 msgid "Use a different phone number"
 msgstr "Используйте другой номер телефона"
+
+msgid "Use the entity picker to split this row"
+msgstr "Используйте выбор сущности для разделения этой строки"
+
+msgid "User already deactivated"
+msgstr "Пользователь уже деактивирован"
+
+msgid "User not found"
+msgstr "Пользователь не найден"
+
+msgid "User record not found"
+msgstr "Пользователь не найден"
 
 msgid "Verification Error"
 msgstr "Ошибка верификации"
@@ -1715,6 +6234,9 @@ msgstr "Объем:"
 
 msgid "Waiting"
 msgstr "Ожидание"
+
+msgid "Warehouse transfer deleted successfully"
+msgstr "Списание в складе успешно удалено"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Мы отправили код подтверждения на {email}"
@@ -1740,6 +6262,9 @@ msgstr "НЗП"
 msgid "Work Center"
 msgstr "Рабочий центр"
 
+msgid "Work Center Blocked"
+msgstr "Цех заблокирован"
+
 msgid "Work Order"
 msgstr "Заказ производства"
 
@@ -1752,12 +6277,30 @@ msgstr "Жёлтый"
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Вы относитесь к нескольким компаниям. Выберите, где работать."
 
+msgid "You cannot deactivate yourself"
+msgstr "Вы не можете деактивировать себя"
+
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "Вы отметили приход в {0}. Вы можете изменить время ухода ниже или подтвердить, что всё ещё работаете."
 
+msgid "You do not have permission to approve this request"
+msgstr "У вас нет разрешения на одобрение этой заявки"
+
+msgid "You do not have permission to deactivate this supplier"
+msgstr "У вас нет прав на деактивацию этого поставщика"
+
+msgid "You do not have permission to reopen this purchase order"
+msgstr "У вас нет разрешения на повторное открытие этого заказа на покупку"
+
+msgid "You do not have permission to update permissions"
+msgstr "У вас нет разрешения на обновление прав доступа"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Вы на смене уже {hoursElapsed} часов. Вы забыли отметить уход?"
+
+msgid "Your account is not active"
+msgstr "Ваша учетная запись не активна"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Ваша компания использует бесплатный тариф (только чтение). Перейдите на платный тариф, чтобы вносить изменения."

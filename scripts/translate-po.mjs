@@ -48,6 +48,31 @@ STRICT RULES:
 - Keep it concise and natural for a UI label/button/message.
 - Do not add surrounding quotation marks or trailing punctuation that is not in the source.`;
 
+// Per-locale terminology + word-order guidance appended to SYSTEM for that
+// target language. Keeps a small local model consistent with the catalog's
+// established terms and grammar (it otherwise drifts, e.g. Process→工艺/流程,
+// or puts 失败 at the front). Keyed by the LOCALE_NAMES value. Extend per locale.
+const LOCALE_GUIDANCE = {
+  "Simplified Chinese": `Additional rules for Simplified Chinese (zh):
+GLOSSARY — always use these exact terms for the app's domain nouns:
+- Process = 工序 (NOT 工艺/流程/过程)
+- Bundle = 分包 (NOT 捆包/批次)
+- Passkey = 通行密钥 (NOT 密码/密钥)
+- Job = 工作 (NOT 工序)
+- Gauge = 量具 (NOT 量规)
+- Failure Mode = 故障模式 (NOT 失效模式/失败模式)
+- RFQ = 询价单 (NOT 报价单; 报价单 = Quote)
+- Style = 款式;  Item = 物品;  Part = 产品;  Scrap Reason = 废料原因;  Deactivate = 停用
+- "Short" as a picking/quantity status = 短缺 (NOT 短)
+WORD ORDER — the outcome word goes LAST, and never drop the object:
+- "Failed to <verb> <X>" → "<verb><X>失败" (失败 at the end). e.g. "Failed to create job" → "创建工作失败".
+- "Error <verb>ing <X>" → "<verb><X>出错" (出错 at the end). e.g. "Error loading issues" → "加载问题出错".
+- "Successfully deleted <X>" → "成功删除<X>". "Deleted <X>" → "已删除<X>".
+- "Updated <X>" (success toast) → "已更新<X>". "Created <X>" → "已创建<X>". "Saved" → "已保存".
+- Always translate the object <X>; never output a bare "删除成功/更新成功" that omits what was affected.
+- Exception: column headers/timestamps like "Updated At"/"Updated By" are NOT past-tense toasts — keep them as 更新于/更新人.`,
+};
+
 const placeholders = (s) => (s.match(/\{[^{}]*\}|<\/?\d+\/?>|%[sd]/g) ?? []).slice().sort();
 
 function placeholdersMatch(src, out) {
@@ -81,6 +106,9 @@ async function callOllama(text, localeName, temperature) {
       options: { temperature },
       messages: [
         { role: "system", content: SYSTEM },
+        ...(LOCALE_GUIDANCE[localeName]
+          ? [{ role: "system", content: LOCALE_GUIDANCE[localeName] }]
+          : []),
         { role: "user", content: `Target language: ${localeName}\nString to translate:\n${text}` },
       ],
     }),

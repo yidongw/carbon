@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -51,8 +52,17 @@ msgstr "{failed} étiquettes sur {0} ont échoué"
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Un lot ou un numéro de série consommé est maintenant passé sa date d'expiration."
 
+msgid "A depreciation run already exists for this period"
+msgstr "Une dépréciation existe déjà pour cette période"
+
 msgid "About"
 msgstr "À propos"
+
+msgid "Account created"
+msgstr "Compte créé"
+
+msgid "Account moved"
+msgstr "Compte déplacé"
 
 msgid "Account Settings"
 msgstr "Paramètres du compte"
@@ -87,6 +97,9 @@ msgstr "Ajouter un nouveau lot de records"
 msgid "Add Spare Part"
 msgstr "Ajouter une pièce de rechange"
 
+msgid "Added colors and sizes"
+msgstr "Ajouté des couleurs et des tailles"
+
 msgid "Adjust stock down"
 msgstr "Réajustez le stock en baisse"
 
@@ -95,6 +108,30 @@ msgstr "Adjuster le stock en hausse"
 
 msgid "All"
 msgstr "Tout"
+
+msgid "All active assets are already covered for this period"
+msgstr "Tous les actifs actifs sont déjà couverts pour cette période"
+
+msgid "An approval request already exists for this supplier"
+msgstr "Une demande d'approbation existe déjà pour ce fournisseur"
+
+msgid "Approval request not found"
+msgstr "Demande d'approbation non trouvée"
+
+msgid "Approval request submitted"
+msgstr "Demande d'approbation soumise"
+
+msgid "Approval rule created"
+msgstr "Règle d'approbation créée"
+
+msgid "Approval rule deleted successfully"
+msgstr "Règle d'approbation supprimée avec succès"
+
+msgid "Approval rule not found"
+msgstr "Règle d'approbation non trouvée"
+
+msgid "Approval rule updated"
+msgstr "Règle d'approbation mise à jour"
 
 msgid "Approve"
 msgstr "Valider"
@@ -111,6 +148,9 @@ msgstr "Autorisé"
 msgid "Approved"
 msgstr "Autorisé"
 
+msgid "Archive ID is required"
+msgstr "L'ID d'archive est requis"
+
 msgid "Are you sure you want to delete this step?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette étape ?"
 
@@ -126,6 +166,18 @@ msgstr "Êtes-vous sûr de vouloir terminer cette opération ? Cela mettra fin �
 msgid "Are you sure you want to leave this page?"
 msgstr "Êtes-vous sûr de vouloir quitter cette page ?"
 
+msgid "Asset class created"
+msgstr "Classe d'actif créée"
+
+msgid "Asset class updated"
+msgstr "Classe d'actif mise à jour"
+
+msgid "Asset disposed successfully"
+msgstr "Actif supprimé avec succès"
+
+msgid "Asset registered successfully"
+msgstr "Actif enregistré avec succès"
+
 msgid "Assigned"
 msgstr "Assigné"
 
@@ -135,14 +187,50 @@ msgstr "Assigné à moi"
 msgid "Assignee"
 msgstr "Assigné à"
 
+msgid "Assignment created successfully"
+msgstr "Attribution créée avec succès"
+
+msgid "Assignment deleted successfully"
+msgstr "Suppression effectuée avec succès"
+
+msgid "Assignment ID is required"
+msgstr "L'ID d'affectation est requis"
+
+msgid "Assignment rule created"
+msgstr "Règle d'attribution créée"
+
+msgid "Assignment rule deleted"
+msgstr "Règle de attribution supprimée"
+
+msgid "Assignment rule updated"
+msgstr "Règle d'affectation mise à jour"
+
+msgid "Assignment updated successfully"
+msgstr "Attribution mise à jour avec succès"
+
 msgid "Attach File"
 msgstr "Joindre un fichier"
+
+msgid "Attribute recorded successfully"
+msgstr "Attribut enregistré avec succès"
+
+msgid "Audit logging disabled"
+msgstr "Enregistrement des audits désactivé"
+
+msgid "Audit logging enabled"
+msgstr "Enregistrement des audits activé"
 
 msgid "Authentication Error"
 msgstr "Erreur d'authentification"
 
 msgid "available"
 msgstr "disponible"
+
+msgid "Bad request for next sequence"
+msgstr "Demande incorrecte pour la séquence suivante"
+
+msgid "Bad request for rolling back sequence"
+msgstr "Demande incorrecte pour annuler la séquence"
 
 msgid "Batch"
 msgstr "Lot"
@@ -173,6 +261,9 @@ msgstr "Bloquant"
 msgid "Blue"
 msgstr "Bleu"
 
+msgid "Bot verification failed. Please try again."
+msgstr "Vérification du bot échouée. Veuillez essayer à nouveau."
+
 msgid "Brown"
 msgstr "Marron"
 
@@ -191,6 +282,9 @@ msgstr "Navigateur"
 msgid "Bundle"
 msgstr "Paquet"
 
+msgid "Bundle not found"
+msgstr "Paquet non trouvé"
+
 msgid "Bundle Work Orders"
 msgstr "Grouper des commandes de travail"
 
@@ -202,6 +296,9 @@ msgstr "Mais ne vous inquiétez pas. Vous pouvez utiliser la procédure de réin
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "En vous connectant, vous acceptez les <0>Conditions d'utilisation</0> et la <1>Politique de confidentialité.</1>"
+
+msgid "Calibration record created"
+msgstr "Enregistrement de calibration créé"
 
 msgid "Camera unavailable — use manual selection below."
 msgstr "Caméra indisponible — utilisez la sélection manuelle ci-dessous."
@@ -217,6 +314,51 @@ msgstr "Annulé"
 
 msgid "Cancelled"
 msgstr "Annulé"
+
+msgid "Cannot delete a posted receipt"
+msgstr "Impossible de supprimer une facture enregistrée"
+
+msgid "Cannot delete a posted shipment"
+msgstr "Impossible de supprimer une expédition enregistrée"
+
+msgid "Cannot edit a protected customer type"
+msgstr "Ne pouvez pas modifier un type de client protégé"
+
+msgid "Cannot edit a protected supplier type"
+msgstr "Ne pouvez pas modifier un type de fournisseur protégé"
+
+msgid "Cannot edit global material grade"
+msgstr "Ne pouvez pas modifier le grade matériau global"
+
+msgid "Cannot edit global material shape"
+msgstr "Impossible de modifier la forme matérielle globale"
+
+msgid "Cannot edit global material substance"
+msgstr "Impossible de modifier la matière matérielle globale"
+
+msgid "Cannot edit global material type"
+msgstr "Ne pouvez pas modifier le type de matériau global"
+
+msgid "Cannot edit global style color"
+msgstr "Impossible de modifier la couleur du style global"
+
+msgid "Cannot edit global style size"
+msgstr "Impossible de modifier la taille des styles globaux"
+
+msgid "Cannot finish operation"
+msgstr "Impossible de finaliser l'opération"
+
+msgid "Cannot modify a locked picking list. Reopen it first."
+msgstr "Ne pouvez pas modifier une liste de picking verrouillée. Ouvrez-la en premier."
+
+msgid "Cannot reprint a job that is still generating"
+msgstr "Ne peut pas réimprimer une tâche qui est toujours en cours de génération"
+
+msgid "Cannot start operation"
+msgstr "Impossible de démarrer l'opération"
+
+msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
+msgstr "Impossible de mettre à jour l'état de la facture d'achat projetée. Veuillez enregistrer la facture en premier."
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Toile affichant le modèle dans l'observateur 3D"
@@ -263,9 +405,15 @@ msgstr "Pointer l'entrée"
 msgid "Clock Out"
 msgstr "Pointer la sortie"
 
+msgid "Clocked in"
+msgstr "Enregistré"
+
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Pointé depuis {0}"
+
+msgid "Clocked out"
+msgstr "Déconnecté"
 
 msgid "Collapse"
 msgstr "Réduire"
@@ -293,8 +441,17 @@ msgstr "Colonne : {0}"
 msgid "Columns"
 msgstr "Colonnes"
 
+msgid "Comment saved"
+msgstr "Comment enregistré"
+
 msgid "Company"
 msgstr "Entreprise"
+
+msgid "Company not found"
+msgstr "Société introuvable"
+
+msgid "Company ownership has been transferred successfully"
+msgstr "La propriété de l'entreprise a été transférée avec succès"
 
 msgid "Complete"
 msgstr "Terminé"
@@ -311,11 +468,23 @@ msgstr "Console"
 msgid "Console Mode"
 msgstr "Mode console"
 
+msgid "Console operator created successfully"
+msgstr "Opérateur de console créé avec succès"
+
+msgid "Console Operator employee type not found. Run the migration."
+msgstr "Type d'employé Opérateur de console non trouvé. Exécutez la migration."
+
 msgid "Consumed expired"
 msgstr "Consommé expiré"
 
 msgid "Continue with WeChat"
 msgstr "Continuer avec WeChat"
+
+msgid "Contractor created"
+msgstr "Fournisseur créé"
+
+msgid "Contractor updated"
+msgstr "Fournisseur mis à jour"
 
 msgid "Copied!"
 msgstr "Copié!"
@@ -325,6 +494,15 @@ msgstr "Copier"
 
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
+
+msgid "Correct the completed, rework and scrap quantities."
+msgstr "Corrigez les quantités terminées, de rétroussage et de rebut."
+
+msgid "Cost center created"
+msgstr "Centre de coûts créé"
+
+msgid "Cost center updated"
+msgstr "Centre de coûts mis à jour"
 
 msgid "Create"
 msgstr "Créer"
@@ -344,6 +522,15 @@ msgstr "Créer un problème de qualité"
 msgid "Create Rework"
 msgstr "Créer une reprise"
 
+msgid "Created company"
+msgstr "Société créée"
+
+msgid "Created maintenance dispatch"
+msgstr "Créé le rappel de maintenance"
+
+msgid "Created webhook"
+msgstr "Webhook créé"
+
 msgid "Current process"
 msgstr "Opération en cours"
 
@@ -352,6 +539,30 @@ msgstr "Actuellement"
 
 msgid "Customer"
 msgstr "Client"
+
+msgid "Customer address updated"
+msgstr "Adresse du client mise à jour"
+
+msgid "Customer contact created"
+msgstr "Contact du client créé"
+
+msgid "Customer contact updated"
+msgstr "Contact du client mis à jour"
+
+msgid "Customer invited"
+msgstr "Client invité"
+
+msgid "Customer location created"
+msgstr "Localisation du client créée"
+
+msgid "Customer portal created"
+msgstr "Portail client créé"
+
+msgid "Customer status created"
+msgstr "Statut du client créé"
+
+msgid "Customer type created"
+msgstr "Type de client créé"
 
 msgid "Dark Mode"
 msgstr "Mode sombre"
@@ -374,6 +585,9 @@ msgstr "Unité de stockage par défaut"
 msgid "Delete"
 msgstr "Supprimer"
 
+msgid "Delete failed"
+msgstr "Supprimer échoué"
+
 msgid "Delete step"
 msgstr "Supprimer l'étape"
 
@@ -383,6 +597,33 @@ msgstr "Supprimer l'étape"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Supprimer la fiche de temps ({0})"
+
+msgid "Deleted attribute value"
+msgstr "Valeur d'attribut supprimée"
+
+msgid "Deleted warehouse transfer line"
+msgstr "Ligne de transfert de stock supprimée"
+
+msgid "Demand forecasts created successfully"
+msgstr "Prévisions de la demande créées avec succès"
+
+msgid "Demand forecasts updated successfully"
+msgstr "Prévisions de la demande mises à jour avec succès"
+
+msgid "Demand projections deleted successfully"
+msgstr "Projections de demandes supprimées avec succès"
+
+msgid "Department created"
+msgstr "Département créé"
+
+msgid "Department updated"
+msgstr "Département mis à jour"
+
+msgid "Depreciation run created"
+msgstr "Exécution de dépréciation créée"
+
+msgid "Depreciation run posted"
+msgstr "Exécution de la dépréciation enregistrée"
 
 msgid "Describe the problem..."
 msgstr "Description du problème..."
@@ -395,6 +636,9 @@ msgstr "Description"
 
 msgid "Details"
 msgstr "Détails"
+
+msgid "Dimension created"
+msgstr "Dimensions créées"
 
 msgid "Dimensions"
 msgstr "Dimensions"
@@ -451,11 +695,20 @@ msgstr "Numéro de série en double"
 msgid "Duration"
 msgstr "Durée"
 
+msgid "Each line must have an account"
+msgstr "Chaque ligne doit avoir un compte"
+
+msgid "Each line must have either a debit or credit amount"
+msgstr "Chaque ligne doit avoir soit un montant débit, soit un montant crédit"
+
 msgid "Earned"
 msgstr "Perçu"
 
 msgid "Edit"
 msgstr "Modifier"
+
+msgid "Elimination entries generated"
+msgstr "Élimination des entrées générées"
 
 msgid "Email"
 msgstr "Email"
@@ -466,6 +719,9 @@ msgstr "Adresse e-mail"
 msgid "Employee"
 msgstr "Employé"
 
+msgid "Employee type created"
+msgstr "Type d'employé créé"
+
 msgid "Employees"
 msgstr "Employés"
 
@@ -475,21 +731,141 @@ msgstr "Centres de travail vides"
 msgid "End Operations"
 msgstr "Arrêter les opérations"
 
+msgid "Enter a quantity greater than zero"
+msgstr "Entrez une quantité supérieure à zéro"
+
 #. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
 msgstr "Saisir le NIP pour {0}"
 
+msgid "Entry added"
+msgstr "Enregistrement ajouté"
+
+msgid "Entry deleted"
+msgstr "Enregistrement supprimé"
+
+msgid "Entry updated"
+msgstr "Saisie mise à jour"
+
 msgid "Error"
 msgstr "Erreur"
+
+msgid "Error creating note"
+msgstr "Erreur lors de la création du rappel"
+
+msgid "Error deleting note"
+msgstr "Erreur lors de la suppression du commentaire"
 
 msgid "Error downloading file"
 msgstr "Erreur de téléchargement de fichier"
 
+msgid "Error loading accounts"
+msgstr "Erreur chargement comptes"
+
+msgid "Error loading assignment"
+msgstr "Erreur chargement affectation"
+
+msgid "Error loading assignment status"
+msgstr "Erreur chargement statut de l'affectation"
+
+msgid "Error loading attribute categories"
+msgstr "Erreur chargement des catégories d'attributs"
+
+msgid "Error loading console operators"
+msgstr "Erreur chargement des opérateurs de console"
+
+msgid "Error loading employee types"
+msgstr "Erreur chargement types d'employés"
+
+msgid "Error loading employees"
+msgstr "Erreur chargement employés"
+
+msgid "Error loading issues"
+msgstr "Erreur chargement des problèmes"
+
+msgid "Error loading item groups"
+msgstr "Erreur chargement des groupes d'articles"
+
+msgid "Error loading material dimensions"
+msgstr "Erreur chargement des dimensions du matériau"
+
+msgid "Error loading material forms"
+msgstr "Erreur chargement des formulaires de matériau"
+
+msgid "Error loading material substances"
+msgstr "Erreur chargement des substances matériales"
+
+msgid "Error loading material types"
+msgstr "Erreur chargement des types de matériau"
+
+msgid "Error loading people"
+msgstr "Erreur chargement personnes"
+
+msgid "Error loading picking lists"
+msgstr "Erreur chargement des listes de picking"
+
+msgid "Error loading receipts"
+msgstr "Erreur chargement des reçus"
+
+msgid "Error loading shipments"
+msgstr "Erreur chargement expéditions"
+
+msgid "Error loading shipping methods"
+msgstr "Erreur chargement méthodes de livraison"
+
+msgid "Error loading stock transfers"
+msgstr "Erreur chargement des transferts de stocks"
+
+msgid "Error loading storage types"
+msgstr "Erreur chargement types de stockage"
+
+msgid "Error loading style colors"
+msgstr "Erreur chargement des couleurs de style"
+
+msgid "Error loading style sizes"
+msgstr "Erreur chargement tailles de style"
+
+msgid "Error loading supplier types"
+msgstr "Erreur chargement types de fournisseur"
+
+msgid "Error loading suppliers"
+msgstr "Erreur chargement fournisseurs"
+
+msgid "Error loading tags"
+msgstr "Erreur chargement des étiquettes"
+
+msgid "Error loading tracked entities"
+msgstr "Erreur chargement des entités suivies"
+
+msgid "Error loading training"
+msgstr "Erreur chargement formation"
+
+msgid "Error loading training assignments"
+msgstr "Erreur chargement des affectations de formation"
+
+msgid "Error loading trainings"
+msgstr "Erreur chargement formations"
+
+msgid "Error loading warehouse transfers"
+msgstr "Erreur chargement des transferts de stock"
+
 msgid "Estimated"
 msgstr "Estimé"
 
+msgid "Event saved"
+msgstr "Événement enregistré"
+
+msgid "Event started"
+msgstr "Événement lancé"
+
+msgid "Event stopped"
+msgstr "Événement arrêté"
+
 msgid "Expand"
 msgstr "Développer"
+
+msgid "Expiration date updated"
+msgstr "Date d'expiration mise à jour"
 
 msgid "Expired"
 msgstr "Expiré"
@@ -503,17 +879,2801 @@ msgstr "Expire le {date}"
 msgid "Expiring first"
 msgstr "Expirez en premier"
 
+msgid "Failed to accept lot"
+msgstr "Échec de l'acceptation du lot"
+
+msgid "Failed to activate gauge"
+msgstr "Échec d'activation de l'indicateur"
+
+msgid "Failed to activate process"
+msgstr "Échec d'activation du processus"
+
+msgid "Failed to activate work center"
+msgstr "Échec d'activation du centre de travail"
+
+msgid "Failed to add colors and sizes"
+msgstr "Échec de l'ajout des couleurs et des tailles"
+
+msgid "Failed to add entry"
+msgstr "Échec de l'ajout"
+
+msgid "Failed to add spare part"
+msgstr "Échec de l'ajout de pièce de rechange"
+
+msgid "Failed to assign"
+msgstr "Échec de l'attribution"
+
+msgid "Failed to assign rule"
+msgstr "Échec de l'attribution de la règle"
+
+msgid "Failed to assign suppliers"
+msgstr "Échec de l'attribution des fournisseurs"
+
+msgid "Failed to cancel RFQ"
+msgstr "Échec de l'annulation de la demande de quote-price"
+
 msgid "Failed to complete inventory adjustment"
 msgstr "Échec de l'ajustement de stock"
+
+msgid "Failed to complete job"
+msgstr "Échec de la tâche"
+
+msgid "Failed to complete maintenance"
+msgstr "Échec de la maintenance"
+
+msgid "Failed to convert quote to order"
+msgstr "Échec de la conversion de la quote-à-commande"
+
+msgid "Failed to convert rework"
+msgstr "Échec de la conversion de rétroussage"
+
+msgid "Failed to convert RFQ"
+msgstr "Échec de la conversion de l'OF"
+
+msgid "Failed to create API key"
+msgstr "Échec de la création de la clé API"
+
+msgid "Failed to create asset class"
+msgstr "Échec de la création de la classe d'actif"
+
+msgid "Failed to create assignment"
+msgstr "Échec de la création de l'affectation"
+
+msgid "Failed to create attribute"
+msgstr "Échec de la création d'attribut"
+
+msgid "Failed to create attribute category"
+msgstr "Échec de la création de la catégorie d'attribut"
+
+msgid "Failed to create auth session"
+msgstr "Échec de la création de la session d'authentification"
+
+msgid "Failed to create company"
+msgstr "Échec de la création de l'entreprise"
+
+msgid "Failed to create contractor"
+msgstr "Échec de la création du sous-traitant"
+
+msgid "Failed to create cost center."
+msgstr "Échec de la création du centre de coûts."
+
+msgid "Failed to create customer location"
+msgstr "Échec de la création du lieu client"
+
+msgid "Failed to create customer portal"
+msgstr "Échec de la création du portail client"
+
+msgid "Failed to create department."
+msgstr "Échec de la création du département."
+
+msgid "Failed to create depreciation run"
+msgstr "Échec de la création de l'exécution de dépréciation"
+
+msgid "Failed to create dimension"
+msgstr "Échec de la création de la dimension"
+
+msgid "Failed to create document"
+msgstr "Échec de la création du document"
+
+msgid "Failed to create employee job record"
+msgstr "Échec de la création du poste pour l'employé"
+
+msgid "Failed to create fixed asset"
+msgstr "Échec de la création d'actif fixe"
+
+msgid "Failed to create group"
+msgstr "Échec de la création du groupe"
+
+msgid "Failed to create headquarters location"
+msgstr "Échec de la création du siège social"
+
+msgid "Failed to create holiday."
+msgstr "Échec de la création d'un congé."
+
+msgid "Failed to create IC transaction"
+msgstr "Échec de la création de la transaction IC"
+
+msgid "Failed to create inspection document"
+msgstr "Échec de la création du document d'inspection"
+
+msgid "Failed to create invite link"
+msgstr "Échec de la création du lien d'invitation"
+
+msgid "Failed to create journal entry"
+msgstr "Échec de la création d'entreejournal"
+
+msgid "Failed to create location."
+msgstr "Échec de la création de localisation."
+
+msgid "Failed to create maintenance dispatch"
+msgstr "Échec de la création du rappel de maintenance"
+
+msgid "Failed to create maintenance schedule"
+msgstr "Échec de la création du planning d'entretien"
+
+msgid "Failed to create master work order"
+msgstr "Échec de la création de la commande maîtresse"
+
+msgid "Failed to create parameter"
+msgstr "Échec de la création du paramètre"
+
+msgid "Failed to create part"
+msgstr "Échec de la création de pièce"
+
+msgid "Failed to create partner"
+msgstr "Échec de la création du partenaire"
+
+msgid "Failed to create price override"
+msgstr "Échec de la création d'un surclassement de prix"
+
+msgid "Failed to create pricing rule"
+msgstr "Échec de la création de la règle tarifaire"
+
+msgid "Failed to create process."
+msgstr "Échec de la création du processus."
+
+msgid "Failed to create purchase invoice"
+msgstr "Échec de la création de la facture d'achat"
+
+msgid "Failed to create purchase invoice line."
+msgstr "Échec de la création de ligne de facture d'achat."
+
+msgid "Failed to create purchase order"
+msgstr "Échec de la création de la commande d'achat"
+
+msgid "Failed to create purchase order line."
+msgstr "Échec de la création de ligne de commande d'achat."
+
+msgid "Failed to create quality issue"
+msgstr "Échec de la création d'un problème de qualité"
+
+msgid "Failed to create quality issue tasks"
+msgstr "Échec de la création des tâches d'incident qualité"
+
+msgid "Failed to create question"
+msgstr "Échec de la création de la question"
+
+msgid "Failed to create quote line method."
+msgstr "Échec de la création de la méthode de ligne de devis."
+
+msgid "Failed to create quote line."
+msgstr "Échec de la création de ligne de devis."
+
+msgid "Failed to create receipt"
+msgstr "Échec de la création du réceptionnement"
+
+msgid "Failed to create repeat depreciation run"
+msgstr "Échec de la création de l'exécution de dépréciation répétée"
+
+msgid "Failed to create reprint"
+msgstr "Échec de la création d'une réimpression"
+
+msgid "Failed to create required action"
+msgstr "Échec de la création de l'action requise"
+
+msgid "Failed to create risk"
+msgstr "Échec de la création du risque"
+
+msgid "Failed to create rule"
+msgstr "Échec de la création de règle"
+
+msgid "Failed to create sales invoice"
+msgstr "Échec de la création de la facture de vente"
+
+msgid "Failed to create sales invoice line."
+msgstr "Échec de la création de ligne facture vente."
+
+msgid "Failed to create sales order"
+msgstr "Échec de la création de la commande de vente"
+
+msgid "Failed to create sales order line."
+msgstr "Échec de la création de ligne de commande de vente."
+
+msgid "Failed to create shift"
+msgstr "Échec de la création d'un horaire"
+
+msgid "Failed to create shipment"
+msgstr "Échec de la création du lot"
+
+msgid "Failed to create step"
+msgstr "Échec de la création de l'étape"
+
+msgid "Failed to create stock transfer"
+msgstr "Échec de la création du transfert de stocks"
+
+msgid "Failed to create supplier location"
+msgstr "Échec de la création de l'emplacement fournisseur"
+
+msgid "Failed to create supplier process"
+msgstr "Échec de la création du processus fournisseur"
+
+msgid "Failed to create tag"
+msgstr "Échec de la création de l'étiquette"
+
+msgid "Failed to create template"
+msgstr "Échec de la création du modèle"
+
+msgid "Failed to create timecard"
+msgstr "Échec de la création du carnet d'heures"
+
+msgid "Failed to create training"
+msgstr "Échec de la création de la formation"
+
+msgid "Failed to create user account"
+msgstr "Échec de la création du compte utilisateur"
+
+msgid "Failed to create user from WeChat"
+msgstr "Échec de la création d'utilisateur depuis WeChat"
+
+msgid "Failed to create warehouse transfer"
+msgstr "Échec de la création du transfert de stock"
+
+msgid "Failed to create webhook"
+msgstr "Échec de la création du webhooks"
+
+msgid "Failed to create WeChat session"
+msgstr "Échec de la création de la session WeChat"
+
+msgid "Failed to create work center"
+msgstr "Échec de la création du centre de production"
+
+msgid "Failed to deactivate attribute"
+msgstr "Échec de désactivation de l'attribut"
+
+msgid "Failed to deactivate attribute category"
+msgstr "Échec de désactivation de la catégorie d'attribut"
+
+msgid "Failed to deactivate employee"
+msgstr "Échec de désactivation de l'employé"
+
+msgid "Failed to deactivate gauge"
+msgstr "Échec de désactivation du manomètre"
+
+msgid "Failed to deactivate process"
+msgstr "Échec de désactivation du processus"
+
+msgid "Failed to deactivate user"
+msgstr "Échec de désactivation de l'utilisateur"
+
+msgid "Failed to deactivate users"
+msgstr "Échec de désactivation des utilisateurs"
+
+msgid "Failed to delete account"
+msgstr "Échec de la suppression du compte"
+
+msgid "Failed to delete API key"
+msgstr "Échec de la suppression de l'API key"
+
+msgid "Failed to delete approval rule"
+msgstr "Échec de la suppression de la règle d'approbation"
+
+msgid "Failed to delete asset class"
+msgstr "Échec de la suppression de la classe d'actif"
+
+msgid "Failed to delete assignment"
+msgstr "Échec de la suppression de l'affectation"
+
+msgid "Failed to delete association"
+msgstr "Échec de la suppression de l'association"
+
+msgid "Failed to delete attribute value"
+msgstr "Échec de la suppression de la valeur d'attribut"
+
+msgid "Failed to delete contractor"
+msgstr "Échec de la suppression du sous-traitant"
+
+msgid "Failed to delete cost center"
+msgstr "Échec de la suppression du centre de coûts"
+
+msgid "Failed to delete custom field"
+msgstr "Échec de la suppression du champ personnalisé"
+
+msgid "Failed to delete customer contact"
+msgstr "Échec de la suppression du contact client"
+
+msgid "Failed to delete customer part"
+msgstr "Échec de la suppression de la pièce client"
+
+msgid "Failed to delete customer status"
+msgstr "Échec de la suppression du statut client"
+
+msgid "Failed to delete customer type"
+msgstr "Échec de la suppression du type de client"
+
+msgid "Failed to delete department"
+msgstr "Échec de la suppression du département"
+
+msgid "Failed to delete depreciation run"
+msgstr "Échec de la suppression de l'exécution de dépréciation"
+
+msgid "Failed to delete dimension"
+msgstr "Échec de la suppression de la dimension"
+
+msgid "Failed to delete document"
+msgstr "Échec de la suppression du document"
+
+msgid "Failed to delete employee type"
+msgstr "Échec de la suppression du type d'employé"
+
+msgid "Failed to delete entry"
+msgstr "Échec de la suppression de l'entrée"
+
+msgid "Failed to delete event"
+msgstr "Échec de la suppression de l'événement"
+
+msgid "Failed to delete fixed asset"
+msgstr "Échec de la suppression du bien immobilisé"
+
+msgid "Failed to delete gauge"
+msgstr "Échec de la suppression du gauge"
+
+msgid "Failed to delete gauge calibration record"
+msgstr "Échec de la suppression du registre de calibrage du capteur"
+
+msgid "Failed to delete group"
+msgstr "Échec de la suppression du groupe"
+
+msgid "Failed to delete holiday"
+msgstr "Échec de la suppression des congés"
+
+msgid "Failed to delete inspection document"
+msgstr "Échec de la suppression du document d'inspection"
+
+msgid "Failed to delete issue"
+msgstr "Échec de la suppression du problème"
+
+msgid "Failed to delete issue workflow"
+msgstr "Échec de la suppression du flux de travail"
+
+msgid "Failed to delete item group"
+msgstr "Échec de la suppression du groupe d'articles"
+
+msgid "Failed to delete job"
+msgstr "Échec de la suppression de la tâche"
+
+msgid "Failed to delete job material"
+msgstr "Échec de la suppression du matériau de la tâche"
+
+msgid "Failed to delete job operation attribute"
+msgstr "Échec de la suppression de l'attribut de l'opération de tâche"
+
+msgid "Failed to delete job operation parameter"
+msgstr "Échec de la suppression du paramètre d'opération de tâche"
+
+msgid "Failed to delete job operation tool"
+msgstr "Échec de la suppression de l'outil d'opération de tâche"
+
+msgid "Failed to delete journal entry"
+msgstr "Échec de la suppression de l'entreejournal"
+
+msgid "Failed to delete kanban"
+msgstr "Échec de la suppression du kanban"
+
+msgid "Failed to delete line"
+msgstr "Échec de la suppression de cette ligne"
+
+msgid "Failed to delete location"
+msgstr "Échec de la suppression du lieu"
+
+msgid "Failed to delete material dimension"
+msgstr "Échec de la suppression des dimensions matérielle"
+
+msgid "Failed to delete material finish"
+msgstr "Échec de la suppression du fini matériau"
+
+msgid "Failed to delete material form"
+msgstr "Échec de la suppression du formulaire de matériau"
+
+msgid "Failed to delete material grade"
+msgstr "Échec de la suppression de la catégorie matériau"
+
+msgid "Failed to delete material substance"
+msgstr "Échec de la suppression de la matière"
+
+msgid "Failed to delete material type"
+msgstr "Échec de la suppression du type de matériau"
+
+msgid "Failed to delete method material"
+msgstr "Échec de la suppression du matériau méthodologique"
+
+msgid "Failed to delete method operation parameter"
+msgstr "Échec de la suppression du paramètre d'opération méthodologique"
+
+msgid "Failed to delete method operation step"
+msgstr "Échec de la suppression de l'étape d'opération méthodologique"
+
+msgid "Failed to delete method operation tool"
+msgstr "Échec de la suppression de l'outil d'opérationméthode"
+
+msgid "Failed to delete parameter"
+msgstr "Échec de la suppression du paramètre"
+
+msgid "Failed to delete partner"
+msgstr "Échec de la suppression du partenaire"
+
+msgid "Failed to delete passkey"
+msgstr "Échec de la suppression de la passe-mot"
+
+msgid "Failed to delete payment term"
+msgstr "Échec de la suppression du terme de paiement"
+
+msgid "Failed to delete picking list"
+msgstr "Échec de la suppression de la liste de picking"
+
+msgid "Failed to delete price override"
+msgstr "Échec de la suppression du surclassement prix"
+
+msgid "Failed to delete pricing rule"
+msgstr "Échec de la suppression de la règle tarifaire"
+
+msgid "Failed to delete printer route"
+msgstr "Échec de la suppression du chemin d'impression"
+
+msgid "Failed to delete procedure"
+msgstr "Échec de la suppression du procédé"
+
+msgid "Failed to delete purchase invoice"
+msgstr "Échec de la suppression de la facture d'achat"
+
+msgid "Failed to delete purchase invoice line"
+msgstr "Échec de la suppression de l'item facture d'achat"
+
+msgid "Failed to delete purchase order line"
+msgstr "Échec de la suppression de l'ligne d'ordre d'achat"
+
+msgid "Failed to delete quality document"
+msgstr "Échec de la suppression du document qualité"
+
+msgid "Failed to delete quantity"
+msgstr "Échec de la suppression de la quantité"
+
+msgid "Failed to delete quantity report"
+msgstr "Échec de la suppression du rapport de quantité"
+
+msgid "Failed to delete question"
+msgstr "Échec de la suppression de la question"
+
+msgid "Failed to delete quote line"
+msgstr "Échec de la suppression de l'item de devis"
+
+msgid "Failed to delete quote material"
+msgstr "Échec de la suppression des matériaux de la quote-part"
+
+msgid "Failed to delete quote operation step"
+msgstr "Échec de la suppression de l'étape d'opération de devis"
+
+msgid "Failed to delete quote operation tool"
+msgstr "Échec de la suppression de l'outil d'opération devis"
+
+msgid "Failed to delete required action"
+msgstr "Échec de la suppression de l'action requise"
+
+msgid "Failed to delete RFQ line"
+msgstr "Échec de la suppression de l' ligne RFQ"
+
+msgid "Failed to delete rule"
+msgstr "Échec de la suppression de la règle"
+
+msgid "Failed to delete sales invoice"
+msgstr "Échec de la suppression de l'facture de vente"
+
+msgid "Failed to delete sales invoice line"
+msgstr "Échec de la suppression de l'item facture vente"
+
+msgid "Failed to delete sales order line"
+msgstr "Échec de la suppression de l'item de commande de vente"
+
+msgid "Failed to delete section"
+msgstr "Échec de la suppression de la section"
+
+msgid "Failed to delete shift"
+msgstr "Échec de la suppression de l'horaire"
+
+msgid "Failed to delete shipping method"
+msgstr "Échec de la suppression du mode de livraison"
+
+msgid "Failed to delete step"
+msgstr "Échec de la suppression de l'étape"
+
+msgid "Failed to delete stock transfer"
+msgstr "Échec de la suppression du transfert de stocks"
+
+msgid "Failed to delete storage type"
+msgstr "Échec de la suppression du type de stockage"
+
+msgid "Failed to delete storage unit"
+msgstr "Échec de la suppression du stockage"
+
+msgid "Failed to delete style color"
+msgstr "Échec de la suppression de la couleur de style"
+
+msgid "Failed to delete style size"
+msgstr "Échec de la suppression de la taille de style"
+
+msgid "Failed to delete subsidiary"
+msgstr "Échec de la suppression de la filiale"
+
+msgid "Failed to delete suggestion"
+msgstr "Échec de la suppression de la suggestion"
+
+msgid "Failed to delete supplier contact"
+msgstr "Échec de la suppression du contact fournisseur"
+
+msgid "Failed to delete supplier process"
+msgstr "Échec de la suppression du processus fournisseur"
+
+msgid "Failed to delete supplier type"
+msgstr "Échec de la suppression du type de fournisseur"
+
+msgid "Failed to delete tag"
+msgstr "Échec de la suppression de l'étiquette"
+
+msgid "Failed to delete template"
+msgstr "Échec de la suppression du modèle"
+
+msgid "Failed to delete timecard"
+msgstr "Échec de la suppression du carnet d'heures"
+
+msgid "Failed to delete training"
+msgstr "Échec de la suppression de l'entraînement"
+
+msgid "Failed to delete unit of measure"
+msgstr "Échec de la suppression de l'unité de mesure"
+
+msgid "Failed to delete view"
+msgstr "Échec de la suppression de la vue"
+
+msgid "Failed to delete warehouse transfer"
+msgstr "Échec de la suppression du transfert de stock"
+
+msgid "Failed to delete warehouse transfer line"
+msgstr "Échec de la suppression de l' ligne de transfert de stock"
+
+msgid "Failed to delete webhook"
+msgstr "Échec de la suppression du webhook"
+
+msgid "Failed to disable audit logging"
+msgstr "Échec de l'arrêt du journalisation des audits"
+
+msgid "Failed to disconnect integration"
+msgstr "Échec de la désintégration"
+
+msgid "Failed to duplicate price list"
+msgstr "Échec de la duplication de la liste de prix"
+
+msgid "Failed to duplicate pricing rule"
+msgstr "Échec de la duplication du règle tarifaire"
+
+msgid "Failed to duplicate purchase order"
+msgstr "Échec de la duplication de la commande d'achat"
+
+msgid "Failed to duplicate purchase order: missing id"
+msgstr "Échec de la duplication de la commande d'achat : identifiant manquant"
+
+msgid "Failed to enable audit logging"
+msgstr "Échec de l'activation du journalisation des audits"
+
+msgid "Failed to end event"
+msgstr "Échec pour mettre fin à l'événement"
+
+msgid "Failed to end maintenance event"
+msgstr "Échec de la fin de l'événement de maintenance"
 
 msgid "Failed to end operations"
 msgstr "Échec de l'arrêt des opérations"
 
+msgid "Failed to ensure pick method exists"
+msgstr "Échec pour s'assurer que la méthode de sélection existe"
+
+msgid "Failed to exchange WeChat code"
+msgstr "Échec de l'échange du code WeChat"
+
+msgid "Failed to favorite purchase order"
+msgstr "Échec de l'ajout aux favoris de la commande d'achat"
+
+msgid "Failed to favorite Quote"
+msgstr "Échec de l'ajout en favoris de la proposition"
+
+msgid "Failed to favorite rfq"
+msgstr "Échec de la favorisation de l'rfq"
+
+msgid "Failed to favorite sales order"
+msgstr "Échec de l'ajout aux favoris de la commande de vente"
+
+msgid "Failed to fetch accounts"
+msgstr "Échec du chargement des comptes"
+
 msgid "Failed to fetch active operations"
 msgstr "Échec de la récupération des opérations actives"
 
+msgid "Failed to fetch assets"
+msgstr "Échec du chargement des actifs"
+
+msgid "Failed to fetch attribute"
+msgstr "Échec du chargement de l'attribut"
+
+msgid "Failed to fetch attribute categories"
+msgstr "Échec du chargement des catégories d'attributs"
+
+msgid "Failed to fetch attribute category"
+msgstr "Échec du chargement de la catégorie d'attribut"
+
+msgid "Failed to fetch consumables"
+msgstr "Échec du chargement des consommables"
+
+msgid "Failed to fetch custom fields"
+msgstr "Échec du chargement des champs personnalisés"
+
+msgid "Failed to fetch customer contacts"
+msgstr "Échec du chargement des contacts clients"
+
+msgid "Failed to fetch customer locations"
+msgstr "Échec du chargement des emplacements clients"
+
+msgid "Failed to fetch customers"
+msgstr "Échec du chargement des clients"
+
+msgid "Failed to fetch cutting completions"
+msgstr "Échec du chargement des complétions de coupure"
+
+msgid "Failed to fetch documents"
+msgstr "Échec du chargement des documents"
+
+msgid "Failed to fetch inventory items"
+msgstr "Échec du chargement des articles de stock"
+
+msgid "Failed to fetch item"
+msgstr "Échec du chargement de l'article"
+
+msgid "Failed to fetch job"
+msgstr "Échec du chargement de la tâche"
+
+msgid "Failed to fetch job events"
+msgstr "Échec du chargement des événements de tâche"
+
+msgid "Failed to fetch job make method"
+msgstr "Échec du chargement de la méthode de fabrication"
+
+msgid "Failed to fetch job materials"
+msgstr "Échec du chargement des matières premières de la tâche"
+
+msgid "Failed to fetch job operation"
+msgstr "Échec du chargement de l'opération de tâche"
+
+msgid "Failed to fetch job operation step records"
+msgstr "Échec du chargement des étapes d'opération de la tâche"
+
+msgid "Failed to fetch job operations"
+msgstr "Échec du chargement des opérations de tâche"
+
+msgid "Failed to fetch jobs"
+msgstr "Échec du chargement des tâches"
+
+msgid "Failed to fetch kanbans"
+msgstr "Échec du chargement des kanbans"
+
+msgid "Failed to fetch materials"
+msgstr "Échec du chargement des matières premières"
+
+msgid "Failed to fetch method materials"
+msgstr "Échec du chargement des matières premières"
+
+msgid "Failed to fetch method operations"
+msgstr "Échec du chargement des opérations de méthode"
+
+msgid "Failed to fetch modules"
+msgstr "Échec du chargement des modules"
+
+msgid "Failed to fetch operation"
+msgstr "Échec du chargement de l'opération"
+
+msgid "Failed to fetch parts"
+msgstr "Échec du chargement des pièces"
+
+msgid "Failed to fetch planning items"
+msgstr "Échec du chargement des éléments de planification"
+
+msgid "Failed to fetch purchase invoices"
+msgstr "Échec du chargement des factures d'achat"
+
+msgid "Failed to fetch purchase orders"
+msgstr "Échec du chargement des commandes d'achat"
+
+msgid "Failed to fetch quotes"
+msgstr "Échec du chargement des devis"
+
+msgid "Failed to fetch RFQs"
+msgstr "Échec du chargement des offres de prix"
+
+msgid "Failed to fetch risks"
+msgstr "Échec du chargement des risques"
+
+msgid "Failed to fetch run lines"
+msgstr "Échec du chargement des lignes de production"
+
+msgid "Failed to fetch sales invoices"
+msgstr "Échec du chargement des factures de vente"
+
+msgid "Failed to fetch sales orders"
+msgstr "Échec du chargement des commandes de vente"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Échec de la récupération des unités de stockage"
+
+msgid "Failed to fetch styles"
+msgstr "Échec du chargement des styles"
+
+msgid "Failed to fetch supplier contacts"
+msgstr "Échec du chargement des contacts fournisseur"
+
+msgid "Failed to fetch supplier locations"
+msgstr "Échec du chargement des emplacements fournisseur"
+
+msgid "Failed to fetch supplier quantities"
+msgstr "Échec du chargement des quantités fournisseur"
+
+msgid "Failed to fetch suppliers"
+msgstr "Échec du chargement des fournisseurs"
+
+msgid "Failed to fetch templates"
+msgstr "Échec du chargement des modèles"
+
+msgid "Failed to fetch tools"
+msgstr "Échec du chargement des outils"
+
+msgid "Failed to fetch unscheduled jobs"
+msgstr "Échec du chargement des tâches non planifiées"
+
+msgid "Failed to fetch work center"
+msgstr "Échec du chargement de la centrale de travail"
+
+msgid "Failed to fetch work centers"
+msgstr "Échec du chargement des centres de travail"
+
+msgid "Failed to finalize purchase order"
+msgstr "Échec de la finalisation du bon d'achat"
+
+msgid "Failed to finalize quote"
+msgstr "Échec de la finalisation de la quote-part"
+
+msgid "Failed to finalize supplier quote"
+msgstr "Échec de la finalisation du devis fournisseur"
+
+msgid "Failed to find quote line"
+msgstr "Échec de recherche de ligne de devis"
+
+msgid "Failed to finish operation"
+msgstr "Échec de la fin de l'opération"
+
+msgid "Failed to generate download URL"
+msgstr "Échec de génération de l'URL de téléchargement"
+
+msgid "Failed to generate elimination entries"
+msgstr "Échec de la génération des enregistrements d'élimination"
+
+msgid "Failed to generate PDF"
+msgstr "Échec de la génération du PDF"
+
+msgid "Failed to generate picking list"
+msgstr "Échec de la génération de la liste de picking"
+
+msgid "Failed to get a category id"
+msgstr "Échec de récupération d'un ID de catégorie"
+
+msgid "Failed to get a customer contact id"
+msgstr "Échec de récupération de l'identifiant de contact client"
+
+msgid "Failed to get a customer location id"
+msgstr "Échec de récupération de l'identifiant du lieu client"
+
+msgid "Failed to get a customer portal id"
+msgstr "Échec de récupération de l'ID du portail client"
+
+msgid "Failed to get a dimension id"
+msgstr "Échec de récupération de l'identifiant de dimension"
+
+msgid "Failed to get a dispatch id"
+msgstr "Échec de récupération de l'ID de mise en route"
+
+msgid "Failed to get a failure mode id"
+msgstr "Échec de récupération du mode d'échec"
+
+msgid "Failed to get a kanban id"
+msgstr "Échec pour obtenir un identifiant kanban"
+
+msgid "Failed to get a material type id"
+msgstr "Échec de récupération du type d'élément matière"
+
+msgid "Failed to get a schedule id"
+msgstr "Échec de récupération de l'ID du planning"
+
+msgid "Failed to get a storage type id"
+msgstr "Échec de récupération du type d'emplacement ID"
+
+msgid "Failed to get a storageUnit id"
+msgstr "Échec de récupération de l'ID d'unité de stock"
+
+msgid "Failed to get a style color id"
+msgstr "Échec de récupération de l'identifiant de couleur de style"
+
+msgid "Failed to get a style size id"
+msgstr "Échec de récupération de l'identifiant de taille de style"
+
+msgid "Failed to get a supplier contact id"
+msgstr "Échec de récupération de l'identifiant du contact fournisseur"
+
+msgid "Failed to get a supplier location id"
+msgstr "Échec de récupération de l'identifiant de localisation du fournisseur"
+
+msgid "Failed to get a work center id"
+msgstr "Échec de récupération de l'ID du centre de travail"
+
+msgid "Failed to get account"
+msgstr "Échec de récupération du compte"
+
+msgid "Failed to get accounting period"
+msgstr "Échec de récupération de la période comptable"
+
+msgid "Failed to get an account id"
+msgstr "Échec de récupération de l'ID du compte"
+
+msgid "Failed to get an attribute id"
+msgstr "Échec de récupération de l'identifiant d'attribut"
+
+msgid "Failed to get an customer status id"
+msgstr "Échec de récupération de l'identifiant du statut client"
+
+msgid "Failed to get an customer type id"
+msgstr "Échec de récupération du type d'客户类型ID"
+
+msgid "Failed to get an employee type id"
+msgstr "Échec de récupération du type d'employé"
+
+msgid "Failed to get an gauge id"
+msgstr "Échec de récupération de l'identifiant du capteur"
+
+msgid "Failed to get an group id"
+msgstr "Échec de récupération du groupe ID"
+
+msgid "Failed to get an id"
+msgstr "Échec de récupération d'un ID"
+
+msgid "Failed to get an issue type id"
+msgstr "Échec de récupération du type d'incident"
+
+msgid "Failed to get an item group id"
+msgstr "Échec de récupération du groupe d'articles"
+
+msgid "Failed to get an material dimension id"
+msgstr "Échec de récupération de l'identifiant de dimension matériau"
+
+msgid "Failed to get an material finish id"
+msgstr "Échec de récupération de l'identifiant du fini matériau"
+
+msgid "Failed to get an material form id"
+msgstr "Échec de récupération de l'ID du matériau"
+
+msgid "Failed to get an material grade id"
+msgstr "Échec de récupération de l'identifiant de la catégorie matériau"
+
+msgid "Failed to get an material substance id"
+msgstr "Échec de récupération de l'identifiant d'un matériau"
+
+msgid "Failed to get an no quote reason id"
+msgstr "Échec de récupération d'un identifiant de raison sans guillemet"
+
+msgid "Failed to get an payment term id"
+msgstr "Échec de récupération de l'identifiant des conditions de paiement"
+
+msgid "Failed to get an receipt id"
+msgstr "Échec de récupération de l'ID de réception"
+
+msgid "Failed to get an scrap reason id"
+msgstr "Échec de récupération de l'ID de raison de rebut"
+
+msgid "Failed to get an shipment id"
+msgstr "Échec de récupération de l'ID de la livraison"
+
+msgid "Failed to get an shipping method id"
+msgstr "Échec de récupération de l'ID du mode de transport"
+
+msgid "Failed to get an supplier type id"
+msgstr "Échec de récupération du type d' fournisseur ID"
+
+msgid "Failed to get an unit of measure id"
+msgstr "Échec de récupération de l'identifiant d'unité de mesure"
+
+msgid "Failed to get asset"
+msgstr "Échec de récupération de l'actif"
+
+msgid "Failed to get asset class"
+msgstr "Échec de récupération de la classe d'actif"
+
+msgid "Failed to get asset class id"
+msgstr "Échec de récupération de l'ID de la classe d'actif"
+
+msgid "Failed to get attribute"
+msgstr "Échec de récupération de l'attribut"
+
+msgid "Failed to get chart of accounts"
+msgstr "Échec de récupération du tableau de comptes"
+
+msgid "Failed to get claims"
+msgstr "Échec du chargement des revendications"
+
+msgid "Failed to get companies"
+msgstr "Échec de récupération des entreprises"
+
+msgid "Failed to get company"
+msgstr "Échec de récupération de l'entreprise"
+
+msgid "Failed to get company ID"
+msgstr "Échec de récupération de l'ID de la société"
+
+msgid "Failed to get company settings"
+msgstr "Échec du chargement des paramètres de l'entreprise"
+
+msgid "Failed to get contractor"
+msgstr "Échec de récupération du sous-traitant"
+
+msgid "Failed to get contractor id"
+msgstr "Échec de récupération de l'ID du sous-traitant"
+
+msgid "Failed to get cost center"
+msgstr "Échec de récupération du centre de coûts"
+
+msgid "Failed to get cost center id"
+msgstr "Échec de récupération de l'identifiant du centre de coûts"
+
+msgid "Failed to get customer contact"
+msgstr "Échec de récupération des informations de contact du client"
+
+msgid "Failed to get customer contacts"
+msgstr "Échec de récupération des contacts clients"
+
+msgid "Failed to get customer location"
+msgstr "Échec de récupération de la localisation du client"
+
+msgid "Failed to get customer part"
+msgstr "Échec de récupération du composant client"
+
+msgid "Failed to get customer portal"
+msgstr "Échec de récupération du portail client"
+
+msgid "Failed to get customer status"
+msgstr "Échec de récupération du statut client"
+
+msgid "Failed to get customer type"
+msgstr "Échec de récupération du type de client"
+
+msgid "Failed to get department"
+msgstr "Échec de récupération du département"
+
+msgid "Failed to get department id"
+msgstr "Échec de récupération de l'ID du département"
+
+msgid "Failed to get depreciation run"
+msgstr "Échec de récupération de la dépréciation"
+
+msgid "Failed to get depreciation run id"
+msgstr "Échec de récupération de l'ID de la dépréciation"
+
+msgid "Failed to get dimension"
+msgstr "Échec de récupération des dimensions"
+
+msgid "Failed to get dispatch"
+msgstr "Échec de l'obtention du dépistage"
+
+msgid "Failed to get document"
+msgstr "Échec de récupération du document"
+
+msgid "Failed to get employee type"
+msgstr "Échec de récupération du type d'employé"
+
+msgid "Failed to get entry id"
+msgstr "Échec de récupération de l'ID d'entrée"
+
+msgid "Failed to get failure mode"
+msgstr "Échec pour obtenir le mode d'échec"
+
+msgid "Failed to get fiscal year settings"
+msgstr "Échec du chargement des paramètres de l'exercice fiscal"
+
+msgid "Failed to get fixed asset"
+msgstr "Échec de récupération du bien immobilisé"
+
+msgid "Failed to get fixed asset id"
+msgstr "Échec de récupération de l'ID d'actif fixe"
+
+msgid "Failed to get gauge type"
+msgstr "Échec de récupération du type de jauge"
+
+msgid "Failed to get group"
+msgstr "Échec de récupération du groupe"
+
+msgid "Failed to get holiday"
+msgstr "Échec de récupération des congés"
+
+msgid "Failed to get holiday id"
+msgstr "Échec de récupération de l'ID de congé"
+
+msgid "Failed to get issue type"
+msgstr "Échec de récupération du type d'incident"
+
+msgid "Failed to get item group"
+msgstr "Échec de récupération du groupe d'articles"
+
+msgid "Failed to get job data"
+msgstr "Échec du chargement des données de tâche"
+
+msgid "Failed to get job information"
+msgstr "Échec de récupération des informations du travail"
+
+msgid "Failed to get kanban"
+msgstr "Échec de récupération du kanban"
+
+msgid "Failed to get location"
+msgstr "Échec de récupération de la localisation"
+
+msgid "Failed to get location id"
+msgstr "Échec de récupération de l'ID du lieu"
+
+msgid "Failed to get location ID"
+msgstr "Échec de récupération de l'ID du lieu"
+
+msgid "Failed to get maintenance dispatch"
+msgstr "Échec du chargement des tâches de maintenance"
+
+msgid "Failed to get maintenance schedule"
+msgstr "Échec de récupération du planning d'entretien"
+
+msgid "Failed to get material dimension"
+msgstr "Échec de récupération des dimensions du matériau"
+
+msgid "Failed to get material finish"
+msgstr "Échec de récupération du fini du matériau"
+
+msgid "Failed to get material form"
+msgstr "Échec de récupération du formulaire de matériau"
+
+msgid "Failed to get material grade"
+msgstr "Échec de récupération de la catégorie matériau"
+
+msgid "Failed to get material make method"
+msgstr "Échec de récupération du mode de fabrication matérielle"
+
+msgid "Failed to get material substance"
+msgstr "Échec de récupération du matériau"
+
+msgid "Failed to get material type"
+msgstr "Échec de récupération du type de matériau"
+
+msgid "Failed to get modules"
+msgstr "Échec de récupération des modules"
+
+msgid "Failed to get next sequence"
+msgstr "Échec de récupération de la séquence suivante"
+
+msgid "Failed to get no quote reason"
+msgstr "Échec de récupération de la raison pour absence de devis"
+
+msgid "Failed to get outside operations"
+msgstr "Échec de récupération des opérations extérieures"
+
+msgid "Failed to get parent account"
+msgstr "Échec de récupération du compte parent"
+
+msgid "Failed to get partner"
+msgstr "Échec de récupération du partenaire"
+
+msgid "Failed to get partner id"
+msgstr "Échec de récupération de l'ID du partenaire"
+
+msgid "Failed to get parts"
+msgstr "Échec de récupération des pièces"
+
+msgid "Failed to get payment term"
+msgstr "Échec du chargement des conditions de paiement"
+
+msgid "Failed to get price override"
+msgstr "Échec du chargement de l'override prix"
+
+msgid "Failed to get price override id"
+msgstr "Échec de récupération de l'ID surcharge prix"
+
+msgid "Failed to get pricing rule"
+msgstr "Échec de récupération du règle tarifaire"
+
+msgid "Failed to get pricing rule id"
+msgstr "Échec de récupération de l'ID du règle de tarification"
+
+msgid "Failed to get process"
+msgstr "Échec de récupération du processus"
+
+msgid "Failed to get process id"
+msgstr "Échec de récupération de l'ID du processus"
+
+msgid "Failed to get production projections"
+msgstr "Échec de récupération des projections de production"
+
+msgid "Failed to get purchase invoice"
+msgstr "Échec de récupération de la facture d'achat"
+
+msgid "Failed to get purchase invoice line"
+msgstr "Échec de récupération de la ligne de facture d'achat"
+
+msgid "Failed to get purchase order"
+msgstr "Échec de récupération de la commande d'achat"
+
+msgid "Failed to get purchase order line"
+msgstr "Échec de récupération de la ligne de commande d'achat"
+
+msgid "Failed to get quality issue sequence"
+msgstr "Échec de récupération de la séquence du problème de qualité"
+
+msgid "Failed to get quote"
+msgstr "Échec de récupération de la quote-mise"
+
+msgid "Failed to get quote details"
+msgstr "Échec du chargement des détails de la quote-part"
+
+msgid "Failed to get receipt"
+msgstr "Échec de la récupération du bon de réception"
+
+msgid "Failed to get sales invoice line"
+msgstr "Échec de récupération de l'item facture vente"
+
+msgid "Failed to get sales order"
+msgstr "Échec de récupération de la commande de vente"
+
+msgid "Failed to get sales order line"
+msgstr "Échec de récupération de la ligne de commande de vente"
+
+msgid "Failed to get scrap reason"
+msgstr "Échec pour obtenir la raison de pertes"
+
+msgid "Failed to get sequence"
+msgstr "Échec de récupération de la séquence"
+
+msgid "Failed to get services"
+msgstr "Échec de récupération des services"
+
+msgid "Failed to get shift"
+msgstr "Échec de récupération du créneau"
+
+msgid "Failed to get shift id"
+msgstr "Échec de récupération de l'ID de la période de travail"
+
+msgid "Failed to get shipment"
+msgstr "Échec de la récupération du lot"
+
+msgid "Failed to get shipping method"
+msgstr "Échec de récupération du mode de livraison"
+
+msgid "Failed to get storage type"
+msgstr "Échec de récupération du type de stockage"
+
+msgid "Failed to get storageUnit"
+msgstr "Échec de récupération du storageUnit"
+
+msgid "Failed to get style color"
+msgstr "Échec pour obtenir la couleur de style"
+
+msgid "Failed to get style size"
+msgstr "Échec de récupération de la taille du style"
+
+msgid "Failed to get subsidiary"
+msgstr "Échec de récupération de la filiale"
+
+msgid "Failed to get subsidiary id"
+msgstr "Échec de récupération de l'identifiant de la filiale"
+
+msgid "Failed to get suggestion"
+msgstr "Échec de récupération des suggestions"
+
+msgid "Failed to get supplier contact"
+msgstr "Échec de récupération des informations de contact du fournisseur"
+
+msgid "Failed to get supplier contacts"
+msgstr "Échec du chargement des contacts fournis"
+
+msgid "Failed to get supplier location"
+msgstr "Échec de récupération de la localisation du fournisseur"
+
+msgid "Failed to get supplier locations"
+msgstr "Échec de récupération des emplacements fournisseur"
+
+msgid "Failed to get supplier processes"
+msgstr "Échec de récupération des processus fournisseur"
+
+msgid "Failed to get supplier quote"
+msgstr "Échec de récupération du devis fournisseur"
+
+msgid "Failed to get supplier quote line prices"
+msgstr "Échec de récupération des prix des lignes de devis fournisseur"
+
+msgid "Failed to get supplier quote lines"
+msgstr "Échec de récupération des lignes de devis fournisseur"
+
+msgid "Failed to get supplier type"
+msgstr "Échec de récupération du type de fournisseur"
+
+msgid "Failed to get tag"
+msgstr "Échec de récupération du tag"
+
+msgid "Failed to get timecard"
+msgstr "Échec de récupération du temps de travail"
+
+msgid "Failed to get unique values for custom field"
+msgstr "Échec de récupération des valeurs uniques pour le champ personnalisé"
+
+msgid "Failed to get unit of measure"
+msgstr "Échec de récupération de l'unité de mesure"
+
+msgid "Failed to get user"
+msgstr "Échec de récupération des informations utilisateur"
+
+msgid "Failed to get user permissions"
+msgstr "Échec du chargement des permissions utilisateur"
+
+msgid "Failed to get WeChat user info"
+msgstr "Échec de récupération des informations utilisateur WeChat"
+
+msgid "Failed to insert account"
+msgstr "Échec de l'insertion du compte"
+
+msgid "Failed to insert consumable"
+msgstr "Échec de l'insertion du consommable"
+
+msgid "Failed to insert consumable inventory"
+msgstr "Échec de l'insertion du stock consommable"
+
+msgid "Failed to insert cost center"
+msgstr "Échec de l'insertion du centre de coûts"
+
+msgid "Failed to insert custom field"
+msgstr "Échec de l'insertion du champ personnalisé"
+
+msgid "Failed to insert customer"
+msgstr "Échec de l'insertion du client"
+
+msgid "Failed to insert customer status"
+msgstr "Échec de l'insertion du statut client"
+
+msgid "Failed to insert customer type"
+msgstr "Échec de l'insertion du type de client"
+
+msgid "Failed to insert department"
+msgstr "Échec de l'insertion du département"
+
+msgid "Failed to insert employee type"
+msgstr "Échec de l'insertion du type d'employé"
+
+msgid "Failed to insert employee type permissions"
+msgstr "Échec de l'insertion des permissions pour le type d'employé"
+
+msgid "Failed to insert failure mode"
+msgstr "Échec de l'insertion du mode d'échec"
+
+msgid "Failed to insert gauge"
+msgstr "Échec de l'insertion du capteur"
+
+msgid "Failed to insert gauge calibration record"
+msgstr "Échec de l'insertion du registre de calibrage"
+
+msgid "Failed to insert gauge type"
+msgstr "Échec de l'insertion du type de jauge"
+
+msgid "Failed to insert group"
+msgstr "Échec de l'insertion du groupe"
+
+msgid "Failed to insert group members"
+msgstr "Échec de l'insertion des membres du groupe"
+
+msgid "Failed to insert issue"
+msgstr "Échec de l'insertion du problème"
+
+msgid "Failed to insert issue type"
+msgstr "Échec de l'insertion du type d'incident"
+
+msgid "Failed to insert issue workflow"
+msgstr "Échec de l'insertion du flux de travail pour l'incident"
+
+msgid "Failed to insert item group"
+msgstr "Échec de l'insertion du groupe d'articles"
+
+msgid "Failed to insert job"
+msgstr "Échec de l'insertion de la tâche"
+
+msgid "Failed to insert job material"
+msgstr "Échec de l'insertion du matériau de la tâche"
+
+msgid "Failed to insert job material make method"
+msgstr "Échec de l'insertion du matériau de la méthode de fabrication"
+
+msgid "Failed to insert job operation"
+msgstr "Échec de l'insertion de l'opération de travail"
+
+msgid "Failed to insert job operation attribute"
+msgstr "Échec de l'insertion de l'attribut d'opération de tâche"
+
+msgid "Failed to insert job operation parameter"
+msgstr "Échec de l'insertion du paramètre d'opération de tâche"
+
+msgid "Failed to insert job operation tool"
+msgstr "Échec de l'insertion de l'outil d'opération de tâche"
+
+msgid "Failed to insert kanban"
+msgstr "Échec de l'insertion du kanban"
+
+msgid "Failed to insert line"
+msgstr "Échec de l'insertion de la ligne"
+
+msgid "Failed to insert material"
+msgstr "Échec de l'insertion du matériau"
+
+msgid "Failed to insert material dimension"
+msgstr "Échec de l'insertion des dimensions du matériau"
+
+msgid "Failed to insert material finish"
+msgstr "Échec de l'insertion du fini matériau"
+
+msgid "Failed to insert material form"
+msgstr "Échec de l'insertion du formulaire de matériau"
+
+msgid "Failed to insert material grade"
+msgstr "Échec de l'insertion de la catégorie matériau"
+
+msgid "Failed to insert material inventory"
+msgstr "Échec de l'insertion du stock de matières premières"
+
+msgid "Failed to insert material substance"
+msgstr "Échec de l'insertion du matériau"
+
+msgid "Failed to insert material type"
+msgstr "Échec de l'insertion du type de matériau"
+
+msgid "Failed to insert method material"
+msgstr "Échec de l'insertion du matériau méthodologique"
+
+msgid "Failed to insert method operation"
+msgstr "Échec de l'insertion de l'opération méthode"
+
+msgid "Failed to insert method operation parameter"
+msgstr "Échec de l'insertion du paramètre d'opération méthode"
+
+msgid "Failed to insert method operation step"
+msgstr "Échec de l'insertion de l'étape d'opération méthode"
+
+msgid "Failed to insert method operation tool"
+msgstr "Échec de l'insertion de l'outil de méthode d'opération"
+
+msgid "Failed to insert model record"
+msgstr "Échec de l'insertion du modèle"
+
+msgid "Failed to insert new version"
+msgstr "Échec de l'insertion de la nouvelle version"
+
+msgid "Failed to insert no quote reason"
+msgstr "Échec de l'insertion de la raison manquante"
+
+msgid "Failed to insert part"
+msgstr "Échec de l'insertion de pièce"
+
+msgid "Failed to insert part inventory"
+msgstr "Échec de l'insertion du stock de pièces"
+
+msgid "Failed to insert payment term"
+msgstr "Échec de l'insertion du terme de paiement"
+
+msgid "Failed to insert procedure"
+msgstr "Échec de l'insertion du procédé"
+
+msgid "Failed to insert procedure parameter"
+msgstr "Échec de l'insertion du paramètre du procédé"
+
+msgid "Failed to insert procedure step"
+msgstr "Échec de l'insertion du pas de procédure"
+
+msgid "Failed to insert production event"
+msgstr "Échec de l'insertion de l'événement de production"
+
+msgid "Failed to insert purchase invoice"
+msgstr "Échec de l'insertion de la facture d'achat"
+
+msgid "Failed to insert purchase order"
+msgstr "Échec de l'insertion de la commande d'achat"
+
+msgid "Failed to insert quality document"
+msgstr "Échec de l'insertion du document qualité"
+
+msgid "Failed to insert quality document step"
+msgstr "Échec de l'insertion de l'étape du document qualité"
+
+msgid "Failed to insert quote"
+msgstr "Échec de l'insertion de la quote-page"
+
+msgid "Failed to insert quote material"
+msgstr "Échec de l'insertion du matériau de devis"
+
+msgid "Failed to insert quote material make method"
+msgstr "Échec de l'insertion du matériau méthode de fabrication"
+
+msgid "Failed to insert quote operation"
+msgstr "Échec de l'insertion de l'opération de devis"
+
+msgid "Failed to insert quote operation parameter"
+msgstr "Échec de l'insertion du paramètre d'opération de devis"
+
+msgid "Failed to insert quote operation step"
+msgstr "Échec de l'insertion de l'étape d'opération de devis"
+
+msgid "Failed to insert quote operation tool"
+msgstr "Échec de l'insertion de l'outil d'opération de devis"
+
+msgid "Failed to insert reviewer"
+msgstr "Échec de l'insertion du réviseur"
+
+msgid "Failed to insert RFQ"
+msgstr "Échec de l'insertion de la demande de prix"
+
+msgid "Failed to insert RFQ line"
+msgstr "Échec de l'insertion de la ligne de devis RFQ"
+
+msgid "Failed to insert sales invoice"
+msgstr "Échec de l'insertion de la facture de vente"
+
+msgid "Failed to insert sales order"
+msgstr "Échec de l'insertion de la commande de vente"
+
+msgid "Failed to insert scrap reason"
+msgstr "Échec de l'insertion de la raison de rebut"
+
+msgid "Failed to insert shipping method"
+msgstr "Échec de l'insertion du mode de livraison"
+
+msgid "Failed to insert storage type"
+msgstr "Échec de l'insertion du type de stockage"
+
+msgid "Failed to insert storageUnit"
+msgstr "Échec de l'insertion de l'unité de stockage"
+
+msgid "Failed to insert style color"
+msgstr "Échec de l'insertion de la couleur de style"
+
+msgid "Failed to insert style inventory"
+msgstr "Échec de l'insertion du stock de styles"
+
+msgid "Failed to insert style size"
+msgstr "Échec de l'insertion de la taille du style"
+
+msgid "Failed to insert supplier quote"
+msgstr "Échec de l'insertion du devis fournisseur"
+
+msgid "Failed to insert supplier type"
+msgstr "Échec de l'insertion du type de fournisseur"
+
+msgid "Failed to insert template"
+msgstr "Échec de l'insertion du modèle"
+
+msgid "Failed to insert tool"
+msgstr "Échec de l'insertion de l'outil"
+
+msgid "Failed to insert tool inventory"
+msgstr "Échec de l'insertion du stock d'outils"
+
+msgid "Failed to insert training question"
+msgstr "Échec de l'insertion de la question de formation"
+
+msgid "Failed to insert unit of measure"
+msgstr "Échec de l'insertion de l'unité de mesure"
+
+msgid "Failed to install integration"
+msgstr "Échec de l'installation de l'intégration"
+
+msgid "Failed to issue material"
+msgstr "Échec de l'émission du matériau"
+
+msgid "Failed to issue materials"
+msgstr "Échec de l'attribution des matières premières"
+
+msgid "Failed to link email"
+msgstr "Échec de la liaison e-mail"
+
+msgid "Failed to link quality issue to MES context"
+msgstr "Échec de l'association du problème de qualité au contexte MES"
+
+msgid "Failed to load account"
+msgstr "Échec du chargement du compte"
+
+msgid "Failed to load any locations"
+msgstr "Échec du chargement de tout emplacement"
+
+msgid "Failed to load api keys"
+msgstr "Échec du chargement des clés API"
+
+msgid "Failed to load applications"
+msgstr "Échec du chargement des applications"
+
+msgid "Failed to load approval rule"
+msgstr "Échec du chargement de la règle d'approbation"
+
+msgid "Failed to load approval rules"
+msgstr "Échec du chargement des règles d'approbation"
+
+msgid "Failed to load attribute category"
+msgstr "Échec du chargement de la catégorie d'attribut"
+
+msgid "Failed to load balance sheet"
+msgstr "Échec du chargement du bilan"
+
+msgid "Failed to load bundle work orders"
+msgstr "Échec du chargement des ordres de travail"
+
+msgid "Failed to load companies"
+msgstr "Échec du chargement des sociétés"
+
+msgid "Failed to load company"
+msgstr "Échec du chargement de l'entreprise"
+
+msgid "Failed to load company for purchase orders"
+msgstr "Échec du chargement de l'entreprise pour les commandes d'achat"
+
+msgid "Failed to load config. Please make sure a valid record exists in your public.config table."
+msgstr "Échec du chargement de la configuration. Veuillez vous assurer qu'un enregistrement valide existe dans votre table public.config."
+
+msgid "Failed to load consumable costing"
+msgstr "Échec du chargement des coûts des consommables"
+
+msgid "Failed to load consumable inventory"
+msgstr "Échec du chargement de l'inventaire des consommables"
+
+msgid "Failed to load consumable planning"
+msgstr "Échec du chargement de la planification des consommables"
+
+msgid "Failed to load consumable purchasing"
+msgstr "Échec du chargement de l'achat de consommables"
+
+msgid "Failed to load consumable quantities"
+msgstr "Échec du chargement des quantités de consommables"
+
+msgid "Failed to load consumable summary"
+msgstr "Échec du chargement de la sommaire des consommables"
+
+msgid "Failed to load contractors"
+msgstr "Échec du chargement des sous-traitants"
+
+msgid "Failed to load cost centers"
+msgstr "Échec du chargement des centres de coûts"
+
+msgid "Failed to load customer payment terms"
+msgstr "Échec du chargement des conditions de paiement du client"
+
+msgid "Failed to load customer shipping"
+msgstr "Échec du chargement des informations de livraison du client"
+
+msgid "Failed to load customer summary"
+msgstr "Échec du chargement de l'aperçu du client"
+
+msgid "Failed to load customer tax information"
+msgstr "Échec du chargement des informations fiscales client"
+
+msgid "Failed to load default accounts"
+msgstr "Échec du chargement des comptes par défaut"
+
+msgid "Failed to load default location"
+msgstr "Échec du chargement de la localisation par défaut"
+
+msgid "Failed to load demand"
+msgstr "Échec du chargement de la demande"
+
+msgid "Failed to load departments"
+msgstr "Échec du chargement des départements"
+
+msgid "Failed to load depreciation run"
+msgstr "Échec du chargement de la dépréciation"
+
+msgid "Failed to load document"
+msgstr "Échec du chargement du document"
+
+msgid "Failed to load employee summary"
+msgstr "Échec du chargement de l'aperçu de l'employé"
+
+msgid "Failed to load entity links"
+msgstr "Échec du chargement des liens d'entité"
+
+msgid "Failed to load fixed asset"
+msgstr "Échec du chargement de l'actif fixe"
+
+msgid "Failed to load gauge"
+msgstr "Échec du chargement de l'indicateur"
+
+msgid "Failed to load gauge calibration record"
+msgstr "Échec du chargement du registre de calibrage de la gageotte"
+
+msgid "Failed to load group"
+msgstr "Échec du chargement du groupe"
+
+msgid "Failed to load group members"
+msgstr "Échec du chargement des membres du groupe"
+
+msgid "Failed to load groups"
+msgstr "Échec du chargement des groupes"
+
+msgid "Failed to load holidays"
+msgstr "Échec du chargement des jours fériés"
+
+msgid "Failed to load income statement"
+msgstr "Échec du chargement de l'ébauche de revenus"
+
+msgid "Failed to load inspection"
+msgstr "Échec du chargement de l'inspection"
+
+msgid "Failed to load inspection document"
+msgstr "Échec du chargement du document d'inspection"
+
+msgid "Failed to load inspections"
+msgstr "Échec du chargement des inspections"
+
+msgid "Failed to load integrations"
+msgstr "Échec du chargement des intégrations"
+
+msgid "Failed to load invite links"
+msgstr "Échec du chargement des liens d'invitation"
+
+msgid "Failed to load issue"
+msgstr "Échec du chargement de l'incident"
+
+msgid "Failed to load issue workflow"
+msgstr "Échec du chargement du flux de travail"
+
+msgid "Failed to load item"
+msgstr "Échec du chargement de l'article"
+
+msgid "Failed to load item inventory activity"
+msgstr "Échec du chargement de l'activité d'inventaire des articles"
+
+msgid "Failed to load item storage unit quantities"
+msgstr "Échec du chargement des quantités de l'unité de stockissement"
+
+msgid "Failed to load job"
+msgstr "Échec du chargement de la tâche"
+
+msgid "Failed to load job make method"
+msgstr "Échec du chargement de la méthode de fabrication"
+
+msgid "Failed to load job materials"
+msgstr "Échec du chargement des matières premières de la tâche"
+
+msgid "Failed to load job operations"
+msgstr "Échec du chargement des opérations de tâche"
+
+msgid "Failed to load journal entry"
+msgstr "Échec du chargement de l'entreejournal"
+
+msgid "Failed to load line"
+msgstr "Échec du chargement de la ligne"
+
+msgid "Failed to load linked sales invoices"
+msgstr "Échec du chargement des factures de vente liées"
+
+msgid "Failed to load locations"
+msgstr "Échec du chargement des emplacements"
+
+msgid "Failed to load maintenance dispatch"
+msgstr "Échec du chargement de la mission de maintenance"
+
+msgid "Failed to load maintenance schedules"
+msgstr "Échec du chargement des horaires de maintenance"
+
+msgid "Failed to load make method"
+msgstr "Échec du chargement de la méthode de fabrication"
+
+msgid "Failed to load master work orders"
+msgstr "Échec du chargement des ordres de production maîtres"
+
+msgid "Failed to load material costing"
+msgstr "Échec du chargement des coûts de matériau"
+
+msgid "Failed to load material inventory"
+msgstr "Échec du chargement de l'inventaire des matières premières"
+
+msgid "Failed to load material planning"
+msgstr "Échec du chargement de la planification des matières premières"
+
+msgid "Failed to load material purchasing"
+msgstr "Échec du chargement de l'achat de matières premières"
+
+msgid "Failed to load material quantities"
+msgstr "Échec du chargement des quantités de matières premières"
+
+msgid "Failed to load material summary"
+msgstr "Échec du chargement de la sommaire des matières premières"
+
+msgid "Failed to load method materials"
+msgstr "Échec du chargement des matériaux méthodologiques"
+
+msgid "Failed to load method operations"
+msgstr "Échec du chargement des opérations méthodiques"
+
+msgid "Failed to load order"
+msgstr "Échec du chargement de la commande"
+
+msgid "Failed to load order payment"
+msgstr "Échec du chargement du paiement de la commande"
+
+msgid "Failed to load order shipment"
+msgstr "Échec du chargement de l'expédition de commande"
+
+msgid "Failed to load part costing"
+msgstr "Échec du chargement du coût de la pièce"
+
+msgid "Failed to load part inventory"
+msgstr "Échec du chargement de l'inventaire des pièces"
+
+msgid "Failed to load part planning"
+msgstr "Échec du chargement de la planification des pièces"
+
+msgid "Failed to load part purchasing"
+msgstr "Échec du chargement de l'achat de pièces"
+
+msgid "Failed to load part quantities"
+msgstr "Échec du chargement des quantités de pièces"
+
+msgid "Failed to load part summary"
+msgstr "Échec du chargement de la sommaire des pièces"
+
+msgid "Failed to load part unit sale price"
+msgstr "Échec du chargement du prix de vente par unité de pièce"
+
+msgid "Failed to load partners"
+msgstr "Échec du chargement des partenaires"
+
+msgid "Failed to load pick method"
+msgstr "Échec du chargement de la méthode de sélection"
+
+msgid "Failed to load picking list"
+msgstr "Échec du chargement de la liste de picking"
+
+msgid "Failed to load picking list line"
+msgstr "Échec du chargement de la ligne de liste de picking"
+
+msgid "Failed to load picking list lines"
+msgstr "Échec du chargement des lignes de liste de picking"
+
+msgid "Failed to load planning periods"
+msgstr "Échec du chargement des périodes de planification"
+
+msgid "Failed to load print job"
+msgstr "Échec du chargement de la tâche d'impression"
+
+msgid "Failed to load procedure"
+msgstr "Échec du chargement du procédé"
+
+msgid "Failed to load processes"
+msgstr "Échec du chargement des processus"
+
+msgid "Failed to load projection periods"
+msgstr "Échec du chargement des périodes de projection"
+
+msgid "Failed to load public attributes"
+msgstr "Échec du chargement des attributs publics"
+
+msgid "Failed to load purchase invoice"
+msgstr "Échec du chargement de la facture d'achat"
+
+msgid "Failed to load purchase order"
+msgstr "Échec du chargement de la commande d'achat"
+
+msgid "Failed to load purchase order line"
+msgstr "Échec du chargement de la ligne de commande d'achat"
+
+msgid "Failed to load purchase order payment"
+msgstr "Échec du chargement du paiement de la commande d'achat"
+
+msgid "Failed to load purchaseOrder"
+msgstr "Échec du chargement de la commande d'achat"
+
+msgid "Failed to load purchasing RFQ summary"
+msgstr "Échec du chargement de la sommaire des offres de prix d'achat"
+
+msgid "Failed to load quote"
+msgstr "Échec du chargement de la quote-part"
+
+msgid "Failed to load quote make method"
+msgstr "Échec du chargement de la méthode de fabrication de devis"
+
+msgid "Failed to load quote materials"
+msgstr "Échec du chargement des matériaux de la quote-part"
+
+msgid "Failed to load quote operations"
+msgstr "Échec du chargement des opérations de devis"
+
+msgid "Failed to load quote opportunity"
+msgstr "Échec du chargement de l'opportunité de devis"
+
+msgid "Failed to load quote payment"
+msgstr "Échec du chargement du paiement de la quote-part"
+
+msgid "Failed to load quote shipment"
+msgstr "Échec du chargement de l'expédition de devis"
+
+msgid "Failed to load receipt"
+msgstr "Échec du chargement de la réception"
+
+msgid "Failed to load report lines"
+msgstr "Échec du chargement des lignes de rapport"
+
+msgid "Failed to load RFQ"
+msgstr "Échec du chargement de la demande de prix"
+
+msgid "Failed to load RFQ lines"
+msgstr "Échec du chargement des lignes de devis"
+
+msgid "Failed to load RFQ suppliers"
+msgstr "Échec du chargement des fournisseurs de devis"
+
+msgid "Failed to load salary record"
+msgstr "Échec du chargement du relevé de salaire"
+
+msgid "Failed to load sales invoice"
+msgstr "Échec du chargement de la facture de vente"
+
+msgid "Failed to load sales invoice totals"
+msgstr "Échec du chargement des totaux de la facture de vente"
+
+msgid "Failed to load sales order"
+msgstr "Échec du chargement de la commande de vente"
+
+msgid "Failed to load sales order line"
+msgstr "Échec du chargement de la ligne de commande de vente"
+
+msgid "Failed to load sales order opportunity"
+msgstr "Échec du chargement de l'opportunité de commande vente"
+
+msgid "Failed to load sales RFQ opportunity"
+msgstr "Échec du chargement de l'opportunité de devis vente"
+
+msgid "Failed to load sales RFQ summary"
+msgstr "Échec du chargement de la sommaire des offres de prix vente"
+
+msgid "Failed to load salesOrder"
+msgstr "Échec du chargement de la commandeVENTE"
+
+msgid "Failed to load shifts"
+msgstr "Échec du chargement des horaires"
+
+msgid "Failed to load shipment"
+msgstr "Échec du chargement de la livraison"
+
+msgid "Failed to load source run"
+msgstr "Échec du chargement de la production source"
+
+msgid "Failed to load stock transfer line or item storage unit quantities"
+msgstr "Échec du chargement des quantités de ligne de transfert de stock ou d'unité de stockage"
+
+msgid "Failed to load stock transfer line or stock transfer"
+msgstr "Échec du chargement de la ligne de transfert de stocks ou de la demande de transfert de stocks"
+
+msgid "Failed to load stockTransfer"
+msgstr "Échec du chargement de la transfert-stock"
+
+msgid "Failed to load storage rules"
+msgstr "Échec du chargement des règles de stockage"
+
+msgid "Failed to load style costing"
+msgstr "Échec du chargement du coût de style"
+
+msgid "Failed to load style inventory"
+msgstr "Échec du chargement de l'inventaire de styles"
+
+msgid "Failed to load style planning"
+msgstr "Échec du chargement de la planification stylistique"
+
+msgid "Failed to load style quantities"
+msgstr "Échec du chargement des quantités de style"
+
+msgid "Failed to load style summary"
+msgstr "Échec du chargement de la sommaire des styles"
+
+msgid "Failed to load style unit sale price"
+msgstr "Échec du chargement de l'unité de prix de vente"
+
+msgid "Failed to load subsidiary"
+msgstr "Échec du chargement de la filiale"
+
+msgid "Failed to load suggestions"
+msgstr "Échec du chargement des suggestions"
+
+msgid "Failed to load supplier interaction record"
+msgstr "Échec du chargement du registre de l'interaction avec le fournisseur"
+
+msgid "Failed to load supplier payment"
+msgstr "Échec du chargement du paiement fourisseur"
+
+msgid "Failed to load supplier payment terms"
+msgstr "Échec du chargement des conditions de paiement du fournisseur"
+
+msgid "Failed to load supplier quote"
+msgstr "Échec du chargement de l'offre fournisseur"
+
+msgid "Failed to load supplier shipping"
+msgstr "Échec du chargement des expéditions fournisseur"
+
+msgid "Failed to load supplier summary"
+msgstr "Échec du chargement de l'aperçu du fournisseur"
+
+msgid "Failed to load supplier tax information"
+msgstr "Échec du chargement des informations fiscales du fournisseur"
+
+msgid "Failed to load timecard entries"
+msgstr "Échec du chargement des entrées de temps"
+
+msgid "Failed to load tool costing"
+msgstr "Échec du chargement de la tarification outil"
+
+msgid "Failed to load tool inventory"
+msgstr "Échec du chargement de l'inventaire outils"
+
+msgid "Failed to load tool planning"
+msgstr "Échec du chargement de la planification outil"
+
+msgid "Failed to load tool purchasing"
+msgstr "Échec du chargement de l'achat d'outils"
+
+msgid "Failed to load tool quantities"
+msgstr "Échec du chargement des quantités outil"
+
+msgid "Failed to load tool summary"
+msgstr "Échec du chargement de l'aperçu de l'outil"
+
+msgid "Failed to load training"
+msgstr "Échec du chargement de la formation"
+
+msgid "Failed to load trial balance"
+msgstr "Échec du chargement du solde provisoire"
+
+msgid "Failed to load users"
+msgstr "Échec du chargement des utilisateurs"
+
+msgid "Failed to load warehouse transfer"
+msgstr "Échec du chargement de la transfert de stock"
+
+msgid "Failed to load warehouse transfer line"
+msgstr "Échec du chargement de la ligne de transfert de magasin"
+
+msgid "Failed to load warehouse transfer lines"
+msgstr "Échec du chargement des lignes de transfert de magasin"
+
+msgid "Failed to load webhook"
+msgstr "Échec du chargement de l'webhook"
+
+msgid "Failed to load webhooks"
+msgstr "Échec du chargement des webhooks"
+
+msgid "Failed to mark partial"
+msgstr "Échec de la marque partielle"
+
+msgid "Failed to mark training complete"
+msgstr "Échec de la validation de l'entraînement"
+
+msgid "Failed to move account"
+msgstr "Échec du déplacement du compte"
+
+msgid "Failed to move entities"
+msgstr "Échec du déplacement des entités"
+
+msgid "Failed to move file"
+msgstr "Échec du déplacement de fichier"
+
+msgid "Failed to notify user"
+msgstr "Échec de la notification du utilisateur"
+
+msgid "Failed to parse claims"
+msgstr "Échec du parsing des revendications"
+
+msgid "Failed to parse permissions"
+msgstr "Échec du parsing des permissions"
+
+msgid "Failed to parse procedure content"
+msgstr "Échec de la parsing du contenu du procédé"
+
+msgid "Failed to parse quality document content"
+msgstr "Échec du parsing du contenu du document de qualité"
+
+msgid "Failed to parse training content"
+msgstr "Échec du parsing du contenu de formation"
+
+msgid "Failed to parse updates"
+msgstr "Échec du parsing des mises à jour"
+
+msgid "Failed to pick line"
+msgstr "Échec du choix de ligne"
+
+msgid "Failed to pick up"
+msgstr "Échec du picking"
+
+msgid "Failed to post asset disposal"
+msgstr "Échec de la publication du désengagement d'actif"
+
+msgid "Failed to post depreciation run"
+msgstr "Échec de la publication de l'exécution de dépréciation"
+
+msgid "Failed to post journal entry"
+msgstr "Échec de l'enregistrement des journaux"
+
+msgid "Failed to post receipt"
+msgstr "Échec de l'enregistrement de la réception"
+
+msgid "Failed to post shipment"
+msgstr "Échec de la mise en compte du transport"
+
+msgid "Failed to reassign tracked entities"
+msgstr "Échec de réaffectation des entités suivies"
+
+msgid "Failed to recalculate dependencies"
+msgstr "Échec du recalcul des dépendances"
+
+msgid "Failed to recalculate job make method requirements"
+msgstr "Échec du recalcul des exigences de la méthode de fabrication du lot"
+
+msgid "Failed to recalculate job operation dependencies"
+msgstr "Échec du recalcul des dépendances de l'opération de tâche"
+
+msgid "Failed to recalculate job requirements"
+msgstr "Échec du recalcul des exigences de la tâche"
+
+msgid "Failed to recalculate quote line prices"
+msgstr "Échec du recalcul des prix des lignes de devis"
+
+msgid "Failed to receive a job id"
+msgstr "Échec de réception d'un identifiant de tâche"
+
+msgid "Failed to receive a job id to recalculate dependencies"
+msgstr "Échec de réception d'un identifiant de tâche pour recalculer les dépendances"
+
+msgid "Failed to receive a new sort order"
+msgstr "Échec de reception d'un nouveau tri"
+
+msgid "Failed to receive an operation id"
+msgstr "Échec de réception de l'ID d'opération"
+
+msgid "Failed to record attribute"
+msgstr "Échec enregistrement attribut"
+
+msgid "Failed to record history"
+msgstr "Échec enregistrement historique"
+
+msgid "Failed to record rework quantity"
+msgstr "Échec enregistrement quantité de rétroussage"
+
+msgid "Failed to record scrap quantity"
+msgstr "Échec enregistrement quantité de déchet"
+
+msgid "Failed to refresh invite"
+msgstr "Échec du rafraîchissement de l'invitation"
+
+msgid "Failed to register asset"
+msgstr "Échec de l'enregistrement de l'actif"
+
+msgid "Failed to reinvite users"
+msgstr "Échec de la ré-invitation des utilisateurs"
+
+msgid "Failed to reject lot"
+msgstr "Échec du rejet du lot"
+
+msgid "Failed to release job"
+msgstr "Échec de la libération de la tâche"
+
+msgid "Failed to remove customer account"
+msgstr "Échec de la suppression du compte client"
+
+msgid "Failed to remove item"
+msgstr "Échec de la suppression de l'article"
+
+msgid "Failed to remove spare part"
+msgstr "Échec de la suppression de pièce de rechange"
+
+msgid "Failed to remove supplier account"
+msgstr "Échec de la suppression du compte fournisseur"
+
+msgid "Failed to remove user from company"
+msgstr "Échec de la suppression de l'utilisateur de l'entreprise"
+
+msgid "Failed to rename passkey"
+msgstr "Échec du renommage de la passe-partout"
+
+msgid "Failed to report quantity"
+msgstr "Échec de la rapportage de quantité"
+
+msgid "Failed to report rework"
+msgstr "Échec du rapport de rétravail"
+
+msgid "Failed to report scrap"
+msgstr "Échec du rapport des déchets"
+
+msgid "Failed to resolve Pull from Inventory prices"
+msgstr "Échec de résolution des prix Pull depuis l'inventaire"
+
+msgid "Failed to resolve Purchase to Order prices"
+msgstr "Échec de la résolution des prix Achat vers Commande"
+
+msgid "Failed to restore document"
+msgstr "Échec de la restauration du document"
+
+msgid "Failed to reverse journal entry"
+msgstr "Échec de l'annulation de la journalisation"
+
+msgid "Failed to review application"
+msgstr "Échec de la révision de l'application"
+
+msgid "Failed to revoke invite link"
+msgstr "Échec de la révocation du lien d'invitation"
+
+msgid "Failed to revoke invites"
+msgstr "Échec de la révocation des invitations"
+
+msgid "Failed to run IC matching"
+msgstr "Échec de l'exécution du matching IC"
+
+msgid "Failed to save bundles"
+msgstr "Échec enregistrement palettes"
+
+msgid "Failed to save comment"
+msgstr "Échec enregistrement commentaire"
+
+msgid "Failed to save demand forecasts"
+msgstr "Échec de l'enregistrement des prévisions de demande"
+
+msgid "Failed to save document layout"
+msgstr "Échec enregistrement du gabarit dokument"
+
+msgid "Failed to save event"
+msgstr "Échec enregistrement événement"
+
+msgid "Failed to save header"
+msgstr "Échec enregistrement en-tête"
+
+msgid "Failed to save item"
+msgstr "Échec enregistrement article"
+
+msgid "Failed to save journal entry"
+msgstr "Échec enregistrement journal"
+
+msgid "Failed to save passkey"
+msgstr "Échec de sauvegarde de la passe-partout"
+
+msgid "Failed to save sample"
+msgstr "Échec enregistrement échantillon"
+
+msgid "Failed to save sampling plan"
+msgstr "Échec de sauvegarde du plan d'échantillonnage"
+
+msgid "Failed to save section"
+msgstr "Échec enregistrement section"
+
+msgid "Failed to search users"
+msgstr "Échec de la recherche d'utilisateurs"
+
+msgid "Failed to seed company"
+msgstr "Échec de la sowing de l'entreprise"
+
+msgid "Failed to send email"
+msgstr "Échec de l'envoi de courrier électronique"
+
+msgid "Failed to send magic link"
+msgstr "Échec de l'envoi du lien magique"
+
+msgid "Failed to send supplier quote"
+msgstr "Échec de l'envoi du devis au fournisseur"
+
+msgid "Failed to send verification code"
+msgstr "Échec de l'envoi du code de vérification"
+
+msgid "Failed to set job release date"
+msgstr "Échec de la mise en date de la tâche"
+
+msgid "Failed to sign in"
+msgstr "Échec de connexion"
+
+msgid "Failed to sign in user"
+msgstr "Échec de connexion utilisateur"
+
+msgid "Failed to split line"
+msgstr "Échec de la division de la ligne"
+
+msgid "Failed to start checkout"
+msgstr "Échec du démarrage de la facturation"
+
+msgid "Failed to start event"
+msgstr "Échec du démarrage de l'événement"
+
+msgid "Failed to start maintenance event"
+msgstr "Échec du démarrage de l'événement de maintenance"
+
+msgid "Failed to stop event"
+msgstr "Échec de la cessation de l'événement"
+
+msgid "Failed to sync procedure"
+msgstr "Échec de la synchronisation du procédé"
+
+msgid "Failed to trigger rework"
+msgstr "Échec du déclenchement de rétroussage"
+
+msgid "Failed to unassign rule"
+msgstr "Échec de désaffectation du règlement"
+
+msgid "Failed to update  operation attribute"
+msgstr "Échec de mise à jour de l'attribut de l'opération"
+
+msgid "Failed to update  operation parameter"
+msgstr "Échec de mise à jour du paramètre d'opération"
+
+msgid "Failed to update  operation tool"
+msgstr "Échec de mise à jour de l'outil d'opération"
+
+msgid "Failed to update account"
+msgstr "Échec de la mise à jour du compte"
+
+msgid "Failed to update API key"
+msgstr "Échec de la mise à jour de l'API"
+
+msgid "Failed to update asset class"
+msgstr "Échec de la mise à jour de la classe d'actif"
+
+msgid "Failed to update assignment"
+msgstr "Échec de la mise à jour de l'affectation"
+
+msgid "Failed to update attribute"
+msgstr "Échec de mise à jour de l'attribut"
+
+msgid "Failed to update attribute category"
+msgstr "Échec de la mise à jour de la catégorie d'attribut"
+
+msgid "Failed to update attribute value"
+msgstr "Échec de mise à jour de la valeur de l'attribut"
+
+msgid "Failed to update avatar"
+msgstr "Échec de la mise à jour de l'avatar"
+
+msgid "Failed to update claims"
+msgstr "Échec de la mise à jour des revendications"
+
+msgid "Failed to update company"
+msgstr "Échec de la mise à jour de l'entreprise"
+
+msgid "Failed to update configuration"
+msgstr "Échec de la mise à jour de la configuration"
+
+msgid "Failed to update consumable"
+msgstr "Échec de la mise à jour du consommable"
+
+msgid "Failed to update consumable costing"
+msgstr "Échec de la mise à jour du coût des consommables"
+
+msgid "Failed to update consumable inventory"
+msgstr "Échec de la mise à jour du stock consommable"
+
+msgid "Failed to update consumable planning"
+msgstr "Échec de la mise à jour du plan d'utilisation"
+
+msgid "Failed to update consumable purchasing"
+msgstr "Échec de la mise à jour des achats de consommables"
+
+msgid "Failed to update content"
+msgstr "Échec de la mise à jour du contenu"
+
+msgid "Failed to update cost center."
+msgstr "Échec de la mise à jour du centre de coûts."
+
+msgid "Failed to update custom field"
+msgstr "Échec de mise à jour du champ personnalisé"
+
+msgid "Failed to update customer"
+msgstr "Échec de la mise à jour du client"
+
+msgid "Failed to update customer address"
+msgstr "Échec de la mise à jour des informations d'adresse du client"
+
+msgid "Failed to update customer contact"
+msgstr "Échec de la mise à jour des informations de contact du client"
+
+msgid "Failed to update customer part"
+msgstr "Échec de la mise à jour du composant client"
+
+msgid "Failed to update customer payment terms"
+msgstr "Échec de la mise à jour des conditions de paiement du client"
+
+msgid "Failed to update customer portal"
+msgstr "Échec de la mise à jour du portail client"
+
+msgid "Failed to update customer shipping"
+msgstr "Échec de la mise à jour des informations d'expédition du client"
+
+msgid "Failed to update customer status"
+msgstr "Échec de la mise à jour du statut client"
+
+msgid "Failed to update customer tax information"
+msgstr "Échec de la mise à jour des informations fiscales du client"
+
+msgid "Failed to update customer type"
+msgstr "Échec de la mise à jour du type de client"
+
+msgid "Failed to update default accounts"
+msgstr "Échec de la mise à jour des comptes par défaut"
+
+msgid "Failed to update demand forecasts"
+msgstr "Échec de la mise à jour des prévisions de demande"
+
+msgid "Failed to update dimension"
+msgstr "Échec de la mise à jour des dimensions"
+
+msgid "Failed to update dispatch status"
+msgstr "Échec de la mise à jour du statut de livraison"
+
+msgid "Failed to update document"
+msgstr "Échec de la mise à jour du document"
+
+msgid "Failed to update document labels"
+msgstr "Échec de la mise à jour des étiquettes du document"
+
+msgid "Failed to update due date"
+msgstr "Échec de la mise à jour de la date limite"
+
+msgid "Failed to update emoji"
+msgstr "Échec de la mise à jour de l'emoji"
+
+msgid "Failed to update employee"
+msgstr "Échec de la mise à jour de l'employé"
+
+msgid "Failed to update employee type"
+msgstr "Échec de la mise à jour du type d'employé"
+
+msgid "Failed to update employee type permissions"
+msgstr "Échec de la mise à jour des permissions pour le type d'employé"
+
+msgid "Failed to update entry"
+msgstr "Échec de la mise à jour"
+
+msgid "Failed to update exchange rate"
+msgstr "Échec de la mise à jour du taux d'échange"
+
+msgid "Failed to update expiration date"
+msgstr "Échec de la mise à jour de la date d'expiration"
+
+msgid "Failed to update failure mode"
+msgstr "Échec de la mise à jour du mode d'échec"
+
+msgid "Failed to update fiscal year settings"
+msgstr "Échec de la mise à jour des paramètres d'exercice fiscal"
+
+msgid "Failed to update fixed asset"
+msgstr "Échec de la mise à jour du bien immobilisé"
+
+msgid "Failed to update gauge"
+msgstr "Échec de mise à jour du manomètre"
+
+msgid "Failed to update gauge calibration record"
+msgstr "Échec de la mise à jour du registre de calibrage"
+
+msgid "Failed to update gauge type"
+msgstr "Échec de mise à jour du type de jauge"
+
+msgid "Failed to update group"
+msgstr "Échec de la mise à jour du groupe"
+
+msgid "Failed to update group members"
+msgstr "Échec de la mise à jour des membres du groupe"
+
+msgid "Failed to update invite link expiration"
+msgstr "Échec de la mise à jour de l'expiration du lien d'invitation"
+
+msgid "Failed to update issue"
+msgstr "Échec de la mise à jour du problème"
+
+msgid "Failed to update issue status"
+msgstr "Échec de mise à jour du statut du problème"
+
+msgid "Failed to update issue type"
+msgstr "Échec de la mise à jour du type d'incident"
+
+msgid "Failed to update issue workflow"
+msgstr "Échec de la mise à jour du flux de travail"
+
+msgid "Failed to update item"
+msgstr "Échec de la mise à jour de l'article"
+
+msgid "Failed to update item group"
+msgstr "Échec de la mise à jour du groupe d'articles"
+
+msgid "Failed to update job"
+msgstr "Échec de la mise à jour du travail"
+
+msgid "Failed to update job material"
+msgstr "Échec de la mise à jour des matériaux de la tâche"
+
+msgid "Failed to update job operation"
+msgstr "Échec de la mise à jour de l'opération de travail"
+
+msgid "Failed to update job operation attribute"
+msgstr "Échec de la mise à jour de l'attribut de l'opération de travail"
+
+msgid "Failed to update job operation parameter"
+msgstr "Échec de mise à jour du paramètre d'opération de tâche"
+
+msgid "Failed to update job operation tool"
+msgstr "Échec de la mise à jour de l'outil d'opération de tâche"
+
+msgid "Failed to update job status"
+msgstr "Échec de mise à jour du statut de la tâche"
+
+msgid "Failed to update kanban"
+msgstr "Échec de la mise à jour du kanban"
+
+msgid "Failed to update line"
+msgstr "Échec de la mise à jour de la ligne"
+
+msgid "Failed to update maintenance schedule"
+msgstr "Échec de la mise à jour du planning d'entretien"
+
+msgid "Failed to update material"
+msgstr "Échec de la mise à jour du matériau"
+
+msgid "Failed to update material costing"
+msgstr "Échec de la mise à jour du coût du matériau"
+
+msgid "Failed to update material form"
+msgstr "Échec de la mise à jour du formulaire de matériau"
+
+msgid "Failed to update material grade"
+msgstr "Échec de la mise à jour du grade matériau"
+
+msgid "Failed to update material inventory"
+msgstr "Échec de la mise à jour du stock de matières premières"
+
+msgid "Failed to update material planning"
+msgstr "Échec de la mise à jour du plan matières"
+
+msgid "Failed to update material purchasing"
+msgstr "Échec de la mise à jour des achats de matières premières"
+
+msgid "Failed to update material substance"
+msgstr "Échec de la mise à jour du matériau"
+
+msgid "Failed to update material type"
+msgstr "Échec de la mise à jour du type de matériau"
+
+msgid "Failed to update method material"
+msgstr "Échec de la mise à jour du matériau méthodologique"
+
+msgid "Failed to update method operation"
+msgstr "Échec de la mise à jour de l'opération méthode"
+
+msgid "Failed to update method operation parameter"
+msgstr "Échec de la mise à jour du paramètre de l'opération méthodologique"
+
+msgid "Failed to update method operation step"
+msgstr "Échec de la mise à jour de l'étape d'opération"
+
+msgid "Failed to update method operation tool"
+msgstr "Échec de la mise à jour de l'outil de méthode d'opération"
+
+msgid "Failed to update no quote reason"
+msgstr "Échec de la mise à jour de la raison manquante"
+
+msgid "Failed to update order"
+msgstr "Échec de la mise à jour de la commande"
+
+msgid "Failed to update original"
+msgstr "Échec de la mise à jour originale"
+
+msgid "Failed to update parameter"
+msgstr "Échec de la mise à jour du paramètre"
+
+msgid "Failed to update part"
+msgstr "Échec de la mise à jour du composant"
+
+msgid "Failed to update part costing"
+msgstr "Échec de la mise à jour du coût de la pièce"
+
+msgid "Failed to update part inventory"
+msgstr "Échec de la mise à jour du stock de pièces"
+
+msgid "Failed to update part manufacturing"
+msgstr "Échec de la mise à jour de la fabrication du composant"
+
+msgid "Failed to update part planning"
+msgstr "Échec de la mise à jour du plan d'éléments"
+
+msgid "Failed to update part purchasing"
+msgstr "Échec de la mise à jour des achats de pièces"
+
+msgid "Failed to update part sale price"
+msgstr "Échec de la mise à jour du prix de vente de l'élément"
+
+msgid "Failed to update payment term"
+msgstr "Échec de la mise à jour des conditions de paiement"
+
+msgid "Failed to update picking list"
+msgstr "Échec de la mise à jour de la liste de picking"
+
+msgid "Failed to update picking list status"
+msgstr "Échec de mise à jour du statut de la liste de picking"
+
+msgid "Failed to update price override"
+msgstr "Échec de la mise à jour du surclassement du prix"
+
+msgid "Failed to update pricing rule"
+msgstr "Échec de la mise à jour du règlement tarifaire"
+
+msgid "Failed to update procedure parameter"
+msgstr "Échec de mise à jour du paramètre du procédé"
+
+msgid "Failed to update procedure step"
+msgstr "Échec de la mise à jour du pas de procédure"
+
+msgid "Failed to update process completion"
+msgstr "Échec de la mise à jour de l'achèvement du processus"
+
+msgid "Failed to update production event"
+msgstr "Échec de la mise à jour de l'événement de production"
+
+msgid "Failed to update profile"
+msgstr "Échec de la mise à jour du profil"
+
+msgid "Failed to update purchase invoice"
+msgstr "Échec de la mise à jour de la facture d'achat"
+
+msgid "Failed to update purchase invoice delivery"
+msgstr "Échec de la mise à jour de la facture d'achat de livraison"
+
+msgid "Failed to update purchase invoice line"
+msgstr "Échec de la mise à jour de l'item de facture d'achat"
+
+msgid "Failed to update purchase invoice status"
+msgstr "Échec de mise à jour du statut de la facture d'achat"
+
+msgid "Failed to update purchase order"
+msgstr "Échec de la mise à jour du bon d'achat"
+
+msgid "Failed to update purchase order delivery"
+msgstr "Échec de la mise à jour de la livraison du bon d'achat"
+
+msgid "Failed to update purchase order line"
+msgstr "Échec de la mise à jour de la ligne de commande d'achat"
+
+msgid "Failed to update purchase order payment"
+msgstr "Échec de la mise à jour du paiement de la commande d'achat"
+
+msgid "Failed to update purchasing order status"
+msgstr "Échec de mise à jour du statut de la commande d'achat"
+
+msgid "Failed to update question"
+msgstr "Échec de la mise à jour de la question"
+
+msgid "Failed to update quote"
+msgstr "Échec de la mise à jour du devis"
+
+msgid "Failed to update quote line"
+msgstr "Échec de la mise à jour de l'alinéa de devis"
+
+msgid "Failed to update quote material"
+msgstr "Échec de la mise à jour du matériau de la proposition"
+
+msgid "Failed to update quote operation"
+msgstr "Échec de la mise à jour de l'opération de devis"
+
+msgid "Failed to update quote payment"
+msgstr "Échec de la mise à jour du paiement de la proposition"
+
+msgid "Failed to update quote shipment"
+msgstr "Échec de la mise à jour du transport de la proposition"
+
+msgid "Failed to update quote status"
+msgstr "Échec de mise à jour du statut de la quote-part"
+
+msgid "Failed to update receipt"
+msgstr "Échec de la mise à jour du réceptionnement"
+
+msgid "Failed to update required action"
+msgstr "Échec de la mise à jour de l'action requise"
+
+msgid "Failed to update RFQ"
+msgstr "Échec de la mise à jour du RFQ"
+
+msgid "Failed to update RFQ line"
+msgstr "Échec de la mise à jour de l'ligne de devis"
+
+msgid "Failed to update RFQ line with model"
+msgstr "Échec de la mise à jour de l'ligne de devis avec le modèle"
+
+msgid "Failed to update RFQ status"
+msgstr "Échec de mise à jour du statut de la demande de prix"
+
+msgid "Failed to update risk"
+msgstr "Échec de la mise à jour du risque"
+
+msgid "Failed to update rule"
+msgstr "Échec de la mise à jour du règle"
+
+msgid "Failed to update sales invoice"
+msgstr "Échec de la mise à jour de l'facture de vente"
+
+msgid "Failed to update sales invoice line"
+msgstr "Échec de la mise à jour de l'item facture vente"
+
+msgid "Failed to update sales invoice shipping"
+msgstr "Échec de la mise à jour du bon de livraison de facture vente"
+
+msgid "Failed to update sales invoice status"
+msgstr "Échec de mise à jour du statut de la facture de vente"
+
+msgid "Failed to update sales order line"
+msgstr "Échec de la mise à jour de l'item de commande de vente"
+
+msgid "Failed to update sales order payment"
+msgstr "Échec de la mise à jour du paiement de la commande vente"
+
+msgid "Failed to update sales order shipment"
+msgstr "Échec de la mise à jour du livraison de la commande de vente"
+
+msgid "Failed to update sales order status"
+msgstr "Échec de mise à jour du statut de la commande de vente"
+
+msgid "Failed to update scrap reason"
+msgstr "Échec de la mise à jour de la raison de rebut"
+
+msgid "Failed to update sequence"
+msgstr "Échec de la mise à jour de la séquence"
+
+msgid "Failed to update shipment"
+msgstr "Échec de la mise à jour du transport"
+
+msgid "Failed to update shipping method"
+msgstr "Échec de la mise à jour du mode de livraison"
+
+msgid "Failed to update sort order"
+msgstr "Échec de mise à jour de l'ordre d'affichage"
+
+msgid "Failed to update status"
+msgstr "Échec de la mise à jour du statut"
+
+msgid "Failed to update step"
+msgstr "Échec de la mise à jour du pas"
+
+msgid "Failed to update storage type"
+msgstr "Échec de la mise à jour du type de stockage"
+
+msgid "Failed to update storageUnit"
+msgstr "Échec de la mise à jour du storageUnit"
+
+msgid "Failed to update style color"
+msgstr "Échec de mise à jour de la couleur de style"
+
+msgid "Failed to update style costing"
+msgstr "Échec de la mise à jour du coût de style"
+
+msgid "Failed to update style inventory"
+msgstr "Échec de la mise à jour du stock de styles"
+
+msgid "Failed to update style planning"
+msgstr "Échec de la mise à jour du plan d'styling"
+
+msgid "Failed to update style sale price"
+msgstr "Échec de mise à jour du prix de vente.style"
+
+msgid "Failed to update style size"
+msgstr "Échec de la mise à jour de la taille de style"
+
+msgid "Failed to update subsidiary"
+msgstr "Échec de la mise à jour de la filiale"
+
+msgid "Failed to update supplier"
+msgstr "Échec de la mise à jour du fournisseur"
+
+msgid "Failed to update supplier address"
+msgstr "Échec de la mise à jour des informations du fournisseur"
+
+msgid "Failed to update supplier contact"
+msgstr "Échec de la mise à jour des coordonnées du fournisseur"
+
+msgid "Failed to update supplier payment terms"
+msgstr "Échec de la mise à jour des conditions de paiement du fournisseur"
+
+msgid "Failed to update supplier process"
+msgstr "Échec de la mise à jour du processus fournisseur"
+
+msgid "Failed to update supplier quote status"
+msgstr "Échec de la mise à jour du statut de l'offre fournisseur"
+
+msgid "Failed to update supplier shipping"
+msgstr "Échec de la mise à jour du transporteur"
+
+msgid "Failed to update supplier tax information"
+msgstr "Échec de la mise à jour des informations fiscales du fournisseur"
+
+msgid "Failed to update supplier type"
+msgstr "Échec de la mise à jour du type de fournisseur"
+
+msgid "Failed to update supplierQuote line"
+msgstr "Échec de la mise à jour de la ligne de devis fournisseur"
+
+msgid "Failed to update suppliers"
+msgstr "Échec de la mise à jour des fournisseurs"
+
+msgid "Failed to update task status"
+msgstr "Échec de mise à jour du statut de la tâche"
+
+msgid "Failed to update task supplier"
+msgstr "Échec de la mise à jour du fournisseur de la tâche"
+
+msgid "Failed to update timecard"
+msgstr "Échec de la mise à jour du carnet d'heures"
+
+msgid "Failed to update tool"
+msgstr "Échec de la mise à jour de l'outil"
+
+msgid "Failed to update tool costing"
+msgstr "Échec de la mise à jour du coût outil"
+
+msgid "Failed to update tool inventory"
+msgstr "Échec de la mise à jour du stock d'outils"
+
+msgid "Failed to update tool manufacturing"
+msgstr "Échec de la mise à jour de la fabrication outil"
+
+msgid "Failed to update tool planning"
+msgstr "Échec de la mise à jour du plan d'outils"
+
+msgid "Failed to update tool purchasing"
+msgstr "Échec de la mise à jour des achats de outils"
+
+msgid "Failed to update training question"
+msgstr "Échec de la mise à jour de la question de formation"
+
+msgid "Failed to update unit of measure"
+msgstr "Échec de la mise à jour de l'unité de mesure"
+
+msgid "Failed to update user permissions"
+msgstr "Échec de la mise à jour des permissions utilisateur"
+
+msgid "Failed to update warehouse transfer"
+msgstr "Échec de la mise à jour du transfert entre magasins"
+
+msgid "Failed to update warehouse transfer line"
+msgstr "Échec de la mise à jour de l' ligne de transfert de stock"
+
+msgid "Failed to update warehouse transfer status"
+msgstr "Échec de mise à jour du statut du transfert entre magasins"
+
+msgid "Failed to update webhook"
+msgstr "Échec de la mise à jour du webhooks"
+
+msgid "Failed to update work center"
+msgstr "Échec de la mise à jour du centre de production"
+
+msgid "Failed to upload file"
+msgstr "Échec de l'upload du fichier"
 
 #. placeholder {0}: fileUpload.name
 msgid "Failed to upload file: {0}"
@@ -521,6 +3681,24 @@ msgstr "Échec du téléversement du fichier : {0}"
 
 msgid "Failed to upload image"
 msgstr "Échec du téléversement de l'image"
+
+msgid "Failed to verify WeChat session"
+msgstr "Échec de la vérification de la session WeChat"
+
+msgid "Failed to void purchase invoice"
+msgstr "Échec de l'annulation de la facture d'achat"
+
+msgid "Failed to void receipt"
+msgstr "Échec de l'annulation du réceptionnement"
+
+msgid "Failed to void sales invoice"
+msgstr "Échec de l'annulation de la facture de vente"
+
+msgid "Failed to void shipment"
+msgstr "Échec de l'annulation du transport"
+
+msgid "Failure mode created"
+msgstr "Mode d'échec créé"
 
 msgid "Feedback"
 msgstr "Commentaires"
@@ -547,8 +3725,17 @@ msgstr "Terminer {0}"
 msgid "Finish Anyways"
 msgstr "Terminer de toute façon"
 
+msgid "Finish created"
+msgstr "Terminer créé"
+
 msgid "Fixed"
 msgstr "Corrigé"
+
+msgid "Fixed asset created"
+msgstr "Actif immobilisé créé"
+
+msgid "Fixed asset updated"
+msgstr "Actif immobilisé mis à jour"
 
 msgid "Forgot to Clock Out?"
 msgstr "Oubli de pointer la sortie ?"
@@ -559,11 +3746,23 @@ msgstr "Retour à l'opération"
 msgid "Gold"
 msgstr "Doré"
 
+msgid "Grade created"
+msgstr "Grade créé"
+
 msgid "Gray"
 msgstr "Gris"
 
 msgid "Green"
 msgstr "Vert"
+
+msgid "Group created"
+msgstr "Groupe créé"
+
+msgid "Group not found"
+msgstr "Groupe non trouvé"
+
+msgid "Group updated successfully"
+msgstr "Groupe mis à jour avec succès"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Vous avez un problème technique ? Contactez le <0>Support Carbon.</0>"
@@ -577,6 +3776,12 @@ msgstr "Priorité élevée"
 msgid "History"
 msgstr "Histoire"
 
+msgid "Holiday created"
+msgstr "Congé créé"
+
+msgid "Holiday updated"
+msgstr "Congé mis à jour"
+
 msgid "How many were actually picked?"
 msgstr "Combien en ont-ils réellement sélectionnés ?"
 
@@ -585,6 +3790,9 @@ msgstr "Je comprends et souhaite terminer sans distribuer"
 
 msgid "I'm Still Working"
 msgstr "Je travaille encore"
+
+msgid "IC transaction created"
+msgstr "Opération IC créée"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "Des idées, suggestions ou problèmes avec cette page ?"
@@ -604,8 +3812,95 @@ msgstr "En cours"
 msgid "Increase"
 msgstr "Augmenter"
 
+msgid "Inspection document created"
+msgstr "Document d'inspection créé"
+
+msgid "Inspection document deleted"
+msgstr "Document d'inspection supprimé"
+
+msgid "Inspection id mismatch"
+msgstr "Identifiant d'inspection ne correspond pas"
+
 msgid "Insufficient quantity"
 msgstr "Quantité insuffisante"
+
+msgid "Invalid access token"
+msgstr "Token d'accès invalide"
+
+msgid "Invalid action"
+msgstr "Action invalide"
+
+msgid "Invalid action type"
+msgstr "Type d'action invalide"
+
+msgid "Invalid avatar path"
+msgstr "Chemins d'avatars invalide"
+
+msgid "Invalid callback form"
+msgstr "Formulaire de rappel invalide"
+
+msgid "Invalid email address"
+msgstr "Adresse e-mail invalide"
+
+msgid "Invalid form data"
+msgstr "Données de formulaire invalides"
+
+msgid "Invalid invitation"
+msgstr "Invitation invalide"
+
+msgid "Invalid job configuration"
+msgstr "Configuration de tâche invalide"
+
+msgid "Invalid lines data"
+msgstr "Données de lignes invalides"
+
+msgid "Invalid mode"
+msgstr "Mode invalide"
+
+msgid "Invalid operation"
+msgstr "Opération invalide"
+
+msgid "Invalid or expired verification code"
+msgstr "Code de vérification invalide ou expiré"
+
+msgid "Invalid payload"
+msgstr "Charge invalide"
+
+msgid "Invalid phone number"
+msgstr "Numéro de téléphone invalide"
+
+msgid "Invalid plan"
+msgstr "Plan invalide"
+
+msgid "Invalid reprint request"
+msgstr "Demande de réimpression invalide"
+
+msgid "Invalid request body"
+msgstr "Corps de la requête invalide"
+
+msgid "Invalid reviewer"
+msgstr "Revue invalide"
+
+msgid "Invalid session data"
+msgstr "Données de session invalides"
+
+msgid "Invalid split request"
+msgstr "Demande de division invalide"
+
+msgid "Invalid state parameter"
+msgstr "Paramètre d'état invalide"
+
+msgid "Invalid status"
+msgstr "Statut invalide"
+
+msgid "Invalid table"
+msgstr "Tableau invalide"
+
+msgid "Invalid task ID"
+msgstr "ID de tâche invalide"
+
+msgid "Invalid verification code"
+msgstr "Code de vérification invalide"
 
 msgid "Inventory adjustment completed"
 msgstr "Ajustement de stock terminé"
@@ -618,6 +3913,18 @@ msgstr "Invitation"
 
 msgid "Invitations"
 msgstr "Invitations"
+
+msgid "Invite link created"
+msgstr "Lien d'invitation créé"
+
+msgid "Invite link expiration updated"
+msgstr "Lien d'invitation : nouvelle date d'expiration"
+
+msgid "Invite link revoked"
+msgstr "Lien d'invitation révoqué"
+
+msgid "Invite updated"
+msgstr "Invitez à mettre à jour"
 
 msgid "is"
 msgstr "est"
@@ -637,8 +3944,20 @@ msgstr "Type d'incident"
 msgid "Item"
 msgstr "Article"
 
+msgid "Item association not found"
+msgstr "Association d'élément non trouvée"
+
 msgid "Item Master"
 msgstr "Fiche article"
+
+msgid "Item posting group created"
+msgstr "Groupe d'enregistrement d'articles créé"
+
+msgid "Item removed and returned to inventory"
+msgstr "Article supprimé et retourné au stock"
+
+msgid "Item saved"
+msgstr "Article enregistré"
 
 msgid "Items"
 msgstr "Articles"
@@ -646,8 +3965,32 @@ msgstr "Articles"
 msgid "Job"
 msgstr "Ordre de fabrication"
 
+msgid "Job cancelled"
+msgstr "Tâche annulée"
+
+msgid "Job completed successfully"
+msgstr "Tâche terminée avec succès"
+
 msgid "Job Details"
 msgstr "Détails de l'ordre de fabrication"
+
+msgid "Job marked as planned"
+msgstr "Tâche marquée comme planifiée"
+
+msgid "Job operation attribute updated"
+msgstr "Attribut d'opération de tâche mis à jour"
+
+msgid "Job operation is required"
+msgstr "Une opération de tâche est requise"
+
+msgid "Job operation not found"
+msgstr "Opération de tâche non trouvée"
+
+msgid "Job operation parameter updated"
+msgstr "Paramètre d'opération de tâche mis à jour"
+
+msgid "Job operation tool updated"
+msgstr "Outil d'opération de tâche mis à jour"
 
 msgid "Job Traveler"
 msgstr "Fiche suiveuse"
@@ -655,14 +3998,29 @@ msgstr "Fiche suiveuse"
 msgid "Jobs"
 msgstr "Postes"
 
+msgid "Jobs created"
+msgstr "Postes créés"
+
 msgid "Join"
 msgstr "Joignez-vous"
 
 msgid "Join a company you've been invited to, or pick one."
 msgstr "Rejoignez une entreprise à laquelle vous avez été invité ou en choisissez une."
 
-msgid "Keep the completed quantity and give a reason for the rest."
-msgstr "Maintenez la quantité complétée et indiquez une raison pour le reste."
+msgid "Journal entry deleted"
+msgstr "Enregistrement journal supprimé"
+
+msgid "Journal entry posted"
+msgstr "Enregistrement de journal posté"
+
+msgid "Journal entry reversed"
+msgstr "Enregistrement de journal annulé"
+
+msgid "Journal entry saved"
+msgstr "Enregistrement du journal sauvegardé"
+
+msgid "Kanban created"
+msgstr "Kanban créé"
 
 msgid "Khaki"
 msgstr "Kaki"
@@ -682,6 +4040,18 @@ msgstr "Quitter cette page"
 msgid "Let's build something"
 msgstr "Construisons quelque chose"
 
+msgid "Line already picked"
+msgstr "Ligne déjà choisie"
+
+msgid "Line created"
+msgstr "Ligne créée"
+
+msgid "Line split"
+msgstr "Séparation de ligne"
+
+msgid "Line updated"
+msgstr "Ligne mise à jour"
+
 msgid "lines"
 msgstr "lignes"
 
@@ -691,6 +4061,15 @@ msgstr "Lien"
 msgid "Linked"
 msgstr "Lié"
 
+msgid "Linked email"
+msgstr "Email lié"
+
+msgid "Linked phone"
+msgstr "Téléphone lié"
+
+msgid "Linked WeChat"
+msgstr "Compte WeChat lié"
+
 msgid "Loading item details..."
 msgstr "Chargement des détails de l'article..."
 
@@ -699,6 +4078,12 @@ msgstr "Chargement..."
 
 msgid "Location"
 msgstr "Emplacement"
+
+msgid "Location created"
+msgstr "Emplacement créé"
+
+msgid "Location updated"
+msgstr "Emplacement mis à jour"
 
 msgid "Log Completed"
 msgstr "Enregistrer la production"
@@ -727,6 +4112,30 @@ msgstr "Enregistrer le rebut pour {0}"
 msgid "Login"
 msgstr "Connexion"
 
+msgid "Lot accepted"
+msgstr "Lot accepté"
+
+msgid "Lot marked partial"
+msgstr "Lot marqué partiel"
+
+msgid "Lot rejected"
+msgstr "Lot rejeté"
+
+msgid "Lot rejected — NCR opened"
+msgstr "Lot rejeté — NCR ouverte"
+
+msgid "Lot rejected, but failed to create NCR"
+msgstr "Lot rejeté, mais pas de NCR créé"
+
+msgid "Lot rejected, but failed to create NCR tasks"
+msgstr "Lot rejeté, mais impossible de créer les tâches NCR"
+
+msgid "Lot rejected, but failed to load it for NCR"
+msgstr "Lot rejeté, mais impossible de le charger pour NCR"
+
+msgid "Lot rejected. Configure at least one Issue Type and a default user location to auto-create an NCR."
+msgstr "Lot rejeté. Configurer au moins un type de problème et une localisation utilisateur par défaut pour créer automatiquement un NCER."
+
 msgid "Low Priority"
 msgstr "Priorité faible"
 
@@ -736,17 +4145,35 @@ msgstr "Machine"
 msgid "Maintenance"
 msgstr "Maintenance"
 
+msgid "Maintenance completed"
+msgstr "Maintenance effectuée"
+
 msgid "Maintenance Completed"
 msgstr "Maintenance terminée"
 
+msgid "Maintenance dispatch created"
+msgstr "Maintenance dispatch créée"
+
 msgid "Maintenance dispatches"
 msgstr "Dispatches de maintenance"
+
+msgid "Maintenance paused"
+msgstr "Maintenance en pause"
+
+msgid "Maintenance schedule created"
+msgstr "Plan de maintenance créé"
+
+msgid "Maintenance started"
+msgstr "Maintenance en cours"
 
 msgid "Manually add items to inventory"
 msgstr "Ajouter manuellement des articles au stock"
 
 msgid "Manually remove items from inventory"
 msgstr "Retirer manuellement des articles du stock"
+
+msgid "Manufacturing is blocked"
+msgstr "La fabrication est bloquée"
 
 msgid "Mark fixed"
 msgstr "Marquer comme corrigé"
@@ -760,11 +4187,17 @@ msgstr "Signaler une rupture"
 msgid "Master Order"
 msgstr "Commande maîtresse"
 
+msgid "Master work order created"
+msgstr "Commande maîtresse créée"
+
 msgid "Master Work Orders"
 msgstr "Commandes-maîtres"
 
 msgid "matches"
 msgstr "correspond à"
+
+msgid "Material form created"
+msgstr "Forme de matériau créée"
 
 msgid "Materials"
 msgstr "Matériaux"
@@ -775,8 +4208,38 @@ msgstr "Nombre maximum d'enregistrements atteint"
 msgid "Medium Priority"
 msgstr "Priorité moyenne"
 
+msgid "Method operation parameter updated"
+msgstr "Paramètre de l'opération mise à jour"
+
+msgid "Method operation step updated"
+msgstr "Étape de l'opération de la méthode mise à jour"
+
+msgid "Method operation tool updated"
+msgstr "Outil d'opération de méthode mis à jour"
+
 msgid "Metric"
 msgstr "Métrique"
+
+msgid "Missing code or state from WeChat"
+msgstr "Code ou état manquant de WeChat"
+
+msgid "Missing credentialId"
+msgstr "Manque de credentialId"
+
+msgid "Missing depreciation run ID"
+msgstr "ID de la dépréciation manquante"
+
+msgid "Missing fields"
+msgstr "Champs manquants"
+
+msgid "Missing operation"
+msgstr "Opération manquante"
+
+msgid "Missing parameters"
+msgstr "Manquants"
+
+msgid "Missing required fields"
+msgstr "Champs requis manquants"
 
 msgid "Model"
 msgstr "Modèle"
@@ -800,6 +4263,9 @@ msgstr "Déplacer la colonne : {0}"
 msgid "Move reworked units back into finished production."
 msgstr "Réintégrer les pièces retouchées dans la production terminée."
 
+msgid "Moved entities"
+msgstr "Déplacés"
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "Doit être < {maxValue} {unitOfMeasureCode}"
 
@@ -820,6 +4286,9 @@ msgstr "Nom"
 
 msgid "Navy"
 msgstr "Bleu marine"
+
+msgid "NCR closed"
+msgstr "NCR fermée"
 
 msgid "New"
 msgstr "Nouveau"
@@ -851,6 +4320,9 @@ msgstr "Aucune intervention de maintenance active"
 msgid "No active operations"
 msgstr "Aucune opération active"
 
+msgid "No active plan"
+msgstr "Aucun plan actif"
+
 msgid "No approved completions this period"
 msgstr "Aucune conclusion approuvée ce trimestre"
 
@@ -869,14 +4341,26 @@ msgstr "Aucune entité suivie disponible trouvée"
 msgid "No bundle work orders"
 msgstr "Aucune commande de travail en lot"
 
+msgid "No depreciation to calculate for uncovered assets"
+msgstr "Aucune dépréciation à calculer pour les actifs non couverts"
+
 msgid "No dispatches assigned to you"
 msgstr "Aucune intervention qui vous est assignée"
 
 msgid "No files"
 msgstr "Aucun fichier"
 
+msgid "No forecast quantities provided"
+msgstr "Aucune quantité de prévision fournie"
+
 msgid "No Impact"
 msgstr "Aucun impact"
+
+msgid "No invite record found for user"
+msgstr "Aucun enregistrement d'invitation trouvé pour l'utilisateur"
+
+msgid "No line items found for this RFQ"
+msgstr "Aucun article de production trouvé pour cette offre de prix"
 
 msgid "No maintenance scheduled for today"
 msgstr "Aucune maintenance planifiée pour aujourd'hui"
@@ -907,6 +4391,9 @@ msgstr "Aucun imprimant configuré"
 
 msgid "No production logs"
 msgstr "Aucun journal de production"
+
+msgid "No quote reason created"
+msgstr "Aucune raison de non-lotissement créée"
 
 msgid "No recent operations"
 msgstr "Aucune opération récente"
@@ -941,6 +4428,9 @@ msgstr "Aucune pièce de rechange ajoutée"
 msgid "No stock"
 msgstr "Aucun stock"
 
+msgid "No suppliers found for this RFQ"
+msgstr "Aucun fournisseur trouvé pour cette offre d'achat"
+
 msgid "No time entries for this week"
 msgstr "Aucune saisie de temps pour cette semaine"
 
@@ -952,6 +4442,15 @@ msgstr "Aucun poste de travail n'est bloqué"
 
 msgid "No work centers exist"
 msgstr "Aucun poste de travail n'existe"
+
+msgid "Non-conformance type created"
+msgstr "Type de non-conformité créé"
+
+msgid "Non-conformance workflow created"
+msgstr "Workflow de non-conformité créé"
+
+msgid "Non-conformance workflow updated"
+msgstr "Workflow de non-conformité mis à jour"
 
 msgid "Not finished yet"
 msgstr "Pas encore terminé"
@@ -975,6 +4474,21 @@ msgstr "Plus ancien en premier"
 msgid "Only {0} available"
 msgstr "Seulement {0} disponible(s)"
 
+msgid "Only active assets can be sold"
+msgstr "Seuls les actifs actifs peuvent être vendus"
+
+msgid "Only Active or Fully Depreciated assets can be disposed"
+msgstr "Seules les actifs actifs ou pleinement dépréciés peuvent être désossés"
+
+msgid "Only Draft assets can be purchased"
+msgstr "Seules les actifs en brouillon peuvent être achetés"
+
+msgid "Only Draft assets can be registered"
+msgstr "Seules les actifs en brouillon peuvent être enregistrés"
+
+msgid "Only posted runs can be repeated"
+msgstr "Seuls les lots postés peuvent être répétés"
+
 msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "Oups. Vous ne devriez pas voir cette page. Elle deviendra éventuellement une page d'accueil."
 
@@ -990,6 +4504,12 @@ msgstr "Ouvrir le sélectionneur de日期已过期，请联系客服。"
 msgid "Open Jobs"
 msgstr "Emplois ouverts"
 
+msgid "Operation finished successfully"
+msgstr "Opération terminée avec succès"
+
+msgid "Operation not found"
+msgstr "Opération non trouvée"
+
 msgid "Operations"
 msgstr "Opérations"
 
@@ -1001,6 +4521,12 @@ msgstr "Opérations terminées"
 
 msgid "Operations you are currently working on"
 msgstr "Opérations sur lesquelles vous travaillez actuellement"
+
+msgid "Operator converted to full user. Invite email sent."
+msgstr "Opérateur converti en utilisateur complet. Email d'invitation envoyé."
+
+msgid "Operator not found"
+msgstr "Opérateur non trouvé"
 
 msgid "Operator Performed"
 msgstr "Effectué par l'opérateur"
@@ -1026,8 +4552,29 @@ msgstr "Paramètres"
 msgid "Part"
 msgstr "Pièce"
 
+msgid "Part group created"
+msgstr "Groupe de pièces créé"
+
+msgid "Partner created"
+msgstr "Partenaire créé"
+
+msgid "Partner updated"
+msgstr "Partenaire mis à jour"
+
 msgid "Passed Inspection"
 msgstr "Inspection réussie"
+
+msgid "Passkey name must be 100 characters or fewer"
+msgstr "Le nom de la passe-partout doit comporter 100 caractères ou moins"
+
+msgid "Passkey removed"
+msgstr "Code de passe supprimé"
+
+msgid "Passkey renamed"
+msgstr "Code d'accès renommé"
+
+msgid "Passkeys are disabled"
+msgstr "Les passe-connecteurs sont désactivés"
 
 msgid "Paste a link"
 msgstr "Coller un lien"
@@ -1037,6 +4584,12 @@ msgstr "Pause"
 
 msgid "Paused"
 msgstr "En pause"
+
+msgid "Payment recorded successfully"
+msgstr "Paiement enregistré avec succès"
+
+msgid "Payment term created"
+msgstr "Termes de paiement créé"
 
 msgid "Pending"
 msgstr "Attendant"
@@ -1049,6 +4602,9 @@ msgstr "Attente d'approbation"
 
 msgid "Period"
 msgstr "Période"
+
+msgid "Permissions updated"
+msgstr "Permissions mises à jour"
 
 msgid "Phone"
 msgstr "Téléphone"
@@ -1084,6 +4640,9 @@ msgstr "Colonne {0} saisie à la position : {1} sur {2}"
 msgid "Picking"
 msgstr "Choix"
 
+msgid "Picking list deleted successfully"
+msgstr "Liste de picking supprimée avec succès"
+
 msgid "Picking lists to fulfill"
 msgstr "Listes de picking pour remplir"
 
@@ -1092,6 +4651,9 @@ msgstr "Prendre l'ordre de lot"
 
 msgid "Pin Out"
 msgstr "Déconnecter"
+
+msgid "PIN reset successfully"
+msgstr "Réinitialisation du PIN effectuée avec succès"
 
 msgid "Pink"
 msgstr "Rose"
@@ -1105,8 +4667,14 @@ msgstr "Veuillez enregistrer toutes les étapes de cette opération avant de la 
 msgid "Please select an item"
 msgstr "Veuillez sélectionner un article"
 
+msgid "Please sign in before linking WeChat"
+msgstr "Veuillez vous connecter avant de lier WeChat"
+
 msgid "Point the camera at the bundle ticket QR code"
 msgstr "Pointez la caméra vers le QR code de l'étiquette du lot"
+
+msgid "Posting date is required"
+msgstr "La date de publication est requise"
 
 msgid "Prev"
 msgstr "Précédent"
@@ -1129,6 +4697,27 @@ msgstr "Slide précédente"
 msgid "Previous Year"
 msgstr "Année précédente"
 
+msgid "Price override created"
+msgstr "Surcharge de prix créé"
+
+msgid "Price override deleted"
+msgstr "Suppression du surclassement de prix effectuée"
+
+msgid "Price override updated"
+msgstr "Prix modifié"
+
+msgid "Pricing rule created"
+msgstr "Règle tarifaire créée"
+
+msgid "Pricing rule deleted"
+msgstr "Règle tarifaire supprimée"
+
+msgid "Pricing rule duplicated"
+msgstr "Règle de tarification dupliquée"
+
+msgid "Pricing rule updated"
+msgstr "Règle tarifaire mise à jour"
+
 msgid "Print"
 msgstr "Imprimer"
 
@@ -1139,11 +4728,20 @@ msgstr "Imprimer ({0})"
 msgid "Print from this device"
 msgstr "Imprimer depuis cet appareil"
 
+msgid "Print job deleted"
+msgstr "Tâche d'impression supprimée"
+
+msgid "Print job ID required"
+msgstr "ID de la tâche d'impression requis"
+
 msgid "Print Tickets"
 msgstr "Imprimer les étiquettes"
 
 msgid "Print to"
 msgstr "Imprimer sur"
+
+msgid "Printer route deleted"
+msgstr "Route d'impression supprimée"
 
 msgid "Printer Settings"
 msgstr "Paramètres de l'imprimante"
@@ -1154,8 +4752,17 @@ msgstr "Priorité"
 msgid "Procedure"
 msgstr "Procédure"
 
+msgid "Procedure created"
+msgstr "Procédure créée"
+
 msgid "Process"
 msgstr "Processus"
+
+msgid "Process completion created"
+msgstr "Création de la finalisation du processus"
+
+msgid "Process created"
+msgstr "Processus créé"
 
 msgid "Process Parameters"
 msgstr "Paramètres de processus"
@@ -1169,6 +4776,9 @@ msgstr "Produit"
 msgid "production"
 msgstr "production"
 
+msgid "Production event created"
+msgstr "Événement de production créé"
+
 msgid "Production Logs"
 msgstr "Logs de production"
 
@@ -1177,6 +4787,21 @@ msgstr "Progression"
 
 msgid "Properties"
 msgstr "Propriétés"
+
+msgid "Purchase invoice voided"
+msgstr "Facture d'achat nulle"
+
+msgid "Purchase order created"
+msgstr "Commande d'achat créée"
+
+msgid "Purchase order finalized"
+msgstr "Commande d'achat finalisée"
+
+msgid "Purchase order not found"
+msgstr "Commande d'achat introuvable"
+
+msgid "Purchase order submitted for approval"
+msgstr "Commande d'achat soumise pour approbation"
 
 msgid "Purple"
 msgstr "Violet"
@@ -1189,6 +4814,9 @@ msgstr "Problème de qualité"
 
 msgid "Quality issue created"
 msgstr "Problème de qualité créé"
+
+msgid "QualityDocument created"
+msgstr "Document de qualité créé"
 
 msgid "Quantity"
 msgstr "Quantité"
@@ -1203,6 +4831,21 @@ msgstr "Quantité prélevée aux lignes"
 msgid "Queued {0} tickets for printing"
 msgstr "{0} étiquettes ajoutées à la file d'impression"
 
+msgid "Quote finalized successfully"
+msgstr "La quote a été finalisée avec succès"
+
+msgid "Quote operation attribute updated"
+msgstr "Attribut d'opération mis à jour"
+
+msgid "Quote operation parameter updated"
+msgstr "Paramètre d'opération mis à jour"
+
+msgid "Quote operation tool updated"
+msgstr "Outil de mise à jour de l'opération mise en quote"
+
+msgid "Rate limit exceeded"
+msgstr "Limite de taux dépassée"
+
 msgid "Ready"
 msgstr "Prêt"
 
@@ -1214,6 +4857,9 @@ msgstr "Raison de la réfection"
 
 msgid "Reason for the remaining {shortfall}"
 msgstr "Raison des {shortfall} restants"
+
+msgid "Receipt voided"
+msgstr "Résiliation de réception"
 
 msgid "Recent"
 msgstr "Récent"
@@ -1268,6 +4914,12 @@ msgstr "Retirer la pièce"
 msgid "Remove Serial Number"
 msgstr "Supprimer le numéro de série"
 
+msgid "Removed login method"
+msgstr "Méthode de connexion supprimée"
+
+msgid "Repeat depreciation run created"
+msgstr "Exécution de la dépréciation répétée créée"
+
 msgid "Report"
 msgstr "Déclarer"
 
@@ -1279,6 +4931,27 @@ msgstr "Déclarer les quantités"
 
 msgid "Reported"
 msgstr "Signaler"
+
+msgid "Reprint job created"
+msgstr "Tâche de réimpression créée"
+
+msgid "Request failed"
+msgstr "Demande échouée"
+
+msgid "Request succeeded"
+msgstr "Demande réussie"
+
+msgid "Required action created successfully"
+msgstr "Action requise créée avec succès"
+
+msgid "Required action deleted successfully"
+msgstr "Action requise supprimée avec succès"
+
+msgid "Required action not found"
+msgstr "Action requise non trouvée"
+
+msgid "Required action updated successfully"
+msgstr "Action requise mise à jour avec succès"
 
 msgid "Reset zoom"
 msgstr "Reinitialiser le zoom"
@@ -1301,11 +4974,65 @@ msgstr "Retravailler"
 msgid "Rework created successfully"
 msgstr "Reprise créée avec succès"
 
+msgid "Rework quantity recorded successfully"
+msgstr "Quantité de rework enregistrée avec succès"
+
+msgid "Rework triggered successfully"
+msgstr "Rafraîchissement effectué avec succès"
+
+msgid "RFQ cancelled"
+msgstr "RFQ annulé"
+
+msgid "Risk created successfully"
+msgstr "Risque créé avec succès"
+
+msgid "Risk updated successfully"
+msgstr "Risque mis à jour avec succès"
+
+msgid "Root accounts cannot be deleted"
+msgstr "Les comptes racine ne peuvent pas être supprimés"
+
+msgid "Root accounts cannot be modified"
+msgstr "Les comptes racine ne peuvent pas être modifiés"
+
+msgid "Rule assigned"
+msgstr "Règle assignée"
+
+msgid "Rule deleted"
+msgstr "Règle supprimée"
+
+msgid "Rule id required"
+msgstr "ID de règle requis"
+
+msgid "Rule not found"
+msgstr "Règle non trouvée"
+
+msgid "Rule unassigned"
+msgstr "Règle non affectée"
+
+msgid "Run is not in Draft status"
+msgstr "L'exécution n'est pas en statut草稿"
+
+msgid "Sales invoice voided"
+msgstr "Facture de vente annulée"
+
 msgid "Sales Order"
 msgstr "Commande client"
 
+msgid "Sales order created"
+msgstr "Commande de vente créée"
+
+msgid "Sample recorded"
+msgstr "Échantillon enregistré"
+
+msgid "Sampling plan updated"
+msgstr "Plan d'échantillonnage mis à jour"
+
 msgid "Save"
 msgstr "Enregistrer"
+
+msgid "Saved document layout"
+msgstr "Disposition de document enregistrée"
 
 msgid "Scan"
 msgstr "Scanner"
@@ -1343,11 +5070,14 @@ msgstr "défaut"
 msgid "Scrap"
 msgstr "Défaut"
 
+msgid "Scrap quantity recorded successfully"
+msgstr "Quantité de déchets enregistrée avec succès"
+
 msgid "Scrap Reason"
 msgstr "Motif de rebut"
 
-msgid "Reworked"
-msgstr "Retravaillé"
+msgid "Scrap reason created"
+msgstr "Raison de déchet créée"
 
 msgid "Scrapped"
 msgstr "Rebuté"
@@ -1375,6 +5105,12 @@ msgstr "Rechercher des opérateurs..."
 
 msgid "Search..."
 msgstr "Rechercher..."
+
+msgid "Section deleted"
+msgstr "Section supprimée"
+
+msgid "Section saved"
+msgstr "Section enregistrée"
 
 msgid "Select"
 msgstr "Sélectionner"
@@ -1453,6 +5189,9 @@ msgstr "Numéros de série"
 msgid "Serial Numbers"
 msgstr "Numéros de série"
 
+msgid "Session mismatch"
+msgstr "Échec de la session"
+
 msgid "Set Clock Out"
 msgstr "Définir la sortie"
 
@@ -1464,6 +5203,18 @@ msgstr "Réglage"
 
 msgid "Share an idea or report a problem"
 msgstr "Partagez une idée ou signaler un problème"
+
+msgid "Shift created"
+msgstr "Plaquette créée"
+
+msgid "Shift updated"
+msgstr "Plage mise à jour"
+
+msgid "Shipment voided"
+msgstr "Expédition annulée"
+
+msgid "Shipping method created"
+msgstr "Méthode de livraison créée"
 
 msgid "Short"
 msgstr "Courte"
@@ -1492,6 +5243,9 @@ msgstr "Se connecter avec le téléphone"
 msgid "Sign Out"
 msgstr "Se déconnecter"
 
+msgid "Sign-in failed. Please try again."
+msgstr "Connexion échouée. Veuillez essayer à nouveau."
+
 msgid "Signed in as {stationName}"
 msgstr "Connecté en tant que {stationName}"
 
@@ -1504,11 +5258,23 @@ msgstr "Taille"
 msgid "Source"
 msgstr "Source"
 
+msgid "Spare part added"
+msgstr "Pièce de rechange ajoutée"
+
+msgid "Spare part removed and returned to inventory"
+msgstr "Pièce de rechange retirée et retournée en stock"
+
 msgid "Spare Parts"
 msgstr "Pièces de rechange"
 
 msgid "Spare Parts Used"
 msgstr "Pièces de rechange utilisées"
+
+msgid "Split failed"
+msgstr "Échec de la division"
+
+msgid "Split quantity too large"
+msgstr "Quantité trop grande"
 
 msgid "Start"
 msgstr "Démarrer"
@@ -1528,26 +5294,362 @@ msgstr "Statuts"
 msgid "Stay on this page"
 msgstr "Restez sur cette page"
 
+msgid "Step deleted successfully"
+msgstr "Étape supprimée avec succès"
+
 msgid "Steps"
 msgstr "Étapes"
 
 msgid "Steps are missing"
 msgstr "Des étapes sont manquantes"
 
+msgid "Stock transfer is not in progress or released"
+msgstr "Le transfert de stock n'est pas en cours ou non libéré"
+
+msgid "Stock transfer line not found"
+msgstr "Ligne de transfert en stock non trouvée"
+
 msgid "Stop all your active operations"
 msgstr "Arrêtez toutes vos opérations en cours"
+
+msgid "Storage type created"
+msgstr "Type de stockage créé"
+
+msgid "Storage type is in use; confirm cascade to delete"
+msgstr "Type de stockage en usage ; confirmer la propagation pour supprimer"
 
 msgid "Storage Unit"
 msgstr "Unité de stockage"
 
+msgid "Storage unit created"
+msgstr "Unité de stockage créée"
+
 msgid "Style"
 msgstr "Style"
+
+msgid "Style color created"
+msgstr "Couleur de style créée"
+
+msgid "Style size created"
+msgstr "Taille de style créée"
 
 msgid "Submit anonymously"
 msgstr "Soumettre anonymement"
 
+msgid "Success. Please check back in a few moments."
+msgstr "Succès. Veuillez vérifier à nouveau dans quelques instants."
+
+msgid "Successfully activate work center"
+msgstr "Activation du centre de production réussie"
+
+msgid "Successfully activated gauge"
+msgstr "Activation du gyroscope réussie"
+
+msgid "Successfully activated process"
+msgstr "Processus activé avec succès"
+
+msgid "Successfully added invites to queue"
+msgstr "Ajout des invitations à la file d'attente réussi"
+
+msgid "Successfully converted quote to order"
+msgstr "Conversion de la proposition en commande réussie"
+
+msgid "Successfully converted RFQ to quote"
+msgstr "Conversion réussie de la demande de prix en devis"
+
+msgid "Successfully deactivated attribute"
+msgstr "Déactivation réussie de l'attribut"
+
+msgid "Successfully deactivated attribute category"
+msgstr "Déactivation réussie de la catégorie d'attribut"
+
+msgid "Successfully deactivated gauge"
+msgstr "Déactivation réussie du capteur"
+
+msgid "Successfully deactivated process"
+msgstr "Déactivation du processus réussie"
+
+msgid "Successfully deactivated work center"
+msgstr "Déactivation réussie de la centrale de travail"
+
+msgid "Successfully deleted account"
+msgstr "Compte supprimé avec succès"
+
+msgid "Successfully deleted API key"
+msgstr "Suppression réussie de la clé API"
+
+msgid "Successfully deleted asset class"
+msgstr "Suppression de la classe d'actif réussie"
+
+msgid "Successfully deleted association"
+msgstr "Suppression réussie de l'association"
+
+msgid "Successfully deleted contractor"
+msgstr "Supprimé avec succès le contracteur"
+
+msgid "Successfully deleted cost center"
+msgstr "Suppression du centre de coûts réussie"
+
+msgid "Successfully deleted custom field"
+msgstr "Suppression réussie du champ personnalisé"
+
+msgid "Successfully deleted customer contact"
+msgstr "Suppression du contact client réussie"
+
+msgid "Successfully deleted customer location"
+msgstr "Suppression du lieu de client réussie"
+
+msgid "Successfully deleted customer part"
+msgstr "Suppression du composant client réussie"
+
+msgid "Successfully deleted customer portal"
+msgstr "Suppression du portail client réussie"
+
+msgid "Successfully deleted customer status"
+msgstr "Suppression du statut client réussie"
+
+msgid "Successfully deleted customer type"
+msgstr "Suppression du type de client réussie"
+
+msgid "Successfully deleted department"
+msgstr "Suppression du département réussie"
+
+msgid "Successfully deleted depreciation run"
+msgstr "Suppression de l'écoulement de dépréciation effectuée avec succès"
+
+msgid "Successfully deleted dimension"
+msgstr "Suppression de la dimension réussie"
+
+msgid "Successfully deleted employee type"
+msgstr "Suppression réussie du type d'employé"
+
+msgid "Successfully deleted event"
+msgstr "Suppression de l'événement réussie"
+
+msgid "Successfully deleted failure mode"
+msgstr "Suppression réussie du mode d'échec"
+
+msgid "Successfully deleted fixed asset"
+msgstr "Suppression réussie de l'actif fixe"
+
+msgid "Successfully deleted gauge"
+msgstr "Supprimé avec succès la goupille"
+
+msgid "Successfully deleted gauge calibration record"
+msgstr "Suppression du registre de calibrage de la goupille réussie"
+
+msgid "Successfully deleted group"
+msgstr "Suppression du groupe réussie"
+
+msgid "Successfully deleted holiday"
+msgstr "Supprimé avec succès les congés"
+
+msgid "Successfully deleted issue"
+msgstr "Suppression réussie"
+
+msgid "Successfully deleted issue workflow"
+msgstr "Suppression de l'workflow de l'incident réussie"
+
+msgid "Successfully deleted item"
+msgstr "Suppression de l'élément réussie"
+
+msgid "Successfully deleted item group"
+msgstr "Suppression de groupe d'articles effectuée avec succès"
+
+msgid "Successfully deleted kanban"
+msgstr "Supprimé avec succès le kanban"
+
+msgid "Successfully deleted line"
+msgstr "Suppression de ligne réussie"
+
+msgid "Successfully deleted location"
+msgstr "Suppression de l'emplacement réussie"
+
+msgid "Successfully deleted maintenance dispatch"
+msgstr "Suppression de l'ordre de maintenance effectuée avec succès"
+
+msgid "Successfully deleted maintenance schedule"
+msgstr "Suppression de l'horaire de maintenance effectuée avec succès"
+
+msgid "Successfully deleted material dimension"
+msgstr "Suppression réussie de la dimension matérielle"
+
+msgid "Successfully deleted material finish"
+msgstr "Suppression du fini de matériau réussie"
+
+msgid "Successfully deleted material form"
+msgstr "Suppression du formulaire de matériau réussie"
+
+msgid "Successfully deleted material grade"
+msgstr "Suppression du grade de matériau réussie"
+
+msgid "Successfully deleted material substance"
+msgstr "Matériau supprimé avec succès"
+
+msgid "Successfully deleted material type"
+msgstr "Suppression du type de matériau réussie"
+
+msgid "Successfully deleted noQuote reason"
+msgstr "Suppression réussie de la raison"
+
+msgid "Successfully deleted parameter"
+msgstr "Paramètre supprimé avec succès"
+
+msgid "Successfully deleted partner"
+msgstr "Suppression du partenaire réussie"
+
+msgid "Successfully deleted payment term"
+msgstr "Suppression du terme de paiement réussie"
+
+msgid "Successfully deleted procedure"
+msgstr "Suppression de la procédure réussie"
+
+msgid "Successfully deleted purchase invoice line"
+msgstr "Suppression de ligne de facture d'achat réussie"
+
+msgid "Successfully deleted purchase order line"
+msgstr "Suppression de la ligne de commande d'achat réussie"
+
+msgid "Successfully deleted quality document"
+msgstr "Suppression réussie du document qualité"
+
+msgid "Successfully deleted quantity"
+msgstr "Suppression réussie de la quantité"
+
+msgid "Successfully deleted quantity report"
+msgstr "Suppression de la rapport de quantité effectuée avec succès"
+
+msgid "Successfully deleted question"
+msgstr "Suppression de la question réussie"
+
+msgid "Successfully deleted receipt"
+msgstr "Suppression de la réception réussie"
+
+msgid "Successfully deleted sales invoice line"
+msgstr "Suppression de l'item facture vente réussie"
+
+msgid "Successfully deleted sales order line"
+msgstr "Suppression de ligne de commande de vente réussie"
+
+msgid "Successfully deleted scrap reason"
+msgstr "Suppression de la raison de rebut réussie"
+
+msgid "Successfully deleted shift"
+msgstr "Suppression de la période de travail réussie"
+
+msgid "Successfully deleted shipment"
+msgstr "Suppression de la livraison réussie"
+
+msgid "Successfully deleted shipping method"
+msgstr "Méthode de livraison supprimée avec succès"
+
+msgid "Successfully deleted step"
+msgstr "Suppression réussie du pas"
+
+msgid "Successfully deleted stock transfer"
+msgstr "Suppression du transfert de stock réussie"
+
+msgid "Successfully deleted storage type"
+msgstr "Suppression du type de stockage réussie"
+
+msgid "Successfully deleted style color"
+msgstr "Suppression de la couleur de style réussie"
+
+msgid "Successfully deleted style size"
+msgstr "Suppression de la taille de style réussie"
+
+msgid "Successfully deleted subsidiary"
+msgstr "Supprimé avec succès la filiale"
+
+msgid "Successfully deleted supplier contact"
+msgstr "Suppression du contact fournisseur réussie"
+
+msgid "Successfully deleted supplier location"
+msgstr "Suppression du lieu de fournisseur réussie"
+
+msgid "Successfully deleted supplier type"
+msgstr "Suppression du type de fournisseur réussie"
+
+msgid "Successfully deleted tag"
+msgstr "Suppression de l'étiquette réussie"
+
+msgid "Successfully deleted template"
+msgstr "Supprimé avec succès le modèle"
+
+msgid "Successfully deleted timecard"
+msgstr "Supprimé avec succès la fiche horaire"
+
+msgid "Successfully deleted training"
+msgstr "Suppression de la formation réussie"
+
+msgid "Successfully deleted unit of measure"
+msgstr "Suppression de l'unité de mesure réussie"
+
+msgid "Successfully deleted webhook"
+msgstr "Suppression réussie du webhooks"
+
+msgid "Successfully invited employee"
+msgstr "Invitation de l'employé réussie"
+
+msgid "Successfully resent invite"
+msgstr "Invitation réenvoyée avec succès"
+
+msgid "Successfully revoked invites"
+msgstr "Revocation des invitations réussie"
+
+msgid "Successfully updated attribtue"
+msgstr "Successfully updated attribute"
+
+msgid "Successfully updated exchange rate"
+msgstr "Mise à jour de la taux de change effectuée avec succès"
+
+msgid "Successfully updated fiscal year settings"
+msgstr "Mise à jour des paramètres de l'exercice fiscal effectuée avec succès"
+
+msgid "Successfully updated job"
+msgstr "Mise à jour du travail effectuée avec succès"
+
+msgid "Sucessfully deactivated customer"
+msgstr "Succèsment désactivé le client"
+
+msgid "Sucessfully deactivated employee"
+msgstr "Élément de personnel désactivé avec succès"
+
+msgid "Sucessfully deactivated supplier"
+msgstr "Succèsment désactivé le fournisseur"
+
 msgid "Suggestion"
 msgstr "Suggestion"
+
+msgid "Supplier address updated"
+msgstr "Adresse du fournisseur mise à jour"
+
+msgid "Supplier contact created"
+msgstr "Contact du fournisseur créé"
+
+msgid "Supplier contact updated"
+msgstr "Fournisseur de contact mis à jour"
+
+msgid "Supplier deactivated"
+msgstr "Fournisseur désactivé"
+
+msgid "Supplier invited"
+msgstr "Fournisseur invité"
+
+msgid "Supplier location created"
+msgstr "Localisation du fournisseur créée"
+
+msgid "Supplier part updated"
+msgstr "Fournisseur partie mise à jour"
+
+msgid "Supplier quote finalized successfully"
+msgstr "Fournisseur : devis finalisé avec succès"
+
+msgid "Supplier quote sent successfully"
+msgstr "Fournisseur : devis envoyé avec succès"
+
+msgid "Supplier type created"
+msgstr "Type de fournisseur créé"
 
 msgid "Support Required"
 msgstr "Support requis"
@@ -1558,8 +5660,14 @@ msgstr "Superficie :"
 msgid "Switch Operator"
 msgstr "Changer d'opérateur"
 
+msgid "Table is required"
+msgstr "La table est requise"
+
 msgid "Tag"
 msgstr "Étiquette"
+
+msgid "Tag created"
+msgstr "Tag créé"
 
 msgid "Tag size"
 msgstr "Taille de l'étiquette"
@@ -1570,6 +5678,15 @@ msgstr "Reprendre"
 #. placeholder {0}: operation.itemReadableId
 msgid "Take over {0}"
 msgstr "Reprendre {0}"
+
+msgid "Task ID is required"
+msgstr "L'ID de tâche est requis"
+
+msgid "Task not found"
+msgstr "Tâche non trouvée"
+
+msgid "Template created"
+msgstr "Modèle créé"
 
 msgid "That QR code isn't a bundle ticket"
 msgstr "Ce QR code n'est pas une étiquette de lot"
@@ -1602,6 +5719,18 @@ msgstr "Saisies de temps"
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Time Worked: {0}"
 msgstr "Temps travaillé : {0}"
+
+msgid "Timecard created"
+msgstr "Carte horaire créée"
+
+msgid "Timecard removed successfully"
+msgstr "Temps de travail supprimé avec succès"
+
+msgid "Timecard updated"
+msgstr "Temps de travail mis à jour"
+
+msgid "Timecards are not enabled. To enable this feature, go to Settings → People to enable Timecards."
+msgstr "Les cartes de temps ne sont pas activées. Pour activer cette fonctionnalité, accédez aux Paramètres → Personnes pour activer les cartes de temps."
 
 msgid "Today"
 msgstr "Aujourd'hui"
@@ -1647,20 +5776,50 @@ msgstr "Temps total : {0}"
 msgid "Total: {0}"
 msgstr "Total : {0}"
 
+msgid "Tracked entity not found"
+msgstr "Entité suivie non trouvée"
+
+msgid "Tracked entity scanned and transferred"
+msgstr "Entité suivie scannée et transférée"
+
 msgid "Tracking"
 msgstr "Suivi"
+
+msgid "Training created"
+msgstr "Formation créée"
+
+msgid "Training ID is required"
+msgstr "L'ID de formation est requis"
+
+msgid "Training marked as complete"
+msgstr "Formation marquée comme terminée"
 
 msgid "Type a message..."
 msgstr "Saisissez un message..."
 
+msgid "Type created"
+msgstr "Type créé"
+
 msgid "Unassigned"
 msgstr "Non attribué"
+
+msgid "Unauthorized"
+msgstr "Non autorisé"
+
+msgid "Unauthorized: Cannot remove attribute"
+msgstr "Non autorisé : Impossible de supprimer l'attribut"
+
+msgid "Unauthorized: Cannot update attribute"
+msgstr "Non autorisé : Impossible de mettre à jour cette attribut"
 
 msgid "Unissued serial/batch materials"
 msgstr "Matériaux série/lot non distribués"
 
 msgid "unit"
 msgstr "Unit"
+
+msgid "Unit of measure created"
+msgstr "Unité de mesure créée"
 
 msgid "Unknown"
 msgstr "Inconnu"
@@ -1678,11 +5837,359 @@ msgstr "Modifications non enregistrées"
 msgid "Update"
 msgstr "Mettre à jour"
 
+msgid "Update failed"
+msgstr "Mise à jour échouée"
+
 msgid "Update step"
 msgstr "Mise à jour de l'étape"
 
+msgid "Updated account"
+msgstr "Compte mis à jour"
+
+msgid "Updated API key"
+msgstr "Clé API mise à jour"
+
+msgid "Updated attribute category "
+msgstr "Catégorie d'attribut mis à jour "
+
+msgid "Updated attribute value"
+msgstr "Valeur d'attribut mise à jour"
+
+msgid "Updated company"
+msgstr "Mise à jour de l'entreprise"
+
+msgid "Updated consumable"
+msgstr "Mise à jour des consommables"
+
+msgid "Updated consumable costing"
+msgstr "Mise à jour du coût des consommables"
+
+msgid "Updated consumable inventory"
+msgstr "Mise à jour de l'inventaire de consommables"
+
+msgid "Updated consumable planning"
+msgstr "Planification des consommables mise à jour"
+
+msgid "Updated consumable purchasing"
+msgstr "Mise à jour de l'achat de consommables"
+
+msgid "Updated customer"
+msgstr "Mise à jour du client"
+
+msgid "Updated customer payment terms"
+msgstr "Mises à jour des conditions de paiement du client"
+
+msgid "Updated customer portal"
+msgstr "Portail client mis à jour"
+
+msgid "Updated customer shipping"
+msgstr "Mise à jour du livraison au client"
+
+msgid "Updated customer status"
+msgstr "Mise à jour du statut client"
+
+msgid "Updated customer tax information"
+msgstr "Mises à jour des informations fiscales clients"
+
+msgid "Updated customer type"
+msgstr "Type de client mis à jour"
+
+msgid "Updated default accounts"
+msgstr "Mises à jour des comptes par défaut"
+
+msgid "Updated dimension"
+msgstr "Mise à jour des dimensions"
+
+msgid "Updated dispatch status"
+msgstr "Statut de la relève mis à jour"
+
+msgid "Updated document"
+msgstr "Document mis à jour"
+
+msgid "Updated employee type"
+msgstr "Type d'employé mis à jour"
+
+msgid "Updated exchange rate"
+msgstr "Taux de change mis à jour"
+
+msgid "Updated failure mode"
+msgstr "Mode de défaillance mis à jour"
+
+msgid "Updated gauge"
+msgstr "Mise à jour de l'indicateur"
+
+msgid "Updated gauge type"
+msgstr "Type de jauge mis à jour"
+
+msgid "Updated group"
+msgstr "Groupe mis à jour"
+
+msgid "Updated issue"
+msgstr "Mise à jour de l'incident"
+
+msgid "Updated issue status"
+msgstr "Mise à jour de l'état du problème"
+
+msgid "Updated issue type"
+msgstr "Type de problème mis à jour"
+
+msgid "Updated item"
+msgstr "Article mis à jour"
+
+msgid "Updated item group"
+msgstr "Groupe d'articles mis à jour"
+
+msgid "Updated job"
+msgstr "Mise à jour de la tâche"
+
+msgid "Updated job status"
+msgstr "Statut de la tâche mis à jour"
+
+msgid "Updated kanban"
+msgstr "Mise à jour kanban"
+
+msgid "Updated maintenance schedule"
+msgstr "Plan de maintenance mis à jour"
+
+msgid "Updated material"
+msgstr "Matière mise à jour"
+
+msgid "Updated material costing"
+msgstr "Mise à jour du coût des matières premières"
+
+msgid "Updated material form"
+msgstr "Formulaires de matériau mis à jour"
+
+msgid "Updated material grade"
+msgstr "Matière mise à jour"
+
+msgid "Updated material inventory"
+msgstr "Mise à jour de l'inventaire des matières premières"
+
+msgid "Updated material planning"
+msgstr "Planification matérielle mise à jour"
+
+msgid "Updated material purchasing"
+msgstr "Mise à jour de l'achat de matières premières"
+
+msgid "Updated material substance"
+msgstr "Matière mise à jour"
+
+msgid "Updated material type"
+msgstr "Type de matériau mis à jour"
+
+msgid "Updated no quote reason"
+msgstr "Mise à jour sans raison de citation"
+
+msgid "Updated order"
+msgstr "Mise à jour de la commande"
+
+msgid "Updated part"
+msgstr "Mise à jour de la pièce"
+
+msgid "Updated part costing"
+msgstr "Mise à jour du coût des pièces"
+
+msgid "Updated part inventory"
+msgstr "Mise à jour du stock de pièces"
+
+msgid "Updated part manufacturing"
+msgstr "Mise à jour de la fabrication de pièces"
+
+msgid "Updated part planning"
+msgstr "Planification mise à jour des pièces"
+
+msgid "Updated part purchasing"
+msgstr "Mise à jour de l'achat de pièces"
+
+msgid "Updated part sale price"
+msgstr "Prix de vente mis à jour du composant"
+
+msgid "Updated payment term"
+msgstr "Mise à jour des conditions de paiement"
+
+msgid "Updated picking list"
+msgstr "Liste de picking mise à jour"
+
+msgid "Updated picking list status"
+msgstr "Mise à jour de l'état de la liste de picking"
+
+msgid "Updated process completion"
+msgstr "Mise à jour de la完工过程"
+
+msgid "Updated production event"
+msgstr "Événement de production mis à jour"
+
+msgid "Updated profile"
+msgstr "Profil mis à jour"
+
+msgid "Updated purchase invoice"
+msgstr "Facture d'achat mise à jour"
+
+msgid "Updated purchase invoice delivery"
+msgstr "Mise à jour de la facture d'achat livrée"
+
+msgid "Updated purchase invoice status"
+msgstr "Statut de la facture d'achat mis à jour"
+
+msgid "Updated purchase order"
+msgstr "Commande d'achat mise à jour"
+
+msgid "Updated purchase order delivery"
+msgstr "Mise à jour de la date de livraison du bon d'achat"
+
+msgid "Updated purchase order payment"
+msgstr "Mise à jour du paiement de la commande d'achat"
+
+msgid "Updated purchasing order status"
+msgstr "Statut de la commande d'achat mis à jour"
+
+msgid "Updated quote"
+msgstr "Mise à jour de la proposition de prix"
+
+msgid "Updated quote line"
+msgstr "Ligne de devis mis à jour"
+
+msgid "Updated quote payment"
+msgstr "Mise à jour du paiement de la proposition"
+
+msgid "Updated quote shipment"
+msgstr "Mise à jour de la livraison de devis"
+
+msgid "Updated quote status"
+msgstr "Statut de la proposition mise à jour"
+
+msgid "Updated receipt"
+msgstr "Réception mise à jour"
+
+msgid "Updated RFQ"
+msgstr "Mise à jour de la proposition de prix"
+
+msgid "Updated RFQ status"
+msgstr "Statut de la proposition mise à jour"
+
+msgid "Updated sales invoice"
+msgstr "Facture de vente mise à jour"
+
+msgid "Updated sales invoice shipping"
+msgstr "Mise à jour de l'expédition de la facture de vente"
+
+msgid "Updated sales invoice status"
+msgstr "Mise à jour du statut de la facture de vente"
+
+msgid "Updated sales order payment"
+msgstr "Mise à jour du paiement de la commande de vente"
+
+msgid "Updated sales order shipment"
+msgstr "Mise à jour de l'expédition de la commande de vente"
+
+msgid "Updated sales order status"
+msgstr "Mise à jour du statut de la commande de vente"
+
+msgid "Updated scrap reason"
+msgstr "Raison mise à jour de déchet"
+
+msgid "Updated sequence"
+msgstr "Séquence mise à jour"
+
+msgid "Updated shipment"
+msgstr "Mise à jour du transport"
+
+msgid "Updated shipping method"
+msgstr "Méthode de livraison mise à jour"
+
+msgid "Updated storage type"
+msgstr "Type de stock mis à jour"
+
+msgid "Updated storageUnit"
+msgstr "Mise à jour du storageUnit"
+
+msgid "Updated style color"
+msgstr "Couleur de style mise à jour"
+
+msgid "Updated style costing"
+msgstr "Mise à jour du coût de style"
+
+msgid "Updated style inventory"
+msgstr "Mise à jour de l'inventaire de styles"
+
+msgid "Updated style planning"
+msgstr "Planification de style mis à jour"
+
+msgid "Updated style sale price"
+msgstr "Prix de vente au style mis à jour"
+
+msgid "Updated style size"
+msgstr "Taille de style mis à jour"
+
+msgid "Updated subsidiary"
+msgstr "Mise à jour de la filiale"
+
 msgid "Updated successfully"
 msgstr "Mis à jour avec succès"
+
+msgid "Updated supplier"
+msgstr "Mise à jour du fournisseur"
+
+msgid "Updated supplier payment terms"
+msgstr "Mises à jour des conditions de paiement des fournisseurs"
+
+msgid "Updated supplier quote status"
+msgstr "Nouveau statut de devis fournisseur"
+
+msgid "Updated supplier shipping"
+msgstr "Mise à jour du délai de livraison du fournisseur"
+
+msgid "Updated supplier tax information"
+msgstr "Mises à jour des informations fiscales du fournisseur"
+
+msgid "Updated supplier type"
+msgstr "Type de fournisseur mis à jour"
+
+msgid "Updated suppliers"
+msgstr "Fournisseurs mis à jour"
+
+msgid "Updated task status"
+msgstr "Statut de la tâche mis à jour"
+
+msgid "Updated tool"
+msgstr "Mise à jour de l'outil"
+
+msgid "Updated tool costing"
+msgstr "Mise à jour du coût de l'outil"
+
+msgid "Updated tool inventory"
+msgstr "Mise à jour de l'inventaire des outils"
+
+msgid "Updated tool manufacturing"
+msgstr "Mise à jour de la fabrication d'outils"
+
+msgid "Updated tool planning"
+msgstr "Planification des outils mises à jour"
+
+msgid "Updated tool purchasing"
+msgstr "Mise à jour de l'achat d'outils"
+
+msgid "Updated unit of measure"
+msgstr "Nouvelle unité de mesure"
+
+msgid "Updated warehouse transfer"
+msgstr "Mise à jour du transfert de stock"
+
+msgid "Updated warehouse transfer line"
+msgstr "Ligne de transfert mis à jour du magasin"
+
+msgid "Updated warehouse transfer status"
+msgstr "Mise à jour du statut de transfert entre entrepôts"
+
+msgid "Updated webhook"
+msgstr "Webhook mis à jour"
+
+msgid "Updated work center "
+msgstr "Centre de production mis à jour "
+
+msgid "Updating user permissions"
+msgstr "Mise à jour des permissions utilisateur"
 
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
@@ -1697,6 +6204,18 @@ msgstr "Utiliser une autre adresse e-mail"
 
 msgid "Use a different phone number"
 msgstr "Utilisez un numéro de téléphone différent"
+
+msgid "Use the entity picker to split this row"
+msgstr "Utilisez le pickeur d'entités pour diviser cette ligne"
+
+msgid "User already deactivated"
+msgstr "Utilisateur déjà désactivé"
+
+msgid "User not found"
+msgstr "Utilisateur non trouvé"
+
+msgid "User record not found"
+msgstr "Enregistrement utilisateur non trouvé"
 
 msgid "Verification Error"
 msgstr "Erreur de vérification"
@@ -1715,6 +6234,9 @@ msgstr "Volume :"
 
 msgid "Waiting"
 msgstr "En attente"
+
+msgid "Warehouse transfer deleted successfully"
+msgstr "Transfert entre magasins supprimé avec succès"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Nous avons envoyé un code de vérification à {email}"
@@ -1740,6 +6262,9 @@ msgstr "En-cours"
 msgid "Work Center"
 msgstr "Poste de travail"
 
+msgid "Work Center Blocked"
+msgstr "Centre de travail bloqué"
+
 msgid "Work Order"
 msgstr "Commande de travail"
 
@@ -1752,12 +6277,30 @@ msgstr "Jaune"
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Vous appartenez à plusieurs sociétés. Choisissez où vous souhaitez travailler."
 
+msgid "You cannot deactivate yourself"
+msgstr "Vous ne pouvez pas vous désactiver vous-même"
+
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "Vous avez pointé votre entrée à {0}. Vous pouvez modifier votre heure de sortie ci-dessous ou confirmer que vous travaillez encore."
 
+msgid "You do not have permission to approve this request"
+msgstr "Vous n'avez pas la permission d'approuver cette demande"
+
+msgid "You do not have permission to deactivate this supplier"
+msgstr "Vous n'avez pas la permission de désactiver ce fournisseur"
+
+msgid "You do not have permission to reopen this purchase order"
+msgstr "Vous n'avez pas la permission de réouvrir cette commande d'achat"
+
+msgid "You do not have permission to update permissions"
+msgstr "Vous n'avez pas la permission de mettre à jour les permissions"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Vous êtes pointé depuis {hoursElapsed} heures. Avez-vous oublié de pointer la sortie ?"
+
+msgid "Your account is not active"
+msgstr "Votre compte n'est pas actif"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Votre entreprise est sur le forfait gratuit (lecture seule). Passez à un forfait supérieur pour effectuer des modifications."

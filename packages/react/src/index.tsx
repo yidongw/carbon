@@ -666,4 +666,4 @@ export type {
   TrackedEntitySelection
 };
 
-export { serverFlashMessages } from "./serverFlashMessages";
+export { translateServerToast } from "./serverToastMessages";

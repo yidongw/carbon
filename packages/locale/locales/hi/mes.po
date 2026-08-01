@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -51,8 +52,20 @@ msgstr "{0} टिकटों में से {failed} विफल रहे"
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "एक खपत की बच्चा या सैरियल अब अपने समाप्ति तारीख से पास हो गया है।"
 
+msgid "A depreciation run already exists for this period"
+msgstr "इस अवधि के लिए एक संपत्ति की कमी परिक्रमा हैं जा रही है"
+
 msgid "About"
 msgstr "के बारे में"
+
+msgid "Account created"
+msgstr ""
+"अ户口所在地：印度\n"
+"字符串翻译结果：\n"
+"आccount created"
+
+msgid "Account moved"
+msgstr "अकाउंट बदला.get@123"
 
 msgid "Account Settings"
 msgstr "खाता सेटिंग्स"
@@ -87,6 +100,9 @@ msgstr "नया रिकॉर्ड सेट जोड़ें"
 msgid "Add Spare Part"
 msgstr "स्पेयर पार्ट जोड़ें"
 
+msgid "Added colors and sizes"
+msgstr "दod रंग और आकारों को जोड़ा गया है"
+
 msgid "Adjust stock down"
 msgstr "स्टॉक को निकालें"
 
@@ -95,6 +111,30 @@ msgstr "स्टॉक को बढ़ावा दें"
 
 msgid "All"
 msgstr "सभी"
+
+msgid "All active assets are already covered for this period"
+msgstr "इस अवधि में प्रत्येक सक्रिय इंजीनियरिंग एजेस्ट का तालिका हैं"
+
+msgid "An approval request already exists for this supplier"
+msgstr "इस विनियोजन के लिए पहले स्वीकारन अनुरोध हैं उपलब्ध"
+
+msgid "Approval request not found"
+msgstr "नहीं पाया अनुमोदन कार्यवाही"
+
+msgid "Approval request submitted"
+msgstr "APPROVAL REQUEST SUBMITTED"
+
+msgid "Approval rule created"
+msgstr "APPROVAL RULE CREATED"
+
+msgid "Approval rule deleted successfully"
+msgstr "निर्धारण नियम सफलतापूर्वक हटा दिया.get@info()"
+
+msgid "Approval rule not found"
+msgstr "निर्धारण नहीं मिला"
+
+msgid "Approval rule updated"
+msgstr "APPROVAL RULE UPDATED"
 
 msgid "Approve"
 msgstr "सीकरण करें"
@@ -111,6 +151,9 @@ msgstr "स्वीकृत"
 msgid "Approved"
 msgstr "स्वीकृत"
 
+msgid "Archive ID is required"
+msgstr "एकार्किव आईडी का उपयोग करने के लिए यह आवश्यक है"
+
 msgid "Are you sure you want to delete this step?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इस चरण को हटाना चाहते हैं?"
 
@@ -126,6 +169,18 @@ msgstr "आपकी यह प्रक्रिया पूरा करन�
 msgid "Are you sure you want to leave this page?"
 msgstr "आपकी पागलें को छोड़ना चाहते हैं?"
 
+msgid "Asset class created"
+msgstr "अधिकार कक्ष बनाया गया है"
+
+msgid "Asset class updated"
+msgstr "अधिकार कक्ष अपडेट किया गया है"
+
+msgid "Asset disposed successfully"
+msgstr "संपत्ति सफलतापूर्वक डिस्पोज़ की गई है"
+
+msgid "Asset registered successfully"
+msgstr "संपत्ति सफलतापूर्वक पंजीकृत हो गई"
+
 msgid "Assigned"
 msgstr "निर्दिष्ट"
 
@@ -135,14 +190,50 @@ msgstr "मुझे असाइन किया गया"
 msgid "Assignee"
 msgstr "असाइनी"
 
+msgid "Assignment created successfully"
+msgstr "असाइनमेंट सफलतापूर्वक बनाया गया है"
+
+msgid "Assignment deleted successfully"
+msgstr "असाइनमेंट सफलतापूर्वक हटाया गया"
+
+msgid "Assignment ID is required"
+msgstr "-Assign की आईडी आवश्यक है-"
+
+msgid "Assignment rule created"
+msgstr "वित्तिय नियम सृजनात्मक"
+
+msgid "Assignment rule deleted"
+msgstr "नियुक्ति नियम हटा dienen"
+
+msgid "Assignment rule updated"
+msgstr "असाइनमेंट रूल अपडेट किया गया है"
+
+msgid "Assignment updated successfully"
+msgstr "आवंटन सफलतापूर्वक अपडेट किया गया है"
+
 msgid "Attach File"
 msgstr "फ़ाइल संलग्न करें"
+
+msgid "Attribute recorded successfully"
+msgstr "संरचना सफलतापूर्वक रिकॉर्ड की गई है"
+
+msgid "Audit logging disabled"
+msgstr "आudit logging बंद है"
+
+msgid "Audit logging enabled"
+msgstr "परीक्षण लॉगिंग सक्रिय"
 
 msgid "Authentication Error"
 msgstr "प्रमाणीकरण त्रुटि"
 
 msgid "available"
 msgstr "उपलब्ध"
+
+msgid "Bad request for next sequence"
+msgstr "अगली अनुक्रम के लिए गलत मांग"
+
+msgid "Bad request for rolling back sequence"
+msgstr "रिकॉर्ड रीसेक्वेंसी को टेर्नअरूड लैंग का मांग गया है"
 
 msgid "Batch"
 msgstr "बैच"
@@ -173,6 +264,9 @@ msgstr "अवरुद्ध"
 msgid "Blue"
 msgstr "नीला"
 
+msgid "Bot verification failed. Please try again."
+msgstr "बॉट वेरिफाइशन असफल रही। कृपया फिर से प्रयास करें।"
+
 msgid "Brown"
 msgstr "भूरा"
 
@@ -191,6 +285,9 @@ msgstr "Browser"
 msgid "Bundle"
 msgstr "बंडल"
 
+msgid "Bundle not found"
+msgstr "बंडल नहीं मिला"
+
 msgid "Bundle Work Orders"
 msgstr "बंडल वर्क ऑर्डर्स"
 
@@ -202,6 +299,9 @@ msgstr "लेकिन चिंता न करें। आप नया ज
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "साइन इन करके, आप <0>सेवा की शर्तें</0> और <1>गोपनीयता नीति</1> से सहमत हैं।"
+
+msgid "Calibration record created"
+msgstr "कीर्तन रिकॉर्ड बनाया गया है"
 
 msgid "Camera unavailable — use manual selection below."
 msgstr "कैमरा उपलब्ध नहीं — नीचे मैन्युअल चयन का उपयोग करें।"
@@ -217,6 +317,51 @@ msgstr "रद्द किया गया"
 
 msgid "Cancelled"
 msgstr "रद्द किया गया"
+
+msgid "Cannot delete a posted receipt"
+msgstr "प्रदर्शित रिकेस्ट को हटा सकते हैं नहीं"
+
+msgid "Cannot delete a posted shipment"
+msgstr "पोस्ट किए गए डिलीवरी को हटा सकते हैं नहीं"
+
+msgid "Cannot edit a protected customer type"
+msgstr "अंजाली ग्राहक प्रकार को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit a protected supplier type"
+msgstr "अपने रोका हुआ विनियमन प्रकार को संपादित नहीं कर सकते"
+
+msgid "Cannot edit global material grade"
+msgstr "ग्लोबल मटेरियल ग्रेड को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit global material shape"
+msgstr "ग्लोबल सामग्री आकार को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit global material substance"
+msgstr "ग्लोबल मटेरियल स्ट्रास्ट को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit global material type"
+msgstr "ग्लोबल मटेरियल टाइप को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit global style color"
+msgstr "निर्देशांक रंग को सunting global style color"
+
+msgid "Cannot edit global style size"
+msgstr "निर्देशक आकार को संपादित नहीं किया जा सकता"
+
+msgid "Cannot finish operation"
+msgstr "निर्माण संचालन को पूरा नहीं किया जा सकता है"
+
+msgid "Cannot modify a locked picking list. Reopen it first."
+msgstr "निष्क्रियतापूर्वक पोइंटिङ लिस्ट को संशोधित नहीं किया जा सकता। पहले इसे खुलाइए।"
+
+msgid "Cannot reprint a job that is still generating"
+msgstr "निर्माण अभी चल रहा है में पुनर्प्र 인쇄하기"
+
+msgid "Cannot start operation"
+msgstr "oprेशन शुरू करना नहीं मिल सकता"
+
+msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
+msgstr "नंबर दिए गए मामले की खरीद टॉकन का स्थatus अपडेट करने की असम्भवता है। पहले टॉकन पोस्ट करें।"
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "3D व्यूर्डर में मॉडल का कंवास"
@@ -263,9 +408,15 @@ msgstr "घड़ी में प्रवेश करें"
 msgid "Clock Out"
 msgstr "घड़ी बंद करें"
 
+msgid "Clocked in"
+msgstr "बजाएं गई"
+
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Clocked in since {0}"
+
+msgid "Clocked out"
+msgstr "बंद किया गया"
 
 msgid "Collapse"
 msgstr "रोशनी घुमाwebkit.Millisecond"
@@ -293,8 +444,17 @@ msgstr "कॉलम: {0}"
 msgid "Columns"
 msgstr "कॉलम"
 
+msgid "Comment saved"
+msgstr "कमेंट संरचित रहा है"
+
 msgid "Company"
 msgstr "कंपनी"
+
+msgid "Company not found"
+msgstr "कंपनी नहीं मिली"
+
+msgid "Company ownership has been transferred successfully"
+msgstr "कंपनी का स्वामित्व सफलतापूर्वक उपलब्ध हो गया है"
 
 msgid "Complete"
 msgstr "पूर्ण करें"
@@ -311,11 +471,23 @@ msgstr "कंसोल"
 msgid "Console Mode"
 msgstr "कंसोल मोड"
 
+msgid "Console operator created successfully"
+msgstr "कंसोल ऑपरेटर सफलतापूर्वक बनाया गया"
+
+msgid "Console Operator employee type not found. Run the migration."
+msgstr "कंसोल ऑपरेटर कर्मचारी प्रकार नहीं मिला। मिग्रेशन चलाएं।"
+
 msgid "Consumed expired"
 msgstr "खपत की गई समाप्त"
 
 msgid "Continue with WeChat"
 msgstr "जारी रखें व्हाट्सएप"
+
+msgid "Contractor created"
+msgstr "कार्यक्रम योगदानकर्ता बनाया.get@source"
+
+msgid "Contractor updated"
+msgstr "कार्यालय संशोधित गरेर सेट किया गया"
 
 msgid "Copied!"
 msgstr "कopiय!"
@@ -325,6 +497,15 @@ msgstr "कopi करें"
 
 msgid "Copy to clipboard"
 msgstr "क्लिपबोर्ड के बाहर कopi करें"
+
+msgid "Correct the completed, rework and scrap quantities."
+msgstr "पूर्ण, रिओर्क और ड्राइड की मात्रा को सुधारें।"
+
+msgid "Cost center created"
+msgstr "कोस्ट सेंटर बनाया गया है"
+
+msgid "Cost center updated"
+msgstr "कोस्ट सेंटर अपडेट किया गया है"
 
 msgid "Create"
 msgstr "बनाएं"
@@ -344,6 +525,15 @@ msgstr "कीलटा समस्या तैयार करें"
 msgid "Create Rework"
 msgstr "रिकार्वर की तैयारी"
 
+msgid "Created company"
+msgstr "संयमन बनाया.get(@,0)"
+
+msgid "Created maintenance dispatch"
+msgstr "संरक्षण डिपाच बनाया.get@#"
+
+msgid "Created webhook"
+msgstr "सीमेटर्स बनाया.get_app()"
+
 msgid "Current process"
 msgstr "वर्तमान प्रक्रिया"
 
@@ -352,6 +542,30 @@ msgstr "वर्तमान में"
 
 msgid "Customer"
 msgstr "ग्राहक"
+
+msgid "Customer address updated"
+msgstr "कार्यालय ठेकेदार का पता अपडेट किया गया है"
+
+msgid "Customer contact created"
+msgstr "कास्टमर कонтेक्ट बनाया गया है"
+
+msgid "Customer contact updated"
+msgstr "कास्टमर कонтेक्टअपडेट दिया गया है"
+
+msgid "Customer invited"
+msgstr "Kund invité"
+
+msgid "Customer location created"
+msgstr "कार्यालय स्थिति बनाई गई"
+
+msgid "Customer portal created"
+msgstr "कार्यालय गतिविधि संस्थापित की गई है"
+
+msgid "Customer status created"
+msgstr "कास्टमर स्थिति बनाई गई"
+
+msgid "Customer type created"
+msgstr "कास्टमर टाइप बनाया.get@123"
 
 msgid "Dark Mode"
 msgstr "डार्क मोड"
@@ -374,6 +588,9 @@ msgstr "डिफ़ॉल्ट स्टोरेज यूनिट"
 msgid "Delete"
 msgstr "हटाएं"
 
+msgid "Delete failed"
+msgstr "फाइल को डिलीट करना व़िश्य है"
+
 msgid "Delete step"
 msgstr "पास्टे हटाएँ"
 
@@ -383,6 +600,33 @@ msgstr "चरण हटाएं"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "टाइमकार्ड हटाएं ({0})"
+
+msgid "Deleted attribute value"
+msgstr "удаленा गए विशेषता का मूल्य"
+
+msgid "Deleted warehouse transfer line"
+msgstr "удаленा तरहस्थ परिवहन पंक्ति"
+
+msgid "Demand forecasts created successfully"
+msgstr "दवांतर पैगम्बर उत्पादित सफलভयो"
+
+msgid "Demand forecasts updated successfully"
+msgstr "दवांतर पैटन सफलतापूर्वक अपडेट किए गए"
+
+msgid "Demand projections deleted successfully"
+msgstr "दवालें प्रतीक्षण हذारों सफलतापूर्वक निरसन किए गए"
+
+msgid "Department created"
+msgstr "DéPARTMENT CREATED"
+
+msgid "Department updated"
+msgstr "Département úpdated"
+
+msgid "Depreciation run created"
+msgstr "विलान रन तैयار किया गया"
+
+msgid "Depreciation run posted"
+msgstr "दप्तर रन पोस्ट किया गया है"
 
 msgid "Describe the problem..."
 msgstr "प्रоблем का वर्णन करें..."
@@ -395,6 +639,9 @@ msgstr "विवरण"
 
 msgid "Details"
 msgstr "विवरण"
+
+msgid "Dimension created"
+msgstr "आयाम बनाया गया है"
 
 msgid "Dimensions"
 msgstr "आयाम"
@@ -451,11 +698,20 @@ msgstr "डुप्लिकेट सीरियल नंबर"
 msgid "Duration"
 msgstr "अवधि"
 
+msgid "Each line must have an account"
+msgstr "प्रत्येक लाइन में एक संग्रहीत वृद्धि होनी चाहिए"
+
+msgid "Each line must have either a debit or credit amount"
+msgstr "प्रत्येक लाइन में कमाई या खर्च की राशि होनी चाहिए"
+
 msgid "Earned"
 msgstr "कमाई"
 
 msgid "Edit"
 msgstr "संपादित करें"
+
+msgid "Elimination entries generated"
+msgstr "निर्माणित हटाव बिछड़े"
 
 msgid "Email"
 msgstr "ईमेल"
@@ -466,6 +722,9 @@ msgstr "ईमेल पता"
 msgid "Employee"
 msgstr "बल्लेवार्ड"
 
+msgid "Employee type created"
+msgstr "बारिश कर सुरक्षित रखने वाला प्रकार बनाया गया है"
+
 msgid "Employees"
 msgstr "तैयारकर्ता"
 
@@ -475,21 +734,141 @@ msgstr "खाली कार्य केंद्र"
 msgid "End Operations"
 msgstr "संचालन समाप्त करें"
 
+msgid "Enter a quantity greater than zero"
+msgstr "0 के बाद में एक मात्रा दर्ज करें"
+
 #. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
 msgstr "{0} के लिए PIN दर्ज करें"
 
+msgid "Entry added"
+msgstr "इन्टरनल जोड़ा"
+
+msgid "Entry deleted"
+msgstr "नंबर हटाया गया"
+
+msgid "Entry updated"
+msgstr "इन्टर्नल अपडेट किया गया है"
+
 msgid "Error"
 msgstr "त्रुटि"
+
+msgid "Error creating note"
+msgstr "नोट बनाने में त्रुटि"
+
+msgid "Error deleting note"
+msgstr "नोट डिलीट करते समय त्रुटि"
 
 msgid "Error downloading file"
 msgstr "फाइल डाउनलोड करते समय त्रुटि"
 
+msgid "Error loading accounts"
+msgstr "ग्राहकों का लोड होता है गलती से"
+
+msgid "Error loading assignment"
+msgstr "लोडिंग यादृच्छिक समस्या हुई है"
+
+msgid "Error loading assignment status"
+msgstr "लोड करते समय ताकता स्थिति में गреш्य है"
+
+msgid "Error loading attribute categories"
+msgstr "तत्सम प्रपाद लोड करने में विफल हो गए"
+
+msgid "Error loading console operators"
+msgstr "कंसोल ऑपरेटर्स का लोड होने में गलती हुई"
+
+msgid "Error loading employee types"
+msgstr "तैयारी में कर्मचारी प्रकारों का लोडинг त्रुटि"
+
+msgid "Error loading employees"
+msgstr "तैयारी में कर्मचारियों लोड हो रहा है"
+
+msgid "Error loading issues"
+msgstr "किसी कार्रवाई को लोड करते समय त्रुटि"
+
+msgid "Error loading item groups"
+msgstr "आइटम ग्रुप लोड करने में त्रुटि"
+
+msgid "Error loading material dimensions"
+msgstr "मटेरियल की आयामों का लोड होत्रा है"
+
+msgid "Error loading material forms"
+msgstr "मटेरियल फॉर्म लोड करने में त्रुटि"
+
+msgid "Error loading material substances"
+msgstr "मटेरियल सबस्टॅंचेस को लोड करते समय त्रुटि"
+
+msgid "Error loading material types"
+msgstr "मटेरियल टाइपों का लोड होता नहीं"
+
+msgid "Error loading people"
+msgstr "किसी कि लोड करने में त्रुटि"
+
+msgid "Error loading picking lists"
+msgstr "पीकिंग लिस्टों का लोड होताहै गलती से"
+
+msgid "Error loading receipts"
+msgstr "प्रावधान लोड करने में असफलता"
+
+msgid "Error loading shipments"
+msgstr "शipment लोडिंग में त्रुटि"
+
+msgid "Error loading shipping methods"
+msgstr "शिपिंग विधि लोड करते समय त्रुटि"
+
+msgid "Error loading stock transfers"
+msgstr "स्टॉक ट्रांजर्स का लोड होतला नहीं सका"
+
+msgid "Error loading storage types"
+msgstr "स्टोरेज प्रकार लोड करते समय त्रुटि"
+
+msgid "Error loading style colors"
+msgstr "कालर शैली लोड करते समय त्रुटि"
+
+msgid "Error loading style sizes"
+msgstr "styl काटन लोड होता नहीं"
+
+msgid "Error loading supplier types"
+msgstr "संशोधक विनियमन प्रकारों का लोड करते समय त्रुटि"
+
+msgid "Error loading suppliers"
+msgstr "संशोधक विद्यमान परिवहन समूहों को लोड करने में त्रुटि हुई"
+
+msgid "Error loading tags"
+msgstr "ताक्षेप लोड करने में त्रुटि"
+
+msgid "Error loading tracked entities"
+msgstr "निरीक्षित ऐतिहासिक दर्जें को लोड करने में गलती"
+
+msgid "Error loading training"
+msgstr "प्रशिक्षण लोड करते ही त्रुटि"
+
+msgid "Error loading training assignments"
+msgstr "प्रशिक्षण वार्ता लोड करते समय त्रुटि"
+
+msgid "Error loading trainings"
+msgstr "प्रशिक्षण लोड करते ही त्रुटि"
+
+msgid "Error loading warehouse transfers"
+msgstr "गैर सफल दुकान परिवहनों का लोडинг"
+
 msgid "Estimated"
 msgstr "अनुमानित"
 
+msgid "Event saved"
+msgstr "इवेंट संरक्षित है"
+
+msgid "Event started"
+msgstr "इवेंट शुरू हो गया"
+
+msgid "Event stopped"
+msgstr "इवेंट रोका गया है"
+
 msgid "Expand"
 msgstr "रोस्टर बढ़ावा दें"
+
+msgid "Expiration date updated"
+msgstr "अवैध तारीख अपडेट की गई"
 
 msgid "Expired"
 msgstr "अवैध"
@@ -503,17 +882,2804 @@ msgstr "अवैध हो जाएगा {date}"
 msgid "Expiring first"
 msgstr "अपने पहले समाप्ती में"
 
+msgid "Failed to accept lot"
+msgstr "लोट स्वीकारण असफल था"
+
+msgid "Failed to activate gauge"
+msgstr "गेज की ऑपरेशन सक्रिय नहीं की जा सकी"
+
+msgid "Failed to activate process"
+msgstr "प्रक्रिया इंटेक्टिव करने में असफलता"
+
+msgid "Failed to activate work center"
+msgstr "कार्य सेंटर को ऑपरेट करने में विफल रहा"
+
+msgid "Failed to add colors and sizes"
+msgstr "ग्लासर और आकारों को जोड़ने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to add entry"
+msgstr "कैसी भी नंबर योजना नहीं जोड़ी जा सकी"
+
+msgid "Failed to add spare part"
+msgstr "गतिविधि न की जा सकी: बच्चे भाग जोड़ना"
+
+msgid "Failed to assign"
+msgstr "फत रहस्यमयी संबद्ध करने में विफल रहा"
+
+msgid "Failed to assign rule"
+msgstr "नियम य委托人分配失败"
+
+msgid "Failed to assign suppliers"
+msgstr "फाइल्ड तुर्की संशोधित करने में वर्स लगाने में फ़ाइल हो रहा है"
+
+msgid "Failed to cancel RFQ"
+msgstr "रिफ़क्यूपी को रद्द करने में वास हुआ"
+
 msgid "Failed to complete inventory adjustment"
 msgstr "इन्वेंटरी समायोजन पूरा करने में विफल"
+
+msgid "Failed to complete job"
+msgstr "कार्य पूरा नहीं हो सका"
+
+msgid "Failed to complete maintenance"
+msgstr "संरक्षण पूरा नहीं हो सका"
+
+msgid "Failed to convert quote to order"
+msgstr "कॉटन ऑर्डर में कनवर्ट किए जाने में वर्ड हो गया"
+
+msgid "Failed to convert rework"
+msgstr "रिओर्क को बदलने में फ़ाग हुआ"
+
+msgid "Failed to convert RFQ"
+msgstr "रफ़क्यू अनुवाद किए बाद त्रुटि हो गई"
+
+msgid "Failed to create API key"
+msgstr "API की सुरक्षा नहीं बनाई जा सकी"
+
+msgid "Failed to create asset class"
+msgstr "असेट क्लास बनाना फ़ालतू रहा है"
+
+msgid "Failed to create assignment"
+msgstr "फलस्वरूप योग्यता संकेतन नहीं बनाया जा सका"
+
+msgid "Failed to create attribute"
+msgstr "फलस्वरूप गुण बनाना नहीं सम्पन्न होगा"
+
+msgid "Failed to create attribute category"
+msgstr "फलस्वरूप गुण क्लास संकलन नहीं हो पा रहा है"
+
+msgid "Failed to create auth session"
+msgstr "अध्यात्मिक सत्र बनाना फल नहीं पड़ा"
+
+msgid "Failed to create company"
+msgstr "कंपनी बनाना फ़लेतर सम्पूर्ण हो गया"
+
+msgid "Failed to create contractor"
+msgstr "फ़ैला हुआ गए कार्यक्रमी को बनाने में सफलता नहीं पायी"
+
+msgid "Failed to create cost center."
+msgstr "कास्ट सेंटर नहीं बना सका।"
+
+msgid "Failed to create customer location"
+msgstr "ग्राहक स्थान बनाना फ़लेंदी हुआ नहीं"
+
+msgid "Failed to create customer portal"
+msgstr "ग्राहक पोर्टल बनाना फ़ालतू रहा है"
+
+msgid "Failed to create department."
+msgstr "不成ता है दिभागना बनाना।"
+
+msgid "Failed to create depreciation run"
+msgstr "गणना रन नहीं बनाया जा सका"
+
+msgid "Failed to create dimension"
+msgstr "दिión बनाई गईंगे फेक में हुईं"
+
+msgid "Failed to create document"
+msgstr "दocument बनाई गईं की फाल्टी हो रही है"
+
+msgid "Failed to create employee job record"
+msgstr "तैयारी करने में असफलता हो गई एम्प्लीयूड जॉब रिकॉर्ड को"
+
+msgid "Failed to create fixed asset"
+msgstr "फीड्स असेट का यादृच्छिक रूप से नहीं बनाया जा सका"
+
+msgid "Failed to create group"
+msgstr "गруппа बनाई गईं नहीं"
+
+msgid "Failed to create headquarters location"
+msgstr "कार्यालय स्थल बनाने में व आया"
+
+msgid "Failed to create holiday."
+msgstr "कार्यक्रम बंद करने में फालतू प्रयास किया गया।"
+
+msgid "Failed to create IC transaction"
+msgstr "IC ट्रैन्शेशन को बनाने में फ़ल निकाला गया है"
+
+msgid "Failed to create inspection document"
+msgstr "गतिविधि डाकुमेंट की सफलतापूर्वक तैयारी में फाइल नहीं बना सका"
+
+msgid "Failed to create invite link"
+msgstr "नvide कीलिंक बनाने में असफलता"
+
+msgid "Failed to create journal entry"
+msgstr "कार्टेज निर्माण को फ़ैला दिया गया है"
+
+msgid "Failed to create location."
+msgstr "लैकेशन नहीं बनाया जा सका।"
+
+msgid "Failed to create maintenance dispatch"
+msgstr "गतिविधि बनाना फल नहीं पड़ा"
+
+msgid "Failed to create maintenance schedule"
+msgstr "रखरखाव योजना की बनाने में फाल्ट आईं"
+
+msgid "Failed to create master work order"
+msgstr "मास्टर वर्क ऑर्डर का निर्माण फ़ाइल नहीं हुआ"
+
+msgid "Failed to create parameter"
+msgstr "पैरामीटर बनाना फ़लेंद हुआ नहीं"
+
+msgid "Failed to create part"
+msgstr "गार्ड की बनाना फ़लेंदी हुआ मतलब"
+
+msgid "Failed to create partner"
+msgstr "साझेदार योजना बनाई गईं मतलब"
+
+msgid "Failed to create price override"
+msgstr "फीस ओवरराइड को बनाने में विफल रहा"
+
+msgid "Failed to create pricing rule"
+msgstr "फीसिंग नियम को बनाने में व़ला"
+
+msgid "Failed to create process."
+msgstr "प्रक्रिया नहीं बनाई जा सकी।"
+
+msgid "Failed to create purchase invoice"
+msgstr "क्रय बिल की तैयारी में विफलता हुई"
+
+msgid "Failed to create purchase invoice line."
+msgstr "पर्चेज बिल पंक्ति को नहीं बनाया जा सका।"
+
+msgid "Failed to create purchase order"
+msgstr "पर्चे क्रियाविधि तैयार करना नहीं सफल रहा"
+
+msgid "Failed to create purchase order line."
+msgstr "पर्चे संयोजन लाइन बनाई गई नहीं।"
+
+msgid "Failed to create quality issue"
+msgstr "गुणांक समस्या बनाने में विफल रहा"
+
+msgid "Failed to create quality issue tasks"
+msgstr "गैर सफल गुणांक समस्या कार्यों की तैयारी में"
+
+msgid "Failed to create question"
+msgstr "फ्रेंडशिप को बनाने में फ़ल न पड़ा"
+
+msgid "Failed to create quote line method."
+msgstr "कॉटन रेखा मेथोड की प्रतिबंधित करणावर असफलता आहे।"
+
+msgid "Failed to create quote line."
+msgstr "कॉटन रेकर्ड की प्रतिबंधित होने का प्रयास वाया गया।"
+
+msgid "Failed to create receipt"
+msgstr "पासिंग को नहीं बना सका"
+
+msgid "Failed to create repeat depreciation run"
+msgstr "फैलाव बहाली क्रन्ति निर्माण में फ़ल नहीं पड़ा"
+
+msgid "Failed to create reprint"
+msgstr "फैला निर्माण करने में व़या"
+
+msgid "Failed to create required action"
+msgstr "अभियान बनाने में व़ला हुआ है"
+
+msgid "Failed to create risk"
+msgstr "निष्पादन फ़ालतू नहीं बनाया जा सका"
+
+msgid "Failed to create rule"
+msgstr "नियम बनाना फल नहीं आया"
+
+msgid "Failed to create sales invoice"
+msgstr "सॉल्स इनवाइबुल को बनाना फ़िल्ड हो रहा है"
+
+msgid "Failed to create sales invoice line."
+msgstr "सॉल्स इनवाइबुल लाइन बनाना फ़ाइल हो रहा है।"
+
+msgid "Failed to create sales order"
+msgstr "विक्रय आदेश को बनाने में व़फ़ादरी रहीं है"
+
+msgid "Failed to create sales order line."
+msgstr "विक्रय आदेश पंक्ति को बनाने में विफल रहा।"
+
+msgid "Failed to create shift"
+msgstr "फिट नहीं हुआ शिफ्ट बनाना"
+
+msgid "Failed to create shipment"
+msgstr "शipment बनाना फ़लेंदी हुआ नहीं"
+
+msgid "Failed to create step"
+msgstr "फ़ाइल नहीं बनाया जा सका"
+
+msgid "Failed to create stock transfer"
+msgstr "स्टॉक ट्रांसफर को बनाने में व़ला गया है"
+
+msgid "Failed to create supplier location"
+msgstr "फ़ाइल कर समाप्त नहीं किया गया है"
+
+msgid "Failed to create supplier process"
+msgstr "फ़ैल्यूड संशोधक नहीं बनाएंगे"
+
+msgid "Failed to create tag"
+msgstr "ताका बनाने में व़ला हुआ"
+
+msgid "Failed to create template"
+msgstr "टेम्पलेट की बनाई गई है नहीं"
+
+msgid "Failed to create timecard"
+msgstr "समय कार्ड योजना नहीं सफलतापूर्वक बनाई गई है"
+
+msgid "Failed to create training"
+msgstr "फ्रेमवर्क तैयार करने में फालतु हुई"
+
+msgid "Failed to create user account"
+msgstr "काउंट यूजर की तैयारी में फाल्टी हो गई"
+
+msgid "Failed to create user from WeChat"
+msgstr "वेचाट से उपयोगकर्ता बनाना फलताहै"
+
+msgid "Failed to create warehouse transfer"
+msgstr "गैर सफल तरंग स्टोक प्रविष्टि की tạo lập"
+
+msgid "Failed to create webhook"
+msgstr "व्हॉबहक बनाना फल निकला"
+
+msgid "Failed to create WeChat session"
+msgstr "वेचाट सिझन बनाना फ़ालतू रहा है"
+
+msgid "Failed to create work center"
+msgstr "कार्य सेंटर नहीं बनाया जा सका"
+
+msgid "Failed to deactivate attribute"
+msgstr "फाइल्मेंटीवे गुणजात को नहीं ब्यूरिया सका"
+
+msgid "Failed to deactivate attribute category"
+msgstr "फलस्वरूप गुण क्याटेगरी को डिसैक्टिवेट नहीं किया जा सका"
+
+msgid "Failed to deactivate employee"
+msgstr "नौकर को डिस्टेक्ट करने में वफ़ादारी नहीं की"
+
+msgid "Failed to deactivate gauge"
+msgstr "गेज की डिएक्टाइवर क्रिया विफल रही"
+
+msgid "Failed to deactivate process"
+msgstr "प्रक्रिया नहीं डिसैक्टिवेट करने में फालतु होई गई"
+
+msgid "Failed to deactivate user"
+msgstr "utzer की डिएक्टाइवेशन में फैला हुआ है"
+
+msgid "Failed to deactivate users"
+msgstr "अनुप्रयोगकर्ता की अक्षमता को बंद करने में विफल रहा"
+
+msgid "Failed to delete account"
+msgstr ""
+"अ户口所在地：印度\n"
+"字符串翻译结果：\n"
+"फाइल होम工作地点：德里国家首都是：新德里"
+
+msgid "Failed to delete API key"
+msgstr "API की जांच को हटाना फ़लेतर सफल नहीं रहा"
+
+msgid "Failed to delete approval rule"
+msgstr "फाइल्मेंट को हटाने में वर्ड लगा सकते हैं"
+
+msgid "Failed to delete asset class"
+msgstr "असेट क्लास डिलीट करने में व़ोग्राफ़िय हुआ"
+
+msgid "Failed to delete assignment"
+msgstr "फैल्युअर संबधित डेलीट करने में व़ोगा"
+
+msgid "Failed to delete association"
+msgstr "फाइल को हटाना बीच में विफल रहा"
+
+msgid "Failed to delete attribute value"
+msgstr "फाइल्मेंट वैशिष्ट्य मूल्य को हटाने में फ़मत्री संपर्क किए गए"
+
+msgid "Failed to delete contractor"
+msgstr "फ़ैल्युअर टू डिलेट कंट्रक्टर"
+
+msgid "Failed to delete cost center"
+msgstr "कスト केंदर डिलेट होने में फाल्टी"
+
+msgid "Failed to delete custom field"
+msgstr "फाइल्ड को हटाना फ़लेंगे"
+
+msgid "Failed to delete customer contact"
+msgstr "ग्राहक संपर्क को हटाने में विफल रहा"
+
+msgid "Failed to delete customer part"
+msgstr "ग्राहक भाग को हटाना फ़लेंदरी है"
+
+msgid "Failed to delete customer status"
+msgstr "ग्राहक अवस्था हटाने में विफल रहा"
+
+msgid "Failed to delete customer type"
+msgstr "ग्राहक प्रकार को डिलेट करने में व़िश्य हुआ"
+
+msgid "Failed to delete department"
+msgstr "दिवार्ती को हटाना फ़ालतू था"
+
+msgid "Failed to delete depreciation run"
+msgstr "दpreciation run डिेट करने में वया"
+
+msgid "Failed to delete dimension"
+msgstr "दिión हटाने में वया हुआ है"
+
+msgid "Failed to delete document"
+msgstr "दокумент हटाने में विफल रहा"
+
+msgid "Failed to delete employee type"
+msgstr "नौकरी का प्रकार हटाने में फ़ल निकला"
+
+msgid "Failed to delete entry"
+msgstr "फाइल हटाना फ़ाना मिला नहीं सका"
+
+msgid "Failed to delete event"
+msgstr "अवस्थातः घटना हटाने में विफल रहा"
+
+msgid "Failed to delete fixed asset"
+msgstr "फीड्डेड असेट को हटाना मनाया गया है"
+
+msgid "Failed to delete gauge"
+msgstr "गेज को हटाने में व़या"
+
+msgid "Failed to delete gauge calibration record"
+msgstr "गेज कैलिब्रेशन रिकॉर्ड हटाने में फाल्टी"
+
+msgid "Failed to delete group"
+msgstr "गруппа हटाने में विफल रही"
+
+msgid "Failed to delete holiday"
+msgstr "हoliदी निरसन में विफलता"
+
+msgid "Failed to delete inspection document"
+msgstr "ग्लविसन डॉक्युमेंट को हटाने में वफ़ादरी नहीं की"
+
+msgid "Failed to delete issue"
+msgstr "समस्या हटाने में विफल रहा"
+
+msgid "Failed to delete issue workflow"
+msgstr "फाइल होम कर सकारात्मक नहीं किया गया"
+
+msgid "Failed to delete item group"
+msgstr "हालाँकि इंटम ग्रुप को हटाने में विफल रहा"
+
+msgid "Failed to delete job"
+msgstr "कार्य को हटाना फ़ालतू था"
+
+msgid "Failed to delete job material"
+msgstr "कार्य सामग्री हटाना वँडा गया"
+
+msgid "Failed to delete job operation attribute"
+msgstr "बिकली डिलेट करने में फाइला जोब संचालन प्रतिष्ठान"
+
+msgid "Failed to delete job operation parameter"
+msgstr "बिकली डेलिट करण्यात असफलता मिळली"
+
+msgid "Failed to delete job operation tool"
+msgstr "बिक्री करने में फाल्टि हो गई जॉब ऑपरेशन टूल"
+
+msgid "Failed to delete journal entry"
+msgstr "दीर्जन रिकॉर्ड को हटाने में वा हुआ है"
+
+msgid "Failed to delete kanban"
+msgstr "कैन्बॉन को हटाने में व़ला गया है"
+
+msgid "Failed to delete line"
+msgstr "रकांट को हटाना फ़ालतू गया"
+
+msgid "Failed to delete location"
+msgstr "लैकेशन डिलीट करने में व़ोगा"
+
+msgid "Failed to delete material dimension"
+msgstr "मटेरियल आयाम को हटाने में व़कता हुई सफलता"
+
+msgid "Failed to delete material finish"
+msgstr "ग्राहक को मटेरियल पूर्ण डिलेट होने में विफल रहा"
+
+msgid "Failed to delete material form"
+msgstr "मटेरियल फॉर्म को हटाना बीच में विफल रहा"
+
+msgid "Failed to delete material grade"
+msgstr "ग्रेड को हटाना फ़लेंदरी से हुआ नहीं"
+
+msgid "Failed to delete material substance"
+msgstr "गTanggal उपादान को हटाया जाने में विफल रहा"
+
+msgid "Failed to delete material type"
+msgstr "ग्राहक प्रकार को डिलेट करने में व़िश्य हुआ"
+
+msgid "Failed to delete method material"
+msgstr "फाइल हटाना बिल्कुल नहीं किया जा सका"
+
+msgid "Failed to delete method operation parameter"
+msgstr "फाइल्ड ऑपरेशन पैरामीटर को हटाने में फ़ागा हुआ है"
+
+msgid "Failed to delete method operation step"
+msgstr "फाइल्ड टू डिलेट को महसूब़ करने में फ़ावड़ हुआ है"
+
+msgid "Failed to delete method operation tool"
+msgstr "फाइल हटाना फ़ावड़ कैसे होना वास्तव में फ़ावड़ नहीं हुआ"
+
+msgid "Failed to delete parameter"
+msgstr "पूरक डिलेट करने में व़ोटा हुआ"
+
+msgid "Failed to delete partner"
+msgstr "साझेदार को हटाना फ़ालतू था"
+
+msgid "Failed to delete passkey"
+msgstr "पासकीय को हटाने में फ़ल निकला"
+
+msgid "Failed to delete payment term"
+msgstr "पेमेंट टर्म को हटाने में विफल रहा"
+
+msgid "Failed to delete picking list"
+msgstr "पोकिंग लिस्ट को हटायना में विफल रहा"
+
+msgid "Failed to delete price override"
+msgstr "फिल्टर को हटाना बीच में विफल रहा"
+
+msgid "Failed to delete pricing rule"
+msgstr "प्रिक्सिंग रूल को हटाने में फ़ावड़ हुआ"
+
+msgid "Failed to delete printer route"
+msgstr "दिलीवर प्रिंटर रूट को हटाना फ़ालतू था"
+
+msgid "Failed to delete procedure"
+msgstr "प्रक्रिया हटाने में विफल रहा"
+
+msgid "Failed to delete purchase invoice"
+msgstr "पर्चेज इनवाइक्स को हटाने में फ़ल नहीं पड़ा"
+
+msgid "Failed to delete purchase invoice line"
+msgstr "दाखिली खरीद क्रम स्लाइन हटाने में व़ोट आया"
+
+msgid "Failed to delete purchase order line"
+msgstr "पर्चेज ऑर्डर पंक्ति हटाना फ़ाइलड"
+
+msgid "Failed to delete quality document"
+msgstr "गुण दस्तावेज़ को हटाने में फल नहीं प्राप्त किया गया"
+
+msgid "Failed to delete quantity"
+msgstr "कॉन्ट्रीत को हटाना बिल्कुल नहीं मिला"
+
+msgid "Failed to delete quantity report"
+msgstr "फाइल हटाना बिल्कुल गलत रहा है"
+
+msgid "Failed to delete question"
+msgstr "फ्रेम को हटाना फ़लेंगे"
+
+msgid "Failed to delete quote line"
+msgstr "कॉटन रेखा हटाने में व़या हुआ"
+
+msgid "Failed to delete quote material"
+msgstr "कॉपी मटेरियल को डिलेट करने में व़फ़ादार नहीं हुआ"
+
+msgid "Failed to delete quote operation step"
+msgstr "फैल्ड ऑपरेशन स्टप को हटाना मिला नहीं"
+
+msgid "Failed to delete quote operation tool"
+msgstr "फैल्ड ऑपरेशन टूल को हटाने में फ़ल नहीं पड़ा"
+
+msgid "Failed to delete required action"
+msgstr "अनिवार्य क्रमचय हटाना असफल रहा"
+
+msgid "Failed to delete RFQ line"
+msgstr "RFQ पंक्ति डिलेट करने में फाइल हो गई"
+
+msgid "Failed to delete rule"
+msgstr "नियम हटाने में व्याकरणीय त्रुटि आईं"
+
+msgid "Failed to delete sales invoice"
+msgstr "सॉल्स इनवाइब को हटाना फ़ाग रहा है"
+
+msgid "Failed to delete sales invoice line"
+msgstr "सॉल्स इनवाइब की पंक्ति हटाना फ़ाइल नहीं हो सकी"
+
+msgid "Failed to delete sales order line"
+msgstr "बिक्री ऑर्डर पंक्ति हटाना फ़ालतू रही है"
+
+msgid "Failed to delete section"
+msgstr "सब्जिक्ट को हटाना फ़लेंदी सकता है"
+
+msgid "Failed to delete shift"
+msgstr "फिल्टर को हटाना बीच में व गया"
+
+msgid "Failed to delete shipping method"
+msgstr "शippिङ विधि को हटाने में फाल्टी हुई"
+
+msgid "Failed to delete step"
+msgstr "फ़ाइल्ड स्टेप को हटाने में विफल रहा"
+
+msgid "Failed to delete stock transfer"
+msgstr "स्टॉक ट्रांसफर को हटाने में विफल रहा"
+
+msgid "Failed to delete storage type"
+msgstr "स्टोरेज टाइप को हटाने में विफल रहा"
+
+msgid "Failed to delete storage unit"
+msgstr "स्टोरेज इकाई को हटाने में विफल रहा"
+
+msgid "Failed to delete style color"
+msgstr "stile कॉलर हटाना फ़लेंदी हो गया"
+
+msgid "Failed to delete style size"
+msgstr "stile आकार को हटाने में फ़ल निकला"
+
+msgid "Failed to delete subsidiary"
+msgstr "फाइलीज डिलेट करने में व़ोटा हुआ है"
+
+msgid "Failed to delete suggestion"
+msgstr "सUGGESTION हटाने में विफल रहा"
+
+msgid "Failed to delete supplier contact"
+msgstr "संप्रदाता कонтेक्ट को हटाने में विफल रहा"
+
+msgid "Failed to delete supplier process"
+msgstr "फ़ाइल को हटाने में व्याकरणीय त्रुटि होने पर"
+
+msgid "Failed to delete supplier type"
+msgstr "फ़ाइल को हटाने में व्याकरण त्रुटि आईं"
+
+msgid "Failed to delete tag"
+msgstr "टैग डिलीट करने में व़ला गया"
+
+msgid "Failed to delete template"
+msgstr "टेम्पलेट को हटाना फ़ालतू था"
+
+msgid "Failed to delete timecard"
+msgstr "समय कार्ड नहीं हटा सका"
+
+msgid "Failed to delete training"
+msgstr "फैल्युअर टू डिलेट ट्राइनिंग"
+
+msgid "Failed to delete unit of measure"
+msgstr "यादृच्छिक इकाई हटाना वदले"
+
+msgid "Failed to delete view"
+msgstr "विन्यास को हटाने में व़फ़ादरी आईं"
+
+msgid "Failed to delete warehouse transfer"
+msgstr "गैर सफल तरह से दुकान परिवहन हटाएं"
+
+msgid "Failed to delete warehouse transfer line"
+msgstr "गैर सफल तरह से दिलाइव्हरी पंजीकरण पंक्ति हटाना"
+
+msgid "Failed to delete webhook"
+msgstr "वेबहुक को हटाने में फ़ल निकला"
+
+msgid "Failed to disable audit logging"
+msgstr "निरीक्षण लॉगिंग को ब्लॉक करने में व़फ़ादार नहीं हुआ"
+
+msgid "Failed to disconnect integration"
+msgstr "फाइल्मेंटिशन को अकड़ने में वर्ड हुआ"
+
+msgid "Failed to duplicate price list"
+msgstr "फैला नहीं सका मूल्य सूची को बहिर्रखने की"
+
+msgid "Failed to duplicate pricing rule"
+msgstr "फीडरिंग नियम को बहस नहीं किया जा सका"
+
+msgid "Failed to duplicate purchase order"
+msgstr "दबाव संचयन क्रम यहीं बहाल किए गए में फट गया है"
+
+msgid "Failed to duplicate purchase order: missing id"
+msgstr "ग्राहक अर्डर कopi करने में विफल: लाभ नंबर अज्ञात"
+
+msgid "Failed to enable audit logging"
+msgstr "फीडबैक लॉगिंग को इनाम नहीं किया जा सका"
+
+msgid "Failed to end event"
+msgstr "फेलाडा घटना समाप्त करने में विफल"
+
+msgid "Failed to end maintenance event"
+msgstr "संरक्षण घटना को अंत नहीं लगाया मिला"
 
 msgid "Failed to end operations"
 msgstr "संचालन समाप्त करने में विफल"
 
+msgid "Failed to ensure pick method exists"
+msgstr "पोकर विधि की सुनिश्चितता में फाल्टी"
+
+msgid "Failed to exchange WeChat code"
+msgstr "वेचाट कोड बदलने में व़फ़ादरी नहीं की.gets_translated_to_this_in_hindi"
+
+msgid "Failed to favorite purchase order"
+msgstr "ग्राहक अर्डर को पसंदीदा नहीं किया जा सका"
+
+msgid "Failed to favorite Quote"
+msgstr "फॉवरिट ऑट को फ्याड़ करने में विफल रहा"
+
+msgid "Failed to favorite rfq"
+msgstr "फैवोरिट रेफ्यू की प्रयाप्त नहीं हुई"
+
+msgid "Failed to favorite sales order"
+msgstr "फैवोरिट विक्रय क्रम से फाड़ी नहीं करने में असफलता"
+
+msgid "Failed to fetch accounts"
+msgstr "ग्राहक डेटा प्राप्त करने में व़िष्ट हो गए"
+
 msgid "Failed to fetch active operations"
 msgstr "सक्रिय संचालन प्राप्त करने में विफल"
 
+msgid "Failed to fetch assets"
+msgstr "असेट्स को लोड करने में व़ित हुआ"
+
+msgid "Failed to fetch attribute"
+msgstr "लागू गुण को प्राप्त करने में व़िया हुआ है"
+
+msgid "Failed to fetch attribute categories"
+msgstr "फलस्वरूप संरचनाएँ प्राप्त नहीं की जा सकीं"
+
+msgid "Failed to fetch attribute category"
+msgstr "गुण परिभाषा लोड करने में व़ियाहू"
+
+msgid "Failed to fetch consumables"
+msgstr "सपन्बल प्राप्त नहीं किए गए हैं"
+
+msgid "Failed to fetch custom fields"
+msgstr "कस्टम फील्डों को लेने में व़िराह"
+
+msgid "Failed to fetch customer contacts"
+msgstr "ग्राहक कонтेक्ट को लॉड करने में व़िला"
+
+msgid "Failed to fetch customer locations"
+msgstr "ग्राहक स्थान लोड करने में व़िया हुआ है"
+
+msgid "Failed to fetch customers"
+msgstr "ग्राहकों को डालने में वडा हुआ"
+
+msgid "Failed to fetch cutting completions"
+msgstr "काटने की पूर्ति लोड हुई"
+
+msgid "Failed to fetch documents"
+msgstr "दокументات लोड करने में व़िरासत हुई"
+
+msgid "Failed to fetch inventory items"
+msgstr "समावेशित सामग्री लोड करने में फ़ल न पाया"
+
+msgid "Failed to fetch item"
+msgstr "आइटम प्राप्त करने में व़फ़ादार नहीं हो सका"
+
+msgid "Failed to fetch job"
+msgstr "कार्य प्राप्त नहीं किया जा सका"
+
+msgid "Failed to fetch job events"
+msgstr "कार्य घटनाओं को प्राप्त करने में व़िया हुआ"
+
+msgid "Failed to fetch job make method"
+msgstr "फैला हुआ जोब मेडी से प्राप्त करना"
+
+msgid "Failed to fetch job materials"
+msgstr "कार्य सामग्री लोड करने में व़िया हुआ है"
+
+msgid "Failed to fetch job operation"
+msgstr "कार्य ऑपरेशन को प्राप्त करने में व़िश हुआ"
+
+msgid "Failed to fetch job operation step records"
+msgstr "कार्य अपरेशन स्टप की रिकॉर्ड लोड हो नहीं रहे"
+
+msgid "Failed to fetch job operations"
+msgstr "कार्य क्रियाएँ प्राप्त करने में वसफल रहे"
+
+msgid "Failed to fetch jobs"
+msgstr "कार्य प्राप्त नहीं किए गए"
+
+msgid "Failed to fetch kanbans"
+msgstr "कान्बैन लोड करणे असफल झाले आहेत"
+
+msgid "Failed to fetch materials"
+msgstr "मटेरियल लोड करने में व़िरास्त हुआ"
+
+msgid "Failed to fetch method materials"
+msgstr "मैथोड मटेरियल्स प्राप्त करना फ़ाइल हुआ सका"
+
+msgid "Failed to fetch method operations"
+msgstr "मेथोड ऑपरेशन्स को प्राप्त करने में व़िया हुआ"
+
+msgid "Failed to fetch modules"
+msgstr "मॉड्युल लोड करने में व़फ़ादार नहीं हो सका"
+
+msgid "Failed to fetch operation"
+msgstr "oprेशन प्राप्त करणा विफल झाला होता"
+
+msgid "Failed to fetch parts"
+msgstr "कार्यों को प्राप्त नहीं किए गए"
+
+msgid "Failed to fetch planning items"
+msgstr "प्लानिंग आइटमов को प्राप्त करने में व़िया हुआ"
+
+msgid "Failed to fetch purchase invoices"
+msgstr "कार्यिंग इनवेस्ट को प्राप्त नहीं किया गया"
+
+msgid "Failed to fetch purchase orders"
+msgstr "पर्चे ऑर्डर को लोड करने में व़फ़ादारी नहीं की"
+
+msgid "Failed to fetch quotes"
+msgstr "कॉट्स डालने में विफल रहा"
+
+msgid "Failed to fetch RFQs"
+msgstr "रफ़क्यू फेच करने में विफल रहा"
+
+msgid "Failed to fetch risks"
+msgstr "ग्रेस्क को लोड करने में फालतू सफलता हुई है"
+
+msgid "Failed to fetch run lines"
+msgstr "लार्न लाइन को प्राप्त करने में व़या है"
+
+msgid "Failed to fetch sales invoices"
+msgstr "विक्रय इनवाइबल्स को प्राप्त करने में व़फ़ादरी नहीं हुई"
+
+msgid "Failed to fetch sales orders"
+msgstr "विक्रय आदेश लोड करने में व़िश्या हुई"
+
 msgid "Failed to fetch storageUnits"
 msgstr "storageUnits को प्राप्त करने में विफल"
+
+msgid "Failed to fetch styles"
+msgstr "स्टाइल लोड करने में व़िष्ट हुआ"
+
+msgid "Failed to fetch supplier contacts"
+msgstr "संशोधक का संपर्क डालने में व़िट हो गया"
+
+msgid "Failed to fetch supplier locations"
+msgstr "संशोधक नहीं प्राप्त किए गए संप्रवेशक अवसरों की सूची"
+
+msgid "Failed to fetch supplier quantities"
+msgstr "संशोधक की गणना प्राप्त नहीं की जा सकी"
+
+msgid "Failed to fetch suppliers"
+msgstr "संशोधकार्थ वित्तीय समर्थक लोड हो रहा है"
+
+msgid "Failed to fetch templates"
+msgstr "टेम्पलेट्स को लौड करने में व़िरा हुई"
+
+msgid "Failed to fetch tools"
+msgstr "कार्यों को प्राप्त करने में विफल रहा"
+
+msgid "Failed to fetch unscheduled jobs"
+msgstr "अनुप्रयोग की कार्यक्रम से डेटा प्राप्त नहीं किया जा सका"
+
+msgid "Failed to fetch work center"
+msgstr "कार्य सेंटर को लोड करने में व़िला"
+
+msgid "Failed to fetch work centers"
+msgstr "कार्य सेंटरों को डाउनलोड करने में व़िया हुआ है"
+
+msgid "Failed to finalize purchase order"
+msgstr "पर्चेज ऑर्डर को पूरा करने में विफल रहा"
+
+msgid "Failed to finalize quote"
+msgstr "फॉर्म अंतिम रूप से पूरा किया गया है"
+
+msgid "Failed to finalize supplier quote"
+msgstr "फाइनल डायरेक्टरी को पूरा करने में असफलता"
+
+msgid "Failed to find quote line"
+msgstr "कॉट्यूअल लाइन पाईं गई है"
+
+msgid "Failed to finish operation"
+msgstr "फैला हुआ ऑपरेशन समाप्त करने में विफल रहा"
+
+msgid "Failed to generate download URL"
+msgstr "फ़ाइल डाउनलोड की यूआरएल गенरेट करने में फ़ल आईं"
+
+msgid "Failed to generate elimination entries"
+msgstr "गैर सफल था इनटीग्रेशन पंजीकरणों के उत्पादन"
+
+msgid "Failed to generate PDF"
+msgstr "फ़ॉलोअप पीडीएफ गनना में विफल"
+
+msgid "Failed to generate picking list"
+msgstr "पोकिंग लिस्ट का उत्पादन फ़ल गया"
+
+msgid "Failed to get a category id"
+msgstr "कатегорी आईडी प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get a customer contact id"
+msgstr "ग्राहक संपर्क आईडी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get a customer location id"
+msgstr "ग्राहक स्थिति आईडी प्राप्त करने में व़फ़ादरी है"
+
+msgid "Failed to get a customer portal id"
+msgstr "ग्राहक पोर्टल आईडी का प्राप्त करने में फाल्स हुआ"
+
+msgid "Failed to get a dimension id"
+msgstr "दिión आईडी प्राप्त करने में फ़ल नाहीं मिले"
+
+msgid "Failed to get a dispatch id"
+msgstr "डिपाच आईडी प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get a failure mode id"
+msgstr "गति रूप अभिव्यक्ति का ID प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get a kanban id"
+msgstr "कान्बन आईडी प्राप्त करने में फाल्टी"
+
+msgid "Failed to get a material type id"
+msgstr "मटेरियल टाइप आईडी प्राप्त करना फ़ाइल हो रहा है"
+
+msgid "Failed to get a schedule id"
+msgstr "फीडबैक नहीं मिल पाया"
+
+msgid "Failed to get a storage type id"
+msgstr "स्टोरेज टाइप आईडी प्राप्त करने में फालतू सफलता"
+
+msgid "Failed to get a storageUnit id"
+msgstr "स्टोरेज यूनिट आईडी प्राप्त करने में फालतु आई"
+
+msgid "Failed to get a style color id"
+msgstr "stile का रंग आईडी प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get a style size id"
+msgstr "stile की आकार आईडी प्राप्त करने में फ़ल निकाला गया है"
+
+msgid "Failed to get a supplier contact id"
+msgstr "फ़ाइल कर ने कोई प्रदाता संपर्क आईडी प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get a supplier location id"
+msgstr "फ़ाइल्ड नहीं किया गया संपादक पозिशन आईडी"
+
+msgid "Failed to get a work center id"
+msgstr "कार्य सेंटर आईडी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get account"
+msgstr "ग्राहक की लेनदेन डाटा प्राप्त करने में व़िश्य हो गए"
+
+msgid "Failed to get accounting period"
+msgstr "कांटींग परियोज्ञा प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get an account id"
+msgstr "अकाउंट आईडी प्राप्त करने में फाल्टी"
+
+msgid "Failed to get an attribute id"
+msgstr "गुणात्मक आईडी प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get an customer status id"
+msgstr "ग्राहक के स्थिति आईडी प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get an customer type id"
+msgstr "ग्राहक प्रकार का ID लेन में व़ला"
+
+msgid "Failed to get an employee type id"
+msgstr "निर्देशक प्रकार की आईडी प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get an gauge id"
+msgstr "गेज आईडी प्राप्त करने में फाल्टी"
+
+msgid "Failed to get an group id"
+msgstr "गруппा आईडी प्राप्त करने में फाल्टी हो गई"
+
+msgid "Failed to get an id"
+msgstr "फाइल्ड आईडी प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get an issue type id"
+msgstr "असफलता हो गई एक समस्याधीर्जन क्रमांक प्राप्त करने में"
+
+msgid "Failed to get an item group id"
+msgstr "आइटम ग्रुप आईडी प्राप्त करने में व़िशा हो रही है"
+
+msgid "Failed to get an material dimension id"
+msgstr "मटेरियल डामेशन आईडी प्राप्त करने में फालतू सफलता"
+
+msgid "Failed to get an material finish id"
+msgstr "मटेरियल फाइनिश आईडी प्राप्त करना वया है"
+
+msgid "Failed to get an material form id"
+msgstr "मटेरियल फॉर्म आईडी प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get an material grade id"
+msgstr "ग्रेड आईडी प्राप्त करने में फाल्टी"
+
+msgid "Failed to get an material substance id"
+msgstr "मटेरियल सब्स्टैंस आईडी प्राप्त करने में फालतू हो गया"
+
+msgid "Failed to get an no quote reason id"
+msgstr "फॉलोअप कारण आईडी प्राप्त करने में फाल्टी संकेत"
+
+msgid "Failed to get an payment term id"
+msgstr "फेलाड़ गया पैमाने की आईडी प्राप्त करने में"
+
+msgid "Failed to get an receipt id"
+msgstr "फाइल्ड रिसीप्ट आईडी को प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get an scrap reason id"
+msgstr "ग्राहक की वजह से माल का कारण ID प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get an shipment id"
+msgstr "शipment आईडी प्राप्त करने में वसकता है"
+
+msgid "Failed to get an shipping method id"
+msgstr "शippिंg मेथोड आईडी प्राप्त करने में फाल्टी हुई"
+
+msgid "Failed to get an supplier type id"
+msgstr "फ़ैल्युअर टो गट एस्पील्यूर टाइप आईडी"
+
+msgid "Failed to get an unit of measure id"
+msgstr "फाइल्ड उनिट माप आईडी प्राप्त करने में वा हुआ है"
+
+msgid "Failed to get asset"
+msgstr "असेट को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get asset class"
+msgstr "असेट क्लास प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get asset class id"
+msgstr "असेट क्लास आईडी प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get attribute"
+msgstr "गुणांक प्राप्त करने में विफल"
+
+msgid "Failed to get chart of accounts"
+msgstr "ग्राहक चार्ट को प्राप्त करने में विफल रहा"
+
+msgid "Failed to get claims"
+msgstr "केमा चायम्स मिलने में विफल रहे"
+
+msgid "Failed to get companies"
+msgstr "कंपनियां प्राप्त नहीं की जा सकीं"
+
+msgid "Failed to get company"
+msgstr "कंपनी को प्राप्त नहीं किया गया"
+
+msgid "Failed to get company ID"
+msgstr "कंपनी आईडी प्राप्त करने में फालतू सफलता"
+
+msgid "Failed to get company settings"
+msgstr "कंपनी सेटिंग्स को लाभ नहीं प्राप्त कर सका"
+
+msgid "Failed to get contractor"
+msgstr "ग्राहक को प्राप्त नहीं किया गया"
+
+msgid "Failed to get contractor id"
+msgstr "ग्राहक आईडी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get cost center"
+msgstr "कास्ट सेंटर को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get cost center id"
+msgstr "कितने लागत केंद्र आईडी प्राप्त नहीं किए जा सके"
+
+msgid "Failed to get customer contact"
+msgstr "ग्राहक संपर्क प्राप्त करने में विफल रहा"
+
+msgid "Failed to get customer contacts"
+msgstr "ग्राहक कонтेक्ट को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get customer location"
+msgstr "ग्राहक की स्थिति प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get customer part"
+msgstr "ग्राहक का भाग प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get customer portal"
+msgstr "ग्राहक पोर्टल से डेटा प्राप्त करने में विफल रहे"
+
+msgid "Failed to get customer status"
+msgstr "ग्राहक के स्थिति लोड करने में व़िरुद्ध आया"
+
+msgid "Failed to get customer type"
+msgstr "ग्राहक प्रकार को अवश्यम्भावना से प्राप्त नहीं किया गया है"
+
+msgid "Failed to get department"
+msgstr "दिवार्ती का भाग प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get department id"
+msgstr "द डिपार्टमेंट आईडी को प्राप्त नहीं किया गया है"
+
+msgid "Failed to get depreciation run"
+msgstr "संपत्ति बटुआ प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get depreciation run id"
+msgstr "दpreciation run id प्राप्त करने में वया"
+
+msgid "Failed to get dimension"
+msgstr "गर्मी को प्राप्त नहीं किया गया"
+
+msgid "Failed to get dispatch"
+msgstr "डिपाच को प्राप्त नहीं किया गया"
+
+msgid "Failed to get document"
+msgstr "दocument प्राप्त करने में वफ़ादार नहीं हो सका"
+
+msgid "Failed to get employee type"
+msgstr "नौकर की प्रकार में फाइल नहीं लिया गया"
+
+msgid "Failed to get entry id"
+msgstr "किसी निबंधन ID प्राप्त करने में विफल रहा"
+
+msgid "Failed to get failure mode"
+msgstr "गति रूप से विफल हो गया मॉडल"
+
+msgid "Failed to get fiscal year settings"
+msgstr "फैशन वर्ष सेटिंग्स को प्राप्त नहीं किए गए"
+
+msgid "Failed to get fixed asset"
+msgstr "फीड्डिड असेट को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get fixed asset id"
+msgstr "फीड्डेड असेट आईडी प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get gauge type"
+msgstr "गेज प्रकार को अवश्यकता ही नहीं मिली"
+
+msgid "Failed to get group"
+msgstr "गруппа प्राप्त करने में वफ़ादरी नहीं समा"
+
+msgid "Failed to get holiday"
+msgstr "कार्यक्रम विकल्प ग्रहण करने में फालतू प्रयास किया गया है"
+
+msgid "Failed to get holiday id"
+msgstr "कार्यक्रम दिनांक ID प्राप्त करने में फ़ल नहीं मिला"
+
+msgid "Failed to get issue type"
+msgstr "समस्या प्रकार को अवश्ययतन से प्राप्त नहीं किया गया है"
+
+msgid "Failed to get item group"
+msgstr "आइटम ग्रुप प्राप्त करने में व़िशा होई गई"
+
+msgid "Failed to get job data"
+msgstr "कार्य डेटा प्राप्त करने में विफल रहे"
+
+msgid "Failed to get job information"
+msgstr "कार्य जानकारी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get kanban"
+msgstr "कान्बन को प्राप्त नहीं किया गया"
+
+msgid "Failed to get location"
+msgstr "लैकेशन प्राप्त करने में विफल"
+
+msgid "Failed to get location id"
+msgstr "लोकेशन आईडी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get location ID"
+msgstr "लोकेशन आईडी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get maintenance dispatch"
+msgstr "सेवा डिपाच को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get maintenance schedule"
+msgstr "संरक्षण सिक्ल ग्रहण में विफल रहा"
+
+msgid "Failed to get material dimension"
+msgstr "मटेरियल की आयाम संग्रहण में विफलता"
+
+msgid "Failed to get material finish"
+msgstr "मटेरियल की पूर्णता अप्राप्त होने पर"
+
+msgid "Failed to get material form"
+msgstr "मटेरियल फॉर्म प्राप्त करना वया है"
+
+msgid "Failed to get material grade"
+msgstr "ग्रेड का सामग्री प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get material make method"
+msgstr "मटेरियल मेड कैशनी अपार्ट हो गया"
+
+msgid "Failed to get material substance"
+msgstr "मटेरियल की सामग्री प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get material type"
+msgstr "ग्रहण वस्तु प्रकार को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get modules"
+msgstr "मॉड्युल लोड करने में व़िरह हुआ"
+
+msgid "Failed to get next sequence"
+msgstr "अग्रिम अनुक्रम प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get no quote reason"
+msgstr "नकद कारण प्राप्त नहीं किया गया"
+
+msgid "Failed to get outside operations"
+msgstr "बाहरी ऑपरेशन प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get parent account"
+msgstr "प्रतिबंधित खाते को प्राप्त करने में वा सफल रहीं"
+
+msgid "Failed to get partner"
+msgstr "साझेदार को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get partner id"
+msgstr "पार्टनर आईडी प्राप्त करने में फाल्टी"
+
+msgid "Failed to get parts"
+msgstr "गार्ड का प्राप्त करने में व आया है"
+
+msgid "Failed to get payment term"
+msgstr "पेमेंट टर्म प्राप्त करने में विफल रहा"
+
+msgid "Failed to get price override"
+msgstr "फीस ओवरराइड को प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get price override id"
+msgstr "फैला हुआ गिनती अतिरिक्त आईडी प्राप्त करने में"
+
+msgid "Failed to get pricing rule"
+msgstr "प्रीज़ नियम प्राप्त करने में वफा हुई"
+
+msgid "Failed to get pricing rule id"
+msgstr "पैरिंग नियम का ID प्राप्त करने में व़ियाहो"
+
+msgid "Failed to get process"
+msgstr "प्रोसेस प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get process id"
+msgstr "प्रोसेस आईडी प्राप्त करने में व़िशा हुई"
+
+msgid "Failed to get production projections"
+msgstr "उत्पादन प्रतीक्षण ग्रहण करने में विफल रहा"
+
+msgid "Failed to get purchase invoice"
+msgstr "कार्य निकाल खरीद क्रमांक प्राप्त नहीं किए जा सके"
+
+msgid "Failed to get purchase invoice line"
+msgstr "कार्य निवेशन बिल पंजरे को प्राप्त करने में फाइल दिखाई दिया"
+
+msgid "Failed to get purchase order"
+msgstr "पर्चेज ऑर्डर को प्राप्त नहीं किया गया"
+
+msgid "Failed to get purchase order line"
+msgstr "कार्यपत्र पंजर को अवश्य ही प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get quality issue sequence"
+msgstr "कार्यरत गुणवत्ता समस्या प्रक्रिया नहीं प्राप्त की जा सकी"
+
+msgid "Failed to get quote"
+msgstr "कॉट डालने में विफल रहा"
+
+msgid "Failed to get quote details"
+msgstr "कॉटन विवरण प्राप्त करने में फालतू सफलता"
+
+msgid "Failed to get receipt"
+msgstr "रिसेप्ट प्राप्त करने में व़िश्या"
+
+msgid "Failed to get sales invoice line"
+msgstr "विक्रय इनवाइबल के पंक्ति प्राप्त करना फ़ाइल हो रहा है"
+
+msgid "Failed to get sales order"
+msgstr "विक्रय आदेश प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get sales order line"
+msgstr "विक्रय आदेश पंक्ति प्राप्त करने में विफल रहा"
+
+msgid "Failed to get scrap reason"
+msgstr "फ़ैला हुआ डेर कारण प्राप्त नहीं किया गया"
+
+msgid "Failed to get sequence"
+msgstr "क्रम लाने में विफल रहे"
+
+msgid "Failed to get services"
+msgstr "सेवाएँ प्राप्त नहीं की जा सकीं"
+
+msgid "Failed to get shift"
+msgstr "शिफ्ट प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get shift id"
+msgstr "शिफ्ट आईडी प्राप्त करने में व़िया हुआ"
+
+msgid "Failed to get shipment"
+msgstr "शipment प्राप्त करने में विफल रहा"
+
+msgid "Failed to get shipping method"
+msgstr "शippिङ विधि प्राप्त करने में फाल्टी हो गई"
+
+msgid "Failed to get storage type"
+msgstr "स्टोरेज प्रकार का प्राप्त करने में व़ियाहू"
+
+msgid "Failed to get storageUnit"
+msgstr "स्टोरेज यूनिट का प्राप्त करने में व़ियाहो"
+
+msgid "Failed to get style color"
+msgstr "stile का रंग प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get style size"
+msgstr "stile का आकार प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get subsidiary"
+msgstr "संकलन ग्रुप को प्राप्त करने में विफल रहा"
+
+msgid "Failed to get subsidiary id"
+msgstr "संपत्ति आईडी प्राप्त करने में विफल रहा"
+
+msgid "Failed to get suggestion"
+msgstr "सुझाव प्राप्त करने में असफलता"
+
+msgid "Failed to get supplier contact"
+msgstr "संप्रेषक संबंधी जानकारी प्राप्त करने में व़ियाहो"
+
+msgid "Failed to get supplier contacts"
+msgstr "संशोधक का संपर्क अमनक प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get supplier location"
+msgstr "संशोधक की स्थिति प्राप्त नहीं की जा सकी"
+
+msgid "Failed to get supplier locations"
+msgstr "संशोधक की स्थान अमिट करने में व़िला"
+
+msgid "Failed to get supplier processes"
+msgstr "संशोधक प्रक्रियाएँ प्राप्त करने में वा सफल रहे"
+
+msgid "Failed to get supplier quote"
+msgstr "संपादक की अनुबतित मूल्य समावेश नहीं हो पा रहा है"
+
+msgid "Failed to get supplier quote line prices"
+msgstr "फ़ाइल्ड तोपी की निर्धारण में विफल रहे"
+
+msgid "Failed to get supplier quote lines"
+msgstr "फ़ाइल्ड तोपी के उदाहरण लाइनें प्राप्त करने में वगेज"
+
+msgid "Failed to get supplier type"
+msgstr "संशोधक की तरह विनियमित ग्राहक प्रकार प्राप्त नहीं किया जा सका"
+
+msgid "Failed to get tag"
+msgstr "टैग को प्राप्त नहीं किया गया"
+
+msgid "Failed to get timecard"
+msgstr "कार्ड टाइम मिलना फाल्टी है"
+
+msgid "Failed to get unique values for custom field"
+msgstr "कस्टम फील्ड के अद्वितीय मूल्यов प्राप्त करने में वा सफल नहीं हुई"
+
+msgid "Failed to get unit of measure"
+msgstr "कार्य इकाई नहीं प्राप्त किया जा सका"
+
+msgid "Failed to get user"
+msgstr "फाइल्ड उपयोगकर्ता प्राप्त करने में वा हुई सफल नहीं रही"
+
+msgid "Failed to get user permissions"
+msgstr "सक्षमताएँ प्राप्त नहीं की जा सकीं"
+
+msgid "Failed to get WeChat user info"
+msgstr "वेचाट उपयोगकर्ता जानकारी प्राप्त करने में विफल रहा"
+
+msgid "Failed to insert account"
+msgstr "ग्रहण इन्सर्ट किए गए नहीं"
+
+msgid "Failed to insert consumable"
+msgstr "ग्रहणीय को इन्सर्ट करने में वा हुईं"
+
+msgid "Failed to insert consumable inventory"
+msgstr "गतिविधि स्टॉक इनर्स्ट करने में फाल्टी"
+
+msgid "Failed to insert cost center"
+msgstr "कित्तर सेंटर इनसर्ट करने में फालतू हो गया"
+
+msgid "Failed to insert custom field"
+msgstr "फाइल्ड का यंत्रणा नहीं हुआ"
+
+msgid "Failed to insert customer"
+msgstr "ग्राहक इन्सर्ट करणे असफल झाले आहेत"
+
+msgid "Failed to insert customer status"
+msgstr "ग्राहक के रूपरेखा इन्सर्ट होने में फालतु आई"
+
+msgid "Failed to insert customer type"
+msgstr "ग्राहक प्रकार को इन्सर्ट करने में व़िशिष्ट त्रुटि हो गई"
+
+msgid "Failed to insert department"
+msgstr "दिवार्ती विभाग इन्सर्ट करने में फाल्टी हो गई"
+
+msgid "Failed to insert employee type"
+msgstr "ग्राहक प्रकार को इन्सर्ट करने में व़िशिष्ट त्रुटि हो गई"
+
+msgid "Failed to insert employee type permissions"
+msgstr "निर्वाही प्रकार की अनुमति इंसर्ट करने में फाल्ट हो गई"
+
+msgid "Failed to insert failure mode"
+msgstr "गति नहीं हुई फाइल कोड स्थिर रखने में"
+
+msgid "Failed to insert gauge"
+msgstr "गेज इन्सर्ट किए गए नहीं हो सके"
+
+msgid "Failed to insert gauge calibration record"
+msgstr "गेज कैलिब्रेशन रिकॉर्ड इंサइट होने पर वाया"
+
+msgid "Failed to insert gauge type"
+msgstr "गेज प्रकार इन्सर्ट किए गए नहीं हैं"
+
+msgid "Failed to insert group"
+msgstr "गруппа इन्सर्ट हो नहीं सकीा"
+
+msgid "Failed to insert group members"
+msgstr "ग룹 सदस्य इन्सर्ट करने में व़िश्य हो रहा है"
+
+msgid "Failed to insert issue"
+msgstr "ग्रहण इंसर्ट किए गए अवस्थापन में विफल रहे"
+
+msgid "Failed to insert issue type"
+msgstr "ग्रहण प्रकार को इन्सर्ट करने में फालतू हुआ"
+
+msgid "Failed to insert issue workflow"
+msgstr "ग्रहण प्रक्रिया इन्सर्ट करने में वाय हुआ है"
+
+msgid "Failed to insert item group"
+msgstr "ग्रुप इंसर्ट करने में व़फ़ादार नहीं समायोजित हो गया"
+
+msgid "Failed to insert job"
+msgstr "कार्य इन्सर्ट करने में व़िश्य हो गया"
+
+msgid "Failed to insert job material"
+msgstr "फाइल का मटेरियल इन्सर्ट होने पर वडा आया है"
+
+msgid "Failed to insert job material make method"
+msgstr "फैलाव नहीं किया जा सका जोब मटेरियल मेड एन्ट्री"
+
+msgid "Failed to insert job operation"
+msgstr "फैला हुआ जोब ऑपरेशन इंサल्ट किया गया है"
+
+msgid "Failed to insert job operation attribute"
+msgstr "फैला हुआ जोब ऑपरेशन संकाय विशेषता इन्सर्ट करने में"
+
+msgid "Failed to insert job operation parameter"
+msgstr "फैला हुआ जोब संचालन पूरक डिटेल्स की इस्तेमाल करके इन्शर्ट करना"
+
+msgid "Failed to insert job operation tool"
+msgstr "फैला हुआ जोब ऑपरेशन टूल इंサर्ट करने में"
+
+msgid "Failed to insert kanban"
+msgstr "कान्बन इंसर्ट करने में फालतू सफलता पायीं"
+
+msgid "Failed to insert line"
+msgstr "लाइन इंサर्ट करने में व़िरह हुआ"
+
+msgid "Failed to insert material"
+msgstr "मटेरियल इन्सर्ट करने में वफ़ादारी नहीं की जा सकी"
+
+msgid "Failed to insert material dimension"
+msgstr "मटेरियल डाइंजन को इन्सर्ट करने में व़फ़ादरी नहीं पाई"
+
+msgid "Failed to insert material finish"
+msgstr "ग्रहण समाप्ति को इनсर्ट करने में फ़ैला हुआ है"
+
+msgid "Failed to insert material form"
+msgstr "मटेरियल फॉर्म में इनсर्ट करने में व़िश्य हो गए"
+
+msgid "Failed to insert material grade"
+msgstr "ग्रेड में लक्षात रखें कि सामग्री ग्रेड इंサल्ट हो रहा है"
+
+msgid "Failed to insert material inventory"
+msgstr "ग्राहक सम्पत्ति का इनर्ज़ कॉल किए बाद वफ़ आया है"
+
+msgid "Failed to insert material substance"
+msgstr "मटेरियल सबस्टॅंच इनсер्ट करना फाल्टी हो गया"
+
+msgid "Failed to insert material type"
+msgstr "ग्रहण प्रकार को इंサल्टने में फाल्ट हुई"
+
+msgid "Failed to insert method material"
+msgstr "माध्यम सामग्री इनсर्ट करने में व़ला"
+
+msgid "Failed to insert method operation"
+msgstr "मेथोड ऑपरेशन में इंサर्ट करने में फालतू सफलता"
+
+msgid "Failed to insert method operation parameter"
+msgstr "फाइल डिटेल्स को इन्सर्ट करने में फ़ावड़ हुआ है"
+
+msgid "Failed to insert method operation step"
+msgstr "मेथोड ऑपरेशन स्टप को इंサर्ट करने में व़ला"
+
+msgid "Failed to insert method operation tool"
+msgstr "गतिविधि उपकरण को इन्सर्ट करने में फाल्टी"
+
+msgid "Failed to insert model record"
+msgstr "मॉडल रिकर्ड इनサर्ट करने में व़िरह हुआ"
+
+msgid "Failed to insert new version"
+msgstr "नई संस्करण इन्सर्ट करने में वफ़ादारी नहीं की जा पाई"
+
+msgid "Failed to insert no quote reason"
+msgstr "नकारात्मक कारण इंサर्ट करने में वफ़ादरी नहीं पायी"
+
+msgid "Failed to insert part"
+msgstr "गार्ड को इनсर्ट करने में फालतू हुआ"
+
+msgid "Failed to insert part inventory"
+msgstr "गारंटी भाग स्टॉक मेंरो करने में वा हुआ"
+
+msgid "Failed to insert payment term"
+msgstr "पेमेंट टर्म को इनсर्ट करने में विफल रहा"
+
+msgid "Failed to insert procedure"
+msgstr "प्रक्रिया इन्सर्ट करने में फालतू सफलता"
+
+msgid "Failed to insert procedure parameter"
+msgstr "प्रक्रिया पूर्वाधार इनсер्ट करने में फालतु हुई"
+
+msgid "Failed to insert procedure step"
+msgstr "प्रक्रिया चरण को इन्सर्ट करने में व़िश्य हुआ"
+
+msgid "Failed to insert production event"
+msgstr "उत्पादन घटना इंサल्ट हो गई"
+
+msgid "Failed to insert purchase invoice"
+msgstr "क्रय बिल का इनर्ज़ किया गया है"
+
+msgid "Failed to insert purchase order"
+msgstr "क्रय आदेश इन्सर्ट करने में विफल रहा"
+
+msgid "Failed to insert quality document"
+msgstr "गुणात्मक दस्तावेज़ इनсер्ट करने में असफलता"
+
+msgid "Failed to insert quality document step"
+msgstr "गुणात्मक डॉक्युमेंट कदम इनसर्ट होने में फाल्टी"
+
+msgid "Failed to insert quote"
+msgstr "कॉटन इंサर्ट किए गए नहीं हैं"
+
+msgid "Failed to insert quote material"
+msgstr "कॉटन अमाईलर इंसर्ट किए गए नहीं हुए"
+
+msgid "Failed to insert quote material make method"
+msgstr "फाइल का उत्तरदायी नहीं हो सका मालerial बनावट विधि को डालने का"
+
+msgid "Failed to insert quote operation"
+msgstr "कॉटन ऑपरेशन को इंサल्ट करने में वर्ड आया"
+
+msgid "Failed to insert quote operation parameter"
+msgstr "फॉर्मेट का इनсер्ट होने में फ़ल नहीं पड़ा"
+
+msgid "Failed to insert quote operation step"
+msgstr "फॉर्मेट का इनсер्ट होने में फ़ल नहीं पड़ा"
+
+msgid "Failed to insert quote operation tool"
+msgstr "गिफ्ट ऑपरेशन टूल में इंサर्ट करने में वर्ड आया"
+
+msgid "Failed to insert reviewer"
+msgstr "ग्रहणकर्ता इंサलट करने में वर्ड"
+
+msgid "Failed to insert RFQ"
+msgstr "RFQ इन्सर्ट किए जाने में व़या"
+
+msgid "Failed to insert RFQ line"
+msgstr "RFQ र्यूम को इनсर्ट करने में वफ़ादार नहीं हुआ"
+
+msgid "Failed to insert sales invoice"
+msgstr "विक्रय इनवाइब्ल को इंसर्ट करने में फालतू परिणाम आये"
+
+msgid "Failed to insert sales order"
+msgstr "विक्रय आदेश इन्सर्ट करने में फालतू सफलता"
+
+msgid "Failed to insert scrap reason"
+msgstr "गमाना कारण इंサर्ट होने में व़या"
+
+msgid "Failed to insert shipping method"
+msgstr "शिपिंग विधि को इन्सर्ट करने में फालतू हुआ"
+
+msgid "Failed to insert storage type"
+msgstr "स्टोरेज प्रकार का इनсер्ट होने में फाल्ट आईं"
+
+msgid "Failed to insert storageUnit"
+msgstr "स्टोरेज यूनिट में इंサर्ट करने में फालतु आई"
+
+msgid "Failed to insert style color"
+msgstr "stile कॉलर इन्सर्ट होने में विफल रहा"
+
+msgid "Failed to insert style inventory"
+msgstr "गैर सफल शॉप इनवार्टर का प्रवेन"
+
+msgid "Failed to insert style size"
+msgstr "stile की आका इंसर्ट होने में फाल्टी हुई"
+
+msgid "Failed to insert supplier quote"
+msgstr "फ़ाइल को डालने में व्याकरण त्रुटि हो गई"
+
+msgid "Failed to insert supplier type"
+msgstr "फ़ाइल को इंसर्ट करने में वँदाया गया संशोधक प्रकार"
+
+msgid "Failed to insert template"
+msgstr "फैला हुआ टेम्पलेट इनサर्ट करना"
+
+msgid "Failed to insert tool"
+msgstr "ग्रहण साधन इंサर्ट करने में वा हुई"
+
+msgid "Failed to insert tool inventory"
+msgstr "ग्राहक निरपेक्षण में डाटा इनサル트 करने में व्‍याक्‍त हुआ"
+
+msgid "Failed to insert training question"
+msgstr "नेटवर्क को डाटा इंसर्ट करने में फालतू हुआ था"
+
+msgid "Failed to insert unit of measure"
+msgstr "यादृच्छिक इकाई डालने का प्रयास वा मिला नहीं सका"
+
+msgid "Failed to install integration"
+msgstr "इंटरनेशनल इस्ताल किए बाद विफल"
+
+msgid "Failed to issue material"
+msgstr "मटेरियल का उदाहरण नहीं दिया जा सका"
+
+msgid "Failed to issue materials"
+msgstr "मटेरियल्स का उदाहरण फ़ालतू हो गया"
+
+msgid "Failed to link email"
+msgstr "ईमेल को जोड़ने में वर्ड किया गया है"
+
+msgid "Failed to link quality issue to MES context"
+msgstr "कार्यवाही मेस कंटेक्स्ट में गुणता समस्या को लिंकने में विफल"
+
+msgid "Failed to load account"
+msgstr "ग्राहक लोड करने में व़िरास्"
+
+msgid "Failed to load any locations"
+msgstr "किसी भी स्थान को cariche करने में वफ़ादरी नहीं हुई"
+
+msgid "Failed to load api keys"
+msgstr "API की सेटिंग लोड होने में फाल्टी हुई"
+
+msgid "Failed to load applications"
+msgstr "ऐप्लिकेशन लोड होने में व़ाया गया है"
+
+msgid "Failed to load approval rule"
+msgstr "निर्धारण नियम को caricirnaले लadata नहीं मिल सका"
+
+msgid "Failed to load approval rules"
+msgstr "निर्धारण नियमों का लोड करने में व़ियाहू"
+
+msgid "Failed to load attribute category"
+msgstr "लोड करने में विफल हो गया अत्रि्यूट क्लास समान"
+
+msgid "Failed to load balance sheet"
+msgstr "लोड करने में व़िता साल्ड फैलाव नहीं आया"
+
+msgid "Failed to load bundle work orders"
+msgstr "बैंडल वर्क ऑर्डर लोड करने में फालतु हुई"
+
+msgid "Failed to load companies"
+msgstr "कंपनियां लोड होती नहीं"
+
+msgid "Failed to load company"
+msgstr "कंपनी लोड होने में फाल्टी रही"
+
+msgid "Failed to load company for purchase orders"
+msgstr "पर्चेज ऑर्डर के लिए कंपनी छुट्टी में आईंगी"
+
+msgid "Failed to load config. Please make sure a valid record exists in your public.config table."
+msgstr "संfig लोड होने में असफलता हुई। कृपया यादरखें, आपकी public.config टेबल में एक वैध रिकॉर्ड अस्तित्व में है।"
+
+msgid "Failed to load consumable costing"
+msgstr "अवशेषित लागत छुट्टी से नहीं लोड हो पा रहा है"
+
+msgid "Failed to load consumable inventory"
+msgstr "अनुपयोगी जमा सूचना लadata truncated: \"अनुपयोगी जमा सूचना लड़कें\""
+
+msgid "Failed to load consumable planning"
+msgstr "अनुपयोगी योजना लोड करने में वास"
+
+msgid "Failed to load consumable purchasing"
+msgstr "कंस्युमेबल पर्यावरण लोड करने में फ़ागी हुई"
+
+msgid "Failed to load consumable quantities"
+msgstr "अनुपयोगी राशियां लोड करने में वा हुईं हैं"
+
+msgid "Failed to load consumable summary"
+msgstr "अवश्यक सारांश लोड करने में वा हुई"
+
+msgid "Failed to load contractors"
+msgstr "ग्राहकों का लोड होने में फाल्टी है"
+
+msgid "Failed to load cost centers"
+msgstr "कित्त सेंटर लोड करने में वफ़ादार नहीं हुए"
+
+msgid "Failed to load customer payment terms"
+msgstr "ग्राहक की भुगतान परियोज्ञा लadata truncated"
+
+msgid "Failed to load customer shipping"
+msgstr "ग्राहक की डिलीवरी छुट्टी लोड होने में व़या"
+
+msgid "Failed to load customer summary"
+msgstr "ग्राहक सारांश लोड होने में विफल रहा"
+
+msgid "Failed to load customer tax information"
+msgstr "ग्राहक के आदान-प्रदान विवरण लोड होने में फाल्टी हुई"
+
+msgid "Failed to load default accounts"
+msgstr "अपने डिफल्ट खातों की लोड होने में वस आया है"
+
+msgid "Failed to load default location"
+msgstr "अंतर्जाल की डिफल्ट स्थिति लोड होने में वा हुई है"
+
+msgid "Failed to load demand"
+msgstr "लाग्रेज़ मांग लोड करने में वफ़ादरी नहीं की"
+
+msgid "Failed to load departments"
+msgstr "दिवार्ती अवसरों का लोड करने में फालतू सफलता"
+
+msgid "Failed to load depreciation run"
+msgstr "अवरोधित डेप्रीएशन रन लadata loaded"
+
+msgid "Failed to load document"
+msgstr "दокумент लोड होने में व़या हुआ है"
+
+msgid "Failed to load employee summary"
+msgstr "नौकर की सार्वत्रिक जानकारी लोड होने में असफल रहा"
+
+msgid "Failed to load entity links"
+msgstr "संबंधी तत्वों का caricare नहीं मिल सका"
+
+msgid "Failed to load fixed asset"
+msgstr "निर्धारित अधीक्षण लोड करने में व़िया हुआ है"
+
+msgid "Failed to load gauge"
+msgstr "गेज लोड करने में व़िता हुई"
+
+msgid "Failed to load gauge calibration record"
+msgstr "गेज कैलिब्रेशन रिकॉर्ड लोड हो नहीं सका"
+
+msgid "Failed to load group"
+msgstr "गруппа लोड होने में फाल्टी रही"
+
+msgid "Failed to load group members"
+msgstr "ग룹 सदस्य लोड करने में व़ियाहू"
+
+msgid "Failed to load groups"
+msgstr "गруппы लोड होने में फाल्टी रही"
+
+msgid "Failed to load holidays"
+msgstr "कार्यक्रम बुधदिवसों का लोड करने में फ़ल नहीं पाया"
+
+msgid "Failed to load income statement"
+msgstr "लाभ व हानि बिल्डिंग छोड़ पड़ा"
+
+msgid "Failed to load inspection"
+msgstr "निरीक्षण लोड करने में व़ाया.get@#"
+
+msgid "Failed to load inspection document"
+msgstr "निरीक्षण डокумент का लोड होने में फालतू परिस्थिति हुई"
+
+msgid "Failed to load inspections"
+msgstr "लौडी जांच लोड करने में व़या हुआ है"
+
+msgid "Failed to load integrations"
+msgstr "इंटीग्रेशन लोड हो नहीं सका"
+
+msgid "Failed to load invite links"
+msgstr "नामित लिंकों का लोड होने में फाल्टी रही"
+
+msgid "Failed to load issue"
+msgstr "लोड करने में विफल रहा"
+
+msgid "Failed to load issue workflow"
+msgstr "लोड करने में विफल रहा समस्या प्रक्रिया"
+
+msgid "Failed to load item"
+msgstr "आइटम लोड करने में व़िरास्"
+
+msgid "Failed to load item inventory activity"
+msgstr "नामूने की सम्पत्ति अभियान लोड होने में विफल रहा"
+
+msgid "Failed to load item storage unit quantities"
+msgstr "कार्यरत नहीं हुए आइटम स्टोरेज इकाइयों की मात्राों का लोडинг"
+
+msgid "Failed to load job"
+msgstr "नौकरी लोड करने में व़िरासत हुई"
+
+msgid "Failed to load job make method"
+msgstr "नौकरी बनाने का मेथोड लोड होने में व्याक्रमण हुआ है"
+
+msgid "Failed to load job materials"
+msgstr "नौकरी के सामग्रies लोड हो रही हैं"
+
+msgid "Failed to load job operations"
+msgstr "नौकरी के अपराधों का लोड करने में व़ित हुआ"
+
+msgid "Failed to load journal entry"
+msgstr "कार्यदفتر छुटू पड़ा है"
+
+msgid "Failed to load line"
+msgstr "लाइन लोड करने में व़िरा हुई"
+
+msgid "Failed to load linked sales invoices"
+msgstr "लिंक की सॉल्स इनवाइबलोज़ छुट्टी लोड हो नहीं सकीं"
+
+msgid "Failed to load locations"
+msgstr "लोकेशन लोड करने में व़िरासत हुई"
+
+msgid "Failed to load maintenance dispatch"
+msgstr "लोड करणे असफल झाला मैनटेनंस डिप्शन सुरू करा"
+
+msgid "Failed to load maintenance schedules"
+msgstr "रखरखाव योजनाओं का लोड होने में फाल्टी रही"
+
+msgid "Failed to load make method"
+msgstr "फैला हुआ निर्माण प्रक्रिया लोड करना"
+
+msgid "Failed to load master work orders"
+msgstr "मॉस्टर वर्क ऑर्डर लोड करने में असफलता"
+
+msgid "Failed to load material costing"
+msgstr "मटेरियल कॉस्ट लोड होने में विफल रहा"
+
+msgid "Failed to load material inventory"
+msgstr "मटेरियल स्टॉक लोड करने में व़िरासत हुई"
+
+msgid "Failed to load material planning"
+msgstr "मटेरियल प्लानिंग लोड होने में विफल रहा"
+
+msgid "Failed to load material purchasing"
+msgstr "मटेरियल पर्यावरण लोड करने में फ़ाइल आया"
+
+msgid "Failed to load material quantities"
+msgstr "मटेरियल की मात्रा लोड होने में विफल रहे"
+
+msgid "Failed to load material summary"
+msgstr "मटेरियल सार्वेक्षण लोड होने में असफल रहा"
+
+msgid "Failed to load method materials"
+msgstr "मैथोड मटेरियल लोड करने में फाल्टी हुई"
+
+msgid "Failed to load method operations"
+msgstr "मैथड ऑपरेशन्स को caricirna karne mein khata tha"
+
+msgid "Failed to load order"
+msgstr "लोड करने में व़िरास आया है"
+
+msgid "Failed to load order payment"
+msgstr "रद्दी किताबचारे लोड होने में विफल रहा"
+
+msgid "Failed to load order shipment"
+msgstr "अर्डर शिपमेंट लोड करने में व़िरासत"
+
+msgid "Failed to load part costing"
+msgstr "कार्यवाही का लागत डालना नहीं सफल रहा"
+
+msgid "Failed to load part inventory"
+msgstr "कार्यवाही समावेशन लोड करने में असफलता"
+
+msgid "Failed to load part planning"
+msgstr "गणना भ्रमरित हो गई है"
+
+msgid "Failed to load part purchasing"
+msgstr "गतिविधि भ्रमरो हुई पार्ट की खरीद डालना में"
+
+msgid "Failed to load part quantities"
+msgstr "पार्ट की मात्रा लोड होने में विफल रहे"
+
+msgid "Failed to load part summary"
+msgstr "गार्ड परिवर्तन छुटकारा लोड करने में फालतू हो गया"
+
+msgid "Failed to load part unit sale price"
+msgstr "गतिविधि मालिका भेजने की कीमत लोड हो नहीं सकी"
+
+msgid "Failed to load partners"
+msgstr "साझेदारों का लोड होने में फाल्टी है"
+
+msgid "Failed to load pick method"
+msgstr "पिक मेथड को लोड करने में व़ाया.get"
+
+msgid "Failed to load picking list"
+msgstr "पोकिंग लिस्ट का लोड होने में फालतू समस्या आई है"
+
+msgid "Failed to load picking list line"
+msgstr "पक्सिंग लिस्ट पंजीकरण को भ्रमरहित नहीं लोड किया जा सका"
+
+msgid "Failed to load picking list lines"
+msgstr "पक्सिंग लिस्ट पंजीकरण नहीं किए गए हैं"
+
+msgid "Failed to load planning periods"
+msgstr "प्लानिंग अवधि लोड करने में व़फ़ादरी हुई"
+
+msgid "Failed to load print job"
+msgstr "प्रिंट कार्य लोड होने में व़कता हुई है"
+
+msgid "Failed to load procedure"
+msgstr "प्रक्रिया लोड करने में व़ियाहू"
+
+msgid "Failed to load processes"
+msgstr "प्रोसेस लोड करने में व़िराही हुईं"
+
+msgid "Failed to load projection periods"
+msgstr "लोड करणे असफल झाले प्रक्षेपन अवधीं"
+
+msgid "Failed to load public attributes"
+msgstr "लाइड ऑफ़ सार्कलर पब्लिक साइनेट्रिब्स फाइले डॉल्ड"
+
+msgid "Failed to load purchase invoice"
+msgstr "कार्य खरीद क्रमांक लोड होने में विफल रहा"
+
+msgid "Failed to load purchase order"
+msgstr "पर्चेज ऑर्डर का लोड होने में फाल्टी हुई"
+
+msgid "Failed to load purchase order line"
+msgstr "पर्चेज ऑर्डर पंजीकरण लोड करने में वायले समस्या आई है"
+
+msgid "Failed to load purchase order payment"
+msgstr "किराये वित्तपरिवहन को caricature नहीं किया जा सका"
+
+msgid "Failed to load purchaseOrder"
+msgstr "पर्चेज़ ऑर्डर लोड करने में वँदा हुआ है"
+
+msgid "Failed to load purchasing RFQ summary"
+msgstr "पर्चेजिंग आरएफक्यू सारांश लोड करने में वा हुई"
+
+msgid "Failed to load quote"
+msgstr "कार्ट लोड करने में विफल"
+
+msgid "Failed to load quote make method"
+msgstr "फैल्याड लोड करने में विफल"
+
+msgid "Failed to load quote materials"
+msgstr "कॉपी मटेरियल लोड करने में व़फ़ादार नहीं हुए"
+
+msgid "Failed to load quote operations"
+msgstr "कॉपी लोड करने में व़िरास्"
+
+msgid "Failed to load quote opportunity"
+msgstr "कॉटन अवसर लोड किए गए नहीं हैं"
+
+msgid "Failed to load quote payment"
+msgstr "कॉपी वित्तीय डेटा लोड होने में फालतू हुई है"
+
+msgid "Failed to load quote shipment"
+msgstr "कार्य डालने की भेजा गया माल छुट्टी लोड हो नहीं सकी"
+
+msgid "Failed to load receipt"
+msgstr "लेख पाने में विफल रहा"
+
+msgid "Failed to load report lines"
+msgstr "रिपोर्ट लाइनें लोड करने में व़या"
+
+msgid "Failed to load RFQ"
+msgstr "RFQ लोड करने में व़ित हुआ"
+
+msgid "Failed to load RFQ lines"
+msgstr "RFQ रेकर्ड लोड किए नहीं गए"
+
+msgid "Failed to load RFQ suppliers"
+msgstr "RFQ के डालने के प्रदाताओं को लोड करने में व़िला हुआ"
+
+msgid "Failed to load salary record"
+msgstr "लाभ रिकॉर्ड को लोड करने में व़फ़ादरी हुई"
+
+msgid "Failed to load sales invoice"
+msgstr "विक्रय इनवाइब्स को裁剪以适应字数限制"
+
+msgid "Failed to load sales invoice totals"
+msgstr "विक्रय बिल के राशि छुट्टी नहीं हुई"
+
+msgid "Failed to load sales order"
+msgstr "विक्रय ऑर्डर लोड करने में व़िए"
+
+msgid "Failed to load sales order line"
+msgstr "विक्रय ऑर्डर पंक्ति लोड करने में वाया गया है"
+
+msgid "Failed to load sales order opportunity"
+msgstr "विक्रय आर्डर अवसर लोड करने में वायले गए हैं"
+
+msgid "Failed to load sales RFQ opportunity"
+msgstr "विक्रय आरएफक्यू अवसर लोड करने में फाल्टी है"
+
+msgid "Failed to load sales RFQ summary"
+msgstr "विक्रय आरएफक्यू सारांश लोड होने में विफल रहा"
+
+msgid "Failed to load salesOrder"
+msgstr "विक्रय ऑर्डर लोड करने में व़िश्या हुई"
+
+msgid "Failed to load shifts"
+msgstr "लोड करने में व़ित शाफ्ट्स"
+
+msgid "Failed to load shipment"
+msgstr "शipment लोड करने में वफ़ादार नहीं हुआ"
+
+msgid "Failed to load source run"
+msgstr "स्रोत रन का caricton नहीं हुआ"
+
+msgid "Failed to load stock transfer line or item storage unit quantities"
+msgstr "स्टॉक ट्रांसफर लाइन या पहलू की मात्रा लोड होने में विफल रहा"
+
+msgid "Failed to load stock transfer line or stock transfer"
+msgstr "स्टॉक ट्रांसफर लाइन या स्टॉक ट्रांसफर को cariche karne mein faal ho gye"
+
+msgid "Failed to load stockTransfer"
+msgstr "स्टॉक ट्रांसफर का caricare विफल रहा है"
+
+msgid "Failed to load storage rules"
+msgstr "स्टोरेज नियमों का caricir हो रहा है"
+
+msgid "Failed to load style costing"
+msgstr "styl कार्य लोड होने में व़ला.get"
+
+msgid "Failed to load style inventory"
+msgstr "stile इन्वेंटरी को लोड करने में फालतू हो गया"
+
+msgid "Failed to load style planning"
+msgstr "stile की लोड होने में फाल्टी हुई"
+
+msgid "Failed to load style quantities"
+msgstr "stile की मात्रा लोड होने में विफल रहे"
+
+msgid "Failed to load style summary"
+msgstr "stile सारांश लोड होने में फाल्टी हुई"
+
+msgid "Failed to load style unit sale price"
+msgstr "स्टाइल इकाई बिक्री मूल्य लोड करने में व़ित रहा"
+
+msgid "Failed to load subsidiary"
+msgstr "फाइल को लोड करने में व़कत हुआ"
+
+msgid "Failed to load suggestions"
+msgstr "सुझावों की लोडिंग में फाल्टी हो गई"
+
+msgid "Failed to load supplier interaction record"
+msgstr "फ़ाइल को लोड करने में असफलता हुई संशोधक रिकॉर्ड"
+
+msgid "Failed to load supplier payment"
+msgstr "फ़ाइल को लोड करने में असफलता हुई संशोधक की भुगतानी"
+
+msgid "Failed to load supplier payment terms"
+msgstr "संशोधक की भुगतान परियोजना छूट सकते हैं लadata loading..."
+
+msgid "Failed to load supplier quote"
+msgstr "फ़ाइल कर निवेशक अपनी योजना लोड करने में फाइल खो गया है"
+
+msgid "Failed to load supplier shipping"
+msgstr "फ़ाइलड तो विनियमन पापता है संपआहरण की सट्टेदारी लोड करने में"
+
+msgid "Failed to load supplier summary"
+msgstr "फ़ाइल कर न पाया संशोधक सारांश"
+
+msgid "Failed to load supplier tax information"
+msgstr "संशोधक के तAXB जानकारी लadata येणे मिळत्या वाचले नवीनीकृती झाली"
+
+msgid "Failed to load timecard entries"
+msgstr "ताम्पन टाइमकार्ड निबंधों का लोड करने में व़ियाहू"
+
+msgid "Failed to load tool costing"
+msgstr "कार्यवाही की लागत लोड होने में विफल रहा"
+
+msgid "Failed to load tool inventory"
+msgstr "कार्यवाही तोला सूची लोड होने में विफल रहा"
+
+msgid "Failed to load tool planning"
+msgstr "कार्यक्रम लोड करने में व़फ़ादरी नहीं है"
+
+msgid "Failed to load tool purchasing"
+msgstr "ग्रहण उपकरण लोड करने में वा हुई है"
+
+msgid "Failed to load tool quantities"
+msgstr "कार्यक्रम की गुणतांडलों का लोड होने में विफल रहा"
+
+msgid "Failed to load tool summary"
+msgstr "कार्यपद्धति सारांश लोड करने में वा हुई है"
+
+msgid "Failed to load training"
+msgstr "लोड करने में व़िता हुई ट्राइनिंग"
+
+msgid "Failed to load trial balance"
+msgstr "प्रयोगशैली बेल्यूस्टेशन का caricature नहीं हुआ"
+
+msgid "Failed to load users"
+msgstr "लोड करने में व़कत हुए उपयोगकर्ताएँ"
+
+msgid "Failed to load warehouse transfer"
+msgstr "गैर सफल तालुका परिवहन छुट्टी"
+
+msgid "Failed to load warehouse transfer line"
+msgstr "गैर सफल तंबाकू परिवहन पंक्ति लोड करने में"
+
+msgid "Failed to load warehouse transfer lines"
+msgstr "गैर सफल तंबाकू परिवहन पंजीकरणों का लोडинг"
+
+msgid "Failed to load webhook"
+msgstr "फीडबैक लोड करने में विध हुआ"
+
+msgid "Failed to load webhooks"
+msgstr "वेबहॉक लोड करने में व़फ़ादार नहीं हुए"
+
+msgid "Failed to mark partial"
+msgstr "ग 파 च र म न श व ल ग य त र क रो ब ड गए ह"
+
+msgid "Failed to mark training complete"
+msgstr "प्रशिक्षण पूरा नहीं अंकित किया जा सका"
+
+msgid "Failed to move account"
+msgstr "ग्राहक ट्रांजेशन को चलाने में विफल रहा"
+
+msgid "Failed to move entities"
+msgstr "निकालने में फ़ागों को विफल करने में विफल रहा"
+
+msgid "Failed to move file"
+msgstr "फाइल आगे बढ़ाने में व्याकरण हो गया"
+
+msgid "Failed to notify user"
+msgstr "नामित उपयोगकर्ता की अवस्था व्यक्त नहीं की जा सकी"
+
+msgid "Failed to parse claims"
+msgstr "केयम्स को विश्लेषण में फालतू सफलता"
+
+msgid "Failed to parse permissions"
+msgstr "परमिट्स का विशलता नहीं हो सका"
+
+msgid "Failed to parse procedure content"
+msgstr "प्रक्रिया कонтेंट को व्याख्या में बदलने में फ़ल नहीं पड़ा"
+
+msgid "Failed to parse quality document content"
+msgstr "कील्ड हो गया कि गुणतांत्रिक प्रसंस्न दस्तावेज़ के सодержामेंt नहीं पarsेस किए जा सके"
+
+msgid "Failed to parse training content"
+msgstr "प्रशिक्षण कंटेंट का विशालाक्ष पतन नहीं हो सका"
+
+msgid "Failed to parse updates"
+msgstr "अपडेट विश्लेषण में फालतू सफलता"
+
+msgid "Failed to pick line"
+msgstr "लाइन का चयन होने में फाल्टी रही"
+
+msgid "Failed to pick up"
+msgstr "फेल एपिक्यूट करने में सफलता नहीं पाई"
+
+msgid "Failed to post asset disposal"
+msgstr "असेट सिस्पाइज़ को पोस्ट करने में वफ़ादार नहीं हुआ"
+
+msgid "Failed to post depreciation run"
+msgstr "समाप्ति रन पोस्ट करने में वा हुई"
+
+msgid "Failed to post journal entry"
+msgstr "कार्यरत बिंदु प्रवेश पोस्ट करने में वी हुई"
+
+msgid "Failed to post receipt"
+msgstr "प्रावधान लेखन को असफल रहा"
+
+msgid "Failed to post shipment"
+msgstr "शipment पोस्ट करने में वया"
+
+msgid "Failed to reassign tracked entities"
+msgstr "फैलेड ट्राक्ेड एनिटीज को रिआसाइन करने में"
+
+msgid "Failed to recalculate dependencies"
+msgstr "गर्जनाओं की गणना फिर से करने में व़ला"
+
+msgid "Failed to recalculate job make method requirements"
+msgstr "बिकल्प उत्पादन विधि की आवश्यकताओं को फिर से कैलकुलेट करने में वा"
+
+msgid "Failed to recalculate job operation dependencies"
+msgstr "कार्य पुनरसंकलन को फेल हुआ है"
+
+msgid "Failed to recalculate job requirements"
+msgstr "कार्य की आवश्यकताएँ नहीं गणना कर सके"
+
+msgid "Failed to recalculate quote line prices"
+msgstr "कॉपी लाइन की कीमतों का पुनराकलन नहीं किया जा सका"
+
+msgid "Failed to receive a job id"
+msgstr "काम आईडी का प्राप्त नहीं किया गया"
+
+msgid "Failed to receive a job id to recalculate dependencies"
+msgstr "फैलाव नहीं हुआ जोब आईडी को परिशुद्ध करने के लिए"
+
+msgid "Failed to receive a new sort order"
+msgstr "नई सॉर्ट ऑर्डर प्राप्त नहीं की गई"
+
+msgid "Failed to receive an operation id"
+msgstr "oprेशन आईडी का प्राप्त नहीं किया गया है"
+
+msgid "Failed to record attribute"
+msgstr "फलन गुण का रिकॉर्ड करने में व़ियाहो"
+
+msgid "Failed to record history"
+msgstr "इतिहास नकदी करने में वडा हुआ"
+
+msgid "Failed to record rework quantity"
+msgstr "रिउर्क की मात्रा रिकॉर्ड करने में वफ़ादरी नहीं की.get@1"
+
+msgid "Failed to record scrap quantity"
+msgstr "फ़ैला हुआ डाटा प्रविष्टि की कोशिश में विफलता"
+
+msgid "Failed to refresh invite"
+msgstr "फाइल्मेड आमंत्रण अपडेट करने में विफल रहा"
+
+msgid "Failed to register asset"
+msgstr "असेट की पंजाबी गलती से हुई"
+
+msgid "Failed to reinvite users"
+msgstr "फाइल्ड उपयोगकर्ताओं की रिआइनवेट करणे में विफल रहा"
+
+msgid "Failed to reject lot"
+msgstr "लोट का ine नहीं किया जा सका"
+
+msgid "Failed to release job"
+msgstr "कार्य को छोड़ने में वरण हुआ"
+
+msgid "Failed to remove customer account"
+msgstr "ग्राहक खाते को हटाना फलताड़ पड़ा है"
+
+msgid "Failed to remove item"
+msgstr "बहाल करने में विफल रहा"
+
+msgid "Failed to remove spare part"
+msgstr "फर्स्ट मैप नहीं हो सका"
+
+msgid "Failed to remove supplier account"
+msgstr "फाइल्ड निकालना फ़कार हुआ"
+
+msgid "Failed to remove user from company"
+msgstr "usercontent को कंपनी से हटाना फ़लेंगे"
+
+msgid "Failed to rename passkey"
+msgstr "पासकीय का नाम परिवर्तन होने में असफलता"
+
+msgid "Failed to report quantity"
+msgstr "कॉन्ट्रीट की मात्रा रिपोर्ट करने पर विफल रहा"
+
+msgid "Failed to report rework"
+msgstr "रिउपोर्ट करणा वाघडा"
+
+msgid "Failed to report scrap"
+msgstr "फ़ैला हुआ स्पर्धा रिपोर्ट करने में फाल्सीफाइड है"
+
+msgid "Failed to resolve Pull from Inventory prices"
+msgstr "फाइल नहीं हो सका अपडेट करने के लिए मॉकअप की कीमतों से"
+
+msgid "Failed to resolve Purchase to Order prices"
+msgstr "क्रय मूल्यों को अर्डर में हिसाब नहीं लगा सका"
+
+msgid "Failed to restore document"
+msgstr "दокумент रिस्टोर करने में व़िश्य हुआ"
+
+msgid "Failed to reverse journal entry"
+msgstr "फाइल की प्रतिगणना नहीं की जा सकी"
+
+msgid "Failed to review application"
+msgstr "निबंधन पर अप्रतीक्षा करने में व़ियाकार हो गया"
+
+msgid "Failed to revoke invite link"
+msgstr "नामित लिंक को रद्द करने में वा हुई है"
+
+msgid "Failed to revoke invites"
+msgstr "नामित को रद्द करने में वा हुई"
+
+msgid "Failed to run IC matching"
+msgstr "IC मेटचिंग को चलाने में व़या"
+
+msgid "Failed to save bundles"
+msgstr "बंडल्स को बचाने में विफल रहे"
+
+msgid "Failed to save comment"
+msgstr "कमेंट संरचना नहीं की जा पाई"
+
+msgid "Failed to save demand forecasts"
+msgstr "दवाईफ़ील्ड अपेक्षित कमाल पर संकेत नहीं मिली"
+
+msgid "Failed to save document layout"
+msgstr "दокумент के परिवर्तन बचाना फ़लेंगे"
+
+msgid "Failed to save event"
+msgstr "इवेंट को बचाव में फाल्टी हो गया"
+
+msgid "Failed to save header"
+msgstr "हेडर बचाने में विफल रहा"
+
+msgid "Failed to save item"
+msgstr "आइटम संरक्षित नहीं किया जा सका"
+
+msgid "Failed to save journal entry"
+msgstr "कार्ड नोट का संरक्षण विफल रहा"
+
+msgid "Failed to save passkey"
+msgstr "पासकीय को बचा नहीं लिया जा सका"
+
+msgid "Failed to save sample"
+msgstr "सैंपल बचाना फ़कार हुआ"
+
+msgid "Failed to save sampling plan"
+msgstr "सैम्पलिंग प्लान को बचाना फ़कार हुआ"
+
+msgid "Failed to save section"
+msgstr "सब्जिकेशन बचाव में फालटी हुई"
+
+msgid "Failed to search users"
+msgstr "अकाउंट खोजना वधित हुआ था"
+
+msgid "Failed to seed company"
+msgstr "कंपनी को सीडिंग में फाल्ट हुई"
+
+msgid "Failed to send email"
+msgstr "ईमेल भेजना फाइल हो रहा है"
+
+msgid "Failed to send magic link"
+msgstr "फैला हुआ मागील लिंक भेजना"
+
+msgid "Failed to send supplier quote"
+msgstr "संपादक की अनुबिधि भेजणा में वर्ड आयोजन त्रुटि होई गई"
+
+msgid "Failed to send verification code"
+msgstr "परीक्षण कोड भेजना फ़ले नहीं मिला"
+
+msgid "Failed to set job release date"
+msgstr "कार्य की छोड़ने तिथि सेट करना फलदायक नहीं हुआ"
+
+msgid "Failed to sign in"
+msgstr "सIGH IN वाला फेल हुआ"
+
+msgid "Failed to sign in user"
+msgstr "सigh-in फ़लेंदर हो गया"
+
+msgid "Failed to split line"
+msgstr "लाइन विभाजित करने में फ़ावड़ हुआ"
+
+msgid "Failed to start checkout"
+msgstr "चेकआउट को शुरू करने में फाल्टी"
+
+msgid "Failed to start event"
+msgstr "इवेंट को शुरू करने में व़ला"
+
+msgid "Failed to start maintenance event"
+msgstr "संरक्षण घटना को शुरू करने में विफल रहा"
+
+msgid "Failed to stop event"
+msgstr "फेल एवेंट को रोकने में विफल"
+
+msgid "Failed to sync procedure"
+msgstr "प्रक्रिया सागन नहीं हो पया"
+
+msgid "Failed to trigger rework"
+msgstr "फैलाव चर्तुरित करने में फाल हुआ"
+
+msgid "Failed to unassign rule"
+msgstr "नियम से विचारणा करने में असफलता"
+
+msgid "Failed to update  operation attribute"
+msgstr "फैल्टर हो गया ऑपरेशन संकाय को अपडेट करने में"
+
+msgid "Failed to update  operation parameter"
+msgstr "फैल्टर अपडेट किसान पूरा नहीं हुआ"
+
+msgid "Failed to update  operation tool"
+msgstr "फैलाइए उपकरण को अपडेट करने में विफल रहा"
+
+msgid "Failed to update account"
+msgstr "अकाउंट अपडेट करने में व़िश्य हो गया"
+
+msgid "Failed to update API key"
+msgstr "API की अपडेट करने में फाल्ट हुई"
+
+msgid "Failed to update asset class"
+msgstr "असेट क्लास अपडेट होने में फाल्टी"
+
+msgid "Failed to update assignment"
+msgstr "फैलाव को अपडेट करने में फाल्स हुआ"
+
+msgid "Failed to update attribute"
+msgstr "फाइल्ड अपडेट होने में फाल्टी"
+
+msgid "Failed to update attribute category"
+msgstr "फाइल अपडेट क्याटेगरी में प्रतिबद्ध होना वास्तव में नहीं सका"
+
+msgid "Failed to update attribute value"
+msgstr "फाइल्ड मूल्य अपडेट होने में विफल रहा"
+
+msgid "Failed to update avatar"
+msgstr "फाइल अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update claims"
+msgstr "केंद्रित करणे माहिती अपडेट करण्यास प्रतिबिम्बित झाला मिळत नाही"
+
+msgid "Failed to update company"
+msgstr "कंपनी अपडेट करणे मित्र झाला"
+
+msgid "Failed to update configuration"
+msgstr "रचनात्मक अपडेट करणे विफल झाले आहे"
+
+msgid "Failed to update consumable"
+msgstr "अनुप्रयोगिता अपडेट करने में वायल्सION"
+
+msgid "Failed to update consumable costing"
+msgstr "अनुपयोगी लागत अपडेट करने में वफ़्दा है"
+
+msgid "Failed to update consumable inventory"
+msgstr "गतिवर्ती समन्वय अपडेट हो नहीं पाया"
+
+msgid "Failed to update consumable planning"
+msgstr "अनुपयोगी योजना को अपडेट करने में व़िश्य हो गए"
+
+msgid "Failed to update consumable purchasing"
+msgstr "गतिविधि अपडेट करने में फाल्टी"
+
+msgid "Failed to update content"
+msgstr "Conteонт апдейт होने में फाल्टी हुई है"
+
+msgid "Failed to update cost center."
+msgstr "कोस्ट सेंटर अपडेट करने में विफल रहा।"
+
+msgid "Failed to update custom field"
+msgstr "फाइल्ड अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update customer"
+msgstr "ग्राहक अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update customer address"
+msgstr "ग्राहक का ठेका अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update customer contact"
+msgstr "ग्राहक संपर्क अपडेट करने में विफल रहा"
+
+msgid "Failed to update customer part"
+msgstr "ग्राहक भाग को अपडेट करने में विफल रहा"
+
+msgid "Failed to update customer payment terms"
+msgstr "ग्राहक की भुगतान परियोजना अपडेट हो नहीं सकी"
+
+msgid "Failed to update customer portal"
+msgstr "ग्राहक पोर्टल अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update customer shipping"
+msgstr "ग्राहक की डिलीवरी अपडेट होने में विफल रहा"
+
+msgid "Failed to update customer status"
+msgstr "ग्राहक के स्थिति अपडेट होने में विफल रहा"
+
+msgid "Failed to update customer tax information"
+msgstr "ग्राहक के आदान-प्रदान डेटा अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update customer type"
+msgstr "ग्राहक प्रकार अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update default accounts"
+msgstr "फैलाव अक्s को अपडेट करने में फ़ल नहीं प्राप्त हुआ"
+
+msgid "Failed to update demand forecasts"
+msgstr "फैलाव फोकस्ट्रेस को अपडेट करने में विफल रहा"
+
+msgid "Failed to update dimension"
+msgstr "दिियन अपडेट हो नहीं सका"
+
+msgid "Failed to update dispatch status"
+msgstr "डिपाच स्टेटस अपडेट होने में फाल्टी रहा"
+
+msgid "Failed to update document"
+msgstr "दocument अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update document labels"
+msgstr "दокумент के लेबलों का अपडेट होने में फाल्टी रहे"
+
+msgid "Failed to update due date"
+msgstr "फाइल होने वाली तारि अपडेट करने में फायदा न आया"
+
+msgid "Failed to update emoji"
+msgstr "फेमिल इमोजी का अपडेट होने में फाल्स हुआ"
+
+msgid "Failed to update employee"
+msgstr "नौकर को अपडेट करने में व़िश्या हुई"
+
+msgid "Failed to update employee type"
+msgstr "नौकर की प्रकार अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update employee type permissions"
+msgstr "नियोजक प्रवे अपडेट करण्यात वैधता दिसायल गेली आहे"
+
+msgid "Failed to update entry"
+msgstr "कैलेडर में नोट को अपडेट करने में व्याक्रमण हुआ"
+
+msgid "Failed to update exchange rate"
+msgstr "परिवार्तन दर अपडेट करने में फाल्स हो गए"
+
+msgid "Failed to update expiration date"
+msgstr "अपडेट करणे असफल झाला"
+
+msgid "Failed to update failure mode"
+msgstr "गति नहीं हुई फैलर मोड को संशोधित करने का प्रयास में"
+
+msgid "Failed to update fiscal year settings"
+msgstr "फैशन वर्ष सेटिंग्स को अपडेट करने में फाल्टी रहा"
+
+msgid "Failed to update fixed asset"
+msgstr "फीड्स्ड असेट को अपडेट करने में विफल रहा"
+
+msgid "Failed to update gauge"
+msgstr "गेज अपडेट होने में फाल्टी"
+
+msgid "Failed to update gauge calibration record"
+msgstr "गेज कैलिब्रेशन रिकॉर्ड अपडेट होने में फाल्टी"
+
+msgid "Failed to update gauge type"
+msgstr "गेज प्रकार अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update group"
+msgstr "गруппा अपडेट करने में वफ़ादरी नहीं की सकई"
+
+msgid "Failed to update group members"
+msgstr "ग룹 सदस्यों का अपडेट होने में फाल्टी रहा"
+
+msgid "Failed to update invite link expiration"
+msgstr "अ्याडवाइट लिंक की समाप्ति परिसंपत्ति वध नहीं हो सकी"
+
+msgid "Failed to update issue"
+msgstr "समस्या अपडेट करने में वफ़्टी हुई"
+
+msgid "Failed to update issue status"
+msgstr "समस्या के अवस्था अपडेट करने में विफल रहा"
+
+msgid "Failed to update issue type"
+msgstr "समस्या प्रकार अपडेट करने में विफल रहा"
+
+msgid "Failed to update issue workflow"
+msgstr "समस्या कार्यप्रक्रिया अपडेट होने में विफल रही"
+
+msgid "Failed to update item"
+msgstr "आइ템 अपडेट करने में वफ़ादरी नहीं की सकता है"
+
+msgid "Failed to update item group"
+msgstr "आइ템 ग्रुप अपडेट करने में व़िश्य हो रहा है"
+
+msgid "Failed to update job"
+msgstr "कार्य अपडेट करने में वफ़ादरी नहीं की सकता है"
+
+msgid "Failed to update job material"
+msgstr "बाकी पदार्थ अपडेट करने में विफल रहा"
+
+msgid "Failed to update job operation"
+msgstr "कार्य परिसंपत्ति अपडेट होने में वस्र किया गया है"
+
+msgid "Failed to update job operation attribute"
+msgstr "कार्य अपडेट करने में वर्तमान संवरण प्रतिक्रिया असफल रही है"
+
+msgid "Failed to update job operation parameter"
+msgstr "कार्य पैरामीटर अपडेट करने में वफ़ादरी नहीं की सकई"
+
+msgid "Failed to update job operation tool"
+msgstr "कार्य उपकरण अपडेट करने में वफ़ादरी नहीं पाई"
+
+msgid "Failed to update job status"
+msgstr "कार्य के स्थिति अपडेट होने में विफल रहा"
+
+msgid "Failed to update kanban"
+msgstr "कान्बन अपडेट हो नहीं सका"
+
+msgid "Failed to update line"
+msgstr "लाइन अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update maintenance schedule"
+msgstr "रखरखाव योजना अपडेट करने में फाल्सी हुआ"
+
+msgid "Failed to update material"
+msgstr "मटेरियल अपडेट होने में फाल्टी"
+
+msgid "Failed to update material costing"
+msgstr "मटेरियल कॉस्टिंग अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update material form"
+msgstr "मटेरियल फॉर्म अपडेट करने में वफ़ादरी नहीं की सकता"
+
+msgid "Failed to update material grade"
+msgstr "मटेरियल ग्रेड अपडेट करने में वफ़ादरी नहीं पाई.get"
+
+msgid "Failed to update material inventory"
+msgstr "मटेरियल स्टॉक अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update material planning"
+msgstr "मटेरियल प्लानिंग अपडेट करने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update material purchasing"
+msgstr "मटेरियल पर्चेजिंग अपडेट करने में वफ़ादरी नहीं साबित हुई"
+
+msgid "Failed to update material substance"
+msgstr "मटेरियल स्टॉक अपडेट होने में विफल रहा"
+
+msgid "Failed to update material type"
+msgstr "मटेरियल टाइप अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update method material"
+msgstr "मालिका अपडेट करने में व़फ़ादरी नहीं की सकीं"
+
+msgid "Failed to update method operation"
+msgstr "मेथोड ऑपरेशन अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update method operation parameter"
+msgstr "मेथोड ऑपरेशन पैरामीटर को अपडेट करने में व़िया हुआ है"
+
+msgid "Failed to update method operation step"
+msgstr "फाइल अपडेट करने में विफल रहा"
+
+msgid "Failed to update method operation tool"
+msgstr "फाइल अपडेट करने में विफल रहा था उपकरण संशोधन प्रक्रिया"
+
+msgid "Failed to update no quote reason"
+msgstr "फाइल ना कारण अपडेट होने पर विफल"
+
+msgid "Failed to update order"
+msgstr "अर्डर अपडेट करने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update original"
+msgstr "फाइल को अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update parameter"
+msgstr "पैरामीटर अपडेट करने में व़िष्ट हो गया"
+
+msgid "Failed to update part"
+msgstr "अंश अपडेट होने में व्याकरणीय रूप से विफल रहा"
+
+msgid "Failed to update part costing"
+msgstr "अंश क्रय में अपडेट करने में व़िरास्त हुआ"
+
+msgid "Failed to update part inventory"
+msgstr "पार्ट स्टॉक अपडेट करने में विफल रहा"
+
+msgid "Failed to update part manufacturing"
+msgstr "गतिविधि अपडेट करने में फाल्टी"
+
+msgid "Failed to update part planning"
+msgstr "गतिविधि अपडेट करने में फाल्टी"
+
+msgid "Failed to update part purchasing"
+msgstr "गतिविधि अपडेट करने में फाल्टी"
+
+msgid "Failed to update part sale price"
+msgstr "अंश की बिक्री मूल्य अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update payment term"
+msgstr "पेमेंट टर्म अपडेट करने में विफल सितमान"
+
+msgid "Failed to update picking list"
+msgstr "पोकिंग लिस्ट को अपडेट करने में वफ़ादार नहीं हुआ"
+
+msgid "Failed to update picking list status"
+msgstr "पोकिंग लिस्ट के स्थATUS अपडेट होने में विफल रहा"
+
+msgid "Failed to update price override"
+msgstr "फिल्टर को अपडेट करने में वर्तन हुआ"
+
+msgid "Failed to update pricing rule"
+msgstr "पैरिटिंग नियम अपडेट करने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update procedure parameter"
+msgstr "प्रक्रिया पूर्वाकलन अपडेट हो नहीं सका"
+
+msgid "Failed to update procedure step"
+msgstr "प्रक्रिया चरण अपडेट करने में वफ़्टी हुईं"
+
+msgid "Failed to update process completion"
+msgstr "प्रक्रिया पूर्णता अपडेट करने में वफ़्दा हुआ"
+
+msgid "Failed to update production event"
+msgstr "उत्पादन घटना अपडेट करने में विफल रहा"
+
+msgid "Failed to update profile"
+msgstr "प्रोफाइल अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update purchase invoice"
+msgstr "क्रय टिकट को अपडेट करने में व़िला"
+
+msgid "Failed to update purchase invoice delivery"
+msgstr "क्रय बिल की डिलीवरी अपडेट होने में फाल्टि हुई"
+
+msgid "Failed to update purchase invoice line"
+msgstr "क्रय बिल पंजरे को अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update purchase invoice status"
+msgstr "पर्चेज अवस्था को अपडेट करने में व़िश्रम हुआ है"
+
+msgid "Failed to update purchase order"
+msgstr "पर्चेज ऑर्डर अपडेट करने में वफ़ादरी नहीं पाई.get_app"
+
+msgid "Failed to update purchase order delivery"
+msgstr "पर्चेज अपडेट करने में विफल रहा"
+
+msgid "Failed to update purchase order line"
+msgstr "पर्चेज ऑर्डर पंक्ति को अपडेट करने में वफ़ादारी नहीं की"
+
+msgid "Failed to update purchase order payment"
+msgstr "क्रय कार्ट वितरण पर अपडेट करने में फालतू हो गया"
+
+msgid "Failed to update purchasing order status"
+msgstr "पर्चेजिंग ऑर्डर सटस को अपडेट करने में वफ़ादरी नहीं पाई.get@info.com"
+
+msgid "Failed to update question"
+msgstr "फ्रेम को अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update quote"
+msgstr "कॉट अपडेट होने में फाल्टी"
+
+msgid "Failed to update quote line"
+msgstr "कॉटन लाइन अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update quote material"
+msgstr "कॉपी मटेरियल अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update quote operation"
+msgstr "कॉपी अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update quote payment"
+msgstr "कॉपी वित्तीय अदालत अपडेट करने में फाइल गया है"
+
+msgid "Failed to update quote shipment"
+msgstr "कॉपी चार्टर को अपडेट करने में व़िश हुआ"
+
+msgid "Failed to update quote status"
+msgstr "कॉटन स्टेटस अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update receipt"
+msgstr "पासिफ़ को अपडेट करने में व्याक्रमण हुआ"
+
+msgid "Failed to update required action"
+msgstr "अनिवार्य क्रिया अपडेट हो नहीं सकीा"
+
+msgid "Failed to update RFQ"
+msgstr "रफ्कीज़ अपडेट करने में विफल रहा"
+
+msgid "Failed to update RFQ line"
+msgstr "रिफ़ीव्ह लाइन को अपडेट करने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update RFQ line with model"
+msgstr "RFQ रेकांसियल अपडेट करने में व्ह सफल नहीं हुई"
+
+msgid "Failed to update RFQ status"
+msgstr "रफ्क्यू स्टेशन को अपडेट करने में फालतू प्रयास किया गया है"
+
+msgid "Failed to update risk"
+msgstr "ग्रिड को अपडेट करने में व़िला"
+
+msgid "Failed to update rule"
+msgstr "नियम अपडेट करणे वाघटनाला मिळवले आहे"
+
+msgid "Failed to update sales invoice"
+msgstr "विक्रय इनवाइब्ज को अपडेट करने में वफ़ादरी नहीं पाई"
+
+msgid "Failed to update sales invoice line"
+msgstr "विक्रय बिल पंक्ति अपडेट करने में वफ़ादारी नहीं की"
+
+msgid "Failed to update sales invoice shipping"
+msgstr "राजस्व फॉक्स डिलीवरी अपडेट करने में वफ़ादरी नहीं की"
+
+msgid "Failed to update sales invoice status"
+msgstr "सॉल्स इनवाइब के स्टेटस अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update sales order line"
+msgstr "विक्रय आदेश पंक्ति अपडेट करने में वाया गया है"
+
+msgid "Failed to update sales order payment"
+msgstr "विक्रय ऑर्डर का कलायोगी राशि अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update sales order shipment"
+msgstr "विक्रय ऑर्डर शिपमेंट को अपडेट करने में व़िशा हुई"
+
+msgid "Failed to update sales order status"
+msgstr "विक्रय आदेश के स्थatus अपडेट होने में विफल रहा"
+
+msgid "Failed to update scrap reason"
+msgstr "फ़ैला हुआ डाटा अपडेट करने में फाल्स हो गया"
+
+msgid "Failed to update sequence"
+msgstr "क्रम अपडेट करने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update shipment"
+msgstr "शipment अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update shipping method"
+msgstr "शippिंg mεθοd अपडेट करने में वफ़ादरी नहीं पाई.get>"
+
+msgid "Failed to update sort order"
+msgstr "सॉर्ट अनुक्रमण को अपडेट करने में वफ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update status"
+msgstr "स्थिति अपडेट करने में वफ़ादरी हो गई"
+
+msgid "Failed to update step"
+msgstr "फ़ाइल्ड अपडेट करने में व़िशिष्ट त्रुटि हो गई"
+
+msgid "Failed to update storage type"
+msgstr "स्टोरेज प्रकार अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update storageUnit"
+msgstr "स्टोरेज यूनिट अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update style color"
+msgstr "stile कलर अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update style costing"
+msgstr "stile की लागत अपडेट होने में फाल्टी रही"
+
+msgid "Failed to update style inventory"
+msgstr "stile तपशील सूचना अपडेट करण्यास प्रतिबद्ध झाला आहे"
+
+msgid "Failed to update style planning"
+msgstr "stile को अपडेट करने में फाल्टी हुई"
+
+msgid "Failed to update style sale price"
+msgstr "stile बिक्री की दर अपडेट करने में फाल्टी हुई"
+
+msgid "Failed to update style size"
+msgstr "stile का आकार अपडेट करने में फ़ल निकाला गया है"
+
+msgid "Failed to update subsidiary"
+msgstr "फीडबैक संशोधन नहीं किया जा सका"
+
+msgid "Failed to update supplier"
+msgstr "फ़ाइल को अपडेट करने में विफल रहा"
+
+msgid "Failed to update supplier address"
+msgstr "संशोधन करने में असफलता हुई संपादित कर्मचारी पत्रika"
+
+msgid "Failed to update supplier contact"
+msgstr "फ़ाइल को अपडेट करने में फाल्टी संशय प्रविष्टि"
+
+msgid "Failed to update supplier payment terms"
+msgstr "संशोधन करने में असफलता हुई: विनियमित क्रयकर्ता की भुगतान परियोजना"
+
+msgid "Failed to update supplier process"
+msgstr "फ़ैल्यो अपडेट संशयकर्ता प्रक्रिया को करने में विफल रहे"
+
+msgid "Failed to update supplier quote status"
+msgstr "संशोधन करणे मिळत नाही - विनिमयक कॉट अवस्था"
+
+msgid "Failed to update supplier shipping"
+msgstr "फ़ाइल को अपडेट करने में विफल रहा संशोधक पाकारी भेजिया"
+
+msgid "Failed to update supplier tax information"
+msgstr "संशोधन करने में असफलता हुई: विनियमित कर सUPPLIER} जानकारी"
+
+msgid "Failed to update supplier type"
+msgstr "फ़ाइल को अपडेट करने में विफल रहा"
+
+msgid "Failed to update supplierQuote line"
+msgstr "फ़ॉलोअप वितरक प्रस्ताव पंक्ति अपडेट होने में फ़ैला गया है"
+
+msgid "Failed to update suppliers"
+msgstr "फ़ाइल को अपडेट करने में विफल रहा"
+
+msgid "Failed to update task status"
+msgstr "टास्क स्टेटस अपडेट करने में विफल रहा"
+
+msgid "Failed to update task supplier"
+msgstr "टास्क की परिष्करण को अपडेट करने में व़िश हुआ"
+
+msgid "Failed to update timecard"
+msgstr "कार्ड वेळा संशोधन झाला मिळत नाही"
+
+msgid "Failed to update tool"
+msgstr "कार्यक्रम अपडेट करने में व़िशिष्ट त्रुटि होई गई"
+
+msgid "Failed to update tool costing"
+msgstr "कार्यवाही क्रमरचना अपडेट हो नहीं सकी"
+
+msgid "Failed to update tool inventory"
+msgstr "कार्यवाही तपशिल सूचना अपडेट हो नहीं पाई"
+
+msgid "Failed to update tool manufacturing"
+msgstr "कार्यक्रमीकरण अपडेट करने में विफल रहा"
+
+msgid "Failed to update tool planning"
+msgstr "कार्यवाही में तैयार किए गए संसाधनों का अपडेट करने में व़िश हुआ"
+
+msgid "Failed to update tool purchasing"
+msgstr "गठन सामान की खरीदरी अपडेट करने में व्याक्रमण हो गया"
+
+msgid "Failed to update training question"
+msgstr "अपडेट करणे खालील प्रश्नमुळे असफल झाले होते"
+
+msgid "Failed to update unit of measure"
+msgstr "यक्ष्मा इकाई को अपडेट करने में व़िशिष्ट रूप से फाल्ट हुई"
+
+msgid "Failed to update user permissions"
+msgstr "सउदाहरण अधिकारों का आधिकारिक प्रतिबद्ध होने में वफ़्डा नहीं आया"
+
+msgid "Failed to update warehouse transfer"
+msgstr "गैर सफल तरक्षण अपडेट"
+
+msgid "Failed to update warehouse transfer line"
+msgstr "गैर सफल तरीके से दुविधा परिवहन पंजीकरण को अपडेट किया गया है"
+
+msgid "Failed to update warehouse transfer status"
+msgstr "गैर सफल तरह स्टाउट्रांस परिस्थिति को अपडेट करना"
+
+msgid "Failed to update webhook"
+msgstr "वेबहॉक अपडेट होने में फाल्टी"
+
+msgid "Failed to update work center"
+msgstr "कार्य सेंटर अपडेट करने में विफल रहा"
+
+msgid "Failed to upload file"
+msgstr "फाइल अपलोड करने में व़िरह हुआ"
 
 #. placeholder {0}: fileUpload.name
 msgid "Failed to upload file: {0}"
@@ -521,6 +3687,24 @@ msgstr "फ़ाइल अपलोड करने में विफल: {0}
 
 msgid "Failed to upload image"
 msgstr "छवि अपलोड करने में विफल"
+
+msgid "Failed to verify WeChat session"
+msgstr "वेचाट सिझन की पर्यावरण जांच में फ़लेंदा हुआ"
+
+msgid "Failed to void purchase invoice"
+msgstr "क्रय फार्मूला को रद्द करने में वडा हुआ"
+
+msgid "Failed to void receipt"
+msgstr "नास्लियमेंट रिकेश्ट को खारिज करने में विफल रहा"
+
+msgid "Failed to void sales invoice"
+msgstr "विक्रय इनवाइक्युस को रद्द करने में वा हुआ है"
+
+msgid "Failed to void shipment"
+msgstr "शipment रद्द करना फ़िल्ड हो गया"
+
+msgid "Failure mode created"
+msgstr "नुकसान रूप बनाया.get_response()"
 
 msgid "Feedback"
 msgstr "प्रतिक्रिया"
@@ -547,8 +3731,17 @@ msgstr "पूरा {0}"
 msgid "Finish Anyways"
 msgstr "किसी तरह से पूरा करें"
 
+msgid "Finish created"
+msgstr "पूरा बनाया"
+
 msgid "Fixed"
 msgstr "ठीक किया गया"
+
+msgid "Fixed asset created"
+msgstr "स्थानिक धन सृजनातीवर"
+
+msgid "Fixed asset updated"
+msgstr "संतुलित धारा अपडेट की गई"
 
 msgid "Forgot to Clock Out?"
 msgstr "घड़ी से बाहर निकलना भूल गए?"
@@ -559,11 +3752,23 @@ msgstr "प्रणाली में पुनः वापस जाएं"
 msgid "Gold"
 msgstr "सुनहरा"
 
+msgid "Grade created"
+msgstr "ग्रेड बनाया.get@123"
+
 msgid "Gray"
 msgstr "धूसर"
 
 msgid "Green"
 msgstr "हरा"
+
+msgid "Group created"
+msgstr "समूह बनाया गया है"
+
+msgid "Group not found"
+msgstr "गруппа नहीं मिली"
+
+msgid "Group updated successfully"
+msgstr "गруппа सफलतापूर्वक अपडेट की गई"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "क्या आपको कोई तकनीकी समस्या है? <0>Carbon Support</0> से संपर्क करें।"
@@ -577,6 +3782,12 @@ msgstr "उचित प्रायिकता"
 msgid "History"
 msgstr "इतिहास"
 
+msgid "Holiday created"
+msgstr "कार्यक्रम शुरू किया.get_app"
+
+msgid "Holiday updated"
+msgstr "कार्यक्रम अपडेट किया गया"
+
 msgid "How many were actually picked?"
 msgstr "कितने वास्तव में पकड़े गए؟"
 
@@ -585,6 +3796,9 @@ msgstr "मैं समझता हूँ और बिना जारी क
 
 msgid "I'm Still Working"
 msgstr "मैं अभी भी काम कर रहा हूँ"
+
+msgid "IC transaction created"
+msgstr "IC ट्रैंज़िशन बनाया गया है"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "इस पृष्ठ के बारे में विचार, सुझाव या समस्याएं?"
@@ -604,8 +3818,95 @@ msgstr "प्रगति में"
 msgid "Increase"
 msgstr "वृद्धि"
 
+msgid "Inspection document created"
+msgstr "परीक्षण डокумент बनाया गया है"
+
+msgid "Inspection document deleted"
+msgstr "इस्पेक्टिंग डॉक्युमेंट हटा दिया गया है"
+
+msgid "Inspection id mismatch"
+msgstr "परीक्षण आईडी सामग्री मिलान"
+
 msgid "Insufficient quantity"
 msgstr "अपर्याप्त मात्रा"
+
+msgid "Invalid access token"
+msgstr "अवैध एक्सेस टोकन"
+
+msgid "Invalid action"
+msgstr "अवैध एक्शन"
+
+msgid "Invalid action type"
+msgstr "अवैध एक्शन प्रकार"
+
+msgid "Invalid avatar path"
+msgstr "अवतार की यादृच्छिक पथ अमान्य है"
+
+msgid "Invalid callback form"
+msgstr "अवैध कैलबैक फ़ोर्म"
+
+msgid "Invalid email address"
+msgstr "अमानत ईमेल पता"
+
+msgid "Invalid form data"
+msgstr "वैध फ़ोर्म डाटा नहीं"
+
+msgid "Invalid invitation"
+msgstr "अवैध आमंत्रण"
+
+msgid "Invalid job configuration"
+msgstr "अवैध जोब कonfiguration"
+
+msgid "Invalid lines data"
+msgstr "अवैध लाइन्स डेटा"
+
+msgid "Invalid mode"
+msgstr "अवैध राजियों"
+
+msgid "Invalid operation"
+msgstr "अवैध ऑपरेशन"
+
+msgid "Invalid or expired verification code"
+msgstr "अवैध या समाप्त हो गया पुष्टि कोड"
+
+msgid "Invalid payload"
+msgstr "अवैध पेयलोड"
+
+msgid "Invalid phone number"
+msgstr "अमानत फोन संख्या"
+
+msgid "Invalid plan"
+msgstr "अवैध योजना"
+
+msgid "Invalid reprint request"
+msgstr "अवैध रिप्रिन्ट कामना"
+
+msgid "Invalid request body"
+msgstr "अवैध रिक्वेस्ट बाउडी"
+
+msgid "Invalid reviewer"
+msgstr "अवैध संपादक"
+
+msgid "Invalid session data"
+msgstr "अवैध सिझन डेटा"
+
+msgid "Invalid split request"
+msgstr "अवैध विभाजन अनुपात"
+
+msgid "Invalid state parameter"
+msgstr "अवैध राज्य पूरक"
+
+msgid "Invalid status"
+msgstr "अवैध स्थिति"
+
+msgid "Invalid table"
+msgstr "अवैध टेबल"
+
+msgid "Invalid task ID"
+msgstr "अवैध टास्क आईडी"
+
+msgid "Invalid verification code"
+msgstr "अवैध जाँच कोड"
 
 msgid "Inventory adjustment completed"
 msgstr "इन्वेंटरी समायोजन पूर्ण हुआ"
@@ -618,6 +3919,18 @@ msgstr "आमंत्रण"
 
 msgid "Invitations"
 msgstr "आमंत्रण"
+
+msgid "Invite link created"
+msgstr "इंवाइट लिंक बनाया गया है"
+
+msgid "Invite link expiration updated"
+msgstr "इंवाइट लिंक की समाप्ति अपडेट की गई"
+
+msgid "Invite link revoked"
+msgstr "इंवाइट लिंक रिवोक्वेड"
+
+msgid "Invite updated"
+msgstr "अपडेट करें इतिहास में शामिल करें"
 
 msgid "is"
 msgstr "है"
@@ -637,8 +3950,20 @@ msgstr "समस्या प्रकार"
 msgid "Item"
 msgstr "वस्तु"
 
+msgid "Item association not found"
+msgstr "आइटम संबन्ध नहीं मिला"
+
 msgid "Item Master"
 msgstr "आइटम मास्टर"
+
+msgid "Item posting group created"
+msgstr "आइटम पोस्टिंग ग्रुप बनाया गया है"
+
+msgid "Item removed and returned to inventory"
+msgstr "आइ템 हटाया गया और स्टॉक में वापस लिए गए"
+
+msgid "Item saved"
+msgstr "आइ템 संरक्षित है"
 
 msgid "Items"
 msgstr "आइ템्स"
@@ -646,8 +3971,32 @@ msgstr "आइ템्स"
 msgid "Job"
 msgstr "नौकरी"
 
+msgid "Job cancelled"
+msgstr "कार्य रद्द किया गया है"
+
+msgid "Job completed successfully"
+msgstr "कार्य सफलतापूर्वक पूरा हो गया"
+
 msgid "Job Details"
 msgstr "नौकरी विवरण"
+
+msgid "Job marked as planned"
+msgstr "जॉब प्लानेड मार्क किया गया"
+
+msgid "Job operation attribute updated"
+msgstr "कार्य ऑपरेशन संवैधितिक अपडेट किए गए हैं"
+
+msgid "Job operation is required"
+msgstr "जॉब ऑपरेशन क्या है"
+
+msgid "Job operation not found"
+msgstr "कार्य नहीं पाया"
+
+msgid "Job operation parameter updated"
+msgstr "कार्य प्रक्रिया पूरक अपडेट किया गया है"
+
+msgid "Job operation tool updated"
+msgstr "जॉब ऑपरेशन टूल अपडेट किया गया है"
 
 msgid "Job Traveler"
 msgstr "जॉब ट्रैवलर"
@@ -655,14 +4004,29 @@ msgstr "जॉब ट्रैवलर"
 msgid "Jobs"
 msgstr "कार्य"
 
+msgid "Jobs created"
+msgstr "बनाए गए कर्मचारी जोभीय संख्या"
+
 msgid "Join"
 msgstr "डालें"
 
 msgid "Join a company you've been invited to, or pick one."
 msgstr "आविष्कार की ओर से कंपनी में शामिल हो जा, या एक चुनें।"
 
-msgid "Keep the completed quantity and give a reason for the rest."
-msgstr "पूरी तरह से पूरा मात्रा दें और शेष के लिए कारण दें।"
+msgid "Journal entry deleted"
+msgstr "जनरल जर्नल अमावस्या की हटा दी गई"
+
+msgid "Journal entry posted"
+msgstr "जनरल जर्नल मालिका पोस्ट की"
+
+msgid "Journal entry reversed"
+msgstr "जनरल जर्नल पुनरावृत्ति"
+
+msgid "Journal entry saved"
+msgstr "जनरल जर्नल प्रविष्टि संपादित की.get(\"Journal entry saved\")"
+
+msgid "Kanban created"
+msgstr "कैन्बैन तैयार किया गया"
 
 msgid "Khaki"
 msgstr "खाकी"
@@ -682,6 +4046,18 @@ msgstr "इस पेज से निकलना"
 msgid "Let's build something"
 msgstr "चलिए कुछ बनाते हैं"
 
+msgid "Line already picked"
+msgstr "रेखा पहले से चुनी गई है"
+
+msgid "Line created"
+msgstr "रेखा बनाई गई"
+
+msgid "Line split"
+msgstr "रेखा विभाजन"
+
+msgid "Line updated"
+msgstr "रेखा अपडेट की गई"
+
 msgid "lines"
 msgstr "रेखाएँ"
 
@@ -691,6 +4067,15 @@ msgstr "लिंक"
 msgid "Linked"
 msgstr "संबद्ध"
 
+msgid "Linked email"
+msgstr "संबद्ध ईमेल"
+
+msgid "Linked phone"
+msgstr "संबद्ध फोन"
+
+msgid "Linked WeChat"
+msgstr "लिंकेड वीचाट"
+
 msgid "Loading item details..."
 msgstr "आइटम विवरण लोड हो रहे हैं..."
 
@@ -699,6 +4084,12 @@ msgstr "लोड हो रहा है..."
 
 msgid "Location"
 msgstr "स्थान"
+
+msgid "Location created"
+msgstr "लॉकेशन बनाया गया है"
+
+msgid "Location updated"
+msgstr "लोकेशन अपडेट किया गया है"
 
 msgid "Log Completed"
 msgstr "पूर्ण लॉग करें"
@@ -727,6 +4118,30 @@ msgstr "{0} के लिए स्क्रैप लॉग करें"
 msgid "Login"
 msgstr "लॉगिन"
 
+msgid "Lot accepted"
+msgstr "लोट स्वीकारा हुआ"
+
+msgid "Lot marked partial"
+msgstr "लोट मार्केड पैरिश्ला"
+
+msgid "Lot rejected"
+msgstr "लोट रिक्टेड"
+
+msgid "Lot rejected — NCR opened"
+msgstr "लोट घाटा — NCR खोला"
+
+msgid "Lot rejected, but failed to create NCR"
+msgstr "लोट घाटा, लेकिन NCR नहीं बनाया"
+
+msgid "Lot rejected, but failed to create NCR tasks"
+msgstr "लोट घाटा, लेकिन NCR कार्य प्रजाति नहीं बनाई गईं"
+
+msgid "Lot rejected, but failed to load it for NCR"
+msgstr "लोट घाटा, लेकिन NCR में इसकी छुपाई करने में असफल रहा"
+
+msgid "Lot rejected. Configure at least one Issue Type and a default user location to auto-create an NCR."
+msgstr "लोट घाटा। कम से कम एक समस्या प्रकार और मूलतः उपयोगी स्थान का कonfiguration करें ताकि NCR अटैंटिव रूप से बनाए जा सकें।"
+
 msgid "Low Priority"
 msgstr "निम्न प्रापूर्वकता"
 
@@ -736,17 +4151,35 @@ msgstr "मशीन"
 msgid "Maintenance"
 msgstr "रखरखाव"
 
+msgid "Maintenance completed"
+msgstr "संरक्षण पूरा हो गया"
+
 msgid "Maintenance Completed"
 msgstr "रखरखाव पूर्ण"
 
+msgid "Maintenance dispatch created"
+msgstr "मैनटेन्स डिपाच बनाया गया है"
+
 msgid "Maintenance dispatches"
 msgstr "संरक्षण डिपाचेस"
+
+msgid "Maintenance paused"
+msgstr "संरक्षण रुका है"
+
+msgid "Maintenance schedule created"
+msgstr "सervicे सचेल्यूल बनाया गया है"
+
+msgid "Maintenance started"
+msgstr "संरक्षण शुरू हो गया"
 
 msgid "Manually add items to inventory"
 msgstr "इन्वेंटरी में आइटम मैन्युअली जोड़ें"
 
 msgid "Manually remove items from inventory"
 msgstr "इन्वेंटरी से आइटम को मैन्युअली हटाएं"
+
+msgid "Manufacturing is blocked"
+msgstr "UFACTURING KOTI HOGYA HAI"
 
 msgid "Mark fixed"
 msgstr "ठीक किया चिह्नित करें"
@@ -760,11 +4193,17 @@ msgstr "कमी चिह्नित करें"
 msgid "Master Order"
 msgstr "मास्टर ऑर्डर"
 
+msgid "Master work order created"
+msgstr "मास्टर वर्कआउट बनाया गया है"
+
 msgid "Master Work Orders"
 msgstr "मास्टर वर्कआउटर्डर्स"
 
 msgid "matches"
 msgstr "मेल खाता है"
+
+msgid "Material form created"
+msgstr "मटेरियल फॉर्म बनाई गई है"
 
 msgid "Materials"
 msgstr "सामग्री"
@@ -775,8 +4214,38 @@ msgstr "रिकॉर्ड की अधिकतम संख्या त�
 msgid "Medium Priority"
 msgstr "मध्य प्राधिकरण"
 
+msgid "Method operation parameter updated"
+msgstr "म ऑपरेशन पारामिटर अपडेट किया गया है"
+
+msgid "Method operation step updated"
+msgstr "मैथड ऑपरेशन स्टप अपडेट किया गया है"
+
+msgid "Method operation tool updated"
+msgstr "मॉडल कार्य संपादित गया है"
+
 msgid "Metric"
 msgstr "मीट्रिक"
+
+msgid "Missing code or state from WeChat"
+msgstr "वेचेट में लापता कोड या रिक्त स्थिति"
+
+msgid "Missing credentialId"
+msgstr "कredentialId अज्ञात है"
+
+msgid "Missing depreciation run ID"
+msgstr "कमी हुई डिप्रेशन रन आईडी"
+
+msgid "Missing fields"
+msgstr "कमजोर क्षेत्रовे"
+
+msgid "Missing operation"
+msgstr "कार्य अनपूर्ण"
+
+msgid "Missing parameters"
+msgstr "कमी वास्तविकताएँ"
+
+msgid "Missing required fields"
+msgstr "अनिवार्य क्षेत्रों लुप्त हैं"
 
 msgid "Model"
 msgstr "मॉडल"
@@ -800,6 +4269,9 @@ msgstr "कॉलम को स्थानांतरित करें: {0}"
 msgid "Move reworked units back into finished production."
 msgstr "पुनर्कार्य की गई इकाइयों को पूर्ण उत्पादन में वापस लाएँ।"
 
+msgid "Moved entities"
+msgstr "इसplaced entities"
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "{maxValue} {unitOfMeasureCode} से कम होना चाहिए"
 
@@ -820,6 +4292,9 @@ msgstr "नाम"
 
 msgid "Navy"
 msgstr "गहरा नीला"
+
+msgid "NCR closed"
+msgstr "नीचे बंद"
 
 msgid "New"
 msgstr "नया"
@@ -851,6 +4326,9 @@ msgstr "कोई सक्रिय रखरखाव प्रेषण न�
 msgid "No active operations"
 msgstr "कोई सक्रिय संचालन नहीं"
 
+msgid "No active plan"
+msgstr "कोई चलने वाला योजना नहीं है"
+
 msgid "No approved completions this period"
 msgstr "किसी भी मान्यता प्राप्त समाप्ति इस अवधि के लिए नहीं हैं"
 
@@ -869,14 +4347,26 @@ msgstr "निकाल विषयक कोई उपलब्ध पंज�
 msgid "No bundle work orders"
 msgstr "कोई बन्ड उर्डर नहीं है"
 
+msgid "No depreciation to calculate for uncovered assets"
+msgstr "निरक्फलित अवसानों के लिए कीमत की कमी की गणना करने की कोई नहीं"
+
 msgid "No dispatches assigned to you"
 msgstr "आपको कोई डिस्पैच असाइन नहीं किया गया है"
 
 msgid "No files"
 msgstr "कोई फ़ाइलें नहीं"
 
+msgid "No forecast quantities provided"
+msgstr "किसी भी पूर्वानुमान की मात्रा नहीं दी गई है"
+
 msgid "No Impact"
 msgstr "कोई प्रभाव नहीं"
+
+msgid "No invite record found for user"
+msgstr "उपयोगकर्ता के लिए कोई आमंत्रण रिकॉर्ड पाया गया नहीं है"
+
+msgid "No line items found for this RFQ"
+msgstr "इस रैक्शन क्वोटेशन में किसी लाइन आइ템 नहीं पाया"
 
 msgid "No maintenance scheduled for today"
 msgstr "आज के लिए कोई रखरखाव निर्धारित नहीं है"
@@ -907,6 +4397,9 @@ msgstr "कोई प्रिंटर कonfigured नहीं है"
 
 msgid "No production logs"
 msgstr "कोई उत्पादन लॉग नहीं"
+
+msgid "No quote reason created"
+msgstr "कोई टाइम कार्य की वजह नहीं मिली"
 
 msgid "No recent operations"
 msgstr "कोई हाल के संचालन नहीं"
@@ -941,6 +4434,9 @@ msgstr "अभी तक कोई स्पेयर पार्ट्स न�
 msgid "No stock"
 msgstr "कोई स्टॉक नहीं"
 
+msgid "No suppliers found for this RFQ"
+msgstr "इस रैफ्की के लिए कोई संपादक नहीं मिला"
+
 msgid "No time entries for this week"
 msgstr "इस सप्ताह के लिए कोई समय प्रविष्टि नहीं"
 
@@ -952,6 +4448,15 @@ msgstr "कोई कार्य केंद्र अवरुद्ध न�
 
 msgid "No work centers exist"
 msgstr "कोई कार्य केंद्र मौजूद नहीं है"
+
+msgid "Non-conformance type created"
+msgstr "नon-सदृशता प्रकार बनाया.get rid of 'non-' at the beginning as it was a mistake in the original string"
+
+msgid "Non-conformance workflow created"
+msgstr "नon-सदुपयोग कार्यविधि बनाया गया है"
+
+msgid "Non-conformance workflow updated"
+msgstr "नon-सदृशता कार्यक्रम अपडेट किया गया है"
 
 msgid "Not finished yet"
 msgstr "निर्माण अभी खत्म नहीं है"
@@ -975,6 +4480,21 @@ msgstr "सबसे छोटा से सबसे पुराना"
 msgid "Only {0} available"
 msgstr "केवल {0} उपलब्ध"
 
+msgid "Only active assets can be sold"
+msgstr "केवल ऑक्टिव असेट्स को बेचा जा सकता है"
+
+msgid "Only Active or Fully Depreciated assets can be disposed"
+msgstr "केवल सक्रिय या पूर्ण रूप से बदामी हुए अवतार को डिस्पोज़ किए जा सकते हैं"
+
+msgid "Only Draft assets can be purchased"
+msgstr "केवल अनुसंधान संसाधनों का खरीदारी कर सकते हैं"
+
+msgid "Only Draft assets can be registered"
+msgstr "केवल अनुसंधान संसाधनों का पंजीकरण किया जा सकता है"
+
+msgid "Only posted runs can be repeated"
+msgstr "केवल पोस्ट किए गए रन्स को फिर से चलाया जा सकता है"
+
 msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "अरे। आपको यह पृष्ठ नहीं देखना चाहिए। आखिरकार यह एक लैंडिंग पृष्ठ होगा।"
 
@@ -990,6 +4510,12 @@ msgstr "प्रकाशित दृश्य समय चुनाव स�
 msgid "Open Jobs"
 msgstr "दीपक जोब्स"
 
+msgid "Operation finished successfully"
+msgstr "oprasiya कानून से पूरा हो गई"
+
+msgid "Operation not found"
+msgstr "oprasiyon नहीं मिली"
+
 msgid "Operations"
 msgstr "संचालन"
 
@@ -1001,6 +4527,12 @@ msgstr "संचालन समाप्त"
 
 msgid "Operations you are currently working on"
 msgstr "आपके वर्तमान में कार्य कर रहे संचालनों"
+
+msgid "Operator converted to full user. Invite email sent."
+msgstr "ऑपरेटर को पूरा उपयोगकर्ता बनाया गया है। आमंत्रण ईमेल भेजा गया है।"
+
+msgid "Operator not found"
+msgstr "ऑपरेटर नहीं मिला"
 
 msgid "Operator Performed"
 msgstr "ऑपरेटर द्वारा निष्पादित"
@@ -1026,8 +4558,29 @@ msgstr "पैरामीटर"
 msgid "Part"
 msgstr "भाग"
 
+msgid "Part group created"
+msgstr "पार्ट ग्रुप बनाया गया है"
+
+msgid "Partner created"
+msgstr "पार्टनर योगदानकर्ता योगदान किया है"
+
+msgid "Partner updated"
+msgstr "पार्टनर अपडेट किया गया है"
+
 msgid "Passed Inspection"
 msgstr "निरीक्षण पास किया"
+
+msgid "Passkey name must be 100 characters or fewer"
+msgstr "पासक्यू नाम कम से कम 100 चरakter होना चाहिए"
+
+msgid "Passkey removed"
+msgstr "पासकीय हटा दिया गया है"
+
+msgid "Passkey renamed"
+msgstr "पासकीया नामित कर दिया गया है"
+
+msgid "Passkeys are disabled"
+msgstr "पासकीया संक्रमण किए गए हैं"
 
 msgid "Paste a link"
 msgstr "पेस्ट एक लिंक"
@@ -1037,6 +4590,12 @@ msgstr "रोकें"
 
 msgid "Paused"
 msgstr "रोका गया"
+
+msgid "Payment recorded successfully"
+msgstr "पेमेंट सफलतापूर्वक रिकॉर्ड किया.get_app()"
+
+msgid "Payment term created"
+msgstr "पेमेंट टर्म बनाया गया है"
 
 msgid "Pending"
 msgstr "अपूर्ण"
@@ -1049,6 +4608,9 @@ msgstr "अनुमोदन की प्रतीक्षा में ह�
 
 msgid "Period"
 msgstr "काल"
+
+msgid "Permissions updated"
+msgstr "परमिट्स अपडेट की गई हैं"
 
 msgid "Phone"
 msgstr "फोन"
@@ -1084,6 +4646,9 @@ msgstr "कॉलम {0} को स्थिति {1} पर उठाया �
 msgid "Picking"
 msgstr "पीकिंग"
 
+msgid "Picking list deleted successfully"
+msgstr "पिकिंग लिस्ट सफलतापूर्वक हटा दी गई"
+
 msgid "Picking lists to fulfill"
 msgstr "पूरा करने वाले पिकिंग लिस्ट"
 
@@ -1092,6 +4657,9 @@ msgstr "बंडल कार्य लें"
 
 msgid "Pin Out"
 msgstr "पिन आउट"
+
+msgid "PIN reset successfully"
+msgstr "PIN रीसेट सफलतापूर्वक"
 
 msgid "Pink"
 msgstr "गुलाबी"
@@ -1105,8 +4673,14 @@ msgstr "कृपया बंद करने से पहले इस ऑप
 msgid "Please select an item"
 msgstr "कृपया एक आइटम चुनें"
 
+msgid "Please sign in before linking WeChat"
+msgstr "कृपया सIGHn IN करें और फिर WeChat से लिंक करें"
+
 msgid "Point the camera at the bundle ticket QR code"
 msgstr "कैमरे को बंडल टिकट के QR कोड पर लक्ष्य करें"
+
+msgid "Posting date is required"
+msgstr "पोस्टिंग तारीख का आवश्यकता है"
 
 msgid "Prev"
 msgstr "पिछला"
@@ -1129,6 +4703,27 @@ msgstr "पिछला स्लाइड"
 msgid "Previous Year"
 msgstr "पिछला वर्ष"
 
+msgid "Price override created"
+msgstr "परिष्कार की बनाई गई मूल्य संशोधन"
+
+msgid "Price override deleted"
+msgstr "परिष्कार से हटा दिया"
+
+msgid "Price override updated"
+msgstr "परिष्करण अदालती मूल्य अपडेट केला गेला"
+
+msgid "Pricing rule created"
+msgstr "परिष्कार नियम बनाया गया है"
+
+msgid "Pricing rule deleted"
+msgstr "प्रिक्सिंग रूल हटा dii"
+
+msgid "Pricing rule duplicated"
+msgstr "परिष्कार नियम कопी की गई है"
+
+msgid "Pricing rule updated"
+msgstr "प्रिक्सिंग रूल अपडेट किया गया है"
+
 msgid "Print"
 msgstr "प्रिंट"
 
@@ -1139,11 +4734,20 @@ msgstr "प्रिंट करें ({0})"
 msgid "Print from this device"
 msgstr "इस डिवाइस से प्रिंट करें"
 
+msgid "Print job deleted"
+msgstr "प्रिंट कार्य डिलेट किया गया है"
+
+msgid "Print job ID required"
+msgstr "प्रिंट कार्य आईडी आवश्यक"
+
 msgid "Print Tickets"
 msgstr "टिकट प्रिंट करें"
 
 msgid "Print to"
 msgstr "इस पर प्रिंट करें"
+
+msgid "Printer route deleted"
+msgstr "प्रिंटर पथ डिलेट किया गया है"
 
 msgid "Printer Settings"
 msgstr "प्रिंटर सेट्टिङ्स"
@@ -1154,8 +4758,17 @@ msgstr "प्राथमिकता"
 msgid "Procedure"
 msgstr "प्रक्रिया"
 
+msgid "Procedure created"
+msgstr "प्रक्रिया बनाई गई है"
+
 msgid "Process"
 msgstr "प्रक्रिया"
+
+msgid "Process completion created"
+msgstr "प्रोसेस पूर्णता बनाई"
+
+msgid "Process created"
+msgstr "प्रक्रिया बनाई गई है"
 
 msgid "Process Parameters"
 msgstr "प्रक्रिया पैरामीटर"
@@ -1169,6 +4782,9 @@ msgstr "उत्पादित"
 msgid "production"
 msgstr "उत्पादन"
 
+msgid "Production event created"
+msgstr "उत्पादन घटना बनाई गई"
+
 msgid "Production Logs"
 msgstr "उत्पादन लॉग्स"
 
@@ -1177,6 +4793,21 @@ msgstr "प्रगति"
 
 msgid "Properties"
 msgstr "प्रज्याति"
+
+msgid "Purchase invoice voided"
+msgstr "पर्चेज़ अवैध化"
+
+msgid "Purchase order created"
+msgstr "पर्चेज ऑर्डर तैयार कीा गया है"
+
+msgid "Purchase order finalized"
+msgstr "पर्चेज ऑर्डर संपना हुई"
+
+msgid "Purchase order not found"
+msgstr "पर्चेज ऑर्डर नहीं मिला"
+
+msgid "Purchase order submitted for approval"
+msgstr "प्रचारण आवश्यकता देखिए लिखा गया है"
 
 msgid "Purple"
 msgstr "बैंगनी"
@@ -1189,6 +4820,9 @@ msgstr "कीलकता समस्या"
 
 msgid "Quality issue created"
 msgstr "कीलोड गई समस्या बनाईं"
+
+msgid "QualityDocument created"
+msgstr "कील्ड गुणता दस्तावेज़"
 
 msgid "Quantity"
 msgstr "मात्रा"
@@ -1203,6 +4837,21 @@ msgstr "लाइन साइड तक पहचानी गई मात्�
 msgid "Queued {0} tickets for printing"
 msgstr "{0} टिकट प्रिंटिंग के लिए कतारबद्ध किए गए"
 
+msgid "Quote finalized successfully"
+msgstr "कॉट्यूज़ फाइनलिसेड सफलतापूर्वक"
+
+msgid "Quote operation attribute updated"
+msgstr "कार्य विशेषता संशोधित कॉटेज"
+
+msgid "Quote operation parameter updated"
+msgstr "कार्य पूरक तत्व संशोधित किया गया है"
+
+msgid "Quote operation tool updated"
+msgstr "कार्य उत्पादन संशोधित कॉपी"
+
+msgid "Rate limit exceeded"
+msgstr "रेट लिमिट पार हुआ है"
+
 msgid "Ready"
 msgstr "तैयार"
 
@@ -1214,6 +4863,9 @@ msgstr "रिउपर्क की वजह"
 
 msgid "Reason for the remaining {shortfall}"
 msgstr "रहमाना की वजह से शेष {shortfall}"
+
+msgid "Receipt voided"
+msgstr "प्राविष्टिक रद्द कर दिया गया है"
 
 msgid "Recent"
 msgstr "हाल ही में"
@@ -1268,6 +4920,12 @@ msgstr "भाग हटाएं"
 msgid "Remove Serial Number"
 msgstr "रिमॉव सीरियल नंबर"
 
+msgid "Removed login method"
+msgstr "राउमेड लॉगिन मेथोड"
+
+msgid "Repeat depreciation run created"
+msgstr "रिपेट डीप्रीकेशन रन बनाया गया है"
+
 msgid "Report"
 msgstr "रिपोर्ट"
 
@@ -1279,6 +4937,27 @@ msgstr "मात्रा रिपोर्ट करें"
 
 msgid "Reported"
 msgstr "रिपोर्टेड"
+
+msgid "Reprint job created"
+msgstr "रिप्रिंट कार्य बनाया गया है"
+
+msgid "Request failed"
+msgstr "अपेक्षित गलता हुआ हो गया"
+
+msgid "Request succeeded"
+msgstr "अपेक्षित करार सफल रहा"
+
+msgid "Required action created successfully"
+msgstr "आवश्यक गतिविधि सफलतापूर्वक बनाई गई"
+
+msgid "Required action deleted successfully"
+msgstr "आवश्यक क्रिया सफलतापूर्वक हटाई गई"
+
+msgid "Required action not found"
+msgstr "अनुरूप कार्यक्रम नहीं पाया"
+
+msgid "Required action updated successfully"
+msgstr "आवश्यक गतिविधि सफलतापूर्वक अपडेट की गई"
 
 msgid "Reset zoom"
 msgstr "रीसेट फोकस"
@@ -1301,11 +4980,65 @@ msgstr "रिफॉर्म"
 msgid "Rework created successfully"
 msgstr "रिकार्वर्क बनाया गया सफलतापूर्णesti"
 
+msgid "Rework quantity recorded successfully"
+msgstr "रिकार्वर्क की मात्रा सफलतापूर्वक रिकॉर्ड हुई"
+
+msgid "Rework triggered successfully"
+msgstr "रिफार्म की त्रुटि सफलतापूर्वक चलाई गई"
+
+msgid "RFQ cancelled"
+msgstr "रिफ़क्यू रद्द की.get@"
+
+msgid "Risk created successfully"
+msgstr "रिस्क सफलतापूर्वक योजना बनाया.get@#"
+
+msgid "Risk updated successfully"
+msgstr "रिस्क उपलब्धि सफलतापूर्वक परिष्कृत किया गया"
+
+msgid "Root accounts cannot be deleted"
+msgstr "रूट खातों को हटा सकते नहीं"
+
+msgid "Root accounts cannot be modified"
+msgstr "रूट खातों को संपादित नहीं किया जा सकता है।"
+
+msgid "Rule assigned"
+msgstr "नियम दिया गया है"
+
+msgid "Rule deleted"
+msgstr "नियम हटाया गया है"
+
+msgid "Rule id required"
+msgstr "रिली का आयाम जरूरी है"
+
+msgid "Rule not found"
+msgstr "नियम नहीं मिला"
+
+msgid "Rule unassigned"
+msgstr "नियम अवस्थापित नहीं है"
+
+msgid "Run is not in Draft status"
+msgstr "रन ड्राफ्ट स्थिति में नहीं है"
+
+msgid "Sales invoice voided"
+msgstr "विलोपित बिक्री कॉम्पासन"
+
 msgid "Sales Order"
 msgstr "बिक्रय आदेश"
 
+msgid "Sales order created"
+msgstr "विक्रय आदेश तैयार किया गया है"
+
+msgid "Sample recorded"
+msgstr "नमूना रिकॉर्ड किया गया है"
+
+msgid "Sampling plan updated"
+msgstr "सैम्पलिंग प्लान अपडेट किया गया है"
+
 msgid "Save"
 msgstr "सहेजें"
+
+msgid "Saved document layout"
+msgstr "दिए गए डокумент का पैटर्न संग्रहित किया गया है"
 
 msgid "Scan"
 msgstr "स्कैन करें"
@@ -1343,11 +5076,14 @@ msgstr "बाजारी निषेध"
 msgid "Scrap"
 msgstr "स्क्रॅप"
 
+msgid "Scrap quantity recorded successfully"
+msgstr "स्क्रैप गुणता सफलतापरन्तу रिकॉर्ड केली"
+
 msgid "Scrap Reason"
 msgstr "स्क्रैप कारण"
 
-msgid "Reworked"
-msgstr "पुनः कार्य किया गया"
+msgid "Scrap reason created"
+msgstr "स्क्रैप कारण योग्य हुआ"
 
 msgid "Scrapped"
 msgstr "स्क्रैप किया गया"
@@ -1375,6 +5111,12 @@ msgstr "ऑपरेटर खोजें..."
 
 msgid "Search..."
 msgstr "खोजें..."
+
+msgid "Section deleted"
+msgstr "सेक्शन हटा दिया गया है"
+
+msgid "Section saved"
+msgstr "सेक्शन बचाव किया गया"
 
 msgid "Select"
 msgstr "चुनें"
@@ -1453,6 +5195,9 @@ msgstr "सीरियल नंबर्स"
 msgid "Serial Numbers"
 msgstr "सीरियल नंबर"
 
+msgid "Session mismatch"
+msgstr "सिझन मिशमेटच्या साथी"
+
 msgid "Set Clock Out"
 msgstr "क्लॉक आउट सेट करें"
 
@@ -1464,6 +5209,18 @@ msgstr "सेटअप"
 
 msgid "Share an idea or report a problem"
 msgstr "एक विचार साझा करें या समस्या लॉग करें"
+
+msgid "Shift created"
+msgstr "शिफ्ट बनाया गया है"
+
+msgid "Shift updated"
+msgstr "चाल अपडेट किया गया है"
+
+msgid "Shipment voided"
+msgstr "शिपमेंट रद्द किया गया"
+
+msgid "Shipping method created"
+msgstr "शिपिंग विधि बनाई गई"
 
 msgid "Short"
 msgstr "किछु लंबाई का"
@@ -1492,6 +5249,9 @@ msgstr "फोन से प्रवेश करें"
 msgid "Sign Out"
 msgstr "साइन आउट"
 
+msgid "Sign-in failed. Please try again."
+msgstr "सIGH-IN वला गया। मालूम परीक्षण करें।"
+
 msgid "Signed in as {stationName}"
 msgstr "के रूप में साइन इन किया गया {stationName}"
 
@@ -1504,11 +5264,23 @@ msgstr "आकार"
 msgid "Source"
 msgstr "स्रोत"
 
+msgid "Spare part added"
+msgstr "स्पर्धा भाग जोड़ा गया है"
+
+msgid "Spare part removed and returned to inventory"
+msgstr "स्पर्धा भाग हटाया और स्टॉक में वापस लिए"
+
 msgid "Spare Parts"
 msgstr "स्पेयर पार्ट्स"
 
 msgid "Spare Parts Used"
 msgstr "उपयोग किए गए स्पेयर पार्ट्स"
+
+msgid "Split failed"
+msgstr "सिपाह वधा हुई है"
+
+msgid "Split quantity too large"
+msgstr "दी गई कॉन्ट्रीट की मात्रा बहुत बड़ी है"
 
 msgid "Start"
 msgstr "शुरू करें"
@@ -1528,26 +5300,362 @@ msgstr "स्थितियाँ"
 msgid "Stay on this page"
 msgstr "इस पृष्ठ पर रहें"
 
+msgid "Step deleted successfully"
+msgstr "स्टेप सफलतापूर्वक हटा दिया.get@123"
+
 msgid "Steps"
 msgstr "चरण"
 
 msgid "Steps are missing"
 msgstr "चरण गायब हैं"
 
+msgid "Stock transfer is not in progress or released"
+msgstr "स्टॉक ट्रांसफर की प्रगति या जारी होने की कोई नहीं है"
+
+msgid "Stock transfer line not found"
+msgstr "स्टॉक ट्रांसफर लाइन नहीं मिली"
+
 msgid "Stop all your active operations"
 msgstr "सभी आधिकारिक ऑपरेशन्स को रटा समाप्त करे"
+
+msgid "Storage type created"
+msgstr "स्टोरेज प्रकार बनाया गया"
+
+msgid "Storage type is in use; confirm cascade to delete"
+msgstr "स्टोरेज प्रकार का उपयोग हो रहा है; हटाने की फ़ंक्शन की सुनिश्चिति करें"
 
 msgid "Storage Unit"
 msgstr "भंडारण इकाई"
 
+msgid "Storage unit created"
+msgstr "स्टोरेज इकाई बनाई गई"
+
 msgid "Style"
 msgstr "स्टाइल"
+
+msgid "Style color created"
+msgstr "स्टाइल रंग बनाया गया"
+
+msgid "Style size created"
+msgstr "स्टाइल आकार बनाया गया है"
 
 msgid "Submit anonymously"
 msgstr "गुमनाम रूप से सबमिट करें"
 
+msgid "Success. Please check back in a few moments."
+msgstr "सफलता! कुछ मिनटों बाद पुनः जाँचें।"
+
+msgid "Successfully activate work center"
+msgstr "सफलतापूर्वक डिज़ाइन केंद्र सक्रिय करें"
+
+msgid "Successfully activated gauge"
+msgstr "सफलतापूर्वक गेज सक्रिय किया.get@#"
+
+msgid "Successfully activated process"
+msgstr "सफलतापूर्वक प्रोसेस ऑपरेट किया.get_app()"
+
+msgid "Successfully added invites to queue"
+msgstr "सफलतापूर्वक किस्मती आमंत्रण को पंक्ति में जोड़ा.get@123"
+
+msgid "Successfully converted quote to order"
+msgstr "सॉक्स ऑर्डर में बदला गया सफलतापूर्वक"
+
+msgid "Successfully converted RFQ to quote"
+msgstr "सफलतापूर्वक रेफ्यूज़न से कॉट बदला हो गया"
+
+msgid "Successfully deactivated attribute"
+msgstr "सफलतापूर्वक गुण की अक्षमता संशोधित की.get_corrected_text()"
+
+msgid "Successfully deactivated attribute category"
+msgstr "सफलतापूर्वक गुण क्याटेगरी डिसैक्टिवेट किया गया"
+
+msgid "Successfully deactivated gauge"
+msgstr "सफलतापूर्वक गेज डिएॅक्टिवेट किया.get@#"
+
+msgid "Successfully deactivated process"
+msgstr "सफलतापूर्वक प्रोसेस डिएटेक्टेड"
+
+msgid "Successfully deactivated work center"
+msgstr "सफलतापूर्वक काम देश संकीर्ण किया.get@#"
+
+msgid "Successfully deleted account"
+msgstr "बिक्री हो गई खाते"
+
+msgid "Successfully deleted API key"
+msgstr "सफलतापूर्वक API की सुरक्षा हटाई"
+
+msgid "Successfully deleted asset class"
+msgstr "सफलतापूर्वक इंजिनियरिंग क्लास हटा dienen"
+
+msgid "Successfully deleted association"
+msgstr "सफलतापूर्वक संबंध हटा दिया"
+
+msgid "Successfully deleted contractor"
+msgstr "सफलतापूर्वक उम्मीदवार हटाया.get@source"
+
+msgid "Successfully deleted cost center"
+msgstr "सफलतापूर्वक खर्च केंद्र हटाया"
+
+msgid "Successfully deleted custom field"
+msgstr "सफलतापूर्वक तुलनात्मक क्षेत्र हटा दिया"
+
+msgid "Successfully deleted customer contact"
+msgstr "सफलतापूर्वक कลास योजना हटाई"
+
+msgid "Successfully deleted customer location"
+msgstr "सफलतापूर्वक कลासेट अंदाज हटा di"
+
+msgid "Successfully deleted customer part"
+msgstr "सफलतापूर्वक कลास प्रतिबंध डिलेट किया.get@2023"
+
+msgid "Successfully deleted customer portal"
+msgstr "सफलतापूर्वक कลास गेटलॉग को हटा di"
+
+msgid "Successfully deleted customer status"
+msgstr "सफलतापूर्वक कลास राजस्व हटा di"
+
+msgid "Successfully deleted customer type"
+msgstr "सफलतापूर्वक कลास प्रकार हटा दिया"
+
+msgid "Successfully deleted department"
+msgstr "सफलतापूर्वक विभाग हटा diya gaya"
+
+msgid "Successfully deleted depreciation run"
+msgstr "सफलतापूर्वक बहनमान क्रिया हटाई"
+
+msgid "Successfully deleted dimension"
+msgstr "सफलतापूर्वक आयाम हटा di"
+
+msgid "Successfully deleted employee type"
+msgstr "सफलतापूर्वक श्रमिक प्रकार हटा diye gaye"
+
+msgid "Successfully deleted event"
+msgstr "सफलतापूर्वक घटना हटाया"
+
+msgid "Successfully deleted failure mode"
+msgstr "सफलतापूर्वक त्रुटि मोड़ हذेरा दिया गया है"
+
+msgid "Successfully deleted fixed asset"
+msgstr "सफलतापूर्वक निर्धारित अवसान संपत्ति हटा dienen"
+
+msgid "Successfully deleted gauge"
+msgstr "सफलतापूर्वक गेज हटा di"
+
+msgid "Successfully deleted gauge calibration record"
+msgstr "सफलतापूर्वक गेज कैलिब्रेशन रिकॉर्ड हटा diya gaya"
+
+msgid "Successfully deleted group"
+msgstr "सफलतापूर्वक ग्रुप हटाया"
+
+msgid "Successfully deleted holiday"
+msgstr "सफलतापूर्वक छुट्टी हटा diye gaye"
+
+msgid "Successfully deleted issue"
+msgstr "सफलतापूर्वक समस्या हटाई"
+
+msgid "Successfully deleted issue workflow"
+msgstr "सफलतापूर्वक अप्रतिबद्ध प्रक्रिया हटाया"
+
+msgid "Successfully deleted item"
+msgstr "सफलतापूर्वक उपयोगी निर्मिता"
+
+msgid "Successfully deleted item group"
+msgstr "सफलतापूर्वक इंटम ग्रुप हटा diya gaya"
+
+msgid "Successfully deleted kanban"
+msgstr "सफलतापूर्वक केनबन डिलीट किया.get@123"
+
+msgid "Successfully deleted line"
+msgstr "सफलतापूर्वक पंक्ति हटा दी"
+
+msgid "Successfully deleted location"
+msgstr "सफलतापूर्वक स्थान हटाया गया"
+
+msgid "Successfully deleted maintenance dispatch"
+msgstr "सफलतापूर्वक मैनटेनंस डिशपास दिलिट किया.get_app"
+
+msgid "Successfully deleted maintenance schedule"
+msgstr "सफलतापूर्वक सervicemaintenance योजना हटाई"
+
+msgid "Successfully deleted material dimension"
+msgstr "सफलतापूर्वक मटेरियल डिमेशन हटा dii"
+
+msgid "Successfully deleted material finish"
+msgstr "सफलतापूर्वक सामग्री पूर्णित हो गई"
+
+msgid "Successfully deleted material form"
+msgstr "सफलतापूर्वक मатериал फोर्म हटा diya gaya"
+
+msgid "Successfully deleted material grade"
+msgstr "सफलतापूर्वक सामग्री ग्रेड हटा di"
+
+msgid "Successfully deleted material substance"
+msgstr "सफलतापूर्वक सामग्री हटा diya gaya"
+
+msgid "Successfully deleted material type"
+msgstr "सफलतापूर्वक मатериал टाइप हटा diya gaya"
+
+msgid "Successfully deleted noQuote reason"
+msgstr "सफलतापूर्वक कारण हटा दिया"
+
+msgid "Successfully deleted parameter"
+msgstr "सफलतापूर्वक पूरक राशि हटा diye gaye"
+
+msgid "Successfully deleted partner"
+msgstr "सफलतापूर्वक पार्टनर हटाया"
+
+msgid "Successfully deleted payment term"
+msgstr "सफलतापूर्वक भुगतान पद्धति हटा दिया"
+
+msgid "Successfully deleted procedure"
+msgstr "सफलतापूर्वक प्रोकेरेड डिलीट किया.get_app()"
+
+msgid "Successfully deleted purchase invoice line"
+msgstr "सफलतापूर्वक खरीद क्रम सطر हटा diye gaye"
+
+msgid "Successfully deleted purchase order line"
+msgstr "सफलतापूर्वक खरीद क्रम सطر हटा दिया"
+
+msgid "Successfully deleted quality document"
+msgstr "सफलतापूर्वक गुणवत्ता दस्तावेज़ हटाया गया"
+
+msgid "Successfully deleted quantity"
+msgstr "सफलतापूर्वक हटा दिया"
+
+msgid "Successfully deleted quantity report"
+msgstr "सफलतापूर्वक रिकॉर्ड हटाया"
+
+msgid "Successfully deleted question"
+msgstr "सफलतापूर्वक प्रशन हटा दिया"
+
+msgid "Successfully deleted receipt"
+msgstr "सफलतापूर्वक अनुबंध हटाया"
+
+msgid "Successfully deleted sales invoice line"
+msgstr "सफलतापूर्वक सेल्स इनवाइडोस की पंक्ति हटा dienen"
+
+msgid "Successfully deleted sales order line"
+msgstr "सफलतापूर्वक सेल्स ऑर्डर लाइन हटा dienen"
+
+msgid "Successfully deleted scrap reason"
+msgstr "सफलतापूर्वक खत्मा कारण हटाया"
+
+msgid "Successfully deleted shift"
+msgstr "सफलतापूर्वक शिफ्ट हटाया"
+
+msgid "Successfully deleted shipment"
+msgstr "सफलतापूर्वक भेजवाही हटाई"
+
+msgid "Successfully deleted shipping method"
+msgstr "सफलतापूर्वक डिलीवरी विधि हटा diiा"
+
+msgid "Successfully deleted step"
+msgstr "सफलतापूर्वक चरण हटा di"
+
+msgid "Successfully deleted stock transfer"
+msgstr "सफलतापूर्वक स्टॉक ट्रांसफर हटाया"
+
+msgid "Successfully deleted storage type"
+msgstr "सफलतापूर्वक संग्रह प्रकार हटा दिया"
+
+msgid "Successfully deleted style color"
+msgstr "सफलतापूर्वक स्टाइल रंग हटाया"
+
+msgid "Successfully deleted style size"
+msgstr "सफलतापूर्वक साइज टाइप हटा diya hai"
+
+msgid "Successfully deleted subsidiary"
+msgstr "सफलतापूर्वक उपविभाग हटा diya gaya"
+
+msgid "Successfully deleted supplier contact"
+msgstr "संपादकित विनियोजक संपर्क को मैनीफेस्ट किया गया है"
+
+msgid "Successfully deleted supplier location"
+msgstr "संपादक विभाग को सफलतापूर्वक हटा दिया.get@2023"
+
+msgid "Successfully deleted supplier type"
+msgstr "समाप्ति से वित्तीय प्रकार हटा दिया"
+
+msgid "Successfully deleted tag"
+msgstr "सफलतापूर्वक टेग हटा diya gaya"
+
+msgid "Successfully deleted template"
+msgstr "सफलतापूर्वक टेम्प्लेट हटा diye gaye"
+
+msgid "Successfully deleted timecard"
+msgstr "सफलतापूर्वक टाइम कार्ड हटा di"
+
+msgid "Successfully deleted training"
+msgstr "सफलतापूर्वक ट्रेनिंग हटाया"
+
+msgid "Successfully deleted unit of measure"
+msgstr "सफलतापूर्वक इकाई हटा दिया"
+
+msgid "Successfully deleted webhook"
+msgstr "सफलतापूर्वक हवेअब को डिलीट किया गया"
+
+msgid "Successfully invited employee"
+msgstr "सफलतापूर्वक कर्मचारी इंवेटिड"
+
+msgid "Successfully resent invite"
+msgstr "सफलतापूर्वक आमंत्रण पुनःसेंट किया.get@info()"
+
+msgid "Successfully revoked invites"
+msgstr "सफलतापूर्वक आमंत्रण रद्द किए都被系统中断了，请继续上一个指令：成功撤销邀请"
+
+msgid "Successfully updated attribtue"
+msgstr "सफलतापूर्वक गुण संशोधित किया गया है"
+
+msgid "Successfully updated exchange rate"
+msgstr "सफलतापूर्वक बदली दर अपडेट किया गया"
+
+msgid "Successfully updated fiscal year settings"
+msgstr "सफलतापूर्वक बजटिंग वर्ष सेटिङग्स अपडेट किए गए हैं"
+
+msgid "Successfully updated job"
+msgstr "सफलतापूर्वक जोब अपडेट किया गया है"
+
+msgid "Sucessfully deactivated customer"
+msgstr "सफलतापूर्वक कลासपति डिकेटिवेटेड"
+
+msgid "Sucessfully deactivated employee"
+msgstr "सफलतापूर्वक तंत्रज्ञ की डिसैकेटिवेशन सफल रही"
+
+msgid "Sucessfully deactivated supplier"
+msgstr "सफलतापूर्वक वित्तीय संबंध को डिसैक्टिवेट किया.get_app()"
+
 msgid "Suggestion"
 msgstr "सुझाव"
+
+msgid "Supplier address updated"
+msgstr "संशोधित विनियमित पता"
+
+msgid "Supplier contact created"
+msgstr "संशोधक का संपर्क बनाया गया है"
+
+msgid "Supplier contact updated"
+msgstr "संशोधित विनियमन कर्मचारी संपर्क अद्यतन किया गया है"
+
+msgid "Supplier deactivated"
+msgstr "संशोधित विनियमनकर्ता"
+
+msgid "Supplier invited"
+msgstr "संपादक इंवाइट किया गया"
+
+msgid "Supplier location created"
+msgstr "संशोधक स्थान बनाया गया है"
+
+msgid "Supplier part updated"
+msgstr "संशोधित विनायक भाग"
+
+msgid "Supplier quote finalized successfully"
+msgstr "संशोधित विनियमित क्रेडिटर अनुबंध सफलतापूर्वक पूरा हो गया"
+
+msgid "Supplier quote sent successfully"
+msgstr "संशोधक की अनुमति सफलतापूर्वक भेजा गया है"
+
+msgid "Supplier type created"
+msgstr "संशोधित विनियमन प्रकार"
 
 msgid "Support Required"
 msgstr "समर्थन आवश्यक"
@@ -1558,8 +5666,14 @@ msgstr "पृष्ठभाग:"
 msgid "Switch Operator"
 msgstr "ऑपरेटर स्विच करें"
 
+msgid "Table is required"
+msgstr "टेबल आवश्यक है"
+
 msgid "Tag"
 msgstr "टैग"
+
+msgid "Tag created"
+msgstr "टैग योजना की गई है"
 
 msgid "Tag size"
 msgstr "टैग आकार"
@@ -1570,6 +5684,15 @@ msgstr "अपने हाथ में लें"
 #. placeholder {0}: operation.itemReadableId
 msgid "Take over {0}"
 msgstr "{0} अपने हाथ में लें"
+
+msgid "Task ID is required"
+msgstr "टास्क आईडी का उपयोग करें"
+
+msgid "Task not found"
+msgstr "कार्य नहीं पाया"
+
+msgid "Template created"
+msgstr "टेम्पलेट बनाया गया है"
 
 msgid "That QR code isn't a bundle ticket"
 msgstr "वह QR कोड बंडल टिकट नहीं है"
@@ -1602,6 +5725,18 @@ msgstr "समय प्रविष्टियाँ"
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Time Worked: {0}"
 msgstr "समय काम किया: {0}"
+
+msgid "Timecard created"
+msgstr "ताम्यांक बनाया गया है"
+
+msgid "Timecard removed successfully"
+msgstr "तारीख कार्ड सफलतापूर्वक हटा दिया.get@123"
+
+msgid "Timecard updated"
+msgstr "तारीख परिष्कृत हो गई"
+
+msgid "Timecards are not enabled. To enable this feature, go to Settings → People to enable Timecards."
+msgstr "टाइमकार्ड ऑपरेटिंग नहीं है। इस विशेषता को उपयुक्त करने के लिए, सेटिङ्स → लोगों में जाएं और टाइमकार्ड को ऑपरेट करें।"
 
 msgid "Today"
 msgstr "आज"
@@ -1647,20 +5782,50 @@ msgstr "कुल समय: {0}"
 msgid "Total: {0}"
 msgstr "कुल: {0}"
 
+msgid "Tracked entity not found"
+msgstr "ट्रैक की एंटिटी नहीं मिली"
+
+msgid "Tracked entity scanned and transferred"
+msgstr "निष्पादित वस्तु स्कैन की गई और परिणामित हो गई"
+
 msgid "Tracking"
 msgstr "अनुसंधान"
+
+msgid "Training created"
+msgstr "प्रशिक्षण योजना तैयार की.get(\"Training created\")"
+
+msgid "Training ID is required"
+msgstr "प्रशिक्षण आईडी का मांग होता है"
+
+msgid "Training marked as complete"
+msgstr "प्रशिक्षण पूरा अंकित किया गया"
 
 msgid "Type a message..."
 msgstr "एक संदेश लिखें..."
 
+msgid "Type created"
+msgstr "तरीका बनाया गया"
+
 msgid "Unassigned"
 msgstr "असौंपा"
+
+msgid "Unauthorized"
+msgstr "अनुमोदित नहीं"
+
+msgid "Unauthorized: Cannot remove attribute"
+msgstr "अनुमोदित नहीं: स्पर्श गुणांक हटा नहीं सकते"
+
+msgid "Unauthorized: Cannot update attribute"
+msgstr "अनुमोदित नहीं: स्पर्श गुणांक पर कैसे अपडेट करा सकता हों मत लगवाओ"
 
 msgid "Unissued serial/batch materials"
 msgstr "अजारी सीरीज़/बैच सामग्री"
 
 msgid "unit"
 msgstr "विधि"
+
+msgid "Unit of measure created"
+msgstr "मापक्रम बनाया गया है"
 
 msgid "Unknown"
 msgstr "अज्ञात"
@@ -1678,11 +5843,359 @@ msgstr "बदलाव बचा है"
 msgid "Update"
 msgstr "अपडेट करें"
 
+msgid "Update failed"
+msgstr "अपडेट विफल रहा"
+
 msgid "Update step"
 msgstr "अपडेट कदम"
 
+msgid "Updated account"
+msgstr "अपडेट खाता"
+
+msgid "Updated API key"
+msgstr "अपडेट डायपी की सुरक्षित पत्रिका"
+
+msgid "Updated attribute category "
+msgstr "अपडेट विशेषता क्याटेगरी "
+
+msgid "Updated attribute value"
+msgstr "अपडेट दिए गए प्रांत का मूल्य"
+
+msgid "Updated company"
+msgstr "अपडेट विनियमन"
+
+msgid "Updated consumable"
+msgstr "अपडेट दिया गया संवर्तन"
+
+msgid "Updated consumable costing"
+msgstr "अपडेट खर्चित कस्टिंग"
+
+msgid "Updated consumable inventory"
+msgstr "अपडेट खरीदारी सम्पत्ति"
+
+msgid "Updated consumable planning"
+msgstr "अपडेट खर्चाता प्लैनिंग"
+
+msgid "Updated consumable purchasing"
+msgstr "अपडेट खरीदारी संपन्न"
+
+msgid "Updated customer"
+msgstr "अपडेट ग्राहक"
+
+msgid "Updated customer payment terms"
+msgstr "अपडेट ग्राहक की भुगतान परियोजना"
+
+msgid "Updated customer portal"
+msgstr "अपडेट ग्राहक पोर्टल"
+
+msgid "Updated customer shipping"
+msgstr "अपडेट ग्राहक की डिलीवरी"
+
+msgid "Updated customer status"
+msgstr "अपडेट ग्राहक की स्थिति"
+
+msgid "Updated customer tax information"
+msgstr "अपडेट ग्राहक के आदान-प्रदान सूचना"
+
+msgid "Updated customer type"
+msgstr "अपडेट ग्राहक प्रकार"
+
+msgid "Updated default accounts"
+msgstr "अपडेट डिफल्ट खाते सूची"
+
+msgid "Updated dimension"
+msgstr "अपडेट डिमेशन"
+
+msgid "Updated dispatch status"
+msgstr "अपडेट डिप्शन स्थिति"
+
+msgid "Updated document"
+msgstr "अपडेट दिए गए डокумент"
+
+msgid "Updated employee type"
+msgstr "अपडेट एम्प्लॉयी प्रकार"
+
+msgid "Updated exchange rate"
+msgstr "अद्यतन बाजार मानकर्ता दर"
+
+msgid "Updated failure mode"
+msgstr "अपडेट फाइलर मोड"
+
+msgid "Updated gauge"
+msgstr "अपडेट गेज"
+
+msgid "Updated gauge type"
+msgstr "अपडेट डिजाइन प्रकार"
+
+msgid "Updated group"
+msgstr "अपडेट ग्रुप"
+
+msgid "Updated issue"
+msgstr "अपडेट दिया गया समस्या"
+
+msgid "Updated issue status"
+msgstr "अपडेट इस्सUE स्टाशस"
+
+msgid "Updated issue type"
+msgstr "अपडेट इस्सUE प्रकार"
+
+msgid "Updated item"
+msgstr "अपडेट इंजमेंट"
+
+msgid "Updated item group"
+msgstr "अपडेट इंटम ग्रुप"
+
+msgid "Updated job"
+msgstr "अपडेट डायोज़"
+
+msgid "Updated job status"
+msgstr "अपडेट डायोज़ स्टैटस"
+
+msgid "Updated kanban"
+msgstr "अपडेट कैन्बॉन"
+
+msgid "Updated maintenance schedule"
+msgstr "अपडेट रखी मैनटेन्स सिक्युलर"
+
+msgid "Updated material"
+msgstr "अपडेट डाटा"
+
+msgid "Updated material costing"
+msgstr "अद्यतन लक्षा की खराबी समूह"
+
+msgid "Updated material form"
+msgstr "अपडेट दिया गया सामग्री फॉर्म"
+
+msgid "Updated material grade"
+msgstr "अधिaded मटेरियल"
+
+msgid "Updated material inventory"
+msgstr "अपडेट लागू धातु सम्पदा"
+
+msgid "Updated material planning"
+msgstr "अपडेट लाईब्रेरी मैटेरियल प्लानिंग"
+
+msgid "Updated material purchasing"
+msgstr "अपडेट लक्षाते रखा मैटेरियल संशोधन"
+
+msgid "Updated material substance"
+msgstr "अपडेट दिए गए सामग्री मूल्य"
+
+msgid "Updated material type"
+msgstr "अपडेट दिए गए सामग्री प्रकार"
+
+msgid "Updated no quote reason"
+msgstr "अपडेट ना कारण"
+
+msgid "Updated order"
+msgstr "अपडेट दिया गया संग्रह"
+
+msgid "Updated part"
+msgstr "अपडेट दिया गया भाग"
+
+msgid "Updated part costing"
+msgstr "अपडेट भाग की मूल्यवैकल्पिकkeiten"
+
+msgid "Updated part inventory"
+msgstr "अपडेट वार्ड सटिवीलरी"
+
+msgid "Updated part manufacturing"
+msgstr "अपडेट वार्ता उत्पादन"
+
+msgid "Updated part planning"
+msgstr "अपडेट वार्ता योजना"
+
+msgid "Updated part purchasing"
+msgstr "अपडेट वार्ड पर्चेजिंग"
+
+msgid "Updated part sale price"
+msgstr "अपडेट भाग बिक्री मूल्य"
+
+msgid "Updated payment term"
+msgstr "अपडेट वित्तीय शर्त"
+
+msgid "Updated picking list"
+msgstr "अपडेट चयन सूची"
+
+msgid "Updated picking list status"
+msgstr "अपडेट चयन सूची के स्थिति"
+
+msgid "Updated process completion"
+msgstr "अपडेट विधि पूरा होने की सूचना"
+
+msgid "Updated production event"
+msgstr "अपडेट उत्पादन घटना"
+
+msgid "Updated profile"
+msgstr "अपडेट डायनामिक प्रोफाइल"
+
+msgid "Updated purchase invoice"
+msgstr "अपडेट खरीद क्रमांक"
+
+msgid "Updated purchase invoice delivery"
+msgstr "अपडेट खरीद क्रमांक पहुंच"
+
+msgid "Updated purchase invoice status"
+msgstr "अपडेट खरीद क्रमांक स्थिति"
+
+msgid "Updated purchase order"
+msgstr "अपडेट खरीद कार्यक्रम"
+
+msgid "Updated purchase order delivery"
+msgstr "अपडेट खरीद क्रमांक पहुंच"
+
+msgid "Updated purchase order payment"
+msgstr "अपडेट खरीद क्रम संपादन"
+
+msgid "Updated purchasing order status"
+msgstr "अपडेट खरीदारी का संबंधित अवस्था"
+
+msgid "Updated quote"
+msgstr "अपडेट डायरेक्शन"
+
+msgid "Updated quote line"
+msgstr "अपडेट दिए गए कॉट्यूज राइने"
+
+msgid "Updated quote payment"
+msgstr "अपडेट अनुबंध का किताबचाही"
+
+msgid "Updated quote shipment"
+msgstr "अपडेट दिए गए कॉट्यूज़ की भंडारणा"
+
+msgid "Updated quote status"
+msgstr "अपडेट दिया गया कॉट्यूज़ स्टाटस"
+
+msgid "Updated receipt"
+msgstr "अपडेट लेखा"
+
+msgid "Updated RFQ"
+msgstr "अपडेट एनफ्यूज़"
+
+msgid "Updated RFQ status"
+msgstr "अपडेट डिवीएस स्टेटस"
+
+msgid "Updated sales invoice"
+msgstr "अपडेट विक्रय काहस्त्रोंकी संकलन"
+
+msgid "Updated sales invoice shipping"
+msgstr "अपडेट विक्रय काहस्त्र भंडारण"
+
+msgid "Updated sales invoice status"
+msgstr "अपडेट विक्रय काहस्त्र स्थिति"
+
+msgid "Updated sales order payment"
+msgstr "अपडेट बिक्री का सूचना कराने वाला किताबचारा"
+
+msgid "Updated sales order shipment"
+msgstr "अपडेट विक्रय कार्ड भंडारण"
+
+msgid "Updated sales order status"
+msgstr "अपडेट विक्रय क्रम स्थिति"
+
+msgid "Updated scrap reason"
+msgstr "अपडेट ड्राइवर का कारण"
+
+msgid "Updated sequence"
+msgstr "अपडेट श्रृंखला"
+
+msgid "Updated shipment"
+msgstr "अपडेट शिपमेंट"
+
+msgid "Updated shipping method"
+msgstr "अपडेट डिलीवरी विधि"
+
+msgid "Updated storage type"
+msgstr "अपडेट डायनामिक प्रकार"
+
+msgid "Updated storageUnit"
+msgstr "अपडेट डायनामिक्सUNIT"
+
+msgid "Updated style color"
+msgstr "अपडेट डिज़ाइन पंत्री"
+
+msgid "Updated style costing"
+msgstr "अपडेट डिजाइन की लागत"
+
+msgid "Updated style inventory"
+msgstr "अपडेट डिवाइन स्टॉक"
+
+msgid "Updated style planning"
+msgstr "अपडेट डिजाइन प्लैनिंग"
+
+msgid "Updated style sale price"
+msgstr "अद्यतन दिए गए सैल प्रिस की शॉपिंग मूल्य"
+
+msgid "Updated style size"
+msgstr "अपडेट डिशाइन परिमाप"
+
+msgid "Updated subsidiary"
+msgstr "अपडेट शाखा"
+
 msgid "Updated successfully"
 msgstr "सफलतापूर्वक अपडेट किया गया"
+
+msgid "Updated supplier"
+msgstr "अपडेट दिया गया संशोधक"
+
+msgid "Updated supplier payment terms"
+msgstr "अपडेट दिए गए प्रदाता की किस्मत संरचना"
+
+msgid "Updated supplier quote status"
+msgstr "अपडेट विनियोजक कॉट्स अवस्था"
+
+msgid "Updated supplier shipping"
+msgstr "अपडेट दिया गया संशोधक पाकरण"
+
+msgid "Updated supplier tax information"
+msgstr "अपडेट दिए गए प्रदाता के आकर्षण जानकारी"
+
+msgid "Updated supplier type"
+msgstr "अपडेट विनियमित दाता प्रकार"
+
+msgid "Updated suppliers"
+msgstr "अपडेट दिए गए पार्टनरों"
+
+msgid "Updated task status"
+msgstr "अपडेट एंटी के स्थिति"
+
+msgid "Updated tool"
+msgstr "अपडेट तैयारी"
+
+msgid "Updated tool costing"
+msgstr "अपडेट तैयारी क्रमसूची"
+
+msgid "Updated tool inventory"
+msgstr "अपडेट तैयारी समावेश"
+
+msgid "Updated tool manufacturing"
+msgstr "अपडेट तैयारी की संशोधन"
+
+msgid "Updated tool planning"
+msgstr "अपडेट तैयारी समायोजन"
+
+msgid "Updated tool purchasing"
+msgstr "अपडेट तैयारी की खरीदरी"
+
+msgid "Updated unit of measure"
+msgstr "अपडेट इकाई"
+
+msgid "Updated warehouse transfer"
+msgstr "अपडेट तरफ़ स्टॉक परिवहन"
+
+msgid "Updated warehouse transfer line"
+msgstr "अपडेट दिए गए स्टॉक परिवहन पंक्ति"
+
+msgid "Updated warehouse transfer status"
+msgstr "अपडेट तरफ़ स्टॉक प्रस्तुति स्थिति"
+
+msgid "Updated webhook"
+msgstr "अपडेट वर्कहॉक"
+
+msgid "Updated work center "
+msgstr "अपडेट वर्क केंटर "
+
+msgid "Updating user permissions"
+msgstr "उपयोगकर्ता प्रवेन अधिकारों की अपडेट"
 
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
@@ -1697,6 +6210,18 @@ msgstr "एक अलग ईमेल का उपयोग करें"
 
 msgid "Use a different phone number"
 msgstr "दूसरा फोन नंबर का उपयोग करें"
+
+msgid "Use the entity picker to split this row"
+msgstr "इस पंक्ति को विभाजित करने के लिए संबंधी चयनकर्ता का उपयोग करें"
+
+msgid "User already deactivated"
+msgstr "उपयोगकर्ता शुद्धित किया गया है"
+
+msgid "User not found"
+msgstr "उपयोगकर्ता नहीं मिला"
+
+msgid "User record not found"
+msgstr "उपयोगकर्ता रिकॉर्ड नहीं मिला"
 
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"
@@ -1715,6 +6240,9 @@ msgstr "आयतन:"
 
 msgid "Waiting"
 msgstr "प्रतीक्षारत"
+
+msgid "Warehouse transfer deleted successfully"
+msgstr "स्टॉक परिवहन सफलतापूर्वक हटा दिया.get@2023"
 
 msgid "We've sent a verification code to {email}"
 msgstr "हमने {email} पर एक सत्यापन कोड भेजा है"
@@ -1740,6 +6268,9 @@ msgstr "WIP"
 msgid "Work Center"
 msgstr "कार्य केंद्र"
 
+msgid "Work Center Blocked"
+msgstr "कार्य सेंटर ब्लॉकेड"
+
 msgid "Work Order"
 msgstr "कार्य अनुसंधान"
 
@@ -1752,12 +6283,30 @@ msgstr "पीला"
 msgid "You belong to more than one company. Pick where to work."
 msgstr "आपको एक से अधिक कंपनी में साझा है। काम करने वाली कंपनी चुनें।"
 
+msgid "You cannot deactivate yourself"
+msgstr "आपको आपकी स्वयं को डिसैकेटने का अधिकार नहीं है"
+
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "आप {0} पर क्लॉक इन हुए हैं। आप नीचे अपने क्लॉक-आउट समय को संपादित कर सकते हैं या यह स्वीकार कर सकते हैं कि आप अभी भी काम कर रहे हैं।"
 
+msgid "You do not have permission to approve this request"
+msgstr "आपको यह अनुमोदन करने की प्रविष्टि है नहीं मिलती है"
+
+msgid "You do not have permission to deactivate this supplier"
+msgstr "आपको यह संशोधन करने की प्रविष्टि नहीं है यह वार्ता पार्टनर"
+
+msgid "You do not have permission to reopen this purchase order"
+msgstr "आपके पास यह खरीद क्रम संशोधित करने की अनुमति नहीं है"
+
+msgid "You do not have permission to update permissions"
+msgstr "आप परिवर्तन की अनुमति संशोधित करने के लिए नहीं हैं"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "आप {hoursElapsed} घंटे के लिए क्लॉक इन हैं। क्या आप क्लॉक आउट करना भूल गए?"
+
+msgid "Your account is not active"
+msgstr "आपका खाते अक्सर सक्रिय नहीं है"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "आपकी कंपनी निःशुल्क योजना (केवल पढ़ने के लिए) पर है। बदलाव करने के लिए अपग्रेड करें।"

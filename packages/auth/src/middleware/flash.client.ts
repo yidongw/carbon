@@ -1,21 +1,21 @@
 import { getActiveI18n } from "@carbon/locale";
-import { serverFlashMessages, toast } from "@carbon/react";
+import { toast, translateServerToast } from "@carbon/react";
 import type { MiddlewareFunction } from "react-router";
 import type { Result } from "../types";
 
 /**
  * Localize a server-generated flash message. Server code (which can't reach the
- * app's Lingui catalog) sends the English source string; we look it up in
- * `serverFlashMessages` and render the matched `msg` descriptor via the active
- * catalog. The descriptor is required because Carbon's compiled catalog is
- * hash-keyed — a raw source string is never a catalog key. Unknown messages
- * (and the pre-hydration window before a catalog is active) pass through as-is.
+ * app's Lingui catalog) sends the English source string; we look it up in the
+ * generated `serverToastMessages` catalog (scripts/gen-server-toasts.ts) and
+ * render the matched `msg` descriptor via the active catalog. The descriptor is
+ * required because Carbon's compiled catalog is hash-keyed — a raw source string
+ * is never a catalog key. Unknown / interpolated messages (and the pre-hydration
+ * window before a catalog is active) pass through as-is.
  */
 function localize(message: string | undefined): string | undefined {
   if (!message) return message;
-  const descriptor = serverFlashMessages[message];
   const i18n = getActiveI18n();
-  return descriptor && i18n ? i18n._(descriptor) : message;
+  return i18n ? translateServerToast(message, i18n) : message;
 }
 
 type ClientMiddlewareResult = Record<

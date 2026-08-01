@@ -60,7 +60,7 @@
     "lingui:check": "pnpm run lingui:extract && pnpm run lingui:compile",
     "lingui:compile": "lingui compile --namespace es",
     "lingui:extract": "pnpm run lingui:extract:raw && pnpm run lingui:clean",
-    "lingui:extract:raw": "tsx scripts/gen-seed-display-names.ts && lingui extract --clean",
+    "lingui:extract:raw": "tsx scripts/gen-seed-display-names.ts && tsx scripts/gen-server-toasts.ts && lingui extract --clean",
     "lingui:clean": "node ./scripts/strip-po-headers.mjs",
     "novu:sync": "pnpm dlx novu@latest sync --bridge-url https://app.carbon.ms/api/novu --secret-key $NOVU_SECRET_KEY --api-url https://api.novu.co",
     "prepare": "pnpm exec husky install",
