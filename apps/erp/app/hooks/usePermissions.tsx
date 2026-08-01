@@ -9,6 +9,7 @@ export function usePermissions() {
   const data = useRouteData<{
     permissions: Record<string, Permission>;
     role: "employee" | "supplier" | "customer";
+    readOnly?: boolean;
   }>(path.to.authenticatedRoot);
 
   const {
@@ -23,14 +24,22 @@ export function usePermissions() {
     );
   }
 
+  // Free-tier (unpaid) Cloud companies are read-only: they can view everything
+  // but cannot create/update/delete. This mirrors the server-side block in
+  // `requirePermissions`, so New/Edit/Delete/Save controls disable themselves.
+  const readOnly = data?.readOnly ?? false;
+
   const can = useCallback(
     (action: "view" | "create" | "update" | "delete", feature: string) => {
+      if (readOnly && action !== "view") {
+        return false;
+      }
       return (
         data?.permissions[feature]?.[action].includes("0") ||
         data?.permissions[feature]?.[action].includes(companyId)
       );
     },
-    [companyId, data?.permissions]
+    [companyId, data?.permissions, readOnly]
   );
 
   const has = useCallback(

@@ -1,6 +1,11 @@
 import type { Database } from "@carbon/database";
 import { checkApiKeyRateLimit } from "@carbon/database/ratelimit";
-import { Edition, Plan } from "@carbon/utils";
+import {
+  Edition,
+  normalizePlanId,
+  Plan,
+  READ_ONLY_MESSAGE
+} from "@carbon/utils";
 import type {
   AuthSession as SupabaseAuthSession,
   SupabaseClient
@@ -13,6 +18,7 @@ import {
   getAppUrl,
   REFRESH_ACCESS_TOKEN_THRESHOLD,
   STRIPE_BYPASS_COMPANY_IDS,
+  STRIPE_BYPASS_USER_IDS,
   SUPABASE_ANON_KEY,
   SUPABASE_SERVICE_ROLE_KEY,
   SUPABASE_URL,
@@ -207,6 +213,120 @@ function getEffectiveUser(
   }
 }
 
+/**
+ * Route prefixes that stay writable even for a read-only free company, so an
+ * unpaid user is never trapped: they must always be able to upgrade (billing),
+ * switch or create companies (incl. the demo), onboard, and log out.
+ */
+const READ_ONLY_EXEMPT_PREFIXES = [
+  "/x/settings/billing",
+  "/x/settings/company/switch/",
+  "/x/settings/company/demo",
+  "/onboarding",
+  "/select-company",
+  "/logout"
+];
+
+function isReadOnlyExemptPath(pathname: string): boolean {
+  return READ_ONLY_EXEMPT_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix)
+  );
+}
+
+/**
+ * Where to send a blocked read-only write. We bounce back to the page the user
+ * was on (the same-origin `referer`) so they stay put and only see the toast,
+ * rather than being kicked to the dashboard. Falls back to the app root.
+ */
+function refererPathOrDefault(request: Request): string {
+  const referer = request.headers.get("referer");
+  if (referer) {
+    try {
+      // Only the path is reused, and it's issued as a relative redirect, so a
+      // cross-origin or spoofed referer can never redirect off-site. We don't
+      // compare origins because behind a proxy `request.url` carries the
+      // internal host, not the public one, which would reject every referer.
+      const { pathname, search } = new URL(referer);
+      if (pathname.startsWith("/x") || pathname.startsWith("/onboarding")) {
+        return `${pathname}${search}`;
+      }
+    } catch {
+      // ignore a malformed referer and fall through to the default
+    }
+  }
+  return path.to.authenticatedRoot;
+}
+
+function requestsWrite(requiredPermissions: {
+  create?: unknown;
+  update?: unknown;
+  delete?: unknown;
+}): boolean {
+  return (
+    "create" in requiredPermissions ||
+    "update" in requiredPermissions ||
+    "delete" in requiredPermissions
+  );
+}
+
+/**
+ * A company is "read-only" when it is on the free tier of Carbon Cloud: users
+ * can browse everything but cannot insert/update/delete. This is the paywall
+ * lever for unpaid real companies. It never applies to:
+ *  - self-hosted editions (only Cloud paywalls),
+ *  - bypass-listed companies/users (internal/dev/comped),
+ *  - demo companies — kept fully usable, that's their whole purpose,
+ *  - companies with any real plan, active subscription, or one-time term.
+ *
+ * A never-paid company has no `companyPlan` row at all, so `planId` normalizes
+ * to `Plan.Unknown`; any STARTER/BUSINESS/PARTNER row short-circuits to writable
+ * (this protects partners, who are non-subscription but have a real `planId`).
+ */
+export async function isCompanyReadOnly(
+  companyId: string,
+  userId: string
+): Promise<boolean> {
+  if (CarbonEdition !== Edition.Cloud) return false;
+
+  const inList = (raw: string | undefined, value: string) =>
+    (raw ?? "")
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .includes(value);
+  if (
+    inList(STRIPE_BYPASS_COMPANY_IDS, companyId) ||
+    inList(STRIPE_BYPASS_USER_IDS, userId)
+  ) {
+    return false;
+  }
+
+  const serviceRole = getCarbonServiceRole();
+  const [companyResult, planResult] = await Promise.all([
+    serviceRole
+      .from("company")
+      .select("isDemo")
+      .eq("id", companyId)
+      .maybeSingle(),
+    serviceRole
+      .from("companyPlan")
+      .select("planId, stripeSubscriptionId, paymentMode, termEndsAt")
+      .eq("id", companyId)
+      .maybeSingle()
+  ]);
+
+  // The demo company is always fully usable.
+  if (companyResult.data?.isDemo) return false;
+
+  const plan = planResult.data;
+  const isUnpaid =
+    normalizePlanId(plan?.planId) === Plan.Unknown &&
+    !plan?.stripeSubscriptionId &&
+    !(plan?.paymentMode === "one_time" && plan?.termEndsAt);
+
+  return isUnpaid;
+}
+
 export async function requirePermissions(
   request: Request,
   requiredPermissions: {
@@ -322,6 +442,14 @@ export async function requirePermissions(
         }
       }
 
+      // Read-only free companies cannot write via the API either.
+      if (
+        requestsWrite(requiredPermissions) &&
+        (await isCompanyReadOnly(companyId, userId))
+      ) {
+        throw new Response(READ_ONLY_MESSAGE, { status: 403 });
+      }
+
       const client = getCarbonAPIKeyClient(apiKey);
 
       return {
@@ -352,6 +480,19 @@ export async function requirePermissions(
       sessionUserId: userId,
       consoleMode
     };
+  }
+
+  // Free-tier (unpaid) Cloud companies are read-only: block any write unless the
+  // route is on the allowlist that lets an unpaid user upgrade or switch away.
+  if (
+    requestsWrite(requiredPermissions) &&
+    !isReadOnlyExemptPath(new URL(request.url).pathname) &&
+    (await isCompanyReadOnly(companyId, userId))
+  ) {
+    throw redirect(
+      refererPathOrDefault(request),
+      await flash(request, error({ readOnly: true }, READ_ONLY_MESSAGE))
+    );
   }
 
   const myClaims = await getUserClaims(userId, companyId);
