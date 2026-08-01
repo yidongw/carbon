@@ -45,6 +45,7 @@ import { DemoSeedTrigger } from "~/components/DemoSeedTrigger";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import { PlanRenewalBanner } from "~/components/PlanRenewalBanner";
+import { Screensaver } from "~/components/Screensaver";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
@@ -452,6 +453,7 @@ export default function AuthenticatedRoute() {
                     )}
                     <OverlayHost />
                     <FloatingChat />
+                    <Screensaver />
                   </TooltipProvider>
                 </OverlayProvider>
               </TopbarProvider>
