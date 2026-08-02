@@ -3,6 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -27,12 +28,14 @@ msgstr "{0} 个活跃"
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} complete"
 msgstr "{0} / {1} 已完成"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} completed"
 msgstr "{0} / {1} 已完成"
@@ -52,8 +55,17 @@ msgstr "{0} 个吊牌中有 {failed} 个失败"
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "已过有效期的批次或序列号已被使用。"
 
+msgid "A depreciation run already exists for this period"
+msgstr "这个期间已经存在一个折旧运行"
+
 msgid "About"
 msgstr "关于"
+
+msgid "Account created"
+msgstr "账户已创建"
+
+msgid "Account moved"
+msgstr "账户已移动"
 
 msgid "Account Settings"
 msgstr "账户设置"
@@ -88,6 +100,9 @@ msgstr "新增记录集"
 msgid "Add Spare Part"
 msgstr "添加备件"
 
+msgid "Added colors and sizes"
+msgstr "已添加颜色和尺寸"
+
 msgid "Adjust stock down"
 msgstr "减少库存"
 
@@ -96,6 +111,30 @@ msgstr "增加库存"
 
 msgid "All"
 msgstr "全部"
+
+msgid "All active assets are already covered for this period"
+msgstr "所有当前活跃的资产在此期间均已覆盖"
+
+msgid "An approval request already exists for this supplier"
+msgstr "此供应商已有审批请求"
+
+msgid "Approval request not found"
+msgstr "审批请求未找到"
+
+msgid "Approval request submitted"
+msgstr "审批请求已提交"
+
+msgid "Approval rule created"
+msgstr "已创建审批规则"
+
+msgid "Approval rule deleted successfully"
+msgstr "审批规则删除成功"
+
+msgid "Approval rule not found"
+msgstr "未找到审批规则"
+
+msgid "Approval rule updated"
+msgstr "审批规则已更新"
 
 msgid "Approve"
 msgstr "批准"
@@ -112,20 +151,39 @@ msgstr "已批准"
 msgid "Approved"
 msgstr "已批准"
 
+msgid "Archive ID is required"
+msgstr "归档ID是必需的"
+
 msgid "Are you sure you want to delete this step?"
 msgstr "确定要删除此步骤吗？"
 
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
 msgstr "确定要删除此考勤记录吗？此操作无法撤销。"
 
-msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
+msgid ""
+"Are you sure you want to end all production events? This will end all active"
+" operations without completing or finishing them."
 msgstr "确定要结束所有生产事件吗？这将终止所有活跃工序，而不会完成它们。"
 
-msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
+msgid ""
+"Are you sure you want to finish this operation? This will end all active "
+"production events for this operation."
 msgstr "您确定要完成此操作吗？这将结束此操作的所有正在进行的生产事件。"
 
 msgid "Are you sure you want to leave this page?"
 msgstr "您确定要离开此页面吗？"
+
+msgid "Asset class created"
+msgstr "已创建资产类别"
+
+msgid "Asset class updated"
+msgstr "资产类别已更新"
+
+msgid "Asset disposed successfully"
+msgstr "资产已成功处置"
+
+msgid "Asset registered successfully"
+msgstr "资产注册成功"
 
 msgid "Assigned"
 msgstr "已分配"
@@ -136,14 +194,50 @@ msgstr "分配给我"
 msgid "Assignee"
 msgstr "负责人"
 
+msgid "Assignment created successfully"
+msgstr "分配创建成功"
+
+msgid "Assignment deleted successfully"
+msgstr "分配删除成功"
+
+msgid "Assignment ID is required"
+msgstr "分配ID是必需的"
+
+msgid "Assignment rule created"
+msgstr "分配规则已创建"
+
+msgid "Assignment rule deleted"
+msgstr "分配规则已删除"
+
+msgid "Assignment rule updated"
+msgstr "分配规则已更新"
+
+msgid "Assignment updated successfully"
+msgstr "分配已成功更新"
+
 msgid "Attach File"
 msgstr "附加文件"
+
+msgid "Attribute recorded successfully"
+msgstr "属性记录成功"
+
+msgid "Audit logging disabled"
+msgstr "审核日志已禁用"
+
+msgid "Audit logging enabled"
+msgstr "审核日志已启用"
 
 msgid "Authentication Error"
 msgstr "认证错误"
 
 msgid "available"
 msgstr "可用的"
+
+msgid "Bad request for next sequence"
+msgstr "无效的请求继续序列"
+
+msgid "Bad request for rolling back sequence"
+msgstr "无效的回滚序列请求"
 
 msgid "Batch"
 msgstr "批次"
@@ -174,11 +268,14 @@ msgstr "阻塞中"
 msgid "Blue"
 msgstr "蓝色"
 
+msgid "Bot verification failed. Please try again."
+msgstr "验证码错误，请重试。"
+
 msgid "Brown"
 msgstr "棕色"
 
 msgid "Browse bundles and print bundle tickets"
-msgstr "浏览捆包并打印捆包标签"
+msgstr "浏览分包并打印分包标签"
 
 msgid "Browse cutting work orders and their bundles"
 msgstr "浏览切削工单及其分包"
@@ -192,17 +289,27 @@ msgstr "浏览器"
 msgid "Bundle"
 msgstr "分包"
 
+msgid "Bundle not found"
+msgstr "未找到分包"
+
 msgid "Bundle Work Orders"
 msgstr "分包工单"
 
 msgid "Bundles"
 msgstr "分包"
 
-msgid "But don't worry. You can use the forgot password flow to request a new magic link."
+msgid ""
+"But don't worry. You can use the forgot password flow to request a new magic"
+" link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
 
-msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
+msgid ""
+"By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy "
+"Policy.</1>"
 msgstr "登录即表示您同意<0>服务条款</0>和<1>隐私政策。</1>"
+
+msgid "Calibration record created"
+msgstr "已创建校准记录"
 
 msgid "Camera unavailable — use manual selection below."
 msgstr "相机不可用 — 请使用下方手动选择。"
@@ -218,6 +325,53 @@ msgstr "已取消"
 
 msgid "Cancelled"
 msgstr "取消"
+
+msgid "Cannot delete a posted receipt"
+msgstr "不能删除已录入的单据"
+
+msgid "Cannot delete a posted shipment"
+msgstr "不能删除已发布发货单"
+
+msgid "Cannot edit a protected customer type"
+msgstr "不能编辑受保护的客户类型"
+
+msgid "Cannot edit a protected supplier type"
+msgstr "不能编辑受保护的供应商类型"
+
+msgid "Cannot edit global material grade"
+msgstr "不能编辑全局材料等级"
+
+msgid "Cannot edit global material shape"
+msgstr "不能编辑全局材料形状"
+
+msgid "Cannot edit global material substance"
+msgstr "不能编辑全局物料成分"
+
+msgid "Cannot edit global material type"
+msgstr "不能编辑全局物料类型"
+
+msgid "Cannot edit global style color"
+msgstr "无法编辑全局款式颜色"
+
+msgid "Cannot edit global style size"
+msgstr "无法编辑全局款式尺寸"
+
+msgid "Cannot finish operation"
+msgstr "无法完成操作"
+
+msgid "Cannot modify a locked picking list. Reopen it first."
+msgstr "不能修改已锁定的拣货单。先重新打开它。"
+
+msgid "Cannot reprint a job that is still generating"
+msgstr "仍正在生成的工单无法重新打印"
+
+msgid "Cannot start operation"
+msgstr "无法启动操作"
+
+msgid ""
+"Cannot update status of draft purchase invoice. Please post the invoice "
+"first."
+msgstr "无法更新草稿采购发票的状态。请先确认发票。"
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "在3D查看器中显示的模型画布"
@@ -264,9 +418,15 @@ msgstr "上班打卡"
 msgid "Clock Out"
 msgstr "下班打卡"
 
+msgid "Clocked in"
+msgstr "打卡签到"
+
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "自 {0} 起已打卡上班"
+
+msgid "Clocked out"
+msgstr "打卡退出"
 
 msgid "Collapse"
 msgstr "折叠"
@@ -294,8 +454,17 @@ msgstr "列：{0}"
 msgid "Columns"
 msgstr "列"
 
+msgid "Comment saved"
+msgstr "评论已保存"
+
 msgid "Company"
 msgstr "公司"
+
+msgid "Company not found"
+msgstr "公司未找到"
+
+msgid "Company ownership has been transferred successfully"
+msgstr "公司所有权已成功转移"
 
 msgid "Complete"
 msgstr "完成"
@@ -312,11 +481,23 @@ msgstr "控制台"
 msgid "Console Mode"
 msgstr "控制台模式"
 
+msgid "Console operator created successfully"
+msgstr "控制台操作员创建成功"
+
+msgid "Console Operator employee type not found. Run the migration."
+msgstr "控制台操作员员工类型未找到。运行迁移。"
+
 msgid "Consumed expired"
 msgstr "已消耗过期"
 
 msgid "Continue with WeChat"
 msgstr "使用微信继续"
+
+msgid "Contractor created"
+msgstr "已创建承包商"
+
+msgid "Contractor updated"
+msgstr "承包商已更新"
 
 msgid "Copied!"
 msgstr "已复制！"
@@ -326,6 +507,15 @@ msgstr "复制"
 
 msgid "Copy to clipboard"
 msgstr "复制到剪贴板"
+
+msgid "Correct the completed, rework and scrap quantities."
+msgstr "修正已完成、重工和报废的数量。"
+
+msgid "Cost center created"
+msgstr "已创建成本中心"
+
+msgid "Cost center updated"
+msgstr "成本中心已更新"
 
 msgid "Create"
 msgstr "创建"
@@ -340,10 +530,19 @@ msgid "Create Issue"
 msgstr "创建问题"
 
 msgid "Create Quality Issue"
-msgstr "创建质量issue"
+msgstr "创建质量问题"
 
 msgid "Create Rework"
 msgstr "创建返工"
+
+msgid "Created company"
+msgstr "已创建公司"
+
+msgid "Created maintenance dispatch"
+msgstr "已创建维护派工单"
+
+msgid "Created webhook"
+msgstr "已创建webhook"
 
 msgid "Current process"
 msgstr "当前工序"
@@ -353,6 +552,30 @@ msgstr "当前"
 
 msgid "Customer"
 msgstr "客户"
+
+msgid "Customer address updated"
+msgstr "客户地址已更新"
+
+msgid "Customer contact created"
+msgstr "已创建客户联系人"
+
+msgid "Customer contact updated"
+msgstr "客户联系信息已更新"
+
+msgid "Customer invited"
+msgstr "已邀请客户"
+
+msgid "Customer location created"
+msgstr "已创建客户位置"
+
+msgid "Customer portal created"
+msgstr "客户门户已创建"
+
+msgid "Customer status created"
+msgstr "已创建客户状态"
+
+msgid "Customer type created"
+msgstr "已创建客户类型"
 
 msgid "Dark Mode"
 msgstr "深色模式"
@@ -375,6 +598,9 @@ msgstr "默认存储单位"
 msgid "Delete"
 msgstr "删除"
 
+msgid "Delete failed"
+msgstr "删除失败"
+
 msgid "Delete step"
 msgstr "删除步骤"
 
@@ -384,6 +610,33 @@ msgstr "删除步骤"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "删除考勤记录 ({0})"
+
+msgid "Deleted attribute value"
+msgstr "已删除的属性值"
+
+msgid "Deleted warehouse transfer line"
+msgstr "已删除仓库调拨行"
+
+msgid "Demand forecasts created successfully"
+msgstr "需求预测创建成功"
+
+msgid "Demand forecasts updated successfully"
+msgstr "需求预测更新成功"
+
+msgid "Demand projections deleted successfully"
+msgstr "需求预测删除成功"
+
+msgid "Department created"
+msgstr "已创建部门"
+
+msgid "Department updated"
+msgstr "部门已更新"
+
+msgid "Depreciation run created"
+msgstr "已创建折旧运行"
+
+msgid "Depreciation run posted"
+msgstr "折旧运行已记账"
 
 msgid "Describe the problem..."
 msgstr "描述问题..."
@@ -396,6 +649,9 @@ msgstr "描述"
 
 msgid "Details"
 msgstr "详情"
+
+msgid "Dimension created"
+msgstr "已创建尺寸"
 
 msgid "Dimensions"
 msgstr "尺寸"
@@ -434,9 +690,12 @@ msgstr "拖放文件到此处，或点击选择文件"
 msgid "Dragging {0} cancelled."
 msgstr "拖拽 {0} 已取消。"
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(
+#. operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "截止 {0}"
 
@@ -452,11 +711,20 @@ msgstr "重复的序列号"
 msgid "Duration"
 msgstr "时长"
 
+msgid "Each line must have an account"
+msgstr "每行必须有一个账户"
+
+msgid "Each line must have either a debit or credit amount"
+msgstr "每行必须有借方或贷方金额"
+
 msgid "Earned"
 msgstr "已获得"
 
 msgid "Edit"
 msgstr "编辑"
+
+msgid "Elimination entries generated"
+msgstr "生成的消除条目"
 
 msgid "Email"
 msgstr "电子邮件"
@@ -467,6 +735,9 @@ msgstr "电子邮箱"
 msgid "Employee"
 msgstr "员工"
 
+msgid "Employee type created"
+msgstr "已创建员工类型"
+
 msgid "Employees"
 msgstr "员工"
 
@@ -476,21 +747,141 @@ msgstr "空的工作中心"
 msgid "End Operations"
 msgstr "结束工序"
 
+msgid "Enter a quantity greater than zero"
+msgstr "输入大于零的数量"
+
 #. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
 msgstr "输入 {0} 的 PIN 码"
 
+msgid "Entry added"
+msgstr "条目已添加"
+
+msgid "Entry deleted"
+msgstr "条目已删除"
+
+msgid "Entry updated"
+msgstr "录入已更新"
+
 msgid "Error"
 msgstr "错误"
+
+msgid "Error creating note"
+msgstr "创建便签出错"
+
+msgid "Error deleting note"
+msgstr "删除备注失败"
 
 msgid "Error downloading file"
 msgstr "文件下载错误"
 
+msgid "Error loading accounts"
+msgstr "加载账户出错"
+
+msgid "Error loading assignment"
+msgstr "加载分配出错"
+
+msgid "Error loading assignment status"
+msgstr "加载分配状态出错"
+
+msgid "Error loading attribute categories"
+msgstr "加载属性类别时出错"
+
+msgid "Error loading console operators"
+msgstr "加载控制台操作员出错"
+
+msgid "Error loading employee types"
+msgstr "加载员工类型出错"
+
+msgid "Error loading employees"
+msgstr "加载员工信息出错"
+
+msgid "Error loading issues"
+msgstr "加载问题出错"
+
+msgid "Error loading item groups"
+msgstr "加载项组时出错"
+
+msgid "Error loading material dimensions"
+msgstr "材料尺寸加载错误"
+
+msgid "Error loading material forms"
+msgstr "加载物料表单出错"
+
+msgid "Error loading material substances"
+msgstr "加载物料时出错"
+
+msgid "Error loading material types"
+msgstr "加载材料类型时出错"
+
+msgid "Error loading people"
+msgstr "加载人员出错"
+
+msgid "Error loading picking lists"
+msgstr "加载拣货列表出错"
+
+msgid "Error loading receipts"
+msgstr "加载收据失败"
+
+msgid "Error loading shipments"
+msgstr "加载运单时出错"
+
+msgid "Error loading shipping methods"
+msgstr "加载运输方式出错"
+
+msgid "Error loading stock transfers"
+msgstr "加载库存转移时出错"
+
+msgid "Error loading storage types"
+msgstr "存储类型加载错误"
+
+msgid "Error loading style colors"
+msgstr "加载款式颜色出错"
+
+msgid "Error loading style sizes"
+msgstr "加载款式尺寸出错"
+
+msgid "Error loading supplier types"
+msgstr "供应商类型加载出错"
+
+msgid "Error loading suppliers"
+msgstr "供应商加载出错"
+
+msgid "Error loading tags"
+msgstr "加载标签时出错"
+
+msgid "Error loading tracked entities"
+msgstr "加载跟踪实体时出错"
+
+msgid "Error loading training"
+msgstr "加载培训出错"
+
+msgid "Error loading training assignments"
+msgstr "加载培训任务时出错"
+
+msgid "Error loading trainings"
+msgstr "加载培训时出错"
+
+msgid "Error loading warehouse transfers"
+msgstr "仓库转移加载出错"
+
 msgid "Estimated"
 msgstr "估计"
 
+msgid "Event saved"
+msgstr "事件已保存"
+
+msgid "Event started"
+msgstr "事件已开始"
+
+msgid "Event stopped"
+msgstr "事件已停止"
+
 msgid "Expand"
 msgstr "展开"
+
+msgid "Expiration date updated"
+msgstr "已更新有效期"
 
 msgid "Expired"
 msgstr "过期"
@@ -504,17 +895,2803 @@ msgstr "过期日期 {date}"
 msgid "Expiring first"
 msgstr "即将过期"
 
+msgid "Failed to accept lot"
+msgstr "接收批次失败"
+
+msgid "Failed to activate gauge"
+msgstr "激活量具失败"
+
+msgid "Failed to activate process"
+msgstr "激活工序失败"
+
+msgid "Failed to activate work center"
+msgstr "激活工作中心失败"
+
+msgid "Failed to add colors and sizes"
+msgstr "添加颜色和尺码失败"
+
+msgid "Failed to add entry"
+msgstr "添加失败"
+
+msgid "Failed to add spare part"
+msgstr "添加备件失败"
+
+msgid "Failed to assign"
+msgstr "分配失败"
+
+msgid "Failed to assign rule"
+msgstr "分配规则失败"
+
+msgid "Failed to assign suppliers"
+msgstr "分配供应商失败"
+
+msgid "Failed to cancel RFQ"
+msgstr "取消报价失败"
+
 msgid "Failed to complete inventory adjustment"
 msgstr "库存调整失败"
+
+msgid "Failed to complete job"
+msgstr "任务完成失败"
+
+msgid "Failed to complete maintenance"
+msgstr "维护失败"
+
+msgid "Failed to convert quote to order"
+msgstr "转换报价为订单失败"
+
+msgid "Failed to convert rework"
+msgstr "转换返工失败"
+
+msgid "Failed to convert RFQ"
+msgstr "转换询价单失败"
+
+msgid "Failed to create API key"
+msgstr "创建API密钥失败"
+
+msgid "Failed to create asset class"
+msgstr "创建资产类别失败"
+
+msgid "Failed to create assignment"
+msgstr "创建分配失败"
+
+msgid "Failed to create attribute"
+msgstr "创建属性失败"
+
+msgid "Failed to create attribute category"
+msgstr "创建属性类别失败"
+
+msgid "Failed to create auth session"
+msgstr "创建认证会话失败"
+
+msgid "Failed to create company"
+msgstr "创建公司失败"
+
+msgid "Failed to create contractor"
+msgstr "创建承包商失败"
+
+msgid "Failed to create cost center."
+msgstr "创建成本中心失败。"
+
+msgid "Failed to create customer location"
+msgstr "创建客户位置失败"
+
+msgid "Failed to create customer portal"
+msgstr "创建客户门户失败"
+
+msgid "Failed to create department."
+msgstr "创建部门失败。"
+
+msgid "Failed to create depreciation run"
+msgstr "创建折旧运行失败"
+
+msgid "Failed to create dimension"
+msgstr "创建维度失败"
+
+msgid "Failed to create document"
+msgstr "创建文档失败"
+
+msgid "Failed to create employee job record"
+msgstr "创建员工工作记录失败"
+
+msgid "Failed to create fixed asset"
+msgstr "创建固定资产失败"
+
+msgid "Failed to create group"
+msgstr "创建组失败"
+
+msgid "Failed to create headquarters location"
+msgstr "创建总部位置失败"
+
+msgid "Failed to create holiday."
+msgstr "创建假期失败。"
+
+msgid "Failed to create IC transaction"
+msgstr "创建IC交易失败"
+
+msgid "Failed to create inspection document"
+msgstr "创建检验文件失败"
+
+msgid "Failed to create invite link"
+msgstr "创建邀请链接失败"
+
+msgid "Failed to create journal entry"
+msgstr "创建日记项失败"
+
+msgid "Failed to create location."
+msgstr "创建位置失败。"
+
+msgid "Failed to create maintenance dispatch"
+msgstr "创建维护任务失败"
+
+msgid "Failed to create maintenance schedule"
+msgstr "创建维护计划失败"
+
+msgid "Failed to create master work order"
+msgstr "创建主生产订单失败"
+
+msgid "Failed to create parameter"
+msgstr "创建参数失败"
+
+msgid "Failed to create part"
+msgstr "创建零件失败"
+
+msgid "Failed to create partner"
+msgstr "创建合作伙伴失败"
+
+msgid "Failed to create price override"
+msgstr "创建价格覆盖失败"
+
+msgid "Failed to create pricing rule"
+msgstr "创建价格规则失败"
+
+msgid "Failed to create process."
+msgstr "创建工序失败。"
+
+msgid "Failed to create purchase invoice"
+msgstr "创建采购发票失败"
+
+msgid "Failed to create purchase invoice line."
+msgstr "创建采购发票行失败。"
+
+msgid "Failed to create purchase order"
+msgstr "创建采购订单失败"
+
+msgid "Failed to create purchase order line."
+msgstr "创建采购订单行失败。"
+
+msgid "Failed to create quality issue"
+msgstr "创建质量问题失败"
+
+msgid "Failed to create quality issue tasks"
+msgstr "创建质量问题任务失败"
+
+msgid "Failed to create question"
+msgstr "创建问题失败"
+
+msgid "Failed to create quote line method."
+msgstr "创建报价行方法失败。"
+
+msgid "Failed to create quote line."
+msgstr "创建报价行失败。"
+
+msgid "Failed to create receipt"
+msgstr "创建收货失败"
+
+msgid "Failed to create repeat depreciation run"
+msgstr "创建重复折旧运行失败"
+
+msgid "Failed to create reprint"
+msgstr "创建复制品失败"
+
+msgid "Failed to create required action"
+msgstr "创建所需操作失败"
+
+msgid "Failed to create risk"
+msgstr "创建风险失败"
+
+msgid "Failed to create rule"
+msgstr "创建规则失败"
+
+msgid "Failed to create sales invoice"
+msgstr "创建销售发票失败"
+
+msgid "Failed to create sales invoice line."
+msgstr "创建销售发票行失败。"
+
+msgid "Failed to create sales order"
+msgstr "创建销售订单失败"
+
+msgid "Failed to create sales order line."
+msgstr "创建销售订单行失败。"
+
+msgid "Failed to create shift"
+msgstr "创建班次失败"
+
+msgid "Failed to create shipment"
+msgstr "创建发货失败"
+
+msgid "Failed to create step"
+msgstr "创建步骤失败"
+
+msgid "Failed to create stock transfer"
+msgstr "创建库存转移失败"
+
+msgid "Failed to create supplier location"
+msgstr "创建供应商位置失败"
+
+msgid "Failed to create supplier process"
+msgstr "创建供应商工序失败"
+
+msgid "Failed to create tag"
+msgstr "创建标签失败"
+
+msgid "Failed to create template"
+msgstr "创建模板失败"
+
+msgid "Failed to create timecard"
+msgstr "创建考勤记录失败"
+
+msgid "Failed to create training"
+msgstr "创建培训失败"
+
+msgid "Failed to create user account"
+msgstr "创建用户账户失败"
+
+msgid "Failed to create user from WeChat"
+msgstr "从微信创建用户失败"
+
+msgid "Failed to create warehouse transfer"
+msgstr "创建仓库调拨失败"
+
+msgid "Failed to create webhook"
+msgstr "创建Webhook失败"
+
+msgid "Failed to create WeChat session"
+msgstr "创建微信会话失败"
+
+msgid "Failed to create work center"
+msgstr "创建工作中心失败"
+
+msgid "Failed to deactivate attribute"
+msgstr "停用属性失败"
+
+msgid "Failed to deactivate attribute category"
+msgstr "停用属性类别失败"
+
+msgid "Failed to deactivate employee"
+msgstr "停用员工失败"
+
+msgid "Failed to deactivate gauge"
+msgstr "停用量具失败"
+
+msgid "Failed to deactivate process"
+msgstr "停用工序失败"
+
+msgid "Failed to deactivate user"
+msgstr "停用用户失败"
+
+msgid "Failed to deactivate users"
+msgstr "停用用户失败"
+
+msgid "Failed to delete account"
+msgstr "删除账户失败"
+
+msgid "Failed to delete API key"
+msgstr "删除API密钥失败"
+
+msgid "Failed to delete approval rule"
+msgstr "删除审批规则失败"
+
+msgid "Failed to delete asset class"
+msgstr "删除资产类别失败"
+
+msgid "Failed to delete assignment"
+msgstr "删除分配失败"
+
+msgid "Failed to delete association"
+msgstr "删除关联失败"
+
+msgid "Failed to delete attribute value"
+msgstr "删除属性值失败"
+
+msgid "Failed to delete contractor"
+msgstr "删除承包商失败"
+
+msgid "Failed to delete cost center"
+msgstr "删除成本中心失败"
+
+msgid "Failed to delete custom field"
+msgstr "删除自定义字段失败"
+
+msgid "Failed to delete customer contact"
+msgstr "删除客户联系人失败"
+
+msgid "Failed to delete customer part"
+msgstr "删除客户零件失败"
+
+msgid "Failed to delete customer status"
+msgstr "删除客户状态失败"
+
+msgid "Failed to delete customer type"
+msgstr "删除客户类型失败"
+
+msgid "Failed to delete department"
+msgstr "删除部门失败"
+
+msgid "Failed to delete depreciation run"
+msgstr "删除折旧运行失败"
+
+msgid "Failed to delete dimension"
+msgstr "删除尺寸失败"
+
+msgid "Failed to delete document"
+msgstr "删除文档失败"
+
+msgid "Failed to delete employee type"
+msgstr "删除员工类型失败"
+
+msgid "Failed to delete entry"
+msgstr "删除失败"
+
+msgid "Failed to delete event"
+msgstr "删除事件失败"
+
+msgid "Failed to delete fixed asset"
+msgstr "删除固定资产失败"
+
+msgid "Failed to delete gauge"
+msgstr "删除量具失败"
+
+msgid "Failed to delete gauge calibration record"
+msgstr "删除量具校准记录失败"
+
+msgid "Failed to delete group"
+msgstr "删除组失败"
+
+msgid "Failed to delete holiday"
+msgstr "删除假期失败"
+
+msgid "Failed to delete inspection document"
+msgstr "删除检验文件失败"
+
+msgid "Failed to delete issue"
+msgstr "删除问题失败"
+
+msgid "Failed to delete issue workflow"
+msgstr "删除问题工作流失败"
+
+msgid "Failed to delete item group"
+msgstr "删除项组失败"
+
+msgid "Failed to delete job"
+msgstr "删除任务失败"
+
+msgid "Failed to delete job material"
+msgstr "删除作业物料失败"
+
+msgid "Failed to delete job operation attribute"
+msgstr "删除作业操作属性失败"
+
+msgid "Failed to delete job operation parameter"
+msgstr "删除作业操作参数失败"
+
+msgid "Failed to delete job operation tool"
+msgstr "删除作业工序工具失败"
+
+msgid "Failed to delete journal entry"
+msgstr "删除日记条目失败"
+
+msgid "Failed to delete kanban"
+msgstr "删除看板失败"
+
+msgid "Failed to delete line"
+msgstr "删除行失败"
+
+msgid "Failed to delete location"
+msgstr "删除位置失败"
+
+msgid "Failed to delete material dimension"
+msgstr "删除材料维度失败"
+
+msgid "Failed to delete material finish"
+msgstr "删除材料完工失败"
+
+msgid "Failed to delete material form"
+msgstr "删除物料单失败"
+
+msgid "Failed to delete material grade"
+msgstr "删除材料等级失败"
+
+msgid "Failed to delete material substance"
+msgstr "删除物料失败"
+
+msgid "Failed to delete material type"
+msgstr "删除材料类型失败"
+
+msgid "Failed to delete method material"
+msgstr "删除方法材料失败"
+
+msgid "Failed to delete method operation parameter"
+msgstr "删除方法操作参数失败"
+
+msgid "Failed to delete method operation step"
+msgstr "删除方法操作步骤失败"
+
+msgid "Failed to delete method operation tool"
+msgstr "删除方法操作工具失败"
+
+msgid "Failed to delete parameter"
+msgstr "删除参数失败"
+
+msgid "Failed to delete partner"
+msgstr "删除合作伙伴失败"
+
+msgid "Failed to delete passkey"
+msgstr "删除通行密钥失败"
+
+msgid "Failed to delete payment term"
+msgstr "删除支付条款失败"
+
+msgid "Failed to delete picking list"
+msgstr "删除拣货单失败"
+
+msgid "Failed to delete price override"
+msgstr "删除价格覆盖失败"
+
+msgid "Failed to delete pricing rule"
+msgstr "删除价格规则失败"
+
+msgid "Failed to delete printer route"
+msgstr "删除打印路径失败"
+
+msgid "Failed to delete procedure"
+msgstr "删除程序失败"
+
+msgid "Failed to delete purchase invoice"
+msgstr "删除采购发票失败"
+
+msgid "Failed to delete purchase invoice line"
+msgstr "删除采购发票行失败"
+
+msgid "Failed to delete purchase order line"
+msgstr "删除采购订单行失败"
+
+msgid "Failed to delete quality document"
+msgstr "删除质量文档失败"
+
+msgid "Failed to delete quantity"
+msgstr "删除数量失败"
+
+msgid "Failed to delete quantity report"
+msgstr "删除数量报告失败"
+
+msgid "Failed to delete question"
+msgstr "删除问题失败"
+
+msgid "Failed to delete quote line"
+msgstr "删除报价行失败"
+
+msgid "Failed to delete quote material"
+msgstr "删除报价材料失败"
+
+msgid "Failed to delete quote operation step"
+msgstr "删除报价操作步骤失败"
+
+msgid "Failed to delete quote operation tool"
+msgstr "删除报价操作工具失败"
+
+msgid "Failed to delete required action"
+msgstr "删除必要动作失败"
+
+msgid "Failed to delete RFQ line"
+msgstr "删除询价行失败"
+
+msgid "Failed to delete rule"
+msgstr "删除规则失败"
+
+msgid "Failed to delete sales invoice"
+msgstr "删除销售发票失败"
+
+msgid "Failed to delete sales invoice line"
+msgstr "删除销售发票行失败"
+
+msgid "Failed to delete sales order line"
+msgstr "删除销售订单行失败"
+
+msgid "Failed to delete section"
+msgstr "删除部分失败"
+
+msgid "Failed to delete shift"
+msgstr "删除班次失败"
+
+msgid "Failed to delete shipping method"
+msgstr "删除运输方式失败"
+
+msgid "Failed to delete step"
+msgstr "删除步骤失败"
+
+msgid "Failed to delete stock transfer"
+msgstr "删除库存转移失败"
+
+msgid "Failed to delete storage type"
+msgstr "删除存储类型失败"
+
+msgid "Failed to delete storage unit"
+msgstr "删除存储单元失败"
+
+msgid "Failed to delete style color"
+msgstr "删除款式颜色失败"
+
+msgid "Failed to delete style size"
+msgstr "删除款式尺寸失败"
+
+msgid "Failed to delete subsidiary"
+msgstr "删除子工厂失败"
+
+msgid "Failed to delete suggestion"
+msgstr "删除建议失败"
+
+msgid "Failed to delete supplier contact"
+msgstr "删除供应商联系人失败"
+
+msgid "Failed to delete supplier process"
+msgstr "删除供应商工序失败"
+
+msgid "Failed to delete supplier type"
+msgstr "删除供应商类型失败"
+
+msgid "Failed to delete tag"
+msgstr "删除标签失败"
+
+msgid "Failed to delete template"
+msgstr "删除模板失败"
+
+msgid "Failed to delete timecard"
+msgstr "删除考勤记录失败"
+
+msgid "Failed to delete training"
+msgstr "删除培训失败"
+
+msgid "Failed to delete unit of measure"
+msgstr "删除计量单位失败"
+
+msgid "Failed to delete view"
+msgstr "删除视图失败"
+
+msgid "Failed to delete warehouse transfer"
+msgstr "删除仓库调拨失败"
+
+msgid "Failed to delete warehouse transfer line"
+msgstr "删除仓库调拨行失败"
+
+msgid "Failed to delete webhook"
+msgstr "删除 webhook 失败"
+
+msgid "Failed to disable audit logging"
+msgstr "禁用审计日志失败"
+
+msgid "Failed to disconnect integration"
+msgstr "断开集成失败"
+
+msgid "Failed to duplicate price list"
+msgstr "复制价格列表失败"
+
+msgid "Failed to duplicate pricing rule"
+msgstr "复制定价规则失败"
+
+msgid "Failed to duplicate purchase order"
+msgstr "复制采购订单失败"
+
+msgid "Failed to duplicate purchase order: missing id"
+msgstr "复制采购订单失败：缺少ID"
+
+msgid "Failed to enable audit logging"
+msgstr "启用审计日志失败"
+
+msgid "Failed to end event"
+msgstr "结束事件失败"
+
+msgid "Failed to end maintenance event"
+msgstr "维护事件结束失败"
 
 msgid "Failed to end operations"
 msgstr "结束工序失败"
 
+msgid "Failed to ensure pick method exists"
+msgstr "无法确保拣货方法存在"
+
+msgid "Failed to exchange WeChat code"
+msgstr "交换微信代码失败"
+
+msgid "Failed to favorite purchase order"
+msgstr "收藏采购订单失败"
+
+msgid "Failed to favorite Quote"
+msgstr "收藏报价失败"
+
+msgid "Failed to favorite rfq"
+msgstr "收藏询价单失败"
+
+msgid "Failed to favorite sales order"
+msgstr "收藏销售订单失败"
+
+msgid "Failed to fetch accounts"
+msgstr "获取账户信息失败"
+
 msgid "Failed to fetch active operations"
 msgstr "获取活跃工序失败"
 
+msgid "Failed to fetch assets"
+msgstr "获取资产失败"
+
+msgid "Failed to fetch attribute"
+msgstr "获取属性失败"
+
+msgid "Failed to fetch attribute categories"
+msgstr "获取属性类别失败"
+
+msgid "Failed to fetch attribute category"
+msgstr "获取属性类别失败"
+
+msgid "Failed to fetch consumables"
+msgstr "获取消耗品失败"
+
+msgid "Failed to fetch custom fields"
+msgstr "获取自定义字段失败"
+
+msgid "Failed to fetch customer contacts"
+msgstr "获取客户联系信息失败"
+
+msgid "Failed to fetch customer locations"
+msgstr "获取客户位置失败"
+
+msgid "Failed to fetch customers"
+msgstr "获取客户失败"
+
+msgid "Failed to fetch cutting completions"
+msgstr "获取切削完成信息失败"
+
+msgid "Failed to fetch documents"
+msgstr "获取文档失败"
+
+msgid "Failed to fetch inventory items"
+msgstr "获取库存项失败"
+
+msgid "Failed to fetch item"
+msgstr "获取项目失败"
+
+msgid "Failed to fetch job"
+msgstr "获取任务失败"
+
+msgid "Failed to fetch job events"
+msgstr "获取任务事件失败"
+
+msgid "Failed to fetch job make method"
+msgstr "获取作业制作方法失败"
+
+msgid "Failed to fetch job materials"
+msgstr "获取作业材料失败"
+
+msgid "Failed to fetch job operation"
+msgstr "获取作业操作失败"
+
+msgid "Failed to fetch job operation step records"
+msgstr "获取作业操作步骤记录失败"
+
+msgid "Failed to fetch job operations"
+msgstr "获取作业操作失败"
+
+msgid "Failed to fetch jobs"
+msgstr "获取任务失败"
+
+msgid "Failed to fetch kanbans"
+msgstr "获取看板失败"
+
+msgid "Failed to fetch materials"
+msgstr "取料失败"
+
+msgid "Failed to fetch method materials"
+msgstr "获取方法材料失败"
+
+msgid "Failed to fetch method operations"
+msgstr "获取方法操作失败"
+
+msgid "Failed to fetch modules"
+msgstr "获取模块失败"
+
+msgid "Failed to fetch operation"
+msgstr "获取操作失败"
+
+msgid "Failed to fetch parts"
+msgstr "取零件失败"
+
+msgid "Failed to fetch planning items"
+msgstr "获取生产计划项失败"
+
+msgid "Failed to fetch purchase invoices"
+msgstr "获取采购发票失败"
+
+msgid "Failed to fetch purchase orders"
+msgstr "获取采购订单失败"
+
+msgid "Failed to fetch quotes"
+msgstr "获取报价失败"
+
+msgid "Failed to fetch RFQs"
+msgstr "未能获取报价单"
+
+msgid "Failed to fetch risks"
+msgstr "获取风险失败"
+
+msgid "Failed to fetch run lines"
+msgstr "获取运行行失败"
+
+msgid "Failed to fetch sales invoices"
+msgstr "获取销售发票失败"
+
+msgid "Failed to fetch sales orders"
+msgstr "获取销售订单失败"
+
 msgid "Failed to fetch storageUnits"
 msgstr "获取存储单位失败"
+
+msgid "Failed to fetch styles"
+msgstr "获取款式失败"
+
+msgid "Failed to fetch supplier contacts"
+msgstr "获取供应商联系信息失败"
+
+msgid "Failed to fetch supplier locations"
+msgstr "获取供应商位置失败"
+
+msgid "Failed to fetch supplier quantities"
+msgstr "获取供应商库存失败"
+
+msgid "Failed to fetch suppliers"
+msgstr "获取供应商失败"
+
+msgid "Failed to fetch templates"
+msgstr "获取模板失败"
+
+msgid "Failed to fetch tools"
+msgstr "获取工具失败"
+
+msgid "Failed to fetch unscheduled jobs"
+msgstr "未能获取未排程的工作订单"
+
+msgid "Failed to fetch work center"
+msgstr "取工作中心信息失败"
+
+msgid "Failed to fetch work centers"
+msgstr "获取工作中心失败"
+
+msgid "Failed to finalize purchase order"
+msgstr "采购订单最终化失败"
+
+msgid "Failed to finalize quote"
+msgstr "报价最终化失败"
+
+msgid "Failed to finalize supplier quote"
+msgstr "供应商报价最终化失败"
+
+msgid "Failed to find quote line"
+msgstr "未能找到报价行"
+
+msgid "Failed to finish operation"
+msgstr "操作失败"
+
+msgid "Failed to generate download URL"
+msgstr "生成下载链接失败"
+
+msgid "Failed to generate elimination entries"
+msgstr "生成豁免项失败"
+
+msgid "Failed to generate PDF"
+msgstr "生成PDF失败"
+
+msgid "Failed to generate picking list"
+msgstr "生成拣货单失败"
+
+msgid "Failed to get a category id"
+msgstr "获取类别ID失败"
+
+msgid "Failed to get a customer contact id"
+msgstr "获取客户联系人ID失败"
+
+msgid "Failed to get a customer location id"
+msgstr "获取客户位置ID失败"
+
+msgid "Failed to get a customer portal id"
+msgstr "获取客户门户ID失败"
+
+msgid "Failed to get a dimension id"
+msgstr "获取维度ID失败"
+
+msgid "Failed to get a dispatch id"
+msgstr "获取派工单ID失败"
+
+msgid "Failed to get a failure mode id"
+msgstr "获取故障模式ID失败"
+
+msgid "Failed to get a kanban id"
+msgstr "获取看板ID失败"
+
+msgid "Failed to get a material type id"
+msgstr "获取材料类型ID失败"
+
+msgid "Failed to get a schedule id"
+msgstr "获取计划ID失败"
+
+msgid "Failed to get a storage type id"
+msgstr "获取存储类型ID失败"
+
+msgid "Failed to get a storageUnit id"
+msgstr "获取存储单元ID失败"
+
+msgid "Failed to get a style color id"
+msgstr "获取款式颜色ID失败"
+
+msgid "Failed to get a style size id"
+msgstr "获取款式尺寸ID失败"
+
+msgid "Failed to get a supplier contact id"
+msgstr "获取供应商联系人ID失败"
+
+msgid "Failed to get a supplier location id"
+msgstr "获取供应商位置ID失败"
+
+msgid "Failed to get a work center id"
+msgstr "获取工作中心ID失败"
+
+msgid "Failed to get account"
+msgstr "获取账户失败"
+
+msgid "Failed to get accounting period"
+msgstr "获取会计期间失败"
+
+msgid "Failed to get an account id"
+msgstr "获取账号ID失败"
+
+msgid "Failed to get an attribute id"
+msgstr "获取属性ID失败"
+
+msgid "Failed to get an customer status id"
+msgstr "获取客户状态ID失败"
+
+msgid "Failed to get an customer type id"
+msgstr "获取客户类型ID失败"
+
+msgid "Failed to get an employee type id"
+msgstr "获取员工类型ID失败"
+
+msgid "Failed to get an gauge id"
+msgstr "获取量具ID失败"
+
+msgid "Failed to get an group id"
+msgstr "获取不到组ID失败"
+
+msgid "Failed to get an id"
+msgstr "获取ID失败"
+
+msgid "Failed to get an issue type id"
+msgstr "获取问题类型ID失败"
+
+msgid "Failed to get an item group id"
+msgstr "获取项组ID失败"
+
+msgid "Failed to get an material dimension id"
+msgstr "获取材料维度ID失败"
+
+msgid "Failed to get an material finish id"
+msgstr "获取材料表面处理ID失败"
+
+msgid "Failed to get an material form id"
+msgstr "获取材料表单ID失败"
+
+msgid "Failed to get an material grade id"
+msgstr "获取材料等级ID失败"
+
+msgid "Failed to get an material substance id"
+msgstr "获取材料标识失败"
+
+msgid "Failed to get an no quote reason id"
+msgstr "获取无报价原因ID失败"
+
+msgid "Failed to get an payment term id"
+msgstr "获取付款条款ID失败"
+
+msgid "Failed to get an receipt id"
+msgstr "获取收据ID失败"
+
+msgid "Failed to get an scrap reason id"
+msgstr "获取废料原因ID失败"
+
+msgid "Failed to get an shipment id"
+msgstr "获取运单号失败"
+
+msgid "Failed to get an shipping method id"
+msgstr "获取运单ID失败"
+
+msgid "Failed to get an supplier type id"
+msgstr "获取供应商类型ID失败"
+
+msgid "Failed to get an unit of measure id"
+msgstr "获取计量单位ID失败"
+
+msgid "Failed to get asset"
+msgstr "获取资产失败"
+
+msgid "Failed to get asset class"
+msgstr "获取资产类别失败"
+
+msgid "Failed to get asset class id"
+msgstr "获取资产类别ID失败"
+
+msgid "Failed to get attribute"
+msgstr "获取属性失败"
+
+msgid "Failed to get chart of accounts"
+msgstr "获取会计科目表失败"
+
+msgid "Failed to get claims"
+msgstr "获取索赔失败"
+
+msgid "Failed to get companies"
+msgstr "获取公司信息失败"
+
+msgid "Failed to get company"
+msgstr "获取公司信息失败"
+
+msgid "Failed to get company ID"
+msgstr "获取公司ID失败"
+
+msgid "Failed to get company settings"
+msgstr "获取公司设置失败"
+
+msgid "Failed to get contractor"
+msgstr "获取承包商失败"
+
+msgid "Failed to get contractor id"
+msgstr "获取承包商ID失败"
+
+msgid "Failed to get cost center"
+msgstr "获取成本中心失败"
+
+msgid "Failed to get cost center id"
+msgstr "获取成本中心ID失败"
+
+msgid "Failed to get customer contact"
+msgstr "获取客户联系信息失败"
+
+msgid "Failed to get customer contacts"
+msgstr "获取客户联系信息失败"
+
+msgid "Failed to get customer location"
+msgstr "获取客户位置失败"
+
+msgid "Failed to get customer part"
+msgstr "获取客户零件失败"
+
+msgid "Failed to get customer portal"
+msgstr "获取客户门户失败"
+
+msgid "Failed to get customer status"
+msgstr "获取客户状态失败"
+
+msgid "Failed to get customer type"
+msgstr "获取客户类型失败"
+
+msgid "Failed to get department"
+msgstr "获取部门失败"
+
+msgid "Failed to get department id"
+msgstr "获取部门ID失败"
+
+msgid "Failed to get depreciation run"
+msgstr "获取折旧运行失败"
+
+msgid "Failed to get depreciation run id"
+msgstr "获取折旧运行ID失败"
+
+msgid "Failed to get dimension"
+msgstr "获取尺寸失败"
+
+msgid "Failed to get dispatch"
+msgstr "获取派工失败"
+
+msgid "Failed to get document"
+msgstr "获取文档失败"
+
+msgid "Failed to get employee type"
+msgstr "获取员工类型失败"
+
+msgid "Failed to get entry id"
+msgstr "获取条目ID失败"
+
+msgid "Failed to get failure mode"
+msgstr "获取故障模式失败"
+
+msgid "Failed to get fiscal year settings"
+msgstr "获取财政年度设置失败"
+
+msgid "Failed to get fixed asset"
+msgstr "获取固定资产失败"
+
+msgid "Failed to get fixed asset id"
+msgstr "获取固定资产ID失败"
+
+msgid "Failed to get gauge type"
+msgstr "获取量具类型失败"
+
+msgid "Failed to get group"
+msgstr "获取分组失败"
+
+msgid "Failed to get holiday"
+msgstr "获取假期失败"
+
+msgid "Failed to get holiday id"
+msgstr "获取假期ID失败"
+
+msgid "Failed to get issue type"
+msgstr "获取问题类型失败"
+
+msgid "Failed to get item group"
+msgstr "获取项组失败"
+
+msgid "Failed to get job data"
+msgstr "获取作业数据失败"
+
+msgid "Failed to get job information"
+msgstr "获取作业信息失败"
+
+msgid "Failed to get kanban"
+msgstr "获取看板失败"
+
+msgid "Failed to get location"
+msgstr "获取位置失败"
+
+msgid "Failed to get location id"
+msgstr "获取位置ID失败"
+
+msgid "Failed to get location ID"
+msgstr "获取位置ID失败"
+
+msgid "Failed to get maintenance dispatch"
+msgstr "获取维护调度失败"
+
+msgid "Failed to get maintenance schedule"
+msgstr "获取维护计划失败"
+
+msgid "Failed to get material dimension"
+msgstr "获取材料尺寸失败"
+
+msgid "Failed to get material finish"
+msgstr "获取材料表面状态失败"
+
+msgid "Failed to get material form"
+msgstr "获取物料信息失败"
+
+msgid "Failed to get material grade"
+msgstr "获取材料等级失败"
+
+msgid "Failed to get material make method"
+msgstr "获取物料加工方法失败"
+
+msgid "Failed to get material substance"
+msgstr "获取物料成分失败"
+
+msgid "Failed to get material type"
+msgstr "获取材料类型失败"
+
+msgid "Failed to get modules"
+msgstr "获取模块失败"
+
+msgid "Failed to get next sequence"
+msgstr "获取下一个序列失败"
+
+msgid "Failed to get no quote reason"
+msgstr "获取无报价原因失败"
+
+msgid "Failed to get outside operations"
+msgstr "获取外部操作失败"
+
+msgid "Failed to get parent account"
+msgstr "获取父账号失败"
+
+msgid "Failed to get partner"
+msgstr "获取合作伙伴失败"
+
+msgid "Failed to get partner id"
+msgstr "获取合作伙伴ID失败"
+
+msgid "Failed to get parts"
+msgstr "获取零件失败"
+
+msgid "Failed to get payment term"
+msgstr "获取付款条款失败"
+
+msgid "Failed to get price override"
+msgstr "获取价格覆盖失败"
+
+msgid "Failed to get price override id"
+msgstr "获取价格覆盖ID失败"
+
+msgid "Failed to get pricing rule"
+msgstr "获取定价规则失败"
+
+msgid "Failed to get pricing rule id"
+msgstr "获取定价规则ID失败"
+
+msgid "Failed to get process"
+msgstr "获取工序失败"
+
+msgid "Failed to get process id"
+msgstr "获取工序ID失败"
+
+msgid "Failed to get production projections"
+msgstr "获取生产预测失败"
+
+msgid "Failed to get purchase invoice"
+msgstr "获取采购发票失败"
+
+msgid "Failed to get purchase invoice line"
+msgstr "获取采购发票行失败"
+
+msgid "Failed to get purchase order"
+msgstr "获取采购订单失败"
+
+msgid "Failed to get purchase order line"
+msgstr "获取采购订单行失败"
+
+msgid "Failed to get quality issue sequence"
+msgstr "获取质量问题序号失败"
+
+msgid "Failed to get quote"
+msgstr "获取报价失败"
+
+msgid "Failed to get quote details"
+msgstr "获取报价详情失败"
+
+msgid "Failed to get receipt"
+msgstr "获取收据失败"
+
+msgid "Failed to get sales invoice line"
+msgstr "获取销售发票行失败"
+
+msgid "Failed to get sales order"
+msgstr "获取销售订单失败"
+
+msgid "Failed to get sales order line"
+msgstr "获取销售订单行失败"
+
+msgid "Failed to get scrap reason"
+msgstr "获取废料原因失败"
+
+msgid "Failed to get sequence"
+msgstr "获取序列失败"
+
+msgid "Failed to get services"
+msgstr "获取服务失败"
+
+msgid "Failed to get shift"
+msgstr "获取班次失败"
+
+msgid "Failed to get shift id"
+msgstr "获取班次ID失败"
+
+msgid "Failed to get shipment"
+msgstr "获取发货信息失败"
+
+msgid "Failed to get shipping method"
+msgstr "获取运费方式失败"
+
+msgid "Failed to get storage type"
+msgstr "获取存储类型失败"
+
+msgid "Failed to get storageUnit"
+msgstr "获取存储单元失败"
+
+msgid "Failed to get style color"
+msgstr "获取款式颜色失败"
+
+msgid "Failed to get style size"
+msgstr "获取款式尺寸失败"
+
+msgid "Failed to get subsidiary"
+msgstr "获取子公司失败"
+
+msgid "Failed to get subsidiary id"
+msgstr "获取子公司ID失败"
+
+msgid "Failed to get suggestion"
+msgstr "获取建议失败"
+
+msgid "Failed to get supplier contact"
+msgstr "获取供应商联系信息失败"
+
+msgid "Failed to get supplier contacts"
+msgstr "获取供应商联系信息失败"
+
+msgid "Failed to get supplier location"
+msgstr "获取供应商位置失败"
+
+msgid "Failed to get supplier locations"
+msgstr "获取供应商位置失败"
+
+msgid "Failed to get supplier processes"
+msgstr "获取供应商工序失败"
+
+msgid "Failed to get supplier quote"
+msgstr "获取供应商报价失败"
+
+msgid "Failed to get supplier quote line prices"
+msgstr "获取供应商报价行价格失败"
+
+msgid "Failed to get supplier quote lines"
+msgstr "获取供应商报价行失败"
+
+msgid "Failed to get supplier type"
+msgstr "获取供应商类型失败"
+
+msgid "Failed to get tag"
+msgstr "获取标签失败"
+
+msgid "Failed to get timecard"
+msgstr "获取考勤信息失败"
+
+msgid "Failed to get unique values for custom field"
+msgstr "获取自定义字段的唯一值失败"
+
+msgid "Failed to get unit of measure"
+msgstr "获取计量单位失败"
+
+msgid "Failed to get user"
+msgstr "获取用户失败"
+
+msgid "Failed to get user permissions"
+msgstr "获取用户权限失败"
+
+msgid "Failed to get WeChat user info"
+msgstr "获取微信用户信息失败"
+
+msgid "Failed to insert account"
+msgstr "插入账户失败"
+
+msgid "Failed to insert consumable"
+msgstr "插入耗材失败"
+
+msgid "Failed to insert consumable inventory"
+msgstr "插入可消耗库存失败"
+
+msgid "Failed to insert cost center"
+msgstr "插入成本中心失败"
+
+msgid "Failed to insert custom field"
+msgstr "插入自定义字段失败"
+
+msgid "Failed to insert customer"
+msgstr "插入客户失败"
+
+msgid "Failed to insert customer status"
+msgstr "插入客户状态失败"
+
+msgid "Failed to insert customer type"
+msgstr "插入客户类型失败"
+
+msgid "Failed to insert department"
+msgstr "插入部门失败"
+
+msgid "Failed to insert employee type"
+msgstr "插入员工类型失败"
+
+msgid "Failed to insert employee type permissions"
+msgstr "插入员工类型权限失败"
+
+msgid "Failed to insert failure mode"
+msgstr "插入故障模式失败"
+
+msgid "Failed to insert gauge"
+msgstr "插入量具失败"
+
+msgid "Failed to insert gauge calibration record"
+msgstr "插入量具校准记录失败"
+
+msgid "Failed to insert gauge type"
+msgstr "插入量具类型失败"
+
+msgid "Failed to insert group"
+msgstr "插入分组失败"
+
+msgid "Failed to insert group members"
+msgstr "插入组成员失败"
+
+msgid "Failed to insert issue"
+msgstr "插入问题失败"
+
+msgid "Failed to insert issue type"
+msgstr "插入问题类型失败"
+
+msgid "Failed to insert issue workflow"
+msgstr "插入问题工作流失败"
+
+msgid "Failed to insert item group"
+msgstr "插入项组失败"
+
+msgid "Failed to insert job"
+msgstr "插入任务失败"
+
+msgid "Failed to insert job material"
+msgstr "插入工件失败"
+
+msgid "Failed to insert job material make method"
+msgstr "插入工序材料加工方法失败"
+
+msgid "Failed to insert job operation"
+msgstr "插入工序失败"
+
+msgid "Failed to insert job operation attribute"
+msgstr "插入作业操作属性失败"
+
+msgid "Failed to insert job operation parameter"
+msgstr "插入作业参数失败"
+
+msgid "Failed to insert job operation tool"
+msgstr "插入工序工具失败"
+
+msgid "Failed to insert kanban"
+msgstr "插入看板失败"
+
+msgid "Failed to insert line"
+msgstr "插入失败"
+
+msgid "Failed to insert material"
+msgstr "插入材料失败"
+
+msgid "Failed to insert material dimension"
+msgstr "插入材料尺寸失败"
+
+msgid "Failed to insert material finish"
+msgstr "插入材料表面处理失败"
+
+msgid "Failed to insert material form"
+msgstr "插入物料单失败"
+
+msgid "Failed to insert material grade"
+msgstr "插入材料等级失败"
+
+msgid "Failed to insert material inventory"
+msgstr "插入物料库存失败"
+
+msgid "Failed to insert material substance"
+msgstr "插入物料失败"
+
+msgid "Failed to insert material type"
+msgstr "插入物料类型失败"
+
+msgid "Failed to insert method material"
+msgstr "插入方法物料失败"
+
+msgid "Failed to insert method operation"
+msgstr "插入方法步骤失败"
+
+msgid "Failed to insert method operation parameter"
+msgstr "插入方法操作参数失败"
+
+msgid "Failed to insert method operation step"
+msgstr "插入方法步骤失败"
+
+msgid "Failed to insert method operation tool"
+msgstr "插入方法操作工具失败"
+
+msgid "Failed to insert model record"
+msgstr "插入模型记录失败"
+
+msgid "Failed to insert new version"
+msgstr "插入新版本失败"
+
+msgid "Failed to insert no quote reason"
+msgstr "插入无报价原因失败"
+
+msgid "Failed to insert part"
+msgstr "插入零件失败"
+
+msgid "Failed to insert part inventory"
+msgstr "插入零件库存失败"
+
+msgid "Failed to insert payment term"
+msgstr "插入付款条款失败"
+
+msgid "Failed to insert procedure"
+msgstr "插入工序失败"
+
+msgid "Failed to insert procedure parameter"
+msgstr "插入工序参数失败"
+
+msgid "Failed to insert procedure step"
+msgstr "插入工序步骤失败"
+
+msgid "Failed to insert production event"
+msgstr "插入生产事件失败"
+
+msgid "Failed to insert purchase invoice"
+msgstr "插入采购发票失败"
+
+msgid "Failed to insert purchase order"
+msgstr "插入采购订单失败"
+
+msgid "Failed to insert quality document"
+msgstr "插入质量文件失败"
+
+msgid "Failed to insert quality document step"
+msgstr "插入质量文档步骤失败"
+
+msgid "Failed to insert quote"
+msgstr "插入报价失败"
+
+msgid "Failed to insert quote material"
+msgstr "插入报价材料失败"
+
+msgid "Failed to insert quote material make method"
+msgstr "插入报价材料加工方法失败"
+
+msgid "Failed to insert quote operation"
+msgstr "插入报价操作失败"
+
+msgid "Failed to insert quote operation parameter"
+msgstr "插入报价操作参数失败"
+
+msgid "Failed to insert quote operation step"
+msgstr "插入报价操作步骤失败"
+
+msgid "Failed to insert quote operation tool"
+msgstr "插入报价操作工具失败"
+
+msgid "Failed to insert reviewer"
+msgstr "插入审核人失败"
+
+msgid "Failed to insert RFQ"
+msgstr "插入询价失败"
+
+msgid "Failed to insert RFQ line"
+msgstr "插入询价行失败"
+
+msgid "Failed to insert sales invoice"
+msgstr "插入销售发票失败"
+
+msgid "Failed to insert sales order"
+msgstr "插入销售订单失败"
+
+msgid "Failed to insert scrap reason"
+msgstr "插入废料原因失败"
+
+msgid "Failed to insert shipping method"
+msgstr "插入运费方式失败"
+
+msgid "Failed to insert storage type"
+msgstr "插入存储类型失败"
+
+msgid "Failed to insert storageUnit"
+msgstr "插入存储单元失败"
+
+msgid "Failed to insert style color"
+msgstr "插入款式颜色失败"
+
+msgid "Failed to insert style inventory"
+msgstr "插入款式库存失败"
+
+msgid "Failed to insert style size"
+msgstr "插入款式尺寸失败"
+
+msgid "Failed to insert supplier quote"
+msgstr "插入供应商报价失败"
+
+msgid "Failed to insert supplier type"
+msgstr "插入供应商类型失败"
+
+msgid "Failed to insert template"
+msgstr "插入模板失败"
+
+msgid "Failed to insert tool"
+msgstr "插入刀具失败"
+
+msgid "Failed to insert tool inventory"
+msgstr "插入刀具库存失败"
+
+msgid "Failed to insert training question"
+msgstr "插入培训问题失败"
+
+msgid "Failed to insert unit of measure"
+msgstr "插入计量单位失败"
+
+msgid "Failed to install integration"
+msgstr "安装集成失败"
+
+msgid "Failed to issue material"
+msgstr "材料下发失败"
+
+msgid "Failed to issue materials"
+msgstr "材料发放失败"
+
+msgid "Failed to link email"
+msgstr "邮件链接失败"
+
+msgid "Failed to link quality issue to MES context"
+msgstr "未能将质量问题链接到 MES 上下文"
+
+msgid "Failed to load account"
+msgstr "加载账户失败"
+
+msgid "Failed to load any locations"
+msgstr "未能加载任何位置"
+
+msgid "Failed to load api keys"
+msgstr "加载 API 密钥失败"
+
+msgid "Failed to load applications"
+msgstr "加载应用程序失败"
+
+msgid "Failed to load approval rule"
+msgstr "加载审批规则失败"
+
+msgid "Failed to load approval rules"
+msgstr "加载审批规则失败"
+
+msgid "Failed to load attribute category"
+msgstr "加载属性类别失败"
+
+msgid "Failed to load balance sheet"
+msgstr "加载资产负债表失败"
+
+msgid "Failed to load bundle work orders"
+msgstr "加载分包工单失败"
+
+msgid "Failed to load companies"
+msgstr "加载公司失败"
+
+msgid "Failed to load company"
+msgstr "加载公司信息失败"
+
+msgid "Failed to load company for purchase orders"
+msgstr "加载采购订单时失败"
+
+msgid ""
+"Failed to load config. Please make sure a valid record exists in your "
+"public.config table."
+msgstr "加载配置失败。请确保public.config表中存在有效的记录。"
+
+msgid "Failed to load consumable costing"
+msgstr "加载消耗性成本失败"
+
+msgid "Failed to load consumable inventory"
+msgstr "加载消耗库存失败"
+
+msgid "Failed to load consumable planning"
+msgstr "加载消耗计划失败"
+
+msgid "Failed to load consumable purchasing"
+msgstr "加载消耗品采购失败"
+
+msgid "Failed to load consumable quantities"
+msgstr "加载消耗量失败"
+
+msgid "Failed to load consumable summary"
+msgstr "加载消耗摘要失败"
+
+msgid "Failed to load contractors"
+msgstr "加载承包商失败"
+
+msgid "Failed to load cost centers"
+msgstr "加载成本中心失败"
+
+msgid "Failed to load customer payment terms"
+msgstr "加载客户付款条款失败"
+
+msgid "Failed to load customer shipping"
+msgstr "加载客户发货信息失败"
+
+msgid "Failed to load customer summary"
+msgstr "加载客户摘要失败"
+
+msgid "Failed to load customer tax information"
+msgstr "加载客户税务信息失败"
+
+msgid "Failed to load default accounts"
+msgstr "加载默认账户失败"
+
+msgid "Failed to load default location"
+msgstr "加载默认位置失败"
+
+msgid "Failed to load demand"
+msgstr "加载需求失败"
+
+msgid "Failed to load departments"
+msgstr "加载部门失败"
+
+msgid "Failed to load depreciation run"
+msgstr "加载折旧运行失败"
+
+msgid "Failed to load document"
+msgstr "加载文档失败"
+
+msgid "Failed to load employee summary"
+msgstr "加载员工概况失败"
+
+msgid "Failed to load entity links"
+msgstr "加载实体链接失败"
+
+msgid "Failed to load fixed asset"
+msgstr "加载固定资产失败"
+
+msgid "Failed to load gauge"
+msgstr "加载量具失败"
+
+msgid "Failed to load gauge calibration record"
+msgstr "加载量具校准记录失败"
+
+msgid "Failed to load group"
+msgstr "加载分组失败"
+
+msgid "Failed to load group members"
+msgstr "加载组成员失败"
+
+msgid "Failed to load groups"
+msgstr "加载组失败"
+
+msgid "Failed to load holidays"
+msgstr "加载假期失败"
+
+msgid "Failed to load income statement"
+msgstr "加载损益表失败"
+
+msgid "Failed to load inspection"
+msgstr "加载检验失败"
+
+msgid "Failed to load inspection document"
+msgstr "加载检验文件失败"
+
+msgid "Failed to load inspections"
+msgstr "加载检验失败"
+
+msgid "Failed to load integrations"
+msgstr "加载集成失败"
+
+msgid "Failed to load invite links"
+msgstr "加载邀请链接失败"
+
+msgid "Failed to load issue"
+msgstr "加载问题失败"
+
+msgid "Failed to load issue workflow"
+msgstr "加载问题工作流失败"
+
+msgid "Failed to load item"
+msgstr "加载项失败"
+
+msgid "Failed to load item inventory activity"
+msgstr "加载项目库存活动失败"
+
+msgid "Failed to load item storage unit quantities"
+msgstr "加载项目存储单元数量失败"
+
+msgid "Failed to load job"
+msgstr "加载任务失败"
+
+msgid "Failed to load job make method"
+msgstr "加载作业制作方法失败"
+
+msgid "Failed to load job materials"
+msgstr "加载作业材料失败"
+
+msgid "Failed to load job operations"
+msgstr "加载作业操作失败"
+
+msgid "Failed to load journal entry"
+msgstr "加载日记条目失败"
+
+msgid "Failed to load line"
+msgstr "加载生产线失败"
+
+msgid "Failed to load linked sales invoices"
+msgstr "加载关联销售发票失败"
+
+msgid "Failed to load locations"
+msgstr "加载位置失败"
+
+msgid "Failed to load maintenance dispatch"
+msgstr "加载维护调度失败"
+
+msgid "Failed to load maintenance schedules"
+msgstr "加载维护计划失败"
+
+msgid "Failed to load make method"
+msgstr "加载制造方法失败"
+
+msgid "Failed to load master work orders"
+msgstr "加载主工作订单失败"
+
+msgid "Failed to load material costing"
+msgstr "加载材料成本失败"
+
+msgid "Failed to load material inventory"
+msgstr "加载材料库存失败"
+
+msgid "Failed to load material planning"
+msgstr "加载物料计划失败"
+
+msgid "Failed to load material purchasing"
+msgstr "加载材料采购失败"
+
+msgid "Failed to load material quantities"
+msgstr "加载材料数量失败"
+
+msgid "Failed to load material summary"
+msgstr "加载材料摘要失败"
+
+msgid "Failed to load method materials"
+msgstr "加载方法材料失败"
+
+msgid "Failed to load method operations"
+msgstr "加载方法操作失败"
+
+msgid "Failed to load order"
+msgstr "加载订单失败"
+
+msgid "Failed to load order payment"
+msgstr "加载订单支付失败"
+
+msgid "Failed to load order shipment"
+msgstr "加载订单发货失败"
+
+msgid "Failed to load part costing"
+msgstr "加载零件成本失败"
+
+msgid "Failed to load part inventory"
+msgstr "加载零件库存失败"
+
+msgid "Failed to load part planning"
+msgstr "加载部件计划失败"
+
+msgid "Failed to load part purchasing"
+msgstr "加载零件采购信息失败"
+
+msgid "Failed to load part quantities"
+msgstr "加载零件数量失败"
+
+msgid "Failed to load part summary"
+msgstr "加载零件摘要失败"
+
+msgid "Failed to load part unit sale price"
+msgstr "加载零件单价失败"
+
+msgid "Failed to load partners"
+msgstr "加载合作伙伴失败"
+
+msgid "Failed to load pick method"
+msgstr "加载取货方法失败"
+
+msgid "Failed to load picking list"
+msgstr "加载拣货列表失败"
+
+msgid "Failed to load picking list line"
+msgstr "加载拣货列表行失败"
+
+msgid "Failed to load picking list lines"
+msgstr "加载拣货列表失败"
+
+msgid "Failed to load planning periods"
+msgstr "加载计划周期失败"
+
+msgid "Failed to load print job"
+msgstr "加载打印任务失败"
+
+msgid "Failed to load procedure"
+msgstr "加载程序失败"
+
+msgid "Failed to load processes"
+msgstr "加载工序失败"
+
+msgid "Failed to load projection periods"
+msgstr "加载投影周期失败"
+
+msgid "Failed to load public attributes"
+msgstr "加载公共属性失败"
+
+msgid "Failed to load purchase invoice"
+msgstr "加载采购发票失败"
+
+msgid "Failed to load purchase order"
+msgstr "加载采购订单失败"
+
+msgid "Failed to load purchase order line"
+msgstr "加载采购订单行失败"
+
+msgid "Failed to load purchase order payment"
+msgstr "加载采购订单付款失败"
+
+msgid "Failed to load purchaseOrder"
+msgstr "加载采购订单失败"
+
+msgid "Failed to load purchasing RFQ summary"
+msgstr "加载采购询价汇总失败"
+
+msgid "Failed to load quote"
+msgstr "加载报价失败"
+
+msgid "Failed to load quote make method"
+msgstr "加载报价制作方法失败"
+
+msgid "Failed to load quote materials"
+msgstr "加载报价材料失败"
+
+msgid "Failed to load quote operations"
+msgstr "加载报价操作失败"
+
+msgid "Failed to load quote opportunity"
+msgstr "加载报价机会失败"
+
+msgid "Failed to load quote payment"
+msgstr "加载报价付款失败"
+
+msgid "Failed to load quote shipment"
+msgstr "加载报价单失败"
+
+msgid "Failed to load receipt"
+msgstr "加载收据失败"
+
+msgid "Failed to load report lines"
+msgstr "加载报表行失败"
+
+msgid "Failed to load RFQ"
+msgstr "加载询价单失败"
+
+msgid "Failed to load RFQ lines"
+msgstr "加载询价单行项失败"
+
+msgid "Failed to load RFQ suppliers"
+msgstr "加载询价供应商失败"
+
+msgid "Failed to load salary record"
+msgstr "加载工资记录失败"
+
+msgid "Failed to load sales invoice"
+msgstr "加载销售发票失败"
+
+msgid "Failed to load sales invoice totals"
+msgstr "加载销售发票总额失败"
+
+msgid "Failed to load sales order"
+msgstr "加载销售订单失败"
+
+msgid "Failed to load sales order line"
+msgstr "加载销售订单行失败"
+
+msgid "Failed to load sales order opportunity"
+msgstr "加载销售订单机会失败"
+
+msgid "Failed to load sales RFQ opportunity"
+msgstr "加载销售询价机会失败"
+
+msgid "Failed to load sales RFQ summary"
+msgstr "加载销售询价汇总失败"
+
+msgid "Failed to load salesOrder"
+msgstr "加载销售订单失败"
+
+msgid "Failed to load shifts"
+msgstr "加载班次失败"
+
+msgid "Failed to load shipment"
+msgstr "加载运单失败"
+
+msgid "Failed to load source run"
+msgstr "加载源运行失败"
+
+msgid "Failed to load stock transfer line or item storage unit quantities"
+msgstr "加载库存转移行或项目存储单元数量失败"
+
+msgid "Failed to load stock transfer line or stock transfer"
+msgstr "加载库存转移行或库存转移失败"
+
+msgid "Failed to load stockTransfer"
+msgstr "加载库存转移失败"
+
+msgid "Failed to load storage rules"
+msgstr "加载存储规则失败"
+
+msgid "Failed to load style costing"
+msgstr "加载款式成本失败"
+
+msgid "Failed to load style inventory"
+msgstr "加载款式库存失败"
+
+msgid "Failed to load style planning"
+msgstr "加载款式计划失败"
+
+msgid "Failed to load style quantities"
+msgstr "加载款式数量失败"
+
+msgid "Failed to load style summary"
+msgstr "加载款式摘要失败"
+
+msgid "Failed to load style unit sale price"
+msgstr "加载款式单位销售价格失败"
+
+msgid "Failed to load subsidiary"
+msgstr "加载子公司失败"
+
+msgid "Failed to load suggestions"
+msgstr "加载建议失败"
+
+msgid "Failed to load supplier interaction record"
+msgstr "加载供应商交互记录失败"
+
+msgid "Failed to load supplier payment"
+msgstr "加载供应商付款失败"
+
+msgid "Failed to load supplier payment terms"
+msgstr "加载供应商付款条款失败"
+
+msgid "Failed to load supplier quote"
+msgstr "加载供应商报价失败"
+
+msgid "Failed to load supplier shipping"
+msgstr "加载供应商发货信息失败"
+
+msgid "Failed to load supplier summary"
+msgstr "加载供应商概要失败"
+
+msgid "Failed to load supplier tax information"
+msgstr "加载供应商税务信息失败"
+
+msgid "Failed to load timecard entries"
+msgstr "加载时间卡条目失败"
+
+msgid "Failed to load tool costing"
+msgstr "加载刀具成本失败"
+
+msgid "Failed to load tool inventory"
+msgstr "加载刀具库存失败"
+
+msgid "Failed to load tool planning"
+msgstr "加载刀具计划失败"
+
+msgid "Failed to load tool purchasing"
+msgstr "加载工具采购失败"
+
+msgid "Failed to load tool quantities"
+msgstr "加载刀具数量失败"
+
+msgid "Failed to load tool summary"
+msgstr "加载刀具概要失败"
+
+msgid "Failed to load training"
+msgstr "加载培训失败"
+
+msgid "Failed to load trial balance"
+msgstr "加载试算表失败"
+
+msgid "Failed to load users"
+msgstr "加载用户失败"
+
+msgid "Failed to load warehouse transfer"
+msgstr "未能加载仓库转移"
+
+msgid "Failed to load warehouse transfer line"
+msgstr "加载仓库转移行失败"
+
+msgid "Failed to load warehouse transfer lines"
+msgstr "加载仓库转移行失败"
+
+msgid "Failed to load webhook"
+msgstr "加载 webhook 失败"
+
+msgid "Failed to load webhooks"
+msgstr "加载 webhook 失败"
+
+msgid "Failed to mark partial"
+msgstr "标记部分失败"
+
+msgid "Failed to mark training complete"
+msgstr "标记培训完成失败"
+
+msgid "Failed to move account"
+msgstr "移动账户失败"
+
+msgid "Failed to move entities"
+msgstr "移动实体失败"
+
+msgid "Failed to move file"
+msgstr "文件移动失败"
+
+msgid "Failed to notify user"
+msgstr "通知用户失败"
+
+msgid "Failed to parse claims"
+msgstr "解析索赔失败"
+
+msgid "Failed to parse permissions"
+msgstr "解析权限失败"
+
+msgid "Failed to parse procedure content"
+msgstr "解析工艺内容失败"
+
+msgid "Failed to parse quality document content"
+msgstr "解析质量文档内容失败"
+
+msgid "Failed to parse training content"
+msgstr "解析培训内容失败"
+
+msgid "Failed to parse updates"
+msgstr "解析更新失败"
+
+msgid "Failed to pick line"
+msgstr "取行失败"
+
+msgid "Failed to pick up"
+msgstr "未能拣选成功"
+
+msgid "Failed to post asset disposal"
+msgstr "资产处置失败"
+
+msgid "Failed to post depreciation run"
+msgstr "过账折旧运行失败"
+
+msgid "Failed to post journal entry"
+msgstr "记账凭证提交失败"
+
+msgid "Failed to post receipt"
+msgstr "收货失败"
+
+msgid "Failed to post shipment"
+msgstr "发货失败"
+
+msgid "Failed to reassign tracked entities"
+msgstr "重新分配跟踪实体失败"
+
+msgid "Failed to recalculate dependencies"
+msgstr "重新计算依赖关系失败"
+
+msgid "Failed to recalculate job make method requirements"
+msgstr "未能重新计算工作订单制造方法要求"
+
+msgid "Failed to recalculate job operation dependencies"
+msgstr "未能重新计算工作指令的操作依赖关系"
+
+msgid "Failed to recalculate job requirements"
+msgstr "未能重新计算工作项需求"
+
+msgid "Failed to recalculate quote line prices"
+msgstr "报价行价格计算失败"
+
+msgid "Failed to receive a job id"
+msgstr "未能接收作业ID"
+
+msgid "Failed to receive a job id to recalculate dependencies"
+msgstr "未能接收到作业ID以重新计算依赖关系"
+
+msgid "Failed to receive a new sort order"
+msgstr "接收新排序失败"
+
+msgid "Failed to receive an operation id"
+msgstr "未能接收操作ID"
+
+msgid "Failed to record attribute"
+msgstr "记录属性失败"
+
+msgid "Failed to record history"
+msgstr "记录历史失败"
+
+msgid "Failed to record rework quantity"
+msgstr "记录返工数量失败"
+
+msgid "Failed to record scrap quantity"
+msgstr "未能记录废料数量"
+
+msgid "Failed to refresh invite"
+msgstr "刷新邀请失败"
+
+msgid "Failed to register asset"
+msgstr "资产注册失败"
+
+msgid "Failed to reinvite users"
+msgstr "重新邀请用户失败"
+
+msgid "Failed to reject lot"
+msgstr "拒收批次失败"
+
+msgid "Failed to release job"
+msgstr "未能释放任务"
+
+msgid "Failed to remove customer account"
+msgstr "删除客户账户失败"
+
+msgid "Failed to remove item"
+msgstr "删除项失败"
+
+msgid "Failed to remove spare part"
+msgstr "删除备件失败"
+
+msgid "Failed to remove supplier account"
+msgstr "删除供应商账户失败"
+
+msgid "Failed to remove user from company"
+msgstr "删除用户失败"
+
+msgid "Failed to rename passkey"
+msgstr "重命名通行密钥失败"
+
+msgid "Failed to report quantity"
+msgstr "报告数量失败"
+
+msgid "Failed to report rework"
+msgstr "重新加工报告失败"
+
+msgid "Failed to report scrap"
+msgstr "报告废料失败"
+
+msgid "Failed to resolve Pull from Inventory prices"
+msgstr "从库存获取价格失败"
+
+msgid "Failed to resolve Purchase to Order prices"
+msgstr "未能解析采购到订单的价格"
+
+msgid "Failed to restore document"
+msgstr "恢复文档失败"
+
+msgid "Failed to reverse journal entry"
+msgstr "记账凭证反记账失败"
+
+msgid "Failed to review application"
+msgstr "审核申请失败"
+
+msgid "Failed to revoke invite link"
+msgstr "撤销邀请链接失败"
+
+msgid "Failed to revoke invites"
+msgstr "撤销邀请失败"
+
+msgid "Failed to run IC matching"
+msgstr "IC匹配失败"
+
+msgid "Failed to save bundles"
+msgstr "保存分包失败"
+
+msgid "Failed to save comment"
+msgstr "保存评论失败"
+
+msgid "Failed to save demand forecasts"
+msgstr "保存需求预测失败"
+
+msgid "Failed to save document layout"
+msgstr "保存文档布局失败"
+
+msgid "Failed to save event"
+msgstr "保存事件失败"
+
+msgid "Failed to save header"
+msgstr "保存头部失败"
+
+msgid "Failed to save item"
+msgstr "保存项目失败"
+
+msgid "Failed to save journal entry"
+msgstr "保存日记项失败"
+
+msgid "Failed to save passkey"
+msgstr "保存通行密钥失败"
+
+msgid "Failed to save sample"
+msgstr "保存样本失败"
+
+msgid "Failed to save sampling plan"
+msgstr "保存采样计划失败"
+
+msgid "Failed to save section"
+msgstr "保存部分失败"
+
+msgid "Failed to search users"
+msgstr "搜索用户失败"
+
+msgid "Failed to seed company"
+msgstr "初始化公司失败"
+
+msgid "Failed to send email"
+msgstr "发送邮件失败"
+
+msgid "Failed to send magic link"
+msgstr "发送魔力链接失败"
+
+msgid "Failed to send supplier quote"
+msgstr "发送供应商报价失败"
+
+msgid "Failed to send verification code"
+msgstr "发送验证码失败"
+
+msgid "Failed to set job release date"
+msgstr "设置作业释放日期失败"
+
+msgid "Failed to sign in"
+msgstr "登录失败"
+
+msgid "Failed to sign in user"
+msgstr "登录用户失败"
+
+msgid "Failed to split line"
+msgstr "拆分线路失败"
+
+msgid "Failed to start checkout"
+msgstr "启动结算失败"
+
+msgid "Failed to start event"
+msgstr "启动事件失败"
+
+msgid "Failed to start maintenance event"
+msgstr "维护事件启动失败"
+
+msgid "Failed to stop event"
+msgstr "停止事件失败"
+
+msgid "Failed to sync procedure"
+msgstr "同步工序失败"
+
+msgid "Failed to trigger rework"
+msgstr "触发重工失败"
+
+msgid "Failed to unassign rule"
+msgstr "无法取消分配规则"
+
+msgid "Failed to update  operation attribute"
+msgstr "更新操作属性失败"
+
+msgid "Failed to update  operation parameter"
+msgstr "更新操作参数失败"
+
+msgid "Failed to update  operation tool"
+msgstr "更新工装失败"
+
+msgid "Failed to update account"
+msgstr "更新账户失败"
+
+msgid "Failed to update API key"
+msgstr "更新API密钥失败"
+
+msgid "Failed to update asset class"
+msgstr "资产类别更新失败"
+
+msgid "Failed to update assignment"
+msgstr "更新分配失败"
+
+msgid "Failed to update attribute"
+msgstr "更新属性失败"
+
+msgid "Failed to update attribute category"
+msgstr "更新属性类别失败"
+
+msgid "Failed to update attribute value"
+msgstr "更新属性值失败"
+
+msgid "Failed to update avatar"
+msgstr "更新头像失败"
+
+msgid "Failed to update claims"
+msgstr "更新索赔失败"
+
+msgid "Failed to update company"
+msgstr "更新公司信息失败"
+
+msgid "Failed to update configuration"
+msgstr "配置更新失败"
+
+msgid "Failed to update consumable"
+msgstr "更新消耗品失败"
+
+msgid "Failed to update consumable costing"
+msgstr "更新消耗物料成本失败"
+
+msgid "Failed to update consumable inventory"
+msgstr "更新消耗库存失败"
+
+msgid "Failed to update consumable planning"
+msgstr "更新消耗计划失败"
+
+msgid "Failed to update consumable purchasing"
+msgstr "更新消耗品采购失败"
+
+msgid "Failed to update content"
+msgstr "更新内容失败"
+
+msgid "Failed to update cost center."
+msgstr "成本中心更新失败。"
+
+msgid "Failed to update custom field"
+msgstr "更新自定义字段失败"
+
+msgid "Failed to update customer"
+msgstr "更新客户信息失败"
+
+msgid "Failed to update customer address"
+msgstr "更新客户地址失败"
+
+msgid "Failed to update customer contact"
+msgstr "更新客户联系信息失败"
+
+msgid "Failed to update customer part"
+msgstr "更新客户零件失败"
+
+msgid "Failed to update customer payment terms"
+msgstr "更新客户付款条款失败"
+
+msgid "Failed to update customer portal"
+msgstr "更新客户门户失败"
+
+msgid "Failed to update customer shipping"
+msgstr "更新客户发货信息失败"
+
+msgid "Failed to update customer status"
+msgstr "更新客户状态失败"
+
+msgid "Failed to update customer tax information"
+msgstr "更新客户税务信息失败"
+
+msgid "Failed to update customer type"
+msgstr "更新客户类型失败"
+
+msgid "Failed to update default accounts"
+msgstr "更新默认账户失败"
+
+msgid "Failed to update demand forecasts"
+msgstr "更新需求预测失败"
+
+msgid "Failed to update dimension"
+msgstr "更新尺寸失败"
+
+msgid "Failed to update dispatch status"
+msgstr "更新调度状态失败"
+
+msgid "Failed to update document"
+msgstr "更新文件失败"
+
+msgid "Failed to update document labels"
+msgstr "更新文件标签失败"
+
+msgid "Failed to update due date"
+msgstr "更新预计日期失败"
+
+msgid "Failed to update emoji"
+msgstr "更新表情失败"
+
+msgid "Failed to update employee"
+msgstr "更新员工信息失败"
+
+msgid "Failed to update employee type"
+msgstr "更新员工类型失败"
+
+msgid "Failed to update employee type permissions"
+msgstr "更新员工类型权限失败"
+
+msgid "Failed to update entry"
+msgstr "更新条目失败"
+
+msgid "Failed to update exchange rate"
+msgstr "更新汇率失败"
+
+msgid "Failed to update expiration date"
+msgstr "更新有效期失败"
+
+msgid "Failed to update failure mode"
+msgstr "更新故障模式失败"
+
+msgid "Failed to update fiscal year settings"
+msgstr "更新财政年度设置失败"
+
+msgid "Failed to update fixed asset"
+msgstr "固定资产更新失败"
+
+msgid "Failed to update gauge"
+msgstr "更新量具失败"
+
+msgid "Failed to update gauge calibration record"
+msgstr "更新量具校准记录失败"
+
+msgid "Failed to update gauge type"
+msgstr "更新量具类型失败"
+
+msgid "Failed to update group"
+msgstr "更新组失败"
+
+msgid "Failed to update group members"
+msgstr "更新组成员失败"
+
+msgid "Failed to update invite link expiration"
+msgstr "更新邀请链接过期失败"
+
+msgid "Failed to update issue"
+msgstr "更新问题失败"
+
+msgid "Failed to update issue status"
+msgstr "更新问题状态失败"
+
+msgid "Failed to update issue type"
+msgstr "更新问题类型失败"
+
+msgid "Failed to update issue workflow"
+msgstr "更新问题流程失败"
+
+msgid "Failed to update item"
+msgstr "更新项目失败"
+
+msgid "Failed to update item group"
+msgstr "更新项目组失败"
+
+msgid "Failed to update job"
+msgstr "更新任务失败"
+
+msgid "Failed to update job material"
+msgstr "更新工单物料失败"
+
+msgid "Failed to update job operation"
+msgstr "作业工序更新失败"
+
+msgid "Failed to update job operation attribute"
+msgstr "更新工序属性失败"
+
+msgid "Failed to update job operation parameter"
+msgstr "更新工序参数失败"
+
+msgid "Failed to update job operation tool"
+msgstr "更新工序工具失败"
+
+msgid "Failed to update job status"
+msgstr "更新作业状态失败"
+
+msgid "Failed to update kanban"
+msgstr "更新看板失败"
+
+msgid "Failed to update line"
+msgstr "更新行失败"
+
+msgid "Failed to update maintenance schedule"
+msgstr "更新维护计划失败"
+
+msgid "Failed to update material"
+msgstr "材料更新失败"
+
+msgid "Failed to update material costing"
+msgstr "材料成本更新失败"
+
+msgid "Failed to update material form"
+msgstr "材料表更新失败"
+
+msgid "Failed to update material grade"
+msgstr "材料等级更新失败"
+
+msgid "Failed to update material inventory"
+msgstr "材料库存更新失败"
+
+msgid "Failed to update material planning"
+msgstr "材料计划更新失败"
+
+msgid "Failed to update material purchasing"
+msgstr "材料采购更新失败"
+
+msgid "Failed to update material substance"
+msgstr "材料成分更新失败"
+
+msgid "Failed to update material type"
+msgstr "材料类型更新失败"
+
+msgid "Failed to update method material"
+msgstr "更新物料方法失败"
+
+msgid "Failed to update method operation"
+msgstr "更新方法操作失败"
+
+msgid "Failed to update method operation parameter"
+msgstr "更新方法操作参数失败"
+
+msgid "Failed to update method operation step"
+msgstr "更新方法操作步骤失败"
+
+msgid "Failed to update method operation tool"
+msgstr "更新工艺操作刀具失败"
+
+msgid "Failed to update no quote reason"
+msgstr "未更新无报价原因失败"
+
+msgid "Failed to update order"
+msgstr "更新订单失败"
+
+msgid "Failed to update original"
+msgstr "更新失败"
+
+msgid "Failed to update parameter"
+msgstr "参数更新失败"
+
+msgid "Failed to update part"
+msgstr "更新零件失败"
+
+msgid "Failed to update part costing"
+msgstr "更新零件成本失败"
+
+msgid "Failed to update part inventory"
+msgstr "更新零件库存失败"
+
+msgid "Failed to update part manufacturing"
+msgstr "更新零件制造信息失败"
+
+msgid "Failed to update part planning"
+msgstr "更新零件计划失败"
+
+msgid "Failed to update part purchasing"
+msgstr "更新零件采购失败"
+
+msgid "Failed to update part sale price"
+msgstr "更新零件销售价格失败"
+
+msgid "Failed to update payment term"
+msgstr "更新付款条款失败"
+
+msgid "Failed to update picking list"
+msgstr "更新拣货列表失败"
+
+msgid "Failed to update picking list status"
+msgstr "更新取货单状态失败"
+
+msgid "Failed to update price override"
+msgstr "价格覆盖更新失败"
+
+msgid "Failed to update pricing rule"
+msgstr "更新价格规则失败"
+
+msgid "Failed to update procedure parameter"
+msgstr "更新工序参数失败"
+
+msgid "Failed to update procedure step"
+msgstr "更新工序步骤失败"
+
+msgid "Failed to update process completion"
+msgstr "更新工序完成状态失败"
+
+msgid "Failed to update production event"
+msgstr "生产事件更新失败"
+
+msgid "Failed to update profile"
+msgstr "更新资料失败"
+
+msgid "Failed to update purchase invoice"
+msgstr "采购发票更新失败"
+
+msgid "Failed to update purchase invoice delivery"
+msgstr "采购发票发货更新失败"
+
+msgid "Failed to update purchase invoice line"
+msgstr "采购发票行更新失败"
+
+msgid "Failed to update purchase invoice status"
+msgstr "更新采购发票状态失败"
+
+msgid "Failed to update purchase order"
+msgstr "采购订单更新失败"
+
+msgid "Failed to update purchase order delivery"
+msgstr "采购订单交货更新失败"
+
+msgid "Failed to update purchase order line"
+msgstr "采购订单行更新失败"
+
+msgid "Failed to update purchase order payment"
+msgstr "采购订单付款更新失败"
+
+msgid "Failed to update purchasing order status"
+msgstr "采购订单状态更新失败"
+
+msgid "Failed to update question"
+msgstr "更新问题失败"
+
+msgid "Failed to update quote"
+msgstr "报价更新失败"
+
+msgid "Failed to update quote line"
+msgstr "报价行更新失败"
+
+msgid "Failed to update quote material"
+msgstr "报价材料更新失败"
+
+msgid "Failed to update quote operation"
+msgstr "报价操作更新失败"
+
+msgid "Failed to update quote payment"
+msgstr "更新报价付款失败"
+
+msgid "Failed to update quote shipment"
+msgstr "更新报价发货失败"
+
+msgid "Failed to update quote status"
+msgstr "更新报价状态失败"
+
+msgid "Failed to update receipt"
+msgstr "收货更新失败"
+
+msgid "Failed to update required action"
+msgstr "更新必需动作失败"
+
+msgid "Failed to update RFQ"
+msgstr "更新询价单失败"
+
+msgid "Failed to update RFQ line"
+msgstr "更新询价单行失败"
+
+msgid "Failed to update RFQ line with model"
+msgstr "未能更新询价单行项与模型"
+
+msgid "Failed to update RFQ status"
+msgstr "更新询价单状态失败"
+
+msgid "Failed to update risk"
+msgstr "更新风险失败"
+
+msgid "Failed to update rule"
+msgstr "更新规则失败"
+
+msgid "Failed to update sales invoice"
+msgstr "更新销售发票失败"
+
+msgid "Failed to update sales invoice line"
+msgstr "更新销售发票行失败"
+
+msgid "Failed to update sales invoice shipping"
+msgstr "更新销售发票发货失败"
+
+msgid "Failed to update sales invoice status"
+msgstr "更新销售发票状态失败"
+
+msgid "Failed to update sales order line"
+msgstr "更新销售订单行失败"
+
+msgid "Failed to update sales order payment"
+msgstr "更新销售订单付款失败"
+
+msgid "Failed to update sales order shipment"
+msgstr "更新销售订单发货失败"
+
+msgid "Failed to update sales order status"
+msgstr "更新销售订单状态失败"
+
+msgid "Failed to update scrap reason"
+msgstr "更新废料原因失败"
+
+msgid "Failed to update sequence"
+msgstr "更新序列失败"
+
+msgid "Failed to update shipment"
+msgstr "更新发货信息失败"
+
+msgid "Failed to update shipping method"
+msgstr "更新运输方式失败"
+
+msgid "Failed to update sort order"
+msgstr "更新排序顺序失败"
+
+msgid "Failed to update status"
+msgstr "更新状态失败"
+
+msgid "Failed to update step"
+msgstr "更新步骤失败"
+
+msgid "Failed to update storage type"
+msgstr "更新存储类型失败"
+
+msgid "Failed to update storageUnit"
+msgstr "更新存储单元失败"
+
+msgid "Failed to update style color"
+msgstr "更新款式颜色失败"
+
+msgid "Failed to update style costing"
+msgstr "更新款式成本失败"
+
+msgid "Failed to update style inventory"
+msgstr "更新款式库存失败"
+
+msgid "Failed to update style planning"
+msgstr "更新款式计划失败"
+
+msgid "Failed to update style sale price"
+msgstr "更新销售价格失败"
+
+msgid "Failed to update style size"
+msgstr "更新款式尺寸失败"
+
+msgid "Failed to update subsidiary"
+msgstr "更新子公司失败"
+
+msgid "Failed to update supplier"
+msgstr "更新供应商失败"
+
+msgid "Failed to update supplier address"
+msgstr "更新供应商地址失败"
+
+msgid "Failed to update supplier contact"
+msgstr "更新供应商联系信息失败"
+
+msgid "Failed to update supplier payment terms"
+msgstr "更新供应商付款条款失败"
+
+msgid "Failed to update supplier process"
+msgstr "更新供应商工序失败"
+
+msgid "Failed to update supplier quote status"
+msgstr "更新供应商报价状态失败"
+
+msgid "Failed to update supplier shipping"
+msgstr "更新供应商发货信息失败"
+
+msgid "Failed to update supplier tax information"
+msgstr "更新供应商税务信息失败"
+
+msgid "Failed to update supplier type"
+msgstr "更新供应商类型失败"
+
+msgid "Failed to update supplierQuote line"
+msgstr "更新供应商报价行失败"
+
+msgid "Failed to update suppliers"
+msgstr "更新供应商失败"
+
+msgid "Failed to update task status"
+msgstr "更新任务状态失败"
+
+msgid "Failed to update task supplier"
+msgstr "更新任务供应商失败"
+
+msgid "Failed to update timecard"
+msgstr "更新工时记录失败"
+
+msgid "Failed to update tool"
+msgstr "更新刀具失败"
+
+msgid "Failed to update tool costing"
+msgstr "更新刀具成本失败"
+
+msgid "Failed to update tool inventory"
+msgstr "更新刀具库存失败"
+
+msgid "Failed to update tool manufacturing"
+msgstr "更新刀具制造失败"
+
+msgid "Failed to update tool planning"
+msgstr "更新刀具计划失败"
+
+msgid "Failed to update tool purchasing"
+msgstr "更新刀具采购失败"
+
+msgid "Failed to update training question"
+msgstr "更新培训问题失败"
+
+msgid "Failed to update unit of measure"
+msgstr "更新计量单位失败"
+
+msgid "Failed to update user permissions"
+msgstr "更新用户权限失败"
+
+msgid "Failed to update warehouse transfer"
+msgstr "库存转移更新失败"
+
+msgid "Failed to update warehouse transfer line"
+msgstr "库存转移行更新失败"
+
+msgid "Failed to update warehouse transfer status"
+msgstr "更新仓库转移状态失败"
+
+msgid "Failed to update webhook"
+msgstr "更新Webhook失败"
+
+msgid "Failed to update work center"
+msgstr "更新工作中心失败"
+
+msgid "Failed to upload file"
+msgstr "上传文件失败"
 
 #. placeholder {0}: fileUpload.name
 msgid "Failed to upload file: {0}"
@@ -522,6 +3699,24 @@ msgstr "文件上传失败：{0}"
 
 msgid "Failed to upload image"
 msgstr "图片上传失败"
+
+msgid "Failed to verify WeChat session"
+msgstr "微信会话验证失败"
+
+msgid "Failed to void purchase invoice"
+msgstr "取消采购发票失败"
+
+msgid "Failed to void receipt"
+msgstr "取消收货失败"
+
+msgid "Failed to void sales invoice"
+msgstr "销售发票作废失败"
+
+msgid "Failed to void shipment"
+msgstr "取消发货失败"
+
+msgid "Failure mode created"
+msgstr "已创建故障模式"
 
 msgid "Feedback"
 msgstr "反馈"
@@ -548,8 +3743,17 @@ msgstr "完成 {0}"
 msgid "Finish Anyways"
 msgstr "继续完成"
 
+msgid "Finish created"
+msgstr "已创建表面处理"
+
 msgid "Fixed"
 msgstr "已修复"
+
+msgid "Fixed asset created"
+msgstr "已创建固定资产"
+
+msgid "Fixed asset updated"
+msgstr "固定资产已更新"
 
 msgid "Forgot to Clock Out?"
 msgstr "忘记打卡下班了？"
@@ -560,11 +3764,23 @@ msgstr "返回操作"
 msgid "Gold"
 msgstr "金色"
 
+msgid "Grade created"
+msgstr "已创建等级"
+
 msgid "Gray"
 msgstr "灰色"
 
 msgid "Green"
 msgstr "绿色"
+
+msgid "Group created"
+msgstr "已创建组"
+
+msgid "Group not found"
+msgstr "未找到分组"
+
+msgid "Group updated successfully"
+msgstr "组更新成功"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
@@ -578,6 +3794,12 @@ msgstr "高优先级"
 msgid "History"
 msgstr "历史"
 
+msgid "Holiday created"
+msgstr "已创建假期"
+
+msgid "Holiday updated"
+msgstr "已更新假期"
+
 msgid "How many were actually picked?"
 msgstr "实际拣了几个？"
 
@@ -586,6 +3808,9 @@ msgstr "我理解并希望在不发放材料的情况下完成"
 
 msgid "I'm Still Working"
 msgstr "我还在工作"
+
+msgid "IC transaction created"
+msgstr "已创建IC交易"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "对此页面有想法、建议或问题？"
@@ -605,8 +3830,95 @@ msgstr "进行中"
 msgid "Increase"
 msgstr "增加"
 
+msgid "Inspection document created"
+msgstr "已创建检验文件"
+
+msgid "Inspection document deleted"
+msgstr "检验文件已删除"
+
+msgid "Inspection id mismatch"
+msgstr "检验ID不符"
+
 msgid "Insufficient quantity"
 msgstr "数量不足"
+
+msgid "Invalid access token"
+msgstr "无效的访问令牌"
+
+msgid "Invalid action"
+msgstr "无效操作"
+
+msgid "Invalid action type"
+msgstr "无效的操作类型"
+
+msgid "Invalid avatar path"
+msgstr "无效的头像路径"
+
+msgid "Invalid callback form"
+msgstr "无效的回调表单"
+
+msgid "Invalid email address"
+msgstr "无效的电子邮件地址"
+
+msgid "Invalid form data"
+msgstr "无效的表单数据"
+
+msgid "Invalid invitation"
+msgstr "无效邀请"
+
+msgid "Invalid job configuration"
+msgstr "无效的工作配置"
+
+msgid "Invalid lines data"
+msgstr "无效的生产线数据"
+
+msgid "Invalid mode"
+msgstr "无效模式"
+
+msgid "Invalid operation"
+msgstr "无效操作"
+
+msgid "Invalid or expired verification code"
+msgstr "无效或过期的验证码"
+
+msgid "Invalid payload"
+msgstr "无效载荷"
+
+msgid "Invalid phone number"
+msgstr "无效的电话号码"
+
+msgid "Invalid plan"
+msgstr "无效计划"
+
+msgid "Invalid reprint request"
+msgstr "无效的重印请求"
+
+msgid "Invalid request body"
+msgstr "无效的请求体"
+
+msgid "Invalid reviewer"
+msgstr "无效的审核人"
+
+msgid "Invalid session data"
+msgstr "无效的会话数据"
+
+msgid "Invalid split request"
+msgstr "无效的拆分请求"
+
+msgid "Invalid state parameter"
+msgstr "无效的状态参数"
+
+msgid "Invalid status"
+msgstr "无效状态"
+
+msgid "Invalid table"
+msgstr "无效表格"
+
+msgid "Invalid task ID"
+msgstr "无效的任务ID"
+
+msgid "Invalid verification code"
+msgstr "无效的验证码"
 
 msgid "Inventory adjustment completed"
 msgstr "库存调整已完成"
@@ -619,6 +3931,18 @@ msgstr "邀请"
 
 msgid "Invitations"
 msgstr "邀请"
+
+msgid "Invite link created"
+msgstr "邀请链接已创建"
+
+msgid "Invite link expiration updated"
+msgstr "邀请链接过期时间已更新"
+
+msgid "Invite link revoked"
+msgstr "邀请链接已撤销"
+
+msgid "Invite updated"
+msgstr "已更新邀请"
 
 msgid "is"
 msgstr "是"
@@ -638,8 +3962,20 @@ msgstr "问题类型"
 msgid "Item"
 msgstr "物品"
 
+msgid "Item association not found"
+msgstr "未找到项目关联"
+
 msgid "Item Master"
 msgstr "物品主数据"
+
+msgid "Item posting group created"
+msgstr "已创建物品记账组"
+
+msgid "Item removed and returned to inventory"
+msgstr "已移除并返回库存"
+
+msgid "Item saved"
+msgstr "已保存物品"
 
 msgid "Items"
 msgstr "物品"
@@ -647,8 +3983,32 @@ msgstr "物品"
 msgid "Job"
 msgstr "工单"
 
+msgid "Job cancelled"
+msgstr "任务已取消"
+
+msgid "Job completed successfully"
+msgstr "任务完成成功"
+
 msgid "Job Details"
 msgstr "工单详情"
+
+msgid "Job marked as planned"
+msgstr "计划标记为作业"
+
+msgid "Job operation attribute updated"
+msgstr "已更新工序属性"
+
+msgid "Job operation is required"
+msgstr "作业操作是必需的"
+
+msgid "Job operation not found"
+msgstr "未找到工序"
+
+msgid "Job operation parameter updated"
+msgstr "作业参数已更新"
+
+msgid "Job operation tool updated"
+msgstr "已更新工序工具"
 
 msgid "Job Traveler"
 msgstr "工单流转卡"
@@ -656,14 +4016,29 @@ msgstr "工单流转卡"
 msgid "Jobs"
 msgstr "任务"
 
+msgid "Jobs created"
+msgstr "已创建工作"
+
 msgid "Join"
 msgstr "加入"
 
 msgid "Join a company you've been invited to, or pick one."
 msgstr "加入邀请您加入的公司，或选择一家。"
 
-msgid "Keep the completed quantity and give a reason for the rest."
-msgstr "保持已完成的数量，并说明剩余部分的原因。"
+msgid "Journal entry deleted"
+msgstr "日记条目已删除"
+
+msgid "Journal entry posted"
+msgstr "日记条目已记账"
+
+msgid "Journal entry reversed"
+msgstr "记账凭证冲销"
+
+msgid "Journal entry saved"
+msgstr "日记条目已保存"
+
+msgid "Kanban created"
+msgstr "已创建看板"
 
 msgid "Khaki"
 msgstr "卡其色"
@@ -683,6 +4058,18 @@ msgstr "离开此页"
 msgid "Let's build something"
 msgstr "让我们开始构建"
 
+msgid "Line already picked"
+msgstr "已选择生产线"
+
+msgid "Line created"
+msgstr "已创建生产线"
+
+msgid "Line split"
+msgstr "已拆分该行"
+
+msgid "Line updated"
+msgstr "生产线已更新"
+
 msgid "lines"
 msgstr "生产线"
 
@@ -692,6 +4079,15 @@ msgstr "链接"
 msgid "Linked"
 msgstr "已连接"
 
+msgid "Linked email"
+msgstr "已关联邮箱"
+
+msgid "Linked phone"
+msgstr "已关联电话"
+
+msgid "Linked WeChat"
+msgstr "已绑定微信"
+
 msgid "Loading item details..."
 msgstr "正在加载物品详情..."
 
@@ -700,6 +4096,12 @@ msgstr "加载中..."
 
 msgid "Location"
 msgstr "位置"
+
+msgid "Location created"
+msgstr "已创建位置"
+
+msgid "Location updated"
+msgstr "位置已更新"
 
 msgid "Log Completed"
 msgstr "记录完成数量"
@@ -728,6 +4130,32 @@ msgstr "记录 {0} 的报废"
 msgid "Login"
 msgstr "登录"
 
+msgid "Lot accepted"
+msgstr "批次已接受"
+
+msgid "Lot marked partial"
+msgstr "批次已标记为部分接收"
+
+msgid "Lot rejected"
+msgstr "批次已拒收"
+
+msgid "Lot rejected — NCR opened"
+msgstr "批次已拒收——已创建NCR"
+
+msgid "Lot rejected, but failed to create NCR"
+msgstr "批次已拒收，但未能创建NCR"
+
+msgid "Lot rejected, but failed to create NCR tasks"
+msgstr "批次已拒收，但未能创建NCR任务"
+
+msgid "Lot rejected, but failed to load it for NCR"
+msgstr "批次已拒收，但未能加载以创建NCR"
+
+msgid ""
+"Lot rejected. Configure at least one Issue Type and a default user location "
+"to auto-create an NCR."
+msgstr "批次已拒收。请至少配置一种问题类型和默认用户位置以自动创建NCR。"
+
 msgid "Low Priority"
 msgstr "低优先级"
 
@@ -737,17 +4165,35 @@ msgstr "机器"
 msgid "Maintenance"
 msgstr "维护"
 
+msgid "Maintenance completed"
+msgstr "已完成维护"
+
 msgid "Maintenance Completed"
 msgstr "维护已完成"
 
+msgid "Maintenance dispatch created"
+msgstr "已创建维护调度"
+
 msgid "Maintenance dispatches"
 msgstr "维护调度"
+
+msgid "Maintenance paused"
+msgstr "维护已暂停"
+
+msgid "Maintenance schedule created"
+msgstr "维护计划已创建"
+
+msgid "Maintenance started"
+msgstr "维护已开始"
 
 msgid "Manually add items to inventory"
 msgstr "手动添加物品到库存"
 
 msgid "Manually remove items from inventory"
 msgstr "手动从库存中移除物品"
+
+msgid "Manufacturing is blocked"
+msgstr "制造被阻塞"
 
 msgid "Mark fixed"
 msgstr "标记已修复"
@@ -761,11 +4207,17 @@ msgstr "标记短缺"
 msgid "Master Order"
 msgstr "主工单"
 
+msgid "Master work order created"
+msgstr "已创建主工单"
+
 msgid "Master Work Orders"
 msgstr "主工单"
 
 msgid "matches"
 msgstr "匹配"
+
+msgid "Material form created"
+msgstr "已创建材料形态"
 
 msgid "Materials"
 msgstr "材料"
@@ -776,8 +4228,38 @@ msgstr "已达到最大记录数"
 msgid "Medium Priority"
 msgstr "中等优先级"
 
+msgid "Method operation parameter updated"
+msgstr "方法操作参数已更新"
+
+msgid "Method operation step updated"
+msgstr "已更新方法工序步骤"
+
+msgid "Method operation tool updated"
+msgstr "已更新方法工序工具"
+
 msgid "Metric"
 msgstr "公制"
+
+msgid "Missing code or state from WeChat"
+msgstr "缺少微信代码或状态"
+
+msgid "Missing credentialId"
+msgstr "缺少credentialId"
+
+msgid "Missing depreciation run ID"
+msgstr "缺失折旧运行ID"
+
+msgid "Missing fields"
+msgstr "缺少字段"
+
+msgid "Missing operation"
+msgstr "缺少操作"
+
+msgid "Missing parameters"
+msgstr "缺少参数"
+
+msgid "Missing required fields"
+msgstr "缺少必填项"
 
 msgid "Model"
 msgstr "模型"
@@ -801,6 +4283,9 @@ msgstr "移动列：{0}"
 msgid "Move reworked units back into finished production."
 msgstr "将返工件重新计入完成产量。"
 
+msgid "Moved entities"
+msgstr "已移动实体"
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "必须小于 {maxValue} {unitOfMeasureCode}"
 
@@ -821,6 +4306,9 @@ msgstr "名称"
 
 msgid "Navy"
 msgstr "藏青色"
+
+msgid "NCR closed"
+msgstr "已关闭NCR"
 
 msgid "New"
 msgstr "新建"
@@ -852,6 +4340,9 @@ msgstr "无活跃的维护工单"
 msgid "No active operations"
 msgstr "无活跃工序"
 
+msgid "No active plan"
+msgstr "无激活计划"
+
 msgid "No approved completions this period"
 msgstr "本期无已批准的完工记录"
 
@@ -870,14 +4361,26 @@ msgstr "未找到可跟踪的实体"
 msgid "No bundle work orders"
 msgstr "无分包工单"
 
+msgid "No depreciation to calculate for uncovered assets"
+msgstr "未覆盖资产无需计算折旧"
+
 msgid "No dispatches assigned to you"
 msgstr "没有分配给您的工单"
 
 msgid "No files"
 msgstr "无文件"
 
+msgid "No forecast quantities provided"
+msgstr "未提供预测数量"
+
 msgid "No Impact"
 msgstr "无影响"
+
+msgid "No invite record found for user"
+msgstr "未找到用户的邀请记录"
+
+msgid "No line items found for this RFQ"
+msgstr "没有为此询价单找到任何行项"
 
 msgid "No maintenance scheduled for today"
 msgstr "今天没有计划的维护"
@@ -908,6 +4411,9 @@ msgstr "未配置打印机"
 
 msgid "No production logs"
 msgstr "无生产日志"
+
+msgid "No quote reason created"
+msgstr "已创建无报价原因"
 
 msgid "No recent operations"
 msgstr "无近期工序"
@@ -942,10 +4448,15 @@ msgstr "尚未添加备件"
 msgid "No stock"
 msgstr "没有库存"
 
+msgid "No suppliers found for this RFQ"
+msgstr "没有为此询价找到供应商"
+
 msgid "No time entries for this week"
 msgstr "本周无考勤记录"
 
-msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
+msgid ""
+"No warehouse stock is on record for this item. You can still pick it — on-"
+"hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
 
 msgid "No work centers are blocked"
@@ -953,6 +4464,15 @@ msgstr "无工作中心被阻塞"
 
 msgid "No work centers exist"
 msgstr "无工作中心"
+
+msgid "Non-conformance type created"
+msgstr "已创建不合格类型"
+
+msgid "Non-conformance workflow created"
+msgstr "已创建不合格工作流"
+
+msgid "Non-conformance workflow updated"
+msgstr "已更新不合格工作流"
 
 msgid "Not finished yet"
 msgstr "还未完成"
@@ -976,7 +4496,23 @@ msgstr "最旧"
 msgid "Only {0} available"
 msgstr "仅 {0} 可用"
 
-msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgid "Only active assets can be sold"
+msgstr "只有激活的资产才能出售"
+
+msgid "Only Active or Fully Depreciated assets can be disposed"
+msgstr "只有活动状态或完全报废的资产才能处置"
+
+msgid "Only Draft assets can be purchased"
+msgstr "仅草稿状态的资产可以购买"
+
+msgid "Only Draft assets can be registered"
+msgstr "仅草稿资产可以注册"
+
+msgid "Only posted runs can be repeated"
+msgstr "仅已发布的运行可以重复"
+
+msgid ""
+"Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。"
 
 msgid "Open"
@@ -991,6 +4527,12 @@ msgstr "打开日期时间选择器"
 msgid "Open Jobs"
 msgstr "打开工单"
 
+msgid "Operation finished successfully"
+msgstr "操作成功完成"
+
+msgid "Operation not found"
+msgstr "操作未找到"
+
 msgid "Operations"
 msgstr "工序"
 
@@ -1002,6 +4544,12 @@ msgstr "工序已结束"
 
 msgid "Operations you are currently working on"
 msgstr "您当前正在执行的操作"
+
+msgid "Operator converted to full user. Invite email sent."
+msgstr "操作员已转换为全用户。邀请邮件已发送。"
+
+msgid "Operator not found"
+msgstr "操作员未找到"
 
 msgid "Operator Performed"
 msgstr "操作员执行"
@@ -1027,8 +4575,29 @@ msgstr "参数"
 msgid "Part"
 msgstr "产品"
 
+msgid "Part group created"
+msgstr "已创建产品组"
+
+msgid "Partner created"
+msgstr "已创建合作伙伴"
+
+msgid "Partner updated"
+msgstr "合作伙伴已更新"
+
 msgid "Passed Inspection"
 msgstr "检验通过"
+
+msgid "Passkey name must be 100 characters or fewer"
+msgstr "通行密钥名称不得超过100个字符"
+
+msgid "Passkey removed"
+msgstr "通行密钥已删除"
+
+msgid "Passkey renamed"
+msgstr "通行密钥已重命名"
+
+msgid "Passkeys are disabled"
+msgstr "通行密钥已禁用"
 
 msgid "Paste a link"
 msgstr "粘贴链接"
@@ -1038,6 +4607,12 @@ msgstr "暂停"
 
 msgid "Paused"
 msgstr "已暂停"
+
+msgid "Payment recorded successfully"
+msgstr "支付记录成功"
+
+msgid "Payment term created"
+msgstr "已创建付款条款"
 
 msgid "Pending"
 msgstr "待审批"
@@ -1050,6 +4625,9 @@ msgstr "待批准"
 
 msgid "Period"
 msgstr "期间"
+
+msgid "Permissions updated"
+msgstr "权限已更新"
 
 msgid "Phone"
 msgstr "电话"
@@ -1085,6 +4663,9 @@ msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 msgid "Picking"
 msgstr "拣货"
 
+msgid "Picking list deleted successfully"
+msgstr "拣货单删除成功"
+
 msgid "Picking lists to fulfill"
 msgstr "履行的拣货单"
 
@@ -1093,6 +4674,9 @@ msgstr "领取分包工单"
 
 msgid "Pin Out"
 msgstr "退出登录"
+
+msgid "PIN reset successfully"
+msgstr "PIN重置成功"
 
 msgid "Pink"
 msgstr "粉色"
@@ -1106,8 +4690,14 @@ msgstr "请在关闭前记录此工序的所有步骤。"
 msgid "Please select an item"
 msgstr "请选择一个物品"
 
+msgid "Please sign in before linking WeChat"
+msgstr "请先登录再绑定微信"
+
 msgid "Point the camera at the bundle ticket QR code"
 msgstr "将相机对准分包标签二维码"
+
+msgid "Posting date is required"
+msgstr "必须输入过账日期"
 
 msgid "Prev"
 msgstr "上一个"
@@ -1130,6 +4720,27 @@ msgstr "上一张"
 msgid "Previous Year"
 msgstr "上一年度"
 
+msgid "Price override created"
+msgstr "价格覆盖已创建"
+
+msgid "Price override deleted"
+msgstr "价格覆盖已删除"
+
+msgid "Price override updated"
+msgstr "价格覆盖已更新"
+
+msgid "Pricing rule created"
+msgstr "已创建定价规则"
+
+msgid "Pricing rule deleted"
+msgstr "定价规则已删除"
+
+msgid "Pricing rule duplicated"
+msgstr "已复制定价规则"
+
+msgid "Pricing rule updated"
+msgstr "定价规则已更新"
+
 msgid "Print"
 msgstr "打印"
 
@@ -1140,11 +4751,20 @@ msgstr "打印（{0}）"
 msgid "Print from this device"
 msgstr "从本设备打印"
 
+msgid "Print job deleted"
+msgstr "打印作业已删除"
+
+msgid "Print job ID required"
+msgstr "打印作业ID必需"
+
 msgid "Print Tickets"
 msgstr "打印吊牌"
 
 msgid "Print to"
 msgstr "打印到"
+
+msgid "Printer route deleted"
+msgstr "打印机路径已删除"
 
 msgid "Printer Settings"
 msgstr "打印机设置"
@@ -1155,8 +4775,17 @@ msgstr "优先级"
 msgid "Procedure"
 msgstr "规程"
 
+msgid "Procedure created"
+msgstr "已创建规程"
+
 msgid "Process"
 msgstr "工序"
+
+msgid "Process completion created"
+msgstr "工序完成已创建"
+
+msgid "Process created"
+msgstr "工序已创建"
 
 msgid "Process Parameters"
 msgstr "工序参数"
@@ -1170,6 +4799,9 @@ msgstr "已生产"
 msgid "production"
 msgstr "生产"
 
+msgid "Production event created"
+msgstr "已创建生产事件"
+
 msgid "Production Logs"
 msgstr "生产日志"
 
@@ -1178,6 +4810,21 @@ msgstr "进度"
 
 msgid "Properties"
 msgstr "属性"
+
+msgid "Purchase invoice voided"
+msgstr "采购发票已作废"
+
+msgid "Purchase order created"
+msgstr "已创建采购订单"
+
+msgid "Purchase order finalized"
+msgstr "采购订单已完成"
+
+msgid "Purchase order not found"
+msgstr "采购订单未找到"
+
+msgid "Purchase order submitted for approval"
+msgstr "采购订单已提交待审批"
 
 msgid "Purple"
 msgstr "紫色"
@@ -1189,7 +4836,10 @@ msgid "Quality Issue"
 msgstr "质量问题"
 
 msgid "Quality issue created"
-msgstr "质量问题创建"
+msgstr "已创建质量问题"
+
+msgid "QualityDocument created"
+msgstr "已创建质量文档"
 
 msgid "Quantity"
 msgstr "数量"
@@ -1204,6 +4854,21 @@ msgstr "拣入选线数量"
 msgid "Queued {0} tickets for printing"
 msgstr "已将 {0} 个吊牌加入打印队列"
 
+msgid "Quote finalized successfully"
+msgstr "报价已成功确定"
+
+msgid "Quote operation attribute updated"
+msgstr "已更新报价工序属性"
+
+msgid "Quote operation parameter updated"
+msgstr "已更新报价工序参数"
+
+msgid "Quote operation tool updated"
+msgstr "已更新报价工序工具"
+
+msgid "Rate limit exceeded"
+msgstr "速率限制已超出"
+
 msgid "Ready"
 msgstr "就绪"
 
@@ -1215,6 +4880,9 @@ msgstr "返工原因"
 
 msgid "Reason for the remaining {shortfall}"
 msgstr "剩余 {shortfall} 件的原因"
+
+msgid "Receipt voided"
+msgstr "收据已作废"
 
 msgid "Recent"
 msgstr "最近"
@@ -1269,6 +4937,12 @@ msgstr "移除产品"
 msgid "Remove Serial Number"
 msgstr "移除序列号"
 
+msgid "Removed login method"
+msgstr "已删除登录方式"
+
+msgid "Repeat depreciation run created"
+msgstr "已创建重复折旧运行"
+
 msgid "Report"
 msgstr "报工"
 
@@ -1280,6 +4954,27 @@ msgstr "报工数量"
 
 msgid "Reported"
 msgstr "已报"
+
+msgid "Reprint job created"
+msgstr "已创建重新打印作业"
+
+msgid "Request failed"
+msgstr "请求失败"
+
+msgid "Request succeeded"
+msgstr "请求成功"
+
+msgid "Required action created successfully"
+msgstr "操作创建成功"
+
+msgid "Required action deleted successfully"
+msgstr "已成功删除所需操作"
+
+msgid "Required action not found"
+msgstr "未找到所需操作"
+
+msgid "Required action updated successfully"
+msgstr "操作已成功更新"
 
 msgid "Reset zoom"
 msgstr "重置缩放"
@@ -1302,11 +4997,65 @@ msgstr "返工"
 msgid "Rework created successfully"
 msgstr "返工创建成功"
 
+msgid "Rework quantity recorded successfully"
+msgstr "重新加工数量记录成功"
+
+msgid "Rework triggered successfully"
+msgstr "重新加工已成功触发"
+
+msgid "RFQ cancelled"
+msgstr "已取消询价单"
+
+msgid "Risk created successfully"
+msgstr "风险创建成功"
+
+msgid "Risk updated successfully"
+msgstr "风险更新成功"
+
+msgid "Root accounts cannot be deleted"
+msgstr "根账户不能被删除"
+
+msgid "Root accounts cannot be modified"
+msgstr "根账户不能修改"
+
+msgid "Rule assigned"
+msgstr "规则已分配"
+
+msgid "Rule deleted"
+msgstr "规则已删除"
+
+msgid "Rule id required"
+msgstr "规则编号必填"
+
+msgid "Rule not found"
+msgstr "规则未找到"
+
+msgid "Rule unassigned"
+msgstr "已取消分配规则"
+
+msgid "Run is not in Draft status"
+msgstr "运行不在草稿状态"
+
+msgid "Sales invoice voided"
+msgstr "销售发票已作废"
+
 msgid "Sales Order"
 msgstr "销售订单"
 
+msgid "Sales order created"
+msgstr "已创建销售订单"
+
+msgid "Sample recorded"
+msgstr "样本已录制"
+
+msgid "Sampling plan updated"
+msgstr "取样计划已更新"
+
 msgid "Save"
 msgstr "保存"
+
+msgid "Saved document layout"
+msgstr "已保存文档布局"
 
 msgid "Scan"
 msgstr "扫描"
@@ -1344,11 +5093,14 @@ msgstr "废料"
 msgid "Scrap"
 msgstr "废料"
 
+msgid "Scrap quantity recorded successfully"
+msgstr "废料数量记录成功"
+
 msgid "Scrap Reason"
 msgstr "报废原因"
 
-msgid "Reworked"
-msgstr "已返工"
+msgid "Scrap reason created"
+msgstr "已创建废料原因"
 
 msgid "Scrapped"
 msgstr "已报废"
@@ -1376,6 +5128,12 @@ msgstr "搜索操作员..."
 
 msgid "Search..."
 msgstr "搜索..."
+
+msgid "Section deleted"
+msgstr "节已删除"
+
+msgid "Section saved"
+msgstr "已保存章节"
 
 msgid "Select"
 msgstr "选择"
@@ -1429,7 +5187,9 @@ msgstr "选择序列号"
 msgid "Select Serial Number {0}"
 msgstr "选择序列号 {0}"
 
-msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
+msgid ""
+"Select the operation to go back to. All operations from that point to the "
+"current operation will be redone."
 msgstr "选择要返回的操作。从该操作到当前操作的所有操作都将重新执行。"
 
 msgid "Send"
@@ -1454,6 +5214,9 @@ msgstr "序列号"
 msgid "Serial Numbers"
 msgstr "序列号"
 
+msgid "Session mismatch"
+msgstr "会话不匹配"
+
 msgid "Set Clock Out"
 msgstr "设置下班时间"
 
@@ -1466,8 +5229,20 @@ msgstr "设置"
 msgid "Share an idea or report a problem"
 msgstr "分享想法或反馈问题"
 
+msgid "Shift created"
+msgstr "已创建班次"
+
+msgid "Shift updated"
+msgstr "班次已更新"
+
+msgid "Shipment voided"
+msgstr "已作废发货单"
+
+msgid "Shipping method created"
+msgstr "已创建发货方式"
+
 msgid "Short"
-msgstr "短"
+msgstr "短缺"
 
 msgid "Short pick {itemName}"
 msgstr "{itemName}短缺领料"
@@ -1485,13 +5260,16 @@ msgid "Sign in with Outlook"
 msgstr "使用 Outlook 登录"
 
 msgid "Sign in with Passkey"
-msgstr "使用 Passkey 登录"
+msgstr "使用通行密钥登录"
 
 msgid "Sign in with Phone"
 msgstr "使用电话登录"
 
 msgid "Sign Out"
 msgstr "退出登录"
+
+msgid "Sign-in failed. Please try again."
+msgstr "登录失败。请重试。"
 
 msgid "Signed in as {stationName}"
 msgstr "已登录为 {stationName}"
@@ -1505,11 +5283,23 @@ msgstr "大小"
 msgid "Source"
 msgstr "来源"
 
+msgid "Spare part added"
+msgstr "已添加备件"
+
+msgid "Spare part removed and returned to inventory"
+msgstr "备件已移除并返回库存"
+
 msgid "Spare Parts"
 msgstr "备件"
 
 msgid "Spare Parts Used"
 msgstr "已使用备件"
+
+msgid "Split failed"
+msgstr "拆分失败"
+
+msgid "Split quantity too large"
+msgstr "分割数量太大"
 
 msgid "Start"
 msgstr "开始"
@@ -1529,26 +5319,362 @@ msgstr "状态"
 msgid "Stay on this page"
 msgstr "留在当前页面"
 
+msgid "Step deleted successfully"
+msgstr "步骤删除成功"
+
 msgid "Steps"
 msgstr "步骤"
 
 msgid "Steps are missing"
 msgstr "缺少步骤"
 
+msgid "Stock transfer is not in progress or released"
+msgstr "库存转移未进行或未发布"
+
+msgid "Stock transfer line not found"
+msgstr "库存转移行未找到"
+
 msgid "Stop all your active operations"
 msgstr "停止您所有进行中的操作"
+
+msgid "Storage type created"
+msgstr "已创建存储类型"
+
+msgid "Storage type is in use; confirm cascade to delete"
+msgstr "存储类型正在使用；确认级联删除"
 
 msgid "Storage Unit"
 msgstr "存储单位"
 
+msgid "Storage unit created"
+msgstr "已创建存储单元"
+
 msgid "Style"
 msgstr "款式"
+
+msgid "Style color created"
+msgstr "已创建款式颜色"
+
+msgid "Style size created"
+msgstr "已创建款式尺寸"
 
 msgid "Submit anonymously"
 msgstr "匿名提交"
 
+msgid "Success. Please check back in a few moments."
+msgstr "成功，请几秒钟后再次查看。"
+
+msgid "Successfully activate work center"
+msgstr "成功激活工作中心"
+
+msgid "Successfully activated gauge"
+msgstr "成功激活了量具"
+
+msgid "Successfully activated process"
+msgstr "成功激活工序"
+
+msgid "Successfully added invites to queue"
+msgstr "成功添加了邀请到队列"
+
+msgid "Successfully converted quote to order"
+msgstr "成功将报价转换为订单"
+
+msgid "Successfully converted RFQ to quote"
+msgstr "成功将询价单转换为报价单"
+
+msgid "Successfully deactivated attribute"
+msgstr "成功禁用属性"
+
+msgid "Successfully deactivated attribute category"
+msgstr "成功禁用属性类别"
+
+msgid "Successfully deactivated gauge"
+msgstr "成功停用量具"
+
+msgid "Successfully deactivated process"
+msgstr "成功停用工序"
+
+msgid "Successfully deactivated work center"
+msgstr "成功禁用工作中心"
+
+msgid "Successfully deleted account"
+msgstr "成功删除账户"
+
+msgid "Successfully deleted API key"
+msgstr "成功删除API密钥"
+
+msgid "Successfully deleted asset class"
+msgstr "成功删除资产类别"
+
+msgid "Successfully deleted association"
+msgstr "成功删除关联"
+
+msgid "Successfully deleted contractor"
+msgstr "成功删除承包商"
+
+msgid "Successfully deleted cost center"
+msgstr "成功删除成本中心"
+
+msgid "Successfully deleted custom field"
+msgstr "成功删除自定义字段"
+
+msgid "Successfully deleted customer contact"
+msgstr "成功删除客户联系信息"
+
+msgid "Successfully deleted customer location"
+msgstr "成功删除客户位置"
+
+msgid "Successfully deleted customer part"
+msgstr "成功删除客户产品"
+
+msgid "Successfully deleted customer portal"
+msgstr "成功删除客户门户"
+
+msgid "Successfully deleted customer status"
+msgstr "成功删除客户状态"
+
+msgid "Successfully deleted customer type"
+msgstr "成功删除客户类型"
+
+msgid "Successfully deleted department"
+msgstr "成功删除部门"
+
+msgid "Successfully deleted depreciation run"
+msgstr "成功删除折旧运行"
+
+msgid "Successfully deleted dimension"
+msgstr "成功删除尺寸"
+
+msgid "Successfully deleted employee type"
+msgstr "成功删除员工类型"
+
+msgid "Successfully deleted event"
+msgstr "成功删除事件"
+
+msgid "Successfully deleted failure mode"
+msgstr "成功删除故障模式"
+
+msgid "Successfully deleted fixed asset"
+msgstr "成功删除固定资产"
+
+msgid "Successfully deleted gauge"
+msgstr "成功删除量具"
+
+msgid "Successfully deleted gauge calibration record"
+msgstr "成功删除量具校准记录"
+
+msgid "Successfully deleted group"
+msgstr "成功删除组"
+
+msgid "Successfully deleted holiday"
+msgstr "成功删除假期"
+
+msgid "Successfully deleted issue"
+msgstr "成功删除问题"
+
+msgid "Successfully deleted issue workflow"
+msgstr "成功删除问题流程"
+
+msgid "Successfully deleted item"
+msgstr "成功删除物品"
+
+msgid "Successfully deleted item group"
+msgstr "成功删除物品组"
+
+msgid "Successfully deleted kanban"
+msgstr "成功删除看板"
+
+msgid "Successfully deleted line"
+msgstr "成功删除行"
+
+msgid "Successfully deleted location"
+msgstr "成功删除位置"
+
+msgid "Successfully deleted maintenance dispatch"
+msgstr "成功删除维护调度"
+
+msgid "Successfully deleted maintenance schedule"
+msgstr "成功删除维护计划"
+
+msgid "Successfully deleted material dimension"
+msgstr "成功删除材料尺寸"
+
+msgid "Successfully deleted material finish"
+msgstr "成功删除材料表面处理"
+
+msgid "Successfully deleted material form"
+msgstr "成功删除物料形态"
+
+msgid "Successfully deleted material grade"
+msgstr "成功删除材料等级"
+
+msgid "Successfully deleted material substance"
+msgstr "成功删除物料成分"
+
+msgid "Successfully deleted material type"
+msgstr "成功删除材料类型"
+
+msgid "Successfully deleted noQuote reason"
+msgstr "成功删除无报价原因"
+
+msgid "Successfully deleted parameter"
+msgstr "成功删除参数"
+
+msgid "Successfully deleted partner"
+msgstr "成功删除合作伙伴"
+
+msgid "Successfully deleted payment term"
+msgstr "成功删除付款条款"
+
+msgid "Successfully deleted procedure"
+msgstr "成功删除规程"
+
+msgid "Successfully deleted purchase invoice line"
+msgstr "成功删除采购发票行"
+
+msgid "Successfully deleted purchase order line"
+msgstr "成功删除采购订单行"
+
+msgid "Successfully deleted quality document"
+msgstr "成功删除质量文档"
+
+msgid "Successfully deleted quantity"
+msgstr "成功删除数量"
+
+msgid "Successfully deleted quantity report"
+msgstr "成功删除数量报告"
+
+msgid "Successfully deleted question"
+msgstr "成功删除问题"
+
+msgid "Successfully deleted receipt"
+msgstr "成功删除收据"
+
+msgid "Successfully deleted sales invoice line"
+msgstr "成功删除销售发票行"
+
+msgid "Successfully deleted sales order line"
+msgstr "成功删除销售订单行"
+
+msgid "Successfully deleted scrap reason"
+msgstr "成功删除报废原因"
+
+msgid "Successfully deleted shift"
+msgstr "成功删除班次"
+
+msgid "Successfully deleted shipment"
+msgstr "成功删除发货"
+
+msgid "Successfully deleted shipping method"
+msgstr "成功删除发货方式"
+
+msgid "Successfully deleted step"
+msgstr "成功删除步骤"
+
+msgid "Successfully deleted stock transfer"
+msgstr "成功删除库存转移"
+
+msgid "Successfully deleted storage type"
+msgstr "成功删除存储类型"
+
+msgid "Successfully deleted style color"
+msgstr "成功删除款式颜色"
+
+msgid "Successfully deleted style size"
+msgstr "成功删除款式尺码"
+
+msgid "Successfully deleted subsidiary"
+msgstr "成功删除子公司"
+
+msgid "Successfully deleted supplier contact"
+msgstr "成功删除供应商联系人"
+
+msgid "Successfully deleted supplier location"
+msgstr "成功删除供应商位置"
+
+msgid "Successfully deleted supplier type"
+msgstr "成功删除供应商类型"
+
+msgid "Successfully deleted tag"
+msgstr "成功删除标签"
+
+msgid "Successfully deleted template"
+msgstr "成功删除模板"
+
+msgid "Successfully deleted timecard"
+msgstr "成功删除考勤卡"
+
+msgid "Successfully deleted training"
+msgstr "成功删除培训"
+
+msgid "Successfully deleted unit of measure"
+msgstr "成功删除计量单位"
+
+msgid "Successfully deleted webhook"
+msgstr "成功删除webhook"
+
+msgid "Successfully invited employee"
+msgstr "成功邀请了员工"
+
+msgid "Successfully resent invite"
+msgstr "成功重新发送邀请"
+
+msgid "Successfully revoked invites"
+msgstr "成功撤销邀请"
+
+msgid "Successfully updated attribtue"
+msgstr "成功更新属性"
+
+msgid "Successfully updated exchange rate"
+msgstr "成功更新汇率"
+
+msgid "Successfully updated fiscal year settings"
+msgstr "成功更新了会计年度设置"
+
+msgid "Successfully updated job"
+msgstr "成功更新工作"
+
+msgid "Sucessfully deactivated customer"
+msgstr "成功取消激活客户"
+
+msgid "Sucessfully deactivated employee"
+msgstr "成功禁用员工"
+
+msgid "Sucessfully deactivated supplier"
+msgstr "成功禁用了供应商"
+
 msgid "Suggestion"
 msgstr "建议"
+
+msgid "Supplier address updated"
+msgstr "供应商地址已更新"
+
+msgid "Supplier contact created"
+msgstr "已创建供应商联系人"
+
+msgid "Supplier contact updated"
+msgstr "供应商联系信息已更新"
+
+msgid "Supplier deactivated"
+msgstr "供应商已停用"
+
+msgid "Supplier invited"
+msgstr "供应商已受邀"
+
+msgid "Supplier location created"
+msgstr "已创建供应商位置"
+
+msgid "Supplier part updated"
+msgstr "供应商零件已更新"
+
+msgid "Supplier quote finalized successfully"
+msgstr "供应商报价已成功确认"
+
+msgid "Supplier quote sent successfully"
+msgstr "供应商报价已发送成功"
+
+msgid "Supplier type created"
+msgstr "已创建供应商类型"
 
 msgid "Support Required"
 msgstr "需要支持"
@@ -1559,8 +5685,14 @@ msgstr "表面积："
 msgid "Switch Operator"
 msgstr "切换操作员"
 
+msgid "Table is required"
+msgstr "表格是必需的"
+
 msgid "Tag"
 msgstr "标签"
+
+msgid "Tag created"
+msgstr "已创建标签"
 
 msgid "Tag size"
 msgstr "标签尺寸"
@@ -1572,14 +5704,28 @@ msgstr "接管"
 msgid "Take over {0}"
 msgstr "接手 {0}"
 
+msgid "Task ID is required"
+msgstr "任务ID是必填项"
+
+msgid "Task not found"
+msgstr "任务未找到"
+
+msgid "Template created"
+msgstr "已创建模板"
+
 msgid "That QR code isn't a bundle ticket"
 msgstr "该二维码不是分包标签"
 
 #. placeholder {0}: operation.operationQuantity
-msgid "The completed quantity for this operation is less than the required quantity of {0}."
+msgid ""
+"The completed quantity for this operation is less than the required quantity"
+" of {0}."
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
-msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
+msgid ""
+"There are serial or batch tracked materials on the bill of material that "
+"have not been fully issued. Completing without issuing may result in "
+"incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
 msgid "This lot is expired and can't be picked."
@@ -1591,7 +5737,9 @@ msgstr "此操作已被删除"
 msgid "This Period"
 msgstr "本期"
 
-msgid "This process is assigned to someone else. Taking over stops their running clock."
+msgid ""
+"This process is assigned to someone else. Taking over stops their running "
+"clock."
 msgstr "该工序已分配给他人。接手将停止其正在计时的工时。"
 
 msgid "Thumbnail"
@@ -1603,6 +5751,20 @@ msgstr "工时记录"
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Time Worked: {0}"
 msgstr "工作时间：{0}"
+
+msgid "Timecard created"
+msgstr "已创建考勤卡"
+
+msgid "Timecard removed successfully"
+msgstr "时间卡删除成功"
+
+msgid "Timecard updated"
+msgstr "考勤记录已更新"
+
+msgid ""
+"Timecards are not enabled. To enable this feature, go to Settings → People "
+"to enable Timecards."
+msgstr "时间卡未启用。要启用此功能，请前往设置 → 人员以启用时间卡。"
 
 msgid "Today"
 msgstr "今天"
@@ -1648,20 +5810,50 @@ msgstr "总时间：{0}"
 msgid "Total: {0}"
 msgstr "合计：{0}"
 
+msgid "Tracked entity not found"
+msgstr "未找到跟踪实体"
+
+msgid "Tracked entity scanned and transferred"
+msgstr "已跟踪实体扫描并转移"
+
 msgid "Tracking"
 msgstr "跟踪"
+
+msgid "Training created"
+msgstr "已创建培训"
+
+msgid "Training ID is required"
+msgstr "培训ID是必需的"
+
+msgid "Training marked as complete"
+msgstr "培训标记为完成"
 
 msgid "Type a message..."
 msgstr "输入消息..."
 
+msgid "Type created"
+msgstr "已创建类型"
+
 msgid "Unassigned"
 msgstr "未分配"
+
+msgid "Unauthorized"
+msgstr "未授权"
+
+msgid "Unauthorized: Cannot remove attribute"
+msgstr "未经授权：无法删除属性"
+
+msgid "Unauthorized: Cannot update attribute"
+msgstr "未经授权：无法更新属性"
 
 msgid "Unissued serial/batch materials"
 msgstr "未发放的序列号/批次材料"
 
 msgid "unit"
 msgstr "单位"
+
+msgid "Unit of measure created"
+msgstr "已创建计量单位"
 
 msgid "Unknown"
 msgstr "未知"
@@ -1679,11 +5871,359 @@ msgstr "未保存的更改"
 msgid "Update"
 msgstr "更新"
 
+msgid "Update failed"
+msgstr "更新失败"
+
 msgid "Update step"
 msgstr "更新步骤"
 
+msgid "Updated account"
+msgstr "已更新账户"
+
+msgid "Updated API key"
+msgstr "已更新API密钥"
+
+msgid "Updated attribute category "
+msgstr "已更新属性类别 "
+
+msgid "Updated attribute value"
+msgstr "已更新属性值"
+
+msgid "Updated company"
+msgstr "已更新公司"
+
+msgid "Updated consumable"
+msgstr "已更新消耗品"
+
+msgid "Updated consumable costing"
+msgstr "已更新消耗品成本估算"
+
+msgid "Updated consumable inventory"
+msgstr "已更新消耗品库存"
+
+msgid "Updated consumable planning"
+msgstr "已更新消耗品计划"
+
+msgid "Updated consumable purchasing"
+msgstr "已更新消耗品采购"
+
+msgid "Updated customer"
+msgstr "已更新客户"
+
+msgid "Updated customer payment terms"
+msgstr "已更新客户的付款条款"
+
+msgid "Updated customer portal"
+msgstr "已更新客户门户"
+
+msgid "Updated customer shipping"
+msgstr "已更新客户发货信息"
+
+msgid "Updated customer status"
+msgstr "已更新客户状态"
+
+msgid "Updated customer tax information"
+msgstr "已更新客户税务信息"
+
+msgid "Updated customer type"
+msgstr "已更新客户类型"
+
+msgid "Updated default accounts"
+msgstr "已更新默认账户"
+
+msgid "Updated dimension"
+msgstr "已更新尺寸"
+
+msgid "Updated dispatch status"
+msgstr "已更新调度状态"
+
+msgid "Updated document"
+msgstr "已更新文档"
+
+msgid "Updated employee type"
+msgstr "已更新员工类型"
+
+msgid "Updated exchange rate"
+msgstr "已更新汇率"
+
+msgid "Updated failure mode"
+msgstr "已更新故障模式"
+
+msgid "Updated gauge"
+msgstr "已更新量具"
+
+msgid "Updated gauge type"
+msgstr "已更新量具类型"
+
+msgid "Updated group"
+msgstr "已更新组别"
+
+msgid "Updated issue"
+msgstr "已更新问题"
+
+msgid "Updated issue status"
+msgstr "已更新问题状态"
+
+msgid "Updated issue type"
+msgstr "已更新问题类型"
+
+msgid "Updated item"
+msgstr "已更新项"
+
+msgid "Updated item group"
+msgstr "已更新项目组"
+
+msgid "Updated job"
+msgstr "已更新工作"
+
+msgid "Updated job status"
+msgstr "已更新工作状态"
+
+msgid "Updated kanban"
+msgstr "已更新看板"
+
+msgid "Updated maintenance schedule"
+msgstr "已更新维护计划"
+
+msgid "Updated material"
+msgstr "已更新材料"
+
+msgid "Updated material costing"
+msgstr "已更新材料成本"
+
+msgid "Updated material form"
+msgstr "已更新材料表"
+
+msgid "Updated material grade"
+msgstr "已更新材料等级"
+
+msgid "Updated material inventory"
+msgstr "已更新材料库存"
+
+msgid "Updated material planning"
+msgstr "已更新材料计划"
+
+msgid "Updated material purchasing"
+msgstr "已更新原材料采购"
+
+msgid "Updated material substance"
+msgstr "已更新材料成分"
+
+msgid "Updated material type"
+msgstr "已更新材料类型"
+
+msgid "Updated no quote reason"
+msgstr "已更新未报价原因"
+
+msgid "Updated order"
+msgstr "已更新订单"
+
+msgid "Updated part"
+msgstr "已更新部件"
+
+msgid "Updated part costing"
+msgstr "已更新零件成本"
+
+msgid "Updated part inventory"
+msgstr "已更新零件库存"
+
+msgid "Updated part manufacturing"
+msgstr "已更新零件制造"
+
+msgid "Updated part planning"
+msgstr "已更新零件计划"
+
+msgid "Updated part purchasing"
+msgstr "已更新零件采购"
+
+msgid "Updated part sale price"
+msgstr "已更新零件销售价格"
+
+msgid "Updated payment term"
+msgstr "已更新付款条款"
+
+msgid "Updated picking list"
+msgstr "已更新拣货清单"
+
+msgid "Updated picking list status"
+msgstr "已更新拣货列表状态"
+
+msgid "Updated process completion"
+msgstr "已更新工序完成"
+
+msgid "Updated production event"
+msgstr "已更新生产事件"
+
+msgid "Updated profile"
+msgstr "已更新资料"
+
+msgid "Updated purchase invoice"
+msgstr "已更新采购发票"
+
+msgid "Updated purchase invoice delivery"
+msgstr "已更新采购发票入库"
+
+msgid "Updated purchase invoice status"
+msgstr "已更新采购发票状态"
+
+msgid "Updated purchase order"
+msgstr "已更新采购订单"
+
+msgid "Updated purchase order delivery"
+msgstr "已更新采购订单交货日期"
+
+msgid "Updated purchase order payment"
+msgstr "已更新采购订单付款"
+
+msgid "Updated purchasing order status"
+msgstr "已更新采购订单状态"
+
+msgid "Updated quote"
+msgstr "已更新报价"
+
+msgid "Updated quote line"
+msgstr "已更新报价行"
+
+msgid "Updated quote payment"
+msgstr "已更新报价付款"
+
+msgid "Updated quote shipment"
+msgstr "已更新报价运输"
+
+msgid "Updated quote status"
+msgstr "已更新报价状态"
+
+msgid "Updated receipt"
+msgstr "已更新收据"
+
+msgid "Updated RFQ"
+msgstr "已更新询价单"
+
+msgid "Updated RFQ status"
+msgstr "已更新询价单状态"
+
+msgid "Updated sales invoice"
+msgstr "已更新销售发票"
+
+msgid "Updated sales invoice shipping"
+msgstr "已更新销售发票发货信息"
+
+msgid "Updated sales invoice status"
+msgstr "已更新销售发票状态"
+
+msgid "Updated sales order payment"
+msgstr "已更新销售订单付款"
+
+msgid "Updated sales order shipment"
+msgstr "已更新销售订单发货"
+
+msgid "Updated sales order status"
+msgstr "已更新销售订单状态"
+
+msgid "Updated scrap reason"
+msgstr "已更新废料原因"
+
+msgid "Updated sequence"
+msgstr "已更新顺序"
+
+msgid "Updated shipment"
+msgstr "已更新发货信息"
+
+msgid "Updated shipping method"
+msgstr "已更新运输方式"
+
+msgid "Updated storage type"
+msgstr "已更新存储类型"
+
+msgid "Updated storageUnit"
+msgstr "已更新存储单元"
+
+msgid "Updated style color"
+msgstr "已更新款式颜色"
+
+msgid "Updated style costing"
+msgstr "已更新款式成本估算"
+
+msgid "Updated style inventory"
+msgstr "已更新款式库存"
+
+msgid "Updated style planning"
+msgstr "已更新款式规划"
+
+msgid "Updated style sale price"
+msgstr "已更新款式销售价格"
+
+msgid "Updated style size"
+msgstr "已更新款式尺寸"
+
+msgid "Updated subsidiary"
+msgstr "已更新子公司"
+
 msgid "Updated successfully"
 msgstr "更新成功"
+
+msgid "Updated supplier"
+msgstr "已更新供应商"
+
+msgid "Updated supplier payment terms"
+msgstr "已更新供应商付款条款"
+
+msgid "Updated supplier quote status"
+msgstr "已更新供应商报价状态"
+
+msgid "Updated supplier shipping"
+msgstr "已更新供应商发货信息"
+
+msgid "Updated supplier tax information"
+msgstr "已更新供应商税务信息"
+
+msgid "Updated supplier type"
+msgstr "已更新供应商类型"
+
+msgid "Updated suppliers"
+msgstr "已更新供应商"
+
+msgid "Updated task status"
+msgstr "已更新任务状态"
+
+msgid "Updated tool"
+msgstr "已更新工具"
+
+msgid "Updated tool costing"
+msgstr "已更新工具成本"
+
+msgid "Updated tool inventory"
+msgstr "已更新刀具库存"
+
+msgid "Updated tool manufacturing"
+msgstr "已更新刀具制造"
+
+msgid "Updated tool planning"
+msgstr "已更新刀具计划"
+
+msgid "Updated tool purchasing"
+msgstr "已更新工具采购"
+
+msgid "Updated unit of measure"
+msgstr "已更新度量单位"
+
+msgid "Updated warehouse transfer"
+msgstr "已更新仓库转移"
+
+msgid "Updated warehouse transfer line"
+msgstr "已更新仓库转移行"
+
+msgid "Updated warehouse transfer status"
+msgstr "已更新仓库转移状态"
+
+msgid "Updated webhook"
+msgstr "已更新 webhook"
+
+msgid "Updated work center "
+msgstr "已更新工作中心 "
+
+msgid "Updating user permissions"
+msgstr "更新用户权限"
 
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
@@ -1698,6 +6238,18 @@ msgstr "使用其他邮箱"
 
 msgid "Use a different phone number"
 msgstr "使用不同的电话号码"
+
+msgid "Use the entity picker to split this row"
+msgstr "使用实体选择器拆分此行"
+
+msgid "User already deactivated"
+msgstr "用户已停用"
+
+msgid "User not found"
+msgstr "用户未找到"
+
+msgid "User record not found"
+msgstr "用户记录未找到"
 
 msgid "Verification Error"
 msgstr "验证错误"
@@ -1716,6 +6268,9 @@ msgstr "体积："
 
 msgid "Waiting"
 msgstr "等待中"
+
+msgid "Warehouse transfer deleted successfully"
+msgstr "仓库转移删除成功"
 
 msgid "We've sent a verification code to {email}"
 msgstr "我们已向 {email} 发送了验证码"
@@ -1741,6 +6296,9 @@ msgstr "在制品"
 msgid "Work Center"
 msgstr "工作中心"
 
+msgid "Work Center Blocked"
+msgstr "工作中心被阻塞"
+
 msgid "Work Order"
 msgstr "工单"
 
@@ -1753,12 +6311,34 @@ msgstr "黄色"
 msgid "You belong to more than one company. Pick where to work."
 msgstr "您属于多个公司。请选择工作所在的公司。"
 
+msgid "You cannot deactivate yourself"
+msgstr "您不能取消激活自己"
+
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
+msgid ""
+"You clocked in at {0}. You can edit your clock-out time below or acknowledge"
+" that you're still working."
 msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确认您仍在工作。"
 
-msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
+msgid "You do not have permission to approve this request"
+msgstr "您没有权限批准此请求"
+
+msgid "You do not have permission to deactivate this supplier"
+msgstr "您没有权限停用此供应商"
+
+msgid "You do not have permission to reopen this purchase order"
+msgstr "您没有权限重新打开此采购订单"
+
+msgid "You do not have permission to update permissions"
+msgstr "您没有权限更新权限"
+
+msgid ""
+"You've been clocked in for {hoursElapsed} hours. Did you forget to clock "
+"out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"
+
+msgid "Your account is not active"
+msgstr "您的账户未激活"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "您的公司正在使用免费方案（只读）。升级后即可进行更改。"

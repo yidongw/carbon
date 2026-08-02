@@ -1,11 +1,6 @@
 import type { Database } from "@carbon/database";
 import { checkApiKeyRateLimit } from "@carbon/database/ratelimit";
-import {
-  Edition,
-  normalizePlanId,
-  Plan,
-  READ_ONLY_MESSAGE
-} from "@carbon/utils";
+import { Edition, normalizePlanId, Plan } from "@carbon/utils";
 import type {
   AuthSession as SupabaseAuthSession,
   SupabaseClient
@@ -447,7 +442,10 @@ export async function requirePermissions(
         requestsWrite(requiredPermissions) &&
         (await isCompanyReadOnly(companyId, userId))
       ) {
-        throw new Response(READ_ONLY_MESSAGE, { status: 403 });
+        throw new Response(
+          "Your company is on the free plan (read-only). Upgrade to make changes.",
+          { status: 403 }
+        );
       }
 
       const client = getCarbonAPIKeyClient(apiKey);
@@ -491,7 +489,13 @@ export async function requirePermissions(
   ) {
     throw redirect(
       refererPathOrDefault(request),
-      await flash(request, error({ readOnly: true }, READ_ONLY_MESSAGE))
+      await flash(
+        request,
+        error(
+          { readOnly: true },
+          "Your company is on the free plan (read-only). Upgrade to make changes."
+        )
+      )
     );
   }
 

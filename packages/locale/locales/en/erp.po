@@ -163,6 +163,9 @@ msgstr "A contractor is a supplier contact with particular abilities and availab
 msgid "A customer is a business or person who buys your parts or services."
 msgstr "A customer is a business or person who buys your parts or services."
 
+msgid "A depreciation run already exists for this period"
+msgstr "A depreciation run already exists for this period"
+
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "A issue record tracks quality issues and their resolution process."
 
@@ -241,8 +244,14 @@ msgstr "Accept Quote"
 msgid "Account"
 msgstr "Account"
 
+msgid "Account created"
+msgstr "Account created"
+
 msgid "Account Manager"
 msgstr "Account Manager"
+
+msgid "Account moved"
+msgstr "Account moved"
 
 msgid "Account Number"
 msgstr "Account Number"
@@ -560,6 +569,9 @@ msgstr "Added {0}"
 msgid "Added {createdAt}"
 msgstr "Added {createdAt}"
 
+msgid "Added colors and sizes"
+msgstr "Added colors and sizes"
+
 msgid "Adding..."
 msgstr "Adding..."
 
@@ -601,6 +613,9 @@ msgstr "AI Tokens"
 
 msgid "All"
 msgstr "All"
+
+msgid "All active assets are already covered for this period"
+msgstr "All active assets are already covered for this period"
 
 msgid "All Audit Logs"
 msgstr "All Audit Logs"
@@ -655,6 +670,9 @@ msgstr "Amount"
 
 msgid "Amount Type"
 msgstr "Amount Type"
+
+msgid "An approval request already exists for this supplier"
+msgstr "An approval request already exists for this supplier"
 
 msgid "An item cannot be added to itself."
 msgstr "An item cannot be added to itself."
@@ -743,8 +761,26 @@ msgstr "Approval Date"
 msgid "Approval is required at or above this amount, up to the next rule's minimum"
 msgstr "Approval is required at or above this amount, up to the next rule's minimum"
 
+msgid "Approval request not found"
+msgstr "Approval request not found"
+
+msgid "Approval request submitted"
+msgstr "Approval request submitted"
+
 msgid "Approval Requirements"
 msgstr "Approval Requirements"
+
+msgid "Approval rule created"
+msgstr "Approval rule created"
+
+msgid "Approval rule deleted successfully"
+msgstr "Approval rule deleted successfully"
+
+msgid "Approval rule not found"
+msgstr "Approval rule not found"
+
+msgid "Approval rule updated"
+msgstr "Approval rule updated"
 
 msgid "Approval Rules"
 msgstr "Approval Rules"
@@ -775,6 +811,9 @@ msgstr "Archive"
 
 msgid "Archive all"
 msgstr "Archive all"
+
+msgid "Archive ID is required"
+msgstr "Archive ID is required"
 
 msgid "Archived"
 msgstr "Archived"
@@ -1184,11 +1223,23 @@ msgstr "Asset"
 msgid "Asset Class"
 msgstr "Asset Class"
 
+msgid "Asset class created"
+msgstr "Asset class created"
+
+msgid "Asset class updated"
+msgstr "Asset class updated"
+
 msgid "Asset Classes"
 msgstr "Asset Classes"
 
+msgid "Asset disposed successfully"
+msgstr "Asset disposed successfully"
+
 msgid "Asset ID"
 msgstr "Asset ID"
+
+msgid "Asset registered successfully"
+msgstr "Asset registered successfully"
 
 msgid "Assets"
 msgstr "Assets"
@@ -1226,11 +1277,32 @@ msgstr "Assignee"
 msgid "Assignment"
 msgstr "Assignment"
 
+msgid "Assignment created successfully"
+msgstr "Assignment created successfully"
+
+msgid "Assignment deleted successfully"
+msgstr "Assignment deleted successfully"
+
+msgid "Assignment ID is required"
+msgstr "Assignment ID is required"
+
+msgid "Assignment rule created"
+msgstr "Assignment rule created"
+
+msgid "Assignment rule deleted"
+msgstr "Assignment rule deleted"
+
 msgid "Assignment Rule Simulation"
 msgstr "Assignment Rule Simulation"
 
+msgid "Assignment rule updated"
+msgstr "Assignment rule updated"
+
 msgid "Assignment Rules"
 msgstr "Assignment Rules"
+
+msgid "Assignment updated successfully"
+msgstr "Assignment updated successfully"
 
 msgid "Assignments"
 msgstr "Assignments"
@@ -1256,6 +1328,9 @@ msgstr "Attempts"
 msgid "Attribute"
 msgstr "Attribute"
 
+msgid "Attribute recorded successfully"
+msgstr "Attribute recorded successfully"
+
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 
@@ -1270,6 +1345,12 @@ msgstr "Audit Log"
 
 msgid "Audit Logging"
 msgstr "Audit Logging"
+
+msgid "Audit logging disabled"
+msgstr "Audit logging disabled"
+
+msgid "Audit logging enabled"
+msgstr "Audit logging enabled"
 
 msgid "Audit logging is disabled"
 msgstr "Audit logging is disabled"
@@ -1348,6 +1429,12 @@ msgstr "Backflush"
 
 msgid "Bad Debts Expense"
 msgstr "Bad Debts Expense"
+
+msgid "Bad request for next sequence"
+msgstr "Bad request for next sequence"
+
+msgid "Bad request for rolling back sequence"
+msgstr "Bad request for rolling back sequence"
 
 msgid "Bag"
 msgstr "Bag"
@@ -1495,6 +1582,9 @@ msgstr "Bulk Jobs"
 msgid "Bundle"
 msgstr "Bundle"
 
+msgid "Bundle not found"
+msgstr "Bundle not found"
+
 msgid "Bundle Work Orders"
 msgstr "Bundle Work Orders"
 
@@ -1542,6 +1632,9 @@ msgstr "Calibration Expiration Notifications"
 
 msgid "Calibration Interval (Months)"
 msgstr "Calibration Interval (Months)"
+
+msgid "Calibration record created"
+msgstr "Calibration record created"
 
 msgid "Calibration Records"
 msgstr "Calibration Records"
@@ -1600,6 +1693,42 @@ msgstr "Cannot add tools to unsaved operation"
 msgid "Cannot convert RFQ to quote"
 msgstr "Cannot convert RFQ to quote"
 
+msgid "Cannot delete a posted receipt"
+msgstr "Cannot delete a posted receipt"
+
+msgid "Cannot delete a posted shipment"
+msgstr "Cannot delete a posted shipment"
+
+msgid "Cannot edit a protected customer type"
+msgstr "Cannot edit a protected customer type"
+
+msgid "Cannot edit a protected supplier type"
+msgstr "Cannot edit a protected supplier type"
+
+msgid "Cannot edit global material grade"
+msgstr "Cannot edit global material grade"
+
+msgid "Cannot edit global material shape"
+msgstr "Cannot edit global material shape"
+
+msgid "Cannot edit global material substance"
+msgstr "Cannot edit global material substance"
+
+msgid "Cannot edit global material type"
+msgstr "Cannot edit global material type"
+
+msgid "Cannot edit global style color"
+msgstr "Cannot edit global style color"
+
+msgid "Cannot edit global style size"
+msgstr "Cannot edit global style size"
+
+msgid "Cannot finish operation"
+msgstr "Cannot finish operation"
+
+msgid "Cannot modify a locked picking list. Reopen it first."
+msgstr "Cannot modify a locked picking list. Reopen it first."
+
 msgid "Cannot move to parts bucket without item ID"
 msgstr "Cannot move to parts bucket without item ID"
 
@@ -1609,8 +1738,17 @@ msgstr "Cannot place order - no supplier associated with this item"
 msgid "Cannot post — shipment contains expired tracked entities."
 msgstr "Cannot post — shipment contains expired tracked entities."
 
+msgid "Cannot reprint a job that is still generating"
+msgstr "Cannot reprint a job that is still generating"
+
 msgid "Cannot send RFQ"
 msgstr "Cannot send RFQ"
+
+msgid "Cannot start operation"
+msgstr "Cannot start operation"
+
+msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
+msgstr "Cannot update status of draft purchase invoice. Please post the invoice first."
 
 msgid "Cannot upload — supplier interaction not yet created"
 msgstr "Cannot upload — supplier interaction not yet created"
@@ -1771,9 +1909,15 @@ msgstr "Clock In"
 msgid "Clock Out"
 msgstr "Clock Out"
 
+msgid "Clocked in"
+msgstr "Clocked in"
+
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Clocked in since {0}"
+
+msgid "Clocked out"
+msgstr "Clocked out"
 
 msgid "Close"
 msgstr "Close"
@@ -1862,6 +2006,9 @@ msgstr "comma-separated values"
 msgid "Comment"
 msgstr "Comment"
 
+msgid "Comment saved"
+msgstr "Comment saved"
+
 msgid "Comments"
 msgstr "Comments"
 
@@ -1876,6 +2023,12 @@ msgstr "Company"
 
 msgid "Company Name"
 msgstr "Company Name"
+
+msgid "Company not found"
+msgstr "Company not found"
+
+msgid "Company ownership has been transferred successfully"
+msgstr "Company ownership has been transferred successfully"
 
 msgid "Company policy asks for a different person to inspect inbound items than the one who received them."
 msgstr "Company policy asks for a different person to inspect inbound items than the one who received them."
@@ -2046,6 +2199,12 @@ msgstr "Console mode is enabled"
 msgid "Console Operator"
 msgstr "Console Operator"
 
+msgid "Console operator created successfully"
+msgstr "Console operator created successfully"
+
+msgid "Console Operator employee type not found. Run the migration."
+msgstr "Console Operator employee type not found. Run the migration."
+
 msgid "Consumable"
 msgstr "Consumable"
 
@@ -2087,6 +2246,12 @@ msgstr "Containments"
 
 msgid "Contractor"
 msgstr "Contractor"
+
+msgid "Contractor created"
+msgstr "Contractor created"
+
+msgid "Contractor updated"
+msgstr "Contractor updated"
 
 msgid "Contractors"
 msgstr "Contractors"
@@ -2295,6 +2460,12 @@ msgstr "Corrective Action"
 msgid "Cost Center"
 msgstr "Cost Center"
 
+msgid "Cost center created"
+msgstr "Cost center created"
+
+msgid "Cost center updated"
+msgstr "Cost center updated"
+
 msgid "Cost Centers"
 msgstr "Cost Centers"
 
@@ -2448,6 +2619,9 @@ msgstr "Created At"
 msgid "Created By"
 msgstr "Created By"
 
+msgid "Created company"
+msgstr "Created company"
+
 msgid "Created consumable"
 msgstr "Created consumable"
 
@@ -2478,6 +2652,9 @@ msgstr "Created item group"
 
 msgid "Created location"
 msgstr "Created location"
+
+msgid "Created maintenance dispatch"
+msgstr "Created maintenance dispatch"
 
 msgid "Created maintenance schedule"
 msgstr "Created maintenance schedule"
@@ -2619,6 +2796,9 @@ msgstr "Customer"
 msgid "Customer Accounts"
 msgstr "Customer Accounts"
 
+msgid "Customer address updated"
+msgstr "Customer address updated"
+
 msgid "Customer Communication"
 msgstr "Customer Communication"
 
@@ -2627,6 +2807,12 @@ msgstr "Customer Complaint"
 
 msgid "Customer Contact"
 msgstr "Customer Contact"
+
+msgid "Customer contact created"
+msgstr "Customer contact created"
+
+msgid "Customer contact updated"
+msgstr "Customer contact updated"
 
 msgid "Customer Details"
 msgstr "Customer Details"
@@ -2637,11 +2823,17 @@ msgstr "Customer ID"
 msgid "Customer ID cannot be changed after creation"
 msgstr "Customer ID cannot be changed after creation"
 
+msgid "Customer invited"
+msgstr "Customer invited"
+
 msgid "Customer Invoice Number"
 msgstr "Customer Invoice Number"
 
 msgid "Customer Location"
 msgstr "Customer Location"
+
+msgid "Customer location created"
+msgstr "Customer location created"
 
 msgid "Customer Overview"
 msgstr "Customer Overview"
@@ -2673,6 +2865,9 @@ msgstr "Customer PO Number"
 msgid "Customer Portal"
 msgstr "Customer Portal"
 
+msgid "Customer portal created"
+msgstr "Customer portal created"
+
 msgid "Customer Portals"
 msgstr "Customer Portals"
 
@@ -2691,11 +2886,17 @@ msgstr "Customer Scope"
 msgid "Customer Status"
 msgstr "Customer Status"
 
+msgid "Customer status created"
+msgstr "Customer status created"
+
 msgid "Customer Statuses"
 msgstr "Customer Statuses"
 
 msgid "Customer Type"
 msgstr "Customer Type"
+
+msgid "Customer type created"
+msgstr "Customer type created"
 
 msgid "Customer Types"
 msgstr "Customer Types"
@@ -2951,6 +3152,9 @@ msgstr "Delete Document"
 msgid "Delete Employee Type"
 msgstr "Delete Employee Type"
 
+msgid "Delete failed"
+msgstr "Delete failed"
+
 msgid "Delete Failure Mode"
 msgstr "Delete Failure Mode"
 
@@ -3161,6 +3365,12 @@ msgstr "Delete Warehouse Transfer"
 msgid "Delete Webhook"
 msgstr "Delete Webhook"
 
+msgid "Deleted attribute value"
+msgstr "Deleted attribute value"
+
+msgid "Deleted warehouse transfer line"
+msgstr "Deleted warehouse transfer line"
+
 msgid "Delivery Date"
 msgstr "Delivery Date"
 
@@ -3182,8 +3392,17 @@ msgstr "Demand Forecast — Driven by"
 msgid "Demand forecast = BOM-exploded demand from open sales orders, active jobs, and production projections."
 msgstr "Demand forecast = BOM-exploded demand from open sales orders, active jobs, and production projections."
 
+msgid "Demand forecasts created successfully"
+msgstr "Demand forecasts created successfully"
+
+msgid "Demand forecasts updated successfully"
+msgstr "Demand forecasts updated successfully"
+
 msgid "Demand Projections"
 msgstr "Demand Projections"
+
+msgid "Demand projections deleted successfully"
+msgstr "Demand projections deleted successfully"
 
 msgid "Demand-Based"
 msgstr "Demand-Based"
@@ -3191,8 +3410,14 @@ msgstr "Demand-Based"
 msgid "Department"
 msgstr "Department"
 
+msgid "Department created"
+msgstr "Department created"
+
 msgid "Department Name"
 msgstr "Department Name"
+
+msgid "Department updated"
+msgstr "Department updated"
 
 msgid "Departments"
 msgstr "Departments"
@@ -3208,6 +3433,12 @@ msgstr "Depreciation Expense"
 
 msgid "Depreciation Run"
 msgstr "Depreciation Run"
+
+msgid "Depreciation run created"
+msgstr "Depreciation run created"
+
+msgid "Depreciation run posted"
+msgstr "Depreciation run posted"
 
 msgid "Description"
 msgstr "Description"
@@ -3253,6 +3484,9 @@ msgstr "Digital Quotes Enabled"
 
 msgid "Dimension"
 msgstr "Dimension"
+
+msgid "Dimension created"
+msgstr "Dimension created"
 
 msgid "Dimensions"
 msgstr "Dimensions"
@@ -3471,6 +3705,12 @@ msgstr "Each"
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
 msgstr "Each line must have a quantity greater than zero ({0})"
+
+msgid "Each line must have an account"
+msgstr "Each line must have an account"
+
+msgid "Each line must have either a debit or credit amount"
+msgstr "Each line must have either a debit or credit amount"
 
 msgid "Earned"
 msgstr "Earned"
@@ -3772,6 +4012,9 @@ msgstr "Edit Webhook"
 msgid "Edit Work Center"
 msgstr "Edit Work Center"
 
+msgid "Elimination entries generated"
+msgstr "Elimination entries generated"
+
 msgid "Email"
 msgstr "Email"
 
@@ -3798,6 +4041,9 @@ msgstr "Employee"
 
 msgid "Employee Type"
 msgstr "Employee Type"
+
+msgid "Employee type created"
+msgstr "Employee type created"
 
 msgid "Employee Types"
 msgstr "Employee Types"
@@ -3880,6 +4126,9 @@ msgstr "Enter a batch number before setting the expiration date"
 msgid "Enter a positive number to add or a negative number to subtract."
 msgstr "Enter a positive number to add or a negative number to subtract."
 
+msgid "Enter a quantity greater than zero"
+msgstr "Enter a quantity greater than zero"
+
 msgid "Enter an adjustment before saving."
 msgstr "Enter an adjustment before saving."
 
@@ -3937,6 +4186,15 @@ msgstr "Entity is {status}"
 msgid "Entity Type"
 msgstr "Entity Type"
 
+msgid "Entry added"
+msgstr "Entry added"
+
+msgid "Entry deleted"
+msgstr "Entry deleted"
+
+msgid "Entry updated"
+msgstr "Entry updated"
+
 msgid "EORI"
 msgstr "EORI"
 
@@ -3952,8 +4210,14 @@ msgstr "ERP, MES, QMS"
 msgid "Error"
 msgstr "Error"
 
+msgid "Error creating note"
+msgstr "Error creating note"
+
 msgid "Error deleting file"
 msgstr "Error deleting file"
+
+msgid "Error deleting note"
+msgstr "Error deleting note"
 
 msgid "Error downloading file"
 msgstr "Error downloading file"
@@ -3964,20 +4228,101 @@ msgstr "Error fetching customer data"
 msgid "Error fetching supplier data"
 msgstr "Error fetching supplier data"
 
-msgid "Error loading assigned dispatches"
-msgstr "Error loading assigned dispatches"
+msgid "Error loading accounts"
+msgstr "Error loading accounts"
 
-msgid "Error loading assigned documents"
-msgstr "Error loading assigned documents"
+msgid "Error loading assignment"
+msgstr "Error loading assignment"
 
-msgid "Error loading assigned issues"
-msgstr "Error loading assigned issues"
+msgid "Error loading assignment status"
+msgstr "Error loading assignment status"
+
+msgid "Error loading attribute categories"
+msgstr "Error loading attribute categories"
+
+msgid "Error loading console operators"
+msgstr "Error loading console operators"
+
+msgid "Error loading employee types"
+msgstr "Error loading employee types"
+
+msgid "Error loading employees"
+msgstr "Error loading employees"
+
+msgid "Error loading issues"
+msgstr "Error loading issues"
+
+msgid "Error loading item groups"
+msgstr "Error loading item groups"
 
 msgid "Error loading job tree."
 msgstr "Error loading job tree."
 
 msgid "Error loading make method"
 msgstr "Error loading make method"
+
+msgid "Error loading material dimensions"
+msgstr "Error loading material dimensions"
+
+msgid "Error loading material forms"
+msgstr "Error loading material forms"
+
+msgid "Error loading material substances"
+msgstr "Error loading material substances"
+
+msgid "Error loading material types"
+msgstr "Error loading material types"
+
+msgid "Error loading people"
+msgstr "Error loading people"
+
+msgid "Error loading picking lists"
+msgstr "Error loading picking lists"
+
+msgid "Error loading receipts"
+msgstr "Error loading receipts"
+
+msgid "Error loading shipments"
+msgstr "Error loading shipments"
+
+msgid "Error loading shipping methods"
+msgstr "Error loading shipping methods"
+
+msgid "Error loading stock transfers"
+msgstr "Error loading stock transfers"
+
+msgid "Error loading storage types"
+msgstr "Error loading storage types"
+
+msgid "Error loading style colors"
+msgstr "Error loading style colors"
+
+msgid "Error loading style sizes"
+msgstr "Error loading style sizes"
+
+msgid "Error loading supplier types"
+msgstr "Error loading supplier types"
+
+msgid "Error loading suppliers"
+msgstr "Error loading suppliers"
+
+msgid "Error loading tags"
+msgstr "Error loading tags"
+
+msgid "Error loading tracked entities"
+msgstr "Error loading tracked entities"
+
+msgid "Error loading training"
+msgstr "Error loading training"
+
+msgid "Error loading training assignments"
+msgstr "Error loading training assignments"
+
+msgid "Error loading trainings"
+msgstr "Error loading trainings"
+
+msgid "Error loading warehouse transfers"
+msgstr "Error loading warehouse transfers"
 
 msgid "Error moving file"
 msgstr "Error moving file"
@@ -4038,6 +4383,15 @@ msgstr "Estimator"
 
 msgid "Event ID"
 msgstr "Event ID"
+
+msgid "Event saved"
+msgstr "Event saved"
+
+msgid "Event started"
+msgstr "Event started"
+
+msgid "Event stopped"
+msgstr "Event stopped"
 
 msgid "Event Type"
 msgstr "Event Type"
@@ -4107,6 +4461,9 @@ msgstr "Expiration Date"
 
 msgid "Expiration Date (applies to all serials on this line)"
 msgstr "Expiration Date (applies to all serials on this line)"
+
+msgid "Expiration date updated"
+msgstr "Expiration date updated"
 
 msgid "Expired"
 msgstr "Expired"
@@ -4184,9 +4541,90 @@ msgstr "Fail"
 msgid "Failed"
 msgstr "Failed"
 
+msgid "Failed to accept lot"
+msgstr "Failed to accept lot"
+
+msgid "Failed to activate gauge"
+msgstr "Failed to activate gauge"
+
+msgid "Failed to activate process"
+msgstr "Failed to activate process"
+
+msgid "Failed to activate work center"
+msgstr "Failed to activate work center"
+
+msgid "Failed to add colors and sizes"
+msgstr "Failed to add colors and sizes"
+
+msgid "Failed to add entry"
+msgstr "Failed to add entry"
+
+msgid "Failed to add spare part"
+msgstr "Failed to add spare part"
+
+msgid "Failed to assign"
+msgstr "Failed to assign"
+
+msgid "Failed to assign rule"
+msgstr "Failed to assign rule"
+
+msgid "Failed to assign suppliers"
+msgstr "Failed to assign suppliers"
+
+msgid "Failed to cancel RFQ"
+msgstr "Failed to cancel RFQ"
+
+msgid "Failed to complete job"
+msgstr "Failed to complete job"
+
+msgid "Failed to complete maintenance"
+msgstr "Failed to complete maintenance"
+
+msgid "Failed to convert quote to order"
+msgstr "Failed to convert quote to order"
+
+msgid "Failed to convert rework"
+msgstr "Failed to convert rework"
+
+msgid "Failed to convert RFQ"
+msgstr "Failed to convert RFQ"
+
+msgid "Failed to create API key"
+msgstr "Failed to create API key"
+
+msgid "Failed to create asset class"
+msgstr "Failed to create asset class"
+
+msgid "Failed to create assignment"
+msgstr "Failed to create assignment"
+
+msgid "Failed to create attribute"
+msgstr "Failed to create attribute"
+
+msgid "Failed to create attribute category"
+msgstr "Failed to create attribute category"
+
+msgid "Failed to create auth session"
+msgstr "Failed to create auth session"
+
+msgid "Failed to create company"
+msgstr "Failed to create company"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create consumable: {0}"
 msgstr "Failed to create consumable: {0}"
+
+msgid "Failed to create contractor"
+msgstr "Failed to create contractor"
+
+msgid "Failed to create cost center."
+msgstr "Failed to create cost center."
+
+msgid "Failed to create customer location"
+msgstr "Failed to create customer location"
+
+msgid "Failed to create customer portal"
+msgstr "Failed to create customer portal"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create customer portal: {0}"
@@ -4208,25 +4646,76 @@ msgstr "Failed to create customer: {0}"
 msgid "Failed to create department: {0}"
 msgstr "Failed to create department: {0}"
 
+msgid "Failed to create department."
+msgstr "Failed to create department."
+
+msgid "Failed to create depreciation run"
+msgstr "Failed to create depreciation run"
+
+msgid "Failed to create dimension"
+msgstr "Failed to create dimension"
+
+msgid "Failed to create document"
+msgstr "Failed to create document"
+
+msgid "Failed to create employee job record"
+msgstr "Failed to create employee job record"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create failure mode: {0}"
 msgstr "Failed to create failure mode: {0}"
+
+msgid "Failed to create fixed asset"
+msgstr "Failed to create fixed asset"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create gauge type: {0}"
 msgstr "Failed to create gauge type: {0}"
 
+msgid "Failed to create group"
+msgstr "Failed to create group"
+
+msgid "Failed to create headquarters location"
+msgstr "Failed to create headquarters location"
+
+msgid "Failed to create holiday."
+msgstr "Failed to create holiday."
+
+msgid "Failed to create IC transaction"
+msgstr "Failed to create IC transaction"
+
+msgid "Failed to create inspection document"
+msgstr "Failed to create inspection document"
+
+msgid "Failed to create invite link"
+msgstr "Failed to create invite link"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
 msgstr "Failed to create item group: {0}"
+
+msgid "Failed to create journal entry"
+msgstr "Failed to create journal entry"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create location: {0}"
 msgstr "Failed to create location: {0}"
 
+msgid "Failed to create location."
+msgstr "Failed to create location."
+
+msgid "Failed to create maintenance dispatch"
+msgstr "Failed to create maintenance dispatch"
+
+msgid "Failed to create maintenance schedule"
+msgstr "Failed to create maintenance schedule"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create maintenance schedule: {0}"
 msgstr "Failed to create maintenance schedule: {0}"
+
+msgid "Failed to create master work order"
+msgstr "Failed to create master work order"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create material dimension: {0}"
@@ -4260,21 +4749,108 @@ msgstr "Failed to create material: {0}"
 msgid "Failed to create no quote reason: {0}"
 msgstr "Failed to create no quote reason: {0}"
 
+msgid "Failed to create parameter"
+msgstr "Failed to create parameter"
+
+msgid "Failed to create part"
+msgstr "Failed to create part"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create part: {0}"
 msgstr "Failed to create part: {0}"
+
+msgid "Failed to create partner"
+msgstr "Failed to create partner"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create payment term: {0}"
 msgstr "Failed to create payment term: {0}"
 
+msgid "Failed to create price override"
+msgstr "Failed to create price override"
+
+msgid "Failed to create pricing rule"
+msgstr "Failed to create pricing rule"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create process: {0}"
 msgstr "Failed to create process: {0}"
 
+msgid "Failed to create process."
+msgstr "Failed to create process."
+
+msgid "Failed to create purchase invoice"
+msgstr "Failed to create purchase invoice"
+
+msgid "Failed to create purchase invoice line."
+msgstr "Failed to create purchase invoice line."
+
+msgid "Failed to create purchase order"
+msgstr "Failed to create purchase order"
+
+msgid "Failed to create purchase order line."
+msgstr "Failed to create purchase order line."
+
+msgid "Failed to create quality issue"
+msgstr "Failed to create quality issue"
+
+msgid "Failed to create quality issue tasks"
+msgstr "Failed to create quality issue tasks"
+
+msgid "Failed to create question"
+msgstr "Failed to create question"
+
+msgid "Failed to create quote line method."
+msgstr "Failed to create quote line method."
+
+msgid "Failed to create quote line."
+msgstr "Failed to create quote line."
+
+msgid "Failed to create receipt"
+msgstr "Failed to create receipt"
+
+msgid "Failed to create repeat depreciation run"
+msgstr "Failed to create repeat depreciation run"
+
+msgid "Failed to create reprint"
+msgstr "Failed to create reprint"
+
+msgid "Failed to create required action"
+msgstr "Failed to create required action"
+
+msgid "Failed to create risk"
+msgstr "Failed to create risk"
+
+msgid "Failed to create rule"
+msgstr "Failed to create rule"
+
+msgid "Failed to create sales invoice"
+msgstr "Failed to create sales invoice"
+
+msgid "Failed to create sales invoice line."
+msgstr "Failed to create sales invoice line."
+
+msgid "Failed to create sales order"
+msgstr "Failed to create sales order"
+
+msgid "Failed to create sales order line."
+msgstr "Failed to create sales order line."
+
+msgid "Failed to create shift"
+msgstr "Failed to create shift"
+
+msgid "Failed to create shipment"
+msgstr "Failed to create shipment"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create shipping method: {0}"
 msgstr "Failed to create shipping method: {0}"
+
+msgid "Failed to create step"
+msgstr "Failed to create step"
+
+msgid "Failed to create stock transfer"
+msgstr "Failed to create stock transfer"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create stock transfer line: {0}"
@@ -4288,6 +4864,9 @@ msgstr "Failed to create storage type: {0}"
 msgid "Failed to create style: {0}"
 msgstr "Failed to create style: {0}"
 
+msgid "Failed to create supplier location"
+msgstr "Failed to create supplier location"
+
 msgid "Failed to create supplier process"
 msgstr "Failed to create supplier process"
 
@@ -4295,65 +4874,1496 @@ msgstr "Failed to create supplier process"
 msgid "Failed to create supplier: {0}"
 msgstr "Failed to create supplier: {0}"
 
+msgid "Failed to create tag"
+msgstr "Failed to create tag"
+
+msgid "Failed to create template"
+msgstr "Failed to create template"
+
+msgid "Failed to create timecard"
+msgstr "Failed to create timecard"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
 msgstr "Failed to create tool: {0}"
 
+msgid "Failed to create training"
+msgstr "Failed to create training"
+
 msgid "Failed to create user account"
 msgstr "Failed to create user account"
+
+msgid "Failed to create user from WeChat"
+msgstr "Failed to create user from WeChat"
+
+msgid "Failed to create warehouse transfer"
+msgstr "Failed to create warehouse transfer"
+
+msgid "Failed to create webhook"
+msgstr "Failed to create webhook"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create webhook: {0}"
 msgstr "Failed to create webhook: {0}"
 
+msgid "Failed to create WeChat session"
+msgstr "Failed to create WeChat session"
+
+msgid "Failed to create work center"
+msgstr "Failed to create work center"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create work center: {0}"
 msgstr "Failed to create work center: {0}"
 
+msgid "Failed to deactivate attribute"
+msgstr "Failed to deactivate attribute"
+
+msgid "Failed to deactivate attribute category"
+msgstr "Failed to deactivate attribute category"
+
+msgid "Failed to deactivate employee"
+msgstr "Failed to deactivate employee"
+
+msgid "Failed to deactivate gauge"
+msgstr "Failed to deactivate gauge"
+
+msgid "Failed to deactivate process"
+msgstr "Failed to deactivate process"
+
+msgid "Failed to deactivate user"
+msgstr "Failed to deactivate user"
+
+msgid "Failed to deactivate users"
+msgstr "Failed to deactivate users"
+
+msgid "Failed to delete account"
+msgstr "Failed to delete account"
+
+msgid "Failed to delete API key"
+msgstr "Failed to delete API key"
+
+msgid "Failed to delete approval rule"
+msgstr "Failed to delete approval rule"
+
+msgid "Failed to delete asset class"
+msgstr "Failed to delete asset class"
+
+msgid "Failed to delete assignment"
+msgstr "Failed to delete assignment"
+
+msgid "Failed to delete association"
+msgstr "Failed to delete association"
+
+msgid "Failed to delete attribute value"
+msgstr "Failed to delete attribute value"
+
+msgid "Failed to delete contractor"
+msgstr "Failed to delete contractor"
+
+msgid "Failed to delete cost center"
+msgstr "Failed to delete cost center"
+
+msgid "Failed to delete custom field"
+msgstr "Failed to delete custom field"
+
+msgid "Failed to delete customer contact"
+msgstr "Failed to delete customer contact"
+
+msgid "Failed to delete customer part"
+msgstr "Failed to delete customer part"
+
+msgid "Failed to delete customer status"
+msgstr "Failed to delete customer status"
+
+msgid "Failed to delete customer type"
+msgstr "Failed to delete customer type"
+
+msgid "Failed to delete department"
+msgstr "Failed to delete department"
+
+msgid "Failed to delete depreciation run"
+msgstr "Failed to delete depreciation run"
+
+msgid "Failed to delete dimension"
+msgstr "Failed to delete dimension"
+
+msgid "Failed to delete document"
+msgstr "Failed to delete document"
+
+msgid "Failed to delete employee type"
+msgstr "Failed to delete employee type"
+
+msgid "Failed to delete entry"
+msgstr "Failed to delete entry"
+
+msgid "Failed to delete event"
+msgstr "Failed to delete event"
+
 msgid "Failed to delete file from old location"
 msgstr "Failed to delete file from old location"
+
+msgid "Failed to delete fixed asset"
+msgstr "Failed to delete fixed asset"
+
+msgid "Failed to delete gauge"
+msgstr "Failed to delete gauge"
+
+msgid "Failed to delete gauge calibration record"
+msgstr "Failed to delete gauge calibration record"
+
+msgid "Failed to delete group"
+msgstr "Failed to delete group"
+
+msgid "Failed to delete holiday"
+msgstr "Failed to delete holiday"
+
+msgid "Failed to delete inspection document"
+msgstr "Failed to delete inspection document"
+
+msgid "Failed to delete issue"
+msgstr "Failed to delete issue"
+
+msgid "Failed to delete issue workflow"
+msgstr "Failed to delete issue workflow"
+
+msgid "Failed to delete item group"
+msgstr "Failed to delete item group"
+
+msgid "Failed to delete job"
+msgstr "Failed to delete job"
+
+msgid "Failed to delete job material"
+msgstr "Failed to delete job material"
+
+msgid "Failed to delete job operation attribute"
+msgstr "Failed to delete job operation attribute"
+
+msgid "Failed to delete job operation parameter"
+msgstr "Failed to delete job operation parameter"
+
+msgid "Failed to delete job operation tool"
+msgstr "Failed to delete job operation tool"
+
+msgid "Failed to delete journal entry"
+msgstr "Failed to delete journal entry"
+
+msgid "Failed to delete kanban"
+msgstr "Failed to delete kanban"
+
+msgid "Failed to delete line"
+msgstr "Failed to delete line"
+
+msgid "Failed to delete location"
+msgstr "Failed to delete location"
+
+msgid "Failed to delete material dimension"
+msgstr "Failed to delete material dimension"
+
+msgid "Failed to delete material finish"
+msgstr "Failed to delete material finish"
+
+msgid "Failed to delete material form"
+msgstr "Failed to delete material form"
+
+msgid "Failed to delete material grade"
+msgstr "Failed to delete material grade"
+
+msgid "Failed to delete material substance"
+msgstr "Failed to delete material substance"
+
+msgid "Failed to delete material type"
+msgstr "Failed to delete material type"
+
+msgid "Failed to delete method material"
+msgstr "Failed to delete method material"
+
+msgid "Failed to delete method operation parameter"
+msgstr "Failed to delete method operation parameter"
+
+msgid "Failed to delete method operation step"
+msgstr "Failed to delete method operation step"
+
+msgid "Failed to delete method operation tool"
+msgstr "Failed to delete method operation tool"
+
+msgid "Failed to delete parameter"
+msgstr "Failed to delete parameter"
+
+msgid "Failed to delete partner"
+msgstr "Failed to delete partner"
+
+msgid "Failed to delete passkey"
+msgstr "Failed to delete passkey"
+
+msgid "Failed to delete payment term"
+msgstr "Failed to delete payment term"
+
+msgid "Failed to delete picking list"
+msgstr "Failed to delete picking list"
+
+msgid "Failed to delete price override"
+msgstr "Failed to delete price override"
+
+msgid "Failed to delete pricing rule"
+msgstr "Failed to delete pricing rule"
+
+msgid "Failed to delete printer route"
+msgstr "Failed to delete printer route"
+
+msgid "Failed to delete procedure"
+msgstr "Failed to delete procedure"
+
+msgid "Failed to delete purchase invoice"
+msgstr "Failed to delete purchase invoice"
+
+msgid "Failed to delete purchase invoice line"
+msgstr "Failed to delete purchase invoice line"
+
+msgid "Failed to delete purchase order line"
+msgstr "Failed to delete purchase order line"
+
+msgid "Failed to delete quality document"
+msgstr "Failed to delete quality document"
+
+msgid "Failed to delete quantity"
+msgstr "Failed to delete quantity"
+
+msgid "Failed to delete quantity report"
+msgstr "Failed to delete quantity report"
+
+msgid "Failed to delete question"
+msgstr "Failed to delete question"
+
+msgid "Failed to delete quote line"
+msgstr "Failed to delete quote line"
+
+msgid "Failed to delete quote material"
+msgstr "Failed to delete quote material"
+
+msgid "Failed to delete quote operation step"
+msgstr "Failed to delete quote operation step"
+
+msgid "Failed to delete quote operation tool"
+msgstr "Failed to delete quote operation tool"
+
+msgid "Failed to delete required action"
+msgstr "Failed to delete required action"
+
+msgid "Failed to delete RFQ line"
+msgstr "Failed to delete RFQ line"
+
+msgid "Failed to delete rule"
+msgstr "Failed to delete rule"
+
+msgid "Failed to delete sales invoice"
+msgstr "Failed to delete sales invoice"
+
+msgid "Failed to delete sales invoice line"
+msgstr "Failed to delete sales invoice line"
+
+msgid "Failed to delete sales order line"
+msgstr "Failed to delete sales order line"
+
+msgid "Failed to delete section"
+msgstr "Failed to delete section"
+
+msgid "Failed to delete shift"
+msgstr "Failed to delete shift"
+
+msgid "Failed to delete shipping method"
+msgstr "Failed to delete shipping method"
+
+msgid "Failed to delete step"
+msgstr "Failed to delete step"
+
+msgid "Failed to delete stock transfer"
+msgstr "Failed to delete stock transfer"
+
+msgid "Failed to delete storage type"
+msgstr "Failed to delete storage type"
+
+msgid "Failed to delete storage unit"
+msgstr "Failed to delete storage unit"
+
+msgid "Failed to delete style color"
+msgstr "Failed to delete style color"
+
+msgid "Failed to delete style size"
+msgstr "Failed to delete style size"
+
+msgid "Failed to delete subsidiary"
+msgstr "Failed to delete subsidiary"
+
+msgid "Failed to delete suggestion"
+msgstr "Failed to delete suggestion"
+
+msgid "Failed to delete supplier contact"
+msgstr "Failed to delete supplier contact"
+
+msgid "Failed to delete supplier process"
+msgstr "Failed to delete supplier process"
+
+msgid "Failed to delete supplier type"
+msgstr "Failed to delete supplier type"
+
+msgid "Failed to delete tag"
+msgstr "Failed to delete tag"
+
+msgid "Failed to delete template"
+msgstr "Failed to delete template"
+
+msgid "Failed to delete timecard"
+msgstr "Failed to delete timecard"
+
+msgid "Failed to delete training"
+msgstr "Failed to delete training"
+
+msgid "Failed to delete unit of measure"
+msgstr "Failed to delete unit of measure"
+
+msgid "Failed to delete view"
+msgstr "Failed to delete view"
+
+msgid "Failed to delete warehouse transfer"
+msgstr "Failed to delete warehouse transfer"
+
+msgid "Failed to delete warehouse transfer line"
+msgstr "Failed to delete warehouse transfer line"
+
+msgid "Failed to delete webhook"
+msgstr "Failed to delete webhook"
+
+msgid "Failed to disable audit logging"
+msgstr "Failed to disable audit logging"
+
+msgid "Failed to disconnect integration"
+msgstr "Failed to disconnect integration"
 
 msgid "Failed to download file for moving"
 msgstr "Failed to download file for moving"
 
+msgid "Failed to duplicate price list"
+msgstr "Failed to duplicate price list"
+
+msgid "Failed to duplicate pricing rule"
+msgstr "Failed to duplicate pricing rule"
+
+msgid "Failed to duplicate purchase order"
+msgstr "Failed to duplicate purchase order"
+
+msgid "Failed to duplicate purchase order: missing id"
+msgstr "Failed to duplicate purchase order: missing id"
+
+msgid "Failed to enable audit logging"
+msgstr "Failed to enable audit logging"
+
+msgid "Failed to end event"
+msgstr "Failed to end event"
+
+msgid "Failed to end maintenance event"
+msgstr "Failed to end maintenance event"
+
+msgid "Failed to ensure pick method exists"
+msgstr "Failed to ensure pick method exists"
+
+msgid "Failed to exchange WeChat code"
+msgstr "Failed to exchange WeChat code"
+
+msgid "Failed to favorite purchase order"
+msgstr "Failed to favorite purchase order"
+
+msgid "Failed to favorite Quote"
+msgstr "Failed to favorite Quote"
+
+msgid "Failed to favorite rfq"
+msgstr "Failed to favorite rfq"
+
+msgid "Failed to favorite sales order"
+msgstr "Failed to favorite sales order"
+
+msgid "Failed to fetch accounts"
+msgstr "Failed to fetch accounts"
+
+msgid "Failed to fetch assets"
+msgstr "Failed to fetch assets"
+
+msgid "Failed to fetch attribute"
+msgstr "Failed to fetch attribute"
+
+msgid "Failed to fetch attribute categories"
+msgstr "Failed to fetch attribute categories"
+
+msgid "Failed to fetch attribute category"
+msgstr "Failed to fetch attribute category"
+
+msgid "Failed to fetch consumables"
+msgstr "Failed to fetch consumables"
+
+msgid "Failed to fetch custom fields"
+msgstr "Failed to fetch custom fields"
+
+msgid "Failed to fetch customer contacts"
+msgstr "Failed to fetch customer contacts"
+
+msgid "Failed to fetch customer locations"
+msgstr "Failed to fetch customer locations"
+
+msgid "Failed to fetch customers"
+msgstr "Failed to fetch customers"
+
+msgid "Failed to fetch cutting completions"
+msgstr "Failed to fetch cutting completions"
+
+msgid "Failed to fetch documents"
+msgstr "Failed to fetch documents"
+
+msgid "Failed to fetch inventory items"
+msgstr "Failed to fetch inventory items"
+
+msgid "Failed to fetch item"
+msgstr "Failed to fetch item"
+
 msgid "Failed to fetch item costs"
 msgstr "Failed to fetch item costs"
+
+msgid "Failed to fetch job"
+msgstr "Failed to fetch job"
+
+msgid "Failed to fetch job events"
+msgstr "Failed to fetch job events"
+
+msgid "Failed to fetch job make method"
+msgstr "Failed to fetch job make method"
+
+msgid "Failed to fetch job materials"
+msgstr "Failed to fetch job materials"
+
+msgid "Failed to fetch job operation"
+msgstr "Failed to fetch job operation"
+
+msgid "Failed to fetch job operation step records"
+msgstr "Failed to fetch job operation step records"
+
+msgid "Failed to fetch job operations"
+msgstr "Failed to fetch job operations"
+
+msgid "Failed to fetch jobs"
+msgstr "Failed to fetch jobs"
+
+msgid "Failed to fetch kanbans"
+msgstr "Failed to fetch kanbans"
+
+msgid "Failed to fetch materials"
+msgstr "Failed to fetch materials"
+
+msgid "Failed to fetch method materials"
+msgstr "Failed to fetch method materials"
+
+msgid "Failed to fetch method operations"
+msgstr "Failed to fetch method operations"
+
+msgid "Failed to fetch modules"
+msgstr "Failed to fetch modules"
+
+msgid "Failed to fetch operation"
+msgstr "Failed to fetch operation"
+
+msgid "Failed to fetch parts"
+msgstr "Failed to fetch parts"
 
 msgid "Failed to fetch place details"
 msgstr "Failed to fetch place details"
 
+msgid "Failed to fetch planning items"
+msgstr "Failed to fetch planning items"
+
+msgid "Failed to fetch purchase invoices"
+msgstr "Failed to fetch purchase invoices"
+
+msgid "Failed to fetch purchase orders"
+msgstr "Failed to fetch purchase orders"
+
+msgid "Failed to fetch quotes"
+msgstr "Failed to fetch quotes"
+
+msgid "Failed to fetch RFQs"
+msgstr "Failed to fetch RFQs"
+
 msgid "Failed to fetch risks"
 msgstr "Failed to fetch risks"
+
+msgid "Failed to fetch run lines"
+msgstr "Failed to fetch run lines"
+
+msgid "Failed to fetch sales invoices"
+msgstr "Failed to fetch sales invoices"
+
+msgid "Failed to fetch sales orders"
+msgstr "Failed to fetch sales orders"
+
+msgid "Failed to fetch storageUnits"
+msgstr "Failed to fetch storageUnits"
+
+msgid "Failed to fetch styles"
+msgstr "Failed to fetch styles"
 
 msgid "Failed to fetch suggestions"
 msgstr "Failed to fetch suggestions"
 
+msgid "Failed to fetch supplier contacts"
+msgstr "Failed to fetch supplier contacts"
+
+msgid "Failed to fetch supplier locations"
+msgstr "Failed to fetch supplier locations"
+
+msgid "Failed to fetch supplier quantities"
+msgstr "Failed to fetch supplier quantities"
+
+msgid "Failed to fetch suppliers"
+msgstr "Failed to fetch suppliers"
+
+msgid "Failed to fetch templates"
+msgstr "Failed to fetch templates"
+
+msgid "Failed to fetch tools"
+msgstr "Failed to fetch tools"
+
+msgid "Failed to fetch unscheduled jobs"
+msgstr "Failed to fetch unscheduled jobs"
+
+msgid "Failed to fetch work center"
+msgstr "Failed to fetch work center"
+
+msgid "Failed to fetch work centers"
+msgstr "Failed to fetch work centers"
+
+msgid "Failed to finalize purchase order"
+msgstr "Failed to finalize purchase order"
+
+msgid "Failed to finalize quote"
+msgstr "Failed to finalize quote"
+
+msgid "Failed to finalize supplier quote"
+msgstr "Failed to finalize supplier quote"
+
+msgid "Failed to find quote line"
+msgstr "Failed to find quote line"
+
+msgid "Failed to finish operation"
+msgstr "Failed to finish operation"
+
+msgid "Failed to generate download URL"
+msgstr "Failed to generate download URL"
+
+msgid "Failed to generate elimination entries"
+msgstr "Failed to generate elimination entries"
+
+msgid "Failed to generate PDF"
+msgstr "Failed to generate PDF"
+
+msgid "Failed to generate picking list"
+msgstr "Failed to generate picking list"
+
+msgid "Failed to get a category id"
+msgstr "Failed to get a category id"
+
+msgid "Failed to get a customer contact id"
+msgstr "Failed to get a customer contact id"
+
+msgid "Failed to get a customer location id"
+msgstr "Failed to get a customer location id"
+
+msgid "Failed to get a customer portal id"
+msgstr "Failed to get a customer portal id"
+
+msgid "Failed to get a dimension id"
+msgstr "Failed to get a dimension id"
+
+msgid "Failed to get a dispatch id"
+msgstr "Failed to get a dispatch id"
+
+msgid "Failed to get a failure mode id"
+msgstr "Failed to get a failure mode id"
+
+msgid "Failed to get a kanban id"
+msgstr "Failed to get a kanban id"
+
+msgid "Failed to get a material type id"
+msgstr "Failed to get a material type id"
+
+msgid "Failed to get a schedule id"
+msgstr "Failed to get a schedule id"
+
+msgid "Failed to get a storage type id"
+msgstr "Failed to get a storage type id"
+
+msgid "Failed to get a storageUnit id"
+msgstr "Failed to get a storageUnit id"
+
+msgid "Failed to get a style color id"
+msgstr "Failed to get a style color id"
+
+msgid "Failed to get a style size id"
+msgstr "Failed to get a style size id"
+
+msgid "Failed to get a supplier contact id"
+msgstr "Failed to get a supplier contact id"
+
+msgid "Failed to get a supplier location id"
+msgstr "Failed to get a supplier location id"
+
+msgid "Failed to get a work center id"
+msgstr "Failed to get a work center id"
+
+msgid "Failed to get account"
+msgstr "Failed to get account"
+
+msgid "Failed to get accounting period"
+msgstr "Failed to get accounting period"
+
+msgid "Failed to get an account id"
+msgstr "Failed to get an account id"
+
+msgid "Failed to get an attribute id"
+msgstr "Failed to get an attribute id"
+
+msgid "Failed to get an customer status id"
+msgstr "Failed to get an customer status id"
+
+msgid "Failed to get an customer type id"
+msgstr "Failed to get an customer type id"
+
+msgid "Failed to get an employee type id"
+msgstr "Failed to get an employee type id"
+
+msgid "Failed to get an gauge id"
+msgstr "Failed to get an gauge id"
+
+msgid "Failed to get an group id"
+msgstr "Failed to get an group id"
+
+msgid "Failed to get an id"
+msgstr "Failed to get an id"
+
+msgid "Failed to get an issue type id"
+msgstr "Failed to get an issue type id"
+
+msgid "Failed to get an item group id"
+msgstr "Failed to get an item group id"
+
+msgid "Failed to get an material dimension id"
+msgstr "Failed to get an material dimension id"
+
+msgid "Failed to get an material finish id"
+msgstr "Failed to get an material finish id"
+
+msgid "Failed to get an material form id"
+msgstr "Failed to get an material form id"
+
+msgid "Failed to get an material grade id"
+msgstr "Failed to get an material grade id"
+
+msgid "Failed to get an material substance id"
+msgstr "Failed to get an material substance id"
+
+msgid "Failed to get an no quote reason id"
+msgstr "Failed to get an no quote reason id"
+
+msgid "Failed to get an payment term id"
+msgstr "Failed to get an payment term id"
+
+msgid "Failed to get an receipt id"
+msgstr "Failed to get an receipt id"
+
+msgid "Failed to get an scrap reason id"
+msgstr "Failed to get an scrap reason id"
+
+msgid "Failed to get an shipment id"
+msgstr "Failed to get an shipment id"
+
+msgid "Failed to get an shipping method id"
+msgstr "Failed to get an shipping method id"
+
+msgid "Failed to get an supplier type id"
+msgstr "Failed to get an supplier type id"
+
+msgid "Failed to get an unit of measure id"
+msgstr "Failed to get an unit of measure id"
+
+msgid "Failed to get asset"
+msgstr "Failed to get asset"
+
+msgid "Failed to get asset class"
+msgstr "Failed to get asset class"
+
+msgid "Failed to get asset class id"
+msgstr "Failed to get asset class id"
+
+msgid "Failed to get attribute"
+msgstr "Failed to get attribute"
+
+msgid "Failed to get chart of accounts"
+msgstr "Failed to get chart of accounts"
+
+msgid "Failed to get claims"
+msgstr "Failed to get claims"
+
+msgid "Failed to get companies"
+msgstr "Failed to get companies"
+
+msgid "Failed to get company"
+msgstr "Failed to get company"
+
+msgid "Failed to get company ID"
+msgstr "Failed to get company ID"
+
+msgid "Failed to get company settings"
+msgstr "Failed to get company settings"
+
+msgid "Failed to get contractor"
+msgstr "Failed to get contractor"
+
+msgid "Failed to get contractor id"
+msgstr "Failed to get contractor id"
+
+msgid "Failed to get cost center"
+msgstr "Failed to get cost center"
+
+msgid "Failed to get cost center id"
+msgstr "Failed to get cost center id"
+
+msgid "Failed to get customer contact"
+msgstr "Failed to get customer contact"
+
+msgid "Failed to get customer contacts"
+msgstr "Failed to get customer contacts"
+
+msgid "Failed to get customer location"
+msgstr "Failed to get customer location"
+
+msgid "Failed to get customer part"
+msgstr "Failed to get customer part"
+
+msgid "Failed to get customer portal"
+msgstr "Failed to get customer portal"
+
+msgid "Failed to get customer status"
+msgstr "Failed to get customer status"
+
+msgid "Failed to get customer type"
+msgstr "Failed to get customer type"
+
+msgid "Failed to get department"
+msgstr "Failed to get department"
+
+msgid "Failed to get department id"
+msgstr "Failed to get department id"
+
+msgid "Failed to get depreciation run"
+msgstr "Failed to get depreciation run"
+
+msgid "Failed to get depreciation run id"
+msgstr "Failed to get depreciation run id"
+
+msgid "Failed to get dimension"
+msgstr "Failed to get dimension"
+
+msgid "Failed to get dispatch"
+msgstr "Failed to get dispatch"
+
+msgid "Failed to get document"
+msgstr "Failed to get document"
+
+msgid "Failed to get employee type"
+msgstr "Failed to get employee type"
+
+msgid "Failed to get entry id"
+msgstr "Failed to get entry id"
+
+msgid "Failed to get failure mode"
+msgstr "Failed to get failure mode"
+
+msgid "Failed to get fiscal year settings"
+msgstr "Failed to get fiscal year settings"
+
+msgid "Failed to get fixed asset"
+msgstr "Failed to get fixed asset"
+
+msgid "Failed to get fixed asset id"
+msgstr "Failed to get fixed asset id"
+
+msgid "Failed to get gauge type"
+msgstr "Failed to get gauge type"
+
+msgid "Failed to get group"
+msgstr "Failed to get group"
+
+msgid "Failed to get holiday"
+msgstr "Failed to get holiday"
+
+msgid "Failed to get holiday id"
+msgstr "Failed to get holiday id"
+
+msgid "Failed to get issue type"
+msgstr "Failed to get issue type"
+
+msgid "Failed to get item group"
+msgstr "Failed to get item group"
+
+msgid "Failed to get job data"
+msgstr "Failed to get job data"
+
+msgid "Failed to get job information"
+msgstr "Failed to get job information"
+
+msgid "Failed to get kanban"
+msgstr "Failed to get kanban"
+
+msgid "Failed to get location"
+msgstr "Failed to get location"
+
+msgid "Failed to get location id"
+msgstr "Failed to get location id"
+
+msgid "Failed to get location ID"
+msgstr "Failed to get location ID"
+
+msgid "Failed to get maintenance dispatch"
+msgstr "Failed to get maintenance dispatch"
+
+msgid "Failed to get maintenance schedule"
+msgstr "Failed to get maintenance schedule"
+
+msgid "Failed to get material dimension"
+msgstr "Failed to get material dimension"
+
+msgid "Failed to get material finish"
+msgstr "Failed to get material finish"
+
+msgid "Failed to get material form"
+msgstr "Failed to get material form"
+
+msgid "Failed to get material grade"
+msgstr "Failed to get material grade"
+
+msgid "Failed to get material make method"
+msgstr "Failed to get material make method"
+
+msgid "Failed to get material substance"
+msgstr "Failed to get material substance"
+
+msgid "Failed to get material type"
+msgstr "Failed to get material type"
+
+msgid "Failed to get modules"
+msgstr "Failed to get modules"
+
+msgid "Failed to get next sequence"
+msgstr "Failed to get next sequence"
+
+msgid "Failed to get no quote reason"
+msgstr "Failed to get no quote reason"
+
 msgid "Failed to get options"
 msgstr "Failed to get options"
+
+msgid "Failed to get outside operations"
+msgstr "Failed to get outside operations"
+
+msgid "Failed to get parent account"
+msgstr "Failed to get parent account"
+
+msgid "Failed to get partner"
+msgstr "Failed to get partner"
+
+msgid "Failed to get partner id"
+msgstr "Failed to get partner id"
+
+msgid "Failed to get parts"
+msgstr "Failed to get parts"
+
+msgid "Failed to get payment term"
+msgstr "Failed to get payment term"
+
+msgid "Failed to get price override"
+msgstr "Failed to get price override"
+
+msgid "Failed to get price override id"
+msgstr "Failed to get price override id"
+
+msgid "Failed to get pricing rule"
+msgstr "Failed to get pricing rule"
+
+msgid "Failed to get pricing rule id"
+msgstr "Failed to get pricing rule id"
+
+msgid "Failed to get process"
+msgstr "Failed to get process"
+
+msgid "Failed to get process id"
+msgstr "Failed to get process id"
+
+msgid "Failed to get production projections"
+msgstr "Failed to get production projections"
+
+msgid "Failed to get purchase invoice"
+msgstr "Failed to get purchase invoice"
+
+msgid "Failed to get purchase invoice line"
+msgstr "Failed to get purchase invoice line"
+
+msgid "Failed to get purchase order"
+msgstr "Failed to get purchase order"
+
+msgid "Failed to get purchase order line"
+msgstr "Failed to get purchase order line"
+
+msgid "Failed to get quality issue sequence"
+msgstr "Failed to get quality issue sequence"
+
+msgid "Failed to get quote"
+msgstr "Failed to get quote"
+
+msgid "Failed to get quote details"
+msgstr "Failed to get quote details"
+
+msgid "Failed to get receipt"
+msgstr "Failed to get receipt"
+
+msgid "Failed to get sales invoice line"
+msgstr "Failed to get sales invoice line"
+
+msgid "Failed to get sales order"
+msgstr "Failed to get sales order"
+
+msgid "Failed to get sales order line"
+msgstr "Failed to get sales order line"
+
+msgid "Failed to get scrap reason"
+msgstr "Failed to get scrap reason"
+
+msgid "Failed to get sequence"
+msgstr "Failed to get sequence"
+
+msgid "Failed to get services"
+msgstr "Failed to get services"
+
+msgid "Failed to get shift"
+msgstr "Failed to get shift"
+
+msgid "Failed to get shift id"
+msgstr "Failed to get shift id"
+
+msgid "Failed to get shipment"
+msgstr "Failed to get shipment"
+
+msgid "Failed to get shipping method"
+msgstr "Failed to get shipping method"
+
+msgid "Failed to get storage type"
+msgstr "Failed to get storage type"
+
+msgid "Failed to get storageUnit"
+msgstr "Failed to get storageUnit"
+
+msgid "Failed to get style color"
+msgstr "Failed to get style color"
+
+msgid "Failed to get style size"
+msgstr "Failed to get style size"
+
+msgid "Failed to get subsidiary"
+msgstr "Failed to get subsidiary"
+
+msgid "Failed to get subsidiary id"
+msgstr "Failed to get subsidiary id"
+
+msgid "Failed to get suggestion"
+msgstr "Failed to get suggestion"
+
+msgid "Failed to get supplier contact"
+msgstr "Failed to get supplier contact"
+
+msgid "Failed to get supplier contacts"
+msgstr "Failed to get supplier contacts"
+
+msgid "Failed to get supplier location"
+msgstr "Failed to get supplier location"
+
+msgid "Failed to get supplier locations"
+msgstr "Failed to get supplier locations"
+
+msgid "Failed to get supplier processes"
+msgstr "Failed to get supplier processes"
+
+msgid "Failed to get supplier quote"
+msgstr "Failed to get supplier quote"
+
+msgid "Failed to get supplier quote line prices"
+msgstr "Failed to get supplier quote line prices"
+
+msgid "Failed to get supplier quote lines"
+msgstr "Failed to get supplier quote lines"
+
+msgid "Failed to get supplier type"
+msgstr "Failed to get supplier type"
+
+msgid "Failed to get tag"
+msgstr "Failed to get tag"
+
+msgid "Failed to get timecard"
+msgstr "Failed to get timecard"
+
+msgid "Failed to get unique values for custom field"
+msgstr "Failed to get unique values for custom field"
+
+msgid "Failed to get unit of measure"
+msgstr "Failed to get unit of measure"
+
+msgid "Failed to get user"
+msgstr "Failed to get user"
+
+msgid "Failed to get user permissions"
+msgstr "Failed to get user permissions"
+
+msgid "Failed to get WeChat user info"
+msgstr "Failed to get WeChat user info"
 
 msgid "Failed to initialize Carbon client"
 msgstr "Failed to initialize Carbon client"
 
+msgid "Failed to insert account"
+msgstr "Failed to insert account"
+
+msgid "Failed to insert consumable"
+msgstr "Failed to insert consumable"
+
+msgid "Failed to insert consumable inventory"
+msgstr "Failed to insert consumable inventory"
+
+msgid "Failed to insert cost center"
+msgstr "Failed to insert cost center"
+
+msgid "Failed to insert custom field"
+msgstr "Failed to insert custom field"
+
+msgid "Failed to insert customer"
+msgstr "Failed to insert customer"
+
+msgid "Failed to insert customer status"
+msgstr "Failed to insert customer status"
+
+msgid "Failed to insert customer type"
+msgstr "Failed to insert customer type"
+
+msgid "Failed to insert department"
+msgstr "Failed to insert department"
+
+msgid "Failed to insert employee type"
+msgstr "Failed to insert employee type"
+
+msgid "Failed to insert employee type permissions"
+msgstr "Failed to insert employee type permissions"
+
+msgid "Failed to insert failure mode"
+msgstr "Failed to insert failure mode"
+
+msgid "Failed to insert gauge"
+msgstr "Failed to insert gauge"
+
+msgid "Failed to insert gauge calibration record"
+msgstr "Failed to insert gauge calibration record"
+
+msgid "Failed to insert gauge type"
+msgstr "Failed to insert gauge type"
+
+msgid "Failed to insert group"
+msgstr "Failed to insert group"
+
+msgid "Failed to insert group members"
+msgstr "Failed to insert group members"
+
+msgid "Failed to insert issue"
+msgstr "Failed to insert issue"
+
+msgid "Failed to insert issue type"
+msgstr "Failed to insert issue type"
+
+msgid "Failed to insert issue workflow"
+msgstr "Failed to insert issue workflow"
+
+msgid "Failed to insert item group"
+msgstr "Failed to insert item group"
+
+msgid "Failed to insert job"
+msgstr "Failed to insert job"
+
+msgid "Failed to insert job material"
+msgstr "Failed to insert job material"
+
+msgid "Failed to insert job material make method"
+msgstr "Failed to insert job material make method"
+
+msgid "Failed to insert job operation"
+msgstr "Failed to insert job operation"
+
+msgid "Failed to insert job operation attribute"
+msgstr "Failed to insert job operation attribute"
+
+msgid "Failed to insert job operation parameter"
+msgstr "Failed to insert job operation parameter"
+
+msgid "Failed to insert job operation tool"
+msgstr "Failed to insert job operation tool"
+
+msgid "Failed to insert kanban"
+msgstr "Failed to insert kanban"
+
+msgid "Failed to insert line"
+msgstr "Failed to insert line"
+
+msgid "Failed to insert material"
+msgstr "Failed to insert material"
+
+msgid "Failed to insert material dimension"
+msgstr "Failed to insert material dimension"
+
+msgid "Failed to insert material finish"
+msgstr "Failed to insert material finish"
+
+msgid "Failed to insert material form"
+msgstr "Failed to insert material form"
+
+msgid "Failed to insert material grade"
+msgstr "Failed to insert material grade"
+
+msgid "Failed to insert material inventory"
+msgstr "Failed to insert material inventory"
+
+msgid "Failed to insert material substance"
+msgstr "Failed to insert material substance"
+
+msgid "Failed to insert material type"
+msgstr "Failed to insert material type"
+
+msgid "Failed to insert method material"
+msgstr "Failed to insert method material"
+
+msgid "Failed to insert method operation"
+msgstr "Failed to insert method operation"
+
+msgid "Failed to insert method operation parameter"
+msgstr "Failed to insert method operation parameter"
+
+msgid "Failed to insert method operation step"
+msgstr "Failed to insert method operation step"
+
+msgid "Failed to insert method operation tool"
+msgstr "Failed to insert method operation tool"
+
+msgid "Failed to insert model record"
+msgstr "Failed to insert model record"
+
+msgid "Failed to insert new version"
+msgstr "Failed to insert new version"
+
+msgid "Failed to insert no quote reason"
+msgstr "Failed to insert no quote reason"
+
+msgid "Failed to insert part"
+msgstr "Failed to insert part"
+
+msgid "Failed to insert part inventory"
+msgstr "Failed to insert part inventory"
+
+msgid "Failed to insert payment term"
+msgstr "Failed to insert payment term"
+
+msgid "Failed to insert procedure"
+msgstr "Failed to insert procedure"
+
+msgid "Failed to insert procedure parameter"
+msgstr "Failed to insert procedure parameter"
+
+msgid "Failed to insert procedure step"
+msgstr "Failed to insert procedure step"
+
+msgid "Failed to insert production event"
+msgstr "Failed to insert production event"
+
+msgid "Failed to insert purchase invoice"
+msgstr "Failed to insert purchase invoice"
+
+msgid "Failed to insert purchase order"
+msgstr "Failed to insert purchase order"
+
+msgid "Failed to insert quality document"
+msgstr "Failed to insert quality document"
+
+msgid "Failed to insert quality document step"
+msgstr "Failed to insert quality document step"
+
+msgid "Failed to insert quote"
+msgstr "Failed to insert quote"
+
 msgid "Failed to insert quote line"
 msgstr "Failed to insert quote line"
+
+msgid "Failed to insert quote material"
+msgstr "Failed to insert quote material"
+
+msgid "Failed to insert quote material make method"
+msgstr "Failed to insert quote material make method"
+
+msgid "Failed to insert quote operation"
+msgstr "Failed to insert quote operation"
+
+msgid "Failed to insert quote operation parameter"
+msgstr "Failed to insert quote operation parameter"
+
+msgid "Failed to insert quote operation step"
+msgstr "Failed to insert quote operation step"
+
+msgid "Failed to insert quote operation tool"
+msgstr "Failed to insert quote operation tool"
+
+msgid "Failed to insert reviewer"
+msgstr "Failed to insert reviewer"
+
+msgid "Failed to insert RFQ"
+msgstr "Failed to insert RFQ"
+
+msgid "Failed to insert RFQ line"
+msgstr "Failed to insert RFQ line"
+
+msgid "Failed to insert sales invoice"
+msgstr "Failed to insert sales invoice"
+
+msgid "Failed to insert sales order"
+msgstr "Failed to insert sales order"
+
+msgid "Failed to insert scrap reason"
+msgstr "Failed to insert scrap reason"
+
+msgid "Failed to insert shipping method"
+msgstr "Failed to insert shipping method"
+
+msgid "Failed to insert storage type"
+msgstr "Failed to insert storage type"
+
+msgid "Failed to insert storageUnit"
+msgstr "Failed to insert storageUnit"
+
+msgid "Failed to insert style color"
+msgstr "Failed to insert style color"
+
+msgid "Failed to insert style inventory"
+msgstr "Failed to insert style inventory"
+
+msgid "Failed to insert style size"
+msgstr "Failed to insert style size"
+
+msgid "Failed to insert supplier quote"
+msgstr "Failed to insert supplier quote"
 
 msgid "Failed to insert supplier quote line"
 msgstr "Failed to insert supplier quote line"
 
+msgid "Failed to insert supplier type"
+msgstr "Failed to insert supplier type"
+
+msgid "Failed to insert template"
+msgstr "Failed to insert template"
+
+msgid "Failed to insert tool"
+msgstr "Failed to insert tool"
+
+msgid "Failed to insert tool inventory"
+msgstr "Failed to insert tool inventory"
+
+msgid "Failed to insert training question"
+msgstr "Failed to insert training question"
+
+msgid "Failed to insert unit of measure"
+msgstr "Failed to insert unit of measure"
+
+msgid "Failed to install integration"
+msgstr "Failed to install integration"
+
+msgid "Failed to issue material"
+msgstr "Failed to issue material"
+
+msgid "Failed to issue materials"
+msgstr "Failed to issue materials"
+
+msgid "Failed to link email"
+msgstr "Failed to link email"
+
+msgid "Failed to link quality issue to MES context"
+msgstr "Failed to link quality issue to MES context"
+
 msgid "Failed to link WeChat"
 msgstr "Failed to link WeChat"
+
+msgid "Failed to load account"
+msgstr "Failed to load account"
+
+msgid "Failed to load any locations"
+msgstr "Failed to load any locations"
+
+msgid "Failed to load api keys"
+msgstr "Failed to load api keys"
+
+msgid "Failed to load applications"
+msgstr "Failed to load applications"
+
+msgid "Failed to load approval rule"
+msgstr "Failed to load approval rule"
+
+msgid "Failed to load approval rules"
+msgstr "Failed to load approval rules"
+
+msgid "Failed to load attribute category"
+msgstr "Failed to load attribute category"
+
+msgid "Failed to load balance sheet"
+msgstr "Failed to load balance sheet"
+
+msgid "Failed to load bundle work orders"
+msgstr "Failed to load bundle work orders"
+
+msgid "Failed to load companies"
+msgstr "Failed to load companies"
+
+msgid "Failed to load company"
+msgstr "Failed to load company"
+
+msgid "Failed to load company for purchase orders"
+msgstr "Failed to load company for purchase orders"
+
+msgid "Failed to load config. Please make sure a valid record exists in your public.config table."
+msgstr "Failed to load config. Please make sure a valid record exists in your public.config table."
 
 msgid "Failed to load configuration parameters"
 msgstr "Failed to load configuration parameters"
 
+msgid "Failed to load consumable costing"
+msgstr "Failed to load consumable costing"
+
+msgid "Failed to load consumable inventory"
+msgstr "Failed to load consumable inventory"
+
+msgid "Failed to load consumable planning"
+msgstr "Failed to load consumable planning"
+
+msgid "Failed to load consumable purchasing"
+msgstr "Failed to load consumable purchasing"
+
+msgid "Failed to load consumable quantities"
+msgstr "Failed to load consumable quantities"
+
+msgid "Failed to load consumable summary"
+msgstr "Failed to load consumable summary"
+
+msgid "Failed to load contractors"
+msgstr "Failed to load contractors"
+
+msgid "Failed to load cost centers"
+msgstr "Failed to load cost centers"
+
 msgid "Failed to load customer part details"
 msgstr "Failed to load customer part details"
+
+msgid "Failed to load customer payment terms"
+msgstr "Failed to load customer payment terms"
+
+msgid "Failed to load customer shipping"
+msgstr "Failed to load customer shipping"
+
+msgid "Failed to load customer summary"
+msgstr "Failed to load customer summary"
+
+msgid "Failed to load customer tax information"
+msgstr "Failed to load customer tax information"
 
 msgid "Failed to load data"
 msgstr "Failed to load data"
 
+msgid "Failed to load default accounts"
+msgstr "Failed to load default accounts"
+
+msgid "Failed to load default location"
+msgstr "Failed to load default location"
+
+msgid "Failed to load demand"
+msgstr "Failed to load demand"
+
+msgid "Failed to load departments"
+msgstr "Failed to load departments"
+
+msgid "Failed to load depreciation run"
+msgstr "Failed to load depreciation run"
+
+msgid "Failed to load document"
+msgstr "Failed to load document"
+
+msgid "Failed to load employee summary"
+msgstr "Failed to load employee summary"
+
+msgid "Failed to load entity links"
+msgstr "Failed to load entity links"
+
+msgid "Failed to load fixed asset"
+msgstr "Failed to load fixed asset"
+
+msgid "Failed to load gauge"
+msgstr "Failed to load gauge"
+
+msgid "Failed to load gauge calibration record"
+msgstr "Failed to load gauge calibration record"
+
+msgid "Failed to load group"
+msgstr "Failed to load group"
+
+msgid "Failed to load group members"
+msgstr "Failed to load group members"
+
+msgid "Failed to load groups"
+msgstr "Failed to load groups"
+
+msgid "Failed to load holidays"
+msgstr "Failed to load holidays"
+
 msgid "Failed to load inbound inspections"
 msgstr "Failed to load inbound inspections"
+
+msgid "Failed to load income statement"
+msgstr "Failed to load income statement"
+
+msgid "Failed to load inspection"
+msgstr "Failed to load inspection"
+
+msgid "Failed to load inspection document"
+msgstr "Failed to load inspection document"
+
+msgid "Failed to load inspections"
+msgstr "Failed to load inspections"
+
+msgid "Failed to load integrations"
+msgstr "Failed to load integrations"
+
+msgid "Failed to load invite links"
+msgstr "Failed to load invite links"
+
+msgid "Failed to load issue"
+msgstr "Failed to load issue"
+
+msgid "Failed to load issue workflow"
+msgstr "Failed to load issue workflow"
+
+msgid "Failed to load item"
+msgstr "Failed to load item"
 
 msgid "Failed to load item data"
 msgstr "Failed to load item data"
@@ -4361,17 +6371,185 @@ msgstr "Failed to load item data"
 msgid "Failed to load item details"
 msgstr "Failed to load item details"
 
+msgid "Failed to load item inventory activity"
+msgstr "Failed to load item inventory activity"
+
+msgid "Failed to load item storage unit quantities"
+msgstr "Failed to load item storage unit quantities"
+
+msgid "Failed to load job"
+msgstr "Failed to load job"
+
+msgid "Failed to load job make method"
+msgstr "Failed to load job make method"
+
+msgid "Failed to load job materials"
+msgstr "Failed to load job materials"
+
 msgid "Failed to load job operations"
 msgstr "Failed to load job operations"
 
 msgid "Failed to load jobs"
 msgstr "Failed to load jobs"
 
+msgid "Failed to load journal entry"
+msgstr "Failed to load journal entry"
+
+msgid "Failed to load line"
+msgstr "Failed to load line"
+
+msgid "Failed to load linked sales invoices"
+msgstr "Failed to load linked sales invoices"
+
+msgid "Failed to load locations"
+msgstr "Failed to load locations"
+
+msgid "Failed to load maintenance dispatch"
+msgstr "Failed to load maintenance dispatch"
+
+msgid "Failed to load maintenance schedules"
+msgstr "Failed to load maintenance schedules"
+
+msgid "Failed to load make method"
+msgstr "Failed to load make method"
+
+msgid "Failed to load master work orders"
+msgstr "Failed to load master work orders"
+
+msgid "Failed to load material costing"
+msgstr "Failed to load material costing"
+
+msgid "Failed to load material inventory"
+msgstr "Failed to load material inventory"
+
+msgid "Failed to load material planning"
+msgstr "Failed to load material planning"
+
+msgid "Failed to load material purchasing"
+msgstr "Failed to load material purchasing"
+
+msgid "Failed to load material quantities"
+msgstr "Failed to load material quantities"
+
+msgid "Failed to load material summary"
+msgstr "Failed to load material summary"
+
+msgid "Failed to load method materials"
+msgstr "Failed to load method materials"
+
+msgid "Failed to load method operations"
+msgstr "Failed to load method operations"
+
+msgid "Failed to load order"
+msgstr "Failed to load order"
+
+msgid "Failed to load order payment"
+msgstr "Failed to load order payment"
+
+msgid "Failed to load order shipment"
+msgstr "Failed to load order shipment"
+
+msgid "Failed to load part costing"
+msgstr "Failed to load part costing"
+
+msgid "Failed to load part inventory"
+msgstr "Failed to load part inventory"
+
+msgid "Failed to load part planning"
+msgstr "Failed to load part planning"
+
+msgid "Failed to load part purchasing"
+msgstr "Failed to load part purchasing"
+
+msgid "Failed to load part quantities"
+msgstr "Failed to load part quantities"
+
+msgid "Failed to load part summary"
+msgstr "Failed to load part summary"
+
+msgid "Failed to load part unit sale price"
+msgstr "Failed to load part unit sale price"
+
+msgid "Failed to load partners"
+msgstr "Failed to load partners"
+
+msgid "Failed to load pick method"
+msgstr "Failed to load pick method"
+
+msgid "Failed to load picking list"
+msgstr "Failed to load picking list"
+
+msgid "Failed to load picking list line"
+msgstr "Failed to load picking list line"
+
+msgid "Failed to load picking list lines"
+msgstr "Failed to load picking list lines"
+
+msgid "Failed to load planning periods"
+msgstr "Failed to load planning periods"
+
+msgid "Failed to load print job"
+msgstr "Failed to load print job"
+
+msgid "Failed to load procedure"
+msgstr "Failed to load procedure"
+
+msgid "Failed to load processes"
+msgstr "Failed to load processes"
+
+msgid "Failed to load projection periods"
+msgstr "Failed to load projection periods"
+
+msgid "Failed to load public attributes"
+msgstr "Failed to load public attributes"
+
+msgid "Failed to load purchase invoice"
+msgstr "Failed to load purchase invoice"
+
+msgid "Failed to load purchase order"
+msgstr "Failed to load purchase order"
+
+msgid "Failed to load purchase order line"
+msgstr "Failed to load purchase order line"
+
 msgid "Failed to load purchase order lines"
 msgstr "Failed to load purchase order lines"
 
+msgid "Failed to load purchase order payment"
+msgstr "Failed to load purchase order payment"
+
 msgid "Failed to load purchase orders"
 msgstr "Failed to load purchase orders"
+
+msgid "Failed to load purchaseOrder"
+msgstr "Failed to load purchaseOrder"
+
+msgid "Failed to load purchasing RFQ summary"
+msgstr "Failed to load purchasing RFQ summary"
+
+msgid "Failed to load quote"
+msgstr "Failed to load quote"
+
+msgid "Failed to load quote make method"
+msgstr "Failed to load quote make method"
+
+msgid "Failed to load quote materials"
+msgstr "Failed to load quote materials"
+
+msgid "Failed to load quote operations"
+msgstr "Failed to load quote operations"
+
+msgid "Failed to load quote opportunity"
+msgstr "Failed to load quote opportunity"
+
+msgid "Failed to load quote payment"
+msgstr "Failed to load quote payment"
+
+msgid "Failed to load quote shipment"
+msgstr "Failed to load quote shipment"
+
+msgid "Failed to load receipt"
+msgstr "Failed to load receipt"
 
 msgid "Failed to load receipt lines"
 msgstr "Failed to load receipt lines"
@@ -4379,11 +6557,56 @@ msgstr "Failed to load receipt lines"
 msgid "Failed to load receipts"
 msgstr "Failed to load receipts"
 
+msgid "Failed to load report lines"
+msgstr "Failed to load report lines"
+
+msgid "Failed to load RFQ"
+msgstr "Failed to load RFQ"
+
+msgid "Failed to load RFQ lines"
+msgstr "Failed to load RFQ lines"
+
+msgid "Failed to load RFQ suppliers"
+msgstr "Failed to load RFQ suppliers"
+
+msgid "Failed to load salary record"
+msgstr "Failed to load salary record"
+
+msgid "Failed to load sales invoice"
+msgstr "Failed to load sales invoice"
+
+msgid "Failed to load sales invoice totals"
+msgstr "Failed to load sales invoice totals"
+
+msgid "Failed to load sales order"
+msgstr "Failed to load sales order"
+
+msgid "Failed to load sales order line"
+msgstr "Failed to load sales order line"
+
 msgid "Failed to load sales order lines"
 msgstr "Failed to load sales order lines"
 
+msgid "Failed to load sales order opportunity"
+msgstr "Failed to load sales order opportunity"
+
 msgid "Failed to load sales orders"
 msgstr "Failed to load sales orders"
+
+msgid "Failed to load sales RFQ opportunity"
+msgstr "Failed to load sales RFQ opportunity"
+
+msgid "Failed to load sales RFQ summary"
+msgstr "Failed to load sales RFQ summary"
+
+msgid "Failed to load salesOrder"
+msgstr "Failed to load salesOrder"
+
+msgid "Failed to load shifts"
+msgstr "Failed to load shifts"
+
+msgid "Failed to load shipment"
+msgstr "Failed to load shipment"
 
 msgid "Failed to load shipment lines"
 msgstr "Failed to load shipment lines"
@@ -4391,17 +6614,242 @@ msgstr "Failed to load shipment lines"
 msgid "Failed to load shipments"
 msgstr "Failed to load shipments"
 
+msgid "Failed to load source run"
+msgstr "Failed to load source run"
+
+msgid "Failed to load stock transfer line or item storage unit quantities"
+msgstr "Failed to load stock transfer line or item storage unit quantities"
+
+msgid "Failed to load stock transfer line or stock transfer"
+msgstr "Failed to load stock transfer line or stock transfer"
+
+msgid "Failed to load stockTransfer"
+msgstr "Failed to load stockTransfer"
+
+msgid "Failed to load storage rules"
+msgstr "Failed to load storage rules"
+
+msgid "Failed to load style costing"
+msgstr "Failed to load style costing"
+
+msgid "Failed to load style inventory"
+msgstr "Failed to load style inventory"
+
+msgid "Failed to load style planning"
+msgstr "Failed to load style planning"
+
+msgid "Failed to load style quantities"
+msgstr "Failed to load style quantities"
+
+msgid "Failed to load style summary"
+msgstr "Failed to load style summary"
+
+msgid "Failed to load style unit sale price"
+msgstr "Failed to load style unit sale price"
+
+msgid "Failed to load subsidiary"
+msgstr "Failed to load subsidiary"
+
+msgid "Failed to load suggestions"
+msgstr "Failed to load suggestions"
+
+msgid "Failed to load supplier interaction record"
+msgstr "Failed to load supplier interaction record"
+
 msgid "Failed to load supplier part details"
 msgstr "Failed to load supplier part details"
+
+msgid "Failed to load supplier payment"
+msgstr "Failed to load supplier payment"
+
+msgid "Failed to load supplier payment terms"
+msgstr "Failed to load supplier payment terms"
+
+msgid "Failed to load supplier quote"
+msgstr "Failed to load supplier quote"
+
+msgid "Failed to load supplier shipping"
+msgstr "Failed to load supplier shipping"
+
+msgid "Failed to load supplier summary"
+msgstr "Failed to load supplier summary"
+
+msgid "Failed to load supplier tax information"
+msgstr "Failed to load supplier tax information"
+
+msgid "Failed to load timecard entries"
+msgstr "Failed to load timecard entries"
+
+msgid "Failed to load tool costing"
+msgstr "Failed to load tool costing"
+
+msgid "Failed to load tool inventory"
+msgstr "Failed to load tool inventory"
+
+msgid "Failed to load tool planning"
+msgstr "Failed to load tool planning"
+
+msgid "Failed to load tool purchasing"
+msgstr "Failed to load tool purchasing"
+
+msgid "Failed to load tool quantities"
+msgstr "Failed to load tool quantities"
+
+msgid "Failed to load tool summary"
+msgstr "Failed to load tool summary"
 
 msgid "Failed to load tracked entities"
 msgstr "Failed to load tracked entities"
 
+msgid "Failed to load training"
+msgstr "Failed to load training"
+
+msgid "Failed to load trial balance"
+msgstr "Failed to load trial balance"
+
+msgid "Failed to load users"
+msgstr "Failed to load users"
+
+msgid "Failed to load warehouse transfer"
+msgstr "Failed to load warehouse transfer"
+
+msgid "Failed to load warehouse transfer line"
+msgstr "Failed to load warehouse transfer line"
+
+msgid "Failed to load warehouse transfer lines"
+msgstr "Failed to load warehouse transfer lines"
+
+msgid "Failed to load webhook"
+msgstr "Failed to load webhook"
+
+msgid "Failed to load webhooks"
+msgstr "Failed to load webhooks"
+
+msgid "Failed to mark partial"
+msgstr "Failed to mark partial"
+
+msgid "Failed to mark training complete"
+msgstr "Failed to mark training complete"
+
+msgid "Failed to move account"
+msgstr "Failed to move account"
+
+msgid "Failed to move entities"
+msgstr "Failed to move entities"
+
+msgid "Failed to move file"
+msgstr "Failed to move file"
+
+msgid "Failed to notify user"
+msgstr "Failed to notify user"
+
+msgid "Failed to parse claims"
+msgstr "Failed to parse claims"
+
+msgid "Failed to parse permissions"
+msgstr "Failed to parse permissions"
+
+msgid "Failed to parse procedure content"
+msgstr "Failed to parse procedure content"
+
+msgid "Failed to parse quality document content"
+msgstr "Failed to parse quality document content"
+
+msgid "Failed to parse training content"
+msgstr "Failed to parse training content"
+
+msgid "Failed to parse updates"
+msgstr "Failed to parse updates"
+
+msgid "Failed to pick line"
+msgstr "Failed to pick line"
+
+msgid "Failed to pick up"
+msgstr "Failed to pick up"
+
+msgid "Failed to post asset disposal"
+msgstr "Failed to post asset disposal"
+
+msgid "Failed to post depreciation run"
+msgstr "Failed to post depreciation run"
+
+msgid "Failed to post journal entry"
+msgstr "Failed to post journal entry"
+
+msgid "Failed to post receipt"
+msgstr "Failed to post receipt"
+
+msgid "Failed to post shipment"
+msgstr "Failed to post shipment"
+
+msgid "Failed to reassign tracked entities"
+msgstr "Failed to reassign tracked entities"
+
+msgid "Failed to recalculate dependencies"
+msgstr "Failed to recalculate dependencies"
+
+msgid "Failed to recalculate job make method requirements"
+msgstr "Failed to recalculate job make method requirements"
+
+msgid "Failed to recalculate job operation dependencies"
+msgstr "Failed to recalculate job operation dependencies"
+
+msgid "Failed to recalculate job requirements"
+msgstr "Failed to recalculate job requirements"
+
+msgid "Failed to recalculate quote line prices"
+msgstr "Failed to recalculate quote line prices"
+
+msgid "Failed to receive a job id"
+msgstr "Failed to receive a job id"
+
+msgid "Failed to receive a job id to recalculate dependencies"
+msgstr "Failed to receive a job id to recalculate dependencies"
+
+msgid "Failed to receive a new sort order"
+msgstr "Failed to receive a new sort order"
+
+msgid "Failed to receive an operation id"
+msgstr "Failed to receive an operation id"
+
+msgid "Failed to record attribute"
+msgstr "Failed to record attribute"
+
+msgid "Failed to record history"
+msgstr "Failed to record history"
+
+msgid "Failed to record rework quantity"
+msgstr "Failed to record rework quantity"
+
+msgid "Failed to record scrap quantity"
+msgstr "Failed to record scrap quantity"
+
+msgid "Failed to refresh invite"
+msgstr "Failed to refresh invite"
+
+msgid "Failed to register asset"
+msgstr "Failed to register asset"
+
 msgid "Failed to register passkey"
 msgstr "Failed to register passkey"
 
+msgid "Failed to reinvite users"
+msgstr "Failed to reinvite users"
+
+msgid "Failed to reject lot"
+msgstr "Failed to reject lot"
+
+msgid "Failed to release job"
+msgstr "Failed to release job"
+
+msgid "Failed to remove customer account"
+msgstr "Failed to remove customer account"
+
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Failed to remove image: {errorMessage}"
+
+msgid "Failed to remove item"
+msgstr "Failed to remove item"
 
 msgid "Failed to remove model thumbnail"
 msgstr "Failed to remove model thumbnail"
@@ -4409,26 +6857,122 @@ msgstr "Failed to remove model thumbnail"
 msgid "Failed to remove purchase order"
 msgstr "Failed to remove purchase order"
 
+msgid "Failed to remove spare part"
+msgstr "Failed to remove spare part"
+
+msgid "Failed to remove supplier account"
+msgstr "Failed to remove supplier account"
+
 msgid "Failed to remove thumbnail"
 msgstr "Failed to remove thumbnail"
+
+msgid "Failed to remove user from company"
+msgstr "Failed to remove user from company"
+
+msgid "Failed to rename passkey"
+msgstr "Failed to rename passkey"
+
+msgid "Failed to report quantity"
+msgstr "Failed to report quantity"
+
+msgid "Failed to report rework"
+msgstr "Failed to report rework"
+
+msgid "Failed to report scrap"
+msgstr "Failed to report scrap"
 
 msgid "Failed to resize image: {errorMessage}"
 msgstr "Failed to resize image: {errorMessage}"
 
+msgid "Failed to resolve Pull from Inventory prices"
+msgstr "Failed to resolve Pull from Inventory prices"
+
+msgid "Failed to resolve Purchase to Order prices"
+msgstr "Failed to resolve Purchase to Order prices"
+
+msgid "Failed to restore document"
+msgstr "Failed to restore document"
+
 msgid "Failed to retrieve CSV column data."
 msgstr "Failed to retrieve CSV column data."
+
+msgid "Failed to reverse journal entry"
+msgstr "Failed to reverse journal entry"
+
+msgid "Failed to review application"
+msgstr "Failed to review application"
+
+msgid "Failed to revoke invite link"
+msgstr "Failed to revoke invite link"
+
+msgid "Failed to revoke invites"
+msgstr "Failed to revoke invites"
+
+msgid "Failed to run IC matching"
+msgstr "Failed to run IC matching"
+
+msgid "Failed to save bundles"
+msgstr "Failed to save bundles"
+
+msgid "Failed to save comment"
+msgstr "Failed to save comment"
 
 msgid "Failed to save configuration rule"
 msgstr "Failed to save configuration rule"
 
+msgid "Failed to save demand forecasts"
+msgstr "Failed to save demand forecasts"
+
 msgid "Failed to save diagram"
 msgstr "Failed to save diagram"
+
+msgid "Failed to save document layout"
+msgstr "Failed to save document layout"
+
+msgid "Failed to save event"
+msgstr "Failed to save event"
+
+msgid "Failed to save header"
+msgstr "Failed to save header"
+
+msgid "Failed to save item"
+msgstr "Failed to save item"
+
+msgid "Failed to save journal entry"
+msgstr "Failed to save journal entry"
+
+msgid "Failed to save passkey"
+msgstr "Failed to save passkey"
+
+msgid "Failed to save sample"
+msgstr "Failed to save sample"
+
+msgid "Failed to save sampling plan"
+msgstr "Failed to save sampling plan"
+
+msgid "Failed to save section"
+msgstr "Failed to save section"
+
+msgid "Failed to search users"
+msgstr "Failed to search users"
+
+msgid "Failed to seed company"
+msgstr "Failed to seed company"
+
+msgid "Failed to send email"
+msgstr "Failed to send email"
 
 msgid "Failed to send magic link"
 msgstr "Failed to send magic link"
 
+msgid "Failed to send supplier quote"
+msgstr "Failed to send supplier quote"
+
 msgid "Failed to send verification code"
 msgstr "Failed to send verification code"
+
+msgid "Failed to set job release date"
+msgstr "Failed to set job release date"
 
 msgid "Failed to sign in"
 msgstr "Failed to sign in"
@@ -4436,26 +6980,551 @@ msgstr "Failed to sign in"
 msgid "Failed to sign in user"
 msgstr "Failed to sign in user"
 
+msgid "Failed to split line"
+msgstr "Failed to split line"
+
+msgid "Failed to start checkout"
+msgstr "Failed to start checkout"
+
+msgid "Failed to start event"
+msgstr "Failed to start event"
+
+msgid "Failed to start maintenance event"
+msgstr "Failed to start maintenance event"
+
+msgid "Failed to stop event"
+msgstr "Failed to stop event"
+
+msgid "Failed to sync procedure"
+msgstr "Failed to sync procedure"
+
+msgid "Failed to trigger rework"
+msgstr "Failed to trigger rework"
+
+msgid "Failed to unassign rule"
+msgstr "Failed to unassign rule"
+
+msgid "Failed to update  operation attribute"
+msgstr "Failed to update  operation attribute"
+
+msgid "Failed to update  operation parameter"
+msgstr "Failed to update  operation parameter"
+
+msgid "Failed to update  operation tool"
+msgstr "Failed to update  operation tool"
+
+msgid "Failed to update account"
+msgstr "Failed to update account"
+
+msgid "Failed to update API key"
+msgstr "Failed to update API key"
+
+msgid "Failed to update asset class"
+msgstr "Failed to update asset class"
+
+msgid "Failed to update assignment"
+msgstr "Failed to update assignment"
+
+msgid "Failed to update attribute"
+msgstr "Failed to update attribute"
+
+msgid "Failed to update attribute category"
+msgstr "Failed to update attribute category"
+
+msgid "Failed to update attribute value"
+msgstr "Failed to update attribute value"
+
+msgid "Failed to update avatar"
+msgstr "Failed to update avatar"
+
 msgid "Failed to update batch property"
 msgstr "Failed to update batch property"
 
 msgid "Failed to update category markups"
 msgstr "Failed to update category markups"
 
+msgid "Failed to update claims"
+msgstr "Failed to update claims"
+
+msgid "Failed to update company"
+msgstr "Failed to update company"
+
+msgid "Failed to update configuration"
+msgstr "Failed to update configuration"
+
 msgid "Failed to update configuration parameter"
 msgstr "Failed to update configuration parameter"
+
+msgid "Failed to update consumable"
+msgstr "Failed to update consumable"
+
+msgid "Failed to update consumable costing"
+msgstr "Failed to update consumable costing"
+
+msgid "Failed to update consumable inventory"
+msgstr "Failed to update consumable inventory"
+
+msgid "Failed to update consumable planning"
+msgstr "Failed to update consumable planning"
+
+msgid "Failed to update consumable purchasing"
+msgstr "Failed to update consumable purchasing"
+
+msgid "Failed to update content"
+msgstr "Failed to update content"
+
+msgid "Failed to update cost center."
+msgstr "Failed to update cost center."
+
+msgid "Failed to update custom field"
+msgstr "Failed to update custom field"
+
+msgid "Failed to update customer"
+msgstr "Failed to update customer"
+
+msgid "Failed to update customer address"
+msgstr "Failed to update customer address"
+
+msgid "Failed to update customer contact"
+msgstr "Failed to update customer contact"
+
+msgid "Failed to update customer part"
+msgstr "Failed to update customer part"
+
+msgid "Failed to update customer payment terms"
+msgstr "Failed to update customer payment terms"
+
+msgid "Failed to update customer portal"
+msgstr "Failed to update customer portal"
+
+msgid "Failed to update customer shipping"
+msgstr "Failed to update customer shipping"
+
+msgid "Failed to update customer status"
+msgstr "Failed to update customer status"
+
+msgid "Failed to update customer tax information"
+msgstr "Failed to update customer tax information"
+
+msgid "Failed to update customer type"
+msgstr "Failed to update customer type"
+
+msgid "Failed to update default accounts"
+msgstr "Failed to update default accounts"
+
+msgid "Failed to update demand forecasts"
+msgstr "Failed to update demand forecasts"
+
+msgid "Failed to update dimension"
+msgstr "Failed to update dimension"
+
+msgid "Failed to update dispatch status"
+msgstr "Failed to update dispatch status"
+
+msgid "Failed to update document"
+msgstr "Failed to update document"
+
+msgid "Failed to update document labels"
+msgstr "Failed to update document labels"
+
+msgid "Failed to update due date"
+msgstr "Failed to update due date"
+
+msgid "Failed to update emoji"
+msgstr "Failed to update emoji"
+
+msgid "Failed to update employee"
+msgstr "Failed to update employee"
+
+msgid "Failed to update employee type"
+msgstr "Failed to update employee type"
+
+msgid "Failed to update employee type permissions"
+msgstr "Failed to update employee type permissions"
+
+msgid "Failed to update entry"
+msgstr "Failed to update entry"
+
+msgid "Failed to update exchange rate"
+msgstr "Failed to update exchange rate"
+
+msgid "Failed to update expiration date"
+msgstr "Failed to update expiration date"
+
+msgid "Failed to update failure mode"
+msgstr "Failed to update failure mode"
+
+msgid "Failed to update fiscal year settings"
+msgstr "Failed to update fiscal year settings"
+
+msgid "Failed to update fixed asset"
+msgstr "Failed to update fixed asset"
+
+msgid "Failed to update gauge"
+msgstr "Failed to update gauge"
+
+msgid "Failed to update gauge calibration record"
+msgstr "Failed to update gauge calibration record"
+
+msgid "Failed to update gauge type"
+msgstr "Failed to update gauge type"
+
+msgid "Failed to update group"
+msgstr "Failed to update group"
+
+msgid "Failed to update group members"
+msgstr "Failed to update group members"
+
+msgid "Failed to update invite link expiration"
+msgstr "Failed to update invite link expiration"
+
+msgid "Failed to update issue"
+msgstr "Failed to update issue"
+
+msgid "Failed to update issue status"
+msgstr "Failed to update issue status"
+
+msgid "Failed to update issue type"
+msgstr "Failed to update issue type"
+
+msgid "Failed to update issue workflow"
+msgstr "Failed to update issue workflow"
+
+msgid "Failed to update item"
+msgstr "Failed to update item"
 
 msgid "Failed to update item cost"
 msgstr "Failed to update item cost"
 
+msgid "Failed to update item group"
+msgstr "Failed to update item group"
+
+msgid "Failed to update job"
+msgstr "Failed to update job"
+
+msgid "Failed to update job material"
+msgstr "Failed to update job material"
+
+msgid "Failed to update job operation"
+msgstr "Failed to update job operation"
+
+msgid "Failed to update job operation attribute"
+msgstr "Failed to update job operation attribute"
+
+msgid "Failed to update job operation parameter"
+msgstr "Failed to update job operation parameter"
+
+msgid "Failed to update job operation tool"
+msgstr "Failed to update job operation tool"
+
+msgid "Failed to update job status"
+msgstr "Failed to update job status"
+
+msgid "Failed to update kanban"
+msgstr "Failed to update kanban"
+
+msgid "Failed to update line"
+msgstr "Failed to update line"
+
+msgid "Failed to update maintenance schedule"
+msgstr "Failed to update maintenance schedule"
+
+msgid "Failed to update material"
+msgstr "Failed to update material"
+
+msgid "Failed to update material costing"
+msgstr "Failed to update material costing"
+
+msgid "Failed to update material form"
+msgstr "Failed to update material form"
+
+msgid "Failed to update material grade"
+msgstr "Failed to update material grade"
+
+msgid "Failed to update material inventory"
+msgstr "Failed to update material inventory"
+
+msgid "Failed to update material planning"
+msgstr "Failed to update material planning"
+
+msgid "Failed to update material purchasing"
+msgstr "Failed to update material purchasing"
+
+msgid "Failed to update material substance"
+msgstr "Failed to update material substance"
+
+msgid "Failed to update material type"
+msgstr "Failed to update material type"
+
+msgid "Failed to update method material"
+msgstr "Failed to update method material"
+
+msgid "Failed to update method operation"
+msgstr "Failed to update method operation"
+
+msgid "Failed to update method operation parameter"
+msgstr "Failed to update method operation parameter"
+
+msgid "Failed to update method operation step"
+msgstr "Failed to update method operation step"
+
+msgid "Failed to update method operation tool"
+msgstr "Failed to update method operation tool"
+
+msgid "Failed to update no quote reason"
+msgstr "Failed to update no quote reason"
+
 msgid "Failed to update opportunity with purchase order"
 msgstr "Failed to update opportunity with purchase order"
+
+msgid "Failed to update order"
+msgstr "Failed to update order"
+
+msgid "Failed to update original"
+msgstr "Failed to update original"
+
+msgid "Failed to update parameter"
+msgstr "Failed to update parameter"
+
+msgid "Failed to update part"
+msgstr "Failed to update part"
+
+msgid "Failed to update part costing"
+msgstr "Failed to update part costing"
+
+msgid "Failed to update part inventory"
+msgstr "Failed to update part inventory"
+
+msgid "Failed to update part manufacturing"
+msgstr "Failed to update part manufacturing"
+
+msgid "Failed to update part planning"
+msgstr "Failed to update part planning"
+
+msgid "Failed to update part purchasing"
+msgstr "Failed to update part purchasing"
+
+msgid "Failed to update part sale price"
+msgstr "Failed to update part sale price"
+
+msgid "Failed to update payment term"
+msgstr "Failed to update payment term"
+
+msgid "Failed to update picking list"
+msgstr "Failed to update picking list"
+
+msgid "Failed to update picking list status"
+msgstr "Failed to update picking list status"
+
+msgid "Failed to update price override"
+msgstr "Failed to update price override"
+
+msgid "Failed to update pricing rule"
+msgstr "Failed to update pricing rule"
+
+msgid "Failed to update procedure parameter"
+msgstr "Failed to update procedure parameter"
+
+msgid "Failed to update procedure step"
+msgstr "Failed to update procedure step"
+
+msgid "Failed to update process completion"
+msgstr "Failed to update process completion"
+
+msgid "Failed to update production event"
+msgstr "Failed to update production event"
+
+msgid "Failed to update profile"
+msgstr "Failed to update profile"
+
+msgid "Failed to update purchase invoice"
+msgstr "Failed to update purchase invoice"
+
+msgid "Failed to update purchase invoice delivery"
+msgstr "Failed to update purchase invoice delivery"
+
+msgid "Failed to update purchase invoice line"
+msgstr "Failed to update purchase invoice line"
+
+msgid "Failed to update purchase invoice status"
+msgstr "Failed to update purchase invoice status"
+
+msgid "Failed to update purchase order"
+msgstr "Failed to update purchase order"
+
+msgid "Failed to update purchase order delivery"
+msgstr "Failed to update purchase order delivery"
+
+msgid "Failed to update purchase order line"
+msgstr "Failed to update purchase order line"
+
+msgid "Failed to update purchase order payment"
+msgstr "Failed to update purchase order payment"
+
+msgid "Failed to update purchasing order status"
+msgstr "Failed to update purchasing order status"
+
+msgid "Failed to update question"
+msgstr "Failed to update question"
+
+msgid "Failed to update quote"
+msgstr "Failed to update quote"
 
 msgid "Failed to update quote line"
 msgstr "Failed to update quote line"
 
+msgid "Failed to update quote material"
+msgstr "Failed to update quote material"
+
+msgid "Failed to update quote operation"
+msgstr "Failed to update quote operation"
+
+msgid "Failed to update quote payment"
+msgstr "Failed to update quote payment"
+
+msgid "Failed to update quote shipment"
+msgstr "Failed to update quote shipment"
+
+msgid "Failed to update quote status"
+msgstr "Failed to update quote status"
+
+msgid "Failed to update receipt"
+msgstr "Failed to update receipt"
+
+msgid "Failed to update required action"
+msgstr "Failed to update required action"
+
+msgid "Failed to update RFQ"
+msgstr "Failed to update RFQ"
+
+msgid "Failed to update RFQ line"
+msgstr "Failed to update RFQ line"
+
+msgid "Failed to update RFQ line with model"
+msgstr "Failed to update RFQ line with model"
+
+msgid "Failed to update RFQ status"
+msgstr "Failed to update RFQ status"
+
+msgid "Failed to update risk"
+msgstr "Failed to update risk"
+
+msgid "Failed to update rule"
+msgstr "Failed to update rule"
+
+msgid "Failed to update sales invoice"
+msgstr "Failed to update sales invoice"
+
+msgid "Failed to update sales invoice line"
+msgstr "Failed to update sales invoice line"
+
+msgid "Failed to update sales invoice shipping"
+msgstr "Failed to update sales invoice shipping"
+
+msgid "Failed to update sales invoice status"
+msgstr "Failed to update sales invoice status"
+
+msgid "Failed to update sales order line"
+msgstr "Failed to update sales order line"
+
+msgid "Failed to update sales order payment"
+msgstr "Failed to update sales order payment"
+
+msgid "Failed to update sales order shipment"
+msgstr "Failed to update sales order shipment"
+
+msgid "Failed to update sales order status"
+msgstr "Failed to update sales order status"
+
+msgid "Failed to update scrap reason"
+msgstr "Failed to update scrap reason"
+
+msgid "Failed to update sequence"
+msgstr "Failed to update sequence"
+
+msgid "Failed to update shipment"
+msgstr "Failed to update shipment"
+
+msgid "Failed to update shipping method"
+msgstr "Failed to update shipping method"
+
+msgid "Failed to update sort order"
+msgstr "Failed to update sort order"
+
+msgid "Failed to update status"
+msgstr "Failed to update status"
+
+msgid "Failed to update step"
+msgstr "Failed to update step"
+
+msgid "Failed to update storage type"
+msgstr "Failed to update storage type"
+
+msgid "Failed to update storageUnit"
+msgstr "Failed to update storageUnit"
+
+msgid "Failed to update style color"
+msgstr "Failed to update style color"
+
+msgid "Failed to update style costing"
+msgstr "Failed to update style costing"
+
+msgid "Failed to update style inventory"
+msgstr "Failed to update style inventory"
+
+msgid "Failed to update style planning"
+msgstr "Failed to update style planning"
+
+msgid "Failed to update style sale price"
+msgstr "Failed to update style sale price"
+
+msgid "Failed to update style size"
+msgstr "Failed to update style size"
+
+msgid "Failed to update subsidiary"
+msgstr "Failed to update subsidiary"
+
+msgid "Failed to update supplier"
+msgstr "Failed to update supplier"
+
+msgid "Failed to update supplier address"
+msgstr "Failed to update supplier address"
+
+msgid "Failed to update supplier contact"
+msgstr "Failed to update supplier contact"
+
+msgid "Failed to update supplier payment terms"
+msgstr "Failed to update supplier payment terms"
+
+msgid "Failed to update supplier process"
+msgstr "Failed to update supplier process"
+
 msgid "Failed to update supplier quote line"
 msgstr "Failed to update supplier quote line"
+
+msgid "Failed to update supplier quote status"
+msgstr "Failed to update supplier quote status"
+
+msgid "Failed to update supplier shipping"
+msgstr "Failed to update supplier shipping"
+
+msgid "Failed to update supplier tax information"
+msgstr "Failed to update supplier tax information"
+
+msgid "Failed to update supplier type"
+msgstr "Failed to update supplier type"
+
+msgid "Failed to update supplierQuote line"
+msgstr "Failed to update supplierQuote line"
+
+msgid "Failed to update suppliers"
+msgstr "Failed to update suppliers"
+
+msgid "Failed to update task status"
+msgstr "Failed to update task status"
+
+msgid "Failed to update task supplier"
+msgstr "Failed to update task supplier"
 
 msgid "Failed to update template"
 msgstr "Failed to update template"
@@ -4465,6 +7534,51 @@ msgstr "Failed to update thumbnail path"
 
 msgid "Failed to update time"
 msgstr "Failed to update time"
+
+msgid "Failed to update timecard"
+msgstr "Failed to update timecard"
+
+msgid "Failed to update tool"
+msgstr "Failed to update tool"
+
+msgid "Failed to update tool costing"
+msgstr "Failed to update tool costing"
+
+msgid "Failed to update tool inventory"
+msgstr "Failed to update tool inventory"
+
+msgid "Failed to update tool manufacturing"
+msgstr "Failed to update tool manufacturing"
+
+msgid "Failed to update tool planning"
+msgstr "Failed to update tool planning"
+
+msgid "Failed to update tool purchasing"
+msgstr "Failed to update tool purchasing"
+
+msgid "Failed to update training question"
+msgstr "Failed to update training question"
+
+msgid "Failed to update unit of measure"
+msgstr "Failed to update unit of measure"
+
+msgid "Failed to update user permissions"
+msgstr "Failed to update user permissions"
+
+msgid "Failed to update warehouse transfer"
+msgstr "Failed to update warehouse transfer"
+
+msgid "Failed to update warehouse transfer line"
+msgstr "Failed to update warehouse transfer line"
+
+msgid "Failed to update warehouse transfer status"
+msgstr "Failed to update warehouse transfer status"
+
+msgid "Failed to update webhook"
+msgstr "Failed to update webhook"
+
+msgid "Failed to update work center"
+msgstr "Failed to update work center"
 
 #. placeholder {0}: file.name
 msgid "Failed to upload {0}"
@@ -4502,8 +7616,26 @@ msgstr "Failed to upload thumbnail"
 msgid "Failed to upload thumbnail: {message}"
 msgstr "Failed to upload thumbnail: {message}"
 
+msgid "Failed to verify WeChat session"
+msgstr "Failed to verify WeChat session"
+
+msgid "Failed to void purchase invoice"
+msgstr "Failed to void purchase invoice"
+
+msgid "Failed to void receipt"
+msgstr "Failed to void receipt"
+
+msgid "Failed to void sales invoice"
+msgstr "Failed to void sales invoice"
+
+msgid "Failed to void shipment"
+msgstr "Failed to void shipment"
+
 msgid "Failure Mode"
 msgstr "Failure Mode"
+
+msgid "Failure mode created"
+msgstr "Failure mode created"
 
 msgid "Failure Modes"
 msgstr "Failure Modes"
@@ -4610,6 +7742,9 @@ msgstr "Finalize"
 msgid "Finish"
 msgstr "Finish"
 
+msgid "Finish created"
+msgstr "Finish created"
+
 msgid "Finish To"
 msgstr "Finish To"
 
@@ -4657,6 +7792,12 @@ msgstr "Fixed Asset Acquisition Cost"
 
 msgid "Fixed Asset Acquisition Cost on Disposal"
 msgstr "Fixed Asset Acquisition Cost on Disposal"
+
+msgid "Fixed asset created"
+msgstr "Fixed asset created"
+
+msgid "Fixed asset updated"
+msgstr "Fixed asset updated"
 
 msgid "Fixed Assets"
 msgstr "Fixed Assets"
@@ -4812,17 +7953,29 @@ msgstr "GR/IR Clearing"
 msgid "Grade"
 msgstr "Grade"
 
+msgid "Grade created"
+msgstr "Grade created"
+
 msgid "Grades"
 msgstr "Grades"
 
 msgid "Group"
 msgstr "Group"
 
+msgid "Group created"
+msgstr "Group created"
+
 msgid "Group Members"
 msgstr "Group Members"
 
 msgid "Group Name"
 msgstr "Group Name"
+
+msgid "Group not found"
+msgstr "Group not found"
+
+msgid "Group updated successfully"
+msgstr "Group updated successfully"
 
 msgid "Group: {groupDisplayName}"
 msgstr "Group: {groupDisplayName}"
@@ -4863,8 +8016,14 @@ msgstr "History"
 msgid "Holiday"
 msgstr "Holiday"
 
+msgid "Holiday created"
+msgstr "Holiday created"
+
 msgid "Holiday Name"
 msgstr "Holiday Name"
+
+msgid "Holiday updated"
+msgstr "Holiday updated"
 
 msgid "Holidays"
 msgstr "Holidays"
@@ -4901,6 +8060,9 @@ msgstr "I'm Still Working"
 
 msgid "IC Transaction"
 msgstr "IC Transaction"
+
+msgid "IC transaction created"
+msgstr "IC transaction created"
 
 msgid "Icon view"
 msgstr "Icon view"
@@ -5073,8 +8235,17 @@ msgstr "Inspection"
 msgid "Inspection Document"
 msgstr "Inspection Document"
 
+msgid "Inspection document created"
+msgstr "Inspection document created"
+
+msgid "Inspection document deleted"
+msgstr "Inspection document deleted"
+
 msgid "Inspection Documents"
 msgstr "Inspection Documents"
+
+msgid "Inspection id mismatch"
+msgstr "Inspection id mismatch"
 
 msgid "Inspection Level"
 msgstr "Inspection Level"
@@ -5130,8 +8301,29 @@ msgstr "Internal Notes"
 msgid "inv"
 msgstr "inv"
 
+msgid "Invalid access token"
+msgstr "Invalid access token"
+
+msgid "Invalid action"
+msgstr "Invalid action"
+
+msgid "Invalid action type"
+msgstr "Invalid action type"
+
+msgid "Invalid avatar path"
+msgstr "Invalid avatar path"
+
+msgid "Invalid callback form"
+msgstr "Invalid callback form"
+
 msgid "Invalid email address"
 msgstr "Invalid email address"
+
+msgid "Invalid form data"
+msgstr "Invalid form data"
+
+msgid "Invalid invitation"
+msgstr "Invalid invitation"
 
 msgid "Invalid Invite"
 msgstr "Invalid Invite"
@@ -5139,8 +8331,56 @@ msgstr "Invalid Invite"
 msgid "Invalid Invite Link"
 msgstr "Invalid Invite Link"
 
+msgid "Invalid job configuration"
+msgstr "Invalid job configuration"
+
+msgid "Invalid lines data"
+msgstr "Invalid lines data"
+
+msgid "Invalid mode"
+msgstr "Invalid mode"
+
+msgid "Invalid operation"
+msgstr "Invalid operation"
+
 msgid "Invalid or expired verification code"
 msgstr "Invalid or expired verification code"
+
+msgid "Invalid payload"
+msgstr "Invalid payload"
+
+msgid "Invalid phone number"
+msgstr "Invalid phone number"
+
+msgid "Invalid plan"
+msgstr "Invalid plan"
+
+msgid "Invalid reprint request"
+msgstr "Invalid reprint request"
+
+msgid "Invalid request body"
+msgstr "Invalid request body"
+
+msgid "Invalid reviewer"
+msgstr "Invalid reviewer"
+
+msgid "Invalid session data"
+msgstr "Invalid session data"
+
+msgid "Invalid split request"
+msgstr "Invalid split request"
+
+msgid "Invalid state parameter"
+msgstr "Invalid state parameter"
+
+msgid "Invalid status"
+msgstr "Invalid status"
+
+msgid "Invalid table"
+msgstr "Invalid table"
+
+msgid "Invalid task ID"
+msgstr "Invalid task ID"
 
 msgid "Invalid verification code"
 msgstr "Invalid verification code"
@@ -5196,11 +8436,23 @@ msgstr "Invite"
 msgid "Invite Link"
 msgstr "Invite Link"
 
+msgid "Invite link created"
+msgstr "Invite link created"
+
+msgid "Invite link expiration updated"
+msgstr "Invite link expiration updated"
+
 msgid "Invite Link Expired"
 msgstr "Invite Link Expired"
 
+msgid "Invite link revoked"
+msgstr "Invite link revoked"
+
 msgid "Invite Links"
 msgstr "Invite Links"
+
+msgid "Invite updated"
+msgstr "Invite updated"
 
 msgid "Invited"
 msgstr "Invited"
@@ -5319,6 +8571,9 @@ msgstr "Item"
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "Item {scannedItem} is not the same as the item {expectedItem}"
 
+msgid "Item association not found"
+msgstr "Item association not found"
+
 msgid "Item filters"
 msgstr "Item filters"
 
@@ -5346,6 +8601,15 @@ msgstr "Item must match a selected type OR a selected group"
 msgid "Item Posting Group"
 msgstr "Item Posting Group"
 
+msgid "Item posting group created"
+msgstr "Item posting group created"
+
+msgid "Item removed and returned to inventory"
+msgstr "Item removed and returned to inventory"
+
+msgid "Item saved"
+msgstr "Item saved"
+
 msgid "Item Scope"
 msgstr "Item Scope"
 
@@ -5367,11 +8631,20 @@ msgstr "Items inside this window get a yellow badge."
 msgid "Job"
 msgstr "Job"
 
+msgid "Job cancelled"
+msgstr "Job cancelled"
+
+msgid "Job completed successfully"
+msgstr "Job completed successfully"
+
 msgid "Job ID"
 msgstr "Job ID"
 
 msgid "Job Location"
 msgstr "Job Location"
+
+msgid "Job marked as planned"
+msgstr "Job marked as planned"
 
 msgid "Job Matching Results"
 msgstr "Job Matching Results"
@@ -5381,6 +8654,21 @@ msgstr "Job Materials"
 
 msgid "Job Operation"
 msgstr "Job Operation"
+
+msgid "Job operation attribute updated"
+msgstr "Job operation attribute updated"
+
+msgid "Job operation is required"
+msgstr "Job operation is required"
+
+msgid "Job operation not found"
+msgstr "Job operation not found"
+
+msgid "Job operation parameter updated"
+msgstr "Job operation parameter updated"
+
+msgid "Job operation tool updated"
+msgstr "Job operation tool updated"
 
 msgid "Job Operations"
 msgstr "Job Operations"
@@ -5396,6 +8684,9 @@ msgstr "Jobs Assigned to Me"
 
 msgid "Jobs Checked"
 msgstr "Jobs Checked"
+
+msgid "Jobs created"
+msgstr "Jobs created"
 
 msgid "Jobs in progress"
 msgstr "Jobs in progress"
@@ -5420,8 +8711,23 @@ msgstr "Journal Entries"
 msgid "Journal Entry"
 msgstr "Journal Entry"
 
+msgid "Journal entry deleted"
+msgstr "Journal entry deleted"
+
+msgid "Journal entry posted"
+msgstr "Journal entry posted"
+
+msgid "Journal entry reversed"
+msgstr "Journal entry reversed"
+
+msgid "Journal entry saved"
+msgstr "Journal entry saved"
+
 msgid "Kanban"
 msgstr "Kanban"
+
+msgid "Kanban created"
+msgstr "Kanban created"
 
 msgid "Kanban for {kanbanName}"
 msgstr "Kanban for {kanbanName}"
@@ -5585,6 +8891,12 @@ msgstr "Likelihood"
 msgid "Line"
 msgstr "Line"
 
+msgid "Line already picked"
+msgstr "Line already picked"
+
+msgid "Line created"
+msgstr "Line created"
+
 msgid "Line description (optional)"
 msgstr "Line description (optional)"
 
@@ -5594,8 +8906,14 @@ msgstr "Line Item Comparison"
 msgid "Line options"
 msgstr "Line options"
 
+msgid "Line split"
+msgstr "Line split"
+
 msgid "Line Status"
 msgstr "Line Status"
+
+msgid "Line updated"
+msgstr "Line updated"
 
 msgid "Linear Team"
 msgstr "Linear Team"
@@ -5621,13 +8939,22 @@ msgstr "Link Linear Issue"
 msgid "Linked"
 msgstr "Linked"
 
+msgid "Linked email"
+msgstr "Linked email"
+
 #. placeholder {0}: r.linkedSum
 #. placeholder {1}: r.quantity
 msgid "Linked entity quantity ({0}) does not match row quantity ({1})."
 msgstr "Linked entity quantity ({0}) does not match row quantity ({1})."
 
+msgid "Linked phone"
+msgstr "Linked phone"
+
 msgid "Linked PO"
 msgstr "Linked PO"
+
+msgid "Linked WeChat"
+msgstr "Linked WeChat"
 
 msgid "List"
 msgstr "List"
@@ -5677,8 +9004,14 @@ msgstr "Loading…"
 msgid "Location"
 msgstr "Location"
 
+msgid "Location created"
+msgstr "Location created"
+
 msgid "Location Name"
 msgstr "Location Name"
+
+msgid "Location updated"
+msgstr "Location updated"
 
 msgid "Locations"
 msgstr "Locations"
@@ -5726,6 +9059,30 @@ msgstr "Lost"
 msgid "Lot"
 msgstr "Lot"
 
+msgid "Lot accepted"
+msgstr "Lot accepted"
+
+msgid "Lot marked partial"
+msgstr "Lot marked partial"
+
+msgid "Lot rejected"
+msgstr "Lot rejected"
+
+msgid "Lot rejected — NCR opened"
+msgstr "Lot rejected — NCR opened"
+
+msgid "Lot rejected, but failed to create NCR"
+msgstr "Lot rejected, but failed to create NCR"
+
+msgid "Lot rejected, but failed to create NCR tasks"
+msgstr "Lot rejected, but failed to create NCR tasks"
+
+msgid "Lot rejected, but failed to load it for NCR"
+msgstr "Lot rejected, but failed to load it for NCR"
+
+msgid "Lot rejected. Configure at least one Issue Type and a default user location to auto-create an NCR."
+msgstr "Lot rejected. Configure at least one Issue Type and a default user location to auto-create an NCR."
+
 msgid "Lot size"
 msgstr "Lot size"
 
@@ -5771,8 +9128,14 @@ msgstr "Magic link expired or already used. Please request a new one."
 msgid "Maintenance"
 msgstr "Maintenance"
 
+msgid "Maintenance completed"
+msgstr "Maintenance completed"
+
 msgid "Maintenance Dispatch"
 msgstr "Maintenance Dispatch"
+
+msgid "Maintenance dispatch created"
+msgstr "Maintenance dispatch created"
 
 msgid "Maintenance Dispatch Notifications"
 msgstr "Maintenance Dispatch Notifications"
@@ -5783,8 +9146,17 @@ msgstr "Maintenance Dispatches"
 msgid "Maintenance Expense"
 msgstr "Maintenance Expense"
 
+msgid "Maintenance paused"
+msgstr "Maintenance paused"
+
+msgid "Maintenance schedule created"
+msgstr "Maintenance schedule created"
+
 msgid "Maintenance Scheduling"
 msgstr "Maintenance Scheduling"
+
+msgid "Maintenance started"
+msgstr "Maintenance started"
 
 msgid "Maintenance Type"
 msgstr "Maintenance Type"
@@ -5851,6 +9223,9 @@ msgstr "Manufacturing"
 msgid "Manufacturing Defect"
 msgstr "Manufacturing Defect"
 
+msgid "Manufacturing is blocked"
+msgstr "Manufacturing is blocked"
+
 msgid "Manufacturing Services Revenue"
 msgstr "Manufacturing Services Revenue"
 
@@ -5886,6 +9261,9 @@ msgstr "Mark to delete"
 
 msgid "Master Work Order"
 msgstr "Master Work Order"
+
+msgid "Master work order created"
+msgstr "Master work order created"
 
 msgid "Master Work Orders"
 msgstr "Master Work Orders"
@@ -5940,6 +9318,9 @@ msgstr "Material Finishes"
 
 msgid "Material Form"
 msgstr "Material Form"
+
+msgid "Material form created"
+msgstr "Material form created"
 
 msgid "Material Grade"
 msgstr "Material Grade"
@@ -6049,6 +9430,15 @@ msgstr "Method Id"
 msgid "Method Materials"
 msgstr "Method Materials"
 
+msgid "Method operation parameter updated"
+msgstr "Method operation parameter updated"
+
+msgid "Method operation step updated"
+msgstr "Method operation step updated"
+
+msgid "Method operation tool updated"
+msgstr "Method operation tool updated"
+
 msgid "Method Operations"
 msgstr "Method Operations"
 
@@ -6097,11 +9487,32 @@ msgstr "Minutes/1000 Pieces"
 msgid "Minutes/Piece"
 msgstr "Minutes/Piece"
 
+msgid "Missing code or state from WeChat"
+msgstr "Missing code or state from WeChat"
+
+msgid "Missing credentialId"
+msgstr "Missing credentialId"
+
+msgid "Missing depreciation run ID"
+msgstr "Missing depreciation run ID"
+
+msgid "Missing fields"
+msgstr "Missing fields"
+
 msgid "Missing Information"
 msgstr "Missing Information"
 
+msgid "Missing operation"
+msgstr "Missing operation"
+
 msgid "Missing Operations"
 msgstr "Missing Operations"
+
+msgid "Missing parameters"
+msgstr "Missing parameters"
+
+msgid "Missing required fields"
+msgstr "Missing required fields"
 
 msgid "Missing Shipping Costs"
 msgstr "Missing Shipping Costs"
@@ -6180,6 +9591,9 @@ msgstr "Move to Trash"
 msgid "Moved {0} to {1} bucket"
 msgstr "Moved {0} to {1} bucket"
 
+msgid "Moved entities"
+msgstr "Moved entities"
+
 msgid "MRP runs automatically every 3 hours, but you can run it manually here."
 msgstr "MRP runs automatically every 3 hours, but you can run it manually here."
 
@@ -6209,6 +9623,9 @@ msgstr "Navigate"
 
 msgid "Navigation"
 msgstr "Navigation"
+
+msgid "NCR closed"
+msgstr "NCR closed"
 
 msgid "NCRs by Type"
 msgstr "NCRs by Type"
@@ -6659,6 +10076,9 @@ msgstr "No Deadline"
 msgid "No default attachments yet."
 msgstr "No default attachments yet."
 
+msgid "No depreciation to calculate for uncovered assets"
+msgstr "No depreciation to calculate for uncovered assets"
+
 msgid "No description"
 msgstr "No description"
 
@@ -6692,6 +10112,9 @@ msgstr "No files"
 msgid "No files uploaded"
 msgstr "No files uploaded"
 
+msgid "No forecast quantities provided"
+msgstr "No forecast quantities provided"
+
 msgid "No Gauge Selected"
 msgstr "No Gauge Selected"
 
@@ -6704,8 +10127,14 @@ msgstr "No groups assigned"
 msgid "No Impact"
 msgstr "No Impact"
 
+msgid "No invite record found for user"
+msgstr "No invite record found for user"
+
 msgid "No issue types configured"
 msgstr "No issue types configured"
+
+msgid "No line items found for this RFQ"
+msgstr "No line items found for this RFQ"
 
 msgid "No locations found."
 msgstr "No locations found."
@@ -6794,6 +10223,9 @@ msgstr "No Quote"
 msgid "No Quote Reason"
 msgstr "No Quote Reason"
 
+msgid "No quote reason created"
+msgstr "No quote reason created"
+
 msgid "No Quote Reasons"
 msgstr "No Quote Reasons"
 
@@ -6827,6 +10259,9 @@ msgstr "No sorts applied to this view"
 msgid "No stock"
 msgstr "No stock"
 
+msgid "No suppliers found for this RFQ"
+msgstr "No suppliers found for this RFQ"
+
 msgid "No suppliers yet"
 msgstr "No suppliers yet"
 
@@ -6859,6 +10294,15 @@ msgstr "Non Conformance Type"
 
 msgid "Non-Conformance"
 msgstr "Non-Conformance"
+
+msgid "Non-conformance type created"
+msgstr "Non-conformance type created"
+
+msgid "Non-conformance workflow created"
+msgstr "Non-conformance workflow created"
+
+msgid "Non-conformance workflow updated"
+msgstr "Non-conformance workflow updated"
 
 msgid "Non-Inventory"
 msgstr "Non-Inventory"
@@ -6971,6 +10415,21 @@ msgstr "One-time (annual)"
 msgid "One-time annual plan, paid with WeChat Pay, Alipay, or card."
 msgstr "One-time annual plan, paid with WeChat Pay, Alipay, or card."
 
+msgid "Only active assets can be sold"
+msgstr "Only active assets can be sold"
+
+msgid "Only Active or Fully Depreciated assets can be disposed"
+msgstr "Only Active or Fully Depreciated assets can be disposed"
+
+msgid "Only Draft assets can be purchased"
+msgstr "Only Draft assets can be purchased"
+
+msgid "Only Draft assets can be registered"
+msgstr "Only Draft assets can be registered"
+
+msgid "Only posted runs can be repeated"
+msgstr "Only posted runs can be repeated"
+
 msgid "Onshape Status"
 msgstr "Onshape Status"
 
@@ -7058,6 +10517,12 @@ msgstr "Operating Expenses"
 msgid "Operation"
 msgstr "Operation"
 
+msgid "Operation finished successfully"
+msgstr "Operation finished successfully"
+
+msgid "Operation not found"
+msgstr "Operation not found"
+
 msgid "Operation Order"
 msgstr "Operation Order"
 
@@ -7073,11 +10538,17 @@ msgstr "Operations Type"
 msgid "Operator"
 msgstr "Operator"
 
+msgid "Operator converted to full user. Invite email sent."
+msgstr "Operator converted to full user. Invite email sent."
+
 msgid "Operator gets a warning. Stock still goes through."
 msgstr "Operator gets a warning. Stock still goes through."
 
 msgid "Operator must pick a different batch/serial."
 msgstr "Operator must pick a different batch/serial."
+
+msgid "Operator not found"
+msgstr "Operator not found"
 
 msgid "Operator Performed"
 msgstr "Operator Performed"
@@ -7291,6 +10762,9 @@ msgstr "Part"
 msgid "Part Details"
 msgstr "Part Details"
 
+msgid "Part group created"
+msgstr "Part group created"
+
 msgid "Part ID"
 msgstr "Part ID"
 
@@ -7302,6 +10776,12 @@ msgstr "Partial"
 
 msgid "Partner"
 msgstr "Partner"
+
+msgid "Partner created"
+msgstr "Partner created"
+
+msgid "Partner updated"
+msgstr "Partner updated"
 
 msgid "Partners"
 msgstr "Partners"
@@ -7317,6 +10797,15 @@ msgstr "Passkey"
 
 msgid "Passkey name"
 msgstr "Passkey name"
+
+msgid "Passkey name must be 100 characters or fewer"
+msgstr "Passkey name must be 100 characters or fewer"
+
+msgid "Passkey removed"
+msgstr "Passkey removed"
+
+msgid "Passkey renamed"
+msgstr "Passkey renamed"
 
 msgid "Passkeys"
 msgstr "Passkeys"
@@ -7366,11 +10855,17 @@ msgstr "Payment history"
 msgid "Payment Method"
 msgstr "Payment Method"
 
+msgid "Payment recorded successfully"
+msgstr "Payment recorded successfully"
+
 msgid "Payment successful! Your plan is now active."
 msgstr "Payment successful! Your plan is now active."
 
 msgid "Payment Term"
 msgstr "Payment Term"
+
+msgid "Payment term created"
+msgstr "Payment term created"
 
 msgid "Payment Terms"
 msgstr "Payment Terms"
@@ -7438,6 +10933,9 @@ msgstr "Permanently Delete"
 msgid "Permissions"
 msgstr "Permissions"
 
+msgid "Permissions updated"
+msgstr "Permissions updated"
+
 msgid "Phone"
 msgstr "Phone"
 
@@ -7480,6 +10978,9 @@ msgstr "Picking Lines"
 msgid "Picking List"
 msgstr "Picking List"
 
+msgid "Picking list deleted successfully"
+msgstr "Picking list deleted successfully"
+
 msgid "Picking List ID"
 msgstr "Picking List ID"
 
@@ -7500,6 +11001,9 @@ msgstr "PIN"
 
 msgid "Pin column"
 msgstr "Pin column"
+
+msgid "PIN reset successfully"
+msgstr "PIN reset successfully"
 
 msgid "Pinned"
 msgstr "Pinned"
@@ -7560,6 +11064,9 @@ msgstr "Please save the operation before adding tools."
 
 msgid "Please select an item"
 msgstr "Please select an item"
+
+msgid "Please sign in before linking WeChat"
+msgstr "Please sign in before linking WeChat"
 
 msgid "Please upload a CSV file of your data"
 msgstr "Please upload a CSV file of your data"
@@ -7623,6 +11130,9 @@ msgstr "Posted By"
 
 msgid "Posting Date"
 msgstr "Posting Date"
+
+msgid "Posting date is required"
+msgstr "Posting date is required"
 
 msgid "Posting Groups"
 msgstr "Posting Groups"
@@ -7714,6 +11224,15 @@ msgstr "Price List"
 msgid "Price Lists"
 msgstr "Price Lists"
 
+msgid "Price override created"
+msgstr "Price override created"
+
+msgid "Price override deleted"
+msgstr "Price override deleted"
+
+msgid "Price override updated"
+msgstr "Price override updated"
+
 msgid "Prices"
 msgstr "Prices"
 
@@ -7725,6 +11244,18 @@ msgstr "Pricing from the supplier process (first quantity on this job)."
 
 msgid "Pricing Rule"
 msgstr "Pricing Rule"
+
+msgid "Pricing rule created"
+msgstr "Pricing rule created"
+
+msgid "Pricing rule deleted"
+msgstr "Pricing rule deleted"
+
+msgid "Pricing rule duplicated"
+msgstr "Pricing rule duplicated"
+
+msgid "Pricing rule updated"
+msgstr "Pricing rule updated"
 
 msgid "Pricing Rules"
 msgstr "Pricing Rules"
@@ -7753,6 +11284,12 @@ msgstr "Print Bundle Tickets"
 msgid "Print from this device"
 msgstr "Print from this device"
 
+msgid "Print job deleted"
+msgstr "Print job deleted"
+
+msgid "Print job ID required"
+msgstr "Print job ID required"
+
 msgid "Print Jobs"
 msgstr "Print Jobs"
 
@@ -7768,6 +11305,9 @@ msgstr "Print Tickets"
 
 msgid "Print to"
 msgstr "Print to"
+
+msgid "Printer route deleted"
+msgstr "Printer route deleted"
 
 msgid "Printer Settings"
 msgstr "Printer Settings"
@@ -7796,6 +11336,9 @@ msgstr "Private"
 msgid "Procedure"
 msgstr "Procedure"
 
+msgid "Procedure created"
+msgstr "Procedure created"
+
 msgid "Procedures"
 msgstr "Procedures"
 
@@ -7805,8 +11348,14 @@ msgstr "Process"
 msgid "Process Completion"
 msgstr "Process Completion"
 
+msgid "Process completion created"
+msgstr "Process completion created"
+
 msgid "Process Completions"
 msgstr "Process Completions"
+
+msgid "Process created"
+msgstr "Process created"
 
 msgid "Process Deviation"
 msgstr "Process Deviation"
@@ -7831,6 +11380,9 @@ msgstr "Production"
 
 msgid "Production Event"
 msgstr "Production Event"
+
+msgid "Production event created"
+msgstr "Production event created"
 
 msgid "Production Events"
 msgstr "Production Events"
@@ -7898,6 +11450,9 @@ msgstr "Purchase Invoice Amount"
 msgid "Purchase Invoice Line"
 msgstr "Purchase Invoice Line"
 
+msgid "Purchase invoice voided"
+msgstr "Purchase invoice voided"
+
 msgid "Purchase Invoices"
 msgstr "Purchase Invoices"
 
@@ -7910,6 +11465,12 @@ msgstr "Purchase Order Amount"
 msgid "Purchase Order approval rule"
 msgstr "Purchase Order approval rule"
 
+msgid "Purchase order created"
+msgstr "Purchase order created"
+
+msgid "Purchase order finalized"
+msgstr "Purchase order finalized"
+
 msgid "Purchase Order ID"
 msgstr "Purchase Order ID"
 
@@ -7919,8 +11480,14 @@ msgstr "Purchase Order Line"
 msgid "Purchase Order Location"
 msgstr "Purchase Order Location"
 
+msgid "Purchase order not found"
+msgstr "Purchase order not found"
+
 msgid "Purchase order removed successfully"
 msgstr "Purchase order removed successfully"
+
+msgid "Purchase order submitted for approval"
+msgstr "Purchase order submitted for approval"
 
 msgid "Purchase Orders"
 msgstr "Purchase Orders"
@@ -7998,8 +11565,14 @@ msgstr "Quality Document approval rule"
 msgid "Quality Documents"
 msgstr "Quality Documents"
 
+msgid "Quality issue created"
+msgstr "Quality issue created"
+
 msgid "Quality Type"
 msgstr "Quality Type"
+
+msgid "QualityDocument created"
+msgstr "QualityDocument created"
 
 msgid "Quantities"
 msgstr "Quantities"
@@ -8087,6 +11660,9 @@ msgstr "Quote Accepted By Email"
 msgid "Quote expired"
 msgstr "Quote expired"
 
+msgid "Quote finalized successfully"
+msgstr "Quote finalized successfully"
+
 msgid "Quote ID"
 msgstr "Quote ID"
 
@@ -8107,6 +11683,15 @@ msgstr "Quote not found"
 
 msgid "Quote Number"
 msgstr "Quote Number"
+
+msgid "Quote operation attribute updated"
+msgstr "Quote operation attribute updated"
+
+msgid "Quote operation parameter updated"
+msgstr "Quote operation parameter updated"
+
+msgid "Quote operation tool updated"
+msgstr "Quote operation tool updated"
 
 msgid "Quoted Date"
 msgstr "Quoted Date"
@@ -8179,6 +11764,9 @@ msgstr "Receipt Promised Date"
 
 msgid "Receipt Requested Date"
 msgstr "Receipt Requested Date"
+
+msgid "Receipt voided"
+msgstr "Receipt voided"
 
 msgid "Receipts"
 msgstr "Receipts"
@@ -8372,6 +11960,9 @@ msgstr "Remove this storage type from all referencing storage units and delete i
 msgid "Remove Transfer"
 msgstr "Remove Transfer"
 
+msgid "Removed login method"
+msgstr "Removed login method"
+
 msgid "Rendering label preview..."
 msgstr "Rendering label preview..."
 
@@ -8416,6 +12007,9 @@ msgstr "Reorder Quantity:"
 
 msgid "Reordering Policy"
 msgstr "Reordering Policy"
+
+msgid "Repeat depreciation run created"
+msgstr "Repeat depreciation run created"
 
 msgid "Replace drawing?"
 msgstr "Replace drawing?"
@@ -8469,14 +12063,23 @@ msgstr "Reports"
 msgid "Reprint"
 msgstr "Reprint"
 
+msgid "Reprint job created"
+msgstr "Reprint job created"
+
 msgid "Request Approval"
 msgstr "Request Approval"
 
 msgid "Request extension"
 msgstr "Request extension"
 
+msgid "Request failed"
+msgstr "Request failed"
+
 msgid "Request Submitted"
 msgstr "Request Submitted"
+
+msgid "Request succeeded"
+msgstr "Request succeeded"
 
 msgid "Request to Join"
 msgstr "Request to Join"
@@ -8501,6 +12104,18 @@ msgstr "Required"
 
 msgid "Required Action"
 msgstr "Required Action"
+
+msgid "Required action created successfully"
+msgstr "Required action created successfully"
+
+msgid "Required action deleted successfully"
+msgstr "Required action deleted successfully"
+
+msgid "Required action not found"
+msgstr "Required action not found"
+
+msgid "Required action updated successfully"
+msgstr "Required action updated successfully"
 
 msgid "Required Actions"
 msgstr "Required Actions"
@@ -8634,11 +12249,20 @@ msgstr "Revoked"
 msgid "Rework"
 msgstr "Rework"
 
+msgid "Rework quantity recorded successfully"
+msgstr "Rework quantity recorded successfully"
+
+msgid "Rework triggered successfully"
+msgstr "Rework triggered successfully"
+
 msgid "RFQ"
 msgstr "RFQ"
 
 msgid "RFQ (Sales)"
 msgstr "RFQ (Sales)"
+
+msgid "RFQ cancelled"
+msgstr "RFQ cancelled"
 
 msgid "RFQ Date"
 msgstr "RFQ Date"
@@ -8667,8 +12291,14 @@ msgstr "Right item"
 msgid "Risk"
 msgstr "Risk"
 
+msgid "Risk created successfully"
+msgstr "Risk created successfully"
+
 msgid "Risk Register"
 msgstr "Risk Register"
+
+msgid "Risk updated successfully"
+msgstr "Risk updated successfully"
 
 msgid "Risks"
 msgstr "Risks"
@@ -8681,6 +12311,12 @@ msgstr "Role:"
 
 msgid "Roll"
 msgstr "Roll"
+
+msgid "Root accounts cannot be deleted"
+msgstr "Root accounts cannot be deleted"
+
+msgid "Root accounts cannot be modified"
+msgstr "Root accounts cannot be modified"
 
 msgid "Root Cause Analysis"
 msgstr "Root Cause Analysis"
@@ -8706,17 +12342,35 @@ msgstr "Rule applies to every customer."
 msgid "Rule applies to every item."
 msgstr "Rule applies to every item."
 
+msgid "Rule assigned"
+msgstr "Rule assigned"
+
+msgid "Rule deleted"
+msgstr "Rule deleted"
+
+msgid "Rule id required"
+msgstr "Rule id required"
+
 msgid "Rule Name"
 msgstr "Rule Name"
 
+msgid "Rule not found"
+msgstr "Rule not found"
+
 msgid "Rule Type"
 msgstr "Rule Type"
+
+msgid "Rule unassigned"
+msgstr "Rule unassigned"
 
 msgid "Rules"
 msgstr "Rules"
 
 msgid "Run ID"
 msgstr "Run ID"
+
+msgid "Run is not in Draft status"
+msgstr "Run is not in Draft status"
 
 msgid "Run Matching"
 msgstr "Run Matching"
@@ -8772,6 +12426,9 @@ msgstr "Sales Invoice"
 msgid "Sales Invoice Line"
 msgstr "Sales Invoice Line"
 
+msgid "Sales invoice voided"
+msgstr "Sales invoice voided"
+
 msgid "Sales Invoices"
 msgstr "Sales Invoices"
 
@@ -8780,6 +12437,9 @@ msgstr "Sales Job Notifications"
 
 msgid "Sales Order"
 msgstr "Sales Order"
+
+msgid "Sales order created"
+msgstr "Sales order created"
 
 msgid "Sales Order ID"
 msgstr "Sales Order ID"
@@ -8818,11 +12478,17 @@ msgstr "Sample {0}"
 msgid "Sample data"
 msgstr "Sample data"
 
+msgid "Sample recorded"
+msgstr "Sample recorded"
+
 msgid "Sample Size"
 msgstr "Sample Size"
 
 msgid "Sampling Plan"
 msgstr "Sampling Plan"
+
+msgid "Sampling plan updated"
+msgstr "Sampling plan updated"
 
 msgid "Sampling Standard"
 msgstr "Sampling Standard"
@@ -8853,6 +12519,9 @@ msgstr "Save View"
 
 msgid "Saved"
 msgstr "Saved"
+
+msgid "Saved document layout"
+msgstr "Saved document layout"
 
 msgid "Saving..."
 msgstr "Saving..."
@@ -8926,11 +12595,17 @@ msgstr "Scrap Quantity"
 msgid "Scrap Quantity Per Job"
 msgstr "Scrap Quantity Per Job"
 
+msgid "Scrap quantity recorded successfully"
+msgstr "Scrap quantity recorded successfully"
+
 msgid "Scrap reason"
 msgstr "Scrap reason"
 
 msgid "Scrap Reason"
 msgstr "Scrap Reason"
+
+msgid "Scrap reason created"
+msgstr "Scrap reason created"
 
 msgid "Scrap Reasons"
 msgstr "Scrap Reasons"
@@ -9010,6 +12685,12 @@ msgstr "Seats"
 
 msgid "Seconds/Piece"
 msgstr "Seconds/Piece"
+
+msgid "Section deleted"
+msgstr "Section deleted"
+
+msgid "Section saved"
+msgstr "Section saved"
 
 msgid "Sections"
 msgstr "Sections"
@@ -9246,6 +12927,9 @@ msgstr "Serial/Batch #"
 msgid "Service Charge Account"
 msgstr "Service Charge Account"
 
+msgid "Session mismatch"
+msgstr "Session mismatch"
+
 msgid "Set Clock Out"
 msgstr "Set Clock Out"
 
@@ -9343,8 +13027,14 @@ msgstr "Shelf-Life History"
 msgid "Shift"
 msgstr "Shift"
 
+msgid "Shift created"
+msgstr "Shift created"
+
 msgid "Shift Name"
 msgstr "Shift Name"
+
+msgid "Shift updated"
+msgstr "Shift updated"
 
 msgid "Shifts"
 msgstr "Shifts"
@@ -9376,6 +13066,9 @@ msgstr "Shipment Lines"
 msgid "Shipment Location"
 msgstr "Shipment Location"
 
+msgid "Shipment voided"
+msgstr "Shipment voided"
+
 msgid "Shipments"
 msgstr "Shipments"
 
@@ -9402,6 +13095,9 @@ msgstr "Shipping Location"
 
 msgid "Shipping Method"
 msgstr "Shipping Method"
+
+msgid "Shipping method created"
+msgstr "Shipping method created"
 
 msgid "Shipping Methods"
 msgstr "Shipping Methods"
@@ -9505,6 +13201,9 @@ msgstr "Sign in with WeChat"
 msgid "Sign Out"
 msgstr "Sign Out"
 
+msgid "Sign-in failed. Please try again."
+msgstr "Sign-in failed. Please try again."
+
 msgid "Signed in as {name}"
 msgstr "Signed in as {name}"
 
@@ -9604,11 +13303,17 @@ msgstr "Sourcing"
 msgid "Sourcing Type"
 msgstr "Sourcing Type"
 
+msgid "Spare part added"
+msgstr "Spare part added"
+
 msgid "Spare Part Consumption"
 msgstr "Spare Part Consumption"
 
 msgid "Spare Part Cost"
 msgstr "Spare Part Cost"
+
+msgid "Spare part removed and returned to inventory"
+msgstr "Spare part removed and returned to inventory"
 
 msgid "Specific Customer"
 msgstr "Specific Customer"
@@ -9625,6 +13330,9 @@ msgstr "Split"
 msgid "Split Batch"
 msgstr "Split Batch"
 
+msgid "Split failed"
+msgstr "Split failed"
+
 msgid "Split line"
 msgstr "Split line"
 
@@ -9633,6 +13341,9 @@ msgstr "Split Line"
 
 msgid "Split off quantity"
 msgstr "Split off quantity"
+
+msgid "Split quantity too large"
+msgstr "Split quantity too large"
 
 msgid "Split receipt line"
 msgstr "Split receipt line"
@@ -9721,6 +13432,9 @@ msgstr "Stay on this page"
 msgid "Step"
 msgstr "Step"
 
+msgid "Step deleted successfully"
+msgstr "Step deleted successfully"
+
 msgid "Step records"
 msgstr "Step records"
 
@@ -9735,6 +13449,12 @@ msgstr "Stock Transfer"
 
 msgid "Stock Transfer ID"
 msgstr "Stock Transfer ID"
+
+msgid "Stock transfer is not in progress or released"
+msgstr "Stock transfer is not in progress or released"
+
+msgid "Stock transfer line not found"
+msgstr "Stock transfer line not found"
 
 msgid "Stock Transfer Lines"
 msgstr "Stock Transfer Lines"
@@ -9763,11 +13483,20 @@ msgstr "Storage Rules"
 msgid "Storage Type"
 msgstr "Storage Type"
 
+msgid "Storage type created"
+msgstr "Storage type created"
+
+msgid "Storage type is in use; confirm cascade to delete"
+msgstr "Storage type is in use; confirm cascade to delete"
+
 msgid "Storage Types"
 msgstr "Storage Types"
 
 msgid "Storage Unit"
 msgstr "Storage Unit"
+
+msgid "Storage unit created"
+msgstr "Storage unit created"
 
 msgid "Storage Units"
 msgstr "Storage Units"
@@ -9787,6 +13516,9 @@ msgstr "Style"
 msgid "Style Color"
 msgstr "Style Color"
 
+msgid "Style color created"
+msgstr "Style color created"
+
 msgid "Style Colors"
 msgstr "Style Colors"
 
@@ -9804,6 +13536,9 @@ msgstr "Style Properties"
 
 msgid "Style Size"
 msgstr "Style Size"
+
+msgid "Style size created"
+msgstr "Style size created"
 
 msgid "Style Sizes"
 msgstr "Style Sizes"
@@ -9859,11 +13594,293 @@ msgstr "Subtotal:"
 msgid "Success"
 msgstr "Success"
 
+msgid "Success. Please check back in a few moments."
+msgstr "Success. Please check back in a few moments."
+
+msgid "Successfully activate work center"
+msgstr "Successfully activate work center"
+
+msgid "Successfully activated gauge"
+msgstr "Successfully activated gauge"
+
+msgid "Successfully activated process"
+msgstr "Successfully activated process"
+
+msgid "Successfully added invites to queue"
+msgstr "Successfully added invites to queue"
+
+msgid "Successfully converted quote to order"
+msgstr "Successfully converted quote to order"
+
+msgid "Successfully converted RFQ to quote"
+msgstr "Successfully converted RFQ to quote"
+
 msgid "Successfully copied quote"
 msgstr "Successfully copied quote"
 
 msgid "Successfully created a new revision"
 msgstr "Successfully created a new revision"
+
+msgid "Successfully deactivated attribute"
+msgstr "Successfully deactivated attribute"
+
+msgid "Successfully deactivated attribute category"
+msgstr "Successfully deactivated attribute category"
+
+msgid "Successfully deactivated gauge"
+msgstr "Successfully deactivated gauge"
+
+msgid "Successfully deactivated process"
+msgstr "Successfully deactivated process"
+
+msgid "Successfully deactivated work center"
+msgstr "Successfully deactivated work center"
+
+msgid "Successfully deleted account"
+msgstr "Successfully deleted account"
+
+msgid "Successfully deleted API key"
+msgstr "Successfully deleted API key"
+
+msgid "Successfully deleted asset class"
+msgstr "Successfully deleted asset class"
+
+msgid "Successfully deleted association"
+msgstr "Successfully deleted association"
+
+msgid "Successfully deleted contractor"
+msgstr "Successfully deleted contractor"
+
+msgid "Successfully deleted cost center"
+msgstr "Successfully deleted cost center"
+
+msgid "Successfully deleted custom field"
+msgstr "Successfully deleted custom field"
+
+msgid "Successfully deleted customer contact"
+msgstr "Successfully deleted customer contact"
+
+msgid "Successfully deleted customer location"
+msgstr "Successfully deleted customer location"
+
+msgid "Successfully deleted customer part"
+msgstr "Successfully deleted customer part"
+
+msgid "Successfully deleted customer portal"
+msgstr "Successfully deleted customer portal"
+
+msgid "Successfully deleted customer status"
+msgstr "Successfully deleted customer status"
+
+msgid "Successfully deleted customer type"
+msgstr "Successfully deleted customer type"
+
+msgid "Successfully deleted department"
+msgstr "Successfully deleted department"
+
+msgid "Successfully deleted depreciation run"
+msgstr "Successfully deleted depreciation run"
+
+msgid "Successfully deleted dimension"
+msgstr "Successfully deleted dimension"
+
+msgid "Successfully deleted employee type"
+msgstr "Successfully deleted employee type"
+
+msgid "Successfully deleted event"
+msgstr "Successfully deleted event"
+
+msgid "Successfully deleted failure mode"
+msgstr "Successfully deleted failure mode"
+
+msgid "Successfully deleted fixed asset"
+msgstr "Successfully deleted fixed asset"
+
+msgid "Successfully deleted gauge"
+msgstr "Successfully deleted gauge"
+
+msgid "Successfully deleted gauge calibration record"
+msgstr "Successfully deleted gauge calibration record"
+
+msgid "Successfully deleted group"
+msgstr "Successfully deleted group"
+
+msgid "Successfully deleted holiday"
+msgstr "Successfully deleted holiday"
+
+msgid "Successfully deleted issue"
+msgstr "Successfully deleted issue"
+
+msgid "Successfully deleted issue workflow"
+msgstr "Successfully deleted issue workflow"
+
+msgid "Successfully deleted item"
+msgstr "Successfully deleted item"
+
+msgid "Successfully deleted item group"
+msgstr "Successfully deleted item group"
+
+msgid "Successfully deleted kanban"
+msgstr "Successfully deleted kanban"
+
+msgid "Successfully deleted line"
+msgstr "Successfully deleted line"
+
+msgid "Successfully deleted location"
+msgstr "Successfully deleted location"
+
+msgid "Successfully deleted maintenance dispatch"
+msgstr "Successfully deleted maintenance dispatch"
+
+msgid "Successfully deleted maintenance schedule"
+msgstr "Successfully deleted maintenance schedule"
+
+msgid "Successfully deleted material dimension"
+msgstr "Successfully deleted material dimension"
+
+msgid "Successfully deleted material finish"
+msgstr "Successfully deleted material finish"
+
+msgid "Successfully deleted material form"
+msgstr "Successfully deleted material form"
+
+msgid "Successfully deleted material grade"
+msgstr "Successfully deleted material grade"
+
+msgid "Successfully deleted material substance"
+msgstr "Successfully deleted material substance"
+
+msgid "Successfully deleted material type"
+msgstr "Successfully deleted material type"
+
+msgid "Successfully deleted noQuote reason"
+msgstr "Successfully deleted noQuote reason"
+
+msgid "Successfully deleted parameter"
+msgstr "Successfully deleted parameter"
+
+msgid "Successfully deleted partner"
+msgstr "Successfully deleted partner"
+
+msgid "Successfully deleted payment term"
+msgstr "Successfully deleted payment term"
+
+msgid "Successfully deleted procedure"
+msgstr "Successfully deleted procedure"
+
+msgid "Successfully deleted purchase invoice line"
+msgstr "Successfully deleted purchase invoice line"
+
+msgid "Successfully deleted purchase order line"
+msgstr "Successfully deleted purchase order line"
+
+msgid "Successfully deleted quality document"
+msgstr "Successfully deleted quality document"
+
+msgid "Successfully deleted quantity"
+msgstr "Successfully deleted quantity"
+
+msgid "Successfully deleted quantity report"
+msgstr "Successfully deleted quantity report"
+
+msgid "Successfully deleted question"
+msgstr "Successfully deleted question"
+
+msgid "Successfully deleted receipt"
+msgstr "Successfully deleted receipt"
+
+msgid "Successfully deleted sales invoice line"
+msgstr "Successfully deleted sales invoice line"
+
+msgid "Successfully deleted sales order line"
+msgstr "Successfully deleted sales order line"
+
+msgid "Successfully deleted scrap reason"
+msgstr "Successfully deleted scrap reason"
+
+msgid "Successfully deleted shift"
+msgstr "Successfully deleted shift"
+
+msgid "Successfully deleted shipment"
+msgstr "Successfully deleted shipment"
+
+msgid "Successfully deleted shipping method"
+msgstr "Successfully deleted shipping method"
+
+msgid "Successfully deleted step"
+msgstr "Successfully deleted step"
+
+msgid "Successfully deleted stock transfer"
+msgstr "Successfully deleted stock transfer"
+
+msgid "Successfully deleted storage type"
+msgstr "Successfully deleted storage type"
+
+msgid "Successfully deleted style color"
+msgstr "Successfully deleted style color"
+
+msgid "Successfully deleted style size"
+msgstr "Successfully deleted style size"
+
+msgid "Successfully deleted subsidiary"
+msgstr "Successfully deleted subsidiary"
+
+msgid "Successfully deleted supplier contact"
+msgstr "Successfully deleted supplier contact"
+
+msgid "Successfully deleted supplier location"
+msgstr "Successfully deleted supplier location"
+
+msgid "Successfully deleted supplier type"
+msgstr "Successfully deleted supplier type"
+
+msgid "Successfully deleted tag"
+msgstr "Successfully deleted tag"
+
+msgid "Successfully deleted template"
+msgstr "Successfully deleted template"
+
+msgid "Successfully deleted timecard"
+msgstr "Successfully deleted timecard"
+
+msgid "Successfully deleted training"
+msgstr "Successfully deleted training"
+
+msgid "Successfully deleted unit of measure"
+msgstr "Successfully deleted unit of measure"
+
+msgid "Successfully deleted webhook"
+msgstr "Successfully deleted webhook"
+
+msgid "Successfully invited employee"
+msgstr "Successfully invited employee"
+
+msgid "Successfully resent invite"
+msgstr "Successfully resent invite"
+
+msgid "Successfully revoked invites"
+msgstr "Successfully revoked invites"
+
+msgid "Successfully updated attribtue"
+msgstr "Successfully updated attribtue"
+
+msgid "Successfully updated exchange rate"
+msgstr "Successfully updated exchange rate"
+
+msgid "Successfully updated fiscal year settings"
+msgstr "Successfully updated fiscal year settings"
+
+msgid "Successfully updated job"
+msgstr "Successfully updated job"
+
+msgid "Sucessfully deactivated customer"
+msgstr "Sucessfully deactivated customer"
+
+msgid "Sucessfully deactivated employee"
+msgstr "Sucessfully deactivated employee"
+
+msgid "Sucessfully deactivated supplier"
+msgstr "Sucessfully deactivated supplier"
 
 msgid "Suffix"
 msgstr "Suffix"
@@ -9898,14 +13915,29 @@ msgstr "Supplier Accounts"
 msgid "Supplier added and selected"
 msgstr "Supplier added and selected"
 
+msgid "Supplier address updated"
+msgstr "Supplier address updated"
+
 msgid "Supplier Contact"
 msgstr "Supplier Contact"
+
+msgid "Supplier contact created"
+msgstr "Supplier contact created"
+
+msgid "Supplier contact updated"
+msgstr "Supplier contact updated"
+
+msgid "Supplier deactivated"
+msgstr "Supplier deactivated"
 
 msgid "Supplier ID"
 msgstr "Supplier ID"
 
 msgid "Supplier ID cannot be changed after creation"
 msgstr "Supplier ID cannot be changed after creation"
+
+msgid "Supplier invited"
+msgstr "Supplier invited"
 
 msgid "Supplier Invoice Number"
 msgstr "Supplier Invoice Number"
@@ -9915,6 +13947,9 @@ msgstr "Supplier Issue"
 
 msgid "Supplier Location"
 msgstr "Supplier Location"
+
+msgid "Supplier location created"
+msgstr "Supplier location created"
 
 msgid "Supplier Order Number"
 msgstr "Supplier Order Number"
@@ -9927,6 +13962,9 @@ msgstr "Supplier Part ID"
 
 msgid "Supplier Part Number"
 msgstr "Supplier Part Number"
+
+msgid "Supplier part updated"
+msgstr "Supplier part updated"
 
 msgid "Supplier Parts"
 msgstr "Supplier Parts"
@@ -9943,11 +13981,17 @@ msgstr "Supplier Quality"
 msgid "Supplier Quote"
 msgstr "Supplier Quote"
 
+msgid "Supplier quote finalized successfully"
+msgstr "Supplier quote finalized successfully"
+
 msgid "Supplier Quote ID"
 msgstr "Supplier Quote ID"
 
 msgid "Supplier Quote Notifications"
 msgstr "Supplier Quote Notifications"
+
+msgid "Supplier quote sent successfully"
+msgstr "Supplier quote sent successfully"
 
 msgid "Supplier Quotes"
 msgstr "Supplier Quotes"
@@ -9966,6 +14010,9 @@ msgstr "Supplier Status"
 
 msgid "Supplier Type"
 msgstr "Supplier Type"
+
+msgid "Supplier type created"
+msgstr "Supplier type created"
 
 msgid "Supplier Types"
 msgstr "Supplier Types"
@@ -10031,8 +14078,14 @@ msgstr "Table"
 msgid "Table actions"
 msgstr "Table actions"
 
+msgid "Table is required"
+msgstr "Table is required"
+
 msgid "Tag"
 msgstr "Tag"
+
+msgid "Tag created"
+msgstr "Tag created"
 
 msgid "Tag size"
 msgstr "Tag size"
@@ -10075,6 +14128,12 @@ msgstr "Target quantity"
 
 msgid "Target Version"
 msgstr "Target Version"
+
+msgid "Task ID is required"
+msgstr "Task ID is required"
+
+msgid "Task not found"
+msgstr "Task not found"
 
 msgid "Tasks"
 msgstr "Tasks"
@@ -10119,6 +14178,9 @@ msgstr "Temperature"
 
 msgid "Template"
 msgstr "Template"
+
+msgid "Template created"
+msgstr "Template created"
 
 msgid "Template ID"
 msgstr "Template ID"
@@ -10345,6 +14407,15 @@ msgstr "Thursday"
 msgid "Timecard"
 msgstr "Timecard"
 
+msgid "Timecard created"
+msgstr "Timecard created"
+
+msgid "Timecard removed successfully"
+msgstr "Timecard removed successfully"
+
+msgid "Timecard updated"
+msgstr "Timecard updated"
+
 msgid "Timecards"
 msgstr "Timecards"
 
@@ -10353,6 +14424,9 @@ msgstr "Timecards are disabled"
 
 msgid "Timecards are enabled"
 msgstr "Timecards are enabled"
+
+msgid "Timecards are not enabled. To enable this feature, go to Settings → People to enable Timecards."
+msgstr "Timecards are not enabled. To enable this feature, go to Settings → People to enable Timecards."
 
 msgid "Timezone"
 msgstr "Timezone"
@@ -10510,6 +14584,12 @@ msgstr "Tracked entity already picked"
 msgid "Tracked entity ID is required but none was found"
 msgstr "Tracked entity ID is required but none was found"
 
+msgid "Tracked entity not found"
+msgstr "Tracked entity not found"
+
+msgid "Tracked entity scanned and transferred"
+msgstr "Tracked entity scanned and transferred"
+
 msgid "Tracking"
 msgstr "Tracking"
 
@@ -10538,8 +14618,17 @@ msgstr "Training"
 msgid "Training Assignments"
 msgstr "Training Assignments"
 
+msgid "Training created"
+msgstr "Training created"
+
+msgid "Training ID is required"
+msgstr "Training ID is required"
+
 msgid "Training Issue"
 msgstr "Training Issue"
+
+msgid "Training marked as complete"
+msgstr "Training marked as complete"
 
 msgid "Trainings"
 msgstr "Trainings"
@@ -10610,6 +14699,9 @@ msgstr "Type a message..."
 msgid "Type an email and press Enter to add an external recipient"
 msgstr "Type an email and press Enter to add an external recipient"
 
+msgid "Type created"
+msgstr "Type created"
+
 msgid "Type of Permission Update"
 msgstr "Type of Permission Update"
 
@@ -10634,6 +14726,15 @@ msgstr "Unassign rule"
 msgid "Unassigned"
 msgstr "Unassigned"
 
+msgid "Unauthorized"
+msgstr "Unauthorized"
+
+msgid "Unauthorized: Cannot remove attribute"
+msgstr "Unauthorized: Cannot remove attribute"
+
+msgid "Unauthorized: Cannot update attribute"
+msgstr "Unauthorized: Cannot update attribute"
+
 msgid "Unballoon"
 msgstr "Unballoon"
 
@@ -10654,6 +14755,9 @@ msgstr "Unit Cost"
 
 msgid "Unit of Measure"
 msgstr "Unit of Measure"
+
+msgid "Unit of measure created"
+msgstr "Unit of measure created"
 
 msgid "Unit of Measures"
 msgstr "Unit of Measures"
@@ -10779,14 +14883,356 @@ msgstr "Updated {relativeTime}"
 msgid "Updated account"
 msgstr "Updated account"
 
+msgid "Updated API key"
+msgstr "Updated API key"
+
 msgid "Updated At"
 msgstr "Updated At"
+
+msgid "Updated attribute category "
+msgstr "Updated attribute category "
+
+msgid "Updated attribute value"
+msgstr "Updated attribute value"
 
 msgid "Updated By"
 msgstr "Updated By"
 
+msgid "Updated company"
+msgstr "Updated company"
+
+msgid "Updated consumable"
+msgstr "Updated consumable"
+
+msgid "Updated consumable costing"
+msgstr "Updated consumable costing"
+
+msgid "Updated consumable inventory"
+msgstr "Updated consumable inventory"
+
+msgid "Updated consumable planning"
+msgstr "Updated consumable planning"
+
+msgid "Updated consumable purchasing"
+msgstr "Updated consumable purchasing"
+
+msgid "Updated customer"
+msgstr "Updated customer"
+
+msgid "Updated customer payment terms"
+msgstr "Updated customer payment terms"
+
+msgid "Updated customer portal"
+msgstr "Updated customer portal"
+
+msgid "Updated customer shipping"
+msgstr "Updated customer shipping"
+
+msgid "Updated customer status"
+msgstr "Updated customer status"
+
+msgid "Updated customer tax information"
+msgstr "Updated customer tax information"
+
+msgid "Updated customer type"
+msgstr "Updated customer type"
+
+msgid "Updated default accounts"
+msgstr "Updated default accounts"
+
+msgid "Updated dimension"
+msgstr "Updated dimension"
+
+msgid "Updated dispatch status"
+msgstr "Updated dispatch status"
+
+msgid "Updated document"
+msgstr "Updated document"
+
+msgid "Updated employee type"
+msgstr "Updated employee type"
+
+msgid "Updated exchange rate"
+msgstr "Updated exchange rate"
+
+msgid "Updated failure mode"
+msgstr "Updated failure mode"
+
+msgid "Updated gauge"
+msgstr "Updated gauge"
+
+msgid "Updated gauge type"
+msgstr "Updated gauge type"
+
+msgid "Updated group"
+msgstr "Updated group"
+
+msgid "Updated issue"
+msgstr "Updated issue"
+
+msgid "Updated issue status"
+msgstr "Updated issue status"
+
+msgid "Updated issue type"
+msgstr "Updated issue type"
+
+msgid "Updated item"
+msgstr "Updated item"
+
+msgid "Updated item group"
+msgstr "Updated item group"
+
+msgid "Updated job"
+msgstr "Updated job"
+
+msgid "Updated job status"
+msgstr "Updated job status"
+
+msgid "Updated kanban"
+msgstr "Updated kanban"
+
+msgid "Updated maintenance schedule"
+msgstr "Updated maintenance schedule"
+
+msgid "Updated material"
+msgstr "Updated material"
+
+msgid "Updated material costing"
+msgstr "Updated material costing"
+
+msgid "Updated material form"
+msgstr "Updated material form"
+
+msgid "Updated material grade"
+msgstr "Updated material grade"
+
+msgid "Updated material inventory"
+msgstr "Updated material inventory"
+
+msgid "Updated material planning"
+msgstr "Updated material planning"
+
+msgid "Updated material purchasing"
+msgstr "Updated material purchasing"
+
+msgid "Updated material substance"
+msgstr "Updated material substance"
+
+msgid "Updated material type"
+msgstr "Updated material type"
+
+msgid "Updated no quote reason"
+msgstr "Updated no quote reason"
+
+msgid "Updated order"
+msgstr "Updated order"
+
+msgid "Updated part"
+msgstr "Updated part"
+
+msgid "Updated part costing"
+msgstr "Updated part costing"
+
+msgid "Updated part inventory"
+msgstr "Updated part inventory"
+
+msgid "Updated part manufacturing"
+msgstr "Updated part manufacturing"
+
+msgid "Updated part planning"
+msgstr "Updated part planning"
+
+msgid "Updated part purchasing"
+msgstr "Updated part purchasing"
+
+msgid "Updated part sale price"
+msgstr "Updated part sale price"
+
+msgid "Updated payment term"
+msgstr "Updated payment term"
+
+msgid "Updated picking list"
+msgstr "Updated picking list"
+
+msgid "Updated picking list status"
+msgstr "Updated picking list status"
+
+msgid "Updated process completion"
+msgstr "Updated process completion"
+
+msgid "Updated production event"
+msgstr "Updated production event"
+
+msgid "Updated profile"
+msgstr "Updated profile"
+
+msgid "Updated purchase invoice"
+msgstr "Updated purchase invoice"
+
+msgid "Updated purchase invoice delivery"
+msgstr "Updated purchase invoice delivery"
+
+msgid "Updated purchase invoice status"
+msgstr "Updated purchase invoice status"
+
+msgid "Updated purchase order"
+msgstr "Updated purchase order"
+
+msgid "Updated purchase order delivery"
+msgstr "Updated purchase order delivery"
+
+msgid "Updated purchase order payment"
+msgstr "Updated purchase order payment"
+
+msgid "Updated purchasing order status"
+msgstr "Updated purchasing order status"
+
+msgid "Updated quote"
+msgstr "Updated quote"
+
+msgid "Updated quote line"
+msgstr "Updated quote line"
+
+msgid "Updated quote payment"
+msgstr "Updated quote payment"
+
+msgid "Updated quote shipment"
+msgstr "Updated quote shipment"
+
+msgid "Updated quote status"
+msgstr "Updated quote status"
+
+msgid "Updated receipt"
+msgstr "Updated receipt"
+
+msgid "Updated RFQ"
+msgstr "Updated RFQ"
+
+msgid "Updated RFQ status"
+msgstr "Updated RFQ status"
+
+msgid "Updated sales invoice"
+msgstr "Updated sales invoice"
+
+msgid "Updated sales invoice shipping"
+msgstr "Updated sales invoice shipping"
+
+msgid "Updated sales invoice status"
+msgstr "Updated sales invoice status"
+
+msgid "Updated sales order payment"
+msgstr "Updated sales order payment"
+
+msgid "Updated sales order shipment"
+msgstr "Updated sales order shipment"
+
+msgid "Updated sales order status"
+msgstr "Updated sales order status"
+
+msgid "Updated scrap reason"
+msgstr "Updated scrap reason"
+
+msgid "Updated sequence"
+msgstr "Updated sequence"
+
+msgid "Updated shipment"
+msgstr "Updated shipment"
+
+msgid "Updated shipping method"
+msgstr "Updated shipping method"
+
+msgid "Updated storage type"
+msgstr "Updated storage type"
+
+msgid "Updated storageUnit"
+msgstr "Updated storageUnit"
+
+msgid "Updated style color"
+msgstr "Updated style color"
+
+msgid "Updated style costing"
+msgstr "Updated style costing"
+
+msgid "Updated style inventory"
+msgstr "Updated style inventory"
+
+msgid "Updated style planning"
+msgstr "Updated style planning"
+
+msgid "Updated style sale price"
+msgstr "Updated style sale price"
+
+msgid "Updated style size"
+msgstr "Updated style size"
+
+msgid "Updated subsidiary"
+msgstr "Updated subsidiary"
+
 msgid "Updated successfully"
 msgstr "Updated successfully"
+
+msgid "Updated supplier"
+msgstr "Updated supplier"
+
+msgid "Updated supplier payment terms"
+msgstr "Updated supplier payment terms"
+
+msgid "Updated supplier quote status"
+msgstr "Updated supplier quote status"
+
+msgid "Updated supplier shipping"
+msgstr "Updated supplier shipping"
+
+msgid "Updated supplier tax information"
+msgstr "Updated supplier tax information"
+
+msgid "Updated supplier type"
+msgstr "Updated supplier type"
+
+msgid "Updated suppliers"
+msgstr "Updated suppliers"
+
+msgid "Updated task status"
+msgstr "Updated task status"
+
+msgid "Updated tool"
+msgstr "Updated tool"
+
+msgid "Updated tool costing"
+msgstr "Updated tool costing"
+
+msgid "Updated tool inventory"
+msgstr "Updated tool inventory"
+
+msgid "Updated tool manufacturing"
+msgstr "Updated tool manufacturing"
+
+msgid "Updated tool planning"
+msgstr "Updated tool planning"
+
+msgid "Updated tool purchasing"
+msgstr "Updated tool purchasing"
+
+msgid "Updated unit of measure"
+msgstr "Updated unit of measure"
+
+msgid "Updated warehouse transfer"
+msgstr "Updated warehouse transfer"
+
+msgid "Updated warehouse transfer line"
+msgstr "Updated warehouse transfer line"
+
+msgid "Updated warehouse transfer status"
+msgstr "Updated warehouse transfer status"
+
+msgid "Updated webhook"
+msgstr "Updated webhook"
+
+msgid "Updated work center "
+msgstr "Updated work center "
+
+msgid "Updating user permissions"
+msgstr "Updating user permissions"
 
 msgid "Upgrade"
 msgstr "Upgrade"
@@ -10868,6 +15314,9 @@ msgstr "Use another sign-in method"
 msgid "Use metric system for default material dimensions."
 msgstr "Use metric system for default material dimensions."
 
+msgid "Use the entity picker to split this row"
+msgstr "Use the entity picker to split this row"
+
 msgid "Used In"
 msgstr "Used In"
 
@@ -10888,6 +15337,12 @@ msgstr "Used to categorize items for reporting and analysis"
 
 msgid "User"
 msgstr "User"
+
+msgid "User already deactivated"
+msgstr "User already deactivated"
+
+msgid "User not found"
+msgstr "User not found"
 
 msgid "User record not found"
 msgstr "User record not found"
@@ -11168,6 +15623,9 @@ msgstr "Waiting"
 msgid "Warehouse Transfer"
 msgstr "Warehouse Transfer"
 
+msgid "Warehouse transfer deleted successfully"
+msgstr "Warehouse transfer deleted successfully"
+
 msgid "Warehouse Transfers"
 msgstr "Warehouse Transfers"
 
@@ -11336,6 +15794,9 @@ msgstr "Wordmark Light Mode"
 msgid "Work Center"
 msgstr "Work Center"
 
+msgid "Work Center Blocked"
+msgstr "Work Center Blocked"
+
 msgid "Work Center Utilization"
 msgstr "Work Center Utilization"
 
@@ -11400,6 +15861,9 @@ msgstr "You can change the UI style any time through the theme setting"
 msgid "You can only see this key once. Store it safely."
 msgstr "You can only see this key once. Store it safely."
 
+msgid "You cannot deactivate yourself"
+msgstr "You cannot deactivate yourself"
+
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
@@ -11408,6 +15872,18 @@ msgstr "You clocked in at {0}. You can edit your clock-out time below or acknowl
 #. placeholder {1}: job.quantity
 msgid "You completed {leftoverQuantity} more {0} than the ordered quantity of {1}. What would you like to do with the extra parts?"
 msgstr "You completed {leftoverQuantity} more {0} than the ordered quantity of {1}. What would you like to do with the extra parts?"
+
+msgid "You do not have permission to approve this request"
+msgstr "You do not have permission to approve this request"
+
+msgid "You do not have permission to deactivate this supplier"
+msgstr "You do not have permission to deactivate this supplier"
+
+msgid "You do not have permission to reopen this purchase order"
+msgstr "You do not have permission to reopen this purchase order"
+
+msgid "You do not have permission to update permissions"
+msgstr "You do not have permission to update permissions"
 
 msgid "You haven't created any contacts yet."
 msgstr "You haven't created any contacts yet."
@@ -11436,11 +15912,17 @@ msgstr "You're on the free plan. Upgrade to unlock more seats and features."
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 
+msgid "Your account is not active"
+msgstr "Your account is not active"
+
 msgid "Your annual license expires in {left} days. Renew now."
 msgstr "Your annual license expires in {left} days. Renew now."
 
 msgid "Your annual license has expired. Renew now to restore access."
 msgstr "Your annual license has expired. Renew now to restore access."
+
+msgid "Your company is on the free plan (read-only). Upgrade to make changes."
+msgstr "Your company is on the free plan (read-only). Upgrade to make changes."
 
 msgid "Your Console PIN"
 msgstr "Your Console PIN"
@@ -11484,6 +15966,3 @@ msgstr "ZPL (Thermal Label)"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL Label Preview"
-
-msgid "Your company is on the free plan (read-only). Upgrade to make changes."
-msgstr "Your company is on the free plan (read-only). Upgrade to make changes."
