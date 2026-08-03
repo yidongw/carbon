@@ -16159,3 +16159,134 @@ msgstr "из {loc}"
 
 msgid "to {loc}"
 msgstr "в {loc}"
+
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "Вы действительно хотите удалить эту строку отгрузки?"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "Назначьте процессы, которые может выполнять этот сотрудник. Они появляются при отчете о количестве производства для этих процессов."
+
+msgid "Batch has insufficient quantity"
+msgstr "Батч имеет недостаточное количество"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "Номер лота {0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "Номер лота уже используется на другой отгрузочной линии"
+
+msgid "Batch number is required"
+msgstr "Номер лота обязателен"
+
+msgid "Batch number not found"
+msgstr "Номер лота не найден"
+
+msgid "Duplicate serial number"
+msgstr "Дублирующийся серийный номер"
+
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "Истекает {0}"
+
+msgid "Failed to add a line"
+msgstr "Не удалось добавить строку"
+
+msgid "Failed to check serial number index"
+msgstr "Не удалось проверить индекс серийного номера"
+
+msgid "Failed to create samples"
+msgstr "Не удалось создать образцы"
+
+msgid "Failed to create transfer"
+msgstr "Не удалось создать передачу"
+
+msgid "Failed to fetch samples"
+msgstr "Не удалось получить образцы"
+
+msgid "Failed to get employee processes"
+msgstr "Не удалось получить процессы сотрудника"
+
+msgid "Failed to load receipt line"
+msgstr "Не удалось загрузить строку прихода"
+
+msgid "Failed to load tracked entity"
+msgstr "Не удалось загрузить отслеживаемый объект"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Не удалось разрешить партнерский склад"
+
+msgid "Failed to track serial number"
+msgstr "Не удалось отследить серийный номер"
+
+msgid "Failed to update processes"
+msgstr "Не удалось обновить процессы"
+
+msgid "Failed to update tracking"
+msgstr "Не удалось обновить отслеживание"
+
+msgid "Fill shipped serial"
+msgstr "Заполните серийные номера отгруженных товаров"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "Только присвоенные сотрудникам отображаются в отчете о количестве. Оставьте поле пустым для того, чтобы разрешить все."
+
+msgid "Receipt is empty"
+msgstr "Приемка пуста"
+
+msgid "Samples created"
+msgstr "Созданы образцы"
+
+msgid "Serial number already exists"
+msgstr "Серийный номер уже существует"
+
+msgid "Serial number already exists for this item"
+msgstr "Серийный номер уже существует для этого элемента"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "Серийный номер составляет {0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Серийный номер уже используется для другого элемента или позиции"
+
+msgid "Serial number is not available"
+msgstr "Серийный номер недоступен"
+
+msgid "Serial numbers are missing"
+msgstr "Серийные номера отсутствуют"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "Серийные номера отсутствуют или недоступны"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "Серийные номера не отправлены в этом перемещении: {0}"
+
+msgid "Shipment is empty"
+msgstr "Отгрузка пуста"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "Количество отгруженного превышает количество в лоте ({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "Количество отгруженного превышает количество заказа"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "Количество отгруженного меньше количества лота. Для оставшегося количества будет создан новый лот приposting."
+
+msgid "Successfully updated processes"
+msgstr "Успешно обновленные процессы"
+
+msgid "There are more shipped than ordered"
+msgstr "Отгруженного больше, чем заказано"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Этот серийный номер не был отправлен в этом перемещении"
+
+msgid "Tracked entity is not available"
+msgstr "Следимый объект недоступен"
+
+msgid "Transfer created"
+msgstr "Перенос создан"

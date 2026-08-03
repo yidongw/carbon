@@ -6342,3 +6342,60 @@ msgstr "您的账户未激活"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "您的公司正在使用免费方案（只读）。升级后即可进行更改。"
+
+msgid "Batch has insufficient quantity"
+msgstr "数量不足"
+
+msgid "Failed to add a line"
+msgstr "添加行失败"
+
+msgid "Failed to check serial number index"
+msgstr "检查序列号索引失败"
+
+msgid "Failed to create samples"
+msgstr "创建样品失败"
+
+msgid "Failed to create transfer"
+msgstr "创建转移失败"
+
+msgid "Failed to fetch samples"
+msgstr "获取样品失败"
+
+msgid "Failed to get employee processes"
+msgstr "获取员工工序失败"
+
+msgid "Failed to load receipt line"
+msgstr "加载收货行失败"
+
+msgid "Failed to load tracked entity"
+msgstr "加载跟踪实体失败"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "解决合作伙伴仓库失败"
+
+msgid "Failed to update processes"
+msgstr "更新工序失败"
+
+msgid "Failed to update tracking"
+msgstr "更新跟踪失败"
+
+msgid "Samples created"
+msgstr "已创建样品"
+
+msgid "Serial number already exists for this item"
+msgstr "此物品已存在序列号"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "已用于其他物品或位置"
+
+msgid "Successfully updated processes"
+msgstr "已更新工序"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "未在本次转移中发货此序列号"
+
+msgid "Tracked entity is not available"
+msgstr "不可用"
+
+msgid "Transfer created"
+msgstr "已创建转移"

@@ -6310,3 +6310,60 @@ msgstr "आपका खाते अक्सर सक्रिय नही�
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "आपकी कंपनी निःशुल्क योजना (केवल पढ़ने के लिए) पर है। बदलाव करने के लिए अपग्रेड करें।"
+
+msgid "Batch has insufficient quantity"
+msgstr "बैच में पर्याप्त मात्रा नहीं है"
+
+msgid "Failed to add a line"
+msgstr "अ行添加失败"
+
+msgid "Failed to check serial number index"
+msgstr "सीरियल नंबर इन्डेक्स की पроверка वफ़ाई नहीं की जा सकी"
+
+msgid "Failed to create samples"
+msgstr "सैंपल्स की तैयारी में विफलता आई है"
+
+msgid "Failed to create transfer"
+msgstr "TRANSFER बनाना फल नहीं आया"
+
+msgid "Failed to fetch samples"
+msgstr "सैंपल लोड करने में व़िरास्त हुआ"
+
+msgid "Failed to get employee processes"
+msgstr "नौकर के प्रोसेस डालने में विफल रहा"
+
+msgid "Failed to load receipt line"
+msgstr "लेसिप्ट को लोड करने में वस आईं"
+
+msgid "Failed to load tracked entity"
+msgstr "नामित ऐतिहासिक दस्तावेज़ लोड होने में असफल रहा"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "साझेदार तरकारी स्थल को हल नहीं किया जा सका"
+
+msgid "Failed to update processes"
+msgstr "प्रक्रियाएँ अपडेट करने में वफ़ादरी नहीं की सकीं"
+
+msgid "Failed to update tracking"
+msgstr "अपडेट करणे खालील रूपात विफल झाले आहे"
+
+msgid "Samples created"
+msgstr "मॉडल तैयार किए गए样本外的文本已移除，请重新输入或检查字符串。"
+
+msgid "Serial number already exists for this item"
+msgstr "इस आइटम के लिए सीरियल नंबर पहले से है"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "सीरियल नंबर अन्य वस्तु या स्थान के लिए पहचाना गया है"
+
+msgid "Successfully updated processes"
+msgstr "सफलतापूर्वक प्रोसेस अपडेट किए गए हैं"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "इस सीरियल नंबर का इन्हीं परिवहन में भेजा नहीं गया है"
+
+msgid "Tracked entity is not available"
+msgstr "निरीक्षित वस्तु उपलब्ध नहीं है"
+
+msgid "Transfer created"
+msgstr "TRANSFER CREATED"

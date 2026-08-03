@@ -16159,3 +16159,134 @@ msgstr "{loc}から"
 
 msgid "to {loc}"
 msgstr "{loc}へ"
+
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "この荷物情報を取り消すのはよろしいですか？"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "従業員が実行できる工程を割り当ててください。これらの工程は、生産数量報告時に表示されます。"
+
+msgid "Batch has insufficient quantity"
+msgstr "バッチの数量が不足しています"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "バッチ番号は{0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "既に他の出荷ラインで使用されています"
+
+msgid "Batch number is required"
+msgstr "バッチ番号は必須です"
+
+msgid "Batch number not found"
+msgstr "バッチ番号が見つかりません"
+
+msgid "Duplicate serial number"
+msgstr "重複するシリアル番号"
+
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "有効期限は{0}までです"
+
+msgid "Failed to add a line"
+msgstr "追加に失敗しました"
+
+msgid "Failed to check serial number index"
+msgstr "シリアル番号インデックスの確認に失敗しました"
+
+msgid "Failed to create samples"
+msgstr "サンプルの作成に失敗しました"
+
+msgid "Failed to create transfer"
+msgstr "転送の作成に失敗しました"
+
+msgid "Failed to fetch samples"
+msgstr "サンプル取得に失敗しました"
+
+msgid "Failed to get employee processes"
+msgstr "社員のプロセス取得に失敗しました"
+
+msgid "Failed to load receipt line"
+msgstr "受領行の読み込みに失敗しました"
+
+msgid "Failed to load tracked entity"
+msgstr "追跡エンティティの読み込みに失敗しました"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "パートナー倉庫の解決に失敗しました"
+
+msgid "Failed to track serial number"
+msgstr "シリアル番号の追跡に失敗しました"
+
+msgid "Failed to update processes"
+msgstr "プロセスの更新に失敗しました"
+
+msgid "Failed to update tracking"
+msgstr "トラッキングの更新に失敗しました"
+
+msgid "Fill shipped serial"
+msgstr "出荷済シリアルを入力してください"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "割り当てられた従業員のみが表示されます。すべてを許可する場合は空にします。"
+
+msgid "Receipt is empty"
+msgstr "受注は空です"
+
+msgid "Samples created"
+msgstr "サンプル作成済み"
+
+msgid "Serial number already exists"
+msgstr "シリアル番号が既に存在します"
+
+msgid "Serial number already exists for this item"
+msgstr "このアイテムに既にシリアル番号が存在します"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "シリアル番号は{0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "既に他の項目や位置で使用されています"
+
+msgid "Serial number is not available"
+msgstr "シリアルナンバーは利用できません"
+
+msgid "Serial numbers are missing"
+msgstr "シリアル番号が欠けている"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "シリアルナンバーが欠けているか利用不可です"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "この移動で出荷されていないシリアル番号:{0}"
+
+msgid "Shipment is empty"
+msgstr "出荷情報がありません"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "出荷数量がバッチ数量を超過しています({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "出荷数量が JOB 数量を超過しています"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "出荷数量は bach 数量未満です。残りの数量分は確定時に新しい bach が作成されます。"
+
+msgid "Successfully updated processes"
+msgstr "成功しました 更新されたプロセス"
+
+msgid "There are more shipped than ordered"
+msgstr "注文数より多く出荷されています"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "このシリアル番号はこの移動で出荷されていません"
+
+msgid "Tracked entity is not available"
+msgstr "追跡対象が利用できません"
+
+msgid "Transfer created"
+msgstr "転送が作成されました"

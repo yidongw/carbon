@@ -16162,3 +16162,134 @@ msgstr "{loc} से"
 
 msgid "to {loc}"
 msgstr "{loc} को"
+
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "आप यह भेजाने पंक्ति को हटाना चाहते हैं?"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "इस कर्मचारी के प्रदान कर सकने वाले प्रक्रियों का वित्तवाद दिए जाएँ। उन्हें उन प्रक्रियों की उत्पादन मात्रा रिपोर्ट करने के समय दिखाई देते हैं।"
+
+msgid "Batch has insufficient quantity"
+msgstr "बैच में पर्याप्त मात्रा नहीं है"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "बैच नंबर {0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "बैच नंबर अन्य शिपमेंट लाइन पर का उपयोग हुआ है"
+
+msgid "Batch number is required"
+msgstr "बैच नंबर आवश्यक है"
+
+msgid "Batch number not found"
+msgstr "बैच नंबर नहीं मिला"
+
+msgid "Duplicate serial number"
+msgstr "डब्ल्यूट सीरियल नंबर"
+
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "अवैध हो जाएगा {0}"
+
+msgid "Failed to add a line"
+msgstr "अ行添加失败"
+
+msgid "Failed to check serial number index"
+msgstr "सीरियल नंबर इन्डेक्स की पроверка वफ़ाई नहीं की जा सकी"
+
+msgid "Failed to create samples"
+msgstr "सैंपल्स की तैयारी में विफलता हुई"
+
+msgid "Failed to create transfer"
+msgstr "TRANSFER बनाना फल नहीं आया"
+
+msgid "Failed to fetch samples"
+msgstr "सैंपल लोड करने में व़िरास्त हुआ"
+
+msgid "Failed to get employee processes"
+msgstr "कर्मी के प्रोसेस लाभ नहीं हुए"
+
+msgid "Failed to load receipt line"
+msgstr "प्रावधान लाइन लोड करने में फाल्टी"
+
+msgid "Failed to load tracked entity"
+msgstr "नामित ऐतिहासिक दस्तावेज़ लोड होने में असफल रहा"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "साझेदार तरक़ीब को समायोजित नहीं किया जा सका"
+
+msgid "Failed to track serial number"
+msgstr "सीरियल नंबर का प्रॉक्सी नहीं लगाया मेहनत की"
+
+msgid "Failed to update processes"
+msgstr "प्रक्रियाएँ अपडेट करने में वफ़ादरी नहीं की सकीं"
+
+msgid "Failed to update tracking"
+msgstr "फैलाव को अपडेट करने में फाल्सी हुआ"
+
+msgid "Fill shipped serial"
+msgstr "शिप्ड शीरियल भरें"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "वितरित कराए गए सिपाही ही दिखाई देते हैं जब मात्रा रिपोर्ट किया जाता है। सभी को अनुमति देने के लिए खाली छोड़कर रहें।"
+
+msgid "Receipt is empty"
+msgstr "संकलन खाली है"
+
+msgid "Samples created"
+msgstr "सैंपल्स बनाए गए"
+
+msgid "Serial number already exists"
+msgstr "सीरियल नंबर सामने है"
+
+msgid "Serial number already exists for this item"
+msgstr "इस आइटम के लिए सीरियल नंबर पहले से है"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "सीरियल नंबर {0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "सीरियल नंबर अन्य वस्तु या स्थान के लिए पहचाना गया है"
+
+msgid "Serial number is not available"
+msgstr "सीरियल नंबर उपलब्ध नहीं है"
+
+msgid "Serial numbers are missing"
+msgstr "सीरियल नंबर्स लामे हैं"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "सीरियल नंबर लाम्बे हैं या उपलब्ध नहीं हैं"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "इस परिवहन में भेजे नहीं गए सैरियाल नंबर: {0}"
+
+msgid "Shipment is empty"
+msgstr "शिपमेंट खाली है"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "शिप्ड गई मात्रा बैच की मात्रा से अधिक है ({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "शिप्ड गई मात्रा कार्य मात्रा से अधिक है"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "शिप्ड गए मात्रा की बची हुई मात्रा की तुलना में कम है। पोस्ट करने पर शेष मात्रा के लिए एक नया बत्च बनाया जाएगा।"
+
+msgid "Successfully updated processes"
+msgstr "सफलतापूर्वक प्रोसेस अपडेट किए गए हैं"
+
+msgid "There are more shipped than ordered"
+msgstr "शिप्ड की संख्या आरक्षित की गई संख्या से अधिक है"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "इस सीरियल नंबर का इन्हीं परिवहन में भेजा नहीं गया है"
+
+msgid "Tracked entity is not available"
+msgstr "प्रतिबिम्बित वस्तु उपलब्ध नहीं है"
+
+msgid "Transfer created"
+msgstr "TRANSFER KRIYA KI HAI"

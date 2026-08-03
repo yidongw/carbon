@@ -6303,3 +6303,60 @@ msgstr "Your account is not active"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Your company is on the free plan (read-only). Upgrade to make changes."
+
+msgid "Batch has insufficient quantity"
+msgstr "Batch has insufficient quantity"
+
+msgid "Failed to add a line"
+msgstr "Failed to add a line"
+
+msgid "Failed to check serial number index"
+msgstr "Failed to check serial number index"
+
+msgid "Failed to create samples"
+msgstr "Failed to create samples"
+
+msgid "Failed to create transfer"
+msgstr "Failed to create transfer"
+
+msgid "Failed to fetch samples"
+msgstr "Failed to fetch samples"
+
+msgid "Failed to get employee processes"
+msgstr "Failed to get employee processes"
+
+msgid "Failed to load receipt line"
+msgstr "Failed to load receipt line"
+
+msgid "Failed to load tracked entity"
+msgstr "Failed to load tracked entity"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Failed to resolve partner warehouse"
+
+msgid "Failed to update processes"
+msgstr "Failed to update processes"
+
+msgid "Failed to update tracking"
+msgstr "Failed to update tracking"
+
+msgid "Samples created"
+msgstr "Samples created"
+
+msgid "Serial number already exists for this item"
+msgstr "Serial number already exists for this item"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Serial number is already used for a different item or position"
+
+msgid "Successfully updated processes"
+msgstr "Successfully updated processes"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "This serial number was not shipped on this transfer"
+
+msgid "Tracked entity is not available"
+msgstr "Tracked entity is not available"
+
+msgid "Transfer created"
+msgstr "Transfer created"
