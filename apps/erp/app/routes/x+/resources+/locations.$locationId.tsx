@@ -105,6 +105,8 @@ export default function LocationRoute() {
     timezone: location.timezone ?? getLocalTimeZone(),
     latitude: location.latitude ?? undefined,
     longitude: location.longitude ?? undefined,
+    customerId: location.customerId ?? undefined,
+    supplierId: location.supplierId ?? undefined,
     ...getCustomFields(location.customFields)
   };
 
