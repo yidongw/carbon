@@ -347,11 +347,15 @@ export async function getFailureModesList(
     .order("name");
 }
 
+// Reads go through the `locations` view, which resolves a partner warehouse's
+// address through its linked customer/supplier location (own column ?? inherited)
+// and flattens the partner/location names. Writes still target the "location" table
+// (upsertLocation / resolveOrCreatePartnerLocation).
 export async function getLocation(
   client: SupabaseClient<Database>,
   locationId: string
 ) {
-  return client.from("location").select("*").eq("id", locationId).single();
+  return client.from("locations").select("*").eq("id", locationId).single();
 }
 
 export async function getLocations(
@@ -360,8 +364,8 @@ export async function getLocations(
   args?: GenericQueryFilters & { search: string | null }
 ) {
   let query = client
-    .from("location")
-    .select("*, customer(name), supplier(name)", { count: "exact" })
+    .from("locations")
+    .select("*", { count: "exact" })
     .eq("companyId", companyId);
 
   if (args?.search) {
