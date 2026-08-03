@@ -179,6 +179,22 @@ export type Style = NonNullable<
   Awaited<ReturnType<typeof getStyles>>["data"]
 >[number];
 
+// styleSamples view = Style + per-style sample count. getStyleSamples returns
+// `any` rows (view not in generated types yet), so type it explicitly here.
+export type StyleSampleLine = {
+  colorCode: string;
+  colorName: string;
+  size: string;
+  quantity: number;
+};
+
+export type StyleSample = Style & {
+  sampleItemId: string | null;
+  sampleCount: number;
+  sampledColorCount: number;
+  samples: StyleSampleLine[];
+};
+
 export type StyleColor = NonNullable<
   Awaited<ReturnType<typeof getStyleColors>>["data"]
 >[number];

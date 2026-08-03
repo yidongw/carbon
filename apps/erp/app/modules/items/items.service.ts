@@ -1,12 +1,12 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
-import { styleReferenceRows } from "@carbon/database/style-reference";
 import type {
   ExpressionBuilder,
   Kysely,
   KyselyDatabase,
   KyselyTx
 } from "@carbon/database/client";
+import { styleReferenceRows } from "@carbon/database/style-reference";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
@@ -1648,6 +1648,204 @@ export async function getStyles(
   return setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
+}
+
+export async function getStyleSamples(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args: GenericQueryFilters & {
+    search: string | null;
+  }
+) {
+  // "styleSamples" is the styles view + per-style sample count. Typed as any
+  // because the view isn't in the generated Database types yet.
+  const sampleClient = client as SupabaseClient<any>;
+  let query = sampleClient
+    .from("styleSamples")
+    .select("*", {
+      count: "exact"
+    })
+    .eq("companyId", companyId);
+
+  if (args.search) {
+    query = query.or(
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCodes.ilike.%${args.search}%,colorNames.ilike.%${args.search}%,sizeCodes.ilike.%${args.search}%`
+    );
+  }
+
+  return setGenericQueryFilters(query, args, [
+    { column: "readableIdWithRevision", ascending: true }
+  ]);
+}
+
+export async function ensureStyleSampleItem(
+  client: SupabaseClient<Database>,
+  args: { styleId: string; companyId: string; userId: string }
+) {
+  const { styleId, companyId, userId } = args;
+  const sampleClient = client as SupabaseClient<any>;
+
+  // Already have a companion sample item for this style?
+  const existing = await sampleClient
+    .from("styleSample")
+    .select("itemId")
+    .eq("styleId", styleId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+  if (existing.error) return existing;
+  if (existing.data?.itemId) {
+    return { data: { itemId: existing.data.itemId as string }, error: null };
+  }
+
+  // style.id === item.readableId; fetch the style's item for name + UoM.
+  const styleItem = await sampleClient
+    .from("item")
+    .select("name, unitOfMeasureCode")
+    .eq("readableId", styleId)
+    .eq("type", "Style")
+    .eq("companyId", companyId)
+    .order("revision", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (styleItem.error) return styleItem;
+
+  const itemInsert = await client
+    .from("item")
+    .insert({
+      readableId: `${styleId}-SAMPLE`,
+      revision: "0",
+      name: `${styleItem.data?.name ?? styleId} Sample`,
+      type: "Sample",
+      replenishmentSystem: "Make",
+      defaultMethodType: "Make to Order",
+      itemTrackingType: "Serial",
+      unitOfMeasureCode: styleItem.data?.unitOfMeasureCode ?? "EA",
+      active: true,
+      companyId,
+      createdBy: userId
+    })
+    .select("id")
+    .single();
+  if (itemInsert.error) return itemInsert;
+
+  const itemId = itemInsert.data.id;
+  const linkInsert = await sampleClient.from("styleSample").insert({
+    itemId,
+    styleId,
+    companyId,
+    createdBy: userId
+  });
+  if (linkInsert.error) return linkInsert;
+
+  return { data: { itemId }, error: null };
+}
+
+export async function createStyleSamples(
+  client: SupabaseClient<Database>,
+  args: {
+    styleId: string;
+    lines: { colorId: string; size: string; quantity: number }[];
+    locationId: string;
+    storageUnitId?: string | null;
+    companyId: string;
+    userId: string;
+  }
+) {
+  const { styleId, lines, locationId, storageUnitId, companyId, userId } = args;
+  const sampleClient = client as SupabaseClient<any>;
+
+  const ensured = await ensureStyleSampleItem(client, {
+    styleId,
+    companyId,
+    userId
+  });
+  if (ensured.error) return ensured;
+  const sampleItemId = (ensured.data as { itemId: string }).itemId;
+
+  // Map selected styleColor ids -> color codes for the serial + attributes.
+  const colorIds = Array.from(new Set(lines.map((l) => l.colorId)));
+  const colors = await sampleClient
+    .from("styleColor")
+    .select("id, colorCode")
+    .in("id", colorIds)
+    .eq("companyId", companyId);
+  if (colors.error) return colors;
+  const codeById = new Map<string, string>(
+    (colors.data ?? []).map((c: { id: string; colorCode: string }) => [
+      c.id,
+      c.colorCode
+    ])
+  );
+
+  // Continue serial numbering from any samples that already exist for this
+  // color+size, so every physical unit gets a unique serial across creates.
+  const existing = await sampleClient
+    .from("trackedEntity")
+    .select("attributes")
+    .eq("sourceDocument", "Item")
+    .eq("sourceDocumentId", sampleItemId)
+    .eq("companyId", companyId);
+  if (existing.error) return existing;
+  const seqByKey = new Map<string, number>();
+  for (const e of (existing.data ?? []) as { attributes: any }[]) {
+    const key = `${e.attributes?.Color ?? ""}|${e.attributes?.Size ?? ""}`;
+    seqByKey.set(key, (seqByKey.get(key) ?? 0) + 1);
+  }
+
+  const trackedEntities: Record<string, unknown>[] = [];
+  const ledgerRows: Record<string, unknown>[] = [];
+
+  for (const line of lines) {
+    const colorCode = codeById.get(line.colorId) ?? line.colorId;
+    const size = line.size;
+    const key = `${colorCode}|${size}`;
+    for (let n = 1; n <= line.quantity; n++) {
+      const trackedEntityId = nanoid();
+      const seq = (seqByKey.get(key) ?? 0) + 1;
+      seqByKey.set(key, seq);
+      const serial = `${styleId}-${colorCode}-${size}-${seq}`;
+      trackedEntities.push({
+        id: trackedEntityId,
+        quantity: 1,
+        // Available (not On Hold): samples are a separate hidden item, so they
+        // never count toward the style's sellable stock, and Available lets them
+        // reuse the standard serial transfer / shipment / adjustment flows.
+        status: "Available",
+        sourceDocument: "Item",
+        sourceDocumentId: sampleItemId,
+        sourceDocumentReadableId: `${styleId}-SAMPLE`,
+        readableId: serial,
+        itemId: sampleItemId,
+        attributes: { Color: colorCode, Size: size },
+        companyId,
+        createdBy: userId
+      });
+      ledgerRows.push({
+        itemId: sampleItemId,
+        locationId,
+        storageUnitId: storageUnitId || null,
+        trackedEntityId,
+        entryType: "Positive Adjmt.",
+        quantity: 1,
+        companyId,
+        createdBy: userId
+      });
+    }
+  }
+
+  if (trackedEntities.length === 0) {
+    return { data: { count: 0 }, error: null };
+  }
+
+  const entityInsert = await sampleClient
+    .from("trackedEntity")
+    .insert(trackedEntities);
+  if (entityInsert.error) return entityInsert;
+
+  const ledgerInsert = await sampleClient.from("itemLedger").insert(ledgerRows);
+  if (ledgerInsert.error) return ledgerInsert;
+
+  return { data: { count: trackedEntities.length }, error: null };
 }
 
 export async function getStyleColor(
