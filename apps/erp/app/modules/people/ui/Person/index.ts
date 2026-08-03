@@ -3,6 +3,7 @@ import PersonDaysOff from "./PersonDaysOff";
 import PersonJob from "./PersonJob";
 import PersonOvertime from "./PersonOvertime";
 import PersonPreview from "./PersonPreview";
+import PersonProcesses from "./PersonProcesses";
 import PersonSidebar from "./PersonSidebar";
 
 export {
@@ -11,5 +12,6 @@ export {
   PersonJob,
   PersonOvertime,
   PersonPreview,
+  PersonProcesses,
   PersonSidebar
 };
