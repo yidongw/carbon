@@ -974,7 +974,11 @@ function SerialForm({
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { data: serialNumbersData } = useSerialNumbers(
     line.itemId!,
-    isReadOnly
+    isReadOnly,
+    // Gate serials to this line's source warehouse (line.locationId is the
+    // "from" location; the shipment header location can differ, e.g. it's the
+    // destination on a transfer). A serial not on-hand here can't be shipped.
+    line.locationId ?? undefined
   );
 
   // Check for duplicates within the current form
@@ -1420,16 +1424,22 @@ function resolveTrackedEntity(
 
 export default ShipmentLines;
 
-export function useSerialNumbers(itemId?: string, isReadOnly = false) {
+export function useSerialNumbers(
+  itemId?: string,
+  isReadOnly = false,
+  locationId?: string
+) {
   const serialNumbersFetcher =
     useFetcher<Awaited<ReturnType<typeof getSerialNumbersForItem>>>();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
     if (itemId) {
-      serialNumbersFetcher.load(path.to.api.serialNumbers(itemId, isReadOnly));
+      serialNumbersFetcher.load(
+        path.to.api.serialNumbers(itemId, isReadOnly, locationId)
+      );
     }
-  }, [itemId]);
+  }, [itemId, locationId]);
 
   return { data: serialNumbersFetcher.data };
 }

@@ -577,12 +577,34 @@ export async function getSerialNumbersForItem(
   args: {
     itemId: string;
     companyId: string;
+    locationId?: string;
   }
 ) {
-  // Smart default order: expiring soonest first (FEFO, nulls last), then oldest
-  // first (FIFO). Surfaces that don't use the TrackedEntityPicker still get a
-  // sensible pick order; the picker re-sorts client-side when the user switches.
-  let query = client
+  // Location-aware: only serials actually on-hand and Available at the given
+  // location. This is what gates shipping — you can't ship a serial that isn't
+  // in the source warehouse. Mapped to the same id/readableId/status shape the
+  // location-blind branch returns so callers stay unchanged.
+  if (args.locationId) {
+    const available = await getAvailableTrackedEntities(client, {
+      itemId: args.itemId,
+      companyId: args.companyId,
+      locationId: args.locationId
+    });
+    return {
+      data:
+        available.data?.map((entity) => ({
+          id: entity.trackedEntityId,
+          readableId: entity.readableId,
+          status: entity.status
+        })) ?? null,
+      error: available.error
+    };
+  }
+
+  // Location-blind fallback (e.g. read-only display of already-assigned serials
+  // that may no longer be on-hand). Smart default order: expiring soonest first
+  // (FEFO, nulls last), then oldest first (FIFO).
+  return client
     .from("trackedEntity")
     .select("*")
     .eq("sourceDocument", "Item")
@@ -591,8 +613,6 @@ export async function getSerialNumbersForItem(
     .eq("quantity", 1)
     .order("expirationDate", { ascending: true, nullsFirst: false })
     .order("createdAt", { ascending: true });
-
-  return query;
 }
 
 /**
