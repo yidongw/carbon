@@ -20808,66 +20808,72 @@ export type Database = {
       }
       location: {
         Row: {
-          addressLine1: string
+          addressLine1: string | null
           addressLine2: string | null
-          city: string
+          city: string | null
           companyId: string
           countryCode: string | null
           createdAt: string
           createdBy: string
           customerId: string | null
+          customerLocationId: string | null
           customFields: Json | null
           id: string
           latitude: number | null
           longitude: number | null
           name: string
-          postalCode: string
+          postalCode: string | null
           stateProvince: string | null
           supplierId: string | null
+          supplierLocationId: string | null
           tags: string[] | null
           timezone: string
           updatedAt: string | null
           updatedBy: string | null
         }
         Insert: {
-          addressLine1: string
+          addressLine1?: string | null
           addressLine2?: string | null
-          city: string
+          city?: string | null
           companyId: string
           countryCode?: string | null
           createdAt?: string
           createdBy: string
           customerId?: string | null
+          customerLocationId?: string | null
           customFields?: Json | null
           id?: string
           latitude?: number | null
           longitude?: number | null
           name: string
-          postalCode: string
+          postalCode?: string | null
           stateProvince?: string | null
           supplierId?: string | null
+          supplierLocationId?: string | null
           tags?: string[] | null
           timezone: string
           updatedAt?: string | null
           updatedBy?: string | null
         }
         Update: {
-          addressLine1?: string
+          addressLine1?: string | null
           addressLine2?: string | null
-          city?: string
+          city?: string | null
           companyId?: string
           countryCode?: string | null
           createdAt?: string
           createdBy?: string
           customerId?: string | null
+          customerLocationId?: string | null
           customFields?: Json | null
           id?: string
           latitude?: number | null
           longitude?: number | null
           name?: string
-          postalCode?: string
+          postalCode?: string | null
           stateProvince?: string | null
           supplierId?: string | null
+          supplierLocationId?: string | null
           tags?: string[] | null
           timezone?: string
           updatedAt?: string | null
@@ -20879,6 +20885,20 @@ export type Database = {
             columns: ["companyId"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_customerLocationId_fkey"
+            columns: ["customerLocationId"]
+            isOneToOne: false
+            referencedRelation: "customerLocation"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_supplierLocationId_fkey"
+            columns: ["supplierLocationId"]
+            isOneToOne: false
+            referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
           },
           {
@@ -54735,6 +54755,37 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      locations: {
+        Row: {
+          addressLine1: string | null
+          addressLine2: string | null
+          city: string | null
+          companyId: string
+          countryCode: string | null
+          createdAt: string
+          createdBy: string
+          customerId: string | null
+          customerLocationId: string | null
+          customerName: string | null
+          customFields: Json | null
+          id: string
+          isAddressInherited: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          partnerLocationName: string | null
+          postalCode: string | null
+          stateProvince: string | null
+          supplierId: string | null
+          supplierLocationId: string | null
+          supplierName: string | null
+          tags: string[] | null
+          timezone: string
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Relationships: []
       }
       masterWorkOrders: {
         Row: {
