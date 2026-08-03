@@ -24,7 +24,11 @@ export type BatchProperty = NonNullable<
 
 export type InventoryItem = NonNullable<
   Awaited<ReturnType<typeof getInventoryItems>>["data"]
->[number];
+>[number] & {
+  // Merged in by the quantities loader from open warehouse transfers.
+  toShip?: number;
+  toReceive?: number;
+};
 
 export type ItemLedger = NonNullable<
   Awaited<ReturnType<typeof getItemLedgerPage>>["data"]

@@ -233,7 +233,12 @@ const ReceiptForm = ({
                   name="sourceDocument"
                   label={t`Source Document`}
                   options={receiptSourceDocumentType.map((v) => ({
-                    label: v,
+                    label:
+                      {
+                        "Purchase Order": t`Purchase Order`,
+                        "Purchase Invoice": t`Purchase Invoice`,
+                        "Inbound Transfer": t`Inbound Transfer`
+                      }[v] ?? v,
                     value: v
                   }))}
                   onChange={(newValue) => {

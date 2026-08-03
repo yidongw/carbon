@@ -18,10 +18,12 @@ import { useEffect } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
+  Customer,
   CustomFormFields,
   Hidden,
   Input,
   Submit,
+  Supplier,
   Timezone
 } from "~/components/Form";
 import AddressAutocomplete from "~/components/Form/AddressAutocomplete";
@@ -99,6 +101,10 @@ const LocationForm = ({
                 <Input name="name" label={t`Location Name`} />
                 <AddressAutocomplete />
                 <Timezone name="timezone" label={t`Timezone`} />
+                {/* Link this warehouse to a customer or supplier (at most one) so
+                    transfers can send stock/samples "to" that partner. */}
+                <Customer name="customerId" label={t`Customer`} />
+                <Supplier name="supplierId" label={t`Supplier`} />
                 {/* <Number name="latitude" label="Latitude" minValue={-90} maxValue={90} />
               <Number name="longitude" label="Longitude" minVale={-180} maxValue={180} /> */}
                 <CustomFormFields table="location" />

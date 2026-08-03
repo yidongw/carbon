@@ -13,6 +13,7 @@ import {
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import {
+  checkTransferLineAvailability,
   deleteWarehouseTransferLine,
   getWarehouseTransfer,
   getWarehouseTransferLine,
@@ -111,6 +112,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   switch (type) {
     case "update": {
+      // The update payload doesn't carry itemId (item is fixed on edit), so read
+      // it from the existing line to check availability at the new quantity/bin.
+      const existingLine = await getWarehouseTransferLine(
+        viewClient,
+        transferId,
+        id
+      );
+      // `d` is the union minus the discriminant, so narrow to the update shape.
+      const updateData = d as { quantity: number; fromStorageUnitId?: string };
+      const availability = await checkTransferLineAvailability(client, {
+        companyId,
+        locationId: transfer.data?.fromLocationId ?? "",
+        itemId: existingLine.data?.itemId ?? "",
+        fromStorageUnitId: updateData.fromStorageUnitId || null,
+        quantity: updateData.quantity,
+        excludeLineId: id
+      });
+      if (!availability.ok) {
+        return validationError({
+          fieldErrors: { quantity: availability.message }
+        } as never);
+      }
+
       const result = await upsertWarehouseTransferLine(client, {
         id,
         ...d,

@@ -79,9 +79,21 @@ export const locationValidator = z
     countryCode: z.string().min(1, { message: "Country is required" }),
     timezone: z.string().min(1, { message: "Timezone is required" }),
     latitude: zfd.numeric(z.number().optional()),
-    longitude: zfd.numeric(z.number().optional())
+    longitude: zfd.numeric(z.number().optional()),
+    // A location may represent a customer or a supplier (at most one), so
+    // transfers can be sent "to" that partner.
+    customerId: zfd.text(z.string().optional()),
+    supplierId: zfd.text(z.string().optional())
   })
-  .superRefine(({ latitude, longitude }, ctx) => {
+  .superRefine(({ latitude, longitude, customerId, supplierId }, ctx) => {
+    if (customerId && supplierId) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "A location can be linked to a customer or a supplier, not both",
+        path: ["supplierId"]
+      });
+    }
     if ((latitude && !longitude) || (!latitude && longitude)) {
       ctx.addIssue({
         code: "custom",

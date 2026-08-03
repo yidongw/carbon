@@ -361,7 +361,7 @@ export async function getLocations(
 ) {
   let query = client
     .from("location")
-    .select("*", { count: "exact" })
+    .select("*, customer(name), supplier(name)", { count: "exact" })
     .eq("companyId", companyId);
 
   if (args?.search) {
@@ -385,6 +385,20 @@ export async function getLocationsList(
     .from("location")
     .select(`id, name`)
     .eq("companyId", companyId)
+    .order("name");
+}
+
+// Locations that represent a customer or supplier — used to send transfers "to"
+// a partner (the partner's dedicated warehouse).
+export async function getPartnerLocations(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return client
+    .from("location")
+    .select("id, name, customerId, supplierId, customer(name), supplier(name)")
+    .eq("companyId", companyId)
+    .or("customerId.not.is.null,supplierId.not.is.null")
     .order("name");
 }
 

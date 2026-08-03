@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 "X-Generator: @lingui/cli\n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " 供应商是向您出售产品或服务的商家或个人。"
@@ -117,6 +118,12 @@ msgstr "{name} 已删除"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 个权限"
+
+#~ msgid "{total} samples"
+#~ msgstr "{total} 件样衣"
+
+#~ msgid "{total} samples · {sampled}/{colorCount} colors"
+#~ msgstr "{total} 件样衣 · {sampled}/{colorCount} 种颜色"
 
 msgid "/month/user"
 msgstr "/月/用户"
@@ -504,6 +511,9 @@ msgstr "从库中添加…"
 msgid "Add Group"
 msgstr "添加组"
 
+msgid "Add item"
+msgstr "添加物料"
+
 msgid "Add Item"
 msgstr "添加物品"
 
@@ -570,11 +580,17 @@ msgstr "添加需求"
 msgid "Add Risk"
 msgstr "添加风险"
 
+msgid "Add row"
+msgstr "添加行"
+
 msgid "Add Row"
 msgstr "添加行"
 
 msgid "Add rule"
 msgstr "添加规则"
+
+msgid "Add sample"
+msgstr "添加样衣"
 
 msgid "Add seats"
 msgstr "增加席位"
@@ -1695,6 +1711,9 @@ msgstr "账单"
 msgid "Billing Address"
 msgstr "发票地址"
 
+#~ msgid "Bin"
+#~ msgstr "库位"
+
 msgid "Block with an error"
 msgstr "带有错误的块"
 
@@ -2796,8 +2815,14 @@ msgstr "创建修订版"
 msgid "Create Rule"
 msgstr "创建规则"
 
+msgid "Create Sample"
+msgstr "创建样衣"
+
 msgid "Create supplier"
 msgstr "创建供应商"
+
+msgid "Create transfer"
+msgstr "创建调拨"
 
 msgid "Create User"
 msgstr "创建用户"
@@ -3066,6 +3091,9 @@ msgstr "客户付款折扣"
 
 msgid "Customer PO"
 msgstr "客户PO"
+
+msgid "Customer PO #"
+msgstr "客户PO #"
 
 msgid "Customer PO Number"
 msgstr "客户订单号"
@@ -7972,6 +8000,9 @@ msgstr "在此向该供应商发送的每份采购订单电子邮件中，将附
 msgid "Fill cell"
 msgstr "填充单元格"
 
+msgid "Fill shipped serial"
+msgstr "填入已发货序列号"
+
 msgid "Filter"
 msgstr "筛选"
 
@@ -8091,11 +8122,20 @@ msgstr "星期五"
 msgid "From"
 msgstr "从"
 
+msgid "From (current location)"
+msgstr "来源（当前位置）"
+
+msgid "From and To warehouses must be different"
+msgstr "起始仓库和目标仓库必须不同"
+
 msgid "From Location"
 msgstr "起始位置"
 
 msgid "From Storage Unit"
 msgstr "从存储单元"
+
+msgid "From warehouse"
+msgstr "从仓库"
 
 msgid "Fully paid"
 msgstr "全款"
@@ -8151,6 +8191,9 @@ msgstr "生成新PIN"
 
 msgid "Generate Picking List"
 msgstr "生成拣货单"
+
+msgid "Generate serial"
+msgstr "生成序列号"
 
 msgid "Generated IDs are disabled"
 msgstr "生成的ID已禁用"
@@ -8382,6 +8425,9 @@ msgstr "进行中"
 msgid "in selected period"
 msgstr "在选定期间"
 
+msgid "in use"
+msgstr "使用中"
+
 msgid "Inactive"
 msgstr "停用"
 
@@ -8396,6 +8442,9 @@ msgstr "入库检验"
 
 msgid "Inbound Inspections: Require Different Inspector"
 msgstr "入库检验: 需不同检验员"
+
+msgid "Inbound Transfer"
+msgstr "入库转移"
 
 msgid "Inbox"
 msgstr "收件箱"
@@ -9191,6 +9240,9 @@ msgstr "需要价格或交货期的行"
 msgid "Link"
 msgstr "链接"
 
+msgid "Link a warehouse to this partner in Resources → Locations."
+msgstr "将仓库与该合作伙伴关联，在资源→位置中。"
+
 msgid "Link Jira Issue"
 msgstr "链接Jira问题"
 
@@ -9384,6 +9436,42 @@ msgstr "机器单元"
 
 msgid "Machinery & Equipment"
 msgstr "机械设备"
+
+msgid "made a negative adjustment of {q}"
+msgstr "进行了 {q} 的负向调整"
+
+msgid "made a negative adjustment of {q} for batch {te}"
+msgstr "对批次 {te} 进行了 {q} 的负向调整"
+
+msgid "made a negative adjustment of {q} for serial {te}"
+msgstr "对序列号 {te} 进行了 {q} 的负向调整"
+
+msgid "made a negative adjustment of {q} to {unit}"
+msgstr "对 {unit} 进行了 {q} 的负向调整"
+
+msgid "made a negative adjustment of {q} to {unit} for batch {te}"
+msgstr "在 {unit} 对批次 {te} 进行了 {q} 的负向调整"
+
+msgid "made a negative adjustment of {q} to {unit} for serial {te}"
+msgstr "在 {unit} 对序列号 {te} 进行了 {q} 的负向调整"
+
+msgid "made a positive adjustment of {q}"
+msgstr "进行了 {q} 的正向调整"
+
+msgid "made a positive adjustment of {q} for batch {te}"
+msgstr "对批次 {te} 进行了 {q} 的正向调整"
+
+msgid "made a positive adjustment of {q} for serial {te}"
+msgstr "对序列号 {te} 进行了 {q} 的正向调整"
+
+msgid "made a positive adjustment of {q} to {unit}"
+msgstr "对 {unit} 进行了 {q} 的正向调整"
+
+msgid "made a positive adjustment of {q} to {unit} for batch {te}"
+msgstr "在 {unit} 对批次 {te} 进行了 {q} 的正向调整"
+
+msgid "made a positive adjustment of {q} to {unit} for serial {te}"
+msgstr "在 {unit} 对序列号 {te} 进行了 {q} 的正向调整"
 
 msgid "Magic link expired or already used. Please request a new one."
 msgstr "魔力链接已过期或已被使用，请重新请求一个。"
@@ -10141,6 +10229,9 @@ msgstr "新的运输方式"
 msgid "New Size"
 msgstr "新尺寸"
 
+msgid "New Stock Transfer"
+msgstr "新建库存转移"
+
 msgid "New Storage Type"
 msgstr "新建存储类型"
 
@@ -10184,7 +10275,7 @@ msgid "New Transfer"
 msgstr "新建转移"
 
 msgid "New Transfer Line"
-msgstr "新建传输线"
+msgstr "新建转移行"
 
 msgid "New Unit of Measure"
 msgstr "新的计量单位"
@@ -10193,7 +10284,7 @@ msgid "New Version"
 msgstr "新版本"
 
 msgid "New Warehouse Transfer"
-msgstr "新建仓库调拨"
+msgstr "新建仓库转移"
 
 msgid "New Webhook"
 msgstr "新的Webhook"
@@ -10290,6 +10381,9 @@ msgstr "没有可用的过滤器"
 
 msgid "No available tracked entities found"
 msgstr "未找到可追踪的实体"
+
+msgid "No bin"
+msgstr "无存储单元"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "没有BOM输入有保质期政策"
@@ -10541,6 +10635,9 @@ msgstr "暂无供应商"
 
 msgid "No time entries for this week"
 msgstr "本周没有时间记录"
+
+msgid "No units"
+msgstr "无存储单元"
 
 msgid "No value needed"
 msgstr "无需输入值"
@@ -10917,6 +11014,9 @@ msgstr "其他类型"
 msgid "Ounce"
 msgstr "盎司"
 
+msgid "Outbound Transfer"
+msgstr "出库转移"
+
 msgid "Outgoing"
 msgstr "出库"
 
@@ -11242,6 +11342,9 @@ msgstr "选择客户或客户类型以查看其报价。"
 msgid "Pick a date or leave blank to clear it."
 msgstr "选择日期或留空以清除。"
 
+msgid "Pick a warehouse"
+msgstr "选择仓库"
+
 msgid "Pick List"
 msgstr "选择列表"
 
@@ -11387,28 +11490,28 @@ msgid "Positive feedback"
 msgstr "正面反馈"
 
 msgid "Post"
-msgstr "发布"
+msgstr "确认"
 
 msgid "Post Comment"
 msgstr "发布评论"
 
 msgid "Post Invoice"
-msgstr "发布发票"
+msgstr "确认发票"
 
 msgid "Post Receipt"
-msgstr "入库确认"
+msgstr "确认收货"
 
 msgid "Post Shipment"
-msgstr "过账货运"
+msgstr "确认发货"
 
 msgid "Postal Code"
 msgstr "邮政编码"
 
 msgid "Posted"
-msgstr "已发布"
+msgstr "已确认"
 
 msgid "Posted At"
-msgstr "发布于"
+msgstr "确认时间"
 
 msgid "Posted By"
 msgstr "发布者"
@@ -11905,6 +12008,9 @@ msgstr "采购订单数量"
 msgid "Quantity on Sales Order"
 msgstr "销售订单数量"
 
+#~ msgid "Quantity per color"
+#~ msgstr "每种颜色数量"
+
 msgid "Quantity per Parent"
 msgstr "每个父项的数量"
 
@@ -12079,6 +12185,12 @@ msgstr "接收到库存"
 
 msgid "Received"
 msgstr "接收"
+
+msgid "received {q} units from transfer"
+msgstr "调拨接收 {q} 件"
+
+msgid "received {q} units to {unit} from transfer"
+msgstr "调拨接收 {q} 件到 {unit}"
 
 msgid "Received At"
 msgstr "接收于"
@@ -12790,6 +12902,9 @@ msgstr "样本已录制"
 msgid "Sample Size"
 msgstr "样本大小"
 
+msgid "Samples"
+msgstr "样衣"
+
 msgid "Sampling Plan"
 msgstr "取样计划"
 
@@ -13073,6 +13188,9 @@ msgstr "选择要配置的物品"
 msgid "Select an option"
 msgstr "选择一个选项"
 
+msgid "Select color / size"
+msgstr "选择颜色/尺码"
+
 msgid "Select Contact"
 msgstr "选择联系人"
 
@@ -13109,6 +13227,9 @@ msgstr "选择量具"
 msgid "Select groups or individuals"
 msgstr "选择组或个人"
 
+msgid "Select item"
+msgstr "选择物料"
+
 msgid "Select Item Type"
 msgstr "选择物品类型"
 
@@ -13136,6 +13257,9 @@ msgstr "选择范围"
 msgid "Select scrap reason"
 msgstr "选择废料原因"
 
+msgid "Select source"
+msgstr "选择来源"
+
 msgid "Select Supplier Status"
 msgstr "选择供应商状态"
 
@@ -13150,6 +13274,9 @@ msgstr "选择应完成此培训的班组"
 
 msgid "Select the quantity that you'd like to split into a new line."
 msgstr "请选择您想要拆分成新行的数量。"
+
+msgid "Select unit"
+msgstr "选择存储单元"
 
 msgid "Select value"
 msgstr "选择值"
@@ -13228,6 +13355,9 @@ msgstr "需要序列号或批号追踪"
 
 msgid "Serial Tracking"
 msgstr "序列追踪"
+
+msgid "Serial/Batch"
+msgstr "批号/序列号"
 
 msgid "Serial/Batch #"
 msgstr "批号/序列号"
@@ -13356,6 +13486,9 @@ msgstr "发货"
 msgid "Ship some, stock some"
 msgstr "发货一些，库存一些"
 
+msgid "Ship To"
+msgstr "收货地址"
+
 msgid "Ship to Customer"
 msgstr "发给客户"
 
@@ -13364,6 +13497,9 @@ msgstr "发货"
 
 msgid "Shipment Date"
 msgstr "发货日期"
+
+msgid "Shipment Details"
+msgstr "发货详情"
 
 msgid "Shipment ID"
 msgstr "发货单号"
@@ -13385,6 +13521,12 @@ msgstr "发货单"
 
 msgid "Shipped"
 msgstr "已发货"
+
+msgid "shipped {q} units for transfer"
+msgstr "发出 {q} 件用于调拨"
+
+msgid "shipped {q} units from {unit} for transfer"
+msgstr "从 {unit} 发出 {q} 件用于调拨"
 
 msgid "Shipped Qty"
 msgstr "已发货数量"
@@ -13686,6 +13828,9 @@ msgstr "标准"
 
 msgid "Standard Lead Time"
 msgstr "标准交货期"
+
+msgid "Standard Terms & Conditions"
+msgstr "标准条款与条件"
 
 msgid "Start"
 msgstr "开始"
@@ -14542,6 +14687,9 @@ msgstr "模板"
 msgid "Term ends"
 msgstr "到期日"
 
+msgid "Terms"
+msgstr "条款"
+
 msgid "Terms and Privacy"
 msgstr "条款与隐私政策"
 
@@ -14844,7 +14992,7 @@ msgid "To read rows in <0>{resourceId}</0>, use the <1>select</1> method."
 msgstr "读取<0>{resourceId}</0>中的行，请使用<1>select</1>方法。"
 
 msgid "To Receive"
-msgstr "待接收"
+msgstr "待收货"
 
 msgid "To Ship"
 msgstr "待发货"
@@ -14854,6 +15002,12 @@ msgstr "待发货和待收货"
 
 msgid "To Storage Unit"
 msgstr "至存储单位"
+
+msgid "To unit"
+msgstr "转入存储单元"
+
+#~ msgid "To warehouse"
+#~ msgstr "到仓库"
 
 msgid "Today"
 msgstr "今天"
@@ -15068,6 +15222,15 @@ msgstr "将该公司所有权转让给另一用户"
 
 msgid "Transfer To"
 msgstr "转移至"
+
+msgid "transferred {q} units"
+msgstr "调拨了 {q} 件"
+
+msgid "transferred {q} units from {unit}"
+msgstr "从 {unit} 调拨了 {q} 件"
+
+msgid "transferred {q} units to {unit}"
+msgstr "调拨了 {q} 件到 {unit}"
 
 msgid "Transfers"
 msgstr "转移"
@@ -16029,6 +16192,9 @@ msgstr "体积："
 
 msgid "Waiting"
 msgstr "等待中"
+
+msgid "Warehouse"
+msgstr "仓库"
 
 msgid "Warehouse Transfer"
 msgstr "仓库转移"

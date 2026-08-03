@@ -244,6 +244,12 @@ export const path = {
         generatePath(`${api}/people/shifts?location=${id}`),
       storageUnits: (id: string) =>
         generatePath(`${api}/inventory/storage-units?locationId=${id}`),
+      transferItems: (locationId: string) =>
+        generatePath(`${api}/inventory/transfer-items?locationId=${locationId}`),
+      transferStock: (itemId: string, locationId: string) =>
+        generatePath(
+          `${api}/inventory/transfer-stock?itemId=${itemId}&locationId=${locationId}`
+        ),
       storageUnitsTree: (id: string) =>
         generatePath(`${api}/inventory/storage-units-tree?locationId=${id}`),
       storageUnitsWithQuantities: (locationId: string, itemId?: string) =>
@@ -1478,6 +1484,7 @@ export const path = {
       generatePath(`${x}/training/${id}/questions/new`),
     newUom: `${x}/items/uom/new`,
     newWarehouseTransfer: `${x}/warehouse-transfer/new`,
+    newTransfer: `${x}/inventory/transfers/new`,
     newWarehouseTransferLine: (transferId: string) =>
       generatePath(`${x}/warehouse-transfer/${transferId}/details/new`),
     newWorkCenter: `${x}/resources/work-centers/new`,
@@ -1653,6 +1660,9 @@ export const path = {
       generatePath(`${x}/template/methods/operation/tool/delete/${id}`),
     templates: `${x}/items/templates`,
     styles: `${x}/items/styles`,
+    samples: `${x}/items/samples`,
+    newStyleSample: (styleId: string) =>
+      generatePath(`${x}/items/samples/${styleId}/new`),
     procedure: (id: string) => generatePath(`${x}/procedure/${id}`),
     procedureStep: (id: string, attributeId: string) =>
       generatePath(`${x}/procedure/${id}/steps/${attributeId}`),

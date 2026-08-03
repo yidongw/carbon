@@ -200,7 +200,10 @@ const ItemForm = ({ initialValues, type }: ItemFormProps) => {
 
 export default ItemForm;
 
-export function getLinkToItemDetails(type: MethodItemType, id: string) {
+export function getLinkToItemDetails(
+  type: MethodItemType | "Sample",
+  id: string
+) {
   switch (type) {
     case "Part":
       return path.to.partDetails(id);
@@ -214,6 +217,9 @@ export function getLinkToItemDetails(type: MethodItemType, id: string) {
       return path.to.consumableDetails(id);
     // case "Service":
     //   return path.to.serviceDetails(id);
+    case "Sample":
+      // Samples have no standalone detail page; send back to the Samples list.
+      return path.to.samples;
     default:
       throw new Error("Invalid type");
   }

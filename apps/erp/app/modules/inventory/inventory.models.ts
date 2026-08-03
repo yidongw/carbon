@@ -493,3 +493,67 @@ export const pickQuantityValidator = z.object({
   quantity: zfd.numeric(z.number().min(0)),
   markShort: zfd.text(z.string().optional())
 });
+
+export const newTransferValidator = z
+  .object({
+    mode: z.enum(["stock", "warehouse"]).default("warehouse"),
+    // Warehouse-transfer destination kind: a warehouse, or a customer/supplier
+    // (resolved server-side to that partner's dedicated warehouse).
+    toType: z.enum(["warehouse", "customer", "supplier"]).default("warehouse"),
+    fromLocationId: z.string().min(1, { message: "From location is required" }),
+    toLocationId: zfd.text(z.string().optional()),
+    toCustomerId: zfd.text(z.string().optional()),
+    toSupplierId: zfd.text(z.string().optional()),
+    lines: z.preprocess(
+      (v) => {
+        if (typeof v !== "string") return v;
+        try {
+          return JSON.parse(v);
+        } catch {
+          return [];
+        }
+      },
+      z
+        .array(
+          z.object({
+            itemId: z.string().min(1),
+            quantity: z.coerce.number().positive(),
+            fromStorageUnitId: z.string().optional(),
+            trackedEntityId: z.string().optional(),
+            toStorageUnitId: z.string().optional()
+          })
+        )
+        .min(1, { message: "Add at least one item" })
+    )
+  })
+  .superRefine((d, ctx) => {
+    if (d.mode === "stock") return;
+    if (d.toType === "customer") {
+      if (!d.toCustomerId)
+        ctx.addIssue({
+          code: "custom",
+          message: "Customer is required",
+          path: ["toCustomerId"]
+        });
+    } else if (d.toType === "supplier") {
+      if (!d.toSupplierId)
+        ctx.addIssue({
+          code: "custom",
+          message: "Supplier is required",
+          path: ["toSupplierId"]
+        });
+    } else {
+      if (!d.toLocationId)
+        ctx.addIssue({
+          code: "custom",
+          message: "To location is required",
+          path: ["toLocationId"]
+        });
+      else if (d.toLocationId === d.fromLocationId)
+        ctx.addIssue({
+          code: "custom",
+          message: "From and To warehouses must be different",
+          path: ["toLocationId"]
+        });
+    }
+  });

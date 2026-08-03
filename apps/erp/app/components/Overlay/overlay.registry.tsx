@@ -1,3 +1,4 @@
+import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
 import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
@@ -10,6 +11,30 @@ import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
 export const overlayRegistry = {
+  newTransfer: {
+    type: "modal",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              fromLocationId: string;
+              itemsByLocation: Record<string, TransferItem[]>;
+              mode: "stock" | "warehouse";
+              partnerLocationIds: string[];
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          fromLocationId: data.fromLocationId,
+          itemsByLocation: data.itemsByLocation,
+          mode: data.mode,
+          partnerLocationIds: data.partnerLocationIds
+        };
+      },
+      () => import("~/modules/inventory/ui/Transfers/TransferForm")
+    )
+  },
   newMasterWorkOrder: {
     type: "drawer",
     render: renderLazyOverlay(
@@ -43,6 +68,35 @@ export const overlayRegistry = {
       // the loader only gates permissions; any (non-undefined) data means "render".
       (ctx) => (ctx.loaderData ? {} : null),
       () => import("~/modules/users/ui/Employees/CreateEmployeeForm")
+    )
+  },
+  newStyleSample: {
+    type: "modal",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              styleId: string;
+              styleDisplayId: string;
+              colorOptions: { value: string; label: string }[];
+              sizeOptions: { value: string; label: string }[];
+              defaultColorIds: string[];
+              defaultSize: string;
+              defaultLocationId: string;
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          styleId: data.styleId,
+          styleDisplayId: data.styleDisplayId,
+          colorOptions: data.colorOptions,
+          sizeOptions: data.sizeOptions,
+          defaultColorIds: data.defaultColorIds,
+          defaultSize: data.defaultSize,
+          defaultLocationId: data.defaultLocationId
+        };
+      },
+      () => import("~/modules/items/ui/Samples/CreateStyleSampleForm")
     )
   },
   editInvite: {

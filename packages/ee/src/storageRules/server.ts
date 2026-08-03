@@ -498,6 +498,16 @@ export async function evaluateLinesForSurface({
   for (const line of lines) {
     const targetId = lineTargetIdFor(line, targetType);
 
+    // Hidden Sample companion items aren't replenished/sellable, so storage
+    // rules (e.g. the Low Stock warning) are just noise for them — skip.
+    if (
+      targetType === "item" &&
+      line.itemId &&
+      itemsById.get(line.itemId)?.type === "Sample"
+    ) {
+      continue;
+    }
+
     // Per-line compiled rule set: explicit assignments (target-keyed) +
     // broadcasts. Lines without a targetId of this targetType still match
     // broadcasts.

@@ -346,7 +346,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
                 }
                 type="submit"
               >
-                Post Shipment
+                <Trans>Post Shipment</Trans>
               </Button>
             </form>
           </HStack>

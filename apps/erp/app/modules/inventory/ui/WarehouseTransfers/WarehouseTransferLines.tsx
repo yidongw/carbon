@@ -134,8 +134,15 @@ function WarehouseTransferLineListItem({
   const [items] = useItems();
   const navigate = useNavigate();
 
-  const item = getItemById(items, line.itemId);
+  // Fall back to the line's embedded item row for hidden item types (e.g.
+  // samples) that aren't in the shared item list — otherwise the row silently
+  // returns null while the header count still includes it.
+  const item = getItemById(items, line.itemId) ?? line.item;
   if (!item || !line.id) return null;
+  const itemReadableId =
+    (item as { readableIdWithRevision?: string }).readableIdWithRevision ??
+    (item as { readableId?: string }).readableId ??
+    "";
 
   const isUpdated = line.updatedBy !== null;
   const person = isUpdated ? line.updatedBy : line.createdBy;
@@ -159,7 +166,7 @@ function WarehouseTransferLineListItem({
                   {item.name}
                 </span>
                 <span className="text-xs text-muted-foreground truncate">
-                  {item.readableIdWithRevision}
+                  {itemReadableId}
                 </span>
               </VStack>
             </div>
@@ -224,7 +231,7 @@ function WarehouseTransferLineListItem({
         <DeleteWarehouseTransferLine
           lineId={line.id}
           warehouseTransferId={warehouseTransfer.id}
-          itemName={item.readableIdWithRevision}
+          itemName={itemReadableId}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}

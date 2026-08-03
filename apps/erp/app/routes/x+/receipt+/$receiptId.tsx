@@ -7,6 +7,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import {
   getBatchProperties,
+  getInboundTransferShippedSerials,
   getReceipt,
   getReceiptFiles,
   getReceiptLines,
@@ -108,10 +109,23 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       });
   }
 
+  // Inbound-transfer receipt: the exact serials shipped on the outbound side,
+  // so the line can fill in what was actually sent rather than mint a new one.
+  const shippedSerialsByLineId =
+    receipt.data.sourceDocument === "Inbound Transfer" &&
+    receipt.data.sourceDocumentId
+      ? await getInboundTransferShippedSerials(
+          serviceRole,
+          receipt.data.sourceDocumentId,
+          companyId
+        )
+      : {};
+
   return {
     receipt: receipt.data,
     receiptLines: receiptLines.data ?? [],
     fixedAssetLines,
+    shippedSerialsByLineId,
     receiptFiles: getReceiptFiles(serviceRole, companyId, receiptLineIds) ?? [],
     receiptLineTracking: receiptLineTracking.data ?? [],
     batchProperties:

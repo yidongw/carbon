@@ -13,7 +13,8 @@ export function PartiesBlock({ data }: { data: PackingSlipData }) {
     sourceDocument,
     sourceDocumentId,
     customerReference,
-    locale
+    locale,
+    t
   } = data;
   const {
     addressLine1,
@@ -29,7 +30,7 @@ export function PartiesBlock({ data }: { data: PackingSlipData }) {
       <View style={tw("flex flex-row")}>
         <View style={tw("w-1/2 p-3 border-r border-gray-200")}>
           <Text style={tw("text-[9px] font-bold text-gray-600 mb-1 uppercase")}>
-            Ship To
+            {t("Ship To")}
           </Text>
           <View style={tw("text-[10px] text-gray-800")}>
             {customer.name && (
@@ -48,24 +49,28 @@ export function PartiesBlock({ data }: { data: PackingSlipData }) {
         </View>
         <View style={tw("w-1/2 p-3")}>
           <Text style={tw("text-[9px] font-bold text-gray-600 mb-1 uppercase")}>
-            Shipment Details
+            {t("Shipment Details")}
           </Text>
           <View style={tw("text-[10px] text-gray-800")}>
             {shipment?.postingDate && (
               <Text>
-                Date: {formatDate(shipment.postingDate, undefined, locale)}
+                {t("Date")}: {formatDate(shipment.postingDate, undefined, locale)}
               </Text>
             )}
             {sourceDocument && sourceDocumentId && (
               <Text>
-                {sourceDocument}: {sourceDocumentId}
+                {t(sourceDocument)}: {sourceDocumentId}
               </Text>
             )}
             {customerReference && (
-              <Text>Customer PO #: {customerReference}</Text>
+              <Text>
+                {t("Customer PO #")}: {customerReference}
+              </Text>
             )}
             {shipment?.trackingNumber && (
-              <Text>Tracking: {shipment.trackingNumber}</Text>
+              <Text>
+                {t("Tracking")}: {shipment.trackingNumber}
+              </Text>
             )}
           </View>
         </View>

@@ -1,6 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { ensureFont, PackingSlipPDF } from "@carbon/documents/pdf";
+import { ensureCJKFont, ensureFont, PackingSlipPDF } from "@carbon/documents/pdf";
+import { resolveLanguage } from "@carbon/locale";
 import {
   collectSectionIds,
   resolveTemplate,
@@ -36,6 +37,19 @@ import {
   resolveSections
 } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
+import { setupI18n } from "@lingui/core";
+import { createHash } from "node:crypto";
+import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
+
+// Mirror of @lingui/message-utils generateMessageId (avoids adding that package
+// as a direct dependency): base64(sha256(message + UNIT_SEPARATOR)) sliced to 6
+// chars (empty context). UNIT_SEPARATOR is the ASCII unit separator, 0x1F.
+const UNIT_SEPARATOR = String.fromCharCode(0x1f);
+const messageId = (message: string) =>
+  createHash("sha256")
+    .update(message + UNIT_SEPARATOR)
+    .digest("base64")
+    .slice(0, 6);
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -82,6 +96,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const { locale } = getPreferenceHeaders(request);
 
+  // Translate PDF labels into the reader's language. The compiled catalog is
+  // keyed by generateMessageId(source), so we look up by that hash and fall
+  // back to the English source when a string isn't translated.
+  const language = resolveLanguage(locale);
+  const catalog = await loadLinguiCatalogForRequest(request, locale);
+  const i18n = setupI18n();
+  i18n.load(language, catalog);
+  i18n.activate(language);
+  const t = (message: string) =>
+    i18n._({ id: messageId(message), message });
+
   const documentTemplate = await getDocumentTemplate(
     client,
     companyId,
@@ -98,7 +123,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     companyId,
     collectSectionIds(resolvedTemplate)
   );
-  await ensureFont(resolvedTemplate.settings.fontFamily);
+  // Chinese needs a CJK-capable font or glyphs render as blank boxes. Noto
+  // Sans SC also covers Latin, so we use it for the whole document when zh.
+  let pdfFontFamily: string | undefined;
+  if (language === "zh") {
+    pdfFontFamily = await ensureCJKFont();
+  } else {
+    await ensureFont(resolvedTemplate.settings.fontFamily);
+  }
 
   switch (shipment.data.sourceDocument) {
     case "Sales Order": {
@@ -179,6 +211,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           company={company.data as any}
           customer={customer.data}
           locale={locale}
+          t={t}
+          fontFamily={pdfFontFamily}
           meta={{
             author: "Carbon",
             keywords: "packing slip",
@@ -215,6 +249,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const headers = new Headers({
         "Content-Type": "application/pdf",
+        // Regenerate on every open so a language switch is reflected immediately
+        // (the PDF is rendered per-request in the reader's language).
+        "Cache-Control": "no-store",
         "Content-Disposition": contentDisposition(
           `${company.data.name} - ${shipment.data.shipmentId}.pdf`
         )
@@ -302,6 +339,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           company={company.data as any}
           customer={customer.data}
           locale={locale}
+          t={t}
+          fontFamily={pdfFontFamily}
           meta={{
             author: "Carbon",
             keywords: "packing slip",
@@ -338,6 +377,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const headers = new Headers({
         "Content-Type": "application/pdf",
+        // Regenerate on every open so a language switch is reflected immediately
+        // (the PDF is rendered per-request in the reader's language).
+        "Cache-Control": "no-store",
         "Content-Disposition": contentDisposition(
           `${company.data.name} - ${shipment.data.shipmentId}.pdf`
         )
@@ -420,6 +462,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           company={company.data as any}
           customer={supplier.data}
           locale={locale}
+          t={t}
+          fontFamily={pdfFontFamily}
           meta={{
             author: "Carbon",
             keywords: "packing slip",
@@ -534,6 +578,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           company={company.data as any}
           customer={{ name: toLocation?.name ?? "" } as any}
           locale={locale}
+          t={t}
+          fontFamily={pdfFontFamily}
           meta={{
             author: "Carbon",
             keywords: "packing slip",

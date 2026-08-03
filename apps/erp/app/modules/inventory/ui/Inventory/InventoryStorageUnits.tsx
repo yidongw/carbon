@@ -238,7 +238,7 @@ const InventoryStorageUnits = ({
           </CardHeader>
           <CardAction>
             <Button onClick={() => openAdjustmentModal()}>
-              <Trans>Update Inventory</Trans>
+              <Trans>Inventory Adjustment</Trans>
             </Button>
           </CardAction>
         </HStack>
@@ -406,7 +406,7 @@ const InventoryStorageUnits = ({
                               ? []
                               : [
                                   {
-                                    label: "Set Quantity",
+                                    label: t`Set Quantity`,
                                     value: "Set Quantity"
                                   }
                                 ]),

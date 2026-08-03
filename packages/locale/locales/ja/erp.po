@@ -106,6 +106,12 @@ msgstr "{name} を削除しました"
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 個の権限"
 
+#~ msgid "{total} samples"
+#~ msgstr "{total}個"
+
+#~ msgid "{total} samples · {sampled}/{colorCount} colors"
+#~ msgstr "{total} サンプル · {sampled}/{colorCount} 色"
+
 msgid "/month/user"
 msgstr "/月/ユーザー"
 
@@ -455,6 +461,9 @@ msgstr "追加からライブラリ…"
 msgid "Add Group"
 msgstr "グループを追加"
 
+msgid "Add item"
+msgstr "追加"
+
 msgid "Add Item"
 msgstr "アイテムを追加"
 
@@ -521,11 +530,17 @@ msgstr "要件を追加"
 msgid "Add Risk"
 msgstr "リスクを追加"
 
+msgid "Add row"
+msgstr "行を追加"
+
 msgid "Add Row"
 msgstr "行を追加"
 
 msgid "Add rule"
 msgstr "追加ルールを追加"
+
+msgid "Add sample"
+msgstr "サンプルを追加"
 
 msgid "Add seats"
 msgstr "シートを追加"
@@ -1515,6 +1530,9 @@ msgstr "請求"
 
 msgid "Billing Address"
 msgstr "請求先住所"
+
+#~ msgid "Bin"
+#~ msgstr "ビン"
 
 msgid "Block with an error"
 msgstr "エラーでブロック"
@@ -2589,8 +2607,14 @@ msgstr "リビジョンを作成"
 msgid "Create Rule"
 msgstr "ルールを作成"
 
+msgid "Create Sample"
+msgstr "サンプルを作成"
+
 msgid "Create supplier"
 msgstr "作成サプライヤー"
+
+msgid "Create transfer"
+msgstr "転送を作成"
 
 msgid "Create User"
 msgstr "ユーザーを作成"
@@ -2859,6 +2883,9 @@ msgstr "顧客支払い割引"
 
 msgid "Customer PO"
 msgstr "顧客PO"
+
+msgid "Customer PO #"
+msgstr "顧客発注番号"
 
 msgid "Customer PO Number"
 msgstr "顧客PO番号"
@@ -7846,11 +7873,20 @@ msgstr "金曜日"
 msgid "From"
 msgstr "から"
 
+msgid "From (current location)"
+msgstr "現在位置から"
+
+msgid "From and To warehouses must be different"
+msgstr "FROMとTOの倉庫は異なる必要があります"
+
 msgid "From Location"
 msgstr "出発地"
 
 msgid "From Storage Unit"
 msgstr "保管場所から"
+
+msgid "From warehouse"
+msgstr "倉庫から"
 
 msgid "Fully paid"
 msgstr "Fully paid"
@@ -8125,6 +8161,9 @@ msgstr "進行中"
 msgid "in selected period"
 msgstr "選択された期間内"
 
+msgid "in use"
+msgstr "使用中"
+
 msgid "Inactive"
 msgstr "非アクティブ"
 
@@ -8139,6 +8178,9 @@ msgstr "受け入れ検査"
 
 msgid "Inbound Inspections: Require Different Inspector"
 msgstr "受入検査：異なる検査官が必要"
+
+msgid "Inbound Transfer"
+msgstr "入庫移動"
 
 msgid "Inbox"
 msgstr "受信トレイ"
@@ -8931,6 +8973,9 @@ msgstr "ラインには価格またはリードタイムが必要です"
 msgid "Link"
 msgstr "リンク"
 
+msgid "Link a warehouse to this partner in Resources → Locations."
+msgstr "リソース→場所でこのパートナーに倉庫をリンクしてください。"
+
 msgid "Link Jira Issue"
 msgstr "Jira イシューをリンク"
 
@@ -9122,6 +9167,42 @@ msgstr "機械ユニット"
 
 msgid "Machinery & Equipment"
 msgstr "機械・設備"
+
+msgid "made a negative adjustment of {q}"
+msgstr "負の調整を{q}kkeiiesta"
+
+msgid "made a negative adjustment of {q} for batch {te}"
+msgstr "バッチ{te}に対して負の調整{q}を行いました"
+
+msgid "made a negative adjustment of {q} for serial {te}"
+msgstr "seriál {te} に対して負の調整 {q} を施しました"
+
+msgid "made a negative adjustment of {q} to {unit}"
+msgstr "{q}をマイナスに調整しました{unit}"
+
+msgid "made a negative adjustment of {q} to {unit} for batch {te}"
+msgstr "バッチ{te}に対して{q}を{unit}分マイナス調整しました"
+
+msgid "made a negative adjustment of {q} to {unit} for serial {te}"
+msgstr "seriál {te} に対して {q} を {unit} 分減算しました"
+
+msgid "made a positive adjustment of {q}"
+msgstr "{q}分の正味改善を実現しました"
+
+msgid "made a positive adjustment of {q} for batch {te}"
+msgstr "バッチ{te}に対して正の調整{q}を行いました"
+
+msgid "made a positive adjustment of {q} for serial {te}"
+msgstr "seriál {te} に対して正の調整 {q} を施しました"
+
+msgid "made a positive adjustment of {q} to {unit}"
+msgstr "{q}を{unit}に正しく調整しました"
+
+msgid "made a positive adjustment of {q} to {unit} for batch {te}"
+msgstr "バッチ{te}に対して{q}を{unit}に正調節しました"
+
+msgid "made a positive adjustment of {q} to {unit} for serial {te}"
+msgstr "シリアル{te}に対して{q}を{unit}に正の調整を行いました"
 
 msgid "Magic link expired or already used. Please request a new one."
 msgstr "_magicリンクが有効期限切れまたは既に使用されています。新しいものをお願いします._"
@@ -9874,6 +9955,9 @@ msgstr "新しい配送方法"
 msgid "New Size"
 msgstr "新しいサイズ"
 
+msgid "New Stock Transfer"
+msgstr "新規在庫転送"
+
 msgid "New Storage Type"
 msgstr "新しい保管タイプ"
 
@@ -10019,6 +10103,9 @@ msgstr "利用可能なフィルターがありません"
 
 msgid "No available tracked entities found"
 msgstr "追跡可能なエンティティが見つかりません"
+
+msgid "No bin"
+msgstr "無し"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "BOMインプットに棚卸資産有効期限ポリシーがありません"
@@ -10269,11 +10356,17 @@ msgstr "まだサプライヤが登録されていません"
 msgid "No time entries for this week"
 msgstr "今週のタイムエントリがありません"
 
+msgid "No units"
+msgstr "単位なし"
+
 msgid "No value needed"
 msgstr "(有効な値は必要ありません)"
 
 msgid "No values available"
 msgstr "No values available"
+
+msgid "No warehouse mapped"
+msgstr "倉庫がマッピングされていません"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "このアイテムについて倉庫在庫は登録されていません。それでもピックすることは可能です——現在数値は負になる可能性がありますが、調整されるまで如此です。"
@@ -10640,6 +10733,9 @@ msgstr "その他のタイプ"
 msgid "Ounce"
 msgstr "オンス"
 
+msgid "Outbound Transfer"
+msgstr "出荷移動"
+
 msgid "Outgoing"
 msgstr "発送"
 
@@ -10960,6 +11056,9 @@ msgstr "顧客または顧客タイプを選択して価格を表示します。
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "日付を選択するか、空白のままにしてクリアしてください。"
+
+msgid "Pick a warehouse"
+msgstr "倉庫を選択してください"
 
 msgid "Pick List"
 msgstr "ピッキングリスト"
@@ -11614,6 +11713,9 @@ msgstr "購買注文数量"
 msgid "Quantity on Sales Order"
 msgstr "販売注文の数量"
 
+#~ msgid "Quantity per color"
+#~ msgstr "色別数量"
+
 msgid "Quantity per Parent"
 msgstr "親あたりの数量"
 
@@ -11787,6 +11889,12 @@ msgstr "在庫に受け取る"
 
 msgid "Received"
 msgstr "受信しました"
+
+msgid "received {q} units from transfer"
+msgstr "受領しました {q} 単位から転送"
+
+msgid "received {q} units to {unit} from transfer"
+msgstr "受領しました {q} 単位を {unit} から"
 
 msgid "Received At"
 msgstr "受け取った日時"
@@ -12485,6 +12593,9 @@ msgstr "サンプルが録音されました"
 msgid "Sample Size"
 msgstr "サンプルサイズ"
 
+msgid "Samples"
+msgstr "サンプル"
+
 msgid "Sampling Plan"
 msgstr "サンプリング計画"
 
@@ -12766,6 +12877,9 @@ msgstr "設定するアイテムを選択"
 msgid "Select an option"
 msgstr "オプションを選択"
 
+msgid "Select color / size"
+msgstr "色を選択 / サイズを選択"
+
 msgid "Select Contact"
 msgstr "連絡先を選択"
 
@@ -12802,6 +12916,9 @@ msgstr "ゲージを選択"
 msgid "Select groups or individuals"
 msgstr "グループまたは個人を選択"
 
+msgid "Select item"
+msgstr "アイテムを選択してください"
+
 msgid "Select Item Type"
 msgstr "アイテムタイプを選択"
 
@@ -12829,6 +12946,9 @@ msgstr "スコープを選択"
 msgid "Select scrap reason"
 msgstr "選択する Scrap の理由を選択してください"
 
+msgid "Select source"
+msgstr "ソースを選択してください"
+
 msgid "Select Supplier Status"
 msgstr "仕入先ステータスを選択"
 
@@ -12843,6 +12963,9 @@ msgstr "このトレーニングを完了する必要があるグループを選
 
 msgid "Select the quantity that you'd like to split into a new line."
 msgstr "新しい行に分割したい数量を選択してください。"
+
+msgid "Select unit"
+msgstr "単位を選択してください"
 
 msgid "Select value"
 msgstr "選択値"
@@ -12921,6 +13044,9 @@ msgstr "シリアルまたはバッチ追跡が必要です"
 
 msgid "Serial Tracking"
 msgstr "シリアル追跡"
+
+msgid "Serial/Batch"
+msgstr "シリアル/バッチ"
 
 msgid "Serial/Batch #"
 msgstr "シリアル/バッチ #"
@@ -13046,6 +13172,9 @@ msgstr "出荷"
 msgid "Ship some, stock some"
 msgstr "一部を出荷し、一部を在庫に"
 
+msgid "Ship To"
+msgstr "出先先送付先"
+
 msgid "Ship to Customer"
 msgstr "顧客に出荷"
 
@@ -13054,6 +13183,9 @@ msgstr "出荷"
 
 msgid "Shipment Date"
 msgstr "出荷日"
+
+msgid "Shipment Details"
+msgstr "出荷詳細"
 
 msgid "Shipment ID"
 msgstr "配送ID"
@@ -13075,6 +13207,12 @@ msgstr "出荷"
 
 msgid "Shipped"
 msgstr "出荷済み"
+
+msgid "shipped {q} units for transfer"
+msgstr "転送为了{q}個unità已被發貨"
+
+msgid "shipped {q} units from {unit} for transfer"
+msgstr "shipped {q} 単位から{unit}へ転送"
 
 msgid "Shipped Qty"
 msgstr "出荷数量"
@@ -13363,6 +13501,9 @@ msgstr "標準"
 
 msgid "Standard Lead Time"
 msgstr "標準リードタイム"
+
+msgid "Standard Terms & Conditions"
+msgstr "標準条件"
 
 msgid "Start"
 msgstr "開始"
@@ -14192,6 +14333,9 @@ msgstr "テンプレート"
 msgid "Term ends"
 msgstr "期限終了"
 
+msgid "Terms"
+msgstr "利用規約"
+
 msgid "Terms and Privacy"
 msgstr "利用規約とプライバシー"
 
@@ -14456,6 +14600,12 @@ msgstr "配送と受取"
 msgid "To Storage Unit"
 msgstr "保管単位へ"
 
+msgid "To unit"
+msgstr "単位に変換する"
+
+#~ msgid "To warehouse"
+#~ msgstr "倉庫に移送"
+
 msgid "Today"
 msgstr "今日"
 
@@ -14663,6 +14813,15 @@ msgstr "このカンパニーの所有権を別のユーザーに譲渡する"
 
 msgid "Transfer To"
 msgstr "転送先"
+
+msgid "transferred {q} units"
+msgstr "転送した {q} 個"
+
+msgid "transferred {q} units from {unit}"
+msgstr "転送した{q}単位から{unit}"
+
+msgid "transferred {q} units to {unit}"
+msgstr "転送した単位数は{q} {unit}"
 
 msgid "Transfers"
 msgstr "転送"
@@ -15620,6 +15779,9 @@ msgstr "ボリューム："
 
 msgid "Waiting"
 msgstr "待機中"
+
+msgid "Warehouse"
+msgstr "倉庫"
 
 msgid "Warehouse Transfer"
 msgstr "倉庫移動"

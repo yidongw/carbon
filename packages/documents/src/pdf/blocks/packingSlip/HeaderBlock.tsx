@@ -5,7 +5,7 @@ export function HeaderBlock({ data }: { data: PackingSlipData }) {
   return (
     <Header
       company={data.company}
-      title="Packing Slip"
+      title={data.t("Packing Slip")}
       documentId={data.shipment?.shipmentId}
       date={data.shipment?.postingDate}
       locale={data.locale}

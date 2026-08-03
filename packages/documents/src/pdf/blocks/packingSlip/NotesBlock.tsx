@@ -11,7 +11,7 @@ export function NotesBlock({ data }: { data: PackingSlipData }) {
 
   return (
     <View style={tw("mb-3 w-full")}>
-      <Note title="Notes" content={notes} />
+      <Note title={data.t("Notes")} content={notes} />
     </View>
   );
 }

@@ -283,7 +283,12 @@ async function handleKanban({
 
     const createPurchaseOrderLine = await upsertPurchaseOrderLine(client, {
       purchaseOrderId: purchaseOrderId!,
-      purchaseOrderLineType: item.data?.type,
+      // Sample items are never kanban/purchased; narrow the widened itemType
+      // back to the pre-Sample set this call already accepted.
+      purchaseOrderLineType: item.data?.type as Exclude<
+        Database["public"]["Enums"]["itemType"],
+        "Sample"
+      >,
       itemId: kanban.data.itemId!,
       purchaseQuantity: kanban.data.quantity!,
       supplierUnitPrice:

@@ -13,6 +13,7 @@ import {
   LuPizza,
   LuPuzzle,
   LuRuler,
+  LuScanBarcode,
   LuShapes,
   LuShirt
 } from "react-icons/lu";
@@ -35,6 +36,11 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
           name: t`Styles`,
           to: path.to.styles,
           icon: <LuShirt />
+        },
+        {
+          name: t`Samples`,
+          to: path.to.samples,
+          icon: <LuScanBarcode />
         },
         {
           name: t`Parts`,

@@ -11,7 +11,8 @@ import {
   LuMapPin,
   LuPencil,
   LuTrash,
-  LuUser
+  LuUser,
+  LuUsers
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
@@ -51,6 +52,26 @@ const LocationsTable = memo(({ data, count }: LocationsTableProps) => {
         ),
         meta: {
           icon: <LuMapPin />
+        }
+      },
+      {
+        id: "partner",
+        header: t`Partner`,
+        cell: ({ row }) => {
+          const customerName = row.original.customer?.name;
+          const supplierName = row.original.supplier?.name;
+          if (customerName)
+            return (
+              <span className="text-muted-foreground">{`${t`Customer`}: ${customerName}`}</span>
+            );
+          if (supplierName)
+            return (
+              <span className="text-muted-foreground">{`${t`Supplier`}: ${supplierName}`}</span>
+            );
+          return null;
+        },
+        meta: {
+          icon: <LuUsers />
         }
       },
       {

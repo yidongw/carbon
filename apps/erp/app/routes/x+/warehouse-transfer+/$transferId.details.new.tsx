@@ -1,4 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { validationError } from "@carbon/form";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect, useNavigate, useParams } from "react-router";
 import { useRouteData } from "~/hooks";
@@ -7,6 +8,7 @@ import type {
   WarehouseTransferLine
 } from "~/modules/inventory";
 import {
+  checkTransferLineAvailability,
   getWarehouseTransfer,
   isWarehouseTransferLocked,
   upsertWarehouseTransferLine,
@@ -51,6 +53,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { id, ...d } = validation.data;
+
+  const availability = await checkTransferLineAvailability(client, {
+    companyId,
+    locationId: transfer.data?.fromLocationId ?? d.fromLocationId,
+    itemId: d.itemId,
+    fromStorageUnitId: d.fromStorageUnitId || null,
+    quantity: d.quantity
+  });
+  if (!availability.ok) {
+    return validationError({
+      fieldErrors: { quantity: availability.message }
+    } as never);
+  }
 
   const createWarehouseTransferLine = await upsertWarehouseTransferLine(
     client,

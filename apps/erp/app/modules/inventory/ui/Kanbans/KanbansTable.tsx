@@ -552,6 +552,7 @@ const KanbansTable = memo(
                 if (
                   itemType === "Service" ||
                   itemType === "Fixture" ||
+                  itemType === "Sample" ||
                   !itemType
                 )
                   return null;

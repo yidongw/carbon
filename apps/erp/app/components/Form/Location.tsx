@@ -17,6 +17,8 @@ type LocationSelectProps = Omit<
   "options" | "inline"
 > & {
   inline?: boolean;
+  /** Location ids to hide from the list (e.g. the source in a transfer). */
+  exclude?: string[];
 };
 
 const LocationPreview = (
@@ -28,7 +30,11 @@ const LocationPreview = (
   return location?.label ?? null;
 };
 
-const Location = ({ inline = false, ...props }: LocationSelectProps) => {
+const Location = ({
+  inline = false,
+  exclude,
+  ...props
+}: LocationSelectProps) => {
   const newLocationModal = useDisclosure();
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -41,10 +47,12 @@ const Location = ({ inline = false, ...props }: LocationSelectProps) => {
     <>
       <CreatableCombobox
         ref={triggerRef}
-        options={options.map((o) => ({
-          value: o.value,
-          label: <Enumerable value={o.label} />
-        }))}
+        options={options
+          .filter((o) => !exclude?.includes(o.value))
+          .map((o) => ({
+            value: o.value,
+            label: <Enumerable value={o.label} />
+          }))}
         {...props}
         label={props?.label ?? "Location"}
         inline={inline ? LocationPreview : undefined}

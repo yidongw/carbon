@@ -12,6 +12,8 @@ import type { Company } from "../../../types";
 export interface PackingSlipData {
   company: Company;
   locale: string;
+  /** Translate a UI label into the reader's language (identity by default). */
+  t: (key: string) => string;
   customer:
     | Database["public"]["Tables"]["customer"]["Row"]
     | Database["public"]["Tables"]["supplier"]["Row"];

@@ -20815,6 +20815,7 @@ export type Database = {
           countryCode: string | null
           createdAt: string
           createdBy: string
+          customerId: string | null
           customFields: Json | null
           id: string
           latitude: number | null
@@ -20822,6 +20823,7 @@ export type Database = {
           name: string
           postalCode: string
           stateProvince: string | null
+          supplierId: string | null
           tags: string[] | null
           timezone: string
           updatedAt: string | null
@@ -20835,6 +20837,7 @@ export type Database = {
           countryCode?: string | null
           createdAt?: string
           createdBy: string
+          customerId?: string | null
           customFields?: Json | null
           id?: string
           latitude?: number | null
@@ -20842,6 +20845,7 @@ export type Database = {
           name: string
           postalCode: string
           stateProvince?: string | null
+          supplierId?: string | null
           tags?: string[] | null
           timezone: string
           updatedAt?: string | null
@@ -20855,6 +20859,7 @@ export type Database = {
           countryCode?: string | null
           createdAt?: string
           createdBy?: string
+          customerId?: string | null
           customFields?: Json | null
           id?: string
           latitude?: number | null
@@ -20862,6 +20867,7 @@ export type Database = {
           name?: string
           postalCode?: string
           stateProvince?: string | null
+          supplierId?: string | null
           tags?: string[] | null
           timezone?: string
           updatedAt?: string | null
@@ -20895,6 +20901,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "integrations"
             referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "location_customerId_fkey"
+            columns: ["customerId"]
+            isOneToOne: false
+            referencedRelation: "customer"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_supplierId_fkey"
+            columns: ["supplierId"]
+            isOneToOne: false
+            referencedRelation: "supplier"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -53579,6 +53599,7 @@ export type Database = {
           shippedQuantity: number
           toLocationId: string
           toStorageUnitId: string | null
+          trackedEntityId: string | null
           transferId: string
           unitOfMeasureCode: string | null
           updatedAt: string | null
@@ -53599,6 +53620,7 @@ export type Database = {
           shippedQuantity?: number
           toLocationId: string
           toStorageUnitId?: string | null
+          trackedEntityId?: string | null
           transferId: string
           unitOfMeasureCode?: string | null
           updatedAt?: string | null
@@ -53619,6 +53641,7 @@ export type Database = {
           shippedQuantity?: number
           toLocationId?: string
           toStorageUnitId?: string | null
+          trackedEntityId?: string | null
           transferId?: string
           unitOfMeasureCode?: string | null
           updatedAt?: string | null
@@ -53693,6 +53716,13 @@ export type Database = {
             columns: ["fromLocationId"]
             isOneToOne: false
             referencedRelation: "location"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warehouseTransferLine_trackedEntityId_fkey"
+            columns: ["trackedEntityId"]
+            isOneToOne: false
+            referencedRelation: "trackedEntity"
             referencedColumns: ["id"]
           },
           {
@@ -72750,6 +72780,7 @@ export type Database = {
         | "Service"
         | "Consumable"
         | "Fixture"
+        | "Sample"
       jobOperationStatus:
         | "Canceled"
         | "Done"
@@ -74054,6 +74085,7 @@ export const Constants = {
         "Service",
         "Consumable",
         "Fixture",
+        "Sample",
       ],
       jobOperationStatus: [
         "Canceled",
