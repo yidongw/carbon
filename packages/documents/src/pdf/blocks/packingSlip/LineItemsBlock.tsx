@@ -33,7 +33,7 @@ export function LineItemsBlock({
   data: PackingSlipData;
 }) {
   const tw = useTw();
-  const { shipmentLines, trackedEntities, thumbnails, theme } = data;
+  const { shipmentLines, trackedEntities, thumbnails, theme, t } = data;
   const opts = { ...DEFAULT_LINE_ITEMS_OPTIONS, ...block.options };
   const overflow = itemTextOverflowStyle(opts);
   const hasTrackedEntities = trackedEntities.length > 0;
@@ -48,11 +48,11 @@ export function LineItemsBlock({
         ]}
       >
         <Text style={tw(`w-${hasTrackedEntities ? "5/12" : "7/12"} text-left`)}>
-          Description
+          {t("Description")}
         </Text>
-        <Text style={tw("w-2/12 text-right")}>Qty</Text>
+        <Text style={tw("w-2/12 text-right")}>{t("Qty")}</Text>
         {hasTrackedEntities && (
-          <Text style={tw("w-5/12 text-right")}>Serial/Batch</Text>
+          <Text style={tw("w-5/12 text-right")}>{t("Serial/Batch")}</Text>
         )}
       </View>
 

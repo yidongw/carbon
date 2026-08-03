@@ -33,6 +33,10 @@ interface PackingSlipProps extends PDF {
   thumbnails?: Record<string, string | null>;
   template?: DocumentTemplate | null;
   sections?: Record<string, ResolvedSection>;
+  /** Translate a UI label into the reader's language (identity by default). */
+  t?: (key: string) => string;
+  /** Override the resolved template font (e.g. a CJK family for Chinese). */
+  fontFamily?: string;
 }
 
 const PackingSlipPDF = ({
@@ -53,7 +57,9 @@ const PackingSlipPDF = ({
   trackedEntities,
   thumbnails,
   template,
-  sections = {}
+  sections = {},
+  t = (s) => s,
+  fontFamily
 }: PackingSlipProps) => {
   const { blocks, theme, settings, headerSectionId, footerSectionId } =
     resolveTemplate("packingSlip", template);
@@ -73,6 +79,7 @@ const PackingSlipPDF = ({
   const data: PackingSlipData = {
     company,
     locale,
+    t,
     customer,
     customerReference,
     sourceDocument,
@@ -129,7 +136,7 @@ const PackingSlipPDF = ({
       showPageNumbers={settings.showPageNumbers}
       pageNumberFormat={settings.pageNumberFormat}
       showRegistrationLine={settings.showRegistrationLine}
-      fontFamily={settings.fontFamily}
+      fontFamily={fontFamily ?? settings.fontFamily}
       headerContent={headerContent}
       footerContent={footerContent}
     >

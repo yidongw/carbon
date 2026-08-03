@@ -18,7 +18,7 @@ export function TermsBlock({
 
   return (
     <View style={tw("w-full")}>
-      <Note title="Standard Terms & Conditions" content={terms!} />
+      <Note title={data.t("Standard Terms & Conditions")} content={terms!} />
     </View>
   );
 }
