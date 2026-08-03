@@ -8,6 +8,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { useStorageUnits } from "~/components/Form/StorageUnit";
 import {
+  getPendingTransferQuantities,
   getTrackedEntityExpirations,
   InventoryDetails
 } from "~/modules/inventory";
@@ -109,9 +110,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   }
 
-  const [quantities, item] = await Promise.all([
+  const [quantities, item, pendingTransfers] = await Promise.all([
     getItemQuantities(client, itemId, companyId, locationId),
-    getItem(client, itemId)
+    getItem(client, itemId),
+    getPendingTransferQuantities(client, companyId, itemId, locationId)
   ]);
   if (quantities.error) {
     throw redirect(
@@ -211,6 +213,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     item: item.data,
     itemShelfLife: itemShelfLife.data ?? null,
     trackedEntityExpirations,
+    pendingTransfers,
     methodData,
     tags
   };
@@ -223,13 +226,17 @@ export default function ItemInventoryRoute() {
     itemStorageUnitQuantities,
     item,
     itemShelfLife,
-    trackedEntityExpirations
+    trackedEntityExpirations,
+    pendingTransfers
   } = useLoaderData<typeof loader>();
 
   const [items] = useItems();
-  const itemTrackingType = items.find(
-    (i) => i.id === item.id
-  )?.itemTrackingType;
+  // Prefer the loader item (authoritative): hidden item types like Sample are
+  // absent from the useItems() store, so falling back to it would drop serial
+  // tracking. getItem selects *, so item.itemTrackingType is always present.
+  const itemTrackingType =
+    item.itemTrackingType ??
+    items.find((i) => i.id === item.id)?.itemTrackingType;
 
   const storageUnits = useStorageUnits(pickMethod?.locationId);
 
@@ -246,6 +253,7 @@ export default function ItemInventoryRoute() {
           defaultStorageUnitId: pickMethod.defaultStorageUnitId ?? undefined
         }}
         quantities={quantities}
+        pendingTransfers={pendingTransfers}
         storageUnits={storageUnits.options}
       />
     </VStack>

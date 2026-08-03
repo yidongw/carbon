@@ -9,6 +9,7 @@ import type { InventoryItem } from "~/modules/inventory";
 import {
   expandStorageUnitIdsWithDescendants,
   getInventoryItems,
+  getPendingTransferQuantitiesByItem,
   getStorageTypesList,
   getStorageUnitsList
 } from "~/modules/inventory";
@@ -104,9 +105,27 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const uniqueTags = pluckUnique(tags.data, (t) => t.name);
 
+  // Open warehouse-transfer demand per item, so the table can show To Ship /
+  // To Receive alongside on-hand quantities.
+  const pendingByItem = await getPendingTransferQuantitiesByItem(
+    client,
+    companyId,
+    locationId
+  );
+  const inventoryItemsWithPending = (
+    (inventoryItems.data ?? []) as InventoryItem[]
+  ).map((item) => {
+    const pending = pendingByItem.get(item.id ?? "");
+    return {
+      ...item,
+      toShip: pending?.toShip ?? 0,
+      toReceive: pending?.toReceive ?? 0
+    };
+  });
+
   return {
     count: inventoryItems.count ?? 0,
-    inventoryItems: (inventoryItems.data ?? []) as InventoryItem[],
+    inventoryItems: inventoryItemsWithPending as InventoryItem[],
     locationId,
     forms: forms.data ?? [],
     substances: substances.data ?? [],

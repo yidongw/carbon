@@ -155,6 +155,26 @@ const InventoryTable = memo(
             formatter: formatNumber
           }
         },
+        {
+          accessorKey: "toShip",
+          header: t`To Ship`,
+          cell: ({ row }) => formatNumber(row.original.toShip ?? 0),
+          meta: {
+            icon: <LuMoveDown className="text-red-500" />,
+            renderTotal: true,
+            formatter: formatNumber
+          }
+        },
+        {
+          accessorKey: "toReceive",
+          header: t`To Receive`,
+          cell: ({ row }) => formatNumber(row.original.toReceive ?? 0),
+          meta: {
+            icon: <LuMoveUp className="text-emerald-500" />,
+            renderTotal: true,
+            formatter: formatNumber
+          }
+        },
 
         {
           accessorKey: "daysRemaining",

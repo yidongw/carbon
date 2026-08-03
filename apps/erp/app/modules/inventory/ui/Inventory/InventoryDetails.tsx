@@ -30,6 +30,7 @@ type InventoryDetailsProps = {
   trackedEntityExpirations: Record<string, string | null>;
   pickMethod: z.infer<typeof pickMethodValidator>;
   quantities: ItemQuantities | null;
+  pendingTransfers?: { toShip: number; toReceive: number };
   storageUnits: { value: string; label: string }[];
 };
 
@@ -41,6 +42,7 @@ const InventoryDetails = ({
   trackedEntityExpirations,
   pickMethod,
   quantities,
+  pendingTransfers,
   storageUnits
 }: InventoryDetailsProps) => {
   const { locale } = useLocale();
@@ -160,6 +162,40 @@ const InventoryDetails = ({
             </div>
           </CardContent>
         </Card>
+        {pendingTransfers && (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <Trans>To Ship</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-start items-center gap-1">
+                  <h3 className="text-4xl font-medium tracking-tighter">
+                    {formatter.format(pendingTransfers.toShip ?? 0)}
+                  </h3>
+                  <LuMoveDown className="text-red-500 text-lg" />
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <Trans>To Receive</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-start items-center gap-1">
+                  <h3 className="text-4xl font-medium tracking-tighter">
+                    {formatter.format(pendingTransfers.toReceive ?? 0)}
+                  </h3>
+                  <LuMoveUp className="text-emerald-500 text-lg" />
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
       <InventoryStorageUnits
         itemStorageUnitQuantities={itemStorageUnitQuantities}
