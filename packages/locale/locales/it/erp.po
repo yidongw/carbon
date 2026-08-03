@@ -16136,3 +16136,18 @@ msgstr "ZPL (Etichetta termica)"
 
 msgid "ZPL Label Preview"
 msgstr "Anteprima Etichetta ZPL"
+
+msgid "Location Inventory"
+msgstr "Giacenze per ubicazione"
+
+msgid "Stock Overview"
+msgstr "Panoramica giacenze"
+
+msgid "To Send"
+msgstr "Da inviare"
+
+msgid "from {loc}"
+msgstr "da {loc}"
+
+msgid "to {loc}"
+msgstr "a {loc}"

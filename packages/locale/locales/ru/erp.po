@@ -16129,3 +16129,18 @@ msgstr "ZPL (Тепловая этикетка)"
 
 msgid "ZPL Label Preview"
 msgstr "Предварительный просмотр метки ZPL"
+
+msgid "Location Inventory"
+msgstr "Запасы по локации"
+
+msgid "Stock Overview"
+msgstr "Обзор запасов"
+
+msgid "To Send"
+msgstr "К отправке"
+
+msgid "from {loc}"
+msgstr "из {loc}"
+
+msgid "to {loc}"
+msgstr "в {loc}"

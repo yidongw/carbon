@@ -16564,3 +16564,18 @@ msgstr "ZPL（热敏标签）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL标签预览"
+
+msgid "Location Inventory"
+msgstr "地点库存"
+
+msgid "Stock Overview"
+msgstr "库存总览"
+
+msgid "To Send"
+msgstr "待发送"
+
+msgid "from {loc}"
+msgstr "从{loc}"
+
+msgid "to {loc}"
+msgstr "到{loc}"
