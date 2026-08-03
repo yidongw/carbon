@@ -40,6 +40,7 @@ import {
   StandardFactor,
   Submit
 } from "~/components/Form";
+import EmployeesMultiSelect from "~/components/Form/EmployeesMultiSelect";
 import { useSupplierProcesses } from "~/components/Form/SupplierProcess";
 import WorkCenters from "~/components/Form/WorkCenters";
 import { usePermissions } from "~/hooks";
@@ -140,6 +141,11 @@ const ProcessForm = ({
                       value={initialValues.defaultStandardFactor}
                     />
                     <WorkCenters name="workCenters" label={t`Work Centers`} />
+                    <EmployeesMultiSelect
+                      name="employees"
+                      label={t`Employees`}
+                      helperText={t`Only assigned employees appear when reporting quantity. Leave empty to allow all.`}
+                    />
                   </>
                 )}
                 {processType !== "Inside" && (

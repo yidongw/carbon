@@ -196,9 +196,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // Remaining per operation (target − completed − scrapped − reworked, floored
   // at 0) — used to prefill the Production quantity when an operation is chosen.
+  // operationId -> its process id, so the form can filter the actor list by the
+  // process of whichever operation is picked in the dropdown.
+  const processByOperationId: Record<string, string> = {};
   const remainingByOperationId: Record<string, number> = {};
   for (const op of jobOperations ?? []) {
     if (!op.id) continue;
+    if (op.processId) processByOperationId[op.id] = op.processId;
     remainingByOperationId[op.id] = Math.max(
       0,
       (op.targetQuantity ?? op.operationQuantity ?? 0) -
@@ -213,6 +217,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     jobOperationId,
     jobOptions,
     operationOptions,
+    processByOperationId,
     itemId,
     remainingByOperationId,
     // Lock job + operation when the caller seeds a specific operation to report

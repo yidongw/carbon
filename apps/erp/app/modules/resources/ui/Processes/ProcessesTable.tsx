@@ -196,6 +196,24 @@ const ProcessesTable = memo(({ data, count }: ProcessesTableProps) => {
         }
       },
       {
+        id: "employees",
+        header: t`Employees`,
+        cell: ({ row }) => (
+          <AvatarGroup limit={5}>
+            <AvatarGroupList>
+              {((row.original.employees ?? []) as Array<string>).map((id) => {
+                const person = people.find((p) => p.id === id);
+                return <Avatar key={id} name={person?.name ?? ""} />;
+              })}
+            </AvatarGroupList>
+            <AvatarOverflowIndicator />
+          </AvatarGroup>
+        ),
+        meta: {
+          icon: <LuUser />
+        }
+      },
+      {
         accessorKey: "completeAllOnScan",
         header: t`Complete All`,
         cell: editableCell<Process>({

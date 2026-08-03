@@ -5,6 +5,7 @@ import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import type {
+  employeeProcessesValidator,
   failureModeValidator,
   locationValidator,
   maintenanceDispatchCommentValidator,
@@ -1644,7 +1645,7 @@ export async function upsertProcess(
       })
 ) {
   if ("createdBy" in process) {
-    const { workCenters, ...insert } = process;
+    const { workCenters, employees, ...insert } = process;
     const processInsert = await client
       .from("process")
       .insert([
@@ -1676,9 +1677,26 @@ export async function upsertProcess(
       }
     }
 
+    const employeeProcesses = employees?.map((employeeId) => ({
+      employeeId,
+      processId,
+      companyId: insert.companyId,
+      createdBy: insert.createdBy
+    }));
+
+    if (employeeProcesses) {
+      const employeeProcessInsert = await client
+        .from("employeeProcess")
+        .insert(employeeProcesses);
+
+      if (employeeProcessInsert.error) {
+        return employeeProcessInsert;
+      }
+    }
+
     return processInsert;
   }
-  const { workCenters, ...update } = process;
+  const { workCenters, employees, ...update } = process;
   const processUpdate = await client
     .from("process")
     .update(sanitize(update))
@@ -1712,7 +1730,87 @@ export async function upsertProcess(
     }
   }
 
+  const deleteEmployees = await client
+    .from("employeeProcess")
+    .delete()
+    .eq("processId", process.id);
+
+  if (deleteEmployees.error) {
+    return deleteEmployees;
+  }
+
+  const employeeProcesses = employees?.map((employeeId) => ({
+    processId: process.id,
+    employeeId,
+    companyId: update.companyId,
+    createdBy: update.updatedBy
+  }));
+
+  if (employeeProcesses) {
+    const employeeProcessUpdate = await client
+      .from("employeeProcess")
+      .insert(employeeProcesses);
+    if (employeeProcessUpdate.error) {
+      return employeeProcessUpdate;
+    }
+  }
+
   return processUpdate;
+}
+
+export async function getEmployeeProcessesByProcess(
+  client: SupabaseClient<Database>,
+  processId: string
+) {
+  return client
+    .from("employeeProcesses")
+    .select("*")
+    .eq("processId", processId);
+}
+
+export async function getEmployeeProcessesByEmployee(
+  client: SupabaseClient<Database>,
+  employeeId: string,
+  companyId: string
+) {
+  return client
+    .from("employeeProcesses")
+    .select("*")
+    .eq("employeeId", employeeId)
+    .eq("companyId", companyId);
+}
+
+export async function upsertEmployeeProcesses(
+  client: SupabaseClient<Database>,
+  args: z.infer<typeof employeeProcessesValidator> & {
+    companyId: string;
+    createdBy: string;
+  }
+) {
+  const { employeeId, processes, companyId, createdBy } = args;
+
+  const deleteExisting = await client
+    .from("employeeProcess")
+    .delete()
+    .eq("employeeId", employeeId)
+    .eq("companyId", companyId);
+
+  if (deleteExisting.error) {
+    return deleteExisting;
+  }
+
+  const employeeProcesses = processes?.map((processId) => ({
+    employeeId,
+    processId,
+    companyId,
+    createdBy
+  }));
+
+  if (employeeProcesses && employeeProcesses.length > 0) {
+    return client.from("employeeProcess").insert(employeeProcesses);
+  }
+
+  return deleteExisting;
 }
 
 export async function upsertTraining(

@@ -526,6 +526,16 @@ const ProductionQuantityForm = ({
     ? initialValues.jobOperationId
     : jobOperationIdState;
 
+  // The job-level cascade only resolves the seeded operation's processId, so
+  // resolve the picked operation's process from the per-operation map to keep
+  // the actor list filtered to that process's assigned employees/suppliers.
+  const selectedProcessId =
+    (effectiveJobOperationId
+      ? jobPicker.processByOperationId?.[effectiveJobOperationId]
+      : undefined) ??
+    jobPicker.processId ??
+    null;
+
   const {
     hasJobSelected,
     hasOperationSelected,
@@ -548,7 +558,8 @@ const ProductionQuantityForm = ({
   // soon as the operation is picked, instead of waiting for an employee to be
   // selected (submitting still requires one). Plain-quantity reports keep the
   // stricter `areDetailFieldsDisabled` gate.
-  const configFieldsDisabled = isDisabled || !hasJobSelected || !hasOperationSelected;
+  const configFieldsDisabled =
+    isDisabled || !hasJobSelected || !hasOperationSelected;
 
   // Plain-quantity reports (bundles / non-configured items) show the operation's
   // remaining (target − reported) and can't exceed it. Configured reports are
@@ -562,7 +573,9 @@ const ProductionQuantityForm = ({
     ? lines.reduce((sum, line) => sum + (+line.quantity || 0), 0)
     : +quantity || 0;
   const showRemaining =
-    !isEditing && !hasConfigurationParameters && operationRemaining !== Infinity;
+    !isEditing &&
+    !hasConfigurationParameters &&
+    operationRemaining !== Infinity;
   const remaining = operationRemaining - reportedTotal;
   const exceedsRemaining = showRemaining && remaining < 0;
 
@@ -639,7 +652,7 @@ const ProductionQuantityForm = ({
               />
             )}
             <ProductionActorFields
-              processId={jobPicker.processId}
+              processId={selectedProcessId}
               operationType={jobPicker.operationType}
               defaultActorKind={jobPicker.defaultActorKind}
               lockActorSelection={lockActorSelection}

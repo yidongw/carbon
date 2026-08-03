@@ -4,7 +4,8 @@ import {
   LuHardHat,
   LuList,
   LuStickyNote,
-  LuUser
+  LuUser,
+  LuWorkflow
 } from "react-icons/lu";
 import type { PublicAttributes } from "~/modules/account";
 
@@ -23,6 +24,11 @@ export function usePersonSidebar(
       name: t`Job`,
       to: "job",
       icon: <LuHardHat />
+    },
+    {
+      name: t`Processes`,
+      to: "processes",
+      icon: <LuWorkflow />
     },
     {
       name: t`Notes`,

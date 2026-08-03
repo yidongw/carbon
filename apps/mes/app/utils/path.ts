@@ -13,6 +13,8 @@ export const path = {
     api: {
       batchNumbers: (itemId: string) =>
         generatePath(`${api}/batch-numbers?itemId=${itemId}`),
+      employeesByProcess: (processId: string) =>
+        generatePath(`${api}/employees-by-process?processId=${processId}`),
       failureModes: `${api}/failure-modes`,
       locale: `${api}/locale`,
       qualityIssueTypes: `${api}/quality-issue-types`,
