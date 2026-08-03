@@ -10600,6 +10600,82 @@ export type Database = {
           },
         ]
       }
+      employeeProcess: {
+        Row: {
+          companyId: string
+          createdAt: string
+          createdBy: string
+          employeeId: string
+          id: string
+          processId: string
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          employeeId: string
+          id?: string
+          processId: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          employeeId?: string
+          id?: string
+          processId?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employeeProcess_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_employeeId_fkey"
+            columns: ["employeeId", "companyId"]
+            isOneToOne: false
+            referencedRelation: "employee"
+            referencedColumns: ["id", "companyId"]
+          },
+          {
+            foreignKeyName: "employeeProcess_processId_fkey"
+            columns: ["processId"]
+            isOneToOne: false
+            referencedRelation: "process"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_processId_fkey"
+            columns: ["processId"]
+            isOneToOne: false
+            referencedRelation: "processes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employeeShift: {
         Row: {
           employeeId: string
@@ -56916,6 +56992,63 @@ export type Database = {
           },
         ]
       }
+      employeeProcesses: {
+        Row: {
+          companyId: string | null
+          createdAt: string | null
+          createdBy: string | null
+          employeeId: string | null
+          id: string | null
+          processId: string | null
+          processName: string | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employeeProcess_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_employeeId_fkey"
+            columns: ["employeeId", "companyId"]
+            isOneToOne: false
+            referencedRelation: "employee"
+            referencedColumns: ["id", "companyId"]
+          },
+          {
+            foreignKeyName: "employeeProcess_processId_fkey"
+            columns: ["processId"]
+            isOneToOne: false
+            referencedRelation: "process"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_processId_fkey"
+            columns: ["processId"]
+            isOneToOne: false
+            referencedRelation: "processes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeProcess_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employees: {
         Row: {
           active: boolean | null
@@ -61603,6 +61736,7 @@ export type Database = {
           createdBy: string | null
           customFields: Json | null
           defaultStandardFactor: Database["public"]["Enums"]["factor"] | null
+          employees: string[] | null
           id: string | null
           name: string | null
           processType: Database["public"]["Enums"]["processType"] | null

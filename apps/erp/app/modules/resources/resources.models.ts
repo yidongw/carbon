@@ -300,6 +300,9 @@ export const processValidator = z
     workCenters: z
       .array(z.string().min(1, { message: "Invalid work center" }))
       .optional(),
+    employees: z
+      .array(z.string().min(1, { message: "Invalid employee" }))
+      .optional(),
     completeAllOnScan: zfd.checkbox()
   })
   .refine((data) => {
@@ -314,6 +317,13 @@ export const processValidator = z
     }
     return true;
   });
+
+export const employeeProcessesValidator = z.object({
+  employeeId: z.string().min(1, { message: "Employee is required" }),
+  processes: z
+    .array(z.string().min(1, { message: "Invalid process" }))
+    .optional()
+});
 
 export const trainingAssignmentStatusOptions = [
   "Completed",
