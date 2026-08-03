@@ -58,8 +58,8 @@ const LocationsTable = memo(({ data, count }: LocationsTableProps) => {
         id: "partner",
         header: t`Partner`,
         cell: ({ row }) => {
-          const customerName = row.original.customer?.name;
-          const supplierName = row.original.supplier?.name;
+          const customerName = row.original.customerName;
+          const supplierName = row.original.supplierName;
           if (customerName)
             return (
               <span className="text-muted-foreground">{`${t`Customer`}: ${customerName}`}</span>

@@ -14,6 +14,7 @@ type SupplierSelectProps = Omit<
   inline?: boolean;
   allowedSuppliers?: string[];
   onlyApproved?: boolean;
+  exclude?: string[];
 };
 
 const SupplierPreview = (
@@ -26,6 +27,7 @@ const SupplierPreview = (
 const Supplier = ({
   allowedSuppliers,
   onlyApproved,
+  exclude,
   ...props
 }: SupplierSelectProps) => {
   const supplierApprovalRequired = useSupplierApprovalRequired();
@@ -39,11 +41,12 @@ const Supplier = ({
       suppliers
         .filter((s) => !allowedSuppliers || allowedSuppliers.includes(s.id))
         .filter((s) => !onlyApproved || s.supplierStatus === "Active")
+        .filter((s) => !exclude?.includes(s.id))
         .map((c) => ({
           value: c.id,
           label: c.name
         })) ?? [],
-    [suppliers, allowedSuppliers, onlyApproved]
+    [suppliers, allowedSuppliers, onlyApproved, exclude]
   );
 
   const { company } = useUser();

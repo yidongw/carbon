@@ -18,6 +18,9 @@ type CustomerLocationSelectProps = Omit<
 > & {
   customer?: string;
   inline?: boolean;
+  // Show only the location name (e.g. "Main Office"). Use where the address is
+  // already shown separately. Falls back to the address when a location is unnamed.
+  nameOnly?: boolean;
   onChange?: (customer: CustomerLocationType | null) => void;
 };
 
@@ -48,19 +51,23 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
     }
   }, [props.customer]);
 
+  const nameOnly = props.nameOnly;
   const options = useMemo(
     () =>
-      customerLocationsFetcher.data?.data?.map((c) => ({
-        value: c.id,
-        label: `${formatAddress(
+      customerLocationsFetcher.data?.data?.map((c) => {
+        const address = formatAddress(
           c.address?.addressLine1,
           c.address?.addressLine2,
           c.address?.city,
           c.address?.stateProvince
-        )} (${c.name})`
-      })) ?? [],
+        );
+        return {
+          value: c.id,
+          label: nameOnly ? c.name || address : `${address} (${c.name})`
+        };
+      }) ?? [],
 
-    [customerLocationsFetcher.data]
+    [customerLocationsFetcher.data, nameOnly]
   );
 
   const onChange = (

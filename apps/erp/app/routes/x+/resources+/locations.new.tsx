@@ -5,11 +5,13 @@ import { validationError, validator } from "@carbon/form";
 import { getLocalTimeZone } from "@internationalized/date";
 import type {
   ActionFunctionArgs,
-  ClientActionFunctionArgs
+  ClientActionFunctionArgs,
+  LoaderFunctionArgs
 } from "react-router";
-import { redirect, useNavigate } from "react-router";
+import { redirect, useLoaderData, useNavigate } from "react-router";
 import { useUser } from "~/hooks";
 import {
+  getPartnerLocations,
   LocationForm,
   locationValidator,
   upsertLocation
@@ -17,6 +19,29 @@ import {
 import { setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
 import { getCompanyId, locationsQuery } from "~/utils/react-query";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { client, companyId } = await requirePermissions(request, {
+    view: "resources"
+  });
+
+  // A customer/supplier that already has a warehouse is hidden from the pickers so
+  // it isn't given a second one.
+  const partnerLocations = await getPartnerLocations(client, companyId);
+  const used = (partnerLocations.data ?? []) as {
+    customerId: string | null;
+    supplierId: string | null;
+  }[];
+
+  return {
+    excludeCustomers: used
+      .map((l) => l.customerId)
+      .filter((id): id is string => !!id),
+    excludeSuppliers: used
+      .map((l) => l.supplierId)
+      .filter((id): id is string => !!id)
+  };
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
@@ -74,6 +99,7 @@ export async function clientAction({ serverAction }: ClientActionFunctionArgs) {
 export default function NewLocationRoute() {
   const navigate = useNavigate();
   const { company } = useUser();
+  const { excludeCustomers, excludeSuppliers } = useLoaderData<typeof loader>();
   const onClose = () => navigate(path.to.locations);
 
   const initialValues = {
@@ -87,5 +113,12 @@ export default function NewLocationRoute() {
     countryCode: company?.countryCode ?? ""
   };
 
-  return <LocationForm initialValues={initialValues} onClose={onClose} />;
+  return (
+    <LocationForm
+      initialValues={initialValues}
+      onClose={onClose}
+      excludeCustomers={excludeCustomers}
+      excludeSuppliers={excludeSuppliers}
+    />
+  );
 }
