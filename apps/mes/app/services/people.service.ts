@@ -234,3 +234,15 @@ export async function getMySalaryHistory(
     .order("month", { ascending: false })
     .limit(12);
 }
+
+export async function getEmployeeProcessesByProcess(
+  client: SupabaseClient<Database>,
+  processId: string,
+  companyId: string
+) {
+  return client
+    .from("employeeProcess")
+    .select("employeeId")
+    .eq("processId", processId)
+    .eq("companyId", companyId);
+}

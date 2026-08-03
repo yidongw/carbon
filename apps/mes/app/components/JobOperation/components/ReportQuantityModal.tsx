@@ -13,11 +13,12 @@ import {
   VStack
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { OperationStatusIcon } from "~/components/Icons";
 import { useLocalizeColor } from "~/hooks";
+import type { getEmployeeProcessesByProcess } from "~/services/people.service";
 import type { Operation, OperationWithDetails } from "~/services/types";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -48,6 +49,8 @@ export function ReportQuantityModal({
   const { t } = useLingui();
   const localizeColor = useLocalizeColor();
   const [people] = usePeople();
+  const { ids: assignedEmployeeIds, isLoading: assignedEmployeesLoading } =
+    useEmployeesByProcess(operation.processId);
   const [employeeId, setEmployeeId] = useState(defaultEmployeeId);
   const fetcher = useFetcher<{ success: boolean }>();
   const submitted = useRef(false);
@@ -106,7 +109,19 @@ export function ReportQuantityModal({
     Canceled: t`Canceled`
   };
 
-  const employeeOptions = people.map((p) => ({ label: p.name, value: p.id }));
+  // Only show employees assigned to this operation's process. Show nothing
+  // while the assignments load (avoids flashing the full list), then fall back
+  // to everyone when the process has no assignments so reporting is never
+  // blocked.
+  const eligiblePeople = assignedEmployeesLoading
+    ? []
+    : assignedEmployeeIds.size > 0
+      ? people.filter((p) => assignedEmployeeIds.has(p.id))
+      : people;
+  const employeeOptions = eligiblePeople.map((p) => ({
+    label: p.name,
+    value: p.id
+  }));
 
   const submit = () => {
     submitted.current = true;
@@ -318,4 +333,33 @@ function InfoRow({
       </span>
     </div>
   );
+}
+
+// Loads the set of employee ids assigned to a process. Empty while loading or
+// when nobody is assigned — callers fall back to the full people list.
+function useEmployeesByProcess(processId?: string | null) {
+  const fetcher =
+    useFetcher<Awaited<ReturnType<typeof getEmployeeProcessesByProcess>>>();
+
+  useEffect(() => {
+    if (processId) {
+      fetcher.load(path.to.api.employeesByProcess(processId));
+    }
+  }, [processId, fetcher.load]);
+
+  const ids = useMemo(
+    () =>
+      new Set(
+        (fetcher.data?.data ?? [])
+          .map((row) => row.employeeId)
+          .filter((id): id is string => Boolean(id))
+      ),
+    [fetcher.data]
+  );
+
+  // Loading until the first response arrives, so the caller can avoid flashing
+  // the full employee list before the assignments are known.
+  const isLoading = Boolean(processId) && fetcher.data === undefined;
+
+  return { ids, isLoading };
 }

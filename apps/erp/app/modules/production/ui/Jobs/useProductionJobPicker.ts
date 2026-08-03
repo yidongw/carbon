@@ -6,6 +6,10 @@ export type ProductionJobPickerLoaderData = {
   jobId: string;
   jobOperationId: string;
   operationOptions: { label: string; value: string }[];
+  /** operationId -> its process id, so the client can resolve the process of the
+   * operation picked in the dropdown (the job-level cascade only resolves the
+   * seeded operation's processId). */
+  processByOperationId?: Record<string, string>;
   configurationParameters?:
     | {
         key: string;
@@ -98,6 +102,7 @@ export function useProductionJobPicker({
     setSelectedJobId,
     isCascadeLoading,
     operationOptions: cascadeData?.operationOptions ?? operationOptions,
+    processByOperationId: cascadeData?.processByOperationId ?? {},
     configurationParameters:
       cascadeData?.configurationParameters ?? configurationParameters,
     configReferenceSource:

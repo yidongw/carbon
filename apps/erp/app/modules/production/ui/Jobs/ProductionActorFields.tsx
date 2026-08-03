@@ -5,6 +5,7 @@ import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Avatar from "~/components/Avatar";
 import { Hidden } from "~/components/Form";
+import { useEmployeeProcesses } from "~/components/Form/EmployeeProcess";
 import { useSupplierProcesses } from "~/components/Form/SupplierProcess";
 import { overlay, useOverlay } from "~/components/Overlay";
 import {
@@ -127,6 +128,10 @@ export function ProductionActorFields({
   const supplierProcesses = useSupplierProcesses({
     processId: processId ?? undefined
   });
+  const { employeeProcesses, isLoading: employeeProcessesLoading } =
+    useEmployeeProcesses({
+      processId: processId ?? undefined
+    });
 
   const openCreateSupplierProcess = useCallback(() => {
     newSupplierProcessModal.onOpen();
@@ -223,8 +228,25 @@ export function ProductionActorFields({
   }, [lockActorSelection, onActorKindChange, selection, showSupplierActors]);
 
   const groups = useMemo(() => {
+    // Only show employees assigned to this process. Fall back to everyone when
+    // the process has no assignments so reporting is never blocked.
+    const assignedEmployeeIds = new Set(
+      employeeProcesses
+        .map((ep) => ep.employeeId)
+        .filter((id): id is string => Boolean(id))
+    );
+    // While the assignments are still loading, show nothing rather than the
+    // full list — otherwise the unfiltered list flashes before it collapses to
+    // the assigned employees. Fall back to everyone only once we know the
+    // process has no assignees.
+    const eligiblePeople = employeeProcessesLoading
+      ? []
+      : assignedEmployeeIds.size > 0
+        ? people.filter((person) => assignedEmployeeIds.has(person.id))
+        : people;
+
     const employeeOptions =
-      people.map((person) => ({
+      eligiblePeople.map((person) => ({
         value: encodeActorSelection("employee", person.id),
         label: (
           <div className="flex flex-row items-center gap-2 flex-grow">
@@ -340,6 +362,8 @@ export function ProductionActorFields({
     });
   }, [
     people,
+    employeeProcesses,
+    employeeProcessesLoading,
     employeeId,
     supplierProcesses,
     suppliers,
