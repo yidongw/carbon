@@ -1046,6 +1046,94 @@ export async function getShipmentLineTracking(
     .eq("companyId", companyId);
 }
 
+// For an inbound-transfer receipt, the exact serials that were shipped on the
+// matching outbound transfer, grouped by warehouse-transfer line id (which is
+// the receipt line's `lineId`). Lets the receipt fill in the serial that was
+// actually shipped instead of minting a new one — you receive what was sent.
+export async function getInboundTransferShippedSerials(
+  client: SupabaseClient<Database>,
+  warehouseTransferId: string,
+  companyId: string
+): Promise<Record<string, string[]>> {
+  const result: Record<string, string[]> = {};
+
+  // Primary, durable source: the serial pinned to each transfer line. This
+  // survives posting the outbound shipment (which strips the "Shipment"
+  // attribute off the serials), unlike reading the shipment's tracking.
+  const lines = await client
+    .from("warehouseTransferLine")
+    .select("id, trackedEntityId")
+    .eq("transferId", warehouseTransferId)
+    .eq("companyId", companyId);
+  const transferLineByEntity = new Map<string, string>();
+  for (const l of lines.data ?? []) {
+    if (l.id && l.trackedEntityId) transferLineByEntity.set(l.trackedEntityId, l.id);
+  }
+  if (transferLineByEntity.size > 0) {
+    const ents = await client
+      .from("trackedEntity")
+      .select("id, readableId")
+      .in("id", [...transferLineByEntity.keys()])
+      .eq("companyId", companyId);
+    for (const e of ents.data ?? []) {
+      const transferLineId = transferLineByEntity.get(e.id);
+      const serial = e.readableId ?? e.id;
+      if (transferLineId && serial) (result[transferLineId] ??= []).push(serial);
+    }
+  }
+
+  // Lines with no pinned serial (partial serial transfers scan the exact units
+  // at ship). Recover those from the outbound shipment's tracking while it's
+  // still readable (before it's posted).
+  const unpinned = new Set(
+    (lines.data ?? [])
+      .filter((l) => l.id && !l.trackedEntityId)
+      .map((l) => l.id as string)
+  );
+  if (unpinned.size === 0) return result;
+
+  const shipments = await client
+    .from("shipment")
+    .select("id")
+    .eq("sourceDocument", "Outbound Transfer")
+    .eq("sourceDocumentId", warehouseTransferId)
+    .eq("companyId", companyId);
+  const shipmentIds = (shipments.data ?? []).map((s) => s.id);
+  if (shipmentIds.length === 0) return result;
+
+  const shipmentLines = await client
+    .from("shipmentLine")
+    .select("id, lineId")
+    .in("shipmentId", shipmentIds);
+  const transferLineByShipmentLine = new Map<string, string>();
+  for (const sl of shipmentLines.data ?? []) {
+    if (sl.id && sl.lineId) transferLineByShipmentLine.set(sl.id, sl.lineId);
+  }
+
+  const tracking = await Promise.all(
+    shipmentIds.map((id) => getShipmentTracking(client, id, companyId))
+  );
+  const byLine: Record<string, { index: number; serial: string }[]> = {};
+  for (const res of tracking) {
+    for (const te of res.data ?? []) {
+      const attrs = (te.attributes ?? {}) as TrackedEntityAttributes;
+      const shipmentLineId = attrs["Shipment Line"];
+      const serial = te.readableId ?? te.id;
+      if (!shipmentLineId || !serial) continue;
+      const transferLineId = transferLineByShipmentLine.get(shipmentLineId);
+      if (!transferLineId || !unpinned.has(transferLineId)) continue;
+      (byLine[transferLineId] ??= []).push({
+        index: Number(attrs["Shipment Line Index"] ?? 0),
+        serial
+      });
+    }
+  }
+  for (const [lineId, arr] of Object.entries(byLine)) {
+    result[lineId] = arr.sort((a, b) => a.index - b.index).map((x) => x.serial);
+  }
+  return result;
+}
+
 export async function getShippingMethod(
   client: SupabaseClient<Database>,
   shippingMethodId: string
@@ -3091,6 +3179,324 @@ export async function pickPickingListLine(
   return { data: { id: line.id }, error: null };
 }
 
+// Find (or create on first use) the warehouse that represents a customer or
+// supplier, so a transfer can be sent "to" that partner and the serial's
+// location reflects "at partner X". The auto-created location uses placeholder
+// address fields you can edit later in Resources → Locations.
+export async function resolveOrCreatePartnerLocation(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  userId: string,
+  partner: { customerId?: string; supplierId?: string }
+): Promise<{ id: string | null; error: PostgrestError | null }> {
+  const column = partner.customerId ? "customerId" : "supplierId";
+  const partnerId = partner.customerId ?? partner.supplierId;
+  if (!partnerId) return { id: null, error: null };
+
+  const existing = await client
+    .from("location")
+    .select("id")
+    .eq("companyId", companyId)
+    .eq(column, partnerId)
+    .limit(1)
+    .maybeSingle();
+  if (existing.data?.id) return { id: existing.data.id, error: null };
+
+  const partnerRow = await client
+    .from(partner.customerId ? "customer" : "supplier")
+    .select("name")
+    .eq("id", partnerId)
+    .single();
+  const name =
+    partnerRow.data?.name ?? (partner.customerId ? "Customer" : "Supplier");
+
+  const created = await client
+    .from("location")
+    .insert({
+      name,
+      companyId,
+      createdBy: userId,
+      addressLine1: "-",
+      city: "-",
+      postalCode: "-",
+      timezone: "UTC",
+      [column]: partnerId
+    } as never)
+    .select("id")
+    .single();
+
+  return { id: created.data?.id ?? null, error: created.error };
+}
+
+// For an item at a location: quantity waiting to ship out (on open outbound
+// warehouse transfers) and waiting to be received in (shipped but not yet
+// received on open inbound transfers).
+export async function getPendingTransferQuantities(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  itemId: string,
+  locationId: string
+): Promise<{ toShip: number; toReceive: number }> {
+  const [outbound, inbound] = await Promise.all([
+    client
+      .from("warehouseTransferLine")
+      .select("quantity, shippedQuantity, warehouseTransfer!inner(status)")
+      .eq("companyId", companyId)
+      .eq("itemId", itemId)
+      .eq("fromLocationId", locationId)
+      .not("warehouseTransfer.status", "in", "(Completed,Cancelled)"),
+    client
+      .from("warehouseTransferLine")
+      .select(
+        "shippedQuantity, receivedQuantity, warehouseTransfer!inner(status)"
+      )
+      .eq("companyId", companyId)
+      .eq("itemId", itemId)
+      .eq("toLocationId", locationId)
+      .not("warehouseTransfer.status", "in", "(Completed,Cancelled)")
+  ]);
+
+  const toShip = (
+    (outbound.data ?? []) as Array<{
+      quantity: number | null;
+      shippedQuantity: number | null;
+    }>
+  ).reduce(
+    (sum, r) => sum + Math.max(0, (r.quantity ?? 0) - (r.shippedQuantity ?? 0)),
+    0
+  );
+  const toReceive = (
+    (inbound.data ?? []) as Array<{
+      shippedQuantity: number | null;
+      receivedQuantity: number | null;
+    }>
+  ).reduce(
+    (sum, r) =>
+      sum + Math.max(0, (r.shippedQuantity ?? 0) - (r.receivedQuantity ?? 0)),
+    0
+  );
+
+  return { toShip, toReceive };
+}
+
+// Batch version of getPendingTransferQuantities for the whole location, keyed by
+// itemId — used by the inventory quantities table (avoids one query per row).
+export async function getPendingTransferQuantitiesByItem(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string
+): Promise<Map<string, { toShip: number; toReceive: number }>> {
+  const [outbound, inbound] = await Promise.all([
+    client
+      .from("warehouseTransferLine")
+      .select(
+        "itemId, quantity, shippedQuantity, warehouseTransfer!inner(status)"
+      )
+      .eq("companyId", companyId)
+      .eq("fromLocationId", locationId)
+      .not("warehouseTransfer.status", "in", "(Completed,Cancelled)"),
+    client
+      .from("warehouseTransferLine")
+      .select(
+        "itemId, shippedQuantity, receivedQuantity, warehouseTransfer!inner(status)"
+      )
+      .eq("companyId", companyId)
+      .eq("toLocationId", locationId)
+      .not("warehouseTransfer.status", "in", "(Completed,Cancelled)")
+  ]);
+
+  const byItem = new Map<string, { toShip: number; toReceive: number }>();
+  const bump = (
+    itemId: string,
+    patch: { toShip?: number; toReceive?: number }
+  ) => {
+    const v = byItem.get(itemId) ?? { toShip: 0, toReceive: 0 };
+    v.toShip += patch.toShip ?? 0;
+    v.toReceive += patch.toReceive ?? 0;
+    byItem.set(itemId, v);
+  };
+
+  for (const r of (outbound.data ?? []) as Array<{
+    itemId: string | null;
+    quantity: number | null;
+    shippedQuantity: number | null;
+  }>) {
+    if (!r.itemId) continue;
+    bump(r.itemId, {
+      toShip: Math.max(0, (r.quantity ?? 0) - (r.shippedQuantity ?? 0))
+    });
+  }
+  for (const r of (inbound.data ?? []) as Array<{
+    itemId: string | null;
+    shippedQuantity: number | null;
+    receivedQuantity: number | null;
+  }>) {
+    if (!r.itemId) continue;
+    bump(r.itemId, {
+      toReceive: Math.max(
+        0,
+        (r.shippedQuantity ?? 0) - (r.receivedQuantity ?? 0)
+      )
+    });
+  }
+
+  return byItem;
+}
+
+// Stock committed to open (not-yet-completed) transfers out of a location, so a
+// new transfer can net it out and not double-commit the same units/serials.
+export async function getOpenTransferCommitments(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string,
+  itemIds: string[],
+  // Line ids to ignore — used when editing a line so it doesn't reserve against
+  // itself. Stock and warehouse line ids share one set (ids are globally unique).
+  excludeLineIds?: string[]
+): Promise<{
+  committedSerials: Set<string>;
+  committedQtyByItemBin: Map<string, number>;
+}> {
+  const committedSerials = new Set<string>();
+  const committedQtyByItemBin = new Map<string, number>();
+  if (itemIds.length === 0) {
+    return { committedSerials, committedQtyByItemBin };
+  }
+
+  const excluded = new Set(excludeLineIds ?? []);
+
+  const [stock, warehouse] = await Promise.all([
+    client
+      .from("stockTransferLine")
+      .select(
+        "id, itemId, fromStorageUnitId, quantity, trackedEntityId, stockTransfer!inner(status, locationId, companyId)"
+      )
+      .in("itemId", itemIds)
+      .eq("stockTransfer.companyId", companyId)
+      .eq("stockTransfer.locationId", locationId)
+      .not("stockTransfer.status", "in", "(Completed)"),
+    client
+      .from("warehouseTransferLine")
+      .select(
+        "id, itemId, fromStorageUnitId, quantity, trackedEntityId, warehouseTransfer!inner(status, companyId)"
+      )
+      .in("itemId", itemIds)
+      .eq("companyId", companyId)
+      .eq("fromLocationId", locationId)
+      .not("warehouseTransfer.status", "in", "(Completed,Cancelled)")
+  ]);
+
+  for (const rows of [stock.data ?? [], warehouse.data ?? []]) {
+    for (const r of rows as Array<{
+      id: string;
+      itemId: string;
+      fromStorageUnitId: string | null;
+      quantity: number | null;
+      trackedEntityId: string | null;
+    }>) {
+      if (excluded.has(r.id)) continue;
+      if (r.trackedEntityId) {
+        committedSerials.add(r.trackedEntityId);
+      } else {
+        // Include stock held in no storage unit (null bin): key it by "" so it
+        // matches the availability/transfer-stock lookup (`${itemId}::`).
+        const key = `${r.itemId}::${r.fromStorageUnitId ?? ""}`;
+        committedQtyByItemBin.set(
+          key,
+          (committedQtyByItemBin.get(key) ?? 0) + Number(r.quantity ?? 0)
+        );
+      }
+    }
+  }
+
+  return { committedSerials, committedQtyByItemBin };
+}
+
+// Reservation guard for a single transfer line: the requested serial/quantity
+// can't exceed what's available at the source once stock already committed to
+// other open (stock + warehouse) transfers is netted out. Used by the add-line
+// and edit-line actions; the New Transfer overlay does its own aggregate check.
+// Pass excludeLineId when editing so a line doesn't reserve against itself.
+export async function checkTransferLineAvailability(
+  client: SupabaseClient<Database>,
+  input: {
+    companyId: string;
+    locationId: string;
+    itemId: string;
+    fromStorageUnitId?: string | null;
+    trackedEntityId?: string | null;
+    quantity: number;
+    excludeLineId?: string;
+  }
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const {
+    companyId,
+    locationId,
+    itemId,
+    fromStorageUnitId,
+    trackedEntityId,
+    quantity,
+    excludeLineId
+  } = input;
+
+  if (!itemId || !locationId || !(quantity > 0)) return { ok: true };
+
+  const [quantities, commitments] = await Promise.all([
+    client.rpc("get_item_quantities_by_tracking_id", {
+      item_id: itemId,
+      company_id: companyId,
+      location_id: locationId
+    }),
+    getOpenTransferCommitments(
+      client,
+      companyId,
+      locationId,
+      [itemId],
+      excludeLineId ? [excludeLineId] : undefined
+    )
+  ]);
+
+  const rows = (quantities.data ?? []) as Array<{
+    storageUnitId: string | null;
+    trackedEntityId: string | null;
+    quantity: number;
+  }>;
+
+  // Serial: the exact unit must be in stock here and not on another open transfer.
+  if (trackedEntityId) {
+    if (!rows.some((r) => r.trackedEntityId === trackedEntityId)) {
+      return {
+        ok: false,
+        message: "The selected serial is not in stock at this location"
+      };
+    }
+    if (commitments.committedSerials.has(trackedEntityId)) {
+      return {
+        ok: false,
+        message: "A selected serial is already committed to another transfer"
+      };
+    }
+    return { ok: true };
+  }
+
+  // Fungible: on-hand in the chosen bin minus what's committed elsewhere.
+  const bin = fromStorageUnitId ?? "";
+  const onHand = rows
+    .filter((r) => !r.trackedEntityId && (r.storageUnitId ?? "") === bin)
+    .reduce((sum, r) => sum + Number(r.quantity ?? 0), 0);
+  const committed =
+    commitments.committedQtyByItemBin.get(`${itemId}::${bin}`) ?? 0;
+
+  if (quantity > onHand - committed) {
+    return {
+      ok: false,
+      message: "The transfer exceeds the quantity available at the source"
+    };
+  }
+
+  return { ok: true };
+}
+
 export async function insertStockTransfer(
   client: SupabaseClient<Database>,
   input: {
@@ -3099,6 +3505,7 @@ export async function insertStockTransfer(
       itemId: string;
       fromStorageUnitId?: string | null;
       toStorageUnitId?: string | null;
+      trackedEntityId?: string | null;
       quantity?: number;
       requiresSerialTracking?: boolean;
       requiresBatchTracking?: boolean;

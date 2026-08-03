@@ -6,6 +6,7 @@ import { useRouteData } from "@carbon/react";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect, useNavigate, useParams } from "react-router";
 import {
+  checkTransferLineAvailability,
   getStockTransfer,
   isStockTransferLocked,
   stockTransferLineValidator,
@@ -22,7 +23,7 @@ import { path } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, userId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     create: "inventory"
   });
 
@@ -52,6 +53,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const { id: _id, ...d } = validation.data;
+
+  const availability = await checkTransferLineAvailability(client, {
+    companyId,
+    locationId: transfer.data?.locationId ?? "",
+    itemId: d.itemId,
+    fromStorageUnitId: d.fromStorageUnitId || null,
+    quantity: d.quantity,
+    excludeLineId: lineId
+  });
+  if (!availability.ok) {
+    return validationError({
+      fieldErrors: { quantity: availability.message }
+    } as never);
+  }
 
   const updateStockTransferLine = await upsertStockTransferLine(client, {
     id: lineId,

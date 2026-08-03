@@ -1683,6 +1683,11 @@ serve(async (req: Request) => {
           return acc;
         }, {});
 
+        // The exact serial/lot picked when the transfer was created, kept in
+        // step with shipmentLineItems so we can pre-fill the shipment tracking
+        // (no re-entry at ship).
+        const lineTrackedEntityIds: (string | null)[] = [];
+
         const shipmentLineItems = warehouseTransferLines.data.reduce<
           ShipmentLineItem[]
         >((acc, d) => {
@@ -1713,6 +1718,9 @@ serve(async (req: Request) => {
             createdBy: userId,
             orderQuantity: d.quantity ?? 0,
           });
+          lineTrackedEntityIds.push(
+            serialTracking || batchTracking ? (d.trackedEntityId ?? null) : null
+          );
 
           return acc;
         }, []);
@@ -1762,7 +1770,7 @@ serve(async (req: Request) => {
             .where("shipmentId", "=", id)
             .execute();
 
-          await trx
+          const insertedLines = await trx
             .insertInto("shipmentLine")
             .values(
               shipmentLineItems.map((lineItem) => ({
@@ -1770,12 +1778,39 @@ serve(async (req: Request) => {
                 shipmentId: id,
               }))
             )
+            .returning(["id"])
             .execute();
 
-          return { id };
+          return { id, lineIds: insertedLines.map((l) => l.id) };
         });
 
-        return new Response(JSON.stringify(result, null, 2), {
+        // Pre-fill the shipment's serial/lot tracking with the exact unit picked
+        // when the transfer was created, so it doesn't have to be re-entered at
+        // ship. Mirrors the ship-time picker's trackedEntity.attributes stamp.
+        for (let i = 0; i < result.lineIds.length; i++) {
+          const trackedEntityId = lineTrackedEntityIds[i];
+          if (!trackedEntityId) continue;
+          const te = await client
+            .from("trackedEntity")
+            .select("attributes")
+            .eq("id", trackedEntityId)
+            .single();
+          if (te.error || !te.data) continue;
+          const attrs = (te.data.attributes ?? {}) as Record<string, unknown>;
+          await client
+            .from("trackedEntity")
+            .update({
+              attributes: {
+                ...attrs,
+                Shipment: result.id,
+                "Shipment Line": result.lineIds[i],
+                "Shipment Line Index": 0,
+              },
+            })
+            .eq("id", trackedEntityId);
+        }
+
+        return new Response(JSON.stringify({ id: result.id }, null, 2), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 201,
         });

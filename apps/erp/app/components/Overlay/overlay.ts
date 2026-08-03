@@ -74,6 +74,22 @@ export const overlay = {
       };
     },
 
+    newTransfer(mode: "stock" | "warehouse" = "warehouse"): OverlayTarget {
+      return {
+        id: "newTransfer",
+        url: `${path.to.newTransfer}?overlay=true&mode=${mode}`,
+        params: { mode }
+      };
+    },
+
+    newStyleSample({ styleId }: { styleId: string }): OverlayTarget {
+      return {
+        id: "newStyleSample",
+        url: `${path.to.newStyleSample(styleId)}?overlay=true`,
+        params: overlayParams({ styleId })
+      };
+    },
+
     newProductionQuantity({
       jobId,
       jobOperationId,

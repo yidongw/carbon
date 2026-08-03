@@ -1,10 +1,11 @@
-import { MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
+import { Button, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
 import {
   LuBookMarked,
   LuCalendar,
+  LuCirclePlus,
   LuClock,
   LuHash,
   LuMapPin,
@@ -13,8 +14,9 @@ import {
   LuUser
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { EmployeeAvatar, Hyperlink, Table } from "~/components";
 import { ConfirmDelete } from "~/components/Modals";
+import { overlay, useOverlay } from "~/components/Overlay";
 import {
   useDateFormatter,
   usePermissions,
@@ -45,6 +47,18 @@ const WarehouseTransfersTable = memo(
     const { formatDate } = useDateFormatter();
     const navigate = useNavigate();
     const permissions = usePermissions();
+    const { openOverlay } = useOverlay();
+    const openNew = useCallback(() => {
+      openOverlay(overlay.to.newTransfer("warehouse"), {
+        // Go to the created transfer once it's saved. Defer so the navigation
+        // runs after the overlay's own close writes the URL (else it clobbers us
+        // back to the list).
+        onSuccess: (data) => {
+          const to = (data as { redirectTo?: string } | null)?.redirectTo;
+          if (to) setTimeout(() => navigate(to), 0);
+        }
+      });
+    }, [openOverlay, navigate]);
 
     const rows = useMemo(() => data, [data]);
     const [people] = usePeople();
@@ -244,10 +258,9 @@ const WarehouseTransfersTable = memo(
           }}
           primaryAction={
             permissions.can("create", "inventory") && (
-              <New
-                label={t`Warehouse Transfer`}
-                to={path.to.newWarehouseTransfer}
-              />
+              <Button leftIcon={<LuCirclePlus />} onClick={openNew}>
+                <Trans>New Warehouse Transfer</Trans>
+              </Button>
             )
           }
           renderContextMenu={renderContextMenu}

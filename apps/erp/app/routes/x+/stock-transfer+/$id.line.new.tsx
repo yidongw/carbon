@@ -6,6 +6,7 @@ import { useRouteData } from "@carbon/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useNavigate, useParams } from "react-router";
 import {
+  checkTransferLineAvailability,
   getStockTransfer,
   isStockTransferLocked,
   stockTransferLineValidator,
@@ -57,6 +58,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { id: lineId, ...d } = validation.data;
+
+  const availability = await checkTransferLineAvailability(client, {
+    companyId,
+    locationId: transfer.data?.locationId ?? "",
+    itemId: d.itemId,
+    fromStorageUnitId: d.fromStorageUnitId || null,
+    quantity: d.quantity
+  });
+  if (!availability.ok) {
+    return validationError({
+      fieldErrors: { quantity: availability.message }
+    } as never);
+  }
 
   const insertStockTransferLine = await upsertStockTransferLine(client, {
     ...d,

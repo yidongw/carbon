@@ -23,14 +23,14 @@ import { EmployeeAvatar, Hyperlink, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { ConfirmDelete } from "~/components/Modals";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
-import { clearStockTransferWizard, usePeople } from "~/stores";
+import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import { stockTransferStatusType } from "../../inventory.models";
 import type { StockTransfer } from "../../types";
 import StockTransferStatus from "./StockTransferStatus";
-import { StockTransferWizard } from "./StockTransferWizard";
 
 type StockTransfersTableProps = {
   data: StockTransfer[];
@@ -40,13 +40,23 @@ type StockTransfersTableProps = {
 
 const StockTransfersTable = memo(
   ({ data, count, locationId }: StockTransfersTableProps) => {
-    const wizardDisclosure = useDisclosure();
-
     const [params] = useUrlParams();
     const { t } = useLingui();
     const { formatDate } = useDateFormatter();
     const navigate = useNavigate();
     const permissions = usePermissions();
+    const { openOverlay } = useOverlay();
+    const openNew = useCallback(() => {
+      openOverlay(overlay.to.newTransfer("stock"), {
+        // Go to the created transfer once it's saved. Defer so the navigation
+        // runs after the overlay's own close writes the URL (else it clobbers us
+        // back to the list).
+        onSuccess: (data) => {
+          const to = (data as { redirectTo?: string } | null)?.redirectTo;
+          if (to) setTimeout(() => navigate(to), 0);
+        }
+      });
+    }, [openOverlay, navigate]);
 
     const rows = useMemo(() => data, [data]);
     const [people] = usePeople();
@@ -258,14 +268,8 @@ const StockTransfersTable = memo(
                 }}
               />
               {permissions.can("create", "inventory") && (
-                <Button
-                  onClick={() => {
-                    clearStockTransferWizard();
-                    wizardDisclosure.onOpen();
-                  }}
-                  leftIcon={<LuCirclePlus />}
-                >
-                  Add Stock Transfer
+                <Button leftIcon={<LuCirclePlus />} onClick={openNew}>
+                  <Trans>New Stock Transfer</Trans>
                 </Button>
               )}
             </div>
@@ -289,12 +293,6 @@ const StockTransfersTable = memo(
               deleteStockTransferModal.onClose();
               setSelectedStockTransfer(null);
             }}
-          />
-        )}
-        {wizardDisclosure.isOpen && (
-          <StockTransferWizard
-            locationId={locationId}
-            onClose={wizardDisclosure.onClose}
           />
         )}
       </>
