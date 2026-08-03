@@ -11,6 +11,7 @@ import {
   LuCheck,
   LuFile,
   LuHash,
+  LuMapPin,
   LuNetwork,
   LuQrCode,
   LuTriangleAlert
@@ -35,11 +36,18 @@ type ShelfLifePolicy = {
   calculateFromBom?: boolean | null;
 };
 
+type EntityLocation = {
+  locationName: string | null;
+  warehouseName: string | null;
+  storageUnitName: string | null;
+};
+
 type TrackedEntitiesTableProps = {
   data: TrackedEntity[];
   count: number;
   nearExpiryWarningDays: number | null;
   shelfLifePolicies?: Record<string, ShelfLifePolicy>;
+  entityLocations?: Record<string, EntityLocation>;
 };
 
 const TrackedEntitiesTable = memo(
@@ -47,7 +55,8 @@ const TrackedEntitiesTable = memo(
     data,
     count,
     nearExpiryWarningDays,
-    shelfLifePolicies
+    shelfLifePolicies,
+    entityLocations
   }: TrackedEntitiesTableProps) => {
     const navigate = useNavigate();
     const { t } = useLingui();
@@ -115,6 +124,38 @@ const TrackedEntitiesTable = memo(
           meta: {
             icon: <LuHash />,
             renderTotal: true
+          }
+        },
+        {
+          id: "location",
+          header: t`Location`,
+          cell: ({ row }) => {
+            const location = entityLocations?.[row.original.id];
+            if (
+              !location ||
+              (!location.locationName &&
+                !location.warehouseName &&
+                !location.storageUnitName)
+            ) {
+              return null;
+            }
+            const primary = location.locationName ?? location.warehouseName;
+            const secondary = [location.warehouseName, location.storageUnitName]
+              .filter(Boolean)
+              .join(" · ");
+            return (
+              <div className="flex flex-col items-start gap-0">
+                <span>{primary}</span>
+                {secondary && (
+                  <span className="text-xs text-muted-foreground">
+                    {secondary}
+                  </span>
+                )}
+              </div>
+            );
+          },
+          meta: {
+            icon: <LuMapPin />
           }
         },
         {
@@ -215,6 +256,7 @@ const TrackedEntitiesTable = memo(
         t,
         nearExpiryWarningDays,
         shelfLifePolicies,
+        entityLocations,
         formatDate
       ]
     );
