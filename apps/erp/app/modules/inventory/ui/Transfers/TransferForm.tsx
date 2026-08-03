@@ -19,10 +19,12 @@ import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import {
   Customer,
+  CustomerLocation,
   Hidden,
   Location,
   Submit,
-  Supplier
+  Supplier,
+  SupplierLocation
 } from "~/components/Form";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { newTransferValidator } from "~/modules/inventory";
@@ -430,17 +432,43 @@ const TransferForm = ({
                   onChange={(o) => setToLocationId(o?.value ?? "")}
                 />
               ) : toType === "customer" ? (
-                <Customer
-                  name="toCustomerId"
-                  label={t`Customer`}
-                  onChange={(o) => setToCustomerId(o?.value ?? "")}
-                />
+                // Pick the customer, then the specific ship-to location. Each
+                // customer location has its own warehouse (created on first use);
+                // leaving the location empty ships to the customer's bare
+                // warehouse.
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full items-start">
+                  <Customer
+                    name="toCustomerId"
+                    label={t`Customer`}
+                    onChange={(o) => setToCustomerId(o?.value ?? "")}
+                  />
+                  {toCustomerId && (
+                    // key on the customer so switching customers resets the
+                    // location field (and its options) to empty.
+                    <CustomerLocation
+                      key={toCustomerId}
+                      name="toCustomerLocationId"
+                      customer={toCustomerId}
+                      label={t`Ship-to location`}
+                    />
+                  )}
+                </div>
               ) : (
-                <Supplier
-                  name="toSupplierId"
-                  label={t`Supplier`}
-                  onChange={(o) => setToSupplierId(o?.value ?? "")}
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full items-start">
+                  <Supplier
+                    name="toSupplierId"
+                    label={t`Supplier`}
+                    onChange={(o) => setToSupplierId(o?.value ?? "")}
+                  />
+                  {toSupplierId && (
+                    <SupplierLocation
+                      key={toSupplierId}
+                      name="toSupplierLocationId"
+                      supplier={toSupplierId}
+                      label={t`Ship-to location`}
+                    />
+                  )}
+                </div>
               )}
             </>
           )}

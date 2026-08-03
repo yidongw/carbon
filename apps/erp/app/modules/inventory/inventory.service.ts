@@ -1067,7 +1067,8 @@ export async function getInboundTransferShippedSerials(
     .eq("companyId", companyId);
   const transferLineByEntity = new Map<string, string>();
   for (const l of lines.data ?? []) {
-    if (l.id && l.trackedEntityId) transferLineByEntity.set(l.trackedEntityId, l.id);
+    if (l.id && l.trackedEntityId)
+      transferLineByEntity.set(l.trackedEntityId, l.id);
   }
   if (transferLineByEntity.size > 0) {
     const ents = await client
@@ -1078,7 +1079,8 @@ export async function getInboundTransferShippedSerials(
     for (const e of ents.data ?? []) {
       const transferLineId = transferLineByEntity.get(e.id);
       const serial = e.readableId ?? e.id;
-      if (transferLineId && serial) (result[transferLineId] ??= []).push(serial);
+      if (transferLineId && serial)
+        (result[transferLineId] ??= []).push(serial);
     }
   }
 
@@ -3217,36 +3219,68 @@ export async function pickPickingListLine(
   return { data: { id: line.id }, error: null };
 }
 
-// Find (or create on first use) the warehouse that represents a customer or
-// supplier, so a transfer can be sent "to" that partner and the serial's
-// location reflects "at partner X". The auto-created location uses placeholder
-// address fields you can edit later in Resources → Locations.
+// Find (or create on first use) the warehouse that represents a SPECIFIC customer
+// or supplier location, so a transfer can be sent "to" that partner and the
+// serial's location reflects "at partner X". The warehouse stores no address of
+// its own — it reads the address through the linked customer/supplier location
+// (single source of truth); you can still override it in Resources → Locations.
+// When no partner location is given (the partner has none yet), one bare
+// per-partner warehouse is used instead.
 export async function resolveOrCreatePartnerLocation(
   client: SupabaseClient<Database>,
   companyId: string,
   userId: string,
-  partner: { customerId?: string; supplierId?: string }
+  partner:
+    | { customerId: string; customerLocationId?: string | null }
+    | { supplierId: string; supplierLocationId?: string | null }
 ): Promise<{ id: string | null; error: PostgrestError | null }> {
-  const column = partner.customerId ? "customerId" : "supplierId";
-  const partnerId = partner.customerId ?? partner.supplierId;
+  const isCustomer = "customerId" in partner;
+  const partnerColumn = isCustomer ? "customerId" : "supplierId";
+  const partnerLocationColumn = isCustomer
+    ? "customerLocationId"
+    : "supplierLocationId";
+  const partnerId = isCustomer ? partner.customerId : partner.supplierId;
+  const partnerLocationId = isCustomer
+    ? partner.customerLocationId
+    : partner.supplierLocationId;
   if (!partnerId) return { id: null, error: null };
 
-  const existing = await client
+  // A specific partner location has its own warehouse; otherwise fall back to the
+  // single bare per-partner warehouse (no partner location linked).
+  const existingQuery = client
     .from("location")
     .select("id")
-    .eq("companyId", companyId)
-    .eq(column, partnerId)
+    .eq("companyId", companyId);
+  const existing = await (partnerLocationId
+    ? existingQuery.eq(partnerLocationColumn, partnerLocationId)
+    : existingQuery.eq(partnerColumn, partnerId).is(partnerLocationColumn, null)
+  )
     .limit(1)
     .maybeSingle();
   if (existing.data?.id) return { id: existing.data.id, error: null };
 
   const partnerRow = await client
-    .from(partner.customerId ? "customer" : "supplier")
+    .from(isCustomer ? "customer" : "supplier")
     .select("name")
     .eq("id", partnerId)
     .single();
-  const name =
-    partnerRow.data?.name ?? (partner.customerId ? "Customer" : "Supplier");
+  const partnerName =
+    partnerRow.data?.name ?? (isCustomer ? "Customer" : "Supplier");
+
+  // Name the warehouse "Partner — Location" when tied to a specific location so
+  // the location list stays legible; the unique (name, companyId) constraint also
+  // needs distinct names per customer location.
+  let name = partnerName;
+  if (partnerLocationId) {
+    const partnerLocationRow = await client
+      .from(isCustomer ? "customerLocation" : "supplierLocation")
+      .select("name")
+      .eq("id", partnerLocationId)
+      .single();
+    const locationName = (partnerLocationRow.data as { name?: string } | null)
+      ?.name;
+    if (locationName) name = `${partnerName} — ${locationName}`;
+  }
 
   const created = await client
     .from("location")
@@ -3254,11 +3288,12 @@ export async function resolveOrCreatePartnerLocation(
       name,
       companyId,
       createdBy: userId,
-      addressLine1: "-",
-      city: "-",
-      postalCode: "-",
+      // No own address — inherited from the linked partner location.
       timezone: "UTC",
-      [column]: partnerId
+      [partnerColumn]: partnerId,
+      ...(partnerLocationId
+        ? { [partnerLocationColumn]: partnerLocationId }
+        : {})
     } as never)
     .select("id")
     .single();

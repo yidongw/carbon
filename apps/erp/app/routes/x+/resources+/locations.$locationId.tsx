@@ -107,6 +107,8 @@ export default function LocationRoute() {
     longitude: location.longitude ?? undefined,
     customerId: location.customerId ?? undefined,
     supplierId: location.supplierId ?? undefined,
+    customerLocationId: location.customerLocationId ?? undefined,
+    supplierLocationId: location.supplierLocationId ?? undefined,
     ...getCustomFields(location.customFields)
   };
 

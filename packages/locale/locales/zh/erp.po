@@ -3062,6 +3062,9 @@ msgstr "已邀请客户"
 msgid "Customer Invoice Number"
 msgstr "客户发票号"
 
+msgid "Customer location"
+msgstr "客户位置"
+
 msgid "Customer Location"
 msgstr "客户位置"
 
@@ -8509,6 +8512,12 @@ msgstr "从材料继承"
 msgid "Inherited from parent"
 msgstr "继承自父级"
 
+msgid "Inherited from the selected location"
+msgstr "继承自选定位置"
+
+msgid "Inherited from the selected location."
+msgstr "继承自选定位置。"
+
 msgid "inherits {inheritedName}"
 msgstr "继承 {inheritedName}"
 
@@ -13492,6 +13501,9 @@ msgstr "收货地址"
 msgid "Ship to Customer"
 msgstr "发给客户"
 
+msgid "Ship-to location"
+msgstr "收货地点"
+
 msgid "Shipment"
 msgstr "发货"
 
@@ -14433,6 +14445,9 @@ msgstr "供应商发票号"
 
 msgid "Supplier Issue"
 msgstr "供应商问题"
+
+msgid "Supplier location"
+msgstr "供应商位置"
 
 msgid "Supplier Location"
 msgstr "供应商位置"

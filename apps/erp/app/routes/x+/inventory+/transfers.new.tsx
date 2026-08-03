@@ -122,6 +122,8 @@ export async function action({ request }: ActionFunctionArgs) {
     toLocationId,
     toCustomerId,
     toSupplierId,
+    toCustomerLocationId,
+    toSupplierLocationId,
     lines
   } = validation.data;
 
@@ -274,8 +276,14 @@ export async function action({ request }: ActionFunctionArgs) {
       companyId,
       userId,
       toType === "customer"
-        ? { customerId: toCustomerId }
-        : { supplierId: toSupplierId }
+        ? {
+            customerId: toCustomerId as string,
+            customerLocationId: toCustomerLocationId ?? null
+          }
+        : {
+            supplierId: toSupplierId as string,
+            supplierLocationId: toSupplierLocationId ?? null
+          }
     );
     if (resolved.error || !resolved.id) {
       if (isOverlay) {

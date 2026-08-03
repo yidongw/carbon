@@ -504,6 +504,11 @@ export const newTransferValidator = z
     toLocationId: zfd.text(z.string().optional()),
     toCustomerId: zfd.text(z.string().optional()),
     toSupplierId: zfd.text(z.string().optional()),
+    // The specific customer/supplier location to ship to (its warehouse is
+    // created on first use). Optional: a partner with no location falls back to a
+    // single bare per-partner warehouse.
+    toCustomerLocationId: zfd.text(z.string().optional()),
+    toSupplierLocationId: zfd.text(z.string().optional()),
     lines: z.preprocess(
       (v) => {
         if (typeof v !== "string") return v;

@@ -2853,6 +2853,9 @@ msgstr "Customer invited"
 msgid "Customer Invoice Number"
 msgstr "Customer Invoice Number"
 
+msgid "Customer location"
+msgstr "Customer location"
+
 msgid "Customer Location"
 msgstr "Customer Location"
 
@@ -8244,6 +8247,12 @@ msgstr "Inherit From Materials"
 msgid "Inherited from parent"
 msgstr "Inherited from parent"
 
+msgid "Inherited from the selected location"
+msgstr "Inherited from the selected location"
+
+msgid "Inherited from the selected location."
+msgstr "Inherited from the selected location."
+
 msgid "inherits {inheritedName}"
 msgstr "inherits {inheritedName}"
 
@@ -13177,6 +13186,9 @@ msgstr "Ship To"
 msgid "Ship to Customer"
 msgstr "Ship to Customer"
 
+msgid "Ship-to location"
+msgstr "Ship-to location"
+
 msgid "Shipment"
 msgstr "Shipment"
 
@@ -14085,6 +14097,9 @@ msgstr "Supplier Invoice Number"
 
 msgid "Supplier Issue"
 msgstr "Supplier Issue"
+
+msgid "Supplier location"
+msgstr "Supplier location"
 
 msgid "Supplier Location"
 msgstr "Supplier Location"

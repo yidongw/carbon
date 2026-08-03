@@ -17,6 +17,9 @@ type SupplierLocationSelectProps = Omit<
 > & {
   supplier?: string;
   inline?: boolean;
+  // Show only the location name (e.g. "Main Office"). Use where the address is
+  // already shown separately. Falls back to the address when a location is unnamed.
+  nameOnly?: boolean;
   onChange?: (supplier: SupplierLocationType | null) => void;
 };
 
@@ -45,19 +48,23 @@ const SupplierLocation = (props: SupplierLocationSelectProps) => {
     }
   }, [props.supplier]);
 
+  const nameOnly = props.nameOnly;
   const options = useMemo(
     () =>
-      supplierLocationsFetcher.data?.data?.map((c) => ({
-        value: c.id,
-        label: `${formatAddress(
+      supplierLocationsFetcher.data?.data?.map((c) => {
+        const address = formatAddress(
           c.address?.addressLine1,
           c.address?.addressLine2,
           c.address?.city,
           c.address?.stateProvince
-        )} (${c.name})`
-      })) ?? [],
+        );
+        return {
+          value: c.id,
+          label: nameOnly ? c.name || address : `${address} (${c.name})`
+        };
+      }) ?? [],
 
-    [supplierLocationsFetcher.data]
+    [supplierLocationsFetcher.data, nameOnly]
   );
 
   const onChange = (

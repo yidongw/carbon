@@ -2854,6 +2854,9 @@ msgstr "Клиент приглашен"
 msgid "Customer Invoice Number"
 msgstr "Номер счета клиента"
 
+msgid "Customer location"
+msgstr "Локация клиента"
+
 msgid "Customer Location"
 msgstr "Местоположение клиента"
 
@@ -8245,6 +8248,12 @@ msgstr "Наследовать от материалов"
 msgid "Inherited from parent"
 msgstr "Наследуется из родителя"
 
+msgid "Inherited from the selected location"
+msgstr "Инкапсулировано из выбранного местоположения"
+
+msgid "Inherited from the selected location."
+msgstr "Инкапсулировано из выбранного местоположения."
+
 msgid "inherits {inheritedName}"
 msgstr "наследует {inheritedName}"
 
@@ -13178,6 +13187,9 @@ msgstr "Отправить адресу"
 msgid "Ship to Customer"
 msgstr "Отправить клиенту"
 
+msgid "Ship-to location"
+msgstr "Адрес доставки"
+
 msgid "Shipment"
 msgstr "Отправка"
 
@@ -14086,6 +14098,9 @@ msgstr "Номер счета поставщика"
 
 msgid "Supplier Issue"
 msgstr "Проблема с поставщиком"
+
+msgid "Supplier location"
+msgstr "Локация поставщика"
 
 msgid "Supplier Location"
 msgstr "Местоположение поставщика"

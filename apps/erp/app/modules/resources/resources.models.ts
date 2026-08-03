@@ -71,36 +71,87 @@ export const locationValidator = z
   .object({
     id: zfd.text(z.string().optional()),
     name: z.string().min(1, { message: "Name is required" }),
-    addressLine1: z.string().min(1, { message: "Address is required" }),
-    addressLine2: z.string().optional(),
-    city: z.string().min(1, { message: "City is required" }),
+    // Address fields are optional at the schema level: a partner warehouse (linked
+    // to a customer/supplier) stores no address of its own and inherits it from the
+    // linked partner location. The superRefine below still requires them for
+    // internal warehouses.
+    addressLine1: zfd.text(z.string().optional()),
+    addressLine2: zfd.text(z.string().optional()),
+    city: zfd.text(z.string().optional()),
     stateProvince: zfd.text(z.string().optional()),
-    postalCode: z.string().min(1, { message: "Postal Code is required" }),
-    countryCode: z.string().min(1, { message: "Country is required" }),
+    postalCode: zfd.text(z.string().optional()),
+    countryCode: zfd.text(z.string().optional()),
     timezone: z.string().min(1, { message: "Timezone is required" }),
     latitude: zfd.numeric(z.number().optional()),
     longitude: zfd.numeric(z.number().optional()),
     // A location may represent a customer or a supplier (at most one), so
     // transfers can be sent "to" that partner.
     customerId: zfd.text(z.string().optional()),
-    supplierId: zfd.text(z.string().optional())
+    supplierId: zfd.text(z.string().optional()),
+    // The specific customer/supplier location this warehouse represents; its
+    // address is inherited through this link.
+    customerLocationId: zfd.text(z.string().optional()),
+    supplierLocationId: zfd.text(z.string().optional())
   })
-  .superRefine(({ latitude, longitude, customerId, supplierId }, ctx) => {
-    if (customerId && supplierId) {
-      ctx.addIssue({
-        code: "custom",
-        message:
-          "A location can be linked to a customer or a supplier, not both",
-        path: ["supplierId"]
-      });
+  .superRefine(
+    (
+      {
+        latitude,
+        longitude,
+        customerId,
+        supplierId,
+        addressLine1,
+        city,
+        postalCode,
+        countryCode
+      },
+      ctx
+    ) => {
+      if (customerId && supplierId) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "A location can be linked to a customer or a supplier, not both",
+          path: ["supplierId"]
+        });
+      }
+      // Internal warehouses require a real address; partner warehouses inherit it
+      // from the linked customer/supplier location.
+      const isPartner = !!(customerId || supplierId);
+      if (!isPartner) {
+        if (!addressLine1)
+          ctx.addIssue({
+            code: "custom",
+            message: "Address is required",
+            path: ["addressLine1"]
+          });
+        if (!city)
+          ctx.addIssue({
+            code: "custom",
+            message: "City is required",
+            path: ["city"]
+          });
+        if (!postalCode)
+          ctx.addIssue({
+            code: "custom",
+            message: "Postal Code is required",
+            path: ["postalCode"]
+          });
+        if (!countryCode)
+          ctx.addIssue({
+            code: "custom",
+            message: "Country is required",
+            path: ["countryCode"]
+          });
+      }
+      if ((latitude && !longitude) || (!latitude && longitude)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Both latitude and longitude are required"
+        });
+      }
     }
-    if ((latitude && !longitude) || (!latitude && longitude)) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Both latitude and longitude are required"
-      });
-    }
-  });
+  );
 
 export const maintenanceDispatchCommentValidator = z.object({
   id: zfd.text(z.string().optional()),

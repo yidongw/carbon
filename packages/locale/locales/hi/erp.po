@@ -2854,6 +2854,9 @@ msgstr "कार्यात वित्तीय संबंधी प्र
 msgid "Customer Invoice Number"
 msgstr "ग्राहक चालान संख्या"
 
+msgid "Customer location"
+msgstr "कार्यालय स्थिति"
+
 msgid "Customer Location"
 msgstr "ग्राहक स्थान"
 
@@ -8248,6 +8251,12 @@ msgstr "सामग्री से विरासत में प्रा�
 msgid "Inherited from parent"
 msgstr "प्रिंटल द्वारा इनहरेट किया.get_app()"
 
+msgid "Inherited from the selected location"
+msgstr "इसको चयनित स्थान से हुआ है"
+
+msgid "Inherited from the selected location."
+msgstr "इसको चयनित स्थान से हुआ है।"
+
 msgid "inherits {inheritedName}"
 msgstr "{inheritedName} इनहेरिट करता है"
 
@@ -13181,6 +13190,9 @@ msgstr "शिप टू"
 msgid "Ship to Customer"
 msgstr "ग्राहक को भेजें"
 
+msgid "Ship-to location"
+msgstr "शिप टू स्थान"
+
 msgid "Shipment"
 msgstr "शिपमेंट"
 
@@ -14089,6 +14101,9 @@ msgstr "आपूर्तिकर्ता चालान संख्या"
 
 msgid "Supplier Issue"
 msgstr "सप्लायर से जुड़ी समस्या"
+
+msgid "Supplier location"
+msgstr "संपादक विषयवासी स्थान"
 
 msgid "Supplier Location"
 msgstr "आपूर्तिकर्ता स्थान"
