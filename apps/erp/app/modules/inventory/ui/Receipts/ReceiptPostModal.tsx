@@ -37,7 +37,12 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
   const { t } = useLingui();
   const [items] = useItems();
   const routeData = useRouteData<{
+    receipt: {
+      sourceDocument: string | null;
+      sourceDocumentId: string | null;
+    } | null;
     receiptLines: ReceiptLine[];
+    shippedSerialsByLineId?: Record<string, string[]>;
     fixedAssetLines: {
       id: string;
       received: boolean;
@@ -90,7 +95,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
         {
           itemReadableId: null,
           receivedQuantity: 0,
-          receivedQuantityError: "Receipt is empty"
+          receivedQuantityError: t`Receipt is empty`
         }
       ]);
     }
@@ -107,7 +112,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
             receivedQuantity: line.receivedQuantity ?? 0,
-            receivedQuantityError: "Batch number is required"
+            receivedQuantityError: t`Batch number is required`
           });
         }
       }
@@ -142,8 +147,31 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
             receivedQuantity,
-            receivedQuantityError: "Serial numbers are missing"
+            receivedQuantityError: t`Serial numbers are missing`
           });
+        }
+
+        // Warehouse-transfer receipts may only post serials that were shipped
+        // on the linked transfer. Block posting anything not in that set.
+        if (routeData?.receipt?.sourceDocument === "Inbound Transfer") {
+          const shippedSerials =
+            routeData?.shippedSerialsByLineId?.[line.lineId ?? ""] ?? [];
+          const invalidSerials = (receiptLineTracking.data ?? [])
+            .filter((tracking) => {
+              const attributes = tracking.attributes as TrackedEntityAttributes;
+              return attributes["Receipt Line"] === line.id;
+            })
+            .map((tracking) => tracking.readableId)
+            .filter((serial): serial is string => Boolean(serial))
+            .filter((serial) => !shippedSerials.includes(serial));
+
+          if (invalidSerials.length > 0) {
+            errors.push({
+              itemReadableId: getItemReadableId(items, line.itemId) ?? null,
+              receivedQuantity,
+              receivedQuantityError: t`Serial numbers not shipped on this transfer: ${invalidSerials.join(", ")}`
+            });
+          }
         }
       }
     });

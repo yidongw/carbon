@@ -99,7 +99,7 @@ const ShipmentVoidModal = ({ onClose }: { onClose: () => void }) => {
                 }
                 type="submit"
               >
-                Void Shipment
+                <Trans>Void Shipment</Trans>
               </Button>
             </fetcher.Form>
           </HStack>

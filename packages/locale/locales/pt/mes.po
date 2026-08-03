@@ -6304,3 +6304,60 @@ msgstr "Sua conta não está ativa"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Sua empresa está no plano gratuito (somente leitura). Faça upgrade para fazer alterações."
+
+msgid "Batch has insufficient quantity"
+msgstr "Lote possui quantidade insuficiente"
+
+msgid "Failed to add a line"
+msgstr "Falhou ao adicionar uma linha"
+
+msgid "Failed to check serial number index"
+msgstr "Falhou ao verificar o índice do número de série"
+
+msgid "Failed to create samples"
+msgstr "Falhou na criação de amostras"
+
+msgid "Failed to create transfer"
+msgstr "Falhou na criação da transferência"
+
+msgid "Failed to fetch samples"
+msgstr "Falhou ao obter amostras"
+
+msgid "Failed to get employee processes"
+msgstr "Falhou ao obter os processos do funcionário"
+
+msgid "Failed to load receipt line"
+msgstr "Falha ao carregar linha de recibo"
+
+msgid "Failed to load tracked entity"
+msgstr "Falhou ao carregar entidade rastreada"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Falhou na resolução do almoxarifado parceiro"
+
+msgid "Failed to update processes"
+msgstr "Falhou ao atualizar os processos"
+
+msgid "Failed to update tracking"
+msgstr "Falhou ao atualizar o rastreamento"
+
+msgid "Samples created"
+msgstr "Amostras criadas"
+
+msgid "Serial number already exists for this item"
+msgstr "Número de série já existe para este item"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "O número de série já está sendo usado para um outro item ou posição"
+
+msgid "Successfully updated processes"
+msgstr "Processos atualizados com sucesso"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Este número de série não foi embarcado nesta transferência"
+
+msgid "Tracked entity is not available"
+msgstr "Entidade rastreada não está disponível"
+
+msgid "Transfer created"
+msgstr "Transferência criada"

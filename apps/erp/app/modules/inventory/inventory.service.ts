@@ -577,12 +577,34 @@ export async function getSerialNumbersForItem(
   args: {
     itemId: string;
     companyId: string;
+    locationId?: string;
   }
 ) {
-  // Smart default order: expiring soonest first (FEFO, nulls last), then oldest
-  // first (FIFO). Surfaces that don't use the TrackedEntityPicker still get a
-  // sensible pick order; the picker re-sorts client-side when the user switches.
-  let query = client
+  // Location-aware: only serials actually on-hand and Available at the given
+  // location. This is what gates shipping — you can't ship a serial that isn't
+  // in the source warehouse. Mapped to the same id/readableId/status shape the
+  // location-blind branch returns so callers stay unchanged.
+  if (args.locationId) {
+    const available = await getAvailableTrackedEntities(client, {
+      itemId: args.itemId,
+      companyId: args.companyId,
+      locationId: args.locationId
+    });
+    return {
+      data:
+        available.data?.map((entity) => ({
+          id: entity.trackedEntityId,
+          readableId: entity.readableId,
+          status: entity.status
+        })) ?? null,
+      error: available.error
+    };
+  }
+
+  // Location-blind fallback (e.g. read-only display of already-assigned serials
+  // that may no longer be on-hand). Smart default order: expiring soonest first
+  // (FEFO, nulls last), then oldest first (FIFO).
+  return client
     .from("trackedEntity")
     .select("*")
     .eq("sourceDocument", "Item")
@@ -591,8 +613,6 @@ export async function getSerialNumbersForItem(
     .eq("quantity", 1)
     .order("expirationDate", { ascending: true, nullsFirst: false })
     .order("createdAt", { ascending: true });
-
-  return query;
 }
 
 /**
@@ -1048,8 +1068,9 @@ export async function getShipmentLineTracking(
 
 // For an inbound-transfer receipt, the exact serials that were shipped on the
 // matching outbound transfer, grouped by warehouse-transfer line id (which is
-// the receipt line's `lineId`). Lets the receipt fill in the serial that was
-// actually shipped instead of minting a new one — you receive what was sent.
+// the receipt line's `lineId`). You receive what was actually SENT — which can
+// differ from whatever serial was pinned to the transfer line, since the
+// shipment lets you pick any serial on-hand at the source warehouse.
 export async function getInboundTransferShippedSerials(
   client: SupabaseClient<Database>,
   warehouseTransferId: string,
@@ -1057,43 +1078,16 @@ export async function getInboundTransferShippedSerials(
 ): Promise<Record<string, string[]>> {
   const result: Record<string, string[]> = {};
 
-  // Primary, durable source: the serial pinned to each transfer line. This
-  // survives posting the outbound shipment (which strips the "Shipment"
-  // attribute off the serials), unlike reading the shipment's tracking.
   const lines = await client
     .from("warehouseTransferLine")
     .select("id, trackedEntityId")
     .eq("transferId", warehouseTransferId)
     .eq("companyId", companyId);
-  const transferLineByEntity = new Map<string, string>();
-  for (const l of lines.data ?? []) {
-    if (l.id && l.trackedEntityId)
-      transferLineByEntity.set(l.trackedEntityId, l.id);
-  }
-  if (transferLineByEntity.size > 0) {
-    const ents = await client
-      .from("trackedEntity")
-      .select("id, readableId")
-      .in("id", [...transferLineByEntity.keys()])
-      .eq("companyId", companyId);
-    for (const e of ents.data ?? []) {
-      const transferLineId = transferLineByEntity.get(e.id);
-      const serial = e.readableId ?? e.id;
-      if (transferLineId && serial)
-        (result[transferLineId] ??= []).push(serial);
-    }
-  }
 
-  // Lines with no pinned serial (partial serial transfers scan the exact units
-  // at ship). Recover those from the outbound shipment's tracking while it's
-  // still readable (before it's posted).
-  const unpinned = new Set(
-    (lines.data ?? [])
-      .filter((l) => l.id && !l.trackedEntityId)
-      .map((l) => l.id as string)
-  );
-  if (unpinned.size === 0) return result;
-
+  // Primary source of truth: the serials actually recorded on the outbound
+  // shipment for this transfer (trackedEntity tagged with 'Shipment' /
+  // 'Shipment Line'). These persist after the shipment is posted, and reflect
+  // what was really shipped — not merely what was pinned on the transfer line.
   const shipments = await client
     .from("shipment")
     .select("id")
@@ -1101,38 +1095,64 @@ export async function getInboundTransferShippedSerials(
     .eq("sourceDocumentId", warehouseTransferId)
     .eq("companyId", companyId);
   const shipmentIds = (shipments.data ?? []).map((s) => s.id);
-  if (shipmentIds.length === 0) return result;
 
-  const shipmentLines = await client
-    .from("shipmentLine")
-    .select("id, lineId")
-    .in("shipmentId", shipmentIds);
-  const transferLineByShipmentLine = new Map<string, string>();
-  for (const sl of shipmentLines.data ?? []) {
-    if (sl.id && sl.lineId) transferLineByShipmentLine.set(sl.id, sl.lineId);
-  }
+  if (shipmentIds.length > 0) {
+    const shipmentLines = await client
+      .from("shipmentLine")
+      .select("id, lineId")
+      .in("shipmentId", shipmentIds);
+    const transferLineByShipmentLine = new Map<string, string>();
+    for (const sl of shipmentLines.data ?? []) {
+      if (sl.id && sl.lineId) transferLineByShipmentLine.set(sl.id, sl.lineId);
+    }
 
-  const tracking = await Promise.all(
-    shipmentIds.map((id) => getShipmentTracking(client, id, companyId))
-  );
-  const byLine: Record<string, { index: number; serial: string }[]> = {};
-  for (const res of tracking) {
-    for (const te of res.data ?? []) {
-      const attrs = (te.attributes ?? {}) as TrackedEntityAttributes;
-      const shipmentLineId = attrs["Shipment Line"];
-      const serial = te.readableId ?? te.id;
-      if (!shipmentLineId || !serial) continue;
-      const transferLineId = transferLineByShipmentLine.get(shipmentLineId);
-      if (!transferLineId || !unpinned.has(transferLineId)) continue;
-      (byLine[transferLineId] ??= []).push({
-        index: Number(attrs["Shipment Line Index"] ?? 0),
-        serial
-      });
+    const tracking = await Promise.all(
+      shipmentIds.map((id) => getShipmentTracking(client, id, companyId))
+    );
+    const byLine: Record<string, { index: number; serial: string }[]> = {};
+    for (const res of tracking) {
+      for (const te of res.data ?? []) {
+        const attrs = (te.attributes ?? {}) as TrackedEntityAttributes;
+        const shipmentLineId = attrs["Shipment Line"];
+        const serial = te.readableId ?? te.id;
+        if (!shipmentLineId || !serial) continue;
+        const transferLineId = transferLineByShipmentLine.get(shipmentLineId);
+        if (!transferLineId) continue;
+        (byLine[transferLineId] ??= []).push({
+          index: Number(attrs["Shipment Line Index"] ?? 0),
+          serial
+        });
+      }
+    }
+    for (const [lineId, arr] of Object.entries(byLine)) {
+      result[lineId] = arr
+        .sort((a, b) => a.index - b.index)
+        .map((x) => x.serial);
     }
   }
-  for (const [lineId, arr] of Object.entries(byLine)) {
-    result[lineId] = arr.sort((a, b) => a.index - b.index).map((x) => x.serial);
+
+  // Fallback for transfer lines the shipment hasn't recorded a serial for yet
+  // (e.g. the serial was pinned on the transfer but not entered on the
+  // shipment): fall back to the serial pinned to the transfer line.
+  const pinnedByEntity = new Map<string, string>();
+  for (const l of lines.data ?? []) {
+    if (l.id && l.trackedEntityId && !result[l.id])
+      pinnedByEntity.set(l.trackedEntityId, l.id);
   }
+  if (pinnedByEntity.size > 0) {
+    const ents = await client
+      .from("trackedEntity")
+      .select("id, readableId")
+      .in("id", [...pinnedByEntity.keys()])
+      .eq("companyId", companyId);
+    for (const e of ents.data ?? []) {
+      const transferLineId = pinnedByEntity.get(e.id);
+      const serial = e.readableId ?? e.id;
+      if (transferLineId && serial)
+        (result[transferLineId] ??= []).push(serial);
+    }
+  }
+
   return result;
 }
 

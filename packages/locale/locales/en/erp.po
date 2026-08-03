@@ -16158,3 +16158,134 @@ msgstr "from {loc}"
 
 msgid "to {loc}"
 msgstr "to {loc}"
+
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "Are you sure you want to delete this shipment line?"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+
+msgid "Batch has insufficient quantity"
+msgstr "Batch has insufficient quantity"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "Batch number is {0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "Batch number is already used on another shipment line"
+
+msgid "Batch number is required"
+msgstr "Batch number is required"
+
+msgid "Batch number not found"
+msgstr "Batch number not found"
+
+msgid "Duplicate serial number"
+msgstr "Duplicate serial number"
+
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "Expired on {0}"
+
+msgid "Failed to add a line"
+msgstr "Failed to add a line"
+
+msgid "Failed to check serial number index"
+msgstr "Failed to check serial number index"
+
+msgid "Failed to create samples"
+msgstr "Failed to create samples"
+
+msgid "Failed to create transfer"
+msgstr "Failed to create transfer"
+
+msgid "Failed to fetch samples"
+msgstr "Failed to fetch samples"
+
+msgid "Failed to get employee processes"
+msgstr "Failed to get employee processes"
+
+msgid "Failed to load receipt line"
+msgstr "Failed to load receipt line"
+
+msgid "Failed to load tracked entity"
+msgstr "Failed to load tracked entity"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Failed to resolve partner warehouse"
+
+msgid "Failed to track serial number"
+msgstr "Failed to track serial number"
+
+msgid "Failed to update processes"
+msgstr "Failed to update processes"
+
+msgid "Failed to update tracking"
+msgstr "Failed to update tracking"
+
+msgid "Fill shipped serial"
+msgstr "Fill shipped serial"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+
+msgid "Receipt is empty"
+msgstr "Receipt is empty"
+
+msgid "Samples created"
+msgstr "Samples created"
+
+msgid "Serial number already exists"
+msgstr "Serial number already exists"
+
+msgid "Serial number already exists for this item"
+msgstr "Serial number already exists for this item"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "Serial number is {0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Serial number is already used for a different item or position"
+
+msgid "Serial number is not available"
+msgstr "Serial number is not available"
+
+msgid "Serial numbers are missing"
+msgstr "Serial numbers are missing"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "Serial numbers are missing or unavailable"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "Serial numbers not shipped on this transfer: {0}"
+
+msgid "Shipment is empty"
+msgstr "Shipment is empty"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "Shipped quantity exceeds batch quantity ({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "Shipped quantity exceeds job quantity"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+
+msgid "Successfully updated processes"
+msgstr "Successfully updated processes"
+
+msgid "There are more shipped than ordered"
+msgstr "There are more shipped than ordered"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "This serial number was not shipped on this transfer"
+
+msgid "Tracked entity is not available"
+msgstr "Tracked entity is not available"
+
+msgid "Transfer created"
+msgstr "Transfer created"

@@ -6304,3 +6304,60 @@ msgstr "Ваша учетная запись не активна"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Ваша компания использует бесплатный тариф (только чтение). Перейдите на платный тариф, чтобы вносить изменения."
+
+msgid "Batch has insufficient quantity"
+msgstr "Батч имеет недостаточное количество"
+
+msgid "Failed to add a line"
+msgstr "Не удалось добавить строку"
+
+msgid "Failed to check serial number index"
+msgstr "Не удалось проверить индекс серийного номера"
+
+msgid "Failed to create samples"
+msgstr "Не удалось создать образцы"
+
+msgid "Failed to create transfer"
+msgstr "Не удалось создать передачу"
+
+msgid "Failed to fetch samples"
+msgstr "Не удалось получить образцы"
+
+msgid "Failed to get employee processes"
+msgstr "Не удалось получить процессы сотрудника"
+
+msgid "Failed to load receipt line"
+msgstr "Не удалось загрузить строку прихода"
+
+msgid "Failed to load tracked entity"
+msgstr "Не удалось загрузить отслеживаемый объект"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Не удалось разрешить склад партнера"
+
+msgid "Failed to update processes"
+msgstr "Не удалось обновить процессы"
+
+msgid "Failed to update tracking"
+msgstr "Не удалось обновить отслеживание"
+
+msgid "Samples created"
+msgstr "Созданы образцы"
+
+msgid "Serial number already exists for this item"
+msgstr "Серийный номер уже существует для этого элемента"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Серийный номер уже используется для другого элемента или позиции"
+
+msgid "Successfully updated processes"
+msgstr "Успешно обновлены процессы"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Этот серийный номер не был отправлен в этом перемещении"
+
+msgid "Tracked entity is not available"
+msgstr "Следимый объект недоступен"
+
+msgid "Transfer created"
+msgstr "Перенос создан"

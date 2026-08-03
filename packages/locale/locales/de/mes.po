@@ -6304,3 +6304,60 @@ msgstr "Ihr Konto ist nicht aktiv"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Ihr Unternehmen nutzt den kostenlosen Tarif (schreibgeschützt). Führen Sie ein Upgrade durch, um Änderungen vorzunehmen."
+
+msgid "Batch has insufficient quantity"
+msgstr "Lagerbestand ist zu gering"
+
+msgid "Failed to add a line"
+msgstr "Fehler beim Hinzufügen einer Zeile"
+
+msgid "Failed to check serial number index"
+msgstr "Fehler beim Überprüfen der Seriennummer-Index"
+
+msgid "Failed to create samples"
+msgstr "Fehler beim Erstellen von Proben"
+
+msgid "Failed to create transfer"
+msgstr "Fehler beim Erstellen des Transfers"
+
+msgid "Failed to fetch samples"
+msgstr "Fehler beim Abrufen der Proben"
+
+msgid "Failed to get employee processes"
+msgstr "Fehler beim Abrufen der Mitarbeiterprozesse"
+
+msgid "Failed to load receipt line"
+msgstr "Fehler beim Laden der Empfangsposition"
+
+msgid "Failed to load tracked entity"
+msgstr "Fehler beim Laden des überwachten Elements"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Fehler beim Auflösen des Partnerlagers"
+
+msgid "Failed to update processes"
+msgstr "Fehler beim Aktualisieren der Prozesse"
+
+msgid "Failed to update tracking"
+msgstr "Fehler beim Aktualisieren des Verfolgungsstatus"
+
+msgid "Samples created"
+msgstr "Proben erstellt"
+
+msgid "Serial number already exists for this item"
+msgstr "Seriennummer existiert bereits für dieses Item"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Seriennummer wird für ein anderes Item oder Position verwendet"
+
+msgid "Successfully updated processes"
+msgstr "Erfolgreich aktualisierte Prozesse"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Diese Seriennummer wurde auf dieser Übertragung nicht geliefert"
+
+msgid "Tracked entity is not available"
+msgstr "Der beobachtete Gegenstand ist nicht verfügbar"
+
+msgid "Transfer created"
+msgstr "Übertragung erstellt"

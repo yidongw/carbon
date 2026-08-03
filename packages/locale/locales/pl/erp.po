@@ -16159,3 +16159,134 @@ msgstr "z {loc}"
 
 msgid "to {loc}"
 msgstr "do {loc}"
+
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "Czy na pewno chcesz usunąć ten wpis wysyłki?"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "Przypisz procesy, które może wykonywać ten pracownik. Wyświetlane są one podczas raportowania ilości produkcyjnej dla tych procesów."
+
+msgid "Batch has insufficient quantity"
+msgstr "Lepsza parte ma niedostateczną ilość"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "Numer lote jest {0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "Numer lote jest już używany w innej linii wysyłki"
+
+msgid "Batch number is required"
+msgstr "Numer lote jest wymagany"
+
+msgid "Batch number not found"
+msgstr "Numer lote nie został znaleziony"
+
+msgid "Duplicate serial number"
+msgstr "Duplikat numeru seryjnego"
+
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "Z期过期于 {0}"
+
+msgid "Failed to add a line"
+msgstr "Nie udało się dodać linii"
+
+msgid "Failed to check serial number index"
+msgstr "Nie udało się sprawdzić indeksu numeru seryjnego"
+
+msgid "Failed to create samples"
+msgstr "Nie udało się utworzyć próbek"
+
+msgid "Failed to create transfer"
+msgstr "Nie udało się utworzyć przenoszenia"
+
+msgid "Failed to fetch samples"
+msgstr "Nieruchome są próbki"
+
+msgid "Failed to get employee processes"
+msgstr "Nie udało się pobrać procesów pracownika"
+
+msgid "Failed to load receipt line"
+msgstr "Nie można załadować linii odbioru"
+
+msgid "Failed to load tracked entity"
+msgstr "Nie удалось załadować monitorowanego elementu"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Nie udało się rozwiązać magazynu partnerskiego"
+
+msgid "Failed to track serial number"
+msgstr "Nie można śledzić numeru seryjnego"
+
+msgid "Failed to update processes"
+msgstr "Nie udało się zaktualizować procesów"
+
+msgid "Failed to update tracking"
+msgstr "Nie udało się zaktualizować śledzenia"
+
+msgid "Fill shipped serial"
+msgstr "Wypełnij seriale wysłane"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "Tylko przypisani pracownicy pojawią się w raporcie ilościowym. Zakładnie pole puste umożliwia wszystkich."
+
+msgid "Receipt is empty"
+msgstr "Przyjęcie jest puste"
+
+msgid "Samples created"
+msgstr "Zostaleły utworzone próby"
+
+msgid "Serial number already exists"
+msgstr "Numer seryjny już istnieje"
+
+msgid "Serial number already exists for this item"
+msgstr "Numer seryjny już istnieje dla tego elementu"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "Numer seryjny to {0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Numer seryjny jest już używany dla innego elementu lub położenia"
+
+msgid "Serial number is not available"
+msgstr "Numer seryjny nie jest dostępny"
+
+msgid "Serial numbers are missing"
+msgstr "Numer serii brakuje"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "Numer serii brakuje lub są niedostępne"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "Seryjne numery nie wysłane w tym przeniesieniu: {0}"
+
+msgid "Shipment is empty"
+msgstr "Wysyłka jest pusta"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "Ilość wysłanej ilości przekracza ilość loteczną ({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "Ilość wysłanej ilości przekracza ilość zlecenia"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "Ilość wysłanej ilości jest mniejsza niż ilość lotej. Nowe loty zostaną utworzone dla pozostałej ilości podczas publikacji."
+
+msgid "Successfully updated processes"
+msgstr "Pomyślnie zaktualizowano procesy"
+
+msgid "There are more shipped than ordered"
+msgstr "Zostało wysłane więcej niż zamówione"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Ten numer seryjny nie został wysłany w tej przenosinie"
+
+msgid "Tracked entity is not available"
+msgstr "Obiekt monitorowany nie jest dostępny"
+
+msgid "Transfer created"
+msgstr "Przeniesiono do strefyprodukcji"

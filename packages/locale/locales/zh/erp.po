@@ -16594,3 +16594,131 @@ msgstr "从{loc}"
 
 msgid "to {loc}"
 msgstr "到{loc}"
+
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "确定要删除此发货行吗?"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "分配该员工可执行的工序。在报告这些工序的生产数量时会显示。"
+
+msgid "Batch has insufficient quantity"
+msgstr "数量不足"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "批次号是{0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "另一个发货行已使用此批号"
+
+msgid "Batch number is required"
+msgstr "分包号是必填项"
+
+msgid "Batch number not found"
+msgstr "未找到批次号"
+
+msgid "Duplicate serial number"
+msgstr "重复序列号"
+
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "过期于{0}"
+
+msgid "Failed to add a line"
+msgstr "添加行失败"
+
+msgid "Failed to check serial number index"
+msgstr "检查序列号索引失败"
+
+msgid "Failed to create samples"
+msgstr "创建样品失败"
+
+msgid "Failed to create transfer"
+msgstr "创建转移失败"
+
+msgid "Failed to fetch samples"
+msgstr "获取样本失败"
+
+msgid "Failed to get employee processes"
+msgstr "获取员工工序失败"
+
+msgid "Failed to load receipt line"
+msgstr "加载收货行失败"
+
+msgid "Failed to load tracked entity"
+msgstr "加载跟踪实体失败"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "解决合作伙伴仓库失败"
+
+msgid "Failed to track serial number"
+msgstr "跟踪序列号失败"
+
+msgid "Failed to update processes"
+msgstr "更新工序失败"
+
+msgid "Failed to update tracking"
+msgstr "更新跟踪失败"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "仅分配的员工上报数量时出现。留空表示全部。"
+
+msgid "Receipt is empty"
+msgstr "收货为空"
+
+msgid "Samples created"
+msgstr "已创建样品"
+
+msgid "Serial number already exists"
+msgstr "序列号已存在"
+
+msgid "Serial number already exists for this item"
+msgstr "此物品已存在序列号"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "序列号是{0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "已用于其他物品或位置"
+
+msgid "Serial number is not available"
+msgstr "序列号不可用"
+
+msgid "Serial numbers are missing"
+msgstr "缺少序列号"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "缺少或不可用的序列号"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "未随此转移发货的序列号：{0}"
+
+msgid "Shipment is empty"
+msgstr "发货信息为空"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "发货数量超过分包数量({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "发货数量超过工作数量"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "已发货数量少于分包数量。发布时将为剩余数量创建新分包。"
+
+msgid "Successfully updated processes"
+msgstr "已更新工序"
+
+msgid "There are more shipped than ordered"
+msgstr "已发货数量多于订单数量"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "未在本次转移中发货此序列号"
+
+msgid "Tracked entity is not available"
+msgstr "不可用"
+
+msgid "Transfer created"
+msgstr "已创建转移"

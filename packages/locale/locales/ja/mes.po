@@ -6304,3 +6304,60 @@ msgstr "あなたのアカウントは有効になっていません"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "お客様の会社は無料プラン（読み取り専用）です。変更するにはアップグレードしてください。"
+
+msgid "Batch has insufficient quantity"
+msgstr "バッチの数量が不足しています"
+
+msgid "Failed to add a line"
+msgstr "追加に失敗しました"
+
+msgid "Failed to check serial number index"
+msgstr "シリアル番号インデックスの確認に失敗しました"
+
+msgid "Failed to create samples"
+msgstr "サンプルの作成に失敗しました"
+
+msgid "Failed to create transfer"
+msgstr "転送の作成に失敗しました"
+
+msgid "Failed to fetch samples"
+msgstr "サンプル取得に失敗しました"
+
+msgid "Failed to get employee processes"
+msgstr "従業員のプロセス取得に失敗しました"
+
+msgid "Failed to load receipt line"
+msgstr "受領行の読み込みに失敗しました"
+
+msgid "Failed to load tracked entity"
+msgstr "追跡エンティティの読み込みに失敗しました"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "パートナー倉庫の解決に失敗しました"
+
+msgid "Failed to update processes"
+msgstr "プロセスの更新に失敗しました"
+
+msgid "Failed to update tracking"
+msgstr "トラッキングの更新に失敗しました"
+
+msgid "Samples created"
+msgstr "サンプル作成済み"
+
+msgid "Serial number already exists for this item"
+msgstr "このアイテムに既にシリアル番号が存在します"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "既に他の項目や位置で使用されています"
+
+msgid "Successfully updated processes"
+msgstr "成功しました 更新されたプロセス"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "このシリアル番号はこの移動で出荷されていません"
+
+msgid "Tracked entity is not available"
+msgstr "追跡対象が利用できません"
+
+msgid "Transfer created"
+msgstr "転送が作成されました"

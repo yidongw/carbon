@@ -235,9 +235,15 @@ export const path = {
       search: `${api}/search`,
       seedQualityDocuments: `${api}/quality/documents/seed`,
       sequences: (table: string) => `${api}/settings/sequences?table=${table}`,
-      serialNumbers: (itemId: string, isReadOnly: boolean) =>
+      serialNumbers: (
+        itemId: string,
+        isReadOnly: boolean,
+        locationId?: string
+      ) =>
         generatePath(
-          `${api}/inventory/serial-numbers?itemId=${itemId}&isReadOnly=${isReadOnly}`
+          `${api}/inventory/serial-numbers?itemId=${itemId}&isReadOnly=${isReadOnly}${
+            locationId ? `&locationId=${locationId}` : ""
+          }`
         ),
       services: `${api}/items/services`,
       shifts: (id: string) =>
@@ -245,7 +251,9 @@ export const path = {
       storageUnits: (id: string) =>
         generatePath(`${api}/inventory/storage-units?locationId=${id}`),
       transferItems: (locationId: string) =>
-        generatePath(`${api}/inventory/transfer-items?locationId=${locationId}`),
+        generatePath(
+          `${api}/inventory/transfer-items?locationId=${locationId}`
+        ),
       transferStock: (itemId: string, locationId: string) =>
         generatePath(
           `${api}/inventory/transfer-stock?itemId=${itemId}&locationId=${locationId}`

@@ -115,7 +115,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
         {
           itemReadableId: null,
           shippedQuantity: 0,
-          shippedQuantityError: "Shipment is empty"
+          shippedQuantityError: t`Shipment is empty`
         }
       ]);
     }
@@ -151,7 +151,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
             shippedQuantity: line.shippedQuantity ?? 0,
-            shippedQuantityError: "Tracked entity is not available"
+            shippedQuantityError: t`Tracked entity is not available`
           });
         }
 
@@ -192,7 +192,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
             shippedQuantity: line.shippedQuantity ?? 0,
-            shippedQuantityError: "Serial numbers are missing or unavailable"
+            shippedQuantityError: t`Serial numbers are missing or unavailable`
           });
         }
 
@@ -292,7 +292,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
                         {w.readableId}
                       </span>
                       <span className="block mt-0.5 text-red-500 font-normal">
-                        Expired on {w.expirationDate}
+                        {t`Expired on ${w.expirationDate}`}
                       </span>
                     </li>
                   ))}
@@ -315,7 +315,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
                         {w.readableId}
                       </span>
                       <span className="block mt-0.5 text-amber-600 font-normal">
-                        Expired on {w.expirationDate}
+                        {t`Expired on ${w.expirationDate}`}
                       </span>
                     </li>
                   ))}
