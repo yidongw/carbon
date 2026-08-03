@@ -4,6 +4,8 @@ import {
   Checkbox,
   Combobox,
   HStack,
+  MenuIcon,
+  MenuItem,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -37,7 +39,7 @@ import {
   LuWarehouse,
   LuX
 } from "react-icons/lu";
-import { useFetcher } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 import {
   Hyperlink,
   ItemThumbnail,
@@ -89,6 +91,7 @@ const InventoryTable = memo(
   }: InventoryTableProps) => {
     const [params] = useUrlParams();
     const { t } = useLingui();
+    const navigate = useNavigate();
 
     const translateReplenishment = useCallback(
       (v: string) =>
@@ -651,8 +654,29 @@ const InventoryTable = memo(
 
     const mrpFetcher = useFetcher<typeof mrpAction>();
 
+    const renderContextMenu = useCallback(
+      (row: InventoryItem) => {
+        return (
+          <MenuItem
+            onClick={() => {
+              navigate(
+                `${path.to.inventoryStockOverview}?search=${encodeURIComponent(
+                  row.readableIdWithRevision ?? ""
+                )}`
+              );
+            }}
+          >
+            <MenuIcon icon={<LuWarehouse />} />
+            <Trans>Stock Overview</Trans>
+          </MenuItem>
+        );
+      },
+      [navigate]
+    );
+
     return (
       <Table<InventoryItem>
+        renderContextMenu={renderContextMenu}
         count={count}
         columns={columns}
         data={data}

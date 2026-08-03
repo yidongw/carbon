@@ -141,3 +141,30 @@ export interface GraphData {
   nodes: GraphNode[];
   links: GraphLink[];
 }
+
+// A single clickable chip: a per-warehouse on-hand amount, or a per-document
+// (warehouse transfer / receipt) amount that deep-links to that document.
+export type StockOverviewChip = {
+  id: string;
+  locationId: string;
+  locationName: string;
+  quantity: number;
+  href: string;
+};
+
+export type StockOverviewItem = {
+  itemId: string;
+  readableIdWithRevision: string;
+  name: string;
+  thumbnailPath: string | null;
+  type: string | null;
+  unitOfMeasureCode: string | null;
+  onHand: number;
+  toSend: number;
+  toReceive: number;
+  inTransit: number;
+  total: number;
+  onHandChips: StockOverviewChip[];
+  toSendChips: StockOverviewChip[];
+  toReceiveChips: StockOverviewChip[];
+};

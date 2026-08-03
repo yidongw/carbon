@@ -63,7 +63,7 @@ function useModuleDefinitions(): ModuleDefinition[] {
       key: "inventory",
       permission: "inventory",
       name: t`Inventory`,
-      to: path.to.inventoryQuantities,
+      to: path.to.inventoryStockOverview,
       icon: LuBox
     },
     {
