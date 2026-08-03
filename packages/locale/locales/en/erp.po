@@ -16128,3 +16128,18 @@ msgstr "ZPL (Thermal Label)"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL Label Preview"
+
+msgid "Location Inventory"
+msgstr "Location Inventory"
+
+msgid "Stock Overview"
+msgstr "Stock Overview"
+
+msgid "To Send"
+msgstr "To Send"
+
+msgid "from {loc}"
+msgstr "from {loc}"
+
+msgid "to {loc}"
+msgstr "to {loc}"

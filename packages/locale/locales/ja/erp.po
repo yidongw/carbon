@@ -16129,3 +16129,18 @@ msgstr "ZPL（熱感ラベル）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPLラベルプレビュー"
+
+msgid "Location Inventory"
+msgstr "拠点在庫"
+
+msgid "Stock Overview"
+msgstr "在庫概要"
+
+msgid "To Send"
+msgstr "出荷予定"
+
+msgid "from {loc}"
+msgstr "{loc}から"
+
+msgid "to {loc}"
+msgstr "{loc}へ"

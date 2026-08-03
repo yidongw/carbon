@@ -1,6 +1,7 @@
 import { useLingui } from "@lingui/react/macro";
 import {
   LuArrowRightLeft,
+  LuBoxes,
   LuClipboardList,
   LuHandCoins,
   LuListChecks,
@@ -68,11 +69,17 @@ export default function useInventorySubmodules() {
           icon: <LuScanQrCode />
         },
         {
-          name: t`Quantities`,
+          name: t`Location Inventory`,
           to: path.to.inventoryQuantities,
           role: "employee",
           icon: <LuTally5 />,
           table: "inventory"
+        },
+        {
+          name: t`Stock Overview`,
+          to: path.to.inventoryStockOverview,
+          role: "employee",
+          icon: <LuBoxes />
         },
         {
           name: t`Tracked Entities`,

@@ -16132,3 +16132,18 @@ msgstr "ZPL (तापमान लेबल)"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL लेबल प्रीवयज़न"
+
+msgid "Location Inventory"
+msgstr "स्थान इन्वेंटरी"
+
+msgid "Stock Overview"
+msgstr "स्टॉक अवलोकन"
+
+msgid "To Send"
+msgstr "भेजना है"
+
+msgid "from {loc}"
+msgstr "{loc} से"
+
+msgid "to {loc}"
+msgstr "{loc} को"

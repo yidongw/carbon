@@ -1409,6 +1409,44 @@ export async function getWarehouseTransferLines(
     .eq("transferId", transferId);
 }
 
+// All warehouse-transfer lines for an item, with their parent transfer status.
+// Used to compute per-location "to send" (outbound not yet shipped) and
+// "to receive" / in-transit (shipped but not yet received) quantities.
+export async function getItemWarehouseTransferQuantities(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+) {
+  return client
+    .from("warehouseTransferLine")
+    .select(
+      "quantity, shippedQuantity, receivedQuantity, fromLocationId, toLocationId, warehouseTransfer(status)"
+    )
+    .eq("itemId", itemId)
+    .eq("companyId", companyId);
+}
+
+// Purchase-order receipt lines for an item that have a receipt created but not
+// yet posted (status Draft/Pending). These represent PO stock in transit — we
+// only count a PO once a receipt exists, and stop once it posts into on-hand.
+// sourceDocument is pinned to "Purchase Order" so inbound transfers (which are
+// already counted via warehouse-transfer lines) are not double-counted.
+export async function getItemPendingReceiptQuantities(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+) {
+  return client
+    .from("receiptLine")
+    .select(
+      "locationId, receivedQuantity, receipt!inner(status, sourceDocument, locationId)"
+    )
+    .eq("itemId", itemId)
+    .eq("companyId", companyId)
+    .eq("receipt.sourceDocument", "Purchase Order")
+    .in("receipt.status", ["Draft", "Pending"]);
+}
+
 export async function insertManualInventoryAdjustment(
   client: SupabaseClient<Database>,
   inventoryAdjustment: z.infer<typeof inventoryAdjustmentValidator> & {
