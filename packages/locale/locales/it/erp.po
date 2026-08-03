@@ -2854,6 +2854,9 @@ msgstr "Cliente invito"
 msgid "Customer Invoice Number"
 msgstr "Numero Fattura Cliente"
 
+msgid "Customer location"
+msgstr "Località cliente"
+
 msgid "Customer Location"
 msgstr "Ubicazione Cliente"
 
@@ -8252,6 +8255,12 @@ msgstr "Eredita dai Materiali"
 msgid "Inherited from parent"
 msgstr "Ereditato dal genitore"
 
+msgid "Inherited from the selected location"
+msgstr "In ereditato dalla località selezionata"
+
+msgid "Inherited from the selected location."
+msgstr "In ereditato dalla località selezionata."
+
 msgid "inherits {inheritedName}"
 msgstr "eredita {inheritedName}"
 
@@ -13185,6 +13194,9 @@ msgstr "Indirizzo di spedizione"
 msgid "Ship to Customer"
 msgstr "Spedisci al Cliente"
 
+msgid "Ship-to location"
+msgstr "Indirizzo di spedizione"
+
 msgid "Shipment"
 msgstr "Spedizione"
 
@@ -14093,6 +14105,9 @@ msgstr "Numero Fattura Fornitore"
 
 msgid "Supplier Issue"
 msgstr "Problema del fornitore"
+
+msgid "Supplier location"
+msgstr "Località fornitore"
 
 msgid "Supplier Location"
 msgstr "Ubicazione Fornitore"

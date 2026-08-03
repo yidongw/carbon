@@ -2854,6 +2854,9 @@ msgstr "顧客を招待しました"
 msgid "Customer Invoice Number"
 msgstr "顧客請求書番号"
 
+msgid "Customer location"
+msgstr "顧客の位置情報"
+
 msgid "Customer Location"
 msgstr "顧客ロケーション"
 
@@ -8245,6 +8248,12 @@ msgstr "材料から継承"
 msgid "Inherited from parent"
 msgstr "親から継承"
 
+msgid "Inherited from the selected location"
+msgstr "選択した場所から継承"
+
+msgid "Inherited from the selected location."
+msgstr "選択した場所から継承されました。"
+
 msgid "inherits {inheritedName}"
 msgstr "{inheritedName} を継承"
 
@@ -13178,6 +13187,9 @@ msgstr "出先先送付先"
 msgid "Ship to Customer"
 msgstr "顧客に出荷"
 
+msgid "Ship-to location"
+msgstr "出荷先住所"
+
 msgid "Shipment"
 msgstr "出荷"
 
@@ -14086,6 +14098,9 @@ msgstr "仕入先請求書番号"
 
 msgid "Supplier Issue"
 msgstr "サプライヤーの問題"
+
+msgid "Supplier location"
+msgstr "サプライヤーの場所"
 
 msgid "Supplier Location"
 msgstr "仕入先の場所"
