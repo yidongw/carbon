@@ -1062,9 +1062,16 @@ function SerialForm({
             return newErrors;
           });
         } else {
+          let message = "Serial number already exists";
+          try {
+            const body = await response.json();
+            if (body?.error) message = body.error;
+          } catch {
+            // keep the default message
+          }
           setErrors((prev) => ({
             ...prev,
-            [serialNumber.index]: "Serial number already exists"
+            [serialNumber.index]: message
           }));
         }
       } catch (error) {

@@ -3,6 +3,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
+import { getInboundTransferShippedSerials } from "~/modules/inventory";
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -72,6 +73,56 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const index = Number(formData.get("index"));
     const expiryDate = formData.get("expiryDate") as string | null;
 
+    const serviceRole = await getCarbonServiceRole();
+
+    // For a warehouse-transfer receipt, a serial may only be received if it was
+    // one of the serials shipped on the linked transfer. Anything else is
+    // rejected — you can only receive what was actually sent.
+    const receipt = await serviceRole
+      .from("receipt")
+      .select("sourceDocument, sourceDocumentId")
+      .eq("id", receiptId)
+      .eq("companyId", companyId)
+      .single();
+
+    if (receipt.error) {
+      return data({ error: "Failed to load receipt" }, { status: 500 });
+    }
+
+    if (
+      receipt.data.sourceDocument === "Inbound Transfer" &&
+      receipt.data.sourceDocumentId
+    ) {
+      const receiptLine = await serviceRole
+        .from("receiptLine")
+        .select("lineId")
+        .eq("id", receiptLineId)
+        .eq("receiptId", receiptId)
+        .single();
+
+      if (receiptLine.error) {
+        return data({ error: "Failed to load receipt line" }, { status: 500 });
+      }
+
+      const shippedSerialsByLineId = await getInboundTransferShippedSerials(
+        serviceRole,
+        receipt.data.sourceDocumentId,
+        companyId
+      );
+      const shippedSerials = receiptLine.data.lineId
+        ? (shippedSerialsByLineId[receiptLine.data.lineId] ?? [])
+        : [];
+
+      if (!shippedSerials.includes(serialNumber)) {
+        return data(
+          {
+            error: `Serial number ${serialNumber} was not shipped on this transfer`
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     // Check if the serial number is already used for a different receipt line or index
     const { data: existingEntityWithIndex, error: indexQueryError } =
       await client
@@ -121,7 +172,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
       }
     }
 
-    const serviceRole = await getCarbonServiceRole();
     // Use a transaction to ensure data consistency
     const { error } = await serviceRole.rpc(
       "update_receipt_line_serial_tracking",
@@ -145,6 +195,34 @@ export async function action({ request, context }: ActionFunctionArgs) {
         );
       }
       return data({ error: "Failed to update tracking" }, { status: 500 });
+    }
+
+    // A receipt-line index holds exactly one serial: clear the receipt tags from
+    // any OTHER serial previously stamped at this same line + index, so replacing
+    // a serial never leaves a stale duplicate behind (mirrors the shipment side).
+    const staleAtIndex = await serviceRole
+      .from("trackedEntity")
+      .select("id, attributes")
+      .eq("companyId", companyId)
+      .eq("attributes ->> Receipt Line", receiptLineId)
+      .eq("attributes ->> Receipt Line Index", String(index))
+      .neq("readableId", serialNumber);
+
+    if (staleAtIndex.data && staleAtIndex.data.length > 0) {
+      await Promise.all(
+        staleAtIndex.data.map((entity) => {
+          const cleaned = {
+            ...((entity.attributes ?? {}) as Record<string, unknown>)
+          };
+          delete cleaned.Receipt;
+          delete cleaned["Receipt Line"];
+          delete cleaned["Receipt Line Index"];
+          return serviceRole
+            .from("trackedEntity")
+            .update({ attributes: cleaned })
+            .eq("id", entity.id);
+        })
+      );
     }
   }
 
