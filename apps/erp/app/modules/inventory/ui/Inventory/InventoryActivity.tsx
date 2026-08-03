@@ -1,10 +1,13 @@
+import type { I18n } from "@lingui/core";
+import { msg } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react/macro";
 import { LuArrowRightLeft, LuCircleMinus, LuCirclePlus } from "react-icons/lu";
 import { Hyperlink } from "~/components";
 import Activity from "~/components/Activity";
 import { path } from "~/utils/path";
 import type { ItemLedger } from "../../types";
 
-const getActivityText = (ledgerRecord: ItemLedger) => {
+const getActivityText = (ledgerRecord: ItemLedger, i18n: I18n) => {
   switch (ledgerRecord.documentType) {
     case "Purchase Receipt":
       return `received ${ledgerRecord.quantity} units${
@@ -42,26 +45,28 @@ const getActivityText = (ledgerRecord: ItemLedger) => {
           ? ` from ${ledgerRecord.storageUnit.name}`
           : ""
       }`;
-    case "Transfer Shipment":
-      return `shipped ${-1 * ledgerRecord.quantity} units${
-        ledgerRecord.storageUnit?.name
-          ? ` from ${ledgerRecord.storageUnit.name}`
-          : ""
-      } for transfer`;
-    case "Transfer Receipt":
-      return `received ${ledgerRecord.quantity} units${
-        ledgerRecord.storageUnit?.name
-          ? ` to ${ledgerRecord.storageUnit.name}`
-          : ""
-      } from transfer`;
-    case "Direct Transfer":
-      return `transferred ${Math.abs(ledgerRecord.quantity)} units${
-        ledgerRecord.storageUnit?.name
-          ? ` ${ledgerRecord.quantity > 0 ? "to" : "from"} ${
-              ledgerRecord.storageUnit.name
-            }`
-          : ""
-      }`;
+    case "Transfer Shipment": {
+      const q = -1 * ledgerRecord.quantity;
+      const unit = ledgerRecord.storageUnit?.name;
+      return unit
+        ? i18n._(msg`shipped ${q} units from ${unit} for transfer`)
+        : i18n._(msg`shipped ${q} units for transfer`);
+    }
+    case "Transfer Receipt": {
+      const q = ledgerRecord.quantity;
+      const unit = ledgerRecord.storageUnit?.name;
+      return unit
+        ? i18n._(msg`received ${q} units to ${unit} from transfer`)
+        : i18n._(msg`received ${q} units from transfer`);
+    }
+    case "Direct Transfer": {
+      const q = Math.abs(ledgerRecord.quantity);
+      const unit = ledgerRecord.storageUnit?.name;
+      if (!unit) return i18n._(msg`transferred ${q} units`);
+      return ledgerRecord.quantity > 0
+        ? i18n._(msg`transferred ${q} units to ${unit}`)
+        : i18n._(msg`transferred ${q} units from ${unit}`);
+    }
     case "Inventory Receipt":
       return `received ${ledgerRecord.quantity} units into inventory${
         ledgerRecord.storageUnit?.name
@@ -209,30 +214,48 @@ const getActivityText = (ledgerRecord: ItemLedger) => {
   }
 
   switch (ledgerRecord.entryType) {
-    case "Positive Adjmt.":
-      return `made a positive adjustment of ${ledgerRecord.quantity}${
-        ledgerRecord.storageUnit?.name
-          ? ` to ${ledgerRecord.storageUnit?.name}`
-          : ""
-      }${
-        ledgerRecord.trackedEntityId
-          ? ` for ${Math.abs(ledgerRecord.quantity) > 1 ? "batch" : "serial"} ${
-              ledgerRecord.trackedEntityId
-            }`
-          : ""
-      }`;
-    case "Negative Adjmt.":
-      return `made a negative adjustment of ${-1 * ledgerRecord.quantity}${
-        ledgerRecord.storageUnit?.name
-          ? ` to ${ledgerRecord.storageUnit.name}`
-          : ""
-      }${
-        ledgerRecord.trackedEntityId
-          ? ` for ${Math.abs(ledgerRecord.quantity) > 1 ? "batch" : "serial"} ${
-              ledgerRecord.trackedEntityId
-            }`
-          : ""
-      }`;
+    case "Positive Adjmt.": {
+      const q = ledgerRecord.quantity;
+      const unit = ledgerRecord.storageUnit?.name;
+      const te = ledgerRecord.trackedEntityId;
+      const batch = Math.abs(q) > 1;
+      if (unit && te)
+        return batch
+          ? i18n._(
+              msg`made a positive adjustment of ${q} to ${unit} for batch ${te}`
+            )
+          : i18n._(
+              msg`made a positive adjustment of ${q} to ${unit} for serial ${te}`
+            );
+      if (unit)
+        return i18n._(msg`made a positive adjustment of ${q} to ${unit}`);
+      if (te)
+        return batch
+          ? i18n._(msg`made a positive adjustment of ${q} for batch ${te}`)
+          : i18n._(msg`made a positive adjustment of ${q} for serial ${te}`);
+      return i18n._(msg`made a positive adjustment of ${q}`);
+    }
+    case "Negative Adjmt.": {
+      const q = -1 * ledgerRecord.quantity;
+      const unit = ledgerRecord.storageUnit?.name;
+      const te = ledgerRecord.trackedEntityId;
+      const batch = Math.abs(ledgerRecord.quantity) > 1;
+      if (unit && te)
+        return batch
+          ? i18n._(
+              msg`made a negative adjustment of ${q} to ${unit} for batch ${te}`
+            )
+          : i18n._(
+              msg`made a negative adjustment of ${q} to ${unit} for serial ${te}`
+            );
+      if (unit)
+        return i18n._(msg`made a negative adjustment of ${q} to ${unit}`);
+      if (te)
+        return batch
+          ? i18n._(msg`made a negative adjustment of ${q} for batch ${te}`)
+          : i18n._(msg`made a negative adjustment of ${q} for serial ${te}`);
+      return i18n._(msg`made a negative adjustment of ${q}`);
+    }
     default:
       return "";
   }
@@ -257,10 +280,11 @@ type InventoryActivityProps = {
 };
 
 const InventoryActivity = ({ item }: InventoryActivityProps) => {
+  const { i18n } = useLingui();
   return (
     <Activity
       employeeId={item.createdBy}
-      activityMessage={getActivityText(item)}
+      activityMessage={getActivityText(item, i18n)}
       activityTime={item.createdAt}
       activityIcon={getActivityIcon(item)}
       comment={item.comment}

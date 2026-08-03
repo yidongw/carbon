@@ -106,6 +106,12 @@ msgstr "{name} удалён"
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} разрешений"
 
+#~ msgid "{total} samples"
+#~ msgstr "{total} образцов"
+
+#~ msgid "{total} samples · {sampled}/{colorCount} colors"
+#~ msgstr "{total} образцов · {sampled}/{colorCount} цветов"
+
 msgid "/month/user"
 msgstr "/месяц/пользователь"
 
@@ -455,6 +461,9 @@ msgstr "Добавить из библиотеки…"
 msgid "Add Group"
 msgstr "Добавить группу"
 
+msgid "Add item"
+msgstr "Добавить элемент"
+
 msgid "Add Item"
 msgstr "Добавить элемент"
 
@@ -521,11 +530,17 @@ msgstr "Добавить требование"
 msgid "Add Risk"
 msgstr "Добавить риск"
 
+msgid "Add row"
+msgstr "Добавить строку"
+
 msgid "Add Row"
 msgstr "Добавить строку"
 
 msgid "Add rule"
 msgstr "Добавить правило"
+
+msgid "Add sample"
+msgstr "Добавить образец"
 
 msgid "Add seats"
 msgstr "Добавить места"
@@ -1515,6 +1530,9 @@ msgstr "Выставление счетов"
 
 msgid "Billing Address"
 msgstr "Адрес выставления счета"
+
+#~ msgid "Bin"
+#~ msgstr "Бин"
 
 msgid "Block with an error"
 msgstr "Заблокировать с ошибкой"
@@ -2589,8 +2607,14 @@ msgstr "Создать редакцию"
 msgid "Create Rule"
 msgstr "Создать правило"
 
+msgid "Create Sample"
+msgstr "Создать образец"
+
 msgid "Create supplier"
 msgstr "Создать поставщика"
+
+msgid "Create transfer"
+msgstr "Создать передачу"
 
 msgid "Create User"
 msgstr "Создать пользователя"
@@ -2859,6 +2883,9 @@ msgstr "Скидки по платежам клиентов"
 
 msgid "Customer PO"
 msgstr "Заказ клиента"
+
+msgid "Customer PO #"
+msgstr "Номер заказа клиента #"
 
 msgid "Customer PO Number"
 msgstr "Номер заказа клиента"
@@ -7846,11 +7873,20 @@ msgstr "Пятница"
 msgid "From"
 msgstr "От"
 
+msgid "From (current location)"
+msgstr "От (текущего местоположения)"
+
+msgid "From and To warehouses must be different"
+msgstr "Склады «От» и «До» должны быть разными"
+
 msgid "From Location"
 msgstr "Из местоположения"
 
 msgid "From Storage Unit"
 msgstr "Из хранилища"
+
+msgid "From warehouse"
+msgstr "Из склада"
 
 msgid "Fully paid"
 msgstr "Полностью оплачен"
@@ -8125,6 +8161,9 @@ msgstr "В процессе"
 msgid "in selected period"
 msgstr "в выбранном периоде"
 
+msgid "in use"
+msgstr "в использовании"
+
 msgid "Inactive"
 msgstr "Неактивно"
 
@@ -8139,6 +8178,9 @@ msgstr "Входящие проверки"
 
 msgid "Inbound Inspections: Require Different Inspector"
 msgstr "Входящие проверки: требовать другого инспектора"
+
+msgid "Inbound Transfer"
+msgstr "Передача входящая"
 
 msgid "Inbox"
 msgstr "Входящие"
@@ -8931,6 +8973,9 @@ msgstr "Строки требуют цены или сроки поставки"
 msgid "Link"
 msgstr "Ссылка"
 
+msgid "Link a warehouse to this partner in Resources → Locations."
+msgstr "Привяжите склад к этому партнеру в Ресурсы → Локации."
+
 msgid "Link Jira Issue"
 msgstr "Связать проблему Jira"
 
@@ -9122,6 +9167,42 @@ msgstr "Единица машины"
 
 msgid "Machinery & Equipment"
 msgstr "Техника и оборудование"
+
+msgid "made a negative adjustment of {q}"
+msgstr "сделал отрицательное изменение на {q}"
+
+msgid "made a negative adjustment of {q} for batch {te}"
+msgstr "выполнить отрицательную корректировку на {q} для лота {te}"
+
+msgid "made a negative adjustment of {q} for serial {te}"
+msgstr "выполнить отрицательную корректировку на {q} для серии {te}"
+
+msgid "made a negative adjustment of {q} to {unit}"
+msgstr "сделал отрицательное изменение на {q} {unit}"
+
+msgid "made a negative adjustment of {q} to {unit} for batch {te}"
+msgstr "выполнить отрицательную корректировку на {q} {unit} для лота {te}"
+
+msgid "made a negative adjustment of {q} to {unit} for serial {te}"
+msgstr "выполнить отрицательное изменение на {q} в {unit} для серийного номера {te}"
+
+msgid "made a positive adjustment of {q}"
+msgstr "сделал положительное изменение на {q}"
+
+msgid "made a positive adjustment of {q} for batch {te}"
+msgstr "сделал положительную корректировку на {q} для лота {te}"
+
+msgid "made a positive adjustment of {q} for serial {te}"
+msgstr "сделал положительную корректировку на {q} для серии {te}"
+
+msgid "made a positive adjustment of {q} to {unit}"
+msgstr "сделал положительное изменение на {q} {unit}"
+
+msgid "made a positive adjustment of {q} to {unit} for batch {te}"
+msgstr "сделал положительное изменение на {q} в {unit} для лота {te}"
+
+msgid "made a positive adjustment of {q} to {unit} for serial {te}"
+msgstr "сделал положительное изменение на {q} в {unit} для серийного номера {te}"
 
 msgid "Magic link expired or already used. Please request a new one."
 msgstr "Ссылка на магию истекла или уже использовалась. Пожалуйста, запросите новую."
@@ -9874,6 +9955,9 @@ msgstr "Новый способ доставки"
 msgid "New Size"
 msgstr "Новый размер"
 
+msgid "New Stock Transfer"
+msgstr "Новый передача запасов"
+
 msgid "New Storage Type"
 msgstr "Новый тип хранилища"
 
@@ -10019,6 +10103,9 @@ msgstr "Нет доступных фильтров"
 
 msgid "No available tracked entities found"
 msgstr "Найдено нетracked объектов"
+
+msgid "No bin"
+msgstr "Нет коробки"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Ни один вход BOM не имеет политики срока хранения"
@@ -10269,11 +10356,17 @@ msgstr "Нет поставщиков еще"
 msgid "No time entries for this week"
 msgstr "Нет записей о времени на эту неделю"
 
+msgid "No units"
+msgstr "Нет единиц"
+
 msgid "No value needed"
 msgstr "Нет необходимости"
 
 msgid "No values available"
 msgstr "Нет доступных значений"
+
+msgid "No warehouse mapped"
+msgstr "Нет склада, который был связан"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
@@ -10640,6 +10733,9 @@ msgstr "Другой тип"
 msgid "Ounce"
 msgstr "Унция"
 
+msgid "Outbound Transfer"
+msgstr "Передача на склад выдачи"
+
 msgid "Outgoing"
 msgstr "Исходящие"
 
@@ -10960,6 +11056,9 @@ msgstr "Выберите клиента или тип клиента, чтобы
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "Выберите дату или оставьте пустым, чтобы очистить."
+
+msgid "Pick a warehouse"
+msgstr "Выберите склад"
 
 msgid "Pick List"
 msgstr "Список подбора"
@@ -11614,6 +11713,9 @@ msgstr "Количество в заказе на покупку"
 msgid "Quantity on Sales Order"
 msgstr "Количество в заказе на продажу"
 
+#~ msgid "Quantity per color"
+#~ msgstr "Количество по цвету"
+
 msgid "Quantity per Parent"
 msgstr "Количество на родителя"
 
@@ -11787,6 +11889,12 @@ msgstr "Получить в инвентарь"
 
 msgid "Received"
 msgstr "Принято"
+
+msgid "received {q} units from transfer"
+msgstr "получено {q} единиц из передачи"
+
+msgid "received {q} units to {unit} from transfer"
+msgstr "получено {q} единиц в {unit} из передачи"
 
 msgid "Received At"
 msgstr "Получено в"
@@ -12485,6 +12593,9 @@ msgstr "Запись выполнена"
 msgid "Sample Size"
 msgstr "Размер выборки"
 
+msgid "Samples"
+msgstr "Примеры"
+
 msgid "Sampling Plan"
 msgstr "План выборочного контроля"
 
@@ -12766,6 +12877,9 @@ msgstr "Выберите элемент для настройки"
 msgid "Select an option"
 msgstr "Выберите опцию"
 
+msgid "Select color / size"
+msgstr "Выберите цвет / размер"
+
 msgid "Select Contact"
 msgstr "Выберите контакт"
 
@@ -12802,6 +12916,9 @@ msgstr "Выбрать датчик"
 msgid "Select groups or individuals"
 msgstr "Выберите группы или отдельных лиц"
 
+msgid "Select item"
+msgstr "Выберите элемент"
+
 msgid "Select Item Type"
 msgstr "Выберите тип элемента"
 
@@ -12829,6 +12946,9 @@ msgstr "Выберите область"
 msgid "Select scrap reason"
 msgstr "Выберите причину отходов"
 
+msgid "Select source"
+msgstr "Выберите источник"
+
 msgid "Select Supplier Status"
 msgstr "Выберите статус поставщика"
 
@@ -12843,6 +12963,9 @@ msgstr "Выберите группы, которые должны пройти 
 
 msgid "Select the quantity that you'd like to split into a new line."
 msgstr "Выберите количество, которое вы хотите разделить на новую строку."
+
+msgid "Select unit"
+msgstr "Выберите единицу"
 
 msgid "Select value"
 msgstr "Выберите значение"
@@ -12921,6 +13044,9 @@ msgstr "Требуется отслеживание по серийному но
 
 msgid "Serial Tracking"
 msgstr "Отслеживание по серийным номерам"
+
+msgid "Serial/Batch"
+msgstr "Серийный/Лот"
 
 msgid "Serial/Batch #"
 msgstr "Серийный номер/Партия №"
@@ -13046,6 +13172,9 @@ msgstr "Отправить"
 msgid "Ship some, stock some"
 msgstr "Отправить часть, оставить часть на складе"
 
+msgid "Ship To"
+msgstr "Отправить адресу"
+
 msgid "Ship to Customer"
 msgstr "Отправить клиенту"
 
@@ -13054,6 +13183,9 @@ msgstr "Отправка"
 
 msgid "Shipment Date"
 msgstr "Дата отправки"
+
+msgid "Shipment Details"
+msgstr "Детали отгрузки"
 
 msgid "Shipment ID"
 msgstr "ID отправки"
@@ -13075,6 +13207,12 @@ msgstr "Отправки"
 
 msgid "Shipped"
 msgstr "Отгруzed"
+
+msgid "shipped {q} units for transfer"
+msgstr "отправлено {q} единиц для перевода"
+
+msgid "shipped {q} units from {unit} for transfer"
+msgstr "отправлено {q} единиц из {unit} для перевозки"
 
 msgid "Shipped Qty"
 msgstr "Отправленное кол-во"
@@ -13363,6 +13501,9 @@ msgstr "Стандартный"
 
 msgid "Standard Lead Time"
 msgstr "Стандартное время доставки"
+
+msgid "Standard Terms & Conditions"
+msgstr "Стандартные условия и положения"
 
 msgid "Start"
 msgstr "Начать"
@@ -14192,6 +14333,9 @@ msgstr "Шаблоны"
 msgid "Term ends"
 msgstr "Окончание срока"
 
+msgid "Terms"
+msgstr "Условия"
+
 msgid "Terms and Privacy"
 msgstr "Условия и конфиденциальность"
 
@@ -14456,6 +14600,12 @@ msgstr "К отправке и получению"
 msgid "To Storage Unit"
 msgstr "На хранилище"
 
+msgid "To unit"
+msgstr "В единицу"
+
+#~ msgid "To warehouse"
+#~ msgstr "В склад"
+
 msgid "Today"
 msgstr "Сегодня"
 
@@ -14663,6 +14813,15 @@ msgstr "Передайте право собственности на эту к�
 
 msgid "Transfer To"
 msgstr "Передать в"
+
+msgid "transferred {q} units"
+msgstr "пере转入 {q} 单位"
+
+msgid "transferred {q} units from {unit}"
+msgstr "пере转入 {q} 单位从 {unit}"
+
+msgid "transferred {q} units to {unit}"
+msgstr "пере转入 {q} 单位到 {unit}"
 
 msgid "Transfers"
 msgstr "Передачи"
@@ -15620,6 +15779,9 @@ msgstr "Объем:"
 
 msgid "Waiting"
 msgstr "Ожидание"
+
+msgid "Warehouse"
+msgstr "Склад"
 
 msgid "Warehouse Transfer"
 msgstr "Передача между складами"

@@ -226,7 +226,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
                 }
                 type="submit"
               >
-                Post Receipt
+                <Trans>Post Receipt</Trans>
               </Button>
             </form>
           </HStack>

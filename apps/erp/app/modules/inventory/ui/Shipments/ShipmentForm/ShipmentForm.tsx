@@ -259,7 +259,12 @@ const ShipmentForm = ({
                   name="sourceDocument"
                   label={t`Source Document`}
                   options={shipmentSourceDocumentType.map((v) => ({
-                    label: v,
+                    label:
+                      {
+                        "Sales Order": t`Sales Order`,
+                        "Purchase Order": t`Purchase Order`,
+                        "Outbound Transfer": t`Outbound Transfer`
+                      }[v] ?? v,
                     value: v
                   }))}
                   onChange={(newValue) => {

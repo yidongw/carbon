@@ -10,7 +10,9 @@ import {
 import type { KyselifyDatabase } from "kysely-supabase";
 // Aliased it as pg so can be imported as-is in Node environment
 import { Pool } from "pg";
-import type { Database as SupabaseDatabase } from "../../../../src/types.ts";
+// Use the copy already bundled by the functions (lib/types.ts) instead of the
+// second 2.3 MB src/types.ts copy — deploying both blows the 5 MB function cap.
+import type { Database as SupabaseDatabase } from "../types.ts";
 
 export type KyselyDatabase = KyselifyDatabase<SupabaseDatabase>;
 export type KyselyTx = Transaction<KyselyDatabase>;

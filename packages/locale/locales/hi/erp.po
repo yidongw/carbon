@@ -106,6 +106,12 @@ msgstr "{name} की हटाई गई है"
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} अनुमतियाँ"
 
+#~ msgid "{total} samples"
+#~ msgstr "{total} नमूने"
+
+#~ msgid "{total} samples · {sampled}/{colorCount} colors"
+#~ msgstr "{total} सैंपल्स · {sampled}/{colorCount} रंगों"
+
 msgid "/month/user"
 msgstr "/माह/उपयोगकर्ता"
 
@@ -455,6 +461,9 @@ msgstr "अड्डा से जोड़..."
 msgid "Add Group"
 msgstr "समूह जोड़ें"
 
+msgid "Add item"
+msgstr "अज्ञात आइटम जोड़ें"
+
 msgid "Add Item"
 msgstr "आइटम जोड़ें"
 
@@ -521,11 +530,17 @@ msgstr "आवश्यकता जोड़ें"
 msgid "Add Risk"
 msgstr "जोखिम जोड़ें"
 
+msgid "Add row"
+msgstr "पंक्ति जोड़ें"
+
 msgid "Add Row"
 msgstr "पंक्ति जोड़ें"
 
 msgid "Add rule"
 msgstr "नियम जोड़ें"
+
+msgid "Add sample"
+msgstr "नमूना जोड़ें"
 
 msgid "Add seats"
 msgstr "सीटें जोड़ें"
@@ -1515,6 +1530,9 @@ msgstr "बिलिंग"
 
 msgid "Billing Address"
 msgstr "बिलिंग पता"
+
+#~ msgid "Bin"
+#~ msgstr "बाउन्स"
 
 msgid "Block with an error"
 msgstr "त्रुटि के साथ ब्लॉक करें"
@@ -2589,8 +2607,14 @@ msgstr "संशोधन बनाएं"
 msgid "Create Rule"
 msgstr "नियम बनाएं"
 
+msgid "Create Sample"
+msgstr "सूचनाएँ तैयार करें"
+
 msgid "Create supplier"
 msgstr "सस्प्लायर बनाएं"
+
+msgid "Create transfer"
+msgstr "TRANSFER बनाएं"
 
 msgid "Create User"
 msgstr "उपयोगकर्ता बनाएं"
@@ -2859,6 +2883,9 @@ msgstr "ग्राहक भुगतान पर छूट"
 
 msgid "Customer PO"
 msgstr "ग्राहक PO"
+
+msgid "Customer PO #"
+msgstr "कास्टमर पीओ #"
 
 msgid "Customer PO Number"
 msgstr "ग्राहक PO संख्या"
@@ -7849,11 +7876,20 @@ msgstr "शुक्रवार"
 msgid "From"
 msgstr "से"
 
+msgid "From (current location)"
+msgstr "से (वर्तमान स्थान)"
+
+msgid "From and To warehouses must be different"
+msgstr "फर्म और टू गॉस्रहम के बीच अंतर होना चाहिए"
+
 msgid "From Location"
 msgstr "स्थान से"
 
 msgid "From Storage Unit"
 msgstr "स्टोरेज यूनिट से"
+
+msgid "From warehouse"
+msgstr "स्टॉक से"
 
 msgid "Fully paid"
 msgstr "पूरी तरह से भुगतान किया गया"
@@ -8128,6 +8164,9 @@ msgstr "प्रगति में"
 msgid "in selected period"
 msgstr "चयनित अवधि में"
 
+msgid "in use"
+msgstr "दिलाई गई है"
+
 msgid "Inactive"
 msgstr "निष्क्रिय"
 
@@ -8142,6 +8181,9 @@ msgstr "इनबाउंड निरीक्षण"
 
 msgid "Inbound Inspections: Require Different Inspector"
 msgstr "इनबाउंड निरीक्षण: विभिन्न निरीक्षक की आवश्यकता"
+
+msgid "Inbound Transfer"
+msgstr "आवंटिल ट्रांसफर"
 
 msgid "Inbox"
 msgstr "इनबॉक्स"
@@ -8934,6 +8976,9 @@ msgstr "लाइनों को कीमतों या लीड समय 
 msgid "Link"
 msgstr "लिंक"
 
+msgid "Link a warehouse to this partner in Resources → Locations."
+msgstr "रिसอร्सों → स्थानों में यह पार्टनर को एक दुकान से जोड़ें।"
+
 msgid "Link Jira Issue"
 msgstr "Jira समस्या को लिंक करें"
 
@@ -9125,6 +9170,42 @@ msgstr "मशीन यूनिट"
 
 msgid "Machinery & Equipment"
 msgstr "मशीनरी और उपकरण"
+
+msgid "made a negative adjustment of {q}"
+msgstr "मानक ह्रास की राशि {q} में किया गया है"
+
+msgid "made a negative adjustment of {q} for batch {te}"
+msgstr "मानकर {q} की ऋण रूप से संशोधन किया गया है बच्च {te}"
+
+msgid "made a negative adjustment of {q} for serial {te}"
+msgstr "मानक {q} की ऋण वाली संशोधन की है सीरियल {te}"
+
+msgid "made a negative adjustment of {q} to {unit}"
+msgstr "मानक ह्रास की राशि {q} {unit} में तय की gota"
+
+msgid "made a negative adjustment of {q} to {unit} for batch {te}"
+msgstr "मानकर {q} का ऋण मूल्य रेखा {unit} के लिए बचत {te} में की गई है"
+
+msgid "made a negative adjustment of {q} to {unit} for serial {te}"
+msgstr "मानक ह्रास की राशि {q} {unit} के लिए सैरियल {te} पर तय की गई है"
+
+msgid "made a positive adjustment of {q}"
+msgstr "मई {q} के साथ एक धनात्मक परिवर्तन की योजना बनाईं"
+
+msgid "made a positive adjustment of {q} for batch {te}"
+msgstr "मानक {q} के लिए बैच {te} में सक्रिय रूप से सुधार की गई है"
+
+msgid "made a positive adjustment of {q} for serial {te}"
+msgstr "मानक {q} का धनात्मक संशोधन किया गया है लगभग {te}"
+
+msgid "made a positive adjustment of {q} to {unit}"
+msgstr "मई {q} को {unit} में धनात्मक रूप से सुधार किया है"
+
+msgid "made a positive adjustment of {q} to {unit} for batch {te}"
+msgstr "मानक {q} को {unit} में धनात्मक सुधार किया गया है बैच {te} में"
+
+msgid "made a positive adjustment of {q} to {unit} for serial {te}"
+msgstr "मासक {q} को {unit} में धनात्मक रूप से रिसेक्ट किया गया है {te}"
 
 msgid "Magic link expired or already used. Please request a new one."
 msgstr "मैगिक लिंक समाप्त हो गई या पहले से का थी। मुख्य रूप से एक नया आँपेंदत करें।"
@@ -9877,6 +9958,9 @@ msgstr "नई शिपिंग विधि"
 msgid "New Size"
 msgstr "नया आकार"
 
+msgid "New Stock Transfer"
+msgstr "नया स्टॉक ट्रांसफर"
+
 msgid "New Storage Type"
 msgstr "नया स्टोरेज प्रकार"
 
@@ -10022,6 +10106,9 @@ msgstr "कोई उपलब्ध फ़िल्टर नहीं"
 
 msgid "No available tracked entities found"
 msgstr "निकाल वस्तुओं में कोई उपलब्ध ट्रैक की गई वस्तु नहीं पाया"
+
+msgid "No bin"
+msgstr "कोई बाउन्सर नहीं"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "कोई BOM इनपुट शेल्फ-लाइफ नीति नहीं है"
@@ -10272,11 +10359,17 @@ msgstr "किसी भी वस्तुपश्रय यादृच्छ
 msgid "No time entries for this week"
 msgstr "इस सप्ताह के लिए कोई समय प्रविष्टि नहीं"
 
+msgid "No units"
+msgstr "कोई मात्रा नहीं"
+
 msgid "No value needed"
 msgstr "न कोई मूल्य आवश्यक है"
 
 msgid "No values available"
 msgstr "कोई मूल्य उपलब्ध नहीं हैं"
+
+msgid "No warehouse mapped"
+msgstr "कोई तरह की स्टॉक बाजार संबंधित मॉप्ड नहीं मैप की गई है"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "इस आइटम के लिए कोई स्टॉक की रिकॉर्ड नहीं है। आप इसे भी चयन कर सकते हैं — अवशेष तकनीकी विवरणित हो जाएगा तill गणना की मेल-मिलान हो।"
@@ -10643,6 +10736,9 @@ msgstr "अन्य प्रकार"
 msgid "Ounce"
 msgstr "आउंस"
 
+msgid "Outbound Transfer"
+msgstr "आउटबन्ड ट्रांसफर"
+
 msgid "Outgoing"
 msgstr "बाहर जाने वाला"
 
@@ -10963,6 +11059,9 @@ msgstr "उनका किराया देखने के लिए ग्�
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "एक तारीख चुनें या इसे साफ करने के लिए खाली छोड़ें।"
+
+msgid "Pick a warehouse"
+msgstr "स्टॉक स्टोरीज़ चुनें"
 
 msgid "Pick List"
 msgstr "पिक लिस्ट"
@@ -11617,6 +11716,9 @@ msgstr "क्रय आदेश पर मात्रा"
 msgid "Quantity on Sales Order"
 msgstr "बिक्रय आदेश पर मात्रा"
 
+#~ msgid "Quantity per color"
+#~ msgstr "रंग प्रति मात्रा"
+
 msgid "Quantity per Parent"
 msgstr "प्रति पैरेंट मात्रा"
 
@@ -11790,6 +11892,12 @@ msgstr "इन्वेंटरी में प्राप्त करें
 
 msgid "Received"
 msgstr "संकलित"
+
+msgid "received {q} units from transfer"
+msgstr "संपर्क में {q} इकाई ली"
+
+msgid "received {q} units to {unit} from transfer"
+msgstr "संपर्क में {q} इकाई का प्राप्त होना {unit} से"
 
 msgid "Received At"
 msgstr "प्राप्त किया गया"
@@ -12488,6 +12596,9 @@ msgstr "नमूना रिकॉर्ड किया गया है"
 msgid "Sample Size"
 msgstr "नमूना आकार"
 
+msgid "Samples"
+msgstr "प्रतीक्षुक सूत्रेहरू"
+
 msgid "Sampling Plan"
 msgstr "सैंपलिंग प्लान"
 
@@ -12769,6 +12880,9 @@ msgstr "कॉन्फ़िगर करने के लिए एक आइ�
 msgid "Select an option"
 msgstr "एक विकल्प चुनें"
 
+msgid "Select color / size"
+msgstr "चयन करें रंग / आकार"
+
 msgid "Select Contact"
 msgstr "संपर्क चुनें"
 
@@ -12805,6 +12919,9 @@ msgstr "गेज चुनें"
 msgid "Select groups or individuals"
 msgstr "समूह या व्यक्तियों का चयन करें"
 
+msgid "Select item"
+msgstr "इंजेक्शन चयन करें"
+
 msgid "Select Item Type"
 msgstr "आइटम प्रकार चुनें"
 
@@ -12832,6 +12949,9 @@ msgstr "स्कोप चुनें"
 msgid "Select scrap reason"
 msgstr "विस्थापित कारण चुनें"
 
+msgid "Select source"
+msgstr "स्रोत चुनें"
+
 msgid "Select Supplier Status"
 msgstr "आपूर्तिकर्ता स्थिति चुनें"
 
@@ -12846,6 +12966,9 @@ msgstr "उन समूहों का चयन करें जिन्ह�
 
 msgid "Select the quantity that you'd like to split into a new line."
 msgstr "नई पंक्ति में विभाजित करने वाली उत्पादन संख्या चुनें।"
+
+msgid "Select unit"
+msgstr "यादृच्छिक इकाई चुनें"
 
 msgid "Select value"
 msgstr "चुनें मान"
@@ -12924,6 +13047,9 @@ msgstr "सीरियल या बैच ट्रैकिंग आवश�
 
 msgid "Serial Tracking"
 msgstr "सीरियल ट्रैकिंग"
+
+msgid "Serial/Batch"
+msgstr "सीरियल/बॅच"
 
 msgid "Serial/Batch #"
 msgstr "सीरीज़/बैच #"
@@ -13049,6 +13175,9 @@ msgstr "भेजें"
 msgid "Ship some, stock some"
 msgstr "कुछ भेजें, कुछ स्टॉक करें"
 
+msgid "Ship To"
+msgstr "शिप टू"
+
 msgid "Ship to Customer"
 msgstr "ग्राहक को भेजें"
 
@@ -13057,6 +13186,9 @@ msgstr "शिपमेंट"
 
 msgid "Shipment Date"
 msgstr "शिपमेंट तारीख"
+
+msgid "Shipment Details"
+msgstr "शिपमेंट विवरण"
 
 msgid "Shipment ID"
 msgstr "शिपमेंट आईडी"
@@ -13078,6 +13210,12 @@ msgstr "शिपमेंट"
 
 msgid "Shipped"
 msgstr "शिप्ड"
+
+msgid "shipped {q} units for transfer"
+msgstr "शिप्ड {q} इकाईएं ट्रांसफर के लिए"
+
+msgid "shipped {q} units from {unit} for transfer"
+msgstr "शिप्डे {q} इकाई {unit} को ट्रांसफर के लिए"
 
 msgid "Shipped Qty"
 msgstr "भेजी गई मात्रा"
@@ -13366,6 +13504,9 @@ msgstr "मानक"
 
 msgid "Standard Lead Time"
 msgstr "मानक लीड समय"
+
+msgid "Standard Terms & Conditions"
+msgstr "सामान्य शर्तें और सिफारि"
 
 msgid "Start"
 msgstr "शुरू करें"
@@ -14195,6 +14336,9 @@ msgstr "मॉडल"
 msgid "Term ends"
 msgstr "अवधि समाप्त होती है"
 
+msgid "Terms"
+msgstr "शर्तें"
+
 msgid "Terms and Privacy"
 msgstr "शर्तें और गोपनीयता"
 
@@ -14459,6 +14603,12 @@ msgstr "भेजने और प्राप्त करने के लि�
 msgid "To Storage Unit"
 msgstr "स्टोरेज यूनिट को"
 
+msgid "To unit"
+msgstr "कित्रा में"
+
+#~ msgid "To warehouse"
+#~ msgstr "स्टॉक बाजार"
+
 msgid "Today"
 msgstr "आज"
 
@@ -14666,6 +14816,15 @@ msgstr "इस कंपनी की स्वामित्व किसी �
 
 msgid "Transfer To"
 msgstr "को स्थानांतरित करें"
+
+msgid "transferred {q} units"
+msgstr "TRANSFERED {q} UNITS"
+
+msgid "transferred {q} units from {unit}"
+msgstr "TRANSFERRED {q} UNITS FROM {unit}"
+
+msgid "transferred {q} units to {unit}"
+msgstr "TRANSFERRED {q} UNITS TO {unit}"
 
 msgid "Transfers"
 msgstr "स्थानांतरण"
@@ -15623,6 +15782,9 @@ msgstr "आयतन:"
 
 msgid "Waiting"
 msgstr "प्रतीक्षा"
+
+msgid "Warehouse"
+msgstr "स्टॉक संग्रहणालय"
 
 msgid "Warehouse Transfer"
 msgstr "गोदाम स्थानांतरण"

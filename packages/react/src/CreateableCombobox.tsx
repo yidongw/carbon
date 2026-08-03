@@ -146,12 +146,22 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
                 onClick={() => setOpen(true)}
               >
                 {value ? (
-                  <TruncatedTooltipText
-                    className="block min-w-0 flex-1 truncate text-left"
-                    tooltip={selectedOptionText}
-                  >
-                    {selectedOption?.label}
-                  </TruncatedTooltipText>
+                  typeof selectedOption?.label === "string" ? (
+                    <TruncatedTooltipText
+                      className="block min-w-0 flex-1 truncate text-left"
+                      tooltip={selectedOptionText}
+                    >
+                      {selectedOption.label}
+                    </TruncatedTooltipText>
+                  ) : (
+                    // Non-string labels (e.g. an Enumerable badge) handle their
+                    // own truncation. Avoid text-overflow:ellipsis here, which
+                    // Safari renders as a phantom "…" after an inline-flex child
+                    // even when it fits.
+                    <span className="flex min-w-0 flex-1 overflow-hidden text-left">
+                      {selectedOption?.label}
+                    </span>
+                  )
                 ) : (
                   <span className="!text-muted-foreground">
                     {placeholder ?? t`Select`}

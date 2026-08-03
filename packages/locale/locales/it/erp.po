@@ -106,6 +106,12 @@ msgstr "{name} eliminato"
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} autorizzazioni"
 
+#~ msgid "{total} samples"
+#~ msgstr "{total} campioni"
+
+#~ msgid "{total} samples · {sampled}/{colorCount} colors"
+#~ msgstr "{total} campioni · {sampled}/{colorCount} colori"
+
 msgid "/month/user"
 msgstr "/mese/utente"
 
@@ -455,6 +461,9 @@ msgstr "Aggiungi dalla libreria…"
 msgid "Add Group"
 msgstr "Aggiungi Gruppo"
 
+msgid "Add item"
+msgstr "Aggiungi elemento"
+
 msgid "Add Item"
 msgstr "Aggiungi Articolo"
 
@@ -521,11 +530,17 @@ msgstr "Aggiungi Requisito"
 msgid "Add Risk"
 msgstr "Aggiungi Rischio"
 
+msgid "Add row"
+msgstr "Aggiungi riga"
+
 msgid "Add Row"
 msgstr "Aggiungi Riga"
 
 msgid "Add rule"
 msgstr "Aggiungi regola"
+
+msgid "Add sample"
+msgstr "Aggiungi campione"
 
 msgid "Add seats"
 msgstr "Aggiungi posti"
@@ -1515,6 +1530,9 @@ msgstr "Fatturazione"
 
 msgid "Billing Address"
 msgstr "Indirizzo di Fatturazione"
+
+#~ msgid "Bin"
+#~ msgstr "Sella"
 
 msgid "Block with an error"
 msgstr "Blocca con un errore"
@@ -2589,8 +2607,14 @@ msgstr "Crea Revisione"
 msgid "Create Rule"
 msgstr "Crea Regola"
 
+msgid "Create Sample"
+msgstr "Crea Campione"
+
 msgid "Create supplier"
 msgstr "Crea fornitore"
+
+msgid "Create transfer"
+msgstr "Crea trasferimento"
 
 msgid "Create User"
 msgstr "Crea Utente"
@@ -2859,6 +2883,9 @@ msgstr "Sconti pagamento cliente"
 
 msgid "Customer PO"
 msgstr "Ordine cliente"
+
+msgid "Customer PO #"
+msgstr "Numero PO cliente"
 
 msgid "Customer PO Number"
 msgstr "Numero PO Cliente"
@@ -7853,11 +7880,20 @@ msgstr "Venerdì"
 msgid "From"
 msgstr "Da"
 
+msgid "From (current location)"
+msgstr "Da (posizione corrente)"
+
+msgid "From and To warehouses must be different"
+msgstr "Da e a magazzino devono essere diversi"
+
 msgid "From Location"
 msgstr "Da Ubicazione"
 
 msgid "From Storage Unit"
 msgstr "Da Unità di Stoccaggio"
+
+msgid "From warehouse"
+msgstr "Dalla magazzino"
 
 msgid "Fully paid"
 msgstr "Pagato in pieno"
@@ -8132,6 +8168,9 @@ msgstr "In corso"
 msgid "in selected period"
 msgstr "nel periodo selezionato"
 
+msgid "in use"
+msgstr "in uso"
+
 msgid "Inactive"
 msgstr "Inattivo"
 
@@ -8146,6 +8185,9 @@ msgstr "Ispezioni in Entrata"
 
 msgid "Inbound Inspections: Require Different Inspector"
 msgstr "Ispezioni in Entrata: Richiedi Ispettore Diverso"
+
+msgid "Inbound Transfer"
+msgstr "Traslato Ingresso"
 
 msgid "Inbox"
 msgstr "Posta in arrivo"
@@ -8938,6 +8980,9 @@ msgstr "Le righe necessitano di prezzi o tempi di consegna"
 msgid "Link"
 msgstr "Collegamento"
 
+msgid "Link a warehouse to this partner in Resources → Locations."
+msgstr "Collega un magazzino a questo partner in Risorse → Locali."
+
 msgid "Link Jira Issue"
 msgstr "Collega Problema Jira"
 
@@ -9129,6 +9174,42 @@ msgstr "Unità Macchina"
 
 msgid "Machinery & Equipment"
 msgstr "Eserciziatura e Strumenti"
+
+msgid "made a negative adjustment of {q}"
+msgstr "effettuato un'adeguamento negativo di {q}"
+
+msgid "made a negative adjustment of {q} for batch {te}"
+msgstr "effettuata una correzione negativa di {q} per la partita {te}"
+
+msgid "made a negative adjustment of {q} for serial {te}"
+msgstr "effettuata una correzione negativa di {q} per il seriale {te}"
+
+msgid "made a negative adjustment of {q} to {unit}"
+msgstr "effettuata una correzione negativa di {q} a {unit}"
+
+msgid "made a negative adjustment of {q} to {unit} for batch {te}"
+msgstr "effettuata una correzione negativa di {q} a {unit} per il lotto {te}"
+
+msgid "made a negative adjustment of {q} to {unit} for serial {te}"
+msgstr "effettuata una correzione negativa di {q} a {unit} per il seriale {te}"
+
+msgid "made a positive adjustment of {q}"
+msgstr "effettuata una modifica positiva di {q}"
+
+msgid "made a positive adjustment of {q} for batch {te}"
+msgstr "effettuata una correzione positiva di {q} per la partita {te}"
+
+msgid "made a positive adjustment of {q} for serial {te}"
+msgstr "effettuata una modifica positiva di {q} per la serie {te}"
+
+msgid "made a positive adjustment of {q} to {unit}"
+msgstr "effettuata una correzione positiva di {q} a {unit}"
+
+msgid "made a positive adjustment of {q} to {unit} for batch {te}"
+msgstr "effettuata una modifica positiva di {q} a {unit} per la partita {te}"
+
+msgid "made a positive adjustment of {q} to {unit} for serial {te}"
+msgstr "effettuata una modifica positiva di {q} a {unit} per il seriale {te}"
 
 msgid "Magic link expired or already used. Please request a new one."
 msgstr "Collegamento magico scaduto o già utilizzato. Per favore richiedene uno nuovo."
@@ -9881,6 +9962,9 @@ msgstr "Nuovo Metodo di Spedizione"
 msgid "New Size"
 msgstr "Nuova Dimensione"
 
+msgid "New Stock Transfer"
+msgstr "Nuovo Trasferimento Magazzino"
+
 msgid "New Storage Type"
 msgstr "Nuovo Tipo di Archiviazione"
 
@@ -10026,6 +10110,9 @@ msgstr "Nessun filtro disponibile"
 
 msgid "No available tracked entities found"
 msgstr "Nessun entità tracciata disponibile trovata"
+
+msgid "No bin"
+msgstr "Nessun contenitore"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Nessun input della distinta base ha una politica di shelf-life"
@@ -10276,11 +10363,17 @@ msgstr "Nessun fornitore ancora"
 msgid "No time entries for this week"
 msgstr "Nessuna registrazione oraria per questa settimana"
 
+msgid "No units"
+msgstr "Nessuna unità"
+
 msgid "No value needed"
 msgstr "Non è necessario inserire un valore"
 
 msgid "No values available"
 msgstr "Nessun valore disponibile"
+
+msgid "No warehouse mapped"
+msgstr "Nessun magazzino mappato"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Non ci sono dati di magazzino registrati per questo articolo. Puoi comunque prenderlo - il saldo attuale diventerà negativo fino a quando non verranno effettuate le rettifiche."
@@ -10647,6 +10740,9 @@ msgstr "Altro Tipo"
 msgid "Ounce"
 msgstr "Oncia"
 
+msgid "Outbound Transfer"
+msgstr "Traslato Uscente"
+
 msgid "Outgoing"
 msgstr "In uscita"
 
@@ -10967,6 +11063,9 @@ msgstr "Scegli un cliente o un tipo di cliente per visualizzare i suoi prezzi."
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "Scegli una data o lascia vuoto per cancellarla."
+
+msgid "Pick a warehouse"
+msgstr "Scegli un magazzino"
 
 msgid "Pick List"
 msgstr "Elenco di prelievo"
@@ -11621,6 +11720,9 @@ msgstr "Quantità in Ordine di Acquisto"
 msgid "Quantity on Sales Order"
 msgstr "Quantità in Ordine di Vendita"
 
+#~ msgid "Quantity per color"
+#~ msgstr "Quantità per colore"
+
 msgid "Quantity per Parent"
 msgstr "Quantità per Genitore"
 
@@ -11794,6 +11896,12 @@ msgstr "Ricevi in Inventario"
 
 msgid "Received"
 msgstr "Ricevuto"
+
+msgid "received {q} units from transfer"
+msgstr "ricevute {q} unità da trasferimento"
+
+msgid "received {q} units to {unit} from transfer"
+msgstr "ricevute {q} unità da {unit} trasferimento"
 
 msgid "Received At"
 msgstr "Ricevuto il"
@@ -12492,6 +12600,9 @@ msgstr "Campione registrato"
 msgid "Sample Size"
 msgstr "Dimensione del Campione"
 
+msgid "Samples"
+msgstr "Campioni"
+
 msgid "Sampling Plan"
 msgstr "Piano di Campionamento"
 
@@ -12773,6 +12884,9 @@ msgstr "Seleziona un articolo da configurare"
 msgid "Select an option"
 msgstr "Seleziona un'opzione"
 
+msgid "Select color / size"
+msgstr "Seleziona colore / dimensione"
+
 msgid "Select Contact"
 msgstr "Seleziona Contatto"
 
@@ -12809,6 +12923,9 @@ msgstr "Seleziona Calibro"
 msgid "Select groups or individuals"
 msgstr "Seleziona gruppi o individui"
 
+msgid "Select item"
+msgstr "Seleziona articolo"
+
 msgid "Select Item Type"
 msgstr "Seleziona Tipo di Articolo"
 
@@ -12836,6 +12953,9 @@ msgstr "Seleziona ambito"
 msgid "Select scrap reason"
 msgstr "Scegliere ragione di scarto"
 
+msgid "Select source"
+msgstr "Seleziona la fonte"
+
 msgid "Select Supplier Status"
 msgstr "Seleziona Stato Fornitore"
 
@@ -12850,6 +12970,9 @@ msgstr "Seleziona i gruppi che devono completare questo training"
 
 msgid "Select the quantity that you'd like to split into a new line."
 msgstr "Seleziona la quantità che desideri dividere in una nuova riga."
+
+msgid "Select unit"
+msgstr "Selezionaunità"
 
 msgid "Select value"
 msgstr "Scegliere valore"
@@ -12928,6 +13051,9 @@ msgstr "Tracciamento Seriale o Batch Richiesto"
 
 msgid "Serial Tracking"
 msgstr "Tracciamento Seriale"
+
+msgid "Serial/Batch"
+msgstr "Numero di serie/Numero di batch"
 
 msgid "Serial/Batch #"
 msgstr "Seriale/Lotto #"
@@ -13053,6 +13179,9 @@ msgstr "Spedisci"
 msgid "Ship some, stock some"
 msgstr "Spedisci alcuni, immagazzina alcuni"
 
+msgid "Ship To"
+msgstr "Indirizzo di spedizione"
+
 msgid "Ship to Customer"
 msgstr "Spedisci al Cliente"
 
@@ -13061,6 +13190,9 @@ msgstr "Spedizione"
 
 msgid "Shipment Date"
 msgstr "Data di spedizione"
+
+msgid "Shipment Details"
+msgstr "Dettagli spedizione"
 
 msgid "Shipment ID"
 msgstr "ID Spedizione"
@@ -13082,6 +13214,12 @@ msgstr "Spedizioni"
 
 msgid "Shipped"
 msgstr "Spedito"
+
+msgid "shipped {q} units for transfer"
+msgstr "inviate {q} unità per trasferimento"
+
+msgid "shipped {q} units from {unit} for transfer"
+msgstr "inviate {q} unità da {unit} per trasferimento"
 
 msgid "Shipped Qty"
 msgstr "Qtà Spedita"
@@ -13370,6 +13508,9 @@ msgstr "Standard"
 
 msgid "Standard Lead Time"
 msgstr "Tempo di consegna standard"
+
+msgid "Standard Terms & Conditions"
+msgstr "Condizioni generali di vendita"
 
 msgid "Start"
 msgstr "Avvia"
@@ -14199,6 +14340,9 @@ msgstr "Modelli"
 msgid "Term ends"
 msgstr "Scadenza periodo"
 
+msgid "Terms"
+msgstr "Condizioni"
+
 msgid "Terms and Privacy"
 msgstr "Termini e Privacy"
 
@@ -14463,6 +14607,12 @@ msgstr "Da spedire e ricevere"
 msgid "To Storage Unit"
 msgstr "A Storage Unit"
 
+msgid "To unit"
+msgstr "Aunità"
+
+#~ msgid "To warehouse"
+#~ msgstr "Nell'magazzino"
+
 msgid "Today"
 msgstr "Oggi"
 
@@ -14670,6 +14820,15 @@ msgstr "Trasferisci la proprietà di questa azienda a un altro utente"
 
 msgid "Transfer To"
 msgstr "Trasferisci A"
+
+msgid "transferred {q} units"
+msgstr "trasferiti {q} unità"
+
+msgid "transferred {q} units from {unit}"
+msgstr "trasferiti {q} unità da {unit}"
+
+msgid "transferred {q} units to {unit}"
+msgstr "trasferiti {q} unità a {unit}"
 
 msgid "Transfers"
 msgstr "Trasferimenti"
@@ -15627,6 +15786,9 @@ msgstr "Volume:"
 
 msgid "Waiting"
 msgstr "In attesa"
+
+msgid "Warehouse"
+msgstr "Magazzino"
 
 msgid "Warehouse Transfer"
 msgstr "Trasferimento Magazzino"
