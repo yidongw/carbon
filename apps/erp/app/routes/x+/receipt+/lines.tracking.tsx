@@ -1,3 +1,4 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { TrackedEntityAttributes } from "@carbon/utils";
@@ -86,7 +87,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
       .single();
 
     if (receipt.error) {
-      return data({ error: "Failed to load receipt" }, { status: 500 });
+      return data(error(receipt.error, "Failed to load receipt"), {
+        status: 500
+      });
     }
 
     if (
@@ -101,7 +104,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
         .single();
 
       if (receiptLine.error) {
-        return data({ error: "Failed to load receipt line" }, { status: 500 });
+        return data(error(receiptLine.error, "Failed to load receipt line"), {
+          status: 500
+        });
       }
 
       const shippedSerialsByLineId = await getInboundTransferShippedSerials(
@@ -115,9 +120,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
       if (!shippedSerials.includes(serialNumber)) {
         return data(
-          {
-            error: `Serial number ${serialNumber} was not shipped on this transfer`
-          },
+          error(null, "This serial number was not shipped on this transfer"),
           { status: 400 }
         );
       }
@@ -135,7 +138,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     if (indexQueryError) {
       return data(
-        { error: "Failed to check serial number index" },
+        error(indexQueryError, "Failed to check serial number index"),
         { status: 500 }
       );
     }
@@ -163,17 +166,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
       if (hasReceiptLineIndex && (!receiptLineMatches || !indexMatches)) {
         return data(
-          {
-            error:
-              "Serial number is already used for a different item or position"
-          },
+          error(
+            null,
+            "Serial number is already used for a different item or position"
+          ),
           { status: 400 }
         );
       }
     }
 
     // Use a transaction to ensure data consistency
-    const { error } = await serviceRole.rpc(
+    const { error: rpcError } = await serviceRole.rpc(
       "update_receipt_line_serial_tracking",
       {
         p_tracked_entity_id: existingEntityWithIndex?.id,
@@ -185,16 +188,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
       }
     );
 
-    if (error) {
-      console.error(error);
+    if (rpcError) {
+      console.error(rpcError);
       // Check if error is due to unique constraint violation
-      if (error.message?.includes("duplicate key value")) {
-        return data(
-          { error: "Serial number already exists for this item" },
-          { status: 400 }
-        );
+      if (rpcError.message?.includes("duplicate key value")) {
+        return data(error(null, "Serial number already exists for this item"), {
+          status: 400
+        });
       }
-      return data({ error: "Failed to update tracking" }, { status: 500 });
+      return data(error(rpcError, "Failed to update tracking"), {
+        status: 500
+      });
     }
 
     // A receipt-line index holds exactly one serial: clear the receipt tags from

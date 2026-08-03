@@ -234,8 +234,8 @@ const ReceiptsTable = memo(({ data, count }: ReceiptsTableProps) => {
           filter: {
             type: "static",
             options: [
-              { value: "true", label: "Yes" },
-              { value: "false", label: "No" }
+              { value: "true", label: t`Yes` },
+              { value: "false", label: t`No` }
             ]
           },
           pluralHeader: t`Invoiced Statuses`,
@@ -370,7 +370,7 @@ const ReceiptsTable = memo(({ data, count }: ReceiptsTableProps) => {
           action={path.to.deleteReceipt(selectedReceipt.id)}
           isOpen={deleteReceiptModal.isOpen}
           name={selectedReceipt.receiptId!}
-          text={`Are you sure you want to delete ${selectedReceipt.receiptId!}? This cannot be undone.`}
+          text={t`Are you sure you want to delete ${selectedReceipt.receiptId!}? This cannot be undone.`}
           onCancel={() => {
             deleteReceiptModal.onClose();
             setSelectedReceipt(null);

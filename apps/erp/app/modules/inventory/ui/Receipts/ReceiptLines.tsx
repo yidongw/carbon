@@ -1,5 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import { Number, Submit, ValidatedForm } from "@carbon/form";
+import { getActiveI18n } from "@carbon/locale";
 import {
   Button,
   Card,
@@ -31,6 +32,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
+  translateServerToast,
   useDisclosure,
   VStack
 } from "@carbon/react";
@@ -374,7 +376,7 @@ function ReceiptFixedAssetLineItem({
       />
       <VStack spacing={0} className="flex-1 min-w-0">
         <span className="text-sm font-medium">
-          {line.assetName ?? line.description ?? "Fixed Asset"}
+          {line.assetName ?? line.description ?? t`Fixed Asset`}
         </span>
         {line.assetReadableId && (
           <span className="text-xs text-muted-foreground">
@@ -1019,9 +1021,9 @@ function SerialForm({
         (sn, idx) => idx !== currentIndex && sn.number.trim() === trimmedNumber
       );
 
-      return isDuplicate ? "Duplicate serial number" : null;
+      return isDuplicate ? t`Duplicate serial number` : null;
     },
-    [serialNumbers]
+    [serialNumbers, t]
   );
 
   const updateSerialNumber = useCallback(
@@ -1062,10 +1064,18 @@ function SerialForm({
             return newErrors;
           });
         } else {
-          let message = "Serial number already exists";
+          let message = t`Serial number already exists`;
           try {
             const body = await response.json();
-            if (body?.error) message = body.error;
+            // Server sends the English message (error() Result builder); localize
+            // it via the generated server-toast catalog, same as flash toasts.
+            const serverMessage = body?.message ?? body?.error;
+            if (serverMessage) {
+              const i18n = getActiveI18n();
+              message = i18n
+                ? translateServerToast(serverMessage, i18n)
+                : serverMessage;
+            }
           } catch {
             // keep the default message
           }
@@ -1078,12 +1088,12 @@ function SerialForm({
         if (error instanceof Error && error.message.includes("duplicate")) {
           setErrors((prev) => ({
             ...prev,
-            [serialNumber.index]: "Serial number already exists for this item"
+            [serialNumber.index]: t`Serial number already exists for this item`
           }));
         }
       }
     },
-    [line.id, line.itemId, receipt?.id, validateSerialNumber, expiryDate]
+    [line.id, line.itemId, receipt?.id, validateSerialNumber, expiryDate, t]
   );
 
   const propertiesDisclosure = useDisclosure();
@@ -1396,14 +1406,14 @@ function useReceiptFiles(receiptId: string) {
         .remove([getPath(file, lineId)]);
 
       if (!fileDelete || fileDelete.error) {
-        toast.error(fileDelete?.error?.message || "Error deleting file");
+        toast.error(fileDelete?.error?.message || t`Error deleting file`);
         return;
       }
 
       toast.success(`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [getPath, carbon?.storage, revalidator]
+    [getPath, carbon?.storage, revalidator, t]
   );
 
   return { upload, deleteFile, getPath };

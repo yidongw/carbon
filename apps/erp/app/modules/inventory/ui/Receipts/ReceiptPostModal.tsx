@@ -95,7 +95,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
         {
           itemReadableId: null,
           receivedQuantity: 0,
-          receivedQuantityError: "Receipt is empty"
+          receivedQuantityError: t`Receipt is empty`
         }
       ]);
     }
@@ -112,7 +112,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
             receivedQuantity: line.receivedQuantity ?? 0,
-            receivedQuantityError: "Batch number is required"
+            receivedQuantityError: t`Batch number is required`
           });
         }
       }
@@ -147,7 +147,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
             receivedQuantity,
-            receivedQuantityError: "Serial numbers are missing"
+            receivedQuantityError: t`Serial numbers are missing`
           });
         }
 
@@ -169,9 +169,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
             errors.push({
               itemReadableId: getItemReadableId(items, line.itemId) ?? null,
               receivedQuantity,
-              receivedQuantityError: `Serial numbers not shipped on this transfer: ${invalidSerials.join(
-                ", "
-              )}`
+              receivedQuantityError: t`Serial numbers not shipped on this transfer: ${invalidSerials.join(", ")}`
             });
           }
         }

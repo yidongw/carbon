@@ -1,5 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import { Number, Submit, ValidatedForm } from "@carbon/form";
+import { getActiveI18n } from "@carbon/locale";
 import {
   Button,
   Card,
@@ -32,6 +33,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  translateServerToast,
   useDisclosure,
   VStack
 } from "@carbon/react";
@@ -365,7 +367,7 @@ function ShipmentFixedAssetLineItem({
       />
       <VStack spacing={0} className="flex-1 min-w-0">
         <span className="text-sm font-medium">
-          {line.assetName ?? line.description ?? "Fixed Asset"}
+          {line.assetName ?? line.description ?? t`Fixed Asset`}
         </span>
         {line.assetReadableId && (
           <span className="text-xs text-muted-foreground">
@@ -443,7 +445,7 @@ function ShipmentLineItem({
       <div className="absolute top-6 right-6">
         {line.fulfillment?.type === "Job" ? (
           <div className="flex flex-col items-end gap-0">
-            <span>Job</span>
+            <span>{t`Job`}</span>
             <span className="text-xs text-muted-foreground">
               {line.fulfillment?.job?.jobId}
             </span>
@@ -518,7 +520,7 @@ function ShipmentLineItem({
                       <LuCircleAlert className="text-red-500" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      Shipped quantity exceeds job quantity
+                      {t`Shipped quantity exceeds job quantity`}
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -587,7 +589,7 @@ function ShipmentLineItem({
                       <LuCircleAlert className="text-red-500" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      There are more shipped than ordered
+                      {t`There are more shipped than ordered`}
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -638,7 +640,7 @@ function ShipmentLineItem({
       {deleteDisclosure.isOpen && (
         <ConfirmDelete
           name="Shipment Line"
-          text="Are you sure you want to delete this shipment line?"
+          text={t`Are you sure you want to delete this shipment line?`}
           action={path.to.shipmentLineDelete(line.id!)}
           onCancel={deleteDisclosure.onClose}
           onSubmit={deleteDisclosure.onClose}
@@ -806,7 +808,7 @@ function BatchForm({
     // @ts-expect-error TS2339 - TODO: fix type
     if (batchNumber && batchNumber.status !== "Available") {
       // @ts-expect-error TS2339 - TODO: fix type
-      setError(`Batch number is ${batchNumber.status}`);
+      setError(t`Batch number is ${batchNumber.status}`);
       setValues({
         ...valuesToSubmit,
         number: ""
@@ -814,7 +816,7 @@ function BatchForm({
       return;
     } else if (!batchNumber && valuesToSubmit.number.trim()) {
       // If batch number is not in the list, don't proceed with the network request
-      setError("Batch number not found");
+      setError(t`Batch number not found`);
       return;
     } else {
       setError(null);
@@ -825,7 +827,7 @@ function BatchForm({
     if (batchNumber && (line.shippedQuantity || 0) > batchNumber.quantity) {
       setError(
         // @ts-expect-error TS2339 - TODO: fix type
-        `Shipped quantity exceeds batch quantity (${batchNumber.quantity})`
+        t`Shipped quantity exceeds batch quantity (${batchNumber.quantity})`
       );
       setValues({
         ...valuesToSubmit,
@@ -844,7 +846,7 @@ function BatchForm({
         // biome-ignore lint/complexity/useLiteralKeys: suppressed due to migration
         attributes["Shipment"] === shipment?.id
       ) {
-        setError("Batch number is already used on another shipment line");
+        setError(t`Batch number is already used on another shipment line`);
         setValues({
           ...valuesToSubmit,
           number: ""
@@ -941,8 +943,7 @@ function BatchForm({
             <div className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground">
               <LuInfo className="h-3.5 w-3.5 flex-shrink-0" />
               <span>
-                Shipped quantity is less than batch quantity. A new batch will
-                be created for the remaining quantity when posted.
+                {t`Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted.`}
               </span>
             </div>
           );
@@ -1006,7 +1007,7 @@ function SerialForm({
       });
 
       if (isDuplicate) {
-        return "Duplicate serial number";
+        return t`Duplicate serial number`;
       }
 
       // Check if serial number is available (by id or readableId)
@@ -1016,18 +1017,18 @@ function SerialForm({
       );
 
       if (!serialNumber) {
-        return "Serial number not found";
+        return t`Serial number not found`;
       }
 
       // @ts-expect-error TS2339 - TODO: fix type
       if (serialNumber.status !== "Available") {
         // @ts-expect-error TS2339 - TODO: fix type
-        return `Serial number is ${serialNumber.status}`;
+        return t`Serial number is ${serialNumber.status}`;
       }
 
       return null;
     },
-    [serialNumbers, serialNumbersData?.data]
+    [serialNumbers, serialNumbersData?.data, t]
   );
 
   const updateSerialNumber = useCallback(
@@ -1083,8 +1084,13 @@ function SerialForm({
           });
         } else {
           const responseData = await response.json();
-          const errorMessage =
-            responseData.message || "Failed to track serial number";
+          const raw = responseData?.message ?? responseData?.error;
+          const i18n = getActiveI18n();
+          const errorMessage = raw
+            ? i18n
+              ? translateServerToast(raw, i18n)
+              : raw
+            : t`Failed to track serial number`;
 
           setErrors((prev) => ({
             ...prev,
@@ -1103,7 +1109,7 @@ function SerialForm({
         if (error instanceof Error && error.message.includes("available")) {
           setErrors((prev) => ({
             ...prev,
-            [serialNumber.index]: "Serial number is not available"
+            [serialNumber.index]: t`Serial number is not available`
           }));
 
           // Clear the input value but keep the error message
@@ -1123,7 +1129,8 @@ function SerialForm({
       validateSerialNumber,
       serialNumbers,
       serialNumbersData?.data,
-      onSerialNumbersChange
+      onSerialNumbersChange,
+      t
     ]
   );
 

@@ -189,8 +189,8 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
           filter: {
             type: "static",
             options: [
-              { value: "true", label: "Yes" },
-              { value: "false", label: "No" }
+              { value: "true", label: t`Yes` },
+              { value: "false", label: t`No` }
             ]
           },
           icon: <LuCheck />
@@ -387,7 +387,7 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
           action={path.to.deleteShipment(selectedShipment.id)}
           isOpen={deleteShipmentModal.isOpen}
           name={selectedShipment.shipmentId!}
-          text={`Are you sure you want to delete ${selectedShipment.shipmentId!}? This cannot be undone.`}
+          text={t`Are you sure you want to delete ${selectedShipment.shipmentId!}? This cannot be undone.`}
           onCancel={() => {
             deleteShipmentModal.onClose();
             setSelectedShipment(null);

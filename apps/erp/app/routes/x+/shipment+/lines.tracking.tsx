@@ -27,30 +27,18 @@ export async function action({ request }: ActionFunctionArgs) {
     .single();
 
   if (trackedEntityResponse.error) {
-    return data(
-      { success: false, error: trackedEntityResponse.error.message },
-      await flash(
-        request,
-        error(trackedEntityResponse.error, trackedEntityResponse.error.message)
-      )
+    const result = error(
+      trackedEntityResponse.error,
+      "Failed to load tracked entity"
     );
+    return data(result, await flash(request, result));
   }
 
   const trackedEntity = trackedEntityResponse.data;
 
   if (trackedEntity.status !== "Available") {
-    return data(
-      {
-        success: false,
-        error: `Tracked entity is not available. Current status: ${trackedEntity.status}`
-      },
-      await flash(
-        request,
-        error(
-          `Tracked entity is not available. Current status: ${trackedEntity.status}`
-        )
-      )
-    );
+    const result = error(null, "Tracked entity is not available");
+    return data(result, await flash(request, result));
   }
 
   const serviceRole = await getCarbonServiceRole();
@@ -63,10 +51,8 @@ export async function action({ request }: ActionFunctionArgs) {
     const quantity = Number(formData.get("quantity"));
 
     if (trackedEntity.quantity < quantity) {
-      return data(
-        { success: false, error: "Batch has insufficient quantity" },
-        await flash(request, error("Batch has insufficient quantity"))
-      );
+      const result = error(null, "Batch has insufficient quantity");
+      return data(result, await flash(request, result));
     }
 
     // Add batch-specific attributes
@@ -133,13 +119,8 @@ export async function action({ request }: ActionFunctionArgs) {
     .eq("status", "Available");
 
   if (updateResponse.error) {
-    return data(
-      { success: false, error: updateResponse.error.message },
-      await flash(
-        request,
-        error(updateResponse.error, updateResponse.error.message)
-      )
-    );
+    const result = error(updateResponse.error, "Failed to update tracking");
+    return data(result, await flash(request, result));
   }
 
   return { success: true };
