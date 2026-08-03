@@ -38,7 +38,7 @@ import {
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   LuCheck,
   LuCircleAlert,
@@ -970,6 +970,8 @@ function SerialForm({
 }) {
   const { t } = useLingui();
   const [errors, setErrors] = useState<Record<number, string>>({});
+  // One ref per serial input so a scan can jump focus to the next empty box.
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { data: serialNumbersData } = useSerialNumbers(
     line.itemId!,
     isReadOnly
@@ -1121,109 +1123,164 @@ function SerialForm({
     ]
   );
 
+  // Validate + save one serial; returns whether it was accepted. Shared by the
+  // input's blur and the scan-to-advance (Enter) handler.
+  const commitSerial = useCallback(
+    (index: number, value: string) => {
+      const error = validateSerialNumber(value, index);
+      setErrors((prev) => {
+        const next = { ...prev };
+        if (error) next[index] = error;
+        else delete next[index];
+        return next;
+      });
+      if (!error) {
+        updateSerialNumber({ index, id: value });
+        return true;
+      }
+      const next = [...serialNumbers];
+      next[index] = { index, id: "" };
+      onSerialNumbersChange(next);
+      return false;
+    },
+    [
+      validateSerialNumber,
+      updateSerialNumber,
+      serialNumbers,
+      onSerialNumbersChange
+    ]
+  );
+
+  // After a good scan, move focus to the next still-empty serial box (wrapping)
+  // so a scanner can fill them one after another without clicking.
+  const focusNextEmptySerial = (fromIndex: number) => {
+    const order = [
+      ...serialNumbers.slice(fromIndex + 1),
+      ...serialNumbers.slice(0, fromIndex + 1)
+    ];
+    const target = order.find((s) => !s.id && s.index !== fromIndex);
+    if (target) inputRefs.current[target.index]?.focus();
+  };
+
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-lg">
-      <div className="flex justify-between items-center gap-4">
-        <Heading size="h4">{t`Tracking Numbers`}</Heading>
+      {/* Label + tracking inputs + Print on one line; stacks below `sm`. */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+        <Heading size="h4" className="shrink-0">
+          {t`Serial Numbers`}
+        </Heading>
         {hasTrackingLabel && (
-          <PrintButton
-            sourceDocument="Shipment"
-            sourceDocumentId={shipment?.id ?? ""}
-            locationId={shipment?.locationId ?? undefined}
-            context="shipping"
-            fileRoutes={{
-              pdf: (id, opts) =>
-                path.to.file.shipmentLabelsPdf(id, {
-                  ...opts,
-                  lineId: line.id!
-                }),
-              zpl: (id, opts) =>
-                path.to.file.shipmentLabelsZpl(id, {
-                  ...opts,
-                  lineId: line.id!
-                })
-            }}
-          />
+          <div className="flex shrink-0 items-center gap-2 order-last">
+            <PrintButton
+              sourceDocument="Shipment"
+              sourceDocumentId={shipment?.id ?? ""}
+              locationId={shipment?.locationId ?? undefined}
+              context="shipping"
+              fileRoutes={{
+                pdf: (id, opts) =>
+                  path.to.file.shipmentLabelsPdf(id, {
+                    ...opts,
+                    lineId: line.id!
+                  }),
+                zpl: (id, opts) =>
+                  path.to.file.shipmentLabelsZpl(id, {
+                    ...opts,
+                    lineId: line.id!
+                  })
+              }}
+            />
+          </div>
         )}
-      </div>
+        <div className="grid w-full grid-cols-1 gap-x-4 gap-y-3 sm:w-auto sm:flex-1 sm:grid-cols-2 lg:grid-cols-3">
+          {serialNumbers.map((serialNumber, index) => {
+            // Check if the serial number is valid and in the list
+            const resolvedSerial = serialNumber.id
+              ? resolveTrackedEntity(
+                  serialNumber.id,
+                  serialNumbersData?.data ?? []
+                )
+              : null;
+            // @ts-expect-error TS2339 - TODO: fix type
+            const isSerialNumberValid = resolvedSerial?.status === "Available";
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-3">
-        {serialNumbers.map((serialNumber, index) => {
-          // Check if the serial number is valid and in the list
-          const resolvedSerial = serialNumber.id
-            ? resolveTrackedEntity(
-                serialNumber.id,
-                serialNumbersData?.data ?? []
-              )
-            : null;
-          // @ts-expect-error TS2339 - TODO: fix type
-          const isSerialNumberValid = resolvedSerial?.status === "Available";
-
-          return (
-            <div
-              key={`${line.id}-${index}-serial`}
-              className="flex flex-col gap-1"
-            >
-              <InputGroup isDisabled={isReadOnly}>
-                <Input
-                  placeholder={t`Tracking Number ${index + 1}`}
-                  value={serialNumber.id}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    const newSerialNumbers = [...serialNumbers];
-                    newSerialNumbers[index] = {
-                      index,
-                      id: newValue
-                    };
-                    onSerialNumbersChange(newSerialNumbers);
-                  }}
-                  onBlur={(e) => {
-                    const newValue = e.target.value;
-                    const error = validateSerialNumber(newValue, index);
-
-                    setErrors((prev) => {
-                      const newErrors = { ...prev };
-                      if (error) {
-                        newErrors[index] = error;
-                      } else {
-                        delete newErrors[index];
-                      }
-                      return newErrors;
-                    });
-
-                    if (!error) {
-                      updateSerialNumber({
-                        index,
-                        id: newValue
-                      });
-                    } else {
-                      // Clear the input value but keep the error message
+            return (
+              <div
+                key={`${line.id}-${index}-serial`}
+                className="flex flex-col gap-1"
+              >
+                <InputGroup isDisabled={isReadOnly}>
+                  <Input
+                    ref={(el: HTMLInputElement | null) => {
+                      inputRefs.current[index] = el;
+                    }}
+                    placeholder={t`Serial ${index + 1}`}
+                    value={serialNumber.id}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
                       const newSerialNumbers = [...serialNumbers];
                       newSerialNumbers[index] = {
                         index,
-                        id: ""
+                        id: newValue
                       };
                       onSerialNumbersChange(newSerialNumbers);
-                    }
-                  }}
-                  className={cn(errors[index] && "border-destructive")}
-                />
-                <InputRightElement className="pl-2">
-                  {isSerialNumberValid ? (
-                    <LuCheck className="text-emerald-500" />
-                  ) : (
-                    <LuQrCode />
-                  )}
-                </InputRightElement>
-              </InputGroup>
-              {errors[index] && (
-                <span className="text-xs text-destructive">
-                  {errors[index]}
-                </span>
-              )}
-            </div>
-          );
-        })}
+                    }}
+                    onKeyDown={(e) => {
+                      // Barcode scanners send Enter after the code — validate,
+                      // save, and jump to the next empty box (don't submit form).
+                      if (e.key !== "Enter") return;
+                      e.preventDefault();
+                      if (commitSerial(index, e.currentTarget.value)) {
+                        focusNextEmptySerial(index);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const newValue = e.target.value;
+                      const error = validateSerialNumber(newValue, index);
+
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        if (error) {
+                          newErrors[index] = error;
+                        } else {
+                          delete newErrors[index];
+                        }
+                        return newErrors;
+                      });
+
+                      if (!error) {
+                        updateSerialNumber({
+                          index,
+                          id: newValue
+                        });
+                      } else {
+                        // Clear the input value but keep the error message
+                        const newSerialNumbers = [...serialNumbers];
+                        newSerialNumbers[index] = {
+                          index,
+                          id: ""
+                        };
+                        onSerialNumbersChange(newSerialNumbers);
+                      }
+                    }}
+                    className={cn(errors[index] && "border-destructive")}
+                  />
+                  <InputRightElement className="pl-2">
+                    {isSerialNumberValid ? (
+                      <LuCheck className="text-emerald-500" />
+                    ) : (
+                      <LuQrCode />
+                    )}
+                  </InputRightElement>
+                </InputGroup>
+                {errors[index] && (
+                  <span className="text-xs text-destructive">
+                    {errors[index]}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

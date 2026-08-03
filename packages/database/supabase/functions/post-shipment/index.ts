@@ -1708,22 +1708,55 @@ serve(async (req: Request) => {
                 shippedQuantity: newShippedQuantity,
               };
 
-              // Create item ledger entry for negative adjustment at source
+              // Ledger at source. Honor tracked entities (serials/lots) captured
+              // on the shipment so the transfer moves the specific units — not
+              // just a quantity — otherwise the entity's location wouldn't
+              // follow the move. Unlike a Sales Shipment we do NOT consume the
+              // entity here; it stays Available and in-transit until received.
               if (shippedQuantity !== 0) {
-                itemLedgerInserts.push({
+                const transferShipmentLedgerBase = {
                   postingDate: today,
                   itemId: shipmentLine.itemId,
-                  quantity: -shippedQuantity, // Negative for outbound transfer
                   locationId: shipmentLine.locationId,
                   storageUnitId: shipmentLine.storageUnitId,
-                  entryType: "Transfer",
-                  documentType: "Transfer Shipment",
+                  entryType: "Transfer" as const,
+                  documentType: "Transfer Shipment" as const,
                   documentId: warehouseTransfer.data?.transferId,
                   externalDocumentId:
                     shipment.data?.externalDocumentId ?? undefined,
                   createdBy: userId,
                   companyId,
-                });
+                };
+                const lineTracking = shipmentLineTracking.data?.filter(
+                  (tracking) =>
+                    (
+                      tracking.attributes as TrackedEntityAttributes | undefined
+                    )?.["Shipment Line"] === shipmentLine.id
+                );
+
+                if (shipmentLine.requiresSerialTracking && lineTracking?.length) {
+                  lineTracking.forEach((tracking) => {
+                    itemLedgerInserts.push({
+                      ...transferShipmentLedgerBase,
+                      quantity: -1,
+                      trackedEntityId: tracking.id,
+                    });
+                  });
+                } else if (
+                  shipmentLine.requiresBatchTracking &&
+                  lineTracking?.length
+                ) {
+                  itemLedgerInserts.push({
+                    ...transferShipmentLedgerBase,
+                    quantity: -shippedQuantity,
+                    trackedEntityId: lineTracking[0]?.id,
+                  });
+                } else {
+                  itemLedgerInserts.push({
+                    ...transferShipmentLedgerBase,
+                    quantity: -shippedQuantity, // Negative for outbound transfer
+                  });
+                }
               }
             }
 

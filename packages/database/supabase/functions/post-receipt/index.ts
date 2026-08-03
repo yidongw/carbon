@@ -1651,20 +1651,64 @@ serve(async (req: Request) => {
           const unitCost = itemCost?.unitCost ?? 0;
           const totalValue = Math.abs(receivedQuantity) * unitCost;
 
-          // Create item ledger entry for positive adjustment at destination
-          itemLedgerInserts.push({
+          // Ledger at destination. For tracked items, relocate the SAME serials/
+          // lots that were shipped (per-entity +1) so the entity lands here;
+          // otherwise a fungible quantity row.
+          const transferReceiptLedgerBase = {
             postingDate: today,
             itemId: receiptLine.itemId,
-            quantity: receivedQuantity,
             locationId: receiptLine.locationId,
             storageUnitId: receiptLine.storageUnitId,
-            entryType: "Transfer",
-            documentType: "Transfer Receipt",
+            entryType: "Transfer" as const,
+            documentType: "Transfer Receipt" as const,
             documentId: warehouseTransfer.data?.transferId,
             externalDocumentId: receipt.data?.externalDocumentId ?? undefined,
             createdBy: userId,
             companyId,
-          });
+          };
+          if (receiptLine.requiresSerialTracking) {
+            // Relocate the exact serials entered on THIS receipt line (durable),
+            // keyed by Receipt Line + Index — mirrors the Purchase Order case.
+            // Do NOT source from the outbound shipment's tracking: posting the
+            // outbound strips its "Shipment" attribute, so that lookup is empty
+            // by the time the transfer is received, leaving destination stock 0.
+            const lineTracking = receiptLineTracking.data?.filter(
+              (t) =>
+                (t.attributes as TrackedEntityAttributes | undefined)?.[
+                  "Receipt Line"
+                ] === receiptLine.id
+            );
+            for (let i = 0; i < Math.abs(receivedQuantity); i++) {
+              const te = lineTracking?.find(
+                (t) =>
+                  (t.attributes as TrackedEntityAttributes | undefined)?.[
+                    "Receipt Line Index"
+                  ] === i
+              );
+              itemLedgerInserts.push({
+                ...transferReceiptLedgerBase,
+                quantity: 1,
+                trackedEntityId: te?.id,
+              });
+            }
+          } else if (receiptLine.requiresBatchTracking) {
+            const te = receiptLineTracking.data?.find(
+              (t) =>
+                (t.attributes as TrackedEntityAttributes | undefined)?.[
+                  "Receipt Line"
+                ] === receiptLine.id
+            );
+            itemLedgerInserts.push({
+              ...transferReceiptLedgerBase,
+              quantity: receivedQuantity,
+              trackedEntityId: te?.id,
+            });
+          } else {
+            itemLedgerInserts.push({
+              ...transferReceiptLedgerBase,
+              quantity: receivedQuantity,
+            });
+          }
 
           // Create journal entries for inventory movement if there's value
           if (accountingEnabled && accountDefaults?.data && totalValue > 0) {
