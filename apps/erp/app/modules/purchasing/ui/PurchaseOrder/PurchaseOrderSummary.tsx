@@ -12,6 +12,7 @@ import {
   Tbody,
   Td,
   Tr,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -19,7 +20,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuImage } from "react-icons/lu";
+import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import { MethodIcon, SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
@@ -28,9 +29,11 @@ import {
   useCurrencyFormatter,
   useDateFormatter,
   usePercentFormatter,
+  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
+import type { MethodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
@@ -40,6 +43,7 @@ import type {
   PurchaseOrderLine,
   Supplier
 } from "../../types";
+import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
 
 const LineItems = ({
   currencyCode,
@@ -371,7 +375,9 @@ const PurchaseOrderSummary = ({
   if (!orderId) throw new Error("Could not find orderId");
   const { formatDate } = useDateFormatter();
 
-  const { company } = useUser();
+  const { company, defaults } = useUser();
+  const permissions = usePermissions();
+  const newPurchaseOrderLineDisclosure = useDisclosure();
   const routeData = useRouteData<{
     purchaseOrder: PurchaseOrder;
     lines: PurchaseOrderLine[];
@@ -380,6 +386,22 @@ const PurchaseOrderSummary = ({
   }>(path.to.purchaseOrder(orderId));
 
   const isEditable = !isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
+  const canAddLine =
+    isEditable &&
+    routeData?.purchaseOrder?.status === "Draft" &&
+    permissions.can("update", "purchasing");
+
+  const purchaseOrderLineInitialValues = {
+    purchaseOrderId: orderId,
+    purchaseOrderLineType: "Item" as MethodItemType,
+    purchaseQuantity: 1,
+    supplierUnitPrice: 0,
+    locationId:
+      routeData?.purchaseOrder?.locationId ?? defaults.locationId ?? "",
+    supplierTaxAmount: 0,
+    supplierShippingCost: 0,
+    exchangeRate: routeData?.purchaseOrder?.exchangeRate ?? 1
+  };
 
   const { locale } = useLocale();
   const formatter = useCurrencyFormatter();
@@ -433,124 +455,144 @@ const PurchaseOrderSummary = ({
   const supplierTotal = supplierSubtotal + supplierTax + supplierShippingCost;
 
   return (
-    <Card>
-      <CardHeader>
-        <HStack className="justify-between items-center">
-          <div className="flex flex-col gap-1">
-            <CardTitle>{routeData?.purchaseOrder.purchaseOrderId}</CardTitle>
-            <CardDescription>
-              <Trans>Purchase Order</Trans>
-            </CardDescription>
-          </div>
-          <div className="flex flex-col gap-1 items-end">
-            <SupplierAvatar
-              supplierId={routeData?.purchaseOrder.supplierId ?? null}
-            />
-            {routeData?.purchaseOrder?.orderDate && (
-              <span className="text-muted-foreground text-sm">
-                <Trans>
-                  Ordered {formatDate(routeData?.purchaseOrder.orderDate)}
-                </Trans>
+    <>
+      <Card>
+        <CardHeader>
+          <HStack className="justify-between items-center">
+            <div className="flex flex-col gap-1">
+              <CardTitle>{routeData?.purchaseOrder.purchaseOrderId}</CardTitle>
+              <CardDescription>
+                <Trans>Purchase Order</Trans>
+              </CardDescription>
+            </div>
+            <div className="flex flex-col gap-1 items-end">
+              <SupplierAvatar
+                supplierId={routeData?.purchaseOrder.supplierId ?? null}
+              />
+              {routeData?.purchaseOrder?.orderDate && (
+                <span className="text-muted-foreground text-sm">
+                  <Trans>
+                    Ordered {formatDate(routeData?.purchaseOrder.orderDate)}
+                  </Trans>
+                </span>
+              )}
+            </div>
+          </HStack>
+        </CardHeader>
+        <CardContent>
+          <LineItems
+            currencyCode={company?.baseCurrencyCode ?? "USD"}
+            presentationCurrencyFormatter={presentationCurrencyFormatter}
+            formatter={formatter}
+            locale={locale}
+            lines={routeData?.lines ?? []}
+            shouldConvertCurrency={shouldConvertCurrency}
+          />
+
+          {canAddLine && (
+            <button
+              type="button"
+              onClick={newPurchaseOrderLineDisclosure.onOpen}
+              className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+            >
+              <LuCirclePlus className="h-4 w-4" />
+              <Trans>Add Line Item</Trans>
+            </button>
+          )}
+
+          <VStack spacing={2} className="mt-8">
+            <HStack className="justify-between text-base text-muted-foreground w-full">
+              <span>
+                <Trans>Subtotal:</Trans>
               </span>
-            )}
-          </div>
-        </HStack>
-      </CardHeader>
-      <CardContent>
-        <LineItems
-          currencyCode={company?.baseCurrencyCode ?? "USD"}
-          presentationCurrencyFormatter={presentationCurrencyFormatter}
-          formatter={formatter}
-          locale={locale}
-          lines={routeData?.lines ?? []}
-          shouldConvertCurrency={shouldConvertCurrency}
-        />
-
-        <VStack spacing={2} className="mt-8">
-          <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>
-              <Trans>Subtotal:</Trans>
-            </span>
-            <VStack spacing={0} className="items-end">
-              <span>{formatter.format(subtotal)}</span>
-              {shouldConvertCurrency && (
-                <span className="text-sm">
-                  {presentationCurrencyFormatter.format(supplierSubtotal)}
-                </span>
-              )}
-            </VStack>
-          </HStack>
-          <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>
-              <Trans>Tax:</Trans>
-            </span>
-            <VStack spacing={0} className="items-end">
-              <span>{formatter.format(tax)}</span>
-              {shouldConvertCurrency && (
-                <span className="text-sm">
-                  {presentationCurrencyFormatter.format(supplierTax)}
-                </span>
-              )}
-            </VStack>
-          </HStack>
-
-          <HStack className="justify-between text-base text-muted-foreground w-full">
-            {shippingCost > 0 ? (
-              <>
-                <VStack spacing={0}>
-                  <span>
-                    <Trans>Shipping:</Trans>
+              <VStack spacing={0} className="items-end">
+                <span>{formatter.format(subtotal)}</span>
+                {shouldConvertCurrency && (
+                  <span className="text-sm">
+                    {presentationCurrencyFormatter.format(supplierSubtotal)}
                   </span>
-                  {isEditable && (
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="text-muted-foreground"
-                      onClick={onEditShippingCost}
-                    >
-                      <Trans>Edit Shipping</Trans>
-                    </Button>
-                  )}
-                </VStack>
-                <VStack spacing={0} className="items-end">
-                  <span>{formatter.format(shippingCost)}</span>
-                  {shouldConvertCurrency && (
-                    <span className="text-sm">
-                      {presentationCurrencyFormatter.format(
-                        supplierShippingCost
-                      )}
-                    </span>
-                  )}
-                </VStack>
-              </>
-            ) : isEditable ? (
-              <Button
-                variant="link"
-                size="sm"
-                className="text-muted-foreground"
-                onClick={onEditShippingCost}
-              >
-                <Trans>Add Shipping</Trans>
-              </Button>
-            ) : null}
-          </HStack>
+                )}
+              </VStack>
+            </HStack>
+            <HStack className="justify-between text-base text-muted-foreground w-full">
+              <span>
+                <Trans>Tax:</Trans>
+              </span>
+              <VStack spacing={0} className="items-end">
+                <span>{formatter.format(tax)}</span>
+                {shouldConvertCurrency && (
+                  <span className="text-sm">
+                    {presentationCurrencyFormatter.format(supplierTax)}
+                  </span>
+                )}
+              </VStack>
+            </HStack>
 
-          <HStack className="justify-between text-xl font-bold w-full">
-            <span>
-              <Trans>Total:</Trans>
-            </span>
-            <VStack spacing={0} className="items-end">
-              <span>{formatter.format(total)}</span>
-              {shouldConvertCurrency && (
-                <span className="text-sm">
-                  {presentationCurrencyFormatter.format(supplierTotal)}
-                </span>
-              )}
-            </VStack>
-          </HStack>
-        </VStack>
-      </CardContent>
-    </Card>
+            <HStack className="justify-between text-base text-muted-foreground w-full">
+              {shippingCost > 0 ? (
+                <>
+                  <VStack spacing={0}>
+                    <span>
+                      <Trans>Shipping:</Trans>
+                    </span>
+                    {isEditable && (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="text-muted-foreground"
+                        onClick={onEditShippingCost}
+                      >
+                        <Trans>Edit Shipping</Trans>
+                      </Button>
+                    )}
+                  </VStack>
+                  <VStack spacing={0} className="items-end">
+                    <span>{formatter.format(shippingCost)}</span>
+                    {shouldConvertCurrency && (
+                      <span className="text-sm">
+                        {presentationCurrencyFormatter.format(
+                          supplierShippingCost
+                        )}
+                      </span>
+                    )}
+                  </VStack>
+                </>
+              ) : isEditable ? (
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-muted-foreground"
+                  onClick={onEditShippingCost}
+                >
+                  <Trans>Add Shipping</Trans>
+                </Button>
+              ) : null}
+            </HStack>
+
+            <HStack className="justify-between text-xl font-bold w-full">
+              <span>
+                <Trans>Total:</Trans>
+              </span>
+              <VStack spacing={0} className="items-end">
+                <span>{formatter.format(total)}</span>
+                {shouldConvertCurrency && (
+                  <span className="text-sm">
+                    {presentationCurrencyFormatter.format(supplierTotal)}
+                  </span>
+                )}
+              </VStack>
+            </HStack>
+          </VStack>
+        </CardContent>
+      </Card>
+      {newPurchaseOrderLineDisclosure.isOpen && (
+        <PurchaseOrderLineForm
+          initialValues={purchaseOrderLineInitialValues}
+          type="modal"
+          onClose={newPurchaseOrderLineDisclosure.onClose}
+        />
+      )}
+    </>
   );
 };
 
