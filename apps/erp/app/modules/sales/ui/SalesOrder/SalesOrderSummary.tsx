@@ -34,6 +34,7 @@ import MotionNumber from "motion-number";
 import { useMemo, useState } from "react";
 import {
   LuChevronRight,
+  LuCirclePlus,
   LuEllipsisVertical,
   LuImage,
   LuInfo,
@@ -46,7 +47,8 @@ import {
   useDateFormatter,
   usePercentFormatter,
   usePermissions,
-  useRouteData
+  useRouteData,
+  useUser
 } from "~/hooks";
 import JobStatus from "~/modules/production/ui/Jobs/JobStatus";
 import { getPrivateUrl, path } from "~/utils/path";
@@ -58,6 +60,7 @@ import type {
   SalesOrderJob,
   SalesOrderLine
 } from "../../types";
+import SalesOrderLineForm from "./SalesOrderLineForm";
 import { SalesOrderJobItem } from "./SalesOrderLineJobs";
 
 const SalesOrderSummary = ({
@@ -83,6 +86,9 @@ const SalesOrderSummary = ({
   }>(path.to.salesOrder(orderId));
 
   const salesOrderToJobsModal = useDisclosure();
+  const newSalesOrderLineDisclosure = useDisclosure();
+  const { defaults } = useUser();
+  const permissions = usePermissions();
 
   const { locale } = useLocale();
   const formatter = useMemo(
@@ -95,6 +101,10 @@ const SalesOrderSummary = ({
   );
 
   const isEditable = !isSalesOrderLocked(routeData?.salesOrder?.status);
+  const canAddLine =
+    isEditable &&
+    routeData?.salesOrder?.status === "Draft" &&
+    permissions.can("update", "sales");
 
   // Calculate totals
   const subtotal =
@@ -121,7 +131,6 @@ const SalesOrderSummary = ({
     (routeData?.salesOrder?.exchangeRate ?? 1) *
     (routeData?.salesOrder?.shippingCost ?? 0);
   const total = subtotal + tax + convertedShippingCost;
-  const permissions = usePermissions();
 
   // Check if there are any lines with "Make" method type that would require jobs
   const hasMakeItems =
@@ -213,6 +222,17 @@ const SalesOrderSummary = ({
             formatter={formatter}
             lines={routeData?.lines ?? []}
           />
+
+          {canAddLine && (
+            <button
+              type="button"
+              onClick={newSalesOrderLineDisclosure.onOpen}
+              className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+            >
+              <LuCirclePlus className="h-4 w-4" />
+              <Trans>Add Line Item</Trans>
+            </button>
+          )}
 
           <VStack spacing={2} className="mt-8">
             <HStack className="justify-between text-base text-muted-foreground w-full">
@@ -332,6 +352,28 @@ const SalesOrderSummary = ({
           </VStack>
         </CardContent>
       </Card>
+      {newSalesOrderLineDisclosure.isOpen && (
+        <SalesOrderLineForm
+          initialValues={{
+            salesOrderId: orderId,
+            salesOrderLineType: "Part" as const,
+            saleQuantity: 1,
+            unitPrice: 0,
+            addOnCost: 0,
+            nonTaxableAddOnCost: 0,
+            locationId:
+              routeData?.salesOrder?.locationId ?? defaults.locationId ?? "",
+            taxPercent: routeData?.customer?.taxPercent ?? 0,
+            promisedDate:
+              routeData?.salesOrder?.receiptPromisedDate ??
+              routeData?.salesOrder?.receiptRequestedDate ??
+              "",
+            shippingCost: 0
+          }}
+          type="modal"
+          onClose={newSalesOrderLineDisclosure.onClose}
+        />
+      )}
     </>
   );
 };
