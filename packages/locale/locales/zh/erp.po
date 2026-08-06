@@ -898,7 +898,9 @@ msgstr "您确定要停用该用户吗？"
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "您确定要从该操作中删除{0}吗？此操作无法撤销。"
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "您确定要删除{0}吗？"
 
@@ -1344,11 +1346,23 @@ msgstr "尝试次数"
 msgid "Attribute"
 msgstr "属性"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "属性记录成功"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "用于计算进货检验时批样大小及接受/拒收数量的属性采样标准。"
+
+msgid "Attribute Set"
+msgstr ""
+
+msgid "Attribute Sets"
+msgstr ""
+
+msgid "Attribute Values"
+msgstr ""
 
 msgid "Attributes"
 msgstr "属性"
@@ -1754,6 +1768,15 @@ msgstr "无法编辑全局款式颜色"
 
 msgid "Cannot edit global style size"
 msgstr "无法编辑全局款式尺寸"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "无法完成操作"
@@ -2654,6 +2677,15 @@ msgstr "已创建账户"
 msgid "Created At"
 msgstr "创建于"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created By"
 msgstr "创建人"
 
@@ -3409,6 +3441,12 @@ msgstr "删除仓库调拨"
 msgid "Delete Webhook"
 msgstr "删除Webhook"
 
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
+
 msgid "Deleted attribute value"
 msgstr "已删除的属性值"
 
@@ -3782,6 +3820,12 @@ msgstr "编辑属性"
 
 msgid "Edit Attribute Category"
 msgstr "编辑属性类别"
+
+msgid "Edit Attribute Set"
+msgstr ""
+
+msgid "Edit Attribute Value"
+msgstr ""
 
 msgid "Edit Category"
 msgstr "编辑类别"
@@ -4287,6 +4331,15 @@ msgstr "加载分配状态出错"
 msgid "Error loading attribute categories"
 msgstr "加载属性类别时出错"
 
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
+
 msgid "Error loading console operators"
 msgstr "加载控制台操作员出错"
 
@@ -4586,6 +4639,9 @@ msgstr "外部参考"
 msgid "External Reference"
 msgstr "外部参考"
 
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr ""
+
 msgid "Fail"
 msgstr "失败"
 
@@ -4660,6 +4716,12 @@ msgstr "创建属性失败"
 
 msgid "Failed to create attribute category"
 msgstr "创建属性类别失败"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "创建认证会话失败"
@@ -5017,6 +5079,12 @@ msgstr "删除分配失败"
 
 msgid "Failed to delete association"
 msgstr "删除关联失败"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "删除属性值失败"
@@ -5668,6 +5736,21 @@ msgstr "获取资产类别ID失败"
 
 msgid "Failed to get attribute"
 msgstr "获取属性失败"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "获取会计科目表失败"
@@ -7111,6 +7194,9 @@ msgstr "更新属性失败"
 
 msgid "Failed to update attribute category"
 msgstr "更新属性类别失败"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "更新属性值失败"
@@ -8691,6 +8777,9 @@ msgstr "物品{scannedItem}与预期物品{expectedItem}不符"
 msgid "Item association not found"
 msgstr "未找到项目关联"
 
+msgid "Item Attributes"
+msgstr ""
+
 msgid "Item filters"
 msgstr "项目过滤器"
 
@@ -9852,6 +9941,12 @@ msgstr "新属性"
 msgid "New Attribute Category"
 msgstr "新属性类别"
 
+msgid "New Attribute Set"
+msgstr ""
+
+msgid "New Attribute Value"
+msgstr ""
+
 msgid "New chat"
 msgstr "新消息"
 
@@ -10561,6 +10656,9 @@ msgstr "确定"
 
 msgid "Oldest first"
 msgstr "最旧"
+
+msgid "On hand"
+msgstr ""
 
 msgid "On Hand"
 msgstr "现有数量"
@@ -13513,6 +13611,12 @@ msgstr "在公司节假日跳过计划维护"
 msgid "Skipped"
 msgstr "跳过"
 
+msgid "SKU"
+msgstr ""
+
+msgid "SKU quantities"
+msgstr ""
+
 msgid "Soft Deadline"
 msgstr "软截止日期"
 
@@ -13539,6 +13643,9 @@ msgstr "按排序"
 
 msgid "Sort Descending"
 msgstr "降序排序"
+
+msgid "Sort Order"
+msgstr ""
 
 msgid "sorted ascending"
 msgstr "升序排序"
@@ -15203,8 +15310,14 @@ msgstr "已更新API密钥"
 msgid "Updated At"
 msgstr "更新于"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "已更新属性类别 "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "已更新属性值"

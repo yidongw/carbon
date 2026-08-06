@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import type { z } from "zod";
 import { getDatabaseClient } from "~/services/database.server";
 import { sanitize } from "~/utils/supabase";
+import { syncStyleVariantsFromAssignments } from "./itemAttribute.service";
 import {
   syncStyleConfigurationParameters,
   upsertItemDefaultPickMethod,
@@ -458,6 +459,15 @@ export async function upsertStyle(
         styleColorIds: style.styleColorIds,
         styleSizeIds: style.styleSizeIds
       });
+      // Dual-write: attribute selections + child SKU items
+      const variantSync = await syncStyleVariantsFromAssignments(client, {
+        itemId,
+        companyId: style.companyId,
+        userId: style.createdBy,
+        styleColorIds: style.styleColorIds,
+        styleSizeIds: style.styleSizeIds
+      });
+      if (variantSync.error) throw variantSync.error;
     } catch (error) {
       // Roll back the orphaned item so retries don't hit duplicate-key errors
       await client.from("item").delete().eq("id", itemId);
@@ -643,17 +653,27 @@ export async function addStyleColorsAndSizes(
     if (allColors.error) throw allColors.error;
     if (allSizes.error) throw allSizes.error;
 
+    const allColorIds = (allColors.data ?? []).map(
+      (c: { styleColorId: string }) => c.styleColorId
+    );
+    const allSizeIds = (allSizes.data ?? []).map(
+      (s: { styleSizeId: string }) => s.styleSizeId
+    );
     await syncStyleConfigurationParameters(client, {
       itemId,
       companyId,
       userId,
-      styleColorIds: (allColors.data ?? []).map(
-        (c: { styleColorId: string }) => c.styleColorId
-      ),
-      styleSizeIds: (allSizes.data ?? []).map(
-        (s: { styleSizeId: string }) => s.styleSizeId
-      )
+      styleColorIds: allColorIds,
+      styleSizeIds: allSizeIds
     });
+    const variantSync = await syncStyleVariantsFromAssignments(client, {
+      itemId,
+      companyId,
+      userId,
+      styleColorIds: allColorIds,
+      styleSizeIds: allSizeIds
+    });
+    if (variantSync.error) throw variantSync.error;
   } catch (error) {
     return {
       data: null,

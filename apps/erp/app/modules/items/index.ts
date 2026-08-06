@@ -1,5 +1,7 @@
 export * from "./configurationParametersBindings";
 export * from "./configurationRuleBindings";
+export * from "./itemAttribute.models";
+export * from "./itemAttribute.service";
 export * from "./items.models";
 export * from "./items.service";
 export * from "./methodBindings";

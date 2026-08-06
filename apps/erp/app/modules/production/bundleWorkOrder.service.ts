@@ -2,6 +2,7 @@ import type { Database } from "@carbon/database";
 import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { resolveVariantItemId } from "~/modules/items/itemAttribute.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
@@ -300,11 +301,10 @@ export async function insertBundleWorkOrder(
 ) {
   // The child job is the bundle's execution backing; the bundle -> master link
   // is carried by bundleWorkOrder.masterWorkOrderId (the job table has no
-  // parentJobId column), so we don't set one here. Bundles carry no
-  // configuration: color/size live in bundleWorkOrder.colorCode/sizeCode and the
-  // bundle's method doesn't vary by color/size, so the child job stays
-  // unconfigured (which is what makes the production report show a plain
-  // quantity instead of the config-params editor).
+  // parentJobId column), so we don't set one here. Prefer the variant SKU
+  // itemId (resolved by color/size) when variants exist; colorCode/sizeCode
+  // remain on the bundle row for display/compat. Bundles stay unconfigured so
+  // production reporting shows a plain quantity.
   const job = await insertJob(client, {
     itemId: input.itemId,
     quantity: input.quantity,
@@ -831,9 +831,15 @@ export async function saveBundleSplit(
       return { created: 0, updated: 1, error: null };
     }
 
+    const resolved = await resolveVariantItemId(client, {
+      parentItemId: itemId,
+      companyId: input.companyId,
+      colorCode: op.bundle.colorCode,
+      sizeCode: op.bundle.sizeCode
+    });
     const inserted = await insertBundleWorkOrder(client, {
       masterWorkOrderId: input.masterWorkOrderId,
-      itemId,
+      itemId: resolved.data,
       quantity: op.quantity,
       sequence: op.sequence,
       colorCode: op.bundle.colorCode,

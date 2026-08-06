@@ -897,7 +897,9 @@ msgstr "¿Estás seguro de que deseas desactivar este usuario?"
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "¿Está seguro de que desea eliminar {0} de esta operación? Esto no se puede deshacer."
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "¿Estás seguro de que deseas eliminar {0}?"
 
@@ -1343,11 +1345,23 @@ msgstr "Intentos"
 msgid "Attribute"
 msgstr "Atributo"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "Atributo registrado con éxito"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "Estándar de muestreo de atributos utilizado para calcular tamaños de lote de muestra y números de aceptación/rechazo en inspecciones de entrada."
+
+msgid "Attribute Set"
+msgstr ""
+
+msgid "Attribute Sets"
+msgstr ""
+
+msgid "Attribute Values"
+msgstr ""
 
 msgid "Attributes"
 msgstr "Atributos"
@@ -1753,6 +1767,15 @@ msgstr "No se puede editar el color del estilo global"
 
 msgid "Cannot edit global style size"
 msgstr "No se puede editar el tamaño del estilo global"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "No se puede completar la operación"
@@ -2653,6 +2676,15 @@ msgstr "Cuenta creada"
 msgid "Created At"
 msgstr "Creado el"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created By"
 msgstr "Creado por"
 
@@ -3408,6 +3440,12 @@ msgstr "Eliminar Transferencia de Almacén"
 msgid "Delete Webhook"
 msgstr "Eliminar Webhook"
 
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
+
 msgid "Deleted attribute value"
 msgstr "Valor de atributo eliminado"
 
@@ -3781,6 +3819,12 @@ msgstr "Editar Atributo"
 
 msgid "Edit Attribute Category"
 msgstr "Editar Categoría de Atributo"
+
+msgid "Edit Attribute Set"
+msgstr ""
+
+msgid "Edit Attribute Value"
+msgstr ""
 
 msgid "Edit Category"
 msgstr "Editar Categoría"
@@ -4286,6 +4330,15 @@ msgstr "Error cargando estado de asignación"
 msgid "Error loading attribute categories"
 msgstr "Error cargando categorías de atributos"
 
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
+
 msgid "Error loading console operators"
 msgstr "Error cargando operadores del consola"
 
@@ -4585,6 +4638,9 @@ msgstr "Ref. Externa"
 msgid "External Reference"
 msgstr "Referencia Externa"
 
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr ""
+
 msgid "Fail"
 msgstr "Fallar"
 
@@ -4659,6 +4715,12 @@ msgstr "Falló al crear atributo"
 
 msgid "Failed to create attribute category"
 msgstr "Falló al crear la categoría de atributo"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "Falló la creación de la sesión de autenticación"
@@ -5016,6 +5078,12 @@ msgstr "Falló al eliminar la asignación"
 
 msgid "Failed to delete association"
 msgstr "Falló al eliminar la asociación"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "Falló al eliminar el valor del atributo"
@@ -5667,6 +5735,21 @@ msgstr "Falló al obtener el ID de la clase de activo"
 
 msgid "Failed to get attribute"
 msgstr "Falló al obtener el atributo"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "Falló al obtener el libro de cuentas"
@@ -7110,6 +7193,9 @@ msgstr "Falló al actualizar atributo"
 
 msgid "Failed to update attribute category"
 msgstr "Falló al actualizar la categoría del atributo"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "Falló al actualizar el valor del atributo"
@@ -8690,6 +8776,9 @@ msgstr "El artículo {scannedItem} no es el mismo que el artículo {expectedItem
 msgid "Item association not found"
 msgstr "Asociación de elemento no encontrada"
 
+msgid "Item Attributes"
+msgstr ""
+
 msgid "Item filters"
 msgstr "Filtros de artículo"
 
@@ -9851,6 +9940,12 @@ msgstr "Nuevo Atributo"
 msgid "New Attribute Category"
 msgstr "Nueva Categoría de Atributo"
 
+msgid "New Attribute Set"
+msgstr ""
+
+msgid "New Attribute Value"
+msgstr ""
+
 msgid "New chat"
 msgstr "Nuevo chat"
 
@@ -10560,6 +10655,9 @@ msgstr "Aceptar"
 
 msgid "Oldest first"
 msgstr "Primero los más antiguos"
+
+msgid "On hand"
+msgstr ""
 
 msgid "On Hand"
 msgstr "En Stock"
@@ -13512,6 +13610,12 @@ msgstr "Omitir mantenimiento programado en días festivos de la empresa"
 msgid "Skipped"
 msgstr "Omitido"
 
+msgid "SKU"
+msgstr ""
+
+msgid "SKU quantities"
+msgstr ""
+
 msgid "Soft Deadline"
 msgstr "Plazo suave de vencimiento"
 
@@ -13538,6 +13642,9 @@ msgstr "Ordenar por"
 
 msgid "Sort Descending"
 msgstr "Ordenar descendente"
+
+msgid "Sort Order"
+msgstr ""
 
 msgid "sorted ascending"
 msgstr "ordenado ascendentemente"
@@ -15202,8 +15309,14 @@ msgstr "Clave API actualizada"
 msgid "Updated At"
 msgstr "Actualizado en"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "Categoría de atributo actualizada "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "Valor del atributo actualizado"

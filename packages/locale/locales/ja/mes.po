@@ -210,6 +210,9 @@ msgstr "割り当てが成功しました"
 msgid "Attach File"
 msgstr "ファイルを添付"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "属性が記録されました"
 
@@ -346,6 +349,15 @@ msgstr "グローバルスタイルの色を編集できません"
 
 msgid "Cannot edit global style size"
 msgstr "グローバルスタイルサイズを編集できません"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "操作を終了できません"
@@ -524,6 +536,15 @@ msgstr "品質問題を作成"
 msgid "Create Rework"
 msgstr "再加工を作成"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "作成した会社"
 
@@ -599,6 +620,12 @@ msgstr "ステップを削除"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "タイムカードを削除（{0}）"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "削除された属性値"
@@ -772,6 +799,15 @@ msgstr "エラー：割り当てステータスの読み込み中に発生しま
 
 msgid "Error loading attribute categories"
 msgstr "属性カテゴリの読み込みエラー"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "コンソールオペレータの読み込みエラー"
@@ -952,6 +988,12 @@ msgstr "属性の作成に失敗しました"
 
 msgid "Failed to create attribute category"
 msgstr "属性カテゴリの作成に失敗しました"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "認証セッションの作成に失敗しました"
@@ -1189,6 +1231,12 @@ msgstr "削除に失敗しました"
 
 msgid "Failed to delete association"
 msgstr "削除に失敗しました"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "削除に失敗しました"
@@ -1831,6 +1879,21 @@ msgstr "資産クラスIDを取得できませんでした"
 
 msgid "Failed to get attribute"
 msgstr "属性取得に失敗しました"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "取引先階層情報の取得に失敗しました"
@@ -3178,6 +3241,9 @@ msgstr "属性の更新に失敗しました"
 
 msgid "Failed to update attribute category"
 msgstr "属性カテゴリの更新に失敗しました"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "属性値の更新に失敗しました"
@@ -5911,8 +5977,14 @@ msgstr "更新されたアカウント"
 msgid "Updated API key"
 msgstr "更新されたAPIキー"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "更新された属性カテゴリ "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "更新された属性値"

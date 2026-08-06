@@ -213,6 +213,9 @@ msgstr "आवंटन सफलतापूर्वक अपडेट कि
 msgid "Attach File"
 msgstr "फ़ाइल संलग्न करें"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "संरचना सफलतापूर्वक रिकॉर्ड की गई है"
 
@@ -349,6 +352,15 @@ msgstr "निर्देशांक रंग को सunting global style c
 
 msgid "Cannot edit global style size"
 msgstr "निर्देशक आकार को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "निर्माण संचालन को पूरा नहीं किया जा सकता है"
@@ -527,6 +539,15 @@ msgstr "कीलटा समस्या तैयार करें"
 msgid "Create Rework"
 msgstr "रिकार्वर की तैयारी"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "संयमन बनाया.get(@,0)"
 
@@ -602,6 +623,12 @@ msgstr "चरण हटाएं"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "टाइमकार्ड हटाएं ({0})"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "удаленा गए विशेषता का मूल्य"
@@ -775,6 +802,15 @@ msgstr "लोड करते समय ताकता स्थिति म�
 
 msgid "Error loading attribute categories"
 msgstr "तत्सम प्रपाद लोड करने में विफल हो गए"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "कंसोल ऑपरेटर्स का लोड होने में गलती हुई"
@@ -955,6 +991,12 @@ msgstr "फलस्वरूप गुण बनाना नहीं सम�
 
 msgid "Failed to create attribute category"
 msgstr "फलस्वरूप गुण क्लास संकलन नहीं हो पा रहा है"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "अध्यात्मिक सत्र बनाना फल नहीं पड़ा"
@@ -1195,6 +1237,12 @@ msgstr "फैल्युअर संबधित डेलीट करने
 
 msgid "Failed to delete association"
 msgstr "फाइल को हटाना बीच में विफल रहा"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "फाइल्मेंट वैशिष्ट्य मूल्य को हटाने में फ़मत्री संपर्क किए गए"
@@ -1837,6 +1885,21 @@ msgstr "असेट क्लास आईडी प्राप्त नह�
 
 msgid "Failed to get attribute"
 msgstr "गुणांक प्राप्त करने में विफल"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "ग्राहक चार्ट को प्राप्त करने में विफल रहा"
@@ -3184,6 +3247,9 @@ msgstr "फाइल्ड अपडेट होने में फाल्�
 
 msgid "Failed to update attribute category"
 msgstr "फाइल अपडेट क्याटेगरी में प्रतिबद्ध होना वास्तव में नहीं सका"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "फाइल्ड मूल्य अपडेट होने में विफल रहा"
@@ -5917,8 +5983,14 @@ msgstr "अपडेट खाता"
 msgid "Updated API key"
 msgstr "अपडेट डायपी की सुरक्षित पत्रिका"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "अपडेट विशेषता क्याटेगरी "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "अपडेट दिए गए प्रांत का मूल्य"

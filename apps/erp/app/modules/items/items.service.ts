@@ -783,13 +783,127 @@ export async function getItemQuantities(
   companyId: string,
   locationId: string
 ) {
-  return client
+  const db = client as SupabaseClient<any>;
+  const variants = await db
+    .from("itemVariant")
+    .select("variantItemId")
+    .eq("parentItemId", itemId)
+    .eq("companyId", companyId);
+
+  const variantIds = (variants.data ?? []).map(
+    (v: { variantItemId: string }) => v.variantItemId
+  );
+
+  if (variantIds.length === 0) {
+    return client
+      .rpc("get_inventory_quantities", {
+        location_id: locationId,
+        company_id: companyId
+      })
+      .eq("id", itemId)
+      .maybeSingle();
+  }
+
+  // Parent with variants: roll up child SKU quantities into one summary row
+  const childQtys = await client
     .rpc("get_inventory_quantities", {
       location_id: locationId,
       company_id: companyId
     })
-    .eq("id", itemId)
-    .maybeSingle();
+    .in("id", variantIds);
+
+  if (childQtys.error) return childQtys;
+
+  const rows = childQtys.data ?? [];
+  if (rows.length === 0) {
+    return client
+      .rpc("get_inventory_quantities", {
+        location_id: locationId,
+        company_id: companyId
+      })
+      .eq("id", itemId)
+      .maybeSingle();
+  }
+
+  const sumKeys = [
+    "quantityOnHand",
+    "quantityOnSalesOrder",
+    "quantityOnPurchaseOrder",
+    "quantityOnProductionOrder",
+    "quantityOnProdDemand",
+    "quantityAvailable",
+    "quantityRejected",
+    "usageLast30Days"
+  ] as const;
+
+  const rolled: Record<string, unknown> = { ...rows[0], id: itemId };
+  for (const key of sumKeys) {
+    rolled[key] = rows.reduce(
+      (acc: number, row: Record<string, unknown>) =>
+        acc + (Number(row[key]) || 0),
+      0
+    );
+  }
+  if (
+    typeof rolled.usageLast30Days === "number" &&
+    rolled.usageLast30Days > 0 &&
+    typeof rolled.quantityOnHand === "number"
+  ) {
+    rolled.daysRemaining = Math.round(
+      (rolled.quantityOnHand as number) / (rolled.usageLast30Days as number)
+    );
+  }
+
+  return { data: rolled, error: null };
+}
+
+/** Per-SKU inventory breakdown for a parent item (empty if no variants). */
+export async function getItemVariantQuantities(
+  client: SupabaseClient<Database>,
+  parentItemId: string,
+  companyId: string,
+  locationId: string
+) {
+  const db = client as SupabaseClient<any>;
+  const variants = await db
+    .from("itemVariant")
+    .select(
+      "id, variantItemId, valuesKey, variant:item!itemVariant_variantItemId_fkey(id, readableId, name)"
+    )
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId);
+
+  if (variants.error) return variants;
+  const list = variants.data ?? [];
+  if (list.length === 0) return { data: [], error: null };
+
+  const ids = list.map((v: { variantItemId: string }) => v.variantItemId);
+  const qtys = await client
+    .rpc("get_inventory_quantities", {
+      location_id: locationId,
+      company_id: companyId
+    })
+    .in("id", ids);
+
+  if (qtys.error) return qtys;
+  const byId = new Map((qtys.data ?? []).map((q: { id: string }) => [q.id, q]));
+
+  return {
+    data: list.map(
+      (v: {
+        variantItemId: string;
+        valuesKey: string;
+        variant: { readableId: string; name: string } | null;
+      }) => ({
+        variantItemId: v.variantItemId,
+        valuesKey: v.valuesKey,
+        readableId: v.variant?.readableId ?? v.variantItemId,
+        name: v.variant?.name ?? v.valuesKey,
+        quantities: byId.get(v.variantItemId) ?? null
+      })
+    ),
+    error: null
+  };
 }
 
 export async function getItemReplenishment(
@@ -3476,9 +3590,10 @@ export async function upsertConsumable(
         unitOfMeasureCode: consumable.unitOfMeasureCode,
         active: true,
         thumbnailPath: consumable.thumbnailPath,
+        attributeSetId: consumable.attributeSetId || null,
         companyId: consumable.companyId,
         createdBy: consumable.createdBy
-      })
+      } as any)
       .select("id")
       .single();
     if (itemInsert.error) return itemInsert;

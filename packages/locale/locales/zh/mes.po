@@ -211,6 +211,9 @@ msgstr "分配已成功更新"
 msgid "Attach File"
 msgstr "附加文件"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "属性记录成功"
 
@@ -347,6 +350,15 @@ msgstr "无法编辑全局款式颜色"
 
 msgid "Cannot edit global style size"
 msgstr "无法编辑全局款式尺寸"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "无法完成操作"
@@ -525,6 +537,15 @@ msgstr "创建质量问题"
 msgid "Create Rework"
 msgstr "创建返工"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "已创建公司"
 
@@ -600,6 +621,12 @@ msgstr "删除步骤"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "删除考勤记录 ({0})"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "已删除的属性值"
@@ -773,6 +800,15 @@ msgstr "加载分配状态出错"
 
 msgid "Error loading attribute categories"
 msgstr "加载属性类别时出错"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "加载控制台操作员出错"
@@ -953,6 +989,12 @@ msgstr "创建属性失败"
 
 msgid "Failed to create attribute category"
 msgstr "创建属性类别失败"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "创建认证会话失败"
@@ -1190,6 +1232,12 @@ msgstr "删除分配失败"
 
 msgid "Failed to delete association"
 msgstr "删除关联失败"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "删除属性值失败"
@@ -1832,6 +1880,21 @@ msgstr "获取资产类别ID失败"
 
 msgid "Failed to get attribute"
 msgstr "获取属性失败"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "获取会计科目表失败"
@@ -3179,6 +3242,9 @@ msgstr "更新属性失败"
 
 msgid "Failed to update attribute category"
 msgstr "更新属性类别失败"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "更新属性值失败"
@@ -5912,8 +5978,14 @@ msgstr "已更新账户"
 msgid "Updated API key"
 msgstr "已更新API密钥"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "已更新属性类别 "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "已更新属性值"

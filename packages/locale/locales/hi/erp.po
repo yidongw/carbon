@@ -897,7 +897,9 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप इस ऑपरेशन से {0} को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "क्या आप {0} को हटाना सुनिश्चित हैं?"
 
@@ -1343,11 +1345,23 @@ msgstr "प्रयास"
 msgid "Attribute"
 msgstr "विशेषता"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "संरचना सफलतापूर्वक रिकॉर्ड की"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "इनबाउंड निरीक्षणों पर लॉट नमूना आकार और स्वीकार/अस्वीकार संख्याओं की गणना करने के लिए उपयोग किया जाने वाला विशेषता नमूनाकरण मानक।"
+
+msgid "Attribute Set"
+msgstr ""
+
+msgid "Attribute Sets"
+msgstr ""
+
+msgid "Attribute Values"
+msgstr ""
 
 msgid "Attributes"
 msgstr "विशेषताएं"
@@ -1753,6 +1767,15 @@ msgstr "निर्वाहित फॉर्मेट का रंग स�
 
 msgid "Cannot edit global style size"
 msgstr "निर्देशांक आकार को संपादित नहीं किया जा सकता"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "निर्माण संचालन पूरा नहीं किया जा सकता है"
@@ -2653,6 +2676,15 @@ msgstr "रचना की गई खाता"
 msgid "Created At"
 msgstr "बनाया गया"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created By"
 msgstr "द्वारा बनाया गया"
 
@@ -3408,6 +3440,12 @@ msgstr "गोदाम स्थानांतरण हटाएं"
 msgid "Delete Webhook"
 msgstr "वेबहुक हटाएं"
 
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
+
 msgid "Deleted attribute value"
 msgstr "удаленा गए प्रतिकृपा मान"
 
@@ -3781,6 +3819,12 @@ msgstr "विशेषता संपादित करें"
 
 msgid "Edit Attribute Category"
 msgstr "विशेषता श्रेणी संपादित करें"
+
+msgid "Edit Attribute Set"
+msgstr ""
+
+msgid "Edit Attribute Value"
+msgstr ""
 
 msgid "Edit Category"
 msgstr "श्रेणी संपादित करें"
@@ -4286,6 +4330,15 @@ msgstr "लोड करते समय ताकत की स्थिति 
 msgid "Error loading attribute categories"
 msgstr "तत्सम प्रपाद लोड करने में विफल हो गए"
 
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
+
 msgid "Error loading console operators"
 msgstr "कंसोल ऑपरेटर्स का लोड होने में गलती हुई"
 
@@ -4585,6 +4638,9 @@ msgstr "बाहरी संदर्भ"
 msgid "External Reference"
 msgstr "बाहरी संदर्भ"
 
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr ""
+
 msgid "Fail"
 msgstr "विफल"
 
@@ -4659,6 +4715,12 @@ msgstr "फलस्वरूप गुण बनाना नहीं मि�
 
 msgid "Failed to create attribute category"
 msgstr "फलस्वरूप गुण क्लास संस्करण नहीं हो सका"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "अध्यात्मिक सत्र की बनावट नहीं की जा पाई"
@@ -5019,6 +5081,12 @@ msgstr "फैल्युअर दिलीज को हटाना फ़�
 
 msgid "Failed to delete association"
 msgstr "फाइल्ड असोसिएशन को हटाने में वर्द आया है"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "फाइल्मेंट वैशिष्ट्य मूल्य को हटाने में फ़मत्री आया।"
@@ -5670,6 +5738,21 @@ msgstr "असेट क्लास आईडी प्राप्त कर�
 
 msgid "Failed to get attribute"
 msgstr "गुणांक प्राप्त करने में विफल रहा"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "ग्राहक कार्ट ग्रहण नहीं किया जा सका"
@@ -7113,6 +7196,9 @@ msgstr "फाइल्ड अपडेट होने में विफल �
 
 msgid "Failed to update attribute category"
 msgstr "फाइल अपडेट क्लास संशोधित नहीं किया जा सका"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "फाइल्ड मूल्य अपडेट होने में विफल रहा"
@@ -8693,6 +8779,9 @@ msgstr "आइटम {scannedItem} आइटम {expectedItem} के समा�
 msgid "Item association not found"
 msgstr "आइटम संबन्ध नहीं मिला"
 
+msgid "Item Attributes"
+msgstr ""
+
 msgid "Item filters"
 msgstr "आइ템 फिल्टर्स"
 
@@ -9854,6 +9943,12 @@ msgstr "नई विशेषता"
 msgid "New Attribute Category"
 msgstr "नई विशेषता श्रेणी"
 
+msgid "New Attribute Set"
+msgstr ""
+
+msgid "New Attribute Value"
+msgstr ""
+
 msgid "New chat"
 msgstr "नई चैट"
 
@@ -10563,6 +10658,9 @@ msgstr "ठीक है"
 
 msgid "Oldest first"
 msgstr "सबसे छोटा से बड़ा"
+
+msgid "On hand"
+msgstr ""
 
 msgid "On Hand"
 msgstr "हाथ में"
@@ -13515,6 +13613,12 @@ msgstr "कंपनी की छुट्टियों पर निर्�
 msgid "Skipped"
 msgstr "छोड़ा गया"
 
+msgid "SKU"
+msgstr ""
+
+msgid "SKU quantities"
+msgstr ""
+
 msgid "Soft Deadline"
 msgstr "अंतिम समय"
 
@@ -13541,6 +13645,9 @@ msgstr "द्वारा क्रमबद्ध करें"
 
 msgid "Sort Descending"
 msgstr "अवरोही क्रम में सॉर्ट करें"
+
+msgid "Sort Order"
+msgstr ""
 
 msgid "sorted ascending"
 msgstr "सॉर्ट किया गया अव?=.*"
@@ -15205,8 +15312,14 @@ msgstr "अपडेट डिएमी की सुरक्षा की स�
 msgid "Updated At"
 msgstr "अपडेट किया गया"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "अपडेट विशेषता क्लास संरचना "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "अपडेट दिए गए प्रांत का मूल्य"

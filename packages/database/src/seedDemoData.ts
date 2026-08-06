@@ -60,6 +60,13 @@ export async function seedDemoData(
          ON CONFLICT ("colorCode", "companyId") DO NOTHING`,
         [c.colorCode, c.colorName, companyId, userId]
       );
+      // Mirror into generic itemAttributeValue (Color) for variant SKUs
+      await client.query(
+        `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "companyId", "createdBy")
+         VALUES ('iat_color', $1, $2, $3, $4)
+         ON CONFLICT ("attributeId", "code", "companyId") DO NOTHING`,
+        [c.colorCode, c.colorName, companyId, userId]
+      );
     }
     for (const s of sizes) {
       await client.query(
@@ -4184,7 +4191,9 @@ export async function seedDemoData(
       const blackColor = L.configParams.colorOptions[0]!;
       const navyColor = L.configParams.colorOptions[2]!;
       const tshirtBlackConfig = JSON.stringify({
-        configTable: [{ S: 5, M: 10, L: 12, XL: 8, "2XL": 5, color: blackColor }],
+        configTable: [
+          { S: 5, M: 10, L: 12, XL: 8, "2XL": 5, color: blackColor }
+        ],
         configTablePrimaryKeys: L.configParams.sizeOptions
       });
       await seedGarmentProdRecord(

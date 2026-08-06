@@ -210,6 +210,9 @@ msgstr "Assegnazione aggiornata con successo"
 msgid "Attach File"
 msgstr "Allega File"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "Attributo registrato con successo"
 
@@ -348,6 +351,15 @@ msgid "Cannot edit global style size"
 msgstr ""
 "Non è possibile modificare il尺寸错误，已修正为：\n"
 "非可编辑全局样式大小"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "Impossibile completare l'operazione"
@@ -526,6 +538,15 @@ msgstr "Crea problema di qualità"
 msgid "Create Rework"
 msgstr "Crea Rework"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "Creato azienda"
 
@@ -601,6 +622,12 @@ msgstr "Elimina Fase"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Elimina Cartellino ({0})"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "Valore attributo eliminato"
@@ -774,6 +801,15 @@ msgstr "Errore caricamento stato assegnazione"
 
 msgid "Error loading attribute categories"
 msgstr "Errore caricamento categorie attributi"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "Errore caricamento operatori console"
@@ -954,6 +990,12 @@ msgstr "Fallito nella creazione dell'attributo"
 
 msgid "Failed to create attribute category"
 msgstr "Impossibile creare la categoria attributo"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "Fallito nella creazione della sessione di autenticazione"
@@ -1191,6 +1233,12 @@ msgstr "Fallito l'eliminazione dell'assegnazione"
 
 msgid "Failed to delete association"
 msgstr "Fallito l'eliminazione dell'associazione"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "Impossibile eliminare il valore dell'attributo"
@@ -1833,6 +1881,21 @@ msgstr "Fallito nel recuperare l'ID della classe di attivo"
 
 msgid "Failed to get attribute"
 msgstr "Fallito nel recuperare l'attributo"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "Fallito nel recupero del piano dei conti"
@@ -3188,6 +3251,9 @@ msgstr "Fallito aggiornamento attributo"
 
 msgid "Failed to update attribute category"
 msgstr "Fallito aggiornamento categoria attributo"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "Fallito aggiornamento valore attributo"
@@ -5921,8 +5987,14 @@ msgstr "Aggiornato conto"
 msgid "Updated API key"
 msgstr "Chiave API aggiornata"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "Categoria attributo aggiornata "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "Valore attributo aggiornato"

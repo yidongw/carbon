@@ -870,6 +870,12 @@ export const path = {
       generatePath(`${x}/items/colors/delete/${id}`),
     deleteStyleSize: (id: string) =>
       generatePath(`${x}/items/sizes/delete/${id}`),
+    deleteItemAttribute: (id: string) =>
+      generatePath(`${x}/items/attributes/delete/${id}`),
+    deleteItemAttributeSet: (id: string) =>
+      generatePath(`${x}/items/attribute-sets/delete/${id}`),
+    deleteItemAttributeValue: (attributeId: string, id: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}/delete/${id}`),
     deleteMaterialForm: (id: string) =>
       generatePath(`${x}/items/forms/delete/${id}`),
     deleteMaterialGrade: (id: string) =>
@@ -1269,6 +1275,15 @@ export const path = {
     styleColors: `${x}/items/colors`,
     styleSize: (id: string) => generatePath(`${x}/items/sizes/${id}`),
     styleSizes: `${x}/items/sizes`,
+    itemAttribute: (id: string) => generatePath(`${x}/items/attributes/${id}`),
+    itemAttributes: `${x}/items/attributes`,
+    itemAttributeValues: (attributeId: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}`),
+    itemAttributeValue: (attributeId: string, id: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}/${id}`),
+    itemAttributeSet: (id: string) =>
+      generatePath(`${x}/items/attribute-sets/${id}`),
+    itemAttributeSets: `${x}/items/attribute-sets`,
     materialForm: (id: string) => generatePath(`${x}/items/forms/${id}`),
     materialForms: `${x}/items/forms`,
     materialGrade: (id: string) => generatePath(`${x}/items/grades/${id}`),
@@ -1402,6 +1417,10 @@ export const path = {
     newMaterialFinish: `${x}/items/finishes/new`,
     newStyleColor: `${x}/items/colors/new`,
     newStyleSize: `${x}/items/sizes/new`,
+    newItemAttribute: `${x}/items/attributes/new`,
+    newItemAttributeSet: `${x}/items/attribute-sets/new`,
+    newItemAttributeValue: (attributeId: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}/new`),
     newMaterialForm: `${x}/items/forms/new`,
     newMaterialGrade: `${x}/items/grades/new`,
     newMaterialSubstance: `${x}/items/substances/new`,

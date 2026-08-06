@@ -210,6 +210,9 @@ msgstr "Assignment updated successfully"
 msgid "Attach File"
 msgstr "Attach File"
 
+msgid "Attribute not found"
+msgstr "Attribute not found"
+
 msgid "Attribute recorded successfully"
 msgstr "Attribute recorded successfully"
 
@@ -346,6 +349,15 @@ msgstr "Cannot edit global style color"
 
 msgid "Cannot edit global style size"
 msgstr "Cannot edit global style size"
+
+msgid "Cannot edit system attribute"
+msgstr "Cannot edit system attribute"
+
+msgid "Cannot edit system attribute set"
+msgstr "Cannot edit system attribute set"
+
+msgid "Cannot edit system attribute value"
+msgstr "Cannot edit system attribute value"
 
 msgid "Cannot finish operation"
 msgstr "Cannot finish operation"
@@ -524,6 +536,15 @@ msgstr "Create Quality Issue"
 msgid "Create Rework"
 msgstr "Create Rework"
 
+msgid "Created attribute"
+msgstr "Created attribute"
+
+msgid "Created attribute set"
+msgstr "Created attribute set"
+
+msgid "Created attribute value"
+msgstr "Created attribute value"
+
 msgid "Created company"
 msgstr "Created company"
 
@@ -599,6 +620,12 @@ msgstr "Delete Step"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Delete Timecard ({0})"
+
+msgid "Deleted attribute"
+msgstr "Deleted attribute"
+
+msgid "Deleted attribute set"
+msgstr "Deleted attribute set"
 
 msgid "Deleted attribute value"
 msgstr "Deleted attribute value"
@@ -772,6 +799,15 @@ msgstr "Error loading assignment status"
 
 msgid "Error loading attribute categories"
 msgstr "Error loading attribute categories"
+
+msgid "Error loading attribute sets"
+msgstr "Error loading attribute sets"
+
+msgid "Error loading attribute values"
+msgstr "Error loading attribute values"
+
+msgid "Error loading attributes"
+msgstr "Error loading attributes"
 
 msgid "Error loading console operators"
 msgstr "Error loading console operators"
@@ -952,6 +988,12 @@ msgstr "Failed to create attribute"
 
 msgid "Failed to create attribute category"
 msgstr "Failed to create attribute category"
+
+msgid "Failed to create attribute set"
+msgstr "Failed to create attribute set"
+
+msgid "Failed to create attribute value"
+msgstr "Failed to create attribute value"
 
 msgid "Failed to create auth session"
 msgstr "Failed to create auth session"
@@ -1189,6 +1231,12 @@ msgstr "Failed to delete assignment"
 
 msgid "Failed to delete association"
 msgstr "Failed to delete association"
+
+msgid "Failed to delete attribute"
+msgstr "Failed to delete attribute"
+
+msgid "Failed to delete attribute set"
+msgstr "Failed to delete attribute set"
 
 msgid "Failed to delete attribute value"
 msgstr "Failed to delete attribute value"
@@ -1831,6 +1879,21 @@ msgstr "Failed to get asset class id"
 
 msgid "Failed to get attribute"
 msgstr "Failed to get attribute"
+
+msgid "Failed to get attribute id"
+msgstr "Failed to get attribute id"
+
+msgid "Failed to get attribute set"
+msgstr "Failed to get attribute set"
+
+msgid "Failed to get attribute set id"
+msgstr "Failed to get attribute set id"
+
+msgid "Failed to get attribute value"
+msgstr "Failed to get attribute value"
+
+msgid "Failed to get attribute value id"
+msgstr "Failed to get attribute value id"
 
 msgid "Failed to get chart of accounts"
 msgstr "Failed to get chart of accounts"
@@ -3178,6 +3241,9 @@ msgstr "Failed to update attribute"
 
 msgid "Failed to update attribute category"
 msgstr "Failed to update attribute category"
+
+msgid "Failed to update attribute set"
+msgstr "Failed to update attribute set"
 
 msgid "Failed to update attribute value"
 msgstr "Failed to update attribute value"
@@ -5911,8 +5977,14 @@ msgstr "Updated account"
 msgid "Updated API key"
 msgstr "Updated API key"
 
+msgid "Updated attribute"
+msgstr "Updated attribute"
+
 msgid "Updated attribute category "
 msgstr "Updated attribute category "
+
+msgid "Updated attribute set"
+msgstr "Updated attribute set"
 
 msgid "Updated attribute value"
 msgstr "Updated attribute value"

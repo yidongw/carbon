@@ -38,6 +38,7 @@ import ItemThumbnailField from "../Item/ItemThumbnailField";
 
 type ConsumableFormProps = {
   initialValues: z.infer<typeof consumableValidator> & { tags: string[] };
+  attributeSetOptions?: Array<{ label: string; value: string }>;
   type?: "card" | "modal";
   onClose?: () => void;
 };
@@ -48,6 +49,7 @@ function startsWithLetter(value: string) {
 
 const ConsumableForm = ({
   initialValues,
+  attributeSetOptions = [],
   type = "card",
   onClose
 }: ConsumableFormProps) => {
@@ -186,6 +188,20 @@ const ConsumableForm = ({
                   name="unitOfMeasureCode"
                   label={t`Unit of Measure`}
                 />
+                {!isEditing && attributeSetOptions.length === 1 ? (
+                  <Hidden
+                    name="attributeSetId"
+                    value={attributeSetOptions[0].value}
+                  />
+                ) : null}
+                {!isEditing && attributeSetOptions.length > 1 ? (
+                  <Select
+                    name="attributeSetId"
+                    label={t`Attribute Set`}
+                    options={attributeSetOptions}
+                    helperText={t`Fabric, Trim, etc. — drives which variant options this item can have`}
+                  />
+                ) : null}
                 {!isEditing && (
                   <ItemPostingGroup
                     name="postingGroupId"

@@ -210,6 +210,9 @@ msgstr "Zuweisung erfolgreich aktualisiert"
 msgid "Attach File"
 msgstr "Datei anhängen"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "Attribut erfolgreich aufgezeichnet"
 
@@ -346,6 +349,15 @@ msgstr "Kann Farbe der globalen Stil nicht bearbeiten"
 
 msgid "Cannot edit global style size"
 msgstr "Kann Global-Stil-Größe nicht bearbeiten"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "Kann die Operation nicht beenden"
@@ -524,6 +536,15 @@ msgstr "Erstelle Qualitätsschwerpunkt"
 msgid "Create Rework"
 msgstr "Erstelle Rework"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "Erstellte Firma"
 
@@ -599,6 +620,12 @@ msgstr "Schritt löschen"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Zeitkarte löschen ({0})"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "Löscherter Attributwert"
@@ -772,6 +799,15 @@ msgstr "Fehler beim Laden des Zuweisungsstatus"
 
 msgid "Error loading attribute categories"
 msgstr "Fehler beim Laden der Attributskategorien"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "Fehler beim Laden der Konsole-Benutzer"
@@ -952,6 +988,12 @@ msgstr "Fehler beim Erstellen des Attributs"
 
 msgid "Failed to create attribute category"
 msgstr "Fehler beim Erstellen der Attributskategorie"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "Fehler beim Erstellen der Authentifizierungssession"
@@ -1189,6 +1231,12 @@ msgstr "Fehler beim Löschen der Zuordnung"
 
 msgid "Failed to delete association"
 msgstr "Fehler beim Löschen der Zuordnung"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "Fehler beim Löschen des Attributwerts"
@@ -1831,6 +1879,21 @@ msgstr "Fehler beim Abrufen der Asset-Klasse-ID"
 
 msgid "Failed to get attribute"
 msgstr "Fehler: Attribute konnten nicht abgerufen werden"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "Fehler beim Abrufen der Kontodarstellung"
@@ -3178,6 +3241,9 @@ msgstr "Fehler beim Aktualisieren des Attributs"
 
 msgid "Failed to update attribute category"
 msgstr "Fehler beim Aktualisieren der Attributkategorie"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "Fehler beim Aktualisieren des Attributwerts"
@@ -5911,8 +5977,14 @@ msgstr "Aktualisiertes Konto"
 msgid "Updated API key"
 msgstr "Aktualisierte API-Schlüssel"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "Aktualisierte Attribute-Kategorie "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "Aktualisierte Attribute-Wert"

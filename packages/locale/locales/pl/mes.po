@@ -210,6 +210,9 @@ msgstr "Zadanie zaktualizowane pomyślnie"
 msgid "Attach File"
 msgstr "Załącz plik"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "Zapisano atrybut pomyślnie"
 
@@ -346,6 +349,15 @@ msgstr "Nie można edytować koloru stylu globalnego"
 
 msgid "Cannot edit global style size"
 msgstr "Nie można edytować globalnej wielkości stylu"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "Nie można zakończyć operacji"
@@ -524,6 +536,15 @@ msgstr "Stwórz problem jakości"
 msgid "Create Rework"
 msgstr "Stwórz Rework"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "Stworzona firma"
 
@@ -599,6 +620,12 @@ msgstr "Usuń krok"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Usuń kartę czasu pracy ({0})"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "Usunięto wartość atrybutu"
@@ -772,6 +799,15 @@ msgstr "Błąd załadowania stanu przypisania"
 
 msgid "Error loading attribute categories"
 msgstr "Błąd załadowania kategorii atrybutów"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "Błąd załadowania operatorów konsoli"
@@ -952,6 +988,12 @@ msgstr "Nie udało się utworzyć atrybutu"
 
 msgid "Failed to create attribute category"
 msgstr "Nie udało się utworzyć kategorii atrybutu"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "Nie udało się utworzyć sesji autoryzacyjnej"
@@ -1189,6 +1231,12 @@ msgstr "Niedostępna do usunięcia przypisania"
 
 msgid "Failed to delete association"
 msgstr "Niedostępna do usunięcia associated element"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "Niedostępna do usunięcia wartość atrybutu"
@@ -1831,6 +1879,21 @@ msgstr "Nie można pobrać identyfikatora klasy aktuwa"
 
 msgid "Failed to get attribute"
 msgstr "Nie można pobrać atrybutu"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "Nie można pobrać planu kalkulacyjnego"
@@ -3178,6 +3241,9 @@ msgstr "Nie udało się zaktualizować atrybutu"
 
 msgid "Failed to update attribute category"
 msgstr "Nie udało się zaktualizować kategorii atrybutu"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "Nie udało się zaktualizować wartości atrybutu"
@@ -5911,8 +5977,14 @@ msgstr "Zaktualizowana konto"
 msgid "Updated API key"
 msgstr "Zaktualizowany klucz API"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "Zaktualizowana kategoria atrybutu "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "Zaktualizowana wartość atrybutu"

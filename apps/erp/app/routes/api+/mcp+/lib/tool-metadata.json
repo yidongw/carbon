@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T02:48:47.571Z",
-  "totalTools": 1270,
+  "generated": "2026-08-06T14:23:52.153Z",
+  "totalTools": 1271,
   "modules": 15,
   "tools": [
     {
@@ -9524,6 +9524,37 @@
         },
         "required": [
           "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "items_getItemVariantQuantities",
+      "module": "items",
+      "classification": "READ",
+      "description": "get item variant quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId",
           "locationId"
         ]
       }

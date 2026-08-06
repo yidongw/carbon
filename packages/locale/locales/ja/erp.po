@@ -897,7 +897,9 @@ msgstr "このユーザーを無効化してもよろしいですか？"
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "{0}をこの操作から削除してもよろしいですか?これは元に戻すことができません。"
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "{0}を削除してもよろしいですか？"
 
@@ -1343,11 +1345,23 @@ msgstr "試行回数"
 msgid "Attribute"
 msgstr "属性"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "属性が記録されました"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "ロット標本サイズおよび受入検査の合格/不合格番号を計算するために使用される属性サンプリング標準。"
+
+msgid "Attribute Set"
+msgstr ""
+
+msgid "Attribute Sets"
+msgstr ""
+
+msgid "Attribute Values"
+msgstr ""
 
 msgid "Attributes"
 msgstr "属性"
@@ -1753,6 +1767,15 @@ msgstr "グローバルスタイルの色を編集できません"
 
 msgid "Cannot edit global style size"
 msgstr "グローバルスタイルサイズを編集できません"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "操作を終了できません"
@@ -2653,6 +2676,15 @@ msgstr "アカウントを作成しました"
 msgid "Created At"
 msgstr "作成日時"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created By"
 msgstr "作成者"
 
@@ -3408,6 +3440,12 @@ msgstr "倉庫移動を削除"
 msgid "Delete Webhook"
 msgstr "Webhookを削除"
 
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
+
 msgid "Deleted attribute value"
 msgstr "削除された属性値"
 
@@ -3781,6 +3819,12 @@ msgstr "属性を編集"
 
 msgid "Edit Attribute Category"
 msgstr "属性カテゴリを編集"
+
+msgid "Edit Attribute Set"
+msgstr ""
+
+msgid "Edit Attribute Value"
+msgstr ""
 
 msgid "Edit Category"
 msgstr "カテゴリを編集"
@@ -4286,6 +4330,15 @@ msgstr "エラー：割り当てステータスの読み込み中に発生しま
 msgid "Error loading attribute categories"
 msgstr "属性カテゴリの読み込みエラー"
 
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
+
 msgid "Error loading console operators"
 msgstr "コンソールオペレータの読み込みエラー"
 
@@ -4585,6 +4638,9 @@ msgstr "外部参照"
 msgid "External Reference"
 msgstr "外部参照"
 
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr ""
+
 msgid "Fail"
 msgstr "不合格"
 
@@ -4659,6 +4715,12 @@ msgstr "属性の作成に失敗しました"
 
 msgid "Failed to create attribute category"
 msgstr "属性カテゴリの作成に失敗しました"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "認証セッションの作成に失敗しました"
@@ -5016,6 +5078,12 @@ msgstr "削除に失敗しました"
 
 msgid "Failed to delete association"
 msgstr "削除に失敗しました"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "削除に失敗しました"
@@ -5667,6 +5735,21 @@ msgstr "資産クラスIDを取得できませんでした"
 
 msgid "Failed to get attribute"
 msgstr "属性取得に失敗しました"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "会計-chartを取得できませんでした"
@@ -7110,6 +7193,9 @@ msgstr "属性の更新に失敗しました"
 
 msgid "Failed to update attribute category"
 msgstr "属性カテゴリの更新に失敗しました"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "属性値の更新に失敗しました"
@@ -8690,6 +8776,9 @@ msgstr "アイテム {scannedItem} は、アイテム {expectedItem} と同じ�
 msgid "Item association not found"
 msgstr "アイテムの関連付けが見つかりません"
 
+msgid "Item Attributes"
+msgstr ""
+
 msgid "Item filters"
 msgstr "アイテムフィルタ"
 
@@ -9851,6 +9940,12 @@ msgstr "新しい属性"
 msgid "New Attribute Category"
 msgstr "新しい属性カテゴリ"
 
+msgid "New Attribute Set"
+msgstr ""
+
+msgid "New Attribute Value"
+msgstr ""
+
 msgid "New chat"
 msgstr "新しいチャット"
 
@@ -10560,6 +10655,9 @@ msgstr "OK"
 
 msgid "Oldest first"
 msgstr "最古順"
+
+msgid "On hand"
+msgstr ""
 
 msgid "On Hand"
 msgstr "手持在庫"
@@ -13512,6 +13610,12 @@ msgstr "会社の祝日に予定されたメンテナンスをスキップする
 msgid "Skipped"
 msgstr "スキップ"
 
+msgid "SKU"
+msgstr ""
+
+msgid "SKU quantities"
+msgstr ""
+
 msgid "Soft Deadline"
 msgstr "Soft Deadline"
 
@@ -13538,6 +13642,9 @@ msgstr "並べ替え"
 
 msgid "Sort Descending"
 msgstr "降順でソート"
+
+msgid "Sort Order"
+msgstr ""
 
 msgid "sorted ascending"
 msgstr "昇順ソート"
@@ -15202,8 +15309,14 @@ msgstr "更新されたAPIキー"
 msgid "Updated At"
 msgstr "更新日時"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "更新された属性カテゴリ "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "更新された属性値"

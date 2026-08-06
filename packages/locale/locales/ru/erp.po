@@ -897,7 +897,9 @@ msgstr "Вы уверены, что хотите деактивировать э
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить {0} из этой операции? Это действие невозможно отменить."
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "Вы уверены, что хотите удалить {0}?"
 
@@ -1343,11 +1345,23 @@ msgstr "Попытки"
 msgid "Attribute"
 msgstr "Атрибут"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "Атрибут успешно зарегистрирован"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "Стандарт выборочного контроля атрибутов, используемый для расчета размеров выборки партии и чисел приемки/отклонения при входящих проверках."
+
+msgid "Attribute Set"
+msgstr ""
+
+msgid "Attribute Sets"
+msgstr ""
+
+msgid "Attribute Values"
+msgstr ""
 
 msgid "Attributes"
 msgstr "Атрибуты"
@@ -1753,6 +1767,15 @@ msgstr "Невозможно редактировать глобальный с�
 
 msgid "Cannot edit global style size"
 msgstr "Невозможно редактировать глобальный стиль размера"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "Невозможно завершить операцию"
@@ -2653,6 +2676,15 @@ msgstr "Создан аккаунт"
 msgid "Created At"
 msgstr "Создано"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created By"
 msgstr "Создано"
 
@@ -3408,6 +3440,12 @@ msgstr "Удалить передачу между складами"
 msgid "Delete Webhook"
 msgstr "Удалить Webhook"
 
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
+
 msgid "Deleted attribute value"
 msgstr "Удаленное значение атрибута"
 
@@ -3781,6 +3819,12 @@ msgstr "Редактировать атрибут"
 
 msgid "Edit Attribute Category"
 msgstr "Редактировать категорию атрибута"
+
+msgid "Edit Attribute Set"
+msgstr ""
+
+msgid "Edit Attribute Value"
+msgstr ""
 
 msgid "Edit Category"
 msgstr "Редактировать категорию"
@@ -4286,6 +4330,15 @@ msgstr "Ошибка загрузки статуса назначения"
 msgid "Error loading attribute categories"
 msgstr "Ошибка загрузки категорий атрибутов"
 
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
+
 msgid "Error loading console operators"
 msgstr "Ошибка загрузки консольных операторов"
 
@@ -4585,6 +4638,9 @@ msgstr "Внешняя ссылка"
 msgid "External Reference"
 msgstr "Внешняя ссылка"
 
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr ""
+
 msgid "Fail"
 msgstr "Не пройти"
 
@@ -4659,6 +4715,12 @@ msgstr "Не удалось создать атрибут"
 
 msgid "Failed to create attribute category"
 msgstr "Не удалось создать категорию атрибутов"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "Не удалось создать сессию аутентификации"
@@ -5016,6 +5078,12 @@ msgstr "Не удалось удалить назначение"
 
 msgid "Failed to delete association"
 msgstr "Не удалось удалить связь"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "Не удалось удалить значение атрибута"
@@ -5667,6 +5735,21 @@ msgstr "Не удалось получить идентификатор клас
 
 msgid "Failed to get attribute"
 msgstr "Не удалось получить атрибут"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "Не удалось получить счета баланса"
@@ -7110,6 +7193,9 @@ msgstr "Не удалось обновить атрибут"
 
 msgid "Failed to update attribute category"
 msgstr "Не удалось обновить категорию атрибута"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "Не удалось обновить значение атрибута"
@@ -8690,6 +8776,9 @@ msgstr "Товар {scannedItem} не совпадает с товаром {expe
 msgid "Item association not found"
 msgstr "Связь с элементом не найдена"
 
+msgid "Item Attributes"
+msgstr ""
+
 msgid "Item filters"
 msgstr "Фильтры элементов"
 
@@ -9851,6 +9940,12 @@ msgstr "Новый атрибут"
 msgid "New Attribute Category"
 msgstr "Новая категория атрибутов"
 
+msgid "New Attribute Set"
+msgstr ""
+
+msgid "New Attribute Value"
+msgstr ""
+
 msgid "New chat"
 msgstr "Новый чат"
 
@@ -10560,6 +10655,9 @@ msgstr "ОК"
 
 msgid "Oldest first"
 msgstr "Самые старые первыми"
+
+msgid "On hand"
+msgstr ""
 
 msgid "On Hand"
 msgstr "На складе"
@@ -13512,6 +13610,12 @@ msgstr "Пропускать запланированное техническо
 msgid "Skipped"
 msgstr "Пропущено"
 
+msgid "SKU"
+msgstr ""
+
+msgid "SKU quantities"
+msgstr ""
+
 msgid "Soft Deadline"
 msgstr "Мягкий Deadlin"
 
@@ -13538,6 +13642,9 @@ msgstr "Сортировать по"
 
 msgid "Sort Descending"
 msgstr "Сортировка по убыванию"
+
+msgid "Sort Order"
+msgstr ""
 
 msgid "sorted ascending"
 msgstr "отсортирован по возрастанию"
@@ -15202,8 +15309,14 @@ msgstr "Обновленный API ключ"
 msgid "Updated At"
 msgstr "Обновлено"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "Обновленная категория атрибута "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "Обновленное значение атрибута"

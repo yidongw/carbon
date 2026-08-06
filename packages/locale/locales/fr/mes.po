@@ -210,6 +210,9 @@ msgstr "Attribution mise à jour avec succès"
 msgid "Attach File"
 msgstr "Joindre un fichier"
 
+msgid "Attribute not found"
+msgstr ""
+
 msgid "Attribute recorded successfully"
 msgstr "Attribut enregistré avec succès"
 
@@ -346,6 +349,15 @@ msgstr "Impossible de modifier la couleur du style global"
 
 msgid "Cannot edit global style size"
 msgstr "Impossible de modifier la taille des styles globaux"
+
+msgid "Cannot edit system attribute"
+msgstr ""
+
+msgid "Cannot edit system attribute set"
+msgstr ""
+
+msgid "Cannot edit system attribute value"
+msgstr ""
 
 msgid "Cannot finish operation"
 msgstr "Impossible de finaliser l'opération"
@@ -524,6 +536,15 @@ msgstr "Créer un problème de qualité"
 msgid "Create Rework"
 msgstr "Créer une reprise"
 
+msgid "Created attribute"
+msgstr ""
+
+msgid "Created attribute set"
+msgstr ""
+
+msgid "Created attribute value"
+msgstr ""
+
 msgid "Created company"
 msgstr "Société créée"
 
@@ -599,6 +620,12 @@ msgstr "Supprimer l'étape"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Supprimer la fiche de temps ({0})"
+
+msgid "Deleted attribute"
+msgstr ""
+
+msgid "Deleted attribute set"
+msgstr ""
 
 msgid "Deleted attribute value"
 msgstr "Valeur d'attribut supprimée"
@@ -772,6 +799,15 @@ msgstr "Erreur chargement statut de l'affectation"
 
 msgid "Error loading attribute categories"
 msgstr "Erreur chargement des catégories d'attributs"
+
+msgid "Error loading attribute sets"
+msgstr ""
+
+msgid "Error loading attribute values"
+msgstr ""
+
+msgid "Error loading attributes"
+msgstr ""
 
 msgid "Error loading console operators"
 msgstr "Erreur chargement des opérateurs de console"
@@ -952,6 +988,12 @@ msgstr "Échec de la création d'attribut"
 
 msgid "Failed to create attribute category"
 msgstr "Échec de la création de la catégorie d'attribut"
+
+msgid "Failed to create attribute set"
+msgstr ""
+
+msgid "Failed to create attribute value"
+msgstr ""
 
 msgid "Failed to create auth session"
 msgstr "Échec de la création de la session d'authentification"
@@ -1189,6 +1231,12 @@ msgstr "Échec de la suppression de l'affectation"
 
 msgid "Failed to delete association"
 msgstr "Échec de la suppression de l'association"
+
+msgid "Failed to delete attribute"
+msgstr ""
+
+msgid "Failed to delete attribute set"
+msgstr ""
 
 msgid "Failed to delete attribute value"
 msgstr "Échec de la suppression de la valeur d'attribut"
@@ -1831,6 +1879,21 @@ msgstr "Échec de récupération de l'ID de la classe d'actif"
 
 msgid "Failed to get attribute"
 msgstr "Échec de récupération de l'attribut"
+
+msgid "Failed to get attribute id"
+msgstr ""
+
+msgid "Failed to get attribute set"
+msgstr ""
+
+msgid "Failed to get attribute set id"
+msgstr ""
+
+msgid "Failed to get attribute value"
+msgstr ""
+
+msgid "Failed to get attribute value id"
+msgstr ""
 
 msgid "Failed to get chart of accounts"
 msgstr "Échec de récupération du tableau de comptes"
@@ -3178,6 +3241,9 @@ msgstr "Échec de mise à jour de l'attribut"
 
 msgid "Failed to update attribute category"
 msgstr "Échec de la mise à jour de la catégorie d'attribut"
+
+msgid "Failed to update attribute set"
+msgstr ""
 
 msgid "Failed to update attribute value"
 msgstr "Échec de mise à jour de la valeur de l'attribut"
@@ -5911,8 +5977,14 @@ msgstr "Compte mis à jour"
 msgid "Updated API key"
 msgstr "Clé API mise à jour"
 
+msgid "Updated attribute"
+msgstr ""
+
 msgid "Updated attribute category "
 msgstr "Catégorie d'attribut mis à jour "
+
+msgid "Updated attribute set"
+msgstr ""
 
 msgid "Updated attribute value"
 msgstr "Valeur d'attribut mise à jour"

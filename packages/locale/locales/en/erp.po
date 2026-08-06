@@ -897,7 +897,9 @@ msgstr "Are you sure you want to deactivate this user?"
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "Are you sure you want to delete {0} from this operation? This cannot be undone."
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "Are you sure you want to delete {0}?"
 
@@ -1343,11 +1345,23 @@ msgstr "Attempts"
 msgid "Attribute"
 msgstr "Attribute"
 
+msgid "Attribute not found"
+msgstr "Attribute not found"
+
 msgid "Attribute recorded successfully"
 msgstr "Attribute recorded successfully"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
+
+msgid "Attribute Set"
+msgstr "Attribute Set"
+
+msgid "Attribute Sets"
+msgstr "Attribute Sets"
+
+msgid "Attribute Values"
+msgstr "Attribute Values"
 
 msgid "Attributes"
 msgstr "Attributes"
@@ -1753,6 +1767,15 @@ msgstr "Cannot edit global style color"
 
 msgid "Cannot edit global style size"
 msgstr "Cannot edit global style size"
+
+msgid "Cannot edit system attribute"
+msgstr "Cannot edit system attribute"
+
+msgid "Cannot edit system attribute set"
+msgstr "Cannot edit system attribute set"
+
+msgid "Cannot edit system attribute value"
+msgstr "Cannot edit system attribute value"
 
 msgid "Cannot finish operation"
 msgstr "Cannot finish operation"
@@ -2653,6 +2676,15 @@ msgstr "Created account"
 msgid "Created At"
 msgstr "Created At"
 
+msgid "Created attribute"
+msgstr "Created attribute"
+
+msgid "Created attribute set"
+msgstr "Created attribute set"
+
+msgid "Created attribute value"
+msgstr "Created attribute value"
+
 msgid "Created By"
 msgstr "Created By"
 
@@ -3408,6 +3440,12 @@ msgstr "Delete Warehouse Transfer"
 msgid "Delete Webhook"
 msgstr "Delete Webhook"
 
+msgid "Deleted attribute"
+msgstr "Deleted attribute"
+
+msgid "Deleted attribute set"
+msgstr "Deleted attribute set"
+
 msgid "Deleted attribute value"
 msgstr "Deleted attribute value"
 
@@ -3781,6 +3819,12 @@ msgstr "Edit Attribute"
 
 msgid "Edit Attribute Category"
 msgstr "Edit Attribute Category"
+
+msgid "Edit Attribute Set"
+msgstr "Edit Attribute Set"
+
+msgid "Edit Attribute Value"
+msgstr "Edit Attribute Value"
 
 msgid "Edit Category"
 msgstr "Edit Category"
@@ -4286,6 +4330,15 @@ msgstr "Error loading assignment status"
 msgid "Error loading attribute categories"
 msgstr "Error loading attribute categories"
 
+msgid "Error loading attribute sets"
+msgstr "Error loading attribute sets"
+
+msgid "Error loading attribute values"
+msgstr "Error loading attribute values"
+
+msgid "Error loading attributes"
+msgstr "Error loading attributes"
+
 msgid "Error loading console operators"
 msgstr "Error loading console operators"
 
@@ -4585,6 +4638,9 @@ msgstr "External Ref."
 msgid "External Reference"
 msgstr "External Reference"
 
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr "Fabric, Trim, etc. — drives which variant options this item can have"
+
 msgid "Fail"
 msgstr "Fail"
 
@@ -4659,6 +4715,12 @@ msgstr "Failed to create attribute"
 
 msgid "Failed to create attribute category"
 msgstr "Failed to create attribute category"
+
+msgid "Failed to create attribute set"
+msgstr "Failed to create attribute set"
+
+msgid "Failed to create attribute value"
+msgstr "Failed to create attribute value"
 
 msgid "Failed to create auth session"
 msgstr "Failed to create auth session"
@@ -5016,6 +5078,12 @@ msgstr "Failed to delete assignment"
 
 msgid "Failed to delete association"
 msgstr "Failed to delete association"
+
+msgid "Failed to delete attribute"
+msgstr "Failed to delete attribute"
+
+msgid "Failed to delete attribute set"
+msgstr "Failed to delete attribute set"
 
 msgid "Failed to delete attribute value"
 msgstr "Failed to delete attribute value"
@@ -5667,6 +5735,21 @@ msgstr "Failed to get asset class id"
 
 msgid "Failed to get attribute"
 msgstr "Failed to get attribute"
+
+msgid "Failed to get attribute id"
+msgstr "Failed to get attribute id"
+
+msgid "Failed to get attribute set"
+msgstr "Failed to get attribute set"
+
+msgid "Failed to get attribute set id"
+msgstr "Failed to get attribute set id"
+
+msgid "Failed to get attribute value"
+msgstr "Failed to get attribute value"
+
+msgid "Failed to get attribute value id"
+msgstr "Failed to get attribute value id"
 
 msgid "Failed to get chart of accounts"
 msgstr "Failed to get chart of accounts"
@@ -7110,6 +7193,9 @@ msgstr "Failed to update attribute"
 
 msgid "Failed to update attribute category"
 msgstr "Failed to update attribute category"
+
+msgid "Failed to update attribute set"
+msgstr "Failed to update attribute set"
 
 msgid "Failed to update attribute value"
 msgstr "Failed to update attribute value"
@@ -8690,6 +8776,9 @@ msgstr "Item {scannedItem} is not the same as the item {expectedItem}"
 msgid "Item association not found"
 msgstr "Item association not found"
 
+msgid "Item Attributes"
+msgstr "Item Attributes"
+
 msgid "Item filters"
 msgstr "Item filters"
 
@@ -9851,6 +9940,12 @@ msgstr "New Attribute"
 msgid "New Attribute Category"
 msgstr "New Attribute Category"
 
+msgid "New Attribute Set"
+msgstr "New Attribute Set"
+
+msgid "New Attribute Value"
+msgstr "New Attribute Value"
+
 msgid "New chat"
 msgstr "New chat"
 
@@ -10560,6 +10655,9 @@ msgstr "OK"
 
 msgid "Oldest first"
 msgstr "Oldest first"
+
+msgid "On hand"
+msgstr "On hand"
 
 msgid "On Hand"
 msgstr "On Hand"
@@ -13512,6 +13610,12 @@ msgstr "Skip scheduled maintenance on company holidays"
 msgid "Skipped"
 msgstr "Skipped"
 
+msgid "SKU"
+msgstr "SKU"
+
+msgid "SKU quantities"
+msgstr "SKU quantities"
+
 msgid "Soft Deadline"
 msgstr "Soft Deadline"
 
@@ -13538,6 +13642,9 @@ msgstr "Sort by"
 
 msgid "Sort Descending"
 msgstr "Sort Descending"
+
+msgid "Sort Order"
+msgstr "Sort Order"
 
 msgid "sorted ascending"
 msgstr "sorted ascending"
@@ -15202,8 +15309,14 @@ msgstr "Updated API key"
 msgid "Updated At"
 msgstr "Updated At"
 
+msgid "Updated attribute"
+msgstr "Updated attribute"
+
 msgid "Updated attribute category "
 msgstr "Updated attribute category "
+
+msgid "Updated attribute set"
+msgstr "Updated attribute set"
 
 msgid "Updated attribute value"
 msgstr "Updated attribute value"

@@ -74,6 +74,23 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
       ]
     },
     {
+      name: t`Item Attributes`,
+      routes: [
+        {
+          name: t`Attributes`,
+          to: path.to.itemAttributes,
+          icon: <LuShapes />,
+          role: "employee"
+        },
+        {
+          name: t`Attribute Sets`,
+          to: path.to.itemAttributeSets,
+          icon: <LuGroup />,
+          role: "employee"
+        }
+      ]
+    },
+    {
       name: t`Style Properties`,
       routes: [
         {

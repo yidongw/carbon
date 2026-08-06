@@ -327,7 +327,8 @@ export const consumableValidator = applyStorageAndShelfLifeRefines(
       thumbnailPath: zfd.text(z.string().optional()),
       unitOfMeasureCode: z
         .string()
-        .min(1, { message: "Unit of Measure is required" })
+        .min(1, { message: "Unit of Measure is required" }),
+      attributeSetId: zfd.text(z.string().optional())
     })
   )
 );
