@@ -27,11 +27,8 @@ import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
-import type {
-  getStyleColorList,
-  getStyleSizeList,
-  ItemPostingGroupListItem
-} from "~/modules/items";
+import type { ItemPostingGroupListItem } from "~/modules/items";
+import type { getGarmentAttributeValueList } from "~/modules/items/itemAttribute.service";
 import type { getTemplatesList } from "~/modules/items/template.service";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
@@ -59,13 +56,12 @@ const StylesTable = memo(
     const { formatDate } = useDateFormatter();
 
     const canAddColorsSizes = permissions.can("update", "parts");
-    // Load the company's colors/sizes once for the whole table so the inline
-    // add pickers in every row share a single fetch (each cell filters out the
-    // options already assigned to that style).
+    // Load Color/Size attribute values once for the whole table so inline
+    // add pickers share a single fetch.
     const colorListFetcher =
-      useFetcher<Awaited<ReturnType<typeof getStyleColorList>>>();
+      useFetcher<Awaited<ReturnType<typeof getGarmentAttributeValueList>>>();
     const sizeListFetcher =
-      useFetcher<Awaited<ReturnType<typeof getStyleSizeList>>>();
+      useFetcher<Awaited<ReturnType<typeof getGarmentAttributeValueList>>>();
     useMount(() => {
       if (!canAddColorsSizes) return;
       colorListFetcher.load(path.to.api.styleColors);
@@ -75,7 +71,7 @@ const StylesTable = memo(
       () =>
         (colorListFetcher.data?.data ?? []).map((color) => ({
           value: color.id,
-          label: color.colorName || color.colorCode,
+          label: color.colorName || color.colorCode || "",
           helper: color.colorCode
         })),
       [colorListFetcher.data?.data]
@@ -84,7 +80,7 @@ const StylesTable = memo(
       () =>
         (sizeListFetcher.data?.data ?? []).map((size) => ({
           value: size.id,
-          label: size.sizeCode,
+          label: size.sizeCode || "",
           helper: size.sizeName
         })),
       [sizeListFetcher.data?.data]

@@ -3,13 +3,14 @@ import { MultiSelect } from "@carbon/form";
 import { useMount } from "@carbon/react";
 import { useMemo } from "react";
 import { useFetcher } from "react-router";
-import type { getStyleSizeList } from "~/modules/items";
+import type { getGarmentAttributeValueList } from "~/modules/items/itemAttribute.service";
 import { path } from "~/utils/path";
 
 type StyleSizesProps = Omit<MultiSelectProps, "options">;
 
 const StyleSizes = (props: StyleSizesProps) => {
-  const fetcher = useFetcher<Awaited<ReturnType<typeof getStyleSizeList>>>();
+  const fetcher =
+    useFetcher<Awaited<ReturnType<typeof getGarmentAttributeValueList>>>();
 
   useMount(() => {
     fetcher.load(path.to.api.styleSizes);

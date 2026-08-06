@@ -365,8 +365,7 @@ async function insertStyleRecord(
 }
 
 /**
- * Resolve styleColor / styleSize catalog ids currently selected on a Style item
- * via itemAttributeSelection (codes joined to styleColor/styleSize).
+ * Resolve Color/Size attribute value ids currently selected on a Style item.
  */
 async function getStyleCatalogIdsFromSelections(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
@@ -375,44 +374,24 @@ async function getStyleCatalogIdsFromSelections(
   const db = client as any;
   const { data: selections, error } = await db
     .from("itemAttributeSelection")
-    .select("attributeId, attributeValue:attributeValueId(code)")
+    .select("attributeId, attributeValueId")
     .eq("itemId", args.itemId)
     .eq("companyId", args.companyId)
     .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size]);
   if (error) throw error;
 
-  const colorCodes: string[] = [];
-  const sizeCodes: string[] = [];
+  const styleColorIds: string[] = [];
+  const styleSizeIds: string[] = [];
   for (const row of selections ?? []) {
-    const code = (row.attributeValue as { code?: string } | null)?.code;
-    if (!code) continue;
-    if (row.attributeId === SYSTEM_ATTRIBUTE.color) colorCodes.push(code);
-    if (row.attributeId === SYSTEM_ATTRIBUTE.size) sizeCodes.push(code);
+    if (row.attributeId === SYSTEM_ATTRIBUTE.color) {
+      styleColorIds.push(row.attributeValueId);
+    }
+    if (row.attributeId === SYSTEM_ATTRIBUTE.size) {
+      styleSizeIds.push(row.attributeValueId);
+    }
   }
 
-  const [colors, sizes] = await Promise.all([
-    colorCodes.length > 0
-      ? db
-          .from("styleColor")
-          .select("id")
-          .in("colorCode", colorCodes)
-          .or(`companyId.eq.${args.companyId},companyId.is.null`)
-      : Promise.resolve({ data: [] as { id: string }[], error: null }),
-    sizeCodes.length > 0
-      ? db
-          .from("styleSize")
-          .select("id")
-          .in("sizeCode", sizeCodes)
-          .or(`companyId.eq.${args.companyId},companyId.is.null`)
-      : Promise.resolve({ data: [] as { id: string }[], error: null })
-  ]);
-  if (colors.error) throw colors.error;
-  if (sizes.error) throw sizes.error;
-
-  return {
-    styleColorIds: (colors.data ?? []).map((c: { id: string }) => c.id),
-    styleSizeIds: (sizes.data ?? []).map((s: { id: string }) => s.id)
-  };
+  return { styleColorIds, styleSizeIds };
 }
 
 export async function upsertStyle(

@@ -1897,19 +1897,16 @@ export async function createStyleSamples(
   if (ensured.error) return ensured;
   const sampleItemId = (ensured.data as { itemId: string }).itemId;
 
-  // Map selected styleColor ids -> color codes for the serial + attributes.
+  // Map selected Color attribute value ids -> color codes for the serial + attributes.
   const colorIds = Array.from(new Set(lines.map((l) => l.colorId)));
   const colors = await sampleClient
-    .from("styleColor")
-    .select("id, colorCode")
+    .from("itemAttributeValue")
+    .select("id, code")
     .in("id", colorIds)
-    .eq("companyId", companyId);
+    .eq("attributeId", "iat_color");
   if (colors.error) return colors;
   const codeById = new Map<string, string>(
-    (colors.data ?? []).map((c: { id: string; colorCode: string }) => [
-      c.id,
-      c.colorCode
-    ])
+    (colors.data ?? []).map((c: { id: string; code: string }) => [c.id, c.code])
   );
 
   // Continue serial numbering from any samples that already exist for this

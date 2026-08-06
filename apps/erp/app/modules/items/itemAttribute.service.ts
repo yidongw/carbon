@@ -134,8 +134,71 @@ export async function getStyleConfigurationParametersFromAttributes(
 }
 
 /**
- * Ensure company-scoped Color attribute values exist for the given styleColor ids,
- * then write itemAttributeSelection rows for the parent Style item.
+ * List Color or Size attribute values for Style pickers (system + company).
+ * Shape mirrors legacy styleColor / styleSize list rows so form components
+ * keep working with the same MultiSelect mapping.
+ */
+export async function getGarmentAttributeValueList(
+  client: Db,
+  args: {
+    attributeId: typeof SYSTEM_ATTRIBUTE.color | typeof SYSTEM_ATTRIBUTE.size;
+    companyId: string;
+  }
+): Promise<{
+  data: Array<{
+    id: string;
+    colorCode?: string;
+    colorName?: string;
+    sizeCode?: string;
+    sizeName?: string;
+    sortOrder: number;
+  }> | null;
+  error: Error | null;
+}> {
+  const db = client as any;
+  try {
+    const { data, error } = await db
+      .from("itemAttributeValue")
+      .select("id, code, name, sortOrder")
+      .eq("attributeId", args.attributeId)
+      .or(`companyId.eq.${args.companyId},companyId.is.null`)
+      .order("sortOrder", { ascending: true })
+      .order("code", { ascending: true });
+    if (error) throw error;
+
+    const rows = (data ?? []).map(
+      (v: {
+        id: string;
+        code: string;
+        name: string | null;
+        sortOrder: number;
+      }) =>
+        args.attributeId === SYSTEM_ATTRIBUTE.color
+          ? {
+              id: v.id,
+              colorCode: v.code,
+              colorName: v.name ?? v.code,
+              sortOrder: v.sortOrder ?? 100
+            }
+          : {
+              id: v.id,
+              sizeCode: v.code,
+              sizeName: v.name ?? v.code,
+              sortOrder: v.sortOrder ?? 100
+            }
+    );
+    return { data: rows, error: null };
+  } catch (error) {
+    return {
+      data: null,
+      error: toError(error, "Failed to load attribute values")
+    };
+  }
+}
+
+/**
+ * Write itemAttributeSelection rows for a Style from Color/Size attribute
+ * value ids (styleColorIds/styleSizeIds form fields now carry value ids).
  */
 export async function syncStyleAttributeSelections(
   client: Db,
@@ -157,117 +220,39 @@ export async function syncStyleAttributeSelections(
       .eq("id", itemId)
       .eq("companyId", companyId);
 
-    // Replace selections for this item
     await db
       .from("itemAttributeSelection")
       .delete()
       .eq("itemId", itemId)
       .eq("companyId", companyId);
 
-    if (styleColorIds.length > 0) {
-      const { data: colors, error: colorErr } = await db
-        .from("styleColor")
-        .select("id, colorCode, colorName")
-        .in("id", styleColorIds)
-        .eq("companyId", companyId);
-      if (colorErr) throw colorErr;
-
-      for (const color of colors ?? []) {
-        const { data: existing } = await db
-          .from("itemAttributeValue")
-          .select("id")
-          .eq("attributeId", SYSTEM_ATTRIBUTE.color)
-          .eq("code", color.colorCode)
-          .eq("companyId", companyId)
-          .maybeSingle();
-
-        let valueId = existing?.id as string | undefined;
-        if (!valueId) {
-          const { data: inserted, error: insertErr } = await db
-            .from("itemAttributeValue")
-            .insert({
-              attributeId: SYSTEM_ATTRIBUTE.color,
-              code: color.colorCode,
-              name: color.colorName,
-              companyId,
-              createdBy: userId
-            })
-            .select("id")
-            .single();
-          if (insertErr) throw insertErr;
-          valueId = inserted.id;
-        }
-
+    const insertSelections = async (
+      attributeId: string,
+      valueIds: string[]
+    ) => {
+      if (valueIds.length === 0) return;
+      const { data: values, error: valErr } = await db
+        .from("itemAttributeValue")
+        .select("id, attributeId")
+        .in("id", valueIds)
+        .eq("attributeId", attributeId);
+      if (valErr) throw valErr;
+      for (const v of values ?? []) {
         const { error: selErr } = await db
           .from("itemAttributeSelection")
           .insert({
             itemId,
-            attributeId: SYSTEM_ATTRIBUTE.color,
-            attributeValueId: valueId,
+            attributeId,
+            attributeValueId: v.id,
             companyId,
             createdBy: userId
           });
         if (selErr) throw selErr;
       }
-    }
+    };
 
-    if (styleSizeIds.length > 0) {
-      const { data: sizes, error: sizeErr } = await db
-        .from("styleSize")
-        .select("id, sizeCode, sizeName, sortOrder")
-        .in("id", styleSizeIds);
-      if (sizeErr) throw sizeErr;
-
-      for (const size of sizes ?? []) {
-        // Prefer global system size value, else company-scoped
-        const { data: globalVal } = await db
-          .from("itemAttributeValue")
-          .select("id")
-          .eq("attributeId", SYSTEM_ATTRIBUTE.size)
-          .eq("code", size.sizeCode)
-          .is("companyId", null)
-          .maybeSingle();
-
-        let valueId = globalVal?.id as string | undefined;
-        if (!valueId) {
-          const { data: companyVal } = await db
-            .from("itemAttributeValue")
-            .select("id")
-            .eq("attributeId", SYSTEM_ATTRIBUTE.size)
-            .eq("code", size.sizeCode)
-            .eq("companyId", companyId)
-            .maybeSingle();
-          valueId = companyVal?.id;
-        }
-        if (!valueId) {
-          const { data: inserted, error: insertErr } = await db
-            .from("itemAttributeValue")
-            .insert({
-              attributeId: SYSTEM_ATTRIBUTE.size,
-              code: size.sizeCode,
-              name: size.sizeName,
-              sortOrder: size.sortOrder ?? 100,
-              companyId,
-              createdBy: userId
-            })
-            .select("id")
-            .single();
-          if (insertErr) throw insertErr;
-          valueId = inserted.id;
-        }
-
-        const { error: selErr } = await db
-          .from("itemAttributeSelection")
-          .insert({
-            itemId,
-            attributeId: SYSTEM_ATTRIBUTE.size,
-            attributeValueId: valueId,
-            companyId,
-            createdBy: userId
-          });
-        if (selErr) throw selErr;
-      }
-    }
+    await insertSelections(SYSTEM_ATTRIBUTE.color, styleColorIds);
+    await insertSelections(SYSTEM_ATTRIBUTE.size, styleSizeIds);
 
     return { error: null };
   } catch (error) {
@@ -481,7 +466,7 @@ export async function syncItemVariants(
   }
 }
 
-/** Dual-write Style color/size assignments into attribute selections + SKUs */
+/** Sync Style Color/Size attribute value ids into selections + child SKUs */
 export async function syncStyleVariantsFromAssignments(
   client: Db,
   args: {

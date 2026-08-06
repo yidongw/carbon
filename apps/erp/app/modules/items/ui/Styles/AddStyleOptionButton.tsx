@@ -17,7 +17,7 @@ type AddStyleOptionButtonProps = {
   /** The style item.id the option is added to. */
   itemId: string;
   kind: "color" | "size";
-  /** Already-assigned styleColor/styleSize ids — excluded from the dropdown. */
+  /** Already-assigned Color/Size attribute value ids — excluded from the dropdown. */
   assignedIds: string[];
   /**
    * Pre-fetched options so callers rendering many pickers (the styles table)
