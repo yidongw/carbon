@@ -16,4 +16,4 @@ When adding a new size read/display, order by `sortOrder`, not `sizeCode`.
 
 ## Variant SKUs (inventory)
 
-Style items get child variant SKUs (`itemVariant` + `itemAttribute*`, migration `20260806132455`). Lookup key is `valuesKey` = `color|size` (e.g. `BK|S`). Parent Style remains on PO/SO lines; receipt/shipment create expands `configuration.configTable` to one line per variant — see `inventory-system.md` § Style variant SKUs.
+Style items get child variant SKUs (`itemVariant` + `itemAttribute*`, migration `20260806132455`). Lookup key is `valuesKey` = `color|size` (e.g. `BK|S`). On SO/PO Style line save, parent + `configuration.configTable` expands to one order line per variant SKU; edge receive/ship expand remains fallback for legacy parent+config lines — see `inventory-system.md` § Style variant SKUs.
