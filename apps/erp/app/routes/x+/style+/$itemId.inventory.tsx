@@ -350,7 +350,7 @@ export default function StyleInventoryRoute() {
                           {row.readableId}
                           {row.active === false ? (
                             <span className="ml-2 text-xs">
-                              (<Trans>Inactive</Trans>
+                              <Trans>Inactive</Trans>
                             </span>
                           ) : null}
                         </td>
