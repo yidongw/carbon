@@ -50,7 +50,7 @@ export type SynthesizedConfigurationParameter = {
  * Build Color/Size list parameters from itemAttributeSelection so Style qty
  * matrices work without configurationParameter dual-write.
  * Size is first (primary columns); Color is the row descriptor — matches
- * legacy syncStyleConfigurationParameters ordering.
+ * the former syncStyleConfigurationParameters ordering.
  */
 export async function getStyleConfigurationParametersFromAttributes(
   client: Db,

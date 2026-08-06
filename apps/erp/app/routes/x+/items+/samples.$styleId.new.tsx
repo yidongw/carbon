@@ -14,7 +14,7 @@ import {
 import {
   createStyleSamples,
   createStyleSampleValidator,
-  getStyleSizes
+  getStyleSizeList
 } from "~/modules/items";
 import { getUserDefaults } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
@@ -59,7 +59,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       .eq("readableId", styleId)
       .eq("companyId", companyId)
       .maybeSingle(),
-    getStyleSizes(client, companyId),
+    getStyleSizeList(client, companyId),
     getUserDefaults(client, userId, companyId)
   ]);
 
@@ -68,7 +68,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     .slice()
     .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
-  // Offer every company size, ordered, and guarantee L (the sample default).
+  // Offer every catalog size (company + system), ordered, and guarantee L.
   const sizeCodes = Array.from(new Set([...sizes.map((s) => s.sizeCode), "L"]));
 
   return {

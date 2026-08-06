@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T15:23:21.813Z",
-  "totalTools": 1273,
+  "generated": "2026-08-06T15:43:35.467Z",
+  "totalTools": 1272,
   "modules": 15,
   "tools": [
     {
@@ -11710,46 +11710,6 @@
         "required": [
           "id",
           "revision"
-        ]
-      }
-    },
-    {
-      "name": "items_syncStyleConfigurationParameters",
-      "module": "items",
-      "classification": "WRITE",
-      "description": "sync style configuration parameters",
-      "paramCount": 3,
-      "serviceParams": [
-        "client",
-        "args"
-      ],
-      "injectAuth": [
-        "companyId",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "itemId": {
-            "type": "string"
-          },
-          "styleColorIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "styleSizeIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "itemId",
-          "styleColorIds",
-          "styleSizeIds"
         ]
       }
     },
