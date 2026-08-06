@@ -757,7 +757,29 @@ export async function getItemAttributeValues(
   if (args?.search) {
     query = query.or(`code.ilike.%${args.search}%,name.ilike.%${args.search}%`);
   }
-  return query;
+
+  const result = await query;
+  if (result.error) return result;
+
+  // Prefer company-scoped rows when the same code also exists as a system
+  // catalog value — otherwise admin lists show XS/S/… twice after backfill.
+  const byCode = new Map<string, Record<string, unknown>>();
+  for (const row of (result.data ?? []) as Array<
+    Record<string, unknown> & { code: string; companyId: string | null }
+  >) {
+    const existing = byCode.get(row.code);
+    if (!existing || (row.companyId && !existing.companyId)) {
+      byCode.set(row.code, row);
+    }
+  }
+  const data = [...byCode.values()].sort((a, b) => {
+    const sortA = Number(a.sortOrder ?? 100);
+    const sortB = Number(b.sortOrder ?? 100);
+    if (sortA !== sortB) return sortA - sortB;
+    return String(a.code).localeCompare(String(b.code));
+  });
+
+  return { ...result, data, count: data.length };
 }
 
 export async function getItemAttributeValue(client: Db, id: string) {
