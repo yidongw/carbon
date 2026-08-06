@@ -47,32 +47,24 @@ export async function seedDemoData(
     return (r.rowCount ?? 0) > 0;
   }
 
-  // ─── Style colors + sizes ─────────────────────────────────────────────────
-  // Per-company apparel reference data (color names localized to the seed
-  // language; sizes are seeded by code).
-  console.log("Seeding style colors + sizes...");
+  // ─── Style colors + sizes → itemAttributeValue ────────────────────────────
+  // Per-company apparel reference (color names localized; sizes by code).
+  console.log("Seeding style colors + sizes (itemAttributeValue)...");
   {
     const { colors, sizes } = styleReferenceRows(language);
     for (const c of colors) {
       await client.query(
-        `INSERT INTO "styleColor" ("colorCode", "colorName", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT ("colorCode", "companyId") DO NOTHING`,
-        [c.colorCode, c.colorName, companyId, userId]
-      );
-      // Mirror into generic itemAttributeValue (Color) for variant SKUs
-      await client.query(
-        `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "companyId", "createdBy")
-         VALUES ('iat_color', $1, $2, $3, $4)
+        `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "companyId", "createdBy", "sortOrder")
+         VALUES ('iat_color', $1, $2, $3, $4, 100)
          ON CONFLICT ("attributeId", "code", "companyId") DO NOTHING`,
         [c.colorCode, c.colorName, companyId, userId]
       );
     }
     for (const s of sizes) {
       await client.query(
-        `INSERT INTO "styleSize" ("sizeCode", "sizeName", "sortOrder", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT ("sizeCode", "companyId") DO NOTHING`,
+        `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "sortOrder", "companyId", "createdBy")
+         VALUES ('iat_size', $1, $2, $3, $4, $5)
+         ON CONFLICT ("attributeId", "code", "companyId") DO NOTHING`,
         [s.sizeCode, s.sizeName, s.sortOrder, companyId, userId]
       );
     }
