@@ -11,6 +11,10 @@ import {
   calculateOutsideProcessingPurchaseOrderLines,
   toPurchaseOrderItemLineType,
 } from "../lib/outside-processing-pricing.ts";
+import {
+  expandConfigTableToVariantQuantities,
+  hasConfigTable,
+} from "../lib/item-variants.ts";
 
 const pool = getConnectionPool(1);
 const db = getDatabaseClient<DB>(pool);
@@ -838,6 +842,7 @@ serve(async (req: Request) => {
               "Tool",
               "Fixture",
               "Consumable",
+              "Style",
             ]),
           client
             .from("purchaseOrderLine")
@@ -865,13 +870,62 @@ serve(async (req: Request) => {
           locationId = userLocationId;
         }
 
+        // Pre-expand Style config tables → variant SKUs so tracking/pickMethod
+        // lookups cover child itemIds (inventory lands on variants, not parent).
+        type ExpandedReceiptSource = {
+          line: (typeof purchaseOrderLines.data)[number];
+          itemId: string;
+          quantity: number;
+        };
+        const expandedSources: ExpandedReceiptSource[] = [];
+        for (const d of purchaseOrderLines.data) {
+          if (
+            !d.itemId ||
+            !d.purchaseQuantity ||
+            d.purchaseOrderLineType === "Service" ||
+            d.purchaseOrderLineType === "G/L Account"
+          ) {
+            continue;
+          }
+
+          if (
+            d.purchaseOrderLineType === "Style" &&
+            hasConfigTable(d.configuration)
+          ) {
+            const variants = await expandConfigTableToVariantQuantities(
+              client,
+              {
+                parentItemId: d.itemId,
+                companyId,
+                configuration: d.configuration,
+              }
+            );
+            if (variants.length > 0) {
+              for (const v of variants) {
+                expandedSources.push({
+                  line: d,
+                  itemId: v.variantItemId,
+                  quantity: v.quantity,
+                });
+              }
+              continue;
+            }
+          }
+
+          expandedSources.push({
+            line: d,
+            itemId: d.itemId,
+            quantity: d.purchaseQuantity,
+          });
+        }
+
         const items = await client
           .from("item")
           .select("id, itemTrackingType")
           .in(
             "id",
-            purchaseOrderLines.data
-              .filter((d) => d.locationId === locationId)
+            expandedSources
+              .filter((d) => d.line.locationId === locationId)
               .map((d) => d.itemId)
           );
         const serializedItems = new Set(
@@ -891,9 +945,9 @@ serve(async (req: Request) => {
         // one explicitly. Scoped by locationId because a single item can
         // be stocked across multiple locations with different defaults
         // per location (that's why pickMethod exists).
-        const receiptItemIds = purchaseOrderLines.data
-          .filter((d): d is typeof d & { itemId: string } => !!d.itemId)
-          .map((d) => d.itemId);
+        const receiptItemIds = [
+          ...new Set(expandedSources.map((d) => d.itemId)),
+        ];
         const pickMethods = await client
           .from("pickMethod")
           .select("itemId, locationId, defaultStorageUnitId")
@@ -921,55 +975,55 @@ serve(async (req: Request) => {
           return acc;
         }, {});
 
-        const receiptLineItems = purchaseOrderLines.data.reduce<
-          ReceiptLineItem[]
-        >((acc, d) => {
-          if (
-            !d.itemId ||
-            !d.purchaseQuantity ||
-            d.purchaseOrderLineType === "Service" ||
-            d.purchaseOrderLineType === "G/L Account"
-          ) {
+        const receiptLineItems = expandedSources.reduce<ReceiptLineItem[]>(
+          (acc, source) => {
+            const d = source.line;
+            const unitPrice = d.unitPrice ?? 0;
+            const conversionFactor = d.conversionFactor ?? 1;
+            // For Style variants, quantity is the cell qty; for normal lines it
+            // is the full purchaseQuantity. Outstanding still keys off the
+            // parent PO line's quantityReceived for non-variant lines.
+            const linePurchaseQty = d.purchaseQuantity ?? 0;
+            const sourceShare =
+              linePurchaseQty > 0 ? source.quantity / linePurchaseQty : 1;
+            const outstandingParent =
+              linePurchaseQty -
+              (previouslyReceivedQuantitiesByLine[d.id!] ?? 0);
+            const outstandingQuantity = outstandingParent * sourceShare;
+            if (outstandingQuantity <= 0) return acc;
+
+            const shippingAndTaxUnitCost =
+              ((d.taxAmount ?? 0) + (d.shippingCost ?? 0)) /
+              (linePurchaseQty * conversionFactor || 1);
+
+            acc.push({
+              lineId: d.id,
+              companyId: companyId,
+              itemId: source.itemId,
+              orderQuantity: source.quantity * conversionFactor,
+              outstandingQuantity: outstandingQuantity * conversionFactor,
+              receivedQuantity: outstandingQuantity * conversionFactor,
+              conversionFactor,
+              requiresSerialTracking:
+                serializedItems.has(source.itemId) && !isOutsideOperation,
+              requiresBatchTracking:
+                batchItems.has(source.itemId) && !isOutsideOperation,
+              unitPrice: unitPrice / conversionFactor + shippingAndTaxUnitCost,
+              unitOfMeasure: d.inventoryUnitOfMeasureCode ?? "EA",
+              locationId: d.locationId ?? null,
+              storageUnitId:
+                d.storageUnitId ??
+                defaultStorageUnitByItemLocation.get(
+                  pickMethodKey(source.itemId, d.locationId ?? null)
+                ) ??
+                null,
+              createdBy: userId ?? "",
+            });
+
             return acc;
-          }
-
-          const unitPrice = d.unitPrice ?? 0;
-          const outstandingQuantity =
-            d.purchaseQuantity -
-            (previouslyReceivedQuantitiesByLine[d.id!] ?? 0);
-
-          const shippingAndTaxUnitCost =
-            ((d.taxAmount ?? 0) + (d.shippingCost ?? 0)) /
-            (d.purchaseQuantity * (d.conversionFactor ?? 1));
-
-          acc.push({
-            lineId: d.id,
-            companyId: companyId,
-            itemId: d.itemId,
-            orderQuantity: d.purchaseQuantity * (d.conversionFactor ?? 1),
-            outstandingQuantity:
-              outstandingQuantity * (d.conversionFactor ?? 1),
-            receivedQuantity: outstandingQuantity * (d.conversionFactor ?? 1),
-            conversionFactor: d.conversionFactor ?? 1,
-            requiresSerialTracking:
-              serializedItems.has(d.itemId) && !isOutsideOperation,
-            requiresBatchTracking:
-              batchItems.has(d.itemId) && !isOutsideOperation,
-            unitPrice:
-              unitPrice / (d.conversionFactor ?? 1) + shippingAndTaxUnitCost,
-            unitOfMeasure: d.inventoryUnitOfMeasureCode ?? "EA",
-            locationId: d.locationId ?? null,
-            storageUnitId:
-              d.storageUnitId ??
-              defaultStorageUnitByItemLocation.get(
-                pickMethodKey(d.itemId!, d.locationId ?? null)
-              ) ??
-              null,
-            createdBy: userId ?? "",
-          });
-
-          return acc;
-        }, []);
+          },
+          []
+        );
 
         const hasUnreceivedFaLines = (fixedAssetPoLines.data ?? []).some(
           (d) => d.assetId && d.purchaseQuantity && !d.receivedComplete
@@ -1862,6 +1916,7 @@ serve(async (req: Request) => {
               "Tool",
               "Fixture",
               "Consumable",
+              "Style",
             ])
             .eq("locationId", locationId),
           client
@@ -1880,12 +1935,57 @@ serve(async (req: Request) => {
         if (purchaseOrderLines.error)
           throw new Error(purchaseOrderLines.error.message);
 
+        type ExpandedPoShipSource = {
+          line: (typeof purchaseOrderLines.data)[number];
+          itemId: string;
+          quantity: number;
+        };
+        const expandedPoShipSources: ExpandedPoShipSource[] = [];
+        for (const d of purchaseOrderLines.data) {
+          if (
+            !d.itemId ||
+            !d.purchaseQuantity ||
+            d.purchaseOrderLineType === "Service" ||
+            d.purchaseOrderLineType === "G/L Account"
+          ) {
+            continue;
+          }
+          if (
+            d.purchaseOrderLineType === "Style" &&
+            hasConfigTable(d.configuration)
+          ) {
+            const variants = await expandConfigTableToVariantQuantities(
+              client,
+              {
+                parentItemId: d.itemId,
+                companyId,
+                configuration: d.configuration,
+              }
+            );
+            if (variants.length > 0) {
+              for (const v of variants) {
+                expandedPoShipSources.push({
+                  line: d,
+                  itemId: v.variantItemId,
+                  quantity: v.quantity,
+                });
+              }
+              continue;
+            }
+          }
+          expandedPoShipSources.push({
+            line: d,
+            itemId: d.itemId,
+            quantity: d.purchaseQuantity,
+          });
+        }
+
         const items = await client
           .from("item")
           .select("id, itemTrackingType")
           .in(
             "id",
-            purchaseOrderLines.data.map((d) => d.itemId)
+            expandedPoShipSources.map((d) => d.itemId)
           );
         const serializedItems = new Set(
           items.data
@@ -1964,7 +2064,6 @@ serve(async (req: Request) => {
             shipmentIdReadable = newShipment?.[0]?.shipmentId!;
           }
 
-          // Process each sales order line
           for await (const purchaseOrderLine of purchaseOrderLines.data) {
             if (
               !purchaseOrderLine.itemId ||
@@ -1975,39 +2074,60 @@ serve(async (req: Request) => {
               continue;
             }
 
-            const isSerial = serializedItems.has(purchaseOrderLine.itemId);
-            const isBatch = batchItems.has(purchaseOrderLine.itemId);
+            const sources = expandedPoShipSources.filter(
+              (s) => s.line.id === purchaseOrderLine.id
+            );
+            const lineSources =
+              sources.length > 0
+                ? sources
+                : [
+                    {
+                      line: purchaseOrderLine,
+                      itemId: purchaseOrderLine.itemId,
+                      quantity: purchaseOrderLine.purchaseQuantity,
+                    },
+                  ];
 
-            const outstandingQuantity =
-              (purchaseOrderLine.purchaseQuantity ?? 0) -
-                previouslyShippedQuantitiesByLine[purchaseOrderLine.id] ?? 0;
+            const purchaseQty = purchaseOrderLine.purchaseQuantity ?? 0;
+            const outstandingParent =
+              purchaseQty -
+              (previouslyShippedQuantitiesByLine[purchaseOrderLine.id] ?? 0);
 
-            const shippingAndTaxUnitCost =
-              ((purchaseOrderLine.shippingCost ?? 0) /
-                (purchaseOrderLine.purchaseQuantity ?? 0) +
-                (purchaseOrderLine.unitPrice ?? 0)) *
-              (1 + (purchaseOrderLine.taxPercent ?? 0));
+            for (const source of lineSources) {
+              const sourceShare =
+                purchaseQty > 0 ? source.quantity / purchaseQty : 1;
+              const outstandingQuantity = outstandingParent * sourceShare;
+              if (outstandingQuantity <= 0) continue;
 
-            await trx
-              .insertInto("shipmentLine")
-              .values({
-                shipmentId: shipmentId,
-                lineId: purchaseOrderLine.id,
-                companyId: companyId,
-                itemId: purchaseOrderLine.itemId,
-                orderQuantity: purchaseOrderLine.purchaseQuantity,
-                outstandingQuantity: outstandingQuantity,
-                shippedQuantity: outstandingQuantity ?? 0,
-                requiresSerialTracking: isSerial && !isOutsideOperation,
-                requiresBatchTracking: isBatch && !isOutsideOperation,
-                unitPrice: shippingAndTaxUnitCost,
-                unitOfMeasure:
-                  purchaseOrderLine.purchaseUnitOfMeasureCode ?? "EA",
-                locationId: purchaseOrderLine.locationId,
-                storageUnitId: purchaseOrderLine.storageUnitId,
-                createdBy: userId ?? "",
-              })
-              .execute();
+              const isSerial = serializedItems.has(source.itemId);
+              const isBatch = batchItems.has(source.itemId);
+
+              const shippingAndTaxUnitCost =
+                ((purchaseOrderLine.shippingCost ?? 0) / (purchaseQty || 1) +
+                  (purchaseOrderLine.unitPrice ?? 0)) *
+                (1 + (purchaseOrderLine.taxPercent ?? 0));
+
+              await trx
+                .insertInto("shipmentLine")
+                .values({
+                  shipmentId: shipmentId,
+                  lineId: purchaseOrderLine.id,
+                  companyId: companyId,
+                  itemId: source.itemId,
+                  orderQuantity: source.quantity,
+                  outstandingQuantity: outstandingQuantity,
+                  shippedQuantity: outstandingQuantity,
+                  requiresSerialTracking: isSerial && !isOutsideOperation,
+                  requiresBatchTracking: isBatch && !isOutsideOperation,
+                  unitPrice: shippingAndTaxUnitCost,
+                  unitOfMeasure:
+                    purchaseOrderLine.purchaseUnitOfMeasureCode ?? "EA",
+                  locationId: purchaseOrderLine.locationId,
+                  storageUnitId: purchaseOrderLine.storageUnitId,
+                  createdBy: userId ?? "",
+                })
+                .execute();
+            }
           }
         });
 
@@ -2066,6 +2186,7 @@ serve(async (req: Request) => {
               "Tool",
               "Fixture",
               "Consumable",
+              "Style",
             ])
             .eq("locationId", locationId),
           client
@@ -2094,12 +2215,64 @@ serve(async (req: Request) => {
         if (salesOrderLines.error)
           throw new Error(salesOrderLines.error.message);
 
+        // Expand Style config → variant SKUs for inventory shipments (tracking
+        // lookups need child itemIds).
+        type ExpandedShipSource = {
+          line: (typeof salesOrderLines.data)[number];
+          itemId: string;
+          quantity: number;
+        };
+        const expandedShipSources: ExpandedShipSource[] = [];
+        for (const line of salesOrderLines.data) {
+          if (
+            !line.itemId ||
+            !line.saleQuantity ||
+            line.salesOrderLineType === "Service"
+          ) {
+            continue;
+          }
+          if (
+            line.salesOrderLineType === "Style" &&
+            line.methodType !== "Make to Order" &&
+            hasConfigTable(line.configuration)
+          ) {
+            const variants = await expandConfigTableToVariantQuantities(
+              client,
+              {
+                parentItemId: line.itemId,
+                companyId,
+                configuration: line.configuration,
+              }
+            );
+            if (variants.length > 0) {
+              for (const v of variants) {
+                expandedShipSources.push({
+                  line,
+                  itemId: v.variantItemId,
+                  quantity: v.quantity,
+                });
+              }
+              continue;
+            }
+          }
+          expandedShipSources.push({
+            line,
+            itemId: line.itemId,
+            quantity: line.saleQuantity,
+          });
+        }
+
         const items = await client
           .from("item")
           .select("id, itemTrackingType")
           .in(
             "id",
-            salesOrderLines.data.map((d) => d.itemId)
+            [
+              ...new Set([
+                ...salesOrderLines.data.map((d) => d.itemId).filter(Boolean),
+                ...expandedShipSources.map((d) => d.itemId),
+              ]),
+            ] as string[]
           );
         const serializedItems = new Set(
           items.data
@@ -2302,35 +2475,59 @@ serve(async (req: Request) => {
                 }
               }
             } else {
-              const outstandingQuantity =
-                (salesOrderLine.saleQuantity ?? 0) -
-                  previouslyShippedQuantitiesByLine[salesOrderLine.id] ?? 0;
+              // Inventory / buy lines — Style with config expands to one
+              // shipment line per variant SKU.
+              const sources = expandedShipSources.filter(
+                (s) => s.line.id === salesOrderLine.id
+              );
+              const lineSources =
+                sources.length > 0
+                  ? sources
+                  : [
+                      {
+                        line: salesOrderLine,
+                        itemId: salesOrderLine.itemId!,
+                        quantity: salesOrderLine.saleQuantity ?? 0,
+                      },
+                    ];
 
-              const shippingAndTaxUnitCost =
-                (salesOrderLine.shippingCost /
-                  (salesOrderLine.saleQuantity ?? 0) +
-                  (salesOrderLine.unitPrice ?? 0)) *
-                (1 + salesOrderLine.taxPercent);
+              for (const source of lineSources) {
+                const saleQty = salesOrderLine.saleQuantity ?? 0;
+                const sourceShare = saleQty > 0 ? source.quantity / saleQty : 1;
+                const outstandingParent =
+                  saleQty -
+                  (previouslyShippedQuantitiesByLine[salesOrderLine.id] ?? 0);
+                const outstandingQuantity = outstandingParent * sourceShare;
+                if (outstandingQuantity <= 0) continue;
 
-              await trx
-                .insertInto("shipmentLine")
-                .values({
-                  shipmentId: shipmentId,
-                  lineId: salesOrderLine.id,
-                  companyId: companyId,
-                  itemId: salesOrderLine.itemId,
-                  orderQuantity: salesOrderLine.saleQuantity,
-                  outstandingQuantity: outstandingQuantity,
-                  shippedQuantity: outstandingQuantity ?? 0,
-                  requiresSerialTracking: isSerial,
-                  requiresBatchTracking: isBatch,
-                  unitPrice: shippingAndTaxUnitCost,
-                  unitOfMeasure: salesOrderLine.unitOfMeasureCode ?? "EA",
-                  locationId: salesOrderLine.locationId,
-                  storageUnitId: salesOrderLine.storageUnitId,
-                  createdBy: userId ?? "",
-                })
-                .execute();
+                const isSerialSource = serializedItems.has(source.itemId);
+                const isBatchSource = batchItems.has(source.itemId);
+
+                const shippingAndTaxUnitCost =
+                  (salesOrderLine.shippingCost / (saleQty || 1) +
+                    (salesOrderLine.unitPrice ?? 0)) *
+                  (1 + salesOrderLine.taxPercent);
+
+                await trx
+                  .insertInto("shipmentLine")
+                  .values({
+                    shipmentId: shipmentId,
+                    lineId: salesOrderLine.id,
+                    companyId: companyId,
+                    itemId: source.itemId,
+                    orderQuantity: source.quantity,
+                    outstandingQuantity: outstandingQuantity,
+                    shippedQuantity: outstandingQuantity,
+                    requiresSerialTracking: isSerialSource,
+                    requiresBatchTracking: isBatchSource,
+                    unitPrice: shippingAndTaxUnitCost,
+                    unitOfMeasure: salesOrderLine.unitOfMeasureCode ?? "EA",
+                    locationId: salesOrderLine.locationId,
+                    storageUnitId: salesOrderLine.storageUnitId,
+                    createdBy: userId ?? "",
+                  })
+                  .execute();
+              }
             }
           }
 
@@ -2444,16 +2641,59 @@ serve(async (req: Request) => {
 
         if (!salesOrder.data) throw new Error("Sales order not found");
 
-        const item = await client
+        type ExpandedSingleShipSource = {
+          itemId: string;
+          quantity: number;
+        };
+        const expandedSingleSources: ExpandedSingleShipSource[] = [];
+        const sol = salesOrderLine.data;
+        if (
+          sol.salesOrderLineType === "Style" &&
+          sol.methodType !== "Make to Order" &&
+          sol.itemId &&
+          hasConfigTable(sol.configuration)
+        ) {
+          const variants = await expandConfigTableToVariantQuantities(client, {
+            parentItemId: sol.itemId,
+            companyId,
+            configuration: sol.configuration,
+          });
+          if (variants.length > 0) {
+            for (const v of variants) {
+              expandedSingleSources.push({
+                itemId: v.variantItemId,
+                quantity: v.quantity,
+              });
+            }
+          }
+        }
+        if (expandedSingleSources.length === 0 && sol.itemId) {
+          expandedSingleSources.push({
+            itemId: sol.itemId,
+            quantity: sol.saleQuantity ?? 0,
+          });
+        }
+
+        const items = await client
           .from("item")
           .select("id, itemTrackingType")
-          .eq("id", salesOrderLine.data.itemId)
-          .single();
-
-        if (!item.data) throw new Error("Item not found");
-
-        const isSerial = item.data.itemTrackingType === "Serial";
-        const isBatch = item.data.itemTrackingType === "Batch";
+          .in(
+            "id",
+            expandedSingleSources.map((s) => s.itemId)
+          );
+        const serializedItems = new Set(
+          items.data
+            ?.filter((d) => d.itemTrackingType === "Serial")
+            .map((d) => d.id)
+        );
+        const batchItems = new Set(
+          items.data
+            ?.filter((d) => d.itemTrackingType === "Batch")
+            .map((d) => d.id)
+        );
+        const parentItem = items.data?.find((d) => d.id === sol.itemId);
+        const isSerial = parentItem?.itemTrackingType === "Serial";
+        const isBatch = parentItem?.itemTrackingType === "Batch";
 
         const hasShipment = !!shipment.data?.id;
         const previouslyShippedQuantity = salesOrderLine.data.quantitySent ?? 0;
@@ -2607,37 +2847,45 @@ serve(async (req: Request) => {
               }
             }
           } else {
-            const outstandingQuantity = Math.max(
+            const saleQty = salesOrderLine.data.saleQuantity ?? 0;
+            const outstandingParent = Math.max(
               0,
-              (salesOrderLine.data.saleQuantity ?? 0) -
-                previouslyShippedQuantity
+              saleQty - previouslyShippedQuantity
             );
 
-            const shippingAndTaxUnitCost =
-              (salesOrderLine.data.shippingCost /
-                (salesOrderLine.data.saleQuantity ?? 0) +
-                (salesOrderLine.data.unitPrice ?? 0)) *
-              (1 + salesOrderLine.data.taxPercent);
+            for (const source of expandedSingleSources) {
+              const sourceShare = saleQty > 0 ? source.quantity / saleQty : 1;
+              const outstandingQuantity = outstandingParent * sourceShare;
+              if (outstandingQuantity <= 0) continue;
 
-            await trx
-              .insertInto("shipmentLine")
-              .values({
-                shipmentId: shipmentId,
-                lineId: salesOrderLineId,
-                companyId: companyId,
-                itemId: salesOrderLine.data.itemId!,
-                orderQuantity: salesOrderLine.data.saleQuantity ?? 0,
-                outstandingQuantity: outstandingQuantity,
-                shippedQuantity: outstandingQuantity,
-                requiresSerialTracking: isSerial,
-                requiresBatchTracking: isBatch,
-                unitPrice: shippingAndTaxUnitCost,
-                unitOfMeasure: salesOrderLine.data.unitOfMeasureCode ?? "EA",
-                locationId: salesOrderLine.data.locationId!,
-                storageUnitId: salesOrderLine.data.storageUnitId!,
-                createdBy: userId ?? "",
-              })
-              .execute();
+              const isSerialSource = serializedItems.has(source.itemId);
+              const isBatchSource = batchItems.has(source.itemId);
+
+              const shippingAndTaxUnitCost =
+                (salesOrderLine.data.shippingCost / (saleQty || 1) +
+                  (salesOrderLine.data.unitPrice ?? 0)) *
+                (1 + salesOrderLine.data.taxPercent);
+
+              await trx
+                .insertInto("shipmentLine")
+                .values({
+                  shipmentId: shipmentId,
+                  lineId: salesOrderLineId,
+                  companyId: companyId,
+                  itemId: source.itemId,
+                  orderQuantity: source.quantity,
+                  outstandingQuantity: outstandingQuantity,
+                  shippedQuantity: outstandingQuantity,
+                  requiresSerialTracking: isSerialSource,
+                  requiresBatchTracking: isBatchSource,
+                  unitPrice: shippingAndTaxUnitCost,
+                  unitOfMeasure: salesOrderLine.data.unitOfMeasureCode ?? "EA",
+                  locationId: salesOrderLine.data.locationId!,
+                  storageUnitId: salesOrderLine.data.storageUnitId!,
+                  createdBy: userId ?? "",
+                })
+                .execute();
+            }
           }
         });
 
