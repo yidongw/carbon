@@ -43,6 +43,8 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Edit:** properties sidebar `ConsumableAttributeEditor` → POST `consumable/$itemId/attributes` → `syncItemVariantsFromSelections`. Loader: `getItemAttributeSelectionsForItem`.
 
+**Variant lifecycle:** `syncItemVariants` soft-deactivates (`item.active=false`) SKUs whose `valuesKey` is no longer selected; reactivates when selections grow again. `resolveVariantByValuesKey(parent, valuesKey)` resolves any set order (Style `resolveVariantItemId` wraps color|size).
+
 **Lists:** `consumables` view excludes variant children (`20260806162513`). Inventory RPC excludes children and rolls qty onto parents (`20260806162447`). SKU breakdown uses `get_inventory_quantities_for_items` (`20260806163128`) via `getItemVariantQuantities` (Style + Consumable inventory tabs).
 
 ## Styles view (migration `20260806150151`)
