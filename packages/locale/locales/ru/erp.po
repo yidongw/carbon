@@ -7188,6 +7188,9 @@ msgstr "Не удалось запустить событие техническ
 msgid "Failed to stop event"
 msgstr "Не удалось остановить событие"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Не удалось синхронизировать процедуру"
 
@@ -13218,6 +13221,9 @@ msgstr "Выбрано"
 
 msgid "Selected Operation"
 msgstr "Выбранная операция"
+
+msgid "Selected values become variant SKUs"
+msgstr ""
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"

@@ -7189,6 +7189,9 @@ msgstr "维护事件启动失败"
 msgid "Failed to stop event"
 msgstr "停止事件失败"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
 
@@ -13219,6 +13222,9 @@ msgstr "选定的"
 
 msgid "Selected Operation"
 msgstr "已选操作"
+
+msgid "Selected values become variant SKUs"
+msgstr ""
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"

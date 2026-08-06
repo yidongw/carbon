@@ -916,6 +916,7 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Failed to start event": msg`Failed to start event`,
   "Failed to start maintenance event": msg`Failed to start maintenance event`,
   "Failed to stop event": msg`Failed to stop event`,
+  "Failed to sync consumable variants": msg`Failed to sync consumable variants`,
   "Failed to sync procedure": msg`Failed to sync procedure`,
   "Failed to trigger rework": msg`Failed to trigger rework`,
   "Failed to unassign rule": msg`Failed to unassign rule`,

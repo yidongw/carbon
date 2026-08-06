@@ -3234,6 +3234,9 @@ msgstr "维护事件启动失败"
 msgid "Failed to stop event"
 msgstr "停止事件失败"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
 

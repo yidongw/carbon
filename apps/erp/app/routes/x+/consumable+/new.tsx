@@ -6,7 +6,11 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import { consumableValidator, upsertConsumable } from "~/modules/items";
-import { getAttributeSetsForItemType } from "~/modules/items/itemAttribute.service";
+import {
+  getAttributeSetsForItemType,
+  parseAttributeValueSelectionsFromFormData,
+  syncItemVariantsFromSelections
+} from "~/modules/items/itemAttribute.service";
 import { ConsumableForm } from "~/modules/items/ui/Consumables";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -78,6 +82,40 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const itemId = createConsumable.data?.id;
   if (!itemId) throw new Error("Consumable ID not found");
+
+  const attributeSetId = validation.data.attributeSetId;
+  if (attributeSetId) {
+    const selections = parseAttributeValueSelectionsFromFormData(formData);
+    const hasSelections = Object.values(selections).some(
+      (ids) => ids.length > 0
+    );
+    if (hasSelections) {
+      const sync = await syncItemVariantsFromSelections(client, {
+        itemId,
+        companyId,
+        userId,
+        attributeSetId,
+        selections
+      });
+      if (sync.error) {
+        return modal
+          ? data(
+              { data: null, error: sync.error },
+              await flash(
+                request,
+                error(sync.error, "Failed to sync consumable variants")
+              )
+            )
+          : redirect(
+              path.to.consumables,
+              await flash(
+                request,
+                error(sync.error, "Failed to sync consumable variants")
+              )
+            );
+      }
+    }
+  }
 
   // The thumbnail is uploaded to a staging path before the item exists. Now
   // that we have the item's id, re-key the object under the item's own folder

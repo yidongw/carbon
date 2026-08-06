@@ -7188,6 +7188,9 @@ msgstr "Niedostępny jest zaczynak evenu utrzymania"
 msgid "Failed to stop event"
 msgstr "Niedostępne do zatrzymania zdarzenie"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Nie udało się zsynchronizować procedury"
 
@@ -13218,6 +13221,9 @@ msgstr "Wybrane"
 
 msgid "Selected Operation"
 msgstr "Wybrana operacja"
+
+msgid "Selected values become variant SKUs"
+msgstr ""
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"

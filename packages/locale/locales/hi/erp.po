@@ -7191,6 +7191,9 @@ msgstr "संरक्षण घटना को शुरू करने म�
 msgid "Failed to stop event"
 msgstr "अवस्थायों को रटने में व नहीं आया"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "प्रक्रिया सागन नहीं हो पया"
 
@@ -13221,6 +13224,9 @@ msgstr "चयनित"
 
 msgid "Selected Operation"
 msgstr "चयनित ऑपरेशन"
+
+msgid "Selected values become variant SKUs"
+msgstr ""
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"

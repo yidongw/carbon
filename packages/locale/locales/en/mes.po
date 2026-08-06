@@ -3233,6 +3233,9 @@ msgstr "Failed to start maintenance event"
 msgid "Failed to stop event"
 msgstr "Failed to stop event"
 
+msgid "Failed to sync consumable variants"
+msgstr "Failed to sync consumable variants"
+
 msgid "Failed to sync procedure"
 msgstr "Failed to sync procedure"
 

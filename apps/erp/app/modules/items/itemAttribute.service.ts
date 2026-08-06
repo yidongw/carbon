@@ -956,6 +956,253 @@ export async function getAttributeSetsForItemType(
   return { data: sets, error: null };
 }
 
+export type AttributeValueOption = {
+  id: string;
+  code: string;
+  name: string;
+  sortOrder: number;
+};
+
+export type AttributeSetFormAttribute = {
+  id: string;
+  code: string;
+  name: string;
+  sortOrder: number;
+  options: AttributeValueOption[];
+};
+
+export type AttributeSetFormOption = {
+  id: string;
+  code: string;
+  name: string;
+  attributes: AttributeSetFormAttribute[];
+};
+
+/** Deduped attribute values (company over system) for any attribute. */
+export async function getAttributeValueOptions(
+  client: Db,
+  args: { attributeId: string; companyId: string }
+): Promise<{ data: AttributeValueOption[]; error: Error | null }> {
+  const db = client as any;
+  try {
+    const { data, error } = await db
+      .from("itemAttributeValue")
+      .select("id, code, name, sortOrder, companyId")
+      .eq("attributeId", args.attributeId)
+      .or(`companyId.eq.${args.companyId},companyId.is.null`)
+      .order("sortOrder", { ascending: true })
+      .order("code", { ascending: true });
+    if (error) throw error;
+
+    const byCode = new Map<
+      string,
+      {
+        id: string;
+        code: string;
+        name: string | null;
+        sortOrder: number;
+        companyId: string | null;
+      }
+    >();
+    for (const v of data ?? []) {
+      const existing = byCode.get(v.code);
+      if (!existing || (v.companyId && !existing.companyId)) {
+        byCode.set(v.code, v);
+      }
+    }
+
+    const rows = [...byCode.values()]
+      .map((v) => ({
+        id: v.id,
+        code: v.code,
+        name: v.name ?? v.code,
+        sortOrder: v.sortOrder ?? 100
+      }))
+      .sort(
+        (a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code)
+      );
+
+    return { data: rows, error: null };
+  } catch (error) {
+    return {
+      data: [],
+      error: toError(error, "Failed to load attribute values")
+    };
+  }
+}
+
+/**
+ * Sets allowed for an item type, each with ordered attributes and value options.
+ * Used by Consumable (and future) create forms for set + value pickers.
+ */
+export async function getAttributeSetFormOptionsForItemType(
+  client: Db,
+  itemType: string,
+  companyId: string
+): Promise<{ data: AttributeSetFormOption[]; error: Error | null }> {
+  const db = client as any;
+  try {
+    const setsResult = await getAttributeSetsForItemType(
+      client,
+      itemType,
+      companyId
+    );
+    if (setsResult.error) throw setsResult.error;
+    const sets = (setsResult.data ?? []) as Array<{
+      id: string;
+      code: string;
+      name: string;
+    }>;
+
+    const out: AttributeSetFormOption[] = [];
+    for (const set of sets) {
+      const { data: setAttrs, error: setAttrErr } = await db
+        .from("itemAttributeSetAttribute")
+        .select(
+          "attributeId, sortOrder, itemAttribute:attributeId(id, code, name)"
+        )
+        .eq("attributeSetId", set.id)
+        .order("sortOrder", { ascending: true });
+      if (setAttrErr) throw setAttrErr;
+
+      const attributes: AttributeSetFormAttribute[] = [];
+      for (const row of setAttrs ?? []) {
+        const attr = row.itemAttribute as {
+          id: string;
+          code: string;
+          name: string;
+        } | null;
+        if (!attr) continue;
+        const values = await getAttributeValueOptions(client, {
+          attributeId: attr.id,
+          companyId
+        });
+        if (values.error) throw values.error;
+        attributes.push({
+          id: attr.id,
+          code: attr.code,
+          name: attr.name,
+          sortOrder: row.sortOrder ?? 100,
+          options: values.data
+        });
+      }
+
+      out.push({
+        id: set.id,
+        code: set.code,
+        name: set.name,
+        attributes
+      });
+    }
+
+    return { data: out, error: null };
+  } catch (error) {
+    return {
+      data: [],
+      error: toError(error, "Failed to load attribute set form options")
+    };
+  }
+}
+
+/**
+ * Parse MultiSelect fields named `av__<attributeId>` (submits as av__id[0]…).
+ */
+export function parseAttributeValueSelectionsFromFormData(
+  formData: FormData
+): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  for (const [key, value] of formData.entries()) {
+    const match = /^av__([^[]+)\[/.exec(key);
+    if (!match || typeof value !== "string" || !value) continue;
+    (out[match[1]] ??= []).push(value);
+  }
+  return out;
+}
+
+/**
+ * Replace itemAttributeSelection rows for a parent from attributeId → valueIds.
+ * Also sets item.attributeSetId when provided.
+ */
+export async function syncItemAttributeSelections(
+  client: Db,
+  args: {
+    itemId: string;
+    companyId: string;
+    userId: string;
+    attributeSetId: string;
+    selections: Record<string, string[]>;
+  }
+): Promise<{ error: Error | null }> {
+  const db = client as any;
+  const { itemId, companyId, userId, attributeSetId, selections } = args;
+
+  try {
+    await db
+      .from("item")
+      .update({ attributeSetId })
+      .eq("id", itemId)
+      .eq("companyId", companyId);
+
+    await db
+      .from("itemAttributeSelection")
+      .delete()
+      .eq("itemId", itemId)
+      .eq("companyId", companyId);
+
+    for (const [attributeId, valueIds] of Object.entries(selections)) {
+      const uniqueIds = [...new Set(valueIds.filter(Boolean))];
+      if (uniqueIds.length === 0) continue;
+
+      const { data: values, error: valErr } = await db
+        .from("itemAttributeValue")
+        .select("id, attributeId")
+        .in("id", uniqueIds)
+        .eq("attributeId", attributeId);
+      if (valErr) throw valErr;
+
+      for (const v of values ?? []) {
+        const { error: selErr } = await db
+          .from("itemAttributeSelection")
+          .insert({
+            itemId,
+            attributeId,
+            attributeValueId: v.id,
+            companyId,
+            createdBy: userId
+          });
+        if (selErr) throw selErr;
+      }
+    }
+
+    return { error: null };
+  } catch (error) {
+    return {
+      error: toError(error, "Failed to sync item attribute selections")
+    };
+  }
+}
+
+/** Write selections then create missing variant child SKUs. */
+export async function syncItemVariantsFromSelections(
+  client: Db,
+  args: {
+    itemId: string;
+    companyId: string;
+    userId: string;
+    attributeSetId: string;
+    selections: Record<string, string[]>;
+  }
+): Promise<{ error: Error | null }> {
+  const sel = await syncItemAttributeSelections(client, args);
+  if (sel.error) return sel;
+  const variants = await syncItemVariants(client, {
+    parentItemId: args.itemId,
+    companyId: args.companyId,
+    userId: args.userId
+  });
+  return { error: variants.error };
+}
+
 /**
  * Expand a Style-style configTable into { variantItemId, quantity } rows.
  * valuesKey is built as color|size from row descriptor + size column keys.

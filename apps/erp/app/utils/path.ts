@@ -169,6 +169,8 @@ export const path = {
       materialSubstances: `${api}/items/substances`,
       styleColors: `${api}/items/style-colors`,
       styleSizes: `${api}/items/style-sizes`,
+      attributeSetsForType: (itemType: string) =>
+        `${api}/items/attribute-sets-for-type?itemType=${encodeURIComponent(itemType)}`,
       messagingNotify: `${api}/messaging/notify`,
       mrp: (locationId?: string) =>
         generatePath(

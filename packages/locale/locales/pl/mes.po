@@ -3233,6 +3233,9 @@ msgstr "Niedostępny jest podziałka utrzymania"
 msgid "Failed to stop event"
 msgstr "Niedostępne do zatrzymania zdarzenie"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Nie udało się zsynchronizować procedury"
 

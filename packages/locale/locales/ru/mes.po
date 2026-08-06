@@ -3233,6 +3233,9 @@ msgstr "Не удалось запустить событие техническ
 msgid "Failed to stop event"
 msgstr "Не удалось остановить событие"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Не удалось синхронизировать процедуру"
 

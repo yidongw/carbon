@@ -3233,6 +3233,9 @@ msgstr "Échec du démarrage de l'événement de maintenance"
 msgid "Failed to stop event"
 msgstr "Échec de la cessation de l'événement"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Échec de la synchronisation du procédé"
 

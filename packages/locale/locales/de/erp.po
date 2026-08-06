@@ -7188,6 +7188,9 @@ msgstr "Fehler beim Start der Wartungsaktion"
 msgid "Failed to stop event"
 msgstr "Fehler beim Stoppen des Events"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Fehler beim Synchronisieren des Verfahrens"
 
@@ -13218,6 +13221,9 @@ msgstr "Ausgewählt"
 
 msgid "Selected Operation"
 msgstr "Ausgewählter Vorgang"
+
+msgid "Selected values become variant SKUs"
+msgstr ""
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"

@@ -3233,6 +3233,9 @@ msgstr "Fehler beim Start der Wartungsaktion"
 msgid "Failed to stop event"
 msgstr "Fehler beim Stoppen des Events"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "Fehler beim Synchronisieren des Verfahrens"
 

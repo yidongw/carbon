@@ -3239,6 +3239,9 @@ msgstr "संरक्षण घटना को शुरू करने म�
 msgid "Failed to stop event"
 msgstr "फेल एवेंट को रोकने में विफल"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "प्रक्रिया सागन नहीं हो पया"
 

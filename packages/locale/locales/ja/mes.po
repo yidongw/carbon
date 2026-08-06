@@ -3233,6 +3233,9 @@ msgstr "メンテナンスイベントを開始できませんでした"
 msgid "Failed to stop event"
 msgstr "イベント停止に失敗しました"
 
+msgid "Failed to sync consumable variants"
+msgstr ""
+
 msgid "Failed to sync procedure"
 msgstr "同期に失敗しました"
 
