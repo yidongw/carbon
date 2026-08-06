@@ -142,6 +142,136 @@ export function getConfigTableRows(configuration: unknown): ConfigTableRow[] {
   return configTable as ConfigTableRow[];
 }
 
+export type ConfigQuantityCell = {
+  key: string;
+  label: string;
+  quantity: number;
+};
+
+/** Apparel size codes used as quantity-column keys in Style config tables. */
+const STYLE_SIZE_CODE_SET = new Set([
+  "XXS",
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "2XL",
+  "3XL",
+  "4XL",
+  "OS"
+]);
+
+function isSizeToken(value: string): boolean {
+  return STYLE_SIZE_CODE_SET.has(value.trim().toUpperCase());
+}
+
+function optionLabelOf(
+  value: string,
+  optionLabels?: Record<string, string>
+): string {
+  if (!optionLabels) return value;
+  if (optionLabels[value]) return optionLabels[value];
+  const lower = value.toLowerCase();
+  for (const [key, label] of Object.entries(optionLabels)) {
+    if (key.toLowerCase() === lower) return label;
+  }
+  return value;
+}
+
+/**
+ * Flatten a stored config table into one cell per non-zero quantity, for
+ * summary badges (`Color · Size ×2`) and expand lists — no parameter metadata
+ * required; uses `configTablePrimaryKeys` from the JSON itself.
+ *
+ * Always labels as **Color · Size** regardless of whether the stored table
+ * uses sizes or colors as the quantity columns.
+ */
+export function getConfigQuantityCells(
+  configuration: unknown,
+  optionLabels?: Record<string, string>
+): ConfigQuantityCell[] {
+  if (
+    configuration === null ||
+    configuration === undefined ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return [];
+  }
+
+  const raw = configuration as Record<string, unknown>;
+  const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
+    ? raw.configTablePrimaryKeys.filter(
+        (k): k is string => typeof k === "string" && k.length > 0
+      )
+    : [];
+  if (primaryKeys.length === 0) return [];
+
+  const primaryKeySet = new Set(primaryKeys);
+  const labelOf = (value: string) => optionLabelOf(value, optionLabels);
+  const cells: ConfigQuantityCell[] = [];
+
+  // Sizes-as-columns (Style default): `{ color: "BK", S: 6 }` with PKs ["S"]
+  // Colors-as-columns (legacy / job grids): `{ Size: "S", Red: 2 }` with PKs ["Red"]
+  const primaryKeysAreSizes =
+    primaryKeys.every(isSizeToken) || primaryKeys.some(isSizeToken);
+
+  for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
+    const descriptorEntries = Object.entries(row).filter(
+      ([key]) => !primaryKeySet.has(key)
+    );
+    const sizeDesc = descriptorEntries.find(
+      ([key]) => key.toLowerCase() === "size"
+    );
+    const colorDesc = descriptorEntries.find(
+      ([key]) => key.toLowerCase() === "color"
+    );
+    const otherDescriptors = descriptorEntries
+      .filter(
+        ([key]) => key.toLowerCase() !== "size" && key.toLowerCase() !== "color"
+      )
+      .map(([, value]) => String(value ?? "").trim())
+      .filter(Boolean)
+      .map(labelOf);
+
+    // Prefer explicit color/size keys; fall back to PK orientation heuristic.
+    const sizesAreQuantityColumns =
+      !!colorDesc || (!sizeDesc && primaryKeysAreSizes);
+
+    for (const qtyKey of primaryKeys) {
+      const rawQty = row[qtyKey];
+      if (isZeroOrEmpty(rawQty)) continue;
+      const quantity = Number(rawQty) || 0;
+      if (quantity === 0) continue;
+
+      let colorPart: string;
+      let sizePart: string;
+      if (sizesAreQuantityColumns) {
+        colorPart = labelOf(
+          String(colorDesc?.[1] ?? otherDescriptors[0] ?? "").trim()
+        );
+        sizePart = labelOf(qtyKey);
+      } else {
+        colorPart = labelOf(qtyKey);
+        sizePart = labelOf(
+          String(sizeDesc?.[1] ?? otherDescriptors[0] ?? "").trim()
+        );
+      }
+
+      const parts = [colorPart, sizePart, ...otherDescriptors.slice(1)].filter(
+        Boolean
+      );
+      cells.push({
+        key: `${rowIndex}:${qtyKey}`,
+        label: parts.join(" · "),
+        quantity
+      });
+    }
+  }
+
+  return cells;
+}
 export function formatConfigRowLabel(
   row: ConfigTableRow,
   columns: ConfigColumn[],
@@ -463,7 +593,11 @@ export function buildConfigTableEditorState({
     const row: ConfigTableRow = { ...template };
 
     for (const col of columns) {
-      if (col.type !== "quantity" && current && current[col.key] !== undefined) {
+      if (
+        col.type !== "quantity" &&
+        current &&
+        current[col.key] !== undefined
+      ) {
         row[col.key] = current[col.key] ?? row[col.key] ?? "";
       }
     }

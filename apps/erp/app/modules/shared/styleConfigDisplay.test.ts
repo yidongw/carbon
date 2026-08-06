@@ -1,0 +1,84 @@
+import { describe, expect, it } from "vitest";
+import {
+  buildStyleColorNames,
+  getStyleConfigDisplay
+} from "./styleConfigDisplay";
+
+describe("getStyleConfigDisplay", () => {
+  it("returns Color · Size chips for size-column Style configs", () => {
+    const display = getStyleConfigDisplay(
+      {
+        configTable: [{ color: "BK", XS: 0, S: 6 }],
+        configTablePrimaryKeys: ["XS", "S"]
+      },
+      { BK: "黑色" }
+    );
+    expect(display?.chips).toEqual([
+      {
+        key: "0:S",
+        colorSize: "黑色 · S",
+        label: "黑色 · S ×6",
+        quantity: 6
+      }
+    ]);
+  });
+
+  it("returns Color · Size chips for color-column legacy configs", () => {
+    const display = getStyleConfigDisplay(
+      {
+        configTable: [
+          { Size: "S", Red: 2, Blue: 1 },
+          { Size: "M", Red: 1, Blue: 2 }
+        ],
+        configTablePrimaryKeys: ["Red", "Blue"]
+      },
+      buildStyleColorNames([
+        { colorCode: "RD", colorName: "红色" },
+        { colorCode: "BL", colorName: "蓝色" }
+      ])
+    );
+    expect(display?.chips.map((c) => c.label)).toEqual([
+      "红色 · S ×2",
+      "蓝色 · S ×1",
+      "红色 · M ×1",
+      "蓝色 · M ×2"
+    ]);
+  });
+
+  it("aliases Light Gray from styleReference for legacy LGY columns", () => {
+    const display = getStyleConfigDisplay(
+      {
+        configTable: [{ Size: "M", "Light Gray": 3 }],
+        configTablePrimaryKeys: ["Light Gray"]
+      },
+      buildStyleColorNames([{ colorCode: "LGY", colorName: "浅灰色" }])
+    );
+    expect(display?.chips.map((c) => c.label)).toEqual(["浅灰色 · M ×3"]);
+  });
+
+  it("parses JSON string configurations", () => {
+    const display = getStyleConfigDisplay(
+      JSON.stringify({
+        configTable: [{ color: "BG", L: 2 }],
+        configTablePrimaryKeys: ["L"]
+      }),
+      { BG: "米色" }
+    );
+    expect(display?.chips[0]?.label).toBe("米色 · L ×2");
+  });
+});
+
+describe("buildStyleColorNames", () => {
+  it("maps colorCode and English aliases from the seed reference", () => {
+    const names = buildStyleColorNames([
+      { colorCode: "RD", colorName: "红色" },
+      { colorCode: "GY", colorName: "灰色" }
+    ]);
+    expect(names.RD).toBe("红色");
+    expect(names.Red).toBe("红色");
+    expect(names.red).toBe("红色");
+    expect(names.RED).toBe("红色");
+    expect(names.Gray).toBe("灰色");
+    expect(names.Grey).toBe("灰色");
+  });
+});
