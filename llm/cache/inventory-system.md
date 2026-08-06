@@ -70,3 +70,17 @@ This function is primarily used by:
 - Items module (`/apps/erp/app/modules/items/items.service.ts`)
 
 It provides a comprehensive view of inventory levels and commitments for materials tracking.
+
+## Style variant SKUs (flexible product attributes)
+
+Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttribute*` tables (migration `20260806132455_item_attributes_and_variants.sql`). Child items hold inventory; the parent Style stays on PO/SO lines.
+
+**Expansion at receipt/shipment create** (not on the order line itself): edge function `packages/database/supabase/functions/create/index.ts` expands Style line `configuration.configTable` into one `receiptLine` / `shipmentLine` per variant SKU using `packages/database/supabase/functions/lib/item-variants.ts`:
+
+- `hasConfigTable(configuration)` — true when `configTable` is a non-empty array
+- `expandConfigTableToVariantQuantities` — walks color rows × size columns → `{ variantItemId, quantity, valuesKey }`
+- `resolveVariantItemId` — looks up `itemVariant` by `parentItemId` + `valuesKey`
+
+**`valuesKey` format:** `color|size` (e.g. `BK|S`). Size-only falls back to just the size code.
+
+**Applies when creating:** receipt from PO, shipment from SO, shipment from SO line, shipment from PO (returns). `"Style"` is included in those line-type filters.

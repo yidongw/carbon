@@ -1094,6 +1094,9 @@ msgstr "Nie udało się utworzyć zamówienia zakupów"
 msgid "Failed to create purchase order line."
 msgstr "Nie udało się utworzyć linii zamówienia zakupów."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "Niedostępne do utworzenia problemu jakości"
 
@@ -1138,6 +1141,9 @@ msgstr "Nie udało się utworzyć zamówienia sprzedaży"
 
 msgid "Failed to create sales order line."
 msgstr "Nie udało się utworzyć linii zlecenia sprzedaży."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Nie udało się utworzyć próbek"
@@ -3560,6 +3566,9 @@ msgstr "Nie udało się zaktualizować dostawy zamówienia zakupów"
 msgid "Failed to update purchase order line"
 msgstr "Nie udało się zaktualizować linii zamówienia zakupów"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "Nie udało się zaktualizować płatności zamówienia zakupowego"
 
@@ -3628,6 +3637,9 @@ msgstr "Nie udało się zaktualizować statusu faktury sprzedaży"
 
 msgid "Failed to update sales order line"
 msgstr "Nie udało się zaktualizować linii zamówienia sprzedaży"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "Nie udało się zaktualizować płatności zlecenia sprzedaży"
@@ -4901,6 +4913,9 @@ msgstr "Zamówienie zakupowe zakończone"
 msgid "Purchase order line created"
 msgstr "Linia zamówienia zakupów utworzona"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Zamówienie zakupowe nie zostało znalezione"
 
@@ -5128,6 +5143,9 @@ msgstr "Zamówienie sprzedawniczne utworzone"
 
 msgid "Sales order line created"
 msgstr "Linia zamówienia sprzedaży utworzona"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sample recorded"
 msgstr "Zapisane próbki"

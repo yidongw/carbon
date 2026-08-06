@@ -19,6 +19,10 @@ import {
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
 import { getItemReplenishment } from "~/modules/items";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable
+} from "~/modules/items/styleOrderLines.server";
 import { getJobsBySalesOrderLine } from "~/modules/production";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import type {
@@ -32,6 +36,7 @@ import {
   getSalesOrderLine,
   getSalesOrderLineShipments,
   isSalesOrderLocked,
+  replaceSalesOrderLinesWithStyleVariants,
   salesOrderLineValidator,
   upsertSalesOrderLine
 } from "~/modules/sales";
@@ -44,6 +49,7 @@ import {
   SalesOrderLineJobs
 } from "~/modules/sales/ui/SalesOrder";
 import { SalesOrderLineShipments } from "~/modules/sales/ui/SalesOrder/SalesOrderLineShipments";
+import { getDatabaseClient } from "~/services/database.server";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -105,7 +111,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked sales order. Reopen it first."
   });
 
-  const { client, userId } = await requirePermissions(request, {
+  const { client, userId, companyId } = await requirePermissions(request, {
     create: "sales"
   });
 
@@ -139,17 +145,84 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   let saleQuantity = rawQuantity;
   let configurationUpdate: { configuration: Json | null } | undefined;
+  let configuration: Json | undefined;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = jobConfigurationUpdateFields(parsed);
       configurationUpdate = { configuration: fields.configuration };
+      configuration = fields.configuration;
       saleQuantity = fields.quantity;
     } catch {
       // Invalid JSON — keep typed quantity and leave existing configuration alone.
     }
   } else {
     // Explicit empty hidden field clears Style configuration.
+    configurationUpdate = { configuration: null };
+  }
+
+  if (
+    d.salesOrderLineType === "Style" &&
+    d.itemId &&
+    configuration &&
+    hasStyleConfigTable(configuration)
+  ) {
+    const expanded = await expandStyleConfigToVariantLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      configuration
+    });
+    if (!expanded.ok) {
+      throw redirect(
+        path.to.salesOrderLine(orderId, lineId),
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === d.itemId;
+
+    if (!onlyParent) {
+      try {
+        await replaceSalesOrderLinesWithStyleVariants(getDatabaseClient(), {
+          companyId,
+          userId,
+          salesOrderId: orderId,
+          replaceLineId: lineId,
+          exchangeRate: salesOrder.data?.exchangeRate ?? 1,
+          variants: expanded.variants,
+          base: {
+            salesOrderLineType: d.salesOrderLineType,
+            description: d.description,
+            locationId: d.locationId,
+            storageUnitId: d.storageUnitId,
+            methodType: d.methodType,
+            unitOfMeasureCode: d.unitOfMeasureCode,
+            unitPrice: d.unitPrice,
+            setupPrice: d.setupPrice,
+            shippingCost: d.shippingCost,
+            addOnCost: d.addOnCost,
+            nonTaxableAddOnCost: d.nonTaxableAddOnCost,
+            taxPercent: d.taxPercent,
+            promisedDate: d.promisedDate
+          },
+          customFields: setCustomFields(formData)
+        });
+      } catch (err) {
+        throw redirect(
+          path.to.salesOrderLine(orderId, lineId),
+          await flash(
+            request,
+            error(err, "Failed to update sales order lines for style variants")
+          )
+        );
+      }
+
+      throw redirect(path.to.salesOrderDetails(orderId));
+    }
+
+    saleQuantity = expanded.variants[0].quantity;
     configurationUpdate = { configuration: null };
   }
 

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T14:23:52.153Z",
-  "totalTools": 1271,
+  "generated": "2026-08-06T14:43:22.053Z",
+  "totalTools": 1273,
   "modules": 15,
   "tools": [
     {
@@ -21829,6 +21829,38 @@
       }
     },
     {
+      "name": "purchasing_replacePurchaseOrderLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace purchase order lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      purchaseOrderLineType: z.infer<\n        typeof purchaseOrderLineValidator\n      >[\"purchaseOrderLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "purchaseOrderId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "purchasing_updatePurchaseOrderLineOrder",
       "module": "purchasing",
       "classification": "WRITE",
@@ -32052,6 +32084,42 @@
         },
         "required": [
           "salesOrderLines"
+        ]
+      }
+    },
+    {
+      "name": "sales_replaceSalesOrderLinesWithStyleVariants",
+      "module": "sales",
+      "classification": "WRITE",
+      "description": "replace sales order lines with style variants",
+      "paramCount": 6,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "variants": {},
+          "base: {\n      salesOrderLineType: z.infer<\n        typeof salesOrderLineValidator\n      >[\"salesOrderLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "salesOrderId",
+          "exchangeRate",
+          "variants"
         ]
       }
     },

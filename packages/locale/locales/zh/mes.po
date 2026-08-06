@@ -1095,6 +1095,9 @@ msgstr "创建采购订单失败"
 msgid "Failed to create purchase order line."
 msgstr "创建采购订单行失败。"
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "创建质量问题失败"
 
@@ -1139,6 +1142,9 @@ msgstr "创建销售订单失败"
 
 msgid "Failed to create sales order line."
 msgstr "创建销售订单行失败。"
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "创建样品失败"
@@ -3561,6 +3567,9 @@ msgstr "采购订单交货更新失败"
 msgid "Failed to update purchase order line"
 msgstr "采购订单行更新失败"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "采购订单付款更新失败"
 
@@ -3629,6 +3638,9 @@ msgstr "更新销售发票状态失败"
 
 msgid "Failed to update sales order line"
 msgstr "更新销售订单行失败"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "更新销售订单付款失败"
@@ -4902,6 +4914,9 @@ msgstr "采购订单已完成"
 msgid "Purchase order line created"
 msgstr "已创建采购订单行"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "采购订单未找到"
 
@@ -5129,6 +5144,9 @@ msgstr "已创建销售订单"
 
 msgid "Sales order line created"
 msgstr "已创建销售订单行"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sample recorded"
 msgstr "样本已录制"

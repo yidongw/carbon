@@ -1097,6 +1097,9 @@ msgstr "पर्चे क्रियाविधि तैयार करन
 msgid "Failed to create purchase order line."
 msgstr "पर्चे संयोजन लाइन बनाई गई नहीं।"
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "गुणांक समस्या बनाने में विफल रहा"
 
@@ -1141,6 +1144,9 @@ msgstr "विक्रय आदेश को बनाने में व़�
 
 msgid "Failed to create sales order line."
 msgstr "विक्रय आदेश पंक्ति को बनाने में विफल रहा।"
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "सैंपल्स की तैयारी में विफलता आई है"
@@ -3566,6 +3572,9 @@ msgstr "पर्चेज अपडेट करने में विफल �
 msgid "Failed to update purchase order line"
 msgstr "पर्चेज ऑर्डर पंक्ति को अपडेट करने में वफ़ादारी नहीं की"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "क्रय कार्ट वितरण पर अपडेट करने में फालतू हो गया"
 
@@ -3634,6 +3643,9 @@ msgstr "सॉल्स इनवाइब के स्टेटस अपड�
 
 msgid "Failed to update sales order line"
 msgstr "विक्रय आदेश पंक्ति अपडेट करने में वाया गया है"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "विक्रय ऑर्डर का कलायोगी राशि अपडेट होने में फाल्टी रही"
@@ -4907,6 +4919,9 @@ msgstr "पर्चेज ऑर्डर संपना हुई"
 msgid "Purchase order line created"
 msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "पर्चेज ऑर्डर नहीं मिला"
 
@@ -5134,6 +5149,9 @@ msgstr "विक्रय आदेश तैयार किया गया �
 
 msgid "Sales order line created"
 msgstr "विक्रय आदेश पंक्ति बनाई गई"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sample recorded"
 msgstr "नमूना रिकॉर्ड किया गया है"

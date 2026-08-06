@@ -1094,6 +1094,9 @@ msgstr "Fehler beim Erstellen der Lieferanforderung"
 msgid "Failed to create purchase order line."
 msgstr "Fehler beim Erstellen der Lieferanforderungseintrag."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "Fehler beim Erstellen eines Qualitätsschlages"
 
@@ -1138,6 +1141,9 @@ msgstr "Fehler beim Erstellen der Verkaufsauftrag"
 
 msgid "Failed to create sales order line."
 msgstr "Fehler beim Erstellen der Verkaufsauftragsposition."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Fehler beim Erstellen von Proben"
@@ -3560,6 +3566,9 @@ msgstr "Fehler beim Aktualisieren der Lieferung der Purchase Order"
 msgid "Failed to update purchase order line"
 msgstr "Fehler beim Aktualisieren der Lieferantenummer"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "Fehler beim Aktualisieren der Lieferantenzahlung"
 
@@ -3628,6 +3637,9 @@ msgstr "Fehler beim Aktualisieren des Verkaufsrechnungzustands"
 
 msgid "Failed to update sales order line"
 msgstr "Fehler beim Aktualisieren der Verkaufsauftragsposition"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "Fehler beim Aktualisieren des Verkaufsrechnungszahls"
@@ -4901,6 +4913,9 @@ msgstr "Bestellvertrag abgeschlossen"
 msgid "Purchase order line created"
 msgstr "Bestellposition erstellt"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Bestellnummer nicht gefunden"
 
@@ -5128,6 +5143,9 @@ msgstr "Vertrag erstellt"
 
 msgid "Sales order line created"
 msgstr "Verkaufsauftragsposition erstellt"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sample recorded"
 msgstr "Beispiel aufgezeichnet"

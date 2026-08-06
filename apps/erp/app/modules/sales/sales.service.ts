@@ -2013,6 +2013,111 @@ export async function insertSalesOrderLines(
   return client.from("salesOrderLine").insert(linesWithDefaults).select("id");
 }
 
+/**
+ * Replace a Style parent+config submit with one salesOrderLine per variant SKU.
+ * Uses a Kysely transaction so delete+insert is atomic.
+ */
+export async function replaceSalesOrderLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    salesOrderId: string;
+    replaceLineId?: string;
+    exchangeRate: number;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      salesOrderLineType: z.infer<
+        typeof salesOrderLineValidator
+      >["salesOrderLineType"];
+      description?: string | null;
+      locationId?: string | null;
+      storageUnitId?: string | null;
+      methodType?: z.infer<typeof salesOrderLineValidator>["methodType"];
+      unitOfMeasureCode?: string | null;
+      unitPrice?: number | null;
+      setupPrice?: number | null;
+      shippingCost?: number | null;
+      addOnCost?: number | null;
+      nonTaxableAddOnCost?: number | null;
+      taxPercent?: number | null;
+      promisedDate?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    salesOrderId,
+    replaceLineId,
+    exchangeRate,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
+  const shippingTotal = base.shippingCost ?? 0;
+
+  return db.transaction().execute(async (trx) => {
+    if (replaceLineId) {
+      await trx
+        .deleteFrom("salesOrderLine")
+        .where("id", "=", replaceLineId)
+        .where("salesOrderId", "=", salesOrderId)
+        .where("companyId", "=", companyId)
+        .execute();
+    }
+
+    const existing = await trx
+      .selectFrom("salesOrderLine")
+      .select("sortOrder")
+      .where("salesOrderId", "=", salesOrderId)
+      .execute();
+    let sortOrder = existing.reduce(
+      (max, row) => Math.max(max, row.sortOrder ?? 0),
+      0
+    );
+
+    const ids: string[] = [];
+    for (const variant of variants) {
+      sortOrder += 1;
+      const share = variant.quantity / totalQty;
+      const inserted = await trx
+        .insertInto("salesOrderLine")
+        .values({
+          salesOrderId,
+          salesOrderLineType: base.salesOrderLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? null,
+          locationId: base.locationId ?? null,
+          storageUnitId: base.storageUnitId ?? null,
+          methodType: base.methodType ?? "Pull from Inventory",
+          unitOfMeasureCode: base.unitOfMeasureCode ?? "EA",
+          saleQuantity: variant.quantity,
+          unitPrice: base.unitPrice ?? 0,
+          setupPrice: base.setupPrice ?? 0,
+          shippingCost: shippingTotal * share,
+          addOnCost: (base.addOnCost ?? 0) * share,
+          nonTaxableAddOnCost: (base.nonTaxableAddOnCost ?? 0) * share,
+          taxPercent: base.taxPercent ?? 0,
+          promisedDate: base.promisedDate || null,
+          exchangeRate,
+          companyId,
+          createdBy: userId,
+          sortOrder,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
+}
+
 export async function finalizeQuote(
   client: SupabaseClient<Database>,
   quoteId: string,

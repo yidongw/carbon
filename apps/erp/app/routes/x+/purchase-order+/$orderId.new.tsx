@@ -11,15 +11,21 @@ import {
   overlayToken,
   serializeSearch
 } from "~/components/Overlay/overlay";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable
+} from "~/modules/items/styleOrderLines.server";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
   getPurchaseOrder,
   isPurchaseOrderLocked,
   purchaseOrderLineValidator,
+  replacePurchaseOrderLinesWithStyleVariants,
   upsertPurchaseOrderLine
 } from "~/modules/purchasing";
 import type { MethodItemType } from "~/modules/shared";
 import { getUserDefaults } from "~/modules/users/users.server";
+import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -151,6 +157,100 @@ export async function action({ request, params }: ActionFunctionArgs) {
     } catch {
       // Invalid JSON — create without configuration; keep typed quantity.
     }
+  }
+
+  if (
+    d.purchaseOrderLineType === "Style" &&
+    d.itemId &&
+    configuration &&
+    hasStyleConfigTable(configuration)
+  ) {
+    const expanded = await expandStyleConfigToVariantLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      configuration
+    });
+    if (!expanded.ok) {
+      if (isOverlay) {
+        return data(
+          { ok: false as const },
+          await flash(request, error(expanded.error, expanded.error))
+        );
+      }
+      throw redirect(
+        path.to.purchaseOrderDetails(orderId),
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === d.itemId;
+
+    if (!onlyParent) {
+      try {
+        await replacePurchaseOrderLinesWithStyleVariants(getDatabaseClient(), {
+          companyId,
+          userId,
+          purchaseOrderId: d.purchaseOrderId,
+          variants: expanded.variants,
+          base: {
+            purchaseOrderLineType: d.purchaseOrderLineType,
+            description: d.description,
+            locationId: d.locationId,
+            storageUnitId: d.storageUnitId,
+            purchaseUnitOfMeasureCode: d.purchaseUnitOfMeasureCode,
+            inventoryUnitOfMeasureCode: d.inventoryUnitOfMeasureCode,
+            conversionFactor: d.conversionFactor,
+            supplierUnitPrice: d.supplierUnitPrice,
+            setupPrice: undefined,
+            supplierShippingCost: d.supplierShippingCost,
+            supplierTaxAmount: d.supplierTaxAmount,
+            exchangeRate: d.exchangeRate,
+            requiredDate: d.requiredDate,
+            promisedDate: d.promisedDate
+          },
+          customFields: setCustomFields(formData)
+        });
+      } catch (err) {
+        if (isOverlay) {
+          return data(
+            { ok: false as const },
+            await flash(
+              request,
+              error(
+                err,
+                "Failed to create purchase order lines for style variants"
+              )
+            )
+          );
+        }
+        throw redirect(
+          path.to.purchaseOrderDetails(orderId),
+          await flash(
+            request,
+            error(
+              err,
+              "Failed to create purchase order lines for style variants"
+            )
+          )
+        );
+      }
+
+      if (isOverlay) {
+        return data(
+          { ok: true as const },
+          await flash(request, success("Purchase order lines created"))
+        );
+      }
+      throw redirect(
+        path.to.purchaseOrderDetails(orderId),
+        await flash(request, success("Purchase order lines created"))
+      );
+    }
+
+    purchaseQuantity = expanded.variants[0].quantity;
+    configuration = undefined;
   }
 
   const createPurchaseOrderLine = await upsertPurchaseOrderLine(client, {

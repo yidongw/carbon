@@ -1094,6 +1094,9 @@ msgstr "購入注文の作成に失敗しました"
 msgid "Failed to create purchase order line."
 msgstr "購入注文行の作成に失敗しました。"
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "品質問題の作成に失敗しました"
 
@@ -1138,6 +1141,9 @@ msgstr "売上注文の作成に失敗しました"
 
 msgid "Failed to create sales order line."
 msgstr "販売注文行の作成に失敗しました。"
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "サンプルの作成に失敗しました"
@@ -3560,6 +3566,9 @@ msgstr "購入注文の納期更新に失敗しました"
 msgid "Failed to update purchase order line"
 msgstr "購入注文行の更新に失敗しました"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "購入注文の支払いを更新できませんでした"
 
@@ -3628,6 +3637,9 @@ msgstr "販売請求書のステータス更新に失敗しました"
 
 msgid "Failed to update sales order line"
 msgstr "販売注文行の更新に失敗しました"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "売上注文の支払いを更新できませんでした"
@@ -4901,6 +4913,9 @@ msgstr "購入注文完了"
 msgid "Purchase order line created"
 msgstr "購入注文行が作成されました"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "購入注文が見つかりません"
 
@@ -5128,6 +5143,9 @@ msgstr "販売注文を作成しました"
 
 msgid "Sales order line created"
 msgstr "販売注文行が作成されました"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sample recorded"
 msgstr "サンプルが録音されました"

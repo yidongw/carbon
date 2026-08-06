@@ -1792,6 +1792,101 @@ export async function upsertPurchaseOrderLine(
     .single();
 }
 
+/**
+ * Replace a Style parent+config submit with one purchaseOrderLine per variant SKU.
+ */
+export async function replacePurchaseOrderLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    purchaseOrderId: string;
+    replaceLineId?: string;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      purchaseOrderLineType: z.infer<
+        typeof purchaseOrderLineValidator
+      >["purchaseOrderLineType"];
+      description?: string | null;
+      locationId?: string | null;
+      storageUnitId?: string | null;
+      purchaseUnitOfMeasureCode?: string | null;
+      inventoryUnitOfMeasureCode?: string | null;
+      conversionFactor?: number | null;
+      supplierUnitPrice?: number | null;
+      setupPrice?: number | null;
+      supplierShippingCost?: number | null;
+      supplierTaxAmount?: number | null;
+      exchangeRate?: number | null;
+      requiredDate?: string | null;
+      promisedDate?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    purchaseOrderId,
+    replaceLineId,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
+  const shippingTotal = base.supplierShippingCost ?? 0;
+  const taxTotal = base.supplierTaxAmount ?? 0;
+  const unitPrice = base.supplierUnitPrice ?? 0;
+
+  return db.transaction().execute(async (trx) => {
+    if (replaceLineId) {
+      await trx
+        .deleteFrom("purchaseOrderLine")
+        .where("id", "=", replaceLineId)
+        .where("purchaseOrderId", "=", purchaseOrderId)
+        .where("companyId", "=", companyId)
+        .execute();
+    }
+
+    const ids: string[] = [];
+    for (const variant of variants) {
+      const share = variant.quantity / totalQty;
+      const inserted = await trx
+        .insertInto("purchaseOrderLine")
+        .values({
+          purchaseOrderId,
+          purchaseOrderLineType: base.purchaseOrderLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? null,
+          locationId: base.locationId ?? null,
+          storageUnitId: base.storageUnitId ?? null,
+          purchaseUnitOfMeasureCode: base.purchaseUnitOfMeasureCode ?? "EA",
+          inventoryUnitOfMeasureCode: base.inventoryUnitOfMeasureCode ?? "EA",
+          conversionFactor: base.conversionFactor ?? 1,
+          purchaseQuantity: variant.quantity,
+          unitPrice,
+          setupPrice: base.setupPrice ?? 0,
+          supplierUnitPrice: unitPrice,
+          supplierShippingCost: shippingTotal * share,
+          supplierTaxAmount: taxTotal * share,
+          shippingCost: shippingTotal * share,
+          exchangeRate: base.exchangeRate ?? 1,
+          requiredDate: base.requiredDate || null,
+          promisedDate: base.promisedDate || null,
+          companyId,
+          createdBy: userId,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
+}
+
 export async function updatePurchaseOrderLineOrder(
   db: Kysely<KyselyDatabase>,
   updates: { id: string; sortOrder: number; updatedBy: string }[]

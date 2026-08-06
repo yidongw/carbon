@@ -1094,6 +1094,9 @@ msgstr "Failed to create purchase order"
 msgid "Failed to create purchase order line."
 msgstr "Failed to create purchase order line."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr "Failed to create purchase order lines for style variants"
+
 msgid "Failed to create quality issue"
 msgstr "Failed to create quality issue"
 
@@ -1138,6 +1141,9 @@ msgstr "Failed to create sales order"
 
 msgid "Failed to create sales order line."
 msgstr "Failed to create sales order line."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr "Failed to create sales order lines for style variants"
 
 msgid "Failed to create samples"
 msgstr "Failed to create samples"
@@ -3560,6 +3566,9 @@ msgstr "Failed to update purchase order delivery"
 msgid "Failed to update purchase order line"
 msgstr "Failed to update purchase order line"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr "Failed to update purchase order lines for style variants"
+
 msgid "Failed to update purchase order payment"
 msgstr "Failed to update purchase order payment"
 
@@ -3628,6 +3637,9 @@ msgstr "Failed to update sales invoice status"
 
 msgid "Failed to update sales order line"
 msgstr "Failed to update sales order line"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr "Failed to update sales order lines for style variants"
 
 msgid "Failed to update sales order payment"
 msgstr "Failed to update sales order payment"
@@ -4901,6 +4913,9 @@ msgstr "Purchase order finalized"
 msgid "Purchase order line created"
 msgstr "Purchase order line created"
 
+msgid "Purchase order lines created"
+msgstr "Purchase order lines created"
+
 msgid "Purchase order not found"
 msgstr "Purchase order not found"
 
@@ -5128,6 +5143,9 @@ msgstr "Sales order created"
 
 msgid "Sales order line created"
 msgstr "Sales order line created"
+
+msgid "Sales order lines created"
+msgstr "Sales order lines created"
 
 msgid "Sample recorded"
 msgstr "Sample recorded"

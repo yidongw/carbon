@@ -13,3 +13,7 @@ Apparel **style sizes** (`styleSize` table) must display in apparel order — sm
   - The `styles` view `sizes` json aggregate (`ORDER BY ss."sortOrder", ss."sizeCode"`).
 
 When adding a new size read/display, order by `sortOrder`, not `sizeCode`.
+
+## Variant SKUs (inventory)
+
+Style items get child variant SKUs (`itemVariant` + `itemAttribute*`, migration `20260806132455`). Lookup key is `valuesKey` = `color|size` (e.g. `BK|S`). Parent Style remains on PO/SO lines; receipt/shipment create expands `configuration.configTable` to one line per variant — see `inventory-system.md` § Style variant SKUs.

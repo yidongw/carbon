@@ -1094,6 +1094,9 @@ msgstr "Échec de la création de la commande d'achat"
 msgid "Failed to create purchase order line."
 msgstr "Échec de la création de ligne de commande d'achat."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "Échec de la création d'un problème de qualité"
 
@@ -1138,6 +1141,9 @@ msgstr "Échec de la création de la commande de vente"
 
 msgid "Failed to create sales order line."
 msgstr "Échec de la création de ligne de commande de vente."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Échec de la création des échantillons"
@@ -3560,6 +3566,9 @@ msgstr "Échec de la mise à jour de la livraison du bon d'achat"
 msgid "Failed to update purchase order line"
 msgstr "Échec de la mise à jour de la ligne de commande d'achat"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "Échec de la mise à jour du paiement de la commande d'achat"
 
@@ -3628,6 +3637,9 @@ msgstr "Échec de mise à jour du statut de la facture de vente"
 
 msgid "Failed to update sales order line"
 msgstr "Échec de la mise à jour de l'item de commande de vente"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "Échec de la mise à jour du paiement de la commande vente"
@@ -4901,6 +4913,9 @@ msgstr "Commande d'achat finalisée"
 msgid "Purchase order line created"
 msgstr "Ligne de commande d'achat créée"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Commande d'achat introuvable"
 
@@ -5128,6 +5143,9 @@ msgstr "Commande de vente créée"
 
 msgid "Sales order line created"
 msgstr "Ligne de commande vendus créée"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sample recorded"
 msgstr "Échantillon enregistré"

@@ -4909,6 +4909,9 @@ msgstr "Falhou na criação de pedido de compra"
 msgid "Failed to create purchase order line."
 msgstr "Falhou na criação da linha de pedido de compra."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "Falhou na criação de questão de qualidade"
 
@@ -4953,6 +4956,9 @@ msgstr "Falhou na criação do pedido de venda"
 
 msgid "Failed to create sales order line."
 msgstr "Falhou na criação da linha de pedido de venda."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Falhou na criação de amostras"
@@ -7527,6 +7533,9 @@ msgstr "Falhou na atualização da entrega do pedido de compra"
 msgid "Failed to update purchase order line"
 msgstr "Falhou ao atualizar linha de pedido de compra"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "Falhou ao atualizar o pagamento da ordem de compra"
 
@@ -7595,6 +7604,9 @@ msgstr "Falhou ao atualizar o status da fatura de vendas"
 
 msgid "Failed to update sales order line"
 msgstr "Falhou ao atualizar linha de pedido de venda"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "Falhou ao atualizar o pagamento da ordem de venda"
@@ -11760,6 +11772,9 @@ msgstr "Linha de Ordem de Compra"
 msgid "Purchase order line created"
 msgstr "Linha de pedido de compra criada"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase Order Location"
 msgstr "Localização da Ordem de Compra"
 
@@ -12741,6 +12756,9 @@ msgstr "Linha de Pedido de Venda"
 
 msgid "Sales order line created"
 msgstr "Linha de pedido de venda criada"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sales Order Location"
 msgstr "Localização da Ordem de Venda"

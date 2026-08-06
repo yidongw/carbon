@@ -370,16 +370,16 @@ const PurchaseOrderLineForm = ({
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
-  // Styles always use the color×size quantity grid — show the trigger as soon
-  // as a Style item is selected (don't wait on requiresConfiguration /
-  // configurable-items hydrate the way Job/Part forms do).
+  // Styles use the color×size grid when adding/editing a parent Style.
+  // Variant SKU lines (no stored configuration) use plain quantity.
   const hasConfigurationParameters =
-    itemType === "Style" && Boolean(itemData.itemId);
+    itemType === "Style" &&
+    Boolean(itemData.itemId) &&
+    !(isEditing && !initialValues.configuration);
 
-  // A Style line's quantity comes from the color×size grid, so it starts at 0
-  // and Save stays disabled until the grid supplies a quantity.
+  // A Style parent line's quantity comes from the color×size grid.
   const isMissingStyleQuantity =
-    itemType === "Style" && !(itemData.purchaseQuantity > 0);
+    hasConfigurationParameters && !(itemData.purchaseQuantity > 0);
 
   const onQuantityChange = (value: number) => {
     const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;

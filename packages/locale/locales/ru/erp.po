@@ -4909,6 +4909,9 @@ msgstr "Не удалось создать закупочную заявку"
 msgid "Failed to create purchase order line."
 msgstr "Не удалось создать строку закупочного заказа."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to create quality issue"
 msgstr "Не удалось создать质量问题"
 
@@ -4953,6 +4956,9 @@ msgstr "Не удалось создать заказ на продажу"
 
 msgid "Failed to create sales order line."
 msgstr "Не удалось создать строку продажного заказа."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Не удалось создать образцы"
@@ -7527,6 +7533,9 @@ msgstr "Не удалось обновить поставку заказа на 
 msgid "Failed to update purchase order line"
 msgstr "Не удалось обновить строку заказа на покупку"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr ""
+
 msgid "Failed to update purchase order payment"
 msgstr "Не удалось обновить оплату заказа покупки"
 
@@ -7595,6 +7604,9 @@ msgstr "Не удалось обновить статус продажного�
 
 msgid "Failed to update sales order line"
 msgstr "Не удалось обновить строку заказа на продажи"
+
+msgid "Failed to update sales order lines for style variants"
+msgstr ""
 
 msgid "Failed to update sales order payment"
 msgstr "Не удалось обновить оплату заказа на продажи"
@@ -11760,6 +11772,9 @@ msgstr "Строка заказа на покупку"
 msgid "Purchase order line created"
 msgstr "Заказ на покупку строка создана"
 
+msgid "Purchase order lines created"
+msgstr ""
+
 msgid "Purchase Order Location"
 msgstr "Местоположение заказа на покупку"
 
@@ -12741,6 +12756,9 @@ msgstr "Строка заказа продажи"
 
 msgid "Sales order line created"
 msgstr "Линия продажного заказа создана"
+
+msgid "Sales order lines created"
+msgstr ""
 
 msgid "Sales Order Location"
 msgstr "Местоположение заказа на продажу"
