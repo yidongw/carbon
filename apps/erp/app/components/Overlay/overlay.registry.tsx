@@ -1,6 +1,7 @@
 import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
 import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { PurchaseOrderLineInitialValues } from "~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm";
+import type { SalesOrderLineFormInitialValues } from "~/modules/sales/ui/SalesOrder/SalesOrderLineForm";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
@@ -60,6 +61,22 @@ export const overlayRegistry = {
       },
       () =>
         import("~/modules/production/ui/MasterWorkOrders/MasterWorkOrderForm")
+    )
+  },
+  newSalesOrderLine: {
+    type: "modal",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              initialValues: SalesOrderLineFormInitialValues;
+            }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues };
+      },
+      () => import("~/modules/sales/ui/SalesOrder/SalesOrderLineForm")
     )
   },
   newEmployee: {

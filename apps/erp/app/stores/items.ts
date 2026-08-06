@@ -11,6 +11,9 @@ export type Item = ListItem & {
   unitOfMeasureCode: string;
   type: Database["public"]["Enums"]["itemType"];
   active: boolean;
+  // Preloaded with the item list so line forms can set Method on pick without
+  // waiting on a per-selection item query.
+  defaultMethodType?: Database["public"]["Enums"]["methodType"];
   quantityOnHand?: number;
   quantityByLocation?: Record<string, number>;
   // Whether the item's manufacturing setup requires a configuration table (color/

@@ -1991,10 +1991,14 @@ export async function insertCustomerLocation(
 
 export async function insertSalesOrderLines(
   client: SupabaseClient<Database>,
-  salesOrderLines: (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
+  salesOrderLines: (Omit<
+    z.infer<typeof salesOrderLineValidator>,
+    "id" | "configuration"
+  > & {
     companyId: string;
     createdBy: string;
     customFields?: Json;
+    configuration?: Json;
   })[]
 ) {
   const linesWithDefaults = salesOrderLines.map((line) => ({
@@ -5550,15 +5554,17 @@ export async function upsertSalesOrderShipment(
 export async function upsertSalesOrderLine(
   client: SupabaseClient<Database>,
   salesOrderLine:
-    | (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
+    | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
+        configuration?: Json;
       })
-    | (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
+    | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
+        configuration?: Json;
       })
 ) {
   if ("id" in salesOrderLine) {
@@ -5583,21 +5589,27 @@ export async function upsertSalesOrderLine(
     0
   );
 
+  // Validator carries a few optional text fields that are not columns (or must
+  // be NULL rather than ""). Empty strings blow up FKs/dates on insert;
+  // `serviceId` is legacy and not on the table.
+  const { serviceId: _serviceId, ...line } = salesOrderLine;
+  const row = Object.fromEntries(
+    Object.entries({
+      ...line,
+      setupPrice: salesOrderLine.setupPrice ?? 0,
+      unitPrice: salesOrderLine.unitPrice ?? 0,
+      shippingCost: salesOrderLine.shippingCost ?? 0,
+      addOnCost: salesOrderLine.addOnCost ?? 0,
+      nonTaxableAddOnCost: salesOrderLine.nonTaxableAddOnCost ?? 0,
+      taxPercent: salesOrderLine.taxPercent ?? 0,
+      exchangeRate: salesOrder.data?.exchangeRate ?? 1,
+      sortOrder: maxSortOrder + 1
+    }).map(([key, value]) => [key, value === "" ? null : value])
+  );
+
   return client
     .from("salesOrderLine")
-    .insert([
-      {
-        ...salesOrderLine,
-        setupPrice: salesOrderLine.setupPrice ?? 0,
-        unitPrice: salesOrderLine.unitPrice ?? 0,
-        shippingCost: salesOrderLine.shippingCost ?? 0,
-        addOnCost: salesOrderLine.addOnCost ?? 0,
-        nonTaxableAddOnCost: salesOrderLine.nonTaxableAddOnCost ?? 0,
-        taxPercent: salesOrderLine.taxPercent ?? 0,
-        exchangeRate: salesOrder.data?.exchangeRate ?? 1,
-        sortOrder: maxSortOrder + 1
-      }
-    ])
+    .insert([sanitize(row)])
     .select("id")
     .single();
 }

@@ -74,6 +74,14 @@ export const overlay = {
       };
     },
 
+    newSalesOrderLine({ orderId }: { orderId: string }): OverlayTarget {
+      return {
+        id: "newSalesOrderLine",
+        url: `${path.to.newSalesOrderLine(orderId)}?overlay=true`,
+        params: { orderId }
+      };
+    },
+
     newTransfer(mode: "stock" | "warehouse" = "warehouse"): OverlayTarget {
       return {
         id: "newTransfer",

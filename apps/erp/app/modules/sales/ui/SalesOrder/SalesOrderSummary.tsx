@@ -38,19 +38,27 @@ import {
   LuEllipsisVertical,
   LuImage,
   LuInfo,
+  LuPencil,
+  LuTrash,
   LuTriangleAlert
 } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useRevalidator } from "react-router";
 import { CustomerAvatar, Hyperlink, MethodIcon } from "~/components";
 import { Confirm } from "~/components/Modals";
+import { useOverlay } from "~/components/Overlay/OverlayProvider";
+import { overlay } from "~/components/Overlay/overlay";
+import {
+  StyleConfigChips,
+  StyleConfigExpandRows
+} from "~/components/StyleConfigChips";
 import {
   useDateFormatter,
   usePercentFormatter,
   usePermissions,
-  useRouteData,
-  useUser
+  useRouteData
 } from "~/hooks";
 import JobStatus from "~/modules/production/ui/Jobs/JobStatus";
+import { getStyleConfigDisplay } from "~/modules/shared/styleConfigDisplay";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isSalesOrderLocked } from "../../sales.models";
 import type {
@@ -60,7 +68,7 @@ import type {
   SalesOrderJob,
   SalesOrderLine
 } from "../../types";
-import SalesOrderLineForm from "./SalesOrderLineForm";
+import DeleteSalesOrderLine from "./DeleteSalesOrderLine";
 import { SalesOrderJobItem } from "./SalesOrderLineJobs";
 
 const SalesOrderSummary = ({
@@ -76,6 +84,7 @@ const SalesOrderSummary = ({
   const routeData = useRouteData<{
     salesOrder: SalesOrder;
     lines: SalesOrderLine[];
+    colorNames?: Record<string, string>;
     customer: Customer;
     quote: Quotation;
     invoiceSummary: {
@@ -86,9 +95,9 @@ const SalesOrderSummary = ({
   }>(path.to.salesOrder(orderId));
 
   const salesOrderToJobsModal = useDisclosure();
-  const newSalesOrderLineDisclosure = useDisclosure();
-  const { defaults } = useUser();
   const permissions = usePermissions();
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
 
   const { locale } = useLocale();
   const formatter = useMemo(
@@ -105,6 +114,12 @@ const SalesOrderSummary = ({
     isEditable &&
     routeData?.salesOrder?.status === "Draft" &&
     permissions.can("update", "sales");
+
+  const openNewLine = () => {
+    openOverlay(overlay.to.newSalesOrderLine({ orderId }), {
+      onCreated: () => revalidate()
+    });
+  };
 
   // Calculate totals
   const subtotal =
@@ -221,12 +236,13 @@ const SalesOrderSummary = ({
             locale={locale}
             formatter={formatter}
             lines={routeData?.lines ?? []}
+            colorNames={routeData?.colorNames}
           />
 
           {canAddLine && (
             <button
               type="button"
-              onClick={newSalesOrderLineDisclosure.onOpen}
+              onClick={openNewLine}
               className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
             >
               <LuCirclePlus className="h-4 w-4" />
@@ -352,28 +368,6 @@ const SalesOrderSummary = ({
           </VStack>
         </CardContent>
       </Card>
-      {newSalesOrderLineDisclosure.isOpen && (
-        <SalesOrderLineForm
-          initialValues={{
-            salesOrderId: orderId,
-            salesOrderLineType: "Part" as const,
-            saleQuantity: 1,
-            unitPrice: 0,
-            addOnCost: 0,
-            nonTaxableAddOnCost: 0,
-            locationId:
-              routeData?.salesOrder?.locationId ?? defaults.locationId ?? "",
-            taxPercent: routeData?.customer?.taxPercent ?? 0,
-            promisedDate:
-              routeData?.salesOrder?.receiptPromisedDate ??
-              routeData?.salesOrder?.receiptRequestedDate ??
-              "",
-            shippingCost: 0
-          }}
-          type="modal"
-          onClose={newSalesOrderLineDisclosure.onClose}
-        />
-      )}
     </>
   );
 };
@@ -383,25 +377,41 @@ function LineItems({
   locale,
   formatter,
   lines,
-  salesOrder
+  salesOrder,
+  colorNames
 }: {
   currencyCode: string;
   formatter: Intl.NumberFormat;
   locale: string;
   lines: SalesOrderLine[];
   salesOrder?: SalesOrder;
+  colorNames?: Record<string, string>;
 }) {
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
   const percentFormatter = usePercentFormatter();
+  const permissions = usePermissions();
   const [openItems, setOpenItems] = useState<string[]>([]);
+  const [deleteLine, setDeleteLine] = useState<SalesOrderLine | null>(null);
+  const deleteLineDisclosure = useDisclosure();
   const todaysDate = useMemo(() => today(getLocalTimeZone()), []);
+  const isEditable = !isSalesOrderLocked(salesOrder?.status);
 
   const toggleOpen = (id: string) => {
     setOpenItems((prev) =>
       prev.includes(id) ? prev.filter?.((item) => item !== id) : [...prev, id]
     );
+  };
+
+  const onDeleteLine = (line: SalesOrderLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
   };
 
   return (
@@ -410,6 +420,10 @@ function LineItems({
         if (!line.id) return null;
 
         const isMade = line.methodType === "Make to Order";
+        const styleConfig = getStyleConfigDisplay(
+          line.configuration,
+          colorNames
+        );
 
         const { jobLabel, jobVariant, jobs } = getSalesOrderJobStatus(
           // @ts-expect-error TS2345 - TODO: fix type
@@ -461,16 +475,38 @@ function LineItems({
                           asChild
                           variant="link"
                           size="sm"
-                          className="text-muted-foreground flex-shrink-0"
+                          className="text-blue-600 flex-shrink-0"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          <Link to={path.to.salesOrderLine(orderId, line.id!)}>
+                          <Link
+                            to={path.to.salesOrderLine(orderId, line.id!)}
+                            className="inline-flex items-center gap-1"
+                          >
+                            <LuPencil />
                             <Trans>Edit</Trans>
                           </Link>
                         </Button>
+                        {isEditable && permissions.can("delete", "sales") && (
+                          <Button
+                            variant="link"
+                            size="sm"
+                            className="text-destructive flex-shrink-0"
+                            leftIcon={<LuTrash />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteLine(line);
+                            }}
+                          >
+                            <Trans>Delete</Trans>
+                          </Button>
+                        )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {line.description}
                       </span>
+                      {styleConfig ? (
+                        <StyleConfigChips chips={styleConfig.chips} />
+                      ) : null}
                     </VStack>
                     <VStack
                       spacing={2}
@@ -586,188 +622,201 @@ function LineItems({
                     </div>
                   )}
                 </div>
+
+                <motion.div
+                  initial="collapsed"
+                  animate={openItems.includes(line.id) ? "open" : "collapsed"}
+                  variants={{
+                    open: { opacity: 1, height: "auto", marginTop: 16 },
+                    collapsed: { opacity: 0, height: 0, marginTop: 0 }
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full overflow-hidden"
+                >
+                  <div className="flex flex-col gap-y-4 w-full">
+                    <Table>
+                      <Tbody>
+                        <StyleConfigExpandRows
+                          chips={styleConfig?.chips ?? []}
+                        />
+                        <Tr>
+                          <Td>
+                            <Trans>Quantity</Trans>
+                          </Td>
+                          <Td className="text-right">{line.saleQuantity}</Td>
+                        </Tr>
+                        <Tr>
+                          <Td>
+                            <Trans>Unit Price</Trans>
+                          </Td>
+                          <Td className="text-right">
+                            <MotionNumber
+                              value={line.convertedUnitPrice ?? 0}
+                              format={{
+                                style: "currency",
+                                currency: currencyCode
+                              }}
+                              locales={locale}
+                            />
+                          </Td>
+                        </Tr>
+                        <Tr className="border-b border-border">
+                          <Td>
+                            <Trans>Extended Price</Trans>
+                          </Td>
+                          <Td className="text-right">
+                            <MotionNumber
+                              value={
+                                (line.convertedUnitPrice ?? 0) *
+                                (line.saleQuantity ?? 0)
+                              }
+                              format={{
+                                style: "currency",
+                                currency: currencyCode
+                              }}
+                              locales={locale}
+                            />
+                          </Td>
+                        </Tr>
+
+                        {Number(line.addOnCost ?? 0) > 0 && (
+                          <Tr>
+                            <Td>
+                              <Trans>Additional Charges</Trans>
+                            </Td>
+                            <Td className="text-right">
+                              <MotionNumber
+                                value={line.addOnCost ?? 0}
+                                format={{
+                                  style: "currency",
+                                  currency: currencyCode
+                                }}
+                                locales={locale}
+                              />
+                            </Td>
+                          </Tr>
+                        )}
+
+                        {Number(line.nonTaxableAddOnCost ?? 0) > 0 && (
+                          <Tr>
+                            <Td>
+                              <Trans>Non-Taxable Charges</Trans>
+                            </Td>
+                            <Td className="text-right">
+                              <MotionNumber
+                                value={line.nonTaxableAddOnCost ?? 0}
+                                format={{
+                                  style: "currency",
+                                  currency: currencyCode
+                                }}
+                                locales={locale}
+                              />
+                            </Td>
+                          </Tr>
+                        )}
+
+                        <Tr key="subtotal">
+                          <Td>
+                            <Trans>Subtotal</Trans>
+                          </Td>
+                          <Td className="text-right">
+                            <MotionNumber
+                              value={
+                                (line.convertedUnitPrice ?? 0) *
+                                  (line.saleQuantity ?? 0) +
+                                (line.convertedAddOnCost ?? 0) +
+                                (line.convertedNonTaxableAddOnCost ?? 0) +
+                                (line.convertedShippingCost ?? 0)
+                              }
+                              format={{
+                                style: "currency",
+                                currency: currencyCode
+                              }}
+                              locales={locale}
+                            />
+                          </Td>
+                        </Tr>
+
+                        <Tr key="tax" className="border-b border-border">
+                          <Td>
+                            <Trans>
+                              Tax (
+                              {percentFormatter.format(line.taxPercent ?? 0)})
+                            </Trans>
+                          </Td>
+                          <Td className="text-right">
+                            <MotionNumber
+                              value={
+                                ((line.convertedUnitPrice ?? 0) *
+                                  (line.saleQuantity ?? 0) +
+                                  (line.convertedAddOnCost ?? 0) +
+                                  (line.convertedShippingCost ?? 0)) *
+                                (line.taxPercent ?? 0)
+                              }
+                              format={{
+                                style: "currency",
+                                currency: currencyCode
+                              }}
+                              locales={locale}
+                            />
+                          </Td>
+                        </Tr>
+
+                        <Tr key="total" className="font-bold">
+                          <Td>
+                            <Trans>Total</Trans>
+                          </Td>
+                          <Td className="text-right">
+                            <MotionNumber
+                              value={
+                                ((line.convertedUnitPrice ?? 0) *
+                                  (line.saleQuantity ?? 0) +
+                                  (line.convertedAddOnCost ?? 0) +
+                                  (line.convertedShippingCost ?? 0)) *
+                                  (1 + (line.taxPercent ?? 0)) +
+                                (line.convertedNonTaxableAddOnCost ?? 0)
+                              }
+                              format={{
+                                style: "currency",
+                                currency: currencyCode
+                              }}
+                              locales={locale}
+                            />
+                          </Td>
+                        </Tr>
+                      </Tbody>
+                    </Table>
+
+                    {isMade && jobs.length > 0 && (
+                      <div className="border rounded-lg">
+                        {jobs
+                          .sort((a, b) =>
+                            (a.jobId ?? "").localeCompare(b.jobId ?? "")
+                          )
+                          .map((job, index) => (
+                            <div
+                              key={job.id}
+                              className={cn(
+                                "border-b p-6",
+                                index === jobs.length - 1 && "border-b-0"
+                              )}
+                            >
+                              {/* @ts-expect-error TS2739 */}
+                              <SalesOrderJobItem job={job} />
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
               </VStack>
             </HStack>
-
-            <motion.div
-              initial="collapsed"
-              animate={openItems.includes(line.id) ? "open" : "collapsed"}
-              variants={{
-                open: { opacity: 1, height: "auto", marginTop: 16 },
-                collapsed: { opacity: 0, height: 0, marginTop: 0 }
-              }}
-              transition={{ duration: 0.3 }}
-              className="w-full overflow-hidden"
-            >
-              <div className="flex flex-col gap-y-4 w-full">
-                <Table>
-                  <Tbody>
-                    <Tr>
-                      <Td>
-                        <Trans>Quantity</Trans>
-                      </Td>
-                      <Td className="text-right">{line.saleQuantity}</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>
-                        <Trans>Unit Price</Trans>
-                      </Td>
-                      <Td className="text-right">
-                        <MotionNumber
-                          value={line.convertedUnitPrice ?? 0}
-                          format={{ style: "currency", currency: currencyCode }}
-                          locales={locale}
-                        />
-                      </Td>
-                    </Tr>
-                    <Tr className="border-b border-border">
-                      <Td>
-                        <Trans>Extended Price</Trans>
-                      </Td>
-                      <Td className="text-right">
-                        <MotionNumber
-                          value={
-                            (line.convertedUnitPrice ?? 0) *
-                            (line.saleQuantity ?? 0)
-                          }
-                          format={{ style: "currency", currency: currencyCode }}
-                          locales={locale}
-                        />
-                      </Td>
-                    </Tr>
-
-                    {Number(line.addOnCost ?? 0) > 0 && (
-                      <Tr>
-                        <Td>
-                          <Trans>Additional Charges</Trans>
-                        </Td>
-                        <Td className="text-right">
-                          <MotionNumber
-                            value={line.addOnCost ?? 0}
-                            format={{
-                              style: "currency",
-                              currency: currencyCode
-                            }}
-                            locales={locale}
-                          />
-                        </Td>
-                      </Tr>
-                    )}
-
-                    {Number(line.nonTaxableAddOnCost ?? 0) > 0 && (
-                      <Tr>
-                        <Td>
-                          <Trans>Non-Taxable Charges</Trans>
-                        </Td>
-                        <Td className="text-right">
-                          <MotionNumber
-                            value={line.nonTaxableAddOnCost ?? 0}
-                            format={{
-                              style: "currency",
-                              currency: currencyCode
-                            }}
-                            locales={locale}
-                          />
-                        </Td>
-                      </Tr>
-                    )}
-
-                    <Tr key="subtotal">
-                      <Td>
-                        <Trans>Subtotal</Trans>
-                      </Td>
-                      <Td className="text-right">
-                        <MotionNumber
-                          value={
-                            (line.convertedUnitPrice ?? 0) *
-                              (line.saleQuantity ?? 0) +
-                            (line.convertedAddOnCost ?? 0) +
-                            (line.convertedNonTaxableAddOnCost ?? 0) +
-                            (line.convertedShippingCost ?? 0)
-                          }
-                          format={{
-                            style: "currency",
-                            currency: currencyCode
-                          }}
-                          locales={locale}
-                        />
-                      </Td>
-                    </Tr>
-
-                    <Tr key="tax" className="border-b border-border">
-                      <Td>
-                        <Trans>
-                          Tax ({percentFormatter.format(line.taxPercent ?? 0)})
-                        </Trans>
-                      </Td>
-                      <Td className="text-right">
-                        <MotionNumber
-                          value={
-                            ((line.convertedUnitPrice ?? 0) *
-                              (line.saleQuantity ?? 0) +
-                              (line.convertedAddOnCost ?? 0) +
-                              (line.convertedShippingCost ?? 0)) *
-                            (line.taxPercent ?? 0)
-                          }
-                          format={{
-                            style: "currency",
-                            currency: currencyCode
-                          }}
-                          locales={locale}
-                        />
-                      </Td>
-                    </Tr>
-
-                    <Tr key="total" className="font-bold">
-                      <Td>
-                        <Trans>Total</Trans>
-                      </Td>
-                      <Td className="text-right">
-                        <MotionNumber
-                          value={
-                            ((line.convertedUnitPrice ?? 0) *
-                              (line.saleQuantity ?? 0) +
-                              (line.convertedAddOnCost ?? 0) +
-                              (line.convertedShippingCost ?? 0)) *
-                              (1 + (line.taxPercent ?? 0)) +
-                            (line.convertedNonTaxableAddOnCost ?? 0)
-                          }
-                          format={{
-                            style: "currency",
-                            currency: currencyCode
-                          }}
-                          locales={locale}
-                        />
-                      </Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-
-                {isMade && jobs.length > 0 && (
-                  <div className="border rounded-lg">
-                    {jobs
-                      .sort((a, b) =>
-                        (a.jobId ?? "").localeCompare(b.jobId ?? "")
-                      )
-                      .map((job, index) => (
-                        <div
-                          key={job.id}
-                          className={cn(
-                            "border-b p-6",
-                            index === jobs.length - 1 && "border-b-0"
-                          )}
-                        >
-                          {/* @ts-expect-error TS2739 */}
-                          <SalesOrderJobItem job={job} />
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
           </motion.div>
         );
       })}
+      {deleteLineDisclosure.isOpen && deleteLine && (
+        <DeleteSalesOrderLine line={deleteLine} onCancel={onDeleteCancel} />
+      )}
     </VStack>
   );
 }

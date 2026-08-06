@@ -4,16 +4,16 @@ import { useCallback, useEffect, useRef } from "react";
 import { useFetcher, useFetchers, useRevalidator } from "react-router";
 import { configParamsModalContentClassName } from "~/modules/production/ui/Jobs/configTableShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
+import { useOverlay } from "./OverlayProvider";
 import { buildOverlayTarget, type OverlayTarget } from "./overlay";
 import { getOverlayRegistryEntry } from "./overlay.registry";
-import { useOverlay } from "./OverlayProvider";
 import type { OverlayConfirmMode, OverlayInstance } from "./types";
 
 // `w-fit` alone is not enough: ModalContentVariants' base carries `md:w-full`,
 // which tailwind-merge keeps (different responsive group) and which wins on
 // desktop — blowing the overlay to full width. `md:w-fit` overrides it so the
 // modal shrinks to its content (the form's own `w-[44rem]`) at every breakpoint.
-const overlayModalContentClassName = `${configParamsModalContentClassName} md:w-fit`;
+const overlayModalContentClassName = `${configParamsModalContentClassName} pt-6 md:w-fit`;
 
 /** A successful confirm response can request opening a follow-up overlay via a
  * generic `nextOverlay: { id, params }` signal (e.g. a master cutting report →
