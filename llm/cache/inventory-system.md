@@ -82,3 +82,14 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 **Edge receive/ship fallback** (legacy parent+config lines still on the order): `packages/database/supabase/functions/create/index.ts` + `lib/item-variants.ts` (`hasConfigTable`, `expandConfigTableToVariantQuantities`, `resolveVariantItemId`) still expand at receipt/shipment create for PO receipt, SO shipment, SO-line shipment, PO return shipment.
 
 **`valuesKey` format:** `color|size` (e.g. `BK|S`). Size-only falls back to just the size code.
+
+## Inventory list vs variant SKUs (20260806162447)
+
+`get_inventory_quantities` (preview/shared DB also has `breakdown`/`jobBreakdown` from style inventory work):
+- Color/size display names resolve via `itemAttributeValue` (not dropped `styleColor`/`styleSize`).
+- Variant child SKUs are **excluded** from the inventory list.
+- Parent rows **roll up** child qty columns (on-hand, SO/PO/jobs, usage, etc.).
+- Detail SKU breakdown remains `getItemVariantQuantities` (Style inventory page).
+
+`consumables` view excludes variant children (`20260806162513`), same pattern as `styles`.
+
