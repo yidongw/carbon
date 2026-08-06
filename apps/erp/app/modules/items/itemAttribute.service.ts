@@ -853,6 +853,83 @@ export async function deleteItemAttributeValue(client: Db, id: string) {
   return (client as any).from("itemAttributeValue").delete().eq("id", id);
 }
 
+export async function getItemAttributeSetAssignments(
+  client: Db,
+  companyId: string,
+  args?: { search?: string | null }
+) {
+  const db = client as any;
+  let query = db
+    .from("itemAttributeSetAssignment")
+    .select("*, itemAttributeSet:attributeSetId(id, code, name)", {
+      count: "exact"
+    })
+    .or(`companyId.eq.${companyId},companyId.is.null`)
+    .order("itemType", { ascending: true });
+
+  if (args?.search) {
+    query = query.or(`itemType.ilike.%${args.search}%`);
+  }
+  return query;
+}
+
+export async function getItemAttributeSetAssignment(client: Db, id: string) {
+  return (client as any)
+    .from("itemAttributeSetAssignment")
+    .select("*, itemAttributeSet:attributeSetId(id, code, name)")
+    .eq("id", id)
+    .single();
+}
+
+export async function upsertItemAttributeSetAssignment(
+  client: Db,
+  payload:
+    | {
+        itemType: string;
+        attributeSetId: string;
+        companyId: string;
+        createdBy: string;
+      }
+    | {
+        id: string;
+        itemType: string;
+        attributeSetId: string;
+        companyId: string | null;
+      }
+) {
+  const db = client as any;
+  if ("id" in payload) {
+    return db
+      .from("itemAttributeSetAssignment")
+      .update({
+        itemType: payload.itemType,
+        attributeSetId: payload.attributeSetId
+      })
+      .eq("id", payload.id)
+      .select("id")
+      .single();
+  }
+  return db
+    .from("itemAttributeSetAssignment")
+    .insert([
+      {
+        itemType: payload.itemType,
+        attributeSetId: payload.attributeSetId,
+        companyId: payload.companyId,
+        createdBy: payload.createdBy
+      }
+    ])
+    .select("*")
+    .single();
+}
+
+export async function deleteItemAttributeSetAssignment(client: Db, id: string) {
+  return (client as any)
+    .from("itemAttributeSetAssignment")
+    .delete()
+    .eq("id", id);
+}
+
 /** Attribute sets allowed for an item type (system + company). */
 export async function getAttributeSetsForItemType(
   client: Db,

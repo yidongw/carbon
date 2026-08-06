@@ -935,6 +935,9 @@ msgstr "Bist du sicher, dass du die Konto löschen möchtest: {0}{1}? Das kann n
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "Sind Sie sicher, dass Sie den API-Schlüssel: {0}? löschen möchten? Dies kann nicht rückgängig gemacht werden."
 
+msgid "Are you sure you want to delete the assignment {name}?"
+msgstr ""
+
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
 msgstr "Sind Sie sicher, dass Sie die Anforderungsvorgabe löschen möchten: {0}? Dies kann nicht wiederhergestellt werden."
@@ -2770,6 +2773,9 @@ msgstr "Erforderliche Aktion erstellt"
 msgid "Created scrap reason"
 msgstr "Verschrottungsgrund erstellt"
 
+msgid "Created set assignment"
+msgstr ""
+
 msgid "Created shipping method"
 msgstr "Versandmethode erstellt"
 
@@ -3449,6 +3455,9 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Löscherter Attributwert"
 
+msgid "Deleted set assignment"
+msgstr ""
+
 msgid "Deleted warehouse transfer line"
 msgstr "Lagerübertragungszeile gelöscht"
 
@@ -4018,6 +4027,9 @@ msgstr "Bearbeiten sezction"
 msgid "Edit Sequence"
 msgstr "Sequenz bearbeiten"
 
+msgid "Edit Set Assignment"
+msgstr ""
+
 msgid "Edit Shift"
 msgstr "Schicht bearbeiten"
 
@@ -4329,6 +4341,9 @@ msgstr "Fehler beim Laden des Zuweisungsstatus"
 
 msgid "Error loading attribute categories"
 msgstr "Fehler beim Laden der Attributskategorien"
+
+msgid "Error loading attribute set assignments"
+msgstr ""
 
 msgid "Error loading attribute sets"
 msgstr ""
@@ -4963,6 +4978,9 @@ msgstr ""
 msgid "Failed to create samples"
 msgstr "Fehler beim Erstellen von Proben"
 
+msgid "Failed to create set assignment"
+msgstr ""
+
 msgid "Failed to create shift"
 msgstr "Fehler beim Erstellen der Schicht"
 
@@ -5303,6 +5321,9 @@ msgstr "Fehler beim Löschen der Verkaufsauftragsposition"
 
 msgid "Failed to delete section"
 msgstr "Fehler beim Löschen der Abschnitts-Seite"
+
+msgid "Failed to delete set assignment"
+msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Fehler beim Löschen der Schicht"
@@ -5739,6 +5760,9 @@ msgstr "Fehler beim Abrufen der Asset-Klasse"
 msgid "Failed to get asset class id"
 msgstr "Fehler: Asset-Klasse-ID konnte nicht abgerufen werden"
 
+msgid "Failed to get assignment id"
+msgstr ""
+
 msgid "Failed to get attribute"
 msgstr "Fehler: Attribut konnte nicht abgerufen werden"
 
@@ -6005,6 +6029,9 @@ msgstr "Fehler beim Abrufen der Sequenz"
 
 msgid "Failed to get services"
 msgstr "Fehler beim Abrufen der Dienste"
+
+msgid "Failed to get set assignment"
+msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Fehler beim Abrufen der Schicht"
@@ -7622,6 +7649,9 @@ msgstr "Fehler beim Aktualisieren der Abfallgründen"
 
 msgid "Failed to update sequence"
 msgstr "Fehler beim Aktualisieren der Sequenz"
+
+msgid "Failed to update set assignment"
+msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Fehler beim Aktualisieren des Versandes"
@@ -10131,6 +10161,9 @@ msgstr "Neue Verkaufsauftragsposition"
 
 msgid "New Scheduled Maintenance"
 msgstr "Neue geplante Wartung"
+
+msgid "New Set Assignment"
+msgstr ""
 
 msgid "New Shift"
 msgstr "Neue Schicht"
@@ -13290,6 +13323,15 @@ msgstr "Servicegebührenkonto"
 msgid "Session mismatch"
 msgstr "Sitzungsübereinstimmung fehlt"
 
+msgid "Set Assignment"
+msgstr ""
+
+msgid "Set assignment not found"
+msgstr ""
+
+msgid "Set Assignments"
+msgstr ""
+
 msgid "Set Clock Out"
 msgstr "Abmeldung festlegen"
 
@@ -15578,6 +15620,9 @@ msgstr "Aktualisierte Abfallgründen"
 
 msgid "Updated sequence"
 msgstr "Aktualisierte Sequenz"
+
+msgid "Updated set assignment"
+msgstr ""
 
 msgid "Updated shipment"
 msgstr "Aktualisierte Lieferung"

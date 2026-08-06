@@ -935,6 +935,9 @@ msgstr "Вы действительно хотите удалить аккаун
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить API ключ: {0}? Это действие невозможно отменить."
 
+msgid "Are you sure you want to delete the assignment {name}?"
+msgstr ""
+
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
 msgstr "Вы действительно хотите удалить заданную rèтуру назначения: {0}? Это не может быть отменено."
@@ -2770,6 +2773,9 @@ msgstr "Требуемое действие создано"
 msgid "Created scrap reason"
 msgstr "Причина брака создана"
 
+msgid "Created set assignment"
+msgstr ""
+
 msgid "Created shipping method"
 msgstr "Способ доставки создан"
 
@@ -3449,6 +3455,9 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Удаленное значение атрибута"
 
+msgid "Deleted set assignment"
+msgstr ""
+
 msgid "Deleted warehouse transfer line"
 msgstr "Удаленная складская транзакция"
 
@@ -4018,6 +4027,9 @@ msgstr "Редактирование раздела"
 msgid "Edit Sequence"
 msgstr "Редактировать последовательность"
 
+msgid "Edit Set Assignment"
+msgstr ""
+
 msgid "Edit Shift"
 msgstr "Редактировать смену"
 
@@ -4329,6 +4341,9 @@ msgstr "Ошибка загрузки статуса назначения"
 
 msgid "Error loading attribute categories"
 msgstr "Ошибка загрузки категорий атрибутов"
+
+msgid "Error loading attribute set assignments"
+msgstr ""
 
 msgid "Error loading attribute sets"
 msgstr ""
@@ -4963,6 +4978,9 @@ msgstr ""
 msgid "Failed to create samples"
 msgstr "Не удалось создать образцы"
 
+msgid "Failed to create set assignment"
+msgstr ""
+
 msgid "Failed to create shift"
 msgstr "Не удалось создать смену"
 
@@ -5303,6 +5321,9 @@ msgstr "Не удалось удалить строку продажного з�
 
 msgid "Failed to delete section"
 msgstr "Не удалось удалить раздел"
+
+msgid "Failed to delete set assignment"
+msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Не удалось удалить смену"
@@ -5739,6 +5760,9 @@ msgstr "Не удалось получить класс активасии"
 msgid "Failed to get asset class id"
 msgstr "Не удалось получить идентификатор класса активов"
 
+msgid "Failed to get assignment id"
+msgstr ""
+
 msgid "Failed to get attribute"
 msgstr "Не удалось получить атрибут"
 
@@ -6005,6 +6029,9 @@ msgstr "Не удалось получить последовательност�
 
 msgid "Failed to get services"
 msgstr "Не удалось получить услуги"
+
+msgid "Failed to get set assignment"
+msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Не удалось получить смену"
@@ -7622,6 +7649,9 @@ msgstr "Не удалось обновить причину потери мат�
 
 msgid "Failed to update sequence"
 msgstr "Не удалось обновить последовательность"
+
+msgid "Failed to update set assignment"
+msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Не удалось обновить отгрузку"
@@ -10131,6 +10161,9 @@ msgstr "Новая строка заказа продажи"
 
 msgid "New Scheduled Maintenance"
 msgstr "Новое плановое обслуживание"
+
+msgid "New Set Assignment"
+msgstr ""
 
 msgid "New Shift"
 msgstr "Новая смена"
@@ -13290,6 +13323,15 @@ msgstr "Аккаунт для оплаты услуг"
 msgid "Session mismatch"
 msgstr "Сессия несоответствует"
 
+msgid "Set Assignment"
+msgstr ""
+
+msgid "Set assignment not found"
+msgstr ""
+
+msgid "Set Assignments"
+msgstr ""
+
 msgid "Set Clock Out"
 msgstr "Установить время выхода"
 
@@ -15578,6 +15620,9 @@ msgstr "Обновленная причина потери материала"
 
 msgid "Updated sequence"
 msgstr "Обновлена последовательность"
+
+msgid "Updated set assignment"
+msgstr ""
 
 msgid "Updated shipment"
 msgstr "Обновленная поставка"

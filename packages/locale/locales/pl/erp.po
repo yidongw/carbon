@@ -935,6 +935,9 @@ msgstr "Czy chcesz usunąć konto: {0}{1}? To nie może być odwołane."
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć klucz API: {0}? Tej czynności nie można cofnąć."
 
+msgid "Are you sure you want to delete the assignment {name}?"
+msgstr ""
+
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
 msgstr "Czy chcesz usunąć regułę przydzielania: {0}? To nie może być odwołane."
@@ -2770,6 +2773,9 @@ msgstr "Utworzono wymaganą akcję"
 msgid "Created scrap reason"
 msgstr "Utworzono przyczynę złomu"
 
+msgid "Created set assignment"
+msgstr ""
+
 msgid "Created shipping method"
 msgstr "Utworzono metodę wysyłki"
 
@@ -3449,6 +3455,9 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Usunięto wartość atrybutu"
 
+msgid "Deleted set assignment"
+msgstr ""
+
 msgid "Deleted warehouse transfer line"
 msgstr "Usunięta linia przenoszenia magazynowego"
 
@@ -4018,6 +4027,9 @@ msgstr "Edytuj sekcję"
 msgid "Edit Sequence"
 msgstr "Edytuj sekwencję"
 
+msgid "Edit Set Assignment"
+msgstr ""
+
 msgid "Edit Shift"
 msgstr "Edytuj zmianę"
 
@@ -4329,6 +4341,9 @@ msgstr "Błąd załadowania stanu przypisania"
 
 msgid "Error loading attribute categories"
 msgstr "Błąd załadowania kategorii atrybutów"
+
+msgid "Error loading attribute set assignments"
+msgstr ""
 
 msgid "Error loading attribute sets"
 msgstr ""
@@ -4963,6 +4978,9 @@ msgstr ""
 msgid "Failed to create samples"
 msgstr "Nie udało się utworzyć próbek"
 
+msgid "Failed to create set assignment"
+msgstr ""
+
 msgid "Failed to create shift"
 msgstr "Nie udało się utworzyć zmiany"
 
@@ -5303,6 +5321,9 @@ msgstr "Niedostępna do usunięcia linia zamówienia sprzedaży"
 
 msgid "Failed to delete section"
 msgstr "Niedostępna do usunięcia sekcja"
+
+msgid "Failed to delete set assignment"
+msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Niedostępne do usunięcia zmiany"
@@ -5739,6 +5760,9 @@ msgstr "Nie można pobrać klasy aktuwa"
 msgid "Failed to get asset class id"
 msgstr "Nie można pobrać identyfikatora klasy zasobu"
 
+msgid "Failed to get assignment id"
+msgstr ""
+
 msgid "Failed to get attribute"
 msgstr "Nie można pobrać atrybutu"
 
@@ -6005,6 +6029,9 @@ msgstr "Nie można pobrać sekwencji"
 
 msgid "Failed to get services"
 msgstr "Nie można pobrać usług"
+
+msgid "Failed to get set assignment"
+msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Nie można pobrać zmiany"
@@ -7622,6 +7649,9 @@ msgstr "Nie udało się zaktualizować przyczyny odpadu"
 
 msgid "Failed to update sequence"
 msgstr "Nie udało się zaktualizować sekwencji"
+
+msgid "Failed to update set assignment"
+msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Nie udało się zaktualizować wysyłki"
@@ -10131,6 +10161,9 @@ msgstr "Nowa linia zamówienia sprzedaży"
 
 msgid "New Scheduled Maintenance"
 msgstr "Nowa zaplanowana konserwacja"
+
+msgid "New Set Assignment"
+msgstr ""
 
 msgid "New Shift"
 msgstr "Nowa zmiana"
@@ -13290,6 +13323,15 @@ msgstr "Konto opłat serwisowych"
 msgid "Session mismatch"
 msgstr "Błąd zgodności sesji"
 
+msgid "Set Assignment"
+msgstr ""
+
+msgid "Set assignment not found"
+msgstr ""
+
+msgid "Set Assignments"
+msgstr ""
+
 msgid "Set Clock Out"
 msgstr "Ustaw czas wyjścia"
 
@@ -15578,6 +15620,9 @@ msgstr "Zaktualizowana przyczyna odpadu"
 
 msgid "Updated sequence"
 msgstr "Zaktualizowana sekwencja"
+
+msgid "Updated set assignment"
+msgstr ""
 
 msgid "Updated shipment"
 msgstr "Zaktualizowana wysyłka"

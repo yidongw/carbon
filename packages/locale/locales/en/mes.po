@@ -551,6 +551,9 @@ msgstr "Created company"
 msgid "Created maintenance dispatch"
 msgstr "Created maintenance dispatch"
 
+msgid "Created set assignment"
+msgstr "Created set assignment"
+
 msgid "Created webhook"
 msgstr "Created webhook"
 
@@ -629,6 +632,9 @@ msgstr "Deleted attribute set"
 
 msgid "Deleted attribute value"
 msgstr "Deleted attribute value"
+
+msgid "Deleted set assignment"
+msgstr "Deleted set assignment"
 
 msgid "Deleted warehouse transfer line"
 msgstr "Deleted warehouse transfer line"
@@ -799,6 +805,9 @@ msgstr "Error loading assignment status"
 
 msgid "Error loading attribute categories"
 msgstr "Error loading attribute categories"
+
+msgid "Error loading attribute set assignments"
+msgstr "Error loading attribute set assignments"
 
 msgid "Error loading attribute sets"
 msgstr "Error loading attribute sets"
@@ -1148,6 +1157,9 @@ msgstr "Failed to create sales order lines for style variants"
 msgid "Failed to create samples"
 msgstr "Failed to create samples"
 
+msgid "Failed to create set assignment"
+msgstr "Failed to create set assignment"
+
 msgid "Failed to create shift"
 msgstr "Failed to create shift"
 
@@ -1453,6 +1465,9 @@ msgstr "Failed to delete sales order line"
 
 msgid "Failed to delete section"
 msgstr "Failed to delete section"
+
+msgid "Failed to delete set assignment"
+msgstr "Failed to delete set assignment"
 
 msgid "Failed to delete shift"
 msgstr "Failed to delete shift"
@@ -1883,6 +1898,9 @@ msgstr "Failed to get asset class"
 msgid "Failed to get asset class id"
 msgstr "Failed to get asset class id"
 
+msgid "Failed to get assignment id"
+msgstr "Failed to get assignment id"
+
 msgid "Failed to get attribute"
 msgstr "Failed to get attribute"
 
@@ -2146,6 +2164,9 @@ msgstr "Failed to get sequence"
 
 msgid "Failed to get services"
 msgstr "Failed to get services"
+
+msgid "Failed to get set assignment"
+msgstr "Failed to get set assignment"
 
 msgid "Failed to get shift"
 msgstr "Failed to get shift"
@@ -3655,6 +3676,9 @@ msgstr "Failed to update scrap reason"
 
 msgid "Failed to update sequence"
 msgstr "Failed to update sequence"
+
+msgid "Failed to update set assignment"
+msgstr "Failed to update set assignment"
 
 msgid "Failed to update shipment"
 msgstr "Failed to update shipment"
@@ -5326,6 +5350,9 @@ msgstr "Serial Numbers"
 msgid "Session mismatch"
 msgstr "Session mismatch"
 
+msgid "Set assignment not found"
+msgstr "Set assignment not found"
+
 msgid "Set Clock Out"
 msgstr "Set Clock Out"
 
@@ -6243,6 +6270,9 @@ msgstr "Updated scrap reason"
 
 msgid "Updated sequence"
 msgstr "Updated sequence"
+
+msgid "Updated set assignment"
+msgstr "Updated set assignment"
 
 msgid "Updated shipment"
 msgstr "Updated shipment"

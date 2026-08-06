@@ -935,6 +935,9 @@ msgstr "Are you sure you want to delete the account: {0}{1}? This cannot be undo
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the API key: {0}? This cannot be undone."
 
+msgid "Are you sure you want to delete the assignment {name}?"
+msgstr "Are you sure you want to delete the assignment {name}?"
+
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
@@ -2770,6 +2773,9 @@ msgstr "Created required action"
 msgid "Created scrap reason"
 msgstr "Created scrap reason"
 
+msgid "Created set assignment"
+msgstr "Created set assignment"
+
 msgid "Created shipping method"
 msgstr "Created shipping method"
 
@@ -3449,6 +3455,9 @@ msgstr "Deleted attribute set"
 msgid "Deleted attribute value"
 msgstr "Deleted attribute value"
 
+msgid "Deleted set assignment"
+msgstr "Deleted set assignment"
+
 msgid "Deleted warehouse transfer line"
 msgstr "Deleted warehouse transfer line"
 
@@ -4018,6 +4027,9 @@ msgstr "Edit section"
 msgid "Edit Sequence"
 msgstr "Edit Sequence"
 
+msgid "Edit Set Assignment"
+msgstr "Edit Set Assignment"
+
 msgid "Edit Shift"
 msgstr "Edit Shift"
 
@@ -4329,6 +4341,9 @@ msgstr "Error loading assignment status"
 
 msgid "Error loading attribute categories"
 msgstr "Error loading attribute categories"
+
+msgid "Error loading attribute set assignments"
+msgstr "Error loading attribute set assignments"
 
 msgid "Error loading attribute sets"
 msgstr "Error loading attribute sets"
@@ -4963,6 +4978,9 @@ msgstr "Failed to create sales order lines for style variants"
 msgid "Failed to create samples"
 msgstr "Failed to create samples"
 
+msgid "Failed to create set assignment"
+msgstr "Failed to create set assignment"
+
 msgid "Failed to create shift"
 msgstr "Failed to create shift"
 
@@ -5303,6 +5321,9 @@ msgstr "Failed to delete sales order line"
 
 msgid "Failed to delete section"
 msgstr "Failed to delete section"
+
+msgid "Failed to delete set assignment"
+msgstr "Failed to delete set assignment"
 
 msgid "Failed to delete shift"
 msgstr "Failed to delete shift"
@@ -5739,6 +5760,9 @@ msgstr "Failed to get asset class"
 msgid "Failed to get asset class id"
 msgstr "Failed to get asset class id"
 
+msgid "Failed to get assignment id"
+msgstr "Failed to get assignment id"
+
 msgid "Failed to get attribute"
 msgstr "Failed to get attribute"
 
@@ -6005,6 +6029,9 @@ msgstr "Failed to get sequence"
 
 msgid "Failed to get services"
 msgstr "Failed to get services"
+
+msgid "Failed to get set assignment"
+msgstr "Failed to get set assignment"
 
 msgid "Failed to get shift"
 msgstr "Failed to get shift"
@@ -7622,6 +7649,9 @@ msgstr "Failed to update scrap reason"
 
 msgid "Failed to update sequence"
 msgstr "Failed to update sequence"
+
+msgid "Failed to update set assignment"
+msgstr "Failed to update set assignment"
 
 msgid "Failed to update shipment"
 msgstr "Failed to update shipment"
@@ -10131,6 +10161,9 @@ msgstr "New Sales Order Line"
 
 msgid "New Scheduled Maintenance"
 msgstr "New Scheduled Maintenance"
+
+msgid "New Set Assignment"
+msgstr "New Set Assignment"
 
 msgid "New Shift"
 msgstr "New Shift"
@@ -13290,6 +13323,15 @@ msgstr "Service Charge Account"
 msgid "Session mismatch"
 msgstr "Session mismatch"
 
+msgid "Set Assignment"
+msgstr "Set Assignment"
+
+msgid "Set assignment not found"
+msgstr "Set assignment not found"
+
+msgid "Set Assignments"
+msgstr "Set Assignments"
+
 msgid "Set Clock Out"
 msgstr "Set Clock Out"
 
@@ -15578,6 +15620,9 @@ msgstr "Updated scrap reason"
 
 msgid "Updated sequence"
 msgstr "Updated sequence"
+
+msgid "Updated set assignment"
+msgstr "Updated set assignment"
 
 msgid "Updated shipment"
 msgstr "Updated shipment"

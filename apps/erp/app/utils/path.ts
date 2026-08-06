@@ -874,6 +874,8 @@ export const path = {
       generatePath(`${x}/items/attributes/delete/${id}`),
     deleteItemAttributeSet: (id: string) =>
       generatePath(`${x}/items/attribute-sets/delete/${id}`),
+    deleteItemAttributeSetAssignment: (id: string) =>
+      generatePath(`${x}/items/attribute-set-assignments/delete/${id}`),
     deleteItemAttributeValue: (attributeId: string, id: string) =>
       generatePath(`${x}/items/attribute-values/${attributeId}/delete/${id}`),
     deleteMaterialForm: (id: string) =>
@@ -1284,6 +1286,9 @@ export const path = {
     itemAttributeSet: (id: string) =>
       generatePath(`${x}/items/attribute-sets/${id}`),
     itemAttributeSets: `${x}/items/attribute-sets`,
+    itemAttributeSetAssignment: (id: string) =>
+      generatePath(`${x}/items/attribute-set-assignments/${id}`),
+    itemAttributeSetAssignments: `${x}/items/attribute-set-assignments`,
     materialForm: (id: string) => generatePath(`${x}/items/forms/${id}`),
     materialForms: `${x}/items/forms`,
     materialGrade: (id: string) => generatePath(`${x}/items/grades/${id}`),
@@ -1419,6 +1424,7 @@ export const path = {
     newStyleSize: `${x}/items/sizes/new`,
     newItemAttribute: `${x}/items/attributes/new`,
     newItemAttributeSet: `${x}/items/attribute-sets/new`,
+    newItemAttributeSetAssignment: `${x}/items/attribute-set-assignments/new`,
     newItemAttributeValue: (attributeId: string) =>
       generatePath(`${x}/items/attribute-values/${attributeId}/new`),
     newMaterialForm: `${x}/items/forms/new`,

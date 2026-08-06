@@ -87,6 +87,12 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
           to: path.to.itemAttributeSets,
           icon: <LuGroup />,
           role: "employee"
+        },
+        {
+          name: t`Set Assignments`,
+          to: path.to.itemAttributeSetAssignments,
+          icon: <LuPuzzle />,
+          role: "employee"
         }
       ]
     },
