@@ -3,6 +3,7 @@ import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveVariantItemId } from "~/modules/items/itemAttribute.service";
+import { getStyleColorList } from "~/modules/items/items.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
@@ -604,10 +605,7 @@ export async function getCuttingSplitProposal(
   );
   // Display names for color codes (localized), so the split modal can show the
   // color name instead of the bare code.
-  const styleColors = await client
-    .from("styleColor")
-    .select("colorCode, colorName")
-    .eq("companyId", companyId);
+  const styleColors = await getStyleColorList(client, companyId);
   const colorNameByCode = new Map<string, string>();
   for (const c of styleColors.data ?? []) {
     if (c.colorCode)

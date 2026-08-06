@@ -159,33 +159,52 @@ export async function getGarmentAttributeValueList(
   try {
     const { data, error } = await db
       .from("itemAttributeValue")
-      .select("id, code, name, sortOrder")
+      .select("id, code, name, sortOrder, companyId")
       .eq("attributeId", args.attributeId)
       .or(`companyId.eq.${args.companyId},companyId.is.null`)
       .order("sortOrder", { ascending: true })
       .order("code", { ascending: true });
     if (error) throw error;
 
-    const rows = (data ?? []).map(
-      (v: {
+    // Prefer company-scoped rows when the same code exists as a system value.
+    const byCode = new Map<
+      string,
+      {
         id: string;
         code: string;
         name: string | null;
         sortOrder: number;
-      }) =>
-        args.attributeId === SYSTEM_ATTRIBUTE.color
-          ? {
-              id: v.id,
-              colorCode: v.code,
-              colorName: v.name ?? v.code,
-              sortOrder: v.sortOrder ?? 100
-            }
-          : {
-              id: v.id,
-              sizeCode: v.code,
-              sizeName: v.name ?? v.code,
-              sortOrder: v.sortOrder ?? 100
-            }
+        companyId: string | null;
+      }
+    >();
+    for (const v of data ?? []) {
+      const existing = byCode.get(v.code);
+      if (!existing || (v.companyId && !existing.companyId)) {
+        byCode.set(v.code, v);
+      }
+    }
+
+    const rows = [...byCode.values()].map((v) =>
+      args.attributeId === SYSTEM_ATTRIBUTE.color
+        ? {
+            id: v.id,
+            colorCode: v.code,
+            colorName: v.name ?? v.code,
+            sortOrder: v.sortOrder ?? 100
+          }
+        : {
+            id: v.id,
+            sizeCode: v.code,
+            sizeName: v.name ?? v.code,
+            sortOrder: v.sortOrder ?? 100
+          }
+    );
+    rows.sort(
+      (a, b) =>
+        (a.sortOrder ?? 100) - (b.sortOrder ?? 100) ||
+        (a.colorCode ?? a.sizeCode ?? "").localeCompare(
+          b.colorCode ?? b.sizeCode ?? ""
+        )
     );
     return { data: rows, error: null };
   } catch (error) {

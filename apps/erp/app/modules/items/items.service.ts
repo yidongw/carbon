@@ -11,7 +11,11 @@ import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
-import { getStyleConfigurationParametersFromAttributes } from "~/modules/items/itemAttribute.service";
+import {
+  getGarmentAttributeValueList,
+  getStyleConfigurationParametersFromAttributes,
+  SYSTEM_ATTRIBUTE
+} from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
@@ -2018,18 +2022,20 @@ export async function getStyleColorList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient
-    .from("styleColor")
-    .select("id, colorCode, colorName, companyId")
-    .eq("companyId", companyId)
-    .order("colorCode");
+  // Color name maps and legacy callers now read itemAttributeValue (pickers
+  // already do). Keep this wrapper so SO/PO/config-table imports stay stable.
+  return getGarmentAttributeValueList(client, {
+    attributeId: SYSTEM_ATTRIBUTE.color,
+    companyId
+  });
 }
 
 /**
  * Seeds the standard apparel colors + sizes for a freshly created company, with
  * names localized to the company's language. Idempotent — re-running skips rows
  * whose (code, companyId) already exists. Called from company onboarding.
+ * Also upserts Color itemAttributeValue rows so Style pickers (which read
+ * attribute values) see the same catalog; Size relies on system values.
  */
 export async function seedStyleReference(
   client: SupabaseClient<Database>,
@@ -2039,6 +2045,15 @@ export async function seedStyleReference(
 ) {
   const styleClient = client as SupabaseClient<any>;
   const { colors, sizes } = styleReferenceRows(language);
+  const colorAttributeValues = colors.map((c) => ({
+    attributeId: SYSTEM_ATTRIBUTE.color,
+    code: c.colorCode,
+    name: c.colorName,
+    companyId,
+    createdBy: userId,
+    sortOrder: 100
+  }));
+
   return Promise.all([
     styleClient.from("styleColor").upsert(
       colors.map((c) => ({ ...c, companyId, createdBy: userId })),
@@ -2047,7 +2062,11 @@ export async function seedStyleReference(
     styleClient.from("styleSize").upsert(
       sizes.map((s) => ({ ...s, companyId, createdBy: userId })),
       { onConflict: "sizeCode,companyId", ignoreDuplicates: true }
-    )
+    ),
+    styleClient.from("itemAttributeValue").upsert(colorAttributeValues, {
+      onConflict: "attributeId,code,companyId",
+      ignoreDuplicates: true
+    })
   ]);
 }
 
@@ -2090,13 +2109,10 @@ export async function getStyleSizeList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient
-    .from("styleSize")
-    .select("id, sizeCode, sizeName, companyId")
-    .eq("companyId", companyId)
-    .order("sortOrder")
-    .order("sizeCode");
+  return getGarmentAttributeValueList(client, {
+    attributeId: SYSTEM_ATTRIBUTE.size,
+    companyId
+  });
 }
 
 export async function getPartsList(
@@ -4880,18 +4896,47 @@ export async function upsertStyleColor(
 ) {
   const styleClient = client as SupabaseClient<any>;
   if ("id" in styleColor) {
-    return styleClient
+    const updated = await styleClient
       .from("styleColor")
       .update(sanitize({ ...styleColor, updatedAt: new Date().toISOString() }))
       .eq("id", styleColor.id)
-      .select("id")
+      .select("id, colorCode, colorName, companyId")
       .single();
+    if (!updated.error && updated.data) {
+      await styleClient.from("itemAttributeValue").upsert(
+        {
+          attributeId: SYSTEM_ATTRIBUTE.color,
+          code: updated.data.colorCode,
+          name: updated.data.colorName,
+          companyId: updated.data.companyId,
+          createdBy: styleColor.updatedBy,
+          updatedBy: styleColor.updatedBy,
+          updatedAt: new Date().toISOString()
+        },
+        { onConflict: "attributeId,code,companyId" }
+      );
+    }
+    return updated;
   }
-  return styleClient
+  const inserted = await styleClient
     .from("styleColor")
     .insert([styleColor])
     .select("*")
     .single();
+  if (!inserted.error && inserted.data) {
+    await styleClient.from("itemAttributeValue").upsert(
+      {
+        attributeId: SYSTEM_ATTRIBUTE.color,
+        code: styleColor.colorCode,
+        name: styleColor.colorName,
+        companyId: styleColor.companyId,
+        createdBy: styleColor.createdBy,
+        sortOrder: 100
+      },
+      { onConflict: "attributeId,code,companyId", ignoreDuplicates: true }
+    );
+  }
+  return inserted;
 }
 
 export async function upsertStyleSize(
@@ -4908,14 +4953,48 @@ export async function upsertStyleSize(
 ) {
   const styleClient = client as SupabaseClient<any>;
   if ("id" in styleSize) {
-    return styleClient
+    const updated = await styleClient
       .from("styleSize")
       .update(sanitize({ ...styleSize, updatedAt: new Date().toISOString() }))
       .eq("id", styleSize.id)
-      .select("id")
+      .select("id, sizeCode, sizeName, sortOrder, companyId")
       .single();
+    if (!updated.error && updated.data) {
+      await styleClient.from("itemAttributeValue").upsert(
+        {
+          attributeId: SYSTEM_ATTRIBUTE.size,
+          code: updated.data.sizeCode,
+          name: updated.data.sizeName,
+          sortOrder: updated.data.sortOrder ?? 100,
+          companyId: updated.data.companyId,
+          createdBy: styleSize.updatedBy,
+          updatedBy: styleSize.updatedBy,
+          updatedAt: new Date().toISOString()
+        },
+        { onConflict: "attributeId,code,companyId" }
+      );
+    }
+    return updated;
   }
-  return styleClient.from("styleSize").insert([styleSize]).select("*").single();
+  const inserted = await styleClient
+    .from("styleSize")
+    .insert([styleSize])
+    .select("*")
+    .single();
+  if (!inserted.error && inserted.data) {
+    await styleClient.from("itemAttributeValue").upsert(
+      {
+        attributeId: SYSTEM_ATTRIBUTE.size,
+        code: styleSize.sizeCode,
+        name: styleSize.sizeName,
+        sortOrder: styleSize.sortOrder ?? 100,
+        companyId: styleSize.companyId,
+        createdBy: styleSize.createdBy
+      },
+      { onConflict: "attributeId,code,companyId", ignoreDuplicates: true }
+    );
+  }
+  return inserted;
 }
 
 export async function upsertMaterialForm(
