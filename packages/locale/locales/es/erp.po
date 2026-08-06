@@ -1360,6 +1360,9 @@ msgstr "Estándar de muestreo de atributos utilizado para calcular tamaños de l
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Falló al actualizar el valor del atributo"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Falló al actualizar el avatar"
 
@@ -7259,6 +7265,9 @@ msgstr "Error al actualizar el parámetro de configuración"
 
 msgid "Failed to update consumable"
 msgstr "Falló al actualizar el消耗性材料"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Falló al actualizar el costo del consumo"
@@ -12860,6 +12869,9 @@ msgstr "Guardar y cerrar"
 msgid "Save and Overwrite"
 msgstr "Guardar y Sobrescribir"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Guardar Método"
 
@@ -15395,6 +15407,9 @@ msgstr "Compañía actualizada"
 
 msgid "Updated consumable"
 msgstr "Consumible actualizado"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Actualizado costo de consumibles"

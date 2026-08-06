@@ -1360,6 +1360,9 @@ msgstr "Standard pobierania próbek atrybutów używany do obliczania wielkości
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Nie udało się zaktualizować wartości atrybutu"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Nie udało się zaktualizować obrazka profilowego"
 
@@ -7259,6 +7265,9 @@ msgstr "Nie udało się zaktualizować parametru konfiguracji"
 
 msgid "Failed to update consumable"
 msgstr "Nie udało się zaktualizować zużycia"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Nie udało sięaktualizować kosztu zużycia"
@@ -12860,6 +12869,9 @@ msgstr "Zapisz i zamknij"
 msgid "Save and Overwrite"
 msgstr "Zapisz i Zastąp"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Zapisz metodę"
 
@@ -15395,6 +15407,9 @@ msgstr "Zaktualizowana firma"
 
 msgid "Updated consumable"
 msgstr "Zaktualizowany zużycie"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Zaktualizowane koszty zużycia"

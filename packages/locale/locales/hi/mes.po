@@ -219,6 +219,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "संरचना सफलतापूर्वक रिकॉर्ड की गई है"
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -3299,6 +3302,9 @@ msgstr "रचनात्मक अपडेट करणे विफल झ�
 msgid "Failed to update consumable"
 msgstr "अनुप्रयोगिता अपडेट करने में वायल्सION"
 
+msgid "Failed to update consumable attributes"
+msgstr ""
+
 msgid "Failed to update consumable costing"
 msgstr "अनुपयोगी लागत अपडेट करने में वफ़्दा है"
 
@@ -6048,6 +6054,9 @@ msgstr "अपडेट विनियमन"
 
 msgid "Updated consumable"
 msgstr "अपडेट दिया गया संवर्तन"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "अपडेट खर्चित कस्टिंग"

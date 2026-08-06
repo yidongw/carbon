@@ -217,6 +217,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "属性记录成功"
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -3294,6 +3297,9 @@ msgstr "配置更新失败"
 msgid "Failed to update consumable"
 msgstr "更新消耗品失败"
 
+msgid "Failed to update consumable attributes"
+msgstr ""
+
 msgid "Failed to update consumable costing"
 msgstr "更新消耗物料成本失败"
 
@@ -6043,6 +6049,9 @@ msgstr "已更新公司"
 
 msgid "Updated consumable"
 msgstr "已更新消耗品"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "已更新消耗品成本估算"

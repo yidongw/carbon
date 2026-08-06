@@ -1360,6 +1360,9 @@ msgstr "Attribut-Stichprobenstandard zur Berechnung von Losgrößen und Annahme-
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Fehler beim Aktualisieren des Attributwerts"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Fehler beim Aktualisieren des Avatars"
 
@@ -7259,6 +7265,9 @@ msgstr "Fehler beim Aktualisieren des Konfigurationsparameters"
 
 msgid "Failed to update consumable"
 msgstr "Fehler beim Aktualisieren des Verbrauchsguts"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Fehler beim Aktualisieren der Verbrauchsmaterialkosten"
@@ -12860,6 +12869,9 @@ msgstr "Speichern & Schließen"
 msgid "Save and Overwrite"
 msgstr "Speichern und Überschreiben"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Methode speichern"
 
@@ -15395,6 +15407,9 @@ msgstr "Aktualisierte Firma"
 
 msgid "Updated consumable"
 msgstr "Aktualisierte Verbrauchsmaterialien"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Aktualisierte Verbrauchsmaterialkosten"

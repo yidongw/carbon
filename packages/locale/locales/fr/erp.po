@@ -1360,6 +1360,9 @@ msgstr "Norme d'échantillonnage par attributs utilisée pour calculer les taill
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Échec de mise à jour de la valeur de l'attribut"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Échec de la mise à jour de l'avatar"
 
@@ -7259,6 +7265,9 @@ msgstr "Échec de la mise à jour du paramètre de configuration"
 
 msgid "Failed to update consumable"
 msgstr "Échec de la mise à jour du consommable"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Échec de la mise à jour du coût des consommables"
@@ -12860,6 +12869,9 @@ msgstr "Enregistrer et fermer"
 msgid "Save and Overwrite"
 msgstr "Enregistrer et remplacer"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Enregistrer la méthode"
 
@@ -15395,6 +15407,9 @@ msgstr "Mise à jour de l'entreprise"
 
 msgid "Updated consumable"
 msgstr "Mise à jour des consomables"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Mise à jour du coût des consommables"

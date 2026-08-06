@@ -1360,6 +1360,9 @@ msgstr "Padrão de amostragem de atributos usado para calcular tamanhos de amost
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Falhou ao atualizar o valor do atributo"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Falhou ao atualizar o avatar"
 
@@ -7259,6 +7265,9 @@ msgstr "Falha ao atualizar parâmetro de configuração"
 
 msgid "Failed to update consumable"
 msgstr "Falhou ao atualizar o consumo"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Falhou na atualização do custo do consumo"
@@ -12860,6 +12869,9 @@ msgstr "Guardar e Fechar"
 msgid "Save and Overwrite"
 msgstr "Guardar e Sobrescrever"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Salvar Método"
 
@@ -15395,6 +15407,9 @@ msgstr "Empresa atualizada"
 
 msgid "Updated consumable"
 msgstr "Consumível atualizado"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Atualizado o custo dos consumíveis"

@@ -1360,6 +1360,9 @@ msgstr "Standard di campionamento per attributi utilizzato per calcolare le dime
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7243,6 +7246,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Fallito aggiornamento valore attributo"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Fallito aggiornamento avatar"
 
@@ -7266,6 +7272,9 @@ msgstr "Impossibile aggiornare il parametro di configurazione"
 
 msgid "Failed to update consumable"
 msgstr "Fallito aggiornamento del consumabile"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Fallito aggiornamento del costo dei consumabili"
@@ -12867,6 +12876,9 @@ msgstr "Salva e chiudi"
 msgid "Save and Overwrite"
 msgstr "Salva e Sovrascrivi"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Salva Metodo"
 
@@ -15404,6 +15416,9 @@ msgstr "Aggiornata azienda"
 
 msgid "Updated consumable"
 msgstr "Aggiornato consumabile"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Aggiornato costo degli articoli di consumo"

@@ -22,6 +22,7 @@ import {
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
+import { getItemAttributeSelectionsForItem } from "~/modules/items/itemAttribute.service";
 import {
   ConsumableHeader,
   ConsumableProperties
@@ -47,12 +48,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [consumableSummary, supplierParts, pickMethods, tags] =
+  const [consumableSummary, supplierParts, pickMethods, tags, attributeState] =
     await Promise.all([
       getConsumable(client, itemId, companyId),
       getSupplierParts(client, itemId, companyId),
       getPickMethods(client, itemId, companyId),
-      getTagsList(client, companyId, "consumable")
+      getTagsList(client, companyId, "consumable"),
+      getItemAttributeSelectionsForItem(client, { itemId, companyId })
     ]);
 
   if (consumableSummary.error) {
@@ -71,7 +73,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     supplierParts: supplierParts.data ?? [],
     pickMethods: pickMethods.data ?? [],
     tags: tags.data ?? [],
-    usedIn: getMaterialUsedIn(client, itemId, companyId)
+    usedIn: getMaterialUsedIn(client, itemId, companyId),
+    attributeSetId: attributeState.data.attributeSetId,
+    attributeSelections: attributeState.data.selections
   };
 }
 

@@ -216,6 +216,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "Attribut enregistré avec succès"
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -3293,6 +3296,9 @@ msgstr "Échec de la mise à jour de la configuration"
 msgid "Failed to update consumable"
 msgstr "Échec de la mise à jour du consommable"
 
+msgid "Failed to update consumable attributes"
+msgstr ""
+
 msgid "Failed to update consumable costing"
 msgstr "Échec de la mise à jour du coût des consommables"
 
@@ -6042,6 +6048,9 @@ msgstr "Mise à jour de l'entreprise"
 
 msgid "Updated consumable"
 msgstr "Mise à jour des consommables"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Mise à jour du coût des consommables"

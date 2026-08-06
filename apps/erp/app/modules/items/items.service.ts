@@ -838,78 +838,15 @@ export async function getItemQuantities(
   companyId: string,
   locationId: string
 ) {
-  const db = client as SupabaseClient<any>;
-  const variants = await db
-    .from("itemVariant")
-    .select("variantItemId")
-    .eq("parentItemId", itemId)
-    .eq("companyId", companyId);
-
-  const variantIds = (variants.data ?? []).map(
-    (v: { variantItemId: string }) => v.variantItemId
-  );
-
-  if (variantIds.length === 0) {
-    return client
-      .rpc("get_inventory_quantities", {
-        location_id: locationId,
-        company_id: companyId
-      })
-      .eq("id", itemId)
-      .maybeSingle();
-  }
-
-  // Parent with variants: roll up child SKU quantities into one summary row
-  const childQtys = await client
+  // Parent rows in get_inventory_quantities already roll up child SKU qty when
+  // variants exist; variant children themselves are excluded from that RPC.
+  return client
     .rpc("get_inventory_quantities", {
       location_id: locationId,
       company_id: companyId
     })
-    .in("id", variantIds);
-
-  if (childQtys.error) return childQtys;
-
-  const rows = childQtys.data ?? [];
-  if (rows.length === 0) {
-    return client
-      .rpc("get_inventory_quantities", {
-        location_id: locationId,
-        company_id: companyId
-      })
-      .eq("id", itemId)
-      .maybeSingle();
-  }
-
-  const sumKeys = [
-    "quantityOnHand",
-    "quantityOnSalesOrder",
-    "quantityOnPurchaseOrder",
-    "quantityOnProductionOrder",
-    "quantityOnProdDemand",
-    "quantityAvailable",
-    "quantityRejected",
-    "usageLast30Days"
-  ] as const;
-
-  const rolled: Record<string, unknown> = { ...rows[0], id: itemId };
-  for (const key of sumKeys) {
-    rolled[key] = rows.reduce(
-      (acc: number, row: Record<string, unknown>) =>
-        acc + (Number(row[key]) || 0),
-      0
-    );
-  }
-  if (
-    typeof rolled.usageLast30Days === "number" &&
-    rolled.usageLast30Days > 0 &&
-    typeof rolled.quantityOnHand === "number"
-  ) {
-    rolled.daysRemaining = Math.round(
-      (rolled.quantityOnHand as number) / (rolled.usageLast30Days as number)
-    );
-  }
-
-  return { data: rolled, error: null };
+    .eq("id", itemId)
+    .maybeSingle();
 }
 
 /** Per-SKU inventory breakdown for a parent item (empty if no variants). */
@@ -933,15 +870,21 @@ export async function getItemVariantQuantities(
   if (list.length === 0) return { data: [], error: null };
 
   const ids = list.map((v: { variantItemId: string }) => v.variantItemId);
-  const qtys = await client
-    .rpc("get_inventory_quantities", {
+  // Variant children are excluded from get_inventory_quantities (list rollup);
+  // fetch them explicitly for SKU breakdown tables.
+  const qtys = await (client as SupabaseClient<any>).rpc(
+    "get_inventory_quantities_for_items",
+    {
       location_id: locationId,
-      company_id: companyId
-    })
-    .in("id", ids);
+      company_id: companyId,
+      item_ids: ids
+    }
+  );
 
   if (qtys.error) return qtys;
-  const byId = new Map((qtys.data ?? []).map((q: { id: string }) => [q.id, q]));
+  const byId = new Map(
+    ((qtys.data ?? []) as { id: string }[]).map((q) => [q.id, q])
+  );
 
   return {
     data: list.map(
@@ -949,13 +892,30 @@ export async function getItemVariantQuantities(
         variantItemId: string;
         valuesKey: string;
         variant: { readableId: string; name: string } | null;
-      }) => ({
-        variantItemId: v.variantItemId,
-        valuesKey: v.valuesKey,
-        readableId: v.variant?.readableId ?? v.variantItemId,
-        name: v.variant?.name ?? v.valuesKey,
-        quantities: byId.get(v.variantItemId) ?? null
-      })
+      }) => {
+        const q = byId.get(v.variantItemId) as
+          | {
+              quantityOnHand?: number;
+              quantityOnSalesOrder?: number;
+              quantityOnPurchaseOrder?: number;
+              quantityOnProductionOrder?: number;
+            }
+          | undefined;
+        const onHand = Number(q?.quantityOnHand ?? 0);
+        const onSales = Number(q?.quantityOnSalesOrder ?? 0);
+        return {
+          variantItemId: v.variantItemId,
+          valuesKey: v.valuesKey,
+          readableId: v.variant?.readableId ?? v.variantItemId,
+          name: v.variant?.name ?? v.valuesKey,
+          quantities: {
+            ...(q ?? {}),
+            quantityOnHand: onHand,
+            // Approximate available for display (same spirit as legacy views).
+            quantityAvailable: onHand - onSales
+          }
+        };
+      }
     ),
     error: null
   };

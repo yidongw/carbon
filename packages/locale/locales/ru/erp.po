@@ -1360,6 +1360,9 @@ msgstr "Стандарт выборочного контроля атрибут�
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "Не удалось обновить значение атрибута"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "Не удалось обновить аватарку"
 
@@ -7259,6 +7265,9 @@ msgstr "Ошибка при обновлении параметра конфиг
 
 msgid "Failed to update consumable"
 msgstr "Не удалось обновить расходный материал"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "Не удалось обновить затраты наsumeable"
@@ -12860,6 +12869,9 @@ msgstr "Сохранить и закрыть"
 msgid "Save and Overwrite"
 msgstr "Сохранить и перезаписать"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "Сохранить метод"
 
@@ -15395,6 +15407,9 @@ msgstr "Обновленная компания"
 
 msgid "Updated consumable"
 msgstr "Обновленный расходник"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Обновленные затраты наsumeables"

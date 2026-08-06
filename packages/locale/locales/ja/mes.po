@@ -216,6 +216,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "属性が記録されました"
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -3293,6 +3296,9 @@ msgstr "設定の更新に失敗しました"
 msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
 
+msgid "Failed to update consumable attributes"
+msgstr ""
+
 msgid "Failed to update consumable costing"
 msgstr "消費材コスト更新に失敗しました"
 
@@ -6042,6 +6048,9 @@ msgstr "更新された会社"
 
 msgid "Updated consumable"
 msgstr "更新済みの消耗品"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "更新された消耗品コスト"

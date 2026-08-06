@@ -1119,6 +1119,54 @@ export function parseAttributeValueSelectionsFromFormData(
   return out;
 }
 
+/** Current attribute set + selected value ids for a parent item. */
+export async function getItemAttributeSelectionsForItem(
+  client: Db,
+  args: { itemId: string; companyId: string }
+): Promise<{
+  data: {
+    attributeSetId: string | null;
+    selections: Record<string, string[]>;
+  };
+  error: Error | null;
+}> {
+  const db = client as any;
+  try {
+    const { data: item, error: itemErr } = await db
+      .from("item")
+      .select("attributeSetId")
+      .eq("id", args.itemId)
+      .eq("companyId", args.companyId)
+      .single();
+    if (itemErr) throw itemErr;
+
+    const { data: rows, error: selErr } = await db
+      .from("itemAttributeSelection")
+      .select("attributeId, attributeValueId")
+      .eq("itemId", args.itemId)
+      .eq("companyId", args.companyId);
+    if (selErr) throw selErr;
+
+    const selections: Record<string, string[]> = {};
+    for (const row of rows ?? []) {
+      (selections[row.attributeId] ??= []).push(row.attributeValueId);
+    }
+
+    return {
+      data: {
+        attributeSetId: item?.attributeSetId ?? null,
+        selections
+      },
+      error: null
+    };
+  } catch (error) {
+    return {
+      data: { attributeSetId: null, selections: {} },
+      error: toError(error, "Failed to load item attribute selections")
+    };
+  }
+}
+
 /**
  * Replace itemAttributeSelection rows for a parent from attributeId → valueIds.
  * Also sets item.attributeSetId when provided.

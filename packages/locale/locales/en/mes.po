@@ -216,6 +216,9 @@ msgstr "Attribute not found"
 msgid "Attribute recorded successfully"
 msgstr "Attribute recorded successfully"
 
+msgid "Attribute set is required"
+msgstr "Attribute set is required"
+
 msgid "Attribute set not found"
 msgstr "Attribute set not found"
 
@@ -3293,6 +3296,9 @@ msgstr "Failed to update configuration"
 msgid "Failed to update consumable"
 msgstr "Failed to update consumable"
 
+msgid "Failed to update consumable attributes"
+msgstr "Failed to update consumable attributes"
+
 msgid "Failed to update consumable costing"
 msgstr "Failed to update consumable costing"
 
@@ -6042,6 +6048,9 @@ msgstr "Updated company"
 
 msgid "Updated consumable"
 msgstr "Updated consumable"
+
+msgid "Updated consumable attributes"
+msgstr "Updated consumable attributes"
 
 msgid "Updated consumable costing"
 msgstr "Updated consumable costing"

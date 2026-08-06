@@ -216,6 +216,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "Атрибут успешно зарегистрирован"
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -3293,6 +3296,9 @@ msgstr "Не удалось обновить конфигурацию"
 msgid "Failed to update consumable"
 msgstr "Не удалось обновить расходный материал"
 
+msgid "Failed to update consumable attributes"
+msgstr ""
+
 msgid "Failed to update consumable costing"
 msgstr "Не удалось обновить затраты наsumeable"
 
@@ -6042,6 +6048,9 @@ msgstr "Обновленная компания"
 
 msgid "Updated consumable"
 msgstr "Обновленный расходник"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "Обновленные затраты наsumeables"

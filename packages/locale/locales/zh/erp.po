@@ -1361,6 +1361,9 @@ msgstr "用于计算进货检验时批样大小及接受/拒收数量的属性�
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7237,6 +7240,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "更新属性值失败"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "更新头像失败"
 
@@ -7260,6 +7266,9 @@ msgstr "配置参数更新失败"
 
 msgid "Failed to update consumable"
 msgstr "更新消耗品失败"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "更新消耗物料成本失败"
@@ -12861,6 +12870,9 @@ msgstr "保存并关闭"
 msgid "Save and Overwrite"
 msgstr "保存并覆盖"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "保存方法"
 
@@ -15396,6 +15408,9 @@ msgstr "已更新公司"
 
 msgid "Updated consumable"
 msgstr "已更新耗材"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "已更新消耗品成本估算"

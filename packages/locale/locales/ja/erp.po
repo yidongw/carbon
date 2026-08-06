@@ -1360,6 +1360,9 @@ msgstr "ロット標本サイズおよび受入検査の合格/不合格番号�
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7236,6 +7239,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "属性値の更新に失敗しました"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "アバターの更新に失敗しました"
 
@@ -7259,6 +7265,9 @@ msgstr "設定パラメータの更新に失敗しました"
 
 msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "消費材コスト更新に失敗しました"
@@ -12860,6 +12869,9 @@ msgstr "保存して閉じる"
 msgid "Save and Overwrite"
 msgstr "保存して上書き"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "メソッドを保存"
 
@@ -15395,6 +15407,9 @@ msgstr "更新された会社"
 
 msgid "Updated consumable"
 msgstr "更新済みの消耗品"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "更新された消耗品コスト"

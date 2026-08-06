@@ -1360,6 +1360,9 @@ msgstr "इनबाउंड निरीक्षणों पर लॉट �
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set is required"
+msgstr ""
+
 msgid "Attribute set not found"
 msgstr ""
 
@@ -7239,6 +7242,9 @@ msgstr ""
 msgid "Failed to update attribute value"
 msgstr "फाइल्ड मूल्य अपडेट होने में विफल रहा"
 
+msgid "Failed to update attributes"
+msgstr ""
+
 msgid "Failed to update avatar"
 msgstr "फाइल अपडेट करने में व़िरह हुआ"
 
@@ -7262,6 +7268,9 @@ msgstr "कॉन्फ़िगरेशन पैरामीटर को अ
 
 msgid "Failed to update consumable"
 msgstr "गतिविधि अपडेट करने में फाल्टी"
+
+msgid "Failed to update consumable attributes"
+msgstr ""
 
 msgid "Failed to update consumable costing"
 msgstr "अनुपयोगी लागत अपडेट करने में वफ़्दा है"
@@ -12863,6 +12872,9 @@ msgstr "सहेजें और बंद करें"
 msgid "Save and Overwrite"
 msgstr "सहेजें और अधिलेखित करें"
 
+msgid "Save attributes"
+msgstr ""
+
 msgid "Save Method"
 msgstr "विधि सहेजें"
 
@@ -15398,6 +15410,9 @@ msgstr "अपडेट विनियमन"
 
 msgid "Updated consumable"
 msgstr "अपडेट दिया गया संवर्धन"
+
+msgid "Updated consumable attributes"
+msgstr ""
 
 msgid "Updated consumable costing"
 msgstr "अपडेट खर्चित कस्टिंग"

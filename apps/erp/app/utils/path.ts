@@ -708,6 +708,8 @@ export const path = {
       generatePath(`${x}/consumable/${id}/costing`),
     consumableDetails: (id: string) =>
       generatePath(`${x}/consumable/${id}/details`),
+    consumableAttributes: (id: string) =>
+      generatePath(`${x}/consumable/${id}/attributes`),
     consumableInventory: (id: string) =>
       generatePath(`${x}/consumable/${id}/inventory`),
     consumableInventoryLocation: (id: string, locationId: string) =>

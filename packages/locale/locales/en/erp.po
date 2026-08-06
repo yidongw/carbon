@@ -1360,6 +1360,9 @@ msgstr "Attribute sampling standard used to compute lot sample sizes and accept/
 msgid "Attribute Set"
 msgstr "Attribute Set"
 
+msgid "Attribute set is required"
+msgstr "Attribute set is required"
+
 msgid "Attribute set not found"
 msgstr "Attribute set not found"
 
@@ -7236,6 +7239,9 @@ msgstr "Failed to update attribute set"
 msgid "Failed to update attribute value"
 msgstr "Failed to update attribute value"
 
+msgid "Failed to update attributes"
+msgstr "Failed to update attributes"
+
 msgid "Failed to update avatar"
 msgstr "Failed to update avatar"
 
@@ -7259,6 +7265,9 @@ msgstr "Failed to update configuration parameter"
 
 msgid "Failed to update consumable"
 msgstr "Failed to update consumable"
+
+msgid "Failed to update consumable attributes"
+msgstr "Failed to update consumable attributes"
 
 msgid "Failed to update consumable costing"
 msgstr "Failed to update consumable costing"
@@ -12860,6 +12869,9 @@ msgstr "Save & Close"
 msgid "Save and Overwrite"
 msgstr "Save and Overwrite"
 
+msgid "Save attributes"
+msgstr "Save attributes"
+
 msgid "Save Method"
 msgstr "Save Method"
 
@@ -15395,6 +15407,9 @@ msgstr "Updated company"
 
 msgid "Updated consumable"
 msgstr "Updated consumable"
+
+msgid "Updated consumable attributes"
+msgstr "Updated consumable attributes"
 
 msgid "Updated consumable costing"
 msgstr "Updated consumable costing"
