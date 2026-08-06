@@ -35,6 +35,8 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Dropped:** `styleColor` / `styleSize` tables (`20260806155001`). Views `bundleWorkOrders`, `styleSamples` (± `salesOrderLines`) resolve names via `itemAttributeValue`. Assignment tables already dropped (`20260806145747`).
 
+**Admin — Set Assignments:** `/items/attribute-set-assignments` CRUD on `itemAttributeSetAssignment` (itemType → attribute set). Seeds: Style→Garment, Consumable→Fabric, Consumable→Trim. Nav under Item Attributes.
+
 ## Styles view (migration `20260806150151`)
 
 `styles.colors` / `styles.sizes` json: **`id` = `itemAttributeValue.id`**, plus code/name fields; ordered by `iav.sortOrder`, `iav.code`.
