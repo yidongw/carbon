@@ -2,7 +2,7 @@ type ConfigRow = Record<string, string | number | null | undefined>;
 
 export type StyleConfigChip = {
   key: string;
-  /** Badge text, e.g. `BG · L ×2` (uses stored color codes) */
+  /** Badge text, e.g. `Beige · L ×2` when colorNames are provided */
   label: string;
   /** Expand-row left column, e.g. `Beige · L` when colorNames are provided */
   colorSize: string;
@@ -17,8 +17,8 @@ export type StyleConfigDisplay = {
  * Parse a Style line's stored `configuration` JSON into a flat list of every
  * non-zero color×size cell (for chips + a simple quantity breakdown).
  *
- * Config tables store color *codes*; pass `colorNames` to show names in the
- * expand-view `colorSize` column.
+ * Config tables store color *codes*; pass `colorNames` to show localized names
+ * in chips and the expand list.
  */
 export function getStyleConfigDisplay(
   configuration: unknown,
@@ -79,7 +79,7 @@ export function getStyleConfigDisplay(
       chips.push({
         key: `${colorSizeCode}|${quantity}|${chips.length}`,
         colorSize,
-        label: `${colorSizeCode} ×${quantity}`,
+        label: `${colorSize} ×${quantity}`,
         quantity
       });
     }
