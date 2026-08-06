@@ -15,6 +15,7 @@ import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getPaymentTermsList } from "~/modules/accounting";
 import { upsertDocument } from "~/modules/documents";
+import { getStyleColorList } from "~/modules/items";
 import {
   getDefaultAttachmentsForPO,
   getPurchaseOrder,
@@ -470,7 +471,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     )
   );
   const supplierInteractionId = purchaseOrder.data?.supplierInteractionId;
-  const [defaultAttachments, adHocDocs] = await Promise.all([
+  const [defaultAttachments, adHocDocs, styleColors] = await Promise.all([
     getDefaultAttachmentsForPO(serviceRole, {
       companyId,
       supplierId: purchaseOrder.data?.supplierId ?? null,
@@ -482,8 +483,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           companyId,
           supplierInteractionId
         )
-      : Promise.resolve([])
+      : Promise.resolve([]),
+    // Map color code → name so Style line expand views can show names.
+    getStyleColorList(client, companyId)
   ]);
+  const colorNames: Record<string, string> = {};
+  for (const color of styleColors.data ?? []) {
+    if (color.colorCode) {
+      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
+    }
+  }
   const adHocAttachments = adHocDocs.map((d) => ({
     source: "po" as const,
     name: d.name,
@@ -511,7 +520,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canReopen,
     canDelete,
     defaultCc,
-    resolvedAttachments
+    resolvedAttachments,
+    colorNames
   };
 }
 

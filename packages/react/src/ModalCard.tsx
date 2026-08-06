@@ -26,14 +26,21 @@ import {
   ModalTitle
 } from "./Modal";
 
-const ModalCardTypeContext = createContext<"card" | "modal">("card");
+/**
+ * `"overlay"` behaves like `"modal"`, except the `Modal`/`ModalContent` shell is
+ * supplied by the host (the overlay registry), so `ModalCard`/`ModalCardContent`
+ * render their children directly instead of opening a nested modal.
+ */
+type ModalCardType = "card" | "modal" | "overlay";
+
+const ModalCardTypeContext = createContext<ModalCardType>("card");
 const ModalCardTypeProvider = ModalCardTypeContext.Provider;
 
 const ModalCardProvider = ({
   type = "card",
   ...props
 }: PropsWithChildren<{
-  type?: "card" | "modal";
+  type?: ModalCardType;
 }>) => <ModalCardTypeProvider value={type} {...props} />;
 
 const useModalCardType = () => {
@@ -54,6 +61,10 @@ const ModalCard = forwardRef<
 
   if (type === "card") {
     return <Card {...props} ref={ref} />;
+  }
+
+  if (type === "overlay") {
+    return <>{props.children}</>;
   }
 
   return (
@@ -96,6 +107,10 @@ const ModalCardContent = forwardRef<
 
   if (type === "card") {
     return <div {...props} ref={ref} />;
+  }
+
+  if (type === "overlay") {
+    return <>{rest.children}</>;
   }
 
   return <ModalContent {...rest} size={size ?? "xlarge"} ref={ref} />;

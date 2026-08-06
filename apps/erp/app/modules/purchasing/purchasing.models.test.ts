@@ -23,4 +23,19 @@ describe("purchaseOrderLineValidator", () => {
     expect(result.success).toBe(false);
     expect(result.error?.issues[0]?.path).toEqual(["itemId"]);
   });
+
+  it("accepts Style configuration JSON on purchase order lines", () => {
+    const result = purchaseOrderLineValidator.safeParse({
+      purchaseOrderId: "po_1",
+      purchaseOrderLineType: "Style",
+      itemId: "item_1",
+      purchaseQuantity: 10,
+      configuration: JSON.stringify({
+        configTable: [{ color: "Black", S: 2, M: 3 }],
+        configTablePrimaryKeys: ["S", "M"]
+      })
+    });
+
+    expect(result.success).toBe(true);
+  });
 });

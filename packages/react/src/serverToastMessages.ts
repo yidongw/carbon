@@ -1229,6 +1229,7 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Purchase invoice voided": msg`Purchase invoice voided`,
   "Purchase order created": msg`Purchase order created`,
   "Purchase order finalized": msg`Purchase order finalized`,
+  "Purchase order line created": msg`Purchase order line created`,
   "Purchase order not found": msg`Purchase order not found`,
   "Purchase order submitted for approval": msg`Purchase order submitted for approval`,
   "Quality issue created": msg`Quality issue created`,

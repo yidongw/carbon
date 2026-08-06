@@ -82,6 +82,14 @@ export const overlay = {
       };
     },
 
+    newPurchaseOrderLine({ orderId }: { orderId: string }): OverlayTarget {
+      return {
+        id: "newPurchaseOrderLine",
+        url: `${path.to.newPurchaseOrderLine(orderId)}?overlay=true`,
+        params: { orderId }
+      };
+    },
+
     newStyleSample({ styleId }: { styleId: string }): OverlayTarget {
       return {
         id: "newStyleSample",

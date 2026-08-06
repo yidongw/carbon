@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -234,6 +233,9 @@ msgstr "Demande incorrecte pour annuler la séquence"
 
 msgid "Batch"
 msgstr "Lot"
+
+msgid "Batch has insufficient quantity"
+msgstr "La batch comporte une quantité insuffisante"
 
 msgid "Batch is not available"
 msgstr "Le lot n'est pas disponible"
@@ -891,6 +893,9 @@ msgstr "Échec d'activation du processus"
 msgid "Failed to activate work center"
 msgstr "Échec d'activation du centre de travail"
 
+msgid "Failed to add a line"
+msgstr "Échec de l'ajout d'une ligne"
+
 msgid "Failed to add colors and sizes"
 msgstr "Échec de l'ajout des couleurs et des tailles"
 
@@ -911,6 +916,9 @@ msgstr "Échec de l'attribution des fournisseurs"
 
 msgid "Failed to cancel RFQ"
 msgstr "Échec de l'annulation de la demande de quote-price"
+
+msgid "Failed to check serial number index"
+msgstr "Échec du vérification de l'index du numéro de série"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "Échec de l'ajustement de stock"
@@ -1089,6 +1097,9 @@ msgstr "Échec de la création de la commande de vente"
 msgid "Failed to create sales order line."
 msgstr "Échec de la création de ligne de commande de vente."
 
+msgid "Failed to create samples"
+msgstr "Échec de la création des échantillons"
+
 msgid "Failed to create shift"
 msgstr "Échec de la création d'un horaire"
 
@@ -1118,6 +1129,9 @@ msgstr "Échec de la création du carnet d'heures"
 
 msgid "Failed to create training"
 msgstr "Échec de la création de la formation"
+
+msgid "Failed to create transfer"
+msgstr "Échec de la création du transfert"
 
 msgid "Failed to create user account"
 msgstr "Échec de la création du compte utilisateur"
@@ -1617,6 +1631,9 @@ msgstr "Échec du chargement des factures de vente"
 msgid "Failed to fetch sales orders"
 msgstr "Échec du chargement des commandes de vente"
 
+msgid "Failed to fetch samples"
+msgstr "Échec du chargement des échantillons"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Échec de la récupération des unités de stockage"
 
@@ -1886,6 +1903,9 @@ msgstr "Échec de l'obtention du dépistage"
 
 msgid "Failed to get document"
 msgstr "Échec de récupération du document"
+
+msgid "Failed to get employee processes"
+msgstr "Échec de récupération des processus de l'employé"
 
 msgid "Failed to get employee type"
 msgstr "Échec de récupération du type d'employé"
@@ -2721,6 +2741,9 @@ msgstr "Échec du chargement de l'expédition de devis"
 msgid "Failed to load receipt"
 msgstr "Échec du chargement de la réception"
 
+msgid "Failed to load receipt line"
+msgstr "Échec du chargement de la ligne de réception"
+
 msgid "Failed to load report lines"
 msgstr "Échec du chargement des lignes de rapport"
 
@@ -2846,6 +2869,9 @@ msgstr "Échec du chargement des quantités outil"
 
 msgid "Failed to load tool summary"
 msgstr "Échec du chargement de l'aperçu de l'outil"
+
+msgid "Failed to load tracked entity"
+msgstr "Échec du chargement de l'entité suivie"
 
 msgid "Failed to load training"
 msgstr "Échec du chargement de la formation"
@@ -3011,6 +3037,9 @@ msgstr "Échec du rapport de rétravail"
 
 msgid "Failed to report scrap"
 msgstr "Échec du rapport des déchets"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Échec de résolution des entrepôts partenaires"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Échec de résolution des prix Pull depuis l'inventaire"
@@ -3435,6 +3464,9 @@ msgstr "Échec de la mise à jour du pas de procédure"
 msgid "Failed to update process completion"
 msgstr "Échec de la mise à jour de l'achèvement du processus"
 
+msgid "Failed to update processes"
+msgstr "Échec de la mise à jour des processus"
+
 msgid "Failed to update production event"
 msgstr "Échec de la mise à jour de l'événement de production"
 
@@ -3647,6 +3679,9 @@ msgstr "Échec de la mise à jour du plan d'outils"
 
 msgid "Failed to update tool purchasing"
 msgstr "Échec de la mise à jour des achats de outils"
+
+msgid "Failed to update tracking"
+msgstr "Échec de la mise à jour du suivi"
 
 msgid "Failed to update training question"
 msgstr "Échec de la mise à jour de la question de formation"
@@ -4797,6 +4832,9 @@ msgstr "Commande d'achat créée"
 msgid "Purchase order finalized"
 msgstr "Commande d'achat finalisée"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Commande d'achat introuvable"
 
@@ -5025,6 +5063,9 @@ msgstr "Commande de vente créée"
 msgid "Sample recorded"
 msgstr "Échantillon enregistré"
 
+msgid "Samples created"
+msgstr "Échantillons créés"
+
 msgid "Sampling plan updated"
 msgstr "Plan d'échantillonnage mis à jour"
 
@@ -5176,6 +5217,12 @@ msgstr "Série"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "Numéro de série {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "Le numéro de série existe déjà pour cet article"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Le numéro de série est déjà utilisé pour un autre article ou position"
 
 msgid "Serial number is not available"
 msgstr "Le numéro de série n'est pas disponible"
@@ -5609,6 +5656,9 @@ msgstr "Mise à jour des paramètres de l'exercice fiscal effectuée avec succè
 msgid "Successfully updated job"
 msgstr "Mise à jour du travail effectuée avec succès"
 
+msgid "Successfully updated processes"
+msgstr "Mise à jour des processus réussie"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Succèsment désactivé le client"
 
@@ -5710,6 +5760,9 @@ msgstr "Période actuelle"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "Cette opération est attribuée à quelqu'un d'autre. La reprendre arrête son chronomètre en cours."
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "Ce numéro de série n'a pas été expédié dans ce transfert"
+
 msgid "Thumbnail"
 msgstr "Miniature"
 
@@ -5776,6 +5829,9 @@ msgstr "Temps total : {0}"
 msgid "Total: {0}"
 msgstr "Total : {0}"
 
+msgid "Tracked entity is not available"
+msgstr "Entité suivie n'est pas disponible"
+
 msgid "Tracked entity not found"
 msgstr "Entité suivie non trouvée"
 
@@ -5793,6 +5849,9 @@ msgstr "L'ID de formation est requis"
 
 msgid "Training marked as complete"
 msgstr "Formation marquée comme terminée"
+
+msgid "Transfer created"
+msgstr "Transfert créé"
 
 msgid "Type a message..."
 msgstr "Saisissez un message..."
@@ -6304,60 +6363,3 @@ msgstr "Votre compte n'est pas actif"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Votre entreprise est sur le forfait gratuit (lecture seule). Passez à un forfait supérieur pour effectuer des modifications."
-
-msgid "Batch has insufficient quantity"
-msgstr "La batch comporte une quantité insuffisante"
-
-msgid "Failed to add a line"
-msgstr "Échec de l'ajout d'une ligne"
-
-msgid "Failed to check serial number index"
-msgstr "Échec du vérification de l'index du numéro de série"
-
-msgid "Failed to create samples"
-msgstr "Échec de la création des échantillons"
-
-msgid "Failed to create transfer"
-msgstr "Échec de la création du transfert"
-
-msgid "Failed to fetch samples"
-msgstr "Échec du chargement des échantillons"
-
-msgid "Failed to get employee processes"
-msgstr "Échec de récupération des processus de l'employé"
-
-msgid "Failed to load receipt line"
-msgstr "Échec du chargement de la ligne de réception"
-
-msgid "Failed to load tracked entity"
-msgstr "Échec du chargement de l'entité suivie"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "Échec de résolution des entrepôts partenaires"
-
-msgid "Failed to update processes"
-msgstr "Échec de la mise à jour des processus"
-
-msgid "Failed to update tracking"
-msgstr "Échec de la mise à jour du suivi"
-
-msgid "Samples created"
-msgstr "Échantillons créés"
-
-msgid "Serial number already exists for this item"
-msgstr "Le numéro de série existe déjà pour cet article"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "Le numéro de série est déjà utilisé pour un autre article ou position"
-
-msgid "Successfully updated processes"
-msgstr "Mise à jour des processus réussie"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "Ce numéro de série n'a pas été expédié dans ce transfert"
-
-msgid "Tracked entity is not available"
-msgstr "Entité suivie n'est pas disponible"
-
-msgid "Transfer created"
-msgstr "Transfert créé"

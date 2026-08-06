@@ -231,3 +231,36 @@ Patterns learned from corrections. Review at the start of each session.
 - The index builds at module load from `source.getPages()`; after renaming a content dir (`content/guide` →
   `content/guides`) or changing `defineDocs({ dir })`, run `pnpm exec fumadocs-mdx` to regenerate `.source`, and
   the search index only reflects it after the dev server rebuilds the route.
+
+## An "empty picker" is usually a filter prop, not a broken flow
+
+- PO lines showed no Styles because `PurchaseOrderLineForm` passed `replenishmentSystem="Buy"` to `<Item>` and
+  styles are replenished by `Make`. `Item`'s filter is a plain `.filter()` over the `useItems` store — check the
+  props being passed *before* suspecting the store, the query, or the selection flow.
+- When a picker looks empty locally, first switch its type filter to "All Items". If that's empty too, the client
+  item store never hydrated (`RealtimeDataProvider` fetches `item` with the browser client) and the environment
+  is the problem, not the filter. The store caches to localforage under the `items` key, so seeding that key and
+  reloading is a fast way to exercise filter logic without a full DB.
+- Relaxing one filter branch must not relax the others: after skipping the Buy filter for `Style`, verify a
+  `Make` *Part* is still hidden.
+
+## Verifying in a worktree without `crbn up`
+
+- A bare `react-router dev` in a worktree misses env that `crbn` injects: copy both the primary worktree's `.env`
+  (has `SESSION_SECRET`) and `.env.local` (ports, Supabase keys) and `set -a; . ./.env; . ./.env.local` before
+  starting, since vite's `envDir` is the app dir, not the repo root.
+- `DEV_BYPASS_EMAIL` only works for a user that exists and is active in the DB *and* the account must belong to
+  the company that owns the record under test — query `userToCompany` first rather than guessing.
+
+## Style quantity grid icon: don't gate on `requiresConfiguration`
+
+- Style items can have `configurationParameter` rows (color/size) while
+  `itemReplenishment.requiresConfiguration` is still `false` (seen on local
+  "Test T-Shirt"). Gating `QuantityWithConfigTable`'s grid adornment on
+  `requiresConfiguration` / `useConfigurableItems()` hid the icon even after
+  selecting a Style.
+- For PO/SO Style lines, show the grid trigger when `itemType === "Style"` and
+  an `itemId` is set. Job/Part forms can keep the store/API hydrate pattern.
+- Rebuilding `purchaseOrderLines` after adding a column must match the local
+  schema: `LEFT JOIN "fixedAsset"` fails if that table isn't migrated yet — don't
+  DROP the view until the CREATE succeeds.

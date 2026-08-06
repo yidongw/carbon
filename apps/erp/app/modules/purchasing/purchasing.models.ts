@@ -248,7 +248,8 @@ export const purchaseOrderLineValidator = z
     supplierPartId: zfd.text(z.string().optional()),
     supplierShippingCost: zfd.numeric(z.number().optional()),
     supplierTaxAmount: zfd.numeric(z.number().optional()),
-    supplierUnitPrice: zfd.numeric(z.number().optional())
+    supplierUnitPrice: zfd.numeric(z.number().optional()),
+    configuration: zfd.text(z.string().optional())
   })
   .refine(
     (data) =>

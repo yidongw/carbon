@@ -21,10 +21,11 @@ import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useRevalidator } from "react-router";
 import { MethodIcon, SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
+import { overlay, useOverlay } from "~/components/Overlay";
 import {
   useCurrencyFormatter,
   useDateFormatter,
@@ -33,7 +34,6 @@ import {
   useRouteData,
   useUser
 } from "~/hooks";
-import type { MethodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
@@ -43,7 +43,8 @@ import type {
   PurchaseOrderLine,
   Supplier
 } from "../../types";
-import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
+import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
+import { getStyleConfigDisplay } from "./styleConfigDisplay";
 
 const LineItems = ({
   currencyCode,
@@ -51,7 +52,9 @@ const LineItems = ({
   formatter,
   locale,
   lines,
-  shouldConvertCurrency
+  shouldConvertCurrency,
+  colorNames,
+  purchaseOrderStatus
 }: {
   currencyCode: string;
   presentationCurrencyFormatter: Intl.NumberFormat;
@@ -59,9 +62,12 @@ const LineItems = ({
   locale: string;
   lines: PurchaseOrderLine[];
   shouldConvertCurrency: boolean;
+  colorNames: Record<string, string>;
+  purchaseOrderStatus: PurchaseOrder["status"] | null | undefined;
 }) => {
   const [items] = useItems();
   const accounts = useAccounts();
+  const permissions = usePermissions();
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
@@ -70,14 +76,33 @@ const LineItems = ({
   const [openItems, setOpenItems] = useState<string[]>([]);
   const unitOfMeasures = useUnitOfMeasure();
 
+  const deleteLineDisclosure = useDisclosure();
+  const [deleteLine, setDeleteLine] = useState<PurchaseOrderLine | null>(null);
+
+  const isLocked = isPurchaseOrderLocked(purchaseOrderStatus);
+  const isDeleteDisabled = isLocked || purchaseOrderStatus !== "Draft";
+
   const toggleOpen = (id: string) => {
     setOpenItems((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
+  const onDeleteLine = (line: PurchaseOrderLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
+  };
+
   return (
     <VStack spacing={8} className="w-full overflow-hidden">
+      {deleteLineDisclosure.isOpen && deleteLine ? (
+        <DeletePurchaseOrderLine line={deleteLine} onCancel={onDeleteCancel} />
+      ) : null}
       {lines.map((line) => {
         if (!line.id) return null;
 
@@ -98,6 +123,10 @@ const LineItems = ({
           supplierLineTotal +
           (line.supplierTaxAmount ?? 0) +
           (line.supplierShippingCost ?? 0);
+        const styleConfig = getStyleConfigDisplay(
+          line.configuration,
+          colorNames
+        );
 
         return (
           <motion.div
@@ -143,9 +172,25 @@ const LineItems = ({
                         >
                           <Link
                             to={path.to.purchaseOrderLine(orderId, line.id!)}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <Trans>Edit</Trans>
                           </Link>
+                        </Button>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="text-destructive flex-shrink-0"
+                          isDisabled={
+                            isDeleteDisabled ||
+                            !permissions.can("delete", "purchasing")
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteLine(line);
+                          }}
+                        >
+                          <Trans>Delete</Trans>
                         </Button>
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
@@ -156,6 +201,19 @@ const LineItems = ({
                             ? line.description || t`Fixed Asset`
                             : line.description}
                       </span>
+                      {styleConfig ? (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {styleConfig.chips.map((chip) => (
+                            <Badge
+                              key={chip.key}
+                              variant="secondary"
+                              className="font-normal tabular-nums"
+                            >
+                              {chip.label}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
                     </VStack>
                     <VStack
                       spacing={2}
@@ -227,15 +285,27 @@ const LineItems = ({
               transition={{ duration: 0.3 }}
               className="w-full overflow-hidden"
             >
-              <div className="w-full">
+              <div className="w-full space-y-4">
                 <Table>
                   <Tbody>
+                    {styleConfig?.chips.map((chip) => (
+                      <Tr key={chip.key}>
+                        <Td className="whitespace-nowrap">{chip.colorSize}</Td>
+                        <Td className="text-right">
+                          <VStack spacing={0} className="items-end">
+                            <span className="tabular-nums">
+                              {chip.quantity}
+                            </span>
+                          </VStack>
+                        </Td>
+                      </Tr>
+                    ))}
                     <Tr>
-                      <Td>
+                      <Td className="whitespace-nowrap">
                         <Trans>Quantity</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>
                             {line.purchaseQuantity}{" "}
                             {
@@ -262,11 +332,11 @@ const LineItems = ({
                       </Td>
                     </Tr>
                     <Tr>
-                      <Td>
+                      <Td className="whitespace-nowrap">
                         <Trans>Unit Price</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(line.unitPrice ?? 0)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -279,11 +349,11 @@ const LineItems = ({
                       </Td>
                     </Tr>
                     <Tr className="border-b border-border">
-                      <Td>
+                      <Td className="whitespace-nowrap">
                         <Trans>Extended Price</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(lineTotal)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -297,13 +367,13 @@ const LineItems = ({
                     </Tr>
 
                     <Tr key="tax">
-                      <Td>
+                      <Td className="whitespace-nowrap">
                         <Trans>
                           Tax ({percentFormatter.format(line.taxPercent ?? 0)})
                         </Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(line.taxAmount ?? 0)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -317,11 +387,11 @@ const LineItems = ({
                     </Tr>
 
                     <Tr key="shipping" className="border-b border-border">
-                      <Td>
+                      <Td className="whitespace-nowrap">
                         <Trans>Shipping</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>
                             {formatter.format(line.shippingCost ?? 0)}
                           </span>
@@ -337,11 +407,11 @@ const LineItems = ({
                     </Tr>
 
                     <Tr key="total" className="font-bold">
-                      <Td>
+                      <Td className="whitespace-nowrap">
                         <Trans>Total</Trans>
                       </Td>
                       <Td className="text-right">
-                        <VStack spacing={0}>
+                        <VStack spacing={0} className="items-end">
                           <span>{formatter.format(total)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
@@ -375,14 +445,16 @@ const PurchaseOrderSummary = ({
   if (!orderId) throw new Error("Could not find orderId");
   const { formatDate } = useDateFormatter();
 
-  const { company, defaults } = useUser();
+  const { company } = useUser();
   const permissions = usePermissions();
-  const newPurchaseOrderLineDisclosure = useDisclosure();
+  const { openOverlay } = useOverlay();
+  const revalidator = useRevalidator();
   const routeData = useRouteData<{
     purchaseOrder: PurchaseOrder;
     lines: PurchaseOrderLine[];
     purchaseOrderDelivery: PurchaseOrderDelivery;
     supplier: Supplier;
+    colorNames?: Record<string, string>;
   }>(path.to.purchaseOrder(orderId));
 
   const isEditable = !isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
@@ -391,17 +463,10 @@ const PurchaseOrderSummary = ({
     routeData?.purchaseOrder?.status === "Draft" &&
     permissions.can("update", "purchasing");
 
-  const purchaseOrderLineInitialValues = {
-    purchaseOrderId: orderId,
-    purchaseOrderLineType: "Item" as MethodItemType,
-    purchaseQuantity: 1,
-    supplierUnitPrice: 0,
-    locationId:
-      routeData?.purchaseOrder?.locationId ?? defaults.locationId ?? "",
-    supplierTaxAmount: 0,
-    supplierShippingCost: 0,
-    exchangeRate: routeData?.purchaseOrder?.exchangeRate ?? 1
-  };
+  const onAddLine = () =>
+    openOverlay(overlay.to.newPurchaseOrderLine({ orderId }), {
+      onCreated: () => revalidator.revalidate()
+    });
 
   const { locale } = useLocale();
   const formatter = useCurrencyFormatter();
@@ -487,12 +552,14 @@ const PurchaseOrderSummary = ({
             locale={locale}
             lines={routeData?.lines ?? []}
             shouldConvertCurrency={shouldConvertCurrency}
+            colorNames={routeData?.colorNames ?? {}}
+            purchaseOrderStatus={routeData?.purchaseOrder?.status}
           />
 
           {canAddLine && (
             <button
               type="button"
-              onClick={newPurchaseOrderLineDisclosure.onOpen}
+              onClick={onAddLine}
               className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
             >
               <LuCirclePlus className="h-4 w-4" />
@@ -502,7 +569,7 @@ const PurchaseOrderSummary = ({
 
           <VStack spacing={2} className="mt-8">
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Subtotal:</Trans>
               </span>
               <VStack spacing={0} className="items-end">
@@ -515,7 +582,7 @@ const PurchaseOrderSummary = ({
               </VStack>
             </HStack>
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Tax:</Trans>
               </span>
               <VStack spacing={0} className="items-end">
@@ -532,7 +599,7 @@ const PurchaseOrderSummary = ({
               {shippingCost > 0 ? (
                 <>
                   <VStack spacing={0}>
-                    <span>
+                    <span className="whitespace-nowrap">
                       <Trans>Shipping:</Trans>
                     </span>
                     {isEditable && (
@@ -570,7 +637,7 @@ const PurchaseOrderSummary = ({
             </HStack>
 
             <HStack className="justify-between text-xl font-bold w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Total:</Trans>
               </span>
               <VStack spacing={0} className="items-end">
@@ -585,13 +652,6 @@ const PurchaseOrderSummary = ({
           </VStack>
         </CardContent>
       </Card>
-      {newPurchaseOrderLineDisclosure.isOpen && (
-        <PurchaseOrderLineForm
-          initialValues={purchaseOrderLineInitialValues}
-          type="modal"
-          onClose={newPurchaseOrderLineDisclosure.onClose}
-        />
-      )}
     </>
   );
 };

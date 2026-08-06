@@ -52,6 +52,7 @@ import {
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import {
   useCurrencyFormatter,
   usePercentFormatter,
@@ -60,6 +61,13 @@ import {
   useUser
 } from "~/hooks";
 import { getSupplierPartPriceBreaks } from "~/modules/items";
+import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
+import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
+import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
 import type { PurchaseOrder, PurchaseOrderLine } from "~/modules/purchasing";
 import {
   isPurchaseOrderLocked,
@@ -71,19 +79,65 @@ import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
 
-type PurchaseOrderLineFormProps = {
-  initialValues: z.infer<typeof purchaseOrderLineValidator> & {
-    assetReadableId?: string;
-    assetName?: string;
-  };
-  type?: "card" | "modal";
-  onClose?: () => void;
+export type PurchaseOrderLineInitialValues = z.infer<
+  typeof purchaseOrderLineValidator
+> & {
+  assetReadableId?: string;
+  assetName?: string;
 };
+
+type PurchaseOrderLineFormProps = {
+  initialValues: PurchaseOrderLineInitialValues;
+  type?: "card" | "modal" | "overlay";
+  onClose?: () => void;
+} & Partial<OverlayFormInjectedProps>;
+
+function parseInitialConfig(raw: unknown): {
+  rows: Row[] | null;
+  primaryKeys: string[];
+  total: number;
+} {
+  if (!raw) return { rows: null, primaryKeys: [], total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("configTable" in parsed)
+    ) {
+      return { rows: null, primaryKeys: [], total: 0 };
+    }
+    const config = parsed as {
+      configTable?: Row[];
+      configTablePrimaryKeys?: string[];
+    };
+    const rows = Array.isArray(config.configTable) ? config.configTable : null;
+    const primaryKeys = Array.isArray(config.configTablePrimaryKeys)
+      ? config.configTablePrimaryKeys.filter(
+          (k): k is string => typeof k === "string"
+        )
+      : [];
+    let total = 0;
+    if (rows) {
+      for (const row of rows) {
+        for (const key of primaryKeys) {
+          total += Number(row[key]) || 0;
+        }
+      }
+    }
+    return { rows, primaryKeys, total };
+  } catch {
+    return { rows: null, primaryKeys: [], total: 0 };
+  }
+}
 
 const PurchaseOrderLineForm = ({
   initialValues,
   type,
-  onClose
+  onClose,
+  onDismiss,
+  fetcher: overlayFetcher,
+  action: overlayAction
 }: PurchaseOrderLineFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -91,7 +145,12 @@ const PurchaseOrderLineForm = ({
   const [items] = useItems();
   const { company } = useUser();
   const { orderId } = useParams();
-  const fetcher = useFetcher<typeof action>();
+  const localFetcher = useFetcher<typeof action>();
+  const isOverlay = type === "overlay";
+  // In an overlay the host owns the submit fetcher (it closes + revalidates on
+  // a successful response) and the POST target carries the `overlay` flag.
+  const fetcher = overlayFetcher ?? localFetcher;
+  const dismiss = onDismiss ?? onClose;
 
   if (!orderId) throw new Error("orderId not found");
 
@@ -301,9 +360,71 @@ const PurchaseOrderLineForm = ({
   const currencyFormatter = useCurrencyFormatter();
   const percentFormatter = usePercentFormatter();
 
+  const configModal = useConfigTableModal();
+  const initialConfig = parseInitialConfig(initialValues.configuration);
+  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
+    initialConfig.rows
+  );
+  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
+    string[]
+  >(initialConfig.primaryKeys);
+  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+
+  // Styles always use the color×size quantity grid — show the trigger as soon
+  // as a Style item is selected (don't wait on requiresConfiguration /
+  // configurable-items hydrate the way Job/Part forms do).
+  const hasConfigurationParameters =
+    itemType === "Style" && Boolean(itemData.itemId);
+
+  // A Style line's quantity comes from the color×size grid, so it starts at 0
+  // and Save stays disabled until the grid supplies a quantity.
+  const isMissingStyleQuantity =
+    itemType === "Style" && !(itemData.purchaseQuantity > 0);
+
+  const onQuantityChange = (value: number) => {
+    const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
+    setItemData((d) => ({
+      ...d,
+      purchaseQuantity: value,
+      supplierUnitPrice: resolveSupplierPrice(
+        d.priceBreaks,
+        value,
+        d.fallbackUnitPrice,
+        exchangeRate
+      )
+    }));
+  };
+
+  const applyConfig = (data: unknown) => {
+    if (!isConfigTableOverlaySuccess(data)) return;
+    setConfigTableRows(data.configuration.configTable);
+    setConfigTablePrimaryKeys(data.primaryKeys);
+    setConfigTableTotal(data.total);
+    onQuantityChange(data.total);
+  };
+
+  const openConfigTable = () => {
+    if (!itemData.itemId) return;
+    configModal.open({
+      itemId: itemData.itemId,
+      configuration: toConfigTableValue(
+        configTableRows,
+        configTablePrimaryKeys
+      ),
+      onConfirm: applyConfig
+    });
+  };
+
+  const clearConfig = () => {
+    setConfigTableRows(null);
+    setConfigTablePrimaryKeys([]);
+    setConfigTableTotal(0);
+  };
+
   const onTypeChange = (t: MethodItemType | "Item") => {
     if (t === itemType) return;
     setItemType(t as MethodItemType);
+    clearConfig();
     setItemData({
       itemId: "",
       conversionFactor: 1,
@@ -312,7 +433,7 @@ const PurchaseOrderLineForm = ({
       inventoryUom: "",
       minimumOrderQuantity: undefined,
       priceBreaks: [],
-      purchaseQuantity: 1,
+      purchaseQuantity: t === "Style" ? 0 : 1,
       purchaseUom: "",
       requiredDate: null,
       storageUnitId: "",
@@ -326,12 +447,14 @@ const PurchaseOrderLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) throw new Error("Carbon client not found");
+    clearConfig();
     switch (itemType) {
       // @ts-expect-error
       case "Item":
       case "Consumable":
       case "Material":
       case "Part":
+      case "Style":
       case "Tool":
       // @ts-expect-error
       case "Service":
@@ -365,7 +488,11 @@ const PurchaseOrderLineForm = ({
         const itemCost = item?.data?.itemCost?.[0];
         const itemReplenishment = item?.data?.itemReplenishment;
         const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
-        const initialQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
+        const minOrderQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
+        // A Style's quantity is the sum of its color×size grid, so leave it at 0
+        // until the grid is filled in.
+        const isStyle = item?.data?.type === "Style";
+        const initialQty = isStyle ? 0 : minOrderQty;
         const leadTime = item?.data?.itemReplenishment?.leadTime ?? 0;
         const baseFallback =
           (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
@@ -376,7 +503,7 @@ const PurchaseOrderLineForm = ({
           : [];
         const resolvedPrice = resolveSupplierPrice(
           breaks,
-          initialQty,
+          minOrderQty,
           baseFallback,
           exchangeRate
         );
@@ -463,11 +590,18 @@ const PurchaseOrderLineForm = ({
                 validator={purchaseOrderLineValidator}
                 method="post"
                 action={
-                  isEditing
+                  overlayAction ??
+                  (isEditing
                     ? path.to.purchaseOrderLine(orderId, initialValues.id!)
-                    : path.to.newPurchaseOrderLine(orderId)
+                    : path.to.newPurchaseOrderLine(orderId))
                 }
-                className="w-full"
+                className={cn(
+                  "w-full",
+                  // The overlay host renders a `w-fit` modal shell, so the form
+                  // sets its own width and scrolls its body.
+                  isOverlay &&
+                    "flex max-h-[85vh] w-[72rem] max-w-[calc(100vw-2rem)] flex-col pt-6"
+                )}
                 fetcher={fetcher}
                 isDisabled={isLocked}
                 onSuccess={type === "modal" ? onClose : undefined}
@@ -475,7 +609,8 @@ const PurchaseOrderLineForm = ({
                 <HStack
                   className={cn(
                     "w-full justify-between items-start",
-                    type === "modal" && "pr-16"
+                    type !== "card" && "pr-16",
+                    isOverlay && "shrink-0"
                   )}
                 >
                   <ModalCardHeader className="flex flex-1">
@@ -560,7 +695,9 @@ const PurchaseOrderLineForm = ({
                     )}
                   </div>
                 </HStack>
-                <ModalCardBody>
+                <ModalCardBody
+                  className={cn(isOverlay && "min-h-0 flex-1 overflow-y-auto")}
+                >
                   <Hidden name="id" />
                   <Hidden name="purchaseOrderId" />
                   <Hidden
@@ -574,6 +711,18 @@ const PurchaseOrderLineForm = ({
                       name="inventoryUnitOfMeasureCode"
                       value={itemData?.inventoryUom}
                     />
+                    {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
+                    <Hidden
+                      name="configuration"
+                      value={
+                        configTableRows
+                          ? JSON.stringify({
+                              configTable: configTableRows,
+                              configTablePrimaryKeys
+                            })
+                          : ""
+                      }
+                    />
                     <VStack>
                       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
                         <Item
@@ -581,8 +730,13 @@ const PurchaseOrderLineForm = ({
                           label={itemType}
                           type={itemType}
                           locationId={locationId}
+                          // Styles are replenished by Make (they're produced
+                          // in-house or cut-and-sew), but they're still bought
+                          // as finished garments, so don't filter them out.
                           replenishmentSystem={
-                            isOutsideProcessing ? undefined : "Buy"
+                            isOutsideProcessing || itemType === "Style"
+                              ? undefined
+                              : "Buy"
                           }
                           onChange={(value) => {
                             onItemChange(value?.value as string);
@@ -625,30 +779,38 @@ const PurchaseOrderLineForm = ({
                           }}
                         />
 
-                        <NumberControlled
-                          minValue={itemData.minimumOrderQuantity}
-                          name="purchaseQuantity"
-                          label={t`Quantity`}
-                          value={itemData.purchaseQuantity}
-                          onChange={(value) => {
-                            const exchangeRate =
-                              routeData?.purchaseOrder?.exchangeRate ?? 1;
-                            setItemData((d) => ({
-                              ...d,
-                              purchaseQuantity: value,
-                              supplierUnitPrice: resolveSupplierPrice(
-                                d.priceBreaks,
-                                value,
-                                d.fallbackUnitPrice,
-                                exchangeRate
-                              )
-                            }));
-                          }}
-                        />
+                        {itemType === "Style" ? (
+                          <QuantityWithConfigTable
+                            name="purchaseQuantity"
+                            label={t`Quantity`}
+                            minValue={itemData.minimumOrderQuantity}
+                            value={itemData.purchaseQuantity}
+                            onChange={onQuantityChange}
+                            hasConfigurationParameters={
+                              hasConfigurationParameters
+                            }
+                            onOpenConfigTable={
+                              hasConfigurationParameters
+                                ? openConfigTable
+                                : undefined
+                            }
+                            configTableTotal={configTableTotal}
+                            isReadOnly={configTableTotal > 0}
+                          />
+                        ) : (
+                          <NumberControlled
+                            minValue={itemData.minimumOrderQuantity}
+                            name="purchaseQuantity"
+                            label={t`Quantity`}
+                            value={itemData.purchaseQuantity}
+                            onChange={onQuantityChange}
+                          />
+                        )}
 
                         {[
                           "Item",
                           "Part",
+                          "Style",
                           "Material",
                           "Consumable",
                           "Tool",
@@ -703,6 +865,7 @@ const PurchaseOrderLineForm = ({
                         {[
                           "Item",
                           "Part",
+                          "Style",
                           "Service",
                           "Material",
                           "Tool",
@@ -720,6 +883,7 @@ const PurchaseOrderLineForm = ({
                         {[
                           "Item",
                           "Part",
+                          "Style",
                           "Service",
                           "Material",
                           "Tool",
@@ -1106,14 +1270,17 @@ const PurchaseOrderLineForm = ({
                     </>
                   )}
                 </ModalCardBody>
-                <ModalCardFooter>
+                <ModalCardFooter className={cn(isOverlay && "shrink-0")}>
                   <HStack className="justify-end gap-2">
-                    {onClose && (
-                      <Button variant="ghost" onClick={onClose}>
+                    {dismiss && (
+                      <Button variant="ghost" onClick={dismiss}>
                         <Trans>Cancel</Trans>
                       </Button>
                     )}
-                    <Submit isDisabled={isDisabled} withBlocker={false}>
+                    <Submit
+                      isDisabled={isDisabled || isMissingStyleQuantity}
+                      withBlocker={false}
+                    >
                       <Trans>Save</Trans>
                     </Submit>
                   </HStack>
@@ -1123,6 +1290,7 @@ const PurchaseOrderLineForm = ({
           </ModalCard>
         </ModalCardProvider>
       </Tabs>
+      {configModal.node}
       {isEditing && deleteDisclosure.isOpen && (
         <DeletePurchaseOrderLine
           line={initialValues as PurchaseOrderLine}

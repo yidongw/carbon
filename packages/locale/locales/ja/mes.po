@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -234,6 +233,9 @@ msgstr "リクエストが無効です"
 
 msgid "Batch"
 msgstr "バッチ"
+
+msgid "Batch has insufficient quantity"
+msgstr "バッチの数量が不足しています"
 
 msgid "Batch is not available"
 msgstr "バッチは利用できません"
@@ -891,6 +893,9 @@ msgstr "プロセスの有効化に失敗しました"
 msgid "Failed to activate work center"
 msgstr "作業センターの有効化に失敗しました"
 
+msgid "Failed to add a line"
+msgstr "追加に失敗しました"
+
 msgid "Failed to add colors and sizes"
 msgstr "色とサイズの追加に失敗しました"
 
@@ -911,6 +916,9 @@ msgstr "サプライヤーの割り当てに失敗しました"
 
 msgid "Failed to cancel RFQ"
 msgstr "RFQのキャンセルに失敗しました"
+
+msgid "Failed to check serial number index"
+msgstr "シリアル番号インデックスの確認に失敗しました"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "在庫調整の完了に失敗しました"
@@ -1089,6 +1097,9 @@ msgstr "売上注文の作成に失敗しました"
 msgid "Failed to create sales order line."
 msgstr "販売注文行の作成に失敗しました。"
 
+msgid "Failed to create samples"
+msgstr "サンプルの作成に失敗しました"
+
 msgid "Failed to create shift"
 msgstr "シフトの作成に失敗しました"
 
@@ -1118,6 +1129,9 @@ msgstr "タイムカードの作成に失敗しました"
 
 msgid "Failed to create training"
 msgstr "訓練の作成に失敗しました"
+
+msgid "Failed to create transfer"
+msgstr "転送の作成に失敗しました"
 
 msgid "Failed to create user account"
 msgstr "ユーザー アカウントの作成に失敗しました"
@@ -1617,6 +1631,9 @@ msgstr "取引先発行の領収書を取得できませんでした"
 msgid "Failed to fetch sales orders"
 msgstr "取引注文の取得に失敗しました"
 
+msgid "Failed to fetch samples"
+msgstr "サンプル取得に失敗しました"
+
 msgid "Failed to fetch storageUnits"
 msgstr "storageUnitsの取得に失敗しました"
 
@@ -1886,6 +1903,9 @@ msgstr "発送取得に失敗しました"
 
 msgid "Failed to get document"
 msgstr "ドキュメントの取得に失敗しました"
+
+msgid "Failed to get employee processes"
+msgstr "従業員のプロセス取得に失敗しました"
 
 msgid "Failed to get employee type"
 msgstr "従業員の種類を取得できませんでした"
@@ -2721,6 +2741,9 @@ msgstr "注文出荷情報の読み込みに失敗しました"
 msgid "Failed to load receipt"
 msgstr "受付を読み込めませんでした"
 
+msgid "Failed to load receipt line"
+msgstr "受領行の読み込みに失敗しました"
+
 msgid "Failed to load report lines"
 msgstr "レポート行の読み込みに失敗しました"
 
@@ -2846,6 +2869,9 @@ msgstr "ツールの数量を読み込めませんでした"
 
 msgid "Failed to load tool summary"
 msgstr "ツールの概要を読み込めませんでした"
+
+msgid "Failed to load tracked entity"
+msgstr "追跡エンティティの読み込みに失敗しました"
 
 msgid "Failed to load training"
 msgstr "トレーニングの読み込みに失敗しました"
@@ -3011,6 +3037,9 @@ msgstr "再加工報告に失敗しました"
 
 msgid "Failed to report scrap"
 msgstr "不良報告に失敗しました"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "パートナー倉庫の解決に失敗しました"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "在庫からPull価格を解決できませんでした"
@@ -3435,6 +3464,9 @@ msgstr "更新プロシージャステップに失敗しました"
 msgid "Failed to update process completion"
 msgstr "プロセスの完了を更新できませんでした"
 
+msgid "Failed to update processes"
+msgstr "プロセスの更新に失敗しました"
+
 msgid "Failed to update production event"
 msgstr "生産イベントの更新に失敗しました"
 
@@ -3647,6 +3679,9 @@ msgstr "ツール計画の更新に失敗しました"
 
 msgid "Failed to update tool purchasing"
 msgstr "ツール購入の更新に失敗しました"
+
+msgid "Failed to update tracking"
+msgstr "トラッキングの更新に失敗しました"
 
 msgid "Failed to update training question"
 msgstr "更新トレーニング質問に失敗しました"
@@ -4797,6 +4832,9 @@ msgstr "購入注文が作成されました"
 msgid "Purchase order finalized"
 msgstr "購入注文完了"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "購入注文が見つかりません"
 
@@ -5025,6 +5063,9 @@ msgstr "販売注文を作成しました"
 msgid "Sample recorded"
 msgstr "サンプルが録音されました"
 
+msgid "Samples created"
+msgstr "サンプル作成済み"
+
 msgid "Sampling plan updated"
 msgstr "採番計画が更新されました"
 
@@ -5176,6 +5217,12 @@ msgstr "シリアル"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "シリアル番号 {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "このアイテムに既にシリアル番号が存在します"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "既に他の項目や位置で使用されています"
 
 msgid "Serial number is not available"
 msgstr "シリアル番号は利用できません"
@@ -5609,6 +5656,9 @@ msgstr "財政年度設定を更新しました"
 msgid "Successfully updated job"
 msgstr "作業を成功して更新しました"
 
+msgid "Successfully updated processes"
+msgstr "成功しました 更新されたプロセス"
+
 msgid "Sucessfully deactivated customer"
 msgstr "顧客を無効にしました"
 
@@ -5710,6 +5760,9 @@ msgstr "この期間"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "この工程は他の担当者に割り当てられています。引き継ぐと担当者の計測中の時間が停止します。"
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "このシリアル番号はこの移動で出荷されていません"
+
 msgid "Thumbnail"
 msgstr "サムネイル"
 
@@ -5776,6 +5829,9 @@ msgstr "合計時間: {0}"
 msgid "Total: {0}"
 msgstr "合計: {0}"
 
+msgid "Tracked entity is not available"
+msgstr "追跡対象が利用できません"
+
 msgid "Tracked entity not found"
 msgstr "追跡対象が見つかりません"
 
@@ -5793,6 +5849,9 @@ msgstr "トレーニングIDは必須です"
 
 msgid "Training marked as complete"
 msgstr "トレーニングが完了しました"
+
+msgid "Transfer created"
+msgstr "転送が作成されました"
 
 msgid "Type a message..."
 msgstr "メッセージを入力..."
@@ -6304,60 +6363,3 @@ msgstr "あなたのアカウントは有効になっていません"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "お客様の会社は無料プラン（読み取り専用）です。変更するにはアップグレードしてください。"
-
-msgid "Batch has insufficient quantity"
-msgstr "バッチの数量が不足しています"
-
-msgid "Failed to add a line"
-msgstr "追加に失敗しました"
-
-msgid "Failed to check serial number index"
-msgstr "シリアル番号インデックスの確認に失敗しました"
-
-msgid "Failed to create samples"
-msgstr "サンプルの作成に失敗しました"
-
-msgid "Failed to create transfer"
-msgstr "転送の作成に失敗しました"
-
-msgid "Failed to fetch samples"
-msgstr "サンプル取得に失敗しました"
-
-msgid "Failed to get employee processes"
-msgstr "従業員のプロセス取得に失敗しました"
-
-msgid "Failed to load receipt line"
-msgstr "受領行の読み込みに失敗しました"
-
-msgid "Failed to load tracked entity"
-msgstr "追跡エンティティの読み込みに失敗しました"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "パートナー倉庫の解決に失敗しました"
-
-msgid "Failed to update processes"
-msgstr "プロセスの更新に失敗しました"
-
-msgid "Failed to update tracking"
-msgstr "トラッキングの更新に失敗しました"
-
-msgid "Samples created"
-msgstr "サンプル作成済み"
-
-msgid "Serial number already exists for this item"
-msgstr "このアイテムに既にシリアル番号が存在します"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "既に他の項目や位置で使用されています"
-
-msgid "Successfully updated processes"
-msgstr "成功しました 更新されたプロセス"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "このシリアル番号はこの移動で出荷されていません"
-
-msgid "Tracked entity is not available"
-msgstr "追跡対象が利用できません"
-
-msgid "Transfer created"
-msgstr "転送が作成されました"

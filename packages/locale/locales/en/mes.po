@@ -234,6 +234,9 @@ msgstr "Bad request for rolling back sequence"
 msgid "Batch"
 msgstr "Batch"
 
+msgid "Batch has insufficient quantity"
+msgstr "Batch has insufficient quantity"
+
 msgid "Batch is not available"
 msgstr "Batch is not available"
 
@@ -890,6 +893,9 @@ msgstr "Failed to activate process"
 msgid "Failed to activate work center"
 msgstr "Failed to activate work center"
 
+msgid "Failed to add a line"
+msgstr "Failed to add a line"
+
 msgid "Failed to add colors and sizes"
 msgstr "Failed to add colors and sizes"
 
@@ -910,6 +916,9 @@ msgstr "Failed to assign suppliers"
 
 msgid "Failed to cancel RFQ"
 msgstr "Failed to cancel RFQ"
+
+msgid "Failed to check serial number index"
+msgstr "Failed to check serial number index"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "Failed to complete inventory adjustment"
@@ -1088,6 +1097,9 @@ msgstr "Failed to create sales order"
 msgid "Failed to create sales order line."
 msgstr "Failed to create sales order line."
 
+msgid "Failed to create samples"
+msgstr "Failed to create samples"
+
 msgid "Failed to create shift"
 msgstr "Failed to create shift"
 
@@ -1117,6 +1129,9 @@ msgstr "Failed to create timecard"
 
 msgid "Failed to create training"
 msgstr "Failed to create training"
+
+msgid "Failed to create transfer"
+msgstr "Failed to create transfer"
 
 msgid "Failed to create user account"
 msgstr "Failed to create user account"
@@ -1616,6 +1631,9 @@ msgstr "Failed to fetch sales invoices"
 msgid "Failed to fetch sales orders"
 msgstr "Failed to fetch sales orders"
 
+msgid "Failed to fetch samples"
+msgstr "Failed to fetch samples"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Failed to fetch storageUnits"
 
@@ -1885,6 +1903,9 @@ msgstr "Failed to get dispatch"
 
 msgid "Failed to get document"
 msgstr "Failed to get document"
+
+msgid "Failed to get employee processes"
+msgstr "Failed to get employee processes"
 
 msgid "Failed to get employee type"
 msgstr "Failed to get employee type"
@@ -2720,6 +2741,9 @@ msgstr "Failed to load quote shipment"
 msgid "Failed to load receipt"
 msgstr "Failed to load receipt"
 
+msgid "Failed to load receipt line"
+msgstr "Failed to load receipt line"
+
 msgid "Failed to load report lines"
 msgstr "Failed to load report lines"
 
@@ -2845,6 +2869,9 @@ msgstr "Failed to load tool quantities"
 
 msgid "Failed to load tool summary"
 msgstr "Failed to load tool summary"
+
+msgid "Failed to load tracked entity"
+msgstr "Failed to load tracked entity"
 
 msgid "Failed to load training"
 msgstr "Failed to load training"
@@ -3010,6 +3037,9 @@ msgstr "Failed to report rework"
 
 msgid "Failed to report scrap"
 msgstr "Failed to report scrap"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Failed to resolve partner warehouse"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Failed to resolve Pull from Inventory prices"
@@ -3434,6 +3464,9 @@ msgstr "Failed to update procedure step"
 msgid "Failed to update process completion"
 msgstr "Failed to update process completion"
 
+msgid "Failed to update processes"
+msgstr "Failed to update processes"
+
 msgid "Failed to update production event"
 msgstr "Failed to update production event"
 
@@ -3646,6 +3679,9 @@ msgstr "Failed to update tool planning"
 
 msgid "Failed to update tool purchasing"
 msgstr "Failed to update tool purchasing"
+
+msgid "Failed to update tracking"
+msgstr "Failed to update tracking"
 
 msgid "Failed to update training question"
 msgstr "Failed to update training question"
@@ -4796,6 +4832,9 @@ msgstr "Purchase order created"
 msgid "Purchase order finalized"
 msgstr "Purchase order finalized"
 
+msgid "Purchase order line created"
+msgstr "Purchase order line created"
+
 msgid "Purchase order not found"
 msgstr "Purchase order not found"
 
@@ -5024,6 +5063,9 @@ msgstr "Sales order created"
 msgid "Sample recorded"
 msgstr "Sample recorded"
 
+msgid "Samples created"
+msgstr "Samples created"
+
 msgid "Sampling plan updated"
 msgstr "Sampling plan updated"
 
@@ -5175,6 +5217,12 @@ msgstr "Serial"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "Serial Number {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "Serial number already exists for this item"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Serial number is already used for a different item or position"
 
 msgid "Serial number is not available"
 msgstr "Serial number is not available"
@@ -5608,6 +5656,9 @@ msgstr "Successfully updated fiscal year settings"
 msgid "Successfully updated job"
 msgstr "Successfully updated job"
 
+msgid "Successfully updated processes"
+msgstr "Successfully updated processes"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Sucessfully deactivated customer"
 
@@ -5709,6 +5760,9 @@ msgstr "This Period"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "This process is assigned to someone else. Taking over stops their running clock."
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "This serial number was not shipped on this transfer"
+
 msgid "Thumbnail"
 msgstr "Thumbnail"
 
@@ -5775,6 +5829,9 @@ msgstr "Total time: {0}"
 msgid "Total: {0}"
 msgstr "Total: {0}"
 
+msgid "Tracked entity is not available"
+msgstr "Tracked entity is not available"
+
 msgid "Tracked entity not found"
 msgstr "Tracked entity not found"
 
@@ -5792,6 +5849,9 @@ msgstr "Training ID is required"
 
 msgid "Training marked as complete"
 msgstr "Training marked as complete"
+
+msgid "Transfer created"
+msgstr "Transfer created"
 
 msgid "Type a message..."
 msgstr "Type a message..."
@@ -6303,60 +6363,3 @@ msgstr "Your account is not active"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Your company is on the free plan (read-only). Upgrade to make changes."
-
-msgid "Batch has insufficient quantity"
-msgstr "Batch has insufficient quantity"
-
-msgid "Failed to add a line"
-msgstr "Failed to add a line"
-
-msgid "Failed to check serial number index"
-msgstr "Failed to check serial number index"
-
-msgid "Failed to create samples"
-msgstr "Failed to create samples"
-
-msgid "Failed to create transfer"
-msgstr "Failed to create transfer"
-
-msgid "Failed to fetch samples"
-msgstr "Failed to fetch samples"
-
-msgid "Failed to get employee processes"
-msgstr "Failed to get employee processes"
-
-msgid "Failed to load receipt line"
-msgstr "Failed to load receipt line"
-
-msgid "Failed to load tracked entity"
-msgstr "Failed to load tracked entity"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "Failed to resolve partner warehouse"
-
-msgid "Failed to update processes"
-msgstr "Failed to update processes"
-
-msgid "Failed to update tracking"
-msgstr "Failed to update tracking"
-
-msgid "Samples created"
-msgstr "Samples created"
-
-msgid "Serial number already exists for this item"
-msgstr "Serial number already exists for this item"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "Serial number is already used for a different item or position"
-
-msgid "Successfully updated processes"
-msgstr "Successfully updated processes"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "This serial number was not shipped on this transfer"
-
-msgid "Tracked entity is not available"
-msgstr "Tracked entity is not available"
-
-msgid "Transfer created"
-msgstr "Transfer created"

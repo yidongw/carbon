@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Поставщик - это бизнес или лицо, которое продает вам части или услуги."
@@ -105,12 +104,6 @@ msgstr "{name} удалён"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} разрешений"
-
-#~ msgid "{total} samples"
-#~ msgstr "{total} образцов"
-
-#~ msgid "{total} samples · {sampled}/{colorCount} colors"
-#~ msgstr "{total} образцов · {sampled}/{colorCount} цветов"
 
 msgid "/month/user"
 msgstr "/месяц/пользователь"
@@ -1152,6 +1145,9 @@ msgstr "Вы уверены, что хотите удалить этот рис�
 msgid "Are you sure you want to delete this risk? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить этот риск? Это действие невозможно отменить."
 
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "Вы действительно хотите удалить эту строку отгрузки?"
+
 msgid "Are you sure you want to delete this suggestion? This action cannot be undone."
 msgstr "Вы уверены, что хотите удалить это предложение? Это действие невозможно отменить."
 
@@ -1262,6 +1258,9 @@ msgstr "Активы"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
 msgstr "Назначьте принтеры для мест хранения. Отгрузка, прием и рабочие центры наследуют стандартное место, если не переопределено."
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "Назначьте процессы, которые может выполнять этот сотрудник. Они появляются при отчете о количестве производства для этих процессов."
 
 msgid "Assign To"
 msgstr "Назначить"
@@ -1485,6 +1484,9 @@ msgstr "Основная информация"
 msgid "Batch"
 msgstr "Партия"
 
+msgid "Batch has insufficient quantity"
+msgstr "Батч имеет недостаточное количество"
+
 msgid "Batch items require a sales order"
 msgstr "Товары партии требуют заказ на продажу"
 
@@ -1493,6 +1495,19 @@ msgstr "Номер партии"
 
 msgid "Batch Number"
 msgstr "Номер партии"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "Номер лота {0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "Номер лота уже используется на другой отгрузочной линии"
+
+msgid "Batch number is required"
+msgstr "Номер лота обязателен"
+
+msgid "Batch number not found"
+msgstr "Номер лота не найден"
 
 msgid "Batch Properties"
 msgstr "Свойства партии"
@@ -1530,9 +1545,6 @@ msgstr "Выставление счетов"
 
 msgid "Billing Address"
 msgstr "Адрес выставления счета"
-
-#~ msgid "Bin"
-#~ msgstr "Бин"
 
 msgid "Block with an error"
 msgstr "Заблокировать с ошибкой"
@@ -3715,6 +3727,9 @@ msgstr "Дублировать прайс-лист"
 msgid "Duplicate Pricing Rule"
 msgstr "Дублировать правило цены"
 
+msgid "Duplicate serial number"
+msgstr "Дублирующийся серийный номер"
+
 msgid "Duplicate To"
 msgstr "Дублировать в"
 
@@ -4508,6 +4523,10 @@ msgstr "Истекший срок партии"
 msgid "Expired Batches"
 msgstr "Истекшие партии"
 
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "Истекает {0}"
+
 msgid "Expires"
 msgstr "Истекает"
 
@@ -4584,6 +4603,9 @@ msgstr "Не удалось активировать процесс"
 msgid "Failed to activate work center"
 msgstr "Не удалось активировать рабочий центр"
 
+msgid "Failed to add a line"
+msgstr "Не удалось добавить строку"
+
 msgid "Failed to add colors and sizes"
 msgstr "Не удалось добавить цвета и размеры"
 
@@ -4604,6 +4626,9 @@ msgstr "Не удалось назначить поставщиков"
 
 msgid "Failed to cancel RFQ"
 msgstr "Не удалось отменить заявку на ценообразование"
+
+msgid "Failed to check serial number index"
+msgstr "Не удалось проверить индекс серийного номера"
 
 msgid "Failed to complete job"
 msgstr "Не удалось завершить задачу"
@@ -4867,6 +4892,9 @@ msgstr "Не удалось создать заказ на продажу"
 msgid "Failed to create sales order line."
 msgstr "Не удалось создать строку продажного заказа."
 
+msgid "Failed to create samples"
+msgstr "Не удалось создать образцы"
+
 msgid "Failed to create shift"
 msgstr "Не удалось создать смену"
 
@@ -4920,6 +4948,9 @@ msgstr "Не удалось создать инструмент: {0}"
 
 msgid "Failed to create training"
 msgstr "Не удалось создать тренинг"
+
+msgid "Failed to create transfer"
+msgstr "Не удалось создать передачу"
 
 msgid "Failed to create user account"
 msgstr "Не удалось создать учетную запись пользователя"
@@ -5433,6 +5464,9 @@ msgstr "Не удалось получить счета на продажу"
 msgid "Failed to fetch sales orders"
 msgstr "Не удалось получить заказы на продажу"
 
+msgid "Failed to fetch samples"
+msgstr "Не удалось получить образцы"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Не удалось получить(storageUnits)"
 
@@ -5705,6 +5739,9 @@ msgstr "Не удалось получить расписание"
 
 msgid "Failed to get document"
 msgstr "Не удалось получить документ"
+
+msgid "Failed to get employee processes"
+msgstr "Не удалось получить процессы сотрудника"
 
 msgid "Failed to get employee type"
 msgstr "Не удалось получить тип сотрудника"
@@ -6582,6 +6619,9 @@ msgstr "Не удалось загрузить поставку цитаты"
 msgid "Failed to load receipt"
 msgstr "Не удалось загрузить приходную накладную"
 
+msgid "Failed to load receipt line"
+msgstr "Не удалось загрузить строку прихода"
+
 msgid "Failed to load receipt lines"
 msgstr "Не удалось загрузить строки квитанции"
 
@@ -6731,6 +6771,9 @@ msgstr "Не удалось загрузить Zusammenfassung des Werkzeuges"
 
 msgid "Failed to load tracked entities"
 msgstr "Не удалось загрузить отслеживаемые сущности"
+
+msgid "Failed to load tracked entity"
+msgstr "Не удалось загрузить отслеживаемый объект"
 
 msgid "Failed to load training"
 msgstr "Не удалось загрузить тренировку"
@@ -6915,6 +6958,9 @@ msgstr "Не удалось отчитаться о браке"
 msgid "Failed to resize image: {errorMessage}"
 msgstr "Не удалось изменить размер изображения: {errorMessage}"
 
+msgid "Failed to resolve partner warehouse"
+msgstr "Не удалось разрешить партнерский склад"
+
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Не удалось разрешитьPull из инвентаря цен"
 
@@ -7028,6 +7074,9 @@ msgstr "Не удалось остановить событие"
 
 msgid "Failed to sync procedure"
 msgstr "Не удалось синхронизировать процедуру"
+
+msgid "Failed to track serial number"
+msgstr "Не удалось отследить серийный номер"
 
 msgid "Failed to trigger rework"
 msgstr "Не удалось активировать повторную обработку"
@@ -7362,6 +7411,9 @@ msgstr "Не удалось обновить шаг процедуры"
 msgid "Failed to update process completion"
 msgstr "Не удалось обновить процент выполнения процесса"
 
+msgid "Failed to update processes"
+msgstr "Не удалось обновить процессы"
+
 msgid "Failed to update production event"
 msgstr "Не удалось обновить производственное событие"
 
@@ -7587,6 +7639,9 @@ msgstr "Не удалось обновить планирование инстр
 msgid "Failed to update tool purchasing"
 msgstr "Не удалось обновить закупку инструмента"
 
+msgid "Failed to update tracking"
+msgstr "Не удалось обновить отслеживание"
+
 msgid "Failed to update training question"
 msgstr "Не удалось обновить вопрос для обучения"
 
@@ -7761,6 +7816,9 @@ msgstr "Файлы, прикрепленные здесь, отправляют�
 msgid "Fill cell"
 msgstr "Залить ячейку"
 
+msgid "Fill shipped serial"
+msgstr "Заполните серийные номера отгруженных товаров"
+
 msgid "Filter"
 msgstr "Фильтр"
 
@@ -7878,6 +7936,9 @@ msgstr "От"
 
 msgid "From (current location)"
 msgstr "От (текущего местоположения)"
+
+msgid "from {loc}"
+msgstr "из {loc}"
 
 msgid "From and To warehouses must be different"
 msgstr "Склады «От» и «До» должны быть разными"
@@ -8982,9 +9043,6 @@ msgstr "Строки требуют цены или сроки поставки"
 msgid "Link"
 msgstr "Ссылка"
 
-msgid "Link a warehouse to this partner in Resources → Locations."
-msgstr "Привяжите склад к этому партнеру в Ресурсы → Локации."
-
 msgid "Link Jira Issue"
 msgstr "Связать проблему Jira"
 
@@ -9061,6 +9119,9 @@ msgstr "Местоположение"
 
 msgid "Location created"
 msgstr "Локация создана"
+
+msgid "Location Inventory"
+msgstr "Запасы по локации"
 
 msgid "Location Name"
 msgstr "Название местоположения"
@@ -10374,9 +10435,6 @@ msgstr "Нет необходимости"
 msgid "No values available"
 msgstr "Нет доступных значений"
 
-msgid "No warehouse mapped"
-msgstr "Нет склада, который был связан"
-
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
 
@@ -10523,6 +10581,9 @@ msgstr "Только активные актива могут быть прод�
 
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Только активные или полностью списанные активы могут быть выбраны для处置"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "Только присвоенные сотрудникам отображаются в отчете о количестве. Оставьте поле пустым для того, чтобы разрешить все."
 
 msgid "Only Draft assets can be purchased"
 msgstr "Только черновые активы могут быть приобретены"
@@ -11586,6 +11647,9 @@ msgstr "Номер заказа на покупку"
 msgid "Purchase Order Line"
 msgstr "Строка заказа на покупку"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase Order Location"
 msgstr "Местоположение заказа на покупку"
 
@@ -11721,9 +11785,6 @@ msgstr "Количество в заказе на покупку"
 
 msgid "Quantity on Sales Order"
 msgstr "Количество в заказе на продажу"
-
-#~ msgid "Quantity per color"
-#~ msgstr "Количество по цвету"
 
 msgid "Quantity per Parent"
 msgstr "Количество на родителя"
@@ -11864,6 +11925,9 @@ msgstr "Квитанция"
 
 msgid "Receipt ID"
 msgstr "ID квитанции"
+
+msgid "Receipt is empty"
+msgstr "Приемка пуста"
 
 msgid "Receipt Line"
 msgstr "Строка квитанции"
@@ -12605,6 +12669,9 @@ msgstr "Размер выборки"
 msgid "Samples"
 msgstr "Примеры"
 
+msgid "Samples created"
+msgstr "Созданы образцы"
+
 msgid "Sampling Plan"
 msgstr "План выборочного контроля"
 
@@ -13039,6 +13106,22 @@ msgstr "Товары с серийным номером требуют зака�
 msgid "Serial Number"
 msgstr "Серийный номер"
 
+msgid "Serial number already exists"
+msgstr "Серийный номер уже существует"
+
+msgid "Serial number already exists for this item"
+msgstr "Серийный номер уже существует для этого элемента"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "Серийный номер составляет {0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Серийный номер уже используется для другого элемента или позиции"
+
+msgid "Serial number is not available"
+msgstr "Серийный номер недоступен"
+
 msgid "Serial number not found"
 msgstr "Серийный номер не найден"
 
@@ -13047,6 +13130,16 @@ msgstr "Серийный номер:"
 
 msgid "Serial Numbers"
 msgstr "Серийные номера"
+
+msgid "Serial numbers are missing"
+msgstr "Серийные номера отсутствуют"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "Серийные номера отсутствуют или недоступны"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "Серийные номера не отправлены в этом перемещении: {0}"
 
 msgid "Serial or Batch Tracking Required"
 msgstr "Требуется отслеживание по серийному номеру или партии"
@@ -13202,6 +13295,9 @@ msgstr "Детали отгрузки"
 msgid "Shipment ID"
 msgstr "ID отправки"
 
+msgid "Shipment is empty"
+msgstr "Отгрузка пуста"
+
 msgid "Shipment Line"
 msgstr "Строка отправки"
 
@@ -13228,6 +13324,16 @@ msgstr "отправлено {q} единиц из {unit} для перевоз�
 
 msgid "Shipped Qty"
 msgstr "Отправленное кол-во"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "Количество отгруженного превышает количество в лоте ({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "Количество отгруженного превышает количество заказа"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "Количество отгруженного меньше количества лота. Для оставшегося количества будет создан новый лот приposting."
 
 msgid "Shipping"
 msgstr "Доставка"
@@ -13597,6 +13703,9 @@ msgstr "Записи этапов"
 
 msgid "Steps"
 msgstr "Шаги"
+
+msgid "Stock Overview"
+msgstr "Обзор запасов"
 
 msgid "Stock Transfer"
 msgstr "ФОРМА ПЕРЕДАЧИ АКЦИЙ"
@@ -14027,6 +14136,9 @@ msgstr "Успешно обновлены настройки финансово�
 msgid "Successfully updated job"
 msgstr "Успешно обновлено задание"
 
+msgid "Successfully updated processes"
+msgstr "Успешно обновленные процессы"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Успешно деактивирован клиент"
 
@@ -14456,6 +14568,9 @@ msgstr "Тема"
 msgid "Theme Color"
 msgstr "Цвет темы"
 
+msgid "There are more shipped than ordered"
+msgstr "Отгруженного больше, чем заказано"
+
 msgid "There are no active supplier quotes to compare for this RFQ."
 msgstr "Нет активных предложений поставщиков для сравнения по этому РФП."
 
@@ -14521,6 +14636,9 @@ msgstr "Этот заказ на продажу связан с работами
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "Этот заказ на продажу содержит строки, для которых необходимо создать задания"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Этот серийный номер не был отправлен в этом перемещении"
 
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
@@ -14597,6 +14715,9 @@ msgstr "Название"
 msgid "To"
 msgstr "До"
 
+msgid "to {loc}"
+msgstr "в {loc}"
+
 msgid "To Location"
 msgstr "На локацию"
 
@@ -14605,6 +14726,9 @@ msgstr "Чтобы прочитать строки в <0>{resourceId}</0>, ис�
 
 msgid "To Receive"
 msgstr "К получению"
+
+msgid "To Send"
+msgstr "К отправке"
 
 msgid "To Ship"
 msgstr "К отправке"
@@ -14617,9 +14741,6 @@ msgstr "На хранилище"
 
 msgid "To unit"
 msgstr "В единицу"
-
-#~ msgid "To warehouse"
-#~ msgstr "В склад"
 
 msgid "Today"
 msgstr "Сегодня"
@@ -14750,6 +14871,9 @@ msgstr "Отслеживаемая сущность уже выбрана"
 msgid "Tracked entity ID is required but none was found"
 msgstr "ID отслеживаемой сущности требуется, но ничего не найдено"
 
+msgid "Tracked entity is not available"
+msgstr "Следимый объект недоступен"
+
 msgid "Tracked entity not found"
 msgstr "Следимый объект не найден"
 
@@ -14764,13 +14888,6 @@ msgstr "ID отслеживания"
 
 msgid "Tracking Number"
 msgstr "Номер отслеживания"
-
-#. placeholder {0}: index + 1
-msgid "Tracking Number {0}"
-msgstr "Номер отслеживания {0}"
-
-msgid "Tracking Numbers"
-msgstr "Номера отслеживания"
 
 msgid "Tracking Type"
 msgstr "Тип отслеживания"
@@ -14807,6 +14924,9 @@ msgstr "Транзакции создадут записи в журнале и 
 
 msgid "Transfer"
 msgstr "Передача"
+
+msgid "Transfer created"
+msgstr "Перенос создан"
 
 msgid "Transfer Date"
 msgstr "Дата передачи"
@@ -15009,9 +15129,6 @@ msgstr "Обновление истечения сроков"
 
 msgid "Update failed"
 msgstr "Обновление не удалось"
-
-msgid "Update Inventory"
-msgstr "Обновить инвентарь"
 
 msgid "Update Jira issue"
 msgstr "Обновить задачу Jira"
@@ -16144,149 +16261,3 @@ msgstr "ZPL (Тепловая этикетка)"
 
 msgid "ZPL Label Preview"
 msgstr "Предварительный просмотр метки ZPL"
-
-msgid "Location Inventory"
-msgstr "Запасы по локации"
-
-msgid "Stock Overview"
-msgstr "Обзор запасов"
-
-msgid "To Send"
-msgstr "К отправке"
-
-msgid "from {loc}"
-msgstr "из {loc}"
-
-msgid "to {loc}"
-msgstr "в {loc}"
-
-msgid "Are you sure you want to delete this shipment line?"
-msgstr "Вы действительно хотите удалить эту строку отгрузки?"
-
-msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
-msgstr "Назначьте процессы, которые может выполнять этот сотрудник. Они появляются при отчете о количестве производства для этих процессов."
-
-msgid "Batch has insufficient quantity"
-msgstr "Батч имеет недостаточное количество"
-
-#. placeholder {0}: batchNumber.status
-msgid "Batch number is {0}"
-msgstr "Номер лота {0}"
-
-msgid "Batch number is already used on another shipment line"
-msgstr "Номер лота уже используется на другой отгрузочной линии"
-
-msgid "Batch number is required"
-msgstr "Номер лота обязателен"
-
-msgid "Batch number not found"
-msgstr "Номер лота не найден"
-
-msgid "Duplicate serial number"
-msgstr "Дублирующийся серийный номер"
-
-#. placeholder {0}: w.expirationDate
-msgid "Expired on {0}"
-msgstr "Истекает {0}"
-
-msgid "Failed to add a line"
-msgstr "Не удалось добавить строку"
-
-msgid "Failed to check serial number index"
-msgstr "Не удалось проверить индекс серийного номера"
-
-msgid "Failed to create samples"
-msgstr "Не удалось создать образцы"
-
-msgid "Failed to create transfer"
-msgstr "Не удалось создать передачу"
-
-msgid "Failed to fetch samples"
-msgstr "Не удалось получить образцы"
-
-msgid "Failed to get employee processes"
-msgstr "Не удалось получить процессы сотрудника"
-
-msgid "Failed to load receipt line"
-msgstr "Не удалось загрузить строку прихода"
-
-msgid "Failed to load tracked entity"
-msgstr "Не удалось загрузить отслеживаемый объект"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "Не удалось разрешить партнерский склад"
-
-msgid "Failed to track serial number"
-msgstr "Не удалось отследить серийный номер"
-
-msgid "Failed to update processes"
-msgstr "Не удалось обновить процессы"
-
-msgid "Failed to update tracking"
-msgstr "Не удалось обновить отслеживание"
-
-msgid "Fill shipped serial"
-msgstr "Заполните серийные номера отгруженных товаров"
-
-msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
-msgstr "Только присвоенные сотрудникам отображаются в отчете о количестве. Оставьте поле пустым для того, чтобы разрешить все."
-
-msgid "Receipt is empty"
-msgstr "Приемка пуста"
-
-msgid "Samples created"
-msgstr "Созданы образцы"
-
-msgid "Serial number already exists"
-msgstr "Серийный номер уже существует"
-
-msgid "Serial number already exists for this item"
-msgstr "Серийный номер уже существует для этого элемента"
-
-#. placeholder {0}: serialNumber.status
-msgid "Serial number is {0}"
-msgstr "Серийный номер составляет {0}"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "Серийный номер уже используется для другого элемента или позиции"
-
-msgid "Serial number is not available"
-msgstr "Серийный номер недоступен"
-
-msgid "Serial numbers are missing"
-msgstr "Серийные номера отсутствуют"
-
-msgid "Serial numbers are missing or unavailable"
-msgstr "Серийные номера отсутствуют или недоступны"
-
-#. placeholder {0}: invalidSerials.join(", ")
-msgid "Serial numbers not shipped on this transfer: {0}"
-msgstr "Серийные номера не отправлены в этом перемещении: {0}"
-
-msgid "Shipment is empty"
-msgstr "Отгрузка пуста"
-
-#. placeholder {0}: batchNumber.quantity
-msgid "Shipped quantity exceeds batch quantity ({0})"
-msgstr "Количество отгруженного превышает количество в лоте ({0})"
-
-msgid "Shipped quantity exceeds job quantity"
-msgstr "Количество отгруженного превышает количество заказа"
-
-msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
-msgstr "Количество отгруженного меньше количества лота. Для оставшегося количества будет создан новый лот приposting."
-
-msgid "Successfully updated processes"
-msgstr "Успешно обновленные процессы"
-
-msgid "There are more shipped than ordered"
-msgstr "Отгруженного больше, чем заказано"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "Этот серийный номер не был отправлен в этом перемещении"
-
-msgid "Tracked entity is not available"
-msgstr "Следимый объект недоступен"
-
-msgid "Transfer created"
-msgstr "Перенос создан"

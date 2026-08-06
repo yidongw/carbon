@@ -1,6 +1,7 @@
 import { assertIsPost, error, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
@@ -9,6 +10,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
   getPurchaseOrder,
   getPurchaseOrderLine,
@@ -109,12 +111,35 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  // Omit `id` — the route param is the source of truth.
+  const {
+    id: _id,
+    configuration: configStr,
+    purchaseQuantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let purchaseQuantity = rawQuantity;
+  let configurationUpdate: { configuration: Json | null } | undefined;
+  if (configStr) {
+    try {
+      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const fields = jobConfigurationUpdateFields(parsed);
+      configurationUpdate = { configuration: fields.configuration };
+      purchaseQuantity = fields.quantity;
+    } catch {
+      // Invalid JSON — keep typed quantity and leave existing configuration alone.
+    }
+  } else {
+    // Explicit empty hidden field clears Style configuration.
+    configurationUpdate = { configuration: null };
+  }
 
   const updatePurchaseOrderLine = await upsertPurchaseOrderLine(client, {
     id: lineId,
     ...d,
+    purchaseQuantity,
+    ...configurationUpdate,
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -176,6 +201,9 @@ export default function EditPurchaseOrderLineRoute() {
     supplierUnitPrice: line?.supplierUnitPrice ?? 0,
     costCenterId: line?.costCenterId ?? "",
     taxPercent: line?.taxPercent ?? 0,
+    configuration: line?.configuration
+      ? JSON.stringify(line.configuration)
+      : undefined,
     assetReadableId: (line as any)?.assetReadableId ?? "",
     assetName: (line as any)?.assetName ?? "",
     ...getCustomFields(line?.customFields)

@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -234,6 +233,9 @@ msgstr "Błędna prośba o cofnięcie sekwencji"
 
 msgid "Batch"
 msgstr "Lepszać"
+
+msgid "Batch has insufficient quantity"
+msgstr "Lepsza parte ma niedostateczną ilość"
 
 msgid "Batch is not available"
 msgstr "Partia jest niedostępna"
@@ -891,6 +893,9 @@ msgstr "Nie udało się aktywować procesu"
 msgid "Failed to activate work center"
 msgstr "Nie udało się aktywować centrum pracy"
 
+msgid "Failed to add a line"
+msgstr "Nie udało się dodać linii"
+
 msgid "Failed to add colors and sizes"
 msgstr "Nie udało się dodać kolorów i rozmiarów"
 
@@ -911,6 +916,9 @@ msgstr "Nie udało się przypisać dostawców"
 
 msgid "Failed to cancel RFQ"
 msgstr "Niedostępne do anulowania RFQ"
+
+msgid "Failed to check serial number index"
+msgstr "Nie udało się sprawdzić indeksu numeru seryjnego"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "Nie udało się zakończyć korekty zapasów"
@@ -1089,6 +1097,9 @@ msgstr "Nie udało się utworzyć zamówienia sprzedaży"
 msgid "Failed to create sales order line."
 msgstr "Nie udało się utworzyć linii zlecenia sprzedaży."
 
+msgid "Failed to create samples"
+msgstr "Nie udało się utworzyć próbek"
+
 msgid "Failed to create shift"
 msgstr "Nie udało się utworzyć zmiany"
 
@@ -1118,6 +1129,9 @@ msgstr "Nie udało się utworzyć karty czasu"
 
 msgid "Failed to create training"
 msgstr "Nie udało się utworzyć treningu"
+
+msgid "Failed to create transfer"
+msgstr "Nie udało się utworzyć przenoszenia"
 
 msgid "Failed to create user account"
 msgstr "Nie udało się utworzyć konta użytkownika"
@@ -1617,6 +1631,9 @@ msgstr "Nie udało się załadować faktur sprzedaży"
 msgid "Failed to fetch sales orders"
 msgstr "Nie udało się załadować zamówień sprzedaży"
 
+msgid "Failed to fetch samples"
+msgstr "Niedostępne sa próby"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Nie udało się pobrać jednostek magazynowych"
 
@@ -1886,6 +1903,9 @@ msgstr "Nie udało się pobrać dystrybucji"
 
 msgid "Failed to get document"
 msgstr "Nie można pobrać dokumentu"
+
+msgid "Failed to get employee processes"
+msgstr "Nie udało się pobrać procesów pracownika"
 
 msgid "Failed to get employee type"
 msgstr "Nie można pobrać typu pracownika"
@@ -2721,6 +2741,9 @@ msgstr "Nie można załadować dostawy cytatu cenowego"
 msgid "Failed to load receipt"
 msgstr "Niedostępny dokument odebrany"
 
+msgid "Failed to load receipt line"
+msgstr "Nie można załadować linii odbioru"
+
 msgid "Failed to load report lines"
 msgstr "Nieruchome są raportowe linie"
 
@@ -2846,6 +2869,9 @@ msgstr "Nie można załadować ilości narzędzi"
 
 msgid "Failed to load tool summary"
 msgstr "Niedostępna podsumowanie narzędzia"
+
+msgid "Failed to load tracked entity"
+msgstr "Nie można załadować monitorowanego elementu"
 
 msgid "Failed to load training"
 msgstr "Niedostępne treningi"
@@ -3011,6 +3037,9 @@ msgstr "Nie udało się zgłosić powtórnej produkcji"
 
 msgid "Failed to report scrap"
 msgstr "Nie udało się zgłosić odpadków"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Nie można rozwiązać magazynu partnerskiego"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Nie udało się rozwiązać cen z MagazynuPull"
@@ -3435,6 +3464,9 @@ msgstr "Nie udało się zaktualizować kroku procedury"
 msgid "Failed to update process completion"
 msgstr "Nie udało sięaktualizować zakończenia procesu"
 
+msgid "Failed to update processes"
+msgstr "Nie udało się zaktualizować procesów"
+
 msgid "Failed to update production event"
 msgstr "Nie udało się zaktualizować wydarzenia produkcyjnego"
 
@@ -3647,6 +3679,9 @@ msgstr "Nie udało się zaktualizować planowania narzędzia"
 
 msgid "Failed to update tool purchasing"
 msgstr "Nie udało się zaktualizować zakupu narzędzia"
+
+msgid "Failed to update tracking"
+msgstr "Nie udało się zaktualizować śledzenia"
 
 msgid "Failed to update training question"
 msgstr "Nie udało się zaktualizować pytania treningowej"
@@ -4797,6 +4832,9 @@ msgstr "Zamówienie zakupowe utworzone"
 msgid "Purchase order finalized"
 msgstr "Zamówienie zakupowe zakończone"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Zamówienie zakupowe nie zostało znalezione"
 
@@ -5025,6 +5063,9 @@ msgstr "Zamówienie sprzedawniczne utworzone"
 msgid "Sample recorded"
 msgstr "Zapisane próbki"
 
+msgid "Samples created"
+msgstr "Samoplany utworzone"
+
 msgid "Sampling plan updated"
 msgstr "Plan próbkowania zaktualizowany"
 
@@ -5176,6 +5217,12 @@ msgstr "Seryjny"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "Numer seryjny {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "Numer seryjny już istnieje dla tego elementu"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Numer seryjny jest już używany dla innego elementu lub położenia"
 
 msgid "Serial number is not available"
 msgstr "Numer seryjny jest niedostępny"
@@ -5609,6 +5656,9 @@ msgstr "Pomyślnie zaktualizowano ustawienia finansowego roku"
 msgid "Successfully updated job"
 msgstr "Pomyślnie zaktualizowano zadanie"
 
+msgid "Successfully updated processes"
+msgstr "Pomyślnie zaktualizowano procesy"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Pomyślnie deaktywowano klienta"
 
@@ -5710,6 +5760,9 @@ msgstr "Ten okres"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "Ta operacja jest przypisana do kogoś innego. Przejęcie zatrzyma jego bieżący czas pracy."
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "Ten numer seryjny nie został wysłany w tym przeniesieniu"
+
 msgid "Thumbnail"
 msgstr "Miniatura"
 
@@ -5776,6 +5829,9 @@ msgstr "Czas całkowity: {0}"
 msgid "Total: {0}"
 msgstr "Razem: {0}"
 
+msgid "Tracked entity is not available"
+msgstr "Obiekt monitorowany nie jest dostępny"
+
 msgid "Tracked entity not found"
 msgstr "Zidentyfikowana jednostka nie została znaleziona"
 
@@ -5793,6 +5849,9 @@ msgstr "ID treningu jest wymagany"
 
 msgid "Training marked as complete"
 msgstr "Trening zaznaczony jako ukończony"
+
+msgid "Transfer created"
+msgstr "Przeniesiono do strefyprodukcji"
 
 msgid "Type a message..."
 msgstr "Wpisz wiadomość..."
@@ -6304,60 +6363,3 @@ msgstr "Twoje konto nie jest aktywne"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Twoja firma korzysta z planu darmowego (tylko do odczytu). Przejdź na wyższy plan, aby wprowadzać zmiany."
-
-msgid "Batch has insufficient quantity"
-msgstr "Lepsza parte ma niedostateczną ilość"
-
-msgid "Failed to add a line"
-msgstr "Nie udało się dodać linii"
-
-msgid "Failed to check serial number index"
-msgstr "Nie udało się sprawdzić indeksu numeru seryjnego"
-
-msgid "Failed to create samples"
-msgstr "Nie udało się utworzyć próbek"
-
-msgid "Failed to create transfer"
-msgstr "Nie udało się utworzyć przenoszenia"
-
-msgid "Failed to fetch samples"
-msgstr "Niedostępne sa próby"
-
-msgid "Failed to get employee processes"
-msgstr "Nie udało się pobrać procesów pracownika"
-
-msgid "Failed to load receipt line"
-msgstr "Nie można załadować linii odbioru"
-
-msgid "Failed to load tracked entity"
-msgstr "Nie można załadować monitorowanego elementu"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "Nie można rozwiązać magazynu partnerskiego"
-
-msgid "Failed to update processes"
-msgstr "Nie udało się zaktualizować procesów"
-
-msgid "Failed to update tracking"
-msgstr "Nie udało się zaktualizować śledzenia"
-
-msgid "Samples created"
-msgstr "Samoplany utworzone"
-
-msgid "Serial number already exists for this item"
-msgstr "Numer seryjny już istnieje dla tego elementu"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "Numer seryjny jest już używany dla innego elementu lub położenia"
-
-msgid "Successfully updated processes"
-msgstr "Pomyślnie zaktualizowano procesy"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "Ten numer seryjny nie został wysłany w tym przeniesieniu"
-
-msgid "Tracked entity is not available"
-msgstr "Obiekt monitorowany nie jest dostępny"
-
-msgid "Transfer created"
-msgstr "Przeniesiono do strefyprodukcji"
