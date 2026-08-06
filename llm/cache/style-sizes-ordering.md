@@ -9,10 +9,21 @@ Apparel **style sizes** (`styleSize` table) must display in apparel order — sm
 - **Every read path orders by `sortOrder` (then `sizeCode` as tiebreak):**
   - `getStyleSizeList` — feeds the `<StyleSizes>` MultiSelect picker on `/x/style/new`.
   - `getStyleSizes` — sizes admin list default sort.
-  - `syncStyleConfigurationParameters` — order of the `size` configurator list-param options.
+  - `getStyleConfigurationParametersFromAttributes` — synthesized `size` list options (from `itemAttributeValue.sortOrder`).
+  - Deprecated `syncStyleConfigurationParameters` — legacy repair still orders `size` options by `styleSize.sortOrder`.
   - The `styles` view `sizes` json aggregate (`ORDER BY ss."sortOrder", ss."sizeCode"`).
 
 When adding a new size read/display, order by `sortOrder`, not `sizeCode`.
+
+## Style qty matrix params (no configurationParameter dual-write)
+
+**New Styles** only dual-write attribute selections + variant SKUs (`syncStyleVariantsFromAssignments`). They do **not** call `syncStyleConfigurationParameters` — no `configurationParameter` rows, no `itemReplenishment.requiresConfiguration` flip.
+
+**Read path:** `getConfigurationParameters` returns stored `configurationParameter` rows when present (legacy Styles). If empty, falls back to `getStyleConfigurationParametersFromAttributes` (Color/Size from `itemAttributeSelection`; Size `sortOrder=0` primary columns, Color `sortOrder=1` row descriptor).
+
+**Configurable itemIds:** `api+/items.configurable.ts` unions `configurationParameter.itemId` with Color/Size `itemAttributeSelection.itemId` (does not rely on `requiresConfiguration`).
+
+**Legacy:** Styles that already have stored `configurationParameter` rows keep working. `syncStyleConfigurationParameters` remains `@deprecated` for one-off repair only.
 
 ## Variant SKUs (inventory)
 
