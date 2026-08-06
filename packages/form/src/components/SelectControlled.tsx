@@ -4,7 +4,8 @@ import {
   FormHelperText,
   FormLabel
 } from "@carbon/react";
-import { useEffect } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 
 import { useControlField, useField } from "../hooks";
 import { useFormStateContext } from "../internal/formStateContext";
@@ -17,6 +18,7 @@ export type SelectProps = Omit<SelectBaseProps, "onChange"> & {
   helperText?: string;
   isConfigured?: boolean;
   isOptional?: boolean;
+  formatError?: (error: string) => ReactNode;
   options: { value: string | number; label: string | JSX.Element }[];
   onChange?: (
     newValue: { value: string; label: string | JSX.Element } | null
@@ -32,9 +34,16 @@ const SelectControlled = ({
   isConfigured,
   isOptional,
   onConfigure,
+  formatError = (error) => error,
   ...props
 }: SelectProps) => {
-  const { getInputProps, error, isOptional: fieldIsOptional } = useField(name);
+  const {
+    getInputProps,
+    error,
+    validate,
+    clearError,
+    isOptional: fieldIsOptional
+  } = useField(name);
   const formState = useFormStateContext();
   const isDisabled = formState.isDisabled || props.isDisabled;
   const isReadOnly = formState.isReadOnly || props.isReadOnly;
@@ -42,11 +51,34 @@ const SelectControlled = ({
   const [controlValue, setControlValue] = useControlField<string | undefined>(
     name
   );
+  const hasMounted = useRef(false);
+
+  // Prefer the React-controlled `value` prop. TabsContent (and similar) unmount
+  // fields when inactive; unregister resets the form store to defaultValues, so
+  // after remount controlValue is empty even when the parent still holds the
+  // selection. Without this, Method (etc.) appears blank after switching tabs.
+  const resolvedValue =
+    props.value !== null && props.value !== undefined
+      ? props.value
+      : controlValue;
 
   useEffect(() => {
     if (props.value !== null && props.value !== undefined)
       setControlValue(props.value);
   }, [props.value, setControlValue]);
+
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    // Parent-driven updates (e.g. item pick preloading Method) bypass the
+    // select's own onChange. Only clear a stale error when a real value lands —
+    // never validate an empty value here or "required" flashes on first open.
+    if (props.value) {
+      clearError();
+    }
+  }, [props.value, clearError]);
 
   const onChange = (value: string) => {
     if (value) {
@@ -77,15 +109,19 @@ const SelectControlled = ({
         type="hidden"
         name={name}
         id={name}
-        value={controlValue}
+        value={resolvedValue}
       />
       <SelectBase
         {...props}
         options={options}
-        value={controlValue}
+        value={resolvedValue}
         onChange={(newValue) => {
           setControlValue(newValue ?? "");
           onChange(newValue ?? "");
+          // The value lands in form state, not on the hidden input, so the
+          // input's own onChange never fires — revalidate here or a submitted
+          // error stays on screen after the user picks a valid option.
+          validate();
         }}
         isClearable={resolvedIsOptional && !isReadOnly}
         isDisabled={isDisabled}
@@ -94,7 +130,7 @@ const SelectControlled = ({
       />
 
       {error ? (
-        <FormErrorMessage>{error}</FormErrorMessage>
+        <FormErrorMessage>{formatError(error)}</FormErrorMessage>
       ) : (
         helperText && <FormHelperText>{helperText}</FormHelperText>
       )}

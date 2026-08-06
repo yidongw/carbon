@@ -7,6 +7,7 @@ import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { getStyleColorList } from "~/modules/items";
 import {
   getCustomer,
   getOpportunityDocuments,
@@ -24,6 +25,7 @@ import {
   SalesOrderProperties
 } from "~/modules/sales/ui/SalesOrder";
 import { getCompanySettings } from "~/modules/settings";
+import { buildStyleColorNames } from "~/modules/shared/styleConfigDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -42,9 +44,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
 
-  const [salesOrder, lines] = await Promise.all([
+  const [salesOrder, lines, styleColors] = await Promise.all([
     getSalesOrder(client, orderId),
-    getSalesOrderLines(client, orderId)
+    getSalesOrderLines(client, orderId),
+    getStyleColorList(client, companyId)
   ]);
 
   if (salesOrder.error) {
@@ -149,9 +152,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     ? customer.data.defaultCc
     : (companySettings.data?.defaultCustomerCc ?? []);
 
+  // Color code -> display name for Style config badges / expand rows.
+  const colorNames = buildStyleColorNames(styleColors.data ?? []);
+
   return {
     salesOrder: salesOrder.data,
     lines: lines.data ?? [],
+    colorNames,
     files: getOpportunityDocuments(client, companyId, opportunity.data.id),
     relatedItems: getSalesOrderRelatedItems(
       client,

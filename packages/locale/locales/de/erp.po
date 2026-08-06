@@ -7885,6 +7885,9 @@ msgstr "Anschaffungskosten des Anlagevermögens bei der Veräußerung"
 msgid "Fixed asset created"
 msgstr "Anlage erstellt"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "Feststehendes Anlagenelement-Menge muss 1 sein"
+
 msgid "Fixed asset updated"
 msgstr "Feststehendes Anlagevermögen aktualisiert"
 
@@ -8701,6 +8704,9 @@ msgstr "Artikelgruppen"
 
 msgid "Item ID"
 msgstr "Artikel-ID"
+
+msgid "Item is required"
+msgstr "Artikel ist erforderlich"
 
 msgid "Item Master"
 msgstr "Artikelstamm"
@@ -9579,6 +9585,9 @@ msgstr "Methode"
 msgid "Method Id"
 msgstr "Methoden-ID"
 
+msgid "Method is required"
+msgstr "Methode ist erforderlich"
+
 msgid "Method Materials"
 msgstr "Methodenmaterialien"
 
@@ -9596,6 +9605,9 @@ msgstr "Methodenvorgänge"
 
 msgid "Method Type"
 msgstr "Methodentyp"
+
+msgid "Method type is required"
+msgstr "Der Verfahrenstyp ist erforderlich"
 
 msgid "Methods"
 msgstr "Methoden"
@@ -11648,7 +11660,7 @@ msgid "Purchase Order Line"
 msgstr "Bestellposition"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Bestellposition erstellt"
 
 msgid "Purchase Order Location"
 msgstr "Bestellort"
@@ -12628,6 +12640,9 @@ msgstr "Verkaufsauftrags-ID"
 
 msgid "Sales Order Line"
 msgstr "Verkaufsauftragszeile"
+
+msgid "Sales order line created"
+msgstr "Verkaufsbestellposition erstellt"
 
 msgid "Sales Order Location"
 msgstr "Verkaufsauftrag-Standort"
@@ -13796,6 +13811,12 @@ msgstr "Stil der Kanban-Ausgabe, die in der Kanban-Tabelle angezeigt werden soll
 
 msgid "Style Properties"
 msgstr "Stileigenschaften"
+
+msgid "Style quantity configuration is required"
+msgstr "Stilmenge-Konfiguration ist erforderlich"
+
+msgid "Style quantity is required"
+msgstr "Stilmenge ist erforderlich"
 
 msgid "Style Size"
 msgstr "Stilgröße"

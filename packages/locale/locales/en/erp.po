@@ -7885,6 +7885,9 @@ msgstr "Fixed Asset Acquisition Cost on Disposal"
 msgid "Fixed asset created"
 msgstr "Fixed asset created"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "Fixed Asset quantity must be 1"
+
 msgid "Fixed asset updated"
 msgstr "Fixed asset updated"
 
@@ -8701,6 +8704,9 @@ msgstr "Item Groups"
 
 msgid "Item ID"
 msgstr "Item ID"
+
+msgid "Item is required"
+msgstr "Item is required"
 
 msgid "Item Master"
 msgstr "Item Master"
@@ -9579,6 +9585,9 @@ msgstr "Method"
 msgid "Method Id"
 msgstr "Method Id"
 
+msgid "Method is required"
+msgstr "Method is required"
+
 msgid "Method Materials"
 msgstr "Method Materials"
 
@@ -9596,6 +9605,9 @@ msgstr "Method Operations"
 
 msgid "Method Type"
 msgstr "Method Type"
+
+msgid "Method type is required"
+msgstr "Method type is required"
 
 msgid "Methods"
 msgstr "Methods"
@@ -12629,6 +12641,9 @@ msgstr "Sales Order ID"
 msgid "Sales Order Line"
 msgstr "Sales Order Line"
 
+msgid "Sales order line created"
+msgstr "Sales order line created"
+
 msgid "Sales Order Location"
 msgstr "Sales Order Location"
 
@@ -13796,6 +13811,12 @@ msgstr "Style of kanban output to show in the Kanban table"
 
 msgid "Style Properties"
 msgstr "Style Properties"
+
+msgid "Style quantity configuration is required"
+msgstr "Style quantity configuration is required"
+
+msgid "Style quantity is required"
+msgstr "Style quantity is required"
 
 msgid "Style Size"
 msgstr "Style Size"

@@ -4839,7 +4839,7 @@ msgid "Purchase order finalized"
 msgstr "पर्चेज ऑर्डर संपना हुई"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
 
 msgid "Purchase order not found"
 msgstr "पर्चेज ऑर्डर नहीं मिला"
@@ -5065,6 +5065,9 @@ msgstr "बिक्रय आदेश"
 
 msgid "Sales order created"
 msgstr "विक्रय आदेश तैयार किया गया है"
+
+msgid "Sales order line created"
+msgstr "विक्रय आदेश पंक्ति बनाई गई"
 
 msgid "Sample recorded"
 msgstr "नमूना रिकॉर्ड किया गया है"

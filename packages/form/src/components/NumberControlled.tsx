@@ -37,6 +37,7 @@ type FormNumberProps = NumberFieldProps & {
   value: number;
   inline?: boolean;
   isConfigured?: boolean;
+  formatError?: (error: string) => ReactNode;
   onChange?: (newValue: number) => void;
   onConfigure?: () => void;
   adornment?: ReactNode;
@@ -48,6 +49,7 @@ const Number = forwardRef<HTMLInputElement, FormNumberProps>(
       name,
       label,
       size,
+      formatError = (error) => error,
       isConfigured,
       isOptional,
       isRequired,
@@ -191,7 +193,7 @@ const Number = forwardRef<HTMLInputElement, FormNumberProps>(
           </NumberInputGroup>
         </NumberField>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+        {error && <FormErrorMessage>{formatError(error)}</FormErrorMessage>}
       </FormControl>
     );
   }

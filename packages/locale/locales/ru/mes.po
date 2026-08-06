@@ -4833,7 +4833,7 @@ msgid "Purchase order finalized"
 msgstr "Заказ на покупку завершен"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Заказ на покупку строка создана"
 
 msgid "Purchase order not found"
 msgstr "Заказ не найден"
@@ -5059,6 +5059,9 @@ msgstr "Заказ на продажу"
 
 msgid "Sales order created"
 msgstr "Заказ продаж создан"
+
+msgid "Sales order line created"
+msgstr "Линия продажного заказа создана"
 
 msgid "Sample recorded"
 msgstr "Запись выполнена"

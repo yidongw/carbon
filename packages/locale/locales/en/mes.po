@@ -5060,6 +5060,9 @@ msgstr "Sales Order"
 msgid "Sales order created"
 msgstr "Sales order created"
 
+msgid "Sales order line created"
+msgstr "Sales order line created"
+
 msgid "Sample recorded"
 msgstr "Sample recorded"
 

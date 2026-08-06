@@ -35,7 +35,13 @@ import {
   LuTrash,
   LuTruck
 } from "react-icons/lu";
-import { Await, Link, useNavigate, useParams } from "react-router";
+import {
+  Await,
+  Link,
+  useNavigate,
+  useParams,
+  useRevalidator
+} from "react-router";
 import {
   Empty,
   Hyperlink,
@@ -50,13 +56,14 @@ import {
   ReorderEditBar,
   useLineOrderEditMode
 } from "~/components/LineReorder";
+import { useOverlay } from "~/components/Overlay/OverlayProvider";
+import { overlay } from "~/components/Overlay/overlay";
 import { LevelLine } from "~/components/TreeView";
 import {
   useOptimisticLocation,
   usePermissions,
   useRealtime,
-  useRouteData,
-  useUser
+  useRouteData
 } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
@@ -71,7 +78,6 @@ import type {
   SalesOrderRelatedItems
 } from "../../types";
 import DeleteSalesOrderLine from "./DeleteSalesOrderLine";
-import SalesOrderLineForm from "./SalesOrderLineForm";
 
 // Define types for the related items
 type RelatedItem = {
@@ -127,7 +133,6 @@ function getRelatedItems(
 export default function SalesOrderExplorer() {
   const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
-  const { defaults } = useUser();
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
   const salesOrderData = useRouteData<{
@@ -137,30 +142,20 @@ export default function SalesOrderExplorer() {
   }>(path.to.salesOrder(orderId));
   const permissions = usePermissions();
 
-  const salesOrderLineInitialValues = {
-    salesOrderId: orderId,
-    salesOrderLineType: "Part" as const,
-    saleQuantity: 1,
-    unitPrice: 0,
-    addOnCost: 0,
-    nonTaxableAddOnCost: 0,
-    locationId:
-      salesOrderData?.salesOrder?.locationId ?? defaults.locationId ?? "",
-    taxPercent: salesOrderData?.customer?.taxPercent ?? 0,
-    promisedDate:
-      salesOrderData?.salesOrder?.receiptPromisedDate ??
-      salesOrderData?.salesOrder?.receiptRequestedDate ??
-      "",
-    shippingCost: 0
-  };
-
-  const newSalesOrderLineDisclosure = useDisclosure();
   const deleteLineDisclosure = useDisclosure();
   const [deleteLine, setDeleteLine] = useState<SalesOrderLine | null>(null);
   const isLocked = isSalesOrderLocked(salesOrderData?.salesOrder?.status);
   const isDisabled = isLocked
     ? true
     : salesOrderData?.salesOrder?.status !== "Draft";
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
+
+  const openNewLine = () => {
+    openOverlay(overlay.to.newSalesOrderLine({ orderId }), {
+      onCreated: () => revalidate()
+    });
+  };
 
   useRealtime(
     "modelUpload",
@@ -232,7 +227,7 @@ export default function SalesOrderExplorer() {
                   isDisabled={isDisabled}
                   leftIcon={<LuCirclePlus />}
                   variant="secondary"
-                  onClick={newSalesOrderLineDisclosure.onOpen}
+                  onClick={openNewLine}
                 >
                   <Trans>Add Line Item</Trans>
                 </Button>
@@ -260,7 +255,7 @@ export default function SalesOrderExplorer() {
                     }
                     leftIcon={<LuCirclePlus />}
                     variant="secondary"
-                    onClick={newSalesOrderLineDisclosure.onOpen}
+                    onClick={openNewLine}
                   >
                     <Trans>Add Line Item</Trans>
                   </Button>
@@ -287,13 +282,6 @@ export default function SalesOrderExplorer() {
           )}
         </div>
       </VStack>
-      {newSalesOrderLineDisclosure.isOpen && (
-        <SalesOrderLineForm
-          initialValues={salesOrderLineInitialValues}
-          type="modal"
-          onClose={newSalesOrderLineDisclosure.onClose}
-        />
-      )}
       {deleteLineDisclosure.isOpen && (
         <DeleteSalesOrderLine line={deleteLine!} onCancel={onDeleteCancel} />
       )}

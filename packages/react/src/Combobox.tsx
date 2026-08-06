@@ -16,6 +16,7 @@ import { IconButton } from "./IconButton";
 import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
 import { Spinner } from "./Spinner";
 import { TruncatedTooltipText } from "./TruncatedTooltipText";
+import { closeAfterPointerUp } from "./utils/closeAfterPointerUp";
 import { cn } from "./utils/cn";
 import { reactNodeToString } from "./utils/react";
 
@@ -295,7 +296,9 @@ function VirtualizedCommand({
                 onSelect={() => {
                   onChange?.(item.value);
                   setSearch("");
-                  setOpen(false);
+                  // Keep the portal mounted until this click finishes so it
+                  // cannot fall through onto controls beneath (e.g. Save).
+                  closeAfterPointerUp(() => setOpen(false));
                 }}
                 style={{
                   position: "absolute",

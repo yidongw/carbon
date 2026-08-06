@@ -42,6 +42,7 @@ import {
   getLowerTierApproverUserIds,
   rejectRequest
 } from "~/modules/shared";
+import { buildStyleColorNames } from "~/modules/shared/styleConfigDisplay";
 import { getUser } from "~/modules/users/users.server";
 import { loader as pdfLoader } from "~/routes/file+/purchase-order+/$orderId[.]pdf";
 import { getDatabaseClient } from "~/services/database.server";
@@ -487,12 +488,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     // Map color code → name so Style line expand views can show names.
     getStyleColorList(client, companyId)
   ]);
-  const colorNames: Record<string, string> = {};
-  for (const color of styleColors.data ?? []) {
-    if (color.colorCode) {
-      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
-    }
-  }
+  const colorNames = buildStyleColorNames(styleColors.data ?? []);
   const adHocAttachments = adHocDocs.map((d) => ({
     source: "po" as const,
     name: d.name,

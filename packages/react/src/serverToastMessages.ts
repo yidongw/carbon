@@ -1264,6 +1264,7 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Run is not in Draft status": msg`Run is not in Draft status`,
   "Sales invoice voided": msg`Sales invoice voided`,
   "Sales order created": msg`Sales order created`,
+  "Sales order line created": msg`Sales order line created`,
   "Sample recorded": msg`Sample recorded`,
   "Samples created": msg`Samples created`,
   "Sampling plan updated": msg`Sampling plan updated`,

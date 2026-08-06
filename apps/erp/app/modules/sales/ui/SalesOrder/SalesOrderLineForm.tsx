@@ -16,6 +16,7 @@ import {
   IconButton,
   Input,
   Label,
+  ModalBody,
   ModalCard,
   ModalCardBody,
   ModalCardContent,
@@ -24,6 +25,10 @@ import {
   ModalCardHeader,
   ModalCardProvider,
   ModalCardTitle,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
   Tabs,
   TabsContent,
   TabsList,
@@ -61,6 +66,7 @@ import {
   StorageUnit,
   Submit
 } from "~/components/Form";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import {
   useCurrencyFormatter,
   usePercentFormatter,
@@ -69,6 +75,13 @@ import {
   useUser
 } from "~/hooks";
 import { getDefaultStorageUnitForJob } from "~/modules/inventory/inventory.service";
+import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
+import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
+import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
 import { methodType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -85,31 +98,82 @@ import type {
 import { PriceTracePopover } from "../Pricing/PriceTracePopover";
 import DeleteSalesOrderLine from "./DeleteSalesOrderLine";
 
+export type SalesOrderLineFormInitialValues = z.infer<
+  typeof salesOrderLineValidator
+> & {
+  assetReadableId?: string;
+  assetName?: string;
+};
+
 type SalesOrderLineFormProps = {
-  initialValues: z.infer<typeof salesOrderLineValidator> & {
-    assetReadableId?: string;
-    assetName?: string;
-  };
+  initialValues: SalesOrderLineFormInitialValues;
   type?: "card" | "modal";
   onClose?: () => void;
-};
+} & Partial<Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">>;
+
+function parseInitialConfig(raw: unknown): {
+  rows: Row[] | null;
+  primaryKeys: string[];
+  total: number;
+} {
+  if (!raw) return { rows: null, primaryKeys: [], total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("configTable" in parsed)
+    ) {
+      return { rows: null, primaryKeys: [], total: 0 };
+    }
+    const config = parsed as {
+      configTable?: Row[];
+      configTablePrimaryKeys?: string[];
+    };
+    const rows = Array.isArray(config.configTable) ? config.configTable : null;
+    const primaryKeys = Array.isArray(config.configTablePrimaryKeys)
+      ? config.configTablePrimaryKeys.filter(
+          (k): k is string => typeof k === "string"
+        )
+      : [];
+    let total = 0;
+    if (rows) {
+      for (const row of rows) {
+        for (const key of primaryKeys) {
+          total += globalThis.Number(row[key]) || 0;
+        }
+      }
+    }
+    return { rows, primaryKeys, total };
+  } catch {
+    return { rows: null, primaryKeys: [], total: 0 };
+  }
+}
 
 const SalesOrderLineForm = ({
   initialValues,
-  type,
-  onClose
+  type = "card",
+  onClose,
+  onDismiss,
+  fetcher,
+  action
 }: SalesOrderLineFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
   const { company } = useUser();
   const { orderId } = useParams();
+  const isOverlay = Boolean(onDismiss && fetcher && action);
+  const dismiss = onDismiss ?? onClose;
 
-  if (!orderId) throw new Error("orderId not found");
+  if (!orderId && !initialValues.salesOrderId) {
+    throw new Error("orderId not found");
+  }
+  const resolvedOrderId = orderId ?? initialValues.salesOrderId;
 
   const routeData = useRouteData<{
     salesOrder: SalesOrder;
-  }>(path.to.salesOrder(orderId));
+  }>(path.to.salesOrder(resolvedOrderId));
 
   const isLocked = isSalesOrderLocked(routeData?.salesOrder?.status);
   const isEditable = !isLocked;
@@ -121,7 +185,6 @@ const SalesOrderLineForm = ({
   const [saleQuantity, setSaleQuantity] = useState(
     initialValues.saleQuantity ?? 1
   );
-  const [isPriceResolving, setIsPriceResolving] = useState(false);
   const [itemData, setItemData] = useState<{
     itemId: string;
     methodType: string;
@@ -154,6 +217,61 @@ const SalesOrderLineForm = ({
   const [activeTab, setActiveTab] = useState<"item" | "asset">(
     isFixedAsset ? "asset" : "item"
   );
+
+  const configModal = useConfigTableModal();
+  const [items] = useItems();
+  const initialConfig = parseInitialConfig(initialValues.configuration);
+  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
+    initialConfig.rows
+  );
+  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
+    string[]
+  >(initialConfig.primaryKeys);
+  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+
+  // Prefer the selected item's real type over the picker filter. Choosing a
+  // Style under "All Items" leaves lineType as Part/Item, but the grid still
+  // applies — match PO line behavior (set type from the item on select).
+  const selectedItemType =
+    items.find((i) => i.id === itemData.itemId)?.type ?? lineType;
+  const isStyleLine = selectedItemType === "Style" || lineType === "Style";
+
+  // Styles always use the color×size quantity grid — show the trigger as soon
+  // as a Style item is selected (don't wait on requiresConfiguration /
+  // configurable-items hydrate the way Job/Part forms do). Match PO.
+  const hasConfigurationParameters = isStyleLine && Boolean(itemData.itemId);
+
+  // A Style line's quantity comes from the color×size grid, so it starts at 0
+  // and Save stays disabled until the grid supplies a quantity.
+  const isMissingStyleQuantity =
+    isStyleLine && Boolean(itemData.itemId) && !(saleQuantity > 0);
+
+  const applyConfig = (data: unknown) => {
+    if (!isConfigTableOverlaySuccess(data)) return;
+    setConfigTableRows(data.configuration.configTable);
+    setConfigTablePrimaryKeys(data.primaryKeys);
+    setConfigTableTotal(data.total);
+    // Always mirror the grid total — a zero confirm must wipe a prior quantity.
+    onQuantityChange(data.total);
+  };
+
+  const openConfigTable = () => {
+    if (!itemData.itemId) return;
+    configModal.open({
+      itemId: itemData.itemId,
+      configuration: toConfigTableValue(
+        configTableRows,
+        configTablePrimaryKeys
+      ),
+      onConfirm: applyConfig
+    });
+  };
+
+  const clearConfig = () => {
+    setConfigTableRows(null);
+    setConfigTablePrimaryKeys([]);
+    setConfigTableTotal(0);
+  };
 
   const [assetOptions, setAssetOptions] = useState<
     { value: string; label: string }[]
@@ -231,7 +349,10 @@ const SalesOrderLineForm = ({
   const onTypeChange = (t: SalesOrderLineType) => {
     // @ts-ignore
     setLineType(t);
-    setItemData({
+    clearConfig();
+    const nextQty = t === "Style" ? 0 : 1;
+    setSaleQuantity(nextQty);
+    setItemData((d) => ({
       itemId: "",
       description: "",
       unitPrice: 0,
@@ -242,7 +363,7 @@ const SalesOrderLineForm = ({
       priceListId: null,
       priceListName: null,
       priceTrace: null
-    });
+    }));
   };
 
   const currencyFormatter = useCurrencyFormatter();
@@ -278,7 +399,6 @@ const SalesOrderLineForm = ({
 
   const debouncedQuantityResolve = useDebounce(async (qty: number) => {
     if (!itemData.itemId) {
-      setIsPriceResolving(false);
       return;
     }
     const result = await resolvePrice(itemData.itemId, qty);
@@ -291,24 +411,64 @@ const SalesOrderLineForm = ({
         priceTrace: result.trace
       }));
     }
-    setIsPriceResolving(false);
   }, 400);
 
   const onQuantityChange = (qty: number) => {
     setSaleQuantity(qty);
-    setIsPriceResolving(true);
     debouncedQuantityResolve(qty);
   };
+
+  // Configurable-item membership can arrive after the first selection (the API
+  // list loads on mount). Force quantity to 0 once we know a grid is required
+  // and nothing has been configured yet — otherwise a default 1 can stick.
+  // Existing lines keep their saved quantity: zeroing it here would misreport
+  // what's on the order (Save stays blocked until the grid is filled anyway).
+  useEffect(() => {
+    if (
+      !isEditing &&
+      hasConfigurationParameters &&
+      configTableTotal <= 0 &&
+      saleQuantity !== 0
+    ) {
+      setSaleQuantity(0);
+    }
+  }, [isEditing, hasConfigurationParameters, configTableTotal, saleQuantity]);
 
   const onChange = async (itemId: string) => {
     if (!itemId) return;
     if (!carbon || !company.id) return;
-    setIsPriceResolving(true);
+    clearConfig();
+    // Adopt the item before enriching it: the lookups below take several round
+    // trips, and the quantity control (grid trigger for configurable styles)
+    // keys off the selected item, so it must swap on selection, not on arrival.
+    // Method / description / UOM come from the preloaded items store — no need
+    // to wait on the item query just to fill those fields.
+    const storeItem = items.find((i) => i.id === itemId);
+    const storeType = storeItem?.type;
+    setItemData((d) => ({
+      ...d,
+      itemId,
+      description: storeItem?.name ?? "",
+      // Prefer store default; never keep the previous item's Method.
+      methodType: storeItem?.defaultMethodType ?? "",
+      uom: storeItem?.unitOfMeasureCode ?? "EA"
+    }));
+    // Sync line type from the item so "All Items" → Style still gets the grid
+    // and submits salesOrderLineType=Style (not the filter's "Item"/Part).
+    if (storeType) {
+      setLineType(storeType as SalesOrderLineType);
+    }
+    // Styles always get quantity from the color×size grid — start at 0.
+    const isStyle = storeType === "Style" || lineType === "Style";
+    const quantityForItem = isStyle ? 0 : saleQuantity || 1;
+    if (isStyle || quantityForItem !== saleQuantity) {
+      onQuantityChange(quantityForItem);
+    }
     const [item, price] = await Promise.all([
       carbon
         .from("item")
         .select(
-          "name, readableIdWithRevision, defaultMethodType, unitOfMeasureCode, modelUploadId"
+          "name, readableIdWithRevision, defaultMethodType, unitOfMeasureCode, modelUploadId, type"
         )
         .eq("id", itemId)
         .eq("companyId", company.id)
@@ -320,6 +480,15 @@ const SalesOrderLineForm = ({
         .eq("companyId", company.id)
         .maybeSingle()
     ]);
+
+    if (item.data?.type) {
+      setLineType(item.data.type as SalesOrderLineType);
+    }
+
+    // If the store missed the type, zero quantity once we know it's a Style.
+    if (item.data?.type === "Style" && !isStyle) {
+      onQuantityChange(0);
+    }
 
     // Get default storage unit or storage unit with highest quantity
     const defaultStorageUnitId = locationId
@@ -334,7 +503,7 @@ const SalesOrderLineForm = ({
     let resolvedPrice = price.data?.unitSalePrice ?? 0;
     let priceListId: string | null = null;
 
-    const result = await resolvePrice(itemId, saleQuantity);
+    const result = await resolvePrice(itemId, quantityForItem);
     if (result) {
       resolvedPrice = result.finalPrice;
       priceListId = result.priceListId;
@@ -342,17 +511,17 @@ const SalesOrderLineForm = ({
 
     setItemData({
       itemId,
-      description: item.data?.name ?? "",
-      methodType: item.data?.defaultMethodType ?? "",
+      description: item.data?.name ?? storeItem?.name ?? "",
+      methodType:
+        item.data?.defaultMethodType ?? storeItem?.defaultMethodType ?? "",
       unitPrice: resolvedPrice,
-      uom: item.data?.unitOfMeasureCode ?? "EA",
+      uom: item.data?.unitOfMeasureCode ?? storeItem?.unitOfMeasureCode ?? "EA",
       storageUnitId: defaultStorageUnitId ?? "",
       modelUploadId: item.data?.modelUploadId ?? null,
       priceListId,
       priceListName: result?.priceListName ?? null,
       priceTrace: result?.trace ?? null
     });
-    setIsPriceResolving(false);
   };
 
   const onLocationChange = async (newLocation: { value: string } | null) => {
@@ -380,631 +549,664 @@ const SalesOrderLineForm = ({
   const costsDisclosure = useDisclosure();
   const assetCostsDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
-  const [items] = useItems();
+
+  const formAction =
+    action ??
+    (isEditing
+      ? path.to.salesOrderLine(resolvedOrderId, initialValues.id!)
+      : path.to.newSalesOrderLine(resolvedOrderId));
+
+  const Header = isOverlay ? ModalHeader : ModalCardHeader;
+  const Title = isOverlay ? ModalTitle : ModalCardTitle;
+  const Description = isOverlay ? ModalDescription : ModalCardDescription;
+  const Body = isOverlay ? ModalBody : ModalCardBody;
+  const Footer = isOverlay ? ModalFooter : ModalCardFooter;
+
+  const form = (
+    <ValidatedForm
+      defaultValues={initialValues}
+      validator={salesOrderLineValidator}
+      method="post"
+      action={formAction}
+      fetcher={fetcher}
+      className={cn(
+        "w-full",
+        // Overlay ModalContent is overflow-hidden; pin an explicit max-h on the
+        // form (same as PO line) so Body can scroll when the viewport is short.
+        isOverlay && "flex min-h-0 max-h-[85vh] flex-1 flex-col"
+      )}
+      isDisabled={isEditing && isLocked}
+      onSubmit={() => {
+        if (type === "modal") onClose?.();
+      }}
+    >
+      <Header
+        className={cn(
+          "flex-row items-start justify-between gap-6",
+          (type === "modal" || isOverlay) && "pr-20",
+          isOverlay && "shrink-0"
+        )}
+      >
+        <div className="min-w-0 space-y-1.5">
+          <Title
+            className={cn(
+              isEditing &&
+                !isFixedAsset &&
+                !itemData?.itemId &&
+                "text-muted-foreground"
+            )}
+          >
+            {isEditing
+              ? isFixedAsset
+                ? initialValues.assetReadableId || t`Fixed Asset`
+                : getItemReadableId(items, itemData?.itemId) || "..."
+              : t`New Sales Order Line`}
+          </Title>
+          <Description>
+            {isEditing ? (
+              <div className="flex flex-col items-start gap-1">
+                <span>
+                  {isFixedAsset
+                    ? initialValues.assetName || assetData.description
+                    : itemData?.description}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    {initialValues?.saleQuantity}
+                    {!isFixedAsset && <MethodIcon type={itemData.methodType} />}
+                  </Badge>
+                  <Badge variant="green">
+                    {currencyFormatter.format(initialValues?.unitPrice ?? 0)}{" "}
+                    {initialValues?.unitOfMeasureCode}
+                  </Badge>
+                  {initialValues?.taxPercent > 0 ? (
+                    <Badge variant="red">
+                      {percentFormatter.format(initialValues?.taxPercent)}{" "}
+                      <Trans>Tax</Trans>
+                    </Badge>
+                  ) : null}
+                </div>
+              </div>
+            ) : (
+              <Trans>
+                A sales order line contains order details for a particular item
+              </Trans>
+            )}
+          </Description>
+        </div>
+        <div className="flex shrink-0 items-center">
+          {!isEditing && (
+            <TabsList>
+              <TabsTrigger value="item">
+                <LuBox className="mr-1" />
+                <Trans>Item</Trans>
+              </TabsTrigger>
+              <TabsTrigger value="asset">
+                <LuLandmark className="mr-1" />
+                <Trans>Asset</Trans>
+              </TabsTrigger>
+            </TabsList>
+          )}
+          {isEditing && permissions.can("update", "sales") && !isLocked && (
+            <CardAction>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <IconButton
+                    icon={<BsThreeDotsVertical />}
+                    aria-label={t`More`}
+                    variant="ghost"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    destructive
+                    onClick={deleteDisclosure.onOpen}
+                  >
+                    <DropdownMenuIcon icon={<LuTrash />} />
+                    <Trans>Delete Line</Trans>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </CardAction>
+          )}
+        </div>
+      </Header>
+      <Body className={cn(isOverlay && "mb-0 min-h-0 flex-1 overflow-y-auto")}>
+        <Hidden name="id" />
+        <Hidden name="salesOrderId" />
+
+        <TabsContent value="item">
+          {!isEditing && (
+            <Hidden name="description" value={itemData?.description ?? ""} />
+          )}
+          <Hidden
+            name="modelUploadId"
+            value={itemData?.modelUploadId ?? undefined}
+          />
+          <Hidden
+            name="priceListId"
+            value={itemData?.priceListId ?? undefined}
+          />
+          <Hidden
+            name="priceTrace"
+            value={
+              itemData?.priceTrace
+                ? JSON.stringify(itemData.priceTrace)
+                : undefined
+            }
+          />
+          <Hidden name="unitOfMeasureCode" value={itemData.uom} />
+          <Hidden
+            name="configuration"
+            value={
+              configTableRows
+                ? JSON.stringify({
+                    configTable: configTableRows,
+                    configTablePrimaryKeys
+                  })
+                : ""
+            }
+          />
+          <VStack>
+            <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+              <Item
+                name="itemId"
+                label={lineType}
+                type={lineType as "Part"}
+                typeFieldName="salesOrderLineType"
+                value={itemData.itemId}
+                locationId={locationId}
+                onChange={(value) => {
+                  onChange(value?.value as string);
+                }}
+                onTypeChange={onTypeChange}
+              />
+
+              {isEditing && (
+                <InputControlled
+                  name="description"
+                  label={t`Short Description`}
+                  onChange={(value) => {
+                    setItemData((d) => ({
+                      ...d,
+                      description: value
+                    }));
+                  }}
+                  value={itemData.description}
+                />
+              )}
+
+              {lineType !== "Comment" && (
+                <>
+                  <SelectControlled
+                    name="methodType"
+                    label={t`Method`}
+                    // The schema marks methodType optional so Fixed Asset lines
+                    // can skip it, but every item line requires one — don't
+                    // advertise it as optional (or offer a clear button) there.
+                    isOptional={lineType === "Fixed Asset"}
+                    options={
+                      methodType.map((m) => ({
+                        label: (
+                          <span className="flex items-center gap-2">
+                            <MethodIcon type={m} />
+                            {m === "Purchase to Order"
+                              ? t`Purchase to Order`
+                              : m === "Pull from Inventory"
+                                ? t`Pull from Inventory`
+                                : t`Make to Order`}
+                          </span>
+                        ),
+                        value: m
+                      })) ?? []
+                    }
+                    value={itemData.methodType}
+                    onChange={(newValue) => {
+                      if (newValue)
+                        setItemData((d) => ({
+                          ...d,
+                          methodType: newValue?.value
+                        }));
+                    }}
+                  />
+                  {isStyleLine ? (
+                    <QuantityWithConfigTable
+                      name="saleQuantity"
+                      label={t`Quantity`}
+                      value={saleQuantity}
+                      onChange={onQuantityChange}
+                      hasConfigurationParameters={hasConfigurationParameters}
+                      onOpenConfigTable={
+                        hasConfigurationParameters ? openConfigTable : undefined
+                      }
+                      configTableTotal={configTableTotal}
+                      // Grid-backed styles are never typed by hand — quantity
+                      // only comes from confirmed color/size totals.
+                      isReadOnly={hasConfigurationParameters}
+                      minValue={0}
+                    />
+                  ) : (
+                    <NumberControlled
+                      name="saleQuantity"
+                      label={t`Quantity`}
+                      value={saleQuantity}
+                      onChange={onQuantityChange}
+                    />
+                  )}
+                  <div className="flex flex-col gap-y-2 w-full">
+                    <div className="flex items-center justify-between min-h-[16px]">
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {t`Unit Price`}
+                      </span>
+                      <PriceTracePopover
+                        trace={itemData.priceTrace}
+                        currencyCode={baseCurrency}
+                      />
+                    </div>
+                    <NumberControlled
+                      name="unitPrice"
+                      value={itemData.unitPrice}
+                      formatOptions={{
+                        style: "currency",
+                        currency: baseCurrency
+                      }}
+                      onChange={(value) =>
+                        setItemData((d) => ({
+                          ...d,
+                          unitPrice: value
+                        }))
+                      }
+                    />
+                  </div>
+                  <DatePicker name="promisedDate" label={t`Promised Date`} />
+                  {[
+                    "Style",
+                    "Part",
+                    "Material",
+                    "Service",
+                    "Tool",
+                    "Consumable"
+                  ].includes(lineType) && (
+                    <Location
+                      name="locationId"
+                      label={t`Shipping Location`}
+                      onChange={onLocationChange}
+                    />
+                  )}
+                  {[
+                    "Style",
+                    "Part",
+                    "Material",
+                    "Tool",
+                    "Fixture",
+                    "Consumable"
+                  ].includes(lineType) && (
+                    <StorageUnit
+                      name="storageUnitId"
+                      label={t`Storage Unit`}
+                      locationId={locationId}
+                      itemId={itemData.itemId}
+                      value={itemData.storageUnitId ?? undefined}
+                      onChange={(newValue) => {
+                        if (newValue) {
+                          setItemData((d) => ({
+                            ...d,
+                            storageUnitId: newValue?.id
+                          }));
+                        }
+                      }}
+                    />
+                  )}
+                </>
+              )}
+              <CustomFormFields table="salesOrderLine" />
+            </div>
+
+            {lineType !== "Comment" && (
+              <div className="w-full">
+                <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
+                  <HStack
+                    className="w-full justify-between cursor-pointer"
+                    onClick={costsDisclosure.onToggle}
+                  >
+                    <Label>
+                      <Trans>Tax &amp; Additional Costs</Trans>
+                    </Label>
+                    <HStack>
+                      {(initialValues?.taxPercent ?? 0) > 0 && (
+                        <Badge variant="red">
+                          {percentFormatter.format(
+                            initialValues?.taxPercent ?? 0
+                          )}{" "}
+                          <Trans>Tax</Trans>
+                        </Badge>
+                      )}
+                      {(initialValues?.shippingCost ?? 0) > 0 && (
+                        <Badge
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
+                          <LuTruck />
+                          <span>
+                            {currencyFormatter.format(
+                              initialValues?.shippingCost ?? 0
+                            )}
+                          </span>
+                        </Badge>
+                      )}
+                      {(initialValues?.addOnCost ?? 0) > 0 ||
+                        ((initialValues?.nonTaxableAddOnCost ?? 0) > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            <LuPlus />
+                            <span>
+                              {currencyFormatter.format(
+                                (initialValues?.addOnCost ?? 0) +
+                                  (initialValues?.nonTaxableAddOnCost ?? 0)
+                              )}{" "}
+                              <Trans>Add-On</Trans>
+                            </span>
+                          </Badge>
+                        ))}
+
+                      <IconButton
+                        icon={<LuChevronRight />}
+                        aria-label={
+                          costsDisclosure.isOpen
+                            ? t`Collapse Costs`
+                            : t`Expand Costs`
+                        }
+                        variant="ghost"
+                        size="md"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          costsDisclosure.onToggle();
+                        }}
+                        className={`transition-transform ${
+                          costsDisclosure.isOpen ? "rotate-90" : ""
+                        }`}
+                      />
+                    </HStack>
+                  </HStack>
+                  <div
+                    className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                      costsDisclosure.isOpen ? "" : "hidden"
+                    }`}
+                  >
+                    <Number
+                      name="taxPercent"
+                      label={t`Tax Percent`}
+                      minValue={0}
+                      maxValue={1}
+                      step={0.0001}
+                      formatOptions={{
+                        style: "percent",
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2
+                      }}
+                    />
+                    <Number
+                      name="shippingCost"
+                      label={t`Shipping Cost`}
+                      minValue={0}
+                      formatOptions={{
+                        style: "currency",
+                        currency: baseCurrency
+                      }}
+                    />
+                    <Number
+                      name="addOnCost"
+                      label={t`Add-On Cost`}
+                      formatOptions={{
+                        style: "currency",
+                        currency: baseCurrency
+                      }}
+                    />
+                    <Number
+                      name="nonTaxableAddOnCost"
+                      label={t`Non-Taxable Add-On Cost`}
+                      formatOptions={{
+                        style: "currency",
+                        currency: baseCurrency
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </VStack>
+        </TabsContent>
+
+        {activeTab === "asset" && (
+          <>
+            <Hidden name="salesOrderLineType" value="Fixed Asset" />
+            <Hidden name="description" value={assetData.description} />
+            <VStack>
+              <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                <Combobox
+                  name="assetId"
+                  label={t`Fixed Asset`}
+                  isOptional={false}
+                  options={assetOptions}
+                  value={assetData.assetId}
+                  onChange={(selected) => {
+                    setAssetData((d) => ({
+                      ...d,
+                      assetId: (selected?.value as string) ?? ""
+                    }));
+                  }}
+                />
+                <Location
+                  name="locationId"
+                  label={t`Shipping Location`}
+                  onChange={onLocationChange}
+                />
+                <FormControl>
+                  <FormLabel>
+                    <Trans>Description</Trans>
+                  </FormLabel>
+                  <Input
+                    value={assetData.description}
+                    onChange={(e) =>
+                      setAssetData((d) => ({
+                        ...d,
+                        description: e.target.value
+                      }))
+                    }
+                  />
+                </FormControl>
+                <DatePicker name="promisedDate" label={t`Promised Date`} />
+                <NumberControlled
+                  name="saleQuantity"
+                  label={t`Quantity`}
+                  isOptional={false}
+                  isDisabled
+                  value={1}
+                  onChange={() => undefined}
+                />
+                <NumberControlled
+                  name="unitPrice"
+                  label={t`Unit Price`}
+                  isOptional={false}
+                  value={assetData.unitPrice}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(value) =>
+                    setAssetData((d) => ({
+                      ...d,
+                      unitPrice: value
+                    }))
+                  }
+                />
+                <CustomFormFields table="salesOrderLine" />
+              </div>
+
+              <div className="h-4" />
+
+              <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+                <HStack
+                  className="w-full justify-between cursor-pointer"
+                  onClick={assetCostsDisclosure.onToggle}
+                >
+                  <Label>
+                    <Trans>Tax &amp; Additional Costs</Trans>
+                  </Label>
+                  <HStack>
+                    {assetData.taxPercent > 0 && (
+                      <Badge variant="red">
+                        {percentFormatter.format(assetData.taxPercent)}{" "}
+                        <Trans>Tax</Trans>
+                      </Badge>
+                    )}
+                    {assetData.shippingCost > 0 && (
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        <LuTruck />
+                        <span>
+                          {currencyFormatter.format(assetData.shippingCost)}
+                        </span>
+                      </Badge>
+                    )}
+                    <IconButton
+                      icon={<LuChevronRight />}
+                      aria-label={
+                        assetCostsDisclosure.isOpen
+                          ? t`Collapse Costs`
+                          : t`Expand Costs`
+                      }
+                      variant="ghost"
+                      size="md"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        assetCostsDisclosure.onToggle();
+                      }}
+                      className={`transition-transform ${assetCostsDisclosure.isOpen ? "rotate-90" : ""}`}
+                    />
+                  </HStack>
+                </HStack>
+                <div
+                  className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                    assetCostsDisclosure.isOpen ? "" : "hidden"
+                  }`}
+                >
+                  <NumberControlled
+                    name="taxPercent"
+                    label={t`Tax Percent`}
+                    value={assetData.taxPercent}
+                    minValue={0}
+                    maxValue={1}
+                    step={0.0001}
+                    formatOptions={{
+                      style: "percent",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2
+                    }}
+                    onChange={(value) =>
+                      setAssetData((d) => ({
+                        ...d,
+                        taxPercent: value
+                      }))
+                    }
+                  />
+                  <NumberControlled
+                    name="shippingCost"
+                    label={t`Shipping Cost`}
+                    value={assetData.shippingCost}
+                    minValue={0}
+                    formatOptions={{
+                      style: "currency",
+                      currency: baseCurrency
+                    }}
+                    onChange={(value) =>
+                      setAssetData((d) => ({
+                        ...d,
+                        shippingCost: value
+                      }))
+                    }
+                  />
+                  <NumberControlled
+                    name="addOnCost"
+                    label={t`Add-On Cost`}
+                    value={assetData.addOnCost}
+                    formatOptions={{
+                      style: "currency",
+                      currency: baseCurrency
+                    }}
+                    onChange={(value) =>
+                      setAssetData((d) => ({
+                        ...d,
+                        addOnCost: value
+                      }))
+                    }
+                  />
+                  <NumberControlled
+                    name="nonTaxableAddOnCost"
+                    label={t`Non-Taxable Add-On Cost`}
+                    value={assetData.nonTaxableAddOnCost}
+                    formatOptions={{
+                      style: "currency",
+                      currency: baseCurrency
+                    }}
+                    onChange={(value) =>
+                      setAssetData((d) => ({
+                        ...d,
+                        nonTaxableAddOnCost: value
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+            </VStack>
+          </>
+        )}
+      </Body>
+      <Footer className={cn(isOverlay && "shrink-0")}>
+        <Submit
+          isDisabled={
+            !isEditable ||
+            isMissingStyleQuantity ||
+            (isEditing
+              ? !permissions.can("update", "sales")
+              : !permissions.can("create", "sales"))
+          }
+        >
+          <Trans>Save</Trans>
+        </Submit>
+      </Footer>
+    </ValidatedForm>
+  );
 
   return (
     <>
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "item" | "asset")}
-        className="w-full"
+        className={cn(
+          "w-full",
+          isOverlay && "flex min-h-0 max-h-[85vh] w-[56rem] max-w-full flex-col"
+        )}
       >
-        <ModalCardProvider type={type}>
-          <ModalCard
-            onClose={onClose}
-            isCollapsible={isEditing}
-            defaultCollapsed={false}
-          >
-            <ModalCardContent size="xxlarge">
-              <ValidatedForm
-                defaultValues={initialValues}
-                validator={salesOrderLineValidator}
-                method="post"
-                action={
-                  isEditing
-                    ? path.to.salesOrderLine(orderId, initialValues.id!)
-                    : path.to.newSalesOrderLine(orderId)
-                }
-                className="w-full"
-                isDisabled={isEditing && isLocked}
-                onSubmit={() => {
-                  if (type === "modal") onClose?.();
-                }}
-              >
-                <HStack
-                  className={cn(
-                    "w-full justify-between items-start",
-                    type === "modal" && "pr-16"
-                  )}
-                >
-                  <ModalCardHeader className="flex flex-1">
-                    <ModalCardTitle
-                      className={cn(
-                        isEditing &&
-                          !isFixedAsset &&
-                          !itemData?.itemId &&
-                          "text-muted-foreground"
-                      )}
-                    >
-                      {isEditing
-                        ? isFixedAsset
-                          ? initialValues.assetReadableId || "Fixed Asset"
-                          : getItemReadableId(items, itemData?.itemId) || "..."
-                        : t`New Sales Order Line`}
-                    </ModalCardTitle>
-                    <ModalCardDescription>
-                      {isEditing ? (
-                        <div className="flex flex-col items-start gap-1">
-                          <span>
-                            {isFixedAsset
-                              ? initialValues.assetName || assetData.description
-                              : itemData?.description}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <Badge
-                              variant="outline"
-                              className="flex items-center gap-2"
-                            >
-                              {initialValues?.saleQuantity}
-                              {!isFixedAsset && (
-                                <MethodIcon type={itemData.methodType} />
-                              )}
-                            </Badge>
-                            <Badge variant="green">
-                              {currencyFormatter.format(
-                                initialValues?.unitPrice ?? 0
-                              )}{" "}
-                              {initialValues?.unitOfMeasureCode}
-                            </Badge>
-                            {initialValues?.taxPercent > 0 ? (
-                              <Badge variant="red">
-                                {percentFormatter.format(
-                                  initialValues?.taxPercent
-                                )}{" "}
-                                <Trans>Tax</Trans>
-                              </Badge>
-                            ) : null}
-                          </div>
-                        </div>
-                      ) : (
-                        <Trans>
-                          A sales order line contains order details for a
-                          particular item
-                        </Trans>
-                      )}
-                    </ModalCardDescription>
-                  </ModalCardHeader>
-                  <div className="flex-shrink-0 flex items-center gap-2">
-                    {!isEditing && (
-                      <TabsList>
-                        <TabsTrigger value="item">
-                          <LuBox className="mr-1" />
-                          <Trans>Item</Trans>
-                        </TabsTrigger>
-                        <TabsTrigger value="asset">
-                          <LuLandmark className="mr-1" />
-                          <Trans>Asset</Trans>
-                        </TabsTrigger>
-                      </TabsList>
-                    )}
-                    {isEditing &&
-                      permissions.can("update", "sales") &&
-                      !isLocked && (
-                        <CardAction>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <IconButton
-                                icon={<BsThreeDotsVertical />}
-                                aria-label={t`More`}
-                                variant="ghost"
-                              />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                destructive
-                                onClick={deleteDisclosure.onOpen}
-                              >
-                                <DropdownMenuIcon icon={<LuTrash />} />
-                                <Trans>Delete Line</Trans>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </CardAction>
-                      )}
-                  </div>
-                </HStack>
-                <ModalCardBody>
-                  <Hidden name="id" />
-                  <Hidden name="salesOrderId" />
-
-                  <TabsContent value="item">
-                    {!isEditing && (
-                      <Hidden
-                        name="description"
-                        value={itemData?.description ?? ""}
-                      />
-                    )}
-                    <Hidden
-                      name="modelUploadId"
-                      value={itemData?.modelUploadId ?? undefined}
-                    />
-                    <Hidden
-                      name="priceListId"
-                      value={itemData?.priceListId ?? undefined}
-                    />
-                    <Hidden
-                      name="priceTrace"
-                      value={
-                        itemData?.priceTrace
-                          ? JSON.stringify(itemData.priceTrace)
-                          : undefined
-                      }
-                    />
-                    <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                    <VStack>
-                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        <Item
-                          name="itemId"
-                          label={lineType}
-                          type={lineType as "Part"}
-                          typeFieldName="salesOrderLineType"
-                          value={itemData.itemId}
-                          locationId={locationId}
-                          onChange={(value) => {
-                            onChange(value?.value as string);
-                          }}
-                          onTypeChange={onTypeChange}
-                        />
-
-                        {isEditing && (
-                          <InputControlled
-                            name="description"
-                            label={t`Short Description`}
-                            onChange={(value) => {
-                              setItemData((d) => ({
-                                ...d,
-                                description: value
-                              }));
-                            }}
-                            value={itemData.description}
-                          />
-                        )}
-
-                        {lineType !== "Comment" && (
-                          <>
-                            <SelectControlled
-                              name="methodType"
-                              label={t`Method`}
-                              options={
-                                methodType.map((m) => ({
-                                  label: (
-                                    <span className="flex items-center gap-2">
-                                      <MethodIcon type={m} />
-                                      {m}
-                                    </span>
-                                  ),
-                                  value: m
-                                })) ?? []
-                              }
-                              value={itemData.methodType}
-                              onChange={(newValue) => {
-                                if (newValue)
-                                  setItemData((d) => ({
-                                    ...d,
-                                    methodType: newValue?.value
-                                  }));
-                              }}
-                            />
-                            <NumberControlled
-                              name="saleQuantity"
-                              label={t`Quantity`}
-                              value={saleQuantity}
-                              onChange={onQuantityChange}
-                            />
-                            <div className="flex flex-col gap-y-2 w-full">
-                              <div className="flex items-center justify-between min-h-[16px]">
-                                <span className="text-xs font-medium text-muted-foreground">
-                                  Unit Price
-                                </span>
-                                <PriceTracePopover
-                                  trace={itemData.priceTrace}
-                                  currencyCode={baseCurrency}
-                                />
-                              </div>
-                              <NumberControlled
-                                name="unitPrice"
-                                value={itemData.unitPrice}
-                                formatOptions={{
-                                  style: "currency",
-                                  currency: baseCurrency
-                                }}
-                                onChange={(value) =>
-                                  setItemData((d) => ({
-                                    ...d,
-                                    unitPrice: value
-                                  }))
-                                }
-                              />
-                            </div>
-                            <DatePicker
-                              name="promisedDate"
-                              label={t`Promised Date`}
-                            />
-                            {[
-                              "Part",
-                              "Material",
-                              "Service",
-                              "Tool",
-                              "Consumable"
-                            ].includes(lineType) && (
-                              <Location
-                                name="locationId"
-                                label={t`Shipping Location`}
-                                onChange={onLocationChange}
-                              />
-                            )}
-                            {[
-                              "Part",
-                              "Material",
-                              "Tool",
-                              "Fixture",
-                              "Consumable"
-                            ].includes(lineType) && (
-                              <StorageUnit
-                                name="storageUnitId"
-                                label={t`Storage Unit`}
-                                locationId={locationId}
-                                itemId={itemData.itemId}
-                                value={itemData.storageUnitId ?? undefined}
-                                onChange={(newValue) => {
-                                  if (newValue) {
-                                    setItemData((d) => ({
-                                      ...d,
-                                      storageUnitId: newValue?.id
-                                    }));
-                                  }
-                                }}
-                              />
-                            )}
-                          </>
-                        )}
-                        <CustomFormFields table="salesOrderLine" />
-                      </div>
-
-                      {lineType !== "Comment" && (
-                        <div className="w-full">
-                          <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
-                            <HStack
-                              className="w-full justify-between cursor-pointer"
-                              onClick={costsDisclosure.onToggle}
-                            >
-                              <Label>
-                                <Trans>Tax &amp; Additional Costs</Trans>
-                              </Label>
-                              <HStack>
-                                {(initialValues?.taxPercent ?? 0) > 0 && (
-                                  <Badge variant="red">
-                                    {percentFormatter.format(
-                                      initialValues?.taxPercent ?? 0
-                                    )}{" "}
-                                    <Trans>Tax</Trans>
-                                  </Badge>
-                                )}
-                                {(initialValues?.shippingCost ?? 0) > 0 && (
-                                  <Badge
-                                    variant="secondary"
-                                    className="flex items-center gap-1"
-                                  >
-                                    <LuTruck />
-                                    <span>
-                                      {currencyFormatter.format(
-                                        initialValues?.shippingCost ?? 0
-                                      )}
-                                    </span>
-                                  </Badge>
-                                )}
-                                {(initialValues?.addOnCost ?? 0) > 0 ||
-                                  ((initialValues?.nonTaxableAddOnCost ?? 0) >
-                                    0 && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="flex items-center gap-1"
-                                    >
-                                      <LuPlus />
-                                      <span>
-                                        {currencyFormatter.format(
-                                          (initialValues?.addOnCost ?? 0) +
-                                            (initialValues?.nonTaxableAddOnCost ??
-                                              0)
-                                        )}{" "}
-                                        <Trans>Add-On</Trans>
-                                      </span>
-                                    </Badge>
-                                  ))}
-
-                                <IconButton
-                                  icon={<LuChevronRight />}
-                                  aria-label={
-                                    costsDisclosure.isOpen
-                                      ? t`Collapse Costs`
-                                      : t`Expand Costs`
-                                  }
-                                  variant="ghost"
-                                  size="md"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    costsDisclosure.onToggle();
-                                  }}
-                                  className={`transition-transform ${
-                                    costsDisclosure.isOpen ? "rotate-90" : ""
-                                  }`}
-                                />
-                              </HStack>
-                            </HStack>
-                            <div
-                              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                                costsDisclosure.isOpen ? "" : "hidden"
-                              }`}
-                            >
-                              <Number
-                                name="taxPercent"
-                                label={t`Tax Percent`}
-                                minValue={0}
-                                maxValue={1}
-                                step={0.0001}
-                                formatOptions={{
-                                  style: "percent",
-                                  minimumFractionDigits: 0,
-                                  maximumFractionDigits: 2
-                                }}
-                              />
-                              <Number
-                                name="shippingCost"
-                                label={t`Shipping Cost`}
-                                minValue={0}
-                                formatOptions={{
-                                  style: "currency",
-                                  currency: baseCurrency
-                                }}
-                              />
-                              <Number
-                                name="addOnCost"
-                                label={t`Add-On Cost`}
-                                formatOptions={{
-                                  style: "currency",
-                                  currency: baseCurrency
-                                }}
-                              />
-                              <Number
-                                name="nonTaxableAddOnCost"
-                                label={t`Non-Taxable Add-On Cost`}
-                                formatOptions={{
-                                  style: "currency",
-                                  currency: baseCurrency
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </VStack>
-                  </TabsContent>
-
-                  {activeTab === "asset" && (
-                    <>
-                      <Hidden name="salesOrderLineType" value="Fixed Asset" />
-                      <Hidden
-                        name="description"
-                        value={assetData.description}
-                      />
-                      <VStack>
-                        <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                          <Combobox
-                            name="assetId"
-                            label={t`Fixed Asset`}
-                            isOptional={false}
-                            options={assetOptions}
-                            value={assetData.assetId}
-                            onChange={(selected) => {
-                              setAssetData((d) => ({
-                                ...d,
-                                assetId: (selected?.value as string) ?? ""
-                              }));
-                            }}
-                          />
-                          <Location
-                            name="locationId"
-                            label={t`Shipping Location`}
-                            onChange={onLocationChange}
-                          />
-                          <FormControl>
-                            <FormLabel>
-                              <Trans>Description</Trans>
-                            </FormLabel>
-                            <Input
-                              value={assetData.description}
-                              onChange={(e) =>
-                                setAssetData((d) => ({
-                                  ...d,
-                                  description: e.target.value
-                                }))
-                              }
-                            />
-                          </FormControl>
-                          <DatePicker
-                            name="promisedDate"
-                            label={t`Promised Date`}
-                          />
-                          <NumberControlled
-                            name="saleQuantity"
-                            label={t`Quantity`}
-                            isOptional={false}
-                            isDisabled
-                            value={1}
-                            onChange={() => undefined}
-                          />
-                          <NumberControlled
-                            name="unitPrice"
-                            label={t`Unit Price`}
-                            isOptional={false}
-                            value={assetData.unitPrice}
-                            formatOptions={{
-                              style: "currency",
-                              currency: baseCurrency
-                            }}
-                            onChange={(value) =>
-                              setAssetData((d) => ({
-                                ...d,
-                                unitPrice: value
-                              }))
-                            }
-                          />
-                          <CustomFormFields table="salesOrderLine" />
-                        </div>
-
-                        <div className="h-4" />
-
-                        <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-                          <HStack
-                            className="w-full justify-between cursor-pointer"
-                            onClick={assetCostsDisclosure.onToggle}
-                          >
-                            <Label>
-                              <Trans>Tax &amp; Additional Costs</Trans>
-                            </Label>
-                            <HStack>
-                              {assetData.taxPercent > 0 && (
-                                <Badge variant="red">
-                                  {percentFormatter.format(
-                                    assetData.taxPercent
-                                  )}{" "}
-                                  <Trans>Tax</Trans>
-                                </Badge>
-                              )}
-                              {assetData.shippingCost > 0 && (
-                                <Badge
-                                  variant="secondary"
-                                  className="flex items-center gap-1"
-                                >
-                                  <LuTruck />
-                                  <span>
-                                    {currencyFormatter.format(
-                                      assetData.shippingCost
-                                    )}
-                                  </span>
-                                </Badge>
-                              )}
-                              <IconButton
-                                icon={<LuChevronRight />}
-                                aria-label={
-                                  assetCostsDisclosure.isOpen
-                                    ? t`Collapse Costs`
-                                    : t`Expand Costs`
-                                }
-                                variant="ghost"
-                                size="md"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  assetCostsDisclosure.onToggle();
-                                }}
-                                className={`transition-transform ${assetCostsDisclosure.isOpen ? "rotate-90" : ""}`}
-                              />
-                            </HStack>
-                          </HStack>
-                          <div
-                            className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                              assetCostsDisclosure.isOpen ? "" : "hidden"
-                            }`}
-                          >
-                            <NumberControlled
-                              name="taxPercent"
-                              label={t`Tax Percent`}
-                              value={assetData.taxPercent}
-                              minValue={0}
-                              maxValue={1}
-                              step={0.0001}
-                              formatOptions={{
-                                style: "percent",
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2
-                              }}
-                              onChange={(value) =>
-                                setAssetData((d) => ({
-                                  ...d,
-                                  taxPercent: value
-                                }))
-                              }
-                            />
-                            <NumberControlled
-                              name="shippingCost"
-                              label={t`Shipping Cost`}
-                              value={assetData.shippingCost}
-                              minValue={0}
-                              formatOptions={{
-                                style: "currency",
-                                currency: baseCurrency
-                              }}
-                              onChange={(value) =>
-                                setAssetData((d) => ({
-                                  ...d,
-                                  shippingCost: value
-                                }))
-                              }
-                            />
-                            <NumberControlled
-                              name="addOnCost"
-                              label={t`Add-On Cost`}
-                              value={assetData.addOnCost}
-                              formatOptions={{
-                                style: "currency",
-                                currency: baseCurrency
-                              }}
-                              onChange={(value) =>
-                                setAssetData((d) => ({
-                                  ...d,
-                                  addOnCost: value
-                                }))
-                              }
-                            />
-                            <NumberControlled
-                              name="nonTaxableAddOnCost"
-                              label={t`Non-Taxable Add-On Cost`}
-                              value={assetData.nonTaxableAddOnCost}
-                              formatOptions={{
-                                style: "currency",
-                                currency: baseCurrency
-                              }}
-                              onChange={(value) =>
-                                setAssetData((d) => ({
-                                  ...d,
-                                  nonTaxableAddOnCost: value
-                                }))
-                              }
-                            />
-                          </div>
-                        </div>
-                      </VStack>
-                    </>
-                  )}
-                </ModalCardBody>
-                <ModalCardFooter>
-                  <Submit
-                    isDisabled={
-                      isPriceResolving ||
-                      !isEditable ||
-                      (isEditing
-                        ? !permissions.can("update", "sales")
-                        : !permissions.can("create", "sales"))
-                    }
-                  >
-                    <Trans>Save</Trans>
-                  </Submit>
-                </ModalCardFooter>
-              </ValidatedForm>
-            </ModalCardContent>
-          </ModalCard>
-        </ModalCardProvider>
+        {isOverlay ? (
+          form
+        ) : (
+          <ModalCardProvider type={type}>
+            <ModalCard
+              onClose={dismiss}
+              isCollapsible={isEditing}
+              defaultCollapsed={false}
+            >
+              <ModalCardContent size="xxlarge">{form}</ModalCardContent>
+            </ModalCard>
+          </ModalCardProvider>
+        )}
       </Tabs>
+      {configModal.node}
       {isEditing && deleteDisclosure.isOpen && (
         <DeleteSalesOrderLine
           line={initialValues as SalesOrderLine}

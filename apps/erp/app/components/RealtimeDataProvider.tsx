@@ -107,6 +107,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
         replenishmentSystem: string;
         active: boolean;
         itemTrackingType: string;
+        defaultMethodType: string;
         itemReplenishment:
           | { requiresConfiguration: boolean }
           | { requiresConfiguration: boolean }[]
@@ -114,7 +115,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
       }>(
         carbon,
         "item",
-        "id, readableIdWithRevision, unitOfMeasureCode, name, type, replenishmentSystem, active, itemTrackingType, itemReplenishment(requiresConfiguration)",
+        "id, readableIdWithRevision, unitOfMeasureCode, name, type, replenishmentSystem, active, itemTrackingType, defaultMethodType, itemReplenishment(requiresConfiguration)",
         (query) =>
           query
             .eq("companyId", companyId)
@@ -248,7 +249,8 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
                       itemTrackingType: inserted.itemTrackingType,
                       unitOfMeasureCode: inserted.unitOfMeasureCode,
                       type: inserted.type,
-                      active: inserted.active
+                      active: inserted.active,
+                      defaultMethodType: inserted.defaultMethodType
                     }
                   ].sort((a, b) =>
                     a.readableIdWithRevision.localeCompare(
@@ -273,7 +275,8 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
                           itemTrackingType: updated.itemTrackingType,
                           unitOfMeasureCode: updated.unitOfMeasureCode,
                           type: updated.type,
-                          active: updated.active
+                          active: updated.active,
+                          defaultMethodType: updated.defaultMethodType
                         };
                       }
                       return i;

@@ -7888,6 +7888,9 @@ msgstr "निपटान पर निश्चित संपत्ति �
 msgid "Fixed asset created"
 msgstr "स्थानिक धन बनाया गया है"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "संपत्ति की मात्रा 1 होनी चाहिए"
+
 msgid "Fixed asset updated"
 msgstr "संपत्ति अपडेट किया गया है"
 
@@ -8704,6 +8707,9 @@ msgstr "आइटम समूह"
 
 msgid "Item ID"
 msgstr "आइटम आईडी"
+
+msgid "Item is required"
+msgstr "आइटम आवश्यक है"
 
 msgid "Item Master"
 msgstr "आइटम मास्टर"
@@ -9582,6 +9588,9 @@ msgstr "तरीका"
 msgid "Method Id"
 msgstr "विधि आईडी"
 
+msgid "Method is required"
+msgstr "मेथोड आवश्यक है"
+
 msgid "Method Materials"
 msgstr "विधि सामग्री"
 
@@ -9599,6 +9608,9 @@ msgstr "विधि संचालन"
 
 msgid "Method Type"
 msgstr "विधि प्रकार"
+
+msgid "Method type is required"
+msgstr "मेथोड टाइप कर्तव्य है"
 
 msgid "Methods"
 msgstr "तरीके"
@@ -11651,7 +11663,7 @@ msgid "Purchase Order Line"
 msgstr "क्रय आदेश पंक्ति"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
 
 msgid "Purchase Order Location"
 msgstr "क्रय आदेश स्थान"
@@ -12631,6 +12643,9 @@ msgstr "बिक्रय आदेश ID"
 
 msgid "Sales Order Line"
 msgstr "बिक्रय आदेश पंक्ति"
+
+msgid "Sales order line created"
+msgstr "विक्रय आदेश पंक्ति बनाई गई"
 
 msgid "Sales Order Location"
 msgstr "बिक्रय आदेश स्थान"
@@ -13799,6 +13814,12 @@ msgstr "Kanban तालिका में दिखाने के लिए 
 
 msgid "Style Properties"
 msgstr "शैली गुण"
+
+msgid "Style quantity configuration is required"
+msgstr "स्टाइल गुणता कonfiguration आवश्यक है"
+
+msgid "Style quantity is required"
+msgstr "स्टाइल की मात्रा आवश्यक है"
 
 msgid "Style Size"
 msgstr "शैली आकार"

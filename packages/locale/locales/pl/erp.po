@@ -7885,6 +7885,9 @@ msgstr "Koszt nabycia środków trwałych przy zbyciu"
 msgid "Fixed asset created"
 msgstr "Zakupiło nieruchomość"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "Ilość Dostosowanego Szybkiego Zasobu musi wynosić 1"
+
 msgid "Fixed asset updated"
 msgstr "Zaktualizowano nieruchomość"
 
@@ -8701,6 +8704,9 @@ msgstr "Grupy Pozycji"
 
 msgid "Item ID"
 msgstr "ID Przedmiotu"
+
+msgid "Item is required"
+msgstr "Pole wymaga wybrania pozycji"
 
 msgid "Item Master"
 msgstr "Główny element"
@@ -9579,6 +9585,9 @@ msgstr "Metoda"
 msgid "Method Id"
 msgstr "Identyfikator metody"
 
+msgid "Method is required"
+msgstr "Metoda jest wymagana"
+
 msgid "Method Materials"
 msgstr "Materiały metody"
 
@@ -9596,6 +9605,9 @@ msgstr "Operacje metody"
 
 msgid "Method Type"
 msgstr "Typ metody"
+
+msgid "Method type is required"
+msgstr "Typ metody jest wymagany"
 
 msgid "Methods"
 msgstr "Metody"
@@ -11648,7 +11660,7 @@ msgid "Purchase Order Line"
 msgstr "Linia Zamówienia Zakupu"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Linia zamówienia zakupów utworzona"
 
 msgid "Purchase Order Location"
 msgstr "Lokalizacja Zamówienia Zakupu"
@@ -12628,6 +12640,9 @@ msgstr "Numer zamówienia sprzedaży"
 
 msgid "Sales Order Line"
 msgstr "Linia Zamówienia Sprzedaży"
+
+msgid "Sales order line created"
+msgstr "Linia zamówienia sprzedaży utworzona"
 
 msgid "Sales Order Location"
 msgstr "Lokalizacja Zamówienia Sprzedaży"
@@ -13796,6 +13811,12 @@ msgstr "Styl wyjścia kanban do wyświetlenia w tabeli Kanban"
 
 msgid "Style Properties"
 msgstr "Właściwości modelu"
+
+msgid "Style quantity configuration is required"
+msgstr "Konfiguracja ilościowego stylu jest wymagana"
+
+msgid "Style quantity is required"
+msgstr "Ilość produktu jest wymagana"
 
 msgid "Style Size"
 msgstr "Rozmiar modelu"

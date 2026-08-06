@@ -672,6 +672,7 @@ export const quoteShipmentValidator = z.object({
 });
 
 export const salesOrderLineType = [
+  "Style",
   "Part",
   // "Service",
   "Material",
@@ -799,19 +800,9 @@ export const salesOrderLineValidator = z
     ),
     unitOfMeasureCode: zfd.text(z.string().optional()),
     unitPrice: zfd.numeric(z.number().optional()),
-    exchangeRate: zfd.numeric(z.number().optional())
+    exchangeRate: zfd.numeric(z.number().optional()),
+    configuration: zfd.text(z.string().optional())
   })
-  .refine((data) => (data.salesOrderLineType === "Part" ? data.itemId : true), {
-    message: "Part is required",
-    path: ["itemId"] // path of error
-  })
-  .refine(
-    (data) => (data.salesOrderLineType === "Comment" ? data.description : true),
-    {
-      message: "Comment is required",
-      path: ["description"] // path of error
-    }
-  )
   .refine(
     (data) => {
       if (
@@ -823,8 +814,37 @@ export const salesOrderLineValidator = z
       return true;
     },
     {
-      message: "Item is required for this line type",
+      message: "Item is required",
       path: ["itemId"]
+    }
+  )
+  .refine(
+    (data) => (data.salesOrderLineType === "Comment" ? data.description : true),
+    {
+      message: "Comment is required",
+      path: ["description"]
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.salesOrderLineType !== "Style" || !data.itemId) return true;
+      // Style quantity must come from the color×size grid (total > 0).
+      return (data.saleQuantity ?? 0) > 0;
+    },
+    {
+      message: "Style quantity is required",
+      path: ["saleQuantity"]
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.salesOrderLineType !== "Style" || !data.itemId) return true;
+      // Grid total is only trusted when configuration JSON is present.
+      return Boolean(data.configuration && data.configuration.trim());
+    },
+    {
+      message: "Style quantity configuration is required",
+      path: ["configuration"]
     }
   )
   .refine(
@@ -839,7 +859,7 @@ export const salesOrderLineValidator = z
       return true;
     },
     {
-      message: "Method type is required",
+      message: "Method is required",
       path: ["methodType"]
     }
   )

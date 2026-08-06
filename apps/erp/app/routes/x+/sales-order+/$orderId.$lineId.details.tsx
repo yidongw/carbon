@@ -2,6 +2,7 @@ import { assertIsPost, error, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { Card, CardHeader, CardTitle } from "@carbon/react";
@@ -19,6 +20,7 @@ import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
 import { getItemReplenishment } from "~/modules/items";
 import { getJobsBySalesOrderLine } from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import type {
   Opportunity,
   SalesOrder,
@@ -116,8 +118,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    configuration: configStr,
+    saleQuantity: rawQuantity,
+    ...d
+  } = validation.data;
 
   if (d.salesOrderLineType === "Comment") {
     d.accountId = undefined;
@@ -131,9 +137,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
     d.assetId = undefined;
   }
 
+  let saleQuantity = rawQuantity;
+  let configurationUpdate: { configuration: Json | null } | undefined;
+  if (configStr) {
+    try {
+      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const fields = jobConfigurationUpdateFields(parsed);
+      configurationUpdate = { configuration: fields.configuration };
+      saleQuantity = fields.quantity;
+    } catch {
+      // Invalid JSON — keep typed quantity and leave existing configuration alone.
+    }
+  } else {
+    // Explicit empty hidden field clears Style configuration.
+    configurationUpdate = { configuration: null };
+  }
+
   const updateSalesOrderLine = await upsertSalesOrderLine(client, {
     id: lineId,
     ...d,
+    saleQuantity,
+    ...configurationUpdate,
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -191,6 +215,9 @@ export default function EditSalesOrderLineRoute() {
     unitPrice: line?.unitPrice ?? 0,
     taxPercent: line?.taxPercent ?? 0,
     shippingCost: line?.shippingCost ?? 0,
+    configuration: line?.configuration
+      ? JSON.stringify(line.configuration)
+      : undefined,
     assetReadableId: (line as any)?.assetReadableId ?? undefined,
     assetName: (line as any)?.assetName ?? undefined,
     ...getCustomFields(line?.customFields)

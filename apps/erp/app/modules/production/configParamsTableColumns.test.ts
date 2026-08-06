@@ -274,3 +274,41 @@ describe("fillValueFromReference", () => {
     expect(fillValueFromReference(4)).toBe(4);
   });
 });
+
+describe("getConfigQuantityCells", () => {
+  it("labels Color · Size when sizes are quantity columns", async () => {
+    const { getConfigQuantityCells } = await import(
+      "./configParamsTableColumns"
+    );
+    const cells = getConfigQuantityCells(
+      {
+        configTable: [{ color: "BK", XS: 0, S: 6 }],
+        configTablePrimaryKeys: ["XS", "S"]
+      },
+      { BK: "黑色" }
+    );
+    expect(cells).toEqual([{ key: "0:S", label: "黑色 · S", quantity: 6 }]);
+  });
+
+  it("labels Color · Size when colors are quantity columns", async () => {
+    const { getConfigQuantityCells } = await import(
+      "./configParamsTableColumns"
+    );
+    const cells = getConfigQuantityCells(
+      {
+        configTable: [
+          { Size: "S", Red: 2, Blue: 1 },
+          { Size: "M", Red: 1, Blue: 2 }
+        ],
+        configTablePrimaryKeys: ["Red", "Blue"]
+      },
+      { Red: "红色", Blue: "蓝色" }
+    );
+    expect(cells.map((c) => c.label)).toEqual([
+      "红色 · S",
+      "蓝色 · S",
+      "红色 · M",
+      "蓝色 · M"
+    ]);
+  });
+});

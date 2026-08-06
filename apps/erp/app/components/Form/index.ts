@@ -11,12 +11,10 @@ import {
   InputControlled,
   MultiSelect,
   Number,
-  NumberControlled,
   Password,
   PhoneInput,
   Radios,
   Select,
-  SelectControlled,
   Submit,
   TextArea,
   TimePicker,
@@ -53,11 +51,13 @@ import ItemPostingGroup from "./ItemPostingGroup";
 import Items from "./Items";
 import Location from "./Location";
 import MaterialType from "./MaterialType";
+import NumberControlled from "./NumberControlled";
 import Part from "./Part";
 import PaymentTerm from "./PaymentTerm";
 import Procedure from "./Procedure";
 import Process from "./Process";
 import Processes from "./Processes";
+import SelectControlled from "./SelectControlled";
 import Sequence from "./Sequence";
 import SequenceOrCustomId from "./SequenceOrCustomId";
 import Service from "./Service";
