@@ -51,7 +51,12 @@ const Select = ({
   onConfigure,
   ...props
 }: SelectProps) => {
-  const { getInputProps, error, isOptional: fieldIsOptional } = useField(name);
+  const {
+    getInputProps,
+    error,
+    validate,
+    isOptional: fieldIsOptional
+  } = useField(name);
   const [value, setValue] = useControlField<string | undefined>(name);
   const formState = useFormStateContext();
   const isDisabled = formState.isDisabled || props.isDisabled;
@@ -102,6 +107,10 @@ const Select = ({
         onChange={(newValue) => {
           setValue(newValue ?? "");
           onChange(newValue ?? "");
+          // The value lands in form state, not on the hidden input, so the
+          // input's own onChange never fires — revalidate here or a submitted
+          // error stays on screen after the user picks a valid option.
+          validate();
         }}
         isClearable={resolvedIsOptional && !isReadOnly}
         isDisabled={isDisabled}
