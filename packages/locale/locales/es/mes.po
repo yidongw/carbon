@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -234,6 +233,9 @@ msgstr "Solicitud incorrecta para revertir secuencia"
 
 msgid "Batch"
 msgstr "Lote"
+
+msgid "Batch has insufficient quantity"
+msgstr "Lote tiene una cantidad insuficiente"
 
 msgid "Batch is not available"
 msgstr "El lote no está disponible"
@@ -891,6 +893,9 @@ msgstr "Falló al activar el proceso"
 msgid "Failed to activate work center"
 msgstr "Falló al activar el centro de trabajo"
 
+msgid "Failed to add a line"
+msgstr "Falló al agregar una línea"
+
 msgid "Failed to add colors and sizes"
 msgstr "Falló al agregar colores y tamaños"
 
@@ -911,6 +916,9 @@ msgstr "No se pudo asignar proveedores"
 
 msgid "Failed to cancel RFQ"
 msgstr "Falló al cancelar la OFR"
+
+msgid "Failed to check serial number index"
+msgstr "Falló al verificar el índice del número de serie"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "Error al completar el ajuste de inventario"
@@ -1089,6 +1097,9 @@ msgstr "Falló al crear la orden de venta"
 msgid "Failed to create sales order line."
 msgstr "Falló al crear línea de pedido de ventas."
 
+msgid "Failed to create samples"
+msgstr "Falló al crear muestras"
+
 msgid "Failed to create shift"
 msgstr "Falló al crear turno"
 
@@ -1118,6 +1129,9 @@ msgstr "Falló al crear la tarjeta horaria"
 
 msgid "Failed to create training"
 msgstr "Falló la creación del entrenamiento"
+
+msgid "Failed to create transfer"
+msgstr "Falló la creación de la transferencia"
 
 msgid "Failed to create user account"
 msgstr "Falló la creación de la cuenta de usuario"
@@ -1617,6 +1631,9 @@ msgstr "Falló al obtener las facturas de ventas"
 msgid "Failed to fetch sales orders"
 msgstr "Falló al obtener los pedidos de ventas"
 
+msgid "Failed to fetch samples"
+msgstr "Falló al obtener muestras"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Error al obtener unidades de almacenamiento"
 
@@ -1886,6 +1903,9 @@ msgstr "Falló al obtener la asignación"
 
 msgid "Failed to get document"
 msgstr "Falló al obtener el documento"
+
+msgid "Failed to get employee processes"
+msgstr "Falló al obtener los procesos del empleado"
 
 msgid "Failed to get employee type"
 msgstr "Falló al obtener el tipo de empleado"
@@ -2721,6 +2741,9 @@ msgstr "Falló al cargar la remisión de cotización"
 msgid "Failed to load receipt"
 msgstr "Falló al cargar la recepción"
 
+msgid "Failed to load receipt line"
+msgstr "Falló al cargar línea de recibos"
+
 msgid "Failed to load report lines"
 msgstr "Falló al cargar las líneas del informe"
 
@@ -2846,6 +2869,9 @@ msgstr "Falló al cargar las cantidades de herramientas"
 
 msgid "Failed to load tool summary"
 msgstr "Falló al cargar el resumen de la herramienta"
+
+msgid "Failed to load tracked entity"
+msgstr "Falló al cargar el ente rastreado"
 
 msgid "Failed to load training"
 msgstr "Falló al cargar el entrenamiento"
@@ -3011,6 +3037,9 @@ msgstr "Falló el informe de rehacer"
 
 msgid "Failed to report scrap"
 msgstr "Falló al informar sobre el desperdicio"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "No se pudo resolver almacén de socio"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Falló al resolver los precios de la Extracción desde Inventario"
@@ -3435,6 +3464,9 @@ msgstr "Falló al actualizar paso del procedimiento"
 msgid "Failed to update process completion"
 msgstr "Falló al actualizar la conclusión del proceso"
 
+msgid "Failed to update processes"
+msgstr "Falló al actualizar los procesos"
+
 msgid "Failed to update production event"
 msgstr "Falló al actualizar el evento de producción"
 
@@ -3647,6 +3679,9 @@ msgstr "Falló al actualizar la planificación de herramientas"
 
 msgid "Failed to update tool purchasing"
 msgstr "Falló al actualizar la compra de herramientas"
+
+msgid "Failed to update tracking"
+msgstr "Falló al actualizar el seguimiento"
 
 msgid "Failed to update training question"
 msgstr "Falló al actualizar la pregunta de capacitación"
@@ -4797,6 +4832,9 @@ msgstr "Orden de compra creada"
 msgid "Purchase order finalized"
 msgstr "Orden de compra finalizada"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Orden de compra no encontrada"
 
@@ -5025,6 +5063,9 @@ msgstr "Orden de venta creada"
 msgid "Sample recorded"
 msgstr "Muestra registrada"
 
+msgid "Samples created"
+msgstr "Muestras creadas"
+
 msgid "Sampling plan updated"
 msgstr "Plan de muestreo actualizado"
 
@@ -5176,6 +5217,12 @@ msgstr "Serie"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "Número de serie {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "El número de serie ya existe para este artículo"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "El número de serie ya se está utilizando para un artículo diferente o posición"
 
 msgid "Serial number is not available"
 msgstr "El número de serie no está disponible"
@@ -5609,6 +5656,9 @@ msgstr "Se actualizaron con éxito los ajustes del ejercicio fiscal"
 msgid "Successfully updated job"
 msgstr "Se ha actualizado la tarea con éxito"
 
+msgid "Successfully updated processes"
+msgstr "Se actualizaron correctamente los procesos"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Éxito al desactivar cliente"
 
@@ -5710,6 +5760,9 @@ msgstr "Este período"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "Este proceso está asignado a otra persona. Tomar el control detiene su cronómetro en curso."
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "Este número de serie no se envió en este traslado"
+
 msgid "Thumbnail"
 msgstr "Miniatura"
 
@@ -5776,6 +5829,9 @@ msgstr "Tiempo total: {0}"
 msgid "Total: {0}"
 msgstr "Total: {0}"
 
+msgid "Tracked entity is not available"
+msgstr "Entidad rastreada no disponible"
+
 msgid "Tracked entity not found"
 msgstr "Entidad rastreada no encontrada"
 
@@ -5793,6 +5849,9 @@ msgstr "ID de entrenamiento es requerido"
 
 msgid "Training marked as complete"
 msgstr "Entrenamiento marcado como completo"
+
+msgid "Transfer created"
+msgstr "Traslado creado"
 
 msgid "Type a message..."
 msgstr "Escriba un mensaje..."
@@ -6304,60 +6363,3 @@ msgstr "Tu cuenta no está activa"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Tu empresa está en el plan gratuito (solo lectura). Mejora tu plan para hacer cambios."
-
-msgid "Batch has insufficient quantity"
-msgstr "Lote tiene una cantidad insuficiente"
-
-msgid "Failed to add a line"
-msgstr "Falló al agregar una línea"
-
-msgid "Failed to check serial number index"
-msgstr "Falló al verificar el índice del número de serie"
-
-msgid "Failed to create samples"
-msgstr "Falló al crear muestras"
-
-msgid "Failed to create transfer"
-msgstr "Falló la creación de la transferencia"
-
-msgid "Failed to fetch samples"
-msgstr "Falló al obtener muestras"
-
-msgid "Failed to get employee processes"
-msgstr "Falló al obtener los procesos del empleado"
-
-msgid "Failed to load receipt line"
-msgstr "Falló al cargar línea de recibos"
-
-msgid "Failed to load tracked entity"
-msgstr "Falló al cargar el ente rastreado"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "No se pudo resolver almacén de socio"
-
-msgid "Failed to update processes"
-msgstr "Falló al actualizar los procesos"
-
-msgid "Failed to update tracking"
-msgstr "Falló al actualizar el seguimiento"
-
-msgid "Samples created"
-msgstr "Muestras creadas"
-
-msgid "Serial number already exists for this item"
-msgstr "El número de serie ya existe para este artículo"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "El número de serie ya se está utilizando para un artículo diferente o posición"
-
-msgid "Successfully updated processes"
-msgstr "Se actualizaron correctamente los procesos"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "Este número de serie no se envió en este traslado"
-
-msgid "Tracked entity is not available"
-msgstr "Entidad rastreada no disponible"
-
-msgid "Transfer created"
-msgstr "Traslado creado"

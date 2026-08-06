@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fournisseur est une entreprise ou un individu qui vous vend des pièces ou des services."
@@ -105,12 +104,6 @@ msgstr "{name} supprimé"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permissions"
-
-#~ msgid "{total} samples"
-#~ msgstr "{total} échantillons"
-
-#~ msgid "{total} samples · {sampled}/{colorCount} colors"
-#~ msgstr "{total} échantillons · {sampled}/{colorCount} couleurs"
 
 msgid "/month/user"
 msgstr "/mois/utilisateur"
@@ -1152,6 +1145,9 @@ msgstr "Êtes-vous sûr de vouloir supprimer ce risque ?"
 msgid "Are you sure you want to delete this risk? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer ce risque ? Cette action ne peut pas être annulée."
 
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette ligne de livraison ?"
+
 msgid "Are you sure you want to delete this suggestion? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer cette suggestion ? Cette action ne peut pas être annulée."
 
@@ -1262,6 +1258,9 @@ msgstr "Actif"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
 msgstr "Attribuez les imprimantes aux emplacements. Les centres de expédition, réception et travail héritent par défaut des paramètres d'emplacement sauf si c'est surchargé."
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "Attribuez les processus auxquels cet employé peut s'occuper. Ils apparaissent lors du rapport de quantité de production pour ces processus."
 
 msgid "Assign To"
 msgstr "Assigner à"
@@ -1485,6 +1484,9 @@ msgstr "Informations de base"
 msgid "Batch"
 msgstr "Lot"
 
+msgid "Batch has insufficient quantity"
+msgstr "La lot contient une quantité insuffisante"
+
 msgid "Batch items require a sales order"
 msgstr "Les articles en lot nécessitent une commande client"
 
@@ -1493,6 +1495,19 @@ msgstr "Numéro de lot"
 
 msgid "Batch Number"
 msgstr "Numéro de lot"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "Numéro de lot est {0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "Le numéro de lot est déjà utilisé sur une autre ligne de fret"
+
+msgid "Batch number is required"
+msgstr "Le numéro de lot est requis"
+
+msgid "Batch number not found"
+msgstr "Numéro de lot non trouvé"
 
 msgid "Batch Properties"
 msgstr "Propriétés de lot"
@@ -1530,9 +1545,6 @@ msgstr "Facturation"
 
 msgid "Billing Address"
 msgstr "Adresse de facturation"
-
-#~ msgid "Bin"
-#~ msgstr "Emplacement"
 
 msgid "Block with an error"
 msgstr "Bloquer avec une erreur"
@@ -3715,6 +3727,9 @@ msgstr "Dupliquer la liste de prix"
 msgid "Duplicate Pricing Rule"
 msgstr "Dupliquer la règle de tarification"
 
+msgid "Duplicate serial number"
+msgstr "Numéro de série dupliqué"
+
 msgid "Duplicate To"
 msgstr "Dupliquer vers"
 
@@ -4508,6 +4523,10 @@ msgstr "Lot expiré"
 msgid "Expired Batches"
 msgstr "Lots Expirés"
 
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "Expire le {0}"
+
 msgid "Expires"
 msgstr "Expire"
 
@@ -4584,6 +4603,9 @@ msgstr "Échec d'activation du processus"
 msgid "Failed to activate work center"
 msgstr "Échec d'activation du centre de travail"
 
+msgid "Failed to add a line"
+msgstr "Échec de l'ajout d'une ligne"
+
 msgid "Failed to add colors and sizes"
 msgstr "Échec de l'ajout des couleurs et des tailles"
 
@@ -4604,6 +4626,9 @@ msgstr "Échec de l'attribution des fournisseurs"
 
 msgid "Failed to cancel RFQ"
 msgstr "Échec de l'annulation de la demande de quote-prévisionnelle"
+
+msgid "Failed to check serial number index"
+msgstr "Échec du vérification de l'index du numéro de série"
 
 msgid "Failed to complete job"
 msgstr "Échec de la tâche"
@@ -4867,6 +4892,9 @@ msgstr "Échec de la création de la commande de vente"
 msgid "Failed to create sales order line."
 msgstr "Échec de la création de ligne de commande de vente."
 
+msgid "Failed to create samples"
+msgstr "Échec de la création des échantillons"
+
 msgid "Failed to create shift"
 msgstr "Échec de la création d'un horaire"
 
@@ -4920,6 +4948,9 @@ msgstr "Échec de la création de l'outil : {0}"
 
 msgid "Failed to create training"
 msgstr "Échec de la création de la formation"
+
+msgid "Failed to create transfer"
+msgstr "Échec de la création du transfert"
 
 msgid "Failed to create user account"
 msgstr "Échec de la création du compte utilisateur"
@@ -5433,6 +5464,9 @@ msgstr "Échec du chargement des factures de vente"
 msgid "Failed to fetch sales orders"
 msgstr "Échec du chargement des commandes de vente"
 
+msgid "Failed to fetch samples"
+msgstr "Échec du chargement des échantillons"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Échec du chargement de storageUnits"
 
@@ -5705,6 +5739,9 @@ msgstr "Échec de l'obtention du dépistage"
 
 msgid "Failed to get document"
 msgstr "Échec de récupération du document"
+
+msgid "Failed to get employee processes"
+msgstr "Échec de récupération des processus de l'employé"
 
 msgid "Failed to get employee type"
 msgstr "Échec de récupération du type d'employé"
@@ -6582,6 +6619,9 @@ msgstr "Échec du chargement de l'expédition de devis"
 msgid "Failed to load receipt"
 msgstr "Échec du chargement de la réception"
 
+msgid "Failed to load receipt line"
+msgstr "Échec du chargement de la ligne de réception"
+
 msgid "Failed to load receipt lines"
 msgstr "Échec du chargement des lignes de réception"
 
@@ -6731,6 +6771,9 @@ msgstr "Échec du chargement de l'aperçu de l'outil"
 
 msgid "Failed to load tracked entities"
 msgstr "Impossible de charger les entités suivies"
+
+msgid "Failed to load tracked entity"
+msgstr "Échec du chargement de l'entité suivie"
 
 msgid "Failed to load training"
 msgstr "Échec du chargement de la formation"
@@ -6915,6 +6958,9 @@ msgstr "Échec du rapport des déchets"
 msgid "Failed to resize image: {errorMessage}"
 msgstr "Échec du redimensionnement de l'image : {errorMessage}"
 
+msgid "Failed to resolve partner warehouse"
+msgstr "Échec de résolution des entrepôts partenaires"
+
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Échec de la résolution des prix Pull depuis l'inventaire"
 
@@ -7028,6 +7074,9 @@ msgstr "Échec de la cessation de l'événement"
 
 msgid "Failed to sync procedure"
 msgstr "Échec de la synchronisation du procédé"
+
+msgid "Failed to track serial number"
+msgstr "Échec de suivi du numéro de série"
 
 msgid "Failed to trigger rework"
 msgstr "Échec du déclenchement de rétroussage"
@@ -7362,6 +7411,9 @@ msgstr "Échec de la mise à jour du pas de procédure"
 msgid "Failed to update process completion"
 msgstr "Échec de la mise à jour de l'achèvement du processus"
 
+msgid "Failed to update processes"
+msgstr "Échec de la mise à jour des processus"
+
 msgid "Failed to update production event"
 msgstr "Échec de la mise à jour de l'événement de production"
 
@@ -7587,6 +7639,9 @@ msgstr "Échec de la mise à jour du plan d'outils"
 msgid "Failed to update tool purchasing"
 msgstr "Échec de la mise à jour des achats de outils"
 
+msgid "Failed to update tracking"
+msgstr "Échec de la mise à jour du suivi"
+
 msgid "Failed to update training question"
 msgstr "Échec de la mise à jour de la question de formation"
 
@@ -7761,6 +7816,9 @@ msgstr "Les fichiers joints ici accompagnent chaque email de commande envoyé à
 msgid "Fill cell"
 msgstr "Remplir la case"
 
+msgid "Fill shipped serial"
+msgstr "Remplir les séries expédiées"
+
 msgid "Filter"
 msgstr "Filtre"
 
@@ -7878,6 +7936,9 @@ msgstr "De"
 
 msgid "From (current location)"
 msgstr "De (emplacement courant)"
+
+msgid "from {loc}"
+msgstr "depuis {loc}"
 
 msgid "From and To warehouses must be different"
 msgstr "Les entrepôts de départ et d'arrivée doivent être différents"
@@ -8982,9 +9043,6 @@ msgstr "Les lignes ont besoin de prix ou de délais"
 msgid "Link"
 msgstr "Lien"
 
-msgid "Link a warehouse to this partner in Resources → Locations."
-msgstr "Liens entre entrepôt et partenaire dans Ressources → Localisations."
-
 msgid "Link Jira Issue"
 msgstr "Lier un problème Jira"
 
@@ -9061,6 +9119,9 @@ msgstr "Emplacement"
 
 msgid "Location created"
 msgstr "Emplacement créé"
+
+msgid "Location Inventory"
+msgstr "Stock par emplacement"
 
 msgid "Location Name"
 msgstr "Nom du lieu"
@@ -10374,9 +10435,6 @@ msgstr "Pas de valeur requise"
 msgid "No values available"
 msgstr "Aucune valeur disponible"
 
-msgid "No warehouse mapped"
-msgstr "Aucun entrepôt映射"
-
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Aucun stock de magasin n'est enregistré pour cet article. Vous pouvez tout de même le sélectionner — le stock disponible sera négatif jusqu'à ce que le compte soit réconcilié."
 
@@ -10523,6 +10581,9 @@ msgstr "Seuls les actifs actifs peuvent être vendus"
 
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Seules les actifs actifs ou pleinement dépréciés peuvent être désossés"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "Seuls les employés affectés apparaissent lors de la rapportation des quantités. Laissez ce champ vide pour autoriser tous les employés."
 
 msgid "Only Draft assets can be purchased"
 msgstr "Seules les actifs en brouillon peuvent être achetés"
@@ -11586,6 +11647,9 @@ msgstr "Numéro de bon de commande"
 msgid "Purchase Order Line"
 msgstr "Ligne de bon de commande"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase Order Location"
 msgstr "Localisation de la commande d'achat"
 
@@ -11721,9 +11785,6 @@ msgstr "Quantité en commande d'achat"
 
 msgid "Quantity on Sales Order"
 msgstr "Quantité sur Commande Vente"
-
-#~ msgid "Quantity per color"
-#~ msgstr "Quantité par couleur"
 
 msgid "Quantity per Parent"
 msgstr "Quantité par Parent"
@@ -11864,6 +11925,9 @@ msgstr "Reçu"
 
 msgid "Receipt ID"
 msgstr "ID de reçu"
+
+msgid "Receipt is empty"
+msgstr "La réception est vide"
 
 msgid "Receipt Line"
 msgstr "Ligne de réception"
@@ -12605,6 +12669,9 @@ msgstr "Taille de l'échantillon"
 msgid "Samples"
 msgstr "Échantillons"
 
+msgid "Samples created"
+msgstr "Échantillons créés"
+
 msgid "Sampling Plan"
 msgstr "Plan d'échantillonnage"
 
@@ -13039,6 +13106,22 @@ msgstr "Les articles en série nécessitent un bon de commande"
 msgid "Serial Number"
 msgstr "Numéro de série"
 
+msgid "Serial number already exists"
+msgstr "Numéro de série déjà existant"
+
+msgid "Serial number already exists for this item"
+msgstr "Le numéro de série existe déjà pour cet article"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "Numéro de série est {0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Le numéro de série est déjà utilisé pour un autre article ou position"
+
+msgid "Serial number is not available"
+msgstr "Le numéro de série n'est pas disponible"
+
 msgid "Serial number not found"
 msgstr "Numéro de série introuvable"
 
@@ -13047,6 +13130,16 @@ msgstr "Numéro de série :"
 
 msgid "Serial Numbers"
 msgstr "Numéros de série"
+
+msgid "Serial numbers are missing"
+msgstr "Les numéros de série manquent"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "Les numéros de série manquent ou ne sont pas disponibles"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "Noms de série non expédiés pour ce transfert : {0}"
 
 msgid "Serial or Batch Tracking Required"
 msgstr "Suivi en série ou par lot requis"
@@ -13202,6 +13295,9 @@ msgstr "Détails de la livraison"
 msgid "Shipment ID"
 msgstr "ID d'expédition"
 
+msgid "Shipment is empty"
+msgstr "La livraison est vide"
+
 msgid "Shipment Line"
 msgstr "Ligne d'expédition"
 
@@ -13228,6 +13324,16 @@ msgstr "expédiées {q} unités depuis {unit} pour transfert"
 
 msgid "Shipped Qty"
 msgstr "Qté Expédiée"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "Quantité expédiée excède la quantité du lot ({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "Quantité expédiée excède la quantité de la tâche"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "La quantité expédiée est inférieure à la quantité de lots. Un nouveau lot sera créé pour la quantité restante lors de l'enregistrement."
 
 msgid "Shipping"
 msgstr "Expédition"
@@ -13597,6 +13703,9 @@ msgstr "Enregistrements d'étapes"
 
 msgid "Steps"
 msgstr "Étapes"
+
+msgid "Stock Overview"
+msgstr "Aperçu des stocks"
 
 msgid "Stock Transfer"
 msgstr "Transfert de stock"
@@ -14027,6 +14136,9 @@ msgstr "Mise à jour des paramètres de l'exercice fiscal effectuée avec succè
 msgid "Successfully updated job"
 msgstr "Mise à jour du travail effectuée avec succès"
 
+msgid "Successfully updated processes"
+msgstr "Mise à jour des processus réussie"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Succèsment désactivé le client"
 
@@ -14456,6 +14568,9 @@ msgstr "Thème"
 msgid "Theme Color"
 msgstr "Couleur du thème"
 
+msgid "There are more shipped than ordered"
+msgstr "Il y en a plus expédiées que commandées"
+
 msgid "There are no active supplier quotes to compare for this RFQ."
 msgstr "Il n'y a pas de devis fournisseurs actifs à comparer pour cette demande de prix."
 
@@ -14521,6 +14636,9 @@ msgstr "Cette commande de vente est associée à des tâches. Choisissez ce que 
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "Cette commande client contient des lignes qui nécessitent la création de tâches"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "Ce numéro de série n'a pas été expédié dans ce transfert"
 
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
@@ -14597,6 +14715,9 @@ msgstr "Titre"
 msgid "To"
 msgstr "À"
 
+msgid "to {loc}"
+msgstr "vers {loc}"
+
 msgid "To Location"
 msgstr "Vers l'emplacement"
 
@@ -14605,6 +14726,9 @@ msgstr "Pour lire les lignes dans <0>{resourceId}</0>, utilisez la méthode <1>s
 
 msgid "To Receive"
 msgstr "À recevoir"
+
+msgid "To Send"
+msgstr "À envoyer"
 
 msgid "To Ship"
 msgstr "À expédier"
@@ -14617,9 +14741,6 @@ msgstr "Vers l'unité de stockage"
 
 msgid "To unit"
 msgstr "À l'unité"
-
-#~ msgid "To warehouse"
-#~ msgstr "En entrepôt"
 
 msgid "Today"
 msgstr "Aujourd'hui"
@@ -14750,6 +14871,9 @@ msgstr "Entité suivie déjà prélevée"
 msgid "Tracked entity ID is required but none was found"
 msgstr "L'ID d'entité suivie est requis mais aucun n'a été trouvé"
 
+msgid "Tracked entity is not available"
+msgstr "Entité suivie n'est pas disponible"
+
 msgid "Tracked entity not found"
 msgstr "Entité suivie non trouvée"
 
@@ -14764,13 +14888,6 @@ msgstr "ID de suivi"
 
 msgid "Tracking Number"
 msgstr "Numéro de suivi"
-
-#. placeholder {0}: index + 1
-msgid "Tracking Number {0}"
-msgstr "Numéro de suivi {0}"
-
-msgid "Tracking Numbers"
-msgstr "Numéros de traçage"
 
 msgid "Tracking Type"
 msgstr "Type de suivi"
@@ -14807,6 +14924,9 @@ msgstr "Les transactions créeront des écritures de journal et mettront à jour
 
 msgid "Transfer"
 msgstr "Transfert"
+
+msgid "Transfer created"
+msgstr "Transfert créé"
 
 msgid "Transfer Date"
 msgstr "Date de transfert"
@@ -15009,9 +15129,6 @@ msgstr "Mise à jour de l'expiration"
 
 msgid "Update failed"
 msgstr "Mise à jour échouée"
-
-msgid "Update Inventory"
-msgstr "Mettre à jour l'inventaire"
 
 msgid "Update Jira issue"
 msgstr "Mettre à jour le problème Jira"
@@ -16146,149 +16263,3 @@ msgstr "ZPL (étiquette thermique)"
 
 msgid "ZPL Label Preview"
 msgstr "Prévisualisation étiquette ZPL"
-
-msgid "Location Inventory"
-msgstr "Stock par emplacement"
-
-msgid "Stock Overview"
-msgstr "Aperçu des stocks"
-
-msgid "To Send"
-msgstr "À envoyer"
-
-msgid "from {loc}"
-msgstr "depuis {loc}"
-
-msgid "to {loc}"
-msgstr "vers {loc}"
-
-msgid "Are you sure you want to delete this shipment line?"
-msgstr "Êtes-vous sûr de vouloir supprimer cette ligne de livraison ?"
-
-msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
-msgstr "Attribuez les processus auxquels cet employé peut s'occuper. Ils apparaissent lors du rapport de quantité de production pour ces processus."
-
-msgid "Batch has insufficient quantity"
-msgstr "La lot contient une quantité insuffisante"
-
-#. placeholder {0}: batchNumber.status
-msgid "Batch number is {0}"
-msgstr "Numéro de lot est {0}"
-
-msgid "Batch number is already used on another shipment line"
-msgstr "Le numéro de lot est déjà utilisé sur une autre ligne de fret"
-
-msgid "Batch number is required"
-msgstr "Le numéro de lot est requis"
-
-msgid "Batch number not found"
-msgstr "Numéro de lot non trouvé"
-
-msgid "Duplicate serial number"
-msgstr "Numéro de série dupliqué"
-
-#. placeholder {0}: w.expirationDate
-msgid "Expired on {0}"
-msgstr "Expire le {0}"
-
-msgid "Failed to add a line"
-msgstr "Échec de l'ajout d'une ligne"
-
-msgid "Failed to check serial number index"
-msgstr "Échec du vérification de l'index du numéro de série"
-
-msgid "Failed to create samples"
-msgstr "Échec de la création des échantillons"
-
-msgid "Failed to create transfer"
-msgstr "Échec de la création du transfert"
-
-msgid "Failed to fetch samples"
-msgstr "Échec du chargement des échantillons"
-
-msgid "Failed to get employee processes"
-msgstr "Échec de récupération des processus de l'employé"
-
-msgid "Failed to load receipt line"
-msgstr "Échec du chargement de la ligne de réception"
-
-msgid "Failed to load tracked entity"
-msgstr "Échec du chargement de l'entité suivie"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "Échec de résolution des entrepôts partenaires"
-
-msgid "Failed to track serial number"
-msgstr "Échec de suivi du numéro de série"
-
-msgid "Failed to update processes"
-msgstr "Échec de la mise à jour des processus"
-
-msgid "Failed to update tracking"
-msgstr "Échec de la mise à jour du suivi"
-
-msgid "Fill shipped serial"
-msgstr "Remplir les séries expédiées"
-
-msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
-msgstr "Seuls les employés affectés apparaissent lors de la rapportation des quantités. Laissez ce champ vide pour autoriser tous les employés."
-
-msgid "Receipt is empty"
-msgstr "La réception est vide"
-
-msgid "Samples created"
-msgstr "Échantillons créés"
-
-msgid "Serial number already exists"
-msgstr "Numéro de série déjà existant"
-
-msgid "Serial number already exists for this item"
-msgstr "Le numéro de série existe déjà pour cet article"
-
-#. placeholder {0}: serialNumber.status
-msgid "Serial number is {0}"
-msgstr "Numéro de série est {0}"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "Le numéro de série est déjà utilisé pour un autre article ou position"
-
-msgid "Serial number is not available"
-msgstr "Le numéro de série n'est pas disponible"
-
-msgid "Serial numbers are missing"
-msgstr "Les numéros de série manquent"
-
-msgid "Serial numbers are missing or unavailable"
-msgstr "Les numéros de série manquent ou ne sont pas disponibles"
-
-#. placeholder {0}: invalidSerials.join(", ")
-msgid "Serial numbers not shipped on this transfer: {0}"
-msgstr "Noms de série non expédiés pour ce transfert : {0}"
-
-msgid "Shipment is empty"
-msgstr "La livraison est vide"
-
-#. placeholder {0}: batchNumber.quantity
-msgid "Shipped quantity exceeds batch quantity ({0})"
-msgstr "Quantité expédiée excède la quantité du lot ({0})"
-
-msgid "Shipped quantity exceeds job quantity"
-msgstr "Quantité expédiée excède la quantité de la tâche"
-
-msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
-msgstr "La quantité expédiée est inférieure à la quantité de lots. Un nouveau lot sera créé pour la quantité restante lors de l'enregistrement."
-
-msgid "Successfully updated processes"
-msgstr "Mise à jour des processus réussie"
-
-msgid "There are more shipped than ordered"
-msgstr "Il y en a plus expédiées que commandées"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "Ce numéro de série n'a pas été expédié dans ce transfert"
-
-msgid "Tracked entity is not available"
-msgstr "Entité suivie n'est pas disponible"
-
-msgid "Transfer created"
-msgstr "Transfert créé"

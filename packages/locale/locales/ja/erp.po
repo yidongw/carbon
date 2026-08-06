@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -105,12 +104,6 @@ msgstr "{name} を削除しました"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 個の権限"
-
-#~ msgid "{total} samples"
-#~ msgstr "{total}個"
-
-#~ msgid "{total} samples · {sampled}/{colorCount} colors"
-#~ msgstr "{total} サンプル · {sampled}/{colorCount} 色"
 
 msgid "/month/user"
 msgstr "/月/ユーザー"
@@ -1152,6 +1145,9 @@ msgstr "このリスクを削除してもよろしいですか？"
 msgid "Are you sure you want to delete this risk? This cannot be undone."
 msgstr "このリスクを削除してもよろしいですか？この操作は取り消せません。"
 
+msgid "Are you sure you want to delete this shipment line?"
+msgstr "この荷物情報を取り消すのはよろしいですか？"
+
 msgid "Are you sure you want to delete this suggestion? This action cannot be undone."
 msgstr "本当にこの提案を削除してもよろしいですか？この操作は取り消せません。"
 
@@ -1262,6 +1258,9 @@ msgstr "アセット"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
 msgstr "プリンタを場所に割り当てる。出荷、受入、作業センタは、上書きされるまで場所のデフォルトを継承します。"
+
+msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
+msgstr "従業員が実行できる工程を割り当ててください。これらの工程は、生産数量報告時に表示されます。"
 
 msgid "Assign To"
 msgstr "割り当て先"
@@ -1485,6 +1484,9 @@ msgstr "基本情報"
 msgid "Batch"
 msgstr "バッチ"
 
+msgid "Batch has insufficient quantity"
+msgstr "バッチの数量が不足しています"
+
 msgid "Batch items require a sales order"
 msgstr "バッチ品目は販売注文が必要です"
 
@@ -1493,6 +1495,19 @@ msgstr "バッチ番号"
 
 msgid "Batch Number"
 msgstr "バッチ番号"
+
+#. placeholder {0}: batchNumber.status
+msgid "Batch number is {0}"
+msgstr "バッチ番号は{0}"
+
+msgid "Batch number is already used on another shipment line"
+msgstr "既に他の出荷ラインで使用されています"
+
+msgid "Batch number is required"
+msgstr "バッチ番号は必須です"
+
+msgid "Batch number not found"
+msgstr "バッチ番号が見つかりません"
 
 msgid "Batch Properties"
 msgstr "バッチプロパティ"
@@ -1530,9 +1545,6 @@ msgstr "請求"
 
 msgid "Billing Address"
 msgstr "請求先住所"
-
-#~ msgid "Bin"
-#~ msgstr "ビン"
 
 msgid "Block with an error"
 msgstr "エラーでブロック"
@@ -3715,6 +3727,9 @@ msgstr "価格リストを複製"
 msgid "Duplicate Pricing Rule"
 msgstr "価格設定ルールを複製"
 
+msgid "Duplicate serial number"
+msgstr "重複するシリアル番号"
+
 msgid "Duplicate To"
 msgstr "複製先"
 
@@ -4508,6 +4523,10 @@ msgstr "期限切れバッチ"
 msgid "Expired Batches"
 msgstr "期限切れバッチ"
 
+#. placeholder {0}: w.expirationDate
+msgid "Expired on {0}"
+msgstr "有効期限は{0}までです"
+
 msgid "Expires"
 msgstr "有効期限"
 
@@ -4584,6 +4603,9 @@ msgstr "プロセスの有効化に失敗しました"
 msgid "Failed to activate work center"
 msgstr "作業センターの有効化に失敗しました"
 
+msgid "Failed to add a line"
+msgstr "追加に失敗しました"
+
 msgid "Failed to add colors and sizes"
 msgstr "色とサイズの追加に失敗しました"
 
@@ -4604,6 +4626,9 @@ msgstr "サプライヤーの割り当てに失敗しました"
 
 msgid "Failed to cancel RFQ"
 msgstr "RFQのキャンセルに失敗しました"
+
+msgid "Failed to check serial number index"
+msgstr "シリアル番号インデックスの確認に失敗しました"
 
 msgid "Failed to complete job"
 msgstr "ジョブの完了に失敗しました"
@@ -4867,6 +4892,9 @@ msgstr "販売注文の作成に失敗しました"
 msgid "Failed to create sales order line."
 msgstr "売上注文行の作成に失敗しました。"
 
+msgid "Failed to create samples"
+msgstr "サンプルの作成に失敗しました"
+
 msgid "Failed to create shift"
 msgstr "シフトの作成に失敗しました"
 
@@ -4920,6 +4948,9 @@ msgstr "ツール作成に失敗しました: {0}"
 
 msgid "Failed to create training"
 msgstr "訓練の作成に失敗しました"
+
+msgid "Failed to create transfer"
+msgstr "転送の作成に失敗しました"
 
 msgid "Failed to create user account"
 msgstr "ユーザー アカウントの作成に失敗しました"
@@ -5433,6 +5464,9 @@ msgstr "取引先発行の領収書を取得できませんでした"
 msgid "Failed to fetch sales orders"
 msgstr "取引注文の取得に失敗しました"
 
+msgid "Failed to fetch samples"
+msgstr "サンプル取得に失敗しました"
+
 msgid "Failed to fetch storageUnits"
 msgstr "ストレージ単位の取得に失敗しました"
 
@@ -5705,6 +5739,9 @@ msgstr "発送取得に失敗しました"
 
 msgid "Failed to get document"
 msgstr "ドキュメントの取得に失敗しました"
+
+msgid "Failed to get employee processes"
+msgstr "社員のプロセス取得に失敗しました"
 
 msgid "Failed to get employee type"
 msgstr "従業員の種類を取得できませんでした"
@@ -6582,6 +6619,9 @@ msgstr "注文出荷情報の読み込みに失敗しました"
 msgid "Failed to load receipt"
 msgstr "受付を読み込めませんでした"
 
+msgid "Failed to load receipt line"
+msgstr "受領行の読み込みに失敗しました"
+
 msgid "Failed to load receipt lines"
 msgstr "領収書行の読み込みに失敗しました"
 
@@ -6731,6 +6771,9 @@ msgstr "ツールの概要を読み込めませんでした"
 
 msgid "Failed to load tracked entities"
 msgstr "追跡対象エンティティの読み込みに失敗しました"
+
+msgid "Failed to load tracked entity"
+msgstr "追跡エンティティの読み込みに失敗しました"
 
 msgid "Failed to load training"
 msgstr "訓練の読み込みに失敗しました"
@@ -6915,6 +6958,9 @@ msgstr "不良報告に失敗しました"
 msgid "Failed to resize image: {errorMessage}"
 msgstr "画像のリサイズに失敗しました: {errorMessage}"
 
+msgid "Failed to resolve partner warehouse"
+msgstr "パートナー倉庫の解決に失敗しました"
+
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "在庫からPull価格を解決できませんでした"
 
@@ -7028,6 +7074,9 @@ msgstr "イベント停止に失敗しました"
 
 msgid "Failed to sync procedure"
 msgstr "同期に失敗しました"
+
+msgid "Failed to track serial number"
+msgstr "シリアル番号の追跡に失敗しました"
 
 msgid "Failed to trigger rework"
 msgstr "再加工をトリガーできませんでした"
@@ -7362,6 +7411,9 @@ msgstr "更新プロシージャステップに失敗しました"
 msgid "Failed to update process completion"
 msgstr "プロセスの完了を更新できませんでした"
 
+msgid "Failed to update processes"
+msgstr "プロセスの更新に失敗しました"
+
 msgid "Failed to update production event"
 msgstr "生産イベントの更新に失敗しました"
 
@@ -7587,6 +7639,9 @@ msgstr "ツール計画の更新に失敗しました"
 msgid "Failed to update tool purchasing"
 msgstr "ツール購入の更新に失敗しました"
 
+msgid "Failed to update tracking"
+msgstr "トラッキングの更新に失敗しました"
+
 msgid "Failed to update training question"
 msgstr "更新トレーニング質問に失敗しました"
 
@@ -7761,6 +7816,9 @@ msgstr "ここに添付されたファイルは、このサプライヤー宛に
 msgid "Fill cell"
 msgstr "填入セル"
 
+msgid "Fill shipped serial"
+msgstr "出荷済シリアルを入力してください"
+
 msgid "Filter"
 msgstr "フィルター"
 
@@ -7878,6 +7936,9 @@ msgstr "から"
 
 msgid "From (current location)"
 msgstr "現在位置から"
+
+msgid "from {loc}"
+msgstr "{loc}から"
 
 msgid "From and To warehouses must be different"
 msgstr "FROMとTOの倉庫は異なる必要があります"
@@ -8982,9 +9043,6 @@ msgstr "ラインには価格またはリードタイムが必要です"
 msgid "Link"
 msgstr "リンク"
 
-msgid "Link a warehouse to this partner in Resources → Locations."
-msgstr "リソース→場所でこのパートナーに倉庫をリンクしてください。"
-
 msgid "Link Jira Issue"
 msgstr "Jira イシューをリンク"
 
@@ -9061,6 +9119,9 @@ msgstr "ロケーション"
 
 msgid "Location created"
 msgstr "場所を作成しました"
+
+msgid "Location Inventory"
+msgstr "拠点在庫"
 
 msgid "Location Name"
 msgstr "ロケーション名"
@@ -10374,9 +10435,6 @@ msgstr "(有効な値は必要ありません)"
 msgid "No values available"
 msgstr "No values available"
 
-msgid "No warehouse mapped"
-msgstr "倉庫がマッピングされていません"
-
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "このアイテムについて倉庫在庫は登録されていません。それでもピックすることは可能です——現在数値は負になる可能性がありますが、調整されるまで如此です。"
 
@@ -10523,6 +10581,9 @@ msgstr "有効な資産のみが販売可能です"
 
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "有効または完全に減価償却された資産のみが処分可能です"
+
+msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
+msgstr "割り当てられた従業員のみが表示されます。すべてを許可する場合は空にします。"
 
 msgid "Only Draft assets can be purchased"
 msgstr "ドラフト資産のみが購入可能استعراض المستندات"
@@ -11586,6 +11647,9 @@ msgstr "購買注文ID"
 msgid "Purchase Order Line"
 msgstr "購買注文行"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase Order Location"
 msgstr "購入注文の場所"
 
@@ -11721,9 +11785,6 @@ msgstr "購買注文数量"
 
 msgid "Quantity on Sales Order"
 msgstr "販売注文の数量"
-
-#~ msgid "Quantity per color"
-#~ msgstr "色別数量"
 
 msgid "Quantity per Parent"
 msgstr "親あたりの数量"
@@ -11864,6 +11925,9 @@ msgstr "領収書"
 
 msgid "Receipt ID"
 msgstr "受取ID"
+
+msgid "Receipt is empty"
+msgstr "受注は空です"
 
 msgid "Receipt Line"
 msgstr "領収書行"
@@ -12605,6 +12669,9 @@ msgstr "サンプルサイズ"
 msgid "Samples"
 msgstr "サンプル"
 
+msgid "Samples created"
+msgstr "サンプル作成済み"
+
 msgid "Sampling Plan"
 msgstr "サンプリング計画"
 
@@ -13039,6 +13106,22 @@ msgstr "シリアル品は販売注文が必要です"
 msgid "Serial Number"
 msgstr "シリアル番号"
 
+msgid "Serial number already exists"
+msgstr "シリアル番号が既に存在します"
+
+msgid "Serial number already exists for this item"
+msgstr "このアイテムに既にシリアル番号が存在します"
+
+#. placeholder {0}: serialNumber.status
+msgid "Serial number is {0}"
+msgstr "シリアル番号は{0}"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "既に他の項目や位置で使用されています"
+
+msgid "Serial number is not available"
+msgstr "シリアルナンバーは利用できません"
+
 msgid "Serial number not found"
 msgstr "シリアル番号が見つかりません"
 
@@ -13047,6 +13130,16 @@ msgstr "シリアル番号:"
 
 msgid "Serial Numbers"
 msgstr "シリアルナンバー"
+
+msgid "Serial numbers are missing"
+msgstr "シリアル番号が欠けている"
+
+msgid "Serial numbers are missing or unavailable"
+msgstr "シリアルナンバーが欠けているか利用不可です"
+
+#. placeholder {0}: invalidSerials.join(", ")
+msgid "Serial numbers not shipped on this transfer: {0}"
+msgstr "この移動で出荷されていないシリアル番号:{0}"
 
 msgid "Serial or Batch Tracking Required"
 msgstr "シリアルまたはバッチ追跡が必要です"
@@ -13202,6 +13295,9 @@ msgstr "出荷詳細"
 msgid "Shipment ID"
 msgstr "配送ID"
 
+msgid "Shipment is empty"
+msgstr "出荷情報がありません"
+
 msgid "Shipment Line"
 msgstr "出荷ライン"
 
@@ -13228,6 +13324,16 @@ msgstr "shipped {q} 単位から{unit}へ転送"
 
 msgid "Shipped Qty"
 msgstr "出荷数量"
+
+#. placeholder {0}: batchNumber.quantity
+msgid "Shipped quantity exceeds batch quantity ({0})"
+msgstr "出荷数量がバッチ数量を超過しています({0})"
+
+msgid "Shipped quantity exceeds job quantity"
+msgstr "出荷数量が JOB 数量を超過しています"
+
+msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
+msgstr "出荷数量は bach 数量未満です。残りの数量分は確定時に新しい bach が作成されます。"
 
 msgid "Shipping"
 msgstr "配送"
@@ -13597,6 +13703,9 @@ msgstr "ステップレコード"
 
 msgid "Steps"
 msgstr "ステップ"
+
+msgid "Stock Overview"
+msgstr "在庫概要"
 
 msgid "Stock Transfer"
 msgstr "株式譲渡"
@@ -14027,6 +14136,9 @@ msgstr "財政年度設定を更新しました"
 msgid "Successfully updated job"
 msgstr "作業を成功して更新しました"
 
+msgid "Successfully updated processes"
+msgstr "成功しました 更新されたプロセス"
+
 msgid "Sucessfully deactivated customer"
 msgstr "顧客を無効にしました"
 
@@ -14456,6 +14568,9 @@ msgstr "テーマ"
 msgid "Theme Color"
 msgstr "テーマカラー"
 
+msgid "There are more shipped than ordered"
+msgstr "注文数より多く出荷されています"
+
 msgid "There are no active supplier quotes to compare for this RFQ."
 msgstr "このRFQに比較するアクティブなサプライヤー見積もりがありません。"
 
@@ -14521,6 +14636,9 @@ msgstr "この販売注文には関連するジョブがあります。それら
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "この販売注文には、ジョブを作成する必要があるラインがあります"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "このシリアル番号はこの移動で出荷されていません"
 
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
@@ -14597,6 +14715,9 @@ msgstr "タイトル"
 msgid "To"
 msgstr "まで"
 
+msgid "to {loc}"
+msgstr "{loc}へ"
+
 msgid "To Location"
 msgstr "到着地"
 
@@ -14605,6 +14726,9 @@ msgstr "<0>{resourceId}</0>内の行を読み取るには、<1>select</1>メソ�
 
 msgid "To Receive"
 msgstr "受け取り予定"
+
+msgid "To Send"
+msgstr "出荷予定"
 
 msgid "To Ship"
 msgstr "発送予定"
@@ -14617,9 +14741,6 @@ msgstr "保管単位へ"
 
 msgid "To unit"
 msgstr "単位に変換する"
-
-#~ msgid "To warehouse"
-#~ msgstr "倉庫に移送"
 
 msgid "Today"
 msgstr "今日"
@@ -14750,6 +14871,9 @@ msgstr "既に追跡対象が選択されています"
 msgid "Tracked entity ID is required but none was found"
 msgstr "追跡対象エンティティIDが必要ですが、見つかりませんでした"
 
+msgid "Tracked entity is not available"
+msgstr "追跡対象が利用できません"
+
 msgid "Tracked entity not found"
 msgstr "追跡対象が見つかりません"
 
@@ -14764,13 +14888,6 @@ msgstr "追跡ID"
 
 msgid "Tracking Number"
 msgstr "追跡番号"
-
-#. placeholder {0}: index + 1
-msgid "Tracking Number {0}"
-msgstr "トラッキング番号 {0}"
-
-msgid "Tracking Numbers"
-msgstr "トラッキングナンバー"
 
 msgid "Tracking Type"
 msgstr "追跡タイプ"
@@ -14807,6 +14924,9 @@ msgstr "トランザクションは仕訳帳エントリを作成し、総勘定
 
 msgid "Transfer"
 msgstr "転送"
+
+msgid "Transfer created"
+msgstr "転送が作成されました"
 
 msgid "Transfer Date"
 msgstr "転送日"
@@ -15009,9 +15129,6 @@ msgstr "更新期限"
 
 msgid "Update failed"
 msgstr "更新失敗"
-
-msgid "Update Inventory"
-msgstr "在庫を更新"
 
 msgid "Update Jira issue"
 msgstr "Jiraの問題を更新"
@@ -16144,149 +16261,3 @@ msgstr "ZPL（熱感ラベル）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPLラベルプレビュー"
-
-msgid "Location Inventory"
-msgstr "拠点在庫"
-
-msgid "Stock Overview"
-msgstr "在庫概要"
-
-msgid "To Send"
-msgstr "出荷予定"
-
-msgid "from {loc}"
-msgstr "{loc}から"
-
-msgid "to {loc}"
-msgstr "{loc}へ"
-
-msgid "Are you sure you want to delete this shipment line?"
-msgstr "この荷物情報を取り消すのはよろしいですか？"
-
-msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
-msgstr "従業員が実行できる工程を割り当ててください。これらの工程は、生産数量報告時に表示されます。"
-
-msgid "Batch has insufficient quantity"
-msgstr "バッチの数量が不足しています"
-
-#. placeholder {0}: batchNumber.status
-msgid "Batch number is {0}"
-msgstr "バッチ番号は{0}"
-
-msgid "Batch number is already used on another shipment line"
-msgstr "既に他の出荷ラインで使用されています"
-
-msgid "Batch number is required"
-msgstr "バッチ番号は必須です"
-
-msgid "Batch number not found"
-msgstr "バッチ番号が見つかりません"
-
-msgid "Duplicate serial number"
-msgstr "重複するシリアル番号"
-
-#. placeholder {0}: w.expirationDate
-msgid "Expired on {0}"
-msgstr "有効期限は{0}までです"
-
-msgid "Failed to add a line"
-msgstr "追加に失敗しました"
-
-msgid "Failed to check serial number index"
-msgstr "シリアル番号インデックスの確認に失敗しました"
-
-msgid "Failed to create samples"
-msgstr "サンプルの作成に失敗しました"
-
-msgid "Failed to create transfer"
-msgstr "転送の作成に失敗しました"
-
-msgid "Failed to fetch samples"
-msgstr "サンプル取得に失敗しました"
-
-msgid "Failed to get employee processes"
-msgstr "社員のプロセス取得に失敗しました"
-
-msgid "Failed to load receipt line"
-msgstr "受領行の読み込みに失敗しました"
-
-msgid "Failed to load tracked entity"
-msgstr "追跡エンティティの読み込みに失敗しました"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "パートナー倉庫の解決に失敗しました"
-
-msgid "Failed to track serial number"
-msgstr "シリアル番号の追跡に失敗しました"
-
-msgid "Failed to update processes"
-msgstr "プロセスの更新に失敗しました"
-
-msgid "Failed to update tracking"
-msgstr "トラッキングの更新に失敗しました"
-
-msgid "Fill shipped serial"
-msgstr "出荷済シリアルを入力してください"
-
-msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
-msgstr "割り当てられた従業員のみが表示されます。すべてを許可する場合は空にします。"
-
-msgid "Receipt is empty"
-msgstr "受注は空です"
-
-msgid "Samples created"
-msgstr "サンプル作成済み"
-
-msgid "Serial number already exists"
-msgstr "シリアル番号が既に存在します"
-
-msgid "Serial number already exists for this item"
-msgstr "このアイテムに既にシリアル番号が存在します"
-
-#. placeholder {0}: serialNumber.status
-msgid "Serial number is {0}"
-msgstr "シリアル番号は{0}"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "既に他の項目や位置で使用されています"
-
-msgid "Serial number is not available"
-msgstr "シリアルナンバーは利用できません"
-
-msgid "Serial numbers are missing"
-msgstr "シリアル番号が欠けている"
-
-msgid "Serial numbers are missing or unavailable"
-msgstr "シリアルナンバーが欠けているか利用不可です"
-
-#. placeholder {0}: invalidSerials.join(", ")
-msgid "Serial numbers not shipped on this transfer: {0}"
-msgstr "この移動で出荷されていないシリアル番号:{0}"
-
-msgid "Shipment is empty"
-msgstr "出荷情報がありません"
-
-#. placeholder {0}: batchNumber.quantity
-msgid "Shipped quantity exceeds batch quantity ({0})"
-msgstr "出荷数量がバッチ数量を超過しています({0})"
-
-msgid "Shipped quantity exceeds job quantity"
-msgstr "出荷数量が JOB 数量を超過しています"
-
-msgid "Shipped quantity is less than batch quantity. A new batch will be created for the remaining quantity when posted."
-msgstr "出荷数量は bach 数量未満です。残りの数量分は確定時に新しい bach が作成されます。"
-
-msgid "Successfully updated processes"
-msgstr "成功しました 更新されたプロセス"
-
-msgid "There are more shipped than ordered"
-msgstr "注文数より多く出荷されています"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "このシリアル番号はこの移動で出荷されていません"
-
-msgid "Tracked entity is not available"
-msgstr "追跡対象が利用できません"
-
-msgid "Transfer created"
-msgstr "転送が作成されました"

@@ -3,7 +3,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,14 +27,12 @@ msgstr "{0} 个活跃"
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
-#. (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} complete"
 msgstr "{0} / {1} 已完成"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
-#. (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} completed"
 msgstr "{0} / {1} 已完成"
@@ -160,14 +157,10 @@ msgstr "确定要删除此步骤吗？"
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
 msgstr "确定要删除此考勤记录吗？此操作无法撤销。"
 
-msgid ""
-"Are you sure you want to end all production events? This will end all active"
-" operations without completing or finishing them."
+msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
 msgstr "确定要结束所有生产事件吗？这将终止所有活跃工序，而不会完成它们。"
 
-msgid ""
-"Are you sure you want to finish this operation? This will end all active "
-"production events for this operation."
+msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
 msgstr "您确定要完成此操作吗？这将结束此操作的所有正在进行的生产事件。"
 
 msgid "Are you sure you want to leave this page?"
@@ -242,6 +235,9 @@ msgstr "无效的回滚序列请求"
 msgid "Batch"
 msgstr "批次"
 
+msgid "Batch has insufficient quantity"
+msgstr "数量不足"
+
 msgid "Batch is not available"
 msgstr "批次不可用"
 
@@ -298,14 +294,10 @@ msgstr "分包工单"
 msgid "Bundles"
 msgstr "分包"
 
-msgid ""
-"But don't worry. You can use the forgot password flow to request a new magic"
-" link."
+msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
 
-msgid ""
-"By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy "
-"Policy.</1>"
+msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "登录即表示您同意<0>服务条款</0>和<1>隐私政策。</1>"
 
 msgid "Calibration record created"
@@ -368,9 +360,7 @@ msgstr "仍正在生成的工单无法重新打印"
 msgid "Cannot start operation"
 msgstr "无法启动操作"
 
-msgid ""
-"Cannot update status of draft purchase invoice. Please post the invoice "
-"first."
+msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
 msgstr "无法更新草稿采购发票的状态。请先确认发票。"
 
 msgid "Canvas showing the model in the 3D Viewer"
@@ -690,12 +680,9 @@ msgstr "拖放文件到此处，或点击选择文件"
 msgid "Dragging {0} cancelled."
 msgstr "拖拽 {0} 已取消。"
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(
-#. operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime(
-#. convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime(
-#. convertDateStringToIsoString(item.dueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "截止 {0}"
 
@@ -907,6 +894,9 @@ msgstr "激活工序失败"
 msgid "Failed to activate work center"
 msgstr "激活工作中心失败"
 
+msgid "Failed to add a line"
+msgstr "添加行失败"
+
 msgid "Failed to add colors and sizes"
 msgstr "添加颜色和尺码失败"
 
@@ -927,6 +917,9 @@ msgstr "分配供应商失败"
 
 msgid "Failed to cancel RFQ"
 msgstr "取消报价失败"
+
+msgid "Failed to check serial number index"
+msgstr "检查序列号索引失败"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "库存调整失败"
@@ -1105,6 +1098,9 @@ msgstr "创建销售订单失败"
 msgid "Failed to create sales order line."
 msgstr "创建销售订单行失败。"
 
+msgid "Failed to create samples"
+msgstr "创建样品失败"
+
 msgid "Failed to create shift"
 msgstr "创建班次失败"
 
@@ -1134,6 +1130,9 @@ msgstr "创建考勤记录失败"
 
 msgid "Failed to create training"
 msgstr "创建培训失败"
+
+msgid "Failed to create transfer"
+msgstr "创建转移失败"
 
 msgid "Failed to create user account"
 msgstr "创建用户账户失败"
@@ -1633,6 +1632,9 @@ msgstr "获取销售发票失败"
 msgid "Failed to fetch sales orders"
 msgstr "获取销售订单失败"
 
+msgid "Failed to fetch samples"
+msgstr "获取样品失败"
+
 msgid "Failed to fetch storageUnits"
 msgstr "获取存储单位失败"
 
@@ -1902,6 +1904,9 @@ msgstr "获取派工失败"
 
 msgid "Failed to get document"
 msgstr "获取文档失败"
+
+msgid "Failed to get employee processes"
+msgstr "获取员工工序失败"
 
 msgid "Failed to get employee type"
 msgstr "获取员工类型失败"
@@ -2455,9 +2460,7 @@ msgstr "加载公司信息失败"
 msgid "Failed to load company for purchase orders"
 msgstr "加载采购订单时失败"
 
-msgid ""
-"Failed to load config. Please make sure a valid record exists in your "
-"public.config table."
+msgid "Failed to load config. Please make sure a valid record exists in your public.config table."
 msgstr "加载配置失败。请确保public.config表中存在有效的记录。"
 
 msgid "Failed to load consumable costing"
@@ -2739,6 +2742,9 @@ msgstr "加载报价单失败"
 msgid "Failed to load receipt"
 msgstr "加载收据失败"
 
+msgid "Failed to load receipt line"
+msgstr "加载收货行失败"
+
 msgid "Failed to load report lines"
 msgstr "加载报表行失败"
 
@@ -2864,6 +2870,9 @@ msgstr "加载刀具数量失败"
 
 msgid "Failed to load tool summary"
 msgstr "加载刀具概要失败"
+
+msgid "Failed to load tracked entity"
+msgstr "加载跟踪实体失败"
 
 msgid "Failed to load training"
 msgstr "加载培训失败"
@@ -3029,6 +3038,9 @@ msgstr "重新加工报告失败"
 
 msgid "Failed to report scrap"
 msgstr "报告废料失败"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "解决合作伙伴仓库失败"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "从库存获取价格失败"
@@ -3453,6 +3465,9 @@ msgstr "更新工序步骤失败"
 msgid "Failed to update process completion"
 msgstr "更新工序完成状态失败"
 
+msgid "Failed to update processes"
+msgstr "更新工序失败"
+
 msgid "Failed to update production event"
 msgstr "生产事件更新失败"
 
@@ -3665,6 +3680,9 @@ msgstr "更新刀具计划失败"
 
 msgid "Failed to update tool purchasing"
 msgstr "更新刀具采购失败"
+
+msgid "Failed to update tracking"
+msgstr "更新跟踪失败"
 
 msgid "Failed to update training question"
 msgstr "更新培训问题失败"
@@ -4151,9 +4169,7 @@ msgstr "批次已拒收，但未能创建NCR任务"
 msgid "Lot rejected, but failed to load it for NCR"
 msgstr "批次已拒收，但未能加载以创建NCR"
 
-msgid ""
-"Lot rejected. Configure at least one Issue Type and a default user location "
-"to auto-create an NCR."
+msgid "Lot rejected. Configure at least one Issue Type and a default user location to auto-create an NCR."
 msgstr "批次已拒收。请至少配置一种问题类型和默认用户位置以自动创建NCR。"
 
 msgid "Low Priority"
@@ -4454,9 +4470,7 @@ msgstr "没有为此询价找到供应商"
 msgid "No time entries for this week"
 msgstr "本周无考勤记录"
 
-msgid ""
-"No warehouse stock is on record for this item. You can still pick it — on-"
-"hand will go negative until the count is reconciled."
+msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
 
 msgid "No work centers are blocked"
@@ -4511,8 +4525,7 @@ msgstr "仅草稿资产可以注册"
 msgid "Only posted runs can be repeated"
 msgstr "仅已发布的运行可以重复"
 
-msgid ""
-"Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。"
 
 msgid "Open"
@@ -4820,6 +4833,9 @@ msgstr "已创建采购订单"
 msgid "Purchase order finalized"
 msgstr "采购订单已完成"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "采购订单未找到"
 
@@ -5048,6 +5064,9 @@ msgstr "已创建销售订单"
 msgid "Sample recorded"
 msgstr "样本已录制"
 
+msgid "Samples created"
+msgstr "已创建样品"
+
 msgid "Sampling plan updated"
 msgstr "取样计划已更新"
 
@@ -5187,9 +5206,7 @@ msgstr "选择序列号"
 msgid "Select Serial Number {0}"
 msgstr "选择序列号 {0}"
 
-msgid ""
-"Select the operation to go back to. All operations from that point to the "
-"current operation will be redone."
+msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
 msgstr "选择要返回的操作。从该操作到当前操作的所有操作都将重新执行。"
 
 msgid "Send"
@@ -5201,6 +5218,12 @@ msgstr "序列号"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "序列号 {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "此物品已存在序列号"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "已用于其他物品或位置"
 
 msgid "Serial number is not available"
 msgstr "序列号不可用"
@@ -5634,6 +5657,9 @@ msgstr "成功更新了会计年度设置"
 msgid "Successfully updated job"
 msgstr "成功更新工作"
 
+msgid "Successfully updated processes"
+msgstr "已更新工序"
+
 msgid "Sucessfully deactivated customer"
 msgstr "成功取消激活客户"
 
@@ -5717,15 +5743,10 @@ msgid "That QR code isn't a bundle ticket"
 msgstr "该二维码不是分包标签"
 
 #. placeholder {0}: operation.operationQuantity
-msgid ""
-"The completed quantity for this operation is less than the required quantity"
-" of {0}."
+msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
-msgid ""
-"There are serial or batch tracked materials on the bill of material that "
-"have not been fully issued. Completing without issuing may result in "
-"incorrect traceability records."
+msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
 msgid "This lot is expired and can't be picked."
@@ -5737,10 +5758,11 @@ msgstr "此操作已被删除"
 msgid "This Period"
 msgstr "本期"
 
-msgid ""
-"This process is assigned to someone else. Taking over stops their running "
-"clock."
+msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "该工序已分配给他人。接手将停止其正在计时的工时。"
+
+msgid "This serial number was not shipped on this transfer"
+msgstr "未在本次转移中发货此序列号"
 
 msgid "Thumbnail"
 msgstr "缩略图"
@@ -5761,9 +5783,7 @@ msgstr "时间卡删除成功"
 msgid "Timecard updated"
 msgstr "考勤记录已更新"
 
-msgid ""
-"Timecards are not enabled. To enable this feature, go to Settings → People "
-"to enable Timecards."
+msgid "Timecards are not enabled. To enable this feature, go to Settings → People to enable Timecards."
 msgstr "时间卡未启用。要启用此功能，请前往设置 → 人员以启用时间卡。"
 
 msgid "Today"
@@ -5810,6 +5830,9 @@ msgstr "总时间：{0}"
 msgid "Total: {0}"
 msgstr "合计：{0}"
 
+msgid "Tracked entity is not available"
+msgstr "不可用"
+
 msgid "Tracked entity not found"
 msgstr "未找到跟踪实体"
 
@@ -5827,6 +5850,9 @@ msgstr "培训ID是必需的"
 
 msgid "Training marked as complete"
 msgstr "培训标记为完成"
+
+msgid "Transfer created"
+msgstr "已创建转移"
 
 msgid "Type a message..."
 msgstr "输入消息..."
@@ -6315,9 +6341,7 @@ msgid "You cannot deactivate yourself"
 msgstr "您不能取消激活自己"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-msgid ""
-"You clocked in at {0}. You can edit your clock-out time below or acknowledge"
-" that you're still working."
+msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确认您仍在工作。"
 
 msgid "You do not have permission to approve this request"
@@ -6332,9 +6356,7 @@ msgstr "您没有权限重新打开此采购订单"
 msgid "You do not have permission to update permissions"
 msgstr "您没有权限更新权限"
 
-msgid ""
-"You've been clocked in for {hoursElapsed} hours. Did you forget to clock "
-"out?"
+msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"
 
 msgid "Your account is not active"
@@ -6342,60 +6364,3 @@ msgstr "您的账户未激活"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "您的公司正在使用免费方案（只读）。升级后即可进行更改。"
-
-msgid "Batch has insufficient quantity"
-msgstr "数量不足"
-
-msgid "Failed to add a line"
-msgstr "添加行失败"
-
-msgid "Failed to check serial number index"
-msgstr "检查序列号索引失败"
-
-msgid "Failed to create samples"
-msgstr "创建样品失败"
-
-msgid "Failed to create transfer"
-msgstr "创建转移失败"
-
-msgid "Failed to fetch samples"
-msgstr "获取样品失败"
-
-msgid "Failed to get employee processes"
-msgstr "获取员工工序失败"
-
-msgid "Failed to load receipt line"
-msgstr "加载收货行失败"
-
-msgid "Failed to load tracked entity"
-msgstr "加载跟踪实体失败"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "解决合作伙伴仓库失败"
-
-msgid "Failed to update processes"
-msgstr "更新工序失败"
-
-msgid "Failed to update tracking"
-msgstr "更新跟踪失败"
-
-msgid "Samples created"
-msgstr "已创建样品"
-
-msgid "Serial number already exists for this item"
-msgstr "此物品已存在序列号"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "已用于其他物品或位置"
-
-msgid "Successfully updated processes"
-msgstr "已更新工序"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "未在本次转移中发货此序列号"
-
-msgid "Tracked entity is not available"
-msgstr "不可用"
-
-msgid "Transfer created"
-msgstr "已创建转移"

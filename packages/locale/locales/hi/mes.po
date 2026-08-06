@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -237,6 +236,9 @@ msgstr "रिकॉर्ड रीसेक्वेंसी को टेर
 
 msgid "Batch"
 msgstr "बैच"
+
+msgid "Batch has insufficient quantity"
+msgstr "बैच में पर्याप्त मात्रा नहीं है"
 
 msgid "Batch is not available"
 msgstr "बैच उपलब्ध नहीं है"
@@ -894,6 +896,9 @@ msgstr "प्रक्रिया इंटेक्टिव करने म
 msgid "Failed to activate work center"
 msgstr "कार्य सेंटर को ऑपरेट करने में विफल रहा"
 
+msgid "Failed to add a line"
+msgstr "अ行添加失败"
+
 msgid "Failed to add colors and sizes"
 msgstr "ग्लासर और आकारों को जोड़ने में वफ़ादरी नहीं की जा सकी"
 
@@ -914,6 +919,9 @@ msgstr "फाइल्ड तुर्की संशोधित करने
 
 msgid "Failed to cancel RFQ"
 msgstr "रिफ़क्यूपी को रद्द करने में वास हुआ"
+
+msgid "Failed to check serial number index"
+msgstr "सीरियल नंबर इन्डेक्स की पроверка वफ़ाई नहीं की जा सकी"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "इन्वेंटरी समायोजन पूरा करने में विफल"
@@ -1092,6 +1100,9 @@ msgstr "विक्रय आदेश को बनाने में व़�
 msgid "Failed to create sales order line."
 msgstr "विक्रय आदेश पंक्ति को बनाने में विफल रहा।"
 
+msgid "Failed to create samples"
+msgstr "सैंपल्स की तैयारी में विफलता आई है"
+
 msgid "Failed to create shift"
 msgstr "फिट नहीं हुआ शिफ्ट बनाना"
 
@@ -1121,6 +1132,9 @@ msgstr "समय कार्ड योजना नहीं सफलता�
 
 msgid "Failed to create training"
 msgstr "फ्रेमवर्क तैयार करने में फालतु हुई"
+
+msgid "Failed to create transfer"
+msgstr "TRANSFER बनाना फल नहीं आया"
 
 msgid "Failed to create user account"
 msgstr "काउंट यूजर की तैयारी में फाल्टी हो गई"
@@ -1623,6 +1637,9 @@ msgstr "विक्रय इनवाइबल्स को प्राप्
 msgid "Failed to fetch sales orders"
 msgstr "विक्रय आदेश लोड करने में व़िश्या हुई"
 
+msgid "Failed to fetch samples"
+msgstr "सैंपल लोड करने में व़िरास्त हुआ"
+
 msgid "Failed to fetch storageUnits"
 msgstr "storageUnits को प्राप्त करने में विफल"
 
@@ -1892,6 +1909,9 @@ msgstr "डिपाच को प्राप्त नहीं किया �
 
 msgid "Failed to get document"
 msgstr "दocument प्राप्त करने में वफ़ादार नहीं हो सका"
+
+msgid "Failed to get employee processes"
+msgstr "नौकर के प्रोसेस डालने में विफल रहा"
 
 msgid "Failed to get employee type"
 msgstr "नौकर की प्रकार में फाइल नहीं लिया गया"
@@ -2727,6 +2747,9 @@ msgstr "कार्य डालने की भेजा गया माल 
 msgid "Failed to load receipt"
 msgstr "लेख पाने में विफल रहा"
 
+msgid "Failed to load receipt line"
+msgstr "लेसिप्ट को लोड करने में वस आईं"
+
 msgid "Failed to load report lines"
 msgstr "रिपोर्ट लाइनें लोड करने में व़या"
 
@@ -2852,6 +2875,9 @@ msgstr "कार्यक्रम की गुणतांडलों का
 
 msgid "Failed to load tool summary"
 msgstr "कार्यपद्धति सारांश लोड करने में वा हुई है"
+
+msgid "Failed to load tracked entity"
+msgstr "नामित ऐतिहासिक दस्तावेज़ लोड होने में असफल रहा"
 
 msgid "Failed to load training"
 msgstr "लोड करने में व़िता हुई ट्राइनिंग"
@@ -3017,6 +3043,9 @@ msgstr "रिउपोर्ट करणा वाघडा"
 
 msgid "Failed to report scrap"
 msgstr "फ़ैला हुआ स्पर्धा रिपोर्ट करने में फाल्सीफाइड है"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "साझेदार तरकारी स्थल को हल नहीं किया जा सका"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "फाइल नहीं हो सका अपडेट करने के लिए मॉकअप की कीमतों से"
@@ -3441,6 +3470,9 @@ msgstr "प्रक्रिया चरण अपडेट करने म�
 msgid "Failed to update process completion"
 msgstr "प्रक्रिया पूर्णता अपडेट करने में वफ़्दा हुआ"
 
+msgid "Failed to update processes"
+msgstr "प्रक्रियाएँ अपडेट करने में वफ़ादरी नहीं की सकीं"
+
 msgid "Failed to update production event"
 msgstr "उत्पादन घटना अपडेट करने में विफल रहा"
 
@@ -3653,6 +3685,9 @@ msgstr "कार्यवाही में तैयार किए गए �
 
 msgid "Failed to update tool purchasing"
 msgstr "गठन सामान की खरीदरी अपडेट करने में व्याक्रमण हो गया"
+
+msgid "Failed to update tracking"
+msgstr "अपडेट करणे खालील रूपात विफल झाले आहे"
 
 msgid "Failed to update training question"
 msgstr "अपडेट करणे खालील प्रश्नमुळे असफल झाले होते"
@@ -4803,6 +4838,9 @@ msgstr "पर्चेज ऑर्डर तैयार कीा गया �
 msgid "Purchase order finalized"
 msgstr "पर्चेज ऑर्डर संपना हुई"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "पर्चेज ऑर्डर नहीं मिला"
 
@@ -5031,6 +5069,9 @@ msgstr "विक्रय आदेश तैयार किया गया �
 msgid "Sample recorded"
 msgstr "नमूना रिकॉर्ड किया गया है"
 
+msgid "Samples created"
+msgstr "मॉडल तैयार किए गए样本外的文本已移除，请重新输入或检查字符串。"
+
 msgid "Sampling plan updated"
 msgstr "सैम्पलिंग प्लान अपडेट किया गया है"
 
@@ -5182,6 +5223,12 @@ msgstr "सीरीज़"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "सीरियल नंबर {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "इस आइटम के लिए सीरियल नंबर पहले से है"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "सीरियल नंबर अन्य वस्तु या स्थान के लिए पहचाना गया है"
 
 msgid "Serial number is not available"
 msgstr "सीरियल नंबर उपलब्ध नहीं है"
@@ -5615,6 +5662,9 @@ msgstr "सफलतापूर्वक बजटिंग वर्ष से
 msgid "Successfully updated job"
 msgstr "सफलतापूर्वक जोब अपडेट किया गया है"
 
+msgid "Successfully updated processes"
+msgstr "सफलतापूर्वक प्रोसेस अपडेट किए गए हैं"
+
 msgid "Sucessfully deactivated customer"
 msgstr "सफलतापूर्वक कลासपति डिकेटिवेटेड"
 
@@ -5716,6 +5766,9 @@ msgstr "यह अवधि"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "यह प्रक्रिया किसी और को सौंपी गई है। इसे अपने हाथ में लेने से उनकी चल रही घड़ी रुक जाएगी।"
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "इस सीरियल नंबर का इन्हीं परिवहन में भेजा नहीं गया है"
+
 msgid "Thumbnail"
 msgstr "थंबनेल"
 
@@ -5782,6 +5835,9 @@ msgstr "कुल समय: {0}"
 msgid "Total: {0}"
 msgstr "कुल: {0}"
 
+msgid "Tracked entity is not available"
+msgstr "निरीक्षित वस्तु उपलब्ध नहीं है"
+
 msgid "Tracked entity not found"
 msgstr "ट्रैक की एंटिटी नहीं मिली"
 
@@ -5799,6 +5855,9 @@ msgstr "प्रशिक्षण आईडी का मांग होत�
 
 msgid "Training marked as complete"
 msgstr "प्रशिक्षण पूरा अंकित किया गया"
+
+msgid "Transfer created"
+msgstr "TRANSFER CREATED"
 
 msgid "Type a message..."
 msgstr "एक संदेश लिखें..."
@@ -6310,60 +6369,3 @@ msgstr "आपका खाते अक्सर सक्रिय नही�
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "आपकी कंपनी निःशुल्क योजना (केवल पढ़ने के लिए) पर है। बदलाव करने के लिए अपग्रेड करें।"
-
-msgid "Batch has insufficient quantity"
-msgstr "बैच में पर्याप्त मात्रा नहीं है"
-
-msgid "Failed to add a line"
-msgstr "अ行添加失败"
-
-msgid "Failed to check serial number index"
-msgstr "सीरियल नंबर इन्डेक्स की पроверка वफ़ाई नहीं की जा सकी"
-
-msgid "Failed to create samples"
-msgstr "सैंपल्स की तैयारी में विफलता आई है"
-
-msgid "Failed to create transfer"
-msgstr "TRANSFER बनाना फल नहीं आया"
-
-msgid "Failed to fetch samples"
-msgstr "सैंपल लोड करने में व़िरास्त हुआ"
-
-msgid "Failed to get employee processes"
-msgstr "नौकर के प्रोसेस डालने में विफल रहा"
-
-msgid "Failed to load receipt line"
-msgstr "लेसिप्ट को लोड करने में वस आईं"
-
-msgid "Failed to load tracked entity"
-msgstr "नामित ऐतिहासिक दस्तावेज़ लोड होने में असफल रहा"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "साझेदार तरकारी स्थल को हल नहीं किया जा सका"
-
-msgid "Failed to update processes"
-msgstr "प्रक्रियाएँ अपडेट करने में वफ़ादरी नहीं की सकीं"
-
-msgid "Failed to update tracking"
-msgstr "अपडेट करणे खालील रूपात विफल झाले आहे"
-
-msgid "Samples created"
-msgstr "मॉडल तैयार किए गए样本外的文本已移除，请重新输入或检查字符串。"
-
-msgid "Serial number already exists for this item"
-msgstr "इस आइटम के लिए सीरियल नंबर पहले से है"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "सीरियल नंबर अन्य वस्तु या स्थान के लिए पहचाना गया है"
-
-msgid "Successfully updated processes"
-msgstr "सफलतापूर्वक प्रोसेस अपडेट किए गए हैं"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "इस सीरियल नंबर का इन्हीं परिवहन में भेजा नहीं गया है"
-
-msgid "Tracked entity is not available"
-msgstr "निरीक्षित वस्तु उपलब्ध नहीं है"
-
-msgid "Transfer created"
-msgstr "TRANSFER CREATED"

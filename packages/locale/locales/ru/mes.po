@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -234,6 +233,9 @@ msgstr "Некорректный запрос для отката последо
 
 msgid "Batch"
 msgstr "Лот"
+
+msgid "Batch has insufficient quantity"
+msgstr "Батч имеет недостаточное количество"
 
 msgid "Batch is not available"
 msgstr "Партия недоступна"
@@ -891,6 +893,9 @@ msgstr "Не удалось активировать процесс"
 msgid "Failed to activate work center"
 msgstr "Не удалось активировать рабочий центр"
 
+msgid "Failed to add a line"
+msgstr "Не удалось добавить строку"
+
 msgid "Failed to add colors and sizes"
 msgstr "Не удалось добавить цвета и размеры"
 
@@ -911,6 +916,9 @@ msgstr "Не удалось назначить поставщиков"
 
 msgid "Failed to cancel RFQ"
 msgstr "Не удалось отменить заявку на ценообразование"
+
+msgid "Failed to check serial number index"
+msgstr "Не удалось проверить индекс серийного номера"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "Не удалось выполнить корректировку запасов"
@@ -1089,6 +1097,9 @@ msgstr "Не удалось создать заказ на продажу"
 msgid "Failed to create sales order line."
 msgstr "Не удалось создать строку продажного заказа."
 
+msgid "Failed to create samples"
+msgstr "Не удалось создать образцы"
+
 msgid "Failed to create shift"
 msgstr "Не удалось создать смену"
 
@@ -1118,6 +1129,9 @@ msgstr "Не удалось создать карточку времени"
 
 msgid "Failed to create training"
 msgstr "Не удалось создать тренинг"
+
+msgid "Failed to create transfer"
+msgstr "Не удалось создать передачу"
 
 msgid "Failed to create user account"
 msgstr "Не удалось создать учетную запись пользователя"
@@ -1617,6 +1631,9 @@ msgstr "Не удалось получить счета на продажу"
 msgid "Failed to fetch sales orders"
 msgstr "Не удалось получить заказы на продажу"
 
+msgid "Failed to fetch samples"
+msgstr "Не удалось получить образцы"
+
 msgid "Failed to fetch storageUnits"
 msgstr "Не удалось получить единицы хранения"
 
@@ -1886,6 +1903,9 @@ msgstr "Не удалось получить расписание"
 
 msgid "Failed to get document"
 msgstr "Не удалось получить документ"
+
+msgid "Failed to get employee processes"
+msgstr "Не удалось получить процессы сотрудника"
 
 msgid "Failed to get employee type"
 msgstr "Не удалось получить тип сотрудника"
@@ -2721,6 +2741,9 @@ msgstr "Не удалось загрузить заявку на отгрузк�
 msgid "Failed to load receipt"
 msgstr "Не удалось загрузить приходную накладную"
 
+msgid "Failed to load receipt line"
+msgstr "Не удалось загрузить строку прихода"
+
 msgid "Failed to load report lines"
 msgstr "Не удалось загрузить строки отчета"
 
@@ -2846,6 +2869,9 @@ msgstr "Не удалось загрузить количества инстру
 
 msgid "Failed to load tool summary"
 msgstr "Не удалось загрузить Zusammenfassung des Werkzeuges"
+
+msgid "Failed to load tracked entity"
+msgstr "Не удалось загрузить отслеживаемый объект"
 
 msgid "Failed to load training"
 msgstr "Не удалось загрузить тренировку"
@@ -3011,6 +3037,9 @@ msgstr "Не удалось отчитаться о переработке"
 
 msgid "Failed to report scrap"
 msgstr "Не удалось отчитаться о браке"
+
+msgid "Failed to resolve partner warehouse"
+msgstr "Не удалось разрешить склад партнера"
 
 msgid "Failed to resolve Pull from Inventory prices"
 msgstr "Не удалось разрешитьPull из инвентаря цен"
@@ -3435,6 +3464,9 @@ msgstr "Не удалось обновить шаг процедуры"
 msgid "Failed to update process completion"
 msgstr "Не удалось обновить процент выполнения процесса"
 
+msgid "Failed to update processes"
+msgstr "Не удалось обновить процессы"
+
 msgid "Failed to update production event"
 msgstr "Не удалось обновить производственное событие"
 
@@ -3647,6 +3679,9 @@ msgstr "Не удалось обновить планирование инстр
 
 msgid "Failed to update tool purchasing"
 msgstr "Не удалось обновить закупку инструмента"
+
+msgid "Failed to update tracking"
+msgstr "Не удалось обновить отслеживание"
 
 msgid "Failed to update training question"
 msgstr "Не удалось обновить вопрос для обучения"
@@ -4797,6 +4832,9 @@ msgstr "Заказ на покупку создан"
 msgid "Purchase order finalized"
 msgstr "Заказ на покупку завершен"
 
+msgid "Purchase order line created"
+msgstr ""
+
 msgid "Purchase order not found"
 msgstr "Заказ не найден"
 
@@ -5025,6 +5063,9 @@ msgstr "Заказ продаж создан"
 msgid "Sample recorded"
 msgstr "Запись выполнена"
 
+msgid "Samples created"
+msgstr "Созданы образцы"
+
 msgid "Sampling plan updated"
 msgstr "План выборочной проверки обновлен"
 
@@ -5176,6 +5217,12 @@ msgstr "Серийный"
 #. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "Серийный номер {0}"
+
+msgid "Serial number already exists for this item"
+msgstr "Серийный номер уже существует для этого элемента"
+
+msgid "Serial number is already used for a different item or position"
+msgstr "Серийный номер уже используется для другого элемента или позиции"
 
 msgid "Serial number is not available"
 msgstr "Серийный номер недоступен"
@@ -5609,6 +5656,9 @@ msgstr "Успешно обновлены настройки финансово�
 msgid "Successfully updated job"
 msgstr "Успешно обновлено задание"
 
+msgid "Successfully updated processes"
+msgstr "Успешно обновлены процессы"
+
 msgid "Sucessfully deactivated customer"
 msgstr "Успешно деактивирован клиент"
 
@@ -5710,6 +5760,9 @@ msgstr "Эта период"
 msgid "This process is assigned to someone else. Taking over stops their running clock."
 msgstr "Эта операция назначена другому. Перенятие остановит его текущий отсчёт времени."
 
+msgid "This serial number was not shipped on this transfer"
+msgstr "Этот серийный номер не был отправлен в этом перемещении"
+
 msgid "Thumbnail"
 msgstr "Миниатюра"
 
@@ -5776,6 +5829,9 @@ msgstr "Общее время: {0}"
 msgid "Total: {0}"
 msgstr "Итого: {0}"
 
+msgid "Tracked entity is not available"
+msgstr "Следимый объект недоступен"
+
 msgid "Tracked entity not found"
 msgstr "Следимый объект не найден"
 
@@ -5793,6 +5849,9 @@ msgstr "ID тренинга требуется"
 
 msgid "Training marked as complete"
 msgstr "Обучение отмечено как завершенное"
+
+msgid "Transfer created"
+msgstr "Перенос создан"
 
 msgid "Type a message..."
 msgstr "Введите сообщение..."
@@ -6304,60 +6363,3 @@ msgstr "Ваша учетная запись не активна"
 
 msgid "Your company is on the free plan (read-only). Upgrade to make changes."
 msgstr "Ваша компания использует бесплатный тариф (только чтение). Перейдите на платный тариф, чтобы вносить изменения."
-
-msgid "Batch has insufficient quantity"
-msgstr "Батч имеет недостаточное количество"
-
-msgid "Failed to add a line"
-msgstr "Не удалось добавить строку"
-
-msgid "Failed to check serial number index"
-msgstr "Не удалось проверить индекс серийного номера"
-
-msgid "Failed to create samples"
-msgstr "Не удалось создать образцы"
-
-msgid "Failed to create transfer"
-msgstr "Не удалось создать передачу"
-
-msgid "Failed to fetch samples"
-msgstr "Не удалось получить образцы"
-
-msgid "Failed to get employee processes"
-msgstr "Не удалось получить процессы сотрудника"
-
-msgid "Failed to load receipt line"
-msgstr "Не удалось загрузить строку прихода"
-
-msgid "Failed to load tracked entity"
-msgstr "Не удалось загрузить отслеживаемый объект"
-
-msgid "Failed to resolve partner warehouse"
-msgstr "Не удалось разрешить склад партнера"
-
-msgid "Failed to update processes"
-msgstr "Не удалось обновить процессы"
-
-msgid "Failed to update tracking"
-msgstr "Не удалось обновить отслеживание"
-
-msgid "Samples created"
-msgstr "Созданы образцы"
-
-msgid "Serial number already exists for this item"
-msgstr "Серийный номер уже существует для этого элемента"
-
-msgid "Serial number is already used for a different item or position"
-msgstr "Серийный номер уже используется для другого элемента или позиции"
-
-msgid "Successfully updated processes"
-msgstr "Успешно обновлены процессы"
-
-msgid "This serial number was not shipped on this transfer"
-msgstr "Этот серийный номер не был отправлен в этом перемещении"
-
-msgid "Tracked entity is not available"
-msgstr "Следимый объект недоступен"
-
-msgid "Transfer created"
-msgstr "Перенос создан"
