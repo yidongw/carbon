@@ -36,7 +36,6 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useEffect, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
 import { LuBox, LuChevronRight, LuLandmark, LuReceipt } from "react-icons/lu";
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
@@ -166,7 +165,6 @@ const PurchaseOrderLineForm = ({
   const [itemType, setItemType] = useState<MethodItemType>(
     initialValues.purchaseOrderLineType as MethodItemType
   );
-  const [isItemResolving, setIsItemResolving] = useState(false);
   const [locationId, setLocationId] = useState(initialValues.locationId);
   const [itemData, setItemData] = useState<{
     itemId: string;
@@ -450,118 +448,109 @@ const PurchaseOrderLineForm = ({
   const onItemChange = async (itemId: string) => {
     if (!carbon) throw new Error("Carbon client not found");
     clearConfig();
-    // Disable Save synchronously so a combobox click-through cannot POST the
-    // previous line while supplier/price lookups are still in flight.
-    flushSync(() => {
-      setIsItemResolving(true);
-      setItemData((d) => ({
-        ...d,
-        itemId,
-        description: "",
-        purchaseQuantity: itemType === "Style" ? 0 : d.purchaseQuantity
-      }));
-    });
-    try {
-      switch (itemType) {
-        // @ts-expect-error
-        case "Item":
-        case "Consumable":
-        case "Material":
-        case "Part":
-        case "Style":
-        case "Tool":
-        // @ts-expect-error
-        case "Service":
-        // @ts-expect-error
-        case "Fixture":
-          const [item, supplierPart, inventory] = await Promise.all([
-            carbon
-              .from("item")
-              .select(
-                "name, readableIdWithRevision, type, unitOfMeasureCode, itemCost(unitCost), itemReplenishment(purchasingUnitOfMeasureCode, conversionFactor, leadTime)"
-              )
-              .eq("id", itemId)
-              .eq("companyId", company.id)
-              .single(),
-            carbon
-              .from("supplierPart")
-              .select("*")
-              .eq("itemId", itemId)
-              .eq("companyId", company.id)
-              .eq("supplierId", routeData?.purchaseOrder.supplierId!)
-              .maybeSingle(),
-            carbon
-              .from("pickMethod")
-              .select("defaultStorageUnitId")
-              .eq("itemId", itemId)
-              .eq("companyId", company.id)
-              .eq("locationId", locationId!)
-              .maybeSingle()
-          ]);
+    setItemData((d) => ({
+      ...d,
+      itemId,
+      description: "",
+      purchaseQuantity: itemType === "Style" ? 0 : d.purchaseQuantity
+    }));
+    switch (itemType) {
+      // @ts-expect-error
+      case "Item":
+      case "Consumable":
+      case "Material":
+      case "Part":
+      case "Style":
+      case "Tool":
+      // @ts-expect-error
+      case "Service":
+      // @ts-expect-error
+      case "Fixture":
+        const [item, supplierPart, inventory] = await Promise.all([
+          carbon
+            .from("item")
+            .select(
+              "name, readableIdWithRevision, type, unitOfMeasureCode, itemCost(unitCost), itemReplenishment(purchasingUnitOfMeasureCode, conversionFactor, leadTime)"
+            )
+            .eq("id", itemId)
+            .eq("companyId", company.id)
+            .single(),
+          carbon
+            .from("supplierPart")
+            .select("*")
+            .eq("itemId", itemId)
+            .eq("companyId", company.id)
+            .eq("supplierId", routeData?.purchaseOrder.supplierId!)
+            .maybeSingle(),
+          carbon
+            .from("pickMethod")
+            .select("defaultStorageUnitId")
+            .eq("itemId", itemId)
+            .eq("companyId", company.id)
+            .eq("locationId", locationId!)
+            .maybeSingle()
+        ]);
 
-          const itemCost = item?.data?.itemCost?.[0];
-          const itemReplenishment = item?.data?.itemReplenishment;
-          const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
-          const minOrderQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
-          // A Style's quantity is the sum of its color×size grid, so leave it at 0
-          // until the grid is filled in.
-          const isStyle = item?.data?.type === "Style";
-          const initialQty = isStyle ? 0 : minOrderQty;
-          const leadTime = item?.data?.itemReplenishment?.leadTime ?? 0;
-          const baseFallback =
-            (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
-            exchangeRate;
+        const itemCost = item?.data?.itemCost?.[0];
+        const itemReplenishment = item?.data?.itemReplenishment;
+        const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
+        const minOrderQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
+        // A Style's quantity is the sum of its color×size grid, so leave it at 0
+        // until the grid is filled in.
+        const isStyle = item?.data?.type === "Style";
+        const initialQty = isStyle ? 0 : minOrderQty;
+        const leadTime = item?.data?.itemReplenishment?.leadTime ?? 0;
+        const baseFallback =
+          (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
+          exchangeRate;
 
-          const breaks = supplierPart?.data?.id
-            ? await getSupplierPartPriceBreaks(carbon, supplierPart.data.id)
-            : [];
-          const resolvedPrice = resolveSupplierPrice(
-            breaks,
-            minOrderQty,
-            baseFallback,
-            exchangeRate
-          );
+        const breaks = supplierPart?.data?.id
+          ? await getSupplierPartPriceBreaks(carbon, supplierPart.data.id)
+          : [];
+        const resolvedPrice = resolveSupplierPrice(
+          breaks,
+          minOrderQty,
+          baseFallback,
+          exchangeRate
+        );
 
-          setItemData({
-            itemId: itemId,
-            description: item.data?.name ?? "",
-            purchaseQuantity: initialQty,
-            supplierUnitPrice: resolvedPrice,
-            supplierShippingCost: 0,
-            purchaseUom:
-              supplierPart?.data?.supplierUnitOfMeasureCode ??
-              itemReplenishment?.purchasingUnitOfMeasureCode ??
-              item.data?.unitOfMeasureCode ??
-              "EA",
-            inventoryUom: item.data?.unitOfMeasureCode ?? "EA",
-            conversionFactor:
-              supplierPart?.data?.conversionFactor ??
-              itemReplenishment?.conversionFactor ??
-              1,
-            requiredDate:
-              leadTime === 0
-                ? null
-                : today(getLocalTimeZone()).add({ days: leadTime }).toString(),
-            storageUnitId: inventory.data?.defaultStorageUnitId ?? null,
-            supplierPartId: supplierPart?.data?.supplierPartId ?? "",
-            supplierTaxAmount: 0,
-            taxPercent: 0,
-            priceBreaks: breaks,
-            fallbackUnitPrice: baseFallback
-          });
+        setItemData({
+          itemId: itemId,
+          description: item.data?.name ?? "",
+          purchaseQuantity: initialQty,
+          supplierUnitPrice: resolvedPrice,
+          supplierShippingCost: 0,
+          purchaseUom:
+            supplierPart?.data?.supplierUnitOfMeasureCode ??
+            itemReplenishment?.purchasingUnitOfMeasureCode ??
+            item.data?.unitOfMeasureCode ??
+            "EA",
+          inventoryUom: item.data?.unitOfMeasureCode ?? "EA",
+          conversionFactor:
+            supplierPart?.data?.conversionFactor ??
+            itemReplenishment?.conversionFactor ??
+            1,
+          requiredDate:
+            leadTime === 0
+              ? null
+              : today(getLocalTimeZone()).add({ days: leadTime }).toString(),
+          storageUnitId: inventory.data?.defaultStorageUnitId ?? null,
+          supplierPartId: supplierPart?.data?.supplierPartId ?? "",
+          supplierTaxAmount: 0,
+          taxPercent: 0,
+          priceBreaks: breaks,
+          fallbackUnitPrice: baseFallback
+        });
 
-          if (item.data?.type) {
-            setItemType(item.data.type as MethodItemType);
-          }
+        if (item.data?.type) {
+          setItemType(item.data.type as MethodItemType);
+        }
 
-          break;
-        default:
-          throw new Error(
-            `Invalid purchase order line type: ${itemType} is not implemented`
-          );
-      }
-    } finally {
-      setIsItemResolving(false);
+        break;
+      default:
+        throw new Error(
+          `Invalid purchase order line type: ${itemType} is not implemented`
+        );
     }
   };
 
@@ -1295,9 +1284,7 @@ const PurchaseOrderLineForm = ({
                       </Button>
                     )}
                     <Submit
-                      isDisabled={
-                        isDisabled || isMissingStyleQuantity || isItemResolving
-                      }
+                      isDisabled={isDisabled || isMissingStyleQuantity}
                       withBlocker={false}
                     >
                       <Trans>Save</Trans>

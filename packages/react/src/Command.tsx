@@ -233,7 +233,7 @@ CommandSeparator.displayName = CommandPrimitive.Separator.displayName;
 const CommandItem = forwardRef<
   ElementRef<typeof CommandPrimitive.Item>,
   ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
->(({ className, onMouseDown, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
@@ -241,13 +241,6 @@ const CommandItem = forwardRef<
       className
     )}
     {...props}
-    onMouseDown={(event) => {
-      // Keep the option under the cursor for the full click. Closing a portaled
-      // popover mid-click otherwise "clicks through" onto controls beneath
-      // (e.g. a form Save button) and accidentally submits.
-      event.preventDefault();
-      onMouseDown?.(event);
-    }}
   />
 ));
 

@@ -41,7 +41,6 @@ import {
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useState } from "react";
-import { flushSync } from "react-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   LuBox,
@@ -450,19 +449,15 @@ const SalesOrderLineForm = ({
     // to wait on the item query just to fill those fields.
     const storeItem = items.find((i) => i.id === itemId);
     const storeType = storeItem?.type;
-    flushSync(() => {
-      // Disable Save for this paint before the combobox portal closes, so a
-      // click-through cannot POST while Method/price are still settling.
-      setIsPriceResolving(true);
-      setItemData((d) => ({
-        ...d,
-        itemId,
-        description: storeItem?.name ?? "",
-        // Prefer store default; never keep the previous item's Method.
-        methodType: storeItem?.defaultMethodType ?? "",
-        uom: storeItem?.unitOfMeasureCode ?? "EA"
-      }));
-    });
+    setIsPriceResolving(true);
+    setItemData((d) => ({
+      ...d,
+      itemId,
+      description: storeItem?.name ?? "",
+      // Prefer store default; never keep the previous item's Method.
+      methodType: storeItem?.defaultMethodType ?? "",
+      uom: storeItem?.unitOfMeasureCode ?? "EA"
+    }));
     // Sync line type from the item so "All Items" → Style still gets the grid
     // and submits salesOrderLineType=Style (not the filter's "Item"/Part).
     if (storeType) {
