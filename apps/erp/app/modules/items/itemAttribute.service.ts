@@ -26,6 +26,113 @@ function toError(error: unknown, fallback: string) {
   return new Error(fallback);
 }
 
+/** Synthetic configurationParameter-shaped rows for Style qty matrices. */
+export type SynthesizedConfigurationParameter = {
+  id: string;
+  itemId: string;
+  companyId: string;
+  key: string;
+  label: string;
+  dataType: "list";
+  listOptions: string[];
+  sortOrder: number;
+  configurationParameterGroupId: null;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: null;
+  updatedBy: null;
+  deletedAt: null;
+  deletedBy: null;
+  materialFormFilterId: null;
+};
+
+/**
+ * Build Color/Size list parameters from itemAttributeSelection so Style qty
+ * matrices work without configurationParameter dual-write.
+ * Size is first (primary columns); Color is the row descriptor — matches
+ * legacy syncStyleConfigurationParameters ordering.
+ */
+export async function getStyleConfigurationParametersFromAttributes(
+  client: Db,
+  itemId: string,
+  companyId: string
+): Promise<SynthesizedConfigurationParameter[]> {
+  const db = client as any;
+
+  const { data: selections, error: selErr } = await db
+    .from("itemAttributeSelection")
+    .select("attributeId, attributeValueId")
+    .eq("itemId", itemId)
+    .eq("companyId", companyId)
+    .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size]);
+  if (selErr) throw selErr;
+  if (!selections?.length) return [];
+
+  const valueIds = selections.map(
+    (s: { attributeValueId: string }) => s.attributeValueId
+  );
+  const { data: values, error: valErr } = await db
+    .from("itemAttributeValue")
+    .select("id, attributeId, code, sortOrder")
+    .in("id", valueIds)
+    .order("sortOrder", { ascending: true })
+    .order("code", { ascending: true });
+  if (valErr) throw valErr;
+
+  const colorCodes: string[] = [];
+  const sizeCodes: string[] = [];
+  for (const v of values ?? []) {
+    if (!v.code) continue;
+    if (v.attributeId === SYSTEM_ATTRIBUTE.color) colorCodes.push(v.code);
+    if (v.attributeId === SYSTEM_ATTRIBUTE.size) sizeCodes.push(v.code);
+  }
+
+  const nowIso = new Date().toISOString();
+  const out: SynthesizedConfigurationParameter[] = [];
+  // Size first → primary quantity columns in buildConfigColumns
+  if (sizeCodes.length > 0) {
+    out.push({
+      id: `synthetic-size-${itemId}`,
+      itemId,
+      companyId,
+      key: "size",
+      label: "Size",
+      dataType: "list",
+      listOptions: sizeCodes,
+      sortOrder: 0,
+      configurationParameterGroupId: null,
+      createdAt: nowIso,
+      createdBy: "system",
+      updatedAt: null,
+      updatedBy: null,
+      deletedAt: null,
+      deletedBy: null,
+      materialFormFilterId: null
+    });
+  }
+  if (colorCodes.length > 0) {
+    out.push({
+      id: `synthetic-color-${itemId}`,
+      itemId,
+      companyId,
+      key: "color",
+      label: "Color",
+      dataType: "list",
+      listOptions: colorCodes,
+      sortOrder: 1,
+      configurationParameterGroupId: null,
+      createdAt: nowIso,
+      createdBy: "system",
+      updatedAt: null,
+      updatedBy: null,
+      deletedAt: null,
+      deletedBy: null,
+      materialFormFilterId: null
+    });
+  }
+  return out;
+}
+
 /**
  * Ensure company-scoped Color attribute values exist for the given styleColor ids,
  * then write itemAttributeSelection rows for the parent Style item.

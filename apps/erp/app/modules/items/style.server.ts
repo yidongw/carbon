@@ -5,7 +5,6 @@ import { getDatabaseClient } from "~/services/database.server";
 import { sanitize } from "~/utils/supabase";
 import { syncStyleVariantsFromAssignments } from "./itemAttribute.service";
 import {
-  syncStyleConfigurationParameters,
   upsertItemDefaultPickMethod,
   upsertItemShelfLife
 } from "./items.service";
@@ -452,14 +451,9 @@ export async function upsertStyle(
         userId: style.createdBy,
         styleSizeIds: style.styleSizeIds
       });
-      await syncStyleConfigurationParameters(client, {
-        itemId,
-        companyId: style.companyId,
-        userId: style.createdBy,
-        styleColorIds: style.styleColorIds,
-        styleSizeIds: style.styleSizeIds
-      });
-      // Dual-write: attribute selections + child SKU items
+      // Dual-write: attribute selections + child SKU items (qty matrices read
+      // selections via getStyleConfigurationParametersFromAttributes — no
+      // configurationParameter / requiresConfiguration dual-write).
       const variantSync = await syncStyleVariantsFromAssignments(client, {
         itemId,
         companyId: style.companyId,
@@ -566,9 +560,9 @@ export async function upsertStyle(
 
 // Add-only: append colors/sizes to an existing style. Editing/removing is
 // intentionally unsupported — a style's color/size *codes* are snapshotted into
-// production data (bundleWorkOrder, productionQuantity.configuration, config
-// params) with no FK, so renaming/removing them would orphan that history.
-// Adding is safe: new assignment rows + new config-param options only.
+// production data (bundleWorkOrder, productionQuantity.configuration) with no
+// FK, so renaming/removing them would orphan that history.
+// Adding is safe: new assignment rows + attribute selections + variant SKUs.
 export async function addStyleColorsAndSizes(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   args: {
@@ -635,9 +629,7 @@ export async function addStyleColorsAndSizes(
       if (sizeInsert.error) throw sizeInsert.error;
     }
 
-    // Re-derive the config parameters from the FULL set of assignments —
-    // syncStyleConfigurationParameters replaces listOptions with exactly the
-    // ids passed, so passing only the new ids would drop the existing options.
+    // Re-derive attribute selections + variants from the FULL assignment set.
     const [allColors, allSizes] = await Promise.all([
       styleClient
         .from("styleColorAssignment")
@@ -659,13 +651,6 @@ export async function addStyleColorsAndSizes(
     const allSizeIds = (allSizes.data ?? []).map(
       (s: { styleSizeId: string }) => s.styleSizeId
     );
-    await syncStyleConfigurationParameters(client, {
-      itemId,
-      companyId,
-      userId,
-      styleColorIds: allColorIds,
-      styleSizeIds: allSizeIds
-    });
     const variantSync = await syncStyleVariantsFromAssignments(client, {
       itemId,
       companyId,

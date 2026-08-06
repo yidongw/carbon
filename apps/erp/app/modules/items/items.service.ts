@@ -11,6 +11,7 @@ import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
+import { getStyleConfigurationParametersFromAttributes } from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
@@ -425,7 +426,27 @@ export async function getConfigurationParameters(
     return { groups: [], parameters: [] };
   }
 
-  return { groups: groups.data ?? [], parameters: parameters.data ?? [] };
+  const stored = parameters.data ?? [];
+  if (stored.length > 0) {
+    return { groups: groups.data ?? [], parameters: stored };
+  }
+
+  // Style qty matrices: synthesize Color/Size list params from attribute
+  // selections when configurationParameter rows were never written.
+  try {
+    const synthesized = await getStyleConfigurationParametersFromAttributes(
+      client,
+      itemId,
+      companyId
+    );
+    if (synthesized.length > 0) {
+      return { groups: [], parameters: synthesized };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return { groups: groups.data ?? [], parameters: stored };
 }
 
 export async function getConfigurationRules(
@@ -2677,6 +2698,8 @@ export async function updateRevision(
 }
 
 /**
+ * @deprecated Prefer attribute selections + getStyleConfigurationParametersFromAttributes.
+ * Kept for one-off repair of legacy Style configurationParameter rows.
  * Keep a Style item's "Color" and "Size" list configuration parameters in sync
  * with the colors/sizes assigned to the style. This turns a Style into a normal
  * configured item so color/size flow through the existing config machinery
