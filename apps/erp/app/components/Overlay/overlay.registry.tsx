@@ -1,5 +1,6 @@
 import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
 import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
+import type { PurchaseOrderLineInitialValues } from "~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
@@ -68,6 +69,21 @@ export const overlayRegistry = {
       // the loader only gates permissions; any (non-undefined) data means "render".
       (ctx) => (ctx.loaderData ? {} : null),
       () => import("~/modules/users/ui/Employees/CreateEmployeeForm")
+    )
+  },
+  newPurchaseOrderLine: {
+    type: "modal",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | { initialValues: PurchaseOrderLineInitialValues }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues, type: "overlay" as const };
+      },
+      () =>
+        import("~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm")
     )
   },
   newStyleSample: {
