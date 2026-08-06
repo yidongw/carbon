@@ -52,6 +52,12 @@ Patterns learned from corrections. Review at the start of each session.
 
 - `Enumerable` already renders its value as a styled chip/badge. Wrapping it (`<Badge><Enumerable .../></Badge>`) double-wraps and looks wrong. Use `<Enumerable value={...} />` directly (e.g. in a `CardDescription` or inline). If you just need a plain badge for non-enumerable text, use `<Badge>` alone.
 
+## Visually validate overlay conversions before presenting them
+
+- Converting a self-wrapped `ModalCard` form into a registry overlay is not complete when it merely renders. Inspect the actual overlay in the browser before presenting it.
+- Use `ModalHeader` as the real layout container; do not wrap it in a separate horizontal stack and place sibling controls outside it. Reserve room for the host-provided close button.
+- Keep `Hidden` form fields outside CSS grid containers. Carbon's hidden field wrapper can still participate in grid auto-placement and shift visible controls, creating unexplained blank cells.
+
 ## No parentheses around numbers in the UI
 
 - Don't wrap counts/numbers in parentheses in UI labels (e.g. `Generate Picking List (3)` or `2/5 (40%)`). The user dislikes this style. Show the number plainly or with a separator instead: `Generate Picking List 3`, `2/5 · 40%`. (Note: some existing components like KanbansTable use `(n)` — don't copy that pattern into new UI.)
@@ -264,3 +270,67 @@ Patterns learned from corrections. Review at the start of each session.
 - Rebuilding `purchaseOrderLines` after adding a column must match the local
   schema: `LEFT JOIN "fixedAsset"` fails if that table isn't migrated yet — don't
   DROP the view until the CREATE succeeds.
+
+## Controlled form inputs that bypass their hidden input never clear validation errors
+
+- `Select`/`SelectControlled` (`packages/form/src/components/`) render a `type="hidden"` input that carries
+  `getInputProps()`, but the actual value change goes through `useControlField`'s setter. That setter updates the
+  store and marks the field touched — it never calls `validate()`/`clearError()`. So after a failed submit the
+  field error (e.g. "Method is required") stays on screen even once the user picks a valid option, and only
+  disappears on the next submit. Fix: call `validate()` from the component's own change handler, which is the
+  existing convention (`TimePicker`, `DatePicker`, `NumberControlled` all do this).
+- `useField().validate()` = `smartValidate({ alwaysIncludeErrorsFromFields: [name] })`, which awaits the pending
+  controlled-value update and only surfaces *new* errors for touched/submitted fields, so calling it on change is
+  safe — it will not spray unrelated errors across a pristine form.
+- Zod base-parse failures short-circuit `.refine()`s: an empty enum value on one field can hide every refinement
+  error (e.g. "Part is required" never rendered until the method enum parsed).
+
+## Postgres freezes `SELECT tbl.*` in views — adding a column needs the view recreated
+
+- Adding a column to `salesOrderLine` does NOT make it appear in the `salesOrderLines` view even though the view
+  is written `SELECT sl.*`: `*` is expanded to a fixed column list at creation. Anything reading through the view
+  (`getSalesOrderLine` selects `*` from the view) silently gets `undefined` for the new column, which then looks
+  like an app bug (config total 0 → quantity zeroed, Save disabled).
+- Convention here is `DROP VIEW IF EXISTS` + recreate with the **latest committed** definition (187 migrations do
+  this). Always dump the current definition (`pg_get_viewdef`) before copying an older migration's body, or the
+  recreate silently drops columns a newer migration added.
+- The local dev DB in a worktree can diverge from the repo's migration history (e.g. it had `colorCode`/`sizeCode`
+  on the SO line view and no `fixedAsset` table at all). Verify against the DB you're actually testing on before
+  concluding the code is wrong.
+
+## SO line create: missing `sortOrder` looks like a generic "Failed to create"
+
+- `upsertSalesOrderLine` always inserts `sortOrder`. If the local DB never applied
+  `20260513120001_line-item-sort-order.sql`, PostgREST returns PGRST204 ("Could not
+  find the 'sortOrder' column") and the overlay only shows "Failed to create sales
+  order line". Reproduce with a direct REST insert of the same payload before
+  blaming Style/configuration logic.
+- Also null out empty optional text fields (`storageUnitId`, `promisedDate`, …) on
+  insert — `""` fails FK/date checks even when zfd usually strips them.
+- Surface the PostgREST `error.message` in the overlay `{ ok: false, error }` payload
+  so the toast carries the real reason next time.
+
+## Enter in inputs implicitly submits ValidatedForm overlays
+
+- Browser default: Enter while focused on a text/number input submits the form via the Save button. After picking an item, focus often lands on Quantity — one more Enter looks like "auto-save on pick".
+- cmdk already `preventDefault`s Enter inside Command, so combobox Enter-to-pick should not submit the parent form.
+- Do NOT add a form-level submit "arm gate" — fix the real click-through instead.
+
+## Overlay ModalContent clips; form body must scroll
+
+- Registry modal shells use `configParamsModalContentClassName` (`max-h-[92vh] overflow-hidden flex-col`). Content taller than the viewport is clipped unless an inner region scrolls.
+- Pattern (same as PO line overlay): form/Tabs `flex max-h-[85vh] flex-col`, header/footer `shrink-0`, body `min-h-0 flex-1 overflow-y-auto`. Do not rely on `max-h-full` alone — parent `max-height` does not always give children a definite percentage height.
+
+## Style SO lines: grid is mandatory (match PO)
+
+- Gate the quantity grid on `isStyleLine && itemId`, NOT `requiresConfiguration` / `useConfigurableItems()` (async race left Save open with qty 1).
+- Server refine: Style + itemId requires `saleQuantity > 0` and non-empty `configuration`.
+- Edit action: only spread `configuration` when updating (PO pattern) — never pass bare `undefined` through `sanitize` (becomes NULL and wipes the grid).
+- Type change to Style zeros quantity; item pick never keeps the previous item's Method (`?? ""` not `?? d.methodType`).
+
+## Combobox option click can ghost-click Save under the portal
+
+- Symptom: pick an item (e.g. BEARING-6205 / Style 111333), method fills, modal saves/closes — no Enter pressed. There is NO separate autosave API; it's the footer Submit.
+- Cause: selecting closes the portaled list mid-gesture; the leftover click lands on Save. Method preload made the form valid, so that accidental Save succeeded (empty Method used to fail validation — looked like "Method made it save").
+- Fix: `suppressDocumentPointerEventsUntilGestureEnds()` (Radix DismissableLayer pattern) before `setOpen(false)` in Combobox/Creatable/GroupedCreatable + CommandItem `onMouseDown` preventDefault + flushSync disable Save while price resolves. Never submit-arm gates.
+

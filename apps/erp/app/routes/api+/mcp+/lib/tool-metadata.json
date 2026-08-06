@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-17T10:46:18.375Z",
-  "totalTools": 1256,
+  "generated": "2026-08-06T02:48:47.571Z",
+  "totalTools": 1270,
   "modules": 15,
   "tools": [
     {
@@ -4177,7 +4177,7 @@
       "module": "inventory",
       "classification": "READ",
       "description": "get serial numbers for item",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
         "args"
@@ -4189,6 +4189,9 @@
         "type": "object",
         "properties": {
           "itemId": {
+            "type": "string"
+          },
+          "locationId": {
             "type": "string"
           }
         },
@@ -4856,6 +4859,32 @@
       }
     },
     {
+      "name": "inventory_getInboundTransferShippedSerials",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get inbound transfer shipped serials",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "warehouseTransferId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "warehouseTransferId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "warehouseTransferId"
+        ]
+      }
+    },
+    {
       "name": "inventory_getShippingMethod",
       "module": "inventory",
       "classification": "READ",
@@ -5225,6 +5254,58 @@
         },
         "required": [
           "transferId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getItemWarehouseTransferQuantities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get item warehouse transfer quantities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getItemPendingReceiptQuantities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get item pending receipt quantities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
         ]
       }
     },
@@ -6632,6 +6713,177 @@
         },
         "required": [
           "pickingListLineId",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "inventory_resolveOrCreatePartnerLocation",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "resolve or create partner location",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "userId",
+        "partner"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "partner": {}
+        },
+        "required": [
+          "partner"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPendingTransferQuantities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get pending transfer quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "itemId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPendingTransferQuantitiesByItem",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get pending transfer quantities by item",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getOpenTransferCommitments",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get open transfer commitments",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "locationId",
+        "itemIds",
+        "// Line ids to ignore — used when editing a line so it doesn't reserve against\n  // itself. Stock and warehouse line ids share one set (ids are globally unique).\n  excludeLineIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          },
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "// Line ids to ignore — used when editing a line so it doesn't reserve against\n  // itself. Stock and warehouse line ids share one set (ids are globally unique).\n  excludeLineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "locationId",
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "inventory_checkTransferLineAvailability",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "check transfer line availability",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "input"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trackedEntityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "excludeLineId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "locationId",
+          "itemId",
           "quantity"
         ]
       }
@@ -10482,6 +10734,130 @@
             }
           }
         }
+      }
+    },
+    {
+      "name": "items_getStyleSamples",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style samples",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_ensureStyleSampleItem",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "ensure style sample item",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "styleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "styleId"
+        ]
+      }
+    },
+    {
+      "name": "items_createStyleSamples",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "create style samples",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "styleId": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "colorId": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "colorId",
+                "size",
+                "quantity"
+              ]
+            }
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "storageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "styleId",
+          "lines",
+          "locationId"
+        ]
       }
     },
     {
@@ -26249,6 +26625,24 @@
       }
     },
     {
+      "name": "resources_getPartnerLocations",
+      "module": "resources",
+      "classification": "READ",
+      "description": "get partner locations",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "resources_getMaintenanceDispatch",
       "module": "resources",
       "classification": "READ",
@@ -28183,6 +28577,87 @@
         },
         "required": [
           "process"
+        ]
+      }
+    },
+    {
+      "name": "resources_getEmployeeProcessesByProcess",
+      "module": "resources",
+      "classification": "READ",
+      "description": "get employee processes by process",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "processId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "processId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "processId"
+        ]
+      }
+    },
+    {
+      "name": "resources_getEmployeeProcessesByEmployee",
+      "module": "resources",
+      "classification": "READ",
+      "description": "get employee processes by employee",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
+      "name": "resources_upsertEmployeeProcesses",
+      "module": "resources",
+      "classification": "WRITE",
+      "description": "upsert employee processes",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          },
+          "processes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
         ]
       }
     },
@@ -36035,36 +36510,6 @@
       }
     },
     {
-      "name": "settings_updateHiddenSubmodulesSetting",
-      "module": "settings",
-      "classification": "WRITE",
-      "description": "update hidden submodules setting",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "companyId",
-        "hiddenSubmodules"
-      ],
-      "injectAuth": [
-        "companyId",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "hiddenSubmodules": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "hiddenSubmodules"
-        ]
-      }
-    },
-    {
       "name": "settings_updateHiddenMesSectionsSetting",
       "module": "settings",
       "classification": "WRITE",
@@ -36091,6 +36536,36 @@
         },
         "required": [
           "hiddenMesSections"
+        ]
+      }
+    },
+    {
+      "name": "settings_updateHiddenSubmodulesSetting",
+      "module": "settings",
+      "classification": "WRITE",
+      "description": "update hidden submodules setting",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "hiddenSubmodules"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "hiddenSubmodules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "hiddenSubmodules"
         ]
       }
     },
@@ -38455,24 +38930,6 @@
             }
           }
         }
-      }
-    },
-    {
-      "name": "users_getInvitable",
-      "module": "users",
-      "classification": "READ",
-      "description": "get invitable",
-      "paramCount": 0,
-      "serviceParams": [
-        "client",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {}
       }
     },
     {

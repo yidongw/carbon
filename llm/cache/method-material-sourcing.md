@@ -51,3 +51,10 @@ not the parent's. `getMethodMaterialsByMakeMethod` selects
 `get_part_details` / `get_tool_details` (RETURNS TABLE + SELECT) in the same
 migration. `PartSummary`/`ToolSummary` types derive from these RPCs, so they
 pick up `sourcingType` after `db:types` regen.
+
+## Items store preload (SO line Method)
+
+`RealtimeDataProvider` hydrates `item.defaultMethodType` into the nanostore
+`Item` (`apps/erp/app/stores/items.ts`) alongside `requiresConfiguration`.
+`SalesOrderLineForm` applies `storeItem.defaultMethodType` synchronously on
+item pick so Method fills immediately; price/storage still resolve async.
