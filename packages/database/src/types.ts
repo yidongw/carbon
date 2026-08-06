@@ -40841,6 +40841,7 @@ export type Database = {
           addOnCost: number
           assetId: string | null
           companyId: string
+          configuration: Json | null
           convertedAddOnCost: number | null
           convertedNonTaxableAddOnCost: number | null
           convertedShippingCost: number | null
@@ -40888,6 +40889,7 @@ export type Database = {
           addOnCost?: number
           assetId?: string | null
           companyId: string
+          configuration?: Json | null
           convertedAddOnCost?: number | null
           convertedNonTaxableAddOnCost?: number | null
           convertedShippingCost?: number | null
@@ -40935,6 +40937,7 @@ export type Database = {
           addOnCost?: number
           assetId?: string | null
           companyId?: string
+          configuration?: Json | null
           convertedAddOnCost?: number | null
           convertedNonTaxableAddOnCost?: number | null
           convertedShippingCost?: number | null
@@ -66728,6 +66731,7 @@ export type Database = {
           assetReadableId: string | null
           autodeskUrn: string | null
           companyId: string | null
+          configuration: Json | null
           convertedAddOnCost: number | null
           convertedNonTaxableAddOnCost: number | null
           convertedShippingCost: number | null
@@ -73098,6 +73102,7 @@ export type Database = {
       salesOrderLineStatus: "Ordered" | "In Progress" | "Completed"
       salesOrderLineType:
         | "Comment"
+        | "Style"
         | "Part"
         | "Material"
         | "Tool"
@@ -74433,6 +74438,7 @@ export const Constants = {
         "Consumable",
         "Fixture",
         "Fixed Asset",
+        "Style",
       ],
       salesOrderStatus: [
         "Draft",
