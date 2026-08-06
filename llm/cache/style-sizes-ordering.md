@@ -37,6 +37,10 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Admin — Set Assignments:** `/items/attribute-set-assignments` CRUD on `itemAttributeSetAssignment` (itemType → attribute set). Seeds: Style→Garment, Consumable→Fabric, Consumable→Trim. Nav under Item Attributes.
 
+## Consumable Fabric / Trim variants
+
+**Create form** (`ConsumableForm` + `consumable+/new`): loads set form options via `api+/items.attribute-sets-for-type?itemType=Consumable` (page + modal). Shows set picker when >1 set; MultiSelects per set attribute (`av__<attributeId>`). On save with selections: `syncItemVariantsFromSelections` → `itemAttributeSelection` + child variant SKUs (`syncItemVariants`). Generic helpers also: `getAttributeSetFormOptionsForItemType`, `getAttributeValueOptions`, `syncItemAttributeSelections`.
+
 ## Styles view (migration `20260806150151`)
 
 `styles.colors` / `styles.sizes` json: **`id` = `itemAttributeValue.id`**, plus code/name fields; ordered by `iav.sortOrder`, `iav.code`.
