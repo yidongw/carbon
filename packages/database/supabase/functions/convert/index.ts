@@ -10,6 +10,10 @@ import { DB, getConnectionPool, getDatabaseClient } from "../lib/database.ts";
 
 import { format } from "https://deno.land/std@0.205.0/datetime/format.ts";
 import { corsHeaders } from "../lib/headers.ts";
+import {
+  expandConfigTableToVariantQuantities,
+  hasConfigTable,
+} from "../lib/item-variants.ts";
 import { requirePermissions } from "../lib/supabase.ts";
 import { Database } from "../lib/types.ts";
 import { getNextSequence } from "../shared/get-next-sequence.ts";
@@ -532,40 +536,129 @@ serve(async (req: Request) => {
             })
           );
 
+          // Cent-exact proportional split of a flat cost across variant lines,
+          // so the sum equals the original amount (remainder on the last line).
+          const allocateCost = (
+            total: number | null | undefined,
+            quantities: number[],
+            totalQty: number
+          ): number[] => {
+            const cents = Math.round((total ?? 0) * 100);
+            const out: number[] = [];
+            let allocated = 0;
+            for (let i = 0; i < quantities.length; i++) {
+              if (i === quantities.length - 1) {
+                out.push((cents - allocated) / 100);
+              } else {
+                const c = Math.round((cents * quantities[i]) / totalQty);
+                allocated += c;
+                out.push(c / 100);
+              }
+            }
+            return out;
+          };
+
           const salesOrderLineInserts: Database["public"]["Tables"]["salesOrderLine"]["Insert"][] =
-            selectedQuoteLines.map((line) => {
-              return {
-                id: line.id,
-                salesOrderId: insertedSalesOrderId,
-                salesOrderLineType: line.itemType as "Part",
-                addOnCost: selectedLines![line.id!].taxableAddOn ?? selectedLines![line.id!].addOn,
-                nonTaxableAddOnCost: (selectedLines![line.id!].addOn ?? 0) - (selectedLines![line.id!].taxableAddOn ?? selectedLines![line.id!].addOn ?? 0),
-                description: line.description,
-                itemId: line.itemId,
-                locationId: line.locationId ?? quote.data.locationId,
-                methodType: line.methodType,
-                storageUnitId: pickMethodDefaultsByLineId.get(line.id!) ?? null,
-                internalNotes: line.internalNotes,
-                externalNotes: line.externalNotes,
-                saleQuantity: selectedLines![line.id!].quantity,
-                status: "Ordered",
-                unitOfMeasureCode: line.unitOfMeasureCode,
-                unitPrice: selectedLines![line.id!].netUnitPrice,
-                promisedDate: format(
-                  new Date(
-                    Date.now() +
-                      selectedLines![line.id!].leadTime * 24 * 60 * 60 * 1000
-                  ),
-                  "yyyy-MM-dd"
-                ),
-                createdBy: userId,
-                companyId,
-                exchangeRate: quote.data.exchangeRate ?? 1,
-                taxPercent: line.taxPercent,
-                shippingCost: selectedLines![line.id!].shippingCost,
-                sortOrder: line.sortOrder ?? 1,
-              };
+            [];
+          for (const line of selectedQuoteLines) {
+            const sel = selectedLines![line.id!];
+            const promisedDate = format(
+              new Date(Date.now() + sel.leadTime * 24 * 60 * 60 * 1000),
+              "yyyy-MM-dd"
+            );
+            const addOn = sel.taxableAddOn ?? sel.addOn;
+            const nonTaxableAddOn =
+              (sel.addOn ?? 0) - (sel.taxableAddOn ?? sel.addOn ?? 0);
+
+            // Style lines carry a color/size config table; expand them into the
+            // per-variant SKU lines that fulfillment/inventory can actually ship.
+            // Fails loud (throws, rolling back the conversion) if a configured
+            // cell has no variant SKU, rather than creating an unfulfillable
+            // parent-Style line with the configuration silently dropped.
+            if (
+              line.itemType === "Style" &&
+              line.itemId &&
+              hasConfigTable(line.configuration)
+            ) {
+              const expanded = await expandConfigTableToVariantQuantities(
+                client,
+                {
+                  parentItemId: line.itemId,
+                  companyId,
+                  configuration: line.configuration,
+                }
+              );
+              if (expanded.length > 0) {
+                const quantities = expanded.map((v) => v.quantity);
+                const totalQty = quantities.reduce((s, q) => s + q, 0) || 1;
+                const addOnSplit = allocateCost(addOn, quantities, totalQty);
+                const nonTaxableSplit = allocateCost(
+                  nonTaxableAddOn,
+                  quantities,
+                  totalQty
+                );
+                const shippingSplit = allocateCost(
+                  sel.shippingCost,
+                  quantities,
+                  totalQty
+                );
+                expanded.forEach((v, i) => {
+                  salesOrderLineInserts.push({
+                    salesOrderId: insertedSalesOrderId,
+                    salesOrderLineType: "Part",
+                    addOnCost: addOnSplit[i],
+                    nonTaxableAddOnCost: nonTaxableSplit[i],
+                    description: line.description,
+                    itemId: v.variantItemId,
+                    locationId: line.locationId ?? quote.data.locationId,
+                    methodType: line.methodType,
+                    storageUnitId:
+                      pickMethodDefaultsByLineId.get(line.id!) ?? null,
+                    internalNotes: line.internalNotes,
+                    externalNotes: line.externalNotes,
+                    saleQuantity: v.quantity,
+                    status: "Ordered",
+                    unitOfMeasureCode: line.unitOfMeasureCode,
+                    unitPrice: sel.netUnitPrice,
+                    promisedDate,
+                    createdBy: userId,
+                    companyId,
+                    exchangeRate: quote.data.exchangeRate ?? 1,
+                    taxPercent: line.taxPercent,
+                    shippingCost: shippingSplit[i],
+                    sortOrder: (line.sortOrder ?? 1) + i,
+                  });
+                });
+                continue;
+              }
+            }
+
+            salesOrderLineInserts.push({
+              id: line.id,
+              salesOrderId: insertedSalesOrderId,
+              salesOrderLineType: line.itemType as "Part",
+              addOnCost: addOn,
+              nonTaxableAddOnCost: nonTaxableAddOn,
+              description: line.description,
+              itemId: line.itemId,
+              locationId: line.locationId ?? quote.data.locationId,
+              methodType: line.methodType,
+              storageUnitId: pickMethodDefaultsByLineId.get(line.id!) ?? null,
+              internalNotes: line.internalNotes,
+              externalNotes: line.externalNotes,
+              saleQuantity: sel.quantity,
+              status: "Ordered",
+              unitOfMeasureCode: line.unitOfMeasureCode,
+              unitPrice: sel.netUnitPrice,
+              promisedDate,
+              createdBy: userId,
+              companyId,
+              exchangeRate: quote.data.exchangeRate ?? 1,
+              taxPercent: line.taxPercent,
+              shippingCost: sel.shippingCost,
+              sortOrder: line.sortOrder ?? 1,
             });
+          }
 
           if (salesOrderLineInserts.length > 0) {
             await trx

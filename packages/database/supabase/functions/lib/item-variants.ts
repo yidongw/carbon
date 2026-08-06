@@ -1,6 +1,13 @@
 /**
  * Variant SKU helpers for edge functions (Deno).
- * Mirrors apps/erp/.../itemAttribute.service.ts resolve/expand logic.
+ * Mirrors apps/erp/.../itemAttribute.service.ts + styleOrderLines.server.ts.
+ *
+ * Resolution is order-independent (matches a variant by its frozen color/size
+ * attribute values, not by a positional `color|size` string) and FAILS LOUD:
+ * if a config cell has no matching variant SKU we throw rather than silently
+ * posting the quantity onto the parent item. Every caller runs inside a
+ * try/catch that returns the error to the client, so a missing variant surfaces
+ * as a clear error instead of mis-posted inventory.
  */
 
 type SupabaseLike = {
@@ -9,47 +16,83 @@ type SupabaseLike = {
 
 type ConfigRow = Record<string, unknown>;
 
-export async function resolveVariantByValuesKey(
-  client: SupabaseLike,
-  args: {
-    parentItemId: string;
-    companyId: string;
-    valuesKey: string;
+const COLOR_ATTRIBUTE_ID = "iat_color";
+const SIZE_ATTRIBUTE_ID = "iat_size";
+
+function firstCode(...vals: unknown[]): string | null {
+  for (const v of vals) {
+    if (typeof v === "string" && v.length > 0) return v;
   }
-): Promise<string> {
-  const { parentItemId, companyId, valuesKey } = args;
-  if (!valuesKey) return parentItemId;
-
-  const { data, error } = await client
-    .from("itemVariant")
-    .select("variantItemId")
-    .eq("parentItemId", parentItemId)
-    .eq("companyId", companyId)
-    .eq("valuesKey", valuesKey)
-    .maybeSingle();
-
-  if (error) throw error;
-  return (data?.variantItemId as string | undefined) ?? parentItemId;
+  return null;
 }
 
-export async function resolveVariantItemId(
-  client: SupabaseLike,
-  args: {
-    parentItemId: string;
-    companyId: string;
-    colorCode?: string | null;
-    sizeCode?: string | null;
-  }
-): Promise<string> {
-  const { parentItemId, companyId, colorCode, sizeCode } = args;
-  if (!colorCode && !sizeCode) return parentItemId;
+// Normalized, order-independent key for a (color, size) combination.
+function comboKey(colorCode: string | null, sizeCode: string | null): string {
+  return `c=${colorCode ?? ""};s=${sizeCode ?? ""}`;
+}
 
-  const valuesKey = [colorCode, sizeCode].filter(Boolean).join("|");
-  return resolveVariantByValuesKey(client, {
-    parentItemId,
-    companyId,
-    valuesKey
-  });
+type VariantMatch = { variantItemId: string; valuesKey: string };
+
+/**
+ * Load every variant SKU of a parent item, keyed by its frozen color/size
+ * attribute value codes.
+ */
+async function loadVariantsByCombo(
+  client: SupabaseLike,
+  parentItemId: string,
+  companyId: string
+): Promise<Map<string, VariantMatch>> {
+  const { data: variants, error: variantsError } = await client
+    .from("itemVariant")
+    .select("id, variantItemId, valuesKey")
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId);
+
+  if (variantsError) throw variantsError;
+
+  const map = new Map<string, VariantMatch>();
+  const rows = (variants ?? []) as Array<{
+    id: string;
+    variantItemId: string;
+    valuesKey: string;
+  }>;
+  if (rows.length === 0) return map;
+
+  const { data: attrs, error: attrsError } = await client
+    .from("itemVariantAttribute")
+    .select("itemVariantId, attributeId, itemAttributeValue(code)")
+    .eq("companyId", companyId)
+    .in(
+      "itemVariantId",
+      rows.map((r) => r.id)
+    );
+
+  if (attrsError) throw attrsError;
+
+  const colorByVariant = new Map<string, string | null>();
+  const sizeByVariant = new Map<string, string | null>();
+  for (const a of (attrs ?? []) as Array<{
+    itemVariantId: string;
+    attributeId: string;
+    itemAttributeValue?: { code?: string | null } | null;
+  }>) {
+    const code = a.itemAttributeValue?.code ?? null;
+    if (a.attributeId === COLOR_ATTRIBUTE_ID) {
+      colorByVariant.set(a.itemVariantId, code);
+    } else if (a.attributeId === SIZE_ATTRIBUTE_ID) {
+      sizeByVariant.set(a.itemVariantId, code);
+    }
+  }
+
+  for (const r of rows) {
+    const key = comboKey(
+      colorByVariant.get(r.id) ?? null,
+      sizeByVariant.get(r.id) ?? null
+    );
+    map.set(key, { variantItemId: r.variantItemId, valuesKey: r.valuesKey });
+  }
+
+  return map;
 }
 
 export async function expandConfigTableToVariantQuantities(
@@ -68,30 +111,57 @@ export async function expandConfigTableToVariantQuantities(
     ? (raw.configTablePrimaryKeys as string[])
     : [];
 
+  // Collect the requested (color, size, quantity) cells.
+  const cells: Array<{
+    colorCode: string | null;
+    sizeCode: string | null;
+    quantity: number;
+  }> = [];
+  for (const row of table) {
+    const color = firstCode(row.color, row.Color, row.colorCode);
+    for (const size of primaryKeys) {
+      const qty = Number(row[size] ?? 0);
+      if (!Number.isFinite(qty) || qty <= 0) continue;
+      cells.push({ colorCode: color, sizeCode: size || null, quantity: qty });
+    }
+  }
+
+  if (cells.length === 0) return [];
+
+  const variantsByCombo = await loadVariantsByCombo(
+    client,
+    args.parentItemId,
+    args.companyId
+  );
+
   const out: Array<{
     variantItemId: string;
     quantity: number;
     valuesKey: string;
   }> = [];
-
-  for (const row of table) {
-    const color =
-      (row.color as string) ??
-      (row.Color as string) ??
-      (row.colorCode as string) ??
-      "";
-    for (const size of primaryKeys) {
-      const qty = Number(row[size] ?? 0);
-      if (!qty || qty <= 0) continue;
-      const valuesKey = color ? `${color}|${size}` : size;
-      const variantItemId = await resolveVariantItemId(client, {
-        parentItemId: args.parentItemId,
-        companyId: args.companyId,
-        colorCode: color || null,
-        sizeCode: size
-      });
-      out.push({ variantItemId, quantity: qty, valuesKey });
+  const seen = new Set<string>();
+  for (const cell of cells) {
+    const key = comboKey(cell.colorCode, cell.sizeCode);
+    const match = variantsByCombo.get(key);
+    if (!match) {
+      const label =
+        [cell.colorCode, cell.sizeCode].filter(Boolean).join(" / ") || "(base)";
+      throw new Error(
+        `No variant SKU exists for ${label}. Open the style and save its color/size selections to generate variants before shipping or receiving.`
+      );
     }
+    if (seen.has(match.variantItemId)) {
+      // Two config cells resolved to the same SKU — the config is ambiguous.
+      throw new Error(
+        `Style configuration maps more than one color/size cell to the same variant SKU.`
+      );
+    }
+    seen.add(match.variantItemId);
+    out.push({
+      variantItemId: match.variantItemId,
+      quantity: cell.quantity,
+      valuesKey: match.valuesKey
+    });
   }
 
   return out;
