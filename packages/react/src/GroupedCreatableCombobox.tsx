@@ -17,6 +17,7 @@ import { IconButton } from "./IconButton";
 import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
 import { TruncatedTooltipText } from "./TruncatedTooltipText";
 import { cn } from "./utils/cn";
+import { suppressDocumentPointerEventsUntilGestureEnds } from "./utils/dom";
 import { reactNodeToString } from "./utils/react";
 
 const CREATE_PREFIX = "__create__:";
@@ -265,6 +266,7 @@ const GroupedCreatableCombobox = forwardRef<
                                 onSelect={() => {
                                   onChange?.(item.value);
                                   setSearch("");
+                                  suppressDocumentPointerEventsUntilGestureEnds();
                                   setOpen(false);
                                 }}
                                 style={{ minHeight: `${itemHeight}px` }}
@@ -321,6 +323,7 @@ const GroupedCreatableCombobox = forwardRef<
                               onSelect={() => {
                                 group.onCreateOption?.();
                                 setSearch("");
+                                suppressDocumentPointerEventsUntilGestureEnds();
                                 setOpen(false);
                               }}
                               style={{ minHeight: `${itemHeight}px` }}

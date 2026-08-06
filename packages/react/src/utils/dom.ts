@@ -29,6 +29,35 @@ export function preventOverlayCloseAutoFocus(
   };
 }
 
+/**
+ * Swallow the rest of the current pointer gesture so unmounting a portaled
+ * list cannot "click through" onto controls beneath (e.g. a form Save button).
+ * Same approach Radix DismissableLayer uses when layers close mid-click.
+ */
+export function suppressDocumentPointerEventsUntilGestureEnds() {
+  const body = document.body;
+  if (body.dataset.pointerEventsSuppressed === "true") return;
+
+  const previous = body.style.pointerEvents;
+  body.dataset.pointerEventsSuppressed = "true";
+  body.style.pointerEvents = "none";
+
+  const restore = () => {
+    if (body.dataset.pointerEventsSuppressed !== "true") return;
+    body.style.pointerEvents = previous;
+    delete body.dataset.pointerEventsSuppressed;
+    document.removeEventListener("pointerup", restore, true);
+    document.removeEventListener("pointercancel", restore, true);
+    document.removeEventListener("mouseup", restore, true);
+    window.clearTimeout(timeoutId);
+  };
+
+  document.addEventListener("pointerup", restore, true);
+  document.addEventListener("pointercancel", restore, true);
+  document.addEventListener("mouseup", restore, true);
+  const timeoutId = window.setTimeout(restore, 400);
+}
+
 export const copyToClipboard = async (
   str: string | Promise<string>,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration

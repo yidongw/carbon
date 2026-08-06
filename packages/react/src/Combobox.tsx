@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
 import { Spinner } from "./Spinner";
 import { TruncatedTooltipText } from "./TruncatedTooltipText";
 import { cn } from "./utils/cn";
+import { suppressDocumentPointerEventsUntilGestureEnds } from "./utils/dom";
 import { reactNodeToString } from "./utils/react";
 
 export type ComboboxProps = Omit<
@@ -295,6 +296,9 @@ function VirtualizedCommand({
                 onSelect={() => {
                   onChange?.(item.value);
                   setSearch("");
+                  // Close immediately, but block the leftover click from landing
+                  // on whatever was under the portal (often a form Save).
+                  suppressDocumentPointerEventsUntilGestureEnds();
                   setOpen(false);
                 }}
                 style={{
