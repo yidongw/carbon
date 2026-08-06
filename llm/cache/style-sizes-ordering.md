@@ -15,13 +15,13 @@ Apparel **style sizes** (`styleSize` table) must display in apparel order — sm
 
 When adding a new size read/display, order by `sortOrder`, not `sizeCode`.
 
-## Styles view / write path (attribute selections, not assignments)
+## Styles view / write path (attribute selections)
 
-Migration `20260806145305_styles_from_attribute_selections.sql` rewrote the `styles` view so `colors` / `sizes` / `colorCodes` / `colorNames` / `sizeCodes` come from `itemAttributeSelection` + `itemAttributeValue`, joined to `styleColor` / `styleSize` **by code** (`companyId` match **or** `companyId IS NULL` catalog rows).
+Migration `20260806145305_styles_from_attribute_selections.sql` rewrote the `styles` view so `colors` / `sizes` / `colorCodes` / `colorNames` / `sizeCodes` come from `itemAttributeSelection` + `itemAttributeValue`, joined to `styleColor` / `styleSize` **by code** (`companyId` match **or** `companyId IS NULL` catalog rows). Unchanged by the later drop migration.
 
-**Writes (`style.server.ts`):** `upsertStyle` and `addStyleColorsAndSizes` no longer insert into `styleColorAssignment` / `styleSizeAssignment`. Create path calls `syncStyleVariantsFromAssignments` only. Add path merges existing selection catalog ids (`getStyleCatalogIdsFromSelections`) with new ids, then `syncStyleVariantsFromAssignments`.
+**Writes (`style.server.ts`):** `upsertStyle` / `addStyleColorsAndSizes` sync via `itemAttributeSelection` + `syncStyleVariantsFromAssignments` (create: sync only; add: merge catalog ids from `getStyleCatalogIdsFromSelections`, then sync).
 
-**Legacy tables:** `styleColorAssignment` / `styleSizeAssignment` remain historically; not written for new Styles. Dropping them is later.
+**Dropped tables:** `styleColorAssignment` / `styleSizeAssignment` removed in `20260806145747_drop_style_color_size_assignments.sql`; types regenerated without them.
 
 ## Style qty matrix params (no configurationParameter dual-write)
 
