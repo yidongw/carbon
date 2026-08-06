@@ -185,7 +185,6 @@ const SalesOrderLineForm = ({
   const [saleQuantity, setSaleQuantity] = useState(
     initialValues.saleQuantity ?? 1
   );
-  const [isPriceResolving, setIsPriceResolving] = useState(false);
   const [itemData, setItemData] = useState<{
     itemId: string;
     methodType: string;
@@ -400,7 +399,6 @@ const SalesOrderLineForm = ({
 
   const debouncedQuantityResolve = useDebounce(async (qty: number) => {
     if (!itemData.itemId) {
-      setIsPriceResolving(false);
       return;
     }
     const result = await resolvePrice(itemData.itemId, qty);
@@ -413,12 +411,10 @@ const SalesOrderLineForm = ({
         priceTrace: result.trace
       }));
     }
-    setIsPriceResolving(false);
   }, 400);
 
   const onQuantityChange = (qty: number) => {
     setSaleQuantity(qty);
-    setIsPriceResolving(true);
     debouncedQuantityResolve(qty);
   };
 
@@ -449,7 +445,6 @@ const SalesOrderLineForm = ({
     // to wait on the item query just to fill those fields.
     const storeItem = items.find((i) => i.id === itemId);
     const storeType = storeItem?.type;
-    setIsPriceResolving(true);
     setItemData((d) => ({
       ...d,
       itemId,
@@ -527,7 +522,6 @@ const SalesOrderLineForm = ({
       priceListName: result?.priceListName ?? null,
       priceTrace: result?.trace ?? null
     });
-    setIsPriceResolving(false);
   };
 
   const onLocationChange = async (newLocation: { value: string } | null) => {
@@ -1175,7 +1169,6 @@ const SalesOrderLineForm = ({
       <Footer className={cn(isOverlay && "shrink-0")}>
         <Submit
           isDisabled={
-            isPriceResolving ||
             !isEditable ||
             isMissingStyleQuantity ||
             (isEditing
