@@ -332,14 +332,27 @@ export default function StyleInventoryRoute() {
                     (row: {
                       variantItemId: string;
                       readableId: string;
+                      active?: boolean;
                       quantities: {
                         quantityOnHand?: number;
                         quantityAvailable?: number;
                       } | null;
                     }) => (
-                      <tr key={row.variantItemId} className="border-b">
+                      <tr
+                        key={row.variantItemId}
+                        className={
+                          row.active === false
+                            ? "border-b text-muted-foreground"
+                            : "border-b"
+                        }
+                      >
                         <td className="py-2 pr-4 font-mono">
                           {row.readableId}
+                          {row.active === false ? (
+                            <span className="ml-2 text-xs">
+                              (<Trans>Inactive</Trans>
+                            </span>
+                          ) : null}
                         </td>
                         <td className="py-2 pr-4">
                           {Number(row.quantities?.quantityOnHand ?? 0)}

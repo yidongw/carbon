@@ -860,7 +860,7 @@ export async function getItemVariantQuantities(
   const variants = await db
     .from("itemVariant")
     .select(
-      "id, variantItemId, valuesKey, variant:item!itemVariant_variantItemId_fkey(id, readableId, name)"
+      "id, variantItemId, valuesKey, variant:item!itemVariant_variantItemId_fkey(id, readableId, name, active)"
     )
     .eq("parentItemId", parentItemId)
     .eq("companyId", companyId);
@@ -891,7 +891,11 @@ export async function getItemVariantQuantities(
       (v: {
         variantItemId: string;
         valuesKey: string;
-        variant: { readableId: string; name: string } | null;
+        variant: {
+          readableId: string;
+          name: string;
+          active: boolean | null;
+        } | null;
       }) => {
         const q = byId.get(v.variantItemId) as
           | {
@@ -908,6 +912,7 @@ export async function getItemVariantQuantities(
           valuesKey: v.valuesKey,
           readableId: v.variant?.readableId ?? v.variantItemId,
           name: v.variant?.name ?? v.valuesKey,
+          active: v.variant?.active !== false,
           quantities: {
             ...(q ?? {}),
             quantityOnHand: onHand,
