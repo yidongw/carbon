@@ -4843,7 +4843,7 @@ msgid "Purchase order finalized"
 msgstr "Ordine d'acquisto finalizzato"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Linea di ordine d'acquisto creata"
 
 msgid "Purchase order not found"
 msgstr "Ordine d'acquisto non trovato"
@@ -5069,6 +5069,9 @@ msgstr "Ordine di Vendita"
 
 msgid "Sales order created"
 msgstr "Ordine di vendita creato"
+
+msgid "Sales order line created"
+msgstr "Linea di ordine vendite creata"
 
 msgid "Sample recorded"
 msgstr "Campione registrato"

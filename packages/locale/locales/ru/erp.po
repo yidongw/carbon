@@ -7885,6 +7885,9 @@ msgstr "Стоимость приобретения основных средс�
 msgid "Fixed asset created"
 msgstr "Актив создан"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "Количество Долгосрочной амортизируемой стоимости должно быть 1"
+
 msgid "Fixed asset updated"
 msgstr "Дополнительное имущество обновлено"
 
@@ -8701,6 +8704,9 @@ msgstr "Группы товаров"
 
 msgid "Item ID"
 msgstr "ID товара"
+
+msgid "Item is required"
+msgstr "Поле является обязательным"
 
 msgid "Item Master"
 msgstr "Мастер элемента"
@@ -9579,6 +9585,9 @@ msgstr "Метод"
 msgid "Method Id"
 msgstr "ID метода"
 
+msgid "Method is required"
+msgstr "Метод обязателен"
+
 msgid "Method Materials"
 msgstr "Материалы метода"
 
@@ -9596,6 +9605,9 @@ msgstr "Операции метода"
 
 msgid "Method Type"
 msgstr "Тип метода"
+
+msgid "Method type is required"
+msgstr "Тип метода требуется"
 
 msgid "Methods"
 msgstr "Методы"
@@ -11648,7 +11660,7 @@ msgid "Purchase Order Line"
 msgstr "Строка заказа на покупку"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Заказ на покупку строка создана"
 
 msgid "Purchase Order Location"
 msgstr "Местоположение заказа на покупку"
@@ -12628,6 +12640,9 @@ msgstr "Номер заказа на продажу"
 
 msgid "Sales Order Line"
 msgstr "Строка заказа продажи"
+
+msgid "Sales order line created"
+msgstr "Линия продажного заказа создана"
 
 msgid "Sales Order Location"
 msgstr "Местоположение заказа на продажу"
@@ -13796,6 +13811,12 @@ msgstr "Стиль вывода канбана для отображения в 
 
 msgid "Style Properties"
 msgstr "Свойства модели"
+
+msgid "Style quantity configuration is required"
+msgstr "Конфигурация количества стилей требуется"
+
+msgid "Style quantity is required"
+msgstr "Количество стиля обязательно"
 
 msgid "Style Size"
 msgstr "Размер модели"

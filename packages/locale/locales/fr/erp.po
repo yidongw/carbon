@@ -7885,6 +7885,9 @@ msgstr "Coût d'acquisition des immobilisations à la cession"
 msgid "Fixed asset created"
 msgstr "Actif immobilisé créé"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "La quantité d'actif immobilisé doit être 1"
+
 msgid "Fixed asset updated"
 msgstr "Actif immobilisé mis à jour"
 
@@ -8701,6 +8704,9 @@ msgstr "Groupes d'articles"
 
 msgid "Item ID"
 msgstr "ID Article"
+
+msgid "Item is required"
+msgstr "L'article est requis"
 
 msgid "Item Master"
 msgstr "Maître d'article"
@@ -9579,6 +9585,9 @@ msgstr "Méthode"
 msgid "Method Id"
 msgstr "ID Méthode"
 
+msgid "Method is required"
+msgstr "Méthode est requise"
+
 msgid "Method Materials"
 msgstr "Matériaux de méthode"
 
@@ -9596,6 +9605,9 @@ msgstr "Opérations de méthode"
 
 msgid "Method Type"
 msgstr "Type de méthode"
+
+msgid "Method type is required"
+msgstr "Type de méthode est requis"
 
 msgid "Methods"
 msgstr "Méthodes"
@@ -11648,7 +11660,7 @@ msgid "Purchase Order Line"
 msgstr "Ligne de bon de commande"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Ligne de commande d'achat créée"
 
 msgid "Purchase Order Location"
 msgstr "Localisation de la commande d'achat"
@@ -12628,6 +12640,9 @@ msgstr "Numéro de commande client"
 
 msgid "Sales Order Line"
 msgstr "Ligne de commande client"
+
+msgid "Sales order line created"
+msgstr "Ligne de commande vendus créée"
 
 msgid "Sales Order Location"
 msgstr "Localisation de la commande client"
@@ -13796,6 +13811,12 @@ msgstr "Style de sortie kanban à afficher dans le tableau Kanban"
 
 msgid "Style Properties"
 msgstr "Propriétés du modèle"
+
+msgid "Style quantity configuration is required"
+msgstr "La configuration de la quantité de style est requise"
+
+msgid "Style quantity is required"
+msgstr "La quantité de style est requise"
 
 msgid "Style Size"
 msgstr "Taille du modèle"

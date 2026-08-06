@@ -4833,7 +4833,7 @@ msgid "Purchase order finalized"
 msgstr "購入注文完了"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "購入注文行が作成されました"
 
 msgid "Purchase order not found"
 msgstr "購入注文が見つかりません"
@@ -5059,6 +5059,9 @@ msgstr "受注"
 
 msgid "Sales order created"
 msgstr "販売注文を作成しました"
+
+msgid "Sales order line created"
+msgstr "販売注文行が作成されました"
 
 msgid "Sample recorded"
 msgstr "サンプルが録音されました"

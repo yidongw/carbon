@@ -7885,6 +7885,9 @@ msgstr "Coste de adquisición de activos fijos en el momento de la enajenación"
 msgid "Fixed asset created"
 msgstr "Activo fijo creado"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "La cantidad de Activos Fijos debe ser 1"
+
 msgid "Fixed asset updated"
 msgstr "Activo fijo actualizado"
 
@@ -8701,6 +8704,9 @@ msgstr "Grupos de Artículos"
 
 msgid "Item ID"
 msgstr "ID de Artículo"
+
+msgid "Item is required"
+msgstr "Se requiere artículo"
 
 msgid "Item Master"
 msgstr "Maestro de Artículos"
@@ -9579,6 +9585,9 @@ msgstr "Método"
 msgid "Method Id"
 msgstr "Id de Método"
 
+msgid "Method is required"
+msgstr "Método es requerido"
+
 msgid "Method Materials"
 msgstr "Materiales del Método"
 
@@ -9596,6 +9605,9 @@ msgstr "Operaciones de Método"
 
 msgid "Method Type"
 msgstr "Tipo de Método"
+
+msgid "Method type is required"
+msgstr "Tipo de método es requerido"
 
 msgid "Methods"
 msgstr "Métodos"
@@ -11648,7 +11660,7 @@ msgid "Purchase Order Line"
 msgstr "Línea de Orden de Compra"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Línea de pedido de compra creada"
 
 msgid "Purchase Order Location"
 msgstr "Ubicación de la Orden de Compra"
@@ -12628,6 +12640,9 @@ msgstr "ID de Orden de Venta"
 
 msgid "Sales Order Line"
 msgstr "Línea de Orden de Venta"
+
+msgid "Sales order line created"
+msgstr "Línea de pedido de ventas creada"
 
 msgid "Sales Order Location"
 msgstr "Ubicación de Orden de Venta"
@@ -13796,6 +13811,12 @@ msgstr "Estilo de salida de kanban para mostrar en la tabla Kanban"
 
 msgid "Style Properties"
 msgstr "Propiedades del estilo"
+
+msgid "Style quantity configuration is required"
+msgstr "Se requiere la configuración de la cantidad de estilo"
+
+msgid "Style quantity is required"
+msgstr "Se requiere cantidad de estilo"
 
 msgid "Style Size"
 msgstr "Talla del estilo"

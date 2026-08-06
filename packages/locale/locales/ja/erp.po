@@ -7885,6 +7885,9 @@ msgstr "廃棄時の固定資産取得原価"
 msgid "Fixed asset created"
 msgstr "固定資産を作成しました"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "固定資産の数量は1でなければなりません"
+
 msgid "Fixed asset updated"
 msgstr "固定資産が更新されました"
 
@@ -8701,6 +8704,9 @@ msgstr "アイテムグループ"
 
 msgid "Item ID"
 msgstr "アイテムID"
+
+msgid "Item is required"
+msgstr "アイテムは必須です"
 
 msgid "Item Master"
 msgstr "アイテムマスター"
@@ -9579,6 +9585,9 @@ msgstr "方法"
 msgid "Method Id"
 msgstr "メソッドID"
 
+msgid "Method is required"
+msgstr "メソッドは必須です"
+
 msgid "Method Materials"
 msgstr "方法材料"
 
@@ -9596,6 +9605,9 @@ msgstr "メソッド操作"
 
 msgid "Method Type"
 msgstr "メソッドタイプ"
+
+msgid "Method type is required"
+msgstr "メソッドタイプは必須です"
 
 msgid "Methods"
 msgstr "方法"
@@ -11648,7 +11660,7 @@ msgid "Purchase Order Line"
 msgstr "購買注文行"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "購入注文行が作成されました"
 
 msgid "Purchase Order Location"
 msgstr "購入注文の場所"
@@ -12628,6 +12640,9 @@ msgstr "販売注文ID"
 
 msgid "Sales Order Line"
 msgstr "販売注文行"
+
+msgid "Sales order line created"
+msgstr "販売注文行が作成されました"
 
 msgid "Sales Order Location"
 msgstr "販売注文の場所"
@@ -13796,6 +13811,12 @@ msgstr "Kanbanテーブルに表示するカンバン出力のスタイル"
 
 msgid "Style Properties"
 msgstr "スタイルのプロパティ"
+
+msgid "Style quantity configuration is required"
+msgstr "スタイル数量設定が必要です"
+
+msgid "Style quantity is required"
+msgstr "スタイル数量は必要です"
 
 msgid "Style Size"
 msgstr "スタイルサイズ"

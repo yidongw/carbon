@@ -34,7 +34,13 @@ export const validationErrorMessages: Record<string, MessageDescriptor> = {
   "File upload is not supported for external scars": msg`File upload is not supported for external scars`,
   "File size too big (max 20MB).": msg`File size too big (max 20MB).`,
   "Please open this link in the same browser where you requested sign-in.": msg`Please open this link in the same browser where you requested sign-in.`,
-  "Magic link expired or already used. Please request a new one.": msg`Magic link expired or already used. Please request a new one.`
+  "Magic link expired or already used. Please request a new one.": msg`Magic link expired or already used. Please request a new one.`,
+  "Method is required": msg`Method is required`,
+  "Method type is required": msg`Method type is required`,
+  "Item is required": msg`Item is required`,
+  "Style quantity is required": msg`Style quantity is required`,
+  "Style quantity configuration is required": msg`Style quantity configuration is required`,
+  "Fixed Asset quantity must be 1": msg`Fixed Asset quantity must be 1`
 };
 
 export function formatValidationError(error: string, i18n: I18n) {

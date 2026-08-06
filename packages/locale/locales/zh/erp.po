@@ -7886,6 +7886,9 @@ msgstr "固定资产处置时的获取成本"
 msgid "Fixed asset created"
 msgstr "已创建固定资产"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "固定资产数量必须为1"
+
 msgid "Fixed asset updated"
 msgstr "固定资产已更新"
 
@@ -8702,6 +8705,9 @@ msgstr "物品组"
 
 msgid "Item ID"
 msgstr "物品ID"
+
+msgid "Item is required"
+msgstr "物品是必填项"
 
 msgid "Item Master"
 msgstr "物品主数据"
@@ -9580,6 +9586,9 @@ msgstr "方法"
 msgid "Method Id"
 msgstr "方法 ID"
 
+msgid "Method is required"
+msgstr "方法是必填项"
+
 msgid "Method Materials"
 msgstr "方法材料"
 
@@ -9597,6 +9606,9 @@ msgstr "方法操作"
 
 msgid "Method Type"
 msgstr "方法类型"
+
+msgid "Method type is required"
+msgstr "方法类型是必填项"
 
 msgid "Methods"
 msgstr "方法"
@@ -11649,7 +11661,7 @@ msgid "Purchase Order Line"
 msgstr "采购订单行"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "已创建采购订单行"
 
 msgid "Purchase Order Location"
 msgstr "采购订单位置"
@@ -12629,6 +12641,9 @@ msgstr "销售订单号"
 
 msgid "Sales Order Line"
 msgstr "销售订单行"
+
+msgid "Sales order line created"
+msgstr "已创建销售订单行"
 
 msgid "Sales Order Location"
 msgstr "销售订单位置"
@@ -13797,6 +13812,12 @@ msgstr "看板输出款式在看板表格中显示"
 
 msgid "Style Properties"
 msgstr "款式属性"
+
+msgid "Style quantity configuration is required"
+msgstr "款式数量配置是必填项"
+
+msgid "Style quantity is required"
+msgstr "款式数量是必填项"
 
 msgid "Style Size"
 msgstr "款式尺码"

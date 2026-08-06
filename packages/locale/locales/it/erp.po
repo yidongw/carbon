@@ -7892,6 +7892,9 @@ msgstr "Costo di acquisizione cespiti in dismissione"
 msgid "Fixed asset created"
 msgstr "Attivo fisso creato"
 
+msgid "Fixed Asset quantity must be 1"
+msgstr "Quantità dell'Attivo Fisso deve essere 1"
+
 msgid "Fixed asset updated"
 msgstr "Attivo fisso aggiornato"
 
@@ -8708,6 +8711,9 @@ msgstr "Gruppi di articoli"
 
 msgid "Item ID"
 msgstr "ID Articolo"
+
+msgid "Item is required"
+msgstr "Articolo richiesto"
 
 msgid "Item Master"
 msgstr "Anagrafica Articolo"
@@ -9586,6 +9592,9 @@ msgstr "Metodo"
 msgid "Method Id"
 msgstr "ID Metodo"
 
+msgid "Method is required"
+msgstr "Metodo è richiesto"
+
 msgid "Method Materials"
 msgstr "Materiali del Metodo"
 
@@ -9603,6 +9612,9 @@ msgstr "Operazioni Metodo"
 
 msgid "Method Type"
 msgstr "Tipo di Metodo"
+
+msgid "Method type is required"
+msgstr "Tipo di metodo richiesto"
 
 msgid "Methods"
 msgstr "Metodi"
@@ -11655,7 +11667,7 @@ msgid "Purchase Order Line"
 msgstr "Riga di Ordine di Acquisto"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Linea di ordine d'acquisto creata"
 
 msgid "Purchase Order Location"
 msgstr "Ubicazione Ordine di Acquisto"
@@ -12635,6 +12647,9 @@ msgstr "ID Ordine di Vendita"
 
 msgid "Sales Order Line"
 msgstr "Riga Ordine Vendita"
+
+msgid "Sales order line created"
+msgstr "Linea di ordine vendite creata"
 
 msgid "Sales Order Location"
 msgstr "Ubicazione Ordine di Vendita"
@@ -13803,6 +13818,12 @@ msgstr "Stile dell'output kanban da mostrare nella tabella Kanban"
 
 msgid "Style Properties"
 msgstr "Proprietà del modello"
+
+msgid "Style quantity configuration is required"
+msgstr "La configurazione della quantità di stile è richiesta"
+
+msgid "Style quantity is required"
+msgstr "La quantità di stile è richiesta"
 
 msgid "Style Size"
 msgstr "Taglia modello"

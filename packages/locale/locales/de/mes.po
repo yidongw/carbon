@@ -4833,7 +4833,7 @@ msgid "Purchase order finalized"
 msgstr "Bestellvertrag abgeschlossen"
 
 msgid "Purchase order line created"
-msgstr ""
+msgstr "Bestellposition erstellt"
 
 msgid "Purchase order not found"
 msgstr "Bestellnummer nicht gefunden"
@@ -5059,6 +5059,9 @@ msgstr "Kundenauftrag"
 
 msgid "Sales order created"
 msgstr "Vertrag erstellt"
+
+msgid "Sales order line created"
+msgstr "Verkaufsauftragsposition erstellt"
 
 msgid "Sample recorded"
 msgstr "Beispiel aufgezeichnet"

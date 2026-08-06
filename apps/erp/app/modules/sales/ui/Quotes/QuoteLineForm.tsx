@@ -393,7 +393,11 @@ const QuoteLineForm = ({
                             label: (
                               <span className="flex items-center gap-2">
                                 <MethodIcon type={m} />
-                                {m}
+                                {m === "Purchase to Order"
+                                  ? t`Purchase to Order`
+                                  : m === "Pull from Inventory"
+                                    ? t`Pull from Inventory`
+                                    : t`Make to Order`}
                               </span>
                             ),
                             value: m
