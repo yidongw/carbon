@@ -41,7 +41,9 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Create form** (`ConsumableForm` + `consumable+/new`): loads set form options via `api+/items.attribute-sets-for-type?itemType=Consumable` (page + modal). Shows set picker when >1 set; MultiSelects per set attribute (`av__<attributeId>`). On save with selections: `syncItemVariantsFromSelections` → `itemAttributeSelection` + child variant SKUs (`syncItemVariants`). Generic helpers also: `getAttributeSetFormOptionsForItemType`, `getAttributeValueOptions`, `syncItemAttributeSelections`.
 
-**Lists:** `consumables` view excludes variant children (`20260806162513`). Inventory RPC excludes children and rolls qty onto parents (`20260806162447`).
+**Edit:** properties sidebar `ConsumableAttributeEditor` → POST `consumable/$itemId/attributes` → `syncItemVariantsFromSelections`. Loader: `getItemAttributeSelectionsForItem`.
+
+**Lists:** `consumables` view excludes variant children (`20260806162513`). Inventory RPC excludes children and rolls qty onto parents (`20260806162447`). SKU breakdown uses `get_inventory_quantities_for_items` (`20260806163128`) via `getItemVariantQuantities` (Style + Consumable inventory tabs).
 
 ## Styles view (migration `20260806150151`)
 

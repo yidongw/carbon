@@ -93,3 +93,4 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 
 `consumables` view excludes variant children (`20260806162513`), same pattern as `styles`.
 
+SKU breakdown for variant children uses `get_inventory_quantities_for_items` (`20260806163128`) because the list RPC excludes child SKUs.
