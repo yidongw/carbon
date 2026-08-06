@@ -216,6 +216,9 @@ msgstr "Attribute not found"
 msgid "Attribute recorded successfully"
 msgstr "Attribute recorded successfully"
 
+msgid "Attribute set not found"
+msgstr "Attribute set not found"
+
 msgid "Audit logging disabled"
 msgstr "Audit logging disabled"
 
@@ -352,9 +355,6 @@ msgstr "Cannot edit global style size"
 
 msgid "Cannot edit system attribute"
 msgstr "Cannot edit system attribute"
-
-msgid "Cannot edit system attribute set"
-msgstr "Cannot edit system attribute set"
 
 msgid "Cannot edit system attribute value"
 msgstr "Cannot edit system attribute value"

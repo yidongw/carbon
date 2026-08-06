@@ -216,6 +216,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "Attributo registrato con successo"
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "Registrazione delle revisioni disabilitata"
 
@@ -353,9 +356,6 @@ msgstr ""
 "非可编辑全局样式大小"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

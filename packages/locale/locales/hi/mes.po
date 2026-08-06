@@ -219,6 +219,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "संरचना सफलतापूर्वक रिकॉर्ड की गई है"
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "आudit logging बंद है"
 
@@ -354,9 +357,6 @@ msgid "Cannot edit global style size"
 msgstr "निर्देशक आकार को संपादित नहीं किया जा सकता"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

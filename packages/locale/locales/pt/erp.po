@@ -1357,6 +1357,9 @@ msgstr "Padrão de amostragem de atributos usado para calcular tamanhos de amost
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Attribute Sets"
 msgstr ""
 
@@ -1769,9 +1772,6 @@ msgid "Cannot edit global style size"
 msgstr "Não é possível editar o tamanho do estilo global"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

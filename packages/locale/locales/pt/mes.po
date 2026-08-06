@@ -216,6 +216,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "Atributo registrado com sucesso"
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "Registo de auditoria desativado"
 
@@ -351,9 +354,6 @@ msgid "Cannot edit global style size"
 msgstr "Não é possível editar o tamanho do estilo global"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

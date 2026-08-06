@@ -217,6 +217,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "属性记录成功"
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "审核日志已禁用"
 
@@ -352,9 +355,6 @@ msgid "Cannot edit global style size"
 msgstr "无法编辑全局款式尺寸"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

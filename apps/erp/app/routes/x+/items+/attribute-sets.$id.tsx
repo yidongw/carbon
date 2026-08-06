@@ -26,18 +26,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getItemAttributes(client, companyId)
   ]);
 
-  if (set.data?.companyId === null) {
+  if (set.error || !set.data) {
     throw redirect(
       path.to.itemAttributeSets,
-      await flash(
-        request,
-        error(new Error("Access denied"), "Cannot edit system attribute set")
-      )
+      await flash(request, error(set.error, "Attribute set not found"))
     );
   }
 
   return {
-    set: set.data ?? null,
+    set: set.data,
     attributeOptions: (attributes.data ?? []).map(
       (a: { id: string; name: string; code: string }) => ({
         label: `${a.code} — ${a.name}`,
@@ -49,29 +46,42 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, companyId, userId } = await requirePermissions(request, {
+  const { client, userId } = await requirePermissions(request, {
     update: "parts"
   });
   const { id } = params;
   if (!id) throw new Error("Could not find id");
+
+  const existing = await getItemAttributeSet(client, id);
+  if (existing.error || !existing.data) {
+    return data(
+      {},
+      await flash(request, error(existing.error, "Attribute set not found"))
+    );
+  }
 
   const validation = await validator(itemAttributeSetValidator).validate(
     await request.formData()
   );
   if (validation.error) return validationError(validation.error);
 
-  const update = await upsertItemAttributeSet(client, {
+  const setCompanyId = (existing.data.companyId ?? null) as string | null;
+
+  const result = await upsertItemAttributeSet(client, {
     id,
-    ...validation.data,
-    companyId,
+    code: validation.data.code,
+    name: validation.data.name,
+    attributeIds: validation.data.attributeIds,
+    companyId: setCompanyId,
     updatedBy: userId
   });
-  if (update.error) {
+
+  if (result.error) {
     return data(
       {},
       await flash(
         request,
-        error(update.error, "Failed to update attribute set")
+        error(result.error, "Failed to update attribute set")
       )
     );
   }
@@ -85,18 +95,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export default function EditItemAttributeSetRoute() {
   const { set, attributeOptions } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const isSystem = set.companyId === null;
 
   return (
     <ItemAttributeSetForm
       initialValues={{
-        id: set?.id,
-        code: set?.code ?? "",
-        name: set?.name ?? "",
-        attributeIds: (set?.itemAttributeSetAttribute ?? []).map(
-          (a: { attributeId: string }) => a.attributeId
-        )
+        id: set.id,
+        code: set.code ?? "",
+        name: set.name ?? "",
+        attributeIds: [...(set.itemAttributeSetAttribute ?? [])]
+          .sort(
+            (a: { sortOrder?: number }, b: { sortOrder?: number }) =>
+              (a.sortOrder ?? 100) - (b.sortOrder ?? 100)
+          )
+          .map((a: { attributeId: string }) => a.attributeId)
       }}
       attributeOptions={attributeOptions}
+      isSystem={isSystem}
       onClose={() => navigate(path.to.itemAttributeSets)}
     />
   );

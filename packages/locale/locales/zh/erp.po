@@ -1358,6 +1358,9 @@ msgstr "用于计算进货检验时批样大小及接受/拒收数量的属性�
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Attribute Sets"
 msgstr ""
 
@@ -1770,9 +1773,6 @@ msgid "Cannot edit global style size"
 msgstr "无法编辑全局款式尺寸"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

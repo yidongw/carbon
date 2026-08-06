@@ -1,4 +1,4 @@
-import { MenuIcon, MenuItem } from "@carbon/react";
+import { Badge, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
@@ -13,7 +13,11 @@ type ItemAttributeSetRow = {
   code: string;
   name: string;
   companyId: string | null;
-  itemAttributeSetAttribute?: Array<{ attributeId: string }> | null;
+  itemAttributeSetAttribute?: Array<{
+    attributeId: string;
+    sortOrder?: number;
+    itemAttribute?: { id: string; code: string; name: string } | null;
+  }> | null;
 };
 
 type ItemAttributeSetsTableProps = {
@@ -33,14 +37,11 @@ const ItemAttributeSetsTable = memo(
         {
           accessorKey: "code",
           header: t`Code`,
-          cell: ({ row }) =>
-            row.original.companyId === null ? (
+          cell: ({ row }) => (
+            <Hyperlink to={path.to.itemAttributeSet(row.original.id)}>
               <span className="font-mono">{row.original.code}</span>
-            ) : (
-              <Hyperlink to={path.to.itemAttributeSet(row.original.id)}>
-                <span className="font-mono">{row.original.code}</span>
-              </Hyperlink>
-            )
+            </Hyperlink>
+          )
         },
         {
           accessorKey: "name",
@@ -49,7 +50,25 @@ const ItemAttributeSetsTable = memo(
         {
           id: "attributes",
           header: t`Attributes`,
-          cell: ({ row }) => row.original.itemAttributeSetAttribute?.length ?? 0
+          cell: ({ row }) => {
+            const attrs = [
+              ...(row.original.itemAttributeSetAttribute ?? [])
+            ].sort((a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100));
+            if (attrs.length === 0) {
+              return <span className="text-muted-foreground">—</span>;
+            }
+            return (
+              <div className="flex flex-wrap items-center gap-1">
+                {attrs.map((a) => (
+                  <Badge key={a.attributeId} variant="secondary">
+                    {a.itemAttribute?.name ??
+                      a.itemAttribute?.code ??
+                      a.attributeId}
+                  </Badge>
+                ))}
+              </div>
+            );
+          }
         }
       ],
       [t]
@@ -57,7 +76,6 @@ const ItemAttributeSetsTable = memo(
 
     const renderContextMenu = useCallback(
       (row: ItemAttributeSetRow) => {
-        if (row.companyId === null) return null;
         return (
           <>
             <MenuItem
@@ -67,14 +85,16 @@ const ItemAttributeSetsTable = memo(
               <MenuIcon icon={<LuPencil />} />
               <Trans>Edit</Trans>
             </MenuItem>
-            <MenuItem
-              disabled={!permissions.can("delete", "parts")}
-              destructive
-              onClick={() => navigate(path.to.deleteItemAttributeSet(row.id))}
-            >
-              <MenuIcon icon={<LuTrash />} />
-              <Trans>Delete</Trans>
-            </MenuItem>
+            {row.companyId !== null ? (
+              <MenuItem
+                disabled={!permissions.can("delete", "parts")}
+                destructive
+                onClick={() => navigate(path.to.deleteItemAttributeSet(row.id))}
+              >
+                <MenuIcon icon={<LuTrash />} />
+                <Trans>Delete</Trans>
+              </MenuItem>
+            ) : null}
           </>
         );
       },

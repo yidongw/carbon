@@ -216,6 +216,9 @@ msgstr ""
 msgid "Attribute recorded successfully"
 msgstr "Атрибут успешно зарегистрирован"
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "З记账审核禁用"
 
@@ -351,9 +354,6 @@ msgid "Cannot edit global style size"
 msgstr "Невозможно редактировать глобальный стиль размера"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

@@ -577,7 +577,9 @@ export async function getItemAttribute(client: Db, id: string) {
 export async function getItemAttributeSet(client: Db, id: string) {
   return (client as any)
     .from("itemAttributeSet")
-    .select("*, itemAttributeSetAttribute(attributeId, sortOrder)")
+    .select(
+      "*, itemAttributeSetAttribute(attributeId, sortOrder, itemAttribute(id, code, name))"
+    )
     .eq("id", id)
     .single();
 }
@@ -642,9 +644,10 @@ export async function getItemAttributeSets(
   const db = client as any;
   let query = db
     .from("itemAttributeSet")
-    .select("*, itemAttributeSetAttribute(attributeId, sortOrder)", {
-      count: "exact"
-    })
+    .select(
+      "*, itemAttributeSetAttribute(attributeId, sortOrder, itemAttribute(id, code, name))",
+      { count: "exact" }
+    )
     .or(`companyId.eq.${companyId},companyId.is.null`)
     .order("code", { ascending: true });
 
@@ -670,23 +673,28 @@ export async function upsertItemAttributeSet(
         name: string;
         attributeIds: string[];
         updatedBy: string;
-        companyId: string;
+        /** Null when updating a system (shared) attribute set. */
+        companyId: string | null;
       }
 ) {
   const db = client as any;
   if ("id" in payload) {
-    const updated = await db
-      .from("itemAttributeSet")
-      .update({
-        code: payload.code,
-        name: payload.name,
-        updatedBy: payload.updatedBy,
-        updatedAt: new Date().toISOString()
-      })
-      .eq("id", payload.id)
-      .select("id")
-      .single();
-    if (updated.error) return updated;
+    // System sets (companyId null) can't be UPDATEd under RLS — only refresh
+    // their attribute membership. Company sets update code/name as usual.
+    if (payload.companyId !== null) {
+      const updated = await db
+        .from("itemAttributeSet")
+        .update({
+          code: payload.code,
+          name: payload.name,
+          updatedBy: payload.updatedBy,
+          updatedAt: new Date().toISOString()
+        })
+        .eq("id", payload.id)
+        .select("id")
+        .single();
+      if (updated.error) return updated;
+    }
 
     await db
       .from("itemAttributeSetAttribute")
@@ -704,7 +712,7 @@ export async function upsertItemAttributeSet(
       const inserted = await db.from("itemAttributeSetAttribute").insert(rows);
       if (inserted.error) return inserted;
     }
-    return updated;
+    return { data: { id: payload.id }, error: null };
   }
 
   const created = await db

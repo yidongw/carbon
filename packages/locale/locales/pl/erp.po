@@ -1357,6 +1357,9 @@ msgstr "Standard pobierania próbek atrybutów używany do obliczania wielkości
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Attribute Sets"
 msgstr ""
 
@@ -1769,9 +1772,6 @@ msgid "Cannot edit global style size"
 msgstr "Nie można edytować globalnej wielkości stylu"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

@@ -22,6 +22,8 @@ import { itemAttributeSetValidator } from "../../itemAttribute.models";
 type ItemAttributeSetFormProps = {
   initialValues: z.infer<typeof itemAttributeSetValidator>;
   attributeOptions: Array<{ label: string; value: string }>;
+  /** System (shared) sets: code/name locked; attributes still editable. */
+  isSystem?: boolean;
   type?: "modal" | "drawer";
   open?: boolean;
   onClose: () => void;
@@ -30,6 +32,7 @@ type ItemAttributeSetFormProps = {
 const ItemAttributeSetForm = ({
   initialValues,
   attributeOptions,
+  isSystem = false,
   open = true,
   type = "drawer",
   onClose
@@ -76,8 +79,8 @@ const ItemAttributeSetForm = ({
             <ModalDrawerBody>
               <Hidden name="id" />
               <VStack spacing={4}>
-                <Input name="code" label={t`Code`} />
-                <Input name="name" label={t`Name`} />
+                <Input name="code" label={t`Code`} isReadOnly={isSystem} />
+                <Input name="name" label={t`Name`} isReadOnly={isSystem} />
                 <MultiSelect
                   name="attributeIds"
                   label={t`Attributes`}

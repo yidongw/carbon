@@ -1357,6 +1357,9 @@ msgstr "ロット標本サイズおよび受入検査の合格/不合格番号�
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Attribute Sets"
 msgstr ""
 
@@ -1769,9 +1772,6 @@ msgid "Cannot edit global style size"
 msgstr "グローバルスタイルサイズを編集できません"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"

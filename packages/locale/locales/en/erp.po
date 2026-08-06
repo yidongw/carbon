@@ -1357,6 +1357,9 @@ msgstr "Attribute sampling standard used to compute lot sample sizes and accept/
 msgid "Attribute Set"
 msgstr "Attribute Set"
 
+msgid "Attribute set not found"
+msgstr "Attribute set not found"
+
 msgid "Attribute Sets"
 msgstr "Attribute Sets"
 
@@ -1770,9 +1773,6 @@ msgstr "Cannot edit global style size"
 
 msgid "Cannot edit system attribute"
 msgstr "Cannot edit system attribute"
-
-msgid "Cannot edit system attribute set"
-msgstr "Cannot edit system attribute set"
 
 msgid "Cannot edit system attribute value"
 msgstr "Cannot edit system attribute value"

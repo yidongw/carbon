@@ -1357,6 +1357,9 @@ msgstr "इनबाउंड निरीक्षणों पर लॉट �
 msgid "Attribute Set"
 msgstr ""
 
+msgid "Attribute set not found"
+msgstr ""
+
 msgid "Attribute Sets"
 msgstr ""
 
@@ -1769,9 +1772,6 @@ msgid "Cannot edit global style size"
 msgstr "निर्देशांक आकार को संपादित नहीं किया जा सकता"
 
 msgid "Cannot edit system attribute"
-msgstr ""
-
-msgid "Cannot edit system attribute set"
 msgstr ""
 
 msgid "Cannot edit system attribute value"
