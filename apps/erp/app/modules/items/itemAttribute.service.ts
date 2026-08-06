@@ -290,7 +290,8 @@ type AttrValue = {
 
 /**
  * Create missing child SKU items for a parent from its attribute selections.
- * Does not delete existing variants (archive/removal is a later concern).
+ * Soft-deactivates (`item.active = false`) variants whose valuesKey is no longer
+ * in the selected cartesian product; reactivates them if selections grow again.
  */
 export async function syncItemVariants(
   client: Db,
@@ -299,9 +300,13 @@ export async function syncItemVariants(
     companyId: string;
     userId: string;
   }
-): Promise<{ data: { created: number }; error: Error | null }> {
+): Promise<{
+  data: { created: number; archived: number; reactivated: number };
+  error: Error | null;
+}> {
   const db = client as any;
   const { parentItemId, companyId, userId } = args;
+  const empty = { created: 0, archived: 0, reactivated: 0 };
 
   try {
     const { data: parent, error: parentErr } = await db
@@ -314,7 +319,7 @@ export async function syncItemVariants(
       .single();
     if (parentErr) throw parentErr;
     if (!parent?.attributeSetId) {
-      return { data: { created: 0 }, error: null };
+      return { data: empty, error: null };
     }
 
     const { data: setAttrs, error: setAttrErr } = await db
@@ -324,7 +329,7 @@ export async function syncItemVariants(
       .order("sortOrder", { ascending: true });
     if (setAttrErr) throw setAttrErr;
     if (!setAttrs?.length) {
-      return { data: { created: 0 }, error: null };
+      return { data: empty, error: null };
     }
 
     const { data: selections, error: selErr } = await db
@@ -337,8 +342,50 @@ export async function syncItemVariants(
     const valueIds = (selections ?? []).map(
       (s: { attributeValueId: string }) => s.attributeValueId
     );
+
+    const { data: existingVariants, error: existErr } = await db
+      .from("itemVariant")
+      .select(
+        "id, valuesKey, variantItemId, variant:item!itemVariant_variantItemId_fkey(id, active)"
+      )
+      .eq("parentItemId", parentItemId)
+      .eq("companyId", companyId);
+    if (existErr) throw existErr;
+
+    type ExistingVariant = {
+      id: string;
+      valuesKey: string;
+      variantItemId: string;
+      variant: { id: string; active: boolean } | null;
+    };
+    const existingList = (existingVariants ?? []) as ExistingVariant[];
+    const existingByKey = new Map(
+      existingList.map((v) => [v.valuesKey, v] as const)
+    );
+
+    const archiveVariants = async (rows: ExistingVariant[]) => {
+      let archived = 0;
+      for (const row of rows) {
+        if (row.variant?.active === false) continue;
+        const { error: updErr } = await db
+          .from("item")
+          .update({
+            active: false,
+            updatedBy: userId,
+            updatedAt: new Date().toISOString()
+          })
+          .eq("id", row.variantItemId)
+          .eq("companyId", companyId);
+        if (updErr) throw updErr;
+        archived += 1;
+      }
+      return archived;
+    };
+
+    // No complete selection set → archive all existing variant SKUs.
     if (valueIds.length === 0) {
-      return { data: { created: 0 }, error: null };
+      const archived = await archiveVariants(existingList);
+      return { data: { ...empty, archived }, error: null };
     }
 
     const { data: values, error: valErr } = await db
@@ -359,7 +406,8 @@ export async function syncItemVariants(
     // Every attribute in the set must have ≥1 selected value
     for (const attr of setAttrs) {
       if ((valuesByAttr.get(attr.attributeId) ?? []).length === 0) {
-        return { data: { created: 0 }, error: null };
+        const archived = await archiveVariants(existingList);
+        return { data: { ...empty, archived }, error: null };
       }
     }
 
@@ -376,20 +424,46 @@ export async function syncItemVariants(
       combos = next;
     }
 
-    const { data: existingVariants, error: existErr } = await db
-      .from("itemVariant")
-      .select("valuesKey")
-      .eq("parentItemId", parentItemId)
-      .eq("companyId", companyId);
-    if (existErr) throw existErr;
-    const existingKeys = new Set(
-      (existingVariants ?? []).map((v: { valuesKey: string }) => v.valuesKey)
+    const desiredKeys = new Set(
+      combos.map((combo) => combo.map((v) => v.code).join("|"))
     );
+
+    let archived = 0;
+    let reactivated = 0;
+    for (const row of existingList) {
+      if (desiredKeys.has(row.valuesKey)) {
+        if (row.variant?.active === false) {
+          const { error: updErr } = await db
+            .from("item")
+            .update({
+              active: true,
+              updatedBy: userId,
+              updatedAt: new Date().toISOString()
+            })
+            .eq("id", row.variantItemId)
+            .eq("companyId", companyId);
+          if (updErr) throw updErr;
+          reactivated += 1;
+        }
+      } else if (row.variant?.active !== false) {
+        const { error: updErr } = await db
+          .from("item")
+          .update({
+            active: false,
+            updatedBy: userId,
+            updatedAt: new Date().toISOString()
+          })
+          .eq("id", row.variantItemId)
+          .eq("companyId", companyId);
+        if (updErr) throw updErr;
+        archived += 1;
+      }
+    }
 
     let created = 0;
     for (const combo of combos) {
       const valuesKey = combo.map((v) => v.code).join("|");
-      if (existingKeys.has(valuesKey)) continue;
+      if (existingByKey.has(valuesKey)) continue;
 
       const variantReadableId = [
         parent.readableId,
@@ -401,49 +475,76 @@ export async function syncItemVariants(
 
       const { data: existingItem } = await db
         .from("item")
-        .select("id")
+        .select("id, active")
         .eq("readableId", variantReadableId)
         .eq("companyId", companyId)
         .eq("type", parent.type)
         .eq("revision", parent.revision ?? "0")
         .maybeSingle();
-      if (existingItem) continue;
 
-      const { data: variantItem, error: itemErr } = await db
-        .from("item")
-        .insert({
-          readableId: variantReadableId,
-          revision: parent.revision ?? "0",
-          name: variantName,
-          description: parent.description,
-          type: parent.type,
-          replenishmentSystem: parent.replenishmentSystem,
-          defaultMethodType: parent.defaultMethodType,
-          itemTrackingType: parent.itemTrackingType,
-          unitOfMeasureCode: parent.unitOfMeasureCode,
-          active: parent.active,
-          requiresInspection: parent.requiresInspection,
-          sourcingType: parent.sourcingType,
-          thumbnailPath: parent.thumbnailPath,
-          notes: parent.notes,
-          attributeSetId: null,
-          companyId,
-          createdBy: userId
-        })
-        .select("id")
-        .single();
-      if (itemErr) throw itemErr;
+      let variantItemId: string;
+      if (existingItem?.id) {
+        variantItemId = existingItem.id;
+        if (existingItem.active === false) {
+          const { error: updErr } = await db
+            .from("item")
+            .update({
+              active: true,
+              updatedBy: userId,
+              updatedAt: new Date().toISOString()
+            })
+            .eq("id", variantItemId)
+            .eq("companyId", companyId);
+          if (updErr) throw updErr;
+          reactivated += 1;
+        }
+      } else {
+        const { data: variantItem, error: itemErr } = await db
+          .from("item")
+          .insert({
+            readableId: variantReadableId,
+            revision: parent.revision ?? "0",
+            name: variantName,
+            description: parent.description,
+            type: parent.type,
+            replenishmentSystem: parent.replenishmentSystem,
+            defaultMethodType: parent.defaultMethodType,
+            itemTrackingType: parent.itemTrackingType,
+            unitOfMeasureCode: parent.unitOfMeasureCode,
+            active: parent.active,
+            requiresInspection: parent.requiresInspection,
+            sourcingType: parent.sourcingType,
+            thumbnailPath: parent.thumbnailPath,
+            notes: parent.notes,
+            attributeSetId: null,
+            companyId,
+            createdBy: userId
+          })
+          .select("id")
+          .single();
+        if (itemErr) throw itemErr;
+        variantItemId = variantItem.id;
+        created += 1;
 
-      await db
-        .from("itemReplenishment")
-        .update({ requiresConfiguration: false })
-        .eq("itemId", variantItem.id);
+        await db
+          .from("itemReplenishment")
+          .update({ requiresConfiguration: false })
+          .eq("itemId", variantItemId);
+
+        // Style insert interceptor creates a style row per readableId; remove it
+        // so variant SKUs don't appear as top-level Styles.
+        await db
+          .from("style")
+          .delete()
+          .eq("id", variantReadableId)
+          .eq("companyId", companyId);
+      }
 
       const { data: variantRow, error: varErr } = await db
         .from("itemVariant")
         .insert({
           parentItemId,
-          variantItemId: variantItem.id,
+          variantItemId,
           valuesKey,
           companyId,
           createdBy: userId
@@ -464,22 +565,18 @@ export async function syncItemVariants(
         .insert(attrRows);
       if (attrErr) throw attrErr;
 
-      // Style insert interceptor creates a style row per readableId; remove it
-      // so variant SKUs don't appear as top-level Styles.
-      await db
-        .from("style")
-        .delete()
-        .eq("id", variantReadableId)
-        .eq("companyId", companyId);
-
-      created += 1;
-      existingKeys.add(valuesKey);
+      existingByKey.set(valuesKey, {
+        id: variantRow.id,
+        valuesKey,
+        variantItemId,
+        variant: { id: variantItemId, active: true }
+      });
     }
 
-    return { data: { created }, error: null };
+    return { data: { created, archived, reactivated }, error: null };
   } catch (error) {
     return {
-      data: { created: 0 },
+      data: empty,
       error: toError(error, "Failed to sync item variants")
     };
   }
@@ -507,6 +604,50 @@ export async function syncStyleVariantsFromAssignments(
 }
 
 /**
+ * Resolve a child SKU itemId for a parent + valuesKey (attribute codes joined by `|`
+ * in set attribute order). Prefers an active variant; falls back to inactive,
+ * then to the parent itemId when no match exists.
+ */
+export async function resolveVariantByValuesKey(
+  client: Db,
+  args: {
+    parentItemId: string;
+    companyId: string;
+    valuesKey: string;
+  }
+): Promise<{ data: string; error: Error | null }> {
+  const db = client as any;
+  const { parentItemId, companyId, valuesKey } = args;
+
+  if (!valuesKey) {
+    return { data: parentItemId, error: null };
+  }
+
+  try {
+    const { data, error } = await db
+      .from("itemVariant")
+      .select(
+        "variantItemId, variant:item!itemVariant_variantItemId_fkey(id, active)"
+      )
+      .eq("parentItemId", parentItemId)
+      .eq("companyId", companyId)
+      .eq("valuesKey", valuesKey)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data?.variantItemId) {
+      return { data: parentItemId, error: null };
+    }
+    return { data: data.variantItemId, error: null };
+  } catch (error) {
+    return {
+      data: parentItemId,
+      error: toError(error, "Failed to resolve variant item")
+    };
+  }
+}
+
+/**
  * Resolve a child SKU itemId for a parent + color/size codes.
  * Returns the parent itemId when no matching variant exists (legacy fallback).
  */
@@ -519,7 +660,6 @@ export async function resolveVariantItemId(
     sizeCode?: string | null;
   }
 ): Promise<{ data: string; error: Error | null }> {
-  const db = client as any;
   const { parentItemId, companyId, colorCode, sizeCode } = args;
 
   if (!colorCode && !sizeCode) {
@@ -527,24 +667,11 @@ export async function resolveVariantItemId(
   }
 
   const valuesKey = [colorCode, sizeCode].filter(Boolean).join("|");
-
-  try {
-    const { data, error } = await db
-      .from("itemVariant")
-      .select("variantItemId")
-      .eq("parentItemId", parentItemId)
-      .eq("companyId", companyId)
-      .eq("valuesKey", valuesKey)
-      .maybeSingle();
-
-    if (error) throw error;
-    return { data: data?.variantItemId ?? parentItemId, error: null };
-  } catch (error) {
-    return {
-      data: parentItemId,
-      error: toError(error, "Failed to resolve variant item")
-    };
-  }
+  return resolveVariantByValuesKey(client, {
+    parentItemId,
+    companyId,
+    valuesKey
+  });
 }
 
 export async function getItemAttributes(

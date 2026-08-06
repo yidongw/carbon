@@ -9,6 +9,29 @@ type SupabaseLike = {
 
 type ConfigRow = Record<string, unknown>;
 
+export async function resolveVariantByValuesKey(
+  client: SupabaseLike,
+  args: {
+    parentItemId: string;
+    companyId: string;
+    valuesKey: string;
+  }
+): Promise<string> {
+  const { parentItemId, companyId, valuesKey } = args;
+  if (!valuesKey) return parentItemId;
+
+  const { data, error } = await client
+    .from("itemVariant")
+    .select("variantItemId")
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId)
+    .eq("valuesKey", valuesKey)
+    .maybeSingle();
+
+  if (error) throw error;
+  return (data?.variantItemId as string | undefined) ?? parentItemId;
+}
+
 export async function resolveVariantItemId(
   client: SupabaseLike,
   args: {
@@ -22,16 +45,11 @@ export async function resolveVariantItemId(
   if (!colorCode && !sizeCode) return parentItemId;
 
   const valuesKey = [colorCode, sizeCode].filter(Boolean).join("|");
-  const { data, error } = await client
-    .from("itemVariant")
-    .select("variantItemId")
-    .eq("parentItemId", parentItemId)
-    .eq("companyId", companyId)
-    .eq("valuesKey", valuesKey)
-    .maybeSingle();
-
-  if (error) throw error;
-  return (data?.variantItemId as string | undefined) ?? parentItemId;
+  return resolveVariantByValuesKey(client, {
+    parentItemId,
+    companyId,
+    valuesKey
+  });
 }
 
 export async function expandConfigTableToVariantQuantities(
