@@ -15,9 +15,17 @@ Apparel **style sizes** (`styleSize` table) must display in apparel order — sm
 
 When adding a new size read/display, order by `sortOrder`, not `sizeCode`.
 
+## Styles view / write path (attribute selections, not assignments)
+
+Migration `20260806145305_styles_from_attribute_selections.sql` rewrote the `styles` view so `colors` / `sizes` / `colorCodes` / `colorNames` / `sizeCodes` come from `itemAttributeSelection` + `itemAttributeValue`, joined to `styleColor` / `styleSize` **by code** (`companyId` match **or** `companyId IS NULL` catalog rows).
+
+**Writes (`style.server.ts`):** `upsertStyle` and `addStyleColorsAndSizes` no longer insert into `styleColorAssignment` / `styleSizeAssignment`. Create path calls `syncStyleVariantsFromAssignments` only. Add path merges existing selection catalog ids (`getStyleCatalogIdsFromSelections`) with new ids, then `syncStyleVariantsFromAssignments`.
+
+**Legacy tables:** `styleColorAssignment` / `styleSizeAssignment` remain historically; not written for new Styles. Dropping them is later.
+
 ## Style qty matrix params (no configurationParameter dual-write)
 
-**New Styles** only dual-write attribute selections + variant SKUs (`syncStyleVariantsFromAssignments`). They do **not** call `syncStyleConfigurationParameters` — no `configurationParameter` rows, no `itemReplenishment.requiresConfiguration` flip.
+**New Styles** write attribute selections + variant SKUs (`syncStyleVariantsFromAssignments`) only. They do **not** call `syncStyleConfigurationParameters` — no `configurationParameter` rows, no `itemReplenishment.requiresConfiguration` flip.
 
 **Read path:** `getConfigurationParameters` returns stored `configurationParameter` rows when present (legacy Styles). If empty, falls back to `getStyleConfigurationParametersFromAttributes` (Color/Size from `itemAttributeSelection`; Size `sortOrder=0` primary columns, Color `sortOrder=1` row descriptor).
 
