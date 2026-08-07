@@ -70,7 +70,7 @@ export function buildStyleColorNames(
  * when the stored/loader name is the English base. Non-standard codes and size
  * columns are left untouched.
  */
-function localizeColorNameMap(
+export function localizeColorNameMap(
   colorNames: Record<string, string> | undefined,
   locale: string | undefined
 ): Record<string, string> | undefined {

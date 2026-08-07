@@ -333,6 +333,7 @@ export function ReadOnlyConfigTable({
       rows={rows}
       hasReferences={false}
       hideZeroValuesInVertical
+      optionLabels={optionLabels}
       renderCell={(col, row) => {
         const raw = row[col.key];
         const numeric = Number(raw) || 0;
@@ -589,6 +590,7 @@ export function EditableConfigGrid({
       rows={rows}
       hasReferences={hasReferences}
       hideZeroValuesInVertical={readOnly}
+      optionLabels={optionLabels}
       renderCell={renderCell}
       renderRowActions={
         readOnly

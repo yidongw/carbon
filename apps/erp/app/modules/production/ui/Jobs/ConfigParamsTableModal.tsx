@@ -24,11 +24,13 @@ import {
   type ConfigTableOverlaySuccess,
   isConfigTableOverlaySuccess
 } from "~/modules/production/configTableOverlay";
+import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { path } from "~/utils/path";
 import {
   buildColumns,
   type Column,
+  type ConfigurationParameterInput,
   computeTotal,
   configParamsModalBodyClassName,
   configParamsModalContentClassName,
@@ -40,7 +42,6 @@ import {
   makeDefaultRow,
   mergeRows,
   normalizeRow,
-  type ConfigurationParameterInput,
   type Row,
   validateCell
 } from "./configTableShared";
@@ -154,7 +155,7 @@ function ConfigParamsTableModal({
   referenceByRowIndex,
   splitMode,
   jobDisplayId,
-  optionLabels,
+  optionLabels: rawOptionLabels,
   isEditingReport,
   onDismiss,
   action: formAction,
@@ -162,7 +163,11 @@ function ConfigParamsTableModal({
   confirmMode,
   onConfirmSuccess
 }: ConfigParamsTableModalProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
+  // Loader colorNames are the English base; translate to the user's locale so
+  // headers/cells show 米色 rather than "Beige" or the raw "BG" code.
+  const optionLabels =
+    localizeColorNameMap(rawOptionLabels, i18n.locale) ?? rawOptionLabels;
   // `"none"` is a read-only view: cells are disabled and the only button closes.
   const readOnly = confirmMode === "none";
   const flat = Boolean(splitMode);
@@ -185,7 +190,12 @@ function ConfigParamsTableModal({
     if (flat) {
       const seed =
         initialRows && initialRows.length > 0
-          ? matrixRowsToFlatRows(initialRows, primaryParam, primaryKeys, parameters)
+          ? matrixRowsToFlatRows(
+              initialRows,
+              primaryParam,
+              primaryKeys,
+              parameters
+            )
           : [];
       return seed.length > 0
         ? seed.map((row) => normalizeRow(row, flatColumns))
@@ -214,7 +224,8 @@ function ConfigParamsTableModal({
   }, [isEditingReport, initialRows, primaryKeys]);
   const delta = total - baselineTotal;
 
-  const addRow = () => setRows((prev) => [...prev, makeDefaultRow(gridColumns)]);
+  const addRow = () =>
+    setRows((prev) => [...prev, makeDefaultRow(gridColumns)]);
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
@@ -255,7 +266,8 @@ function ConfigParamsTableModal({
         if (cap <= 0) continue;
         const cellRow: Row = {};
         if (primaryParam) cellRow[primaryParam.key] = pk;
-        for (const dk of descriptorKeys) cellRow[dk] = (row[dk] as string) ?? "";
+        for (const dk of descriptorKeys)
+          cellRow[dk] = (row[dk] as string) ?? "";
         planCells.push({
           colorCode: String(cellRow[colorKey] ?? ""),
           sizeCode: String(cellRow[sizeKey] ?? ""),
@@ -267,13 +279,19 @@ function ConfigParamsTableModal({
   const enteredByCell = new Map<string, number>();
   for (const r of rows) {
     const k = cellKeyOf(r[colorKey], r[sizeKey]);
-    enteredByCell.set(k, (enteredByCell.get(k) ?? 0) + (Number(r.Quantities) || 0));
+    enteredByCell.set(
+      k,
+      (enteredByCell.get(k) ?? 0) + (Number(r.Quantities) || 0)
+    );
   }
   const capByCell = new Map(
     planCells.map((c) => [cellKeyOf(c.colorCode, c.sizeCode), c.cap])
   );
-  const remainingForCell = (c: { colorCode: string; sizeCode: string; cap: number }) =>
-    c.cap - (enteredByCell.get(cellKeyOf(c.colorCode, c.sizeCode)) ?? 0);
+  const remainingForCell = (c: {
+    colorCode: string;
+    sizeCode: string;
+    cap: number;
+  }) => c.cap - (enteredByCell.get(cellKeyOf(c.colorCode, c.sizeCode)) ?? 0);
   const addableCells = planCells.filter((c) => remainingForCell(c) > 0);
   const totalPlan = planCells.reduce((s, c) => s + c.cap, 0);
   const planRemaining = totalPlan - total;
@@ -304,7 +322,11 @@ function ConfigParamsTableModal({
     overCellKeys.size > 0
       ? new Set([...invalidCells, ...overCellKeys])
       : invalidCells;
-  const addCellRow = (c: { colorCode: string; sizeCode: string; cap: number }) =>
+  const addCellRow = (c: {
+    colorCode: string;
+    sizeCode: string;
+    cap: number;
+  }) =>
     setRows((prev) => [
       ...prev,
       normalizeRow(
