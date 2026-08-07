@@ -579,9 +579,6 @@ msgstr "Добавлено {0}"
 msgid "Added {createdAt}"
 msgstr "Добавлено {createdAt}"
 
-msgid "Added colors and sizes"
-msgstr "Добавлены цвета и размеры"
-
 msgid "Adding..."
 msgstr "Добавление..."
 
@@ -4655,9 +4652,6 @@ msgstr "Не удалось активировать рабочий центр"
 msgid "Failed to add a line"
 msgstr "Не удалось добавить строку"
 
-msgid "Failed to add colors and sizes"
-msgstr "Не удалось добавить цвета и размеры"
-
 msgid "Failed to add entry"
 msgstr "Не удалось добавить запись"
 
@@ -6770,6 +6764,9 @@ msgstr "Не удалось загрузить.stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Не удалось загрузить правила хранения"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Не удалось загрузить стиль ценообразования"
 
@@ -7636,6 +7633,9 @@ msgstr "Не удалось обновить тип хранения"
 
 msgid "Failed to update storageUnit"
 msgstr "Не удалось обновить(storageUnit)"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Не удалось обновить стиль затрат"
@@ -10313,9 +10313,6 @@ msgstr "Нет истории чатов"
 msgid "No chats found"
 msgstr "Чаты не найдены"
 
-msgid "No colors assigned"
-msgstr "Цвета не назначены"
-
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Нет комментариев. Будьте первым, кто добавит комментарий."
 
@@ -10525,9 +10522,6 @@ msgstr "Пока нет проверенных образцов."
 
 msgid "No selection"
 msgstr "Нет выбора"
-
-msgid "No sizes assigned"
-msgstr "Размеры не назначены"
 
 msgid "No sorts applied to this view"
 msgstr "Сортировка не применена к этому представлению"
@@ -15574,6 +15568,9 @@ msgstr "Обновленный тип хранения"
 
 msgid "Updated storageUnit"
 msgstr "Обновленный складской пункт"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Обновленный стиль ценообразования"

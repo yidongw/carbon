@@ -1,15 +1,14 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { SYSTEM_ATTRIBUTE } from "~/modules/items/itemAttribute.service";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   // Any authenticated employee — no parts_view required.
   const { client, companyId } = await requirePermissions(request, {});
 
-  // "Configurable" = the item has configuration parameters OR Style attribute
-  // selections (color/size) that synthesize a qty matrix. Prefer parameter /
-  // selection tables over `itemReplenishment.requiresConfiguration` — that flag
-  // is gated by parts_view and is no longer set for new Styles.
+  // "Configurable" = the item has configuration parameters OR attribute
+  // selections that synthesize a qty matrix. Prefer parameter / selection
+  // tables over `itemReplenishment.requiresConfiguration` — that flag is gated
+  // by parts_view and is no longer set for new Styles.
   const [params, selections] = await Promise.all([
     client
       .from("configurationParameter")
@@ -19,7 +18,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .from("itemAttributeSelection")
       .select("itemId")
       .eq("companyId", companyId)
-      .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size])
   ]);
 
   if (params.error) return params;

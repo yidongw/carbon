@@ -96,9 +96,6 @@ msgstr "Aggiungi nuovo set di record"
 msgid "Add Spare Part"
 msgstr "Aggiungi Ricambio"
 
-msgid "Added colors and sizes"
-msgstr "Aggiunti colori e dimensioni"
-
 msgid "Adjust stock down"
 msgstr "Adatta il stock verso il basso"
 
@@ -940,9 +937,6 @@ msgstr "Fallito l'attivazione del centro lavoro"
 
 msgid "Failed to add a line"
 msgstr "Fallito nell'aggiunta di una riga"
-
-msgid "Failed to add colors and sizes"
-msgstr "Fallito nell'aggiunta dei colori e delle dimensioni"
 
 msgid "Failed to add entry"
 msgstr "Fallito nell'aggiunta della voce"
@@ -2870,6 +2864,9 @@ msgstr "Fallito caricamento stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Caricamento delle regole di archiviazione fallito"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Caricamento del costo dello stile fallito"
 
@@ -3690,6 +3687,9 @@ msgstr "Fallito aggiornamento tipo magazzino"
 
 msgid "Failed to update storageUnit"
 msgstr "Fallito aggiornamento storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Fallito aggiornamento costo stile"
@@ -6263,6 +6263,9 @@ msgstr "Tipo di magazzino aggiornato"
 
 msgid "Updated storageUnit"
 msgstr "Aggiornato storageUnit"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Aggiornato stile costo"

@@ -579,9 +579,6 @@ msgstr "{0} को जोड़ा गया"
 msgid "Added {createdAt}"
 msgstr "{createdAt} को जोड़ा गया"
 
-msgid "Added colors and sizes"
-msgstr "दod रंग और आकार जोड़े गए हैं"
-
 msgid "Adding..."
 msgstr "जोड़ा जा रहा है..."
 
@@ -4655,9 +4652,6 @@ msgstr "कार्य सेंटर को ऑपरेट करने म�
 msgid "Failed to add a line"
 msgstr "अ行添加失败"
 
-msgid "Failed to add colors and sizes"
-msgstr "ग्लासर और आकारों को जोड़ने में वफ़ादरी नहीं की जा सकी"
-
 msgid "Failed to add entry"
 msgstr "कैसी भी नंबर योजना नहीं जोड़ी जा सकी"
 
@@ -6773,6 +6767,9 @@ msgstr "स्टॉक ट्रांसफर का लोड होने �
 msgid "Failed to load storage rules"
 msgstr "स्टोरेज नियमों का caricir हो रहा है"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "stile ka krishan na ho paya"
 
@@ -7639,6 +7636,9 @@ msgstr "स्टोरेज प्रकार अपडेट करने �
 
 msgid "Failed to update storageUnit"
 msgstr "स्टोरेज यूनिट अपडेट करने में वासी हुआ"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "stile की लागत अपडेट होने में फाल्टी रही"
@@ -10316,9 +10316,6 @@ msgstr "कोई चैट इतिहास नहीं"
 msgid "No chats found"
 msgstr "कोई चैट नहीं मिला"
 
-msgid "No colors assigned"
-msgstr "कोई रंग असाइन नहीं"
-
 msgid "No comments yet. Be the first to add a comment."
 msgstr "अभी तक कोई टिप्पणी नहीं है। टिप्पणी जोड़ने वाले पहले व्यक्ति बनें।"
 
@@ -10528,9 +10525,6 @@ msgstr "अभी तक कोई नमूना निरीक्षण न�
 
 msgid "No selection"
 msgstr "कोई चयन नहीं"
-
-msgid "No sizes assigned"
-msgstr "कोई आकार असाइन नहीं"
 
 msgid "No sorts applied to this view"
 msgstr "इस दृश्य पर कोई सॉर्ट लागू नहीं किया गया"
@@ -15577,6 +15571,9 @@ msgstr "अपडेट डायनामिक प्रकार"
 
 msgid "Updated storageUnit"
 msgstr "अपडेट डायनामिक स्टोरेज इकाई"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "अपडेट डिजाइन की लागत"

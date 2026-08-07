@@ -127,16 +127,14 @@ const JobProperties = ({
         .select("*")
         .eq("itemId", itemId)
         .eq("companyId", company.id),
-      // Attribute-based Styles no longer write configurationParameter rows, so
-      // also treat a color/size attribute selection as "configured" — this is
-      // what makes the quantity grid editor show on the detail page (matches the
-      // list). "iat_color"/"iat_size" are the stable SYSTEM_ATTRIBUTE ids.
+      // Attribute-based items no longer write configurationParameter rows, so
+      // also treat any attribute selection as "configured" — this is what makes
+      // the quantity grid editor show on the detail page (matches the list).
       (carbon as unknown as { from: (t: string) => any })
         .from("itemAttributeSelection")
         .select("itemId")
         .eq("itemId", itemId)
         .eq("companyId", company.id)
-        .in("attributeId", ["iat_color", "iat_size"])
         .limit(1)
     ]).then(([parameters, groups, selections]) => {
       const params = parameters.data ?? [];

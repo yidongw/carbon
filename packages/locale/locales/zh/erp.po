@@ -580,9 +580,6 @@ msgstr "添加于 {0}"
 msgid "Added {createdAt}"
 msgstr "添加于 {createdAt}"
 
-msgid "Added colors and sizes"
-msgstr "已添加颜色和尺寸"
-
 msgid "Adding..."
 msgstr "添加中..."
 
@@ -4656,9 +4653,6 @@ msgstr "激活工作中心失败"
 msgid "Failed to add a line"
 msgstr "添加行失败"
 
-msgid "Failed to add colors and sizes"
-msgstr "添加颜色和尺码失败"
-
 msgid "Failed to add entry"
 msgstr "添加失败"
 
@@ -6771,6 +6765,9 @@ msgstr "加载库存转移失败"
 msgid "Failed to load storage rules"
 msgstr "加载存储规则失败"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "加载款式成本失败"
 
@@ -7637,6 +7634,9 @@ msgstr "更新存储类型失败"
 
 msgid "Failed to update storageUnit"
 msgstr "更新存储单元失败"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "更新款式成本失败"
@@ -10314,9 +10314,6 @@ msgstr "没有聊天记录"
 msgid "No chats found"
 msgstr "未找到聊天记录"
 
-msgid "No colors assigned"
-msgstr "未分配颜色"
-
 msgid "No comments yet. Be the first to add a comment."
 msgstr "暂无评论。来添加第一条评论吧。"
 
@@ -10526,9 +10523,6 @@ msgstr "尚未检验任何样品。"
 
 msgid "No selection"
 msgstr "未选择"
-
-msgid "No sizes assigned"
-msgstr "未分配尺码"
 
 msgid "No sorts applied to this view"
 msgstr "此视图未应用任何排序"
@@ -15575,6 +15569,9 @@ msgstr "已更新存储类型"
 
 msgid "Updated storageUnit"
 msgstr "已更新存储单元"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "已更新款式成本估算"

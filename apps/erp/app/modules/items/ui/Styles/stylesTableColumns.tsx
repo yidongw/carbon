@@ -11,7 +11,6 @@ import {
   LuLayoutTemplate,
   LuLoaderCircle,
   LuPalette,
-  LuRuler,
   LuTag,
   LuUser
 } from "react-icons/lu";
@@ -33,8 +32,6 @@ import {
   itemReplenishmentSystems,
   itemTrackingTypes
 } from "../../items.models";
-import type { StyleOption } from "./AddStyleOptionButton";
-import AddStyleOptionButton from "./AddStyleOptionButton";
 import { defaultStylesTableSharedColumnKeys } from "./stylesTableConfig";
 
 export const STYLE_ITEM_UPDATE = {
@@ -58,9 +55,6 @@ export type BuildStylesTableColumnsArgs = {
   translateMethodType: (value: string) => string;
   translateTrackingType: (value: string) => string;
   i18n: I18n;
-  canAddColorsSizes: boolean;
-  colorOptions: StyleOption[];
-  sizeOptions: StyleOption[];
 };
 
 export function buildDefaultStylesTableColumns({
@@ -72,10 +66,7 @@ export function buildDefaultStylesTableColumns({
   translateReplenishment,
   translateMethodType,
   translateTrackingType,
-  i18n,
-  canAddColorsSizes,
-  colorOptions,
-  sizeOptions
+  i18n
 }: BuildStylesTableColumnsArgs): ColumnDef<Style>[] {
   const itemPostingGroupOptions = itemPostingGroups.map((group) => ({
     value: group.id,
@@ -286,50 +277,34 @@ export function buildDefaultStylesTableColumns({
       }
     },
     {
-      accessorKey: "colors",
-      header: i18n._(msg`Color`),
+      id: "attributes",
+      header: i18n._(msg`Attributes`),
       cell: ({ row }) => {
+        // styles view still exposes colors/sizes JSON until a migration
+        // generalizes it; display as a single Attributes column.
         const colors = (row.original.colors ?? []) as Array<{
           id: string;
           colorCode: string;
           colorName: string;
         }>;
-        const list = Array.isArray(colors) ? colors : [];
-        return (
-          <HStack spacing={1} className="flex-wrap">
-            {list.map((color) => (
-              <Badge key={color.id} variant="outline" title={color.colorCode}>
-                {color.colorName || color.colorCode}
-              </Badge>
-            ))}
-            {canAddColorsSizes && row.original.id && (
-              <AddStyleOptionButton
-                itemId={row.original.id}
-                kind="color"
-                assignedIds={list.map((color) => color.id)}
-                options={colorOptions}
-              />
-            )}
-          </HStack>
-        );
-      },
-      meta: {
-        icon: <LuPalette />
-      }
-    },
-    {
-      accessorKey: "sizes",
-      header: i18n._(msg`Size`),
-      cell: ({ row }) => {
         const sizes = (row.original.sizes ?? []) as Array<{
           id: string;
           sizeCode: string;
           sizeName: string;
         }>;
-        const list = Array.isArray(sizes) ? sizes : [];
+        const colorList = Array.isArray(colors) ? colors : [];
+        const sizeList = Array.isArray(sizes) ? sizes : [];
+        if (colorList.length === 0 && sizeList.length === 0) {
+          return <span className="text-muted-foreground">—</span>;
+        }
         return (
           <HStack spacing={1} className="flex-wrap">
-            {list.map((size) => (
+            {colorList.map((color) => (
+              <Badge key={color.id} variant="outline" title={color.colorCode}>
+                {color.colorName || color.colorCode}
+              </Badge>
+            ))}
+            {sizeList.map((size) => (
               <Badge
                 key={size.id}
                 variant="outline"
@@ -339,19 +314,11 @@ export function buildDefaultStylesTableColumns({
                 {size.sizeCode}
               </Badge>
             ))}
-            {canAddColorsSizes && row.original.id && (
-              <AddStyleOptionButton
-                itemId={row.original.id}
-                kind="size"
-                assignedIds={list.map((size) => size.id)}
-                options={sizeOptions}
-              />
-            )}
           </HStack>
         );
       },
       meta: {
-        icon: <LuRuler />
+        icon: <LuPalette />
       }
     },
     {

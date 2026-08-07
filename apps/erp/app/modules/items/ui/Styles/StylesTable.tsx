@@ -28,7 +28,6 @@ import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { ItemPostingGroupListItem } from "~/modules/items";
-import type { getGarmentAttributeValueList } from "~/modules/items/itemAttribute.service";
 import type { getTemplatesList } from "~/modules/items/template.service";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
@@ -54,37 +53,6 @@ const StylesTable = memo(
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { formatDate } = useDateFormatter();
-
-    const canAddColorsSizes = permissions.can("update", "parts");
-    // Load Color/Size attribute values once for the whole table so inline
-    // add pickers share a single fetch.
-    const colorListFetcher =
-      useFetcher<Awaited<ReturnType<typeof getGarmentAttributeValueList>>>();
-    const sizeListFetcher =
-      useFetcher<Awaited<ReturnType<typeof getGarmentAttributeValueList>>>();
-    useMount(() => {
-      if (!canAddColorsSizes) return;
-      colorListFetcher.load(path.to.api.styleColors);
-      sizeListFetcher.load(path.to.api.styleSizes);
-    });
-    const colorOptions = useMemo(
-      () =>
-        (colorListFetcher.data?.data ?? []).map((color) => ({
-          value: color.id,
-          label: color.colorName || color.colorCode || "",
-          helper: color.colorCode
-        })),
-      [colorListFetcher.data?.data]
-    );
-    const sizeOptions = useMemo(
-      () =>
-        (sizeListFetcher.data?.data ?? []).map((size) => ({
-          value: size.id,
-          label: size.sizeCode || "",
-          helper: size.sizeName
-        })),
-      [sizeListFetcher.data?.data]
-    );
 
     const deleteItemModal = useDisclosure();
     const [selectedItem, setSelectedItem] = useState<Style | null>(null);
@@ -142,10 +110,7 @@ const StylesTable = memo(
         translateReplenishment,
         translateMethodType,
         translateTrackingType,
-        i18n,
-        canAddColorsSizes,
-        colorOptions,
-        sizeOptions
+        i18n
       });
       return [...defaultColumns, ...customColumns];
     }, [
@@ -158,10 +123,7 @@ const StylesTable = memo(
       translateReplenishment,
       translateMethodType,
       translateTrackingType,
-      i18n,
-      canAddColorsSizes,
-      colorOptions,
-      sizeOptions
+      i18n
     ]);
 
     const fetcher = useFetcher<typeof action>();

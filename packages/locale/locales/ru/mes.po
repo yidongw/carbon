@@ -96,9 +96,6 @@ msgstr "Добавить новую запись"
 msgid "Add Spare Part"
 msgstr "Добавить запасную часть"
 
-msgid "Added colors and sizes"
-msgstr "Добавлены цвета и размеры"
-
 msgid "Adjust stock down"
 msgstr "Уменьшить запасы"
 
@@ -940,9 +937,6 @@ msgstr "Не удалось активировать рабочий центр"
 
 msgid "Failed to add a line"
 msgstr "Не удалось добавить строку"
-
-msgid "Failed to add colors and sizes"
-msgstr "Не удалось добавить цвета и размеры"
 
 msgid "Failed to add entry"
 msgstr "Не удалось добавить запись"
@@ -2870,6 +2864,9 @@ msgstr "Не удалось загрузить.stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Не удалось загрузить правила хранения"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Не удалось загрузить стиль ценообразования"
 
@@ -3682,6 +3679,9 @@ msgstr "Не удалось обновить тип хранения"
 
 msgid "Failed to update storageUnit"
 msgstr "Не удалось обновить(storageUnit)"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Не удалось обновить стиль затрат"
@@ -6255,6 +6255,9 @@ msgstr "Обновленный тип хранения"
 
 msgid "Updated storageUnit"
 msgstr "Обновленный(storageUnit)"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Обновленный стиль ценообразования"

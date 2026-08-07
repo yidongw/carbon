@@ -2,14 +2,10 @@ import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { StyleVariantLineMeta } from "~/modules/shared/styleConfigDisplay";
 
-const COLOR_ATTRIBUTE_ID = "iat_color";
-const SIZE_ATTRIBUTE_ID = "iat_size";
-
 /**
- * For order line itemIds that are variant SKUs (any parent item type — garment
- * Styles carry color + size, Fabric/Trim Consumables carry color only), return
- * the parent + attribute codes so the PO/SO summary can group the variant lines
- * under their master item with chips.
+ * For order line itemIds that are variant SKUs, return the parent + attribute
+ * codes (from valuesKey) so PO/SO summaries can group variant lines under
+ * their master with chips. No Color/Size hardcoding.
  */
 export async function getStyleVariantLineMetaByItemIds(
   client: SupabaseClient<Database>,
@@ -30,33 +26,6 @@ export async function getStyleVariantLineMetaByItemIds(
 
   if (variants.error || !variants.data?.length) return {};
 
-  const variantIds = variants.data.map((v) => v.id);
-  const attrs = await client
-    .from("itemVariantAttribute")
-    .select(
-      `itemVariantId, attributeId, attributeValue:itemAttributeValue!itemVariantAttribute_attributeValueId_fkey(code)`
-    )
-    .eq("companyId", companyId)
-    .in("itemVariantId", variantIds);
-
-  const colorSizeByVariantId = new Map<
-    string,
-    { colorCode: string; sizeCode: string }
-  >();
-  for (const row of attrs.data ?? []) {
-    const code = (
-      row.attributeValue as { code?: string | null } | null
-    )?.code?.trim();
-    if (!code) continue;
-    const current = colorSizeByVariantId.get(row.itemVariantId) ?? {
-      colorCode: "",
-      sizeCode: ""
-    };
-    if (row.attributeId === COLOR_ATTRIBUTE_ID) current.colorCode = code;
-    if (row.attributeId === SIZE_ATTRIBUTE_ID) current.sizeCode = code;
-    colorSizeByVariantId.set(row.itemVariantId, current);
-  }
-
   const result: Record<string, StyleVariantLineMeta> = {};
   for (const row of variants.data) {
     const parent = row.parent as {
@@ -67,14 +36,10 @@ export async function getStyleVariantLineMetaByItemIds(
     } | null;
     if (!parent?.readableId) continue;
 
-    let colorCode = colorSizeByVariantId.get(row.id)?.colorCode ?? "";
-    let sizeCode = colorSizeByVariantId.get(row.id)?.sizeCode ?? "";
-    // Fallback: valuesKey is `COLOR|SIZE` for Style variants.
-    if ((!colorCode || !sizeCode) && row.valuesKey) {
-      const [c, s] = String(row.valuesKey).split("|");
-      colorCode = colorCode || c || "";
-      sizeCode = sizeCode || s || "";
-    }
+    const attributeCodes = String(row.valuesKey ?? "")
+      .split("|")
+      .map((c) => c.trim())
+      .filter(Boolean);
 
     result[row.variantItemId] = {
       variantItemId: row.variantItemId,
@@ -82,8 +47,9 @@ export async function getStyleVariantLineMetaByItemIds(
       parentReadableId: parent.readableId,
       parentName: parent.name,
       parentThumbnailPath: parent.thumbnailPath,
-      colorCode,
-      sizeCode
+      attributeCodes,
+      colorCode: attributeCodes[0] ?? "",
+      sizeCode: attributeCodes[1] ?? ""
     };
   }
 

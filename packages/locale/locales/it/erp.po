@@ -579,9 +579,6 @@ msgstr "Aggiunta il {0}"
 msgid "Added {createdAt}"
 msgstr "Aggiunta il {createdAt}"
 
-msgid "Added colors and sizes"
-msgstr "Aggiunti colori e dimensioni"
-
 msgid "Adding..."
 msgstr "Aggiunta in corso..."
 
@@ -4655,9 +4652,6 @@ msgstr "Fallito l'attivazione del centro lavoro"
 msgid "Failed to add a line"
 msgstr "Fallito nell'aggiunta di una riga"
 
-msgid "Failed to add colors and sizes"
-msgstr "Fallito nell'aggiunta dei colori e delle dimensioni"
-
 msgid "Failed to add entry"
 msgstr "Fallito nell'aggiunta della voce"
 
@@ -6770,6 +6764,9 @@ msgstr "Fallito caricamento stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Caricamento delle regole di archiviazione fallito"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Caricamento dello stile di costo fallito"
 
@@ -7643,6 +7640,9 @@ msgstr "Fallito aggiornamento tipo magazzino"
 
 msgid "Failed to update storageUnit"
 msgstr "Fallito aggiornamento storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Fallito aggiornamento costo stile"
@@ -10320,9 +10320,6 @@ msgstr "Nessuna cronologia chat"
 msgid "No chats found"
 msgstr "Nessuna chat trovata"
 
-msgid "No colors assigned"
-msgstr "Nessun colore assegnato"
-
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Nessun commento ancora. Sii il primo ad aggiungere un commento."
 
@@ -10532,9 +10529,6 @@ msgstr "Nessun campione ispezionato ancora."
 
 msgid "No selection"
 msgstr "Nessuna selezione"
-
-msgid "No sizes assigned"
-msgstr "Nessuna taglia assegnata"
 
 msgid "No sorts applied to this view"
 msgstr "Nessun ordinamento applicato a questa visualizzazione"
@@ -15583,6 +15577,9 @@ msgstr "Tipo di magazzino aggiornato"
 
 msgid "Updated storageUnit"
 msgstr "Aggiornato storageUnit"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Aggiornato stile costo"
