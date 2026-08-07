@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { Hyperlink, New, Table } from "~/components";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { path } from "~/utils/path";
+import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 type ItemAttributeValueRow = {
   id: string;
@@ -30,7 +31,7 @@ const ItemAttributeValuesTable = memo(
     data,
     count
   }: ItemAttributeValuesTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const [params] = useUrlParams();
     const navigate = useNavigate();
     const permissions = usePermissions();
@@ -53,14 +54,15 @@ const ItemAttributeValuesTable = memo(
         },
         {
           accessorKey: "name",
-          header: t`Name`
+          header: t`Name`,
+          cell: ({ row }) => translateSeedDisplayName(row.original.name, i18n)
         },
         {
           accessorKey: "sortOrder",
           header: t`Sort`
         }
       ],
-      [attributeId, t]
+      [attributeId, t, i18n]
     );
 
     const renderContextMenu = useCallback(
