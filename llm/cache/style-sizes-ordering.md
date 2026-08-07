@@ -55,10 +55,12 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **New Styles** write attribute selections + variant SKUs (`syncStyleVariantsFromAssignments`) only.
 
-**Read:** `getConfigurationParameters` uses stored rows when present; else `getStyleConfigurationParametersFromAttributes` (Size `sortOrder=0`, Color `sortOrder=1`).
+**Read:** `getConfigurationParameters` for Style items **always** synthesizes Color/Size list params via `getStyleConfigurationParametersFromAttributes` (Size `sortOrder=0`, Color `sortOrder=1`). Legacy `configurationParameter` rows on Styles are ignored (dual-read retired).
 
 **Configurable itemIds:** `api+/items.configurable.ts` unions `configurationParameter.itemId` with Color/Size `itemAttributeSelection.itemId`.
 
 Variant SKUs: `valuesKey` = `color|size` — see `inventory-system.md` § Style variant SKUs.
 
 **Bundle WO:** still stores `colorCode`/`sizeCode` for display labels (not dropped yet; UI still matrix-oriented).
+
+**Jobs / Master WO:** qty matrix is stored on the **backing `job.configuration`** JSON (`configTable` + `configTablePrimaryKeys`), not in `configurationParameter`. Master WO has no separate config column — it uses `masterWorkOrder.jobId` → that job’s configuration. Grid columns come from synthesized Style params (attributes); cell quantities are saved via job configure / config-table overlay (`jobConfigurationUpdateFields`).
