@@ -118,6 +118,45 @@ describe("expandStyleConfigToVariantLines", () => {
     ]);
   });
 
+  it("expands a color-only consumable grid (no size dimension)", async () => {
+    // A Fabric/Trim Consumable has only a color attribute, so its grid stores
+    // the color codes AS the primary quantity columns with no color descriptor.
+    const client = mockClient({
+      variants: [
+        { id: "iv1", variantItemId: "item_rd", valuesKey: "RD" },
+        { id: "iv2", variantItemId: "item_bl", valuesKey: "BL" }
+      ],
+      attrs: [
+        {
+          itemVariantId: "iv1",
+          attributeId: "iat_color",
+          itemAttributeValue: { code: "RD" }
+        },
+        {
+          itemVariantId: "iv2",
+          attributeId: "iat_color",
+          itemAttributeValue: { code: "BL" }
+        }
+      ]
+    });
+
+    const result = await expandStyleConfigToVariantLines(client, {
+      parentItemId,
+      companyId,
+      configuration: {
+        configTable: [{ RD: 3, BL: 2 }],
+        configTablePrimaryKeys: ["RD", "BL"]
+      }
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.variants).toEqual([
+      { variantItemId: "item_rd", quantity: 3, valuesKey: "RD" },
+      { variantItemId: "item_bl", quantity: 2, valuesKey: "BL" }
+    ]);
+  });
+
   it("fails loud when a configured cell has no variant SKU", async () => {
     const client = mockClient({
       variants: [

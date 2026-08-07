@@ -390,18 +390,23 @@ export async function getConfigurationParameters(
     .eq("companyId", companyId)
     .maybeSingle();
 
-  // Styles always derive Color/Size list params from attribute selections —
-  // never from legacy configurationParameter rows (dual-read retired).
-  if (item.data?.type === "Style") {
-    try {
-      const synthesized = await getStyleConfigurationParametersFromAttributes(
-        client,
-        itemId,
-        companyId
-      );
+  // Any item that carries Color/Size variant attributes derives its list params
+  // from those selections: Styles always do (garment set), and Consumables do
+  // when assigned a Fabric/Trim color set. Styles never fall back to legacy
+  // configurationParameter rows (dual-read retired); other types fall back only
+  // when they have no attribute selections.
+  try {
+    const synthesized = await getStyleConfigurationParametersFromAttributes(
+      client,
+      itemId,
+      companyId
+    );
+    if (synthesized.length > 0 || item.data?.type === "Style") {
       return { groups: [], parameters: synthesized };
-    } catch (error) {
-      console.error(error);
+    }
+  } catch (error) {
+    console.error(error);
+    if (item.data?.type === "Style") {
       return { groups: [], parameters: [] };
     }
   }

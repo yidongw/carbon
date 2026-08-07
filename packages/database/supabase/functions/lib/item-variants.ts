@@ -16,19 +16,17 @@ type SupabaseLike = {
 
 type ConfigRow = Record<string, unknown>;
 
-const COLOR_ATTRIBUTE_ID = "iat_color";
-const SIZE_ATTRIBUTE_ID = "iat_size";
-
-function firstCode(...vals: unknown[]): string | null {
-  for (const v of vals) {
-    if (typeof v === "string" && v.length > 0) return v;
-  }
-  return null;
-}
-
-// Normalized, order-independent key for a (color, size) combination.
-function comboKey(colorCode: string | null, sizeCode: string | null): string {
-  return `c=${colorCode ?? ""};s=${sizeCode ?? ""}`;
+// Order-independent key for the SET of attribute value codes identifying a
+// variant ({color, size} for a garment Style, {color} for a Fabric/Trim
+// Consumable, …). Matching by an unordered code set — not by fixed color/size
+// positions — lets one expander handle size×color, color-only, or any future
+// single-attribute grid without hardcoding the roles.
+function codeSetKey(codes: Array<string | null | undefined>): string {
+  return codes
+    .map((c) => (c ?? "").trim())
+    .filter(Boolean)
+    .sort()
+    .join("|");
 }
 
 type VariantMatch = { variantItemId: string; valuesKey: string };
@@ -69,27 +67,26 @@ async function loadVariantsByCombo(
 
   if (attrsError) throw attrsError;
 
-  const colorByVariant = new Map<string, string | null>();
-  const sizeByVariant = new Map<string, string | null>();
+  // Collect every attribute value code per variant (color, size, …) so the key
+  // reflects whatever attributes the variant actually carries.
+  const codesByVariant = new Map<string, string[]>();
   for (const a of (attrs ?? []) as Array<{
     itemVariantId: string;
     attributeId: string;
     itemAttributeValue?: { code?: string | null } | null;
   }>) {
     const code = a.itemAttributeValue?.code ?? null;
-    if (a.attributeId === COLOR_ATTRIBUTE_ID) {
-      colorByVariant.set(a.itemVariantId, code);
-    } else if (a.attributeId === SIZE_ATTRIBUTE_ID) {
-      sizeByVariant.set(a.itemVariantId, code);
-    }
+    if (!code) continue;
+    const list = codesByVariant.get(a.itemVariantId) ?? [];
+    list.push(code);
+    codesByVariant.set(a.itemVariantId, list);
   }
 
   for (const r of rows) {
-    const key = comboKey(
-      colorByVariant.get(r.id) ?? null,
-      sizeByVariant.get(r.id) ?? null
-    );
-    map.set(key, { variantItemId: r.variantItemId, valuesKey: r.valuesKey });
+    map.set(codeSetKey(codesByVariant.get(r.id) ?? []), {
+      variantItemId: r.variantItemId,
+      valuesKey: r.valuesKey
+    });
   }
 
   return map;
@@ -111,18 +108,24 @@ export async function expandConfigTableToVariantQuantities(
     ? (raw.configTablePrimaryKeys as string[])
     : [];
 
-  // Collect the requested (color, size, quantity) cells.
-  const cells: Array<{
-    colorCode: string | null;
-    sizeCode: string | null;
-    quantity: number;
-  }> = [];
+  // Collect the requested cells as { attribute codes, quantity }. Descriptor
+  // columns (any non-primary cell carrying an attribute code, e.g. the Color
+  // column of a size×color grid) combine with the primary column key; a
+  // color-only grid has no descriptor column so its color codes ARE the keys.
+  const cells: Array<{ codes: string[]; quantity: number }> = [];
   for (const row of table) {
-    const color = firstCode(row.color, row.Color, row.colorCode);
-    for (const size of primaryKeys) {
-      const qty = Number(row[size] ?? 0);
+    const descriptorCodes = Object.entries(row)
+      .filter(
+        ([key, value]) =>
+          !primaryKeys.includes(key) &&
+          typeof value === "string" &&
+          value.trim() !== ""
+      )
+      .map(([, value]) => String(value).trim());
+    for (const primaryKey of primaryKeys) {
+      const qty = Number(row[primaryKey] ?? 0);
       if (!Number.isFinite(qty) || qty <= 0) continue;
-      cells.push({ colorCode: color, sizeCode: size || null, quantity: qty });
+      cells.push({ codes: [...descriptorCodes, primaryKey], quantity: qty });
     }
   }
 
@@ -141,19 +144,18 @@ export async function expandConfigTableToVariantQuantities(
   }> = [];
   const seen = new Set<string>();
   for (const cell of cells) {
-    const key = comboKey(cell.colorCode, cell.sizeCode);
+    const key = codeSetKey(cell.codes);
     const match = variantsByCombo.get(key);
     if (!match) {
-      const label =
-        [cell.colorCode, cell.sizeCode].filter(Boolean).join(" / ") || "(base)";
+      const label = cell.codes.filter(Boolean).join(" / ") || "(base)";
       throw new Error(
-        `No variant SKU exists for ${label}. Open the style and save its color/size selections to generate variants before shipping or receiving.`
+        `No variant SKU exists for ${label}. Open the item and save its attribute selections to generate variants before shipping or receiving.`
       );
     }
     if (seen.has(match.variantItemId)) {
       // Two config cells resolved to the same SKU — the config is ambiguous.
       throw new Error(
-        `Style configuration maps more than one color/size cell to the same variant SKU.`
+        `The quantity configuration maps more than one cell to the same variant SKU.`
       );
     }
     seen.add(match.variantItemId);
