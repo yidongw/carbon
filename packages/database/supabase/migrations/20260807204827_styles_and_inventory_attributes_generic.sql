@@ -3,8 +3,11 @@
 -- Styles view exposes attributes JSON from itemAttributeSelection (set order).
 
 -- Genericize styles view attributes + inventory breakdown (no iat_color/iat_size).
+-- Must DROP: CREATE OR REPLACE cannot remove columns (colors/sizes → attributes).
+DROP VIEW IF EXISTS "styleSamples";
+DROP VIEW IF EXISTS "styles";
 
-CREATE OR REPLACE VIEW "styles" WITH (SECURITY_INVOKER=true) AS
+CREATE VIEW "styles" WITH (SECURITY_INVOKER=true) AS
 WITH latest_items AS (
   SELECT DISTINCT ON (i."readableId", i."companyId")
     i.*
@@ -606,7 +609,7 @@ LEFT JOIN "item" i
   ON i."id" = j."itemId" AND i."companyId" = j."companyId";
 
 -- Samples list: group by full attributes JSON (not Color/Size keys).
-CREATE OR REPLACE VIEW "styleSamples" WITH (SECURITY_INVOKER=true) AS
+CREATE VIEW "styleSamples" WITH (SECURITY_INVOKER=true) AS
 SELECT
   s.*,
   ss."itemId" AS "sampleItemId",

@@ -15,11 +15,11 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Config params synthesized from the item’s attribute set + selections (`getStyleConfigurationParametersFromAttributes`); expand matches `valuesKey`.
 
-**Still Color/Size-shaped (HARD leftovers):** samples form (`colorId`+`size`), bundle WO `colorCode`/`sizeCode` columns, `styles` view `colors`/`sizes` JSON, inventory RPCs joining `iat_color`/`iat_size`.
+**Still Color/Size-shaped leftovers (shrinking):**
+- Bundle WO DB columns `colorCode`/`sizeCode` still exist (nullable) but inserts write null; labels use child item.
+- Migration `20260807204827_styles_and_inventory_attributes_generic.sql` replaces `styles.colors/sizes` with `attributes` JSON and inventory RPCs without `iat_color`/`iat_size` joins — apply on preview/prod DB.
+- Samples create form is attribute-selection based.
 
-**Admin Colors / Sizes** = company-scoped `itemAttributeValue` for Color/Size catalogs (not Style runtime knowledge).
-
-**Dropped from Style UI:** `AddStyleOptionButton`, `add-colors-sizes`, Colors/Sizes properties sections, Color|Size table columns (replaced by Attributes).
 
 
 ## Consumable Fabric / Trim variants
