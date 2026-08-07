@@ -8774,7 +8774,7 @@ msgid "Item association not found"
 msgstr "未找到项目关联"
 
 msgid "Item Attribute Sets"
-msgstr ""
+msgstr "物品属性组"
 
 msgid "Item Attributes"
 msgstr "物料属性"
@@ -13174,7 +13174,7 @@ msgid "Select values"
 msgstr "选择值"
 
 msgid "Select…"
-msgstr ""
+msgstr "选择…"
 
 msgid "Selected"
 msgstr "选定的"
