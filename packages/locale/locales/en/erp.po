@@ -1753,11 +1753,20 @@ msgstr "Cannot delete a posted receipt"
 msgid "Cannot delete a posted shipment"
 msgstr "Cannot delete a posted shipment"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr "Cannot delete a system attribute set assignment"
+
 msgid "Cannot edit a protected customer type"
 msgstr "Cannot edit a protected customer type"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Cannot edit a protected supplier type"
+
+msgid "Cannot edit a system attribute set"
+msgstr "Cannot edit a system attribute set"
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr "Cannot edit a system attribute set assignment"
 
 msgid "Cannot edit global material grade"
 msgstr "Cannot edit global material grade"
@@ -9569,6 +9578,12 @@ msgstr "Master work order created"
 msgid "Master Work Orders"
 msgstr "Master Work Orders"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+
 msgid "Match"
 msgstr "Match"
 
@@ -10239,6 +10254,9 @@ msgstr "New Transfer Line"
 
 msgid "New Unit of Measure"
 msgstr "New Unit of Measure"
+
+msgid "New Value"
+msgstr "New Value"
 
 msgid "New Version"
 msgstr "New Version"
@@ -12123,9 +12141,8 @@ msgstr "Receivables"
 msgid "Receive"
 msgstr "Receive"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "Receive {0} to Inventory"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr "Receive {itemReadableId} to Inventory"
 
 msgid "Receive to Inventory"
 msgstr "Receive to Inventory"
@@ -12869,9 +12886,6 @@ msgstr "Save & Close"
 msgid "Save and Overwrite"
 msgstr "Save and Overwrite"
 
-msgid "Save attributes"
-msgstr "Save attributes"
-
 msgid "Save Method"
 msgstr "Save Method"
 
@@ -13340,9 +13354,6 @@ msgstr "Service Charge Account"
 
 msgid "Session mismatch"
 msgstr "Session mismatch"
-
-msgid "Set Assignment"
-msgstr "Set Assignment"
 
 msgid "Set assignment not found"
 msgstr "Set assignment not found"

@@ -1754,11 +1754,20 @@ msgstr "不能删除已录入的单据"
 msgid "Cannot delete a posted shipment"
 msgstr "不能删除已发布发货单"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "不能编辑受保护的客户类型"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "不能编辑受保护的供应商类型"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "不能编辑全局材料等级"
@@ -9570,6 +9579,12 @@ msgstr "已创建主工单"
 msgid "Master Work Orders"
 msgstr "主工单"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "匹配"
 
@@ -10240,6 +10255,9 @@ msgstr "新建转移行"
 
 msgid "New Unit of Measure"
 msgstr "新的计量单位"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "新版本"
@@ -12124,9 +12142,8 @@ msgstr "应收账款"
 msgid "Receive"
 msgstr "接收"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "接收 {0} 至库存"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "接收到库存"
@@ -12870,9 +12887,6 @@ msgstr "保存并关闭"
 msgid "Save and Overwrite"
 msgstr "保存并覆盖"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "保存方法"
 
@@ -13341,9 +13355,6 @@ msgstr "服务收费账户"
 
 msgid "Session mismatch"
 msgstr "会话不匹配"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""

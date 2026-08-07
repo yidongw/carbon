@@ -332,11 +332,20 @@ msgstr "Cannot delete a posted receipt"
 msgid "Cannot delete a posted shipment"
 msgstr "Cannot delete a posted shipment"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr "Cannot delete a system attribute set assignment"
+
 msgid "Cannot edit a protected customer type"
 msgstr "Cannot edit a protected customer type"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Cannot edit a protected supplier type"
+
+msgid "Cannot edit a system attribute set"
+msgstr "Cannot edit a system attribute set"
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr "Cannot edit a system attribute set assignment"
 
 msgid "Cannot edit global material grade"
 msgstr "Cannot edit global material grade"
@@ -4338,6 +4347,9 @@ msgstr "Master work order created"
 
 msgid "Master Work Orders"
 msgstr "Master Work Orders"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
 
 msgid "matches"
 msgstr "matches"

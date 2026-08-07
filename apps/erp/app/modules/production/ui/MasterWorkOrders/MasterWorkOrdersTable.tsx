@@ -6,13 +6,13 @@ import { memo, useCallback, useMemo } from "react";
 import {
   LuBookMarked,
   LuCalendar,
+  LuCircleCheckBig,
+  LuCircleDashed,
   LuCirclePlay,
   LuCirclePlus,
   LuClipboardList,
   LuClock,
   LuHash,
-  LuCircleCheckBig,
-  LuCircleDashed,
   LuMapPin,
   LuPackageOpen,
   LuScissors,
@@ -41,16 +41,12 @@ import type {
 } from "~/modules/production";
 import { useCustomers, usePeople } from "~/stores";
 import { path } from "~/utils/path";
-import {
-  deadlineTypes,
-  isJobLocked,
-  jobStatus
-} from "../../production.models";
+import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { Job } from "../../types";
 import { getDeadlineIcon } from "../Jobs/Deadline";
-import { useDeadlineTypeLabel } from "../Jobs/jobLabels";
 import JobStatus from "../Jobs/JobStatus";
 import JobStatusMenu from "../Jobs/JobStatusMenu";
+import { useDeadlineTypeLabel } from "../Jobs/jobLabels";
 
 // Master work orders are backed by a job; inline edits target that job via
 // `idAccessor: (r) => r.jobId` on the shared job bulk-update action.
@@ -132,7 +128,11 @@ const MasterWorkOrdersTable = memo(
     // Report cutting against the master's cutting operation (locked), then open
     // Split Batch prefilled with what was just cut.
     const openReportCutting = useCallback(
-      (e: MouseEvent, masterWorkOrderId: string, progress: MasterCuttingProgress) => {
+      (
+        e: MouseEvent,
+        masterWorkOrderId: string,
+        progress: MasterCuttingProgress
+      ) => {
         e.stopPropagation();
         if (!progress.cuttingOperationId) return;
         openOverlay(
@@ -224,8 +224,7 @@ const MasterWorkOrdersTable = memo(
               configuredItemIds.has(row.original.itemId);
             if (!showConfig) return quantity;
             const canConfigure =
-              canUpdateProduction &&
-              !isJobLocked(row.original.status);
+              canUpdateProduction && !isJobLocked(row.original.status);
             return (
               <HStack spacing={1}>
                 <span className="line-clamp-1 tabular-nums">{quantity}</span>
@@ -396,8 +395,7 @@ const MasterWorkOrdersTable = memo(
             ) : null,
           meta: {
             icon: <LuBookMarked />,
-            isEmpty: (row) =>
-              !row.salesOrderId || !row.salesOrderReadableId
+            isEmpty: (row) => !row.salesOrderId || !row.salesOrderReadableId
           }
         },
         {
@@ -405,6 +403,7 @@ const MasterWorkOrdersTable = memo(
           header: t`Status`,
           cell: ({ row }) => (
             <JobStatusMenu
+              disableComplete
               job={
                 {
                   ...row.original,

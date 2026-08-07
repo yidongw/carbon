@@ -1753,11 +1753,20 @@ msgstr "Невозможно удалить отраженную поступк�
 msgid "Cannot delete a posted shipment"
 msgstr "Невозможно удалить отгруженную поставку"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Невозможно редактировать защищенный тип клиента"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Невозможно редактировать защищенный тип поставщика"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Невозможно редактировать глобальную материальную степень твердости"
@@ -9569,6 +9578,12 @@ msgstr "Заказ производства создан"
 msgid "Master Work Orders"
 msgstr "Основные наряды"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "Сопоставление"
 
@@ -10239,6 +10254,9 @@ msgstr "Новая строка передачи"
 
 msgid "New Unit of Measure"
 msgstr "Новая единица измерения"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "Новая версия"
@@ -12123,9 +12141,8 @@ msgstr "Дебиторская задолженность"
 msgid "Receive"
 msgstr "Получить"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "Получить {0} в инвентарь"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "Получить в инвентарь"
@@ -12869,9 +12886,6 @@ msgstr "Сохранить и закрыть"
 msgid "Save and Overwrite"
 msgstr "Сохранить и перезаписать"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "Сохранить метод"
 
@@ -13340,9 +13354,6 @@ msgstr "Аккаунт для оплаты услуг"
 
 msgid "Session mismatch"
 msgstr "Сессия несоответствует"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""

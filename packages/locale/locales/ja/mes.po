@@ -332,11 +332,20 @@ msgstr "登録済の受注を削除できません"
 msgid "Cannot delete a posted shipment"
 msgstr "登録済みの出荷を削除できません"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "保護された顧客タイプは編集できません"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "保護されたサプライヤータイプは編集できません"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "グローバル素材格階を編集できません"
@@ -4338,6 +4347,9 @@ msgstr "マスターワークオーダー作成"
 
 msgid "Master Work Orders"
 msgstr "マスターワークオーダーズ"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "が一致"

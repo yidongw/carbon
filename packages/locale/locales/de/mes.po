@@ -332,11 +332,20 @@ msgstr "Kann ein postiertes Eingangsdokument nicht löschen"
 msgid "Cannot delete a posted shipment"
 msgstr "Kann nicht gelöschte Lieferung löschen"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Kann ein geschütztes Kundenprofil nicht bearbeiten"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Kann ein geschütztes Lieferantentype nicht bearbeiten"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Kann-global-Materialgrade-nicht-aendern"
@@ -4338,6 +4347,9 @@ msgstr "Meister-Arbeitsanweisung erstellt"
 
 msgid "Master Work Orders"
 msgstr "Meisterarbeiten"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "entspricht"

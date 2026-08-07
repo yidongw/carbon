@@ -1753,11 +1753,20 @@ msgstr "Nie można usunąć zatwierdzonej faktury"
 msgid "Cannot delete a posted shipment"
 msgstr "Nie można usunąć zatwierdzonej dostawy"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Nie można edytować zabezpieczonego typu klienta"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Nie można edytować chronionej rodziny dostawcy"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Nie można edytować globalnej kategorii materiału"
@@ -9569,6 +9578,12 @@ msgstr "Zostala stworzona główna zlecenie produkcyjne"
 msgid "Master Work Orders"
 msgstr "Główne zlecenia"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "Mezcza"
 
@@ -10239,6 +10254,9 @@ msgstr "Nowa linia transferu"
 
 msgid "New Unit of Measure"
 msgstr "Nowa jednostka miary"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "Nowa wersja"
@@ -12123,9 +12141,8 @@ msgstr "Należności"
 msgid "Receive"
 msgstr "Odbierz"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "Odbierz {0} do Magazynu"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "Odbierz do Magazynu"
@@ -12869,9 +12886,6 @@ msgstr "Zapisz i zamknij"
 msgid "Save and Overwrite"
 msgstr "Zapisz i Zastąp"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "Zapisz metodę"
 
@@ -13340,9 +13354,6 @@ msgstr "Konto opłat serwisowych"
 
 msgid "Session mismatch"
 msgstr "Błąd zgodności sesji"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""

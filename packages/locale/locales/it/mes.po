@@ -332,11 +332,20 @@ msgstr "Impossibile eliminare un ricevimento registrato"
 msgid "Cannot delete a posted shipment"
 msgstr "Impossibile eliminare una spedizione registrata"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Non è possibile modificare un tipo di cliente protetto"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Non è possibile modificare un tipo di fornitore protetto"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Non è possibile modificare la griglia materiale globale"
@@ -4348,6 +4357,9 @@ msgstr "Ordine di produzione principale creato"
 
 msgid "Master Work Orders"
 msgstr "Ordini di produzione principali"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "corrisponde a"

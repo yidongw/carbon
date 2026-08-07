@@ -332,11 +332,20 @@ msgstr "Nie można usunąć wpisanej faktury"
 msgid "Cannot delete a posted shipment"
 msgstr "Nie można usunąć zatwierdzonej dostawy"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Nie można edytować zabezpieczonego typu klienta"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Nie można edytować chronionej typu dostawcy"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Nie można edytować globalnej kategorii materiału"
@@ -4338,6 +4347,9 @@ msgstr "Zostala stworzona główna zlecenie😀"
 
 msgid "Master Work Orders"
 msgstr "Zarządzaj głównymi zleceniami robót"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "pasuje do"

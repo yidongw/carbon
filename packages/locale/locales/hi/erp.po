@@ -1753,11 +1753,20 @@ msgstr "प्रदर्शित रिकेस्ट को हटा स�
 msgid "Cannot delete a posted shipment"
 msgstr "पोस्ट किए गए डिलीवरी को हटा सकते हैं नहीं"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "अपने रोका हुआ कास्टमर टाइप को संपादित नहीं कर सकते"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "अपने रोका हुआ विनियमन प्रकार को संपादित नहीं कर सकते"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "ग्लोबल मटेरियल ग्रेड को संपादित नहीं किया जा सकता"
@@ -9572,6 +9581,12 @@ msgstr "मास्टर वर्कआउट बनाया गया ह�
 msgid "Master Work Orders"
 msgstr "मास्टर कार्य आदेश"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "मैच"
 
@@ -10242,6 +10257,9 @@ msgstr "नई ट्रांसफर लाइन"
 
 msgid "New Unit of Measure"
 msgstr "नई माप की इकाई"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "नया संस्करण"
@@ -12126,9 +12144,8 @@ msgstr "प्राप्य"
 msgid "Receive"
 msgstr "प्राप्त करें"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "{0} को इन्वेंटरी में प्राप्त करें"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "इन्वेंटरी में प्राप्त करें"
@@ -12872,9 +12889,6 @@ msgstr "सहेजें और बंद करें"
 msgid "Save and Overwrite"
 msgstr "सहेजें और अधिलेखित करें"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "विधि सहेजें"
 
@@ -13343,9 +13357,6 @@ msgstr "सेवा शुल्क खाता"
 
 msgid "Session mismatch"
 msgstr "सिझन मिशमेटच्या साथी"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""

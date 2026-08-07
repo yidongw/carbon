@@ -333,11 +333,20 @@ msgstr "不能删除已录入的单据"
 msgid "Cannot delete a posted shipment"
 msgstr "不能删除已发布发货单"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "不能编辑受保护的客户类型"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "不能编辑受保护的供应商类型"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "不能编辑全局材料等级"
@@ -4339,6 +4348,9 @@ msgstr "已创建主工单"
 
 msgid "Master Work Orders"
 msgstr "主工单"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "匹配"

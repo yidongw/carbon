@@ -332,11 +332,20 @@ msgstr "Não é possível excluir um recebimento registrado"
 msgid "Cannot delete a posted shipment"
 msgstr "Não é possível excluir uma remessa registrada"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Não é possível editar um tipo de cliente protegido"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Não é possível editar um tipo de fornecedor protegido"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Não é possível editar o grau global do material"
@@ -4338,6 +4347,9 @@ msgstr "Ordem mestre de trabalho criada"
 
 msgid "Master Work Orders"
 msgstr "Ordens de Produção Master"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "corresponde"

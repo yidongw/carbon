@@ -1753,11 +1753,20 @@ msgstr "Kann ein postiertes Eingangsdokument nicht löschen"
 msgid "Cannot delete a posted shipment"
 msgstr "Kann ein veröffentlichtes Lieferverzeichnis nicht löschen"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Kann ein geschütztes Kunde.typ nicht bearbeiten"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Kann ein geschütztes Lieferantentyp nicht bearbeiten"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Kann-global-Materialgrade-nicht-aendern"
@@ -9569,6 +9578,12 @@ msgstr "Meister-Arbeitsanweisung erstellt"
 msgid "Master Work Orders"
 msgstr "Hauptarbeitsaufträge"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "Match"
 
@@ -10239,6 +10254,9 @@ msgstr "Neue Transferzeile"
 
 msgid "New Unit of Measure"
 msgstr "Neue Maßeinheit"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "Neue Version"
@@ -12123,9 +12141,8 @@ msgstr "Forderungen"
 msgid "Receive"
 msgstr "Empfangen"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "Empfangen Sie {0} im Bestand"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "In Bestand empfangen"
@@ -12869,9 +12886,6 @@ msgstr "Speichern & Schließen"
 msgid "Save and Overwrite"
 msgstr "Speichern und Überschreiben"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "Methode speichern"
 
@@ -13340,9 +13354,6 @@ msgstr "Servicegebührenkonto"
 
 msgid "Session mismatch"
 msgstr "Sitzungsübereinstimmung fehlt"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""

@@ -5,7 +5,10 @@ import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
-import { jobCompleteValidator } from "~/modules/production";
+import {
+  isMasterWorkOrderJob,
+  jobCompleteValidator
+} from "~/modules/production";
 import type { Handle } from "~/utils/handle";
 import { path, requestReferrer } from "~/utils/path";
 
@@ -30,6 +33,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { jobId } = params;
   if (!jobId) throw new Error("Could not find jobId");
+
+  if (await isMasterWorkOrderJob(client, jobId)) {
+    throw redirect(
+      requestReferrer(request) ?? path.to.job(jobId),
+      await flash(
+        request,
+        error(
+          null,
+          "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+        )
+      )
+    );
+  }
 
   const {
     quantityComplete,

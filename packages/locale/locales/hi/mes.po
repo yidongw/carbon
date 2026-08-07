@@ -335,11 +335,20 @@ msgstr "प्रदर्शित रिकेस्ट को हटा स�
 msgid "Cannot delete a posted shipment"
 msgstr "पोस्ट किए गए डिलीवरी को हटा सकते हैं नहीं"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "अंजाली ग्राहक प्रकार को संपादित नहीं किया जा सकता"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "अपने रोका हुआ विनियमन प्रकार को संपादित नहीं कर सकते"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "ग्लोबल मटेरियल ग्रेड को संपादित नहीं किया जा सकता"
@@ -4344,6 +4353,9 @@ msgstr "मास्टर वर्कआउट बनाया गया ह�
 
 msgid "Master Work Orders"
 msgstr "मास्टर वर्कआउटर्डर्स"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "मेल खाता है"

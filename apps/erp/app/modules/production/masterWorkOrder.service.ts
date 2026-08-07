@@ -7,7 +7,7 @@ import {
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { computeConfigRemaining } from "./jobConfiguration";
-import { deadlineTypes } from "./production.models";
+import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
 
 export type MasterCuttingProgress = {
@@ -357,6 +357,22 @@ export async function getMasterCuttingReportSplitTarget(
   );
   if (!cuttingOpId || cuttingOpId !== jobOperationId) return null;
   return master.data.id;
+}
+
+/**
+ * True when this job backs a Master Work Order. Master jobs must not be
+ * completed / received to inventory — stock lands on bundle (child) jobs.
+ */
+export async function isMasterWorkOrderJob(
+  client: SupabaseClient<Database>,
+  jobId: string
+): Promise<boolean> {
+  const master = await client
+    .from("masterWorkOrder")
+    .select("id")
+    .eq("jobId", jobId)
+    .maybeSingle();
+  return !!master.data?.id;
 }
 
 export type MasterWorkOrder = NonNullable<

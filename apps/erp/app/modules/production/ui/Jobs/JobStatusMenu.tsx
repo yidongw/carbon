@@ -32,7 +32,14 @@ import JobStatus from "./JobStatus";
  * Mirrors the status actions in the job header (JobTopbarLeft) and reuses the
  * same modals so side-effect flows (release/complete/cancel) stay consistent.
  */
-export default function JobStatusMenu({ job }: { job: Job }) {
+export default function JobStatusMenu({
+  job,
+  disableComplete
+}: {
+  job: Job;
+  /** Master work order jobs must not be completed / received to inventory. */
+  disableComplete?: boolean;
+}) {
   const { t } = useLingui();
   const permissions = usePermissions();
   const isCardCell = useIsCardCell();
@@ -174,16 +181,18 @@ export default function JobStatusMenu({ job }: { job: Job }) {
               <Trans>Pause</Trans>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem
-            disabled={isDone || busy}
-            onClick={completeModal.onOpen}
-          >
-            <DropdownMenuIcon
-              className="text-green-600"
-              icon={<LuCircleCheck />}
-            />
-            <Trans>Complete</Trans>
-          </DropdownMenuItem>
+          {!disableComplete && (
+            <DropdownMenuItem
+              disabled={isDone || busy}
+              onClick={completeModal.onOpen}
+            >
+              <DropdownMenuIcon
+                className="text-green-600"
+                icon={<LuCircleCheck />}
+              />
+              <Trans>Complete</Trans>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem
             disabled={isDone || busy}
             onClick={cancelModal.onOpen}
@@ -225,7 +234,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           stay
         />
       )}
-      {completeModal.isOpen && (
+      {completeModal.isOpen && !disableComplete && (
         <JobCompleteModal
           job={job}
           onClose={completeModal.onClose}

@@ -332,11 +332,20 @@ msgstr "Impossible de supprimer une facture enregistrée"
 msgid "Cannot delete a posted shipment"
 msgstr "Impossible de supprimer une expédition enregistrée"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Ne pouvez pas modifier un type de client protégé"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Ne pouvez pas modifier un type de fournisseur protégé"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Ne pouvez pas modifier le grade matériau global"
@@ -4338,6 +4347,9 @@ msgstr "Commande maîtresse créée"
 
 msgid "Master Work Orders"
 msgstr "Commandes-maîtres"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
 
 msgid "matches"
 msgstr "correspond à"

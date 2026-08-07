@@ -21,7 +21,8 @@ import {
   getJob,
   getJobDocuments,
   getJobMethodTree,
-  getTrackedEntitiesByJobId
+  getTrackedEntitiesByJobId,
+  isMasterWorkOrderJob
 } from "~/modules/production";
 import {
   JobBoMExplorer,
@@ -47,9 +48,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { jobId } = params;
   if (!jobId) throw new Error("Could not find jobId");
 
-  const [job, tags] = await Promise.all([
+  const [job, tags, isMasterWorkOrder] = await Promise.all([
     getJob(client, jobId),
-    getTagsList(client, companyId, "job")
+    getTagsList(client, companyId, "job"),
+    isMasterWorkOrderJob(client, jobId)
   ]);
 
   if (companyId !== job.data?.companyId) {
@@ -65,6 +67,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     job: job.data,
+    isMasterWorkOrder,
     tags: tags.data ?? [],
     files: getJobDocuments(client, companyId, job.data),
     trackedEntities: getTrackedEntitiesByJobId(client, jobId),

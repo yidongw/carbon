@@ -1753,11 +1753,20 @@ msgstr "登録済の受領を削除できません"
 msgid "Cannot delete a posted shipment"
 msgstr "登録済みの出荷を削除できません"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "保護された顧客タイプは編集できません"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "保護されたサプライヤータイプは編集できません"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "グローバル素材格階を編集できません"
@@ -9569,6 +9578,12 @@ msgstr "マスターワークオーダー作成"
 msgid "Master Work Orders"
 msgstr "マスター作業指示"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "マッチ"
 
@@ -10239,6 +10254,9 @@ msgstr "新しい転送ライン"
 
 msgid "New Unit of Measure"
 msgstr "新しい測定単位"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "新しいバージョン"
@@ -12123,9 +12141,8 @@ msgstr "売掛金"
 msgid "Receive"
 msgstr "受け取る"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "{0}を在庫に受け取る"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "在庫に受け取る"
@@ -12869,9 +12886,6 @@ msgstr "保存して閉じる"
 msgid "Save and Overwrite"
 msgstr "保存して上書き"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "メソッドを保存"
 
@@ -13340,9 +13354,6 @@ msgstr "サービス料口座"
 
 msgid "Session mismatch"
 msgstr "セッション不一致"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""

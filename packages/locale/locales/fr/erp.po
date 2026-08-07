@@ -1753,11 +1753,20 @@ msgstr "Impossible de supprimer une facture postée"
 msgid "Cannot delete a posted shipment"
 msgstr "Impossible de supprimer une expédition enregistrée"
 
+msgid "Cannot delete a system attribute set assignment"
+msgstr ""
+
 msgid "Cannot edit a protected customer type"
 msgstr "Ne pouvez pas modifier un type de client protégé"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Ne pouvez pas modifier un type de fournisseur protégé"
+
+msgid "Cannot edit a system attribute set"
+msgstr ""
+
+msgid "Cannot edit a system attribute set assignment"
+msgstr ""
 
 msgid "Cannot edit global material grade"
 msgstr "Ne pouvez pas modifier le grade de matériau global"
@@ -9569,6 +9578,12 @@ msgstr "Commande maîtresse créée"
 msgid "Master Work Orders"
 msgstr "Ordres de fabrication principaux"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr ""
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr ""
+
 msgid "Match"
 msgstr "Match"
 
@@ -10239,6 +10254,9 @@ msgstr "Nouvelle Ligne de Transfert"
 
 msgid "New Unit of Measure"
 msgstr "Nouvelle Unité de Mesure"
+
+msgid "New Value"
+msgstr ""
 
 msgid "New Version"
 msgstr "Nouvelle Version"
@@ -12123,9 +12141,8 @@ msgstr "Créances"
 msgid "Receive"
 msgstr "Recevoir"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "Recevoir {0} à l'inventaire"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr ""
 
 msgid "Receive to Inventory"
 msgstr "Recevoir en inventaire"
@@ -12869,9 +12886,6 @@ msgstr "Enregistrer et fermer"
 msgid "Save and Overwrite"
 msgstr "Enregistrer et remplacer"
 
-msgid "Save attributes"
-msgstr ""
-
 msgid "Save Method"
 msgstr "Enregistrer la méthode"
 
@@ -13340,9 +13354,6 @@ msgstr "Compte de frais de service"
 
 msgid "Session mismatch"
 msgstr "Échec de la session"
-
-msgid "Set Assignment"
-msgstr ""
 
 msgid "Set assignment not found"
 msgstr ""
