@@ -419,6 +419,9 @@ msgstr "Add at least one line with quantity greater than zero"
 msgid "Add attachments"
 msgstr "Add attachments"
 
+msgid "Add attribute…"
+msgstr "Add attribute…"
+
 msgid "Add block"
 msgstr "Add block"
 
@@ -9829,6 +9832,9 @@ msgstr "More options"
 msgid "Move"
 msgstr "Move"
 
+msgid "Move down"
+msgstr "Move down"
+
 msgid "Move entities"
 msgstr "Move entities"
 
@@ -9846,6 +9852,9 @@ msgstr "Move to"
 
 msgid "Move to Trash"
 msgstr "Move to Trash"
+
+msgid "Move up"
+msgstr "Move up"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10282,6 +10291,9 @@ msgstr "No archived logs yet. Logs older than {0} days will be automatically arc
 
 msgid "No attachments."
 msgstr "No attachments."
+
+msgid "No attributes yet."
+msgstr "No attributes yet."
 
 msgid "No available filters"
 msgstr "No available filters"
@@ -10864,6 +10876,9 @@ msgstr "Order by"
 
 msgid "Order Date"
 msgstr "Order Date"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 
 msgid "Order Multiple"
 msgstr "Order Multiple"

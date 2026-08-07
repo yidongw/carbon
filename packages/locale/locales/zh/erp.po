@@ -420,6 +420,9 @@ msgstr "添加至少一行带有大于零的数量"
 msgid "Add attachments"
 msgstr "添加附件"
 
+msgid "Add attribute…"
+msgstr "添加属性…"
+
 msgid "Add block"
 msgstr "添加块"
 
@@ -9830,6 +9833,9 @@ msgstr "更多选项"
 msgid "Move"
 msgstr "移动"
 
+msgid "Move down"
+msgstr "下移"
+
 msgid "Move entities"
 msgstr "移动实体"
 
@@ -9847,6 +9853,9 @@ msgstr "移动到"
 
 msgid "Move to Trash"
 msgstr "移到回收站"
+
+msgid "Move up"
+msgstr "上移"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10283,6 +10292,9 @@ msgstr "还没有归档日志。超过{0}天的日志将自动归档并在此处
 
 msgid "No attachments."
 msgstr "没有附件。"
+
+msgid "No attributes yet."
+msgstr "暂无属性"
 
 msgid "No available filters"
 msgstr "没有可用的过滤器"
@@ -10865,6 +10877,9 @@ msgstr "按订单排序"
 
 msgid "Order Date"
 msgstr "订单日期"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr "顺序决定属性值在网格和标签中的显示方式（例如 颜色 · 尺码）。"
 
 msgid "Order Multiple"
 msgstr "订购多件"

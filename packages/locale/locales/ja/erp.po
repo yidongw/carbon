@@ -419,6 +419,9 @@ msgstr "追加するには少なくとも 1 行が必要であり、数量は 0 
 msgid "Add attachments"
 msgstr "添付ファイルを追加"
 
+msgid "Add attribute…"
+msgstr ""
+
 msgid "Add block"
 msgstr "ブロックを追加"
 
@@ -9829,6 +9832,9 @@ msgstr "その他のオプション"
 msgid "Move"
 msgstr "移動"
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move entities"
 msgstr "エンティティを移動"
 
@@ -9846,6 +9852,9 @@ msgstr "移動先"
 
 msgid "Move to Trash"
 msgstr "ゴミ箱に移動"
+
+msgid "Move up"
+msgstr ""
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10282,6 +10291,9 @@ msgstr "まだアーカイブされたログはありません。{0}日以上前
 
 msgid "No attachments."
 msgstr "添付ファイルはありません。"
+
+msgid "No attributes yet."
+msgstr ""
 
 msgid "No available filters"
 msgstr "利用可能なフィルターがありません"
@@ -10864,6 +10876,9 @@ msgstr "注文する"
 
 msgid "Order Date"
 msgstr "注文日"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "注文倍数"

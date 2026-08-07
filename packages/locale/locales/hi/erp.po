@@ -419,6 +419,9 @@ msgstr "कम से एक लाइन जोड़ें जिसकी म
 msgid "Add attachments"
 msgstr "संलग्नताएं जोड़ें"
 
+msgid "Add attribute…"
+msgstr ""
+
 msgid "Add block"
 msgstr "ब्लॉक जोड़ें"
 
@@ -9832,6 +9835,9 @@ msgstr "अधिक विकल्प"
 msgid "Move"
 msgstr "स्थानांतरित करें"
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move entities"
 msgstr "संस्थाओं को स्थानांतरित करें"
 
@@ -9849,6 +9855,9 @@ msgstr "को स्थानांतरित करें"
 
 msgid "Move to Trash"
 msgstr "ट्रैश में स्थानांतरित करें"
+
+msgid "Move up"
+msgstr ""
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10285,6 +10294,9 @@ msgstr "अभी तक कोई संग्रहीत लॉग नही�
 
 msgid "No attachments."
 msgstr "कोई अनुप्रयोग नहीं।"
+
+msgid "No attributes yet."
+msgstr ""
 
 msgid "No available filters"
 msgstr "कोई उपलब्ध फ़िल्टर नहीं"
@@ -10867,6 +10879,9 @@ msgstr "सूचीबद्ध करें"
 
 msgid "Order Date"
 msgstr "ऑर्डर तारीख"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "ऑर्डर मल्टीपल"

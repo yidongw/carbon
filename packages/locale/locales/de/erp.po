@@ -419,6 +419,9 @@ msgstr "Mindestens eine Zeile mit einer Menge größer als Null hinzufügen"
 msgid "Add attachments"
 msgstr "Anhänge hinzufügen"
 
+msgid "Add attribute…"
+msgstr ""
+
 msgid "Add block"
 msgstr "Füge Blöcke hinzu"
 
@@ -9829,6 +9832,9 @@ msgstr "Weitere Optionen"
 msgid "Move"
 msgstr "Verschieben"
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move entities"
 msgstr "Entitäten verschieben"
 
@@ -9846,6 +9852,9 @@ msgstr "Verschieben nach"
 
 msgid "Move to Trash"
 msgstr "In den Papierkorb verschieben"
+
+msgid "Move up"
+msgstr ""
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10282,6 +10291,9 @@ msgstr "Noch keine archivierten Protokolle. Protokolle älter als {0} Tage werde
 
 msgid "No attachments."
 msgstr "Keine Anhänge."
+
+msgid "No attributes yet."
+msgstr ""
 
 msgid "No available filters"
 msgstr "Keine verfügbaren Filter"
@@ -10864,6 +10876,9 @@ msgstr "Sortieren nach"
 
 msgid "Order Date"
 msgstr "Bestelldatum"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "Bestellmenge"

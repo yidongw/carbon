@@ -419,6 +419,9 @@ msgstr "Ajouter au moins une ligne avec quantité supérieure à zéro"
 msgid "Add attachments"
 msgstr "Ajouter des pièces jointes"
 
+msgid "Add attribute…"
+msgstr ""
+
 msgid "Add block"
 msgstr "Ajouter une bloc"
 
@@ -9829,6 +9832,9 @@ msgstr "Plus d'options"
 msgid "Move"
 msgstr "Déplacer"
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move entities"
 msgstr "Déplacer les entités"
 
@@ -9846,6 +9852,9 @@ msgstr "Déplacer vers"
 
 msgid "Move to Trash"
 msgstr "Déplacer vers la corbeille"
+
+msgid "Move up"
+msgstr ""
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10282,6 +10291,9 @@ msgstr "Aucun journal archivé pour le moment. Les journaux antérieurs à {0} j
 
 msgid "No attachments."
 msgstr "Aucun piège joint."
+
+msgid "No attributes yet."
+msgstr ""
 
 msgid "No available filters"
 msgstr "Aucun filtre disponible"
@@ -10864,6 +10876,9 @@ msgstr "Trier par"
 
 msgid "Order Date"
 msgstr "Date de commande"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "Multiplicateur de commande"

@@ -419,6 +419,9 @@ msgstr "Dodaj co najmniej jedną linię z ilością większą niż zera."
 msgid "Add attachments"
 msgstr "Dodaj załączniki"
 
+msgid "Add attribute…"
+msgstr ""
+
 msgid "Add block"
 msgstr "Dodaj blok"
 
@@ -9829,6 +9832,9 @@ msgstr "Więcej opcji"
 msgid "Move"
 msgstr "Przenieś"
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move entities"
 msgstr "Przenieś jednostki"
 
@@ -9846,6 +9852,9 @@ msgstr "Przenieś do"
 
 msgid "Move to Trash"
 msgstr "Przenieś do kosza"
+
+msgid "Move up"
+msgstr ""
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10282,6 +10291,9 @@ msgstr "Brak zarchiwizowanych dzienników. Dzienniki starsze niż {0} dni będą
 
 msgid "No attachments."
 msgstr "Brak załączników."
+
+msgid "No attributes yet."
+msgstr ""
 
 msgid "No available filters"
 msgstr "Brak dostępnych filtrów"
@@ -10864,6 +10876,9 @@ msgstr "Sortowanie według"
 
 msgid "Order Date"
 msgstr "Data zamówienia"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "Wielokrotność Zamówienia"

@@ -419,6 +419,9 @@ msgstr "Добавьте хотя бы одну строку с количест
 msgid "Add attachments"
 msgstr "Добавить вложения"
 
+msgid "Add attribute…"
+msgstr ""
+
 msgid "Add block"
 msgstr "Добавить блок"
 
@@ -9829,6 +9832,9 @@ msgstr "Ещё опции"
 msgid "Move"
 msgstr "Переместить"
 
+msgid "Move down"
+msgstr ""
+
 msgid "Move entities"
 msgstr "Переместить сущности"
 
@@ -9846,6 +9852,9 @@ msgstr "Переместить в"
 
 msgid "Move to Trash"
 msgstr "Переместить в корзину"
+
+msgid "Move up"
+msgstr ""
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -10282,6 +10291,9 @@ msgstr "Нет архивированных логов. Логи старше {0
 
 msgid "No attachments."
 msgstr "Нет приложений."
+
+msgid "No attributes yet."
+msgstr ""
 
 msgid "No available filters"
 msgstr "Нет доступных фильтров"
@@ -10864,6 +10876,9 @@ msgstr "Сортировать по"
 
 msgid "Order Date"
 msgstr "Дата заказа"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "Кратность заказа"
