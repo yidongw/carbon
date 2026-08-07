@@ -13103,6 +13103,9 @@ msgstr "Выберите сотрудника"
 msgid "Select Employee Type"
 msgstr "Выберите тип сотрудника"
 
+msgid "Select Fabric, Trim, …"
+msgstr ""
+
 msgid "Select field"
 msgstr "Выберите поле"
 

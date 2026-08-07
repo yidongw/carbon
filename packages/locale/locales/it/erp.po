@@ -13110,6 +13110,9 @@ msgstr "Seleziona Dipendente"
 msgid "Select Employee Type"
 msgstr "Seleziona Tipo di Dipendente"
 
+msgid "Select Fabric, Trim, …"
+msgstr ""
+
 msgid "Select field"
 msgstr "Scegliere campo"
 
