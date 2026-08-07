@@ -4628,6 +4628,9 @@ msgstr "Ref. Externa"
 msgid "External Reference"
 msgstr "Referencia Externa"
 
+msgid "Fabric"
+msgstr ""
+
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
 
@@ -8048,6 +8051,9 @@ msgstr "Ganancias y pérdidas en la eliminación"
 
 msgid "Gallon"
 msgstr "Galón"
+
+msgid "Garment"
+msgstr ""
 
 msgid "Gauge"
 msgstr "Calibrador"
@@ -15090,6 +15096,9 @@ msgstr "Equilibrio de Prueba"
 
 msgid "Triggers"
 msgstr "Triggeces"
+
+msgid "Trim"
+msgstr ""
 
 msgid "True"
 msgstr "Verdadero"

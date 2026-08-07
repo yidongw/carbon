@@ -4629,6 +4629,9 @@ msgstr "外部参考"
 msgid "External Reference"
 msgstr "外部参考"
 
+msgid "Fabric"
+msgstr ""
+
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
 
@@ -8049,6 +8052,9 @@ msgstr "处置损益"
 
 msgid "Gallon"
 msgstr "加仑"
+
+msgid "Garment"
+msgstr ""
 
 msgid "Gauge"
 msgstr "量具"
@@ -15091,6 +15097,9 @@ msgstr "试算平衡表"
 
 msgid "Triggers"
 msgstr "触发器"
+
+msgid "Trim"
+msgstr ""
 
 msgid "True"
 msgstr "真"

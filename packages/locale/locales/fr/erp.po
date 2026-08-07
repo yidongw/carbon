@@ -4628,6 +4628,9 @@ msgstr "Réf. externe"
 msgid "External Reference"
 msgstr "Référence externe"
 
+msgid "Fabric"
+msgstr ""
+
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
 
@@ -8048,6 +8051,9 @@ msgstr "Profits/pertes sur les cessions"
 
 msgid "Gallon"
 msgstr "Gallon"
+
+msgid "Garment"
+msgstr ""
 
 msgid "Gauge"
 msgstr "Jauge"
@@ -15090,6 +15096,9 @@ msgstr "Équilibre de trial"
 
 msgid "Triggers"
 msgstr "Déclencheurs"
+
+msgid "Trim"
+msgstr ""
 
 msgid "True"
 msgstr "Oui"

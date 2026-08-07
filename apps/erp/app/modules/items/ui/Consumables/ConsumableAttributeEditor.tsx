@@ -1,6 +1,6 @@
 import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Select, ValidatedForm } from "@carbon/form";
-import { Badge, Combobox, toast, VStack } from "@carbon/react";
+import { Badge, Combobox, toast, useMount, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useState } from "react";
 import { LuX } from "react-icons/lu";
@@ -8,7 +8,8 @@ import { useFetcher } from "react-router";
 import { z } from "zod";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import { useItemAttributeSetOptions } from "../useItemAttributeSetOptions";
+import type { AttributeSetFormOption } from "../../itemAttribute.service";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 
 type ConsumableAttributeEditorProps = {
   itemId: string;
@@ -24,8 +25,17 @@ const ConsumableAttributeEditor = ({
   const { t, i18n } = useLingui();
   const permissions = usePermissions();
   const canEdit = permissions.can("update", "parts");
+  const attributeSetsFetcher = useFetcher<{
+    data: AttributeSetFormOption[];
+    error: Error | null;
+  }>();
   const saveFetcher = useFetcher<{ success?: boolean }>();
-  const { sets } = useItemAttributeSetOptions("Consumable");
+
+  useMount(() => {
+    attributeSetsFetcher.load(path.to.api.attributeSetsForType("Consumable"));
+  });
+
+  const sets = attributeSetsFetcher.data?.data ?? [];
   const [setId, setSetId] = useState(attributeSetId ?? "");
   // Local, per-attribute selection state (value ids). Auto-saves on change.
   const [selected, setSelected] =
@@ -55,8 +65,12 @@ const ConsumableAttributeEditor = ({
 
   const setLabel = (id: string) => {
     const s = sets.find((x) => x.id === id);
-    return s?.name || s?.code || id;
+    const raw = s?.name || s?.code || id;
+    return translateItemAttributeCatalogName(raw, i18n);
   };
+
+  const attrLabel = (name: string) =>
+    translateItemAttributeCatalogName(name, i18n);
 
   useEffect(() => {
     if (saveFetcher.state !== "idle" || !saveFetcher.data) return;
@@ -128,7 +142,9 @@ const ConsumableAttributeEditor = ({
         </VStack>
         {selectedSet?.attributes.map((attr) => (
           <VStack key={attr.id} spacing={1} className="w-full">
-            <h4 className="text-xs text-muted-foreground">{attr.name}</h4>
+            <h4 className="text-xs text-muted-foreground">
+              {attrLabel(attr.name)}
+            </h4>
             <div className="flex flex-wrap items-center gap-2">
               {(selected[attr.id] ?? []).map((valueId) => {
                 const option = attr.options.find((o) => o.id === valueId);
@@ -171,7 +187,7 @@ const ConsumableAttributeEditor = ({
             )}
             options={sets.map((s) => ({
               value: s.id,
-              label: s.name || s.code
+              label: translateItemAttributeCatalogName(s.name || s.code, i18n)
             }))}
             isReadOnly={saveFetcher.state !== "idle"}
             onChange={(option) => {
@@ -194,7 +210,9 @@ const ConsumableAttributeEditor = ({
           }));
         return (
           <VStack key={attr.id} spacing={1} className="w-full">
-            <h4 className="text-xs text-muted-foreground">{attr.name}</h4>
+            <h4 className="text-xs text-muted-foreground">
+              {attrLabel(attr.name)}
+            </h4>
             <div className="flex flex-wrap items-center gap-2">
               {chosen.map((valueId) => {
                 const option = attr.options.find((o) => o.id === valueId);

@@ -4628,6 +4628,9 @@ msgstr "Внешняя ссылка"
 msgid "External Reference"
 msgstr "Внешняя ссылка"
 
+msgid "Fabric"
+msgstr ""
+
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
 
@@ -8048,6 +8051,9 @@ msgstr "Прибыли и убытки от утилизации"
 
 msgid "Gallon"
 msgstr "Галлон"
+
+msgid "Garment"
+msgstr ""
 
 msgid "Gauge"
 msgstr "Манометр"
@@ -15090,6 +15096,9 @@ msgstr "Тестовое балансо"
 
 msgid "Triggers"
 msgstr "Триггеры"
+
+msgid "Trim"
+msgstr ""
 
 msgid "True"
 msgstr "Действительно"
