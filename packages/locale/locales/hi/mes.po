@@ -441,9 +441,6 @@ msgstr "बंद किया गया"
 msgid "Collapse"
 msgstr "रोशनी घुमाwebkit.Millisecond"
 
-msgid "Color"
-msgstr "रंग"
-
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length

@@ -439,9 +439,6 @@ msgstr "打卡退出"
 msgid "Collapse"
 msgstr "折叠"
 
-msgid "Color"
-msgstr "颜色"
-
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length

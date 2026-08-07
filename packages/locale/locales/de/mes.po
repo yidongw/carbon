@@ -438,9 +438,6 @@ msgstr "Abgemeldet"
 msgid "Collapse"
 msgstr "Zusammenfassen"
 
-msgid "Color"
-msgstr "Farbe"
-
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length

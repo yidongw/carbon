@@ -53,28 +53,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
       ? await serviceRole
           .from("bundleWorkOrders")
           .select(
-            "masterWorkOrderId, reportedQuantity, processCount, colorCode, colorName, sizeCode, quantity"
+            "masterWorkOrderId, reportedQuantity, processCount, attributeLabel, attributeValues, valuesKey, quantity"
           )
           .in("masterWorkOrderId", masterIds)
           .eq("companyId", companyId)
-          .order("colorCode", { ascending: true })
-          .order("sizeCode", { ascending: true })
+          .order("attributeLabel", { ascending: true })
       : {
           data: [] as Array<{
             masterWorkOrderId: string | null;
             reportedQuantity: number | null;
             processCount: number | null;
-            colorCode: string | null;
-            colorName: string | null;
-            sizeCode: string | null;
+            attributeLabel: string | null;
+            attributeValues: Record<string, string> | null;
+            valuesKey: string | null;
             quantity: number | null;
           }>
         };
 
-  type ColorSizeRow = {
-    colorCode: string;
-    colorName: string | null;
-    sizeCode: string;
+  type AttrBreakdownRow = {
+    valuesKey: string;
+    attributeLabel: string;
     quantity: number;
     reportedQuantity: number;
   };
@@ -85,7 +83,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       bundleCount: number;
       processCount: number;
       reportedQuantity: number;
-      breakdown: ColorSizeRow[];
+      breakdown: AttrBreakdownRow[];
     }
   > = {};
 
@@ -95,23 +93,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
       bundleCount: 0,
       processCount: 0,
       reportedQuantity: 0,
-      breakdown: [] as ColorSizeRow[]
+      breakdown: [] as AttrBreakdownRow[]
     };
     s.bundleCount += 1;
     s.processCount = b.processCount ?? s.processCount;
     s.reportedQuantity += b.reportedQuantity ?? 0;
-    if (b.colorCode && b.sizeCode) {
-      const existing = s.breakdown.find(
-        (r) => r.colorCode === b.colorCode && r.sizeCode === b.sizeCode
-      );
+    const valuesKey = b.valuesKey ?? b.attributeLabel ?? "";
+    if (valuesKey) {
+      const existing = s.breakdown.find((r) => r.valuesKey === valuesKey);
       if (existing) {
         existing.quantity += b.quantity ?? 0;
         existing.reportedQuantity += b.reportedQuantity ?? 0;
       } else {
         s.breakdown.push({
-          colorCode: b.colorCode,
-          colorName: b.colorName,
-          sizeCode: b.sizeCode,
+          valuesKey,
+          attributeLabel: b.attributeLabel ?? valuesKey,
           quantity: b.quantity ?? 0,
           reportedQuantity: b.reportedQuantity ?? 0
         });
@@ -324,10 +320,7 @@ export default function MasterWorkOrdersRoute() {
                       <thead>
                         <tr className="text-muted-foreground">
                           <th className="text-left font-normal py-0.5 pr-2">
-                            <Trans>Color</Trans>
-                          </th>
-                          <th className="text-left font-normal py-0.5 pr-2">
-                            <Trans>Size</Trans>
+                            <Trans>Attributes</Trans>
                           </th>
                           <th className="text-right font-normal py-0.5 pr-2">
                             <Trans>Quantity</Trans>
@@ -342,12 +335,9 @@ export default function MasterWorkOrdersRoute() {
                       </thead>
                       <tbody>
                         {statsMap[row.id].breakdown.map((b) => (
-                          <tr key={`${b.colorCode}|${b.sizeCode}`}>
-                            <td className="text-muted-foreground py-0.5 pr-2 truncate max-w-[72px]">
-                              {b.colorName ?? b.colorCode}
-                            </td>
-                            <td className="text-muted-foreground py-0.5 pr-2">
-                              {b.sizeCode}
+                          <tr key={b.valuesKey}>
+                            <td className="text-muted-foreground py-0.5 pr-2 truncate max-w-[120px]">
+                              {b.attributeLabel}
                             </td>
                             <td className="text-right py-0.5 pr-2">
                               {b.quantity}
@@ -462,14 +452,9 @@ export default function MasterWorkOrdersRoute() {
                                   <table className="text-xs tabular-nums">
                                     <tbody>
                                       {statsMap[row.id].breakdown.map((b) => (
-                                        <tr
-                                          key={`${b.colorCode}|${b.sizeCode}`}
-                                        >
+                                        <tr key={b.valuesKey}>
                                           <td className="text-muted-foreground pr-2 py-0.5 max-w-[72px] truncate">
-                                            {b.colorName ?? b.colorCode}
-                                          </td>
-                                          <td className="text-muted-foreground pr-2 py-0.5">
-                                            {b.sizeCode}
+                                            {b.attributeLabel}
                                           </td>
                                           <td className="text-right py-0.5">
                                             {b.quantity}
@@ -509,14 +494,9 @@ export default function MasterWorkOrdersRoute() {
                                   <table className="text-xs tabular-nums">
                                     <tbody>
                                       {statsMap[row.id].breakdown.map((b) => (
-                                        <tr
-                                          key={`${b.colorCode}|${b.sizeCode}`}
-                                        >
+                                        <tr key={b.valuesKey}>
                                           <td className="text-muted-foreground pr-2 py-0.5 max-w-[72px] truncate">
-                                            {b.colorName ?? b.colorCode}
-                                          </td>
-                                          <td className="text-muted-foreground pr-2 py-0.5">
-                                            {b.sizeCode}
+                                            {b.attributeLabel}
                                           </td>
                                           <td className="text-right py-0.5">
                                             {b.reportedQuantity}
@@ -561,14 +541,9 @@ export default function MasterWorkOrdersRoute() {
                                   <table className="text-xs tabular-nums">
                                     <tbody>
                                       {statsMap[row.id].breakdown.map((b) => (
-                                        <tr
-                                          key={`${b.colorCode}|${b.sizeCode}`}
-                                        >
+                                        <tr key={b.valuesKey}>
                                           <td className="text-muted-foreground pr-2 py-0.5 max-w-[72px] truncate">
-                                            {b.colorName ?? b.colorCode}
-                                          </td>
-                                          <td className="text-muted-foreground pr-2 py-0.5">
-                                            {b.sizeCode}
+                                            {b.attributeLabel}
                                           </td>
                                           <td className="text-right py-0.5">
                                             {Math.max(
