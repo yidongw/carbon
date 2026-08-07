@@ -8,6 +8,7 @@ import { Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 
 type ItemAttributeRow = {
   id: string;
@@ -24,7 +25,7 @@ type ItemAttributesTableProps = {
 
 const ItemAttributesTable = memo(
   ({ data, count }: ItemAttributesTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { openOverlay } = useOverlay();
@@ -49,14 +50,16 @@ const ItemAttributesTable = memo(
         },
         {
           accessorKey: "name",
-          header: t`Name`
+          header: t`Name`,
+          cell: ({ row }) =>
+            translateItemAttributeCatalogName(row.original.name, i18n)
         },
         {
           accessorKey: "sortOrder",
           header: t`Sort`
         }
       ],
-      [t]
+      [t, i18n]
     );
 
     const renderContextMenu = useCallback(

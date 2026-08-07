@@ -138,11 +138,15 @@ export function getStyleConfigDisplayFromVariants(
   const localized = localizeColorNameMap(colorNames, locale);
   const byKey = new Map<string, StyleConfigChip>();
   for (const variant of variants) {
+    // Fall back to color/size when attributeCodes is absent OR empty (`??`
+    // alone wouldn't fire on an empty array passed by groupLinesForStyleDisplay).
+    const attrCodes = variant.attributeCodes?.filter(Boolean) ?? [];
     const codes =
-      variant.attributeCodes?.filter(Boolean) ??
-      [variant.colorCode, variant.sizeCode].filter(
-        (c): c is string => !!c?.trim()
-      );
+      attrCodes.length > 0
+        ? attrCodes
+        : [variant.colorCode, variant.sizeCode].filter(
+            (c): c is string => !!c?.trim()
+          );
     if (codes.length === 0) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;

@@ -8,6 +8,7 @@ import { Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 
 type ItemAttributeSetRow = {
   id: string;
@@ -28,7 +29,7 @@ type ItemAttributeSetsTableProps = {
 
 const ItemAttributeSetsTable = memo(
   ({ data, count }: ItemAttributeSetsTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { openOverlay } = useOverlay();
@@ -65,7 +66,9 @@ const ItemAttributeSetsTable = memo(
         },
         {
           accessorKey: "name",
-          header: t`Name`
+          header: t`Name`,
+          cell: ({ row }) =>
+            translateItemAttributeCatalogName(row.original.name, i18n)
         },
         {
           id: "attributes",
@@ -81,9 +84,12 @@ const ItemAttributeSetsTable = memo(
               <div className="flex flex-wrap items-center gap-1">
                 {attrs.map((a) => (
                   <Badge key={a.attributeId} variant="secondary">
-                    {a.itemAttribute?.name ??
-                      a.itemAttribute?.code ??
-                      a.attributeId}
+                    {a.itemAttribute?.name
+                      ? translateItemAttributeCatalogName(
+                          a.itemAttribute.name,
+                          i18n
+                        )
+                      : (a.itemAttribute?.code ?? a.attributeId)}
                   </Badge>
                 ))}
               </div>
@@ -91,7 +97,7 @@ const ItemAttributeSetsTable = memo(
           }
         }
       ],
-      [openEditSet, t]
+      [openEditSet, t, i18n]
     );
 
     const renderContextMenu = useCallback(

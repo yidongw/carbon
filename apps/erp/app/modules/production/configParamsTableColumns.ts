@@ -148,6 +148,24 @@ export type ConfigQuantityCell = {
   quantity: number;
 };
 
+/** Apparel size codes used as quantity-column keys in Style config tables. */
+const STYLE_SIZE_CODE_SET = new Set([
+  "XXS",
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "2XL",
+  "3XL",
+  "4XL",
+  "OS"
+]);
+
+function isSizeToken(value: string): boolean {
+  return STYLE_SIZE_CODE_SET.has(value.trim().toUpperCase());
+}
+
 function optionLabelOf(
   value: string,
   optionLabels?: Record<string, string>
@@ -197,8 +215,7 @@ export function getConfigQuantityCells(
     const descriptorValues = Object.entries(row)
       .filter(([key]) => !primaryKeySet.has(key))
       .map(([, value]) => String(value ?? "").trim())
-      .filter(Boolean)
-      .map(labelOf);
+      .filter(Boolean);
 
     for (const qtyKey of primaryKeys) {
       const rawQty = row[qtyKey];
@@ -206,7 +223,15 @@ export function getConfigQuantityCells(
       const quantity = Number(rawQty) || 0;
       if (quantity === 0) continue;
 
-      const parts = [...descriptorValues, labelOf(qtyKey)].filter(Boolean);
+      // Always render Color · Size: whichever dimension is the quantity column
+      // (sizes for the Style default, colors for legacy color-column grids), the
+      // color token comes first and the size token last.
+      const tokens = [...descriptorValues, qtyKey];
+      const colorTokens = tokens.filter((tk) => !isSizeToken(tk));
+      const sizeTokens = tokens.filter(isSizeToken);
+      const parts = [...colorTokens, ...sizeTokens]
+        .map(labelOf)
+        .filter(Boolean);
       cells.push({
         key: `${rowIndex}:${qtyKey}`,
         label: parts.join(" · "),

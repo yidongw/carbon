@@ -8,6 +8,7 @@ import { Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 
 type ItemAttributeSetAssignmentRow = {
   id: string;
@@ -24,7 +25,7 @@ type ItemAttributeSetAssignmentsTableProps = {
 
 const ItemAttributeSetAssignmentsTable = memo(
   ({ data, count }: ItemAttributeSetAssignmentsTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { openOverlay } = useOverlay();
@@ -67,7 +68,10 @@ const ItemAttributeSetAssignmentsTable = memo(
             return set ? (
               <span>
                 <span className="font-mono">{set.code}</span>
-                <span className="text-muted-foreground"> — {set.name}</span>
+                <span className="text-muted-foreground">
+                  {" "}
+                  — {translateItemAttributeCatalogName(set.name, i18n)}
+                </span>
               </span>
             ) : (
               <span className="font-mono text-muted-foreground">
@@ -77,7 +81,7 @@ const ItemAttributeSetAssignmentsTable = memo(
           }
         }
       ],
-      [openEditAssignment, t]
+      [openEditAssignment, t, i18n]
     );
 
     const renderContextMenu = useCallback(
