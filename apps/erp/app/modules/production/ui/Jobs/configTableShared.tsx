@@ -495,9 +495,16 @@ export function EditableConfigGrid({
         String(row.label).trim().length > 0
           ? String(row.label)
           : null;
+      const fromParts =
+        col.key === "valuesKey" && raw.includes("|")
+          ? raw
+              .split("|")
+              .map((part) => optionLabels?.[part] ?? part)
+              .join(" · ")
+          : null;
       return (
         <span className="px-1 text-sm font-medium">
-          {fromLabel || optionLabels?.[raw] || raw || "—"}
+          {fromLabel || fromParts || optionLabels?.[raw] || raw || "—"}
         </span>
       );
     }
