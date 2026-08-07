@@ -146,7 +146,7 @@ const StylesTable = memo(
       const attrColumns: ColumnDef<Style>[] = attrCodes.map((code) => {
         const meta = attrMeta.get(code)!;
         return {
-          id: `attr:${code}`,
+          id: `attr-${code}`,
           header: translateItemAttributeCatalogName(meta.name || code, i18n),
           cell: ({ row }) => {
             const attr = styleAttributes(row.original).find(

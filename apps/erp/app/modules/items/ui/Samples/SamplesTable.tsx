@@ -114,7 +114,7 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
 
     for (const code of attrCodes) {
       cols.push({
-        id: `attr:${code}`,
+        id: `attr-${code}`,
         header: translateItemAttributeCatalogName(code, i18n),
         cell: ({ row }) => {
           const value = row.original.valuesByCode[code];

@@ -255,7 +255,7 @@ const BundleWorkOrdersTable = memo(
 
       for (const code of sortedCodes) {
         cols.push({
-          id: `attr:${code}`,
+          id: `attr-${code}`,
           header: code,
           cell: ({ row }) => {
             const vals = (
