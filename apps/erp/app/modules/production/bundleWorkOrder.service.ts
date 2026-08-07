@@ -198,6 +198,8 @@ export async function getBundleTicketLabels(
             bundleCurrentWorkCenter(client, bundle.jobId)
           ]);
 
+        const attributeLabel =
+          (bundle as { attributeLabel?: string | null }).attributeLabel ?? null;
         const attributeValues =
           (bundle as { attributeValues?: Record<string, string> })
             .attributeValues ?? {};
@@ -227,17 +229,15 @@ export async function getBundleTicketLabels(
           attributeLines:
             attributeLines.length > 0
               ? attributeLines
-              : (bundle as { attributeLabel?: string }).attributeLabel
+              : attributeLabel
                 ? [
                     {
                       name: translateAttributeName("Attributes"),
-                      value: localizeVariantAttributeLabel(
-                        (bundle as { attributeLabel?: string }).attributeLabel,
-                        locale
-                      )
+                      value: localizeVariantAttributeLabel(attributeLabel, locale)
                     }
                   ]
                 : [],
+          attributeLabel,
           quantity: bundle.quantity ?? 0,
           sequence: bundle.sequence ?? null,
           totalBundles,
@@ -741,7 +741,7 @@ export async function getCuttingSplitProposal(
 
   const pending = await (client as SupabaseClient<any>)
     .from("masterWorkOrderSplitRow")
-    .select("id, colorCode, sizeCode, quantity")
+    .select("id, valuesKey, colorCode, sizeCode, quantity")
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
     .is("bundleWorkOrderId", null)
@@ -749,14 +749,14 @@ export async function getCuttingSplitProposal(
   const splitRows: MasterSplitRow[] = (pending.data ?? []).map(
     (r: {
       id: string;
+      valuesKey: string | null;
       colorCode: string | null;
       sizeCode: string | null;
       quantity: number | null;
     }) => {
-      const valuesKey = valuesKeyFromSplitRowParts(
-        r.colorCode ?? null,
-        r.sizeCode ?? null
-      );
+      const valuesKey =
+        (r.valuesKey && String(r.valuesKey).trim()) ||
+        valuesKeyFromSplitRowParts(r.colorCode ?? null, r.sizeCode ?? null);
       return {
         id: r.id,
         valuesKey,
@@ -1030,6 +1030,8 @@ export async function replaceMasterCuttingSplitRows(
         masterWorkOrderId: input.masterWorkOrderId,
         companyId: input.companyId,
         productionQuantityReportId: input.productionQuantityReportId,
+        valuesKey: valuesKey || null,
+        // Dual-write first two parts for legacy garment tooling / older rows.
         colorCode: parts[0] ?? null,
         sizeCode: parts.length > 1 ? (parts[1] ?? null) : null,
         quantity: Number(r.quantity) || 0,

@@ -8,6 +8,8 @@ export type ConfigTableOverlaySuccess = {
     // Flat cut breakdown (report split editor) — stripped server-side before the
     // config is stored; persisted to masterWorkOrderSplitRow for cutting reports.
     splitRows?: {
+      valuesKey?: string | null;
+      attributeLabel?: string | null;
       colorCode: string | null;
       sizeCode: string | null;
       quantity: number;

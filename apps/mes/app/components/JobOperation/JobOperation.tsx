@@ -158,9 +158,8 @@ import { useOperation } from "./hooks/useOperation";
 type JobOperationProps = {
   assignee?: string | null;
   bundle?: {
-    colorCode: string | null;
-    colorName: string | null;
-    sizeCode: string | null;
+    attributeLabel: string | null;
+    valuesKey: string | null;
   } | null;
   isMasterJob?: boolean;
   canManageProduction?: boolean;

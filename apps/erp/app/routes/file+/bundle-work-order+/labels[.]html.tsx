@@ -135,7 +135,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
       const attrRows =
         l.attributeLines && l.attributeLines.length > 0
           ? l.attributeLines.map((line) => field(`${line.name}:`, line.value))
-          : [field("颜色:", l.colorName), field("尺码:", l.sizeCode)];
+          : l.attributeLabel
+            ? [field("", l.attributeLabel)]
+            : [];
       const rows = [
         field("款号:", l.styleReadableId),
         field("客户:", l.customerName),

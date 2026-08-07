@@ -165,11 +165,7 @@ const MasterProcessesTable = memo(
                     {localizeVariantAttributeLabel(
                       bundle.attributeLabel,
                       i18n.locale
-                    ) ||
-                      [bundle.colorName || bundle.colorCode, bundle.sizeCode]
-                        .filter(Boolean)
-                        .join(" · ") ||
-                      "—"}
+                    ) || "—"}
                   </td>
                   <td className="py-2 pr-4">
                     {bundle.assignee
@@ -214,11 +210,7 @@ const MasterProcessesTable = memo(
                 {localizeVariantAttributeLabel(
                   bundle.attributeLabel,
                   i18n.locale
-                ) ||
-                  [bundle.colorName || bundle.colorCode, bundle.sizeCode]
-                    .filter(Boolean)
-                    .join(" · ") ||
-                  "—"}
+                ) || "—"}
               </div>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-2 text-xs">
                 <div>

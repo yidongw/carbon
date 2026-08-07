@@ -11,41 +11,28 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 ## Style pickers = itemAttributeValue ids (catalog only)
 
-**Source:** `getGarmentAttributeValueList` (`itemAttribute.service.ts`) — Color/Size `itemAttributeValue` rows for **catalog localization / samples / color-name maps**. Style **assign UI** no longer uses these wrappers.
+**Source:** `getGarmentAttributeValueList` (`itemAttribute.service.ts`) — Color/Size `itemAttributeValue` rows for **catalog localization / samples / color-name maps**. Style **assign UI** uses the generic attribute set editor.
 
-**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Config params synthesized from the item’s attribute set + selections (`getStyleConfigurationParametersFromAttributes`); expand matches `valuesKey`.
-
-**Still Color/Size-shaped leftovers (shrinking):**
-- Bundle WO DB columns `colorCode`/`sizeCode` still exist (nullable) but inserts write null; labels use child item.
-- Migration `20260807204827_styles_and_inventory_attributes_generic.sql` replaces `styles.colors/sizes` with `attributes` JSON and inventory RPCs without `iat_color`/`iat_size` joins — apply on preview/prod DB.
-- Samples create form is attribute-selection based.
-
-
+**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Qty editor params are a single combo list (`valuesKey` options = cartesian of selected attribute values via `getStyleConfigurationParametersFromAttributes`). Stored job config shape: `{ valuesKey, Quantities, label? }` with `configTablePrimaryKeys: ["Quantities"]`. Legacy Color×Size matrices are still dual-read on expand.
 
 ## Consumable Fabric / Trim variants
 
-**Create form** (`ConsumableForm` + `consumable+/new`): loads set form options via `api+/items.attribute-sets-for-type?itemType=Consumable` (page + modal). Shows set picker when >1 set; MultiSelects per set attribute (`av__<attributeId>`). On save with selections: `syncItemVariantsFromSelections` → `itemAttributeSelection` + child variant SKUs (`syncItemVariants`). Generic helpers also: `getAttributeSetFormOptionsForItemType`, `getAttributeValueOptions`, `syncItemAttributeSelections`.
+**Create form** (`ConsumableForm` + `consumable+/new`): loads set form options via `api+/items.attribute-sets-for-type?itemType=Consumable`. Shows set picker when >1 set; MultiSelects per set attribute (`av__<attributeId>`). On save with selections: `syncItemVariantsFromSelections`.
 
-**Edit:** properties sidebar `ConsumableAttributeEditor` → POST `consumable/$itemId/attributes` → `syncItemVariantsFromSelections`. Loader: `getItemAttributeSelectionsForItem`.
+**Edit:** properties sidebar `ConsumableAttributeEditor` → POST `consumable/$itemId/attributes` → `syncItemVariantsFromSelections`.
 
-**Variant lifecycle:** `syncItemVariants` soft-deactivates (`item.active=false`) SKUs whose `valuesKey` is no longer selected; reactivates when selections grow again. `resolveVariantByValuesKey(parent, valuesKey)` resolves any set order (Style `resolveVariantItemId` wraps color|size).
-
-**Lists:** `consumables` view excludes variant children (`20260806162513`). Inventory RPC excludes children and rolls qty onto parents (`20260806162447`). SKU breakdown uses `get_inventory_quantities_for_items` (`20260806163128`) via `getItemVariantQuantities` (Style + Consumable inventory tabs).
-
-## Styles view (migration `20260806150151`)
-
-`styles.colors` / `styles.sizes` json: **`id` = `itemAttributeValue.id`**, plus code/name fields; ordered by `iav.sortOrder`, `iav.code`.
+**Lists:** Styles / Samples / Consumables / Bundle WO tables show **per-attribute columns** from `attributes` JSON (not Color/Size hardcoding). Samples chips group by **product attribute codes only** (Receipt/Shipment system keys stripped in `styleSamples` view).
 
 ## Style qty matrix / variants
 
-**New Styles** write attribute selections + variant SKUs (`syncStyleVariantsFromAssignments`) only.
+**Read:** `getConfigurationParameters` for Style synthesizes a `valuesKey` list param (not separate Color/Size matrix columns). Legacy `configurationParameter` rows on Styles are ignored.
 
-**Read:** `getConfigurationParameters` for Style items **always** synthesizes Color/Size list params via `getStyleConfigurationParametersFromAttributes` (Size `sortOrder=0`, Color `sortOrder=1`). Legacy `configurationParameter` rows on Styles are ignored (dual-read retired).
+**Configurable itemIds:** `api+/items.configurable.ts` unions parameter itemIds with attribute-selection itemIds.
 
-**Configurable itemIds:** `api+/items.configurable.ts` unions `configurationParameter.itemId` with Color/Size `itemAttributeSelection.itemId`.
+Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md` § Style variant SKUs.
 
-Variant SKUs: `valuesKey` = `color|size` — see `inventory-system.md` § Style variant SKUs.
+**Bundle WO:** view exposes `valuesKey`, `attributeLabel`, `attributeValues` (table no longer has colorCode/sizeCode). Labels come from the variant’s attribute map.
 
-**Bundle WO:** still stores `colorCode`/`sizeCode` for display labels (not dropped yet; UI still matrix-oriented).
+**Jobs / Master WO:** qty stored on backing `job.configuration` JSON. Split Batch / cutting split rows persist `masterWorkOrderSplitRow.valuesKey` (colorCode/sizeCode dual-written for garment 2-attr only).
 
-**Jobs / Master WO:** qty matrix is stored on the **backing `job.configuration`** JSON (`configTable` + `configTablePrimaryKeys`), not in `configurationParameter`. Master WO has no separate config column — it uses `masterWorkOrder.jobId` → that job’s configuration. Grid columns come from synthesized Style params (attributes); cell quantities are saved via job configure / config-table overlay (`jobConfigurationUpdateFields`).
+**MES:** bundle pickup/report/print use `attributeLabel` / `valuesKey` (not colorCode/sizeCode).

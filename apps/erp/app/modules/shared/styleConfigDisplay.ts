@@ -180,10 +180,6 @@ export type StyleVariantLineMeta = {
   parentThumbnailPath: string | null;
   /** Attribute value codes in set order (from valuesKey / variant attrs). */
   attributeCodes: string[];
-  /** @deprecated first attribute code — kept for transitional callers */
-  colorCode: string;
-  /** @deprecated second attribute code — kept for transitional callers */
-  sizeCode: string;
 };
 
 type GroupableOrderLine = {
@@ -263,8 +259,6 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
         const m = variantByItemId[line.itemId!];
         return {
           attributeCodes: m?.attributeCodes ?? [],
-          colorCode: m?.colorCode ?? "",
-          sizeCode: m?.sizeCode ?? "",
           quantity: quantityOf(line)
         };
       }),
