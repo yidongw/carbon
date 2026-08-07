@@ -10,7 +10,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { z } from "zod";
-import { Hidden, Input, Number, Submit } from "~/components/Form";
+import { Hidden, Input, Submit } from "~/components/Form";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { usePermissions } from "~/hooks";
 import { itemAttributeValidator } from "../../itemAttribute.models";
@@ -56,7 +56,6 @@ const ItemAttributeForm = ({
         <VStack spacing={4}>
           <Input name="code" label={t`Code`} />
           <Input name="name" label={t`Name`} />
-          <Number name="sortOrder" label={t`Sort Order`} />
         </VStack>
       </DrawerBody>
       <DrawerFooter>

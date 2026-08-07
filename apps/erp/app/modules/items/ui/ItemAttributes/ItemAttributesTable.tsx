@@ -53,10 +53,6 @@ const ItemAttributesTable = memo(
           header: t`Name`,
           cell: ({ row }) =>
             translateItemAttributeCatalogName(row.original.name, i18n)
-        },
-        {
-          accessorKey: "sortOrder",
-          header: t`Sort`
         }
       ],
       [t, i18n]
