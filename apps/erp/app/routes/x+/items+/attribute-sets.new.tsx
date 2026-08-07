@@ -3,16 +3,37 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { itemAttributeSetValidator } from "~/modules/items/itemAttribute.models";
 import {
   getItemAttributes,
   upsertItemAttributeSet
 } from "~/modules/items/itemAttribute.service";
-import ItemAttributeSetForm from "~/modules/items/ui/ItemAttributeSets/ItemAttributeSetForm";
-import { getParams, path } from "~/utils/path";
+import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
+  // Bare URL (deep link / direct nav): redirect to the list with the overlay
+  // open, so the form always renders as an overlay rather than a full page.
+  if (!isOverlay) {
+    const token = overlayToken(overlay.to.newItemAttributeSet());
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query
+        ? `${path.to.itemAttributeSets}?${query}`
+        : path.to.itemAttributeSets
+    );
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     create: "parts"
   });
@@ -33,6 +54,8 @@ export async function action({ request }: ActionFunctionArgs) {
     create: "parts"
   });
 
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
   const validation = await validator(itemAttributeSetValidator).validate(
     await request.formData()
   );
@@ -45,8 +68,17 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (insert.error) {
-    return data(
-      {},
+    if (isOverlay) {
+      return data(
+        { ok: false as const, error: "Failed to create attribute set" },
+        await flash(
+          request,
+          error(insert.error, "Failed to create attribute set")
+        )
+      );
+    }
+    throw redirect(
+      path.to.itemAttributeSets,
       await flash(
         request,
         error(insert.error, "Failed to create attribute set")
@@ -54,20 +86,20 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  if (isOverlay) {
+    return data(
+      { ok: true as const },
+      await flash(request, success("Created attribute set"))
+    );
+  }
+
   throw redirect(
-    `${path.to.itemAttributeSets}?${getParams(request)}`,
+    path.to.itemAttributeSets,
     await flash(request, success("Created attribute set"))
   );
 }
 
+// Rendered as a registry overlay (see overlay.registry.tsx `newItemAttributeSet`).
 export default function NewItemAttributeSetRoute() {
-  const { attributeOptions } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
-  return (
-    <ItemAttributeSetForm
-      initialValues={{ code: "", name: "", attributeIds: [] }}
-      attributeOptions={attributeOptions}
-      onClose={() => navigate(path.to.itemAttributeSets)}
-    />
-  );
+  return null;
 }

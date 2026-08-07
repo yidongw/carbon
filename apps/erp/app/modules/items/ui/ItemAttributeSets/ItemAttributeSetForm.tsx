@@ -1,22 +1,18 @@
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
   HStack,
-  ModalDrawer,
-  ModalDrawerBody,
-  ModalDrawerContent,
-  ModalDrawerFooter,
-  ModalDrawerHeader,
-  ModalDrawerProvider,
-  ModalDrawerTitle,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { Hidden, Input, MultiSelect, Submit } from "~/components/Form";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { usePermissions } from "~/hooks";
-import { path } from "~/utils/path";
 import { itemAttributeSetValidator } from "../../itemAttribute.models";
 
 type ItemAttributeSetFormProps = {
@@ -24,22 +20,18 @@ type ItemAttributeSetFormProps = {
   attributeOptions: Array<{ label: string; value: string }>;
   /** System (shared) sets: code/name locked; attributes still editable. */
   isSystem?: boolean;
-  type?: "modal" | "drawer";
-  open?: boolean;
-  onClose: () => void;
-};
+} & Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">;
 
 const ItemAttributeSetForm = ({
   initialValues,
   attributeOptions,
   isSystem = false,
-  open = true,
-  type = "drawer",
-  onClose
+  onDismiss,
+  fetcher,
+  action
 }: ItemAttributeSetFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const fetcher = useFetcher();
 
   const isEditing = initialValues.id !== undefined;
   const isDisabled = isEditing
@@ -47,61 +39,46 @@ const ItemAttributeSetForm = ({
     : !permissions.can("create", "parts");
 
   return (
-    <ModalDrawerProvider type={type}>
-      <ModalDrawer
-        open={open}
-        onOpenChange={(open) => {
-          if (!open) onClose?.();
-        }}
-      >
-        <ModalDrawerContent>
-          <ValidatedForm
-            validator={itemAttributeSetValidator}
-            method="post"
-            action={
-              isEditing
-                ? path.to.itemAttributeSet(initialValues.id!)
-                : path.to.newItemAttributeSet
-            }
-            defaultValues={initialValues}
-            fetcher={fetcher}
-            className="flex flex-col h-full"
-          >
-            <ModalDrawerHeader>
-              <ModalDrawerTitle>
-                {isEditing ? (
-                  <Trans>Edit Attribute Set</Trans>
-                ) : (
-                  <Trans>New Attribute Set</Trans>
-                )}
-              </ModalDrawerTitle>
-            </ModalDrawerHeader>
-            <ModalDrawerBody>
-              <Hidden name="id" />
-              <VStack spacing={4}>
-                <Input name="code" label={t`Code`} isReadOnly={isSystem} />
-                <Input name="name" label={t`Name`} isReadOnly={isSystem} />
-                <MultiSelect
-                  name="attributeIds"
-                  label={t`Attributes`}
-                  options={attributeOptions}
-                />
-              </VStack>
-            </ModalDrawerBody>
-            <ModalDrawerFooter>
-              <HStack>
-                <Submit isDisabled={isDisabled}>
-                  {isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>}
-                </Submit>
-                <Button size="md" variant="solid" onClick={onClose}>
-                  <Trans>Cancel</Trans>
-                </Button>
-              </HStack>
-            </ModalDrawerFooter>
-          </ValidatedForm>
-        </ModalDrawerContent>
-      </ModalDrawer>
-    </ModalDrawerProvider>
+    <ValidatedForm
+      validator={itemAttributeSetValidator}
+      method="post"
+      action={action}
+      defaultValues={initialValues}
+      fetcher={fetcher}
+      className="flex flex-col h-full"
+    >
+      <DrawerHeader>
+        <DrawerTitle>
+          {isEditing ? (
+            <Trans>Edit Attribute Set</Trans>
+          ) : (
+            <Trans>New Attribute Set</Trans>
+          )}
+        </DrawerTitle>
+      </DrawerHeader>
+      <DrawerBody>
+        <Hidden name="id" />
+        <VStack spacing={4}>
+          <Input name="code" label={t`Code`} isReadOnly={isSystem} />
+          <Input name="name" label={t`Name`} isReadOnly={isSystem} />
+          <MultiSelect
+            name="attributeIds"
+            label={t`Attributes`}
+            options={attributeOptions}
+          />
+        </VStack>
+      </DrawerBody>
+      <DrawerFooter>
+        <HStack>
+          <Submit isDisabled={isDisabled}>
+            {isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>}
+          </Submit>
+          <Button size="md" variant="solid" type="button" onClick={onDismiss}>
+            <Trans>Cancel</Trans>
+          </Button>
+        </HStack>
+      </DrawerFooter>
+    </ValidatedForm>
   );
 };
 

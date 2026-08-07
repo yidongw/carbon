@@ -157,6 +157,209 @@ export const overlayRegistry = {
       () => import("~/modules/users/ui/Employees/EditInviteForm")
     )
   },
+  newItemAttribute: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) =>
+        ctx.loaderData
+          ? { initialValues: { code: "", name: "", sortOrder: 100 } }
+          : null,
+      () => import("~/modules/items/ui/ItemAttributes/ItemAttributeForm")
+    )
+  },
+  editItemAttribute: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              attribute: {
+                id: string;
+                code: string | null;
+                name: string | null;
+                sortOrder: number | null;
+              };
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          initialValues: {
+            id: data.attribute.id,
+            code: data.attribute.code ?? "",
+            name: data.attribute.name ?? "",
+            sortOrder: data.attribute.sortOrder ?? 100
+          }
+        };
+      },
+      () => import("~/modules/items/ui/ItemAttributes/ItemAttributeForm")
+    )
+  },
+  newItemAttributeValue: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as { attributeId: string } | undefined;
+        if (!data) return null;
+        return {
+          attributeId: data.attributeId,
+          initialValues: {
+            attributeId: data.attributeId,
+            code: "",
+            name: "",
+            sortOrder: 100
+          }
+        };
+      },
+      () => import("~/modules/items/ui/ItemAttributes/ItemAttributeValueForm")
+    )
+  },
+  editItemAttributeValue: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              attributeId: string;
+              value: {
+                id: string;
+                code: string | null;
+                name: string | null;
+                sortOrder: number | null;
+              } | null;
+            }
+          | undefined;
+        if (!data?.value) return null;
+        return {
+          attributeId: data.attributeId,
+          initialValues: {
+            id: data.value.id,
+            attributeId: data.attributeId,
+            code: data.value.code ?? "",
+            name: data.value.name ?? "",
+            sortOrder: data.value.sortOrder ?? 100
+          }
+        };
+      },
+      () => import("~/modules/items/ui/ItemAttributes/ItemAttributeValueForm")
+    )
+  },
+  newItemAttributeSet: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | { attributeOptions: { label: string; value: string }[] }
+          | undefined;
+        if (!data) return null;
+        return {
+          initialValues: { code: "", name: "", attributeIds: [] },
+          attributeOptions: data.attributeOptions
+        };
+      },
+      () => import("~/modules/items/ui/ItemAttributeSets/ItemAttributeSetForm")
+    )
+  },
+  editItemAttributeSet: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              set: {
+                id: string;
+                code: string | null;
+                name: string | null;
+                companyId: string | null;
+                itemAttributeSetAttribute?: {
+                  attributeId: string;
+                  sortOrder?: number;
+                }[];
+              };
+              attributeOptions: { label: string; value: string }[];
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          initialValues: {
+            id: data.set.id,
+            code: data.set.code ?? "",
+            name: data.set.name ?? "",
+            attributeIds: [...(data.set.itemAttributeSetAttribute ?? [])]
+              .sort((a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100))
+              .map((a) => a.attributeId)
+          },
+          attributeOptions: data.attributeOptions,
+          isSystem: data.set.companyId === null
+        };
+      },
+      () => import("~/modules/items/ui/ItemAttributeSets/ItemAttributeSetForm")
+    )
+  },
+  newItemAttributeSetAssignment: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | { attributeSetOptions: { label: string; value: string }[] }
+          | undefined;
+        if (!data) return null;
+        return {
+          initialValues: { itemType: "Style" as const, attributeSetId: "" },
+          attributeSetOptions: data.attributeSetOptions
+        };
+      },
+      () =>
+        import(
+          "~/modules/items/ui/ItemAttributeSetAssignments/ItemAttributeSetAssignmentForm"
+        )
+    )
+  },
+  editItemAttributeSetAssignment: {
+    type: "drawer",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              assignment: {
+                id: string;
+                itemType:
+                  | "Part"
+                  | "Material"
+                  | "Tool"
+                  | "Consumable"
+                  | "Fixture"
+                  | "Service"
+                  | "Style"
+                  | "Sample";
+                attributeSetId: string;
+              };
+              attributeSetOptions: { label: string; value: string }[];
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          initialValues: {
+            id: data.assignment.id,
+            itemType: data.assignment.itemType,
+            attributeSetId: data.assignment.attributeSetId
+          },
+          attributeSetOptions: data.attributeSetOptions
+        };
+      },
+      () =>
+        import(
+          "~/modules/items/ui/ItemAttributeSetAssignments/ItemAttributeSetAssignmentForm"
+        )
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

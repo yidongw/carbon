@@ -3,23 +3,47 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { itemAttributeSetAssignmentValidator } from "~/modules/items/itemAttribute.models";
 import {
   getItemAttributeSetAssignment,
   getItemAttributeSets,
   upsertItemAttributeSetAssignment
 } from "~/modules/items/itemAttribute.service";
-import ItemAttributeSetAssignmentForm from "~/modules/items/ui/ItemAttributeSetAssignments/ItemAttributeSetAssignmentForm";
-import { getParams, path } from "~/utils/path";
+import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
+  const { id } = params;
+  if (!id) throw notFound("id not found");
+
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
+  // Bare URL (deep link / direct nav): redirect to the list with the overlay
+  // open, so the form always renders as an overlay rather than a full page.
+  if (!isOverlay) {
+    const token = overlayToken(
+      overlay.to.editItemAttributeSetAssignment({ id })
+    );
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query
+        ? `${path.to.itemAttributeSetAssignments}?${query}`
+        : path.to.itemAttributeSetAssignments
+    );
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     view: "parts",
     role: "employee"
   });
-  const { id } = params;
-  if (!id) throw notFound("id not found");
 
   const [assignment, sets] = await Promise.all([
     getItemAttributeSetAssignment(client, id),
@@ -64,16 +88,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { id } = params;
   if (!id) throw new Error("Could not find id");
 
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
   const existing = await getItemAttributeSetAssignment(client, id);
   if (existing.error || !existing.data) {
     return data(
-      {},
+      { ok: false as const, error: "Set assignment not found" },
       await flash(request, error(existing.error, "Set assignment not found"))
     );
   }
   if (existing.data.companyId === null) {
     return data(
-      {},
+      {
+        ok: false as const,
+        error: "Cannot edit a system attribute set assignment"
+      },
       await flash(
         request,
         error(
@@ -97,8 +126,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
   });
 
   if (result.error) {
-    return data(
-      {},
+    if (isOverlay) {
+      return data(
+        { ok: false as const, error: "Failed to update set assignment" },
+        await flash(
+          request,
+          error(result.error, "Failed to update set assignment")
+        )
+      );
+    }
+    throw redirect(
+      path.to.itemAttributeSetAssignments,
       await flash(
         request,
         error(result.error, "Failed to update set assignment")
@@ -106,25 +144,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
+  if (isOverlay) {
+    return data(
+      { ok: true as const },
+      await flash(request, success("Updated set assignment"))
+    );
+  }
+
   throw redirect(
-    `${path.to.itemAttributeSetAssignments}?${getParams(request)}`,
+    path.to.itemAttributeSetAssignments,
     await flash(request, success("Updated set assignment"))
   );
 }
 
+// Rendered as a registry overlay (see overlay.registry.tsx `editItemAttributeSetAssignment`).
 export default function EditItemAttributeSetAssignmentRoute() {
-  const { assignment, attributeSetOptions } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
-
-  return (
-    <ItemAttributeSetAssignmentForm
-      initialValues={{
-        id: assignment.id,
-        itemType: assignment.itemType,
-        attributeSetId: assignment.attributeSetId
-      }}
-      attributeSetOptions={attributeSetOptions}
-      onClose={() => navigate(path.to.itemAttributeSetAssignments)}
-    />
-  );
+  return null;
 }

@@ -3,16 +3,37 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { itemAttributeSetAssignmentValidator } from "~/modules/items/itemAttribute.models";
 import {
   getItemAttributeSets,
   upsertItemAttributeSetAssignment
 } from "~/modules/items/itemAttribute.service";
-import ItemAttributeSetAssignmentForm from "~/modules/items/ui/ItemAttributeSetAssignments/ItemAttributeSetAssignmentForm";
-import { getParams, path } from "~/utils/path";
+import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
+  // Bare URL (deep link / direct nav): redirect to the list with the overlay
+  // open, so the form always renders as an overlay rather than a full page.
+  if (!isOverlay) {
+    const token = overlayToken(overlay.to.newItemAttributeSetAssignment());
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query
+        ? `${path.to.itemAttributeSetAssignments}?${query}`
+        : path.to.itemAttributeSetAssignments
+    );
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     create: "parts"
   });
@@ -33,6 +54,8 @@ export async function action({ request }: ActionFunctionArgs) {
     create: "parts"
   });
 
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
   const validation = await validator(
     itemAttributeSetAssignmentValidator
   ).validate(await request.formData());
@@ -45,8 +68,17 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (insert.error) {
-    return data(
-      {},
+    if (isOverlay) {
+      return data(
+        { ok: false as const, error: "Failed to create set assignment" },
+        await flash(
+          request,
+          error(insert.error, "Failed to create set assignment")
+        )
+      );
+    }
+    throw redirect(
+      path.to.itemAttributeSetAssignments,
       await flash(
         request,
         error(insert.error, "Failed to create set assignment")
@@ -54,20 +86,20 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  if (isOverlay) {
+    return data(
+      { ok: true as const },
+      await flash(request, success("Created set assignment"))
+    );
+  }
+
   throw redirect(
-    `${path.to.itemAttributeSetAssignments}?${getParams(request)}`,
+    path.to.itemAttributeSetAssignments,
     await flash(request, success("Created set assignment"))
   );
 }
 
+// Rendered as a registry overlay (see overlay.registry.tsx `newItemAttributeSetAssignment`).
 export default function NewItemAttributeSetAssignmentRoute() {
-  const { attributeSetOptions } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
-  return (
-    <ItemAttributeSetAssignmentForm
-      initialValues={{ itemType: "Style", attributeSetId: "" }}
-      attributeSetOptions={attributeSetOptions}
-      onClose={() => navigate(path.to.itemAttributeSetAssignments)}
-    />
-  );
+  return null;
 }

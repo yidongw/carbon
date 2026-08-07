@@ -1,11 +1,12 @@
-import { MenuIcon, MenuItem } from "@carbon/react";
+import { Button, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
-import { LuPencil, LuTrash } from "react-icons/lu";
-import { useNavigate } from "react-router";
-import { Hyperlink, New, Table } from "~/components";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { LuCirclePlus, LuPencil, LuTrash } from "react-icons/lu";
+import { useNavigate, useRevalidator } from "react-router";
+import { Hyperlink, Table } from "~/components";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 
 type ItemAttributeSetAssignmentRow = {
@@ -24,9 +25,25 @@ type ItemAttributeSetAssignmentsTableProps = {
 const ItemAttributeSetAssignmentsTable = memo(
   ({ data, count }: ItemAttributeSetAssignmentsTableProps) => {
     const { t } = useLingui();
-    const [params] = useUrlParams();
     const navigate = useNavigate();
     const permissions = usePermissions();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+
+    const openNewAssignment = useCallback(() => {
+      openOverlay(overlay.to.newItemAttributeSetAssignment(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
+
+    const openEditAssignment = useCallback(
+      (id: string) => {
+        openOverlay(overlay.to.editItemAttributeSetAssignment({ id }), {
+          onCreated: () => revalidator.revalidate()
+        });
+      },
+      [openOverlay, revalidator]
+    );
 
     const columns = useMemo<ColumnDef<ItemAttributeSetAssignmentRow>[]>(
       () => [
@@ -34,7 +51,10 @@ const ItemAttributeSetAssignmentsTable = memo(
           accessorKey: "itemType",
           header: t`Item Type`,
           cell: ({ row }) => (
-            <Hyperlink to={path.to.itemAttributeSetAssignment(row.original.id)}>
+            <Hyperlink
+              className="cursor-pointer"
+              onClick={() => openEditAssignment(row.original.id)}
+            >
               {row.original.itemType}
             </Hyperlink>
           )
@@ -57,7 +77,7 @@ const ItemAttributeSetAssignmentsTable = memo(
           }
         }
       ],
-      [t]
+      [openEditAssignment, t]
     );
 
     const renderContextMenu = useCallback(
@@ -66,9 +86,7 @@ const ItemAttributeSetAssignmentsTable = memo(
           <>
             <MenuItem
               disabled={!permissions.can("update", "parts")}
-              onClick={() =>
-                navigate(path.to.itemAttributeSetAssignment(row.id))
-              }
+              onClick={() => openEditAssignment(row.id)}
             >
               <MenuIcon icon={<LuPencil />} />
               <Trans>Edit</Trans>
@@ -86,7 +104,7 @@ const ItemAttributeSetAssignmentsTable = memo(
           </>
         );
       },
-      [navigate, permissions]
+      [navigate, openEditAssignment, permissions]
     );
 
     return (
@@ -96,7 +114,14 @@ const ItemAttributeSetAssignmentsTable = memo(
         count={count}
         primaryAction={
           permissions.can("create", "parts") ? (
-            <New label={t`Set Assignment`} to={`new?${params.toString()}`} />
+            <Button
+              type="button"
+              variant="primary"
+              leftIcon={<LuCirclePlus />}
+              onClick={openNewAssignment}
+            >
+              <Trans>New Set Assignment</Trans>
+            </Button>
           ) : undefined
         }
         renderContextMenu={renderContextMenu}

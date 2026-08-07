@@ -1,11 +1,12 @@
-import { MenuIcon, MenuItem } from "@carbon/react";
+import { Button, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
-import { LuList, LuPencil, LuTrash } from "react-icons/lu";
-import { useNavigate } from "react-router";
-import { Hyperlink, New, Table } from "~/components";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { LuCirclePlus, LuList, LuPencil, LuTrash } from "react-icons/lu";
+import { useNavigate, useRevalidator } from "react-router";
+import { Hyperlink, Table } from "~/components";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 
 type ItemAttributeRow = {
@@ -24,9 +25,16 @@ type ItemAttributesTableProps = {
 const ItemAttributesTable = memo(
   ({ data, count }: ItemAttributesTableProps) => {
     const { t } = useLingui();
-    const [params] = useUrlParams();
     const navigate = useNavigate();
     const permissions = usePermissions();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+
+    const openNewAttribute = useCallback(() => {
+      openOverlay(overlay.to.newItemAttribute(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
 
     const columns = useMemo<ColumnDef<ItemAttributeRow>[]>(
       () => [
@@ -65,7 +73,11 @@ const ItemAttributesTable = memo(
               <>
                 <MenuItem
                   disabled={!permissions.can("update", "parts")}
-                  onClick={() => navigate(path.to.itemAttribute(row.id))}
+                  onClick={() =>
+                    openOverlay(overlay.to.editItemAttribute({ id: row.id }), {
+                      onCreated: () => revalidator.revalidate()
+                    })
+                  }
                 >
                   <MenuIcon icon={<LuPencil />} />
                   <Trans>Edit</Trans>
@@ -83,7 +95,7 @@ const ItemAttributesTable = memo(
           </>
         );
       },
-      [navigate, permissions]
+      [navigate, openOverlay, permissions, revalidator]
     );
 
     return (
@@ -93,7 +105,14 @@ const ItemAttributesTable = memo(
         count={count}
         primaryAction={
           permissions.can("create", "parts") ? (
-            <New label={t`Attribute`} to={`new?${params.toString()}`} />
+            <Button
+              type="button"
+              variant="primary"
+              leftIcon={<LuCirclePlus />}
+              onClick={openNewAttribute}
+            >
+              <Trans>New Attribute</Trans>
+            </Button>
           ) : undefined
         }
         renderContextMenu={renderContextMenu}

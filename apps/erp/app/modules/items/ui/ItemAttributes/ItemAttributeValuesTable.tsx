@@ -1,11 +1,12 @@
-import { MenuIcon, MenuItem } from "@carbon/react";
+import { Button, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
-import { LuPencil, LuTrash } from "react-icons/lu";
-import { useNavigate } from "react-router";
-import { Hyperlink, New, Table } from "~/components";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { LuCirclePlus, LuPencil, LuTrash } from "react-icons/lu";
+import { useNavigate, useRevalidator } from "react-router";
+import { Hyperlink, Table } from "~/components";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
@@ -32,9 +33,25 @@ const ItemAttributeValuesTable = memo(
     count
   }: ItemAttributeValuesTableProps) => {
     const { t, i18n } = useLingui();
-    const [params] = useUrlParams();
     const navigate = useNavigate();
     const permissions = usePermissions();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+
+    const openNewValue = useCallback(() => {
+      openOverlay(overlay.to.newItemAttributeValue({ attributeId }), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [attributeId, openOverlay, revalidator]);
+
+    const openEditValue = useCallback(
+      (id: string) => {
+        openOverlay(overlay.to.editItemAttributeValue({ attributeId, id }), {
+          onCreated: () => revalidator.revalidate()
+        });
+      },
+      [attributeId, openOverlay, revalidator]
+    );
 
     const columns = useMemo<ColumnDef<ItemAttributeValueRow>[]>(
       () => [
@@ -46,7 +63,8 @@ const ItemAttributeValuesTable = memo(
               <span className="font-mono">{row.original.code}</span>
             ) : (
               <Hyperlink
-                to={path.to.itemAttributeValue(attributeId, row.original.id)}
+                className="cursor-pointer"
+                onClick={() => openEditValue(row.original.id)}
               >
                 <span className="font-mono">{row.original.code}</span>
               </Hyperlink>
@@ -62,7 +80,7 @@ const ItemAttributeValuesTable = memo(
           header: t`Sort`
         }
       ],
-      [attributeId, t, i18n]
+      [openEditValue, t, i18n]
     );
 
     const renderContextMenu = useCallback(
@@ -72,9 +90,7 @@ const ItemAttributeValuesTable = memo(
           <>
             <MenuItem
               disabled={!permissions.can("update", "parts")}
-              onClick={() =>
-                navigate(path.to.itemAttributeValue(attributeId, row.id))
-              }
+              onClick={() => openEditValue(row.id)}
             >
               <MenuIcon icon={<LuPencil />} />
               <Trans>Edit</Trans>
@@ -92,7 +108,7 @@ const ItemAttributeValuesTable = memo(
           </>
         );
       },
-      [attributeId, navigate, permissions]
+      [attributeId, navigate, openEditValue, permissions]
     );
 
     return (
@@ -102,10 +118,14 @@ const ItemAttributeValuesTable = memo(
         count={count}
         primaryAction={
           permissions.can("create", "parts") ? (
-            <New
-              label={t`Value`}
-              to={`${path.to.newItemAttributeValue(attributeId)}?${params.toString()}`}
-            />
+            <Button
+              type="button"
+              variant="primary"
+              leftIcon={<LuCirclePlus />}
+              onClick={openNewValue}
+            >
+              <Trans>New Value</Trans>
+            </Button>
           ) : undefined
         }
         renderContextMenu={renderContextMenu}

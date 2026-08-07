@@ -1,42 +1,34 @@
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
   HStack,
-  ModalDrawer,
-  ModalDrawerBody,
-  ModalDrawerContent,
-  ModalDrawerFooter,
-  ModalDrawerHeader,
-  ModalDrawerProvider,
-  ModalDrawerTitle,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { Hidden, Input, Number, Submit } from "~/components/Form";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { usePermissions } from "~/hooks";
-import { path } from "~/utils/path";
 import { itemAttributeValueValidator } from "../../itemAttribute.models";
 
 type ItemAttributeValueFormProps = {
   attributeId: string;
   initialValues: z.infer<typeof itemAttributeValueValidator>;
-  type?: "modal" | "drawer";
-  open?: boolean;
-  onClose: () => void;
-};
+} & Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">;
 
 const ItemAttributeValueForm = ({
   attributeId,
   initialValues,
-  open = true,
-  type = "drawer",
-  onClose
+  onDismiss,
+  fetcher,
+  action
 }: ItemAttributeValueFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const fetcher = useFetcher();
 
   const isEditing = initialValues.id !== undefined;
   const isDisabled = isEditing
@@ -44,58 +36,43 @@ const ItemAttributeValueForm = ({
     : !permissions.can("create", "parts");
 
   return (
-    <ModalDrawerProvider type={type}>
-      <ModalDrawer
-        open={open}
-        onOpenChange={(open) => {
-          if (!open) onClose?.();
-        }}
-      >
-        <ModalDrawerContent>
-          <ValidatedForm
-            validator={itemAttributeValueValidator}
-            method="post"
-            action={
-              isEditing
-                ? path.to.itemAttributeValue(attributeId, initialValues.id!)
-                : path.to.newItemAttributeValue(attributeId)
-            }
-            defaultValues={initialValues}
-            fetcher={fetcher}
-            className="flex flex-col h-full"
-          >
-            <ModalDrawerHeader>
-              <ModalDrawerTitle>
-                {isEditing ? (
-                  <Trans>Edit Attribute Value</Trans>
-                ) : (
-                  <Trans>New Attribute Value</Trans>
-                )}
-              </ModalDrawerTitle>
-            </ModalDrawerHeader>
-            <ModalDrawerBody>
-              <Hidden name="id" />
-              <Hidden name="attributeId" value={attributeId} />
-              <VStack spacing={4}>
-                <Input name="code" label={t`Code`} />
-                <Input name="name" label={t`Name`} />
-                <Number name="sortOrder" label={t`Sort Order`} />
-              </VStack>
-            </ModalDrawerBody>
-            <ModalDrawerFooter>
-              <HStack>
-                <Submit isDisabled={isDisabled}>
-                  {isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>}
-                </Submit>
-                <Button size="md" variant="solid" onClick={onClose}>
-                  <Trans>Cancel</Trans>
-                </Button>
-              </HStack>
-            </ModalDrawerFooter>
-          </ValidatedForm>
-        </ModalDrawerContent>
-      </ModalDrawer>
-    </ModalDrawerProvider>
+    <ValidatedForm
+      validator={itemAttributeValueValidator}
+      method="post"
+      action={action}
+      defaultValues={initialValues}
+      fetcher={fetcher}
+      className="flex flex-col h-full"
+    >
+      <DrawerHeader>
+        <DrawerTitle>
+          {isEditing ? (
+            <Trans>Edit Attribute Value</Trans>
+          ) : (
+            <Trans>New Attribute Value</Trans>
+          )}
+        </DrawerTitle>
+      </DrawerHeader>
+      <DrawerBody>
+        <Hidden name="id" />
+        <Hidden name="attributeId" value={attributeId} />
+        <VStack spacing={4}>
+          <Input name="code" label={t`Code`} />
+          <Input name="name" label={t`Name`} />
+          <Number name="sortOrder" label={t`Sort Order`} />
+        </VStack>
+      </DrawerBody>
+      <DrawerFooter>
+        <HStack>
+          <Submit isDisabled={isDisabled}>
+            {isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>}
+          </Submit>
+          <Button size="md" variant="solid" type="button" onClick={onDismiss}>
+            <Trans>Cancel</Trans>
+          </Button>
+        </HStack>
+      </DrawerFooter>
+    </ValidatedForm>
   );
 };
 
