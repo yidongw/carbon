@@ -81,7 +81,7 @@ const LineItems = ({
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const percentFormatter = usePercentFormatter();
   const [openItems, setOpenItems] = useState<string[]>([]);
   const unitOfMeasures = useUnitOfMeasure();
@@ -135,7 +135,8 @@ const LineItems = ({
           (line.supplierShippingCost ?? 0);
         const styleConfig = getStyleConfigDisplay(
           line.configuration,
-          colorNames
+          colorNames,
+          i18n.locale
         );
 
         return (

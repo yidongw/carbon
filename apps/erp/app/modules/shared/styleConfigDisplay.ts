@@ -1,4 +1,7 @@
-import { styleColorEnglishNamesByCode } from "@carbon/database/style-reference";
+import {
+  localizeStyleColorName,
+  styleColorEnglishNamesByCode
+} from "@carbon/database/style-reference";
 import { getConfigQuantityCells } from "~/modules/production/configParamsTableColumns";
 
 export type StyleConfigChip = {
@@ -61,9 +64,33 @@ export function buildStyleColorNames(
  * either sizes or colors as quantity columns — labels are always Color · Size.
  * Pass `colorNames` to show localized names instead of codes.
  */
+/**
+ * Re-point standard color codes (and their English-name aliases) in a
+ * code→label map to the locale's color name, so chips read 黑色 · L in zh even
+ * when the stored/loader name is the English base. Non-standard codes and size
+ * columns are left untouched.
+ */
+function localizeColorNameMap(
+  colorNames: Record<string, string> | undefined,
+  locale: string | undefined
+): Record<string, string> | undefined {
+  if (!colorNames || !locale) return colorNames;
+  const out = { ...colorNames };
+  for (const [code, enName] of Object.entries(styleColorEnglishNamesByCode())) {
+    const localized = localizeStyleColorName(code, locale);
+    if (!localized) continue;
+    const lower = enName.toLowerCase();
+    for (const key of [code, enName, lower, lower.toUpperCase()]) {
+      if (key in out) out[key] = localized;
+    }
+  }
+  return out;
+}
+
 export function getStyleConfigDisplay(
   configuration: unknown,
-  colorNames?: Record<string, string>
+  colorNames?: Record<string, string>,
+  locale?: string
 ): StyleConfigDisplay | null {
   if (!configuration) return null;
 
@@ -76,7 +103,10 @@ export function getStyleConfigDisplay(
     }
   }
 
-  const cells = getConfigQuantityCells(parsed, colorNames);
+  const cells = getConfigQuantityCells(
+    parsed,
+    localizeColorNameMap(colorNames, locale)
+  );
   if (cells.length === 0) return null;
 
   return {

@@ -422,7 +422,8 @@ function LineItems({
         const isMade = line.methodType === "Make to Order";
         const styleConfig = getStyleConfigDisplay(
           line.configuration,
-          colorNames
+          colorNames,
+          locale
         );
 
         const { jobLabel, jobVariant, jobs } = getSalesOrderJobStatus(
