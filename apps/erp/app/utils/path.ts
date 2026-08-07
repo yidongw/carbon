@@ -870,10 +870,6 @@ export const path = {
       generatePath(`${x}/items/dimensions/delete/${id}`),
     deleteMaterialFinish: (id: string) =>
       generatePath(`${x}/items/finishes/delete/${id}`),
-    deleteStyleColor: (id: string) =>
-      generatePath(`${x}/items/colors/delete/${id}`),
-    deleteStyleSize: (id: string) =>
-      generatePath(`${x}/items/sizes/delete/${id}`),
     deleteItemAttribute: (id: string) =>
       generatePath(`${x}/items/attributes/delete/${id}`),
     deleteItemAttributeSet: (id: string) =>
@@ -1277,10 +1273,6 @@ export const path = {
     materialDimensions: `${x}/items/dimensions`,
     materialFinish: (id: string) => generatePath(`${x}/items/finishes/${id}`),
     materialFinishes: `${x}/items/finishes`,
-    styleColor: (id: string) => generatePath(`${x}/items/colors/${id}`),
-    styleColors: `${x}/items/colors`,
-    styleSize: (id: string) => generatePath(`${x}/items/sizes/${id}`),
-    styleSizes: `${x}/items/sizes`,
     itemAttribute: (id: string) => generatePath(`${x}/items/attributes/${id}`),
     itemAttributes: `${x}/items/attributes`,
     itemAttributeValues: (attributeId: string) =>
@@ -1424,8 +1416,6 @@ export const path = {
     newMethodOperationParameter: `${x}/items/methods/operation/parameter/new`,
     newMaterialDimension: `${x}/items/dimensions/new`,
     newMaterialFinish: `${x}/items/finishes/new`,
-    newStyleColor: `${x}/items/colors/new`,
-    newStyleSize: `${x}/items/sizes/new`,
     newItemAttribute: `${x}/items/attributes/new`,
     newItemAttributeSet: `${x}/items/attribute-sets/new`,
     newItemAttributeSetAssignment: `${x}/items/attribute-set-assignments/new`,
