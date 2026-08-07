@@ -47,9 +47,7 @@ export async function getStyleVariantLineMetaByItemIds(
       parentReadableId: parent.readableId,
       parentName: parent.name,
       parentThumbnailPath: parent.thumbnailPath,
-      attributeCodes,
-      colorCode: attributeCodes[0] ?? "",
-      sizeCode: attributeCodes[1] ?? ""
+      attributeCodes
     };
   }
 

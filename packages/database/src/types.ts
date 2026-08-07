@@ -2541,7 +2541,6 @@ export type Database = {
       }
       bundleWorkOrder: {
         Row: {
-          colorCode: string | null
           companyId: string
           createdAt: string
           createdBy: string
@@ -2552,13 +2551,11 @@ export type Database = {
           masterWorkOrderId: string
           reportedQuantity: number
           sequence: number
-          sizeCode: string | null
           tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
         }
         Insert: {
-          colorCode?: string | null
           companyId: string
           createdAt?: string
           createdBy: string
@@ -2569,13 +2566,11 @@ export type Database = {
           masterWorkOrderId: string
           reportedQuantity?: number
           sequence?: number
-          sizeCode?: string | null
           tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
         }
         Update: {
-          colorCode?: string | null
           companyId?: string
           createdAt?: string
           createdBy?: string
@@ -2586,7 +2581,6 @@ export type Database = {
           masterWorkOrderId?: string
           reportedQuantity?: number
           sequence?: number
-          sizeCode?: string | null
           tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
@@ -22566,6 +22560,7 @@ export type Database = {
           sizeCode: string | null
           updatedAt: string | null
           updatedBy: string | null
+          valuesKey: string | null
         }
         Insert: {
           bundleWorkOrderId?: string | null
@@ -22580,6 +22575,7 @@ export type Database = {
           sizeCode?: string | null
           updatedAt?: string | null
           updatedBy?: string | null
+          valuesKey?: string | null
         }
         Update: {
           bundleWorkOrderId?: string | null
@@ -22594,6 +22590,7 @@ export type Database = {
           sizeCode?: string | null
           updatedAt?: string | null
           updatedBy?: string | null
+          valuesKey?: string | null
         }
         Relationships: [
           {
@@ -54991,8 +54988,8 @@ export type Database = {
         Row: {
           assignedAt: string | null
           assignee: string | null
-          colorCode: string | null
-          colorName: string | null
+          attributeLabel: string | null
+          attributeValues: Json | null
           companyId: string | null
           createdAt: string | null
           createdBy: string | null
@@ -55014,12 +55011,12 @@ export type Database = {
           salesOrderLineId: string | null
           scrapQuantity: number | null
           sequence: number | null
-          sizeCode: string | null
           status: Database["public"]["Enums"]["jobStatus"] | null
           storageUnitId: string | null
           tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
+          valuesKey: string | null
         }
         Relationships: [
           {
@@ -55525,6 +55522,8 @@ export type Database = {
         Row: {
           active: boolean | null
           assignee: string | null
+          attributes: Json | null
+          attributeSetId: string | null
           companyId: string | null
           createdAt: string | null
           createdBy: string | null
@@ -55593,6 +55592,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "item_attributeSetId_fkey"
+            columns: ["attributeSetId"]
+            isOneToOne: false
+            referencedRelation: "itemAttributeSet"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "item_companyId_fkey"
@@ -67862,9 +67868,9 @@ export type Database = {
         Row: {
           active: boolean | null
           assignee: string | null
-          colorCodes: string | null
-          colorNames: string | null
-          colors: Json | null
+          attributeCodes: string | null
+          attributes: Json | null
+          attributeSetId: string | null
           companyId: string | null
           createdAt: string | null
           createdBy: string | null
@@ -67885,8 +67891,6 @@ export type Database = {
             | null
           revision: string | null
           revisions: Json | null
-          sizeCodes: string | null
-          sizes: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null
           tags: string[] | null
           thumbnailPath: string | null
@@ -67929,6 +67933,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "item_attributeSetId_fkey"
+            columns: ["attributeSetId"]
+            isOneToOne: false
+            referencedRelation: "itemAttributeSet"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "item_companyId_fkey"
@@ -68048,9 +68059,9 @@ export type Database = {
         Row: {
           active: boolean | null
           assignee: string | null
-          colorCodes: string | null
-          colorNames: string | null
-          colors: Json | null
+          attributeCodes: string | null
+          attributes: Json | null
+          attributeSetId: string | null
           companyId: string | null
           createdAt: string | null
           createdBy: string | null
@@ -68075,8 +68086,6 @@ export type Database = {
           sampledColorCount: number | null
           sampleItemId: string | null
           samples: Json | null
-          sizeCodes: string | null
-          sizes: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null
           tags: string[] | null
           thumbnailPath: string | null
@@ -68119,6 +68128,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "item_attributeSetId_fkey"
+            columns: ["attributeSetId"]
+            isOneToOne: false
+            referencedRelation: "itemAttributeSet"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "item_companyId_fkey"
@@ -70652,6 +70668,7 @@ export type Database = {
           gradeId: string
           id: string
           itemTrackingType: Database["public"]["Enums"]["itemTrackingType"]
+          jobBreakdown: Json
           leadTime: number
           lotSize: number
           materialFormId: string

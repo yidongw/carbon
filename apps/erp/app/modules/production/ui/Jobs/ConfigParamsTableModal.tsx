@@ -312,11 +312,23 @@ function ConfigParamsTableModal({
     setValidationError("");
   };
 
-  // Flat (report) mode: per-combo / per-color-size plan caps from the
-  // config-param reference, so we can offer a button per plannable cell and
-  // warn if a cell's entered quantity exceeds its plan.
-  const colorKey = parameters.find((p) => p.key === "color")?.key ?? "color";
-  const sizeKey = parameters.find((p) => p.key === "size")?.key ?? "size";
+  // Flat (report) mode: per-combo / per-cell plan caps from the config-param
+  // reference, so we can offer a button per plannable cell and warn if a
+  // cell's entered quantity exceeds its plan.
+  //
+  // Legacy non-combo path: Color×Size-shaped matrices. Prefer explicit
+  // color/size keys when present; otherwise use primaryParam + the first
+  // other list param so cell keys still work when params use other names.
+  // Combo path uses valuesKey and ignores these keys.
+  const listParams = parameters.filter((p) => p.dataType === "list");
+  const sizeKey =
+    listParams.find((p) => p.key === "size")?.key ??
+    primaryParam?.key ??
+    "size";
+  const colorKey =
+    listParams.find((p) => p.key === "color")?.key ??
+    listParams.find((p) => p.key !== sizeKey)?.key ??
+    "color";
   const cellKeyOf = (cell: {
     valuesKey?: string;
     colorCode?: string;
@@ -344,6 +356,8 @@ function ConfigParamsTableModal({
         });
       });
     } else {
+      // Legacy Color×Size-shaped flat matrix (non-combo). New Styles use the
+      // combo path above; keep this for older configurationParameter matrices.
       const descriptorKeys = parameters
         .filter((p) => p.dataType === "list" && p.key !== primaryParam?.key)
         .map((p) => p.key);

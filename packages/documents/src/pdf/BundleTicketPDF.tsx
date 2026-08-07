@@ -11,13 +11,15 @@ export interface BundleTicketLabel {
   /** 款号 — style/item readable id. */
   styleReadableId: string;
   /**
-   * Attribute fields to print (e.g. Color / Size / …). Replaces fixed
-   * 颜色 / 尺码 rows when present.
+   * Attribute fields to print (e.g. Color / Size / …). Preferred over
+   * attributeLabel when present.
    */
   attributeLines?: Array<{ name: string; value: string }> | null;
-  /** @deprecated Prefer attributeLines */
+  /** Single-line attribute summary when attributeLines is empty. */
+  attributeLabel?: string | null;
+  /** @deprecated Prefer attributeLines / attributeLabel */
   colorName?: string | null;
-  /** @deprecated Prefer attributeLines */
+  /** @deprecated Prefer attributeLines / attributeLabel */
   sizeCode?: string | null;
   /** 数量 — this bundle's quantity. */
   quantity: number;
@@ -70,10 +72,9 @@ function leftRows(label: BundleTicketLabel) {
   const attrFields: Field[] =
     label.attributeLines && label.attributeLines.length > 0
       ? label.attributeLines.map((line) => [`${line.name}: `, line.value])
-      : present([
-          ["颜色: ", label.colorName],
-          ["尺码: ", label.sizeCode]
-        ]);
+      : label.attributeLabel
+        ? present([["", label.attributeLabel]])
+        : [];
   return present([
     ["款号: ", label.styleReadableId],
     ...attrFields,

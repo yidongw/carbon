@@ -181,6 +181,9 @@ export type Style = NonNullable<
 
 // styleSamples view = Style + per-style sample count. getStyleSamples returns
 // `any` rows (view not in generated types yet), so type it explicitly here.
+// The view still selects distinct variants as `sampledColorCount`
+// (COALESCE(te."sampledVariantCount", 0) AS "sampledColorCount") — keep that
+// column name until a migration renames it; map here for clearer app types.
 export type StyleSampleLine = {
   label: string;
   /** Attribute code → value code (from trackedEntity.attributes). */
@@ -191,7 +194,8 @@ export type StyleSampleLine = {
 export type StyleSample = Style & {
   sampleItemId: string | null;
   sampleCount: number;
-  sampledColorCount: number;
+  /** Distinct sampled attribute variants (view column: sampledColorCount). */
+  sampledVariantCount: number;
   samples: StyleSampleLine[];
 };
 

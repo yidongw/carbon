@@ -161,11 +161,7 @@ const MasterProcessesTable = memo(
                     {bundle.jobReadableId}
                   </td>
                   <td className="py-2 pr-4 text-muted-foreground">
-                    {bundle.attributeLabel ||
-                      [bundle.colorName || bundle.colorCode, bundle.sizeCode]
-                        .filter(Boolean)
-                        .join(" · ") ||
-                      "—"}
+                    {bundle.attributeLabel || "—"}
                   </td>
                   <td className="py-2 pr-4">
                     {bundle.assignee
@@ -207,11 +203,7 @@ const MasterProcessesTable = memo(
                 {renderOperationStatus(bundle.operationStatus)}
               </div>
               <div className="text-xs text-muted-foreground">
-                {bundle.attributeLabel ||
-                  [bundle.colorName || bundle.colorCode, bundle.sizeCode]
-                    .filter(Boolean)
-                    .join(" · ") ||
-                  "—"}
+                {bundle.attributeLabel || "—"}
               </div>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-2 text-xs">
                 <div>

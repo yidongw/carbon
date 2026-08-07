@@ -181,10 +181,7 @@ const PrintBundleTicketsModal = ({
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
                         {(b as { attributeLabel?: string | null })
-                          .attributeLabel ||
-                          [b.colorName || b.colorCode, b.sizeCode]
-                            .filter(Boolean)
-                            .join(" · ")}
+                          .attributeLabel || ""}
                       </span>
                     </div>
                     <span className="text-xs text-muted-foreground tabular-nums shrink-0">

@@ -1766,9 +1766,22 @@ export async function getStyleSamples(
     );
   }
 
-  return setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
+
+  // View still exposes distinct variants as `sampledColorCount` (alias of
+  // subquery sampledVariantCount). Normalize for app types without a migration.
+  if (result.data) {
+    result.data = result.data.map((row: Record<string, unknown>) => {
+      const sampledVariantCount =
+        row.sampledVariantCount ?? row.sampledColorCount ?? 0;
+      const { sampledColorCount: _legacy, ...rest } = row;
+      return { ...rest, sampledVariantCount };
+    });
+  }
+
+  return result;
 }
 
 export async function ensureStyleSampleItem(

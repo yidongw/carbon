@@ -17,16 +17,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { OperationStatusIcon } from "~/components/Icons";
-import { useLocalizeColor } from "~/hooks";
 import type { getEmployeeProcessesByProcess } from "~/services/people.service";
 import type { Operation, OperationWithDetails } from "~/services/types";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 
 type Bundle = {
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel: string | null;
+  valuesKey: string | null;
 } | null;
 
 /**
@@ -47,7 +45,6 @@ export function ReportQuantityModal({
   onClose: () => void;
 }) {
   const { t } = useLingui();
-  const localizeColor = useLocalizeColor();
   const [people] = usePeople();
   const { ids: assignedEmployeeIds, isLoading: assignedEmployeesLoading } =
     useEmployeesByProcess(operation.processId);
@@ -92,12 +89,10 @@ export function ReportQuantityModal({
   const reported = completed + rework + scrap;
   const invalid = reported <= 0;
 
-  const colorSize = [
-    localizeColor(bundle?.colorName || bundle?.colorCode || ""),
-    bundle?.sizeCode
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const colorSize =
+    bundle?.attributeLabel?.trim() ||
+    bundle?.valuesKey?.replace(/\|/g, " · ").trim() ||
+    "";
 
   const statusLabels: Record<string, string> = {
     Todo: t`Todo`,

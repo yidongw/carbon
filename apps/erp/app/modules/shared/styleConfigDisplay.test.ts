@@ -38,10 +38,10 @@ describe("getStyleConfigDisplay", () => {
       ])
     );
     expect(display?.chips.map((c) => c.label)).toEqual([
-      "红色 · S ×2",
-      "蓝色 · S ×1",
-      "红色 · M ×1",
-      "蓝色 · M ×2"
+      "S · 红色 ×2",
+      "S · 蓝色 ×1",
+      "M · 红色 ×1",
+      "M · 蓝色 ×2"
     ]);
   });
 
@@ -53,7 +53,7 @@ describe("getStyleConfigDisplay", () => {
       },
       buildStyleColorNames([{ colorCode: "LGY", colorName: "浅灰色" }])
     );
-    expect(display?.chips.map((c) => c.label)).toEqual(["浅灰色 · M ×3"]);
+    expect(display?.chips.map((c) => c.label)).toEqual(["M · 浅灰色 ×3"]);
   });
 
   it("parses JSON string configurations", () => {
@@ -127,8 +127,7 @@ describe("groupLinesForStyleDisplay", () => {
           parentReadableId: "111333",
           parentName: "1113333",
           parentThumbnailPath: null,
-          colorCode: "BK",
-          sizeCode: "S"
+          attributeCodes: ["BK", "S"]
         },
         c2: {
           variantItemId: "c2",
@@ -136,8 +135,7 @@ describe("groupLinesForStyleDisplay", () => {
           parentReadableId: "111333",
           parentName: "1113333",
           parentThumbnailPath: null,
-          colorCode: "BG",
-          sizeCode: "S"
+          attributeCodes: ["BG", "S"]
         }
       },
       { BK: "黑色", BG: "米色" },

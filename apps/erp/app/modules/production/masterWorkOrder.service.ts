@@ -301,7 +301,7 @@ export async function getMasterProcessBreakdown(
         (bundle.attributeValues as Record<string, string> | null) ?? null,
       valuesKey: bundle.valuesKey ?? null,
       colorCode: null,
-      colorName: bundle.attributeLabel ?? null,
+      colorName: null,
       sizeCode: null,
       operationStatus: op.status ?? null,
       quantity,
