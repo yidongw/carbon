@@ -129,7 +129,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       name: a.name,
       options: (a.values ?? []).map((v) => ({
         value: v.id,
-        label: v.name || v.code
+        label: v.name || v.code,
+        // Keep the code so the form can localize the display name per locale.
+        code: v.code
       }))
     })),
     defaultLocationId: defaults.data?.locationId ?? ""

@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
@@ -173,7 +174,8 @@ export default function CreateStyleSampleForm({
                       <SelectContent>
                         {attr.options.map((o) => (
                           <SelectItem key={o.value} value={o.value}>
-                            {o.label}
+                            {localizeStyleColorName(o.code, i18n.locale) ||
+                              o.label}
                           </SelectItem>
                         ))}
                       </SelectContent>

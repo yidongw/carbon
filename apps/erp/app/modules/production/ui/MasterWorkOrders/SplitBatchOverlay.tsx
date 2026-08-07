@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Badge, Button, cn, HStack, IconButton } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useState } from "react";
@@ -53,7 +54,7 @@ export default function SplitBatchOverlay({
   fetcher,
   action
 }: SplitBatchOverlayProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
 
   const cutByCell = useMemo(() => {
     const m = new Map<string, number>();
@@ -132,8 +133,10 @@ export default function SplitBatchOverlay({
   const remaining = totalCut - total;
 
   const cellOver = (color: string | null, size: string | null) =>
-    (enteredByCell.get(cellKey(color, size)) ?? 0) > (cutByCell.get(cellKey(color, size)) ?? 0);
-  const rowBelowReported = (r: Row) => !!r.id && num(r.quantity) < r.reportedQuantity;
+    (enteredByCell.get(cellKey(color, size)) ?? 0) >
+    (cutByCell.get(cellKey(color, size)) ?? 0);
+  const rowBelowReported = (r: Row) =>
+    !!r.id && num(r.quantity) < r.reportedQuantity;
 
   const hasOver = useMemo(() => {
     for (const [k, entered] of enteredByCell) {
@@ -147,7 +150,9 @@ export default function SplitBatchOverlay({
     rows.length > 0 && !hasOver && !hasBelowReported && !isSubmitting;
 
   const updateQuantity = (i: number, value: number) =>
-    setRows((prev) => prev.map((r, idx) => (idx === i ? { ...r, quantity: value } : r)));
+    setRows((prev) =>
+      prev.map((r, idx) => (idx === i ? { ...r, quantity: value } : r))
+    );
   const deleteRow = (i: number) =>
     setRows((prev) => prev.filter((_, idx) => idx !== i));
   const addRow = (c: CuttingSplitCell) =>
@@ -189,7 +194,9 @@ export default function SplitBatchOverlay({
           <Trans>Split Batch</Trans>
         </h3>
         {masterDisplayId ? (
-          <p className="mt-1 text-sm text-muted-foreground">{masterDisplayId}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {masterDisplayId}
+          </p>
         ) : null}
       </div>
 
@@ -232,9 +239,14 @@ export default function SplitBatchOverlay({
                             </span>
                           )}
                         </td>
-                        <td className="px-1 font-medium">{r.sizeCode ?? "—"}</td>
                         <td className="px-1 font-medium">
-                          {r.colorName ?? r.colorCode ?? "—"}
+                          {r.sizeCode ?? "—"}
+                        </td>
+                        <td className="px-1 font-medium">
+                          {localizeStyleColorName(r.colorCode, i18n.locale) ??
+                            r.colorName ??
+                            r.colorCode ??
+                            "—"}
                         </td>
                         <td>
                           <input
@@ -283,8 +295,12 @@ export default function SplitBatchOverlay({
                     leftIcon={<LuPlus />}
                     onClick={() => addRow(c)}
                   >
-                    {c.sizeCode ?? "—"} · {c.colorName ?? c.colorCode ?? "—"} ·{" "}
-                    <span className="tabular-nums">{remainingFor(c)}</span>
+                    {c.sizeCode ?? "—"} ·{" "}
+                    {localizeStyleColorName(c.colorCode, i18n.locale) ??
+                      c.colorName ??
+                      c.colorCode ??
+                      "—"}{" "}
+                    · <span className="tabular-nums">{remainingFor(c)}</span>
                   </Button>
                 ))}
               </div>

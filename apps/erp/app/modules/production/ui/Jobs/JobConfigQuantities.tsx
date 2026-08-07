@@ -9,6 +9,7 @@ import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOv
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
+import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
 import type { AdjustmentMode, Column, Row } from "./configTableShared";
 import {
   buildColumns,
@@ -21,7 +22,6 @@ import {
   hasValue,
   jobConfigQuantitiesModalBodyClassName,
   jobConfigQuantitiesModalShellClassName,
-  makeDefaultRow,
   mergeRows,
   normalizeRow,
   ReadOnlyConfigTable,
@@ -126,12 +126,16 @@ function JobConfigQuantities({
   initialRows,
   jobDisplayId,
   history,
-  optionLabels,
+  optionLabels: rawOptionLabels,
   onDismiss,
   action: formAction,
   fetcher
 }: JobConfigQuantitiesProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
+  // Loader colorNames are the English base; translate to the user's locale so
+  // headers/cells/history show 米色 rather than "Beige" or the raw "BG" code.
+  const optionLabels =
+    localizeColorNameMap(rawOptionLabels, i18n.locale) ?? rawOptionLabels;
   const materialShapeOptions = useShape();
   const materialOptions = materialShapeOptions.map((shape) => ({
     label: <Enumerable value={shape.label} />,

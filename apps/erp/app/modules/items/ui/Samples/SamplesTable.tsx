@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Badge, HStack, IconButton, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -16,7 +17,7 @@ type SamplesTableProps = {
 };
 
 const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { openOverlay } = useOverlay();
   const revalidator = useRevalidator();
   const permissions = usePermissions();
@@ -71,7 +72,9 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
                 {attrs.flatMap((a) =>
                   (a.values ?? []).map((v) => (
                     <Badge key={`${a.attributeId}:${v.id}`} variant="outline">
-                      {v.name || v.code}
+                      {localizeStyleColorName(v.code, i18n.locale) ||
+                        v.name ||
+                        v.code}
                     </Badge>
                   ))
                 )}
@@ -88,7 +91,9 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
             <HStack spacing={1} className="flex-wrap">
               {colors.map((color) => (
                 <Badge key={color.id} variant="outline" title={color.colorCode}>
-                  {color.colorName || color.colorCode}
+                  {localizeStyleColorName(color.colorCode, i18n.locale) ||
+                    color.colorName ||
+                    color.colorCode}
                 </Badge>
               ))}
             </HStack>
@@ -111,7 +116,14 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
           const chips = samples.map((s, i) => {
             const label =
               s.label ??
-              [s.colorName || s.colorCode, s.size].filter(Boolean).join(" · ");
+              [
+                localizeStyleColorName(s.colorCode, i18n.locale) ||
+                  s.colorName ||
+                  s.colorCode,
+                s.size
+              ]
+                .filter(Boolean)
+                .join(" · ");
             return (
               <Badge
                 key={`${label}-${i}`}
@@ -162,7 +174,7 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
         meta: { icon: <LuScanBarcode /> }
       }
     ];
-  }, [t, canCreate, openOverlay, revalidator]);
+  }, [t, i18n, canCreate, openOverlay, revalidator]);
 
   return (
     <Table<StyleSample>

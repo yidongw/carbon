@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import {
   Button,
   Checkbox,
@@ -35,7 +36,7 @@ const PrintBundleTicketsModal = ({
   bundles,
   onClose
 }: PrintBundleTicketsModalProps) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { printerRoutes } = usePrinting();
 
   const printable = useMemo(
@@ -180,7 +181,12 @@ const PrintBundleTicketsModal = ({
                         {b.jobReadableId}
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
-                        {[b.colorName || b.colorCode, b.sizeCode]
+                        {[
+                          localizeStyleColorName(b.colorCode, i18n.locale) ||
+                            b.colorName ||
+                            b.colorCode,
+                          b.sizeCode
+                        ]
                           .filter(Boolean)
                           .join(" · ")}
                       </span>

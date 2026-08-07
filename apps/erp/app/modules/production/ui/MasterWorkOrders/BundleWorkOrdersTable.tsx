@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Button, HStack, IconButton } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
@@ -51,7 +52,7 @@ const BundleWorkOrdersTable = memo(
     cuttingOperationId,
     withHeader = true
   }: BundleWorkOrdersTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const permissions = usePermissions();
     const { openOverlay } = useOverlay();
     const revalidator = useRevalidator();
@@ -239,7 +240,10 @@ const BundleWorkOrdersTable = memo(
           accessorKey: "colorCode",
           header: t`Color`,
           cell: ({ row }) =>
-            row.original.colorName || row.original.colorCode || "—",
+            localizeStyleColorName(row.original.colorCode, i18n.locale) ||
+            row.original.colorName ||
+            row.original.colorCode ||
+            "—",
           meta: { icon: <LuPalette /> }
         },
         {
@@ -249,7 +253,7 @@ const BundleWorkOrdersTable = memo(
           meta: { icon: <LuRuler /> }
         }
       ];
-    }, [t, people, styles, dateFormatter, openProcesses]);
+    }, [t, i18n, people, styles, dateFormatter, openProcesses]);
 
     return (
       <>

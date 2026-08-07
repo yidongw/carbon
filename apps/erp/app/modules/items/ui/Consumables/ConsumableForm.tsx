@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { ValidatedForm } from "@carbon/form";
 import {
   cn,
@@ -259,7 +260,10 @@ const ConsumableForm = ({
                       label={translateItemAttributeCatalogName(attr.name, i18n)}
                       options={attr.options.map((o) => ({
                         value: o.id,
-                        label: o.name || o.code,
+                        label:
+                          localizeStyleColorName(o.code, i18n.locale) ||
+                          o.name ||
+                          o.code,
                         helper: o.code
                       }))}
                       helperText={t`Selected values become variant SKUs`}

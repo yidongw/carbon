@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Badge, HStack, VStack } from "@carbon/react";
 import type { I18n } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
@@ -297,7 +298,9 @@ export function buildDefaultStylesTableColumns({
                 variant="outline"
                 title={`${a.name}: ${v.code}`}
               >
-                {v.name || v.code}
+                {localizeStyleColorName(v.code, i18n.locale) ||
+                  v.name ||
+                  v.code}
               </Badge>
             ))
           );
@@ -329,7 +332,9 @@ export function buildDefaultStylesTableColumns({
           <HStack spacing={1} className="flex-wrap">
             {colorList.map((color) => (
               <Badge key={color.id} variant="outline" title={color.colorCode}>
-                {color.colorName || color.colorCode}
+                {localizeStyleColorName(color.colorCode, i18n.locale) ||
+                  color.colorName ||
+                  color.colorCode}
               </Badge>
             ))}
             {sizeList.map((size) => (
