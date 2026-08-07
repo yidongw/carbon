@@ -352,18 +352,19 @@ const STYLE_SIZE_CODES: string[] = [
   "OS"
 ];
 
-const pickName = (names: Record<string, string>, language?: string): string =>
-  (language ? names[language] : undefined) ?? names.en ?? "";
-
 /**
- * The color + size rows to seed for a company, with names localized to the
- * given language (falls back to English for any locale without a translation).
+ * The color + size rows to seed for a company. Color names are stored as the
+ * English base name; the UI translates them per-locale via the seed display-name
+ * catalog (translateSeedDisplayName), so "Black" renders as 黑色 in zh, etc.
+ * `language` is accepted for API compatibility but no longer localizes the
+ * stored name — keeping English as the single stored base was the requirement.
  */
 export function styleReferenceRows(language?: string) {
+  void language;
   return {
     colors: STYLE_COLORS.map((c) => ({
       colorCode: c.code,
-      colorName: pickName(c.names, language)
+      colorName: c.names.en ?? c.code
     })),
     // `index` is the canonical apparel order (XS→3XL, OS last) persisted as
     // `sortOrder` so downstream reads don't fall back to alphabetical.
