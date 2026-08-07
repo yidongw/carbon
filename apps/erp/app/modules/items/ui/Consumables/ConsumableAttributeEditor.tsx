@@ -1,12 +1,5 @@
 import { localizeStyleColorName } from "@carbon/database/style-reference";
-import {
-  Badge,
-  Button,
-  Combobox,
-  toast,
-  useMount,
-  VStack
-} from "@carbon/react";
+import { Badge, Combobox, toast, useMount, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useState } from "react";
 import { LuX } from "react-icons/lu";
@@ -46,6 +39,14 @@ const ConsumableAttributeEditor = ({
     useState<Record<string, string[]>>(selections);
 
   useEffect(() => {
+    setSetId(attributeSetId ?? "");
+  }, [attributeSetId]);
+
+  useEffect(() => {
+    setSelected(selections);
+  }, [selections]);
+
+  useEffect(() => {
     if (setId) return;
     if (attributeSetId) {
       setSetId(attributeSetId);
@@ -57,6 +58,16 @@ const ConsumableAttributeEditor = ({
   const selectedSet = useMemo(
     () => sets.find((s) => s.id === setId),
     [sets, setId]
+  );
+
+  const setOptions = useMemo(
+    () =>
+      sets.map((s) => ({
+        value: s.id,
+        label: s.name || s.code,
+        helper: s.code !== s.name ? s.code : undefined
+      })),
+    [sets]
   );
 
   useEffect(() => {
@@ -83,8 +94,17 @@ const ConsumableAttributeEditor = ({
     });
   };
 
+  const onSetChange = (nextSetId: string) => {
+    if (!nextSetId || nextSetId === setId) return;
+    setSetId(nextSetId);
+    // Switching Fabric ↔ Trim clears value selections for the previous set.
+    const next: Record<string, string[]> = {};
+    setSelected(next);
+    save(next, nextSetId);
+  };
+
   const addValue = (attrId: string, valueId: string) => {
-    if (!valueId) return;
+    if (!valueId || !setId) return;
     setSelected((prev) => {
       const current = prev[attrId] ?? [];
       if (current.includes(valueId)) return prev;
@@ -95,6 +115,7 @@ const ConsumableAttributeEditor = ({
   };
 
   const removeValue = (attrId: string, valueId: string) => {
+    if (!setId) return;
     setSelected((prev) => {
       const next = {
         ...prev,
@@ -112,6 +133,9 @@ const ConsumableAttributeEditor = ({
         <h3 className="text-xs text-muted-foreground">
           <Trans>Attributes</Trans>
         </h3>
+        {selectedSet ? (
+          <p className="text-sm">{selectedSet.name || selectedSet.code}</p>
+        ) : null}
         {selectedSet?.attributes.map((attr) => (
           <VStack key={attr.id} spacing={1} className="w-full">
             <h4 className="text-xs text-muted-foreground">{attr.name}</h4>
@@ -142,19 +166,19 @@ const ConsumableAttributeEditor = ({
         <Trans>Attributes</Trans>
       </h3>
 
-      {!attributeSetId && sets.length > 1 ? (
-        <div className="flex flex-wrap gap-1">
-          {sets.map((s) => (
-            <Button
-              key={s.id}
-              size="sm"
-              variant={setId === s.id ? "primary" : "secondary"}
-              onClick={() => setSetId(s.id)}
-            >
-              {s.code}
-            </Button>
-          ))}
-        </div>
+      {sets.length > 0 ? (
+        <VStack spacing={1} className="w-full">
+          <h4 className="text-xs text-muted-foreground">
+            <Trans>Attribute Set</Trans>
+          </h4>
+          <Combobox
+            options={setOptions}
+            value={setId}
+            onChange={onSetChange}
+            placeholder={t`Select Fabric, Trim, …`}
+            isReadOnly={saveFetcher.state !== "idle"}
+          />
+        </VStack>
       ) : null}
 
       {selectedSet?.attributes.map((attr) => {
@@ -202,7 +226,7 @@ const ConsumableAttributeEditor = ({
                   options={available}
                   inline={() => null}
                   onChange={(valueId) => addValue(attr.id, valueId)}
-                  isReadOnly={saveFetcher.state !== "idle"}
+                  isReadOnly={saveFetcher.state !== "idle" || !setId}
                 />
               </span>
             </div>

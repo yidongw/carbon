@@ -13106,6 +13106,9 @@ msgstr "कर्मचारी चुनें"
 msgid "Select Employee Type"
 msgstr "कर्मचारी प्रकार चुनें"
 
+msgid "Select Fabric, Trim, …"
+msgstr ""
+
 msgid "Select field"
 msgstr "विकल्प क्षेत्र चुनें"
 
