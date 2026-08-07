@@ -31,6 +31,7 @@ import { usePermissions, useRouteData } from "~/hooks";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
+import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 import { copyToClipboard } from "~/utils/string";
 import {
   itemReplenishmentSystems,
@@ -73,7 +74,7 @@ type StyleRouteData = {
 };
 
 const StyleProperties = () => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
@@ -287,7 +288,10 @@ const StyleProperties = () => {
         <div className="flex flex-wrap items-center gap-2">
           {(routeData.styleSummary.styleColorBadges ?? []).map((color) => (
             <Badge key={color.id} variant="secondary" title={color.colorCode}>
-              {color.colorName || color.colorCode}
+              {translateSeedDisplayName(
+                color.colorName || color.colorCode,
+                i18n
+              )}
             </Badge>
           ))}
           {canEditStyle ? (

@@ -1,7 +1,9 @@
 import { Combobox, useMount } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useMemo } from "react";
 import { useFetcher } from "react-router";
 import { path } from "~/utils/path";
+import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 export type StyleOption = { value: string; label: string; helper?: string };
 
@@ -35,6 +37,7 @@ const AddStyleOptionButton = ({
   assignedIds,
   options
 }: AddStyleOptionButtonProps) => {
+  const { i18n } = useLingui();
   const listFetcher = useFetcher<{ data: StyleOptionRow[] | null }>();
   const submitFetcher = useFetcher();
 
@@ -53,7 +56,10 @@ const AddStyleOptionButton = ({
       kind === "color"
         ? {
             value: row.id,
-            label: row.colorName || row.colorCode || "",
+            label: translateSeedDisplayName(
+              row.colorName || row.colorCode || "",
+              i18n
+            ),
             helper: row.colorCode
           }
         : {
@@ -62,7 +68,7 @@ const AddStyleOptionButton = ({
             helper: row.sizeName
           }
     );
-  }, [options, listFetcher.data, kind]);
+  }, [options, listFetcher.data, kind, i18n]);
 
   const available = useMemo(() => {
     const assigned = new Set(assignedIds);
