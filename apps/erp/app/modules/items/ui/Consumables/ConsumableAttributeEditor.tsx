@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import {
   Badge,
   Button,
@@ -12,7 +13,6 @@ import { LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 import type { AttributeSetFormOption } from "../../itemAttribute.service";
 
 type ConsumableAttributeEditorProps = {
@@ -121,7 +121,9 @@ const ConsumableAttributeEditor = ({
                 if (!option) return null;
                 return (
                   <Badge key={valueId} variant="secondary" title={option.code}>
-                    {translateSeedDisplayName(option.name || option.code, i18n)}
+                    {localizeStyleColorName(option.code, i18n.locale) ??
+                      option.name ??
+                      option.code}
                   </Badge>
                 );
               })}
@@ -162,7 +164,8 @@ const ConsumableAttributeEditor = ({
           .filter((o) => !chosenSet.has(o.id))
           .map((o) => ({
             value: o.id,
-            label: translateSeedDisplayName(o.name || o.code, i18n),
+            label:
+              localizeStyleColorName(o.code, i18n.locale) ?? o.name ?? o.code,
             helper: o.code
           }));
         return (
@@ -179,7 +182,9 @@ const ConsumableAttributeEditor = ({
                     title={option.code}
                     className="pr-1"
                   >
-                    {translateSeedDisplayName(option.name || option.code, i18n)}
+                    {localizeStyleColorName(option.code, i18n.locale) ??
+                      option.name ??
+                      option.code}
                     <button
                       type="button"
                       aria-label={t`Remove`}

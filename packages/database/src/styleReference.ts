@@ -388,3 +388,24 @@ export function styleColorEnglishNamesByCode(): Record<string, string> {
   }
   return out;
 }
+
+const STYLE_COLOR_BY_CODE: Record<string, LocalizedRef> = Object.fromEntries(
+  STYLE_COLORS.map((c) => [c.code, c])
+);
+
+/**
+ * Localized display name for a standard style color, by its stable code.
+ * The seed list carries every locale, so the UI can render the color in the
+ * user's language regardless of what name is stored on the value row. Returns
+ * `undefined` for codes that aren't part of the standard palette (e.g. a
+ * company-defined color) so callers can fall back to the stored name.
+ */
+export function localizeStyleColorName(
+  code: string | null | undefined,
+  language?: string
+): string | undefined {
+  if (!code) return undefined;
+  const ref = STYLE_COLOR_BY_CODE[code];
+  if (!ref) return undefined;
+  return (language ? ref.names[language] : undefined) ?? ref.names.en;
+}

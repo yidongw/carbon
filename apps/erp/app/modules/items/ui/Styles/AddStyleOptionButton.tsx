@@ -1,9 +1,9 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Combobox, useMount } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useMemo } from "react";
 import { useFetcher } from "react-router";
 import { path } from "~/utils/path";
-import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 export type StyleOption = { value: string; label: string; helper?: string };
 
@@ -56,10 +56,11 @@ const AddStyleOptionButton = ({
       kind === "color"
         ? {
             value: row.id,
-            label: translateSeedDisplayName(
-              row.colorName || row.colorCode || "",
-              i18n
-            ),
+            label:
+              localizeStyleColorName(row.colorCode, i18n.locale) ??
+              row.colorName ??
+              row.colorCode ??
+              "",
             helper: row.colorCode
           }
         : {

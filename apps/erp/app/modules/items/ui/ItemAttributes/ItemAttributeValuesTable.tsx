@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Button, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -8,7 +9,6 @@ import { Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 type ItemAttributeValueRow = {
   id: string;
@@ -73,7 +73,9 @@ const ItemAttributeValuesTable = memo(
         {
           accessorKey: "name",
           header: t`Name`,
-          cell: ({ row }) => translateSeedDisplayName(row.original.name, i18n)
+          cell: ({ row }) =>
+            localizeStyleColorName(row.original.code, i18n.locale) ??
+            row.original.name
         },
         {
           accessorKey: "sortOrder",
