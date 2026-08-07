@@ -7,6 +7,7 @@ import type {
   PostgrestSingleResponse,
   SupabaseClient
 } from "@supabase/supabase-js";
+import { sql } from "kysely";
 import type { z } from "zod";
 import { getEmployeeJob } from "~/modules/people";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -1835,23 +1836,82 @@ export async function replacePurchaseOrderLinesWithStyleVariants(
   } = args;
 
   const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
-  const shippingTotal = base.supplierShippingCost ?? 0;
-  const taxTotal = base.supplierTaxAmount ?? 0;
   const unitPrice = base.supplierUnitPrice ?? 0;
 
+  // Cent-exact proportional split so the sum across the variant lines equals the
+  // original single-line amount (no floating-point drift); remainder on the last.
+  const allocate = (total: number | null | undefined): number[] => {
+    const cents = Math.round((total ?? 0) * 100);
+    const result: number[] = [];
+    let allocated = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (i === variants.length - 1) {
+        result.push((cents - allocated) / 100);
+      } else {
+        const c = Math.round((cents * variants[i].quantity) / totalQty);
+        allocated += c;
+        result.push(c / 100);
+      }
+    }
+    return result;
+  };
+  const shippingSplit = allocate(base.supplierShippingCost);
+  const taxSplit = allocate(base.supplierTaxAmount);
+  // Setup is a one-time charge: apply it once (first line), not once per variant.
+  const setupTotal = base.setupPrice ?? 0;
+
   return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
     if (replaceLineId) {
+      const original = await trx
+        .selectFrom("purchaseOrderLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("purchaseOrderId", "=", purchaseOrderId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
       await trx
         .deleteFrom("purchaseOrderLine")
         .where("id", "=", replaceLineId)
         .where("purchaseOrderId", "=", purchaseOrderId)
         .where("companyId", "=", companyId)
         .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        if (variants.length > 1) {
+          await trx
+            .updateTable("purchaseOrderLine")
+            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .where("purchaseOrderId", "=", purchaseOrderId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("purchaseOrderLine")
+          .select("sortOrder")
+          .where("purchaseOrderId", "=", purchaseOrderId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("purchaseOrderLine")
+        .select("sortOrder")
+        .where("purchaseOrderId", "=", purchaseOrderId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
     }
 
     const ids: string[] = [];
-    for (const variant of variants) {
-      const share = variant.quantity / totalQty;
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
       const inserted = await trx
         .insertInto("purchaseOrderLine")
         .values({
@@ -1865,15 +1925,16 @@ export async function replacePurchaseOrderLinesWithStyleVariants(
           inventoryUnitOfMeasureCode: base.inventoryUnitOfMeasureCode ?? "EA",
           conversionFactor: base.conversionFactor ?? 1,
           purchaseQuantity: variant.quantity,
-          setupPrice: base.setupPrice ?? 0,
+          setupPrice: i === 0 ? setupTotal : 0,
           supplierUnitPrice: unitPrice,
-          supplierShippingCost: shippingTotal * share,
-          supplierTaxAmount: taxTotal * share,
+          supplierShippingCost: shippingSplit[i],
+          supplierTaxAmount: taxSplit[i],
           exchangeRate: base.exchangeRate ?? 1,
           requiredDate: base.requiredDate || null,
           promisedDate: base.promisedDate || null,
           companyId,
           createdBy: userId,
+          sortOrder: startSortOrder + i,
           ...(customFields !== undefined ? { customFields } : {})
         })
         .returning(["id"])

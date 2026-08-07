@@ -8,6 +8,7 @@ import type {
   PostgrestSingleResponse,
   SupabaseClient
 } from "@supabase/supabase-js";
+import { sql } from "kysely";
 import type { z } from "zod";
 import { getSupplierPriceBreaksForItems } from "~/modules/items/items.service";
 import { getEmployeeJob } from "~/modules/people";
@@ -2058,32 +2059,100 @@ export async function replaceSalesOrderLinesWithStyleVariants(
   } = args;
 
   const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
-  const shippingTotal = base.shippingCost ?? 0;
+
+  // Cent-exact proportional split so the sum across the variant lines equals the
+  // original single-line amount (no floating-point drift). The remainder lands
+  // on the last line.
+  const allocate = (total: number | null | undefined): number[] => {
+    const cents = Math.round((total ?? 0) * 100);
+    const result: number[] = [];
+    let allocated = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (i === variants.length - 1) {
+        result.push((cents - allocated) / 100);
+      } else {
+        const c = Math.round((cents * variants[i].quantity) / totalQty);
+        allocated += c;
+        result.push(c / 100);
+      }
+    }
+    return result;
+  };
+  const shippingSplit = allocate(base.shippingCost);
+  const addOnSplit = allocate(base.addOnCost);
+  const nonTaxableSplit = allocate(base.nonTaxableAddOnCost);
+  // Setup is a one-time charge: apply it once (first line), not once per variant.
+  const setupTotal = base.setupPrice ?? 0;
 
   return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
     if (replaceLineId) {
+      const original = await trx
+        .selectFrom("salesOrderLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("salesOrderId", "=", salesOrderId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      // Refuse to reconfigure a line that already drives production: deleting it
+      // would orphan the jobs (job.salesOrderLineId ON DELETE SET NULL) and
+      // cascade-delete their fulfillment/shipment lines.
+      const jobCount = await trx
+        .selectFrom("job")
+        .select((eb) => eb.fn.countAll<string>().as("count"))
+        .where("salesOrderLineId", "=", replaceLineId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+      if (jobCount && Number(jobCount.count) > 0) {
+        throw new Error(
+          "This style line already has production jobs. Remove or complete the jobs before changing its color/size configuration."
+        );
+      }
+
       await trx
         .deleteFrom("salesOrderLine")
         .where("id", "=", replaceLineId)
         .where("salesOrderId", "=", salesOrderId)
         .where("companyId", "=", companyId)
         .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        // Preserve list position: shift the lines after the replaced one down by
+        // the number of extra variant lines we're inserting.
+        if (variants.length > 1) {
+          await trx
+            .updateTable("salesOrderLine")
+            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .where("salesOrderId", "=", salesOrderId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("salesOrderLine")
+          .select("sortOrder")
+          .where("salesOrderId", "=", salesOrderId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("salesOrderLine")
+        .select("sortOrder")
+        .where("salesOrderId", "=", salesOrderId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
     }
 
-    const existing = await trx
-      .selectFrom("salesOrderLine")
-      .select("sortOrder")
-      .where("salesOrderId", "=", salesOrderId)
-      .execute();
-    let sortOrder = existing.reduce(
-      (max, row) => Math.max(max, row.sortOrder ?? 0),
-      0
-    );
-
     const ids: string[] = [];
-    for (const variant of variants) {
-      sortOrder += 1;
-      const share = variant.quantity / totalQty;
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
       const inserted = await trx
         .insertInto("salesOrderLine")
         .values({
@@ -2097,16 +2166,16 @@ export async function replaceSalesOrderLinesWithStyleVariants(
           unitOfMeasureCode: base.unitOfMeasureCode ?? "EA",
           saleQuantity: variant.quantity,
           unitPrice: base.unitPrice ?? 0,
-          setupPrice: base.setupPrice ?? 0,
-          shippingCost: shippingTotal * share,
-          addOnCost: (base.addOnCost ?? 0) * share,
-          nonTaxableAddOnCost: (base.nonTaxableAddOnCost ?? 0) * share,
+          setupPrice: i === 0 ? setupTotal : 0,
+          shippingCost: shippingSplit[i],
+          addOnCost: addOnSplit[i],
+          nonTaxableAddOnCost: nonTaxableSplit[i],
           taxPercent: base.taxPercent ?? 0,
           promisedDate: base.promisedDate || null,
           exchangeRate,
           companyId,
           createdBy: userId,
-          sortOrder,
+          sortOrder: startSortOrder + i,
           ...(customFields !== undefined ? { customFields } : {})
         })
         .returning(["id"])

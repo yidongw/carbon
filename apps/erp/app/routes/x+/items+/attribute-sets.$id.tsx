@@ -59,6 +59,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
       await flash(request, error(existing.error, "Attribute set not found"))
     );
   }
+  // System (shared) sets are read-only for tenants; editing them would attempt
+  // a cross-tenant write that RLS now blocks anyway.
+  if (existing.data.companyId === null) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(new Error("Access denied"), "Cannot edit a system attribute set")
+      )
+    );
+  }
 
   const validation = await validator(itemAttributeSetValidator).validate(
     await request.formData()

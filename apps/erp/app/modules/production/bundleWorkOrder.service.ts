@@ -3,7 +3,10 @@ import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveVariantItemId } from "~/modules/items/itemAttribute.service";
-import { getStyleColorList } from "~/modules/items/items.service";
+import {
+  getConfigurationParameters,
+  getStyleColorList
+} from "~/modules/items/items.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
@@ -520,14 +523,16 @@ export async function getCuttingSplitProposal(
   const itemId = job.data?.itemId;
   if (!itemId) return { ...empty, masterDisplayId };
 
-  const params = await client
-    .from("configurationParameter")
-    .select("key, listOptions")
-    .eq("itemId", itemId)
-    .eq("companyId", companyId)
-    .in("key", ["color", "size"]);
-  const colorParam = params.data?.find((p) => p.key === "color");
-  const sizeParam = params.data?.find((p) => p.key === "size");
+  // Synthesize color/size params from attribute selections for Styles that no
+  // longer write configurationParameter rows (falls back to stored rows when
+  // present). Mirrors getConfigurationParameters used across the config readers.
+  const { parameters } = await getConfigurationParameters(
+    client,
+    itemId,
+    companyId
+  );
+  const colorParam = parameters.find((p) => p.key === "color");
+  const sizeParam = parameters.find((p) => p.key === "size");
 
   // Planned quantity per color/size cell (the config-param matrix).
   const plannedCells = extractCuttingCells(

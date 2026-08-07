@@ -1368,6 +1368,35 @@ export async function syncItemVariantsFromSelections(
     selections: Record<string, string[]>;
   }
 ): Promise<{ error: Error | null }> {
+  // Validate the chosen set is actually assignable to this item's type. Routes
+  // that build the request by hand (e.g. the consumable attributes action) don't
+  // validate this via a form schema, so guard it here for every caller.
+  const item = await client
+    .from("item")
+    .select("type")
+    .eq("id", args.itemId)
+    .eq("companyId", args.companyId)
+    .maybeSingle();
+  if (item.error) return { error: item.error };
+  if (!item.data) return { error: new Error("Item not found") };
+
+  const validSets = await getAttributeSetsForItemType(
+    client,
+    item.data.type as string,
+    args.companyId
+  );
+  if (validSets.error) return { error: validSets.error };
+  const allowed = (validSets.data ?? []).some(
+    (s: { id: string } | null) => s?.id === args.attributeSetId
+  );
+  if (!allowed) {
+    return {
+      error: new Error(
+        "The selected attribute set is not available for this item type."
+      )
+    };
+  }
+
   const sel = await syncItemAttributeSelections(client, args);
   if (sel.error) return sel;
   const variants = await syncItemVariants(client, {

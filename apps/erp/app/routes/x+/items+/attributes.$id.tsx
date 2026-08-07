@@ -21,7 +21,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!id) throw notFound("id not found");
 
   const attribute = await getItemAttribute(client, id);
-  if (attribute.data?.companyId === null) {
+  if (!attribute.data) throw notFound("Attribute not found");
+  if (attribute.data.companyId === null) {
     throw redirect(
       path.to.itemAttributes,
       await flash(
@@ -31,7 +32,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  return { attribute: attribute.data ?? null };
+  return { attribute: attribute.data };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {

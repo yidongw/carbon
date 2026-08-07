@@ -32,6 +32,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(request, error(assignment.error, "Set assignment not found"))
     );
   }
+  if (assignment.data.companyId === null) {
+    throw redirect(
+      path.to.itemAttributeSetAssignments,
+      await flash(
+        request,
+        error(
+          new Error("Access denied"),
+          "Cannot edit a system attribute set assignment"
+        )
+      )
+    );
+  }
 
   return {
     assignment: assignment.data,
@@ -57,6 +69,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return data(
       {},
       await flash(request, error(existing.error, "Set assignment not found"))
+    );
+  }
+  if (existing.data.companyId === null) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(
+          new Error("Access denied"),
+          "Cannot edit a system attribute set assignment"
+        )
+      )
     );
   }
 

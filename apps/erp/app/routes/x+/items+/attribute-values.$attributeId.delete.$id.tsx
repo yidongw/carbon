@@ -38,11 +38,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { error: deleteError } = await deleteItemAttributeValue(client, id);
   if (deleteError) {
+    // 23503 = FK violation: the value is still referenced by a selection or a
+    // variant SKU (both ON DELETE RESTRICT).
+    const inUse = (deleteError as { code?: string }).code === "23503";
     throw redirect(
       `${path.to.itemAttributeValues(attributeId)}?${getParams(request)}`,
       await flash(
         request,
-        error(deleteError, "Failed to delete attribute value")
+        error(
+          deleteError,
+          inUse
+            ? "This value is in use by an item or variant SKU and can't be deleted"
+            : "Failed to delete attribute value"
+        )
       )
     );
   }

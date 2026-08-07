@@ -26,6 +26,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       )
     );
   }
+  if (assignment.data?.companyId === null) {
+    throw redirect(
+      path.to.itemAttributeSetAssignments,
+      await flash(
+        request,
+        error(
+          new Error("Access denied"),
+          "Cannot delete a system attribute set assignment"
+        )
+      )
+    );
+  }
   return { assignment: assignment.data };
 }
 
@@ -36,6 +48,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
     throw redirect(
       path.to.itemAttributeSetAssignments,
       await flash(request, error(params, "Failed to get assignment id"))
+    );
+  }
+
+  const existing = await getItemAttributeSetAssignment(client, id);
+  if (existing.data?.companyId === null) {
+    throw redirect(
+      path.to.itemAttributeSetAssignments,
+      await flash(
+        request,
+        error(
+          new Error("Access denied"),
+          "Cannot delete a system attribute set assignment"
+        )
+      )
     );
   }
 
