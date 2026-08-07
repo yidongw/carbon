@@ -2026,9 +2026,6 @@ msgstr "Farbe"
 msgid "Color / Size"
 msgstr "Farbe / Größe"
 
-msgid "Colors"
-msgstr "Farben"
-
 msgid "Column"
 msgstr "Spalte"
 
@@ -14758,6 +14755,9 @@ msgstr "Diese Seriennummer wurde auf dieser Übertragung nicht geliefert"
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Dieser Speichertyp wird derzeit von {usageCount} Speichereinheit{0} verwendet."
+
+msgid "This style has no attribute selections yet. Add attributes on the style first."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "Dies aktualisiert das Design für alle Benutzer der Anwendung"

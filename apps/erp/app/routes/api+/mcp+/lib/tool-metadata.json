@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-07T13:46:17.644Z",
+  "generated": "2026-08-07T14:02:14.984Z",
   "totalTools": 1266,
   "modules": 15,
   "tools": [
@@ -10807,19 +10807,13 @@
             "items": {
               "type": "object",
               "properties": {
-                "colorId": {
-                  "type": "string"
-                },
-                "size": {
-                  "type": "string"
-                },
+                "selections": {},
                 "quantity": {
                   "type": "number"
                 }
               },
               "required": [
-                "colorId",
-                "size",
+                "selections",
                 "quantity"
               ]
             }

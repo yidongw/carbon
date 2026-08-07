@@ -49,9 +49,35 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
         meta: { icon: <LuBookMarked /> }
       },
       {
-        accessorKey: "colors",
-        header: t`Colors`,
+        id: "attributes",
+        header: t`Attributes`,
         cell: ({ row }) => {
+          const attrs = (
+            row.original as {
+              attributes?: Array<{
+                attributeId: string;
+                values: Array<{ id: string; code: string; name: string }>;
+              }>;
+              colors?: Array<{
+                id: string;
+                colorCode: string;
+                colorName: string;
+              }>;
+            }
+          ).attributes;
+          if (Array.isArray(attrs) && attrs.length > 0) {
+            return (
+              <HStack spacing={1} className="flex-wrap">
+                {attrs.flatMap((a) =>
+                  (a.values ?? []).map((v) => (
+                    <Badge key={`${a.attributeId}:${v.id}`} variant="outline">
+                      {v.name || v.code}
+                    </Badge>
+                  ))
+                )}
+              </HStack>
+            );
+          }
           const colors = (row.original.colors ?? []) as Array<{
             id: string;
             colorCode: string;
@@ -75,29 +101,33 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
         header: t`Samples`,
         cell: ({ row }) => {
           const samples = (row.original.samples ?? []) as Array<{
-            colorCode: string;
-            colorName: string;
-            size: string;
+            label?: string;
+            colorCode?: string;
+            colorName?: string;
+            size?: string;
             quantity: number;
           }>;
           const sampleItemId = row.original.sampleItemId;
-          const chips = samples.map((s, i) => (
-            <Badge
-              key={`${s.colorCode}-${s.size}-${i}`}
-              variant="outline"
-              className="font-normal"
-            >
-              {`${s.colorName || s.colorCode} · ${s.size}`}
-              <span className="ml-1 font-mono text-muted-foreground">
-                ×{s.quantity}
-              </span>
-            </Badge>
-          ));
+          const chips = samples.map((s, i) => {
+            const label =
+              s.label ??
+              [s.colorName || s.colorCode, s.size].filter(Boolean).join(" · ");
+            return (
+              <Badge
+                key={`${label}-${i}`}
+                variant="outline"
+                className="font-normal"
+              >
+                {label}
+                <span className="ml-1 font-mono text-muted-foreground">
+                  ×{s.quantity}
+                </span>
+              </Badge>
+            );
+          });
           return (
             <HStack spacing={1} className="flex-wrap py-1">
               {sampleItemId && samples.length > 0 ? (
-                // Open the sample item's inventory page (serial list + move /
-                // reduce / ship live there — the standard serial-tracking UI).
                 <Hyperlink
                   to={path.to.inventoryItem(sampleItemId)}
                   onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -115,7 +145,6 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
                   size="sm"
                   icon={<LuPlus />}
                   onClick={(e) => {
-                    // row is a link; don't navigate to the style page
                     e.preventDefault();
                     e.stopPropagation();
                     openOverlay(

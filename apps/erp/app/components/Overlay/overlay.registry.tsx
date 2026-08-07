@@ -111,10 +111,12 @@ export const overlayRegistry = {
           | {
               styleId: string;
               styleDisplayId: string;
-              colorOptions: { value: string; label: string }[];
-              sizeOptions: { value: string; label: string }[];
-              defaultColorIds: string[];
-              defaultSize: string;
+              attributes: Array<{
+                attributeId: string;
+                code: string;
+                name: string;
+                options: { value: string; label: string }[];
+              }>;
               defaultLocationId: string;
             }
           | undefined;
@@ -122,10 +124,7 @@ export const overlayRegistry = {
         return {
           styleId: data.styleId,
           styleDisplayId: data.styleDisplayId,
-          colorOptions: data.colorOptions,
-          sizeOptions: data.sizeOptions,
-          defaultColorIds: data.defaultColorIds,
-          defaultSize: data.defaultSize,
+          attributes: data.attributes,
           defaultLocationId: data.defaultLocationId
         };
       },

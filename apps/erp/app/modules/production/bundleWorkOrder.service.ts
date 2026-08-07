@@ -303,12 +303,9 @@ export async function insertBundleWorkOrder(
     createdBy: string;
   }
 ) {
-  // The child job is the bundle's execution backing; the bundle -> master link
-  // is carried by bundleWorkOrder.masterWorkOrderId (the job table has no
-  // parentJobId column), so we don't set one here. Prefer the variant SKU
-  // itemId (resolved by color/size) when variants exist; colorCode/sizeCode
-  // remain on the bundle row for display/compat. Bundles stay unconfigured so
-  // production reporting shows a plain quantity.
+  // The child job is the bundle's execution backing; identity is the variant
+  // SKU itemId. Do not persist colorCode/sizeCode — labels come from the child
+  // item (readableId/name) via the bundleWorkOrders view.
   const job = await insertJob(client, {
     itemId: input.itemId,
     quantity: input.quantity,
@@ -355,8 +352,8 @@ export async function insertBundleWorkOrder(
       masterWorkOrderId: input.masterWorkOrderId,
       jobId: job.data.id,
       sequence: input.sequence ?? 1,
-      colorCode: input.colorCode ?? null,
-      sizeCode: input.sizeCode ?? null,
+      colorCode: null,
+      sizeCode: null,
       companyId: input.companyId,
       createdBy: input.createdBy
     })

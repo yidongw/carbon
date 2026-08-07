@@ -2026,9 +2026,6 @@ msgstr "Kolor"
 msgid "Color / Size"
 msgstr "Kolor / Rozmiar"
 
-msgid "Colors"
-msgstr "Kolory"
-
 msgid "Column"
 msgstr "Kolumna"
 
@@ -14758,6 +14755,9 @@ msgstr "Ten numer seryjny nie został wysłany w tej przenosinie"
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Ten typ magazynu jest obecnie używany przez {usageCount} jednostkę magazynową{0}."
+
+msgid "This style has no attribute selections yet. Add attributes on the style first."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "To aktualizuje motyw dla wszystkich użytkowników aplikacji"

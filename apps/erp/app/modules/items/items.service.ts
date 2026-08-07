@@ -1734,7 +1734,7 @@ export async function getStyles(
 
   if (args.search) {
     query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCodes.ilike.%${args.search}%,colorNames.ilike.%${args.search}%,sizeCodes.ilike.%${args.search}%`
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,attributeCodes.ilike.%${args.search}%`
     );
   }
 
@@ -1762,7 +1762,7 @@ export async function getStyleSamples(
 
   if (args.search) {
     query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCodes.ilike.%${args.search}%,colorNames.ilike.%${args.search}%,sizeCodes.ilike.%${args.search}%`
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,attributeCodes.ilike.%${args.search}%`
     );
   }
 
@@ -1837,7 +1837,10 @@ export async function createStyleSamples(
   client: SupabaseClient<Database>,
   args: {
     styleId: string;
-    lines: { colorId: string; size: string; quantity: number }[];
+    lines: {
+      selections: Record<string, string>;
+      quantity: number;
+    }[];
     locationId: string;
     storageUnitId?: string | null;
     companyId: string;
@@ -1855,20 +1858,27 @@ export async function createStyleSamples(
   if (ensured.error) return ensured;
   const sampleItemId = (ensured.data as { itemId: string }).itemId;
 
-  // Map selected Color attribute value ids -> color codes for the serial + attributes.
-  const colorIds = Array.from(new Set(lines.map((l) => l.colorId)));
-  const colors = await sampleClient
-    .from("itemAttributeValue")
-    .select("id, code")
-    .in("id", colorIds)
-    .eq("attributeId", "iat_color");
-  if (colors.error) return colors;
-  const codeById = new Map<string, string>(
-    (colors.data ?? []).map((c: { id: string; code: string }) => [c.id, c.code])
+  const allValueIds = Array.from(
+    new Set(lines.flatMap((l) => Object.values(l.selections)))
+  );
+  const values = allValueIds.length
+    ? await sampleClient
+        .from("itemAttributeValue")
+        .select("id, code, attributeId, itemAttribute:attributeId(code, name)")
+        .in("id", allValueIds)
+    : { data: [], error: null };
+  if (values.error) return values;
+
+  type ValueRow = {
+    id: string;
+    code: string;
+    attributeId: string;
+    itemAttribute: { code: string; name: string } | null;
+  };
+  const valueById = new Map(
+    ((values.data ?? []) as ValueRow[]).map((v) => [v.id, v])
   );
 
-  // Continue serial numbering from any samples that already exist for this
-  // color+size, so every physical unit gets a unique serial across creates.
   const existing = await sampleClient
     .from("trackedEntity")
     .select("attributes")
@@ -1878,7 +1888,11 @@ export async function createStyleSamples(
   if (existing.error) return existing;
   const seqByKey = new Map<string, number>();
   for (const e of (existing.data ?? []) as { attributes: any }[]) {
-    const key = `${e.attributes?.Color ?? ""}|${e.attributes?.Size ?? ""}`;
+    const attrs = e.attributes ?? {};
+    const key = Object.keys(attrs)
+      .sort()
+      .map((k) => `${k}=${attrs[k]}`)
+      .join("|");
     seqByKey.set(key, (seqByKey.get(key) ?? 0) + 1);
   }
 
@@ -1886,27 +1900,42 @@ export async function createStyleSamples(
   const ledgerRows: Record<string, unknown>[] = [];
 
   for (const line of lines) {
-    const colorCode = codeById.get(line.colorId) ?? line.colorId;
-    const size = line.size;
-    const key = `${colorCode}|${size}`;
+    const attrPairs: Array<{ attrCode: string; valueCode: string }> = [];
+    for (const valueId of Object.values(line.selections)) {
+      const row = valueById.get(valueId);
+      if (!row) {
+        return {
+          data: null,
+          error: new Error(`Unknown attribute value: ${valueId}`)
+        };
+      }
+      attrPairs.push({
+        attrCode: row.itemAttribute?.code ?? row.attributeId,
+        valueCode: row.code
+      });
+    }
+    attrPairs.sort((a, b) => a.attrCode.localeCompare(b.attrCode));
+    const attributes = Object.fromEntries(
+      attrPairs.map((p) => [p.attrCode, p.valueCode])
+    );
+    const key = attrPairs.map((p) => `${p.attrCode}=${p.valueCode}`).join("|");
+    const codeSuffix = attrPairs.map((p) => p.valueCode).join("-");
+
     for (let n = 1; n <= line.quantity; n++) {
       const trackedEntityId = nanoid();
       const seq = (seqByKey.get(key) ?? 0) + 1;
       seqByKey.set(key, seq);
-      const serial = `${styleId}-${colorCode}-${size}-${seq}`;
+      const serial = `${styleId}-${codeSuffix}-${seq}`;
       trackedEntities.push({
         id: trackedEntityId,
         quantity: 1,
-        // Available (not On Hold): samples are a separate hidden item, so they
-        // never count toward the style's sellable stock, and Available lets them
-        // reuse the standard serial transfer / shipment / adjustment flows.
         status: "Available",
         sourceDocument: "Item",
         sourceDocumentId: sampleItemId,
         sourceDocumentReadableId: `${styleId}-SAMPLE`,
         readableId: serial,
         itemId: sampleItemId,
-        attributes: { Color: colorCode, Size: size },
+        attributes,
         companyId,
         createdBy: userId
       });

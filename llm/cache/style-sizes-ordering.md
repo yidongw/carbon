@@ -9,33 +9,18 @@ Apparel **sizes** must display in apparel order — smallest→largest with `OS`
 
 When adding a new size read/display, order by `sortOrder`, not code.
 
-## Style pickers = itemAttributeValue ids
+## Style pickers = itemAttributeValue ids (catalog only)
 
-**Source:** `getGarmentAttributeValueList` (`itemAttribute.service.ts`) — Color/Size `itemAttributeValue` rows (`companyId` match or catalog `NULL`), ordered by `sortOrder`, `code`. **Dedupes by code**, preferring company-scoped over system (`companyId IS NULL`). Returns `{ id, colorCode|sizeCode, …, sortOrder }` where **`id` is `itemAttributeValue.id`**.
+**Source:** `getGarmentAttributeValueList` (`itemAttribute.service.ts`) — Color/Size `itemAttributeValue` rows for **catalog localization / samples / color-name maps**. Style **assign UI** no longer uses these wrappers.
 
-**System catalogs:** Color (`iav_color_*`) and Size (`iav_size_*`) rows with `companyId NULL` so every company has picker options before `seedStyleReference` runs (migration `20260806155001`).
+**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Config params synthesized from the item’s attribute set + selections (`getStyleConfigurationParametersFromAttributes`); expand matches `valuesKey`.
 
-**Wrappers:** `getStyleColorList` / `getStyleSizeList` call `getGarmentAttributeValueList`.
+**Still Color/Size-shaped (HARD leftovers):** samples form (`colorId`+`size`), bundle WO `colorCode`/`sizeCode` columns, `styles` view `colors`/`sizes` JSON, inventory RPCs joining `iat_color`/`iat_size`.
 
-**Consumers:**
-- `<StyleColors>` / `<StyleSizes>` → `api+/items.style-colors` / `items.style-sizes`
-- `AddStyleOptionButton` / Styles table fetchers
-- Bundle work order color names via `getStyleColorList` / view join to `itemAttributeValue`
-- Samples size options via `getStyleSizeList`
+**Admin Colors / Sizes** = company-scoped `itemAttributeValue` for Color/Size catalogs (not Style runtime knowledge).
 
-**Writes:** Form fields `styleColorIds` / `styleSizeIds` carry those value ids. `syncStyleAttributeSelections` inserts `itemAttributeSelection` from the ids directly (validates `attributeId`).
+**Dropped from Style UI:** `AddStyleOptionButton`, `add-colors-sizes`, Colors/Sizes properties sections, Color|Size table columns (replaced by Attributes).
 
-**Samples:** `createStyleSamples` resolves color codes from `itemAttributeValue` by id (`iat_color`).
-
-## Admin Colors / Sizes = itemAttributeValue
-
-`/items/colors` and `/items/sizes` CRUD read/write **company-scoped** `itemAttributeValue` for Color/Size. Delete blocked when `itemAttributeSelection` references the value.
-
-`seedStyleReference` / demo seed upsert company Color **and** Size `itemAttributeValue` only.
-
-**Dropped:** `styleColor` / `styleSize` tables (`20260806155001`). Views `bundleWorkOrders`, `styleSamples` (± `salesOrderLines`) resolve names via `itemAttributeValue`. Assignment tables already dropped (`20260806145747`).
-
-**Admin — Set Assignments:** `/items/attribute-set-assignments` CRUD on `itemAttributeSetAssignment` (itemType → attribute set). Seeds: Style→Garment, Consumable→Fabric, Consumable→Trim. Nav under Item Attributes.
 
 ## Consumable Fabric / Trim variants
 

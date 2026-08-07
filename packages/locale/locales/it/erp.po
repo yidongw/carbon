@@ -2026,9 +2026,6 @@ msgstr "Colore"
 msgid "Color / Size"
 msgstr "Colore / Taglia"
 
-msgid "Colors"
-msgstr "Colori"
-
 msgid "Column"
 msgstr "Colonna"
 
@@ -14767,6 +14764,9 @@ msgstr "Questo numero di serie non è stato inviato con questo trasferimento"
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Questo tipo di archiviazione è attualmente utilizzato da {usageCount} unità di archiviazione{0}."
+
+msgid "This style has no attribute selections yet. Add attributes on the style first."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "Questo aggiorna il tema per tutti gli utenti dell'applicazione"

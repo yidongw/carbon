@@ -280,8 +280,36 @@ export function buildDefaultStylesTableColumns({
       id: "attributes",
       header: i18n._(msg`Attributes`),
       cell: ({ row }) => {
-        // styles view still exposes colors/sizes JSON until a migration
-        // generalizes it; display as a single Attributes column.
+        const attrs = (row.original as { attributes?: unknown }).attributes as
+          | Array<{
+              attributeId: string;
+              code: string;
+              name: string;
+              values: Array<{ id: string; code: string; name: string }>;
+            }>
+          | null
+          | undefined;
+        if (Array.isArray(attrs) && attrs.length > 0) {
+          const badges = attrs.flatMap((a) =>
+            (a.values ?? []).map((v) => (
+              <Badge
+                key={`${a.attributeId}:${v.id}`}
+                variant="outline"
+                title={`${a.name}: ${v.code}`}
+              >
+                {v.name || v.code}
+              </Badge>
+            ))
+          );
+          return badges.length ? (
+            <HStack spacing={1} className="flex-wrap">
+              {badges}
+            </HStack>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          );
+        }
+        // Pre-migration fallback: styles.colors / styles.sizes JSON
         const colors = (row.original.colors ?? []) as Array<{
           id: string;
           colorCode: string;

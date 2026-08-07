@@ -2026,9 +2026,6 @@ msgstr "रंग"
 msgid "Color / Size"
 msgstr "रंग / आकार"
 
-msgid "Colors"
-msgstr "रंग"
-
 msgid "Column"
 msgstr "कॉलम"
 
@@ -14761,6 +14758,9 @@ msgstr "इस सीरियल नंबर का इन्हीं पर�
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "यह स्टोरेज प्रकार वर्तमान में {usageCount} स्टोरेज यूनिट{0} द्वारा उपयोग किया जा रहा है।"
+
+msgid "This style has no attribute selections yet. Add attributes on the style first."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "यह एप्लिकेशन के सभी उपयोगकर्ताओं के लिए थीम को अपडेट करता है"
