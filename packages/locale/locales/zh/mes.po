@@ -360,12 +360,6 @@ msgstr "不能编辑全局物料成分"
 msgid "Cannot edit global material type"
 msgstr "不能编辑全局物料类型"
 
-msgid "Cannot edit global style color"
-msgstr "无法编辑全局款式颜色"
-
-msgid "Cannot edit global style size"
-msgstr "无法编辑全局款式尺寸"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -878,12 +872,6 @@ msgstr "加载库存转移时出错"
 
 msgid "Error loading storage types"
 msgstr "存储类型加载错误"
-
-msgid "Error loading style colors"
-msgstr "加载款式颜色出错"
-
-msgid "Error loading style sizes"
-msgstr "加载款式尺寸出错"
 
 msgid "Error loading supplier types"
 msgstr "供应商类型加载出错"
@@ -1500,12 +1488,6 @@ msgstr "删除存储类型失败"
 msgid "Failed to delete storage unit"
 msgstr "删除存储单元失败"
 
-msgid "Failed to delete style color"
-msgstr "删除款式颜色失败"
-
-msgid "Failed to delete style size"
-msgstr "删除款式尺寸失败"
-
 msgid "Failed to delete subsidiary"
 msgstr "删除子工厂失败"
 
@@ -1811,12 +1793,6 @@ msgstr "获取存储类型ID失败"
 
 msgid "Failed to get a storageUnit id"
 msgstr "获取存储单元ID失败"
-
-msgid "Failed to get a style color id"
-msgstr "获取款式颜色ID失败"
-
-msgid "Failed to get a style size id"
-msgstr "获取款式尺寸ID失败"
 
 msgid "Failed to get a supplier contact id"
 msgstr "获取供应商联系人ID失败"
@@ -2199,12 +2175,6 @@ msgstr "获取存储类型失败"
 msgid "Failed to get storageUnit"
 msgstr "获取存储单元失败"
 
-msgid "Failed to get style color"
-msgstr "获取款式颜色失败"
-
-msgid "Failed to get style size"
-msgstr "获取款式尺寸失败"
-
 msgid "Failed to get subsidiary"
 msgstr "获取子公司失败"
 
@@ -2481,14 +2451,8 @@ msgstr "插入存储类型失败"
 msgid "Failed to insert storageUnit"
 msgstr "插入存储单元失败"
 
-msgid "Failed to insert style color"
-msgstr "插入款式颜色失败"
-
 msgid "Failed to insert style inventory"
 msgstr "插入款式库存失败"
-
-msgid "Failed to insert style size"
-msgstr "插入款式尺寸失败"
 
 msgid "Failed to insert supplier quote"
 msgstr "插入供应商报价失败"
@@ -3720,9 +3684,6 @@ msgstr "更新存储类型失败"
 msgid "Failed to update storageUnit"
 msgstr "更新存储单元失败"
 
-msgid "Failed to update style color"
-msgstr "更新款式颜色失败"
-
 msgid "Failed to update style costing"
 msgstr "更新款式成本失败"
 
@@ -3734,9 +3695,6 @@ msgstr "更新款式计划失败"
 
 msgid "Failed to update style sale price"
 msgstr "更新销售价格失败"
-
-msgid "Failed to update style size"
-msgstr "更新款式尺寸失败"
 
 msgid "Failed to update subsidiary"
 msgstr "更新子公司失败"
@@ -5510,12 +5468,6 @@ msgstr "已创建存储单元"
 msgid "Style"
 msgstr "款式"
 
-msgid "Style color created"
-msgstr "已创建款式颜色"
-
-msgid "Style size created"
-msgstr "已创建款式尺寸"
-
 msgid "Submit anonymously"
 msgstr "匿名提交"
 
@@ -5734,12 +5686,6 @@ msgstr "成功删除库存转移"
 
 msgid "Successfully deleted storage type"
 msgstr "成功删除存储类型"
-
-msgid "Successfully deleted style color"
-msgstr "成功删除款式颜色"
-
-msgid "Successfully deleted style size"
-msgstr "成功删除款式尺码"
 
 msgid "Successfully deleted subsidiary"
 msgstr "成功删除子公司"
@@ -6311,9 +6257,6 @@ msgstr "已更新存储类型"
 msgid "Updated storageUnit"
 msgstr "已更新存储单元"
 
-msgid "Updated style color"
-msgstr "已更新款式颜色"
-
 msgid "Updated style costing"
 msgstr "已更新款式成本估算"
 
@@ -6325,9 +6268,6 @@ msgstr "已更新款式规划"
 
 msgid "Updated style sale price"
 msgstr "已更新款式销售价格"
-
-msgid "Updated style size"
-msgstr "已更新款式尺寸"
 
 msgid "Updated subsidiary"
 msgstr "已更新子公司"

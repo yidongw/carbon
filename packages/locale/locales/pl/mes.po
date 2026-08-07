@@ -359,12 +359,6 @@ msgstr "Nie można edytować globalnej substancji materiałowej"
 msgid "Cannot edit global material type"
 msgstr "Nie można edytować globalnego typu materiału"
 
-msgid "Cannot edit global style color"
-msgstr "Nie można edytować koloru stylu globalnego"
-
-msgid "Cannot edit global style size"
-msgstr "Nie można edytować globalnej wielkości stylu"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -877,12 +871,6 @@ msgstr "Błąd ładowania przenosin stoczek"
 
 msgid "Error loading storage types"
 msgstr "Błąd ładowania typów magazynowych"
-
-msgid "Error loading style colors"
-msgstr "Błąd załadowania kolorów stylizacyjnych"
-
-msgid "Error loading style sizes"
-msgstr "Błąd podczas ładowania rozmiarów stylu"
 
 msgid "Error loading supplier types"
 msgstr "Błąd ładowania typów dostawców"
@@ -1499,12 +1487,6 @@ msgstr "Niedostępna do usunięcia typ magazynu"
 msgid "Failed to delete storage unit"
 msgstr "Niedostępna do usunięcia jednostka magazynowej"
 
-msgid "Failed to delete style color"
-msgstr "Nie udało się usunąć koloru stylu"
-
-msgid "Failed to delete style size"
-msgstr "Niedostępna do usunięcia styl rozmiaru"
-
 msgid "Failed to delete subsidiary"
 msgstr "Niedostępna do usunięcia pododdziału"
 
@@ -1810,12 +1792,6 @@ msgstr "Nie udało się uzyskać ID typu magazynowego"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Nie udało się uzyskać ID magazynowego miejsca"
-
-msgid "Failed to get a style color id"
-msgstr "Nie udało się uzyskać identyfikatora koloru stylu"
-
-msgid "Failed to get a style size id"
-msgstr "Nie udało się uzyskać identyfikatora rozmiaru stylu"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Nie można uzyskać identyfikatora kontakту dostawcy"
@@ -2198,12 +2174,6 @@ msgstr "Nie można uzyskać typu magazynowego"
 msgid "Failed to get storageUnit"
 msgstr "Nie można pobrać jednostki przechowywania"
 
-msgid "Failed to get style color"
-msgstr "Nie można pobrać koloru stylu"
-
-msgid "Failed to get style size"
-msgstr "Nie można pobrać rozmiaru stylu"
-
 msgid "Failed to get subsidiary"
 msgstr "Nie można pobrać filii"
 
@@ -2480,14 +2450,8 @@ msgstr "Nie udało się wstawić rodzaju magazynowego"
 msgid "Failed to insert storageUnit"
 msgstr "Nie można wstawić jednostki magazynowej"
 
-msgid "Failed to insert style color"
-msgstr "Nie udało się wstawić koloru stylu"
-
 msgid "Failed to insert style inventory"
 msgstr "Nie udało się wstawić stanu magazynowego stylu"
-
-msgid "Failed to insert style size"
-msgstr "Nie udało się wstawić rozmiaru stylu"
 
 msgid "Failed to insert supplier quote"
 msgstr "Nie udało się wstawić dostawcy ceny"
@@ -3719,9 +3683,6 @@ msgstr "Nie udało się zaktualizować typu magazynowego"
 msgid "Failed to update storageUnit"
 msgstr "Nie udało się zaktualizować jednostki magazynowej"
 
-msgid "Failed to update style color"
-msgstr "Nie udało się zaktualizować koloru stylu"
-
 msgid "Failed to update style costing"
 msgstr "Nie udało sięaktualizować kosztu stylu"
 
@@ -3733,9 +3694,6 @@ msgstr "Nie udało się zaktualizować planowania stylu"
 
 msgid "Failed to update style sale price"
 msgstr "Nie udało sięaktualiziersprzedajaczej ceny stylu"
-
-msgid "Failed to update style size"
-msgstr "Nie udało się zaktualizować rozmiaru stylu"
 
 msgid "Failed to update subsidiary"
 msgstr "Nie udało się zaktualizować podkompresji"
@@ -5509,12 +5467,6 @@ msgstr "Zaplecze utworzone"
 msgid "Style"
 msgstr "Styl"
 
-msgid "Style color created"
-msgstr "Stylowa kolorówka utworzona"
-
-msgid "Style size created"
-msgstr "Styl rozmiaru utworzony"
-
 msgid "Submit anonymously"
 msgstr "Wyślij anonimowo"
 
@@ -5733,12 +5685,6 @@ msgstr "Pomyślnie usunięto przenosinę stoczną"
 
 msgid "Successfully deleted storage type"
 msgstr "Pomyślnie usunięto typ magazynowy"
-
-msgid "Successfully deleted style color"
-msgstr "Pomyślnie usunięta kolorystyka stylu"
-
-msgid "Successfully deleted style size"
-msgstr "Pomyślnie usunięto rozmiar stylu"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Pomyślnie usunięto pododdział"
@@ -6310,9 +6256,6 @@ msgstr "Zaktualizowana forma magazynowania"
 msgid "Updated storageUnit"
 msgstr "Zaktualizowana jednostka przechowywania"
 
-msgid "Updated style color"
-msgstr "Zaktualizowana kolorystyka stylu"
-
 msgid "Updated style costing"
 msgstr "Zaktualizowane stylowe koszty"
 
@@ -6324,9 +6267,6 @@ msgstr "Zaktualizowana planowanie stylu"
 
 msgid "Updated style sale price"
 msgstr "Zaktualizowana cena sprzedaży stylu"
-
-msgid "Updated style size"
-msgstr "Zaktualizowana wielkość stylu"
 
 msgid "Updated subsidiary"
 msgstr "Zaktualizowana filia"

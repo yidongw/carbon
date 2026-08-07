@@ -359,12 +359,6 @@ msgstr "Kann-global-Materialstoffs-eigentlich-nicht-verändert-werden"
 msgid "Cannot edit global material type"
 msgstr "Kann-global-Materialietyp-nicht-aendern"
 
-msgid "Cannot edit global style color"
-msgstr "Kann Farbe der globalen Stil nicht bearbeiten"
-
-msgid "Cannot edit global style size"
-msgstr "Kann Global-Stil-Größe nicht bearbeiten"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -877,12 +871,6 @@ msgstr "Fehler beim Laden der Lagerübertragungen"
 
 msgid "Error loading storage types"
 msgstr "Fehler beim Laden der Speicherarten"
-
-msgid "Error loading style colors"
-msgstr "Fehler beim Laden der Stilfarben"
-
-msgid "Error loading style sizes"
-msgstr "Fehler throughout Stylegrößen laden"
 
 msgid "Error loading supplier types"
 msgstr "Fehler beim Laden der Lieferantentypen"
@@ -1499,12 +1487,6 @@ msgstr "Fehler beim Löschen des Speichertypes"
 msgid "Failed to delete storage unit"
 msgstr "Fehler beim Löschen des Speicherbereichs"
 
-msgid "Failed to delete style color"
-msgstr "Fehler beim Löschen der Farbe"
-
-msgid "Failed to delete style size"
-msgstr "Fehler beim Löschen der Stilgröße"
-
 msgid "Failed to delete subsidiary"
 msgstr "Fehler beim Löschen der Niederlassung"
 
@@ -1810,12 +1792,6 @@ msgstr "Fehler beim Abrufen des Speicherarten-IDs"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Fehler: Speicherort-ID konnte nicht abgerufen werden"
-
-msgid "Failed to get a style color id"
-msgstr "Fehler beim Abrufen eines Stilfarben-IDs"
-
-msgid "Failed to get a style size id"
-msgstr "Fehler beim Abrufen eines Stilgrößen-IDs"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Fehler beim Abrufen des Lieferantenkontaktids"
@@ -2198,12 +2174,6 @@ msgstr "Fehler beim Abrufen des Speichertyps"
 msgid "Failed to get storageUnit"
 msgstr "Fehler beim Abrufen des Speicherorts"
 
-msgid "Failed to get style color"
-msgstr "Fehler beim Abrufen der Stilfarbe"
-
-msgid "Failed to get style size"
-msgstr "Fehler beim Abrufen der Stilgröße"
-
 msgid "Failed to get subsidiary"
 msgstr "Fehler beim Abrufen der Tochtergesellschaft"
 
@@ -2480,14 +2450,8 @@ msgstr "Fehler beim Einfügen des Speichertypes"
 msgid "Failed to insert storageUnit"
 msgstr "Fehler beim Speichern des Lagerplatzes"
 
-msgid "Failed to insert style color"
-msgstr "Fehler beim Einfügen der Stilfarbe"
-
 msgid "Failed to insert style inventory"
 msgstr "Fehler beim Einfügen des Stilinventars"
-
-msgid "Failed to insert style size"
-msgstr "Fehler beim Einfügen der Stilgröße"
 
 msgid "Failed to insert supplier quote"
 msgstr "Fehler beim Einfügen der Lieferantenabschätzung"
@@ -3719,9 +3683,6 @@ msgstr "Fehler beim Aktualisieren des Speicherungsformats"
 msgid "Failed to update storageUnit"
 msgstr "Fehler beim Aktualisieren des Speicherorts"
 
-msgid "Failed to update style color"
-msgstr "Fehler beim Aktualisieren der Stilfarbe"
-
 msgid "Failed to update style costing"
 msgstr "Fehler beim Aktualisieren des Stilpreises"
 
@@ -3733,9 +3694,6 @@ msgstr "Fehler beim Aktualisieren der Stilplanung"
 
 msgid "Failed to update style sale price"
 msgstr "Fehler beim Aktualisieren des Verkaufspreises"
-
-msgid "Failed to update style size"
-msgstr "Fehler beim Aktualisieren der Stilsgröße"
 
 msgid "Failed to update subsidiary"
 msgstr "Fehler beim Aktualisieren der Niederlassung"
@@ -5509,12 +5467,6 @@ msgstr "Speicherseinheit erstellt"
 msgid "Style"
 msgstr "Stil"
 
-msgid "Style color created"
-msgstr "Stilfarbe erstellt"
-
-msgid "Style size created"
-msgstr "Stilgröße erstellt"
-
 msgid "Submit anonymously"
 msgstr "Anonym einreichen"
 
@@ -5733,12 +5685,6 @@ msgstr "Erfolgreich gelöschte Lagerübertragung"
 
 msgid "Successfully deleted storage type"
 msgstr "Erfolgreich gelöschter Lagerungsartikel"
-
-msgid "Successfully deleted style color"
-msgstr "Stilfarbe erfolgreich gelöscht"
-
-msgid "Successfully deleted style size"
-msgstr "Stilgröße erfolgreich gelöscht"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Erfolgreich gelöscht"
@@ -6310,9 +6256,6 @@ msgstr "Aktualisierte Speicherart"
 msgid "Updated storageUnit"
 msgstr "aktualisiertes Speicherobjekt"
 
-msgid "Updated style color"
-msgstr "Aktualisierte Stilfarbe"
-
 msgid "Updated style costing"
 msgstr "Aktualisierte Stilkosten"
 
@@ -6324,9 +6267,6 @@ msgstr "Aktualisierte Stilplanung"
 
 msgid "Updated style sale price"
 msgstr "Aktualisierte Stilverkaufspreis"
-
-msgid "Updated style size"
-msgstr "Aktualisierte Stilgröße"
 
 msgid "Updated subsidiary"
 msgstr "Aktualisierte Tochtergesellschaft"

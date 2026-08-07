@@ -359,12 +359,6 @@ msgstr "No se puede editar el material substancial global"
 msgid "Cannot edit global material type"
 msgstr "No se puede editar el tipo de material global"
 
-msgid "Cannot edit global style color"
-msgstr "No se puede editar el color del estilo global"
-
-msgid "Cannot edit global style size"
-msgstr "No se puede editar el tamaño del estilo global"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -877,12 +871,6 @@ msgstr "Error cargando transferencias de inventario"
 
 msgid "Error loading storage types"
 msgstr "Error cargando tipos de almacenamiento"
-
-msgid "Error loading style colors"
-msgstr "Error cargando colores de estilo"
-
-msgid "Error loading style sizes"
-msgstr "Error cargando tamaños de estilo"
 
 msgid "Error loading supplier types"
 msgstr "Error cargando tipos de proveedor"
@@ -1499,12 +1487,6 @@ msgstr "Falló al eliminar el tipo de almacenamiento"
 msgid "Failed to delete storage unit"
 msgstr "Falló al eliminar el unidad de almacenamiento"
 
-msgid "Failed to delete style color"
-msgstr "Falló al eliminar el color de estilo"
-
-msgid "Failed to delete style size"
-msgstr "Falló al eliminar el tamaño de estilo"
-
 msgid "Failed to delete subsidiary"
 msgstr "Falló al eliminar la sucursal"
 
@@ -1810,12 +1792,6 @@ msgstr "Falló al obtener un ID de tipo de almacenamiento"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Falló al obtener un ID de unidad de almacenamiento"
-
-msgid "Failed to get a style color id"
-msgstr "Falló al obtener un identificador de color de estilo"
-
-msgid "Failed to get a style size id"
-msgstr "Falló al obtener un ID de tamaño de estilo"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Falló al obtener el ID de contacto del proveedor"
@@ -2198,12 +2174,6 @@ msgstr "Falló al obtener el tipo de almacenamiento"
 msgid "Failed to get storageUnit"
 msgstr "Falló al obtener el unidad de almacenamiento"
 
-msgid "Failed to get style color"
-msgstr "Falló al obtener el color de estilo"
-
-msgid "Failed to get style size"
-msgstr "Falló al obtener el tamaño del estilo"
-
 msgid "Failed to get subsidiary"
 msgstr "Falló al obtener la sucursal"
 
@@ -2480,14 +2450,8 @@ msgstr "Fallo al insertar tipo de almacenamiento"
 msgid "Failed to insert storageUnit"
 msgstr "Falló al insertar el unidadDeAlmacenamiento"
 
-msgid "Failed to insert style color"
-msgstr "Falló al insertar el color de estilo"
-
 msgid "Failed to insert style inventory"
 msgstr "Falló al insertar el inventario de estilos"
-
-msgid "Failed to insert style size"
-msgstr "Falló al insertar el tamaño de estilo"
 
 msgid "Failed to insert supplier quote"
 msgstr "Falló al insertar la oferta del proveedor"
@@ -3719,9 +3683,6 @@ msgstr "Falló al actualizar el tipo de almacenamiento"
 msgid "Failed to update storageUnit"
 msgstr "Falló al actualizar el storageUnit"
 
-msgid "Failed to update style color"
-msgstr "Falló al actualizar el color del estilo"
-
 msgid "Failed to update style costing"
 msgstr "Falló al actualizar el costo del estilo"
 
@@ -3733,9 +3694,6 @@ msgstr "Falló al actualizar el plan de estilo"
 
 msgid "Failed to update style sale price"
 msgstr "Falló al actualizar el precio de venta del estilo"
-
-msgid "Failed to update style size"
-msgstr "Falló al actualizar el tamaño del estilo"
 
 msgid "Failed to update subsidiary"
 msgstr "Falló al actualizar la sucursal"
@@ -5509,12 +5467,6 @@ msgstr "Unidad de almacenamiento creada"
 msgid "Style"
 msgstr "Estilo"
 
-msgid "Style color created"
-msgstr "Color de estilo creado"
-
-msgid "Style size created"
-msgstr "Tamaño de estilo creado"
-
 msgid "Submit anonymously"
 msgstr "Enviar de forma anónima"
 
@@ -5733,12 +5685,6 @@ msgstr "Eliminado con éxito el traslado de inventario"
 
 msgid "Successfully deleted storage type"
 msgstr "Se ha eliminado correctamente el tipo de almacenamiento"
-
-msgid "Successfully deleted style color"
-msgstr "Se ha eliminado el color de estilo correctamente"
-
-msgid "Successfully deleted style size"
-msgstr "Se eliminó el tamaño de estilo correctamente"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Se ha eliminado correctamente la sucursal"
@@ -6310,9 +6256,6 @@ msgstr "Tipo de almacenamiento actualizado"
 msgid "Updated storageUnit"
 msgstr "Unidad de almacenamiento actualizada"
 
-msgid "Updated style color"
-msgstr "Color de estilo actualizado"
-
 msgid "Updated style costing"
 msgstr "Costo actualizado de estilo"
 
@@ -6324,9 +6267,6 @@ msgstr "Planificación de estilo actualizada"
 
 msgid "Updated style sale price"
 msgstr "Precio de venta actualizado"
-
-msgid "Updated style size"
-msgstr "Tamaño de estilo actualizado"
 
 msgid "Updated subsidiary"
 msgstr "Subsidiaria actualizada"

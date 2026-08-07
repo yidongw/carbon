@@ -44,6 +44,10 @@ import {
   useRouteData,
   useUser
 } from "~/hooks";
+import {
+  groupLinesForStyleDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/styleConfigDisplay";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
@@ -64,6 +68,7 @@ const LineItems = ({
   lines,
   shouldConvertCurrency,
   colorNames,
+  styleVariantByItemId,
   purchaseOrderStatus
 }: {
   currencyCode: string;
@@ -73,6 +78,7 @@ const LineItems = ({
   lines: PurchaseOrderLine[];
   shouldConvertCurrency: boolean;
   colorNames: Record<string, string>;
+  styleVariantByItemId: Record<string, StyleVariantLineMeta>;
   purchaseOrderStatus: PurchaseOrder["status"] | null | undefined;
 }) => {
   const [items] = useItems();
@@ -81,7 +87,7 @@ const LineItems = ({
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
-  const { t, i18n } = useLingui();
+  const { t } = useLingui();
   const percentFormatter = usePercentFormatter();
   const [openItems, setOpenItems] = useState<string[]>([]);
   const unitOfMeasures = useUnitOfMeasure();
@@ -108,51 +114,109 @@ const LineItems = ({
     deleteLineDisclosure.onClose();
   };
 
+  const displayGroups = groupLinesForStyleDisplay(
+    lines,
+    styleVariantByItemId,
+    colorNames,
+    (line) => Number(line.purchaseQuantity ?? 0),
+    locale
+  );
+
   return (
     <VStack spacing={8} className="w-full overflow-hidden">
       {deleteLineDisclosure.isOpen && deleteLine ? (
         <DeletePurchaseOrderLine line={deleteLine} onCancel={onDeleteCancel} />
       ) : null}
-      {lines.map((line) => {
+      {displayGroups.map((group) => {
+        const line = group.kind === "line" ? group.line : group.primaryLine;
         if (!line.id) return null;
+
+        const totalLines =
+          group.kind === "style-group" ? group.totalLines : [line];
+        const styleConfig =
+          group.kind === "style-group"
+            ? group.styleConfig
+            : (group.styleConfig ??
+              getStyleConfigDisplay(line.configuration, colorNames, locale));
 
         const isGlAccount = line.purchaseOrderLineType === "G/L Account";
         const isFixedAsset = line.purchaseOrderLineType === "Fixed Asset";
         const isIndirect = isGlAccount || isFixedAsset;
-        const itemReadableId = isGlAccount
-          ? line.description || t`Indirect Expense`
-          : isFixedAsset
-            ? line.assetReadableId || t`Fixed Asset`
-            : getItemReadableId(items, line.itemId);
-        const lineTotal = (line.unitPrice ?? 0) * (line.purchaseQuantity ?? 0);
-        const supplierLineTotal =
-          (line.supplierUnitPrice ?? 0) * (line.purchaseQuantity ?? 0);
-        const total =
-          lineTotal + (line.taxAmount ?? 0) + (line.shippingCost ?? 0);
-        const supplierTotal =
-          supplierLineTotal +
-          (line.supplierTaxAmount ?? 0) +
-          (line.supplierShippingCost ?? 0);
-        const styleConfig = getStyleConfigDisplay(
-          line.configuration,
-          colorNames,
-          i18n.locale
+        const itemReadableId =
+          group.kind === "style-group"
+            ? group.parentReadableId
+            : isGlAccount
+              ? line.description || t`Indirect Expense`
+              : isFixedAsset
+                ? line.assetReadableId || t`Fixed Asset`
+                : (line.itemReadableId ??
+                  getItemReadableId(items, line.itemId));
+        const itemDescription =
+          group.kind === "style-group"
+            ? (group.parentName ?? line.description)
+            : isGlAccount
+              ? (accounts.find((a) => a.id === line.accountId)?.name ??
+                t`Indirect Expense`)
+              : isFixedAsset
+                ? line.description || t`Fixed Asset`
+                : line.description;
+        const thumbnailPath =
+          group.kind === "style-group"
+            ? (group.parentThumbnailPath ?? line.thumbnailPath)
+            : line.thumbnailPath;
+
+        const lineTotal = totalLines.reduce(
+          (acc, l) => acc + (l.unitPrice ?? 0) * (l.purchaseQuantity ?? 0),
+          0
         );
+        const supplierLineTotal = totalLines.reduce(
+          (acc, l) =>
+            acc + (l.supplierUnitPrice ?? 0) * (l.purchaseQuantity ?? 0),
+          0
+        );
+        const taxAmount = totalLines.reduce(
+          (acc, l) => acc + (l.taxAmount ?? 0),
+          0
+        );
+        const supplierTaxAmount = totalLines.reduce(
+          (acc, l) => acc + (l.supplierTaxAmount ?? 0),
+          0
+        );
+        const shippingCost = totalLines.reduce(
+          (acc, l) => acc + (l.shippingCost ?? 0),
+          0
+        );
+        const supplierShippingCost = totalLines.reduce(
+          (acc, l) => acc + (l.supplierShippingCost ?? 0),
+          0
+        );
+        const purchaseQuantity = totalLines.reduce(
+          (acc, l) => acc + (l.purchaseQuantity ?? 0),
+          0
+        );
+        const total = lineTotal + taxAmount + shippingCost;
+        const supplierTotal =
+          supplierLineTotal + supplierTaxAmount + supplierShippingCost;
+        // Unit price for badge: weighted average when grouped.
+        const unitPrice =
+          purchaseQuantity > 0
+            ? lineTotal / purchaseQuantity
+            : (line.unitPrice ?? 0);
 
         return (
           <motion.div
-            key={line.id}
+            key={group.key}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="border-b border-input py-6 w-full"
           >
             <HStack spacing={4} className="items-start">
-              {line.thumbnailPath ? (
+              {thumbnailPath ? (
                 <img
                   alt={itemReadableId!}
                   className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg"
-                  src={getPrivateUrl(line.thumbnailPath)}
+                  src={getPrivateUrl(thumbnailPath)}
                 />
               ) : (
                 <div className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg p-4">
@@ -163,7 +227,7 @@ const LineItems = ({
               <VStack spacing={0} className="w-full">
                 <div
                   className="flex flex-col cursor-pointer w-full"
-                  onClick={() => toggleOpen(line.id!)}
+                  onClick={() => toggleOpen(group.key)}
                 >
                   <div className="flex items-center justify-between w-full">
                     <VStack
@@ -196,7 +260,8 @@ const LineItems = ({
                           className="text-destructive flex-shrink-0"
                           isDisabled={
                             isDeleteDisabled ||
-                            !permissions.can("delete", "purchasing")
+                            !permissions.can("delete", "purchasing") ||
+                            group.kind === "style-group"
                           }
                           leftIcon={<LuTrash />}
                           onClick={(e) => {
@@ -208,12 +273,7 @@ const LineItems = ({
                         </Button>
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
-                        {isGlAccount
-                          ? (accounts.find((a) => a.id === line.accountId)
-                              ?.name ?? t`Indirect Expense`)
-                          : isFixedAsset
-                            ? line.description || t`Fixed Asset`
-                            : line.description}
+                        {itemDescription}
                       </span>
                       {styleConfig ? (
                         <StyleConfigChips chips={styleConfig.chips} />
@@ -238,7 +298,7 @@ const LineItems = ({
                         </VStack>
                         <motion.div
                           animate={{
-                            rotate: openItems.includes(line.id) ? 90 : 0
+                            rotate: openItems.includes(group.key) ? 90 : 0
                           }}
                           transition={{ duration: 0.3 }}
                         >
@@ -251,7 +311,7 @@ const LineItems = ({
                             variant="outline"
                             className="flex items-center gap-2"
                           >
-                            {line.purchaseQuantity}
+                            {purchaseQuantity}
                             <MethodIcon
                               // @ts-ignore
                               type={line.methodType ?? "Pull from Inventory"}
@@ -259,7 +319,7 @@ const LineItems = ({
                           </Badge>
                         )}
                         <Badge variant="green">
-                          {formatter.format(line.unitPrice ?? 0)}{" "}
+                          {formatter.format(unitPrice)}{" "}
                           {
                             unitOfMeasures.find(
                               (uom) =>
@@ -279,7 +339,7 @@ const LineItems = ({
 
                 <motion.div
                   initial="collapsed"
-                  animate={openItems.includes(line.id) ? "open" : "collapsed"}
+                  animate={openItems.includes(group.key) ? "open" : "collapsed"}
                   variants={{
                     open: { opacity: 1, height: "auto", marginTop: 16 },
                     collapsed: { opacity: 0, height: 0, marginTop: 0 }
@@ -300,7 +360,7 @@ const LineItems = ({
                           <Td className="text-right">
                             <VStack spacing={0} className="items-end">
                               <span>
-                                {line.purchaseQuantity}{" "}
+                                {purchaseQuantity}{" "}
                                 {
                                   unitOfMeasures.find(
                                     (uom) =>
@@ -309,19 +369,6 @@ const LineItems = ({
                                   )?.label
                                 }
                               </span>
-                              {line.conversionFactor !== 1 && (
-                                <span className="text-muted-foreground text-xs">
-                                  {(line.purchaseQuantity ?? 0) *
-                                    (line.conversionFactor ?? 1)}{" "}
-                                  {
-                                    unitOfMeasures.find(
-                                      (uom) =>
-                                        uom.value ===
-                                        line.inventoryUnitOfMeasureCode
-                                    )?.label
-                                  }
-                                </span>
-                              )}
                             </VStack>
                           </Td>
                         </Tr>
@@ -331,13 +378,13 @@ const LineItems = ({
                           </Td>
                           <Td className="text-right">
                             <VStack spacing={0} className="items-end">
-                              <span>
-                                {formatter.format(line.unitPrice ?? 0)}
-                              </span>
+                              <span>{formatter.format(unitPrice)}</span>
                               {shouldConvertCurrency && (
                                 <span className="text-muted-foreground text-xs">
                                   {presentationCurrencyFormatter.format(
-                                    line.supplierUnitPrice ?? 0
+                                    purchaseQuantity > 0
+                                      ? supplierLineTotal / purchaseQuantity
+                                      : (line.supplierUnitPrice ?? 0)
                                   )}
                                 </span>
                               )}
@@ -371,13 +418,11 @@ const LineItems = ({
                           </Td>
                           <Td className="text-right">
                             <VStack spacing={0} className="items-end">
-                              <span>
-                                {formatter.format(line.taxAmount ?? 0)}
-                              </span>
+                              <span>{formatter.format(taxAmount)}</span>
                               {shouldConvertCurrency && (
                                 <span className="text-muted-foreground text-xs">
                                   {presentationCurrencyFormatter.format(
-                                    line.supplierTaxAmount ?? 0
+                                    supplierTaxAmount
                                   )}
                                 </span>
                               )}
@@ -391,13 +436,11 @@ const LineItems = ({
                           </Td>
                           <Td className="text-right">
                             <VStack spacing={0} className="items-end">
-                              <span>
-                                {formatter.format(line.shippingCost ?? 0)}
-                              </span>
+                              <span>{formatter.format(shippingCost)}</span>
                               {shouldConvertCurrency && (
                                 <span className="text-muted-foreground text-xs">
                                   {presentationCurrencyFormatter.format(
-                                    line.supplierShippingCost ?? 0
+                                    supplierShippingCost
                                   )}
                                 </span>
                               )}
@@ -456,6 +499,7 @@ const PurchaseOrderSummary = ({
     purchaseOrderDelivery: PurchaseOrderDelivery;
     supplier: Supplier;
     colorNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(path.to.purchaseOrder(orderId));
 
   const isEditable = !isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
@@ -554,6 +598,7 @@ const PurchaseOrderSummary = ({
             lines={routeData?.lines ?? []}
             shouldConvertCurrency={shouldConvertCurrency}
             colorNames={routeData?.colorNames ?? {}}
+            styleVariantByItemId={routeData?.styleVariantByItemId ?? {}}
             purchaseOrderStatus={routeData?.purchaseOrder?.status}
           />
 

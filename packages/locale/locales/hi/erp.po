@@ -1081,14 +1081,6 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप स्टोरेज यूनिट को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
 
-#. placeholder {0}: styleColor.colorCode
-msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
-msgstr "क्या आप वाकई शैली रंग {0} हटाना चाहते हैं? इसे पूर्ववत नहीं किया जा सकता।"
-
-#. placeholder {0}: styleSize.sizeCode
-msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
-msgstr "क्या आप वाकई शैली आकार {0} हटाना चाहते हैं? इसे पूर्ववत नहीं किया जा सकता।"
-
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
@@ -1780,12 +1772,6 @@ msgstr "ग्लोबल मूलभूत सामग्री को स�
 msgid "Cannot edit global material type"
 msgstr "ग्लोबल मटेरियल टाइप को संपादित नहीं किया जा सकता"
 
-msgid "Cannot edit global style color"
-msgstr "निर्वाहित फॉर्मेट का रंग संपादित नहीं किया जा सकता"
-
-msgid "Cannot edit global style size"
-msgstr "निर्देशांक आकार को संपादित नहीं किया जा सकता"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -2041,12 +2027,6 @@ msgstr "रंग"
 
 msgid "Color / Size"
 msgstr "रंग / आकार"
-
-msgid "Color Code"
-msgstr "रंग कोड"
-
-msgid "Color Name"
-msgstr "रंग नाम"
 
 msgid "Colors"
 msgstr "रंग"
@@ -3410,12 +3390,6 @@ msgstr "स्टोरेज यूनिट हटाएं"
 msgid "Delete Style"
 msgstr "शैली हटाएँ"
 
-msgid "Delete Style Color"
-msgstr "शैली रंग हटाएँ"
-
-msgid "Delete Style Size"
-msgstr "शैली आकार हटाएँ"
-
 msgid "Delete Substance"
 msgstr "पदार्थ हटाएं"
 
@@ -4072,12 +4046,6 @@ msgstr "स्टोरेज यूनिट संपादित करें
 msgid "Edit Style"
 msgstr "शैली संपादित करें"
 
-msgid "Edit Style Color"
-msgstr "शैली रंग संपादित करें"
-
-msgid "Edit Style Size"
-msgstr "शैली आकार संपादित करें"
-
 msgid "Edit Substance"
 msgstr "पदार्थ संपादित करें"
 
@@ -4419,12 +4387,6 @@ msgstr "स्टॉक ट्रांजर्स का लोड होन�
 
 msgid "Error loading storage types"
 msgstr "स्टोरेज प्रकार लोड करते समय त्रुटि"
-
-msgid "Error loading style colors"
-msgstr "कालर शैली लोड करते समय त्रुटि"
-
-msgid "Error loading style sizes"
-msgstr "कारकिर्द आकारों का लोड होता नहीं"
 
 msgid "Error loading supplier types"
 msgstr "संशोधक विनियमन प्रकारों का लोड करते समय त्रुटि"
@@ -5358,12 +5320,6 @@ msgstr "स्टोरेज टाइप को हटाने में व�
 msgid "Failed to delete storage unit"
 msgstr "स्टोरेज इकाई को हटाने में विफल रहा"
 
-msgid "Failed to delete style color"
-msgstr "stile कॉलर हटाना फ़कार हुआ"
-
-msgid "Failed to delete style size"
-msgstr "stile आकार को हटाने में फ़ल निकला"
-
 msgid "Failed to delete subsidiary"
 msgstr "फैलिटेड टू डिलीट सब्जिकर्स"
 
@@ -5675,12 +5631,6 @@ msgstr "स्टोरेज टाइप आईडी प्राप्त �
 
 msgid "Failed to get a storageUnit id"
 msgstr "स्टोरेज यूनिट आईडी प्राप्त करने में वा हुआ है"
-
-msgid "Failed to get a style color id"
-msgstr "stile का रंग आईडी प्राप्त नहीं किया जा सका"
-
-msgid "Failed to get a style size id"
-msgstr "stile की आकार आईडी प्राप्त करने में फ़ल निकाला गया है"
 
 msgid "Failed to get a supplier contact id"
 msgstr "फ़ाइल कर ने कोई प्रदाता संपर्क आईडी प्राप्त नहीं की जा सकी"
@@ -6066,12 +6016,6 @@ msgstr "स्टोरेज प्रकार का प्राप्त �
 msgid "Failed to get storageUnit"
 msgstr "स्टोरेज यूनिट का प्राप्त करने में फालतु आई"
 
-msgid "Failed to get style color"
-msgstr "stile का रंग प्राप्त नहीं किया जा सका"
-
-msgid "Failed to get style size"
-msgstr "stile का आकार प्राप्त नहीं किया जा सका"
-
 msgid "Failed to get subsidiary"
 msgstr "सब्सिडरी से फेल हुई"
 
@@ -6354,14 +6298,8 @@ msgstr "स्टोरेज प्रकार का इनсер्ट ह�
 msgid "Failed to insert storageUnit"
 msgstr "स्टोरेज यूनिट में इंサर्ट करने में फालतु आई"
 
-msgid "Failed to insert style color"
-msgstr "stile कॉलर इनसर्ट होने में विफल"
-
 msgid "Failed to insert style inventory"
 msgstr "गैर सफल शॉप इन्वेंटरी इंサर्ट"
-
-msgid "Failed to insert style size"
-msgstr "stile की आकार समर्पित होने में फालतू हुआ"
 
 msgid "Failed to insert supplier quote"
 msgstr "फ़ाइल को डालने में व्याकरण त्रुटि हो गई"
@@ -7698,9 +7636,6 @@ msgstr "स्टोरेज प्रकार अपडेट करने �
 msgid "Failed to update storageUnit"
 msgstr "स्टोरेज यूनिट अपडेट करने में वासी हुआ"
 
-msgid "Failed to update style color"
-msgstr "stile का रंग अपडेट होने में फाल्टी रही"
-
 msgid "Failed to update style costing"
 msgstr "stile की लागत अपडेट होने में फाल्टी रही"
 
@@ -7712,9 +7647,6 @@ msgstr "stile को अपडेट करने में वफ़ादर�
 
 msgid "Failed to update style sale price"
 msgstr "स्टाइल बिक्री मूल्य अपडेट करने में वफ़ादरी नहीं समाप्त की जा सकी"
-
-msgid "Failed to update style size"
-msgstr "stile का आकार अपडेट होने में फ़ल नहीं पड़ी"
 
 msgid "Failed to update subsidiary"
 msgstr "फीडबैक संशोधन नहीं किया जा सका"
@@ -10218,12 +10150,6 @@ msgstr "नया स्टोरेज यूनिट"
 
 msgid "New Style"
 msgstr "नई शैली"
-
-msgid "New Style Color"
-msgstr "नया शैली रंग"
-
-msgid "New Style Size"
-msgstr "नया शैली आकार"
 
 msgid "New Supplier"
 msgstr "नया स्वीपर"
@@ -13678,12 +13604,6 @@ msgstr "एक नौकरी"
 msgid "Size"
 msgstr "आकार"
 
-msgid "Size Code"
-msgstr "आकार कोड"
-
-msgid "Size Name"
-msgstr "आकार नाम"
-
 msgid "Sizes"
 msgstr "आकार"
 
@@ -13990,15 +13910,6 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Style"
 msgstr "शैली"
 
-msgid "Style Color"
-msgstr "शैली रंग"
-
-msgid "Style color created"
-msgstr "स्टाइल रंग बनाया गया है"
-
-msgid "Style Colors"
-msgstr "शैली रंग"
-
 msgid "Style Details"
 msgstr "शैली विवरण"
 
@@ -14008,23 +13919,11 @@ msgstr "शैली आईडी"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
 
-msgid "Style Properties"
-msgstr "शैली गुण"
-
 msgid "Style quantity configuration is required"
 msgstr "स्टाइल गुणता कonfiguration आवश्यक है"
 
 msgid "Style quantity is required"
 msgstr "स्टाइल की मात्रा आवश्यक है"
-
-msgid "Style Size"
-msgstr "शैली आकार"
-
-msgid "Style size created"
-msgstr "स्टाइल आकार बनाया गया है"
-
-msgid "Style Sizes"
-msgstr "शैली आकार"
 
 msgid "Styles"
 msgstr "शैलियाँ"
@@ -14298,12 +14197,6 @@ msgstr "सफलतापूर्वक स्टॉक ट्रांसफ�
 
 msgid "Successfully deleted storage type"
 msgstr "सफलतापूर्वक संग्रह प्रकार हटा दिया"
-
-msgid "Successfully deleted style color"
-msgstr "सफलतापूर्वक स्टाइल रंग हटाया"
-
-msgid "Successfully deleted style size"
-msgstr "सफलतापूर्वक साइज टाइप हटा diya hai"
 
 msgid "Successfully deleted subsidiary"
 msgstr "सफलतापूर्वक उपविभाग हटा diya gaya"
@@ -15671,9 +15564,6 @@ msgstr "अपडेट डायनामिक प्रकार"
 msgid "Updated storageUnit"
 msgstr "अपडेट डायनामिक स्टोरेज इकाई"
 
-msgid "Updated style color"
-msgstr "अपडेट डिज़ाइन रंग"
-
 msgid "Updated style costing"
 msgstr "अपडेट डिजाइन की लागत"
 
@@ -15685,9 +15575,6 @@ msgstr "अपडेट डिजाइन प्लैनिंग"
 
 msgid "Updated style sale price"
 msgstr "अपडेट डिस्प्ले सुन्दर कीमत"
-
-msgid "Updated style size"
-msgstr "अपडेट डिशाइन साइज"
 
 msgid "Updated subsidiary"
 msgstr "अपडेट विभाग"

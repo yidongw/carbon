@@ -1081,14 +1081,6 @@ msgstr "Вы уверены, что хотите удалить тип хран�
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить хранилище: {0}? Это действие невозможно отменить."
 
-#. placeholder {0}: styleColor.colorCode
-msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
-msgstr "Удалить цвет модели {0}? Это действие нельзя отменить."
-
-#. placeholder {0}: styleSize.sizeCode
-msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
-msgstr "Удалить размер модели {0}? Это действие нельзя отменить."
-
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить тип поставщика: {0}? Это действие невозможно отменить."
@@ -1780,12 +1772,6 @@ msgstr "Невозможно редактировать глобальный м�
 msgid "Cannot edit global material type"
 msgstr "Невозможно редактировать глобальный тип материала"
 
-msgid "Cannot edit global style color"
-msgstr "Невозможно редактировать глобальный стиль цвета"
-
-msgid "Cannot edit global style size"
-msgstr "Невозможно редактировать глобальный стиль размера"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -2041,12 +2027,6 @@ msgstr "Цвет"
 
 msgid "Color / Size"
 msgstr "Цвет / Размер"
-
-msgid "Color Code"
-msgstr "Код цвета"
-
-msgid "Color Name"
-msgstr "Название цвета"
 
 msgid "Colors"
 msgstr "Цвета"
@@ -3410,12 +3390,6 @@ msgstr "Удалить хранилище"
 msgid "Delete Style"
 msgstr "Удалить модель"
 
-msgid "Delete Style Color"
-msgstr "Удалить цвет модели"
-
-msgid "Delete Style Size"
-msgstr "Удалить размер модели"
-
 msgid "Delete Substance"
 msgstr "Удалить вещество"
 
@@ -4072,12 +4046,6 @@ msgstr "Редактировать хранилище"
 msgid "Edit Style"
 msgstr "Изменить модель"
 
-msgid "Edit Style Color"
-msgstr "Изменить цвет модели"
-
-msgid "Edit Style Size"
-msgstr "Изменить размер модели"
-
 msgid "Edit Substance"
 msgstr "Редактировать вещество"
 
@@ -4419,12 +4387,6 @@ msgstr "Ошибка загрузки перемещений складских 
 
 msgid "Error loading storage types"
 msgstr "Ошибка загрузки типов хранения"
-
-msgid "Error loading style colors"
-msgstr "Ошибка загрузки стилевых цветов"
-
-msgid "Error loading style sizes"
-msgstr "Ошибка загрузки размеров стилей"
 
 msgid "Error loading supplier types"
 msgstr "Ошибка загрузки типов поставщиков"
@@ -5355,12 +5317,6 @@ msgstr "Не удалось удалить тип хранения"
 msgid "Failed to delete storage unit"
 msgstr "Не удалось удалить складскую единицу"
 
-msgid "Failed to delete style color"
-msgstr "Не удалось удалить стиль цвета"
-
-msgid "Failed to delete style size"
-msgstr "Не удалось удалить стиль размера"
-
 msgid "Failed to delete subsidiary"
 msgstr "Не удалось удалить дочернюю компанию"
 
@@ -5672,12 +5628,6 @@ msgstr "Не удалось получить идентификатор типа
 
 msgid "Failed to get a storageUnit id"
 msgstr "Не удалось получить идентификатор хранилища"
-
-msgid "Failed to get a style color id"
-msgstr "Не удалось получить идентификатор цвета стиля"
-
-msgid "Failed to get a style size id"
-msgstr "Не удалось получить идентификатор размера стиля"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Не удалось получить идентификатор контактного лица поставщика"
@@ -6063,12 +6013,6 @@ msgstr "Не удалось получить тип хранения"
 msgid "Failed to get storageUnit"
 msgstr "Не удалось получить storageUnit"
 
-msgid "Failed to get style color"
-msgstr "Не удалось получить цвет стиля"
-
-msgid "Failed to get style size"
-msgstr "Не удалось получить размер стиля"
-
 msgid "Failed to get subsidiary"
 msgstr "Не удалось получить филиал"
 
@@ -6351,14 +6295,8 @@ msgstr "Не удалось вставить тип хранения"
 msgid "Failed to insert storageUnit"
 msgstr "Не удалось добавить единицу хранения"
 
-msgid "Failed to insert style color"
-msgstr "Не удалось вставить стиль цвета"
-
 msgid "Failed to insert style inventory"
 msgstr "Не удалось вставить стиль инвентаризации"
-
-msgid "Failed to insert style size"
-msgstr "Не удалось вставить размер стиля"
 
 msgid "Failed to insert supplier quote"
 msgstr "Не удалось вставить поставщика报价"
@@ -7695,9 +7633,6 @@ msgstr "Не удалось обновить тип хранения"
 msgid "Failed to update storageUnit"
 msgstr "Не удалось обновить(storageUnit)"
 
-msgid "Failed to update style color"
-msgstr "Не удалось обновить цвет стиля"
-
 msgid "Failed to update style costing"
 msgstr "Не удалось обновить стиль затрат"
 
@@ -7709,9 +7644,6 @@ msgstr "Не удалось обновить стиль планирования
 
 msgid "Failed to update style sale price"
 msgstr "Не удалось обновить стиль продажной цены"
-
-msgid "Failed to update style size"
-msgstr "Не удалось обновить размер стиля"
 
 msgid "Failed to update subsidiary"
 msgstr "Не удалось обновить филиал"
@@ -10215,12 +10147,6 @@ msgstr "Новое хранилище"
 
 msgid "New Style"
 msgstr "Новая модель"
-
-msgid "New Style Color"
-msgstr "Новый цвет модели"
-
-msgid "New Style Size"
-msgstr "Новый размер модели"
 
 msgid "New Supplier"
 msgstr "Новый поставщик"
@@ -13675,12 +13601,6 @@ msgstr "Один_job"
 msgid "Size"
 msgstr "Размер"
 
-msgid "Size Code"
-msgstr "Код размера"
-
-msgid "Size Name"
-msgstr "Название размера"
-
 msgid "Sizes"
 msgstr "Размеры"
 
@@ -13987,15 +13907,6 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Style"
 msgstr "Модель"
 
-msgid "Style Color"
-msgstr "Цвет модели"
-
-msgid "Style color created"
-msgstr "Цвет стиля создан"
-
-msgid "Style Colors"
-msgstr "Цвета модели"
-
 msgid "Style Details"
 msgstr "Сведения о модели"
 
@@ -14005,23 +13916,11 @@ msgstr "ID модели"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Стиль вывода канбана для отображения в таблице Канбана"
 
-msgid "Style Properties"
-msgstr "Свойства модели"
-
 msgid "Style quantity configuration is required"
 msgstr "Конфигурация количества стилей требуется"
 
 msgid "Style quantity is required"
 msgstr "Количество стиля обязательно"
-
-msgid "Style Size"
-msgstr "Размер модели"
-
-msgid "Style size created"
-msgstr "Размер стиля создан"
-
-msgid "Style Sizes"
-msgstr "Размеры модели"
 
 msgid "Styles"
 msgstr "Модели"
@@ -14295,12 +14194,6 @@ msgstr "Успешно удалена перемещение складских 
 
 msgid "Successfully deleted storage type"
 msgstr "Успешно удалено тип хранения"
-
-msgid "Successfully deleted style color"
-msgstr "Успешно удалена цветовая тема"
-
-msgid "Successfully deleted style size"
-msgstr "Успешно удалена стилевая размерность"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Успешно удалена дочерняя компания"
@@ -15668,9 +15561,6 @@ msgstr "Обновленный тип хранения"
 msgid "Updated storageUnit"
 msgstr "Обновленный складской пункт"
 
-msgid "Updated style color"
-msgstr "Обновленный стиль цвета"
-
 msgid "Updated style costing"
 msgstr "Обновленный стиль ценообразования"
 
@@ -15682,9 +15572,6 @@ msgstr "Обновленный стиль планирования"
 
 msgid "Updated style sale price"
 msgstr "Обновленная стилистическая цена продажи"
-
-msgid "Updated style size"
-msgstr "Обновленный стиль размера"
 
 msgid "Updated subsidiary"
 msgstr "Обновлено филиал"

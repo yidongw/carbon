@@ -359,12 +359,6 @@ msgstr "グローバル素材を編集できません"
 msgid "Cannot edit global material type"
 msgstr "グローバル素材タイプを編集できません"
 
-msgid "Cannot edit global style color"
-msgstr "グローバルスタイルの色を編集できません"
-
-msgid "Cannot edit global style size"
-msgstr "グローバルスタイルサイズを編集できません"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -877,12 +871,6 @@ msgstr "在庫転送の読み込みエラー"
 
 msgid "Error loading storage types"
 msgstr "ストレージタイプの読み込みエラー"
-
-msgid "Error loading style colors"
-msgstr "スタイルの色を読み込めないエラー"
-
-msgid "Error loading style sizes"
-msgstr "スタイルサイズの読み込みエラー"
 
 msgid "Error loading supplier types"
 msgstr "サプライヤータイプの読み込みエラー"
@@ -1499,12 +1487,6 @@ msgstr "ストレージタイプの削除に失敗しました"
 msgid "Failed to delete storage unit"
 msgstr "ストレージ単位の削除に失敗しました"
 
-msgid "Failed to delete style color"
-msgstr "スタイル色を削除できませんでした"
-
-msgid "Failed to delete style size"
-msgstr "スタイルサイズの削除に失敗しました"
-
 msgid "Failed to delete subsidiary"
 msgstr "子会社の削除に失敗しました"
 
@@ -1810,12 +1792,6 @@ msgstr "ストレージタイプIDを取得できませんでした"
 
 msgid "Failed to get a storageUnit id"
 msgstr "ストレージユニットのIDを取得できませんでした"
-
-msgid "Failed to get a style color id"
-msgstr "スタイル色IDを取得できませんでした"
-
-msgid "Failed to get a style size id"
-msgstr "スタイルサイズIDを取得できませんでした"
 
 msgid "Failed to get a supplier contact id"
 msgstr "サプライヤーの連絡先IDを取得できませんでした"
@@ -2198,12 +2174,6 @@ msgstr "ストレージタイプ取得に失敗しました"
 msgid "Failed to get storageUnit"
 msgstr "ストレージ単位の取得に失敗しました"
 
-msgid "Failed to get style color"
-msgstr "スタイル色を取得できませんでした"
-
-msgid "Failed to get style size"
-msgstr "スタイルサイズを取得できませんでした"
-
 msgid "Failed to get subsidiary"
 msgstr "子会社情報取得に失敗しました"
 
@@ -2480,14 +2450,8 @@ msgstr "ストレージタイプの登録に失敗しました"
 msgid "Failed to insert storageUnit"
 msgstr "ストレージ単位の登録に失敗しました"
 
-msgid "Failed to insert style color"
-msgstr "スタイル色の挿入に失敗しました"
-
 msgid "Failed to insert style inventory"
 msgstr "スタイルインベントリの登録に失敗しました"
-
-msgid "Failed to insert style size"
-msgstr "スタイルサイズの挿入に失敗しました"
 
 msgid "Failed to insert supplier quote"
 msgstr "サプライヤーの見積りを挿入できませんでした"
@@ -3719,9 +3683,6 @@ msgstr "ストレージタイプの更新に失敗しました"
 msgid "Failed to update storageUnit"
 msgstr "ストレージ単位の更新に失敗しました"
 
-msgid "Failed to update style color"
-msgstr "スタイル色の更新に失敗しました"
-
 msgid "Failed to update style costing"
 msgstr "スタイルコスト更新に失敗しました"
 
@@ -3733,9 +3694,6 @@ msgstr "スタイル計画の更新に失敗しました"
 
 msgid "Failed to update style sale price"
 msgstr "スタイル販売価格の更新に失敗しました"
-
-msgid "Failed to update style size"
-msgstr "スタイルサイズの更新に失敗しました"
 
 msgid "Failed to update subsidiary"
 msgstr "子会社の更新に失敗しました"
@@ -5509,12 +5467,6 @@ msgstr "ストレージ単位を作成しました"
 msgid "Style"
 msgstr "スタイル"
 
-msgid "Style color created"
-msgstr "スタイル色を作成しました"
-
-msgid "Style size created"
-msgstr "スタイルサイズを作成しました"
-
 msgid "Submit anonymously"
 msgstr "匿名で送信"
 
@@ -5733,12 +5685,6 @@ msgstr "在庫移動を成功して削除しました"
 
 msgid "Successfully deleted storage type"
 msgstr "成功しました。保管種別を削除しました。"
-
-msgid "Successfully deleted style color"
-msgstr "成功して色を削除しました"
-
-msgid "Successfully deleted style size"
-msgstr "成功しました。スタイルサイズを削除しました。"
 
 msgid "Successfully deleted subsidiary"
 msgstr "成功しました。子会社を削除しました。"
@@ -6310,9 +6256,6 @@ msgstr "更新された保管タイプ"
 msgid "Updated storageUnit"
 msgstr "更新されたstorageUnit"
 
-msgid "Updated style color"
-msgstr "更新されたスタイル色"
-
 msgid "Updated style costing"
 msgstr "更新されたスタイルコストинг"
 
@@ -6324,9 +6267,6 @@ msgstr "更新されたスタイル計画"
 
 msgid "Updated style sale price"
 msgstr "更新されたスタイル販売価格"
-
-msgid "Updated style size"
-msgstr "更新されたスタイルサイズ"
 
 msgid "Updated subsidiary"
 msgstr "更新された子会社"

@@ -118,3 +118,193 @@ export function getStyleConfigDisplay(
     }))
   };
 }
+
+/**
+ * Build Color · Size chips from expanded Style variant lines (no configTable).
+ * Used when PO/SO lines were replaced with child SKUs after Style expand.
+ */
+export function getStyleConfigDisplayFromVariants(
+  variants: Array<{
+    colorCode: string;
+    sizeCode: string;
+    quantity: number;
+  }>,
+  colorNames?: Record<string, string>,
+  locale?: string
+): StyleConfigDisplay | null {
+  const localized = localizeColorNameMap(colorNames, locale);
+  const byKey = new Map<string, StyleConfigChip>();
+  for (const variant of variants) {
+    const colorCode = variant.colorCode?.trim();
+    const sizeCode = variant.sizeCode?.trim();
+    if (!colorCode || !sizeCode) continue;
+    const qty = Number(variant.quantity) || 0;
+    if (qty <= 0) continue;
+    const colorLabel = localized?.[colorCode] ?? colorCode;
+    const colorSize = `${colorLabel} · ${sizeCode}`;
+    const key = `${colorCode}|${sizeCode}`;
+    const existing = byKey.get(key);
+    if (existing) {
+      existing.quantity += qty;
+      existing.label = `${colorSize} ×${existing.quantity}`;
+    } else {
+      byKey.set(key, {
+        key,
+        colorSize,
+        label: `${colorSize} ×${qty}`,
+        quantity: qty
+      });
+    }
+  }
+  if (byKey.size === 0) return null;
+  return { chips: [...byKey.values()] };
+}
+
+/** Parent Style metadata for a variant SKU line on an order. */
+export type StyleVariantLineMeta = {
+  variantItemId: string;
+  parentItemId: string;
+  parentReadableId: string;
+  parentName: string | null;
+  parentThumbnailPath: string | null;
+  colorCode: string;
+  sizeCode: string;
+};
+
+type GroupableOrderLine = {
+  id: string | null;
+  itemId: string | null;
+  configuration?: unknown;
+};
+
+export type StyleDisplayLineGroup<T extends GroupableOrderLine> =
+  | {
+      kind: "line";
+      key: string;
+      line: T;
+      styleConfig: StyleConfigDisplay | null;
+    }
+  | {
+      kind: "style-group";
+      key: string;
+      parentItemId: string;
+      parentReadableId: string;
+      parentName: string | null;
+      parentThumbnailPath: string | null;
+      /** Prefer parent line for edit/delete when present; else first variant. */
+      primaryLine: T;
+      /** Lines that contribute to totals (variants when expanded; else parent). */
+      totalLines: T[];
+      styleConfig: StyleConfigDisplay | null;
+    };
+
+/**
+ * Collapse expanded Style variant SKU lines under their parent for summary UI.
+ * Parent lines that still carry a configTable (not yet expanded) stay as-is.
+ * If both a configured parent and sibling variants exist, prefer the variants
+ * for chips/totals so quantities are not double-counted.
+ */
+export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
+  lines: T[],
+  variantByItemId: Record<string, StyleVariantLineMeta>,
+  colorNames?: Record<string, string>,
+  quantityOf: (line: T) => number = () => 0,
+  locale?: string
+): StyleDisplayLineGroup<T>[] {
+  const variantLinesByParent = new Map<string, T[]>();
+  const parentLinesByItemId = new Map<string, T>();
+  const passthrough: T[] = [];
+
+  for (const line of lines) {
+    if (!line.id || !line.itemId) {
+      if (line.id) passthrough.push(line);
+      continue;
+    }
+    const meta = variantByItemId[line.itemId];
+    if (meta) {
+      const list = variantLinesByParent.get(meta.parentItemId) ?? [];
+      list.push(line);
+      variantLinesByParent.set(meta.parentItemId, list);
+      continue;
+    }
+    // Parent Style still holding a color×size grid (pre-expand).
+    if (getStyleConfigDisplay(line.configuration, colorNames, locale)) {
+      parentLinesByItemId.set(line.itemId, line);
+      continue;
+    }
+    passthrough.push(line);
+  }
+
+  const groups: StyleDisplayLineGroup<T>[] = [];
+  const consumedParents = new Set<string>();
+
+  for (const [parentItemId, variantLines] of variantLinesByParent) {
+    const meta = variantByItemId[variantLines[0]!.itemId!];
+    const parentLine = parentLinesByItemId.get(parentItemId);
+    if (parentLine) consumedParents.add(parentItemId);
+
+    const styleConfig = getStyleConfigDisplayFromVariants(
+      variantLines.map((line) => {
+        const m = variantByItemId[line.itemId!];
+        return {
+          colorCode: m?.colorCode ?? "",
+          sizeCode: m?.sizeCode ?? "",
+          quantity: quantityOf(line)
+        };
+      }),
+      colorNames,
+      locale
+    );
+
+    groups.push({
+      kind: "style-group",
+      key: `style:${parentItemId}`,
+      parentItemId,
+      parentReadableId: meta.parentReadableId,
+      parentName: meta.parentName,
+      parentThumbnailPath:
+        meta.parentThumbnailPath ??
+        (parentLine as { thumbnailPath?: string | null } | undefined)
+          ?.thumbnailPath ??
+        null,
+      primaryLine: parentLine ?? variantLines[0]!,
+      totalLines: variantLines,
+      styleConfig
+    });
+  }
+
+  for (const [parentItemId, parentLine] of parentLinesByItemId) {
+    if (consumedParents.has(parentItemId)) continue;
+    groups.push({
+      kind: "line",
+      key: parentLine.id!,
+      line: parentLine,
+      styleConfig: getStyleConfigDisplay(
+        parentLine.configuration,
+        colorNames,
+        locale
+      )
+    });
+  }
+
+  for (const line of passthrough) {
+    groups.push({
+      kind: "line",
+      key: line.id!,
+      line,
+      styleConfig: getStyleConfigDisplay(line.configuration, colorNames, locale)
+    });
+  }
+
+  // Preserve original line order: first occurrence of each group's members.
+  const orderIndex = new Map(lines.map((l, i) => [l.id, i]));
+  const firstIndex = (group: StyleDisplayLineGroup<T>) => {
+    if (group.kind === "line") return orderIndex.get(group.line.id) ?? 0;
+    return Math.min(
+      ...group.totalLines.map((l) => orderIndex.get(l.id) ?? 0),
+      orderIndex.get(group.primaryLine.id) ?? Number.MAX_SAFE_INTEGER
+    );
+  };
+  groups.sort((a, b) => firstIndex(a) - firstIndex(b));
+  return groups;
+}

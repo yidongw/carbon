@@ -1081,14 +1081,6 @@ msgstr "Êtes-vous sûr de vouloir supprimer le type de stockage : {0}? Cette ac
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer l'unité de stockage : {0} ? Cette action ne peut pas être annulée."
 
-#. placeholder {0}: styleColor.colorCode
-msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
-msgstr "Voulez-vous vraiment supprimer la couleur de modèle {0} ? Cette action est irréversible."
-
-#. placeholder {0}: styleSize.sizeCode
-msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
-msgstr "Voulez-vous vraiment supprimer la taille de modèle {0} ? Cette action est irréversible."
-
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer le type de fournisseur : {0} ? Cette action ne peut pas être annulée."
@@ -1780,12 +1772,6 @@ msgstr "Impossible d'éditer la substance matérielle globale"
 msgid "Cannot edit global material type"
 msgstr "Ne pouvez pas modifier le type de matériau global"
 
-msgid "Cannot edit global style color"
-msgstr "Impossible de modifier la couleur du style global"
-
-msgid "Cannot edit global style size"
-msgstr "Impossible de modifier la taille des styles globaux"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -2041,12 +2027,6 @@ msgstr "Couleur"
 
 msgid "Color / Size"
 msgstr "Couleur / Taille"
-
-msgid "Color Code"
-msgstr "Code couleur"
-
-msgid "Color Name"
-msgstr "Nom de la couleur"
 
 msgid "Colors"
 msgstr "Couleurs"
@@ -3410,12 +3390,6 @@ msgstr "Supprimer l'unité de stockage"
 msgid "Delete Style"
 msgstr "Supprimer le modèle"
 
-msgid "Delete Style Color"
-msgstr "Supprimer la couleur du modèle"
-
-msgid "Delete Style Size"
-msgstr "Supprimer la taille du modèle"
-
 msgid "Delete Substance"
 msgstr "Supprimer la substance"
 
@@ -4072,12 +4046,6 @@ msgstr "Modifier l'unité de stockage"
 msgid "Edit Style"
 msgstr "Modifier le modèle"
 
-msgid "Edit Style Color"
-msgstr "Modifier la couleur du modèle"
-
-msgid "Edit Style Size"
-msgstr "Modifier la taille du modèle"
-
 msgid "Edit Substance"
 msgstr "Modifier la substance"
 
@@ -4419,12 +4387,6 @@ msgstr "Erreur chargement des transferts de stocks"
 
 msgid "Error loading storage types"
 msgstr "Erreur chargement types de stockage"
-
-msgid "Error loading style colors"
-msgstr "Erreur chargement des couleurs de style"
-
-msgid "Error loading style sizes"
-msgstr "Erreur chargement tailles de style"
 
 msgid "Error loading supplier types"
 msgstr "Erreur chargement types de fournisseur"
@@ -5355,12 +5317,6 @@ msgstr "Échec de la suppression du type de stockage"
 msgid "Failed to delete storage unit"
 msgstr "Échec de la suppression du stockage"
 
-msgid "Failed to delete style color"
-msgstr "Échec de la suppression de la couleur de style"
-
-msgid "Failed to delete style size"
-msgstr "Échec de la suppression de la taille de style"
-
 msgid "Failed to delete subsidiary"
 msgstr "Échec de la suppression de la filiale"
 
@@ -5672,12 +5628,6 @@ msgstr "Échec de récupération du type d'emplacement"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Échec de récupération de l'ID d'unité de stock"
-
-msgid "Failed to get a style color id"
-msgstr "Échec de récupération de l'ID de couleur de style"
-
-msgid "Failed to get a style size id"
-msgstr "Échec de récupération de l'identifiant de taille de style"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Échec de récupération du identifiant de contact fournisseur"
@@ -6063,12 +6013,6 @@ msgstr "Échec de récupération du type de stockage"
 msgid "Failed to get storageUnit"
 msgstr "Échec de récupération du storageUnit"
 
-msgid "Failed to get style color"
-msgstr "Échec pour obtenir la couleur de style"
-
-msgid "Failed to get style size"
-msgstr "Échec de récupération de la taille du style"
-
 msgid "Failed to get subsidiary"
 msgstr "Échec de récupération de la filiale"
 
@@ -6351,14 +6295,8 @@ msgstr "Échec de l'insertion du type de stockage"
 msgid "Failed to insert storageUnit"
 msgstr "Échec de l'insertion de l'unité de stockage"
 
-msgid "Failed to insert style color"
-msgstr "Échec de l'insertion de la couleur de style"
-
 msgid "Failed to insert style inventory"
 msgstr "Échec de l'insertion du stock de styles"
-
-msgid "Failed to insert style size"
-msgstr "Échec de l'insertion de la taille du style"
 
 msgid "Failed to insert supplier quote"
 msgstr "Échec de l'insertion du devis fournisseur"
@@ -7695,9 +7633,6 @@ msgstr "Échec de la mise à jour du type de stockage"
 msgid "Failed to update storageUnit"
 msgstr "Échec de la mise à jour du storageUnit"
 
-msgid "Failed to update style color"
-msgstr "Échec de mise à jour de la couleur de style"
-
 msgid "Failed to update style costing"
 msgstr "Échec de la mise à jour du coût de style"
 
@@ -7709,9 +7644,6 @@ msgstr "Échec de la mise à jour du plan d'styling"
 
 msgid "Failed to update style sale price"
 msgstr "Échec de mise à jour du prix de vente.style"
-
-msgid "Failed to update style size"
-msgstr "Échec de la mise à jour de la taille du style"
 
 msgid "Failed to update subsidiary"
 msgstr "Échec de la mise à jour de la filiale"
@@ -10215,12 +10147,6 @@ msgstr "Nouvelle Unité de Stockage"
 
 msgid "New Style"
 msgstr "Nouveau modèle"
-
-msgid "New Style Color"
-msgstr "Nouvelle couleur de modèle"
-
-msgid "New Style Size"
-msgstr "Nouvelle taille de modèle"
 
 msgid "New Supplier"
 msgstr "Nouveau Fournisseur"
@@ -13675,12 +13601,6 @@ msgstr "Job individuel"
 msgid "Size"
 msgstr "Taille"
 
-msgid "Size Code"
-msgstr "Code de taille"
-
-msgid "Size Name"
-msgstr "Nom de la taille"
-
 msgid "Sizes"
 msgstr "Tailles"
 
@@ -13987,15 +13907,6 @@ msgstr "Stockez un nombre fixe de jours sur cet article. La date de début d'exp
 msgid "Style"
 msgstr "Modèle"
 
-msgid "Style Color"
-msgstr "Couleur du modèle"
-
-msgid "Style color created"
-msgstr "Couleur de style créée"
-
-msgid "Style Colors"
-msgstr "Couleurs du modèle"
-
 msgid "Style Details"
 msgstr "Détails du modèle"
 
@@ -14005,23 +13916,11 @@ msgstr "ID du modèle"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Style de sortie kanban à afficher dans le tableau Kanban"
 
-msgid "Style Properties"
-msgstr "Propriétés du modèle"
-
 msgid "Style quantity configuration is required"
 msgstr "La configuration de la quantité de style est requise"
 
 msgid "Style quantity is required"
 msgstr "La quantité de style est requise"
-
-msgid "Style Size"
-msgstr "Taille du modèle"
-
-msgid "Style size created"
-msgstr "Taille de style créée"
-
-msgid "Style Sizes"
-msgstr "Tailles du modèle"
 
 msgid "Styles"
 msgstr "Modèles"
@@ -14295,12 +14194,6 @@ msgstr "Suppression du transfert de stock réussie"
 
 msgid "Successfully deleted storage type"
 msgstr "Suppression du type de stockage réussie"
-
-msgid "Successfully deleted style color"
-msgstr "Suppression de la couleur de style réussie"
-
-msgid "Successfully deleted style size"
-msgstr "Suppression de la taille de style réussie"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Supprimé avec succès la filiale"
@@ -15668,9 +15561,6 @@ msgstr "Type de stock mis à jour"
 msgid "Updated storageUnit"
 msgstr "Mise à jour du storageUnit"
 
-msgid "Updated style color"
-msgstr "Nouvelle couleur de style"
-
 msgid "Updated style costing"
 msgstr "Mise à jour du coût de style"
 
@@ -15682,9 +15572,6 @@ msgstr "Planification de style mis à jour"
 
 msgid "Updated style sale price"
 msgstr "Prix de vente au style mis à jour"
-
-msgid "Updated style size"
-msgstr "Taille de style mis à jour"
 
 msgid "Updated subsidiary"
 msgstr "Mise à jour de la filiale"

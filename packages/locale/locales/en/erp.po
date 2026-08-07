@@ -1081,14 +1081,6 @@ msgstr "Are you sure you want to delete the storage type: {0}? This cannot be un
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 
-#. placeholder {0}: styleColor.colorCode
-msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
-msgstr "Are you sure you want to delete the style color {0}? This cannot be undone."
-
-#. placeholder {0}: styleSize.sizeCode
-msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
-msgstr "Are you sure you want to delete the style size {0}? This cannot be undone."
-
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
@@ -1780,12 +1772,6 @@ msgstr "Cannot edit global material substance"
 msgid "Cannot edit global material type"
 msgstr "Cannot edit global material type"
 
-msgid "Cannot edit global style color"
-msgstr "Cannot edit global style color"
-
-msgid "Cannot edit global style size"
-msgstr "Cannot edit global style size"
-
 msgid "Cannot edit system attribute"
 msgstr "Cannot edit system attribute"
 
@@ -2041,12 +2027,6 @@ msgstr "Color"
 
 msgid "Color / Size"
 msgstr "Color / Size"
-
-msgid "Color Code"
-msgstr "Color Code"
-
-msgid "Color Name"
-msgstr "Color Name"
 
 msgid "Colors"
 msgstr "Colors"
@@ -3410,12 +3390,6 @@ msgstr "Delete Storage Unit"
 msgid "Delete Style"
 msgstr "Delete Style"
 
-msgid "Delete Style Color"
-msgstr "Delete Style Color"
-
-msgid "Delete Style Size"
-msgstr "Delete Style Size"
-
 msgid "Delete Substance"
 msgstr "Delete Substance"
 
@@ -4072,12 +4046,6 @@ msgstr "Edit Storage Unit"
 msgid "Edit Style"
 msgstr "Edit Style"
 
-msgid "Edit Style Color"
-msgstr "Edit Style Color"
-
-msgid "Edit Style Size"
-msgstr "Edit Style Size"
-
 msgid "Edit Substance"
 msgstr "Edit Substance"
 
@@ -4419,12 +4387,6 @@ msgstr "Error loading stock transfers"
 
 msgid "Error loading storage types"
 msgstr "Error loading storage types"
-
-msgid "Error loading style colors"
-msgstr "Error loading style colors"
-
-msgid "Error loading style sizes"
-msgstr "Error loading style sizes"
 
 msgid "Error loading supplier types"
 msgstr "Error loading supplier types"
@@ -5355,12 +5317,6 @@ msgstr "Failed to delete storage type"
 msgid "Failed to delete storage unit"
 msgstr "Failed to delete storage unit"
 
-msgid "Failed to delete style color"
-msgstr "Failed to delete style color"
-
-msgid "Failed to delete style size"
-msgstr "Failed to delete style size"
-
 msgid "Failed to delete subsidiary"
 msgstr "Failed to delete subsidiary"
 
@@ -5672,12 +5628,6 @@ msgstr "Failed to get a storage type id"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Failed to get a storageUnit id"
-
-msgid "Failed to get a style color id"
-msgstr "Failed to get a style color id"
-
-msgid "Failed to get a style size id"
-msgstr "Failed to get a style size id"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Failed to get a supplier contact id"
@@ -6063,12 +6013,6 @@ msgstr "Failed to get storage type"
 msgid "Failed to get storageUnit"
 msgstr "Failed to get storageUnit"
 
-msgid "Failed to get style color"
-msgstr "Failed to get style color"
-
-msgid "Failed to get style size"
-msgstr "Failed to get style size"
-
 msgid "Failed to get subsidiary"
 msgstr "Failed to get subsidiary"
 
@@ -6351,14 +6295,8 @@ msgstr "Failed to insert storage type"
 msgid "Failed to insert storageUnit"
 msgstr "Failed to insert storageUnit"
 
-msgid "Failed to insert style color"
-msgstr "Failed to insert style color"
-
 msgid "Failed to insert style inventory"
 msgstr "Failed to insert style inventory"
-
-msgid "Failed to insert style size"
-msgstr "Failed to insert style size"
 
 msgid "Failed to insert supplier quote"
 msgstr "Failed to insert supplier quote"
@@ -7695,9 +7633,6 @@ msgstr "Failed to update storage type"
 msgid "Failed to update storageUnit"
 msgstr "Failed to update storageUnit"
 
-msgid "Failed to update style color"
-msgstr "Failed to update style color"
-
 msgid "Failed to update style costing"
 msgstr "Failed to update style costing"
 
@@ -7709,9 +7644,6 @@ msgstr "Failed to update style planning"
 
 msgid "Failed to update style sale price"
 msgstr "Failed to update style sale price"
-
-msgid "Failed to update style size"
-msgstr "Failed to update style size"
 
 msgid "Failed to update subsidiary"
 msgstr "Failed to update subsidiary"
@@ -10215,12 +10147,6 @@ msgstr "New Storage Unit"
 
 msgid "New Style"
 msgstr "New Style"
-
-msgid "New Style Color"
-msgstr "New Style Color"
-
-msgid "New Style Size"
-msgstr "New Style Size"
 
 msgid "New Supplier"
 msgstr "New Supplier"
@@ -13675,12 +13601,6 @@ msgstr "Single Job"
 msgid "Size"
 msgstr "Size"
 
-msgid "Size Code"
-msgstr "Size Code"
-
-msgid "Size Name"
-msgstr "Size Name"
-
 msgid "Sizes"
 msgstr "Sizes"
 
@@ -13987,15 +13907,6 @@ msgstr "Store a fixed number of days on this item. Expiry start date is set on e
 msgid "Style"
 msgstr "Style"
 
-msgid "Style Color"
-msgstr "Style Color"
-
-msgid "Style color created"
-msgstr "Style color created"
-
-msgid "Style Colors"
-msgstr "Style Colors"
-
 msgid "Style Details"
 msgstr "Style Details"
 
@@ -14005,23 +13916,11 @@ msgstr "Style ID"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Style of kanban output to show in the Kanban table"
 
-msgid "Style Properties"
-msgstr "Style Properties"
-
 msgid "Style quantity configuration is required"
 msgstr "Style quantity configuration is required"
 
 msgid "Style quantity is required"
 msgstr "Style quantity is required"
-
-msgid "Style Size"
-msgstr "Style Size"
-
-msgid "Style size created"
-msgstr "Style size created"
-
-msgid "Style Sizes"
-msgstr "Style Sizes"
 
 msgid "Styles"
 msgstr "Styles"
@@ -14295,12 +14194,6 @@ msgstr "Successfully deleted stock transfer"
 
 msgid "Successfully deleted storage type"
 msgstr "Successfully deleted storage type"
-
-msgid "Successfully deleted style color"
-msgstr "Successfully deleted style color"
-
-msgid "Successfully deleted style size"
-msgstr "Successfully deleted style size"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Successfully deleted subsidiary"
@@ -15668,9 +15561,6 @@ msgstr "Updated storage type"
 msgid "Updated storageUnit"
 msgstr "Updated storageUnit"
 
-msgid "Updated style color"
-msgstr "Updated style color"
-
 msgid "Updated style costing"
 msgstr "Updated style costing"
 
@@ -15682,9 +15572,6 @@ msgstr "Updated style planning"
 
 msgid "Updated style sale price"
 msgstr "Updated style sale price"
-
-msgid "Updated style size"
-msgstr "Updated style size"
 
 msgid "Updated subsidiary"
 msgstr "Updated subsidiary"

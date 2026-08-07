@@ -359,14 +359,6 @@ msgstr "Non è possibile modificare la sostanza materiale globale"
 msgid "Cannot edit global material type"
 msgstr "Non è possibile modificare il tipo materiale globale"
 
-msgid "Cannot edit global style color"
-msgstr "Non è possibile modificare il colore dello stile globale"
-
-msgid "Cannot edit global style size"
-msgstr ""
-"Non è possibile modificare il尺寸错误，已修正为：\n"
-"非可编辑全局样式大小"
-
 msgid "Cannot edit system attribute"
 msgstr ""
 
@@ -879,12 +871,6 @@ msgstr "Errore caricamento trasferimenti magazzino"
 
 msgid "Error loading storage types"
 msgstr "Errore caricamento tipi di magazzino"
-
-msgid "Error loading style colors"
-msgstr "Errore caricamento colori stile"
-
-msgid "Error loading style sizes"
-msgstr "Errore caricamento dimensioni stile"
 
 msgid "Error loading supplier types"
 msgstr "Errore caricamento tipi fornitori"
@@ -1501,12 +1487,6 @@ msgstr "Impossibile eliminare il tipo di magazzino"
 msgid "Failed to delete storage unit"
 msgstr "Fallito durante l'eliminazione del contenitore di magazzino"
 
-msgid "Failed to delete style color"
-msgstr "Impossibile eliminare il colore dello stile"
-
-msgid "Failed to delete style size"
-msgstr "Impossibile eliminare il formato dimensione"
-
 msgid "Failed to delete subsidiary"
 msgstr "Fallito durante il cancellamento della filiale"
 
@@ -1812,12 +1792,6 @@ msgstr "Impossibile ottenere un ID tipo magazzino"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Fallito nel recuperare l'id del storageUnit"
-
-msgid "Failed to get a style color id"
-msgstr "Fallito nel recuperare un identificativo di colore di stile"
-
-msgid "Failed to get a style size id"
-msgstr "Impossibile ottenere un identificativo di dimensione stylistica"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Impossibile ottenere un ID contatto fornitore"
@@ -2200,12 +2174,6 @@ msgstr "Impossibile ottenere il tipo di magazzino"
 msgid "Failed to get storageUnit"
 msgstr "Fallito nel recupero di unità di magazzino"
 
-msgid "Failed to get style color"
-msgstr "Fallito nel recuperare il colore dello stile"
-
-msgid "Failed to get style size"
-msgstr "Impossibile ottenere la dimensione dello stile"
-
 msgid "Failed to get subsidiary"
 msgstr "Fallito nel recupero della filiale"
 
@@ -2482,14 +2450,8 @@ msgstr "Impossibile inserire il tipo di magazzino"
 msgid "Failed to insert storageUnit"
 msgstr "Impossibile inserire il storageUnit"
 
-msgid "Failed to insert style color"
-msgstr "Impossibile inserire il colore dello stile"
-
 msgid "Failed to insert style inventory"
 msgstr "Impossibile inserire lo stock di stile"
-
-msgid "Failed to insert style size"
-msgstr "Impossibile inserire la dimensione dello stile"
 
 msgid "Failed to insert supplier quote"
 msgstr "Impossibile inserire la quotazione del fornitore"
@@ -3729,9 +3691,6 @@ msgstr "Fallito aggiornamento tipo magazzino"
 msgid "Failed to update storageUnit"
 msgstr "Fallito aggiornamento storageUnit"
 
-msgid "Failed to update style color"
-msgstr "Fallito aggiornamento colore stile"
-
 msgid "Failed to update style costing"
 msgstr "Fallito aggiornamento costo stile"
 
@@ -3743,9 +3702,6 @@ msgstr "Fallito aggiornamento pianificazione stile"
 
 msgid "Failed to update style sale price"
 msgstr "Fallito aggiornamento prezzo vendita stile"
-
-msgid "Failed to update style size"
-msgstr "Fallito aggiornamento dimensione stile"
 
 msgid "Failed to update subsidiary"
 msgstr "Fallito aggiornamento filiale"
@@ -5519,12 +5475,6 @@ msgstr "Unità di magazzino creata"
 msgid "Style"
 msgstr "Stile"
 
-msgid "Style color created"
-msgstr "Colore stile creato"
-
-msgid "Style size created"
-msgstr "Dimensione style creata"
-
 msgid "Submit anonymously"
 msgstr "Invia in forma anonima"
 
@@ -5743,12 +5693,6 @@ msgstr "Eliminazione del trasferimento magazzino completata"
 
 msgid "Successfully deleted storage type"
 msgstr "Eliminazione del tipo di magazzino completata"
-
-msgid "Successfully deleted style color"
-msgstr "Stile colore eliminato con successo"
-
-msgid "Successfully deleted style size"
-msgstr "Stile dimensione eliminato con successo"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Eliminazione della filiale completata"
@@ -6320,9 +6264,6 @@ msgstr "Tipo di magazzino aggiornato"
 msgid "Updated storageUnit"
 msgstr "Aggiornato storageUnit"
 
-msgid "Updated style color"
-msgstr "Nuovo colore stile"
-
 msgid "Updated style costing"
 msgstr "Aggiornato stile costo"
 
@@ -6334,9 +6275,6 @@ msgstr "Aggiornato piano stile"
 
 msgid "Updated style sale price"
 msgstr "Prezzo di vendita aggiornatostile"
-
-msgid "Updated style size"
-msgstr "Dimensione stile aggiornata"
 
 msgid "Updated subsidiary"
 msgstr "Aggiornata filiale"

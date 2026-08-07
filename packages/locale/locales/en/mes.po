@@ -359,12 +359,6 @@ msgstr "Cannot edit global material substance"
 msgid "Cannot edit global material type"
 msgstr "Cannot edit global material type"
 
-msgid "Cannot edit global style color"
-msgstr "Cannot edit global style color"
-
-msgid "Cannot edit global style size"
-msgstr "Cannot edit global style size"
-
 msgid "Cannot edit system attribute"
 msgstr "Cannot edit system attribute"
 
@@ -877,12 +871,6 @@ msgstr "Error loading stock transfers"
 
 msgid "Error loading storage types"
 msgstr "Error loading storage types"
-
-msgid "Error loading style colors"
-msgstr "Error loading style colors"
-
-msgid "Error loading style sizes"
-msgstr "Error loading style sizes"
 
 msgid "Error loading supplier types"
 msgstr "Error loading supplier types"
@@ -1499,12 +1487,6 @@ msgstr "Failed to delete storage type"
 msgid "Failed to delete storage unit"
 msgstr "Failed to delete storage unit"
 
-msgid "Failed to delete style color"
-msgstr "Failed to delete style color"
-
-msgid "Failed to delete style size"
-msgstr "Failed to delete style size"
-
 msgid "Failed to delete subsidiary"
 msgstr "Failed to delete subsidiary"
 
@@ -1810,12 +1792,6 @@ msgstr "Failed to get a storage type id"
 
 msgid "Failed to get a storageUnit id"
 msgstr "Failed to get a storageUnit id"
-
-msgid "Failed to get a style color id"
-msgstr "Failed to get a style color id"
-
-msgid "Failed to get a style size id"
-msgstr "Failed to get a style size id"
 
 msgid "Failed to get a supplier contact id"
 msgstr "Failed to get a supplier contact id"
@@ -2198,12 +2174,6 @@ msgstr "Failed to get storage type"
 msgid "Failed to get storageUnit"
 msgstr "Failed to get storageUnit"
 
-msgid "Failed to get style color"
-msgstr "Failed to get style color"
-
-msgid "Failed to get style size"
-msgstr "Failed to get style size"
-
 msgid "Failed to get subsidiary"
 msgstr "Failed to get subsidiary"
 
@@ -2480,14 +2450,8 @@ msgstr "Failed to insert storage type"
 msgid "Failed to insert storageUnit"
 msgstr "Failed to insert storageUnit"
 
-msgid "Failed to insert style color"
-msgstr "Failed to insert style color"
-
 msgid "Failed to insert style inventory"
 msgstr "Failed to insert style inventory"
-
-msgid "Failed to insert style size"
-msgstr "Failed to insert style size"
 
 msgid "Failed to insert supplier quote"
 msgstr "Failed to insert supplier quote"
@@ -3719,9 +3683,6 @@ msgstr "Failed to update storage type"
 msgid "Failed to update storageUnit"
 msgstr "Failed to update storageUnit"
 
-msgid "Failed to update style color"
-msgstr "Failed to update style color"
-
 msgid "Failed to update style costing"
 msgstr "Failed to update style costing"
 
@@ -3733,9 +3694,6 @@ msgstr "Failed to update style planning"
 
 msgid "Failed to update style sale price"
 msgstr "Failed to update style sale price"
-
-msgid "Failed to update style size"
-msgstr "Failed to update style size"
 
 msgid "Failed to update subsidiary"
 msgstr "Failed to update subsidiary"
@@ -5509,12 +5467,6 @@ msgstr "Storage unit created"
 msgid "Style"
 msgstr "Style"
 
-msgid "Style color created"
-msgstr "Style color created"
-
-msgid "Style size created"
-msgstr "Style size created"
-
 msgid "Submit anonymously"
 msgstr "Submit anonymously"
 
@@ -5733,12 +5685,6 @@ msgstr "Successfully deleted stock transfer"
 
 msgid "Successfully deleted storage type"
 msgstr "Successfully deleted storage type"
-
-msgid "Successfully deleted style color"
-msgstr "Successfully deleted style color"
-
-msgid "Successfully deleted style size"
-msgstr "Successfully deleted style size"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Successfully deleted subsidiary"
@@ -6310,9 +6256,6 @@ msgstr "Updated storage type"
 msgid "Updated storageUnit"
 msgstr "Updated storageUnit"
 
-msgid "Updated style color"
-msgstr "Updated style color"
-
 msgid "Updated style costing"
 msgstr "Updated style costing"
 
@@ -6324,9 +6267,6 @@ msgstr "Updated style planning"
 
 msgid "Updated style sale price"
 msgstr "Updated style sale price"
-
-msgid "Updated style size"
-msgstr "Updated style size"
 
 msgid "Updated subsidiary"
 msgstr "Updated subsidiary"
