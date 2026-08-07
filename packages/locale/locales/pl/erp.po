@@ -4628,6 +4628,9 @@ msgstr "Ref. zewnętrzna"
 msgid "External Reference"
 msgstr "Odniesienie zewnętrzne"
 
+msgid "Fabric"
+msgstr ""
+
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
 
@@ -8048,6 +8051,9 @@ msgstr "Zyski i straty ze zbycia"
 
 msgid "Gallon"
 msgstr "Galon"
+
+msgid "Garment"
+msgstr ""
 
 msgid "Gauge"
 msgstr "Miernik"
@@ -15090,6 +15096,9 @@ msgstr "Rachunkowy bilans"
 
 msgid "Triggers"
 msgstr "Wyzwalacze"
+
+msgid "Trim"
+msgstr ""
 
 msgid "True"
 msgstr "Prawda"

@@ -9,6 +9,7 @@ import { z } from "zod";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import type { AttributeSetFormOption } from "../../itemAttribute.service";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 
 type ConsumableAttributeEditorProps = {
   itemId: string;
@@ -64,8 +65,12 @@ const ConsumableAttributeEditor = ({
 
   const setLabel = (id: string) => {
     const s = sets.find((x) => x.id === id);
-    return s?.name || s?.code || id;
+    const raw = s?.name || s?.code || id;
+    return translateItemAttributeCatalogName(raw, i18n);
   };
+
+  const attrLabel = (name: string) =>
+    translateItemAttributeCatalogName(name, i18n);
 
   useEffect(() => {
     if (saveFetcher.state !== "idle" || !saveFetcher.data) return;
@@ -137,7 +142,9 @@ const ConsumableAttributeEditor = ({
         </VStack>
         {selectedSet?.attributes.map((attr) => (
           <VStack key={attr.id} spacing={1} className="w-full">
-            <h4 className="text-xs text-muted-foreground">{attr.name}</h4>
+            <h4 className="text-xs text-muted-foreground">
+              {attrLabel(attr.name)}
+            </h4>
             <div className="flex flex-wrap items-center gap-2">
               {(selected[attr.id] ?? []).map((valueId) => {
                 const option = attr.options.find((o) => o.id === valueId);
@@ -180,7 +187,7 @@ const ConsumableAttributeEditor = ({
             )}
             options={sets.map((s) => ({
               value: s.id,
-              label: s.name || s.code
+              label: translateItemAttributeCatalogName(s.name || s.code, i18n)
             }))}
             isReadOnly={saveFetcher.state !== "idle"}
             onChange={(option) => {
@@ -203,7 +210,9 @@ const ConsumableAttributeEditor = ({
           }));
         return (
           <VStack key={attr.id} spacing={1} className="w-full">
-            <h4 className="text-xs text-muted-foreground">{attr.name}</h4>
+            <h4 className="text-xs text-muted-foreground">
+              {attrLabel(attr.name)}
+            </h4>
             <div className="flex flex-wrap items-center gap-2">
               {chosen.map((valueId) => {
                 const option = attr.options.find((o) => o.id === valueId);

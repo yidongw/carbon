@@ -35,6 +35,7 @@ import { TrackingTypeIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import type { AttributeSetFormOption } from "../../itemAttribute.service";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 import { consumableValidator, itemTrackingTypes } from "../../items.models";
 import ItemStorageFields from "../Item/ItemStorageFields";
 import ItemThumbnailField from "../Item/ItemThumbnailField";
@@ -65,7 +66,7 @@ const ConsumableForm = ({
     data: AttributeSetFormOption[];
     error: Error | null;
   }>();
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
 
   useMount(() => {
     attributeSetsFetcher.load(path.to.api.attributeSetsForType("Consumable"));
@@ -76,12 +77,12 @@ const ConsumableForm = ({
   const attributeSetOptions = useMemo(() => {
     if (attributeSets.length > 0) {
       return attributeSets.map((s) => ({
-        label: `${s.code} — ${s.name}`,
+        label: translateItemAttributeCatalogName(s.name || s.code, i18n),
         value: s.id
       }));
     }
     return attributeSetOptionsProp;
-  }, [attributeSets, attributeSetOptionsProp]);
+  }, [attributeSets, attributeSetOptionsProp, i18n]);
 
   const [attributeSetId, setAttributeSetId] = useState<string>(
     initialValues.attributeSetId ??
@@ -255,7 +256,7 @@ const ConsumableForm = ({
                     <MultiSelect
                       key={attr.id}
                       name={`av__${attr.id}`}
-                      label={attr.name}
+                      label={translateItemAttributeCatalogName(attr.name, i18n)}
                       options={attr.options.map((o) => ({
                         value: o.id,
                         label: o.name || o.code,

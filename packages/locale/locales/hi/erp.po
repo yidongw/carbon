@@ -4628,6 +4628,9 @@ msgstr "बाहरी संदर्भ"
 msgid "External Reference"
 msgstr "बाहरी संदर्भ"
 
+msgid "Fabric"
+msgstr ""
+
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
 
@@ -8051,6 +8054,9 @@ msgstr "निपटान पर लाभ और हानि"
 
 msgid "Gallon"
 msgstr "गैलन"
+
+msgid "Garment"
+msgstr ""
 
 msgid "Gauge"
 msgstr "गेज"
@@ -15093,6 +15099,9 @@ msgstr "परीक्षा संतुलन"
 
 msgid "Triggers"
 msgstr "ट्रिगगर्स"
+
+msgid "Trim"
+msgstr ""
 
 msgid "True"
 msgstr "स्वीकार"
