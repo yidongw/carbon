@@ -3,10 +3,18 @@ import {
   renderBundleTicketsToBuffer,
   tagPageSizeFromInches
 } from "@carbon/documents/pdf";
-import { contentDisposition, labelSizes } from "@carbon/utils";
+import { resolveLanguage } from "@carbon/locale";
+import {
+  contentDisposition,
+  getPreferenceHeaders,
+  labelSizes
+} from "@carbon/utils";
+import { setupI18n } from "@lingui/core";
 import type { LoaderFunctionArgs } from "react-router";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { getBundleTicketLabels } from "~/modules/production";
 import { getCompany } from "~/modules/settings";
+import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 
 const DEFAULT_TAG_ID = "bundleTag40x80mm";
 
@@ -39,9 +47,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     size?.height ?? 3.1496
   );
 
+  // Localize printed attribute names/values into the reader's language.
+  const { locale } = getPreferenceHeaders(request);
+  const language = resolveLanguage(locale);
+  const catalog = await loadLinguiCatalogForRequest(request, locale);
+  const i18n = setupI18n();
+  i18n.load(language, catalog);
+  i18n.activate(language);
+
   const [company, labels] = await Promise.all([
     getCompany(client, companyId),
-    getBundleTicketLabels(client, companyId, ids)
+    getBundleTicketLabels(client, companyId, ids, {
+      locale,
+      translateAttributeName: (name) =>
+        translateItemAttributeCatalogName(name, i18n)
+    })
   ]);
 
   if (labels.length === 0) {

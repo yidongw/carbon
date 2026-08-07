@@ -1,4 +1,8 @@
 import type { Database } from "@carbon/database";
+import {
+  localizeStyleColorNameByName,
+  localizeVariantAttributeLabel
+} from "@carbon/database/style-reference";
 import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -128,19 +132,55 @@ export async function getBundleWorkOrder(
 export async function getBundleTicketLabels(
   client: SupabaseClient<Database>,
   companyId: string,
-  ids: string[]
+  ids: string[],
+  // Localize printed attribute values (Blue -> 蓝色) and names (Color -> 颜色).
+  // Optional so non-localized callers keep the English/base labels.
+  opts?: {
+    locale?: string;
+    translateAttributeName?: (name: string) => string;
+  }
 ): Promise<BundleTicketLabel[]> {
   if (ids.length === 0) return [];
 
   const { data: bundles } = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
+      "id, jobId, itemId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
     )
     .eq("companyId", companyId)
     .in("id", ids);
 
   if (!bundles || bundles.length === 0) return [];
+
+  const locale = opts?.locale;
+  const translateAttributeName =
+    opts?.translateAttributeName ?? ((name: string) => name);
+
+  // 款号 is the PARENT style's readable id — the bundle's job item is a variant
+  // SKU, so resolve its parent through itemVariant.
+  const variantItemIds = [
+    ...new Set(
+      bundles
+        .map((b) => (b as { itemId?: string | null }).itemId)
+        .filter((v): v is string => Boolean(v))
+    )
+  ];
+  const parentReadableByVariant = new Map<string, string>();
+  if (variantItemIds.length > 0) {
+    const { data: variants } = await client
+      .from("itemVariant")
+      .select(
+        "variantItemId, parent:item!itemVariant_parentItemId_fkey(readableIdWithRevision)"
+      )
+      .eq("companyId", companyId)
+      .in("variantItemId", variantItemIds);
+    for (const v of variants ?? []) {
+      const rid = (
+        v.parent as { readableIdWithRevision?: string | null } | null
+      )?.readableIdWithRevision;
+      if (rid) parentReadableByVariant.set(v.variantItemId, rid);
+    }
+  }
 
   // Preserve the caller's requested order.
   const byId = new Map(bundles.map((b) => [b.id, b]));
@@ -163,13 +203,23 @@ export async function getBundleTicketLabels(
             .attributeValues ?? {};
         const attributeLines = Object.entries(attributeValues)
           .filter(([, v]) => v != null && String(v).length > 0)
-          .map(([name, value]) => ({ name, value: String(value) }));
+          .map(([name, value]) => ({
+            name: translateAttributeName(name),
+            value:
+              localizeStyleColorNameByName(String(value), locale) ??
+              String(value)
+          }));
+
+        const variantItemId = (bundle as { itemId?: string | null }).itemId;
 
         return {
           id: bundle.id!,
           readableId: bundle.jobReadableId ?? bundle.id!,
           bundleUrl: `${MES_URL ?? ""}/x/bundle/${bundle.id}`,
           styleReadableId:
+            (variantItemId
+              ? parentReadableByVariant.get(variantItemId)
+              : undefined) ||
             bundle.readableIdWithRevision ||
             bundle.itemName ||
             bundle.jobReadableId ||
@@ -180,9 +230,10 @@ export async function getBundleTicketLabels(
               : (bundle as { attributeLabel?: string }).attributeLabel
                 ? [
                     {
-                      name: "属性",
-                      value: String(
-                        (bundle as { attributeLabel?: string }).attributeLabel
+                      name: translateAttributeName("Attributes"),
+                      value: localizeVariantAttributeLabel(
+                        (bundle as { attributeLabel?: string }).attributeLabel,
+                        locale
                       )
                     }
                   ]
