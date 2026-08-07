@@ -86,6 +86,21 @@ describe("getStyleConfigDisplayFromVariants", () => {
       "黑色 · S ×4"
     ]);
   });
+
+  it("renders color-only chips for consumable variants (no size)", async () => {
+    const { getStyleConfigDisplayFromVariants } = await import(
+      "./styleConfigDisplay"
+    );
+    const display = getStyleConfigDisplayFromVariants(
+      [
+        { colorCode: "BG", sizeCode: "", quantity: 3 },
+        { colorCode: "BK", sizeCode: "", quantity: 4 },
+        { colorCode: "BG", sizeCode: "", quantity: 2 }
+      ],
+      { BG: "米色", BK: "黑色" }
+    );
+    expect(display?.chips.map((c) => c.label)).toEqual(["米色 ×5", "黑色 ×4"]);
+  });
 });
 
 describe("groupLinesForStyleDisplay", () => {

@@ -407,5 +407,9 @@ export function localizeStyleColorName(
   if (!code) return undefined;
   const ref = STYLE_COLOR_BY_CODE[code];
   if (!ref) return undefined;
-  return (language ? ref.names[language] : undefined) ?? ref.names.en;
+  if (!language) return ref.names.en;
+  // Accept both the short lingui locale ("zh") and a full BCP-47 tag ("zh-CN")
+  // — different callers pass different formats. Fall back short, then English.
+  const base = language.split("-")[0];
+  return ref.names[language] ?? ref.names[base] ?? ref.names.en;
 }

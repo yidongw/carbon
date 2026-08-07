@@ -6,8 +6,10 @@ const COLOR_ATTRIBUTE_ID = "iat_color";
 const SIZE_ATTRIBUTE_ID = "iat_size";
 
 /**
- * For order line itemIds that are Style variant SKUs, return parent + color/size
- * so the PO/SO summary can list the master Style with chips.
+ * For order line itemIds that are variant SKUs (any parent item type — garment
+ * Styles carry color + size, Fabric/Trim Consumables carry color only), return
+ * the parent + attribute codes so the PO/SO summary can group the variant lines
+ * under their master item with chips.
  */
 export async function getStyleVariantLineMetaByItemIds(
   client: SupabaseClient<Database>,

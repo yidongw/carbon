@@ -5,6 +5,7 @@ import { getDatabaseClient } from "~/services/database.server";
 import { sanitize } from "~/utils/supabase";
 import {
   SYSTEM_ATTRIBUTE,
+  syncItemVariantsFromSelections,
   syncStyleVariantsFromAssignments
 } from "./itemAttribute.service";
 import {
@@ -25,8 +26,8 @@ type StylePayload = z.infer<typeof styleValidator> & {
   companyId: string;
   createdBy: string;
   customFields?: Json;
-  styleColorIds: string[];
-  styleSizeIds: string[];
+  attributeSetId: string;
+  selections: Record<string, string[]>;
 };
 
 type StyleSummary = {
@@ -431,14 +432,18 @@ export async function upsertStyle(
         customFields: style.customFields
       });
       // Attribute selections + child SKU items (styles view reads selections).
-      const variantSync = await syncStyleVariantsFromAssignments(client, {
-        itemId,
-        companyId: style.companyId,
-        userId: style.createdBy,
-        styleColorIds: style.styleColorIds,
-        styleSizeIds: style.styleSizeIds
-      });
-      if (variantSync.error) throw variantSync.error;
+      // Skip when no set was chosen (e.g. form submitted before the set loaded);
+      // the style is created bare and colors/sizes can be added on the detail page.
+      if (style.attributeSetId) {
+        const variantSync = await syncItemVariantsFromSelections(client, {
+          itemId,
+          companyId: style.companyId,
+          userId: style.createdBy,
+          attributeSetId: style.attributeSetId,
+          selections: style.selections
+        });
+        if (variantSync.error) throw variantSync.error;
+      }
     } catch (error) {
       // Roll back the orphaned item so retries don't hit duplicate-key errors
       await client.from("item").delete().eq("id", itemId);

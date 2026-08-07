@@ -64,12 +64,11 @@ import {
   type serviceValidator,
   type shelfLifeModes,
   type shelfLifeTriggerTimings,
-  type styleColorValidator,
   type supplierPartValidator,
   type toolValidator,
   type unitOfMeasureValidator
 } from "./items.models";
-import type { styleSizeValidator, styleValidator } from "./style.models";
+import type { styleValidator } from "./style.models";
 import {
   ensureStyleMethodScaffold,
   isStyleCuttingOperationFirst,
@@ -289,52 +288,6 @@ export async function deleteMaterialGrade(
   id: string
 ) {
   return client.from("materialGrade").delete().eq("id", id);
-}
-
-export async function deleteStyleColor(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  const { count, error: refError } = await styleClient
-    .from("itemAttributeSelection")
-    .select("id", { count: "exact", head: true })
-    .eq("attributeValueId", id);
-  if (refError) return { data: null, error: refError };
-  if ((count ?? 0) > 0) {
-    return {
-      data: null,
-      error: new Error("Color is assigned to one or more styles")
-    };
-  }
-  return styleClient
-    .from("itemAttributeValue")
-    .delete()
-    .eq("id", id)
-    .eq("attributeId", SYSTEM_ATTRIBUTE.color);
-}
-
-export async function deleteStyleSize(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  const { count, error: refError } = await styleClient
-    .from("itemAttributeSelection")
-    .select("id", { count: "exact", head: true })
-    .eq("attributeValueId", id);
-  if (refError) return { data: null, error: refError };
-  if ((count ?? 0) > 0) {
-    return {
-      data: null,
-      error: new Error("Size is assigned to one or more styles")
-    };
-  }
-  return styleClient
-    .from("itemAttributeValue")
-    .delete()
-    .eq("id", id)
-    .eq("attributeId", SYSTEM_ATTRIBUTE.size);
 }
 
 export async function deleteMaterialSubstance(
@@ -2042,24 +1995,6 @@ function remapAttributeValueQueryArgs(
   };
 }
 
-export async function getStyleColor(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  const result = await styleClient
-    .from("itemAttributeValue")
-    .select("*")
-    .eq("id", id)
-    .eq("attributeId", SYSTEM_ATTRIBUTE.color)
-    .single();
-  if (result.error || !result.data) return result;
-  return {
-    ...result,
-    data: mapAttributeValueToStyleColor(result.data as AttributeValueRow)
-  };
-}
-
 export async function getStyleColors(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -2151,24 +2086,6 @@ export async function seedStyleReference(
       ignoreDuplicates: true
     })
   ]);
-}
-
-export async function getStyleSize(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  const result = await styleClient
-    .from("itemAttributeValue")
-    .select("*")
-    .eq("id", id)
-    .eq("attributeId", SYSTEM_ATTRIBUTE.size)
-    .single();
-  if (result.error || !result.data) return result;
-  return {
-    ...result,
-    data: mapAttributeValueToStyleSize(result.data as AttributeValueRow)
-  };
 }
 
 export async function getStyleSizes(
@@ -4889,121 +4806,6 @@ export async function upsertMaterialFinish(
     .insert([materialFinish])
     .select("*")
     .single();
-}
-
-export async function upsertStyleColor(
-  client: SupabaseClient<Database>,
-  styleColor:
-    | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
-        companyId: string;
-        createdBy: string;
-      })
-    | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
-        id: string;
-        updatedBy: string;
-      })
-) {
-  const styleClient = client as SupabaseClient<any>;
-  if ("id" in styleColor) {
-    const { id, updatedBy, colorCode, colorName } = styleColor;
-    const updated = await styleClient
-      .from("itemAttributeValue")
-      .update(
-        sanitize({
-          code: colorCode,
-          name: colorName,
-          updatedBy,
-          updatedAt: new Date().toISOString()
-        })
-      )
-      .eq("id", id)
-      .eq("attributeId", SYSTEM_ATTRIBUTE.color)
-      .select("*")
-      .single();
-    if (updated.error || !updated.data) return updated;
-    return {
-      ...updated,
-      data: mapAttributeValueToStyleColor(updated.data as AttributeValueRow)
-    };
-  }
-  const inserted = await styleClient
-    .from("itemAttributeValue")
-    .insert([
-      {
-        attributeId: SYSTEM_ATTRIBUTE.color,
-        code: styleColor.colorCode,
-        name: styleColor.colorName,
-        companyId: styleColor.companyId,
-        createdBy: styleColor.createdBy,
-        sortOrder: 100
-      }
-    ])
-    .select("*")
-    .single();
-  if (inserted.error || !inserted.data) return inserted;
-  return {
-    ...inserted,
-    data: mapAttributeValueToStyleColor(inserted.data as AttributeValueRow)
-  };
-}
-
-export async function upsertStyleSize(
-  client: SupabaseClient<Database>,
-  styleSize:
-    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
-        companyId: string;
-        createdBy: string;
-        sortOrder?: number;
-      })
-    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
-        id: string;
-        updatedBy: string;
-        sortOrder?: number;
-      })
-) {
-  const styleClient = client as SupabaseClient<any>;
-  if ("id" in styleSize) {
-    const { id, updatedBy, sizeCode, sizeName, sortOrder } = styleSize;
-    const updated = await styleClient
-      .from("itemAttributeValue")
-      .update(
-        sanitize({
-          code: sizeCode,
-          name: sizeName,
-          ...(sortOrder !== undefined ? { sortOrder } : {}),
-          updatedBy,
-          updatedAt: new Date().toISOString()
-        })
-      )
-      .eq("id", id)
-      .eq("attributeId", SYSTEM_ATTRIBUTE.size)
-      .select("*")
-      .single();
-    if (updated.error || !updated.data) return updated;
-    return {
-      ...updated,
-      data: mapAttributeValueToStyleSize(updated.data as AttributeValueRow)
-    };
-  }
-  const inserted = await styleClient
-    .from("itemAttributeValue")
-    .insert([
-      {
-        attributeId: SYSTEM_ATTRIBUTE.size,
-        code: styleSize.sizeCode,
-        name: styleSize.sizeName,
-        sortOrder: styleSize.sortOrder ?? 100,
-        companyId: styleSize.companyId,
-        createdBy: styleSize.createdBy
-      }
-    ])
-    .select("*")
-    .single();
-  if (inserted.error || !inserted.data) return inserted;
-  return {
-    ...inserted,
-    data: mapAttributeValueToStyleSize(inserted.data as AttributeValueRow)
-  };
 }
 
 export async function upsertMaterialForm(

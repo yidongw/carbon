@@ -137,11 +137,13 @@ export function getStyleConfigDisplayFromVariants(
   for (const variant of variants) {
     const colorCode = variant.colorCode?.trim();
     const sizeCode = variant.sizeCode?.trim();
-    if (!colorCode || !sizeCode) continue;
+    // A variant needs at least one attribute. Garment styles carry color + size;
+    // Fabric/Trim consumables carry color only — so don't require both.
+    if (!colorCode && !sizeCode) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;
-    const colorLabel = localized?.[colorCode] ?? colorCode;
-    const colorSize = `${colorLabel} · ${sizeCode}`;
+    const colorLabel = colorCode ? (localized?.[colorCode] ?? colorCode) : "";
+    const colorSize = [colorLabel, sizeCode].filter(Boolean).join(" · ");
     const key = `${colorCode}|${sizeCode}`;
     const existing = byKey.get(key);
     if (existing) {
