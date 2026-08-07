@@ -72,6 +72,7 @@ msgid "{0} short of goal"
 msgstr "brakujący {0} do celu"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "{0} Tax"
 msgstr "Podatek {0}"
 
@@ -14522,6 +14523,7 @@ msgstr "Podatek"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 #. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "Tax ({0})"
 msgstr "Podatek ({0})"
 

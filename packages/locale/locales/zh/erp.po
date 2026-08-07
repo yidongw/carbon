@@ -73,6 +73,7 @@ msgid "{0} short of goal"
 msgstr "少了 {0}"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "{0} Tax"
 msgstr "{0} 税"
 
@@ -14523,6 +14524,7 @@ msgstr "税"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 #. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "Tax ({0})"
 msgstr "税 ({0})"
 

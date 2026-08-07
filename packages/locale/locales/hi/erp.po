@@ -72,6 +72,7 @@ msgid "{0} short of goal"
 msgstr "{0} लाम्बे हैंgoals"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "{0} Tax"
 msgstr "{0} तकनीय"
 
@@ -14525,6 +14526,7 @@ msgstr "कर"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 #. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "Tax ({0})"
 msgstr "कर ({0})"
 
