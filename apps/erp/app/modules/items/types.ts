@@ -195,19 +195,6 @@ export type StyleSample = Style & {
   samples: StyleSampleLine[];
 };
 
-/** One Samples table row = one (style, attribute combo) with Qty. */
-export type StyleSampleFlatRow = {
-  rowKey: string;
-  styleId: string | null | undefined;
-  readableId: string | null | undefined;
-  readableIdWithRevision: string | null | undefined;
-  name: string | null | undefined;
-  thumbnailPath: string | null | undefined;
-  sampleItemId: string | null;
-  valuesByCode: Record<string, string>;
-  quantity: number;
-};
-
 export type StyleColor = NonNullable<
   Awaited<ReturnType<typeof getStyleColors>>["data"]
 >[number];

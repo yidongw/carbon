@@ -2,12 +2,12 @@ import { Badge, HStack, IconButton, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useMemo } from "react";
-import { LuBookMarked, LuHash, LuPlus } from "react-icons/lu";
+import { LuBookMarked, LuPalette, LuPlus, LuScanBarcode } from "react-icons/lu";
 import { useRevalidator } from "react-router";
 import { Hyperlink, ItemThumbnail, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
-import type { StyleSample, StyleSampleFlatRow } from "~/modules/items";
+import type { StyleSample } from "~/modules/items";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { path } from "~/utils/path";
 
@@ -16,43 +16,16 @@ type SamplesTableProps = {
   count: number;
 };
 
-function flattenSamples(data: StyleSample[]): StyleSampleFlatRow[] {
-  const rows: StyleSampleFlatRow[] = [];
-  for (const style of data) {
-    const samples = Array.isArray(style.samples) ? style.samples : [];
-    if (samples.length === 0) {
-      rows.push({
-        rowKey: `${style.id ?? style.readableId}-empty`,
-        styleId: style.id,
-        readableId: style.readableId,
-        readableIdWithRevision: style.readableIdWithRevision,
-        name: style.name,
-        thumbnailPath: style.thumbnailPath,
-        sampleItemId: style.sampleItemId ?? null,
-        valuesByCode: {},
-        quantity: 0
-      });
-      continue;
-    }
-    for (const [i, sample] of samples.entries()) {
-      const attrs =
-        sample.attributes && typeof sample.attributes === "object"
-          ? (sample.attributes as Record<string, string>)
-          : {};
-      rows.push({
-        rowKey: `${style.id ?? style.readableId}-${i}-${sample.label ?? i}`,
-        styleId: style.id,
-        readableId: style.readableId,
-        readableIdWithRevision: style.readableIdWithRevision,
-        name: style.name,
-        thumbnailPath: style.thumbnailPath,
-        sampleItemId: style.sampleItemId ?? null,
-        valuesByCode: attrs,
-        quantity: sample.quantity ?? 0
-      });
-    }
-  }
-  return rows;
+type StyleAttributeColumn = {
+  attributeId: string;
+  code: string;
+  name: string;
+  values: Array<{ id: string; code: string; name: string }>;
+};
+
+function styleAttributes(row: StyleSample): StyleAttributeColumn[] {
+  const attrs = (row as { attributes?: unknown }).attributes;
+  return Array.isArray(attrs) ? (attrs as StyleAttributeColumn[]) : [];
 }
 
 const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
@@ -62,27 +35,31 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
   const permissions = usePermissions();
   const canCreate = permissions.can("create", "parts");
 
-  const flatRows = useMemo(() => flattenSamples(data), [data]);
-
-  const attrCodes = useMemo(() => {
-    const codes = new Set<string>();
-    for (const row of flatRows) {
-      for (const code of Object.keys(row.valuesByCode)) {
-        if (code) codes.add(code);
+  const attrMeta = useMemo(() => {
+    const meta = new Map<string, { code: string; name: string }>();
+    for (const row of data) {
+      for (const a of styleAttributes(row)) {
+        if (!a.code) continue;
+        if (!meta.has(a.code)) {
+          meta.set(a.code, { code: a.code, name: a.name || a.code });
+        }
       }
     }
-    // Prefer Color then Size then alpha for stable garment layouts.
-    return Array.from(codes).sort((a, b) => {
+    return meta;
+  }, [data]);
+
+  const attrCodes = useMemo(() => {
+    return Array.from(attrMeta.keys()).sort((a, b) => {
       const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
       const d = rank(a) - rank(b);
       return d !== 0 ? d : a.localeCompare(b);
     });
-  }, [flatRows]);
+  }, [attrMeta]);
 
-  const columns = useMemo<ColumnDef<StyleSampleFlatRow>[]>(() => {
-    const cols: ColumnDef<StyleSampleFlatRow>[] = [
+  const columns = useMemo<ColumnDef<StyleSample>[]>(() => {
+    const cols: ColumnDef<StyleSample>[] = [
       {
-        accessorKey: "readableIdWithRevision",
+        accessorKey: "id",
         header: t`Style`,
         cell: ({ row }) => (
           <HStack className="py-1 w-full min-w-0 max-w-[240px]" spacing={2}>
@@ -91,12 +68,7 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
               thumbnailPath={row.original.thumbnailPath}
               type="Style"
             />
-            <Hyperlink
-              to={
-                row.original.styleId ? path.to.style(row.original.styleId) : "#"
-              }
-              className="min-w-0"
-            >
+            <Hyperlink to={path.to.style(row.original.id!)} className="min-w-0">
               <VStack spacing={0} className="min-w-0">
                 <span className="w-full truncate">
                   {row.original.readableIdWithRevision}
@@ -113,48 +85,79 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
     ];
 
     for (const code of attrCodes) {
+      const meta = attrMeta.get(code)!;
       cols.push({
         id: `attr-${code}`,
-        header: translateItemAttributeCatalogName(code, i18n),
+        header: translateItemAttributeCatalogName(meta.name || code, i18n),
         cell: ({ row }) => {
-          const value = row.original.valuesByCode[code];
-          if (!value) {
+          const attr = styleAttributes(row.original).find(
+            (a) => a.code === code
+          );
+          const values = attr?.values ?? [];
+          if (values.length === 0) {
             return <span className="text-muted-foreground">—</span>;
           }
           return (
-            <Badge variant="outline" className="font-normal">
-              {value}
-            </Badge>
+            <HStack spacing={1} className="flex-wrap">
+              {values.map((v) => (
+                <Badge
+                  key={v.id}
+                  variant="outline"
+                  title={`${meta.name}: ${v.code}`}
+                >
+                  {v.name || v.code}
+                </Badge>
+              ))}
+            </HStack>
           );
-        }
+        },
+        meta: { icon: <LuPalette /> }
       });
     }
 
     cols.push({
-      accessorKey: "quantity",
-      header: t`Qty`,
+      accessorKey: "sampleCount",
+      header: t`Samples`,
       cell: ({ row }) => {
-        const qty = row.original.quantity;
+        const samples = (row.original.samples ?? []) as Array<{
+          label?: string;
+          attributes?: Record<string, string>;
+          quantity: number;
+        }>;
         const sampleItemId = row.original.sampleItemId;
-        const body =
-          qty > 0 ? (
-            <span className="tabular-nums font-mono">{qty}</span>
-          ) : (
-            <span className="text-muted-foreground">—</span>
+        const chips = samples.map((s, i) => {
+          const label =
+            s.label ??
+            (s.attributes
+              ? Object.values(s.attributes).filter(Boolean).join(" · ")
+              : "");
+          return (
+            <Badge
+              key={`${label}-${i}`}
+              variant="outline"
+              className="font-normal"
+            >
+              {label || "—"}
+              <span className="ml-1 font-mono text-muted-foreground">
+                ×{s.quantity}
+              </span>
+            </Badge>
           );
+        });
         return (
-          <HStack spacing={1} className="items-center">
-            {sampleItemId && qty > 0 ? (
+          <HStack spacing={1} className="flex-wrap py-1">
+            {sampleItemId && samples.length > 0 ? (
               <Hyperlink
                 to={path.to.inventoryItem(sampleItemId)}
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                className="flex flex-wrap items-center gap-1"
               >
-                {body}
+                {chips}
               </Hyperlink>
             ) : (
-              body
+              chips
             )}
-            {canCreate && row.original.readableId ? (
+            {canCreate && (
               <IconButton
                 aria-label={t`Add sample`}
                 variant="secondary"
@@ -171,25 +174,23 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
                   );
                 }}
               />
-            ) : null}
+            )}
           </HStack>
         );
       },
-      meta: { icon: <LuHash /> }
+      meta: { icon: <LuScanBarcode /> }
     });
 
     return cols;
-  }, [t, i18n, attrCodes, canCreate, openOverlay, revalidator]);
+  }, [t, i18n, attrCodes, attrMeta, canCreate, openOverlay, revalidator]);
 
   return (
-    <Table<StyleSampleFlatRow>
+    <Table<StyleSample>
       count={count}
       columns={columns}
-      data={flatRows}
-      defaultColumnPinning={{ left: ["readableIdWithRevision"] }}
-      getRowHref={(row) =>
-        row.styleId ? path.to.style(row.styleId) : undefined
-      }
+      data={data}
+      defaultColumnPinning={{ left: ["id"] }}
+      getRowHref={(row) => (row.id ? path.to.style(row.id) : undefined)}
       title={t`Samples`}
       table="style"
       searchReloadDocument
