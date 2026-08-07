@@ -43,8 +43,6 @@ CREATE OR REPLACE VIEW "salesOrders" WITH (security_invoker = true) AS
     s."opportunityId",
     s."completedDate",
     s."customerEngineeringContactId",
-    s."deletedAt",
-    s."deletedBy",
         CASE
             WHEN (s.status <> ALL (ARRAY['Closed'::"salesOrderStatus", 'Cancelled'::"salesOrderStatus"])) AND (EXISTS ( SELECT 1
                FROM "salesOrderLine" sol
@@ -76,7 +74,12 @@ CREATE OR REPLACE VIEW "salesOrders" WITH (security_invoker = true) AS
           WHERE eim."entityType" = 'salesOrder'::text AND eim."entityId" = s.id) AS "externalId",
     sm.name AS "shippingMethodName",
     loc.name AS "locationName",
-    pt.name AS "paymentTermName"
+    pt.name AS "paymentTermName",
+    -- Appended (not mid-list): CREATE OR REPLACE VIEW may only ADD columns at the
+    -- end relative to the existing view, which did not expose these. Column order
+    -- is irrelevant to consumers (all access is by name).
+    s."deletedAt",
+    s."deletedBy"
    FROM "salesOrder" s
      LEFT JOIN ( SELECT sol."salesOrderId",
             min(
