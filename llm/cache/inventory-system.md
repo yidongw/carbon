@@ -77,19 +77,25 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 
 **No configurationParameter dual-write on create:** new Styles sync attribute selections + variants only. Qty matrices synthesize Color/Size list params via `getStyleConfigurationParametersFromAttributes` when `getConfigurationParameters` finds no stored rows. Legacy Styles with stored `configurationParameter` still work. Configurable detection unions parameter itemIds with Color/Size attribute selection itemIds (`items.configurable.ts`). Details: `style-sizes-ordering.md` § Style qty matrix params.
 
-**Expansion on SO/PO Style line save** (create/update): when the submitted line is a Style parent with `configuration.configTable`, expand into **one order line per variant SKU** (`itemId` = child variant). Helper: `apps/erp/app/modules/items/styleOrderLines.server.ts` (`expandStyleConfigToVariantLines`, `hasStyleConfigTable`). Writers: `replaceSalesOrderLinesWithStyleVariants` / `replacePurchaseOrderLinesWithStyleVariants` (sales/purchasing services). Forms skip the color×size matrix when editing a Style line with no `configuration` (already a variant SKU). Validators require Style quantity but not configuration JSON.
+**Expansion on SO/PO Style line save** (create/update): when the submitted line is a Style parent with `configuration.configTable`, expand into **one order line per variant SKU** (`itemId` = child variant). Helper: `apps/erp/app/modules/items/styleOrderLines.server.ts` (`expandStyleConfigToVariantLines`, `hasStyleConfigTable`). Writers: `replaceSalesOrderLinesWithStyleVariants` / `replacePurchaseOrderLinesWithStyleVariants` (sales/purchasing services). Forms skip the color×size matrix when editing a Style line with no `configuration` (already a variant SKU). Validators require Style quantity but not configuration JSON. ERP expand matches variants by frozen color/size attribute codes (order-independent) and **fails loud** if a cell has no SKU (`expandConfigTableToVariantQuantities` in `itemAttribute.service.ts`). Unit tests: `styleOrderLines.server.test.ts`.
 
-**Edge receive/ship fallback** (legacy parent+config lines still on the order): `packages/database/supabase/functions/create/index.ts` + `lib/item-variants.ts` (`hasConfigTable`, `expandConfigTableToVariantQuantities`, `resolveVariantItemId`) still expand at receipt/shipment create for PO receipt, SO shipment, SO-line shipment, PO return shipment.
+**Quote → SO conversion** (`packages/database/supabase/functions/convert/index.ts`): Style quote lines with a config table expand to per-variant SO lines with cent-exact add-on/shipping splits. Expanded lines use `salesOrderLineType: "Style"` (same as ERP expand). Requires edge function deploy to take effect on hosted Supabase.
 
-**`valuesKey` format:** `color|size` (e.g. `BK|S`). Size-only falls back to just the size code.
+**Edge receive/ship fallback** (legacy parent+config lines still on the order): `packages/database/supabase/functions/create/index.ts` + `lib/item-variants.ts` (`hasConfigTable`, `expandConfigTableToVariantQuantities`) expand at receipt/shipment create and **fail loud** (no silent parent fallback) when a cell has no matching variant.
 
-## Inventory list vs variant SKUs (20260806162447)
+**`valuesKey` format:** `color|size` (e.g. `BK|S`). Size-only falls back to just the size code. Edge/ERP expand prefer attribute combo keys over positional `valuesKey` strings.
+
+## Inventory list vs variant SKUs (20260806162447 + 20260807092217)
 
 `get_inventory_quantities` (preview/shared DB also has `breakdown`/`jobBreakdown` from style inventory work):
 - Color/size display names resolve via `itemAttributeValue` (not dropped `styleColor`/`styleSize`).
 - Variant child SKUs are **excluded** from the inventory list.
-- Parent rows **roll up** child qty columns (on-hand, SO/PO/jobs, usage, etc.).
+- Parent rows **add** parent ledger + variant rollup (not COALESCE-replace — `20260807092217`); child ledgers included in Style breakdown so headline matches breakdown.
 - Detail SKU breakdown remains `getItemVariantQuantities` (Style inventory page).
+
+`salesOrders.orderTotal` uses plain `SUM` of line amounts with jobs aggregated separately (`20260807093041`) — avoids `SUM(DISTINCT)` undercounting equal-amount variant lines.
+
+`itemAttributeSetAttribute` / `itemAttributeSetAssignment` write RLS no longer allows `companyId IS NULL` (`20260807091544`) so tenants cannot mutate shared system rows.
 
 `consumables` view excludes variant children (`20260806162513`), same pattern as `styles`.
 
