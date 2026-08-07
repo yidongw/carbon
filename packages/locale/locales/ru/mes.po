@@ -219,6 +219,9 @@ msgstr ""
 msgid "Attribute set not found"
 msgstr ""
 
+msgid "Attributes"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "З记账审核禁用"
 
@@ -434,9 +437,6 @@ msgstr "Отметка о выходе"
 
 msgid "Collapse"
 msgstr "Свернуть"
-
-msgid "Color"
-msgstr "Цвет"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1

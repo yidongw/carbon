@@ -1,3 +1,4 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { Button, HStack, Loading, Modal, ModalContent } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
@@ -178,7 +179,8 @@ function ConfigParamsTableModal({
   }));
   const { primaryParam, primaryKeys, columns } = buildColumns(
     parameters,
-    t`Quantities`
+    t`Quantities`,
+    t`Attributes`
   );
   // In flat mode the grid uses one row per color/size (multiple allowed) with a
   // single Quantities column; the stored config is still merged on submit.
@@ -229,6 +231,32 @@ function ConfigParamsTableModal({
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
+
+  // Style combo editor (one row per attribute valuesKey): instead of a generic
+  // "Add Row", offer one button per combo not yet in the table. Deleting a row
+  // frees its combo, so its button reappears.
+  const isCombo = !flat && primaryParam?.key === "valuesKey";
+  const usedCombos = useMemo(
+    () =>
+      new Set(
+        rows.map((r) => String(r.valuesKey ?? "").trim()).filter(Boolean)
+      ),
+    [rows]
+  );
+  const missingCombos = isCombo
+    ? (primaryParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
+    : [];
+
+  const addComboRow = (combo: string) =>
+    setRows((prev) => [
+      ...prev,
+      {
+        ...makeDefaultRow(gridColumns),
+        valuesKey: combo,
+        label: combo.replace(/\|/g, " · "),
+        Quantities: 0
+      }
+    ]);
 
   const updateCell = (
     rowIndex: number,
@@ -449,6 +477,27 @@ function ConfigParamsTableModal({
                 {c.sizeCode || "—"} ·{" "}
                 {optionLabels?.[c.colorCode] || c.colorCode || "—"} ·{" "}
                 <span className="tabular-nums">{remainingForCell(c)}</span>
+              </Button>
+            ))}
+          </div>
+        ) : isCombo ? (
+          // Combo editor: one button per attribute combo not yet in the table,
+          // labelled with the translated attribute values. None shows when every
+          // combo is present.
+          <div className="flex flex-wrap gap-2">
+            {missingCombos.map((combo) => (
+              <Button
+                key={combo}
+                type="button"
+                variant="secondary"
+                size="sm"
+                leftIcon={<LuPlus />}
+                onClick={() => addComboRow(combo)}
+              >
+                {localizeVariantAttributeLabel(
+                  combo.replace(/\|/g, " · "),
+                  i18n.locale
+                )}
               </Button>
             ))}
           </div>

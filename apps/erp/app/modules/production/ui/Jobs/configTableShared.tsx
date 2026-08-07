@@ -36,14 +36,107 @@ export type ConfigurationParameterInput = {
   listOptions?: string[] | null;
 };
 
+const STYLE_COMBO_VALUES_KEY = "valuesKey";
+
+/**
+ * Localize a combo `valuesKey` label ("BK · S" or "Black · S") segment by
+ * segment via `optionLabels` — which (from localizeColorNameMap) maps both the
+ * color CODE and its English NAME to the locale name. Sizes and unknown
+ * segments pass through unchanged.
+ */
+function localizeComboLabel(
+  label: string,
+  optionLabels?: Record<string, string>
+): string {
+  if (!optionLabels || !label) return label;
+  // A combo label may arrive as a stored display label ("Black · S") or the raw
+  // valuesKey ("BK|S") — split on either separator, localize each segment, and
+  // re-join with " · ".
+  return label
+    .split(/\s*·\s*|\|/)
+    .map((part) => optionLabels[part.trim()] ?? part.trim())
+    .filter(Boolean)
+    .join(" · ");
+}
+
+/** Style attribute-backed qty editor: one list param of cartesian valuesKeys. */
+export function isStyleComboParameters(
+  parameters: ConfigurationParameterInput[]
+): boolean {
+  if (
+    parameters.length === 1 &&
+    parameters[0]?.key === STYLE_COMBO_VALUES_KEY
+  ) {
+    return true;
+  }
+  const firstList = parameters.find((p) => p.dataType === "list");
+  return firstList?.key === STYLE_COMBO_VALUES_KEY;
+}
+
+/**
+ * Combo columns: read-only valuesKey (combo label) + Quantities.
+ * List options are row values, not quantity columns.
+ */
+export function buildComboColumns(
+  parameters: ConfigurationParameterInput[],
+  defaultQuantityLabel: string,
+  attributesLabel = "Attributes"
+): {
+  primaryParam: ConfigurationParameterInput | null;
+  primaryKeys: string[];
+  columns: Column[];
+} | null {
+  if (!isStyleComboParameters(parameters)) return null;
+
+  const comboParam =
+    parameters.find(
+      (p) => p.key === STYLE_COMBO_VALUES_KEY && p.dataType === "list"
+    ) ??
+    parameters.find((p) => p.dataType === "list") ??
+    null;
+  if (!comboParam) return null;
+
+  return {
+    primaryParam: comboParam,
+    primaryKeys: ["Quantities"],
+    columns: [
+      {
+        key: STYLE_COMBO_VALUES_KEY,
+        // The synthesized combo param carries the generic English "Attributes";
+        // prefer the caller's translated label, keep any custom param label.
+        label:
+          comboParam.label && comboParam.label !== "Attributes"
+            ? comboParam.label
+            : attributesLabel,
+        type: "list",
+        options: comboParam.listOptions ?? [],
+        readOnly: true
+      },
+      {
+        key: "Quantities",
+        label: defaultQuantityLabel,
+        type: "quantity"
+      }
+    ]
+  };
+}
+
 export function buildColumns(
   parameters: ConfigurationParameterInput[],
-  defaultQuantityLabel: string
+  defaultQuantityLabel: string,
+  attributesLabel = "Attributes"
 ): {
   primaryParam: ConfigurationParameterInput | null;
   primaryKeys: string[];
   columns: Column[];
 } {
+  const combo = buildComboColumns(
+    parameters,
+    defaultQuantityLabel,
+    attributesLabel
+  );
+  if (combo) return combo;
+
   const primaryParam = parameters.find((p) => p.dataType === "list") ?? null;
   const otherParams = parameters.filter((p) => p !== primaryParam);
 
@@ -98,6 +191,16 @@ export function getInitialRows(
   primaryParam: ConfigurationParameterInput | null,
   columns: Column[]
 ): Row[] {
+  // Style combo: one row per valuesKey option (not a Color×Size matrix).
+  if (primaryParam?.key === STYLE_COMBO_VALUES_KEY) {
+    return (primaryParam.listOptions ?? []).map((option) => ({
+      ...makeDefaultRow(columns),
+      [STYLE_COMBO_VALUES_KEY]: option,
+      label: String(option).replace(/\|/g, " · "),
+      Quantities: 0
+    }));
+  }
+
   const nonPrimaryListParams = parameters.filter(
     (p) =>
       p !== primaryParam &&
@@ -338,12 +441,21 @@ export function ReadOnlyConfigTable({
         const raw = row[col.key];
         const numeric = Number(raw) || 0;
         const label = String(raw ?? "");
+        const comboLabel =
+          col.key === "valuesKey"
+            ? localizeComboLabel(
+                row.label != null && String(row.label).trim().length > 0
+                  ? String(row.label)
+                  : label,
+                optionLabels
+              )
+            : null;
         const display =
           col.type === "quantity"
             ? signed
               ? formatSignedTotal(numeric)
               : String(numeric)
-            : (optionLabels?.[label] ?? label);
+            : (comboLabel ?? optionLabels?.[label] ?? label);
         const clickable = col.type === "quantity" && !!onQuantityClick;
         return clickable ? (
           <button
@@ -413,9 +525,18 @@ export function EditableConfigGrid({
     // as plain text — the value is fixed by the add button.
     if (col.readOnly && col.type !== "quantity") {
       const raw = String(cellValue ?? "");
+      const fromLabel =
+        col.key === "valuesKey"
+          ? localizeComboLabel(
+              row.label != null && String(row.label).trim().length > 0
+                ? String(row.label)
+                : raw,
+              optionLabels
+            )
+          : null;
       return (
         <span className="px-1 text-sm font-medium">
-          {optionLabels?.[raw] || raw || "—"}
+          {fromLabel || optionLabels?.[raw] || raw || "—"}
         </span>
       );
     }

@@ -1,143 +1,112 @@
--- Genericize styles.attributes + inventory breakdown without iat_color/iat_size.
--- Bundle job breakdown keys off child job.itemId (variant SKU).
--- Styles view exposes attributes JSON from itemAttributeSelection (set order).
+-- Generic attribute display for samples, bundle WO, inventory breakdown.
+-- Drop bundleWorkOrder.colorCode/sizeCode; expose attributeValues from variant.
 
--- Genericize styles view attributes + inventory breakdown (no iat_color/iat_size).
--- Must DROP: CREATE OR REPLACE cannot remove columns (colors/sizes → attributes).
+
+-- Samples list: group by attributes only (sum qty across serials).
 DROP VIEW IF EXISTS "styleSamples";
-DROP VIEW IF EXISTS "styles";
-
-CREATE VIEW "styles" WITH (SECURITY_INVOKER=true) AS
-WITH latest_items AS (
-  SELECT DISTINCT ON (i."readableId", i."companyId")
-    i.*
-  FROM "item" i
-  WHERE i."type" = 'Style'
-    AND NOT EXISTS (
-      SELECT 1 FROM "itemVariant" iv WHERE iv."variantItemId" = i."id"
-    )
-  ORDER BY i."readableId", i."companyId",
-    CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END DESC,
-    i."createdAt" DESC NULLS LAST
-),
-item_revisions AS (
+CREATE VIEW "styleSamples" WITH (SECURITY_INVOKER=true) AS
+SELECT
+  s.*,
+  ss."itemId" AS "sampleItemId",
+  COALESCE(te."sampleCount", 0) AS "sampleCount",
+  COALESCE(te."sampledVariantCount", 0) AS "sampledColorCount",
+  COALESCE(te."samples", '[]'::json) AS "samples"
+FROM "styles" s
+LEFT JOIN "styleSample" ss
+  ON ss."styleId" = s."readableId" AND ss."companyId" = s."companyId"
+LEFT JOIN LATERAL (
   SELECT
-    i."readableId",
-    i."companyId",
+    sum(g."qty") AS "sampleCount",
+    count(*) AS "sampledVariantCount",
     json_agg(
       json_build_object(
-        'id', i.id,
-        'revision', i."revision",
-        'name', i."name",
-        'description', i."description",
-        'active', i."active",
-        'createdAt', i."createdAt"
-      ) ORDER BY
-        CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END,
-        i."createdAt"
-      ) AS "revisions"
-  FROM "item" i
-  WHERE i."type" = 'Style'
-    AND NOT EXISTS (
-      SELECT 1 FROM "itemVariant" iv WHERE iv."variantItemId" = i."id"
-    )
-  GROUP BY i."readableId", i."companyId"
-)
+        'label', g."label",
+        'attributes', g."attributes",
+        'quantity', g."qty"
+      ) ORDER BY g."label"
+    ) AS "samples"
+  FROM (
+    SELECT
+      t."attributes",
+      COALESCE(
+        (
+          SELECT string_agg(kv.value, ' · ' ORDER BY kv.key)
+          FROM jsonb_each_text(COALESCE(t."attributes", '{}'::jsonb)) AS kv(key, value)
+        ),
+        ''
+      ) AS "label",
+      count(*)::int AS "qty"
+    FROM "trackedEntity" t
+    WHERE t."sourceDocument" = 'Item'
+      AND t."sourceDocumentId" = ss."itemId"
+      AND t."companyId" = s."companyId"
+      AND t."attributes" IS NOT NULL
+      AND t."attributes" <> '{}'::jsonb
+    GROUP BY t."attributes"
+  ) g
+) te ON true;
+
+
+-- Bundle WO: identity = job.itemId (variant). Expose attributeValues JSON; drop color/size cols.
+DROP VIEW IF EXISTS "bundleWorkOrders";
+
+ALTER TABLE "bundleWorkOrder" DROP COLUMN IF EXISTS "colorCode";
+ALTER TABLE "bundleWorkOrder" DROP COLUMN IF EXISTS "sizeCode";
+
+CREATE VIEW "bundleWorkOrders" WITH (SECURITY_INVOKER=true) AS
 SELECT
-  li."active",
-  li."assignee",
-  li."defaultMethodType",
-  li."sourcingType",
-  li."description",
-  li."itemTrackingType",
-  li."name",
-  li."replenishmentSystem",
-  li."unitOfMeasureCode",
-  li."notes",
-  li."revision",
-  li."readableId",
-  li."readableIdWithRevision",
-  li."id",
-  li."companyId",
-  li."thumbnailPath",
-  li."attributeSetId",
+  bwo."id",
+  bwo."masterWorkOrderId",
+  bwo."jobId",
+  bwo."companyId",
+  bwo."sequence",
+  bwo."createdAt",
+  bwo."createdBy",
+  bwo."updatedAt",
+  bwo."updatedBy",
+  bwo."tags",
+  j."jobId" AS "jobReadableId",
+  j."status",
+  j."quantity",
+  j."dueDate",
+  j."itemId",
+  i."readableIdWithRevision",
+  i."name" AS "itemName",
+  j."assignee",
+  j."quantityComplete",
+  bwo."reportedQuantity",
+  bwo."lastReportedAt",
+  j."assignedAt",
   (
-    SELECT COALESCE(json_agg(attr_row.obj ORDER BY attr_row."sortOrder"), '[]'::json)
-    FROM (
-      SELECT
-        COALESCE(isa."sortOrder", 100) AS "sortOrder",
-        json_build_object(
-          'attributeId', ia."id",
-          'code', ia."code",
-          'name', ia."name",
-          'values', COALESCE((
-            SELECT json_agg(
-              json_build_object(
-                'id', iav."id",
-                'code', iav."code",
-                'name', COALESCE(iav."name", iav."code")
-              ) ORDER BY iav."sortOrder", iav."code"
-            )
-            FROM "itemAttributeSelection" ias
-            JOIN "itemAttributeValue" iav ON iav."id" = ias."attributeValueId"
-            WHERE ias."itemId" = li."id"
-              AND ias."companyId" = li."companyId"
-              AND ias."attributeId" = ia."id"
-          ), '[]'::json)
-        ) AS obj
-      FROM "itemAttribute" ia
-      LEFT JOIN "itemAttributeSetAttribute" isa
-        ON isa."attributeId" = ia."id"
-       AND isa."attributeSetId" = li."attributeSetId"
-      WHERE EXISTS (
-        SELECT 1
-        FROM "itemAttributeSelection" ias
-        WHERE ias."itemId" = li."id"
-          AND ias."companyId" = li."companyId"
-          AND ias."attributeId" = ia."id"
-      )
-    ) attr_row
-  ) AS attributes,
-  (
-    SELECT string_agg(iav."code", ' ' ORDER BY COALESCE(isa."sortOrder", 100), iav."sortOrder", iav."code")
-    FROM "itemAttributeSelection" ias
-    JOIN "itemAttributeValue" iav ON iav."id" = ias."attributeValueId"
-    LEFT JOIN "itemAttributeSetAttribute" isa
-      ON isa."attributeId" = ias."attributeId"
-     AND isa."attributeSetId" = li."attributeSetId"
-    WHERE ias."itemId" = li."id"
-      AND ias."companyId" = li."companyId"
-  ) AS "attributeCodes",
-  ir."revisions",
-  s."customFields",
-  s."tags",
-  ic."itemPostingGroupId",
-  li."createdBy",
-  li."createdAt",
-  li."updatedBy",
-  li."updatedAt"
-FROM "style" s
-INNER JOIN latest_items li ON li."readableId" = s."id" AND li."companyId" = s."companyId"
-LEFT JOIN item_revisions ir ON ir."readableId" = li."readableId" AND ir."companyId" = li."companyId"
-LEFT JOIN "itemCost" ic ON ic."itemId" = li.id;
-
-
--- Fix get_inventory_quantities variant rollup hiding pre-existing parent stock.
---
--- The prior version used COALESCE(vr.x, il.x, 0): because variant_qty_rollup
--- produces a (0-filled) row for every parent that has variants, the COALESCE
--- REPLACED the parent's own ledger with the child rollup. Styles that were
--- migrated to variants but still carry their legacy stock on the parent item id
--- (with colorCode/sizeCode) suddenly showed On Hand = 0 in the inventory list
--- while their size/color breakdown still showed the real quantity.
---
--- Correct model: headline quantity = parent's own ledger + rollup of variant
--- children (ADD, not replace). Legacy stock stays booked on the parent; new
--- movements post to variant child SKUs; both belong to the parent's total.
---
--- The style breakdown now also includes variant-child ledgers, keyed by each
--- child's frozen color/size attribute values and attributed to the parent, so
--- the headline On Hand reconciles with the sum of the breakdown going forward.
+    SELECT count(*)
+    FROM "jobOperation" jo
+    WHERE jo."jobId" = bwo."jobId"
+  )::integer AS "processCount",
+  j."scrapQuantity",
+  j."storageUnitId",
+  j."locationId",
+  j."salesOrderId",
+  j."salesOrderLineId",
+  iv."valuesKey",
+  COALESCE(
+    NULLIF(replace(iv."valuesKey", '|', ' · '), ''),
+    i."name",
+    i."readableIdWithRevision"
+  ) AS "attributeLabel",
+  COALESCE((
+    SELECT jsonb_object_agg(ia."code", COALESCE(iav."name", iav."code"))
+    FROM "itemVariantAttribute" iva
+    JOIN "itemAttribute" ia ON ia."id" = iva."attributeId"
+    JOIN "itemAttributeValue" iav ON iav."id" = iva."attributeValueId"
+    WHERE iva."itemVariantId" = iv."id"
+      AND iva."companyId" = bwo."companyId"
+  ), '{}'::jsonb) AS "attributeValues"
+FROM "bundleWorkOrder" bwo
+JOIN "job" j ON j."id" = bwo."jobId"
+LEFT JOIN "item" i
+  ON i."id" = j."itemId" AND i."companyId" = j."companyId"
+LEFT JOIN "itemVariant" iv
+  ON iv."variantItemId" = j."itemId" AND iv."companyId" = j."companyId";
 
 DROP FUNCTION IF EXISTS get_inventory_quantities(TEXT, TEXT);
 
@@ -264,11 +233,6 @@ WITH
           'variantItemId', grp."variantItemId",
           'valuesKey', grp."valuesKey",
           'label', grp."label",
-          'colorCode', grp."colorCode",
-          'colorName', grp."colorName",
-          'sizeCode', grp."sizeCode",
-          'sizeName', grp."sizeName",
-          'sizeSort', grp."sizeSort",
           'quantityOnHand', grp."qty"
         )
         ORDER BY grp."label" NULLS LAST, grp."valuesKey" NULLS LAST
@@ -278,7 +242,7 @@ WITH
         iv."parentItemId" AS "itemId",
         iv."variantItemId",
         iv."valuesKey",
-        COALESCE(vi."readableIdWithRevision", iv."valuesKey") AS "label",
+        COALESCE(NULLIF(replace(iv."valuesKey", '|', ' · '), ''), vi."readableIdWithRevision", iv."valuesKey") AS "label",
         NULLIF(split_part(COALESCE(iv."valuesKey", ''), '|', 1), '') AS "colorCode",
         NULLIF(split_part(COALESCE(iv."valuesKey", ''), '|', 1), '') AS "colorName",
         NULLIF(split_part(COALESCE(iv."valuesKey", ''), '|', 2), '') AS "sizeCode",
@@ -331,11 +295,6 @@ WITH
           'variantItemId', grp."variantItemId",
           'valuesKey', grp."valuesKey",
           'label', grp."label",
-          'colorCode', grp."colorCode",
-          'colorName', grp."colorName",
-          'sizeCode', grp."sizeCode",
-          'sizeName', grp."sizeName",
-          'sizeSort', grp."sizeSort",
           'quantityOnHand', grp."qty"
         )
         ORDER BY grp."label" NULLS LAST, grp."valuesKey" NULLS LAST
@@ -345,7 +304,7 @@ WITH
         mj."itemId",
         bj."itemId" AS "variantItemId",
         iv."valuesKey",
-        COALESCE(vi."readableIdWithRevision", iv."valuesKey", bj."itemId") AS "label",
+        COALESCE(NULLIF(replace(iv."valuesKey", '|', ' · '), ''), vi."readableIdWithRevision", iv."valuesKey", bj."itemId") AS "label",
         NULLIF(split_part(COALESCE(iv."valuesKey", ''), '|', 1), '') AS "colorCode",
         NULLIF(split_part(COALESCE(iv."valuesKey", ''), '|', 1), '') AS "colorName",
         NULLIF(split_part(COALESCE(iv."valuesKey", ''), '|', 2), '') AS "sizeCode",
@@ -562,91 +521,5 @@ WHERE
   END;
 $function$;
 
-NOTIFY pgrst, 'reload schema';
-
--- Bundle WO identity is the child job.itemId (variant SKU). Keep colorCode/
--- sizeCode columns nullable for old rows but stop resolving names via iat_color.
-CREATE OR REPLACE VIEW "bundleWorkOrders" WITH (SECURITY_INVOKER=true) AS
-SELECT
-  bwo."id",
-  bwo."masterWorkOrderId",
-  bwo."jobId",
-  bwo."companyId",
-  bwo."sequence",
-  bwo."colorCode",
-  bwo."sizeCode",
-  bwo."createdAt",
-  bwo."createdBy",
-  bwo."updatedAt",
-  bwo."updatedBy",
-  bwo."tags",
-  j."jobId" AS "jobReadableId",
-  j."status",
-  j."quantity",
-  j."dueDate",
-  j."itemId",
-  i."readableIdWithRevision",
-  i."name" AS "itemName",
-  j."assignee",
-  j."quantityComplete",
-  bwo."reportedQuantity",
-  bwo."lastReportedAt",
-  j."assignedAt",
-  (
-    SELECT count(*)
-    FROM "jobOperation" jo
-    WHERE jo."jobId" = bwo."jobId"
-  )::integer AS "processCount",
-  j."scrapQuantity",
-  j."storageUnitId",
-  j."locationId",
-  j."salesOrderId",
-  j."salesOrderLineId",
-  COALESCE(i."name", i."readableIdWithRevision") AS "colorName"
-FROM "bundleWorkOrder" bwo
-JOIN "job" j ON j."id" = bwo."jobId"
-LEFT JOIN "item" i
-  ON i."id" = j."itemId" AND i."companyId" = j."companyId";
-
--- Samples list: group by full attributes JSON (not Color/Size keys).
-CREATE VIEW "styleSamples" WITH (SECURITY_INVOKER=true) AS
-SELECT
-  s.*,
-  ss."itemId" AS "sampleItemId",
-  COALESCE(te."sampleCount", 0) AS "sampleCount",
-  COALESCE(te."sampledVariantCount", 0) AS "sampledColorCount",
-  COALESCE(te."samples", '[]'::json) AS "samples"
-FROM "styles" s
-LEFT JOIN "styleSample" ss
-  ON ss."styleId" = s."readableId" AND ss."companyId" = s."companyId"
-LEFT JOIN LATERAL (
-  SELECT
-    sum(g."qty") AS "sampleCount",
-    count(*) AS "sampledVariantCount",
-    json_agg(
-      json_build_object(
-        'label', g."label",
-        'attributes', g."attributes",
-        'quantity', g."qty"
-      ) ORDER BY g."label"
-    ) AS "samples"
-  FROM (
-    SELECT
-      t."attributes",
-      COALESCE(
-        (
-          SELECT string_agg(kv.value, ' · ' ORDER BY kv.key)
-          FROM jsonb_each_text(COALESCE(t."attributes", '{}'::jsonb)) AS kv(key, value)
-        ),
-        t."readableId"
-      ) AS "label",
-      count(*)::int AS "qty"
-    FROM "trackedEntity" t
-    WHERE t."sourceDocument" = 'Item'
-      AND t."sourceDocumentId" = ss."itemId"
-      AND t."companyId" = s."companyId"
-    GROUP BY t."attributes", t."readableId"
-  ) g
-) te ON true;
 
 NOTIFY pgrst, 'reload schema';

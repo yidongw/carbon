@@ -1,3 +1,4 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { usePrinting } from "@carbon/printing/ui";
 import {
   Button,
@@ -21,9 +22,10 @@ import { path } from "~/utils/path";
 export type PrintableBundle = {
   id: string;
   jobReadableId: string | null;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel?: string | null;
+  colorCode?: string | null;
+  colorName?: string | null;
+  sizeCode?: string | null;
   quantity: number | null;
   locationId: string | null;
 };
@@ -47,7 +49,7 @@ export function PrintTicketsModal({
   bundles: PrintableBundle[];
   onClose: () => void;
 }) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const localizeColor = useLocalizeColor();
   const { printerRoutes } = usePrinting();
 
@@ -182,12 +184,16 @@ export function PrintTicketsModal({
                         {b.jobReadableId}
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
-                        {[
-                          localizeColor(b.colorName || b.colorCode || ""),
-                          b.sizeCode
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
+                        {localizeVariantAttributeLabel(
+                          b.attributeLabel,
+                          i18n.locale
+                        ) ||
+                          [
+                            localizeColor(b.colorName || b.colorCode || ""),
+                            b.sizeCode
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
                       </span>
                     </div>
                     <span className="text-xs text-muted-foreground tabular-nums shrink-0">

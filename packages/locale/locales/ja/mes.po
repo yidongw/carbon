@@ -219,6 +219,9 @@ msgstr ""
 msgid "Attribute set not found"
 msgstr ""
 
+msgid "Attributes"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "審査ログ記録が無効化されました"
 
@@ -434,9 +437,6 @@ msgstr "退勤しました"
 
 msgid "Collapse"
 msgstr "折りたたむ"
-
-msgid "Color"
-msgstr "色"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1

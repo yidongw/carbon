@@ -1,4 +1,4 @@
-import { localizeStyleColorName } from "@carbon/database/style-reference";
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -130,7 +130,7 @@ const MasterProcessesTable = memo(
                   <Trans>Bundle</Trans>
                 </th>
                 <th className="py-2 pr-4 font-medium">
-                  <Trans>Color / Size</Trans>
+                  <Trans>Attributes</Trans>
                 </th>
                 <th className="py-2 pr-4 font-medium">
                   <Trans>Assignee</Trans>
@@ -162,14 +162,14 @@ const MasterProcessesTable = memo(
                     {bundle.jobReadableId}
                   </td>
                   <td className="py-2 pr-4 text-muted-foreground">
-                    {[
-                      localizeStyleColorName(bundle.colorCode, i18n.locale) ||
-                        bundle.colorName ||
-                        bundle.colorCode,
-                      bundle.sizeCode
-                    ]
-                      .filter(Boolean)
-                      .join(" · ") || "—"}
+                    {localizeVariantAttributeLabel(
+                      bundle.attributeLabel,
+                      i18n.locale
+                    ) ||
+                      [bundle.colorName || bundle.colorCode, bundle.sizeCode]
+                        .filter(Boolean)
+                        .join(" · ") ||
+                      "—"}
                   </td>
                   <td className="py-2 pr-4">
                     {bundle.assignee
@@ -211,14 +211,14 @@ const MasterProcessesTable = memo(
                 {renderOperationStatus(bundle.operationStatus)}
               </div>
               <div className="text-xs text-muted-foreground">
-                {[
-                  localizeStyleColorName(bundle.colorCode, i18n.locale) ||
-                    bundle.colorName ||
-                    bundle.colorCode,
-                  bundle.sizeCode
-                ]
-                  .filter(Boolean)
-                  .join(" · ") || "—"}
+                {localizeVariantAttributeLabel(
+                  bundle.attributeLabel,
+                  i18n.locale
+                ) ||
+                  [bundle.colorName || bundle.colorCode, bundle.sizeCode]
+                    .filter(Boolean)
+                    .join(" · ") ||
+                  "—"}
               </div>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-2 text-xs">
                 <div>

@@ -835,8 +835,6 @@ export const overlayRegistry = {
           | undefined;
         if (!data) return null;
         return {
-          colorAxis: data.colorAxis,
-          sizeAxis: data.sizeAxis,
           cells: data.cells,
           existingBundles: data.existingBundles,
           splitRows: data.splitRows,

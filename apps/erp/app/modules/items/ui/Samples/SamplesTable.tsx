@@ -1,20 +1,63 @@
-import { localizeStyleColorName } from "@carbon/database/style-reference";
+import {
+  localizeStyleColorName,
+  localizeStyleColorNameByName
+} from "@carbon/database/style-reference";
 import { Badge, HStack, IconButton, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useMemo } from "react";
-import { LuBookMarked, LuPalette, LuPlus, LuScanBarcode } from "react-icons/lu";
+import { LuBookMarked, LuHash, LuPlus } from "react-icons/lu";
 import { useRevalidator } from "react-router";
 import { Hyperlink, ItemThumbnail, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
-import type { StyleSample } from "~/modules/items";
+import type { StyleSample, StyleSampleFlatRow } from "~/modules/items";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { path } from "~/utils/path";
 
 type SamplesTableProps = {
   data: StyleSample[];
   count: number;
 };
+
+function flattenSamples(data: StyleSample[]): StyleSampleFlatRow[] {
+  const rows: StyleSampleFlatRow[] = [];
+  for (const style of data) {
+    const samples = Array.isArray(style.samples) ? style.samples : [];
+    if (samples.length === 0) {
+      rows.push({
+        rowKey: `${style.id ?? style.readableId}-empty`,
+        styleId: style.id,
+        readableId: style.readableId,
+        readableIdWithRevision: style.readableIdWithRevision,
+        name: style.name,
+        thumbnailPath: style.thumbnailPath,
+        sampleItemId: style.sampleItemId ?? null,
+        valuesByCode: {},
+        quantity: 0
+      });
+      continue;
+    }
+    for (const [i, sample] of samples.entries()) {
+      const attrs =
+        sample.attributes && typeof sample.attributes === "object"
+          ? (sample.attributes as Record<string, string>)
+          : {};
+      rows.push({
+        rowKey: `${style.id ?? style.readableId}-${i}-${sample.label ?? i}`,
+        styleId: style.id,
+        readableId: style.readableId,
+        readableIdWithRevision: style.readableIdWithRevision,
+        name: style.name,
+        thumbnailPath: style.thumbnailPath,
+        sampleItemId: style.sampleItemId ?? null,
+        valuesByCode: attrs,
+        quantity: sample.quantity ?? 0
+      });
+    }
+  }
+  return rows;
+}
 
 const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
   const { t, i18n } = useLingui();
@@ -23,10 +66,27 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
   const permissions = usePermissions();
   const canCreate = permissions.can("create", "parts");
 
-  const columns = useMemo<ColumnDef<StyleSample>[]>(() => {
-    return [
+  const flatRows = useMemo(() => flattenSamples(data), [data]);
+
+  const attrCodes = useMemo(() => {
+    const codes = new Set<string>();
+    for (const row of flatRows) {
+      for (const code of Object.keys(row.valuesByCode)) {
+        if (code) codes.add(code);
+      }
+    }
+    // Prefer Color then Size then alpha for stable garment layouts.
+    return Array.from(codes).sort((a, b) => {
+      const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
+      const d = rank(a) - rank(b);
+      return d !== 0 ? d : a.localeCompare(b);
+    });
+  }, [flatRows]);
+
+  const columns = useMemo<ColumnDef<StyleSampleFlatRow>[]>(() => {
+    const cols: ColumnDef<StyleSampleFlatRow>[] = [
       {
-        accessorKey: "id",
+        accessorKey: "readableIdWithRevision",
         header: t`Style`,
         cell: ({ row }) => (
           <HStack className="py-1 w-full min-w-0 max-w-[240px]" spacing={2}>
@@ -35,7 +95,12 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
               thumbnailPath={row.original.thumbnailPath}
               type="Style"
             />
-            <Hyperlink to={path.to.style(row.original.id!)} className="min-w-0">
+            <Hyperlink
+              to={
+                row.original.styleId ? path.to.style(row.original.styleId) : "#"
+              }
+              className="min-w-0"
+            >
               <VStack spacing={0} className="min-w-0">
                 <span className="w-full truncate">
                   {row.original.readableIdWithRevision}
@@ -48,141 +113,89 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
           </HStack>
         ),
         meta: { icon: <LuBookMarked /> }
-      },
-      {
-        id: "attributes",
-        header: t`Attributes`,
-        cell: ({ row }) => {
-          const attrs = (
-            row.original as {
-              attributes?: Array<{
-                attributeId: string;
-                values: Array<{ id: string; code: string; name: string }>;
-              }>;
-              colors?: Array<{
-                id: string;
-                colorCode: string;
-                colorName: string;
-              }>;
-            }
-          ).attributes;
-          if (Array.isArray(attrs) && attrs.length > 0) {
-            return (
-              <HStack spacing={1} className="flex-wrap">
-                {attrs.flatMap((a) =>
-                  (a.values ?? []).map((v) => (
-                    <Badge key={`${a.attributeId}:${v.id}`} variant="outline">
-                      {localizeStyleColorName(v.code, i18n.locale) ||
-                        v.name ||
-                        v.code}
-                    </Badge>
-                  ))
-                )}
-              </HStack>
-            );
-          }
-          const colors = (row.original.colors ?? []) as Array<{
-            id: string;
-            colorCode: string;
-            colorName: string;
-          }>;
-          if (!Array.isArray(colors) || colors.length === 0) return null;
-          return (
-            <HStack spacing={1} className="flex-wrap">
-              {colors.map((color) => (
-                <Badge key={color.id} variant="outline" title={color.colorCode}>
-                  {localizeStyleColorName(color.colorCode, i18n.locale) ||
-                    color.colorName ||
-                    color.colorCode}
-                </Badge>
-              ))}
-            </HStack>
-          );
-        },
-        meta: { icon: <LuPalette /> }
-      },
-      {
-        accessorKey: "sampleCount",
-        header: t`Samples`,
-        cell: ({ row }) => {
-          const samples = (row.original.samples ?? []) as Array<{
-            label?: string;
-            colorCode?: string;
-            colorName?: string;
-            size?: string;
-            quantity: number;
-          }>;
-          const sampleItemId = row.original.sampleItemId;
-          const chips = samples.map((s, i) => {
-            const label =
-              s.label ??
-              [
-                localizeStyleColorName(s.colorCode, i18n.locale) ||
-                  s.colorName ||
-                  s.colorCode,
-                s.size
-              ]
-                .filter(Boolean)
-                .join(" · ");
-            return (
-              <Badge
-                key={`${label}-${i}`}
-                variant="outline"
-                className="font-normal"
-              >
-                {label}
-                <span className="ml-1 font-mono text-muted-foreground">
-                  ×{s.quantity}
-                </span>
-              </Badge>
-            );
-          });
-          return (
-            <HStack spacing={1} className="flex-wrap py-1">
-              {sampleItemId && samples.length > 0 ? (
-                <Hyperlink
-                  to={path.to.inventoryItem(sampleItemId)}
-                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                  className="flex flex-wrap items-center gap-1"
-                >
-                  {chips}
-                </Hyperlink>
-              ) : (
-                chips
-              )}
-              {canCreate && (
-                <IconButton
-                  aria-label={t`Add sample`}
-                  variant="secondary"
-                  size="sm"
-                  icon={<LuPlus />}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openOverlay(
-                      overlay.to.newStyleSample({
-                        styleId: row.original.readableId!
-                      }),
-                      { onCreated: () => revalidator.revalidate() }
-                    );
-                  }}
-                />
-              )}
-            </HStack>
-          );
-        },
-        meta: { icon: <LuScanBarcode /> }
       }
     ];
-  }, [t, i18n, canCreate, openOverlay, revalidator]);
+
+    for (const code of attrCodes) {
+      cols.push({
+        id: `attr-${code}`,
+        header: translateItemAttributeCatalogName(code, i18n),
+        cell: ({ row }) => {
+          const value = row.original.valuesByCode[code];
+          if (!value) {
+            return <span className="text-muted-foreground">—</span>;
+          }
+          return (
+            <Badge variant="outline" className="font-normal">
+              {localizeStyleColorName(value, i18n.locale) ||
+                localizeStyleColorNameByName(value, i18n.locale) ||
+                value}
+            </Badge>
+          );
+        }
+      });
+    }
+
+    cols.push({
+      accessorKey: "quantity",
+      header: t`Qty`,
+      cell: ({ row }) => {
+        const qty = row.original.quantity;
+        const sampleItemId = row.original.sampleItemId;
+        const body =
+          qty > 0 ? (
+            <span className="tabular-nums font-mono">{qty}</span>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          );
+        return (
+          <HStack spacing={1} className="items-center">
+            {sampleItemId && qty > 0 ? (
+              <Hyperlink
+                to={path.to.inventoryItem(sampleItemId)}
+                onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              >
+                {body}
+              </Hyperlink>
+            ) : (
+              body
+            )}
+            {canCreate && row.original.readableId ? (
+              <IconButton
+                aria-label={t`Add sample`}
+                variant="secondary"
+                size="sm"
+                icon={<LuPlus />}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openOverlay(
+                    overlay.to.newStyleSample({
+                      styleId: row.original.readableId!
+                    }),
+                    { onCreated: () => revalidator.revalidate() }
+                  );
+                }}
+              />
+            ) : null}
+          </HStack>
+        );
+      },
+      meta: { icon: <LuHash /> }
+    });
+
+    return cols;
+  }, [t, i18n, attrCodes, canCreate, openOverlay, revalidator]);
 
   return (
-    <Table<StyleSample>
+    <Table<StyleSampleFlatRow>
       count={count}
       columns={columns}
-      data={data}
-      defaultColumnPinning={{ left: ["id"] }}
-      getRowHref={(row) => (row.id ? path.to.style(row.id) : undefined)}
+      data={flatRows}
+      defaultColumnPinning={{ left: ["readableIdWithRevision"] }}
+      getRowHref={(row) =>
+        row.styleId ? path.to.style(row.styleId) : undefined
+      }
       title={t`Samples`}
       table="style"
       searchReloadDocument

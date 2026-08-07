@@ -135,8 +135,14 @@ export async function getMasterCuttingProgress(
 export type MasterProcessBundle = {
   bundleWorkOrderId: string;
   jobReadableId: string;
+  attributeLabel: string | null;
+  attributeValues: Record<string, string> | null;
+  valuesKey: string | null;
+  /** @deprecated Prefer attributeLabel */
   colorCode: string | null;
+  /** @deprecated Prefer attributeLabel */
   colorName: string | null;
+  /** @deprecated Prefer attributeLabel */
   sizeCode: string | null;
   /**
    * The bundle's *operation* status for this process (Todo / In Progress /
@@ -255,7 +261,7 @@ export async function getMasterProcessBreakdown(
   const bundles = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, colorCode, colorName, sizeCode, status, quantity, reportedQuantity, assignee, assignedAt, lastReportedAt"
+      "id, jobId, jobReadableId, attributeLabel, attributeValues, valuesKey, status, quantity, reportedQuantity, assignee, assignedAt, lastReportedAt"
     )
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
@@ -290,9 +296,13 @@ export async function getMasterProcessBreakdown(
     process.bundles.push({
       bundleWorkOrderId: bundle.id ?? "",
       jobReadableId: bundle.jobReadableId ?? "",
-      colorCode: bundle.colorCode,
-      colorName: bundle.colorName ?? null,
-      sizeCode: bundle.sizeCode,
+      attributeLabel: bundle.attributeLabel ?? null,
+      attributeValues:
+        (bundle.attributeValues as Record<string, string> | null) ?? null,
+      valuesKey: bundle.valuesKey ?? null,
+      colorCode: null,
+      colorName: bundle.attributeLabel ?? null,
+      sizeCode: null,
       operationStatus: op.status ?? null,
       quantity,
       reportedQuantity: reported,

@@ -1,4 +1,4 @@
-import { localizeStyleColorName } from "@carbon/database/style-reference";
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { Badge, Button, cn, HStack, IconButton } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useState } from "react";
@@ -15,8 +15,6 @@ import {
 } from "../Jobs/configTableShared";
 
 export type SplitBatchOverlayProps = {
-  colorAxis: string[];
-  sizeAxis: string[];
   cells: CuttingSplitCell[];
   existingBundles: ExistingBundle[];
   splitRows: MasterSplitRow[];
@@ -27,23 +25,21 @@ type Row = {
   id: string | null;
   splitRowId: string | null;
   jobReadableId: string | null;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  valuesKey: string;
+  attributeLabel: string;
   quantity: number;
   reportedQuantity: number;
 };
 
-const cellKey = (color: string | null, size: string | null) =>
-  `${color ?? ""}|${size ?? ""}`;
+const cellKey = (valuesKey: string | null | undefined) =>
+  (valuesKey ?? "").trim();
 const num = (v: unknown) => Number(v) || 0;
 
 /**
  * Split a Master Work Order's cut into Bundle Work Orders. Each row is a bundle
  * (existing bundles are editable; their reported quantity is shown and caps how
- * far down they can go). Add a bundle from the per-color/size buttons — one per
- * color/size that still has un-bundled cut remaining; none show when nothing is
- * left. Confirm creates the new bundles and updates the edited ones.
+ * far down they can go). Add a bundle from the remaining attribute-combo
+ * buttons. Confirm creates the new bundles and updates the edited ones.
  */
 export default function SplitBatchOverlay({
   cells,
@@ -58,7 +54,7 @@ export default function SplitBatchOverlay({
 
   const cutByCell = useMemo(() => {
     const m = new Map<string, number>();
-    for (const c of cells) m.set(cellKey(c.colorCode, c.sizeCode), c.cut);
+    for (const c of cells) m.set(cellKey(c.valuesKey), c.cut);
     return m;
   }, [cells]);
   const totalCut = useMemo(() => cells.reduce((s, c) => s + c.cut, 0), [cells]);
@@ -68,73 +64,63 @@ export default function SplitBatchOverlay({
       id: b.id,
       splitRowId: null,
       jobReadableId: b.jobReadableId,
-      colorCode: b.colorCode,
-      colorName: b.colorName,
-      sizeCode: b.sizeCode,
+      valuesKey: b.valuesKey ?? "",
+      attributeLabel: b.attributeLabel ?? b.valuesKey ?? "—",
       quantity: b.quantity,
       reportedQuantity: b.reportedQuantity
     }));
 
-    // Prefer the captured cut rows: one bundle per pending split row (carries its
-    // id so saving materializes it).
     if (splitRows.length > 0) {
       const prefillRows: Row[] = splitRows.map((sr) => ({
         id: null,
         splitRowId: sr.id,
         jobReadableId: null,
-        colorCode: sr.colorCode,
-        colorName: sr.colorName,
-        sizeCode: sr.sizeCode,
+        valuesKey: sr.valuesKey,
+        attributeLabel: sr.attributeLabel,
         quantity: sr.quantity,
         reportedQuantity: 0
       }));
       return [...existingRows, ...prefillRows];
     }
 
-    // Fallback (cuts with no captured rows): prefill the un-bundled cut per cell.
     const bundled = new Map<string, number>();
     for (const b of existingBundles) {
-      const k = cellKey(b.colorCode, b.sizeCode);
+      const k = cellKey(b.valuesKey);
       bundled.set(k, (bundled.get(k) ?? 0) + b.quantity);
     }
     const prefillRows: Row[] = cells
       .map((c) => ({
-        c,
-        remaining: c.cut - (bundled.get(cellKey(c.colorCode, c.sizeCode)) ?? 0)
-      }))
-      .filter((x) => x.remaining > 0)
-      .map(({ c, remaining }) => ({
         id: null,
         splitRowId: null,
         jobReadableId: null,
-        colorCode: c.colorCode,
-        colorName: c.colorName,
-        sizeCode: c.sizeCode,
-        quantity: remaining,
+        valuesKey: c.valuesKey,
+        attributeLabel: c.attributeLabel,
+        quantity: Math.max(0, c.cut - (bundled.get(cellKey(c.valuesKey)) ?? 0)),
         reportedQuantity: 0
-      }));
+      }))
+      .filter((r) => r.quantity > 0);
     return [...existingRows, ...prefillRows];
   });
 
   const enteredByCell = useMemo(() => {
     const m = new Map<string, number>();
     for (const r of rows) {
-      const k = cellKey(r.colorCode, r.sizeCode);
+      const k = cellKey(r.valuesKey);
       m.set(k, (m.get(k) ?? 0) + num(r.quantity));
     }
     return m;
   }, [rows]);
 
   const remainingFor = (c: CuttingSplitCell) =>
-    c.cut - (enteredByCell.get(cellKey(c.colorCode, c.sizeCode)) ?? 0);
+    c.cut - (enteredByCell.get(cellKey(c.valuesKey)) ?? 0);
   const addableCells = cells.filter((c) => remainingFor(c) > 0);
 
   const total = rows.reduce((s, r) => s + num(r.quantity), 0);
   const remaining = totalCut - total;
 
-  const cellOver = (color: string | null, size: string | null) =>
-    (enteredByCell.get(cellKey(color, size)) ?? 0) >
-    (cutByCell.get(cellKey(color, size)) ?? 0);
+  const cellOver = (valuesKey: string) =>
+    (enteredByCell.get(cellKey(valuesKey)) ?? 0) >
+    (cutByCell.get(cellKey(valuesKey)) ?? 0);
   const rowBelowReported = (r: Row) =>
     !!r.id && num(r.quantity) < r.reportedQuantity;
 
@@ -162,9 +148,8 @@ export default function SplitBatchOverlay({
         id: null,
         splitRowId: null,
         jobReadableId: null,
-        colorCode: c.colorCode,
-        colorName: c.colorName,
-        sizeCode: c.sizeCode,
+        valuesKey: c.valuesKey,
+        attributeLabel: c.attributeLabel,
         quantity: remainingFor(c),
         reportedQuantity: 0
       }
@@ -175,8 +160,7 @@ export default function SplitBatchOverlay({
     const bundles = rows.map((r) => ({
       id: r.id ?? undefined,
       splitRowId: r.splitRowId ?? undefined,
-      colorCode: r.colorCode,
-      sizeCode: r.sizeCode,
+      valuesKey: r.valuesKey,
       quantity: num(r.quantity)
     }));
     const formData = new FormData();
@@ -215,10 +199,7 @@ export default function SplitBatchOverlay({
                       <Trans>Bundle</Trans>
                     </th>
                     <th className="px-1 py-1 text-left font-medium">
-                      <Trans>Size</Trans>
-                    </th>
-                    <th className="px-1 py-1 text-left font-medium">
-                      <Trans>Color</Trans>
+                      <Trans>Attributes</Trans>
                     </th>
                     <th className="px-1 py-1 text-left font-medium">
                       <Trans>Quantity</Trans>
@@ -228,7 +209,7 @@ export default function SplitBatchOverlay({
                 </thead>
                 <tbody>
                   {rows.map((r, i) => {
-                    const over = cellOver(r.colorCode, r.sizeCode);
+                    const over = cellOver(r.valuesKey);
                     const below = rowBelowReported(r);
                     return (
                       <tr key={r.id ?? `new-${i}`}>
@@ -240,13 +221,10 @@ export default function SplitBatchOverlay({
                           )}
                         </td>
                         <td className="px-1 font-medium">
-                          {r.sizeCode ?? "—"}
-                        </td>
-                        <td className="px-1 font-medium">
-                          {localizeStyleColorName(r.colorCode, i18n.locale) ??
-                            r.colorName ??
-                            r.colorCode ??
-                            "—"}
+                          {localizeVariantAttributeLabel(
+                            r.attributeLabel,
+                            i18n.locale
+                          ) || "—"}
                         </td>
                         <td>
                           <input
@@ -288,19 +266,18 @@ export default function SplitBatchOverlay({
               <div className="mt-4 flex flex-wrap gap-2">
                 {addableCells.map((c) => (
                   <Button
-                    key={cellKey(c.colorCode, c.sizeCode)}
+                    key={cellKey(c.valuesKey)}
                     type="button"
-                    variant="secondary"
                     size="sm"
+                    variant="secondary"
                     leftIcon={<LuPlus />}
                     onClick={() => addRow(c)}
                   >
-                    {c.sizeCode ?? "—"} ·{" "}
-                    {localizeStyleColorName(c.colorCode, i18n.locale) ??
-                      c.colorName ??
-                      c.colorCode ??
-                      "—"}{" "}
-                    · <span className="tabular-nums">{remainingFor(c)}</span>
+                    {localizeVariantAttributeLabel(
+                      c.attributeLabel,
+                      i18n.locale
+                    )}{" "}
+                    · {remainingFor(c)}
                   </Button>
                 ))}
               </div>
@@ -311,41 +288,31 @@ export default function SplitBatchOverlay({
 
       <div className="shrink-0 border-t border-border px-6 py-4">
         <HStack className="justify-between">
-          <HStack spacing={2}>
-            <span className="text-sm text-muted-foreground">
-              <Trans>Remaining</Trans>:{" "}
-              <strong
-                className={cn(
-                  "tabular-nums",
-                  remaining < 0 ? "text-red-500" : "text-foreground"
-                )}
+          <div className="text-sm text-muted-foreground">
+            <Trans>Total</Trans> {total}
+            {remaining !== 0 ? (
+              <Badge
+                variant="secondary"
+                className="ml-2 font-normal tabular-nums"
               >
-                {remaining}
-              </strong>
-            </span>
-            {hasOver ? (
-              <Badge variant="red">
-                <Trans>Exceeds cut</Trans>
+                {remaining > 0 ? (
+                  <Trans>{remaining} left</Trans>
+                ) : (
+                  <Trans>{Math.abs(remaining)} over</Trans>
+                )}
               </Badge>
             ) : null}
-            {hasBelowReported ? (
-              <Badge variant="red">
-                <Trans>Below reported</Trans>
-              </Badge>
-            ) : null}
-          </HStack>
-          <HStack className="gap-2">
-            <Button type="button" variant="ghost" onClick={onDismiss}>
+          </div>
+          <HStack>
+            <Button variant="secondary" onClick={onDismiss}>
               <Trans>Cancel</Trans>
             </Button>
             <Button
-              type="button"
-              variant="primary"
               isDisabled={!canConfirm}
               isLoading={isSubmitting}
               onClick={handleConfirm}
             >
-              <Trans>Save</Trans>
+              <Trans>Confirm</Trans>
             </Button>
           </HStack>
         </HStack>

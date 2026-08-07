@@ -1,4 +1,3 @@
-import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { Badge, HStack, VStack } from "@carbon/react";
 import type { I18n } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
@@ -290,64 +289,26 @@ export function buildDefaultStylesTableColumns({
             }>
           | null
           | undefined;
-        if (Array.isArray(attrs) && attrs.length > 0) {
-          const badges = attrs.flatMap((a) =>
-            (a.values ?? []).map((v) => (
-              <Badge
-                key={`${a.attributeId}:${v.id}`}
-                variant="outline"
-                title={`${a.name}: ${v.code}`}
-              >
-                {localizeStyleColorName(v.code, i18n.locale) ||
-                  v.name ||
-                  v.code}
-              </Badge>
-            ))
-          );
-          return badges.length ? (
-            <HStack spacing={1} className="flex-wrap">
-              {badges}
-            </HStack>
-          ) : (
-            <span className="text-muted-foreground">—</span>
-          );
-        }
-        // Pre-migration fallback: styles.colors / styles.sizes JSON
-        const colors = (row.original.colors ?? []) as Array<{
-          id: string;
-          colorCode: string;
-          colorName: string;
-        }>;
-        const sizes = (row.original.sizes ?? []) as Array<{
-          id: string;
-          sizeCode: string;
-          sizeName: string;
-        }>;
-        const colorList = Array.isArray(colors) ? colors : [];
-        const sizeList = Array.isArray(sizes) ? sizes : [];
-        if (colorList.length === 0 && sizeList.length === 0) {
+        if (!Array.isArray(attrs) || attrs.length === 0) {
           return <span className="text-muted-foreground">—</span>;
         }
-        return (
+        const badges = attrs.flatMap((a) =>
+          (a.values ?? []).map((v) => (
+            <Badge
+              key={`${a.attributeId}:${v.id}`}
+              variant="outline"
+              title={`${a.name}: ${v.code}`}
+            >
+              {v.name || v.code}
+            </Badge>
+          ))
+        );
+        return badges.length ? (
           <HStack spacing={1} className="flex-wrap">
-            {colorList.map((color) => (
-              <Badge key={color.id} variant="outline" title={color.colorCode}>
-                {localizeStyleColorName(color.colorCode, i18n.locale) ||
-                  color.colorName ||
-                  color.colorCode}
-              </Badge>
-            ))}
-            {sizeList.map((size) => (
-              <Badge
-                key={size.id}
-                variant="outline"
-                className="font-mono"
-                title={size.sizeName}
-              >
-                {size.sizeCode}
-              </Badge>
-            ))}
+            {badges}
           </HStack>
+        ) : (
+          <span className="text-muted-foreground">—</span>
         );
       },
       meta: {

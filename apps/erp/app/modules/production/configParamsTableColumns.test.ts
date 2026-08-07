@@ -305,10 +305,30 @@ describe("getConfigQuantityCells", () => {
       { Red: "红色", Blue: "蓝色" }
     );
     expect(cells.map((c) => c.label)).toEqual([
-      "红色 · S",
-      "蓝色 · S",
-      "红色 · M",
-      "蓝色 · M"
+      "S · 红色",
+      "S · 蓝色",
+      "M · 红色",
+      "M · 蓝色"
+    ]);
+  });
+
+  it("labels combo valuesKey + Quantities rows", async () => {
+    const { getConfigQuantityCells } = await import(
+      "./configParamsTableColumns"
+    );
+    const cells = getConfigQuantityCells(
+      {
+        configTable: [
+          { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
+          { valuesKey: "RD|M", Quantities: 2 }
+        ],
+        configTablePrimaryKeys: ["Quantities"]
+      },
+      { BK: "黑色", RD: "红色" }
+    );
+    expect(cells).toEqual([
+      { key: "0:Quantities", label: "BK · S", quantity: 6 },
+      { key: "1:Quantities", label: "红色 · M", quantity: 2 }
     ]);
   });
 });

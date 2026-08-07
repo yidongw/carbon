@@ -220,6 +220,9 @@ msgstr ""
 msgid "Attribute set not found"
 msgstr ""
 
+msgid "Attributes"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "审核日志已禁用"
 
@@ -435,9 +438,6 @@ msgstr "打卡退出"
 
 msgid "Collapse"
 msgstr "折叠"
-
-msgid "Color"
-msgstr "颜色"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1

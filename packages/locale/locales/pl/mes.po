@@ -219,6 +219,9 @@ msgstr ""
 msgid "Attribute set not found"
 msgstr ""
 
+msgid "Attributes"
+msgstr ""
+
 msgid "Audit logging disabled"
 msgstr "Wyłączona logowanie auditowe"
 
@@ -434,9 +437,6 @@ msgstr "Wylogowany"
 
 msgid "Collapse"
 msgstr "Zwiń"
-
-msgid "Color"
-msgstr "Kolor"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1

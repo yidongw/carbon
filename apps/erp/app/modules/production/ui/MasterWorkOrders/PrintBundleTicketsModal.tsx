@@ -1,4 +1,4 @@
-import { localizeStyleColorName } from "@carbon/database/style-reference";
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import {
   Button,
   Checkbox,
@@ -181,14 +181,14 @@ const PrintBundleTicketsModal = ({
                         {b.jobReadableId}
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
-                        {[
-                          localizeStyleColorName(b.colorCode, i18n.locale) ||
-                            b.colorName ||
-                            b.colorCode,
-                          b.sizeCode
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
+                        {localizeVariantAttributeLabel(
+                          (b as { attributeLabel?: string | null })
+                            .attributeLabel,
+                          i18n.locale
+                        ) ||
+                          [b.colorName || b.colorCode, b.sizeCode]
+                            .filter(Boolean)
+                            .join(" · ")}
                       </span>
                     </div>
                     <span className="text-xs text-muted-foreground tabular-nums shrink-0">

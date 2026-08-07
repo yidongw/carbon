@@ -219,6 +219,9 @@ msgstr "Attribute set is required"
 msgid "Attribute set not found"
 msgstr "Attribute set not found"
 
+msgid "Attributes"
+msgstr "Attributes"
+
 msgid "Audit logging disabled"
 msgstr "Audit logging disabled"
 
@@ -434,9 +437,6 @@ msgstr "Clocked out"
 
 msgid "Collapse"
 msgstr "Collapse"
-
-msgid "Color"
-msgstr "Color"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1

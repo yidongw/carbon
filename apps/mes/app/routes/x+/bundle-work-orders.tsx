@@ -1,5 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import {
   Button,
   Heading,
@@ -31,7 +32,7 @@ import {
 } from "~/components/PrintTicketsModal";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useLocalizeColor, useUrlParams } from "~/hooks";
+import { useUrlParams } from "~/hooks";
 import { getBundleWorkOrdersList } from "~/services/bundle.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -79,9 +80,9 @@ type BundleWorkOrder = {
   jobReadableId: string | null;
   readableIdWithRevision: string | null;
   itemName: string | null;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel: string | null;
+  attributeValues: Record<string, string> | null;
+  valuesKey: string | null;
   sequence: number | null;
   quantity: number | null;
   status: string | null;
@@ -114,12 +115,11 @@ function JobStatus({ status }: { status: string | null }) {
 }
 
 export default function BundleWorkOrdersRoute() {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { bundles, masterWorkOrderId, masterWOMap } =
     useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
   const [people] = usePeople();
-  const localizeColor = useLocalizeColor();
   const { urlFiltersParams, hasFilters } = useFilters();
   const navigate = useNavigate();
 
@@ -144,22 +144,11 @@ export default function BundleWorkOrdersRoute() {
       .map((p) => ({ label: p.name, value: p.id }));
   }, [rows, people]);
 
-  const colorOptions = useMemo(() => {
-    const codes = new Set(rows.map((r) => r.colorCode).filter(Boolean));
-    return Array.from(codes).map((code) => {
-      const row = rows.find((r) => r.colorCode === code);
-      return {
-        label: localizeColor(row?.colorName || code),
-        value: code as string
-      };
-    });
-  }, [rows, localizeColor]);
-
-  const sizeOptions = useMemo(
+  const attributeOptions = useMemo(
     () =>
-      Array.from(new Set(rows.map((r) => r.sizeCode).filter(Boolean))).map(
-        (s) => ({ label: s as string, value: s as string })
-      ),
+      Array.from(
+        new Set(rows.map((r) => r.attributeLabel).filter(Boolean))
+      ).map((s) => ({ label: s as string, value: s as string })),
     [rows]
   );
 
@@ -205,14 +194,9 @@ export default function BundleWorkOrdersRoute() {
         filter: { type: "static", options: styleOptions }
       },
       {
-        accessorKey: "colorCode",
-        header: t`Color`,
-        filter: { type: "static", options: colorOptions }
-      },
-      {
-        accessorKey: "sizeCode",
-        header: t`Size`,
-        filter: { type: "static", options: sizeOptions }
+        accessorKey: "attributeLabel",
+        header: t`Attributes`,
+        filter: { type: "static", options: attributeOptions }
       }
     ],
     [
@@ -220,8 +204,7 @@ export default function BundleWorkOrdersRoute() {
       statusOptions,
       assigneeOptions,
       styleOptions,
-      colorOptions,
-      sizeOptions,
+      attributeOptions,
       t
     ]
   );
@@ -267,9 +250,7 @@ export default function BundleWorkOrdersRoute() {
         .map((r) => ({
           id: r.id,
           jobReadableId: r.jobReadableId,
-          colorCode: r.colorCode,
-          colorName: r.colorName,
-          sizeCode: r.sizeCode,
+          attributeLabel: r.attributeLabel,
           quantity: r.quantity,
           locationId: null
         })),
@@ -366,10 +347,14 @@ export default function BundleWorkOrdersRoute() {
                     )}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {row.colorName && (
-                      <span>{localizeColor(row.colorName)}</span>
+                    {row.attributeLabel && (
+                      <span>
+                        {localizeVariantAttributeLabel(
+                          row.attributeLabel,
+                          i18n.locale
+                        )}
+                      </span>
                     )}
-                    {row.sizeCode && <span>{row.sizeCode}</span>}
                     {row.quantity != null && (
                       <span className="tabular-nums">
                         {t`Qty`}: {row.quantity}
@@ -403,10 +388,7 @@ export default function BundleWorkOrdersRoute() {
                       <Trans>Style</Trans>
                     </Th>
                     <Th>
-                      <Trans>Color</Trans>
-                    </Th>
-                    <Th>
-                      <Trans>Size</Trans>
+                      <Trans>Attributes</Trans>
                     </Th>
                     <Th>
                       <Trans>Quantity</Trans>
@@ -454,10 +436,10 @@ export default function BundleWorkOrdersRoute() {
                         </VStack>
                       </Td>
                       <Td className="text-muted-foreground">
-                        {localizeColor(row.colorName || row.colorCode) || "—"}
-                      </Td>
-                      <Td className="text-muted-foreground">
-                        {row.sizeCode ?? "—"}
+                        {localizeVariantAttributeLabel(
+                          row.attributeLabel,
+                          i18n.locale
+                        ) || "—"}
                       </Td>
                       <Td className="text-muted-foreground tabular-nums">
                         {row.quantity ?? "—"}

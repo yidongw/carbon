@@ -143,9 +143,10 @@ function JobConfigQuantities({
   }));
 
   const defaultQuantityLabel = t`Quantities`;
+  const attributesLabel = t`Attributes`;
   const { primaryParam, primaryKeys, columns } = useMemo(
-    () => buildColumns(parameters, defaultQuantityLabel),
-    [parameters, defaultQuantityLabel]
+    () => buildColumns(parameters, defaultQuantityLabel, attributesLabel),
+    [parameters, defaultQuantityLabel, attributesLabel]
   );
 
   const currentRows = useMemo(

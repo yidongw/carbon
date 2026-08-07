@@ -56,6 +56,10 @@ msgstr "{0} 邀请您以 {1} 身份加入。"
 msgid "{0} orders"
 msgstr "{0} 个订单"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr ""
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "多了 {0}"
@@ -103,6 +107,9 @@ msgstr "{minSeats} 位用户起"
 
 msgid "{name} deleted"
 msgstr "{name} 已删除"
+
+msgid "{remaining} left"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 个权限"
@@ -1535,9 +1542,6 @@ msgstr "批次大小"
 msgid "Batch Tracking"
 msgstr "批次追踪"
 
-msgid "Below reported"
-msgstr "低于已上报量"
-
 msgid "Beta"
 msgstr "测试版"
 
@@ -2026,9 +2030,6 @@ msgstr "折叠子树"
 
 msgid "Color"
 msgstr "颜色"
-
-msgid "Color / Size"
-msgstr "颜色 / 尺码"
 
 msgid "Column"
 msgstr "列"
@@ -4494,9 +4495,6 @@ msgstr "Starter 中的所有功能"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "超过 {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB 总计 — 请先移除一些附件再发送。"
-
-msgid "Exceeds cut"
-msgstr "超出裁剪量"
 
 msgid "Exceeds plan"
 msgstr "超出计划"

@@ -55,6 +55,10 @@ msgstr "{0} は{1}としてあなたを招待しました。"
 msgid "{0} orders"
 msgstr "{0}件の注文"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr ""
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "目標を上回る {0}"
@@ -102,6 +106,9 @@ msgstr "{minSeats}ユーザー以上"
 
 msgid "{name} deleted"
 msgstr "{name} を削除しました"
+
+msgid "{remaining} left"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 個の権限"
@@ -1534,9 +1541,6 @@ msgstr "バッチサイズ"
 msgid "Batch Tracking"
 msgstr "バッチ追跡"
 
-msgid "Below reported"
-msgstr "報告された以下"
-
 msgid "Beta"
 msgstr "ベータ"
 
@@ -2025,9 +2029,6 @@ msgstr "サブツリーを折りたたむ"
 
 msgid "Color"
 msgstr "カラー"
-
-msgid "Color / Size"
-msgstr "カラー / サイズ"
 
 msgid "Column"
 msgstr "カラム"
@@ -4493,9 +4494,6 @@ msgstr "スターターのすべての機能"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "総量が{PO_EMAIL_ATTACHMENT_LIMIT_MB}MBを超えています — 送信するためにはいくつかの添付ファイルを削除してください。"
-
-msgid "Exceeds cut"
-msgstr "切削超cede"
 
 msgid "Exceeds plan"
 msgstr "計画超過"

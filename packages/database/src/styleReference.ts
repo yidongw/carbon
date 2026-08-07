@@ -393,6 +393,29 @@ const STYLE_COLOR_BY_CODE: Record<string, LocalizedRef> = Object.fromEntries(
   STYLE_COLORS.map((c) => [c.code, c])
 );
 
+const STYLE_COLOR_BY_EN_NAME: Record<string, LocalizedRef> = Object.fromEntries(
+  STYLE_COLORS.map((c) => [c.names.en.trim().toLowerCase(), c])
+);
+
+/**
+ * Localized display name for a standard style color looked up by its stored
+ * English base NAME (e.g. "Black" → 黑色), for callers that only have the name
+ * (a variant view exposing `COALESCE(value.name, value.code)`). Returns
+ * `undefined` for non-standard names (e.g. size codes, company colors) so the
+ * caller keeps the stored value.
+ */
+export function localizeStyleColorNameByName(
+  name: string | null | undefined,
+  language?: string
+): string | undefined {
+  if (!name) return undefined;
+  const ref = STYLE_COLOR_BY_EN_NAME[name.trim().toLowerCase()];
+  if (!ref) return undefined;
+  if (!language) return ref.names.en;
+  const base = language.split("-")[0];
+  return ref.names[language] ?? ref.names[base] ?? ref.names.en;
+}
+
 /**
  * Localized display name for a standard style color, by its stable code.
  * The seed list carries every locale, so the UI can render the color in the
@@ -412,4 +435,33 @@ export function localizeStyleColorName(
   // — different callers pass different formats. Fall back short, then English.
   const base = language.split("-")[0];
   return ref.names[language] ?? ref.names[base] ?? ref.names.en;
+}
+
+/**
+ * Localize a variant's attribute label — a separator-joined string of attribute
+ * value CODES (e.g. a bundle's `valuesKey` "BK|S" rendered as "BK · S"). Each
+ * segment is translated to the user's locale when it's a standard color code
+ * (BK → 黑色); size codes and any non-color segments (e.g. an item name
+ * fallback) pass through unchanged. Usable from both ERP and MES.
+ */
+export function localizeVariantAttributeLabel(
+  label: string | null | undefined,
+  language?: string,
+  separator = " · "
+): string {
+  if (!label) return "";
+  return label
+    .split(separator)
+    .map((part) => {
+      const seg = part.trim();
+      // A segment may be a value CODE (BK) or an English base NAME (Black),
+      // depending on the source field — localize either; non-colors pass through.
+      return (
+        localizeStyleColorName(seg, language) ??
+        localizeStyleColorNameByName(seg, language) ??
+        seg
+      );
+    })
+    .filter(Boolean)
+    .join(separator);
 }

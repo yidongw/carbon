@@ -114,7 +114,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     job.data?.id
       ? serviceRole
           .from("bundleWorkOrders")
-          .select("colorCode, colorName, sizeCode")
+          .select("attributeLabel, attributeValues, valuesKey")
           .eq("jobId", job.data.id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
