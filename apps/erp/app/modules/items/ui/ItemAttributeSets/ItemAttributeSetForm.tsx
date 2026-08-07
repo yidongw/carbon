@@ -148,15 +148,19 @@ const ItemAttributeSetForm = ({
             )}
 
             {available.length > 0 ? (
-              <Combobox
-                options={available.map((o) => ({
-                  value: o.value,
-                  label: translateItemAttributeCatalogName(o.label, i18n)
-                }))}
-                value=""
-                placeholder={t`Add attribute…`}
-                onChange={(id) => addAttribute(id)}
-              />
+              // Force the combobox trigger to fill the row like the attribute
+              // rows and the Code/Name inputs (its default is content-width).
+              <div className="w-full [&>div]:w-full [&_button]:w-full">
+                <Combobox
+                  options={available.map((o) => ({
+                    value: o.value,
+                    label: translateItemAttributeCatalogName(o.label, i18n)
+                  }))}
+                  value=""
+                  placeholder={t`Add attribute…`}
+                  onChange={(id) => addAttribute(id)}
+                />
+              </div>
             ) : null}
 
             <p className="text-xs text-muted-foreground">
