@@ -4,10 +4,10 @@ import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 import {
-  getCuttingSplitProposal,
-  saveBundleSplit,
   type CuttingSplitBundle,
-  type CuttingSplitProposal
+  type CuttingSplitProposal,
+  getCuttingSplitProposal,
+  saveBundleSplit
 } from "~/modules/production";
 
 export type MasterWorkOrderSplitBatchLoaderData = CuttingSplitProposal;
@@ -51,9 +51,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // Rows without an id are new bundles (need a positive quantity); rows with an
   // id update an existing bundle (may be any quantity ≥ its reported).
-  const toSave = bundles.filter(
-    (b) => b.id || (Number(b?.quantity) || 0) > 0
-  );
+  const toSave = bundles.filter((b) => b.id || (Number(b?.quantity) || 0) > 0);
   if (toSave.length === 0) {
     return data(
       { ok: false as const },
@@ -66,20 +64,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
     masterWorkOrderId,
     companyId
   );
-  const cellKey = (colorCode: string | null, sizeCode: string | null) =>
-    `${colorCode ?? ""}|${sizeCode ?? ""}`;
+  const cellKey = (valuesKey: string | null | undefined) =>
+    (valuesKey ?? "").trim();
   const cutByCell = new Map(
-    proposal.cells.map((c) => [cellKey(c.colorCode, c.sizeCode), c.cut])
+    proposal.cells.map((c) => [cellKey(c.valuesKey), c.cut])
   );
   const reportedById = new Map(
     proposal.existingBundles.map((b) => [b.id, b.reportedQuantity])
   );
 
-  // Each color/size's bundles (existing + new) can't sum beyond its reported cut.
+  // Each attribute combo's bundles (existing + new) can't sum beyond its cut.
   const requestedByCell = new Map<string, number>();
   for (const b of toSave) {
-    const k = cellKey(b.colorCode ?? null, b.sizeCode ?? null);
-    requestedByCell.set(k, (requestedByCell.get(k) ?? 0) + (Number(b.quantity) || 0));
+    const k = cellKey(b.valuesKey);
+    requestedByCell.set(
+      k,
+      (requestedByCell.get(k) ?? 0) + (Number(b.quantity) || 0)
+    );
   }
   for (const [k, requested] of requestedByCell) {
     const cut = cutByCell.get(k) ?? 0;
@@ -89,8 +90,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
         await flash(
           request,
           error(
-            "Split exceeds the cut quantity for a color/size",
-            `A color/size can't exceed the cut quantity (max ${cut})`
+            "Split exceeds the cut quantity for an attribute combo",
+            `An attribute combo can't exceed the cut quantity (max ${cut})`
           )
         )
       );
