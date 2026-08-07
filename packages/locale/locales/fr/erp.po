@@ -55,6 +55,10 @@ msgstr "{0} vous a invité à rejoindre en tant que {1}."
 msgid "{0} orders"
 msgstr "{0} commandes"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr ""
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "{0} au-dessus de la cible"
@@ -102,6 +106,9 @@ msgstr "Minimum de {minSeats} utilisateurs"
 
 msgid "{name} deleted"
 msgstr "{name} supprimé"
+
+msgid "{remaining} left"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permissions"
@@ -1531,9 +1538,6 @@ msgstr "Taille de lot"
 msgid "Batch Tracking"
 msgstr "Suivi par lot"
 
-msgid "Below reported"
-msgstr "En dessous de la valeur rapportée"
-
 msgid "Beta"
 msgstr "Bêta"
 
@@ -2022,9 +2026,6 @@ msgstr "Réduire le sous-arbre"
 
 msgid "Color"
 msgstr "Couleur"
-
-msgid "Color / Size"
-msgstr "Couleur / Taille"
 
 msgid "Column"
 msgstr "Colonne"
@@ -4490,9 +4491,6 @@ msgstr "Tout de Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Dépasse {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — supprimez某些字符无法识别，假设为“一些”附件以发送。"
-
-msgid "Exceeds cut"
-msgstr "Dépassement de coupure"
 
 msgid "Exceeds plan"
 msgstr "Dépasse le plan"

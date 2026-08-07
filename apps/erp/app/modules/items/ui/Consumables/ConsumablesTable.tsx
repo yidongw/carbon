@@ -28,6 +28,7 @@ import {
   LuCalendar,
   LuCheck,
   LuGroup,
+  LuPalette,
   LuPencil,
   LuTag,
   LuTrash,
@@ -51,6 +52,7 @@ import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { usePeople } from "~/stores";
@@ -64,6 +66,18 @@ const ITEM_UPDATE = {
   idKey: "items" as const
 };
 
+type ConsumableAttributeColumn = {
+  attributeId: string;
+  code: string;
+  name: string;
+  values: Array<{ id: string; code: string; name: string }>;
+};
+
+function consumableAttributes(row: Consumable): ConsumableAttributeColumn[] {
+  const attrs = (row as { attributes?: unknown }).attributes;
+  return Array.isArray(attrs) ? (attrs as ConsumableAttributeColumn[]) : [];
+}
+
 type ConsumablesTableProps = {
   data: Consumable[];
   tags: { name: string }[];
@@ -72,7 +86,7 @@ type ConsumablesTableProps = {
 
 const ConsumablesTable = memo(
   ({ data, count, tags }: ConsumablesTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const translateMethodType = useCallback(
       (v: string) =>
         v === "Purchase to Order"
@@ -356,16 +370,71 @@ const ConsumablesTable = memo(
           }
         }
       ];
-      return [...defaultColumns, ...customColumns];
+
+      const attrMeta = new Map<string, { code: string; name: string }>();
+      for (const row of data) {
+        for (const a of consumableAttributes(row)) {
+          if (!a.code) continue;
+          if (!attrMeta.has(a.code)) {
+            attrMeta.set(a.code, { code: a.code, name: a.name || a.code });
+          }
+        }
+      }
+      const attrCodes = Array.from(attrMeta.keys()).sort((a, b) => {
+        const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
+        const d = rank(a) - rank(b);
+        return d !== 0 ? d : a.localeCompare(b);
+      });
+
+      const attrColumns: ColumnDef<Consumable>[] = attrCodes.map((code) => {
+        const meta = attrMeta.get(code)!;
+        return {
+          id: `attr:${code}`,
+          header: translateItemAttributeCatalogName(meta.name || code, i18n),
+          cell: ({ row }) => {
+            const attr = consumableAttributes(row.original).find(
+              (a) => a.code === code
+            );
+            const values = attr?.values ?? [];
+            if (values.length === 0) {
+              return <span className="text-muted-foreground">—</span>;
+            }
+            return (
+              <HStack spacing={1} className="flex-wrap">
+                {values.map((v) => (
+                  <Badge
+                    key={v.id}
+                    variant="outline"
+                    title={`${meta.name}: ${v.code}`}
+                  >
+                    {v.name || v.code}
+                  </Badge>
+                ))}
+              </HStack>
+            );
+          },
+          meta: { icon: <LuPalette /> }
+        };
+      });
+
+      const insertAt = Math.min(1, defaultColumns.length);
+      const merged = [
+        ...defaultColumns.slice(0, insertAt),
+        ...attrColumns,
+        ...defaultColumns.slice(insertAt)
+      ];
+      return [...merged, ...customColumns];
     }, [
       tags,
       people,
       customColumns,
       itemPostingGroups,
       t,
+      i18n,
       translateMethodType,
       translateTrackingType,
-      formatDate
+      formatDate,
+      data
     ]);
 
     const fetcher = useFetcher<typeof action>();

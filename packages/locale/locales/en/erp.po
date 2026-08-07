@@ -55,6 +55,10 @@ msgstr "{0} invited you to join as {1}."
 msgid "{0} orders"
 msgstr "{0} orders"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr "{0} over"
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "{0} over goal"
@@ -102,6 +106,9 @@ msgstr "{minSeats} user minimum"
 
 msgid "{name} deleted"
 msgstr "{name} deleted"
+
+msgid "{remaining} left"
+msgstr "{remaining} left"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permissions"
@@ -1531,9 +1538,6 @@ msgstr "Batch Size"
 msgid "Batch Tracking"
 msgstr "Batch Tracking"
 
-msgid "Below reported"
-msgstr "Below reported"
-
 msgid "Beta"
 msgstr "Beta"
 
@@ -2022,9 +2026,6 @@ msgstr "Collapse subtree"
 
 msgid "Color"
 msgstr "Color"
-
-msgid "Color / Size"
-msgstr "Color / Size"
 
 msgid "Column"
 msgstr "Column"
@@ -4490,9 +4491,6 @@ msgstr "Everything from Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
-
-msgid "Exceeds cut"
-msgstr "Exceeds cut"
 
 msgid "Exceeds plan"
 msgstr "Exceeds plan"

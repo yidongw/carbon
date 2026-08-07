@@ -55,6 +55,10 @@ msgstr "{0} zaprosił/a Cię do dołączenia jako {1}."
 msgid "{0} orders"
 msgstr "{0} zamówień"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr ""
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "{0} powyżej celu"
@@ -102,6 +106,9 @@ msgstr "Minimum {minSeats} użytkowników"
 
 msgid "{name} deleted"
 msgstr "usunięto {name}"
+
+msgid "{remaining} left"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} uprawnień"
@@ -1531,9 +1538,6 @@ msgstr "Rozmiar partii"
 msgid "Batch Tracking"
 msgstr "Śledzenie partii"
 
-msgid "Below reported"
-msgstr "Poniżej zgłoszone"
-
 msgid "Beta"
 msgstr "Beta"
 
@@ -2022,9 +2026,6 @@ msgstr "Zwiń poddrzewo"
 
 msgid "Color"
 msgstr "Kolor"
-
-msgid "Color / Size"
-msgstr "Kolor / Rozmiar"
 
 msgid "Column"
 msgstr "Kolumna"
@@ -4490,9 +4491,6 @@ msgstr "Wszystko z pakietu Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Przekracza {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB całkowite — usuń niektóre załączniki, aby wysłać."
-
-msgid "Exceeds cut"
-msgstr "Przekracza krojną ilość"
 
 msgid "Exceeds plan"
 msgstr "Przekracza plan"

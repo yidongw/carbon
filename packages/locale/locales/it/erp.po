@@ -55,6 +55,10 @@ msgstr "{0} ti ha invitato/a a unirti come {1}."
 msgid "{0} orders"
 msgstr "{0} ordini"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr ""
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "{0} superiore al traguardo"
@@ -102,6 +106,9 @@ msgstr "Minimo di {minSeats} utenti"
 
 msgid "{name} deleted"
 msgstr "{name} eliminato"
+
+msgid "{remaining} left"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} autorizzazioni"
@@ -1531,9 +1538,6 @@ msgstr "Dimensione lotto"
 msgid "Batch Tracking"
 msgstr "Tracciamento Batch"
 
-msgid "Below reported"
-msgstr "Seguente reportato"
-
 msgid "Beta"
 msgstr "Beta"
 
@@ -2022,9 +2026,6 @@ msgstr "Comprimi sottostruttura"
 
 msgid "Color"
 msgstr "Colore"
-
-msgid "Color / Size"
-msgstr "Colore / Taglia"
 
 msgid "Column"
 msgstr "Colonna"
@@ -4490,9 +4491,6 @@ msgstr "Tutto da Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "超cede i {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB totali — rimuovi alcune附件以发送。"
-
-msgid "Exceeds cut"
-msgstr "Eccesso taglio"
 
 msgid "Exceeds plan"
 msgstr "Supera il piano"
