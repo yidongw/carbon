@@ -8772,6 +8772,9 @@ msgstr "Товар {scannedItem} не совпадает с товаром {expe
 msgid "Item association not found"
 msgstr "Связь с элементом не найдена"
 
+msgid "Item Attribute Sets"
+msgstr ""
+
 msgid "Item Attributes"
 msgstr ""
 
@@ -13103,9 +13106,6 @@ msgstr "Выберите сотрудника"
 msgid "Select Employee Type"
 msgstr "Выберите тип сотрудника"
 
-msgid "Select Fabric, Trim, …"
-msgstr ""
-
 msgid "Select field"
 msgstr "Выберите поле"
 
@@ -13171,6 +13171,9 @@ msgstr "Выберите значение"
 
 msgid "Select values"
 msgstr "Выберите значения"
+
+msgid "Select…"
+msgstr ""
 
 msgid "Selected"
 msgstr "Выбрано"
@@ -13286,9 +13289,6 @@ msgid "Session mismatch"
 msgstr "Сессия несоответствует"
 
 msgid "Set assignment not found"
-msgstr ""
-
-msgid "Set Assignments"
 msgstr ""
 
 msgid "Set Clock Out"

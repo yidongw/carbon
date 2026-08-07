@@ -125,7 +125,7 @@ const ItemAttributeSetAssignmentsTable = memo(
           ) : undefined
         }
         renderContextMenu={renderContextMenu}
-        title={t`Set Assignments`}
+        title={t`Item Attribute Sets`}
         table="itemAttributeSetAssignment"
         withSavedView
         withSearch

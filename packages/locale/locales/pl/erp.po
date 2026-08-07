@@ -8772,6 +8772,9 @@ msgstr "Pozycja {scannedItem} nie jest taka sama jak pozycja {expectedItem}"
 msgid "Item association not found"
 msgstr "Nie znaleziono powiązanej pozycji"
 
+msgid "Item Attribute Sets"
+msgstr ""
+
 msgid "Item Attributes"
 msgstr ""
 
@@ -13103,9 +13106,6 @@ msgstr "Wybierz pracownika"
 msgid "Select Employee Type"
 msgstr "Wybierz typ pracownika"
 
-msgid "Select Fabric, Trim, …"
-msgstr ""
-
 msgid "Select field"
 msgstr "Wybierz pola"
 
@@ -13171,6 +13171,9 @@ msgstr "Wybierz wartość"
 
 msgid "Select values"
 msgstr "Wybierz wartości"
+
+msgid "Select…"
+msgstr ""
 
 msgid "Selected"
 msgstr "Wybrane"
@@ -13286,9 +13289,6 @@ msgid "Session mismatch"
 msgstr "Błąd zgodności sesji"
 
 msgid "Set assignment not found"
-msgstr ""
-
-msgid "Set Assignments"
 msgstr ""
 
 msgid "Set Clock Out"

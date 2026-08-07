@@ -8772,6 +8772,9 @@ msgstr "アイテム {scannedItem} は、アイテム {expectedItem} と同じ�
 msgid "Item association not found"
 msgstr "アイテムの関連付けが見つかりません"
 
+msgid "Item Attribute Sets"
+msgstr ""
+
 msgid "Item Attributes"
 msgstr ""
 
@@ -13103,9 +13106,6 @@ msgstr "従業員を選択"
 msgid "Select Employee Type"
 msgstr "従業員タイプを選択"
 
-msgid "Select Fabric, Trim, …"
-msgstr ""
-
 msgid "Select field"
 msgstr "選択するフィールド"
 
@@ -13171,6 +13171,9 @@ msgstr "選択値"
 
 msgid "Select values"
 msgstr "選択する値を選択してください"
+
+msgid "Select…"
+msgstr ""
 
 msgid "Selected"
 msgstr "選択済み"
@@ -13286,9 +13289,6 @@ msgid "Session mismatch"
 msgstr "セッション不一致"
 
 msgid "Set assignment not found"
-msgstr ""
-
-msgid "Set Assignments"
 msgstr ""
 
 msgid "Set Clock Out"

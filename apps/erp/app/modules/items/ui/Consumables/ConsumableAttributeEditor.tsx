@@ -1,12 +1,14 @@
 import { localizeStyleColorName } from "@carbon/database/style-reference";
-import { Badge, Combobox, toast, useMount, VStack } from "@carbon/react";
+import { Select, ValidatedForm } from "@carbon/form";
+import { Badge, Combobox, toast, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useState } from "react";
 import { LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
+import { z } from "zod";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import type { AttributeSetFormOption } from "../../itemAttribute.service";
+import { useItemAttributeSetOptions } from "../useItemAttributeSetOptions";
 
 type ConsumableAttributeEditorProps = {
   itemId: string;
@@ -22,17 +24,8 @@ const ConsumableAttributeEditor = ({
   const { t, i18n } = useLingui();
   const permissions = usePermissions();
   const canEdit = permissions.can("update", "parts");
-  const attributeSetsFetcher = useFetcher<{
-    data: AttributeSetFormOption[];
-    error: Error | null;
-  }>();
   const saveFetcher = useFetcher<{ success?: boolean }>();
-
-  useMount(() => {
-    attributeSetsFetcher.load(path.to.api.attributeSetsForType("Consumable"));
-  });
-
-  const sets = attributeSetsFetcher.data?.data ?? [];
+  const { sets } = useItemAttributeSetOptions("Consumable");
   const [setId, setSetId] = useState(attributeSetId ?? "");
   // Local, per-attribute selection state (value ids). Auto-saves on change.
   const [selected, setSelected] =
@@ -60,15 +53,10 @@ const ConsumableAttributeEditor = ({
     [sets, setId]
   );
 
-  const setOptions = useMemo(
-    () =>
-      sets.map((s) => ({
-        value: s.id,
-        label: s.name || s.code,
-        helper: s.code !== s.name ? s.code : undefined
-      })),
-    [sets]
-  );
+  const setLabel = (id: string) => {
+    const s = sets.find((x) => x.id === id);
+    return s?.name || s?.code || id;
+  };
 
   useEffect(() => {
     if (saveFetcher.state !== "idle" || !saveFetcher.data) return;
@@ -130,12 +118,14 @@ const ConsumableAttributeEditor = ({
     if (!attributeSetId) return null;
     return (
       <VStack spacing={2} className="w-full">
-        <h3 className="text-xs text-muted-foreground">
-          <Trans>Attributes</Trans>
-        </h3>
-        {selectedSet ? (
-          <p className="text-sm">{selectedSet.name || selectedSet.code}</p>
-        ) : null}
+        <VStack spacing={1} className="w-full">
+          <h3 className="text-xs text-muted-foreground">
+            <Trans>Attribute Set</Trans>
+          </h3>
+          <Badge variant="secondary">
+            {selectedSet ? setLabel(selectedSet.id) : attributeSetId}
+          </Badge>
+        </VStack>
         {selectedSet?.attributes.map((attr) => (
           <VStack key={attr.id} spacing={1} className="w-full">
             <h4 className="text-xs text-muted-foreground">{attr.name}</h4>
@@ -162,23 +152,33 @@ const ConsumableAttributeEditor = ({
 
   return (
     <VStack spacing={2} className="w-full">
-      <h3 className="text-xs text-muted-foreground">
-        <Trans>Attributes</Trans>
-      </h3>
-
       {sets.length > 0 ? (
-        <VStack spacing={1} className="w-full">
-          <h4 className="text-xs text-muted-foreground">
-            <Trans>Attribute Set</Trans>
-          </h4>
-          <Combobox
-            options={setOptions}
-            value={setId}
-            onChange={onSetChange}
-            placeholder={t`Select Fabric, Trim, …`}
+        <ValidatedForm
+          key={setId || "unset"}
+          defaultValues={{ attributeSetId: setId || undefined }}
+          validator={z.object({
+            attributeSetId: z.string().optional()
+          })}
+          className="w-full"
+        >
+          <Select
+            name="attributeSetId"
+            label={t`Attribute Set`}
+            inline={(value) => (
+              <Badge variant="secondary">
+                <span>{value ? setLabel(value) : t`Select…`}</span>
+              </Badge>
+            )}
+            options={sets.map((s) => ({
+              value: s.id,
+              label: s.name || s.code
+            }))}
             isReadOnly={saveFetcher.state !== "idle"}
+            onChange={(option) => {
+              onSetChange(option?.value ?? "");
+            }}
           />
-        </VStack>
+        </ValidatedForm>
       ) : null}
 
       {selectedSet?.attributes.map((attr) => {

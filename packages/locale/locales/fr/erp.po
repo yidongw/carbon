@@ -8772,6 +8772,9 @@ msgstr "L'article {scannedItem} n'est pas le même que l'article {expectedItem}"
 msgid "Item association not found"
 msgstr "Association d'élément non trouvée"
 
+msgid "Item Attribute Sets"
+msgstr ""
+
 msgid "Item Attributes"
 msgstr ""
 
@@ -13103,9 +13106,6 @@ msgstr "Sélectionner un employé"
 msgid "Select Employee Type"
 msgstr "Sélectionner le type d'employé"
 
-msgid "Select Fabric, Trim, …"
-msgstr ""
-
 msgid "Select field"
 msgstr "Sélectionner un champ"
 
@@ -13171,6 +13171,9 @@ msgstr "Sélectionner une valeur"
 
 msgid "Select values"
 msgstr "Sélectionner valeurs"
+
+msgid "Select…"
+msgstr ""
 
 msgid "Selected"
 msgstr "Sélectionné"
@@ -13286,9 +13289,6 @@ msgid "Session mismatch"
 msgstr "Échec de la session"
 
 msgid "Set assignment not found"
-msgstr ""
-
-msgid "Set Assignments"
 msgstr ""
 
 msgid "Set Clock Out"

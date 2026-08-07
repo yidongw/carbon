@@ -11,7 +11,7 @@ import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
 export const handle: Handle = {
-  breadcrumb: msg`Set Assignments`,
+  breadcrumb: msg`Item Attribute Sets`,
   to: path.to.itemAttributeSetAssignments
 };
 
