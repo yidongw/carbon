@@ -31,7 +31,7 @@ describe("defaultStylesTableSharedColumnKeys", () => {
         "defaultMethodType",
         "itemTrackingType",
         "itemPostingGroupId",
-        "colorCode",
+        "attributes",
         "tags",
         "active"
       ])
@@ -53,10 +53,7 @@ describe("defaultStylesTableSharedColumnKeys", () => {
           typeof descriptor === "string"
             ? descriptor
             : (descriptor.message ?? descriptor.id ?? "")
-      } as never,
-      canAddColorsSizes: false,
-      colorOptions: [],
-      sizeOptions: []
+      } as never
     });
 
     const headers = columns.map((column) => column.header);
@@ -70,7 +67,7 @@ describe("defaultStylesTableSharedColumnKeys", () => {
         "Default Method",
         "Tracking",
         "Item Group",
-        "Color",
+        "Attributes",
         "Tags",
         "Active",
         "Created By",

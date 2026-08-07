@@ -96,9 +96,6 @@ msgstr "Agregar nuevo conjunto de registros"
 msgid "Add Spare Part"
 msgstr "Agregar repuesto"
 
-msgid "Added colors and sizes"
-msgstr "Se agregaron colores y tallas"
-
 msgid "Adjust stock down"
 msgstr "Ajustar inventario hacia abajo"
 
@@ -940,9 +937,6 @@ msgstr "Falló al activar el centro de trabajo"
 
 msgid "Failed to add a line"
 msgstr "Falló al agregar una línea"
-
-msgid "Failed to add colors and sizes"
-msgstr "Falló al agregar colores y tamaños"
 
 msgid "Failed to add entry"
 msgstr "Falló al agregar entrada"
@@ -2870,6 +2864,9 @@ msgstr "Falló al cargar stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Falló al cargar las reglas de almacenamiento"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Falló al cargar el costo de estilo"
 
@@ -3682,6 +3679,9 @@ msgstr "Falló al actualizar el tipo de almacenamiento"
 
 msgid "Failed to update storageUnit"
 msgstr "Falló al actualizar el storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Falló al actualizar el costo del estilo"
@@ -6255,6 +6255,9 @@ msgstr "Tipo de almacenamiento actualizado"
 
 msgid "Updated storageUnit"
 msgstr "Unidad de almacenamiento actualizada"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Costo actualizado de estilo"

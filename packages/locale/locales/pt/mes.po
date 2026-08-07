@@ -96,9 +96,6 @@ msgstr "Adicionar novo conjunto de registros"
 msgid "Add Spare Part"
 msgstr "Adicionar Peça Sobressalente"
 
-msgid "Added colors and sizes"
-msgstr "Adicionadas cores e tamanhos"
-
 msgid "Adjust stock down"
 msgstr "Ajustar estoque para baixo"
 
@@ -940,9 +937,6 @@ msgstr "Falhou ao ativar o centro de trabalho"
 
 msgid "Failed to add a line"
 msgstr "Falhou ao adicionar uma linha"
-
-msgid "Failed to add colors and sizes"
-msgstr "Falhou ao adicionar cores e tamanhos"
 
 msgid "Failed to add entry"
 msgstr "Falhou ao adicionar entrada"
@@ -2870,6 +2864,9 @@ msgstr "Falhou ao carregar stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Falhou ao carregar regras de armazenamento"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Falhou ao carregar o custo de estilo"
 
@@ -3682,6 +3679,9 @@ msgstr "Falhou ao atualizar o tipo de armazenamento"
 
 msgid "Failed to update storageUnit"
 msgstr "Falhou na atualização de storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Falhou ao atualizar o custo de estilo"
@@ -6255,6 +6255,9 @@ msgstr "Tipo de armazenamento atualizado"
 
 msgid "Updated storageUnit"
 msgstr "Atualizado o storageUnit"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Atualizado o custo de estilo"

@@ -96,9 +96,6 @@ msgstr "Füge neue Datensatzgruppe hinzu"
 msgid "Add Spare Part"
 msgstr "Ersatzteil hinzufügen"
 
-msgid "Added colors and sizes"
-msgstr "Farbvarianten und Größen hinzugefügt"
-
 msgid "Adjust stock down"
 msgstr "Reduziere Bestand"
 
@@ -940,9 +937,6 @@ msgstr "Fehler beim Aktivieren der Arbeitsstelle"
 
 msgid "Failed to add a line"
 msgstr "Fehler beim Hinzufügen einer Zeile"
-
-msgid "Failed to add colors and sizes"
-msgstr "Fehler beim Hinzufügen von Farben und Größen"
 
 msgid "Failed to add entry"
 msgstr "Fehler beim Hinzufügen"
@@ -2870,6 +2864,9 @@ msgstr "Fehler beim Laden der Lagerübertragung"
 msgid "Failed to load storage rules"
 msgstr "Fehler beim Laden der Speicherregeln"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Fehler beim Laden des Stilcostings"
 
@@ -3682,6 +3679,9 @@ msgstr "Fehler beim Aktualisieren des Speicherungsformats"
 
 msgid "Failed to update storageUnit"
 msgstr "Fehler beim Aktualisieren des Speicherorts"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Fehler beim Aktualisieren des Stilpreises"
@@ -6255,6 +6255,9 @@ msgstr "Aktualisierte Speicherart"
 
 msgid "Updated storageUnit"
 msgstr "aktualisiertes Speicherobjekt"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Aktualisierte Stilkosten"

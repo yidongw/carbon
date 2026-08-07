@@ -96,9 +96,6 @@ msgstr "Add new record set"
 msgid "Add Spare Part"
 msgstr "Add Spare Part"
 
-msgid "Added colors and sizes"
-msgstr "Added colors and sizes"
-
 msgid "Adjust stock down"
 msgstr "Adjust stock down"
 
@@ -940,9 +937,6 @@ msgstr "Failed to activate work center"
 
 msgid "Failed to add a line"
 msgstr "Failed to add a line"
-
-msgid "Failed to add colors and sizes"
-msgstr "Failed to add colors and sizes"
 
 msgid "Failed to add entry"
 msgstr "Failed to add entry"
@@ -2870,6 +2864,9 @@ msgstr "Failed to load stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Failed to load storage rules"
 
+msgid "Failed to load style attributes"
+msgstr "Failed to load style attributes"
+
 msgid "Failed to load style costing"
 msgstr "Failed to load style costing"
 
@@ -3682,6 +3679,9 @@ msgstr "Failed to update storage type"
 
 msgid "Failed to update storageUnit"
 msgstr "Failed to update storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr "Failed to update style attributes"
 
 msgid "Failed to update style costing"
 msgstr "Failed to update style costing"
@@ -6255,6 +6255,9 @@ msgstr "Updated storage type"
 
 msgid "Updated storageUnit"
 msgstr "Updated storageUnit"
+
+msgid "Updated style attributes"
+msgstr "Updated style attributes"
 
 msgid "Updated style costing"
 msgstr "Updated style costing"

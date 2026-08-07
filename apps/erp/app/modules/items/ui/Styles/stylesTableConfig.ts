@@ -6,7 +6,7 @@ export const defaultStylesTableSharedColumnKeys = [
   "defaultMethodType",
   "itemTrackingType",
   "itemPostingGroupId",
-  "colorCode",
+  "attributes",
   "tags",
   "active",
   "createdBy",

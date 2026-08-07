@@ -99,9 +99,6 @@ msgstr "नया रिकॉर्ड सेट जोड़ें"
 msgid "Add Spare Part"
 msgstr "स्पेयर पार्ट जोड़ें"
 
-msgid "Added colors and sizes"
-msgstr "दod रंग और आकारों को जोड़ा गया है"
-
 msgid "Adjust stock down"
 msgstr "स्टॉक को निकालें"
 
@@ -943,9 +940,6 @@ msgstr "कार्य सेंटर को ऑपरेट करने म�
 
 msgid "Failed to add a line"
 msgstr "अ行添加失败"
-
-msgid "Failed to add colors and sizes"
-msgstr "ग्लासर और आकारों को जोड़ने में वफ़ादरी नहीं की जा सकी"
 
 msgid "Failed to add entry"
 msgstr "कैसी भी नंबर योजना नहीं जोड़ी जा सकी"
@@ -2876,6 +2870,9 @@ msgstr "स्टॉक ट्रांसफर का caricare विफल �
 msgid "Failed to load storage rules"
 msgstr "स्टोरेज नियमों का caricir हो रहा है"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "styl कार्य लोड होने में व़ला.get"
 
@@ -3688,6 +3685,9 @@ msgstr "स्टोरेज प्रकार अपडेट करने �
 
 msgid "Failed to update storageUnit"
 msgstr "स्टोरेज यूनिट अपडेट करने में व़िश्य हुआ"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "stile की लागत अपडेट होने में फाल्टी रही"
@@ -6261,6 +6261,9 @@ msgstr "अपडेट डायनामिक प्रकार"
 
 msgid "Updated storageUnit"
 msgstr "अपडेट डायनामिक्सUNIT"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "अपडेट डिजाइन की लागत"

@@ -96,9 +96,6 @@ msgstr "Ajouter un nouveau lot de records"
 msgid "Add Spare Part"
 msgstr "Ajouter une pièce de rechange"
 
-msgid "Added colors and sizes"
-msgstr "Ajouté des couleurs et des tailles"
-
 msgid "Adjust stock down"
 msgstr "Réajustez le stock en baisse"
 
@@ -940,9 +937,6 @@ msgstr "Échec d'activation du centre de travail"
 
 msgid "Failed to add a line"
 msgstr "Échec de l'ajout d'une ligne"
-
-msgid "Failed to add colors and sizes"
-msgstr "Échec de l'ajout des couleurs et des tailles"
 
 msgid "Failed to add entry"
 msgstr "Échec de l'ajout"
@@ -2870,6 +2864,9 @@ msgstr "Échec du chargement de la transfert-stock"
 msgid "Failed to load storage rules"
 msgstr "Échec du chargement des règles de stockage"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "Échec du chargement du coût de style"
 
@@ -3682,6 +3679,9 @@ msgstr "Échec de la mise à jour du type de stockage"
 
 msgid "Failed to update storageUnit"
 msgstr "Échec de la mise à jour du storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "Échec de la mise à jour du coût de style"
@@ -6255,6 +6255,9 @@ msgstr "Type de stock mis à jour"
 
 msgid "Updated storageUnit"
 msgstr "Mise à jour du storageUnit"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "Mise à jour du coût de style"

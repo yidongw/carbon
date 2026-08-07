@@ -579,9 +579,6 @@ msgstr "Added {0}"
 msgid "Added {createdAt}"
 msgstr "Added {createdAt}"
 
-msgid "Added colors and sizes"
-msgstr "Added colors and sizes"
-
 msgid "Adding..."
 msgstr "Adding..."
 
@@ -4655,9 +4652,6 @@ msgstr "Failed to activate work center"
 msgid "Failed to add a line"
 msgstr "Failed to add a line"
 
-msgid "Failed to add colors and sizes"
-msgstr "Failed to add colors and sizes"
-
 msgid "Failed to add entry"
 msgstr "Failed to add entry"
 
@@ -6770,6 +6764,9 @@ msgstr "Failed to load stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Failed to load storage rules"
 
+msgid "Failed to load style attributes"
+msgstr "Failed to load style attributes"
+
 msgid "Failed to load style costing"
 msgstr "Failed to load style costing"
 
@@ -7636,6 +7633,9 @@ msgstr "Failed to update storage type"
 
 msgid "Failed to update storageUnit"
 msgstr "Failed to update storageUnit"
+
+msgid "Failed to update style attributes"
+msgstr "Failed to update style attributes"
 
 msgid "Failed to update style costing"
 msgstr "Failed to update style costing"
@@ -10313,9 +10313,6 @@ msgstr "No chat history"
 msgid "No chats found"
 msgstr "No chats found"
 
-msgid "No colors assigned"
-msgstr "No colors assigned"
-
 msgid "No comments yet. Be the first to add a comment."
 msgstr "No comments yet. Be the first to add a comment."
 
@@ -10525,9 +10522,6 @@ msgstr "No samples inspected yet."
 
 msgid "No selection"
 msgstr "No selection"
-
-msgid "No sizes assigned"
-msgstr "No sizes assigned"
 
 msgid "No sorts applied to this view"
 msgstr "No sorts applied to this view"
@@ -15574,6 +15568,9 @@ msgstr "Updated storage type"
 
 msgid "Updated storageUnit"
 msgstr "Updated storageUnit"
+
+msgid "Updated style attributes"
+msgstr "Updated style attributes"
 
 msgid "Updated style costing"
 msgstr "Updated style costing"

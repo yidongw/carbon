@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-07T11:47:34.476Z",
-  "totalTools": 1272,
+  "generated": "2026-08-07T13:46:17.644Z",
+  "totalTools": 1266,
   "modules": 15,
   "tools": [
     {
@@ -8741,56 +8741,6 @@
       }
     },
     {
-      "name": "items_deleteStyleColor",
-      "module": "items",
-      "classification": "DESTRUCTIVE",
-      "description": "delete style color",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      }
-    },
-    {
-      "name": "items_deleteStyleSize",
-      "module": "items",
-      "classification": "DESTRUCTIVE",
-      "description": "delete style size",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      }
-    },
-    {
       "name": "items_deleteMaterialSubstance",
       "module": "items",
       "classification": "DESTRUCTIVE",
@@ -10892,31 +10842,6 @@
       }
     },
     {
-      "name": "items_getStyleColor",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style color",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      }
-    },
-    {
       "name": "items_getStyleColors",
       "module": "items",
       "classification": "READ",
@@ -10995,31 +10920,6 @@
             "type": "string"
           }
         }
-      }
-    },
-    {
-      "name": "items_getStyleSize",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style size",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
       }
     },
     {
@@ -12752,65 +12652,6 @@
         "required": [
           "materialSubstanceId",
           "name"
-        ]
-      }
-    },
-    {
-      "name": "items_upsertStyleColor",
-      "module": "items",
-      "classification": "WRITE",
-      "description": "upsert style color",
-      "paramCount": 3,
-      "serviceParams": [
-        "client",
-        "styleColor"
-      ],
-      "injectAuth": [
-        "companyId",
-        "createdBy",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "colorCode": {
-            "type": "string"
-          },
-          "colorName": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "colorCode",
-          "colorName"
-        ]
-      }
-    },
-    {
-      "name": "items_upsertStyleSize",
-      "module": "items",
-      "classification": "WRITE",
-      "description": "upsert style size",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "styleSize"
-      ],
-      "injectAuth": [
-        "companyId",
-        "createdBy",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "styleSize": {}
-        },
-        "required": [
-          "styleSize"
         ]
       }
     },

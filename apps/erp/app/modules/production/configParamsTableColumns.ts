@@ -148,24 +148,6 @@ export type ConfigQuantityCell = {
   quantity: number;
 };
 
-/** Apparel size codes used as quantity-column keys in Style config tables. */
-const STYLE_SIZE_CODE_SET = new Set([
-  "XXS",
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "2XL",
-  "3XL",
-  "4XL",
-  "OS"
-]);
-
-function isSizeToken(value: string): boolean {
-  return STYLE_SIZE_CODE_SET.has(value.trim().toUpperCase());
-}
-
 function optionLabelOf(
   value: string,
   optionLabels?: Record<string, string>
@@ -181,11 +163,10 @@ function optionLabelOf(
 
 /**
  * Flatten a stored config table into one cell per non-zero quantity, for
- * summary badges (`Color · Size ×2`) and expand lists — no parameter metadata
+ * summary badges (`BK · S ×2`) and expand lists — no parameter metadata
  * required; uses `configTablePrimaryKeys` from the JSON itself.
  *
- * Always labels as **Color · Size** regardless of whether the stored table
- * uses sizes or colors as the quantity columns.
+ * Labels join row descriptor values with the quantity-column key using ` · `.
  */
 export function getConfigQuantityCells(
   configuration: unknown,
@@ -212,32 +193,12 @@ export function getConfigQuantityCells(
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const cells: ConfigQuantityCell[] = [];
 
-  // Sizes-as-columns (Style default): `{ color: "BK", S: 6 }` with PKs ["S"]
-  // Colors-as-columns (legacy / job grids): `{ Size: "S", Red: 2 }` with PKs ["Red"]
-  const primaryKeysAreSizes =
-    primaryKeys.every(isSizeToken) || primaryKeys.some(isSizeToken);
-
   for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
-    const descriptorEntries = Object.entries(row).filter(
-      ([key]) => !primaryKeySet.has(key)
-    );
-    const sizeDesc = descriptorEntries.find(
-      ([key]) => key.toLowerCase() === "size"
-    );
-    const colorDesc = descriptorEntries.find(
-      ([key]) => key.toLowerCase() === "color"
-    );
-    const otherDescriptors = descriptorEntries
-      .filter(
-        ([key]) => key.toLowerCase() !== "size" && key.toLowerCase() !== "color"
-      )
+    const descriptorValues = Object.entries(row)
+      .filter(([key]) => !primaryKeySet.has(key))
       .map(([, value]) => String(value ?? "").trim())
       .filter(Boolean)
       .map(labelOf);
-
-    // Prefer explicit color/size keys; fall back to PK orientation heuristic.
-    const sizesAreQuantityColumns =
-      !!colorDesc || (!sizeDesc && primaryKeysAreSizes);
 
     for (const qtyKey of primaryKeys) {
       const rawQty = row[qtyKey];
@@ -245,23 +206,7 @@ export function getConfigQuantityCells(
       const quantity = Number(rawQty) || 0;
       if (quantity === 0) continue;
 
-      let colorPart: string;
-      let sizePart: string;
-      if (sizesAreQuantityColumns) {
-        colorPart = labelOf(
-          String(colorDesc?.[1] ?? otherDescriptors[0] ?? "").trim()
-        );
-        sizePart = labelOf(qtyKey);
-      } else {
-        colorPart = labelOf(qtyKey);
-        sizePart = labelOf(
-          String(sizeDesc?.[1] ?? otherDescriptors[0] ?? "").trim()
-        );
-      }
-
-      const parts = [colorPart, sizePart, ...otherDescriptors.slice(1)].filter(
-        Boolean
-      );
+      const parts = [...descriptorValues, labelOf(qtyKey)].filter(Boolean);
       cells.push({
         key: `${rowIndex}:${qtyKey}`,
         label: parts.join(" · "),

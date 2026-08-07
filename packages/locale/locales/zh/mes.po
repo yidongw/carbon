@@ -97,9 +97,6 @@ msgstr "新增记录集"
 msgid "Add Spare Part"
 msgstr "添加备件"
 
-msgid "Added colors and sizes"
-msgstr "已添加颜色和尺寸"
-
 msgid "Adjust stock down"
 msgstr "减少库存"
 
@@ -941,9 +938,6 @@ msgstr "激活工作中心失败"
 
 msgid "Failed to add a line"
 msgstr "添加行失败"
-
-msgid "Failed to add colors and sizes"
-msgstr "添加颜色和尺码失败"
 
 msgid "Failed to add entry"
 msgstr "添加失败"
@@ -2871,6 +2865,9 @@ msgstr "加载库存转移失败"
 msgid "Failed to load storage rules"
 msgstr "加载存储规则失败"
 
+msgid "Failed to load style attributes"
+msgstr ""
+
 msgid "Failed to load style costing"
 msgstr "加载款式成本失败"
 
@@ -3683,6 +3680,9 @@ msgstr "更新存储类型失败"
 
 msgid "Failed to update storageUnit"
 msgstr "更新存储单元失败"
+
+msgid "Failed to update style attributes"
+msgstr ""
 
 msgid "Failed to update style costing"
 msgstr "更新款式成本失败"
@@ -6256,6 +6256,9 @@ msgstr "已更新存储类型"
 
 msgid "Updated storageUnit"
 msgstr "已更新存储单元"
+
+msgid "Updated style attributes"
+msgstr ""
 
 msgid "Updated style costing"
 msgstr "已更新款式成本估算"

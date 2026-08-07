@@ -120,13 +120,16 @@ export function getStyleConfigDisplay(
 }
 
 /**
- * Build Color · Size chips from expanded Style variant lines (no configTable).
- * Used when PO/SO lines were replaced with child SKUs after Style expand.
+ * Build attribute chips from expanded variant lines (no configTable).
+ * Used when PO/SO lines were replaced with child SKUs after expand.
  */
 export function getStyleConfigDisplayFromVariants(
   variants: Array<{
-    colorCode: string;
-    sizeCode: string;
+    attributeCodes?: string[];
+    /** @deprecated prefer attributeCodes */
+    colorCode?: string;
+    /** @deprecated prefer attributeCodes */
+    sizeCode?: string;
     quantity: number;
   }>,
   colorNames?: Record<string, string>,
@@ -135,16 +138,18 @@ export function getStyleConfigDisplayFromVariants(
   const localized = localizeColorNameMap(colorNames, locale);
   const byKey = new Map<string, StyleConfigChip>();
   for (const variant of variants) {
-    const colorCode = variant.colorCode?.trim();
-    const sizeCode = variant.sizeCode?.trim();
-    // A variant needs at least one attribute. Garment styles carry color + size;
-    // Fabric/Trim consumables carry color only — so don't require both.
-    if (!colorCode && !sizeCode) continue;
+    const codes =
+      variant.attributeCodes?.filter(Boolean) ??
+      [variant.colorCode, variant.sizeCode].filter(
+        (c): c is string => !!c?.trim()
+      );
+    if (codes.length === 0) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;
-    const colorLabel = colorCode ? (localized?.[colorCode] ?? colorCode) : "";
-    const colorSize = [colorLabel, sizeCode].filter(Boolean).join(" · ");
-    const key = `${colorCode}|${sizeCode}`;
+    const colorSize = codes
+      .map((code) => localized?.[code] ?? code)
+      .join(" · ");
+    const key = codes.join("|");
     const existing = byKey.get(key);
     if (existing) {
       existing.quantity += qty;
@@ -162,14 +167,18 @@ export function getStyleConfigDisplayFromVariants(
   return { chips: [...byKey.values()] };
 }
 
-/** Parent Style metadata for a variant SKU line on an order. */
+/** Parent Style/Consumable metadata for a variant SKU line on an order. */
 export type StyleVariantLineMeta = {
   variantItemId: string;
   parentItemId: string;
   parentReadableId: string;
   parentName: string | null;
   parentThumbnailPath: string | null;
+  /** Attribute value codes in set order (from valuesKey / variant attrs). */
+  attributeCodes: string[];
+  /** @deprecated first attribute code — kept for transitional callers */
   colorCode: string;
+  /** @deprecated second attribute code — kept for transitional callers */
   sizeCode: string;
 };
 
@@ -249,6 +258,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       variantLines.map((line) => {
         const m = variantByItemId[line.itemId!];
         return {
+          attributeCodes: m?.attributeCodes ?? [],
           colorCode: m?.colorCode ?? "",
           sizeCode: m?.sizeCode ?? "",
           quantity: quantityOf(line)
