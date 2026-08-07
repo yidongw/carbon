@@ -185,7 +185,29 @@ const seedDisplayNameMessages: Record<string, MessageDescriptor> = {
   WIP: msg`WIP`,
   "Work Center": msg`Work Center`,
   "Work In Progress (WIP)": msg`Work In Progress (WIP)`,
-  Yard: msg`Yard`
+  Yard: msg`Yard`,
+  // System Color palette (itemAttributeValue seed). English is the base name;
+  // locales translate it for display. Company-defined colors pass through.
+  Beige: msg`Beige`,
+  Black: msg`Black`,
+  Blue: msg`Blue`,
+  Brown: msg`Brown`,
+  Charcoal: msg`Charcoal`,
+  Cream: msg`Cream`,
+  Gray: msg`Gray`,
+  Green: msg`Green`,
+  Khaki: msg`Khaki`,
+  "Light Blue": msg`Light Blue`,
+  "Light Gray": msg`Light Gray`,
+  Navy: msg`Navy`,
+  Olive: msg`Olive`,
+  Orange: msg`Orange`,
+  Pink: msg`Pink`,
+  Purple: msg`Purple`,
+  Red: msg`Red`,
+  White: msg`White`,
+  Wine: msg`Wine`,
+  Yellow: msg`Yellow`
 };
 
 export function translateSeedDisplayName(
