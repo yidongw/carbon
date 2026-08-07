@@ -499,7 +499,8 @@ const PurchaseOrderLineForm = ({
             // Consumable with a Fabric/Trim color set) gets the config grid.
             carbon
               .from("itemAttributeSelection")
-              .select("id")
+              // Composite PK — no `id` column; select a real column.
+              .select("attributeValueId")
               .eq("itemId", itemId)
               .eq("companyId", company.id)
               .in("attributeId", ["iat_color", "iat_size"])
