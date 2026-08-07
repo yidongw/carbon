@@ -430,6 +430,29 @@ export async function getConfigurationParameters(
   itemId: string,
   companyId: string
 ) {
+  const item = await client
+    .from("item")
+    .select("type")
+    .eq("id", itemId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  // Styles always derive Color/Size list params from attribute selections —
+  // never from legacy configurationParameter rows (dual-read retired).
+  if (item.data?.type === "Style") {
+    try {
+      const synthesized = await getStyleConfigurationParametersFromAttributes(
+        client,
+        itemId,
+        companyId
+      );
+      return { groups: [], parameters: synthesized };
+    } catch (error) {
+      console.error(error);
+      return { groups: [], parameters: [] };
+    }
+  }
+
   const [parameters, groups] = await Promise.all([
     // Order by sortOrder so the derived "primary" parameter (the first
     // list-typed param, used to build job/quote quantity columns) is
@@ -460,27 +483,10 @@ export async function getConfigurationParameters(
     return { groups: [], parameters: [] };
   }
 
-  const stored = parameters.data ?? [];
-  if (stored.length > 0) {
-    return { groups: groups.data ?? [], parameters: stored };
-  }
-
-  // Style qty matrices: synthesize Color/Size list params from attribute
-  // selections when configurationParameter rows were never written.
-  try {
-    const synthesized = await getStyleConfigurationParametersFromAttributes(
-      client,
-      itemId,
-      companyId
-    );
-    if (synthesized.length > 0) {
-      return { groups: [], parameters: synthesized };
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
-  return { groups: groups.data ?? [], parameters: stored };
+  return {
+    groups: groups.data ?? [],
+    parameters: parameters.data ?? []
+  };
 }
 
 export async function getConfigurationRules(
