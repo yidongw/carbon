@@ -4630,7 +4630,7 @@ msgid "External Reference"
 msgstr "外部参考"
 
 msgid "Fabric"
-msgstr ""
+msgstr "面料"
 
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
 msgstr ""
@@ -8054,7 +8054,7 @@ msgid "Gallon"
 msgstr "加仑"
 
 msgid "Garment"
-msgstr ""
+msgstr "成衣"
 
 msgid "Gauge"
 msgstr "量具"
@@ -15099,7 +15099,7 @@ msgid "Triggers"
 msgstr "触发器"
 
 msgid "Trim"
-msgstr ""
+msgstr "辅料"
 
 msgid "True"
 msgstr "真"
