@@ -1014,7 +1014,7 @@ msgid ""
 msgstr "您确定要删除API密钥：{0}？此操作无法撤销。"
 
 msgid "Are you sure you want to delete the assignment {name}?"
-msgstr ""
+msgstr "确定要删除分配 {name} 吗？"
 
 #. placeholder {0}: rule.name ?? ""
 msgid ""
@@ -1527,7 +1527,7 @@ msgid "Attribute"
 msgstr "属性"
 
 msgid "Attribute not found"
-msgstr ""
+msgstr "未找到属性"
 
 msgid "Attribute recorded successfully"
 msgstr "属性记录成功"
@@ -1538,19 +1538,19 @@ msgid ""
 msgstr "用于计算进货检验时批样大小及接受/拒收数量的属性采样标准。"
 
 msgid "Attribute Set"
-msgstr ""
+msgstr "属性集"
 
 msgid "Attribute set is required"
-msgstr ""
+msgstr "属性集为必填项"
 
 msgid "Attribute set not found"
-msgstr ""
+msgstr "未找到属性集"
 
 msgid "Attribute Sets"
-msgstr ""
+msgstr "属性集"
 
 msgid "Attribute Values"
-msgstr ""
+msgstr "属性值"
 
 msgid "Attributes"
 msgstr "属性"
@@ -1943,7 +1943,7 @@ msgid "Cannot delete a posted shipment"
 msgstr "不能删除已发布发货单"
 
 msgid "Cannot delete a system attribute set assignment"
-msgstr ""
+msgstr "无法删除系统属性集分配"
 
 msgid "Cannot edit a protected customer type"
 msgstr "不能编辑受保护的客户类型"
@@ -1952,10 +1952,10 @@ msgid "Cannot edit a protected supplier type"
 msgstr "不能编辑受保护的供应商类型"
 
 msgid "Cannot edit a system attribute set"
-msgstr ""
+msgstr "无法编辑系统属性集"
 
 msgid "Cannot edit a system attribute set assignment"
-msgstr ""
+msgstr "无法编辑系统属性集分配"
 
 msgid "Cannot edit global material grade"
 msgstr "不能编辑全局材料等级"
@@ -1976,10 +1976,10 @@ msgid "Cannot edit global style size"
 msgstr "无法编辑全局款式尺寸"
 
 msgid "Cannot edit system attribute"
-msgstr ""
+msgstr "无法编辑系统属性"
 
 msgid "Cannot edit system attribute value"
-msgstr ""
+msgstr "无法编辑系统属性值"
 
 msgid "Cannot finish operation"
 msgstr "无法完成操作"
@@ -2901,13 +2901,13 @@ msgid "Created At"
 msgstr "创建于"
 
 msgid "Created attribute"
-msgstr ""
+msgstr "已创建属性"
 
 msgid "Created attribute set"
-msgstr ""
+msgstr "已创建属性集"
 
 msgid "Created attribute value"
-msgstr ""
+msgstr "已创建属性值"
 
 msgid "Created By"
 msgstr "创建人"
@@ -2995,7 +2995,7 @@ msgid "Created scrap reason"
 msgstr "已创建报废原因"
 
 msgid "Created set assignment"
-msgstr ""
+msgstr "已创建属性集分配"
 
 msgid "Created shipping method"
 msgstr "已创建配送方式"
@@ -3674,16 +3674,16 @@ msgid "Delete Webhook"
 msgstr "删除Webhook"
 
 msgid "Deleted attribute"
-msgstr ""
+msgstr "已删除属性"
 
 msgid "Deleted attribute set"
-msgstr ""
+msgstr "已删除属性集"
 
 msgid "Deleted attribute value"
 msgstr "已删除的属性值"
 
 msgid "Deleted set assignment"
-msgstr ""
+msgstr "已删除属性集分配"
 
 msgid "Deleted warehouse transfer line"
 msgstr "已删除仓库调拨行"
@@ -4064,10 +4064,10 @@ msgid "Edit Attribute Category"
 msgstr "编辑属性类别"
 
 msgid "Edit Attribute Set"
-msgstr ""
+msgstr "编辑属性集"
 
 msgid "Edit Attribute Value"
-msgstr ""
+msgstr "编辑属性值"
 
 msgid "Edit Category"
 msgstr "编辑类别"
@@ -4262,7 +4262,7 @@ msgid "Edit Sequence"
 msgstr "编辑序列"
 
 msgid "Edit Set Assignment"
-msgstr ""
+msgstr "编辑属性集分配"
 
 msgid "Edit Shift"
 msgstr "编辑班次"
@@ -4589,16 +4589,16 @@ msgid "Error loading attribute categories"
 msgstr "加载属性类别时出错"
 
 msgid "Error loading attribute set assignments"
-msgstr ""
+msgstr "加载属性集分配时出错"
 
 msgid "Error loading attribute sets"
-msgstr ""
+msgstr "加载属性集时出错"
 
 msgid "Error loading attribute values"
-msgstr ""
+msgstr "加载属性值时出错"
 
 msgid "Error loading attributes"
-msgstr ""
+msgstr "加载属性时出错"
 
 msgid "Error loading console operators"
 msgstr "加载控制台操作员出错"
@@ -4981,10 +4981,10 @@ msgid "Failed to create attribute category"
 msgstr "创建属性类别失败"
 
 msgid "Failed to create attribute set"
-msgstr ""
+msgstr "创建属性集失败"
 
 msgid "Failed to create attribute value"
-msgstr ""
+msgstr "创建属性值失败"
 
 msgid "Failed to create auth session"
 msgstr "创建认证会话失败"
@@ -5228,7 +5228,7 @@ msgid "Failed to create samples"
 msgstr "创建样品失败"
 
 msgid "Failed to create set assignment"
-msgstr ""
+msgstr "创建属性集分配失败"
 
 msgid "Failed to create shift"
 msgstr "创建班次失败"
@@ -5353,10 +5353,10 @@ msgid "Failed to delete association"
 msgstr "删除关联失败"
 
 msgid "Failed to delete attribute"
-msgstr ""
+msgstr "删除属性失败"
 
 msgid "Failed to delete attribute set"
-msgstr ""
+msgstr "删除属性集失败"
 
 msgid "Failed to delete attribute value"
 msgstr "删除属性值失败"
@@ -5572,7 +5572,7 @@ msgid "Failed to delete section"
 msgstr "删除部分失败"
 
 msgid "Failed to delete set assignment"
-msgstr ""
+msgstr "删除属性集分配失败"
 
 msgid "Failed to delete shift"
 msgstr "删除班次失败"
@@ -6010,25 +6010,25 @@ msgid "Failed to get asset class id"
 msgstr "获取资产类别ID失败"
 
 msgid "Failed to get assignment id"
-msgstr ""
+msgstr "获取分配 ID 失败"
 
 msgid "Failed to get attribute"
 msgstr "获取属性失败"
 
 msgid "Failed to get attribute id"
-msgstr ""
+msgstr "获取属性 ID 失败"
 
 msgid "Failed to get attribute set"
-msgstr ""
+msgstr "获取属性集失败"
 
 msgid "Failed to get attribute set id"
-msgstr ""
+msgstr "获取属性集 ID 失败"
 
 msgid "Failed to get attribute value"
-msgstr ""
+msgstr "获取属性值失败"
 
 msgid "Failed to get attribute value id"
-msgstr ""
+msgstr "获取属性值 ID 失败"
 
 msgid "Failed to get chart of accounts"
 msgstr "获取会计科目表失败"
@@ -6280,7 +6280,7 @@ msgid "Failed to get services"
 msgstr "获取服务失败"
 
 msgid "Failed to get set assignment"
-msgstr ""
+msgstr "获取属性集分配失败"
 
 msgid "Failed to get shift"
 msgstr "获取班次失败"
@@ -7482,13 +7482,13 @@ msgid "Failed to update attribute category"
 msgstr "更新属性类别失败"
 
 msgid "Failed to update attribute set"
-msgstr ""
+msgstr "更新属性集失败"
 
 msgid "Failed to update attribute value"
 msgstr "更新属性值失败"
 
 msgid "Failed to update attributes"
-msgstr ""
+msgstr "更新属性失败"
 
 msgid "Failed to update avatar"
 msgstr "更新头像失败"
@@ -7515,7 +7515,7 @@ msgid "Failed to update consumable"
 msgstr "更新消耗品失败"
 
 msgid "Failed to update consumable attributes"
-msgstr ""
+msgstr "更新消耗品属性失败"
 
 msgid "Failed to update consumable costing"
 msgstr "更新消耗物料成本失败"
@@ -7911,7 +7911,7 @@ msgid "Failed to update sequence"
 msgstr "更新序列失败"
 
 msgid "Failed to update set assignment"
-msgstr ""
+msgstr "更新属性集分配失败"
 
 msgid "Failed to update shipment"
 msgstr "更新发货信息失败"
@@ -9099,7 +9099,7 @@ msgid "Item association not found"
 msgstr "未找到项目关联"
 
 msgid "Item Attributes"
-msgstr ""
+msgstr "物料属性"
 
 msgid "Item filters"
 msgstr "项目过滤器"
@@ -10283,10 +10283,10 @@ msgid "New Attribute Category"
 msgstr "新属性类别"
 
 msgid "New Attribute Set"
-msgstr ""
+msgstr "新建属性集"
 
 msgid "New Attribute Value"
-msgstr ""
+msgstr "新建属性值"
 
 msgid "New chat"
 msgstr "新消息"
@@ -10463,7 +10463,7 @@ msgid "New Scheduled Maintenance"
 msgstr "新的计划维护"
 
 msgid "New Set Assignment"
-msgstr ""
+msgstr "新建属性集分配"
 
 msgid "New Shift"
 msgstr "新班次"
@@ -10529,7 +10529,7 @@ msgid "New Unit of Measure"
 msgstr "新的计量单位"
 
 msgid "New Value"
-msgstr ""
+msgstr "新建值"
 
 msgid "New Version"
 msgstr "新版本"
@@ -13671,10 +13671,10 @@ msgid "Session mismatch"
 msgstr "会话不匹配"
 
 msgid "Set assignment not found"
-msgstr ""
+msgstr "未找到属性集分配"
 
 msgid "Set Assignments"
-msgstr ""
+msgstr "属性集分配"
 
 msgid "Set Clock Out"
 msgstr "设置下班时间"
@@ -15816,13 +15816,13 @@ msgid "Updated At"
 msgstr "更新于"
 
 msgid "Updated attribute"
-msgstr ""
+msgstr "已更新属性"
 
 msgid "Updated attribute category "
 msgstr "已更新属性类别 "
 
 msgid "Updated attribute set"
-msgstr ""
+msgstr "已更新属性集"
 
 msgid "Updated attribute value"
 msgstr "已更新属性值"
@@ -15837,7 +15837,7 @@ msgid "Updated consumable"
 msgstr "已更新耗材"
 
 msgid "Updated consumable attributes"
-msgstr ""
+msgstr "已更新消耗品属性"
 
 msgid "Updated consumable costing"
 msgstr "已更新消耗品成本估算"
@@ -16071,7 +16071,7 @@ msgid "Updated sequence"
 msgstr "已更新顺序"
 
 msgid "Updated set assignment"
-msgstr ""
+msgstr "已更新属性集分配"
 
 msgid "Updated shipment"
 msgstr "已更新发货信息"
