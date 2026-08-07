@@ -31,7 +31,7 @@ import {
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
-import StyleAttributes from "~/components/Form/StyleAttributes";
+import ItemAttributeSelects from "~/components/Form/ItemAttributeSelects";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -203,7 +203,7 @@ const StyleForm = ({
                   label={t`Short Description`}
                   characterLimit={40}
                 />
-                <StyleAttributes />
+                <ItemAttributeSelects itemType="Style" />
                 <Select
                   name="replenishmentSystem"
                   label={t`Replenishment System`}
