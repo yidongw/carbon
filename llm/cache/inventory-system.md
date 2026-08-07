@@ -79,9 +79,11 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 
 **Expansion on SO/PO Style line save** (create/update): when the submitted line is a Style parent with `configuration.configTable`, expand into **one order line per variant SKU** (`itemId` = child variant). Helper: `apps/erp/app/modules/items/styleOrderLines.server.ts` (`expandStyleConfigToVariantLines`, `hasStyleConfigTable`). Writers: `replaceSalesOrderLinesWithStyleVariants` / `replacePurchaseOrderLinesWithStyleVariants` (sales/purchasing services). Forms skip the color×size matrix when editing a Style line with no `configuration` (already a variant SKU). Validators require Style quantity but not configuration JSON. ERP expand matches variants by frozen color/size attribute codes (order-independent) and **fails loud** if a cell has no SKU (`expandConfigTableToVariantQuantities` in `itemAttribute.service.ts`). Unit tests: `styleOrderLines.server.test.ts`.
 
-**Quote → SO conversion** (`packages/database/supabase/functions/convert/index.ts`): Style quote lines with a config table expand to per-variant SO lines with cent-exact add-on/shipping splits. Expanded lines use `salesOrderLineType: "Style"` (same as ERP expand). Requires edge function deploy to take effect on hosted Supabase.
+**Quote → SO conversion** (`packages/database/supabase/functions/convert/index.ts`): Style quote lines with a config table expand to per-variant SO lines with cent-exact add-on/shipping splits. Expanded lines use `salesOrderLineType: "Style"` (same as ERP expand). Shared helpers live in `lib/item-variants.ts` (`hasConfigTable`, `expandConfigTableToVariantQuantities`).
 
-**Edge receive/ship fallback** (legacy parent+config lines still on the order): `packages/database/supabase/functions/create/index.ts` + `lib/item-variants.ts` (`hasConfigTable`, `expandConfigTableToVariantQuantities`) expand at receipt/shipment create and **fail loud** (no silent parent fallback) when a cell has no matching variant.
+**Edge receive/ship fallback** (legacy parent+config lines still on the order): `packages/database/supabase/functions/create/index.ts` also imports `lib/item-variants.ts` and expands at receipt/shipment create — **fail loud** (no silent parent fallback) when a cell has no matching variant.
+
+**Deploy:** `convert` and `create` need `--import-map supabase/functions/deno.json` (relative imports into `lib/`) or hosted Supabase will not resolve `item-variants.ts`.
 
 **`valuesKey` format:** `color|size` (e.g. `BK|S`). Size-only falls back to just the size code. Edge/ERP expand prefer attribute combo keys over positional `valuesKey` strings.
 
@@ -93,9 +95,13 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 - Parent rows **add** parent ledger + variant rollup (not COALESCE-replace — `20260807092217`); child ledgers included in Style breakdown so headline matches breakdown.
 - Detail SKU breakdown remains `getItemVariantQuantities` (Style inventory page).
 
-`salesOrders.orderTotal` uses plain `SUM` of line amounts with jobs aggregated separately (`20260807093041`) — avoids `SUM(DISTINCT)` undercounting equal-amount variant lines.
+### Harden migrations (already on shared preview DB)
 
-`itemAttributeSetAttribute` / `itemAttributeSetAssignment` write RLS no longer allows `companyId IS NULL` (`20260807091544`) so tenants cannot mutate shared system rows.
+Do not re-apply / “fix” these on the shared preview DB — they are already present:
+
+- `20260807092217` — parent inventory rollup **adds** parent ledger + variant stock (not COALESCE-replace).
+- `20260807093041` — `salesOrders.orderTotal` plain `SUM` of line amounts; jobs aggregated separately (avoids `SUM(DISTINCT)` undercounting equal-amount variant lines).
+- `20260807091544` — `itemAttributeSetAttribute` / `itemAttributeSetAssignment` write RLS no longer allows `companyId IS NULL` (tenants cannot mutate shared system rows).
 
 `consumables` view excludes variant children (`20260806162513`), same pattern as `styles`.
 
