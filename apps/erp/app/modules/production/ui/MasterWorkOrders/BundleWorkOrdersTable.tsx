@@ -120,7 +120,7 @@ const BundleWorkOrdersTable = memo(
     }, [openOverlay, revalidator, masterWorkOrderId]);
 
     const columns = useMemo<ColumnDef<(typeof rows)[number]>[]>(() => {
-      return [
+      const cols: ColumnDef<(typeof rows)[number]>[] = [
         {
           accessorKey: "jobReadableId",
           header: t`Bundle`,
@@ -234,22 +234,48 @@ const BundleWorkOrdersTable = memo(
             },
             icon: <LuShirt />
           }
-        },
-        {
-          accessorKey: "colorCode",
-          header: t`Color`,
-          cell: ({ row }) =>
-            row.original.colorName || row.original.colorCode || "—",
-          meta: { icon: <LuPalette /> }
-        },
-        {
-          accessorKey: "sizeCode",
-          header: t`Size`,
-          cell: ({ row }) => row.original.sizeCode ?? "—",
-          meta: { icon: <LuRuler /> }
         }
       ];
-    }, [t, people, styles, dateFormatter, openProcesses]);
+
+      const attrCodes = new Set<string>();
+      for (const row of rows) {
+        const vals = (row as { attributeValues?: Record<string, string> })
+          .attributeValues;
+        if (vals && typeof vals === "object") {
+          for (const code of Object.keys(vals)) {
+            if (code) attrCodes.add(code);
+          }
+        }
+      }
+      const sortedCodes = Array.from(attrCodes).sort((a, b) => {
+        const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
+        const d = rank(a) - rank(b);
+        return d !== 0 ? d : a.localeCompare(b);
+      });
+
+      for (const code of sortedCodes) {
+        cols.push({
+          id: `attr:${code}`,
+          header: code,
+          cell: ({ row }) => {
+            const vals = (
+              row.original as { attributeValues?: Record<string, string> }
+            ).attributeValues;
+            const value = vals?.[code];
+            return value ? (
+              <span>{value}</span>
+            ) : (
+              <span className="text-muted-foreground">—</span>
+            );
+          },
+          meta: {
+            icon: code === "Size" ? <LuRuler /> : <LuPalette />
+          }
+        });
+      }
+
+      return cols;
+    }, [t, people, styles, dateFormatter, openProcesses, rows]);
 
     return (
       <>

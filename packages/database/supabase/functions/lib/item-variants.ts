@@ -3,6 +3,7 @@
  * Mirrors apps/erp/.../itemAttribute.service.ts expandConfigTableToVariantQuantities.
  *
  * Matches by valuesKey (attribute value codes joined by `|` in set order).
+ * Dual-reads combo flat rows (valuesKey + Quantities) and legacy matrices.
  * Fails loud if a config cell has no matching variant SKU.
  */
 
@@ -104,32 +105,53 @@ export async function expandConfigTableToVariantQuantities(
     ? (raw.configTablePrimaryKeys as string[])
     : [];
 
-  const attrCodes = await getParentSetAttributeCodes(
-    client,
-    args.parentItemId,
-    args.companyId
-  );
-  const codes = attrCodes.length > 0 ? attrCodes : (["Color", "Size"] as string[]);
-  const descriptorCodes = codes.slice(0, -1);
-
   const cells: Array<{ valuesKey: string; quantity: number }> = [];
-  for (const row of table) {
-    for (const primaryValue of primaryKeys) {
-      const qty = Number(row[primaryValue] ?? 0);
-      if (!Number.isFinite(qty) || qty <= 0) continue;
 
-      const parts: string[] = [];
-      for (const code of descriptorCodes) {
-        const v = rowValueForAttrKey(row, code);
-        if (!v) {
-          throw new Error(
-            `Configuration row is missing ${code} for quantity column ${primaryValue}.`
-          );
+  const isComboFlat =
+    primaryKeys.length === 1 &&
+    primaryKeys[0] === "Quantities" &&
+    table.some(
+      (row) =>
+        typeof row.valuesKey === "string" &&
+        String(row.valuesKey).trim().length > 0
+    );
+
+  if (isComboFlat) {
+    for (const row of table) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) continue;
+      const qty = Number(row.Quantities ?? 0);
+      if (!Number.isFinite(qty) || qty <= 0) continue;
+      cells.push({ valuesKey, quantity: qty });
+    }
+  } else {
+    const attrCodes = await getParentSetAttributeCodes(
+      client,
+      args.parentItemId,
+      args.companyId
+    );
+    const codes =
+      attrCodes.length > 0 ? attrCodes : (["Color", "Size"] as string[]);
+    const descriptorCodes = codes.slice(0, -1);
+
+    for (const row of table) {
+      for (const primaryValue of primaryKeys) {
+        const qty = Number(row[primaryValue] ?? 0);
+        if (!Number.isFinite(qty) || qty <= 0) continue;
+
+        const parts: string[] = [];
+        for (const code of descriptorCodes) {
+          const v = rowValueForAttrKey(row, code);
+          if (!v) {
+            throw new Error(
+              `Configuration row is missing ${code} for quantity column ${primaryValue}.`
+            );
+          }
+          parts.push(v);
         }
-        parts.push(v);
+        parts.push(primaryValue);
+        cells.push({ valuesKey: parts.join("|"), quantity: qty });
       }
-      parts.push(primaryValue);
-      cells.push({ valuesKey: parts.join("|"), quantity: qty });
     }
   }
 

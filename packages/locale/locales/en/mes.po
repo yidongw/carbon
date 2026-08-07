@@ -219,6 +219,9 @@ msgstr "Attribute set is required"
 msgid "Attribute set not found"
 msgstr "Attribute set not found"
 
+msgid "Attributes"
+msgstr "Attributes"
+
 msgid "Audit logging disabled"
 msgstr "Audit logging disabled"
 

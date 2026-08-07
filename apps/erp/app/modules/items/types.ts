@@ -182,9 +182,9 @@ export type Style = NonNullable<
 // styleSamples view = Style + per-style sample count. getStyleSamples returns
 // `any` rows (view not in generated types yet), so type it explicitly here.
 export type StyleSampleLine = {
-  colorCode: string;
-  colorName: string;
-  size: string;
+  label: string;
+  /** Attribute code → value code (from trackedEntity.attributes). */
+  attributes: Record<string, string>;
   quantity: number;
 };
 
@@ -193,6 +193,19 @@ export type StyleSample = Style & {
   sampleCount: number;
   sampledColorCount: number;
   samples: StyleSampleLine[];
+};
+
+/** One Samples table row = one (style, attribute combo) with Qty. */
+export type StyleSampleFlatRow = {
+  rowKey: string;
+  styleId: string | null | undefined;
+  readableId: string | null | undefined;
+  readableIdWithRevision: string | null | undefined;
+  name: string | null | undefined;
+  thumbnailPath: string | null | undefined;
+  sampleItemId: string | null;
+  valuesByCode: Record<string, string>;
+  quantity: number;
 };
 
 export type StyleColor = NonNullable<

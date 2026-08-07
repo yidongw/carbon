@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -10,6 +11,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
+  HStack,
   MenuIcon,
   MenuItem,
   toast,
@@ -20,7 +22,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { LuGroup, LuPencil, LuTrash } from "react-icons/lu";
+import { LuGroup, LuPalette, LuPencil, LuTrash } from "react-icons/lu";
 import { Link, useFetcher, useNavigate } from "react-router";
 import { MethodIcon, New, Table, TrackingTypeIcon } from "~/components";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
@@ -28,6 +30,7 @@ import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { ItemPostingGroupListItem } from "~/modules/items";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import type { getTemplatesList } from "~/modules/items/template.service";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
@@ -39,6 +42,18 @@ import {
 } from "../../items.models";
 import type { Style } from "../../types";
 import { buildDefaultStylesTableColumns } from "./stylesTableColumns";
+
+type StyleAttributeColumn = {
+  attributeId: string;
+  code: string;
+  name: string;
+  values: Array<{ id: string; code: string; name: string }>;
+};
+
+function styleAttributes(row: Style): StyleAttributeColumn[] {
+  const attrs = (row as { attributes?: unknown }).attributes;
+  return Array.isArray(attrs) ? (attrs as StyleAttributeColumn[]) : [];
+}
 
 type StylesTableProps = {
   data: Style[];
@@ -112,18 +127,77 @@ const StylesTable = memo(
         translateTrackingType,
         i18n
       });
-      return [...defaultColumns, ...customColumns];
+
+      const attrMeta = new Map<string, { code: string; name: string }>();
+      for (const row of data) {
+        for (const a of styleAttributes(row)) {
+          if (!a.code) continue;
+          if (!attrMeta.has(a.code)) {
+            attrMeta.set(a.code, { code: a.code, name: a.name || a.code });
+          }
+        }
+      }
+      const attrCodes = Array.from(attrMeta.keys()).sort((a, b) => {
+        const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
+        const d = rank(a) - rank(b);
+        return d !== 0 ? d : a.localeCompare(b);
+      });
+
+      const attrColumns: ColumnDef<Style>[] = attrCodes.map((code) => {
+        const meta = attrMeta.get(code)!;
+        return {
+          id: `attr:${code}`,
+          header: translateItemAttributeCatalogName(meta.name || code, i18n),
+          cell: ({ row }) => {
+            const attr = styleAttributes(row.original).find(
+              (a) => a.code === code
+            );
+            const values = attr?.values ?? [];
+            if (values.length === 0) {
+              return <span className="text-muted-foreground">—</span>;
+            }
+            return (
+              <HStack spacing={1} className="flex-wrap">
+                {values.map((v) => (
+                  <Badge
+                    key={v.id}
+                    variant="outline"
+                    title={`${meta.name}: ${v.code}`}
+                  >
+                    {v.name || v.code}
+                  </Badge>
+                ))}
+              </HStack>
+            );
+          },
+          meta: { icon: <LuPalette /> }
+        };
+      });
+
+      // Replace the legacy single Attributes column with per-attribute columns.
+      const withoutAttributes = defaultColumns.filter(
+        (c) => c.id !== "attributes"
+      );
+      const insertAt = Math.min(2, withoutAttributes.length);
+      const merged = [
+        ...withoutAttributes.slice(0, insertAt),
+        ...attrColumns,
+        ...withoutAttributes.slice(insertAt)
+      ];
+
+      return [...merged, ...customColumns];
     }, [
       people,
       tags,
       itemPostingGroups,
       templateOptions,
-      customColumns,
       formatDate,
       translateReplenishment,
       translateMethodType,
       translateTrackingType,
-      i18n
+      i18n,
+      customColumns,
+      data
     ]);
 
     const fetcher = useFetcher<typeof action>();

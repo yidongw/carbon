@@ -31,6 +31,32 @@ export function buildConfigColumns(
   primaryKeys: string[];
   columns: ConfigColumn[];
 } {
+  // Style combo: single valuesKey list → row labels + Quantities (not matrix).
+  const firstList = parameters.find((p) => p.dataType === "list");
+  const isStyleCombo =
+    (parameters.length === 1 && parameters[0]?.key === "valuesKey") ||
+    firstList?.key === "valuesKey";
+
+  if (isStyleCombo && firstList) {
+    return {
+      primaryParam: firstList,
+      primaryKeys: ["Quantities"],
+      columns: [
+        {
+          key: "valuesKey",
+          label: firstList.label || "Attributes",
+          type: "list",
+          options: firstList.listOptions ?? []
+        },
+        {
+          key: "Quantities",
+          label: defaultQuantityLabel,
+          type: "quantity"
+        }
+      ]
+    };
+  }
+
   const primaryParam = parameters.find((p) => p.dataType === "list") ?? null;
   const otherParams = parameters.filter((p) => p !== primaryParam);
 
@@ -166,7 +192,10 @@ function optionLabelOf(
  * summary badges (`BK · S ×2`) and expand lists — no parameter metadata
  * required; uses `configTablePrimaryKeys` from the JSON itself.
  *
- * Labels join row descriptor values with the quantity-column key using ` · `.
+ * Dual-read:
+ * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey` → label from
+ *   `label` or valuesKey with `|` → ` · `.
+ * - Legacy matrix: join row descriptors with the quantity-column key using ` · `.
  */
 export function getConfigQuantityCells(
   configuration: unknown,
@@ -193,7 +222,35 @@ export function getConfigQuantityCells(
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const cells: ConfigQuantityCell[] = [];
 
+  const isComboFlat =
+    primaryKeys.length === 1 && primaryKeys[0] === "Quantities";
+
   for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
+    if (isComboFlat) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (valuesKey) {
+        const rawQty = row.Quantities;
+        if (isZeroOrEmpty(rawQty)) continue;
+        const quantity = Number(rawQty) || 0;
+        if (quantity === 0) continue;
+
+        const storedLabel = String(row.label ?? "").trim();
+        const label = storedLabel
+          ? storedLabel
+          : valuesKey
+              .split("|")
+              .map((part) => labelOf(part))
+              .join(" · ");
+
+        cells.push({
+          key: `${rowIndex}:Quantities`,
+          label,
+          quantity
+        });
+        continue;
+      }
+    }
+
     const descriptorValues = Object.entries(row)
       .filter(([key]) => !primaryKeySet.has(key))
       .map(([, value]) => String(value ?? "").trim())

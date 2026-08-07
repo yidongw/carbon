@@ -26,7 +26,7 @@ function toError(error: unknown, fallback: string) {
   return new Error(fallback);
 }
 
-/** Synthetic configurationParameter-shaped rows for Style qty matrices. */
+/** Synthetic configurationParameter-shaped rows for Style qty editors. */
 export type SynthesizedConfigurationParameter = {
   id: string;
   itemId: string;
@@ -47,14 +47,12 @@ export type SynthesizedConfigurationParameter = {
 };
 
 /**
- * Build list parameters from the item's attribute set + selections so Style
- * qty matrices work without configurationParameter dual-write and without
- * hardcoding Color/Size.
+ * Build a single list parameter from the item's attribute set + selections so
+ * Style qty editors work without configurationParameter dual-write.
  *
- * Convention for 2+ attrs: last attribute in set order becomes the primary
- * quantity columns (matches historical Size-as-columns for Garment); earlier
- * attributes are row descriptors. Keys use attribute codes (and lowercase
- * aliases are still read by expand for legacy config tables).
+ * Returns one list param with key `valuesKey` whose options are the cartesian
+ * product of selected attribute codes in **set order** (pipe-joined), matching
+ * `itemVariant.valuesKey`. Expand dual-reads legacy Color×Size matrices.
  */
 export async function getStyleConfigurationParametersFromAttributes(
   client: Db,
@@ -128,30 +126,40 @@ export async function getStyleConfigurationParametersFromAttributes(
     .filter((a) => a.codes.length > 0);
   if (attrs.length === 0) return [];
 
-  // Last set attribute → primary qty columns; earlier → row descriptors.
-  const orderedForMatrix = [...attrs].reverse();
+  // Cartesian product in set attribute order (do not reverse for matrix).
+  let combos: string[][] = [[]];
+  for (const attr of attrs) {
+    const next: string[][] = [];
+    for (const prefix of combos) {
+      for (const code of attr.codes) {
+        next.push([...prefix, code]);
+      }
+    }
+    combos = next;
+  }
+  const listOptions = combos.map((parts) => parts.join("|"));
 
   const nowIso = new Date().toISOString();
-  return orderedForMatrix.map((attr, index) => ({
-    id: `synthetic-${attr.id}-${itemId}`,
-    itemId,
-    companyId,
-    // Prefer lowercase key so existing Style configTables keyed as "color"
-    // keep working when the attribute code is "Color".
-    key: attr.code.toLowerCase(),
-    label: attr.name,
-    dataType: "list" as const,
-    listOptions: attr.codes,
-    sortOrder: index,
-    configurationParameterGroupId: null,
-    createdAt: nowIso,
-    createdBy: "system",
-    updatedAt: null,
-    updatedBy: null,
-    deletedAt: null,
-    deletedBy: null,
-    materialFormFilterId: null
-  }));
+  return [
+    {
+      id: `synthetic-valuesKey-${itemId}`,
+      itemId,
+      companyId,
+      key: "valuesKey",
+      label: "Attributes",
+      dataType: "list" as const,
+      listOptions,
+      sortOrder: 0,
+      configurationParameterGroupId: null,
+      createdAt: nowIso,
+      createdBy: "system",
+      updatedAt: null,
+      updatedBy: null,
+      deletedAt: null,
+      deletedBy: null,
+      materialFormFilterId: null
+    }
+  ];
 }
 
 /**
@@ -1510,9 +1518,11 @@ async function getParentSetAttributeCodes(
 
 /**
  * Expand a Style/Consumable configTable into { variantItemId, quantity } rows.
- * Matches variants by valuesKey (attribute codes in set order). Quantity
- * columns come from the last set attribute; earlier attributes are row
- * descriptors — same convention as getStyleConfigurationParametersFromAttributes.
+ * Matches variants by valuesKey (attribute codes in set order).
+ *
+ * Dual-read:
+ * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey` → use directly.
+ * - Legacy matrix: last set attribute = qty columns; earlier = row descriptors.
  */
 export async function expandConfigTableToVariantQuantities(
   client: Db,
@@ -1534,40 +1544,60 @@ export async function expandConfigTableToVariantQuantities(
       ? (raw.configTablePrimaryKeys as string[])
       : [];
 
-    const attrCodes = await getParentSetAttributeCodes(
-      client,
-      args.parentItemId,
-      args.companyId
-    );
-    // Fallback for legacy Garment-shaped tables when set is missing.
-    const codes =
-      attrCodes.length > 0 ? attrCodes : (["Color", "Size"] as string[]);
-    const primaryAttrCode = codes[codes.length - 1]!;
-    const descriptorCodes = codes.slice(0, -1);
-
     const cells: Array<{ valuesKey: string; quantity: number }> = [];
-    for (const row of table) {
-      for (const primaryValue of primaryKeys) {
-        const qty = Number(row[primaryValue] ?? 0);
-        if (!Number.isFinite(qty) || qty <= 0) continue;
 
-        const parts: string[] = [];
-        for (const code of descriptorCodes) {
-          const v = rowValueForAttrKey(row, code);
-          if (!v) {
-            throw new Error(
-              `Configuration row is missing ${code} for quantity column ${primaryValue}.`
-            );
+    const isComboFlat =
+      primaryKeys.length === 1 &&
+      primaryKeys[0] === "Quantities" &&
+      table.some(
+        (row) =>
+          typeof row.valuesKey === "string" &&
+          String(row.valuesKey).trim().length > 0
+      );
+
+    if (isComboFlat) {
+      for (const row of table) {
+        const valuesKey = String(row.valuesKey ?? "").trim();
+        if (!valuesKey) continue;
+        const qty = Number(row.Quantities ?? 0);
+        if (!Number.isFinite(qty) || qty <= 0) continue;
+        cells.push({ valuesKey, quantity: qty });
+      }
+    } else {
+      const attrCodes = await getParentSetAttributeCodes(
+        client,
+        args.parentItemId,
+        args.companyId
+      );
+      // Fallback for legacy Garment-shaped tables when set is missing.
+      const codes =
+        attrCodes.length > 0 ? attrCodes : (["Color", "Size"] as string[]);
+      const primaryAttrCode = codes[codes.length - 1]!;
+      const descriptorCodes = codes.slice(0, -1);
+
+      for (const row of table) {
+        for (const primaryValue of primaryKeys) {
+          const qty = Number(row[primaryValue] ?? 0);
+          if (!Number.isFinite(qty) || qty <= 0) continue;
+
+          const parts: string[] = [];
+          for (const code of descriptorCodes) {
+            const v = rowValueForAttrKey(row, code);
+            if (!v) {
+              throw new Error(
+                `Configuration row is missing ${code} for quantity column ${primaryValue}.`
+              );
+            }
+            parts.push(v);
           }
-          parts.push(v);
+          // Single-attribute sets use the primary column value as the only code.
+          if (descriptorCodes.length === 0 && primaryAttrCode) {
+            parts.push(primaryValue);
+          } else {
+            parts.push(primaryValue);
+          }
+          cells.push({ valuesKey: parts.join("|"), quantity: qty });
         }
-        // Single-attribute sets use the primary column value as the only code.
-        if (descriptorCodes.length === 0 && primaryAttrCode) {
-          parts.push(primaryValue);
-        } else {
-          parts.push(primaryValue);
-        }
-        cells.push({ valuesKey: parts.join("|"), quantity: qty });
       }
     }
 

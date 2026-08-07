@@ -55,7 +55,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     undefined;
   const labels = built.map((label) => ({
     ...label,
-    colorName: localizeColorForLocale(label.colorName, locale) ?? null
+    attributeLines: (label.attributeLines ?? []).map((line) => ({
+      ...line,
+      value:
+        line.name === "Color" || line.name === "颜色"
+          ? (localizeColorForLocale(line.value, locale) ?? line.value)
+          : line.value
+    }))
   }));
 
   // Optional tag size (LabelSize dimensions are inches).

@@ -116,11 +116,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const tags = labels
     .map((l, i) => {
+      const attrRows =
+        l.attributeLines && l.attributeLines.length > 0
+          ? l.attributeLines.map((line) => field(`${line.name}:`, line.value))
+          : [field("颜色:", l.colorName), field("尺码:", l.sizeCode)];
       const rows = [
         field("款号:", l.styleReadableId),
         field("客户:", l.customerName),
-        field("颜色:", l.colorName),
-        field("尺码:", l.sizeCode),
+        ...attrRows,
         field("数量:", l.quantity),
         field("车间:", l.workCenterName),
         field("扎号:", l.sequence),

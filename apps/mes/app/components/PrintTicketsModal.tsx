@@ -21,9 +21,10 @@ import { path } from "~/utils/path";
 export type PrintableBundle = {
   id: string;
   jobReadableId: string | null;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel?: string | null;
+  colorCode?: string | null;
+  colorName?: string | null;
+  sizeCode?: string | null;
   quantity: number | null;
   locationId: string | null;
 };
@@ -182,12 +183,13 @@ export function PrintTicketsModal({
                         {b.jobReadableId}
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
-                        {[
-                          localizeColor(b.colorName || b.colorCode || ""),
-                          b.sizeCode
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
+                        {b.attributeLabel ||
+                          [
+                            localizeColor(b.colorName || b.colorCode || ""),
+                            b.sizeCode
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
                       </span>
                     </div>
                     <span className="text-xs text-muted-foreground tabular-nums shrink-0">

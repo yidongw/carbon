@@ -92,7 +92,7 @@ export async function getBundleWorkOrdersList(
 
   if (args?.search) {
     query = query.or(
-      `itemName.ilike.%${args.search}%,colorCode.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%`
+      `itemName.ilike.%${args.search}%,attributeLabel.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%,valuesKey.ilike.%${args.search}%`
     );
   }
 
@@ -135,7 +135,7 @@ export async function getBundleTicketLabels(
   const { data: bundles } = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, masterWorkOrderId, sequence, colorCode, colorName, sizeCode, quantity, jobReadableId, readableIdWithRevision, itemName"
+      "id, jobId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
     )
     .eq("companyId", companyId)
     .in("id", ids);
@@ -158,6 +158,13 @@ export async function getBundleTicketLabels(
             bundleCurrentWorkCenter(client, bundle.jobId)
           ]);
 
+        const attributeValues =
+          (bundle as { attributeValues?: Record<string, string> })
+            .attributeValues ?? {};
+        const attributeLines = Object.entries(attributeValues)
+          .filter(([, v]) => v != null && String(v).length > 0)
+          .map(([name, value]) => ({ name, value: String(value) }));
+
         return {
           id: bundle.id!,
           readableId: bundle.jobReadableId ?? bundle.id!,
@@ -167,8 +174,19 @@ export async function getBundleTicketLabels(
             bundle.itemName ||
             bundle.jobReadableId ||
             "",
-          colorName: bundle.colorName ?? bundle.colorCode ?? null,
-          sizeCode: bundle.sizeCode ?? null,
+          attributeLines:
+            attributeLines.length > 0
+              ? attributeLines
+              : (bundle as { attributeLabel?: string }).attributeLabel
+                ? [
+                    {
+                      name: "属性",
+                      value: String(
+                        (bundle as { attributeLabel?: string }).attributeLabel
+                      )
+                    }
+                  ]
+                : [],
           quantity: bundle.quantity ?? 0,
           sequence: bundle.sequence ?? null,
           totalBundles,
@@ -352,8 +370,6 @@ export async function insertBundleWorkOrder(
       masterWorkOrderId: input.masterWorkOrderId,
       jobId: job.data.id,
       sequence: input.sequence ?? 1,
-      colorCode: null,
-      sizeCode: null,
       companyId: input.companyId,
       createdBy: input.createdBy
     })
@@ -363,13 +379,14 @@ export async function insertBundleWorkOrder(
 
 /**
  * Turn one reported cutting config table into individual color/size cells —
- * one cell (→ one bundle) per (primary option × row) with quantity > 0.
+ * one cell (→ one bundle) per non-zero quantity.
  *
- * The config table is a matrix: the primary list param's options are the
- * quantity columns (`configTablePrimaryKeys`), the other list param is a
- * descriptor column on each row. We identify which param is primary by
- * matching the quantity-column keys against each param's list options, so the
- * color/size mapping is correct regardless of parameter order.
+ * Dual-read:
+ * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey` → split
+ *   valuesKey on `|` for color/size (set order; garment = Color|Size).
+ * - Legacy matrix: primary list options are quantity columns; the other list
+ *   param is a row descriptor. Color/size mapping is inferred by matching
+ *   quantity-column keys against each param's list options.
  */
 function extractCuttingCells(
   configuration: unknown,
@@ -380,6 +397,44 @@ function extractCuttingCells(
   const table = cfg?.configTable;
   const primaryKeys = cfg?.configTablePrimaryKeys ?? [];
   if (!Array.isArray(table) || primaryKeys.length === 0) return [];
+
+  const isComboFlat =
+    primaryKeys.length === 1 &&
+    primaryKeys[0] === "Quantities" &&
+    table.some(
+      (row) => row.valuesKey != null && String(row.valuesKey).trim().length > 0
+    );
+
+  if (isComboFlat) {
+    const cells: CuttingCell[] = [];
+    for (const row of table) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) continue;
+      const quantity = Number(row.Quantities) || 0;
+      if (quantity <= 0) continue;
+
+      const parts = valuesKey.split("|").filter(Boolean);
+      const colorCode = parts[0] ?? null;
+      const sizeCode = parts.length > 1 ? (parts[1] ?? null) : null;
+
+      cells.push({
+        colorCode,
+        sizeCode,
+        quantity,
+        configuration: {
+          configTable: [
+            {
+              valuesKey,
+              Quantities: quantity,
+              ...(row.label != null ? { label: row.label } : {})
+            }
+          ],
+          configTablePrimaryKeys: ["Quantities"]
+        }
+      });
+    }
+    return cells;
+  }
 
   const sizeOptions = new Set(sizeParam?.listOptions ?? []);
   // Primary = the param whose options are the quantity columns; otherwise the
