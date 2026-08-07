@@ -8773,6 +8773,9 @@ msgstr "物品{scannedItem}与预期物品{expectedItem}不符"
 msgid "Item association not found"
 msgstr "未找到项目关联"
 
+msgid "Item Attribute Sets"
+msgstr ""
+
 msgid "Item Attributes"
 msgstr "物料属性"
 
@@ -13104,9 +13107,6 @@ msgstr "选择员工"
 msgid "Select Employee Type"
 msgstr "选择员工类型"
 
-msgid "Select Fabric, Trim, …"
-msgstr ""
-
 msgid "Select field"
 msgstr "选择字段"
 
@@ -13172,6 +13172,9 @@ msgstr "选择值"
 
 msgid "Select values"
 msgstr "选择值"
+
+msgid "Select…"
+msgstr ""
 
 msgid "Selected"
 msgstr "选定的"
@@ -13288,9 +13291,6 @@ msgstr "会话不匹配"
 
 msgid "Set assignment not found"
 msgstr "未找到属性集分配"
-
-msgid "Set Assignments"
-msgstr "属性集分配"
 
 msgid "Set Clock Out"
 msgstr "设置下班时间"

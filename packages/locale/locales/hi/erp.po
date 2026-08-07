@@ -8775,6 +8775,9 @@ msgstr "आइटम {scannedItem} आइटम {expectedItem} के समा�
 msgid "Item association not found"
 msgstr "आइटम संबन्ध नहीं मिला"
 
+msgid "Item Attribute Sets"
+msgstr ""
+
 msgid "Item Attributes"
 msgstr ""
 
@@ -13106,9 +13109,6 @@ msgstr "कर्मचारी चुनें"
 msgid "Select Employee Type"
 msgstr "कर्मचारी प्रकार चुनें"
 
-msgid "Select Fabric, Trim, …"
-msgstr ""
-
 msgid "Select field"
 msgstr "विकल्प क्षेत्र चुनें"
 
@@ -13174,6 +13174,9 @@ msgstr "चुनें मान"
 
 msgid "Select values"
 msgstr "चुनें मूल्य"
+
+msgid "Select…"
+msgstr ""
 
 msgid "Selected"
 msgstr "चयनित"
@@ -13289,9 +13292,6 @@ msgid "Session mismatch"
 msgstr "सिझन मिशमेटच्या साथी"
 
 msgid "Set assignment not found"
-msgstr ""
-
-msgid "Set Assignments"
 msgstr ""
 
 msgid "Set Clock Out"
