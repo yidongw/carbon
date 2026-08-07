@@ -888,10 +888,10 @@ serve(async (req: Request) => {
             continue;
           }
 
-          if (
-            d.purchaseOrderLineType === "Style" &&
-            hasConfigTable(d.configuration)
-          ) {
+          // Any line whose per-variant grid was filled (Style color×size, or a
+          // Consumable color set) expands into variant SKU lines — the parent
+          // must never receive. A config table only exists when the grid ran.
+          if (hasConfigTable(d.configuration)) {
             const variants = await expandConfigTableToVariantQuantities(
               client,
               {
@@ -1950,10 +1950,10 @@ serve(async (req: Request) => {
           ) {
             continue;
           }
-          if (
-            d.purchaseOrderLineType === "Style" &&
-            hasConfigTable(d.configuration)
-          ) {
+          // Any line whose per-variant grid was filled (Style color×size, or a
+          // Consumable color set) expands into variant SKU lines — the parent
+          // must never receive. A config table only exists when the grid ran.
+          if (hasConfigTable(d.configuration)) {
             const variants = await expandConfigTableToVariantQuantities(
               client,
               {
@@ -2231,8 +2231,9 @@ serve(async (req: Request) => {
           ) {
             continue;
           }
+          // Expand any grid-filled line (Style color×size, or a Consumable
+          // color set) into variant SKU lines; Make-to-Order keeps its own path.
           if (
-            line.salesOrderLineType === "Style" &&
             line.methodType !== "Make to Order" &&
             hasConfigTable(line.configuration)
           ) {
@@ -2647,8 +2648,9 @@ serve(async (req: Request) => {
         };
         const expandedSingleSources: ExpandedSingleShipSource[] = [];
         const sol = salesOrderLine.data;
+        // Expand any grid-filled line (Style color×size, or a Consumable color
+        // set) into variant SKU lines; Make-to-Order keeps its own path.
         if (
-          sol.salesOrderLineType === "Style" &&
           sol.methodType !== "Make to Order" &&
           sol.itemId &&
           hasConfigTable(sol.configuration)

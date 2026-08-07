@@ -576,7 +576,6 @@ serve(async (req: Request) => {
             // cell has no variant SKU, rather than creating an unfulfillable
             // parent-Style line with the configuration silently dropped.
             if (
-              line.itemType === "Style" &&
               line.itemId &&
               hasConfigTable(line.configuration)
             ) {

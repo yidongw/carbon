@@ -803,7 +803,8 @@ const PurchaseOrderLineForm = ({
                           }}
                         />
 
-                        {itemType === "Style" ? (
+                        {itemType === "Style" ||
+                        itemData.hasVariantAttributes ? (
                           <QuantityWithConfigTable
                             name="purchaseQuantity"
                             label={t`Quantity`}

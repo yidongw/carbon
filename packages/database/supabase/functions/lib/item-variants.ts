@@ -169,3 +169,9 @@ export async function expandConfigTableToVariantQuantities(
 
   return out;
 }
+
+export function hasConfigTable(configuration: unknown): boolean {
+  if (!configuration || typeof configuration !== "object") return false;
+  const table = (configuration as Record<string, unknown>).configTable;
+  return Array.isArray(table) && table.length > 0;
+}
