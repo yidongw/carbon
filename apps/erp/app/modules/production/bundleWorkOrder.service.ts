@@ -698,22 +698,15 @@ export async function getCuttingSplitProposal(
 
   const pending = await (client as SupabaseClient<any>)
     .from("masterWorkOrderSplitRow")
-    .select("id, valuesKey, colorCode, sizeCode, quantity")
+    .select("id, valuesKey, quantity")
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
     .is("bundleWorkOrderId", null)
     .order("createdAt", { ascending: true });
   const splitRows: MasterSplitRow[] = (pending.data ?? []).map(
-    (r: {
-      id: string;
-      valuesKey: string | null;
-      colorCode: string | null;
-      sizeCode: string | null;
-      quantity: number | null;
-    }) => {
-      const valuesKey =
-        (r.valuesKey && String(r.valuesKey).trim()) ||
-        valuesKeyFromSplitRowParts(r.colorCode ?? null, r.sizeCode ?? null);
+    (r: { id: string; valuesKey: string | null; quantity: number | null }) => {
+      // valuesKey is the source of truth (backfilled + always written).
+      const valuesKey = String(r.valuesKey ?? "").trim();
       return {
         id: r.id,
         valuesKey,
@@ -1001,15 +994,11 @@ export async function replaceMasterCuttingSplitRows(
       const valuesKey =
         (r.valuesKey && String(r.valuesKey).trim()) ||
         valuesKeyFromSplitRowParts(r.colorCode ?? null, r.sizeCode ?? null);
-      const parts = valuesKey.split("|").filter(Boolean);
       return {
         masterWorkOrderId: input.masterWorkOrderId,
         companyId: input.companyId,
         productionQuantityReportId: input.productionQuantityReportId,
         valuesKey: valuesKey || null,
-        // Dual-write first two parts for legacy garment tooling / older rows.
-        colorCode: parts[0] ?? null,
-        sizeCode: parts.length > 1 ? (parts[1] ?? null) : null,
         quantity: Number(r.quantity) || 0,
         createdBy: input.createdBy
       };

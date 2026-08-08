@@ -204,13 +204,12 @@ function describeDocument(
     case "storageUnitLabel":
       break;
     case "bundleWorkOrderLabel":
+      // attributeLines already folds in attributeLabel when it would be empty,
+      // so there's no separate color/size fallback to add.
       if (doc.item.attributeLines?.length) {
         parts.push(
           ...doc.item.attributeLines.map((l) => `${l.name}:${l.value}`)
         );
-      } else {
-        if (doc.item.colorName) parts.push(doc.item.colorName);
-        if (doc.item.sizeCode) parts.push(doc.item.sizeCode);
       }
       break;
   }

@@ -138,12 +138,6 @@ export type MasterProcessBundle = {
   attributeLabel: string | null;
   attributeValues: Record<string, string> | null;
   valuesKey: string | null;
-  /** @deprecated Prefer attributeLabel */
-  colorCode: string | null;
-  /** @deprecated Prefer attributeLabel */
-  colorName: string | null;
-  /** @deprecated Prefer attributeLabel */
-  sizeCode: string | null;
   /**
    * The bundle's *operation* status for this process (Todo / In Progress /
    * Done …), not the bundle work order's own lifecycle status — this row
@@ -300,9 +294,6 @@ export async function getMasterProcessBreakdown(
       attributeValues:
         (bundle.attributeValues as Record<string, string> | null) ?? null,
       valuesKey: bundle.valuesKey ?? null,
-      colorCode: null,
-      colorName: null,
-      sizeCode: null,
       operationStatus: op.status ?? null,
       quantity,
       reportedQuantity: reported,

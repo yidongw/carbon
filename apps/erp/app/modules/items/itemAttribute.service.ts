@@ -676,33 +676,6 @@ export async function resolveVariantByValuesKey(
   }
 }
 
-/**
- * Resolve a child SKU itemId for a parent + color/size codes.
- * Returns the parent itemId when no matching variant exists (legacy fallback).
- */
-export async function resolveVariantItemId(
-  client: Db,
-  args: {
-    parentItemId: string;
-    companyId: string;
-    colorCode?: string | null;
-    sizeCode?: string | null;
-  }
-): Promise<{ data: string; error: Error | null }> {
-  const { parentItemId, companyId, colorCode, sizeCode } = args;
-
-  if (!colorCode && !sizeCode) {
-    return { data: parentItemId, error: null };
-  }
-
-  const valuesKey = [colorCode, sizeCode].filter(Boolean).join("|");
-  return resolveVariantByValuesKey(client, {
-    parentItemId,
-    companyId,
-    valuesKey
-  });
-}
-
 export async function getItemAttributes(
   client: Db,
   companyId: string,

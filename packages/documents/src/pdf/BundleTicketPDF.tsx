@@ -17,10 +17,6 @@ export interface BundleTicketLabel {
   attributeLines?: Array<{ name: string; value: string }> | null;
   /** Single-line attribute summary when attributeLines is empty. */
   attributeLabel?: string | null;
-  /** @deprecated Prefer attributeLines / attributeLabel */
-  colorName?: string | null;
-  /** @deprecated Prefer attributeLines / attributeLabel */
-  sizeCode?: string | null;
   /** 数量 — this bundle's quantity. */
   quantity: number;
   /** 扎号 — bundle number within the master. */

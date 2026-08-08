@@ -28,10 +28,6 @@ export type BundleTicketItem = {
   bundleUrl: string;
   styleReadableId: string;
   attributeLines: Array<{ name: string; value: string }>;
-  /** @deprecated Prefer attributeLines */
-  colorName: string | null;
-  /** @deprecated Prefer attributeLines */
-  sizeCode: string | null;
   quantity: number;
   sequence: number | null;
   totalBundles: number | null;
@@ -94,8 +90,6 @@ export async function buildBundleTicketItem(
       bundle.jobReadableId ||
       "",
     attributeLines,
-    colorName: null,
-    sizeCode: null,
     quantity: bundle.quantity ?? 0,
     sequence: bundle.sequence ?? null,
     totalBundles,

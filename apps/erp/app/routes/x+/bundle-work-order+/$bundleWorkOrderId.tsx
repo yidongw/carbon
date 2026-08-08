@@ -1,9 +1,11 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { localizeStyleColorNameByName } from "@carbon/database/style-reference";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import {
   getBundleWorkOrder,
   getJob,
@@ -50,7 +52,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     jobId,
     job: job?.data ?? null,
     tags: tags.data ?? [],
-    trackedEntities: jobId ? getTrackedEntitiesByJobId(client, jobId) : undefined
+    trackedEntities: jobId
+      ? getTrackedEntitiesByJobId(client, jobId)
+      : undefined
   };
 }
 
@@ -72,7 +76,21 @@ function BundleField({
 export default function BundleWorkOrderLayoutRoute() {
   const { bundleWorkOrder, jobId, job, tags, trackedEntities } =
     useLoaderData<typeof loader>();
-  const { t } = useLingui();
+  const { i18n } = useLingui();
+
+  // The bundle's variant attributes (Color, Size, …) come from the generic
+  // model now — one localized field per attribute, ordered Color-first/Size-last.
+  const attributeValues =
+    (bundleWorkOrder as { attributeValues?: Record<string, string> | null })
+      .attributeValues ?? {};
+  const attributeFields = Object.entries(attributeValues)
+    .filter(([, value]) => value != null && String(value).length > 0)
+    .sort(([a], [b]) => {
+      const rank = (code: string) =>
+        code === "Color" ? 0 : code === "Size" ? 1 : 2;
+      const d = rank(a) - rank(b);
+      return d !== 0 ? d : a.localeCompare(b);
+    });
 
   return (
     <PanelProvider>
@@ -89,19 +107,25 @@ export default function BundleWorkOrderLayoutRoute() {
                     validItemTypes={["Part", "Tool", "Style"]}
                     readOnlyItem
                     extraProperties={
-                      <>
-                        <BundleField
-                          label={t`Color`}
-                          value={
-                            bundleWorkOrder.colorName ||
-                            bundleWorkOrder.colorCode
-                          }
-                        />
-                        <BundleField
-                          label={t`Size`}
-                          value={bundleWorkOrder.sizeCode}
-                        />
-                      </>
+                      attributeFields.length > 0 ? (
+                        <>
+                          {attributeFields.map(([code, value]) => (
+                            <BundleField
+                              key={code}
+                              label={translateItemAttributeCatalogName(
+                                code,
+                                i18n
+                              )}
+                              value={
+                                localizeStyleColorNameByName(
+                                  String(value),
+                                  i18n.locale
+                                ) || String(value)
+                              }
+                            />
+                          ))}
+                        </>
+                      ) : null
                     }
                     routeData={{
                       // biome-ignore lint/suspicious/noExplicitAny: job view -> Job
