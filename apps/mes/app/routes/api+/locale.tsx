@@ -13,6 +13,13 @@ export async function action({ request }: ActionFunctionArgs) {
     return data({ ok: false }, { status: 400 });
   }
 
-  const localeCookie = setLocale(locale);
-  return data({ ok: true }, { headers: [["Set-Cookie", localeCookie]] });
+  const localeCookies = setLocale(locale, request);
+  return data(
+    { ok: true },
+    {
+      headers: localeCookies.map(
+        (value) => ["Set-Cookie", value] as [string, string]
+      )
+    }
+  );
 }

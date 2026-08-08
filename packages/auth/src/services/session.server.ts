@@ -19,7 +19,10 @@ import {
 } from "../config/env";
 import type { AuthSession, Result } from "../types";
 import { isBypassSession } from "../utils/bypass-email";
-import { getCookieDomain } from "../utils/cookie";
+import {
+  expireStaleCookieScopeHeaders,
+  getCookieDomain
+} from "../utils/cookie";
 import { getCurrentPath, isGet, makeRedirectToFromHere } from "../utils/http";
 import { path } from "../utils/path";
 import { refreshAccessToken, verifyAuthSession } from "./auth.server";
@@ -120,8 +123,12 @@ export const cookieDomainMigrationMiddleware: MiddlewareFunction<
   if (!cookieDomain) return response;
 
   const rawCookie = request.headers.get("Cookie") ?? "";
-  const hasStaleVariants =
+  const hasStaleSessionVariants =
     (rawCookie.match(/(?:^|;\s*)carbon=/g)?.length ?? 0) > 1;
+  // Same dual-scope trap as `carbon`: a host-only `locale` shadows the
+  // Domain-scoped one `/api/locale` writes, so language switch looks like a no-op.
+  const hasStaleLocaleVariants =
+    (rawCookie.match(/(?:^|;\s*)locale=/g)?.length ?? 0) > 1;
 
   const setCookies =
     typeof response.headers.getSetCookie === "function"
@@ -130,26 +137,42 @@ export const cookieDomainMigrationMiddleware: MiddlewareFunction<
   const touchesSessionCookie = setCookies.some(
     (c) => c.startsWith("carbon=") && /;\s*Domain=/i.test(c)
   );
-
-  if (!hasStaleVariants && !touchesSessionCookie) return response;
-
-  // Expire the host-only variant (no Domain attribute) ...
-  response.headers.append(
-    "Set-Cookie",
-    "carbon=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+  const touchesLocaleCookie = setCookies.some(
+    (c) => c.startsWith("locale=") && /;\s*Domain=/i.test(c)
   );
-  // ... and every subdomain scope between the request host and cookieDomain,
-  // leaving only the cookieDomain-scoped cookie that the app currently writes.
-  let host = (
-    (request.headers.get("host") ?? "").split(":")[0] ?? ""
-  ).toLowerCase();
-  while (host && host !== cookieDomain && host.includes(".")) {
-    response.headers.append(
-      "Set-Cookie",
-      `carbon=; Domain=${host}; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`
-    );
-    host = host.slice(host.indexOf(".") + 1);
+
+  if (
+    !hasStaleSessionVariants &&
+    !touchesSessionCookie &&
+    !hasStaleLocaleVariants &&
+    !touchesLocaleCookie
+  ) {
+    return response;
   }
+
+  const requestHost = request.headers.get("host") ?? undefined;
+
+  if (hasStaleSessionVariants || touchesSessionCookie) {
+    for (const header of expireStaleCookieScopeHeaders(
+      "carbon",
+      cookieDomain,
+      requestHost,
+      { httpOnly: true, sameSite: "Lax" }
+    )) {
+      response.headers.append("Set-Cookie", header);
+    }
+  }
+
+  if (hasStaleLocaleVariants || touchesLocaleCookie) {
+    for (const header of expireStaleCookieScopeHeaders(
+      "locale",
+      cookieDomain,
+      requestHost
+    )) {
+      response.headers.append("Set-Cookie", header);
+    }
+  }
+
   return response;
 };
 

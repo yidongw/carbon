@@ -344,3 +344,14 @@ Patterns learned from corrections. Review at the start of each session.
   from `itemLedger` (`getStyleOnHandByColorSize` / `api/inventory/style-on-hand`).
 - Matrix mode historically only yellow-highlighted mismatches; hard-block Confirm
   when any cell exceeds its reference (inventory or plan).
+
+## Language switch “broken” on production login
+- Symptom: changing language on `carbon-erp.vercel.app` (lands on `/login`) appears to do nothing / isn’t possible.
+- Cause: language picker lives only in the post-login avatar menu; login has no switcher even though `/api/locale` is public and catalogs work. Production `DEFAULT_LANGUAGE=zh` amplifies this.
+- Rule: if a preference endpoint is documented for public pages, keep a public UI (or remove the claim). Verify the actual surface the user hits (`/` → login) has the control.
+
+## Post-login language switch no-op = dual-scope `locale` cookie
+- Symptom: AvatarMenu language switch reloads but UI stays on the old language (often after login / on Vercel where `DOMAIN` is set).
+- Cause: Domain-scoped `locale` from `/api/locale` shadowed by an older host-only `locale`; Cookie header sends host-only first; `cookie.parse` keeps first.
+- Same class as session `carbon` cookie / `cookieDomainMigrationMiddleware`. Preference cookies need the same stale-scope expiry on write.
+- Quick check: DevTools → Application → Cookies → two `locale` rows (one with Domain, one without).

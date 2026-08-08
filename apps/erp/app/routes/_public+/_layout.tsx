@@ -2,11 +2,15 @@ import { CONTROLLED_ENVIRONMENT } from "@carbon/auth";
 import { cn, Heading, TooltipProvider } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
 import { Outlet } from "react-router";
+import { PublicLanguageSwitcher } from "~/components/PublicLanguageSwitcher";
 
 export default function PublicRoute() {
   return (
     <TooltipProvider>
       <div className="container relative h-full flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+        <div className="absolute top-4 right-4 z-50">
+          <PublicLanguageSwitcher />
+        </div>
         <div className="relative hidden h-full flex-col bg-muted p-10 lg:flex dark:border-r dark:bg-zinc-900 bg-zinc-100">
           <img
             src="/carbon-word-light.svg"
