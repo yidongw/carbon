@@ -7,7 +7,7 @@
 | `ResponsiveConfigTable` | `apps/erp/app/modules/production/ui/Jobs/ResponsiveConfigTable.tsx` | Generic layout wrapper: horizontal table at `md+`, vertical transpose below `md`; accepts custom column/row types via `renderCell` |
 | `ReadOnlyConfigTable` | `configTableShared.tsx` | Read-only config snapshot; hides zero-value columns in vertical mobile view |
 | `EditableConfigGrid` | `configTableShared.tsx` | Editable grid with add/delete row; `readOnly` prop hides zero values in vertical view |
-| `ConfigParamsTableModal` | `ConfigParamsTableModal.tsx` | Item-level config modal; uses `EditableConfigGrid` |
+| `VariantsQuantityModal` | `VariantsQuantityModal.tsx` | Item-level config modal; uses `EditableConfigGrid` |
 | `JobConfigQuantities` | `JobConfigQuantities.tsx` | Job-level config overlay; uses `ReadOnlyConfigTable` + `EditableConfigGrid` |
 | `ConfigParamsReportedTargetTable` | `ConfigParamsReportedTargetTable.tsx` | BOP grid-icon modal table (reported/pickup/target triplets); uses same responsive transpose as `ResponsiveConfigTable` |
 
@@ -20,7 +20,7 @@
 
 ## Modal Usage
 
-- `ConfigParamsTableModal` / `ConfigParamsTableLocalModal` / `useConfigTableModal()`
+- `VariantsQuantityModal` / `VariantsQuantityLocalModal` / `useVariantsQuantityModal()`
 - `JobConfigQuantities` overlay (`jobConfigTable`)
 - Item read-only overlay (`itemConfigTable`, `confirmMode: "none"`)
 
