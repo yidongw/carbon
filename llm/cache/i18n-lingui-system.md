@@ -22,6 +22,16 @@ Using the `t` backtick macro imported from `@lingui/core/macro` in render code t
 
 So: `msg` from core/macro is fine; **never import `t` from `@lingui/core/macro`** in app code.
 
+## UI language preference (cookie)
+
+- Cookie name: `locale` (`localeCookieName`). Set via `apps/{erp,mes}/app/services/locale.server.ts` `setLocale()` (scoped with `DOMAIN` when set).
+- Public POST `apps/erp/app/routes/api+/locale.tsx` validates against `supportedLanguages` and sets the cookie. Root loader reads it through `getPreferenceHeaders()` → `resolveLanguage()` → `loadLinguiCatalogForRequest()`.
+- **Authenticated ERP switcher:** `AvatarMenu` → POST `/api/locale` + `window.location.reload()` (fetcher revalidation alone does not reliably re-run the root loader on heavy routes).
+- **Authenticated MES switcher:** profile dropdown in `AppSidebar` still uses a `useFetcher` form post (ERP’s hard-reload pattern is the safer one).
+- **Dual-scope cookie bug (post-login no-op):** when `DOMAIN` is set to the app host, `/api/locale` writes a Domain-scoped `locale` cookie. Browsers may still hold an older **host-only** `locale` from a prior deploy. Both are sent; host-only comes first; `cookie.parse` kept the stale value → language switch appeared to do nothing after login. Same class of bug as the `carbon` session cookie. Fix: `setLocale` expires stale scopes before writing; `cookieDomainMigrationMiddleware` also clears duplicate `locale` scopes; `getPreferenceHeaders` prefers the **last** `locale=` value.
+- **Public/login gap:** `/api/locale`’s comment says it is for the login page, but the login language UI was removed when the control moved to the avatar menu (#735).
+- Dead code: `ProfileLanguageForm` still exists and posts `intent=locale` to profile, but profile no longer renders it or handles that intent.
+
 ## MES standard color names (tickets / labels)
 
 Do **not** use a static `COLOR_BY_LANGUAGE` map. Color display names live in `mes.po` (`Black`, `Red`, …).
