@@ -36,6 +36,7 @@ import {
   getMethodTree,
   getPartUsedIn
 } from "~/modules/items";
+import { getItemAttributeSelectionsForItem } from "~/modules/items/itemAttribute.service";
 import { getStyle } from "~/modules/items/style.server";
 import { BoMActions, BoMExplorer } from "~/modules/items/ui/Item";
 import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
@@ -61,10 +62,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [styleSummary, makeMethods, tags] = await Promise.all([
+  const [styleSummary, makeMethods, tags, attributeState] = await Promise.all([
     getStyle(itemId, companyId),
     getMakeMethods(client, itemId, companyId),
-    getTagsList(client, companyId, "style")
+    getTagsList(client, companyId, "style"),
+    getItemAttributeSelectionsForItem(client, { itemId, companyId })
   ]);
 
   if (styleSummary.error || !styleSummary.data) {
@@ -73,6 +75,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(
         request,
         error(styleSummary.error, "Failed to load style summary")
+      )
+    );
+  }
+
+  if (attributeState.error) {
+    throw redirect(
+      path.to.items,
+      await flash(
+        request,
+        error(attributeState.error, "Failed to load style attributes")
       )
     );
   }
@@ -152,10 +164,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     styleSummary: {
-      ...styleSummary.data,
-      styleColorBadges: styleSummary.data.colors ?? [],
-      styleSizeBadges: styleSummary.data.sizes ?? []
+      ...styleSummary.data
     },
+    attributeSetId: attributeState.data.attributeSetId,
+    attributeSelections: attributeState.data.selections,
     files: getItemFiles(client, itemId, companyId),
     makeMethods: Promise.resolve(makeMethods),
     usedIn: getPartUsedIn(client, itemId, companyId),

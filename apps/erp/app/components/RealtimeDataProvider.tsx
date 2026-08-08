@@ -175,8 +175,21 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Flatten the embedded itemReplenishment into a top-level flag so pickers can
     // read `requiresConfiguration` directly off each item.
-    const itemsData = (items.data ?? []).map(
-      ({ itemReplenishment, ...rest }) => {
+    // Variant SKU children are hidden from default item pickers/lists — users
+    // browse parents; inventory/jobs resolve to children under the hood.
+    const variantResult = await (carbon as any)
+      .from("itemVariant")
+      .select("variantItemId")
+      .eq("companyId", companyId);
+    const variantIds = new Set<string>(
+      ((variantResult.data ?? []) as { variantItemId: string }[]).map(
+        (r) => r.variantItemId
+      )
+    );
+
+    const itemsData = (items.data ?? [])
+      .filter((row) => !variantIds.has(row.id))
+      .map(({ itemReplenishment, ...rest }) => {
         const replenishment = Array.isArray(itemReplenishment)
           ? itemReplenishment[0]
           : itemReplenishment;
@@ -184,8 +197,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
           ...rest,
           requiresConfiguration: replenishment?.requiresConfiguration ?? false
         };
-      }
-    );
+      });
 
     // @ts-ignore
     setItems(itemsData);

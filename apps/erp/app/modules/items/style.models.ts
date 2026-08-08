@@ -3,8 +3,12 @@ import { zfd } from "zod-form-data";
 import { applyStorageAndShelfLifeRefines, itemValidator } from "./items.models";
 
 export const createStyleSampleLineValidator = z.object({
-  colorId: z.string().min(1, { message: "Color is required" }),
-  size: z.string().min(1, { message: "Size is required" }),
+  /** attributeId → selected itemAttributeValue id (from the style's selections). */
+  selections: z
+    .record(z.string().min(1), z.string().min(1))
+    .refine((v) => Object.keys(v).length > 0, {
+      message: "Select attribute values"
+    }),
   quantity: z.coerce.number().int().min(1)
 });
 
@@ -14,7 +18,7 @@ export const createStyleSampleValidator = z.object({
   // Required so every sample unit lands in a real bin. Loose (null-bin) units
   // make later transfers/adjustments go inconsistent (negative on-hand).
   storageUnitId: z.string().min(1, { message: "Storage unit is required" }),
-  // Rows of [color, size, quantity], submitted as a JSON string in a Hidden field.
+  // Rows of attribute selections + quantity, submitted as JSON in a Hidden field.
   lines: z.preprocess(
     (v) => {
       if (typeof v !== "string") return v;
@@ -42,9 +46,3 @@ export const styleValidator = applyStorageAndShelfLifeRefines(
     })
   )
 );
-
-export const styleSizeValidator = z.object({
-  id: zfd.text(z.string().optional()),
-  sizeCode: z.string().min(1, { message: "Size code is required" }).max(50),
-  sizeName: z.string().min(1, { message: "Size name is required" }).max(255)
-});

@@ -828,23 +828,12 @@ export const salesOrderLineValidator = z
   .refine(
     (data) => {
       if (data.salesOrderLineType !== "Style" || !data.itemId) return true;
-      // Style quantity must come from the color×size grid (total > 0).
+      // Parent Style uses the color×size grid; variant SKU lines use plain qty.
       return (data.saleQuantity ?? 0) > 0;
     },
     {
       message: "Style quantity is required",
       path: ["saleQuantity"]
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.salesOrderLineType !== "Style" || !data.itemId) return true;
-      // Grid total is only trusted when configuration JSON is present.
-      return Boolean(data.configuration && data.configuration.trim());
-    },
-    {
-      message: "Style quantity configuration is required",
-      path: ["configuration"]
     }
   )
   .refine(

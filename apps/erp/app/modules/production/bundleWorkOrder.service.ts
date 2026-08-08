@@ -1,8 +1,18 @@
 import type { Database } from "@carbon/database";
+import {
+  localizeStyleColorNameByName,
+  localizeVariantAttributeLabel
+} from "@carbon/database/style-reference";
 import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
+import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
@@ -38,8 +48,11 @@ function shortestDistinctIdPrefix(id: string, others: string[]): string {
   return sid.slice(0, length);
 }
 
-/** One color/size cutting cell → one bundle. */
+/** One cutting cell → one bundle. Identity is valuesKey (attribute combo). */
 type CuttingCell = {
+  valuesKey: string;
+  attributeLabel: string;
+  /** @deprecated Prefer valuesKey — kept for masterWorkOrderSplitRow columns */
   colorCode: string | null;
   sizeCode: string | null;
   quantity: number;
@@ -87,7 +100,7 @@ export async function getBundleWorkOrdersList(
 
   if (args?.search) {
     query = query.or(
-      `itemName.ilike.%${args.search}%,colorCode.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%`
+      `itemName.ilike.%${args.search}%,attributeLabel.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%,valuesKey.ilike.%${args.search}%`
     );
   }
 
@@ -123,19 +136,55 @@ export async function getBundleWorkOrder(
 export async function getBundleTicketLabels(
   client: SupabaseClient<Database>,
   companyId: string,
-  ids: string[]
+  ids: string[],
+  // Localize printed attribute values (Blue -> 蓝色) and names (Color -> 颜色).
+  // Optional so non-localized callers keep the English/base labels.
+  opts?: {
+    locale?: string;
+    translateAttributeName?: (name: string) => string;
+  }
 ): Promise<BundleTicketLabel[]> {
   if (ids.length === 0) return [];
 
   const { data: bundles } = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, masterWorkOrderId, sequence, colorCode, colorName, sizeCode, quantity, jobReadableId, readableIdWithRevision, itemName"
+      "id, jobId, itemId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
     )
     .eq("companyId", companyId)
     .in("id", ids);
 
   if (!bundles || bundles.length === 0) return [];
+
+  const locale = opts?.locale;
+  const translateAttributeName =
+    opts?.translateAttributeName ?? ((name: string) => name);
+
+  // 款号 is the PARENT style's readable id — the bundle's job item is a variant
+  // SKU, so resolve its parent through itemVariant.
+  const variantItemIds = [
+    ...new Set(
+      bundles
+        .map((b) => (b as { itemId?: string | null }).itemId)
+        .filter((v): v is string => Boolean(v))
+    )
+  ];
+  const parentReadableByVariant = new Map<string, string>();
+  if (variantItemIds.length > 0) {
+    const { data: variants } = await client
+      .from("itemVariant")
+      .select(
+        "variantItemId, parent:item!itemVariant_parentItemId_fkey(readableIdWithRevision)"
+      )
+      .eq("companyId", companyId)
+      .in("variantItemId", variantItemIds);
+    for (const v of variants ?? []) {
+      const rid = (
+        v.parent as { readableIdWithRevision?: string | null } | null
+      )?.readableIdWithRevision;
+      if (rid) parentReadableByVariant.set(v.variantItemId, rid);
+    }
+  }
 
   // Preserve the caller's requested order.
   const byId = new Map(bundles.map((b) => [b.id, b]));
@@ -153,17 +202,49 @@ export async function getBundleTicketLabels(
             bundleCurrentWorkCenter(client, bundle.jobId)
           ]);
 
+        const attributeLabel =
+          (bundle as { attributeLabel?: string | null }).attributeLabel ?? null;
+        const attributeValues =
+          (bundle as { attributeValues?: Record<string, string> })
+            .attributeValues ?? {};
+        const attributeLines = Object.entries(attributeValues)
+          .filter(([, v]) => v != null && String(v).length > 0)
+          .map(([name, value]) => ({
+            name: translateAttributeName(name),
+            value:
+              localizeStyleColorNameByName(String(value), locale) ??
+              String(value)
+          }));
+
+        const variantItemId = (bundle as { itemId?: string | null }).itemId;
+
         return {
           id: bundle.id!,
           readableId: bundle.jobReadableId ?? bundle.id!,
           bundleUrl: `${MES_URL ?? ""}/x/bundle/${bundle.id}`,
           styleReadableId:
+            (variantItemId
+              ? parentReadableByVariant.get(variantItemId)
+              : undefined) ||
             bundle.readableIdWithRevision ||
             bundle.itemName ||
             bundle.jobReadableId ||
             "",
-          colorName: bundle.colorName ?? bundle.colorCode ?? null,
-          sizeCode: bundle.sizeCode ?? null,
+          attributeLines:
+            attributeLines.length > 0
+              ? attributeLines
+              : attributeLabel
+                ? [
+                    {
+                      name: translateAttributeName("Attributes"),
+                      value: localizeVariantAttributeLabel(
+                        attributeLabel,
+                        locale
+                      )
+                    }
+                  ]
+                : [],
+          attributeLabel,
           quantity: bundle.quantity ?? 0,
           sequence: bundle.sequence ?? null,
           totalBundles,
@@ -298,13 +379,9 @@ export async function insertBundleWorkOrder(
     createdBy: string;
   }
 ) {
-  // The child job is the bundle's execution backing; the bundle -> master link
-  // is carried by bundleWorkOrder.masterWorkOrderId (the job table has no
-  // parentJobId column), so we don't set one here. Bundles carry no
-  // configuration: color/size live in bundleWorkOrder.colorCode/sizeCode and the
-  // bundle's method doesn't vary by color/size, so the child job stays
-  // unconfigured (which is what makes the production report show a plain
-  // quantity instead of the config-params editor).
+  // The child job is the bundle's execution backing; identity is the variant
+  // SKU itemId. Do not persist colorCode/sizeCode — labels come from the child
+  // item (readableId/name) via the bundleWorkOrders view.
   const job = await insertJob(client, {
     itemId: input.itemId,
     quantity: input.quantity,
@@ -351,8 +428,6 @@ export async function insertBundleWorkOrder(
       masterWorkOrderId: input.masterWorkOrderId,
       jobId: job.data.id,
       sequence: input.sequence ?? 1,
-      colorCode: input.colorCode ?? null,
-      sizeCode: input.sizeCode ?? null,
       companyId: input.companyId,
       createdBy: input.createdBy
     })
@@ -361,66 +436,82 @@ export async function insertBundleWorkOrder(
 }
 
 /**
- * Turn one reported cutting config table into individual color/size cells —
- * one cell (→ one bundle) per (primary option × row) with quantity > 0.
+ * Turn one reported cutting config table into individual attribute-combo cells —
+ * one cell (→ one bundle) per non-zero quantity.
  *
- * The config table is a matrix: the primary list param's options are the
- * quantity columns (`configTablePrimaryKeys`), the other list param is a
- * descriptor column on each row. We identify which param is primary by
- * matching the quantity-column keys against each param's list options, so the
- * color/size mapping is correct regardless of parameter order.
+ * Dual-read:
+ * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey`.
+ * - Legacy matrix: primary list options are quantity columns; the other list
+ *   param is a row descriptor. Mapped into valuesKey = code|code|….
  */
-function extractCuttingCells(
-  configuration: unknown,
-  colorParam: { key: string; listOptions: string[] | null } | undefined,
-  sizeParam: { key: string; listOptions: string[] | null } | undefined
-): CuttingCell[] {
+function extractCuttingCells(configuration: unknown): CuttingCell[] {
   const cfg = (configuration ?? null) as ConfigTable | null;
   const table = cfg?.configTable;
   const primaryKeys = cfg?.configTablePrimaryKeys ?? [];
   if (!Array.isArray(table) || primaryKeys.length === 0) return [];
 
-  const sizeOptions = new Set(sizeParam?.listOptions ?? []);
-  // Primary = the param whose options are the quantity columns; otherwise the
-  // primary column is treated as color (the `else` branch below).
-  const sizeIsPrimary =
-    sizeOptions.size > 0 && primaryKeys.every((k) => sizeOptions.has(k));
+  const toCell = (
+    valuesKey: string,
+    quantity: number,
+    configuration: ConfigTable
+  ): CuttingCell => {
+    const parts = valuesKey.split("|").filter(Boolean);
+    return {
+      valuesKey,
+      attributeLabel: parts.join(" · ") || valuesKey,
+      colorCode: parts[0] ?? null,
+      sizeCode: parts.length > 1 ? (parts[1] ?? null) : null,
+      quantity,
+      configuration
+    };
+  };
 
-  const cells: CuttingCell[] = [];
-  for (const row of table) {
-    // Descriptor columns = everything that isn't a quantity column.
-    const descriptors = Object.fromEntries(
-      Object.entries(row).filter(([k]) => !primaryKeys.includes(k))
+  const isComboFlat =
+    primaryKeys.length === 1 &&
+    primaryKeys[0] === "Quantities" &&
+    table.some(
+      (row) => row.valuesKey != null && String(row.valuesKey).trim().length > 0
     );
-    for (const key of primaryKeys) {
-      const quantity = Number(row[key]) || 0;
+
+  if (isComboFlat) {
+    const cells: CuttingCell[] = [];
+    for (const row of table) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) continue;
+      const quantity = Number(row.Quantities) || 0;
       if (quantity <= 0) continue;
-
-      let colorCode: string | null;
-      let sizeCode: string | null;
-      if (sizeIsPrimary) {
-        sizeCode = key;
-        colorCode = colorParam
-          ? String(row[colorParam.key] ?? "") || null
-          : null;
-      } else {
-        colorCode = key;
-        sizeCode = sizeParam ? String(row[sizeParam.key] ?? "") || null : null;
-      }
-
-      cells.push({
-        colorCode,
-        sizeCode,
-        quantity,
-        // The bundle carries a single-cell config table for its own reporting.
-        configuration: {
-          configTable: [{ ...descriptors, [key]: quantity }],
-          configTablePrimaryKeys: [key]
-        }
+      const label = String(row.label ?? "").trim();
+      const cell = toCell(valuesKey, quantity, {
+        configTable: [
+          {
+            valuesKey,
+            Quantities: quantity,
+            ...(label ? { label } : {})
+          }
+        ],
+        configTablePrimaryKeys: ["Quantities"]
       });
+      if (label) cell.attributeLabel = label;
+      cells.push(cell);
     }
+    return cells;
   }
-  return cells;
+
+  // Legacy Color×Size (or similar) matrices → combo cells via shared dual-read.
+  return configTableToComboRows(configuration).map((row) => {
+    const cell = toCell(row.valuesKey, row.Quantities, {
+      configTable: [
+        {
+          valuesKey: row.valuesKey,
+          Quantities: row.Quantities,
+          ...(row.label ? { label: row.label } : {})
+        }
+      ],
+      configTablePrimaryKeys: ["Quantities"]
+    });
+    if (row.label) cell.attributeLabel = row.label;
+    return cell;
+  });
 }
 
 export type CuttingSplitBundle = {
@@ -428,45 +519,42 @@ export type CuttingSplitBundle = {
   id?: string | null;
   // Source cut split row this bundle is materialized from (new bundles only).
   splitRowId?: string | null;
-  colorCode: string | null;
-  sizeCode: string | null;
+  valuesKey: string | null;
+  /** @deprecated Prefer valuesKey */
+  colorCode?: string | null;
+  /** @deprecated Prefer valuesKey */
+  sizeCode?: string | null;
   quantity: number;
 };
 
 // A pending cut split row (un-bundled) — Split Batch prefills one bundle per row.
 export type MasterSplitRow = {
   id: string;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  valuesKey: string;
+  attributeLabel: string;
   quantity: number;
 };
 
 export type ExistingBundle = {
   id: string;
   jobReadableId: string;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  valuesKey: string | null;
+  attributeLabel: string | null;
   quantity: number;
   reportedQuantity: number;
 };
 
 export type CuttingSplitCell = {
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
-  // Total reported cut for this color/size — the cap: bundles for this cell
+  valuesKey: string;
+  attributeLabel: string;
+  // Total reported cut for this combo — the cap: bundles for this cell
   // (existing + new) can't sum beyond what was actually cut.
   cut: number;
 };
 
 export type CuttingSplitProposal = {
   masterDisplayId: string | null;
-  // The master's config-param axes (order colors/sizes for the add buttons).
-  colorAxis: string[];
-  sizeAxis: string[];
-  // One entry per configured color/size cell with a reported cut.
+  // One entry per configured attribute combo with a reported cut.
   cells: CuttingSplitCell[];
   // Bundles already created for this master — editable in the split modal.
   existingBundles: ExistingBundle[];
@@ -476,8 +564,15 @@ export type CuttingSplitProposal = {
   splitRows: MasterSplitRow[];
 };
 
-function cellKey(colorCode: string | null, sizeCode: string | null): string {
-  return `${colorCode ?? ""}|${sizeCode ?? ""}`;
+function cellKey(valuesKey: string | null | undefined): string {
+  return (valuesKey ?? "").trim();
+}
+
+function valuesKeyFromSplitRowParts(
+  colorCode: string | null,
+  sizeCode: string | null
+): string {
+  return [colorCode, sizeCode].filter(Boolean).join("|");
 }
 
 /**
@@ -493,8 +588,6 @@ export async function getCuttingSplitProposal(
 ): Promise<CuttingSplitProposal> {
   const empty: CuttingSplitProposal = {
     masterDisplayId: null,
-    colorAxis: [],
-    sizeAxis: [],
     cells: [],
     existingBundles: [],
     splitRows: []
@@ -519,31 +612,17 @@ export async function getCuttingSplitProposal(
   const itemId = job.data?.itemId;
   if (!itemId) return { ...empty, masterDisplayId };
 
-  const params = await client
-    .from("configurationParameter")
-    .select("key, listOptions")
-    .eq("itemId", itemId)
-    .eq("companyId", companyId)
-    .in("key", ["color", "size"]);
-  const colorParam = params.data?.find((p) => p.key === "color");
-  const sizeParam = params.data?.find((p) => p.key === "size");
-
-  // Planned quantity per color/size cell (the config-param matrix).
+  const plannedQty = await getJobVariantQuantities(client, jobId, companyId);
   const plannedCells = extractCuttingCells(
-    job.data?.configuration,
-    colorParam,
-    sizeParam
+    jobVariantQuantitiesToConfigTable(plannedQty.data ?? [])
   );
 
-  // Cut quantity per cell from the master's cutting reports.
   const cuttingOperationId = await getMasterCuttingOperationId(
     client,
     jobId,
     companyId
   );
   const cutByCell = new Map<string, number>();
-  // Cut reported as a bare quantity with no color/size config table carries no
-  // per-cell breakdown; accumulate it here and spread it over the plan below.
   let aggregateOnlyCut = 0;
   if (cuttingOperationId) {
     const cuts = await client
@@ -554,28 +633,22 @@ export async function getCuttingSplitProposal(
       .eq("type", "Production")
       .is("invalidatedAt", null);
     for (const row of cuts.data ?? []) {
-      const rowCells = extractCuttingCells(
-        row.configuration,
-        colorParam,
-        sizeParam
-      );
+      const rowCells = extractCuttingCells(row.configuration);
       if (rowCells.length === 0) {
         aggregateOnlyCut += Number(row.quantity) || 0;
         continue;
       }
       for (const cell of rowCells) {
-        const k = cellKey(cell.colorCode, cell.sizeCode);
+        const k = cellKey(cell.valuesKey);
         cutByCell.set(k, (cutByCell.get(k) ?? 0) + cell.quantity);
       }
     }
   }
 
-  // Attribute aggregate-only cut (no per-cell config) to the planned cells so it
-  // is still splittable: fill each cell up to its plan, in config-param order.
   if (aggregateOnlyCut > 0) {
     for (const cell of plannedCells) {
       if (aggregateOnlyCut <= 0) break;
-      const k = cellKey(cell.colorCode, cell.sizeCode);
+      const k = cellKey(cell.valuesKey);
       const already = cutByCell.get(k) ?? 0;
       const add = Math.min(
         Math.max(0, cell.quantity - already),
@@ -586,9 +659,6 @@ export async function getCuttingSplitProposal(
         aggregateOnlyCut -= add;
       }
     }
-    // Aggregate cut beyond the total plan (over-cut, or no plan to map onto) has
-    // no color/size to attribute to, so it's capped at plan and left out of the
-    // split. Surface it rather than dropping silently.
     if (aggregateOnlyCut > 0) {
       console.warn(
         `getCuttingSplitProposal: ${aggregateOnlyCut} aggregate cut unit(s) for master ${masterWorkOrderId} exceed the plan and are not splittable.`
@@ -596,86 +666,65 @@ export async function getCuttingSplitProposal(
     }
   }
 
-  // Existing bundles (for display) + already-bundled quantity per cell.
   const existing = await getBundleWorkOrders(
     client,
     masterWorkOrderId,
     companyId
   );
-  // Display names for color codes (localized), so the split modal can show the
-  // color name instead of the bare code.
-  const styleColors = await client
-    .from("styleColor")
-    .select("colorCode, colorName")
-    .eq("companyId", companyId);
-  const colorNameByCode = new Map<string, string>();
-  for (const c of styleColors.data ?? []) {
-    if (c.colorCode)
-      colorNameByCode.set(c.colorCode, c.colorName ?? c.colorCode);
-  }
-  const colorName = (code: string | null) =>
-    code ? (colorNameByCode.get(code) ?? code) : null;
 
-  const existingBundles: ExistingBundle[] = (existing.data ?? []).map((b) => ({
-    id: b.id ?? "",
-    jobReadableId: b.jobReadableId ?? "",
-    colorCode: b.colorCode ?? null,
-    colorName: colorName(b.colorCode ?? null),
-    sizeCode: b.sizeCode ?? null,
-    quantity: b.quantity ?? 0,
-    reportedQuantity: b.reportedQuantity ?? 0
-  }));
+  const existingBundles: ExistingBundle[] = (existing.data ?? []).map((b) => {
+    const row = b as {
+      id?: string;
+      jobReadableId?: string | null;
+      valuesKey?: string | null;
+      attributeLabel?: string | null;
+      quantity?: number | null;
+      reportedQuantity?: number | null;
+    };
+    return {
+      id: row.id ?? "",
+      jobReadableId: row.jobReadableId ?? "",
+      valuesKey: row.valuesKey ?? null,
+      attributeLabel: row.attributeLabel ?? row.valuesKey ?? null,
+      quantity: row.quantity ?? 0,
+      reportedQuantity: row.reportedQuantity ?? 0
+    };
+  });
 
   const cells: CuttingSplitCell[] = [];
-  const colorPresent = new Set<string>();
-  const sizePresent = new Set<string>();
   for (const cell of plannedCells) {
-    const k = cellKey(cell.colorCode, cell.sizeCode);
+    const k = cellKey(cell.valuesKey);
     const cut = cutByCell.get(k) ?? 0;
     if (cut <= 0) continue;
     cells.push({
-      colorCode: cell.colorCode,
-      colorName: colorName(cell.colorCode),
-      sizeCode: cell.sizeCode,
+      valuesKey: cell.valuesKey,
+      attributeLabel: cell.attributeLabel,
       cut
     });
-    if (cell.colorCode) colorPresent.add(cell.colorCode);
-    if (cell.sizeCode) sizePresent.add(cell.sizeCode);
   }
 
-  const orderAxis = (present: Set<string>, options: string[] | null) =>
-    options && options.length > 0
-      ? options.filter((o) => present.has(o))
-      : [...present];
-
-  // Pending cut rows (not yet materialized into a bundle) — the split modal
-  // prefills one bundle per row.
   const pending = await (client as SupabaseClient<any>)
     .from("masterWorkOrderSplitRow")
-    .select("id, colorCode, sizeCode, quantity")
+    .select("id, valuesKey, quantity")
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
     .is("bundleWorkOrderId", null)
     .order("createdAt", { ascending: true });
   const splitRows: MasterSplitRow[] = (pending.data ?? []).map(
-    (r: {
-      id: string;
-      colorCode: string | null;
-      sizeCode: string | null;
-      quantity: number | null;
-    }) => ({
-      id: r.id,
-      colorCode: r.colorCode ?? null,
-      colorName: colorName(r.colorCode ?? null),
-      sizeCode: r.sizeCode ?? null,
-      quantity: Number(r.quantity ?? 0)
-    })
+    (r: { id: string; valuesKey: string | null; quantity: number | null }) => {
+      // valuesKey is the source of truth (backfilled + always written).
+      const valuesKey = String(r.valuesKey ?? "").trim();
+      return {
+        id: r.id,
+        valuesKey,
+        attributeLabel: valuesKey.replace(/\|/g, " · ") || valuesKey,
+        quantity: Number(r.quantity ?? 0)
+      };
+    }
   );
 
   return {
     masterDisplayId,
-    colorAxis: orderAxis(colorPresent, colorParam?.listOptions ?? null),
-    sizeAxis: orderAxis(sizePresent, sizeParam?.listOptions ?? null),
     cells,
     existingBundles,
     splitRows
@@ -787,16 +836,21 @@ export async function saveBundleSplit(
     }
     sequence += 1;
     // The bundle's descriptive id (also used as its backing job's readable id).
+    const valuesKey =
+      bundle.valuesKey?.trim() ||
+      valuesKeyFromSplitRowParts(
+        bundle.colorCode ?? null,
+        bundle.sizeCode ?? null
+      );
     const jobReadableId = [
       styleReadableId,
-      bundle.colorCode ?? "NA",
-      bundle.sizeCode ?? "NA",
+      valuesKey.replace(/\|/g, "-") || "NA",
       masterToken,
       String(sequence).padStart(2, "0")
     ].join("-");
     return {
       kind: "create" as const,
-      bundle,
+      bundle: { ...bundle, valuesKey },
       quantity,
       sequence,
       jobReadableId
@@ -831,13 +885,41 @@ export async function saveBundleSplit(
       return { created: 0, updated: 1, error: null };
     }
 
+    const valuesKey =
+      op.bundle.valuesKey?.trim() ||
+      valuesKeyFromSplitRowParts(
+        op.bundle.colorCode ?? null,
+        op.bundle.sizeCode ?? null
+      );
+    if (!valuesKey) {
+      return {
+        created: 0,
+        updated: 0,
+        error: new Error("Bundle is missing attribute combo (valuesKey)")
+      };
+    }
+    const resolved = await resolveVariantByValuesKey(client, {
+      parentItemId: itemId,
+      companyId: input.companyId,
+      valuesKey
+    });
+    if (resolved.error) {
+      return { created: 0, updated: 0, error: resolved.error };
+    }
+    if (!resolved.data || resolved.data === itemId) {
+      return {
+        created: 0,
+        updated: 0,
+        error: new Error(
+          `No variant SKU exists for ${valuesKey.replace(/\|/g, " / ")}`
+        )
+      };
+    }
     const inserted = await insertBundleWorkOrder(client, {
       masterWorkOrderId: input.masterWorkOrderId,
-      itemId,
+      itemId: resolved.data,
       quantity: op.quantity,
       sequence: op.sequence,
-      colorCode: op.bundle.colorCode,
-      sizeCode: op.bundle.sizeCode,
       cuttingProcessId,
       jobReadableId: op.jobReadableId,
       companyId: input.companyId,
@@ -895,8 +977,9 @@ export async function replaceMasterCuttingSplitRows(
     companyId: string;
     createdBy: string;
     rows: {
-      colorCode: string | null;
-      sizeCode: string | null;
+      valuesKey?: string | null;
+      colorCode?: string | null;
+      sizeCode?: string | null;
       quantity: number;
     }[];
   }
@@ -914,15 +997,19 @@ export async function replaceMasterCuttingSplitRows(
   if (rows.length === 0) return { error: null };
 
   const insert = await c.from("masterWorkOrderSplitRow").insert(
-    rows.map((r) => ({
-      masterWorkOrderId: input.masterWorkOrderId,
-      companyId: input.companyId,
-      productionQuantityReportId: input.productionQuantityReportId,
-      colorCode: r.colorCode,
-      sizeCode: r.sizeCode,
-      quantity: Number(r.quantity) || 0,
-      createdBy: input.createdBy
-    }))
+    rows.map((r) => {
+      const valuesKey =
+        (r.valuesKey && String(r.valuesKey).trim()) ||
+        valuesKeyFromSplitRowParts(r.colorCode ?? null, r.sizeCode ?? null);
+      return {
+        masterWorkOrderId: input.masterWorkOrderId,
+        companyId: input.companyId,
+        productionQuantityReportId: input.productionQuantityReportId,
+        valuesKey: valuesKey || null,
+        quantity: Number(r.quantity) || 0,
+        createdBy: input.createdBy
+      };
+    })
   );
   return { error: insert.error };
 }

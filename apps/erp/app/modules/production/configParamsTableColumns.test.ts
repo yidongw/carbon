@@ -311,4 +311,39 @@ describe("getConfigQuantityCells", () => {
       "蓝色 · M"
     ]);
   });
+
+  it("labels combo valuesKey + Quantities rows", async () => {
+    const { getConfigQuantityCells } = await import(
+      "./configParamsTableColumns"
+    );
+    const cells = getConfigQuantityCells(
+      {
+        configTable: [
+          { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
+          { valuesKey: "RD|M", Quantities: 2 }
+        ],
+        configTablePrimaryKeys: ["Quantities"]
+      },
+      { BK: "黑色", RD: "红色" }
+    );
+    expect(cells).toEqual([
+      { key: "0:Quantities", label: "BK · S", quantity: 6 },
+      { key: "1:Quantities", label: "红色 · M", quantity: 2 }
+    ]);
+  });
+
+  it("configTableToComboRows converts legacy size-column matrices", async () => {
+    const { configTableToComboRows } = await import(
+      "./configParamsTableColumns"
+    );
+    expect(
+      configTableToComboRows(
+        {
+          configTable: [{ color: "BK", XS: 0, S: 6 }],
+          configTablePrimaryKeys: ["XS", "S"]
+        },
+        { BK: "黑色" }
+      )
+    ).toEqual([{ valuesKey: "BK|S", Quantities: 6, label: "黑色 · S" }]);
+  });
 });

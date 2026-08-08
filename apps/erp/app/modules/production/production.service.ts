@@ -2097,14 +2097,18 @@ export async function getItemIdsWithConfigurationParameters(
 ): Promise<string[]> {
   if (itemIds.length === 0) return [];
 
-  const { data } = await client
-    .from("configurationParameter")
+  // Qty-grid configured = attribute selections only (mirrors api+/items.configurable).
+  const selections = await (client as any)
+    .from("itemAttributeSelection")
     .select("itemId")
     .in("itemId", itemIds)
     .eq("companyId", companyId);
 
-  if (!data) return [];
-  return [...new Set(data.map((row) => row.itemId))];
+  return [
+    ...new Set(
+      ((selections.data ?? []) as { itemId: string }[]).map((row) => row.itemId)
+    )
+  ];
 }
 
 /** Root routing only: first operation by `order` where status is not Done/Canceled. */

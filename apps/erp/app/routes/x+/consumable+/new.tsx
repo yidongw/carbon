@@ -3,9 +3,14 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
-import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { data, redirect, useLoaderData } from "react-router";
 import { consumableValidator, upsertConsumable } from "~/modules/items";
+import {
+  getAttributeSetsForItemType,
+  parseAttributeValueSelectionsFromFormData,
+  syncItemVariantsFromSelections
+} from "~/modules/items/itemAttribute.service";
 import { ConsumableForm } from "~/modules/items/ui/Consumables";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -16,6 +21,25 @@ export const handle: Handle = {
   to: path.to.consumables,
   module: "items"
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { client, companyId } = await requirePermissions(request, {
+    create: "parts"
+  });
+  const sets = await getAttributeSetsForItemType(
+    client,
+    "Consumable",
+    companyId
+  );
+  return {
+    attributeSetOptions: (sets.data ?? []).map(
+      (s: { id: string; code: string; name: string }) => ({
+        label: `${s.code} — ${s.name}`,
+        value: s.id
+      })
+    )
+  };
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
@@ -59,6 +83,40 @@ export async function action({ request }: ActionFunctionArgs) {
   const itemId = createConsumable.data?.id;
   if (!itemId) throw new Error("Consumable ID not found");
 
+  const attributeSetId = validation.data.attributeSetId;
+  if (attributeSetId) {
+    const selections = parseAttributeValueSelectionsFromFormData(formData);
+    const hasSelections = Object.values(selections).some(
+      (ids) => ids.length > 0
+    );
+    if (hasSelections) {
+      const sync = await syncItemVariantsFromSelections(client, {
+        itemId,
+        companyId,
+        userId,
+        attributeSetId,
+        selections
+      });
+      if (sync.error) {
+        return modal
+          ? data(
+              { data: null, error: sync.error },
+              await flash(
+                request,
+                error(sync.error, "Failed to sync consumable variants")
+              )
+            )
+          : redirect(
+              path.to.consumables,
+              await flash(
+                request,
+                error(sync.error, "Failed to sync consumable variants")
+              )
+            );
+      }
+    }
+  }
+
   // The thumbnail is uploaded to a staging path before the item exists. Now
   // that we have the item's id, re-key the object under the item's own folder
   // to match the convention used everywhere else. If the move fails we keep the
@@ -84,6 +142,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ConsumablesNewRoute() {
+  const { attributeSetOptions } = useLoaderData<typeof loader>();
   const initialValues = {
     id: "",
     name: "",
@@ -95,12 +154,19 @@ export default function ConsumablesNewRoute() {
     unitCost: 0,
     active: true,
     shelfLifeCalculateFromBom: false,
+    attributeSetId:
+      attributeSetOptions.length === 1
+        ? attributeSetOptions[0].value
+        : undefined,
     tags: []
   };
 
   return (
     <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <ConsumableForm initialValues={initialValues} />
+      <ConsumableForm
+        initialValues={initialValues}
+        attributeSetOptions={attributeSetOptions}
+      />
     </div>
   );
 }

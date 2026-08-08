@@ -7,6 +7,7 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { styleValidator } from "~/modules/items";
+import { parseAttributeValueSelectionsFromFormData } from "~/modules/items/itemAttribute.service";
 import { applyTemplateToItem } from "~/modules/items/template.service";
 import { StyleForm } from "~/modules/items/ui/Styles";
 import { setCustomFields } from "~/utils/form";
@@ -35,20 +36,17 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { templateId, ...styleData } = validation.data;
-  const styleColorIds = Array.from(formData.entries())
-    .filter(([key]) => key.startsWith("styleColorIds["))
-    .map(([, value]) => value as string)
-    .filter(Boolean);
-  const styleSizeIds = Array.from(formData.entries())
-    .filter(([key]) => key.startsWith("styleSizeIds["))
-    .map(([, value]) => value as string)
-    .filter(Boolean);
+  // Attribute-set-driven selection: the create form submits a Hidden
+  // attributeSetId + av__<attributeId>[] arrays (parsed generically), replacing
+  // the old color/size-specific fields.
+  const attributeSetId = String(formData.get("attributeSetId") ?? "");
+  const selections = parseAttributeValueSelectionsFromFormData(formData);
   const { upsertStyle } = await import("~/modules/items/style.server");
 
   const createStyle = await upsertStyle(client, {
     ...styleData,
-    styleColorIds,
-    styleSizeIds,
+    attributeSetId,
+    selections,
     companyId,
     customFields: setCustomFields(formData),
     createdBy: userId

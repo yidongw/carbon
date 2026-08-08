@@ -1,13 +1,12 @@
-import { assertIsPost, error, success } from "@carbon/auth";
+import { assertIsPost } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 import {
-  getCuttingSplitProposal,
-  saveBundleSplit,
   type CuttingSplitBundle,
-  type CuttingSplitProposal
+  type CuttingSplitProposal,
+  getCuttingSplitProposal,
+  saveBundleSplit
 } from "~/modules/production";
 
 export type MasterWorkOrderSplitBatchLoaderData = CuttingSplitProposal;
@@ -33,12 +32,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     update: "production"
   });
 
+  // All outcomes are returned as structured data (no server flash): the counts
+  // and the reason are interpolated, which a catalog can't match, so the overlay
+  // host (completeOverlayConfirm) builds + translates the toast client-side.
   const { masterWorkOrderId } = params;
   if (!masterWorkOrderId) {
-    return data(
-      { ok: false as const },
-      await flash(request, error("Missing master work order", "Split failed"))
-    );
+    return data({ ok: false as const });
   }
 
   const formData = await request.formData();
@@ -51,14 +50,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // Rows without an id are new bundles (need a positive quantity); rows with an
   // id update an existing bundle (may be any quantity ≥ its reported).
-  const toSave = bundles.filter(
-    (b) => b.id || (Number(b?.quantity) || 0) > 0
-  );
+  const toSave = bundles.filter((b) => b.id || (Number(b?.quantity) || 0) > 0);
   if (toSave.length === 0) {
-    return data(
-      { ok: false as const },
-      await flash(request, error("Nothing to save", "Split failed"))
-    );
+    return data({ ok: false as const });
   }
 
   const proposal = await getCuttingSplitProposal(
@@ -66,34 +60,28 @@ export async function action({ request, params }: ActionFunctionArgs) {
     masterWorkOrderId,
     companyId
   );
-  const cellKey = (colorCode: string | null, sizeCode: string | null) =>
-    `${colorCode ?? ""}|${sizeCode ?? ""}`;
+  const cellKey = (valuesKey: string | null | undefined) =>
+    (valuesKey ?? "").trim();
   const cutByCell = new Map(
-    proposal.cells.map((c) => [cellKey(c.colorCode, c.sizeCode), c.cut])
+    proposal.cells.map((c) => [cellKey(c.valuesKey), c.cut])
   );
   const reportedById = new Map(
     proposal.existingBundles.map((b) => [b.id, b.reportedQuantity])
   );
 
-  // Each color/size's bundles (existing + new) can't sum beyond its reported cut.
+  // Each attribute combo's bundles (existing + new) can't sum beyond its cut.
   const requestedByCell = new Map<string, number>();
   for (const b of toSave) {
-    const k = cellKey(b.colorCode ?? null, b.sizeCode ?? null);
-    requestedByCell.set(k, (requestedByCell.get(k) ?? 0) + (Number(b.quantity) || 0));
+    const k = cellKey(b.valuesKey);
+    requestedByCell.set(
+      k,
+      (requestedByCell.get(k) ?? 0) + (Number(b.quantity) || 0)
+    );
   }
   for (const [k, requested] of requestedByCell) {
     const cut = cutByCell.get(k) ?? 0;
     if (requested > cut + 0.0001) {
-      return data(
-        { ok: false as const },
-        await flash(
-          request,
-          error(
-            "Split exceeds the cut quantity for a color/size",
-            `A color/size can't exceed the cut quantity (max ${cut})`
-          )
-        )
-      );
+      return data({ ok: false as const, reason: "cap" as const, max: cut });
     }
   }
 
@@ -102,16 +90,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     if (!b.id) continue;
     const reported = reportedById.get(b.id) ?? 0;
     if ((Number(b.quantity) || 0) < reported) {
-      return data(
-        { ok: false as const },
-        await flash(
-          request,
-          error(
-            "Bundle quantity below reported",
-            `A bundle can't be set below its reported quantity (${reported})`
-          )
-        )
-      );
+      return data({
+        ok: false as const,
+        reason: "reported" as const,
+        reported
+      });
     }
   }
 
@@ -123,19 +106,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   });
 
   if (result.error) {
-    return data(
-      { ok: false as const },
-      await flash(request, error(result.error, "Failed to save bundles"))
-    );
+    return data({ ok: false as const, reason: "save" as const });
   }
 
-  return data(
-    { ok: true as const },
-    await flash(
-      request,
-      success(
-        `Saved bundles (${result.data.created} created, ${result.data.updated} updated)`
-      )
-    )
-  );
+  return data({
+    ok: true as const,
+    created: result.data.created,
+    updated: result.data.updated
+  });
 }

@@ -66,6 +66,80 @@ export const overlay = {
       };
     },
 
+    newItemAttribute(): OverlayTarget {
+      return {
+        id: "newItemAttribute",
+        url: `${path.to.newItemAttribute}?overlay=true`,
+        params: {}
+      };
+    },
+
+    editItemAttribute({ id }: { id: string }): OverlayTarget {
+      return {
+        id: "editItemAttribute",
+        url: `${path.to.itemAttribute(id)}?overlay=true`,
+        params: { id }
+      };
+    },
+
+    newItemAttributeValue({
+      attributeId
+    }: {
+      attributeId: string;
+    }): OverlayTarget {
+      return {
+        id: "newItemAttributeValue",
+        url: `${path.to.newItemAttributeValue(attributeId)}?overlay=true`,
+        params: { attributeId }
+      };
+    },
+
+    editItemAttributeValue({
+      attributeId,
+      id
+    }: {
+      attributeId: string;
+      id: string;
+    }): OverlayTarget {
+      return {
+        id: "editItemAttributeValue",
+        url: `${path.to.itemAttributeValue(attributeId, id)}?overlay=true`,
+        params: { attributeId, id }
+      };
+    },
+
+    newItemAttributeSet(): OverlayTarget {
+      return {
+        id: "newItemAttributeSet",
+        url: `${path.to.newItemAttributeSet}?overlay=true`,
+        params: {}
+      };
+    },
+
+    editItemAttributeSet({ id }: { id: string }): OverlayTarget {
+      return {
+        id: "editItemAttributeSet",
+        url: `${path.to.itemAttributeSet(id)}?overlay=true`,
+        params: { id }
+      };
+    },
+
+    newItemAttributeSetAssignment(): OverlayTarget {
+      return {
+        id: "newItemAttributeSetAssignment",
+        url: `${path.to.newItemAttributeSetAssignment}?overlay=true`,
+        params: {}
+      };
+    },
+
+    editItemAttributeSetAssignment({ id }: { id: string }): OverlayTarget {
+      return {
+        id: "editItemAttributeSetAssignment",
+        url: `${path.to.itemAttributeSetAssignment(id)}?overlay=true`,
+        params: { id }
+      };
+    },
+
     newMasterWorkOrder(): OverlayTarget {
       return {
         id: "newMasterWorkOrder",

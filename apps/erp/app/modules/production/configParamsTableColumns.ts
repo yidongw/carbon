@@ -31,6 +31,32 @@ export function buildConfigColumns(
   primaryKeys: string[];
   columns: ConfigColumn[];
 } {
+  // Style combo: single valuesKey list → row labels + Quantities (not matrix).
+  const firstList = parameters.find((p) => p.dataType === "list");
+  const isStyleCombo =
+    (parameters.length === 1 && parameters[0]?.key === "valuesKey") ||
+    firstList?.key === "valuesKey";
+
+  if (isStyleCombo && firstList) {
+    return {
+      primaryParam: firstList,
+      primaryKeys: ["Quantities"],
+      columns: [
+        {
+          key: "valuesKey",
+          label: firstList.label || "Attributes",
+          type: "list",
+          options: firstList.listOptions ?? []
+        },
+        {
+          key: "Quantities",
+          label: defaultQuantityLabel,
+          type: "quantity"
+        }
+      ]
+    };
+  }
+
   const primaryParam = parameters.find((p) => p.dataType === "list") ?? null;
   const otherParams = parameters.filter((p) => p !== primaryParam);
 
@@ -181,11 +207,13 @@ function optionLabelOf(
 
 /**
  * Flatten a stored config table into one cell per non-zero quantity, for
- * summary badges (`Color · Size ×2`) and expand lists — no parameter metadata
+ * summary badges (`BK · S ×2`) and expand lists — no parameter metadata
  * required; uses `configTablePrimaryKeys` from the JSON itself.
  *
- * Always labels as **Color · Size** regardless of whether the stored table
- * uses sizes or colors as the quantity columns.
+ * Dual-read:
+ * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey` → label from
+ *   `label` or valuesKey with `|` → ` · `.
+ * - Legacy matrix: join row descriptors with the quantity-column key using ` · `.
  */
 export function getConfigQuantityCells(
   configuration: unknown,
@@ -212,32 +240,39 @@ export function getConfigQuantityCells(
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const cells: ConfigQuantityCell[] = [];
 
-  // Sizes-as-columns (Style default): `{ color: "BK", S: 6 }` with PKs ["S"]
-  // Colors-as-columns (legacy / job grids): `{ Size: "S", Red: 2 }` with PKs ["Red"]
-  const primaryKeysAreSizes =
-    primaryKeys.every(isSizeToken) || primaryKeys.some(isSizeToken);
+  const isComboFlat =
+    primaryKeys.length === 1 && primaryKeys[0] === "Quantities";
 
   for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
-    const descriptorEntries = Object.entries(row).filter(
-      ([key]) => !primaryKeySet.has(key)
-    );
-    const sizeDesc = descriptorEntries.find(
-      ([key]) => key.toLowerCase() === "size"
-    );
-    const colorDesc = descriptorEntries.find(
-      ([key]) => key.toLowerCase() === "color"
-    );
-    const otherDescriptors = descriptorEntries
-      .filter(
-        ([key]) => key.toLowerCase() !== "size" && key.toLowerCase() !== "color"
-      )
-      .map(([, value]) => String(value ?? "").trim())
-      .filter(Boolean)
-      .map(labelOf);
+    if (isComboFlat) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (valuesKey) {
+        const rawQty = row.Quantities;
+        if (isZeroOrEmpty(rawQty)) continue;
+        const quantity = Number(rawQty) || 0;
+        if (quantity === 0) continue;
 
-    // Prefer explicit color/size keys; fall back to PK orientation heuristic.
-    const sizesAreQuantityColumns =
-      !!colorDesc || (!sizeDesc && primaryKeysAreSizes);
+        const storedLabel = String(row.label ?? "").trim();
+        const label = storedLabel
+          ? storedLabel
+          : valuesKey
+              .split("|")
+              .map((part) => labelOf(part))
+              .join(" · ");
+
+        cells.push({
+          key: `${rowIndex}:Quantities`,
+          label,
+          quantity
+        });
+        continue;
+      }
+    }
+
+    const descriptorValues = Object.entries(row)
+      .filter(([key]) => !primaryKeySet.has(key))
+      .map(([, value]) => String(value ?? "").trim())
+      .filter(Boolean);
 
     for (const qtyKey of primaryKeys) {
       const rawQty = row[qtyKey];
@@ -245,23 +280,15 @@ export function getConfigQuantityCells(
       const quantity = Number(rawQty) || 0;
       if (quantity === 0) continue;
 
-      let colorPart: string;
-      let sizePart: string;
-      if (sizesAreQuantityColumns) {
-        colorPart = labelOf(
-          String(colorDesc?.[1] ?? otherDescriptors[0] ?? "").trim()
-        );
-        sizePart = labelOf(qtyKey);
-      } else {
-        colorPart = labelOf(qtyKey);
-        sizePart = labelOf(
-          String(sizeDesc?.[1] ?? otherDescriptors[0] ?? "").trim()
-        );
-      }
-
-      const parts = [colorPart, sizePart, ...otherDescriptors.slice(1)].filter(
-        Boolean
-      );
+      // Always render Color · Size: whichever dimension is the quantity column
+      // (sizes for the Style default, colors for legacy color-column grids), the
+      // color token comes first and the size token last.
+      const tokens = [...descriptorValues, qtyKey];
+      const colorTokens = tokens.filter((tk) => !isSizeToken(tk));
+      const sizeTokens = tokens.filter(isSizeToken);
+      const parts = [...colorTokens, ...sizeTokens]
+        .map(labelOf)
+        .filter(Boolean);
       cells.push({
         key: `${rowIndex}:${qtyKey}`,
         label: parts.join(" · "),
@@ -272,6 +299,96 @@ export function getConfigQuantityCells(
 
   return cells;
 }
+
+export type ComboConfigRow = {
+  valuesKey: string;
+  Quantities: number;
+  label?: string;
+};
+
+/**
+ * Dual-read stored config → combo editor rows (`valuesKey` + `Quantities`).
+ * Pass-through when already combo; convert legacy Color×Size (or color-column)
+ * matrices using Color-first / Size-last token order for `valuesKey`.
+ */
+export function configTableToComboRows(
+  configuration: unknown,
+  optionLabels?: Record<string, string>
+): ComboConfigRow[] {
+  if (
+    configuration === null ||
+    configuration === undefined ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return [];
+  }
+
+  const raw = configuration as Record<string, unknown>;
+  const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
+    ? raw.configTablePrimaryKeys.filter(
+        (k): k is string => typeof k === "string" && k.length > 0
+      )
+    : [];
+  if (primaryKeys.length === 0) return [];
+
+  const primaryKeySet = new Set(primaryKeys);
+  const labelOf = (value: string) => optionLabelOf(value, optionLabels);
+  const out: ComboConfigRow[] = [];
+
+  const isComboFlat =
+    primaryKeys.length === 1 && primaryKeys[0] === "Quantities";
+
+  for (const row of getConfigTableRows(configuration)) {
+    if (isComboFlat) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) continue;
+      const quantity = Number(row.Quantities) || 0;
+      if (quantity <= 0) continue;
+      const storedLabel = String(row.label ?? "").trim();
+      const label = storedLabel
+        ? storedLabel
+        : valuesKey
+            .split("|")
+            .map((part) => labelOf(part))
+            .join(" · ");
+      out.push({
+        valuesKey,
+        Quantities: quantity,
+        ...(label ? { label } : {})
+      });
+      continue;
+    }
+
+    const descriptorValues = Object.entries(row)
+      .filter(([key]) => !primaryKeySet.has(key))
+      .map(([, value]) => String(value ?? "").trim())
+      .filter(Boolean);
+
+    for (const qtyKey of primaryKeys) {
+      const rawQty = row[qtyKey];
+      if (isZeroOrEmpty(rawQty)) continue;
+      const quantity = Number(rawQty) || 0;
+      if (quantity <= 0) continue;
+
+      const tokens = [...descriptorValues, qtyKey];
+      const colorTokens = tokens.filter((tk) => !isSizeToken(tk));
+      const sizeTokens = tokens.filter(isSizeToken);
+      const ordered = [...colorTokens, ...sizeTokens];
+      const valuesKey = ordered.join("|");
+      if (!valuesKey) continue;
+      const label = ordered.map(labelOf).filter(Boolean).join(" · ");
+      out.push({
+        valuesKey,
+        Quantities: quantity,
+        ...(label ? { label } : {})
+      });
+    }
+  }
+
+  return out;
+}
+
 export function formatConfigRowLabel(
   row: ConfigTableRow,
   columns: ConfigColumn[],

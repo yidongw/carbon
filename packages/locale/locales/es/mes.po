@@ -96,9 +96,6 @@ msgstr "Agregar nuevo conjunto de registros"
 msgid "Add Spare Part"
 msgstr "Agregar repuesto"
 
-msgid "Added colors and sizes"
-msgstr "Se agregaron colores y tallas"
-
 msgid "Adjust stock down"
 msgstr "Ajustar inventario hacia abajo"
 
@@ -210,8 +207,20 @@ msgstr "Asignación actualizada con éxito"
 msgid "Attach File"
 msgstr "Adjuntar archivo"
 
+msgid "Attribute not found"
+msgstr "Atributo no encontrado"
+
 msgid "Attribute recorded successfully"
 msgstr "Atributo registrado con éxito"
+
+msgid "Attribute set is required"
+msgstr "Se requiere un conjunto de atributos"
+
+msgid "Attribute set not found"
+msgstr "Conjunto de atributos no encontrado"
+
+msgid "Attributes"
+msgstr "Atributos"
 
 msgid "Audit logging disabled"
 msgstr "Registro de auditoría deshabilitado"
@@ -323,11 +332,20 @@ msgstr "No se puede eliminar un recibido registrado"
 msgid "Cannot delete a posted shipment"
 msgstr "No se puede eliminar una carga registrada"
 
+msgid "Cannot delete a system item attributes set"
+msgstr "No se puede eliminar un conjunto de atributos de elemento del sistema"
+
 msgid "Cannot edit a protected customer type"
 msgstr "No se puede editar un tipo de cliente protegido"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "No se puede editar un tipo de proveedor protegido"
+
+msgid "Cannot edit a system attribute set"
+msgstr "No se puede editar un conjunto de atributos del sistema"
+
+msgid "Cannot edit a system item attributes set"
+msgstr "No se puede editar un conjunto de atributos de elemento del sistema"
 
 msgid "Cannot edit global material grade"
 msgstr "No se puede editar el grado de material global"
@@ -341,11 +359,11 @@ msgstr "No se puede editar el material substancial global"
 msgid "Cannot edit global material type"
 msgstr "No se puede editar el tipo de material global"
 
-msgid "Cannot edit global style color"
-msgstr "No se puede editar el color del estilo global"
+msgid "Cannot edit system attribute"
+msgstr "No se puede editar el atributo del sistema"
 
-msgid "Cannot edit global style size"
-msgstr "No se puede editar el tamaño del estilo global"
+msgid "Cannot edit system attribute value"
+msgstr "No se puede editar el valor del atributo del sistema"
 
 msgid "Cannot finish operation"
 msgstr "No se puede completar la operación"
@@ -419,9 +437,6 @@ msgstr "Desconectado"
 
 msgid "Collapse"
 msgstr "Colapsar"
-
-msgid "Color"
-msgstr "Color"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -524,8 +539,20 @@ msgstr "Crear Problema de Calidad"
 msgid "Create Rework"
 msgstr "Crear Rehacer"
 
+msgid "Created attribute"
+msgstr "Atributo creado"
+
+msgid "Created attribute set"
+msgstr "Conjunto de atributos creado"
+
+msgid "Created attribute value"
+msgstr "Valor creado"
+
 msgid "Created company"
 msgstr "Compañía creada"
+
+msgid "Created item attributes set"
+msgstr "Atributos del ítem creados"
 
 msgid "Created maintenance dispatch"
 msgstr "Se creó la asignación de mantenimiento"
@@ -600,8 +627,17 @@ msgstr "Eliminar paso"
 msgid "Delete Timecard ({0})"
 msgstr "Eliminar tarjeta de tiempo ({0})"
 
+msgid "Deleted attribute"
+msgstr "Atributo eliminado"
+
+msgid "Deleted attribute set"
+msgstr "Conjunto de atributos eliminado"
+
 msgid "Deleted attribute value"
 msgstr "Valor de atributo eliminado"
+
+msgid "Deleted item attributes set"
+msgstr "Elementos de atributos eliminados"
 
 msgid "Deleted warehouse transfer line"
 msgstr "Línea de traspaso de almacén eliminada"
@@ -773,6 +809,15 @@ msgstr "Error cargando el estado de asignación"
 msgid "Error loading attribute categories"
 msgstr "Error cargando categorías de atributos"
 
+msgid "Error loading attribute sets"
+msgstr "Error cargando conjuntos de atributos"
+
+msgid "Error loading attribute values"
+msgstr "Error cargando valores de atributo"
+
+msgid "Error loading attributes"
+msgstr "Error cargando atributos"
+
 msgid "Error loading console operators"
 msgstr "Error cargando operadores del consola"
 
@@ -784,6 +829,9 @@ msgstr "Error cargando empleados"
 
 msgid "Error loading issues"
 msgstr "Error cargando problemas"
+
+msgid "Error loading item attributes sets"
+msgstr "Error cargando conjuntos de atributos de elemento"
 
 msgid "Error loading item groups"
 msgstr "Error cargando grupos de artículos"
@@ -820,12 +868,6 @@ msgstr "Error cargando transferencias de inventario"
 
 msgid "Error loading storage types"
 msgstr "Error cargando tipos de almacenamiento"
-
-msgid "Error loading style colors"
-msgstr "Error cargando colores de estilo"
-
-msgid "Error loading style sizes"
-msgstr "Error cargando tamaños de estilo"
 
 msgid "Error loading supplier types"
 msgstr "Error cargando tipos de proveedor"
@@ -896,9 +938,6 @@ msgstr "Falló al activar el centro de trabajo"
 msgid "Failed to add a line"
 msgstr "Falló al agregar una línea"
 
-msgid "Failed to add colors and sizes"
-msgstr "Falló al agregar colores y tamaños"
-
 msgid "Failed to add entry"
 msgstr "Falló al agregar entrada"
 
@@ -952,6 +991,12 @@ msgstr "Falló al crear atributo"
 
 msgid "Failed to create attribute category"
 msgstr "Falló al crear la categoría de atributo"
+
+msgid "Failed to create attribute set"
+msgstr "Falló al crear el conjunto de atributos"
+
+msgid "Failed to create attribute value"
+msgstr "Falló al crear el valor del atributo"
 
 msgid "Failed to create auth session"
 msgstr "Falló la creación de la sesión de autenticación"
@@ -1007,6 +1052,9 @@ msgstr "Falló al crear el documento de inspección"
 msgid "Failed to create invite link"
 msgstr "Falló al crear el enlace de invitación"
 
+msgid "Failed to create item attributes set"
+msgstr "Falló al crear el conjunto de atributos del artículo"
+
 msgid "Failed to create journal entry"
 msgstr "Falló al crear el entrada diario"
 
@@ -1052,6 +1100,9 @@ msgstr "Falló al crear pedido de compra"
 msgid "Failed to create purchase order line."
 msgstr "Falló al crear línea de pedido de compra."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr "Falló al crear líneas de pedido de compra para variantes de estilo"
+
 msgid "Failed to create quality issue"
 msgstr "Falló al crear un problema de calidad"
 
@@ -1096,6 +1147,9 @@ msgstr "Falló al crear la orden de venta"
 
 msgid "Failed to create sales order line."
 msgstr "Falló al crear línea de pedido de ventas."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr "Falló al crear líneas de pedido de ventas para variantes de estilo"
 
 msgid "Failed to create samples"
 msgstr "Falló al crear muestras"
@@ -1190,6 +1244,12 @@ msgstr "Falló al eliminar la asignación"
 msgid "Failed to delete association"
 msgstr "Falló al eliminar la asociación"
 
+msgid "Failed to delete attribute"
+msgstr "Falló al eliminar atributo"
+
+msgid "Failed to delete attribute set"
+msgstr "Falló al eliminar el conjunto de atributos"
+
 msgid "Failed to delete attribute value"
 msgstr "Falló al eliminar el valor del atributo"
 
@@ -1258,6 +1318,9 @@ msgstr "Falló al eliminar el problema"
 
 msgid "Failed to delete issue workflow"
 msgstr "Falló al eliminar el flujo de trabajo de la incidencia"
+
+msgid "Failed to delete item attributes set"
+msgstr "Falló al eliminar los atributos del ítem"
 
 msgid "Failed to delete item group"
 msgstr "Falló al eliminar el grupo de artículos"
@@ -1417,12 +1480,6 @@ msgstr "Falló al eliminar el tipo de almacenamiento"
 
 msgid "Failed to delete storage unit"
 msgstr "Falló al eliminar el unidad de almacenamiento"
-
-msgid "Failed to delete style color"
-msgstr "Falló al eliminar el color de estilo"
-
-msgid "Failed to delete style size"
-msgstr "Falló al eliminar el tamaño de estilo"
 
 msgid "Failed to delete subsidiary"
 msgstr "Falló al eliminar la sucursal"
@@ -1730,12 +1787,6 @@ msgstr "Falló al obtener un ID de tipo de almacenamiento"
 msgid "Failed to get a storageUnit id"
 msgstr "Falló al obtener un ID de unidad de almacenamiento"
 
-msgid "Failed to get a style color id"
-msgstr "Falló al obtener un identificador de color de estilo"
-
-msgid "Failed to get a style size id"
-msgstr "Falló al obtener un ID de tamaño de estilo"
-
 msgid "Failed to get a supplier contact id"
 msgstr "Falló al obtener el ID de contacto del proveedor"
 
@@ -1829,8 +1880,26 @@ msgstr "Fallo al obtener la clase de activo"
 msgid "Failed to get asset class id"
 msgstr "Falló al obtener el ID de la clase de activo"
 
+msgid "Failed to get assignment id"
+msgstr "Falló al obtener el ID de asignación"
+
 msgid "Failed to get attribute"
 msgstr "Falló al obtener el atributo"
+
+msgid "Failed to get attribute id"
+msgstr "Falló al obtener el identificador de atributo"
+
+msgid "Failed to get attribute set"
+msgstr "Falló al obtener el conjunto de atributos"
+
+msgid "Failed to get attribute set id"
+msgstr "Falló al obtener el ID del conjunto de atributos"
+
+msgid "Failed to get attribute value"
+msgstr "Fallo al obtener el valor del atributo"
+
+msgid "Failed to get attribute value id"
+msgstr "Falló al obtener el valor del atributo ID"
 
 msgid "Failed to get chart of accounts"
 msgstr "Falló al obtener el libro de cuentas"
@@ -1939,6 +2008,9 @@ msgstr "Falló al obtener el ID de festivo"
 
 msgid "Failed to get issue type"
 msgstr "No se pudo obtener el tipo de problema"
+
+msgid "Failed to get item attributes set"
+msgstr "Falló al obtener los atributos del artículo"
 
 msgid "Failed to get item group"
 msgstr "No se pudo obtener el grupo de ítems"
@@ -2095,12 +2167,6 @@ msgstr "Falló al obtener el tipo de almacenamiento"
 
 msgid "Failed to get storageUnit"
 msgstr "Falló al obtener el unidad de almacenamiento"
-
-msgid "Failed to get style color"
-msgstr "Falló al obtener el color de estilo"
-
-msgid "Failed to get style size"
-msgstr "Falló al obtener el tamaño del estilo"
 
 msgid "Failed to get subsidiary"
 msgstr "Falló al obtener la sucursal"
@@ -2378,14 +2444,8 @@ msgstr "Fallo al insertar tipo de almacenamiento"
 msgid "Failed to insert storageUnit"
 msgstr "Falló al insertar el unidadDeAlmacenamiento"
 
-msgid "Failed to insert style color"
-msgstr "Falló al insertar el color de estilo"
-
 msgid "Failed to insert style inventory"
 msgstr "Falló al insertar el inventario de estilos"
-
-msgid "Failed to insert style size"
-msgstr "Falló al insertar el tamaño de estilo"
 
 msgid "Failed to insert supplier quote"
 msgstr "Falló al insertar la oferta del proveedor"
@@ -2804,6 +2864,9 @@ msgstr "Falló al cargar stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Falló al cargar las reglas de almacenamiento"
 
+msgid "Failed to load style attributes"
+msgstr "Falló al cargar atributos de estilo"
+
 msgid "Failed to load style costing"
 msgstr "Falló al cargar el costo de estilo"
 
@@ -2987,9 +3050,6 @@ msgstr "Falló al recibir un ID de operación"
 msgid "Failed to record attribute"
 msgstr "Falló al registrar atributo"
 
-msgid "Failed to record history"
-msgstr "Falló al registrar la historia"
-
 msgid "Failed to record rework quantity"
 msgstr "Falló al registrar la cantidad de rework"
 
@@ -3065,9 +3125,6 @@ msgstr "Falló al revocar las invitaciones"
 msgid "Failed to run IC matching"
 msgstr "Falló la ejecución del ajuste IC"
 
-msgid "Failed to save bundles"
-msgstr "Falló al guardar los paquetes"
-
 msgid "Failed to save comment"
 msgstr "Falló al guardar el comentario"
 
@@ -3086,6 +3143,9 @@ msgstr "Falló al guardar encabezado"
 msgid "Failed to save item"
 msgstr "Falló al guardar el ítem"
 
+msgid "Failed to save job variant quantities"
+msgstr "Falló al guardar las cantidades de la variante del trabajo"
+
 msgid "Failed to save journal entry"
 msgstr "Falló al guardar el entrada diario"
 
@@ -3100,6 +3160,9 @@ msgstr "Falló al guardar el plan de muestreo"
 
 msgid "Failed to save section"
 msgstr "Falló al guardar sección"
+
+msgid "Failed to save variant quantities"
+msgstr "Falló al guardar las cantidades de variante"
 
 msgid "Failed to search users"
 msgstr "Falló la búsqueda de usuarios"
@@ -3143,6 +3206,9 @@ msgstr "Falló al iniciar el evento de mantenimiento"
 msgid "Failed to stop event"
 msgstr "Falló al detener el evento"
 
+msgid "Failed to sync consumable variants"
+msgstr "Falló al sincronizar variantes de consumibles"
+
 msgid "Failed to sync procedure"
 msgstr "Falló la sincronización del procedimiento"
 
@@ -3179,6 +3245,9 @@ msgstr "Falló al actualizar atributo"
 msgid "Failed to update attribute category"
 msgstr "Falló al actualizar la categoría del atributo"
 
+msgid "Failed to update attribute set"
+msgstr "Falló al actualizar el conjunto de atributos"
+
 msgid "Failed to update attribute value"
 msgstr "Falló al actualizar el valor del atributo"
 
@@ -3196,6 +3265,9 @@ msgstr "Falló al actualizar la configuración"
 
 msgid "Failed to update consumable"
 msgstr "Falló al actualizar el消耗性材料"
+
+msgid "Failed to update consumable attributes"
+msgstr "Falló al actualizar los atributos del consumo"
 
 msgid "Failed to update consumable costing"
 msgstr "Falló al actualizar el costo del consumo"
@@ -3332,6 +3404,9 @@ msgstr "Falló al actualizar el flujo de trabajo del problema"
 msgid "Failed to update item"
 msgstr "Falló al actualizar el artículo"
 
+msgid "Failed to update item attributes set"
+msgstr "Falló al actualizar el conjunto de atributos del artículo"
+
 msgid "Failed to update item group"
 msgstr "Falló al actualizar el grupo de artículos"
 
@@ -3355,6 +3430,9 @@ msgstr "Falló al actualizar la herramienta de la operación del trabajo"
 
 msgid "Failed to update job status"
 msgstr "Falló al actualizar el estado del trabajo"
+
+msgid "Failed to update job variant quantities"
+msgstr "Falló al actualizar las cantidades de la variante de trabajo"
 
 msgid "Failed to update kanban"
 msgstr "Falló al actualizar el kanban"
@@ -3494,6 +3572,9 @@ msgstr "Falló al actualizar la entrega de pedido de compra"
 msgid "Failed to update purchase order line"
 msgstr "Falló al actualizar la línea de pedido de compra"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr "Falló al actualizar las líneas de pedido de compra para las variantes de estilo"
+
 msgid "Failed to update purchase order payment"
 msgstr "Falló al actualizar el pago de la orden de compra"
 
@@ -3563,6 +3644,9 @@ msgstr "Falló al actualizar el estado de la factura de ventas"
 msgid "Failed to update sales order line"
 msgstr "Falló al actualizar la línea de pedido de ventas"
 
+msgid "Failed to update sales order lines for style variants"
+msgstr "Falló al actualizar las líneas de pedido de ventas para variantes de estilo"
+
 msgid "Failed to update sales order payment"
 msgstr "Falló al actualizar el pago de la orden de venta"
 
@@ -3599,8 +3683,8 @@ msgstr "Falló al actualizar el tipo de almacenamiento"
 msgid "Failed to update storageUnit"
 msgstr "Falló al actualizar el storageUnit"
 
-msgid "Failed to update style color"
-msgstr "Falló al actualizar el color del estilo"
+msgid "Failed to update style attributes"
+msgstr "Falló al actualizar los atributos de estilo"
 
 msgid "Failed to update style costing"
 msgstr "Falló al actualizar el costo del estilo"
@@ -3613,9 +3697,6 @@ msgstr "Falló al actualizar el plan de estilo"
 
 msgid "Failed to update style sale price"
 msgstr "Falló al actualizar el precio de venta del estilo"
-
-msgid "Failed to update style size"
-msgstr "Falló al actualizar el tamaño del estilo"
 
 msgid "Failed to update subsidiary"
 msgstr "Falló al actualizar la sucursal"
@@ -3982,6 +4063,9 @@ msgstr "Artículo"
 msgid "Item association not found"
 msgstr "Asociación de elemento no encontrada"
 
+msgid "Item attributes set not found"
+msgstr "Atributos del artículo no encontrados"
+
 msgid "Item Master"
 msgstr "Maestro de artículos"
 
@@ -4227,6 +4311,9 @@ msgstr "Orden maestra de trabajo creada"
 
 msgid "Master Work Orders"
 msgstr "Ordenes Maestras de Trabajo"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr "Las órdenes maestras no pueden completarse o recibirse en inventario. Completa las tareas en lote en su lugar."
 
 msgid "matches"
 msgstr "coincide con"
@@ -4835,6 +4922,9 @@ msgstr "Orden de compra finalizada"
 msgid "Purchase order line created"
 msgstr "Línea de pedido de compra creada"
 
+msgid "Purchase order lines created"
+msgstr "Líneas de pedido de compra creadas"
+
 msgid "Purchase order not found"
 msgstr "Orden de compra no encontrada"
 
@@ -5062,6 +5152,9 @@ msgstr "Orden de venta creada"
 
 msgid "Sales order line created"
 msgstr "Línea de pedido de ventas creada"
+
+msgid "Sales order lines created"
+msgstr "Líneas de pedido de ventas creadas"
 
 msgid "Sample recorded"
 msgstr "Muestra registrada"
@@ -5320,9 +5413,6 @@ msgstr "Repuestos"
 msgid "Spare Parts Used"
 msgstr "Repuestos utilizados"
 
-msgid "Split failed"
-msgstr "Split fallido"
-
 msgid "Split quantity too large"
 msgstr "Cantidad a dividir demasiado grande"
 
@@ -5376,12 +5466,6 @@ msgstr "Unidad de almacenamiento creada"
 
 msgid "Style"
 msgstr "Estilo"
-
-msgid "Style color created"
-msgstr "Color de estilo creado"
-
-msgid "Style size created"
-msgstr "Tamaño de estilo creado"
 
 msgid "Submit anonymously"
 msgstr "Enviar de forma anónima"
@@ -5601,12 +5685,6 @@ msgstr "Eliminado con éxito el traslado de inventario"
 
 msgid "Successfully deleted storage type"
 msgstr "Se ha eliminado correctamente el tipo de almacenamiento"
-
-msgid "Successfully deleted style color"
-msgstr "Se ha eliminado el color de estilo correctamente"
-
-msgid "Successfully deleted style size"
-msgstr "Se eliminó el tamaño de estilo correctamente"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Se ha eliminado correctamente la sucursal"
@@ -5911,8 +5989,14 @@ msgstr "Cuenta actualizada"
 msgid "Updated API key"
 msgstr "Clave API actualizada"
 
+msgid "Updated attribute"
+msgstr "Atributo actualizado"
+
 msgid "Updated attribute category "
 msgstr "Categoría de atributo actualizada "
+
+msgid "Updated attribute set"
+msgstr "Conjunto de atributos actualizado"
 
 msgid "Updated attribute value"
 msgstr "Valor actualizado de atributo"
@@ -5922,6 +6006,9 @@ msgstr "Compañía actualizada"
 
 msgid "Updated consumable"
 msgstr "Consumible actualizado"
+
+msgid "Updated consumable attributes"
+msgstr "Actualizadas las atributos del consumo"
 
 msgid "Updated consumable costing"
 msgstr "Actualizado costo de consumibles"
@@ -5997,6 +6084,9 @@ msgstr "Tipo de problema actualizado"
 
 msgid "Updated item"
 msgstr "Ítem actualizado"
+
+msgid "Updated item attributes set"
+msgstr "Se actualizaron los atributos del artículo"
 
 msgid "Updated item group"
 msgstr "Grupo de elementos actualizado"
@@ -6166,8 +6256,8 @@ msgstr "Tipo de almacenamiento actualizado"
 msgid "Updated storageUnit"
 msgstr "Unidad de almacenamiento actualizada"
 
-msgid "Updated style color"
-msgstr "Color de estilo actualizado"
+msgid "Updated style attributes"
+msgstr "Actualizadas las atributos de estilo"
 
 msgid "Updated style costing"
 msgstr "Costo actualizado de estilo"
@@ -6180,9 +6270,6 @@ msgstr "Planificación de estilo actualizada"
 
 msgid "Updated style sale price"
 msgstr "Precio de venta actualizado"
-
-msgid "Updated style size"
-msgstr "Tamaño de estilo actualizado"
 
 msgid "Updated subsidiary"
 msgstr "Subsidiaria actualizada"

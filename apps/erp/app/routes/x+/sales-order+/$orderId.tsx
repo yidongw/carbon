@@ -26,6 +26,7 @@ import {
 } from "~/modules/sales/ui/SalesOrder";
 import { getCompanySettings } from "~/modules/settings";
 import { buildStyleColorNames } from "~/modules/shared/styleConfigDisplay";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -61,6 +62,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.salesOrders);
   }
 
+  const lineItemIds = Array.from(
+    new Set(
+      (lines.data ?? []).map((l) => l.itemId).filter((id): id is string => !!id)
+    )
+  );
+
   const opportunity = await getOrCreateOpportunityForSalesOrder(client, {
     id: salesOrder.data.id!,
     companyId: salesOrder.data.companyId,
@@ -81,16 +88,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!opportunity.data) throw new Error("Failed to get opportunity record");
 
   const serviceRole = getCarbonServiceRole();
-  const [quote, customer, companySettings, invoiceLines] = await Promise.all([
-    opportunity.data.quotes[0]?.id
-      ? getQuote(client, opportunity.data.quotes[0].id)
-      : Promise.resolve(null),
-    salesOrder.data?.customerId
-      ? getCustomer(client, salesOrder.data.customerId)
-      : Promise.resolve(null),
-    getCompanySettings(serviceRole, companyId),
-    getSalesOrderInvoiceLines(client, orderId)
-  ]);
+  const [quote, customer, companySettings, invoiceLines, styleVariantByItemId] =
+    await Promise.all([
+      opportunity.data.quotes[0]?.id
+        ? getQuote(client, opportunity.data.quotes[0].id)
+        : Promise.resolve(null),
+      salesOrder.data?.customerId
+        ? getCustomer(client, salesOrder.data.customerId)
+        : Promise.resolve(null),
+      getCompanySettings(serviceRole, companyId),
+      getSalesOrderInvoiceLines(client, orderId),
+      getStyleVariantLineMetaByItemIds(client, lineItemIds, companyId)
+    ]);
 
   if (invoiceLines.error) {
     throw redirect(
@@ -159,6 +168,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     salesOrder: salesOrder.data,
     lines: lines.data ?? [],
     colorNames,
+    styleVariantByItemId,
     files: getOpportunityDocuments(client, companyId, opportunity.data.id),
     relatedItems: getSalesOrderRelatedItems(
       client,

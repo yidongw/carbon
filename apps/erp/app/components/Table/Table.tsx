@@ -797,7 +797,8 @@ const Table = <T extends object>({
     () => tableRef.current?.parentElement as HTMLDivElement | undefined,
     []
   );
-  const getHeaderElSelector = (id: string) => `#header-${id}`;
+  // Column ids may contain CSS-special chars (e.g. attr:Color); escape for querySelector.
+  const getHeaderElSelector = (id: string) => `#${CSS.escape(`header-${id}`)}`;
 
   const pinnedColumnsKey = visibleColumns.reduce<string>(
     (acc, col) => (col.getIsPinned() ? `${acc}:${col.id}` : acc),

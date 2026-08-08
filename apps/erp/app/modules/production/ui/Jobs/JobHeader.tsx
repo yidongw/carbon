@@ -92,9 +92,12 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
     variant: "dropdown"
   });
 
-  const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const routeData = useRouteData<{ job: Job; isMasterWorkOrder?: boolean }>(
+    path.to.job(jobId)
+  );
   const statusFetcher = useFetcher<{}>();
   const status = routeData?.job?.status;
+  const isMasterWorkOrder = !!routeData?.isMasterWorkOrder;
 
   const todaysDate = useMemo(() => today(getLocalTimeZone()), []);
   const isDraft = ["Draft", "Planned"].includes(status ?? "");
@@ -239,20 +242,22 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                 <Trans>Pause</Trans>
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem
-              disabled={
-                isDone ||
-                statusFetcher.state !== "idle" ||
-                !permissions.can("update", "production")
-              }
-              onClick={completeModal.onOpen}
-            >
-              <DropdownMenuIcon
-                className="text-green-600"
-                icon={<LuCircleCheck />}
-              />
-              <Trans>Complete</Trans>
-            </DropdownMenuItem>
+            {!isMasterWorkOrder && (
+              <DropdownMenuItem
+                disabled={
+                  isDone ||
+                  statusFetcher.state !== "idle" ||
+                  !permissions.can("update", "production")
+                }
+                onClick={completeModal.onOpen}
+              >
+                <DropdownMenuIcon
+                  className="text-green-600"
+                  icon={<LuCircleCheck />}
+                />
+                <Trans>Complete</Trans>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               disabled={
                 isDone ||
@@ -318,7 +323,7 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
           fetcher={statusFetcher}
         />
       )}
-      {completeModal.isOpen && (
+      {completeModal.isOpen && !isMasterWorkOrder && (
         <JobCompleteModal
           job={routeData?.job}
           onClose={completeModal.onClose}
@@ -843,6 +848,25 @@ export function JobCancelModal({
   );
 }
 
+function jobItemReadableId(job?: Job | null) {
+  if (!job) return "";
+  const withRevision = (job as { itemReadableIdWithRevision?: string | null })
+    .itemReadableIdWithRevision;
+  const readable = (job as { readableIdWithRevision?: string | null })
+    .readableIdWithRevision;
+  return withRevision || readable || job.jobId || "";
+}
+
+function jobProductionQuantity(job?: Job | null) {
+  if (!job) return 0;
+  const production = (job as { productionQuantity?: number | null })
+    .productionQuantity;
+  if (production != null && !Number.isNaN(Number(production))) {
+    return Number(production);
+  }
+  return Number(job.quantity ?? 0);
+}
+
 export function JobCompleteModal({
   job,
   onClose,
@@ -857,13 +881,14 @@ export function JobCompleteModal({
 }) {
   const { carbon } = useCarbon();
   const [loading, setLoading] = useState(true);
+  const [isMasterWorkOrder, setIsMasterWorkOrder] = useState(false);
   const { t } = useLingui();
   const [defaultStorageUnitId, setDefaultStorageUnitId] = useState<
     string | undefined
   >(undefined);
-  const [quantityComplete, setQuantityComplete] = useState<number>(
-    job?.quantityComplete ?? 0
-  );
+  const productionQuantity = jobProductionQuantity(job);
+  const [quantityComplete, setQuantityComplete] =
+    useState<number>(productionQuantity);
   const [hasTrackedQuantity, setHasTrackedQuantity] = useState<boolean>(false);
   const [leftoverAction, setLeftoverAction] = useState<
     "ship" | "receive" | "split" | "discard" | undefined
@@ -875,9 +900,22 @@ export function JobCompleteModal({
   const makeToOrder = !!job?.salesOrderId && !!job?.salesOrderLineId;
   const leftoverQuantity = Math.max(0, quantityComplete - (job?.quantity ?? 0));
   const hasLeftover = leftoverQuantity > 0;
+  const itemReadableId = jobItemReadableId(job);
 
   const getJobData = async () => {
-    if (!carbon) return;
+    if (!carbon || !job?.id) return;
+
+    const master = await carbon
+      .from("masterWorkOrder")
+      .select("id")
+      .eq("jobId", job.id)
+      .maybeSingle();
+    if (master.data?.id) {
+      setIsMasterWorkOrder(true);
+      setLoading(false);
+      return;
+    }
+
     const [pickMethod, makeMethod] = await Promise.all([
       carbon
         .from("pickMethod")
@@ -908,8 +946,12 @@ export function JobCompleteModal({
           if (curr.status === "Available") return acc + curr.quantity;
           return acc;
         }, 0);
-        setQuantityComplete(availableQuantity);
-        setHasTrackedQuantity(true);
+        // Only lock to tracked qty when there is Available stock; otherwise keep
+        // the production quantity preview (avoid showing 0).
+        if (availableQuantity > 0) {
+          setQuantityComplete(availableQuantity);
+          setHasTrackedQuantity(true);
+        }
       }
     }
 
@@ -951,13 +993,35 @@ export function JobCompleteModal({
 
   return (
     <Modal open onOpenChange={onClose}>
-      <ModalContent size={hasLeftover ? "large" : "medium"}>
+      <ModalContent
+        size={hasLeftover && !isMasterWorkOrder ? "large" : "medium"}
+      >
         {loading ? (
           <ModalBody>
             <div className="flex flex-col h-[118px] w-full items-center justify-center gap-2">
               <Spinner className="size-8" />
             </div>
           </ModalBody>
+        ) : isMasterWorkOrder ? (
+          <>
+            <ModalHeader>
+              <ModalTitle>
+                <Trans>Master Work Order</Trans>
+              </ModalTitle>
+              <ModalDescription>
+                <Trans>
+                  Master work orders cannot be completed or received to
+                  inventory. Complete the bundle jobs instead — inventory is
+                  received on those items.
+                </Trans>
+              </ModalDescription>
+            </ModalHeader>
+            <ModalFooter>
+              <Button variant="secondary" onClick={onClose}>
+                <Trans>Close</Trans>
+              </Button>
+            </ModalFooter>
+          </>
         ) : (
           <ValidatedForm
             method="post"
@@ -969,7 +1033,7 @@ export function JobCompleteModal({
             validator={jobCompleteValidator}
             onSuccess={onClose}
             defaultValues={{
-              quantityComplete: job.quantity ?? 0,
+              quantityComplete: productionQuantity,
               salesOrderId: job.salesOrderId ?? undefined,
               salesOrderLineId: job.salesOrderLineId ?? undefined,
               locationId: job.locationId ?? undefined,
@@ -982,7 +1046,7 @@ export function JobCompleteModal({
               <ModalTitle>
                 {makeToOrder
                   ? t`Complete Job`
-                  : t`Receive ${job.jobId} to Inventory`}
+                  : t`Receive ${itemReadableId} to Inventory`}
               </ModalTitle>
               <ModalDescription>
                 {makeToOrder

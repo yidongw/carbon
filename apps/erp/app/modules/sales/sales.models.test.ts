@@ -45,15 +45,12 @@ describe("salesOrderLineValidator", () => {
     ).toBe(true);
   });
 
-  it("requires Style configuration JSON", () => {
+  it("allows Style variant SKU lines without configuration JSON", () => {
     const result = salesOrderLineValidator.safeParse({
       ...baseStyle,
       configuration: ""
     });
 
-    expect(result.success).toBe(false);
-    expect(
-      result.error?.issues.some((i) => i.path.includes("configuration"))
-    ).toBe(true);
+    expect(result.success).toBe(true);
   });
 });

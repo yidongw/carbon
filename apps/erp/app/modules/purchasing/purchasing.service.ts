@@ -7,6 +7,7 @@ import type {
   PostgrestSingleResponse,
   SupabaseClient
 } from "@supabase/supabase-js";
+import { sql } from "kysely";
 import type { z } from "zod";
 import { getEmployeeJob } from "~/modules/people";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -1790,6 +1791,159 @@ export async function upsertPurchaseOrderLine(
     .insert([{ ...purchaseOrderLine, sortOrder: maxSortOrder + 1 }])
     .select("id")
     .single();
+}
+
+/**
+ * Replace a Style parent+config submit with one purchaseOrderLine per variant SKU.
+ */
+export async function replacePurchaseOrderLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    purchaseOrderId: string;
+    replaceLineId?: string;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      purchaseOrderLineType: z.infer<
+        typeof purchaseOrderLineValidator
+      >["purchaseOrderLineType"];
+      description?: string | null;
+      locationId?: string | null;
+      storageUnitId?: string | null;
+      purchaseUnitOfMeasureCode?: string | null;
+      inventoryUnitOfMeasureCode?: string | null;
+      conversionFactor?: number | null;
+      supplierUnitPrice?: number | null;
+      setupPrice?: number | null;
+      supplierShippingCost?: number | null;
+      supplierTaxAmount?: number | null;
+      exchangeRate?: number | null;
+      requiredDate?: string | null;
+      promisedDate?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    purchaseOrderId,
+    replaceLineId,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
+  const unitPrice = base.supplierUnitPrice ?? 0;
+
+  // Cent-exact proportional split so the sum across the variant lines equals the
+  // original single-line amount (no floating-point drift); remainder on the last.
+  const allocate = (total: number | null | undefined): number[] => {
+    const cents = Math.round((total ?? 0) * 100);
+    const result: number[] = [];
+    let allocated = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (i === variants.length - 1) {
+        result.push((cents - allocated) / 100);
+      } else {
+        const c = Math.round((cents * variants[i].quantity) / totalQty);
+        allocated += c;
+        result.push(c / 100);
+      }
+    }
+    return result;
+  };
+  const shippingSplit = allocate(base.supplierShippingCost);
+  const taxSplit = allocate(base.supplierTaxAmount);
+  // Setup is a one-time charge: apply it once (first line), not once per variant.
+  const setupTotal = base.setupPrice ?? 0;
+
+  return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
+    if (replaceLineId) {
+      const original = await trx
+        .selectFrom("purchaseOrderLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("purchaseOrderId", "=", purchaseOrderId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      await trx
+        .deleteFrom("purchaseOrderLine")
+        .where("id", "=", replaceLineId)
+        .where("purchaseOrderId", "=", purchaseOrderId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        if (variants.length > 1) {
+          await trx
+            .updateTable("purchaseOrderLine")
+            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .where("purchaseOrderId", "=", purchaseOrderId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("purchaseOrderLine")
+          .select("sortOrder")
+          .where("purchaseOrderId", "=", purchaseOrderId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("purchaseOrderLine")
+        .select("sortOrder")
+        .where("purchaseOrderId", "=", purchaseOrderId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
+    }
+
+    const ids: string[] = [];
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      const inserted = await trx
+        .insertInto("purchaseOrderLine")
+        .values({
+          purchaseOrderId,
+          purchaseOrderLineType: base.purchaseOrderLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? null,
+          locationId: base.locationId ?? null,
+          storageUnitId: base.storageUnitId ?? null,
+          purchaseUnitOfMeasureCode: base.purchaseUnitOfMeasureCode ?? "EA",
+          inventoryUnitOfMeasureCode: base.inventoryUnitOfMeasureCode ?? "EA",
+          conversionFactor: base.conversionFactor ?? 1,
+          purchaseQuantity: variant.quantity,
+          setupPrice: i === 0 ? setupTotal : 0,
+          supplierUnitPrice: unitPrice,
+          supplierShippingCost: shippingSplit[i],
+          supplierTaxAmount: taxSplit[i],
+          exchangeRate: base.exchangeRate ?? 1,
+          requiredDate: base.requiredDate || null,
+          promisedDate: base.promisedDate || null,
+          companyId,
+          createdBy: userId,
+          sortOrder: startSortOrder + i,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
 }
 
 export async function updatePurchaseOrderLineOrder(

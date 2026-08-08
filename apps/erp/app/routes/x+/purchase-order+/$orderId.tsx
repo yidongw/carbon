@@ -43,6 +43,7 @@ import {
   rejectRequest
 } from "~/modules/shared";
 import { buildStyleColorNames } from "~/modules/shared/styleConfigDisplay";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import { getUser } from "~/modules/users/users.server";
 import { loader as pdfLoader } from "~/routes/file+/purchase-order+/$orderId[.]pdf";
 import { getDatabaseClient } from "~/services/database.server";
@@ -472,22 +473,24 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     )
   );
   const supplierInteractionId = purchaseOrder.data?.supplierInteractionId;
-  const [defaultAttachments, adHocDocs, styleColors] = await Promise.all([
-    getDefaultAttachmentsForPO(serviceRole, {
-      companyId,
-      supplierId: purchaseOrder.data?.supplierId ?? null,
-      itemIds
-    }),
-    supplierInteractionId
-      ? getSupplierInteractionDocuments(
-          serviceRole,
-          companyId,
-          supplierInteractionId
-        )
-      : Promise.resolve([]),
-    // Map color code → name so Style line expand views can show names.
-    getStyleColorList(client, companyId)
-  ]);
+  const [defaultAttachments, adHocDocs, styleColors, styleVariantByItemId] =
+    await Promise.all([
+      getDefaultAttachmentsForPO(serviceRole, {
+        companyId,
+        supplierId: purchaseOrder.data?.supplierId ?? null,
+        itemIds
+      }),
+      supplierInteractionId
+        ? getSupplierInteractionDocuments(
+            serviceRole,
+            companyId,
+            supplierInteractionId
+          )
+        : Promise.resolve([]),
+      // Map color code → name so Style line expand views can show names.
+      getStyleColorList(client, companyId),
+      getStyleVariantLineMetaByItemIds(client, itemIds, companyId)
+    ]);
   const colorNames = buildStyleColorNames(styleColors.data ?? []);
   const adHocAttachments = adHocDocs.map((d) => ({
     source: "po" as const,
@@ -517,7 +520,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canDelete,
     defaultCc,
     resolvedAttachments,
-    colorNames
+    colorNames,
+    styleVariantByItemId
   };
 }
 

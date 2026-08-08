@@ -10,10 +10,13 @@ export interface BundleTicketLabel {
   bundleUrl: string;
   /** 款号 — style/item readable id. */
   styleReadableId: string;
-  /** 颜色 — color name (falls back to code upstream). */
-  colorName?: string | null;
-  /** 尺码 — size code. */
-  sizeCode?: string | null;
+  /**
+   * Attribute fields to print (e.g. Color / Size / …). Preferred over
+   * attributeLabel when present.
+   */
+  attributeLines?: Array<{ name: string; value: string }> | null;
+  /** Single-line attribute summary when attributeLines is empty. */
+  attributeLabel?: string | null;
   /** 数量 — this bundle's quantity. */
   quantity: number;
   /** 扎号 — bundle number within the master. */
@@ -60,12 +63,17 @@ type Field = [string, string | number | null | undefined];
 const present = (fields: Field[]) =>
   fields.filter(([, v]) => v !== null && v !== undefined && v !== "");
 
-/** Left column: style / color / size / qty. */
+/** Left column: style / attributes / qty. */
 function leftRows(label: BundleTicketLabel) {
+  const attrFields: Field[] =
+    label.attributeLines && label.attributeLines.length > 0
+      ? label.attributeLines.map((line) => [`${line.name}: `, line.value])
+      : label.attributeLabel
+        ? present([["", label.attributeLabel]])
+        : [];
   return present([
     ["款号: ", label.styleReadableId],
-    ["颜色: ", label.colorName],
-    ["尺码: ", label.sizeCode],
+    ...attrFields,
     ["数量: ", label.quantity]
   ]);
 }

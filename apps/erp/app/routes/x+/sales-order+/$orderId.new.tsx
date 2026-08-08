@@ -11,15 +11,21 @@ import {
   overlayToken,
   serializeSearch
 } from "~/components/Overlay/overlay";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable
+} from "~/modules/items/styleOrderLines.server";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import type { SalesOrderLineType } from "~/modules/sales";
 import {
   getCustomer,
   getSalesOrder,
   isSalesOrderLocked,
+  replaceSalesOrderLinesWithStyleVariants,
   salesOrderLineValidator,
   upsertSalesOrderLine
 } from "~/modules/sales";
+import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -152,6 +158,99 @@ export async function action({ request, params }: ActionFunctionArgs) {
     } catch {
       // Invalid JSON — create without configuration; keep typed quantity.
     }
+  }
+
+  // A stored config table means the per-variant quantity grid was used (Style
+  // color×size, or a Consumable color set) → one line per variant SKU
+  // (inventory identity), regardless of the picker's line type.
+  if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
+    const expanded = await expandStyleConfigToVariantLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      configuration
+    });
+    if (!expanded.ok) {
+      if (isOverlay) {
+        return data(
+          { ok: false as const, error: expanded.error },
+          await flash(request, error(expanded.error, expanded.error))
+        );
+      }
+      throw redirect(
+        path.to.salesOrderDetails(orderId),
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === d.itemId;
+
+    if (!onlyParent) {
+      try {
+        await replaceSalesOrderLinesWithStyleVariants(getDatabaseClient(), {
+          companyId,
+          userId,
+          salesOrderId: d.salesOrderId,
+          exchangeRate: salesOrder.data?.exchangeRate ?? 1,
+          variants: expanded.variants,
+          base: {
+            salesOrderLineType: d.salesOrderLineType,
+            description: d.description,
+            locationId: d.locationId,
+            storageUnitId: d.storageUnitId,
+            methodType: d.methodType,
+            unitOfMeasureCode: d.unitOfMeasureCode,
+            unitPrice: d.unitPrice,
+            setupPrice: d.setupPrice,
+            shippingCost: d.shippingCost,
+            addOnCost: d.addOnCost,
+            nonTaxableAddOnCost: d.nonTaxableAddOnCost,
+            taxPercent: d.taxPercent,
+            promisedDate: d.promisedDate
+          },
+          customFields: setCustomFields(formData)
+        });
+      } catch (err) {
+        if (isOverlay) {
+          return data(
+            {
+              ok: false as const,
+              error: "Failed to create sales order lines for style variants"
+            },
+            await flash(
+              request,
+              error(
+                err,
+                "Failed to create sales order lines for style variants"
+              )
+            )
+          );
+        }
+        throw redirect(
+          path.to.salesOrderDetails(orderId),
+          await flash(
+            request,
+            error(err, "Failed to create sales order lines for style variants")
+          )
+        );
+      }
+
+      if (isOverlay) {
+        return data(
+          { ok: true as const },
+          await flash(request, success("Sales order lines created"))
+        );
+      }
+      throw redirect(
+        path.to.salesOrderDetails(orderId),
+        await flash(request, success("Sales order lines created"))
+      );
+    }
+
+    // Single parent SKU (no children) — fall through to one-line upsert.
+    saleQuantity = expanded.variants[0].quantity;
+    configuration = undefined;
   }
 
   const createSalesOrderLine = await upsertSalesOrderLine(client, {

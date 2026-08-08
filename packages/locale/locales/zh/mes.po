@@ -97,9 +97,6 @@ msgstr "新增记录集"
 msgid "Add Spare Part"
 msgstr "添加备件"
 
-msgid "Added colors and sizes"
-msgstr "已添加颜色和尺寸"
-
 msgid "Adjust stock down"
 msgstr "减少库存"
 
@@ -211,8 +208,20 @@ msgstr "分配已成功更新"
 msgid "Attach File"
 msgstr "附加文件"
 
+msgid "Attribute not found"
+msgstr "未找到属性"
+
 msgid "Attribute recorded successfully"
 msgstr "属性记录成功"
+
+msgid "Attribute set is required"
+msgstr "属性集是必填项"
+
+msgid "Attribute set not found"
+msgstr "未找到属性集"
+
+msgid "Attributes"
+msgstr "属性"
 
 msgid "Audit logging disabled"
 msgstr "审核日志已禁用"
@@ -324,11 +333,20 @@ msgstr "不能删除已录入的单据"
 msgid "Cannot delete a posted shipment"
 msgstr "不能删除已发布发货单"
 
+msgid "Cannot delete a system item attributes set"
+msgstr "删除系统项属性集失败"
+
 msgid "Cannot edit a protected customer type"
 msgstr "不能编辑受保护的客户类型"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "不能编辑受保护的供应商类型"
+
+msgid "Cannot edit a system attribute set"
+msgstr "无法编辑系统属性集"
+
+msgid "Cannot edit a system item attributes set"
+msgstr "无法编辑系统物品属性集"
 
 msgid "Cannot edit global material grade"
 msgstr "不能编辑全局材料等级"
@@ -342,11 +360,11 @@ msgstr "不能编辑全局物料成分"
 msgid "Cannot edit global material type"
 msgstr "不能编辑全局物料类型"
 
-msgid "Cannot edit global style color"
-msgstr "无法编辑全局款式颜色"
+msgid "Cannot edit system attribute"
+msgstr "无法编辑系统属性"
 
-msgid "Cannot edit global style size"
-msgstr "无法编辑全局款式尺寸"
+msgid "Cannot edit system attribute value"
+msgstr "无法编辑系统属性值"
 
 msgid "Cannot finish operation"
 msgstr "无法完成操作"
@@ -420,9 +438,6 @@ msgstr "打卡退出"
 
 msgid "Collapse"
 msgstr "折叠"
-
-msgid "Color"
-msgstr "颜色"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -525,8 +540,20 @@ msgstr "创建质量问题"
 msgid "Create Rework"
 msgstr "创建返工"
 
+msgid "Created attribute"
+msgstr "已创建属性"
+
+msgid "Created attribute set"
+msgstr "已创建属性集"
+
+msgid "Created attribute value"
+msgstr "已创建属性值"
+
 msgid "Created company"
 msgstr "已创建公司"
+
+msgid "Created item attributes set"
+msgstr "已创建物品属性集"
 
 msgid "Created maintenance dispatch"
 msgstr "已创建维护派工单"
@@ -601,8 +628,17 @@ msgstr "删除步骤"
 msgid "Delete Timecard ({0})"
 msgstr "删除考勤记录 ({0})"
 
+msgid "Deleted attribute"
+msgstr "已删除属性"
+
+msgid "Deleted attribute set"
+msgstr "已删除属性集"
+
 msgid "Deleted attribute value"
 msgstr "已删除的属性值"
+
+msgid "Deleted item attributes set"
+msgstr "已删除物品属性集"
 
 msgid "Deleted warehouse transfer line"
 msgstr "已删除仓库调拨行"
@@ -774,6 +810,15 @@ msgstr "加载分配状态出错"
 msgid "Error loading attribute categories"
 msgstr "加载属性类别时出错"
 
+msgid "Error loading attribute sets"
+msgstr "加载属性集出错"
+
+msgid "Error loading attribute values"
+msgstr "加载属性值出错"
+
+msgid "Error loading attributes"
+msgstr "加载属性出错"
+
 msgid "Error loading console operators"
 msgstr "加载控制台操作员出错"
 
@@ -785,6 +830,9 @@ msgstr "加载员工信息出错"
 
 msgid "Error loading issues"
 msgstr "加载问题出错"
+
+msgid "Error loading item attributes sets"
+msgstr "加载项目属性集出错"
 
 msgid "Error loading item groups"
 msgstr "加载项组时出错"
@@ -821,12 +869,6 @@ msgstr "加载库存转移时出错"
 
 msgid "Error loading storage types"
 msgstr "存储类型加载错误"
-
-msgid "Error loading style colors"
-msgstr "加载款式颜色出错"
-
-msgid "Error loading style sizes"
-msgstr "加载款式尺寸出错"
 
 msgid "Error loading supplier types"
 msgstr "供应商类型加载出错"
@@ -897,9 +939,6 @@ msgstr "激活工作中心失败"
 msgid "Failed to add a line"
 msgstr "添加行失败"
 
-msgid "Failed to add colors and sizes"
-msgstr "添加颜色和尺码失败"
-
 msgid "Failed to add entry"
 msgstr "添加失败"
 
@@ -953,6 +992,12 @@ msgstr "创建属性失败"
 
 msgid "Failed to create attribute category"
 msgstr "创建属性类别失败"
+
+msgid "Failed to create attribute set"
+msgstr "创建属性集失败"
+
+msgid "Failed to create attribute value"
+msgstr "创建属性值失败"
 
 msgid "Failed to create auth session"
 msgstr "创建认证会话失败"
@@ -1008,6 +1053,9 @@ msgstr "创建检验文件失败"
 msgid "Failed to create invite link"
 msgstr "创建邀请链接失败"
 
+msgid "Failed to create item attributes set"
+msgstr "创建项目属性集失败"
+
 msgid "Failed to create journal entry"
 msgstr "创建日记项失败"
 
@@ -1053,6 +1101,9 @@ msgstr "创建采购订单失败"
 msgid "Failed to create purchase order line."
 msgstr "创建采购订单行失败。"
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr "创建购买订单行失败"
+
 msgid "Failed to create quality issue"
 msgstr "创建质量问题失败"
 
@@ -1097,6 +1148,9 @@ msgstr "创建销售订单失败"
 
 msgid "Failed to create sales order line."
 msgstr "创建销售订单行失败。"
+
+msgid "Failed to create sales order lines for style variants"
+msgstr "创建销售订单行失败"
 
 msgid "Failed to create samples"
 msgstr "创建样品失败"
@@ -1191,6 +1245,12 @@ msgstr "删除分配失败"
 msgid "Failed to delete association"
 msgstr "删除关联失败"
 
+msgid "Failed to delete attribute"
+msgstr "删除属性失败"
+
+msgid "Failed to delete attribute set"
+msgstr "删除属性集失败"
+
 msgid "Failed to delete attribute value"
 msgstr "删除属性值失败"
 
@@ -1259,6 +1319,9 @@ msgstr "删除问题失败"
 
 msgid "Failed to delete issue workflow"
 msgstr "删除问题工作流失败"
+
+msgid "Failed to delete item attributes set"
+msgstr "删除项目属性集失败"
 
 msgid "Failed to delete item group"
 msgstr "删除项组失败"
@@ -1418,12 +1481,6 @@ msgstr "删除存储类型失败"
 
 msgid "Failed to delete storage unit"
 msgstr "删除存储单元失败"
-
-msgid "Failed to delete style color"
-msgstr "删除款式颜色失败"
-
-msgid "Failed to delete style size"
-msgstr "删除款式尺寸失败"
 
 msgid "Failed to delete subsidiary"
 msgstr "删除子工厂失败"
@@ -1731,12 +1788,6 @@ msgstr "获取存储类型ID失败"
 msgid "Failed to get a storageUnit id"
 msgstr "获取存储单元ID失败"
 
-msgid "Failed to get a style color id"
-msgstr "获取款式颜色ID失败"
-
-msgid "Failed to get a style size id"
-msgstr "获取款式尺寸ID失败"
-
 msgid "Failed to get a supplier contact id"
 msgstr "获取供应商联系人ID失败"
 
@@ -1830,8 +1881,26 @@ msgstr "获取资产类别失败"
 msgid "Failed to get asset class id"
 msgstr "获取资产类别ID失败"
 
+msgid "Failed to get assignment id"
+msgstr "获取分配ID失败"
+
 msgid "Failed to get attribute"
 msgstr "获取属性失败"
+
+msgid "Failed to get attribute id"
+msgstr "获取属性ID失败"
+
+msgid "Failed to get attribute set"
+msgstr "获取属性集失败"
+
+msgid "Failed to get attribute set id"
+msgstr "获取属性集ID失败"
+
+msgid "Failed to get attribute value"
+msgstr "获取属性值失败"
+
+msgid "Failed to get attribute value id"
+msgstr "获取属性值ID失败"
 
 msgid "Failed to get chart of accounts"
 msgstr "获取会计科目表失败"
@@ -1940,6 +2009,9 @@ msgstr "获取假期ID失败"
 
 msgid "Failed to get issue type"
 msgstr "获取问题类型失败"
+
+msgid "Failed to get item attributes set"
+msgstr "获取物品属性设置失败"
 
 msgid "Failed to get item group"
 msgstr "获取项组失败"
@@ -2096,12 +2168,6 @@ msgstr "获取存储类型失败"
 
 msgid "Failed to get storageUnit"
 msgstr "获取存储单元失败"
-
-msgid "Failed to get style color"
-msgstr "获取款式颜色失败"
-
-msgid "Failed to get style size"
-msgstr "获取款式尺寸失败"
 
 msgid "Failed to get subsidiary"
 msgstr "获取子公司失败"
@@ -2379,14 +2445,8 @@ msgstr "插入存储类型失败"
 msgid "Failed to insert storageUnit"
 msgstr "插入存储单元失败"
 
-msgid "Failed to insert style color"
-msgstr "插入款式颜色失败"
-
 msgid "Failed to insert style inventory"
 msgstr "插入款式库存失败"
-
-msgid "Failed to insert style size"
-msgstr "插入款式尺寸失败"
 
 msgid "Failed to insert supplier quote"
 msgstr "插入供应商报价失败"
@@ -2805,6 +2865,9 @@ msgstr "加载库存转移失败"
 msgid "Failed to load storage rules"
 msgstr "加载存储规则失败"
 
+msgid "Failed to load style attributes"
+msgstr "加载样式属性失败"
+
 msgid "Failed to load style costing"
 msgstr "加载款式成本失败"
 
@@ -2988,9 +3051,6 @@ msgstr "未能接收操作ID"
 msgid "Failed to record attribute"
 msgstr "记录属性失败"
 
-msgid "Failed to record history"
-msgstr "记录历史失败"
-
 msgid "Failed to record rework quantity"
 msgstr "记录返工数量失败"
 
@@ -3066,9 +3126,6 @@ msgstr "撤销邀请失败"
 msgid "Failed to run IC matching"
 msgstr "IC匹配失败"
 
-msgid "Failed to save bundles"
-msgstr "保存分包失败"
-
 msgid "Failed to save comment"
 msgstr "保存评论失败"
 
@@ -3087,6 +3144,9 @@ msgstr "保存头部失败"
 msgid "Failed to save item"
 msgstr "保存项目失败"
 
+msgid "Failed to save job variant quantities"
+msgstr "保存工作变体数量失败"
+
 msgid "Failed to save journal entry"
 msgstr "保存日记项失败"
 
@@ -3101,6 +3161,9 @@ msgstr "保存采样计划失败"
 
 msgid "Failed to save section"
 msgstr "保存部分失败"
+
+msgid "Failed to save variant quantities"
+msgstr "保存变型数量失败"
 
 msgid "Failed to search users"
 msgstr "搜索用户失败"
@@ -3144,6 +3207,9 @@ msgstr "维护事件启动失败"
 msgid "Failed to stop event"
 msgstr "停止事件失败"
 
+msgid "Failed to sync consumable variants"
+msgstr "同步消耗件变体失败"
+
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
 
@@ -3180,6 +3246,9 @@ msgstr "更新属性失败"
 msgid "Failed to update attribute category"
 msgstr "更新属性类别失败"
 
+msgid "Failed to update attribute set"
+msgstr "更新属性集失败"
+
 msgid "Failed to update attribute value"
 msgstr "更新属性值失败"
 
@@ -3197,6 +3266,9 @@ msgstr "配置更新失败"
 
 msgid "Failed to update consumable"
 msgstr "更新消耗品失败"
+
+msgid "Failed to update consumable attributes"
+msgstr "更新消耗属性失败"
 
 msgid "Failed to update consumable costing"
 msgstr "更新消耗物料成本失败"
@@ -3333,6 +3405,9 @@ msgstr "更新问题流程失败"
 msgid "Failed to update item"
 msgstr "更新项目失败"
 
+msgid "Failed to update item attributes set"
+msgstr "更新项目属性集失败"
+
 msgid "Failed to update item group"
 msgstr "更新项目组失败"
 
@@ -3356,6 +3431,9 @@ msgstr "更新工序工具失败"
 
 msgid "Failed to update job status"
 msgstr "更新作业状态失败"
+
+msgid "Failed to update job variant quantities"
+msgstr "更新工作变体数量失败"
 
 msgid "Failed to update kanban"
 msgstr "更新看板失败"
@@ -3495,6 +3573,9 @@ msgstr "采购订单交货更新失败"
 msgid "Failed to update purchase order line"
 msgstr "采购订单行更新失败"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr "更新购买订单行失败"
+
 msgid "Failed to update purchase order payment"
 msgstr "采购订单付款更新失败"
 
@@ -3564,6 +3645,9 @@ msgstr "更新销售发票状态失败"
 msgid "Failed to update sales order line"
 msgstr "更新销售订单行失败"
 
+msgid "Failed to update sales order lines for style variants"
+msgstr "更新销售订单行失败"
+
 msgid "Failed to update sales order payment"
 msgstr "更新销售订单付款失败"
 
@@ -3600,8 +3684,8 @@ msgstr "更新存储类型失败"
 msgid "Failed to update storageUnit"
 msgstr "更新存储单元失败"
 
-msgid "Failed to update style color"
-msgstr "更新款式颜色失败"
+msgid "Failed to update style attributes"
+msgstr "更新样式属性失败"
 
 msgid "Failed to update style costing"
 msgstr "更新款式成本失败"
@@ -3614,9 +3698,6 @@ msgstr "更新款式计划失败"
 
 msgid "Failed to update style sale price"
 msgstr "更新销售价格失败"
-
-msgid "Failed to update style size"
-msgstr "更新款式尺寸失败"
 
 msgid "Failed to update subsidiary"
 msgstr "更新子公司失败"
@@ -3983,6 +4064,9 @@ msgstr "物品"
 msgid "Item association not found"
 msgstr "未找到项目关联"
 
+msgid "Item attributes set not found"
+msgstr "未找到物品属性设置"
+
 msgid "Item Master"
 msgstr "物品主数据"
 
@@ -4228,6 +4312,9 @@ msgstr "已创建主工单"
 
 msgid "Master Work Orders"
 msgstr "主工单"
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr "完成或收货主工作令失败，请完成分包工作。"
 
 msgid "matches"
 msgstr "匹配"
@@ -4836,6 +4923,9 @@ msgstr "采购订单已完成"
 msgid "Purchase order line created"
 msgstr "已创建采购订单行"
 
+msgid "Purchase order lines created"
+msgstr "已创建采购订单行"
+
 msgid "Purchase order not found"
 msgstr "采购订单未找到"
 
@@ -5063,6 +5153,9 @@ msgstr "已创建销售订单"
 
 msgid "Sales order line created"
 msgstr "已创建销售订单行"
+
+msgid "Sales order lines created"
+msgstr "创建销售订单行"
 
 msgid "Sample recorded"
 msgstr "样本已录制"
@@ -5321,9 +5414,6 @@ msgstr "备件"
 msgid "Spare Parts Used"
 msgstr "已使用备件"
 
-msgid "Split failed"
-msgstr "拆分失败"
-
 msgid "Split quantity too large"
 msgstr "分割数量太大"
 
@@ -5377,12 +5467,6 @@ msgstr "已创建存储单元"
 
 msgid "Style"
 msgstr "款式"
-
-msgid "Style color created"
-msgstr "已创建款式颜色"
-
-msgid "Style size created"
-msgstr "已创建款式尺寸"
 
 msgid "Submit anonymously"
 msgstr "匿名提交"
@@ -5602,12 +5686,6 @@ msgstr "成功删除库存转移"
 
 msgid "Successfully deleted storage type"
 msgstr "成功删除存储类型"
-
-msgid "Successfully deleted style color"
-msgstr "成功删除款式颜色"
-
-msgid "Successfully deleted style size"
-msgstr "成功删除款式尺码"
 
 msgid "Successfully deleted subsidiary"
 msgstr "成功删除子公司"
@@ -5912,8 +5990,14 @@ msgstr "已更新账户"
 msgid "Updated API key"
 msgstr "已更新API密钥"
 
+msgid "Updated attribute"
+msgstr "已更新属性"
+
 msgid "Updated attribute category "
 msgstr "已更新属性类别 "
+
+msgid "Updated attribute set"
+msgstr "已更新属性集"
 
 msgid "Updated attribute value"
 msgstr "已更新属性值"
@@ -5923,6 +6007,9 @@ msgstr "已更新公司"
 
 msgid "Updated consumable"
 msgstr "已更新消耗品"
+
+msgid "Updated consumable attributes"
+msgstr "已更新消耗属性"
 
 msgid "Updated consumable costing"
 msgstr "已更新消耗品成本估算"
@@ -5998,6 +6085,9 @@ msgstr "已更新问题类型"
 
 msgid "Updated item"
 msgstr "已更新项"
+
+msgid "Updated item attributes set"
+msgstr "已更新物品属性集"
 
 msgid "Updated item group"
 msgstr "已更新项目组"
@@ -6167,8 +6257,8 @@ msgstr "已更新存储类型"
 msgid "Updated storageUnit"
 msgstr "已更新存储单元"
 
-msgid "Updated style color"
-msgstr "已更新款式颜色"
+msgid "Updated style attributes"
+msgstr "已更新样式属性"
 
 msgid "Updated style costing"
 msgstr "已更新款式成本估算"
@@ -6181,9 +6271,6 @@ msgstr "已更新款式规划"
 
 msgid "Updated style sale price"
 msgstr "已更新款式销售价格"
-
-msgid "Updated style size"
-msgstr "已更新款式尺寸"
 
 msgid "Updated subsidiary"
 msgstr "已更新子公司"

@@ -10,6 +10,10 @@ import {
   computeJobConfigTableTotal,
   reportsExceedConfigPlan
 } from "./jobConfiguration";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "./jobVariantQuantity.service";
 import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
@@ -21,7 +25,12 @@ import type { ProductionQuantityLineInput } from "./productionQuantityReport.mod
  */
 function splitConfigAndRows(configuration: unknown): {
   config: unknown;
-  rows: { colorCode: string | null; sizeCode: string | null; quantity: number }[];
+  rows: {
+    valuesKey: string | null;
+    colorCode: string | null;
+    sizeCode: string | null;
+    quantity: number;
+  }[];
 } {
   if (
     !configuration ||
@@ -36,9 +45,16 @@ function splitConfigAndRows(configuration: unknown): {
   const rows = Array.isArray(splitRows)
     ? splitRows.map((r) => {
         const row = (r ?? {}) as Record<string, unknown>;
+        const colorCode = (row.colorCode ?? null) as string | null;
+        const sizeCode = (row.sizeCode ?? null) as string | null;
+        const valuesKey =
+          (typeof row.valuesKey === "string" && row.valuesKey.trim()) ||
+          [colorCode, sizeCode].filter(Boolean).join("|") ||
+          null;
         return {
-          colorCode: (row.colorCode ?? null) as string | null,
-          sizeCode: (row.sizeCode ?? null) as string | null,
+          valuesKey,
+          colorCode,
+          sizeCode,
           quantity: Number(row.quantity) || 0
         };
       })
@@ -148,13 +164,15 @@ async function validateConfiguredLinesHaveConfiguration(
   // Bundle jobs carry a fixed color/size and report a plain quantity.
   if (bundle.data) return { error: null };
 
-  const params = await client
-    .from("configurationParameter")
-    .select("id")
+  // Qty-grid configured = attribute selections only (not legacy configurationParameter).
+  const selections = await (client as any)
+    .from("itemAttributeSelection")
+    .select("itemId")
     .eq("itemId", itemId)
     .eq("companyId", args.companyId)
     .limit(1);
-  if (!params.data || params.data.length === 0) return { error: null };
+  const isConfigured = (selections.data?.length ?? 0) > 0;
+  if (!isConfigured) return { error: null };
 
   for (const line of linesToCheck) {
     const configTotal = line.configuration
@@ -195,7 +213,7 @@ export async function validateProductionQuantityRemaining(
   );
   const newProductionLines = args.lines.filter((l) => l.type === "Production");
 
-  const [operation, existing, job] = await Promise.all([
+  const [operation, existing] = await Promise.all([
     client
       .from("jobOperation")
       .select("targetQuantity, operationQuantity")
@@ -207,13 +225,7 @@ export async function validateProductionQuantityRemaining(
       .select("quantity, type, configuration")
       .eq("jobOperationId", args.jobOperationId)
       .eq("companyId", args.companyId)
-      .is("invalidatedAt", null),
-    client
-      .from("job")
-      .select("configuration")
-      .eq("id", args.jobId)
-      .eq("companyId", args.companyId)
-      .single()
+      .is("invalidatedAt", null)
   ]);
 
   const existingRows = existing.data ?? [];
@@ -236,8 +248,16 @@ export async function validateProductionQuantityRemaining(
     }
   }
 
-  // (1) Config-param plan cap (per color/size cell, produced units only).
-  const planned = job.data?.configuration ?? null;
+  // (1) Config-param plan cap (per variant cell, produced units only).
+  const plannedQty = await getJobVariantQuantities(
+    client,
+    args.jobId,
+    args.companyId
+  );
+  const planned =
+    plannedQty.data.length > 0
+      ? jobVariantQuantitiesToConfigTable(plannedQty.data)
+      : null;
   const reportedConfigs = [
     ...existingRows
       .filter((r) => r.type === "Production")
@@ -379,7 +399,9 @@ export async function createProductionQuantityReport(
     args.jobOperationId,
     args.companyId
   );
-  const productionRows = prepared.find((p) => p.line.type === "Production")?.rows;
+  const productionRows = prepared.find(
+    (p) => p.line.type === "Production"
+  )?.rows;
   if (
     splitBatchMasterWorkOrderId &&
     productionRows &&
@@ -518,7 +540,9 @@ export async function replaceProductionQuantityReportLines(
 
   // Re-reporting replaces this report's still-pending cut rows (master cutting);
   // an empty set clears them.
-  const productionRows = prepared.find((p) => p.line.type === "Production")?.rows;
+  const productionRows = prepared.find(
+    (p) => p.line.type === "Production"
+  )?.rows;
   if (productionRows) {
     const masterWorkOrderId = await getMasterCuttingReportSplitTarget(
       client,

@@ -9,7 +9,6 @@ import {
   LuGroup,
   LuHammer,
   LuLayoutTemplate,
-  LuPalette,
   LuPizza,
   LuPuzzle,
   LuRuler,
@@ -74,18 +73,24 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
       ]
     },
     {
-      name: t`Style Properties`,
+      name: t`Item Attributes`,
       routes: [
         {
-          name: t`Colors`,
-          to: path.to.styleColors,
-          icon: <LuPalette />,
+          name: t`Attributes`,
+          to: path.to.itemAttributes,
+          icon: <LuShapes />,
           role: "employee"
         },
         {
-          name: t`Sizes`,
-          to: path.to.styleSizes,
-          icon: <LuRuler />,
+          name: t`Attribute Sets`,
+          to: path.to.itemAttributeSets,
+          icon: <LuGroup />,
+          role: "employee"
+        },
+        {
+          name: t`Item Attribute Sets`,
+          to: path.to.itemAttributeSetAssignments,
+          icon: <LuPuzzle />,
           role: "employee"
         }
       ]

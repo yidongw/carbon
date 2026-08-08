@@ -23,6 +23,10 @@ type ResponsiveConfigTableProps<
   getCellClassName?: (column: TColumn, hasReferences: boolean) => string;
   renderCell: (column: TColumn, row: TRow, rowIndex: number) => ReactNode;
   renderRowActions?: (rowIndex: number) => ReactNode;
+  /** Localized display label per column key (e.g. color code -> color name).
+   * Used for header labels when a list attribute's option codes are the columns
+   * (a color-only grid). Codes not in the map (e.g. sizes) render unchanged. */
+  optionLabels?: Record<string, string>;
 };
 
 function isZeroOrEmpty(value: string | number | boolean | undefined): boolean {
@@ -72,9 +76,12 @@ export function ResponsiveConfigTable<
   ) => string,
   getCellClassName,
   renderCell,
-  renderRowActions
+  renderRowActions,
+  optionLabels
 }: ResponsiveConfigTableProps<TColumn, TRow>) {
   if (rows.length === 0) return null;
+
+  const headerLabel = (col: TColumn) => optionLabels?.[col.key] ?? col.label;
 
   const resolveFieldEmpty =
     isFieldEmpty ??
@@ -103,7 +110,7 @@ export function ResponsiveConfigTable<
                     getColumnWidthClass(col, hasReferences)
                   )}
                 >
-                  {col.label}
+                  {headerLabel(col)}
                 </Th>
               ))}
               {renderRowActions ? (
@@ -138,7 +145,7 @@ export function ResponsiveConfigTable<
                 <Th
                   className={cn(stickyLabelClass, "min-w-[5rem] max-w-[8rem]")}
                 >
-                  {col.label}
+                  {headerLabel(col)}
                 </Th>
                 {rows.map((row, rowIndex) => (
                   <Td key={rowIndex} className={cellClassName(col)}>

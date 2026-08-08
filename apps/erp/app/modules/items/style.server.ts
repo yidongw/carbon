@@ -3,8 +3,8 @@ import { sql } from "kysely";
 import type { z } from "zod";
 import { getDatabaseClient } from "~/services/database.server";
 import { sanitize } from "~/utils/supabase";
+import { syncItemVariantsFromSelections } from "./itemAttribute.service";
 import {
-  syncStyleConfigurationParameters,
   upsertItemDefaultPickMethod,
   upsertItemShelfLife
 } from "./items.service";
@@ -22,8 +22,8 @@ type StylePayload = z.infer<typeof styleValidator> & {
   companyId: string;
   createdBy: string;
   customFields?: Json;
-  styleColorIds: string[];
-  styleSizeIds: string[];
+  attributeSetId: string;
+  selections: Record<string, string[]>;
 };
 
 type StyleSummary = {
@@ -361,48 +361,6 @@ async function insertStyleRecord(
   if (result.error) throw result.error;
 }
 
-async function insertStyleColorAssignments(
-  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
-  args: {
-    styleId: string;
-    companyId: string;
-    userId: string;
-    styleColorIds: string[];
-  }
-) {
-  const styleClient = client as any;
-  if (args.styleColorIds.length === 0) return;
-  const rows = args.styleColorIds.map((styleColorId) => ({
-    styleId: args.styleId,
-    styleColorId,
-    companyId: args.companyId,
-    createdBy: args.userId
-  }));
-  const result = await styleClient.from("styleColorAssignment").insert(rows);
-  if (result.error) throw result.error;
-}
-
-async function insertStyleSizeAssignments(
-  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
-  args: {
-    styleId: string;
-    companyId: string;
-    userId: string;
-    styleSizeIds: string[];
-  }
-) {
-  const styleClient = client as any;
-  if (args.styleSizeIds.length === 0) return;
-  const rows = args.styleSizeIds.map((styleSizeId) => ({
-    styleId: args.styleId,
-    styleSizeId,
-    companyId: args.companyId,
-    createdBy: args.userId
-  }));
-  const result = await styleClient.from("styleSizeAssignment").insert(rows);
-  if (result.error) throw result.error;
-}
-
 export async function upsertStyle(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   style: StylePayload
@@ -439,25 +397,19 @@ export async function upsertStyle(
         userId: style.createdBy,
         customFields: style.customFields
       });
-      await insertStyleColorAssignments(client, {
-        styleId: style.id,
-        companyId: style.companyId,
-        userId: style.createdBy,
-        styleColorIds: style.styleColorIds
-      });
-      await insertStyleSizeAssignments(client, {
-        styleId: style.id,
-        companyId: style.companyId,
-        userId: style.createdBy,
-        styleSizeIds: style.styleSizeIds
-      });
-      await syncStyleConfigurationParameters(client, {
-        itemId,
-        companyId: style.companyId,
-        userId: style.createdBy,
-        styleColorIds: style.styleColorIds,
-        styleSizeIds: style.styleSizeIds
-      });
+      // Attribute selections + child SKU items (styles view reads selections).
+      // Skip when no set was chosen (e.g. form submitted before the set loaded);
+      // the style is created bare and colors/sizes can be added on the detail page.
+      if (style.attributeSetId) {
+        const variantSync = await syncItemVariantsFromSelections(client, {
+          itemId,
+          companyId: style.companyId,
+          userId: style.createdBy,
+          attributeSetId: style.attributeSetId,
+          selections: style.selections
+        });
+        if (variantSync.error) throw variantSync.error;
+      }
     } catch (error) {
       // Roll back the orphaned item so retries don't hit duplicate-key errors
       await client.from("item").delete().eq("id", itemId);
@@ -552,114 +504,4 @@ export async function upsertStyle(
     data: null,
     error: new Error("upsertStyle only supports creating a style")
   };
-}
-
-// Add-only: append colors/sizes to an existing style. Editing/removing is
-// intentionally unsupported — a style's color/size *codes* are snapshotted into
-// production data (bundleWorkOrder, productionQuantity.configuration, config
-// params) with no FK, so renaming/removing them would orphan that history.
-// Adding is safe: new assignment rows + new config-param options only.
-export async function addStyleColorsAndSizes(
-  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
-  args: {
-    itemId: string;
-    companyId: string;
-    userId: string;
-    styleColorIds: string[];
-    styleSizeIds: string[];
-  }
-): Promise<{ data: { id: string } | null; error: Error | null }> {
-  const { itemId, companyId, userId, styleColorIds, styleSizeIds } = args;
-
-  if (styleColorIds.length === 0 && styleSizeIds.length === 0) {
-    return { data: { id: itemId }, error: null };
-  }
-
-  const styleClient = client as any;
-
-  // Assignments are keyed on the style's readableId (shared across revisions);
-  // configurationParameter rows are keyed on the per-revision itemId.
-  const itemRow = await styleClient
-    .from("item")
-    .select("readableId")
-    .eq("id", itemId)
-    .eq("companyId", companyId)
-    .single();
-  if (itemRow.error || !itemRow.data?.readableId) {
-    return { data: null, error: toError(itemRow.error, "Style not found") };
-  }
-  const styleId = itemRow.data.readableId as string;
-
-  try {
-    // Ignore duplicates so re-adding an already-assigned color/size is a no-op
-    // rather than a composite-primary-key violation.
-    if (styleColorIds.length > 0) {
-      const colorRows = styleColorIds.map((styleColorId) => ({
-        styleId,
-        styleColorId,
-        companyId,
-        createdBy: userId
-      }));
-      const colorInsert = await styleClient
-        .from("styleColorAssignment")
-        .upsert(colorRows, {
-          onConflict: "styleId,styleColorId,companyId",
-          ignoreDuplicates: true
-        });
-      if (colorInsert.error) throw colorInsert.error;
-    }
-
-    if (styleSizeIds.length > 0) {
-      const sizeRows = styleSizeIds.map((styleSizeId) => ({
-        styleId,
-        styleSizeId,
-        companyId,
-        createdBy: userId
-      }));
-      const sizeInsert = await styleClient
-        .from("styleSizeAssignment")
-        .upsert(sizeRows, {
-          onConflict: "styleId,styleSizeId,companyId",
-          ignoreDuplicates: true
-        });
-      if (sizeInsert.error) throw sizeInsert.error;
-    }
-
-    // Re-derive the config parameters from the FULL set of assignments —
-    // syncStyleConfigurationParameters replaces listOptions with exactly the
-    // ids passed, so passing only the new ids would drop the existing options.
-    const [allColors, allSizes] = await Promise.all([
-      styleClient
-        .from("styleColorAssignment")
-        .select("styleColorId")
-        .eq("styleId", styleId)
-        .eq("companyId", companyId),
-      styleClient
-        .from("styleSizeAssignment")
-        .select("styleSizeId")
-        .eq("styleId", styleId)
-        .eq("companyId", companyId)
-    ]);
-    if (allColors.error) throw allColors.error;
-    if (allSizes.error) throw allSizes.error;
-
-    await syncStyleConfigurationParameters(client, {
-      itemId,
-      companyId,
-      userId,
-      styleColorIds: (allColors.data ?? []).map(
-        (c: { styleColorId: string }) => c.styleColorId
-      ),
-      styleSizeIds: (allSizes.data ?? []).map(
-        (s: { styleSizeId: string }) => s.styleSizeId
-      )
-    });
-  } catch (error) {
-    return {
-      data: null,
-      error: toError(error, "Failed to add style colors and sizes")
-    };
-  }
-
-  return { data: { id: itemId }, error: null };
 }

@@ -171,6 +171,7 @@ const PurchaseOrderLineForm = ({
     conversionFactor: number;
     description: string;
     fallbackUnitPrice: number;
+    hasVariantAttributes: boolean;
     inventoryUom: string;
     minimumOrderQuantity?: number;
     priceBreaks: Array<{ quantity: number; unitPrice: number }>;
@@ -188,6 +189,7 @@ const PurchaseOrderLineForm = ({
     conversionFactor: initialValues.conversionFactor ?? 1,
     description: initialValues.description ?? "",
     fallbackUnitPrice: initialValues.supplierUnitPrice ?? 0,
+    hasVariantAttributes: false,
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     minimumOrderQuantity: undefined,
     purchaseQuantity: initialValues.purchaseQuantity ?? 1,
@@ -370,16 +372,17 @@ const PurchaseOrderLineForm = ({
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
-  // Styles always use the color×size quantity grid — show the trigger as soon
-  // as a Style item is selected (don't wait on requiresConfiguration /
-  // configurable-items hydrate the way Job/Part forms do).
+  // Items with variant attributes use the config-quantity grid when adding a
+  // parent line — Styles (color×size) always, Consumables with a color set. The
+  // expanded variant SKU lines (no stored configuration) use plain quantity.
   const hasConfigurationParameters =
-    itemType === "Style" && Boolean(itemData.itemId);
+    (itemType === "Style" || itemData.hasVariantAttributes) &&
+    Boolean(itemData.itemId) &&
+    !(isEditing && !initialValues.configuration);
 
-  // A Style line's quantity comes from the color×size grid, so it starts at 0
-  // and Save stays disabled until the grid supplies a quantity.
+  // A configurable parent line's quantity comes from the per-variant grid.
   const isMissingStyleQuantity =
-    itemType === "Style" && !(itemData.purchaseQuantity > 0);
+    hasConfigurationParameters && !(itemData.purchaseQuantity > 0);
 
   const onQuantityChange = (value: number) => {
     const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
@@ -430,6 +433,7 @@ const PurchaseOrderLineForm = ({
       conversionFactor: 1,
       description: "",
       fallbackUnitPrice: 0,
+      hasVariantAttributes: false,
       inventoryUom: "",
       minimumOrderQuantity: undefined,
       priceBreaks: [],
@@ -452,6 +456,7 @@ const PurchaseOrderLineForm = ({
       ...d,
       itemId,
       description: "",
+      hasVariantAttributes: false,
       purchaseQuantity: itemType === "Style" ? 0 : d.purchaseQuantity
     }));
     switch (itemType) {
@@ -466,39 +471,52 @@ const PurchaseOrderLineForm = ({
       case "Service":
       // @ts-expect-error
       case "Fixture":
-        const [item, supplierPart, inventory] = await Promise.all([
-          carbon
-            .from("item")
-            .select(
-              "name, readableIdWithRevision, type, unitOfMeasureCode, itemCost(unitCost), itemReplenishment(purchasingUnitOfMeasureCode, conversionFactor, leadTime)"
-            )
-            .eq("id", itemId)
-            .eq("companyId", company.id)
-            .single(),
-          carbon
-            .from("supplierPart")
-            .select("*")
-            .eq("itemId", itemId)
-            .eq("companyId", company.id)
-            .eq("supplierId", routeData?.purchaseOrder.supplierId!)
-            .maybeSingle(),
-          carbon
-            .from("pickMethod")
-            .select("defaultStorageUnitId")
-            .eq("itemId", itemId)
-            .eq("companyId", company.id)
-            .eq("locationId", locationId!)
-            .maybeSingle()
-        ]);
+        const [item, supplierPart, inventory, variantAttributes] =
+          await Promise.all([
+            carbon
+              .from("item")
+              .select(
+                "name, readableIdWithRevision, type, unitOfMeasureCode, itemCost(unitCost), itemReplenishment(purchasingUnitOfMeasureCode, conversionFactor, leadTime)"
+              )
+              .eq("id", itemId)
+              .eq("companyId", company.id)
+              .single(),
+            carbon
+              .from("supplierPart")
+              .select("*")
+              .eq("itemId", itemId)
+              .eq("companyId", company.id)
+              .eq("supplierId", routeData?.purchaseOrder.supplierId!)
+              .maybeSingle(),
+            carbon
+              .from("pickMethod")
+              .select("defaultStorageUnitId")
+              .eq("itemId", itemId)
+              .eq("companyId", company.id)
+              .eq("locationId", locationId!)
+              .maybeSingle(),
+            // Any item with Color/Size attribute selections (Style always; a
+            // Consumable with a Fabric/Trim color set) gets the config grid.
+            carbon
+              .from("itemAttributeSelection")
+              // Composite PK — no `id` column; select a real column.
+              .select("attributeValueId")
+              .eq("itemId", itemId)
+              .eq("companyId", company.id)
+              .in("attributeId", ["iat_color", "iat_size"])
+              .limit(1)
+          ]);
 
         const itemCost = item?.data?.itemCost?.[0];
         const itemReplenishment = item?.data?.itemReplenishment;
         const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
         const minOrderQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
-        // A Style's quantity is the sum of its color×size grid, so leave it at 0
-        // until the grid is filled in.
+        // A configurable item's quantity is the sum of its per-variant grid, so
+        // leave it at 0 until the grid is filled in.
         const isStyle = item?.data?.type === "Style";
-        const initialQty = isStyle ? 0 : minOrderQty;
+        const hasVariantAttributes =
+          isStyle || (variantAttributes?.data?.length ?? 0) > 0;
+        const initialQty = hasVariantAttributes ? 0 : minOrderQty;
         const leadTime = item?.data?.itemReplenishment?.leadTime ?? 0;
         const baseFallback =
           (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
@@ -517,6 +535,7 @@ const PurchaseOrderLineForm = ({
         setItemData({
           itemId: itemId,
           description: item.data?.name ?? "",
+          hasVariantAttributes,
           purchaseQuantity: initialQty,
           supplierUnitPrice: resolvedPrice,
           supplierShippingCost: 0,
@@ -785,7 +804,8 @@ const PurchaseOrderLineForm = ({
                           }}
                         />
 
-                        {itemType === "Style" ? (
+                        {itemType === "Style" ||
+                        itemData.hasVariantAttributes ? (
                           <QuantityWithConfigTable
                             name="purchaseQuantity"
                             label={t`Quantity`}

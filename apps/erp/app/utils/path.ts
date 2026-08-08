@@ -169,6 +169,8 @@ export const path = {
       materialSubstances: `${api}/items/substances`,
       styleColors: `${api}/items/style-colors`,
       styleSizes: `${api}/items/style-sizes`,
+      attributeSetsForType: (itemType: string) =>
+        `${api}/items/attribute-sets-for-type?itemType=${encodeURIComponent(itemType)}`,
       messagingNotify: `${api}/messaging/notify`,
       mrp: (locationId?: string) =>
         generatePath(
@@ -706,6 +708,8 @@ export const path = {
       generatePath(`${x}/consumable/${id}/costing`),
     consumableDetails: (id: string) =>
       generatePath(`${x}/consumable/${id}/details`),
+    consumableAttributes: (id: string) =>
+      generatePath(`${x}/consumable/${id}/attributes`),
     consumableInventory: (id: string) =>
       generatePath(`${x}/consumable/${id}/inventory`),
     consumableInventoryLocation: (id: string, locationId: string) =>
@@ -866,10 +870,14 @@ export const path = {
       generatePath(`${x}/items/dimensions/delete/${id}`),
     deleteMaterialFinish: (id: string) =>
       generatePath(`${x}/items/finishes/delete/${id}`),
-    deleteStyleColor: (id: string) =>
-      generatePath(`${x}/items/colors/delete/${id}`),
-    deleteStyleSize: (id: string) =>
-      generatePath(`${x}/items/sizes/delete/${id}`),
+    deleteItemAttribute: (id: string) =>
+      generatePath(`${x}/items/attributes/delete/${id}`),
+    deleteItemAttributeSet: (id: string) =>
+      generatePath(`${x}/items/attribute-sets/delete/${id}`),
+    deleteItemAttributeSetAssignment: (id: string) =>
+      generatePath(`${x}/items/attribute-set-assignments/delete/${id}`),
+    deleteItemAttributeValue: (attributeId: string, id: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}/delete/${id}`),
     deleteMaterialForm: (id: string) =>
       generatePath(`${x}/items/forms/delete/${id}`),
     deleteMaterialGrade: (id: string) =>
@@ -1265,10 +1273,18 @@ export const path = {
     materialDimensions: `${x}/items/dimensions`,
     materialFinish: (id: string) => generatePath(`${x}/items/finishes/${id}`),
     materialFinishes: `${x}/items/finishes`,
-    styleColor: (id: string) => generatePath(`${x}/items/colors/${id}`),
-    styleColors: `${x}/items/colors`,
-    styleSize: (id: string) => generatePath(`${x}/items/sizes/${id}`),
-    styleSizes: `${x}/items/sizes`,
+    itemAttribute: (id: string) => generatePath(`${x}/items/attributes/${id}`),
+    itemAttributes: `${x}/items/attributes`,
+    itemAttributeValues: (attributeId: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}`),
+    itemAttributeValue: (attributeId: string, id: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}/${id}`),
+    itemAttributeSet: (id: string) =>
+      generatePath(`${x}/items/attribute-sets/${id}`),
+    itemAttributeSets: `${x}/items/attribute-sets`,
+    itemAttributeSetAssignment: (id: string) =>
+      generatePath(`${x}/items/attribute-set-assignments/${id}`),
+    itemAttributeSetAssignments: `${x}/items/attribute-set-assignments`,
     materialForm: (id: string) => generatePath(`${x}/items/forms/${id}`),
     materialForms: `${x}/items/forms`,
     materialGrade: (id: string) => generatePath(`${x}/items/grades/${id}`),
@@ -1400,8 +1416,11 @@ export const path = {
     newMethodOperationParameter: `${x}/items/methods/operation/parameter/new`,
     newMaterialDimension: `${x}/items/dimensions/new`,
     newMaterialFinish: `${x}/items/finishes/new`,
-    newStyleColor: `${x}/items/colors/new`,
-    newStyleSize: `${x}/items/sizes/new`,
+    newItemAttribute: `${x}/items/attributes/new`,
+    newItemAttributeSet: `${x}/items/attribute-sets/new`,
+    newItemAttributeSetAssignment: `${x}/items/attribute-set-assignments/new`,
+    newItemAttributeValue: (attributeId: string) =>
+      generatePath(`${x}/items/attribute-values/${attributeId}/new`),
     newMaterialForm: `${x}/items/forms/new`,
     newMaterialGrade: `${x}/items/grades/new`,
     newMaterialSubstance: `${x}/items/substances/new`,
@@ -1504,8 +1523,8 @@ export const path = {
     notificationSettings: `${x}/account/notifications`,
     part: (id: string) => generatePath(`${x}/part/${id}`),
     style: (id: string) => generatePath(`${x}/style/${id}`),
-    addStyleColorsSizes: (id: string) =>
-      generatePath(`${x}/style/${id}/add-colors-sizes`),
+    styleAttributes: (id: string) =>
+      generatePath(`${x}/style/${id}/attributes`),
     itemProperties: (id: string) => generatePath(`${x}/items/${id}/properties`),
     partCosting: (id: string) => generatePath(`${x}/part/${id}/costing`),
     partDetails: (id: string) => generatePath(`${x}/part/${id}/details`),

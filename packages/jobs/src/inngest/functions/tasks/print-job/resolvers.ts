@@ -27,8 +27,7 @@ export type BundleTicketItem = {
   readableId: string;
   bundleUrl: string;
   styleReadableId: string;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLines: Array<{ name: string; value: string }>;
   quantity: number;
   sequence: number | null;
   totalBundles: number | null;
@@ -47,10 +46,10 @@ export async function buildBundleTicketItem(
   client: SupabaseClient<Database>,
   bundleWorkOrderId: string
 ): Promise<BundleTicketItem | null> {
-  const { data: bundle } = await client
+  const { data: bundle } = await (client as any)
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, masterWorkOrderId, sequence, colorCode, colorName, sizeCode, quantity, jobReadableId, readableIdWithRevision, itemName"
+      "id, jobId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
     )
     .eq("id", bundleWorkOrderId)
     .single();
@@ -65,6 +64,22 @@ export async function buildBundleTicketItem(
       resolveCurrentWorkCenter(client, bundle.jobId)
     ]);
 
+  const attributeValues =
+    (bundle.attributeValues as Record<string, string> | null) ?? {};
+  const attributeLines = Object.entries(attributeValues)
+    .filter(([, v]) => v != null && String(v).length > 0)
+    .map(([name, value]) => ({ name, value: String(value) }));
+  if (
+    attributeLines.length === 0 &&
+    bundle.attributeLabel &&
+    String(bundle.attributeLabel).length > 0
+  ) {
+    attributeLines.push({
+      name: "属性",
+      value: String(bundle.attributeLabel)
+    });
+  }
+
   return {
     id: bundle.id!,
     readableId: bundle.jobReadableId ?? bundle.id!,
@@ -74,8 +89,7 @@ export async function buildBundleTicketItem(
       bundle.itemName ||
       bundle.jobReadableId ||
       "",
-    colorName: bundle.colorName ?? bundle.colorCode ?? null,
-    sizeCode: bundle.sizeCode ?? null,
+    attributeLines,
     quantity: bundle.quantity ?? 0,
     sequence: bundle.sequence ?? null,
     totalBundles,

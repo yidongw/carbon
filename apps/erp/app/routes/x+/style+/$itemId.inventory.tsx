@@ -3,8 +3,15 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { getStorageRulesDataForTarget } from "@carbon/ee/storage-rules.server";
 import { validationError, validator } from "@carbon/form";
-import { VStack } from "@carbon/react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  VStack
+} from "@carbon/react";
 import { pluckUnique } from "@carbon/utils";
+import { Trans } from "@lingui/react/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { useStorageUnits } from "~/components/Form/StorageUnit";
@@ -19,6 +26,7 @@ import {
   getItemQuantities,
   getItemShelfLife,
   getItemStorageUnitQuantities,
+  getItemVariantQuantities,
   getPickMethod,
   pickMethodWithShelfLifeValidator,
   type shelfLifeModes,
@@ -117,7 +125,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     itemStorageUnitQuantities,
     shelfLife,
     bomHasShelfLifeManagedInput,
-    rulesData
+    rulesData,
+    variantQuantities
   ] = await Promise.all([
     getItemQuantities(client, itemId, companyId, locationId),
     getItemStorageUnitQuantities(client, itemId, companyId, locationId),
@@ -127,7 +136,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       targetType: "item",
       targetId: itemId,
       companyId
-    })
+    }),
+    getItemVariantQuantities(client, itemId, companyId, locationId)
   ]);
 
   if (quantities.error) {
@@ -160,6 +170,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     styleInventory: styleInventory.data,
     itemStorageUnitQuantities: itemStorageUnitQuantities.data,
     quantities: quantities.data,
+    variantQuantities: variantQuantities.data ?? [],
     shelfLife: shelfLife.data,
     bomHasShelfLifeManagedInput,
     trackedEntityExpirations,
@@ -236,6 +247,7 @@ export default function StyleInventoryRoute() {
     styleInventory,
     itemStorageUnitQuantities,
     quantities,
+    variantQuantities,
     shelfLife,
     bomHasShelfLifeManagedInput,
     trackedEntityExpirations,
@@ -292,6 +304,71 @@ export default function StyleInventoryRoute() {
         quantities={quantities}
         storageUnits={storageUnits.options}
       />
+      {variantQuantities.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans>SKU quantities</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left border-b">
+                    <th className="py-2 pr-4">
+                      <Trans>SKU</Trans>
+                    </th>
+                    <th className="py-2 pr-4">
+                      <Trans>On hand</Trans>
+                    </th>
+                    <th className="py-2">
+                      <Trans>Available</Trans>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {variantQuantities.map(
+                    (row: {
+                      variantItemId: string;
+                      readableId: string;
+                      active?: boolean;
+                      quantities: {
+                        quantityOnHand?: number;
+                        quantityAvailable?: number;
+                      } | null;
+                    }) => (
+                      <tr
+                        key={row.variantItemId}
+                        className={
+                          row.active === false
+                            ? "border-b text-muted-foreground"
+                            : "border-b"
+                        }
+                      >
+                        <td className="py-2 pr-4 font-mono">
+                          {row.readableId}
+                          {row.active === false ? (
+                            <span className="ml-2 text-xs">
+                              <Trans>Inactive</Trans>
+                            </span>
+                          ) : null}
+                        </td>
+                        <td className="py-2 pr-4">
+                          {Number(row.quantities?.quantityOnHand ?? 0)}
+                        </td>
+                        <td className="py-2">
+                          {Number(row.quantities?.quantityAvailable ?? 0)}
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
       <RuleAssignmentsList
         targetType="item"
         targetId={itemId}

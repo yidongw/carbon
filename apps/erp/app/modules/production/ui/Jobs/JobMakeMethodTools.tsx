@@ -132,7 +132,7 @@ const JobMakeMethodTools = ({ makeMethod }: { makeMethod?: JobMakeMethod }) => {
   const configuratorModal = useDisclosure();
 
   // State for configurable items
-  const configurableItemIds = useConfigurableItems();
+  const configurableItemIds = useConfigurableItems(true);
   const [selectedConfigureItemId, setSelectedConfigureItemId] = useState<
     string | null
   >(null);

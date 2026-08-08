@@ -10,7 +10,7 @@ export function StyleConfigChips({ chips }: { chips: StyleConfigChip[] }) {
         <Badge
           key={chip.key}
           variant="secondary"
-          className="font-normal tabular-nums"
+          className="font-semibold tabular-nums"
         >
           {chip.label}
         </Badge>

@@ -352,18 +352,19 @@ const STYLE_SIZE_CODES: string[] = [
   "OS"
 ];
 
-const pickName = (names: Record<string, string>, language?: string): string =>
-  (language ? names[language] : undefined) ?? names.en ?? "";
-
 /**
- * The color + size rows to seed for a company, with names localized to the
- * given language (falls back to English for any locale without a translation).
+ * The color + size rows to seed for a company. Color names are stored as the
+ * English base name; the UI translates them per-locale via the seed display-name
+ * catalog (translateSeedDisplayName), so "Black" renders as 黑色 in zh, etc.
+ * `language` is accepted for API compatibility but no longer localizes the
+ * stored name — keeping English as the single stored base was the requirement.
  */
 export function styleReferenceRows(language?: string) {
+  void language;
   return {
     colors: STYLE_COLORS.map((c) => ({
       colorCode: c.code,
-      colorName: pickName(c.names, language)
+      colorName: c.names.en ?? c.code
     })),
     // `index` is the canonical apparel order (XS→3XL, OS last) persisted as
     // `sortOrder` so downstream reads don't fall back to alphabetical.
@@ -386,4 +387,83 @@ export function styleColorEnglishNamesByCode(): Record<string, string> {
     if (en) out[color.code] = en;
   }
   return out;
+}
+
+const STYLE_COLOR_BY_CODE: Record<string, LocalizedRef> = Object.fromEntries(
+  STYLE_COLORS.map((c) => [c.code, c])
+);
+
+const STYLE_COLOR_BY_EN_NAME: Record<string, LocalizedRef> = Object.fromEntries(
+  STYLE_COLORS.map((c) => [c.names.en.trim().toLowerCase(), c])
+);
+
+/**
+ * Localized display name for a standard style color looked up by its stored
+ * English base NAME (e.g. "Black" → 黑色), for callers that only have the name
+ * (a variant view exposing `COALESCE(value.name, value.code)`). Returns
+ * `undefined` for non-standard names (e.g. size codes, company colors) so the
+ * caller keeps the stored value.
+ */
+export function localizeStyleColorNameByName(
+  name: string | null | undefined,
+  language?: string
+): string | undefined {
+  if (!name) return undefined;
+  const ref = STYLE_COLOR_BY_EN_NAME[name.trim().toLowerCase()];
+  if (!ref) return undefined;
+  if (!language) return ref.names.en;
+  const base = language.split("-")[0];
+  return ref.names[language] ?? ref.names[base] ?? ref.names.en;
+}
+
+/**
+ * Localized display name for a standard style color, by its stable code.
+ * The seed list carries every locale, so the UI can render the color in the
+ * user's language regardless of what name is stored on the value row. Returns
+ * `undefined` for codes that aren't part of the standard palette (e.g. a
+ * company-defined color) so callers can fall back to the stored name.
+ */
+export function localizeStyleColorName(
+  code: string | null | undefined,
+  language?: string
+): string | undefined {
+  if (!code) return undefined;
+  const ref = STYLE_COLOR_BY_CODE[code];
+  if (!ref) return undefined;
+  if (!language) return ref.names.en;
+  // Accept both the short lingui locale ("zh") and a full BCP-47 tag ("zh-CN")
+  // — different callers pass different formats. Fall back short, then English.
+  const base = language.split("-")[0];
+  return ref.names[language] ?? ref.names[base] ?? ref.names.en;
+}
+
+/**
+ * Localize a variant's attribute label — a separator-joined string of attribute
+ * value CODES (e.g. a bundle's `valuesKey` "BK|S" rendered as "BK · S"). Each
+ * segment is translated to the user's locale when it's a standard color code
+ * (BK → 黑色); size codes and any non-color segments (e.g. an item name
+ * fallback) pass through unchanged. Usable from both ERP and MES.
+ */
+export function localizeVariantAttributeLabel(
+  label: string | null | undefined,
+  language?: string,
+  separator = " · "
+): string {
+  if (!label) return "";
+  // Split on whatever separator the source used — " · ", a bare "·", or the raw
+  // valuesKey "|" — so a label never silently passes through untranslated when a
+  // caller's separator differs from the output one.
+  return label
+    .split(/\s*[·|]\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map(
+      (seg) =>
+        // A segment may be a value CODE (BK) or an English base NAME (Black),
+        // depending on the source field — localize either; non-colors pass through.
+        localizeStyleColorName(seg, language) ??
+        localizeStyleColorNameByName(seg, language) ??
+        seg
+    )
+    .join(separator);
 }

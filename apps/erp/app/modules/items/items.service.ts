@@ -11,6 +11,11 @@ import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
+import {
+  getGarmentAttributeValueList,
+  getStyleConfigurationParametersFromAttributes,
+  SYSTEM_ATTRIBUTE
+} from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
@@ -59,12 +64,11 @@ import {
   type serviceValidator,
   type shelfLifeModes,
   type shelfLifeTriggerTimings,
-  type styleColorValidator,
   type supplierPartValidator,
   type toolValidator,
   type unitOfMeasureValidator
 } from "./items.models";
-import type { styleSizeValidator, styleValidator } from "./style.models";
+import type { styleValidator } from "./style.models";
 import {
   ensureStyleMethodScaffold,
   isStyleCuttingOperationFirst,
@@ -286,22 +290,6 @@ export async function deleteMaterialGrade(
   return client.from("materialGrade").delete().eq("id", id);
 }
 
-export async function deleteStyleColor(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient.from("styleColor").delete().eq("id", id);
-}
-
-export async function deleteStyleSize(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient.from("styleSize").delete().eq("id", id);
-}
-
 export async function deleteMaterialSubstance(
   client: SupabaseClient<Database>,
   id: string
@@ -395,6 +383,34 @@ export async function getConfigurationParameters(
   itemId: string,
   companyId: string
 ) {
+  const item = await client
+    .from("item")
+    .select("type")
+    .eq("id", itemId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  // Any item that carries Color/Size variant attributes derives its list params
+  // from those selections: Styles always do (garment set), and Consumables do
+  // when assigned a Fabric/Trim color set. Styles never fall back to legacy
+  // configurationParameter rows (dual-read retired); other types fall back only
+  // when they have no attribute selections.
+  try {
+    const synthesized = await getStyleConfigurationParametersFromAttributes(
+      client,
+      itemId,
+      companyId
+    );
+    if (synthesized.length > 0 || item.data?.type === "Style") {
+      return { groups: [], parameters: synthesized };
+    }
+  } catch (error) {
+    console.error(error);
+    if (item.data?.type === "Style") {
+      return { groups: [], parameters: [] };
+    }
+  }
+
   const [parameters, groups] = await Promise.all([
     // Order by sortOrder so the derived "primary" parameter (the first
     // list-typed param, used to build job/quote quantity columns) is
@@ -425,7 +441,10 @@ export async function getConfigurationParameters(
     return { groups: [], parameters: [] };
   }
 
-  return { groups: groups.data ?? [], parameters: parameters.data ?? [] };
+  return {
+    groups: groups.data ?? [],
+    parameters: parameters.data ?? []
+  };
 }
 
 export async function getConfigurationRules(
@@ -783,6 +802,8 @@ export async function getItemQuantities(
   companyId: string,
   locationId: string
 ) {
+  // Parent rows in get_inventory_quantities already roll up child SKU qty when
+  // variants exist; variant children themselves are excluded from that RPC.
   return client
     .rpc("get_inventory_quantities", {
       location_id: locationId,
@@ -790,6 +811,83 @@ export async function getItemQuantities(
     })
     .eq("id", itemId)
     .maybeSingle();
+}
+
+/** Per-SKU inventory breakdown for a parent item (empty if no variants). */
+export async function getItemVariantQuantities(
+  client: SupabaseClient<Database>,
+  parentItemId: string,
+  companyId: string,
+  locationId: string
+) {
+  const db = client as SupabaseClient<any>;
+  const variants = await db
+    .from("itemVariant")
+    .select(
+      "id, variantItemId, valuesKey, variant:item!itemVariant_variantItemId_fkey(id, readableId, name, active)"
+    )
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId);
+
+  if (variants.error) return variants;
+  const list = variants.data ?? [];
+  if (list.length === 0) return { data: [], error: null };
+
+  const ids = list.map((v: { variantItemId: string }) => v.variantItemId);
+  // Variant children are excluded from get_inventory_quantities (list rollup);
+  // fetch them explicitly for SKU breakdown tables.
+  const qtys = await (client as SupabaseClient<any>).rpc(
+    "get_inventory_quantities_for_items",
+    {
+      location_id: locationId,
+      company_id: companyId,
+      item_ids: ids
+    }
+  );
+
+  if (qtys.error) return qtys;
+  const byId = new Map(
+    ((qtys.data ?? []) as { id: string }[]).map((q) => [q.id, q])
+  );
+
+  return {
+    data: list.map(
+      (v: {
+        variantItemId: string;
+        valuesKey: string;
+        variant: {
+          readableId: string;
+          name: string;
+          active: boolean | null;
+        } | null;
+      }) => {
+        const q = byId.get(v.variantItemId) as
+          | {
+              quantityOnHand?: number;
+              quantityOnSalesOrder?: number;
+              quantityOnPurchaseOrder?: number;
+              quantityOnProductionOrder?: number;
+            }
+          | undefined;
+        const onHand = Number(q?.quantityOnHand ?? 0);
+        const onSales = Number(q?.quantityOnSalesOrder ?? 0);
+        return {
+          variantItemId: v.variantItemId,
+          valuesKey: v.valuesKey,
+          readableId: v.variant?.readableId ?? v.variantItemId,
+          name: v.variant?.name ?? v.valuesKey,
+          active: v.variant?.active !== false,
+          quantities: {
+            ...(q ?? {}),
+            quantityOnHand: onHand,
+            // Approximate available for display (same spirit as legacy views).
+            quantityAvailable: onHand - onSales
+          }
+        };
+      }
+    ),
+    error: null
+  };
 }
 
 export async function getItemReplenishment(
@@ -1641,7 +1739,7 @@ export async function getStyles(
 
   if (args.search) {
     query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCodes.ilike.%${args.search}%,colorNames.ilike.%${args.search}%,sizeCodes.ilike.%${args.search}%`
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,attributeCodes.ilike.%${args.search}%`
     );
   }
 
@@ -1669,13 +1767,26 @@ export async function getStyleSamples(
 
   if (args.search) {
     query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCodes.ilike.%${args.search}%,colorNames.ilike.%${args.search}%,sizeCodes.ilike.%${args.search}%`
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,attributeCodes.ilike.%${args.search}%`
     );
   }
 
-  return setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
+
+  // View still exposes distinct variants as `sampledColorCount` (alias of
+  // subquery sampledVariantCount). Normalize for app types without a migration.
+  if (result.data) {
+    result.data = result.data.map((row: Record<string, unknown>) => {
+      const sampledVariantCount =
+        row.sampledVariantCount ?? row.sampledColorCount ?? 0;
+      const { sampledColorCount: _legacy, ...rest } = row;
+      return { ...rest, sampledVariantCount };
+    });
+  }
+
+  return result;
 }
 
 export async function ensureStyleSampleItem(
@@ -1744,7 +1855,10 @@ export async function createStyleSamples(
   client: SupabaseClient<Database>,
   args: {
     styleId: string;
-    lines: { colorId: string; size: string; quantity: number }[];
+    lines: {
+      selections: Record<string, string>;
+      quantity: number;
+    }[];
     locationId: string;
     storageUnitId?: string | null;
     companyId: string;
@@ -1762,23 +1876,27 @@ export async function createStyleSamples(
   if (ensured.error) return ensured;
   const sampleItemId = (ensured.data as { itemId: string }).itemId;
 
-  // Map selected styleColor ids -> color codes for the serial + attributes.
-  const colorIds = Array.from(new Set(lines.map((l) => l.colorId)));
-  const colors = await sampleClient
-    .from("styleColor")
-    .select("id, colorCode")
-    .in("id", colorIds)
-    .eq("companyId", companyId);
-  if (colors.error) return colors;
-  const codeById = new Map<string, string>(
-    (colors.data ?? []).map((c: { id: string; colorCode: string }) => [
-      c.id,
-      c.colorCode
-    ])
+  const allValueIds = Array.from(
+    new Set(lines.flatMap((l) => Object.values(l.selections)))
+  );
+  const values = allValueIds.length
+    ? await sampleClient
+        .from("itemAttributeValue")
+        .select("id, code, attributeId, itemAttribute:attributeId(code, name)")
+        .in("id", allValueIds)
+    : { data: [], error: null };
+  if (values.error) return values;
+
+  type ValueRow = {
+    id: string;
+    code: string;
+    attributeId: string;
+    itemAttribute: { code: string; name: string } | null;
+  };
+  const valueById = new Map(
+    ((values.data ?? []) as ValueRow[]).map((v) => [v.id, v])
   );
 
-  // Continue serial numbering from any samples that already exist for this
-  // color+size, so every physical unit gets a unique serial across creates.
   const existing = await sampleClient
     .from("trackedEntity")
     .select("attributes")
@@ -1788,7 +1906,11 @@ export async function createStyleSamples(
   if (existing.error) return existing;
   const seqByKey = new Map<string, number>();
   for (const e of (existing.data ?? []) as { attributes: any }[]) {
-    const key = `${e.attributes?.Color ?? ""}|${e.attributes?.Size ?? ""}`;
+    const attrs = e.attributes ?? {};
+    const key = Object.keys(attrs)
+      .sort()
+      .map((k) => `${k}=${attrs[k]}`)
+      .join("|");
     seqByKey.set(key, (seqByKey.get(key) ?? 0) + 1);
   }
 
@@ -1796,27 +1918,42 @@ export async function createStyleSamples(
   const ledgerRows: Record<string, unknown>[] = [];
 
   for (const line of lines) {
-    const colorCode = codeById.get(line.colorId) ?? line.colorId;
-    const size = line.size;
-    const key = `${colorCode}|${size}`;
+    const attrPairs: Array<{ attrCode: string; valueCode: string }> = [];
+    for (const valueId of Object.values(line.selections)) {
+      const row = valueById.get(valueId);
+      if (!row) {
+        return {
+          data: null,
+          error: new Error(`Unknown attribute value: ${valueId}`)
+        };
+      }
+      attrPairs.push({
+        attrCode: row.itemAttribute?.code ?? row.attributeId,
+        valueCode: row.code
+      });
+    }
+    attrPairs.sort((a, b) => a.attrCode.localeCompare(b.attrCode));
+    const attributes = Object.fromEntries(
+      attrPairs.map((p) => [p.attrCode, p.valueCode])
+    );
+    const key = attrPairs.map((p) => `${p.attrCode}=${p.valueCode}`).join("|");
+    const codeSuffix = attrPairs.map((p) => p.valueCode).join("-");
+
     for (let n = 1; n <= line.quantity; n++) {
       const trackedEntityId = nanoid();
       const seq = (seqByKey.get(key) ?? 0) + 1;
       seqByKey.set(key, seq);
-      const serial = `${styleId}-${colorCode}-${size}-${seq}`;
+      const serial = `${styleId}-${codeSuffix}-${seq}`;
       trackedEntities.push({
         id: trackedEntityId,
         quantity: 1,
-        // Available (not On Hold): samples are a separate hidden item, so they
-        // never count toward the style's sellable stock, and Available lets them
-        // reuse the standard serial transfer / shipment / adjustment flows.
         status: "Available",
         sourceDocument: "Item",
         sourceDocumentId: sampleItemId,
         sourceDocumentReadableId: `${styleId}-SAMPLE`,
         readableId: serial,
         itemId: sampleItemId,
-        attributes: { Color: colorCode, Size: size },
+        attributes,
         companyId,
         createdBy: userId
       });
@@ -1848,12 +1985,61 @@ export async function createStyleSamples(
   return { data: { count: trackedEntities.length }, error: null };
 }
 
-export async function getStyleColor(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient.from("styleColor").select("*").eq("id", id).single();
+type AttributeValueRow = {
+  id: string;
+  code: string;
+  name: string | null;
+  companyId: string | null;
+  sortOrder: number;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string | null;
+  updatedBy?: string | null;
+};
+
+function mapAttributeValueToStyleColor(row: AttributeValueRow) {
+  return {
+    id: row.id,
+    colorCode: row.code,
+    colorName: row.name ?? row.code,
+    companyId: row.companyId,
+    sortOrder: row.sortOrder,
+    createdAt: row.createdAt,
+    createdBy: row.createdBy,
+    updatedAt: row.updatedAt,
+    updatedBy: row.updatedBy
+  };
+}
+
+function mapAttributeValueToStyleSize(row: AttributeValueRow) {
+  return {
+    id: row.id,
+    sizeCode: row.code,
+    sizeName: row.name ?? row.code,
+    companyId: row.companyId,
+    sortOrder: row.sortOrder,
+    createdAt: row.createdAt,
+    createdBy: row.createdBy,
+    updatedAt: row.updatedAt,
+    updatedBy: row.updatedBy
+  };
+}
+
+function remapAttributeValueQueryArgs(
+  args: GenericQueryFilters & { search: string | null },
+  map: Record<string, string>
+): GenericQueryFilters & { search: string | null } {
+  return {
+    ...args,
+    sorts: args.sorts?.map((sort) => ({
+      ...sort,
+      sortBy: map[sort.sortBy] ?? sort.sortBy
+    })),
+    filters: args.filters?.map((filter) => ({
+      ...filter,
+      column: map[filter.column] ?? filter.column
+    }))
+  };
 }
 
 export async function getStyleColors(
@@ -1863,41 +2049,54 @@ export async function getStyleColors(
 ) {
   const styleClient = client as SupabaseClient<any>;
   let query = styleClient
-    .from("styleColor")
+    .from("itemAttributeValue")
     .select("*", { count: "exact" })
+    .eq("attributeId", SYSTEM_ATTRIBUTE.color)
     .eq("companyId", companyId);
 
   if (args?.search) {
-    query = query.or(
-      `colorCode.ilike.%${args.search}%,colorName.ilike.%${args.search}%`
-    );
+    query = query.or(`code.ilike.%${args.search}%,name.ilike.%${args.search}%`);
   }
 
   if (args) {
-    query = setGenericQueryFilters(query, args, [
-      { column: "colorCode", ascending: true }
-    ]);
+    query = setGenericQueryFilters(
+      query,
+      remapAttributeValueQueryArgs(args, {
+        colorCode: "code",
+        colorName: "name"
+      }),
+      [{ column: "code", ascending: true }]
+    );
   }
 
-  return query;
+  const result = await query;
+  if (result.error) return result;
+  return {
+    ...result,
+    data: ((result.data ?? []) as AttributeValueRow[]).map(
+      mapAttributeValueToStyleColor
+    )
+  };
 }
 
 export async function getStyleColorList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient
-    .from("styleColor")
-    .select("id, colorCode, colorName, companyId")
-    .eq("companyId", companyId)
-    .order("colorCode");
+  // Color name maps and legacy callers now read itemAttributeValue (pickers
+  // already do). Keep this wrapper so SO/PO/config-table imports stay stable.
+  return getGarmentAttributeValueList(client, {
+    attributeId: SYSTEM_ATTRIBUTE.color,
+    companyId
+  });
 }
 
 /**
  * Seeds the standard apparel colors + sizes for a freshly created company, with
  * names localized to the company's language. Idempotent — re-running skips rows
- * whose (code, companyId) already exists. Called from company onboarding.
+ * whose (attributeId, code, companyId) already exists. Called from company
+ * onboarding. Writes company-scoped itemAttributeValue only (Colors/Sizes
+ * admin + Style pickers share that catalog).
  */
 export async function seedStyleReference(
   client: SupabaseClient<Database>,
@@ -1907,24 +2106,33 @@ export async function seedStyleReference(
 ) {
   const styleClient = client as SupabaseClient<any>;
   const { colors, sizes } = styleReferenceRows(language);
-  return Promise.all([
-    styleClient.from("styleColor").upsert(
-      colors.map((c) => ({ ...c, companyId, createdBy: userId })),
-      { onConflict: "colorCode,companyId", ignoreDuplicates: true }
-    ),
-    styleClient.from("styleSize").upsert(
-      sizes.map((s) => ({ ...s, companyId, createdBy: userId })),
-      { onConflict: "sizeCode,companyId", ignoreDuplicates: true }
-    )
-  ]);
-}
+  const colorAttributeValues = colors.map((c) => ({
+    attributeId: SYSTEM_ATTRIBUTE.color,
+    code: c.colorCode,
+    name: c.colorName,
+    companyId,
+    createdBy: userId,
+    sortOrder: 100
+  }));
+  const sizeAttributeValues = sizes.map((s) => ({
+    attributeId: SYSTEM_ATTRIBUTE.size,
+    code: s.sizeCode,
+    name: s.sizeName,
+    companyId,
+    createdBy: userId,
+    sortOrder: s.sortOrder ?? 100
+  }));
 
-export async function getStyleSize(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient.from("styleSize").select("*").eq("id", id).single();
+  return Promise.all([
+    styleClient.from("itemAttributeValue").upsert(colorAttributeValues, {
+      onConflict: "attributeId,code,companyId",
+      ignoreDuplicates: true
+    }),
+    styleClient.from("itemAttributeValue").upsert(sizeAttributeValues, {
+      onConflict: "attributeId,code,companyId",
+      ignoreDuplicates: true
+    })
+  ]);
 }
 
 export async function getStyleSizes(
@@ -1934,37 +2142,47 @@ export async function getStyleSizes(
 ) {
   const styleClient = client as SupabaseClient<any>;
   let query = styleClient
-    .from("styleSize")
+    .from("itemAttributeValue")
     .select("*", { count: "exact" })
+    .eq("attributeId", SYSTEM_ATTRIBUTE.size)
     .eq("companyId", companyId);
 
   if (args?.search) {
-    query = query.or(
-      `sizeCode.ilike.%${args.search}%,sizeName.ilike.%${args.search}%`
-    );
+    query = query.or(`code.ilike.%${args.search}%,name.ilike.%${args.search}%`);
   }
 
   if (args) {
-    query = setGenericQueryFilters(query, args, [
-      { column: "sortOrder", ascending: true },
-      { column: "sizeCode", ascending: true }
-    ]);
+    query = setGenericQueryFilters(
+      query,
+      remapAttributeValueQueryArgs(args, {
+        sizeCode: "code",
+        sizeName: "name"
+      }),
+      [
+        { column: "sortOrder", ascending: true },
+        { column: "code", ascending: true }
+      ]
+    );
   }
 
-  return query;
+  const result = await query;
+  if (result.error) return result;
+  return {
+    ...result,
+    data: ((result.data ?? []) as AttributeValueRow[]).map(
+      mapAttributeValueToStyleSize
+    )
+  };
 }
 
 export async function getStyleSizeList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
-  const styleClient = client as SupabaseClient<any>;
-  return styleClient
-    .from("styleSize")
-    .select("id, sizeCode, sizeName, companyId")
-    .eq("companyId", companyId)
-    .order("sortOrder")
-    .order("sizeCode");
+  return getGarmentAttributeValueList(client, {
+    attributeId: SYSTEM_ATTRIBUTE.size,
+    companyId
+  });
 }
 
 export async function getPartsList(
@@ -2560,101 +2778,6 @@ export async function updateRevision(
       updatedAt: today(getLocalTimeZone()).toString()
     })
     .eq("id", revision.id);
-}
-
-/**
- * Keep a Style item's "Color" and "Size" list configuration parameters in sync
- * with the colors/sizes assigned to the style. This turns a Style into a normal
- * configured item so color/size flow through the existing config machinery
- * (job-creation config modal, production-quantity config table).
- */
-export async function syncStyleConfigurationParameters(
-  client: SupabaseClient<Database>,
-  args: {
-    itemId: string;
-    companyId: string;
-    userId: string;
-    styleColorIds: string[];
-    styleSizeIds: string[];
-  }
-) {
-  const [colors, sizes] = await Promise.all([
-    args.styleColorIds.length > 0
-      ? client
-          .from("styleColor")
-          .select("colorCode")
-          .in("id", args.styleColorIds)
-      : Promise.resolve({ data: [] as { colorCode: string }[], error: null }),
-    args.styleSizeIds.length > 0
-      ? client
-          .from("styleSize")
-          .select("sizeCode")
-          .in("id", args.styleSizeIds)
-          .order("sortOrder")
-          .order("sizeCode")
-      : Promise.resolve({ data: [] as { sizeCode: string }[], error: null })
-  ]);
-
-  const colorCodes = (colors.data ?? [])
-    .map((c) => c.colorCode)
-    .filter(Boolean);
-  const sizeCodes = (sizes.data ?? []).map((s) => s.sizeCode).filter(Boolean);
-
-  const existing = await client
-    .from("configurationParameter")
-    .select("id, key")
-    .eq("itemId", args.itemId)
-    .eq("companyId", args.companyId)
-    .in("key", ["color", "size"]);
-
-  const paramByKey = new Map(
-    (existing.data ?? []).map((p) => [p.key, p.id] as const)
-  );
-
-  let hasAnyParam = false;
-  for (const [key, label, options] of [
-    ["color", "Color", colorCodes],
-    ["size", "Size", sizeCodes]
-  ] as const) {
-    if (options.length === 0) continue; // list params require options
-    hasAnyParam = true;
-    await upsertConfigurationParameter(client, {
-      id: paramByKey.get(key),
-      itemId: args.itemId,
-      key,
-      label,
-      dataType: "list",
-      listOptions: options,
-      companyId: args.companyId,
-      userId: args.userId
-    });
-  }
-
-  // Size is the primary dimension for garments: its options must become the
-  // config-table quantity columns (with Color as the row descriptor). "Primary"
-  // is derived as the first list param by sortOrder, so pin Size below Color.
-  await client
-    .from("configurationParameter")
-    .update({ sortOrder: 0 })
-    .eq("itemId", args.itemId)
-    .eq("companyId", args.companyId)
-    .eq("key", "size");
-  await client
-    .from("configurationParameter")
-    .update({ sortOrder: 1 })
-    .eq("itemId", args.itemId)
-    .eq("companyId", args.companyId)
-    .eq("key", "color");
-
-  // Flip on `requiresConfiguration` so the standard config modal fires when a
-  // job / production quantity is created for this style.
-  if (hasAnyParam) {
-    await client
-      .from("itemReplenishment")
-      .update({ requiresConfiguration: true })
-      .eq("itemId", args.itemId)
-      .eq("companyId", args.companyId);
-  }
 }
 
 export async function upsertConfigurationParameter(
@@ -3476,9 +3599,10 @@ export async function upsertConsumable(
         unitOfMeasureCode: consumable.unitOfMeasureCode,
         active: true,
         thumbnailPath: consumable.thumbnailPath,
+        attributeSetId: consumable.attributeSetId || null,
         companyId: consumable.companyId,
         createdBy: consumable.createdBy
-      })
+      } as any)
       .select("id")
       .single();
     if (itemInsert.error) return itemInsert;
@@ -4729,58 +4853,6 @@ export async function upsertMaterialFinish(
     .insert([materialFinish])
     .select("*")
     .single();
-}
-
-export async function upsertStyleColor(
-  client: SupabaseClient<Database>,
-  styleColor:
-    | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
-        companyId: string;
-        createdBy: string;
-      })
-    | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
-        id: string;
-        updatedBy: string;
-      })
-) {
-  const styleClient = client as SupabaseClient<any>;
-  if ("id" in styleColor) {
-    return styleClient
-      .from("styleColor")
-      .update(sanitize({ ...styleColor, updatedAt: new Date().toISOString() }))
-      .eq("id", styleColor.id)
-      .select("id")
-      .single();
-  }
-  return styleClient
-    .from("styleColor")
-    .insert([styleColor])
-    .select("*")
-    .single();
-}
-
-export async function upsertStyleSize(
-  client: SupabaseClient<Database>,
-  styleSize:
-    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
-        companyId: string;
-        createdBy: string;
-      })
-    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
-        id: string;
-        updatedBy: string;
-      })
-) {
-  const styleClient = client as SupabaseClient<any>;
-  if ("id" in styleSize) {
-    return styleClient
-      .from("styleSize")
-      .update(sanitize({ ...styleSize, updatedAt: new Date().toISOString() }))
-      .eq("id", styleSize.id)
-      .select("id")
-      .single();
-  }
-  return styleClient.from("styleSize").insert([styleSize]).select("*").single();
 }
 
 export async function upsertMaterialForm(

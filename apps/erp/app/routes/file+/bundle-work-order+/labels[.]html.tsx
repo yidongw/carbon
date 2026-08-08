@@ -1,8 +1,12 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { generateQRCode } from "@carbon/documents/qr";
-import { labelSizes } from "@carbon/utils";
+import { resolveLanguage } from "@carbon/locale";
+import { getPreferenceHeaders, labelSizes } from "@carbon/utils";
+import { setupI18n } from "@lingui/core";
 import type { LoaderFunctionArgs } from "react-router";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { getBundleTicketLabels } from "~/modules/production";
+import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 
 const DEFAULT_TAG_ID = "bundleTag40x80mm";
 // The top margin scales with the tag; the bottom hole reserve is a FIXED
@@ -100,7 +104,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // where the print lands relative to the hole. Off by default.
   const showBorder = url.searchParams.get("border") === "1";
 
-  const labels = await getBundleTicketLabels(client, companyId, ids);
+  // Localize printed attribute names/values into the reader's language.
+  const { locale } = getPreferenceHeaders(request);
+  const language = resolveLanguage(locale);
+  const catalog = await loadLinguiCatalogForRequest(request, locale);
+  const i18n = setupI18n();
+  i18n.load(language, catalog);
+  i18n.activate(language);
+
+  const labels = await getBundleTicketLabels(client, companyId, ids, {
+    locale,
+    translateAttributeName: (name) =>
+      translateItemAttributeCatalogName(name, i18n)
+  });
   if (labels.length === 0) {
     return new Response("No bundle work orders found", { status: 404 });
   }
@@ -116,11 +132,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const tags = labels
     .map((l, i) => {
+      const attrRows =
+        l.attributeLines && l.attributeLines.length > 0
+          ? l.attributeLines.map((line) => field(`${line.name}:`, line.value))
+          : l.attributeLabel
+            ? [field("", l.attributeLabel)]
+            : [];
       const rows = [
         field("款号:", l.styleReadableId),
         field("客户:", l.customerName),
-        field("颜色:", l.colorName),
-        field("尺码:", l.sizeCode),
+        ...attrRows,
         field("数量:", l.quantity),
         field("车间:", l.workCenterName),
         field("扎号:", l.sequence),

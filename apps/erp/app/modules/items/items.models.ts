@@ -327,7 +327,8 @@ export const consumableValidator = applyStorageAndShelfLifeRefines(
       thumbnailPath: zfd.text(z.string().optional()),
       unitOfMeasureCode: z
         .string()
-        .min(1, { message: "Unit of Measure is required" })
+        .min(1, { message: "Unit of Measure is required" }),
+      attributeSetId: zfd.text(z.string().optional())
     })
   )
 );
@@ -671,12 +672,6 @@ export const materialTypeValidator = z.object({
   materialFormId: z.string().min(1, { message: "Shape is required" }),
   name: z.string().min(1, { message: "Name is required" }).max(255),
   code: z.string().min(1, { message: "Code is required" }).max(10)
-});
-
-export const styleColorValidator = z.object({
-  id: zfd.text(z.string().optional()),
-  colorCode: z.string().min(1, { message: "Color code is required" }).max(50),
-  colorName: z.string().min(1, { message: "Color name is required" }).max(255)
 });
 
 export const partValidator = applyStorageAndShelfLifeRefines(

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-06T02:48:47.571Z",
-  "totalTools": 1270,
+  "generated": "2026-08-08T07:59:10.775Z",
+  "totalTools": 1266,
   "modules": 15,
   "tools": [
     {
@@ -8741,56 +8741,6 @@
       }
     },
     {
-      "name": "items_deleteStyleColor",
-      "module": "items",
-      "classification": "DESTRUCTIVE",
-      "description": "delete style color",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      }
-    },
-    {
-      "name": "items_deleteStyleSize",
-      "module": "items",
-      "classification": "DESTRUCTIVE",
-      "description": "delete style size",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      }
-    },
-    {
       "name": "items_deleteMaterialSubstance",
       "module": "items",
       "classification": "DESTRUCTIVE",
@@ -9524,6 +9474,37 @@
         },
         "required": [
           "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "items_getItemVariantQuantities",
+      "module": "items",
+      "classification": "READ",
+      "description": "get item variant quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId",
           "locationId"
         ]
       }
@@ -10826,19 +10807,13 @@
             "items": {
               "type": "object",
               "properties": {
-                "colorId": {
-                  "type": "string"
-                },
-                "size": {
-                  "type": "string"
-                },
+                "selections": {},
                 "quantity": {
                   "type": "number"
                 }
               },
               "required": [
-                "colorId",
-                "size",
+                "selections",
                 "quantity"
               ]
             }
@@ -10857,31 +10832,6 @@
           "styleId",
           "lines",
           "locationId"
-        ]
-      }
-    },
-    {
-      "name": "items_getStyleColor",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style color",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
         ]
       }
     },
@@ -10964,31 +10914,6 @@
             "type": "string"
           }
         }
-      }
-    },
-    {
-      "name": "items_getStyleSize",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style size",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "id"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ]
       }
     },
     {
@@ -11679,46 +11604,6 @@
         "required": [
           "id",
           "revision"
-        ]
-      }
-    },
-    {
-      "name": "items_syncStyleConfigurationParameters",
-      "module": "items",
-      "classification": "WRITE",
-      "description": "sync style configuration parameters",
-      "paramCount": 3,
-      "serviceParams": [
-        "client",
-        "args"
-      ],
-      "injectAuth": [
-        "companyId",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "itemId": {
-            "type": "string"
-          },
-          "styleColorIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "styleSizeIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "itemId",
-          "styleColorIds",
-          "styleSizeIds"
         ]
       }
     },
@@ -12761,65 +12646,6 @@
         "required": [
           "materialSubstanceId",
           "name"
-        ]
-      }
-    },
-    {
-      "name": "items_upsertStyleColor",
-      "module": "items",
-      "classification": "WRITE",
-      "description": "upsert style color",
-      "paramCount": 3,
-      "serviceParams": [
-        "client",
-        "styleColor"
-      ],
-      "injectAuth": [
-        "companyId",
-        "createdBy",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "colorCode": {
-            "type": "string"
-          },
-          "colorName": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "colorCode",
-          "colorName"
-        ]
-      }
-    },
-    {
-      "name": "items_upsertStyleSize",
-      "module": "items",
-      "classification": "WRITE",
-      "description": "upsert style size",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "styleSize"
-      ],
-      "injectAuth": [
-        "companyId",
-        "createdBy",
-        "updatedBy"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "styleSize": {}
-        },
-        "required": [
-          "styleSize"
         ]
       }
     },
@@ -21794,6 +21620,38 @@
         },
         "required": [
           "purchaseOrderLine"
+        ]
+      }
+    },
+    {
+      "name": "purchasing_replacePurchaseOrderLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace purchase order lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      purchaseOrderLineType: z.infer<\n        typeof purchaseOrderLineValidator\n      >[\"purchaseOrderLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "purchaseOrderId",
+          "variants"
         ]
       }
     },
@@ -32021,6 +31879,42 @@
         },
         "required": [
           "salesOrderLines"
+        ]
+      }
+    },
+    {
+      "name": "sales_replaceSalesOrderLinesWithStyleVariants",
+      "module": "sales",
+      "classification": "WRITE",
+      "description": "replace sales order lines with style variants",
+      "paramCount": 6,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "variants": {},
+          "base: {\n      salesOrderLineType: z.infer<\n        typeof salesOrderLineValidator\n      >[\"salesOrderLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "salesOrderId",
+          "exchangeRate",
+          "variants"
         ]
       }
     },

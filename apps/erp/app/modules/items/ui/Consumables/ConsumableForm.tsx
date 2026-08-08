@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { ValidatedForm } from "@carbon/form";
 import {
   cn,
@@ -9,11 +10,12 @@ import {
   ModalCardHeader,
   ModalCardProvider,
   ModalCardTitle,
-  toast
+  toast,
+  useMount
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
@@ -23,6 +25,7 @@ import {
   Input,
   InputControlled,
   ItemPostingGroup,
+  MultiSelect,
   Number,
   Select,
   Submit,
@@ -32,12 +35,16 @@ import {
 import { TrackingTypeIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
+import type { AttributeSetFormOption } from "../../itemAttribute.service";
+import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 import { consumableValidator, itemTrackingTypes } from "../../items.models";
 import ItemStorageFields from "../Item/ItemStorageFields";
 import ItemThumbnailField from "../Item/ItemThumbnailField";
 
 type ConsumableFormProps = {
   initialValues: z.infer<typeof consumableValidator> & { tags: string[] };
+  /** Optional seed from route loader; form also loads via API for modals. */
+  attributeSetOptions?: Array<{ label: string; value: string }>;
   type?: "card" | "modal";
   onClose?: () => void;
 };
@@ -48,6 +55,7 @@ function startsWithLetter(value: string) {
 
 const ConsumableForm = ({
   initialValues,
+  attributeSetOptions: attributeSetOptionsProp = [],
   type = "card",
   onClose
 }: ConsumableFormProps) => {
@@ -55,7 +63,48 @@ const ConsumableForm = ({
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
   const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
-  const { t } = useLingui();
+  const attributeSetsFetcher = useFetcher<{
+    data: AttributeSetFormOption[];
+    error: Error | null;
+  }>();
+  const { t, i18n } = useLingui();
+
+  useMount(() => {
+    attributeSetsFetcher.load(path.to.api.attributeSetsForType("Consumable"));
+  });
+
+  const attributeSets = attributeSetsFetcher.data?.data ?? [];
+
+  const attributeSetOptions = useMemo(() => {
+    if (attributeSets.length > 0) {
+      return attributeSets.map((s) => ({
+        label: translateItemAttributeCatalogName(s.name || s.code, i18n),
+        value: s.id
+      }));
+    }
+    return attributeSetOptionsProp;
+  }, [attributeSets, attributeSetOptionsProp, i18n]);
+
+  const [attributeSetId, setAttributeSetId] = useState<string>(
+    initialValues.attributeSetId ??
+      (attributeSetOptionsProp.length === 1
+        ? attributeSetOptionsProp[0].value
+        : "")
+  );
+
+  useEffect(() => {
+    if (attributeSetId) return;
+    if (attributeSetOptions.length === 1) {
+      setAttributeSetId(attributeSetOptions[0].value);
+    }
+  }, [attributeSetId, attributeSetOptions]);
+
+  const selectedSet = useMemo(() => {
+    const effectiveSetId =
+      attributeSetId ||
+      (attributeSetOptions.length === 1 ? attributeSetOptions[0].value : "");
+    return attributeSets.find((s) => s.id === effectiveSetId);
+  }, [attributeSets, attributeSetId, attributeSetOptions]);
 
   useEffect(() => {
     if (type !== "modal") return;
@@ -186,6 +235,40 @@ const ConsumableForm = ({
                   name="unitOfMeasureCode"
                   label={t`Unit of Measure`}
                 />
+                {!isEditing && attributeSetOptions.length === 1 ? (
+                  <Hidden
+                    name="attributeSetId"
+                    value={attributeSetOptions[0].value}
+                  />
+                ) : null}
+                {!isEditing && attributeSetOptions.length > 1 ? (
+                  <Select
+                    name="attributeSetId"
+                    label={t`Attribute Set`}
+                    options={attributeSetOptions}
+                    onChange={(option) =>
+                      setAttributeSetId(option?.value ?? "")
+                    }
+                    helperText={t`Fabric, Trim, etc. — drives which variant options this item can have`}
+                  />
+                ) : null}
+                {!isEditing &&
+                  selectedSet?.attributes.map((attr) => (
+                    <MultiSelect
+                      key={attr.id}
+                      name={`av__${attr.id}`}
+                      label={translateItemAttributeCatalogName(attr.name, i18n)}
+                      options={attr.options.map((o) => ({
+                        value: o.id,
+                        label:
+                          localizeStyleColorName(o.code, i18n.locale) ||
+                          o.name ||
+                          o.code,
+                        helper: o.code
+                      }))}
+                      helperText={t`Selected values become variant SKUs`}
+                    />
+                  ))}
                 {!isEditing && (
                   <ItemPostingGroup
                     name="postingGroupId"

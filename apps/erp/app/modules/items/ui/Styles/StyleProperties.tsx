@@ -27,7 +27,7 @@ import {
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ItemThumbnailUpload } from "~/components/ItemThumnailUpload";
-import { usePermissions, useRouteData } from "~/hooks";
+import { useRouteData } from "~/hooks";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
@@ -38,7 +38,7 @@ import {
 } from "../../items.models";
 import type { ItemFile, MakeMethod } from "../../types";
 import { FileBadge, ItemDescription } from "../Item";
-import AddStyleOptionButton from "./AddStyleOptionButton";
+import ItemAttributeEditor from "../Item/ItemAttributeEditor";
 
 type StyleRouteData = {
   styleSummary: {
@@ -53,20 +53,12 @@ type StyleRouteData = {
     readableId: string | null;
     readableIdWithRevision: string | null;
     replenishmentSystem: string | null;
-    styleColorBadges?: Array<{
-      id: string;
-      colorCode: string;
-      colorName: string;
-    }>;
-    styleSizeBadges?: Array<{
-      id: string;
-      sizeCode: string;
-      sizeName: string;
-    }>;
     tags: string[] | null;
     thumbnailPath: string | null;
     unitOfMeasureCode: string | null;
   };
+  attributeSetId?: string | null;
+  attributeSelections?: Record<string, string[]>;
   files: Promise<ItemFile[]>;
   makeMethods: Promise<PostgrestResponse<MakeMethod>>;
   tags: { name: string }[];
@@ -79,9 +71,6 @@ const StyleProperties = () => {
 
   const routeData = useRouteData<StyleRouteData>(path.to.style(itemId));
   if (!routeData) throw new Error("Could not find style data");
-
-  const permissions = usePermissions();
-  const canEditStyle = permissions.can("update", "parts");
 
   const fetcher = useFetcher<typeof action>();
   useEffect(() => {
@@ -280,64 +269,13 @@ const StyleProperties = () => {
         />
       </VStack>
 
-      <VStack spacing={2}>
-        <h3 className="text-xs text-muted-foreground">
-          <Trans>Colors</Trans>
-        </h3>
-        <div className="flex flex-wrap items-center gap-2">
-          {(routeData.styleSummary.styleColorBadges ?? []).map((color) => (
-            <Badge key={color.id} variant="secondary" title={color.colorCode}>
-              {color.colorName || color.colorCode}
-            </Badge>
-          ))}
-          {canEditStyle ? (
-            <AddStyleOptionButton
-              itemId={itemId}
-              kind="color"
-              assignedIds={(routeData.styleSummary.styleColorBadges ?? []).map(
-                (color) => color.id
-              )}
-            />
-          ) : (
-            (routeData.styleSummary.styleColorBadges ?? []).length === 0 && (
-              <span className="text-xs text-muted-foreground">
-                <Trans>No colors assigned</Trans>
-              </span>
-            )
-          )}
-        </div>
-      </VStack>
-
-      <VStack spacing={2}>
-        <h3 className="text-xs text-muted-foreground">
-          <Trans>Sizes</Trans>
-        </h3>
-        <div className="flex flex-wrap items-center gap-2">
-          {(routeData.styleSummary.styleSizeBadges ?? []).map((size) => (
-            <Badge key={size.id} variant="secondary" title={size.sizeName}>
-              {size.sizeCode}
-              {size.sizeName && size.sizeName !== size.sizeCode
-                ? ` - ${size.sizeName}`
-                : ""}
-            </Badge>
-          ))}
-          {canEditStyle ? (
-            <AddStyleOptionButton
-              itemId={itemId}
-              kind="size"
-              assignedIds={(routeData.styleSummary.styleSizeBadges ?? []).map(
-                (size) => size.id
-              )}
-            />
-          ) : (
-            (routeData.styleSummary.styleSizeBadges ?? []).length === 0 && (
-              <span className="text-xs text-muted-foreground">
-                <Trans>No sizes assigned</Trans>
-              </span>
-            )
-          )}
-        </div>
-      </VStack>
+      <ItemAttributeEditor
+        itemId={itemId}
+        itemType="Style"
+        attributeSetId={routeData.attributeSetId ?? null}
+        selections={routeData.attributeSelections ?? {}}
+        saveAction={path.to.styleAttributes(itemId)}
+      />
 
       <ValidatedForm
         defaultValues={{

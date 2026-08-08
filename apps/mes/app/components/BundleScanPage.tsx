@@ -1,8 +1,8 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { Combobox, Heading, toast } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { useLocalizeColor } from "~/hooks";
 import { path } from "~/utils/path";
 import { MesTopbar } from "./MesTopbar";
 import { parseBundleScan, QRScanner } from "./QRScanner";
@@ -10,11 +10,22 @@ import { parseBundleScan, QRScanner } from "./QRScanner";
 export type ReleasedBundle = {
   id: string;
   jobReadableId: string | null;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel: string | null;
+  valuesKey: string | null;
   quantity: number | null;
 };
+
+function bundleAttrLabel(
+  b: {
+    attributeLabel?: string | null;
+    valuesKey?: string | null;
+  },
+  locale?: string
+): string {
+  const raw =
+    b.attributeLabel?.trim() || b.valuesKey?.replace(/\|/g, " · ").trim() || "";
+  return localizeVariantAttributeLabel(raw, locale) || raw;
+}
 
 type BundleScanPageProps = {
   intent: "pickup" | "report";
@@ -29,9 +40,8 @@ export function BundleScanPage({
   description,
   releasedBundles
 }: BundleScanPageProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const navigate = useNavigate();
-  const localizeColor = useLocalizeColor();
 
   const goToBundle = useCallback(
     (id: string) => {
@@ -56,16 +66,11 @@ export function BundleScanPage({
     () =>
       releasedBundles.map((b) => ({
         value: b.id,
-        label: [
-          b.jobReadableId,
-          [localizeColor(b.colorName || b.colorCode), b.sizeCode]
-            .filter(Boolean)
-            .join(" · ")
-        ]
+        label: [b.jobReadableId, bundleAttrLabel(b, i18n.locale)]
           .filter(Boolean)
           .join(" — ")
       })),
-    [releasedBundles, localizeColor]
+    [releasedBundles, i18n.locale]
   );
 
   return (

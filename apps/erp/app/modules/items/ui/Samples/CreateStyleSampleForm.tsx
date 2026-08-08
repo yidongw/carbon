@@ -1,3 +1,4 @@
+import { localizeStyleColorName } from "@carbon/database/style-reference";
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
@@ -21,54 +22,59 @@ import { Hidden, Location, Submit } from "~/components/Form";
 import StorageUnit from "~/components/Form/StorageUnit";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { createStyleSampleValidator } from "~/modules/items";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { path } from "~/utils/path";
 
 type Option = { value: string; label: string };
+export type SampleAttributeField = {
+  attributeId: string;
+  code: string;
+  name: string;
+  options: Option[];
+};
+
 type SampleLine = {
   key: string;
-  colorId: string;
-  size: string;
+  selections: Record<string, string>;
   quantity: number;
 };
 
 type CreateStyleSampleFormProps = {
   styleId: string;
   styleDisplayId: string;
-  colorOptions: Option[];
-  sizeOptions: Option[];
-  defaultColorIds: string[];
-  defaultSize: string;
+  attributes: SampleAttributeField[];
   defaultLocationId: string;
 } & Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">;
+
+function emptySelections(attributes: SampleAttributeField[]) {
+  const selections: Record<string, string> = {};
+  for (const attr of attributes) {
+    selections[attr.attributeId] = attr.options[0]?.value ?? "";
+  }
+  return selections;
+}
 
 export default function CreateStyleSampleForm({
   styleId,
   styleDisplayId,
-  colorOptions,
-  sizeOptions,
-  defaultColorIds,
-  defaultSize,
+  attributes,
   defaultLocationId,
   onDismiss,
   fetcher,
   action
 }: CreateStyleSampleFormProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const keyRef = useRef(0);
   const nextKey = () => `row-${keyRef.current++}`;
 
   const [locationId, setLocationId] = useState<string>(defaultLocationId);
-  const [lines, setLines] = useState<SampleLine[]>(() => {
-    const seed = defaultColorIds.length
-      ? defaultColorIds
-      : [colorOptions[0]?.value ?? ""];
-    return seed.map((colorId) => ({
+  const [lines, setLines] = useState<SampleLine[]>(() => [
+    {
       key: nextKey(),
-      colorId,
-      size: defaultSize,
+      selections: emptySelections(attributes),
       quantity: 1
-    }));
-  });
+    }
+  ]);
 
   const updateLine = (key: string, patch: Partial<SampleLine>) =>
     setLines((prev) =>
@@ -79,8 +85,7 @@ export default function CreateStyleSampleForm({
       ...prev,
       {
         key: nextKey(),
-        colorId: colorOptions[0]?.value ?? "",
-        size: defaultSize,
+        selections: emptySelections(attributes),
         quantity: 1
       }
     ]);
@@ -88,14 +93,14 @@ export default function CreateStyleSampleForm({
     setLines((prev) => prev.filter((l) => l.key !== key));
 
   const linesJson = JSON.stringify(
-    lines.map(({ colorId, size, quantity }) => ({ colorId, size, quantity }))
+    lines.map(({ selections, quantity }) => ({ selections, quantity }))
   );
 
-  // Modal overlays don't inject an action (only confirmMode:"server" does), so
-  // post explicitly to the overlay route with ?overlay=true — that makes the
-  // action return { ok: true } so the host closes + revalidates.
   const formAction =
     action ?? `${path.to.newStyleSample(styleId)}?overlay=true`;
+
+  const attrCols = Math.max(attributes.length, 1);
+  const gridTemplate = `repeat(${attrCols}, minmax(0, 1fr)) 5.5rem 2rem`;
 
   return (
     <ValidatedForm
@@ -117,83 +122,96 @@ export default function CreateStyleSampleForm({
       <ModalBody>
         <Hidden name="styleId" />
         <Hidden name="lines" value={linesJson} />
-        <div className="flex w-[34rem] max-w-full flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-[1fr_1fr_5.5rem_2rem] gap-2 text-xs font-medium text-muted-foreground">
-              <span>{t`Color`}</span>
-              <span>{t`Size`}</span>
-              <span>{t`Quantity`}</span>
-              <span />
-            </div>
-            {lines.map((line) => (
+        <div className="flex w-[min(42rem,100%)] max-w-full flex-col gap-4">
+          {attributes.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              <Trans>
+                This style has no attribute selections yet. Add attributes on
+                the style first.
+              </Trans>
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
               <div
-                key={line.key}
-                className="grid grid-cols-[1fr_1fr_5.5rem_2rem] items-center gap-2"
+                className="grid gap-2 text-xs font-medium text-muted-foreground"
+                style={{ gridTemplateColumns: gridTemplate }}
               >
-                <Select
-                  value={line.colorId}
-                  onValueChange={(value) =>
-                    updateLine(line.key, { colorId: value })
-                  }
-                >
-                  <SelectTrigger className="w-full max-w-full">
-                    <SelectValue placeholder={t`Color`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {colorOptions.map((o) => (
-                      <SelectItem key={o.value} value={o.value}>
-                        {o.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={line.size}
-                  onValueChange={(value) =>
-                    updateLine(line.key, { size: value })
-                  }
-                >
-                  <SelectTrigger className="w-full max-w-full">
-                    <SelectValue placeholder={t`Size`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sizeOptions.map((o) => (
-                      <SelectItem key={o.value} value={o.value}>
-                        {o.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Input
-                  type="number"
-                  min={1}
-                  value={String(line.quantity)}
-                  onChange={(e) =>
-                    updateLine(line.key, {
-                      quantity: Math.max(1, +e.target.value || 1)
-                    })
-                  }
-                />
-                <IconButton
-                  variant="ghost"
-                  aria-label={t`Remove row`}
-                  icon={<LuTrash2 />}
-                  disabled={lines.length === 1}
-                  onClick={() => removeLine(line.key)}
-                />
+                {attributes.map((attr) => (
+                  <span key={attr.attributeId}>
+                    {translateItemAttributeCatalogName(attr.name, i18n)}
+                  </span>
+                ))}
+                <span>{t`Quantity`}</span>
+                <span />
               </div>
-            ))}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="w-full justify-center border border-dashed border-border text-muted-foreground"
-              leftIcon={<LuPlus />}
-              onClick={addLine}
-            >
-              <Trans>Add row</Trans>
-            </Button>
-          </div>
+              {lines.map((line) => (
+                <div
+                  key={line.key}
+                  className="grid items-center gap-2"
+                  style={{ gridTemplateColumns: gridTemplate }}
+                >
+                  {attributes.map((attr) => (
+                    <Select
+                      key={attr.attributeId}
+                      value={line.selections[attr.attributeId] ?? ""}
+                      onValueChange={(value) =>
+                        updateLine(line.key, {
+                          selections: {
+                            ...line.selections,
+                            [attr.attributeId]: value
+                          }
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full max-w-full">
+                        <SelectValue
+                          placeholder={translateItemAttributeCatalogName(
+                            attr.name,
+                            i18n
+                          )}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {attr.options.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>
+                            {localizeStyleColorName(o.code, i18n.locale) ||
+                              o.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ))}
+                  <Input
+                    type="number"
+                    min={1}
+                    value={String(line.quantity)}
+                    onChange={(e) =>
+                      updateLine(line.key, {
+                        quantity: Math.max(1, +e.target.value || 1)
+                      })
+                    }
+                  />
+                  <IconButton
+                    variant="ghost"
+                    aria-label={t`Remove row`}
+                    icon={<LuTrash2 />}
+                    disabled={lines.length === 1}
+                    onClick={() => removeLine(line.key)}
+                  />
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="w-full justify-center border border-dashed border-border text-muted-foreground"
+                leftIcon={<LuPlus />}
+                onClick={addLine}
+              >
+                <Trans>Add row</Trans>
+              </Button>
+            </div>
+          )}
           <Location
             name="locationId"
             label={t`Location`}
@@ -210,7 +228,7 @@ export default function CreateStyleSampleForm({
         <Button variant="secondary" onClick={onDismiss}>
           <Trans>Cancel</Trans>
         </Button>
-        <Submit>
+        <Submit isDisabled={attributes.length === 0}>
           <Trans>Create</Trans>
         </Submit>
       </ModalFooter>

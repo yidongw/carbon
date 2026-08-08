@@ -55,6 +55,10 @@ msgstr "{0} zaprosił/a Cię do dołączenia jako {1}."
 msgid "{0} orders"
 msgstr "{0} zamówień"
 
+#. placeholder {0}: Math.abs(remaining)
+msgid "{0} over"
+msgstr "{0} nad"
+
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
 msgstr "{0} powyżej celu"
@@ -72,6 +76,7 @@ msgid "{0} short of goal"
 msgstr "brakujący {0} do celu"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "{0} Tax"
 msgstr "Podatek {0}"
 
@@ -101,6 +106,9 @@ msgstr "Minimum {minSeats} użytkowników"
 
 msgid "{name} deleted"
 msgstr "usunięto {name}"
+
+msgid "{remaining} left"
+msgstr "Pozostało {remaining}"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} uprawnień"
@@ -153,6 +161,10 @@ msgstr "Minimum 5 użytkowników"
 
 msgid "5MB file limit"
 msgstr "Limit pliku 5MB"
+
+#. placeholder {0}: num("reported")
+msgid "A bundle can't be set below its reported quantity ({0})"
+msgstr "Pakiet nie może być ustawiony poniżej jego ilości zgłoszonej ({0})"
 
 msgid "A consumable is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Materiał zużywalny to przedmiot fizyczny używany do wytworzenia części, którą można wykorzystać w wielu zadaniach"
@@ -418,6 +430,9 @@ msgstr "Dodaj co najmniej jedną linię z ilością większą niż zera."
 msgid "Add attachments"
 msgstr "Dodaj załączniki"
 
+msgid "Add attribute…"
+msgstr "Dodaj atrybut…"
+
 msgid "Add block"
 msgstr "Dodaj blok"
 
@@ -578,9 +593,6 @@ msgstr "Dodano {0}"
 msgid "Added {createdAt}"
 msgstr "Dodano {createdAt}"
 
-msgid "Added colors and sizes"
-msgstr "Dodane kolory i rozmiary"
-
 msgid "Adding..."
 msgstr "Dodawanie..."
 
@@ -682,6 +694,10 @@ msgstr "Typ kwoty"
 
 msgid "An approval request already exists for this supplier"
 msgstr "Zażądanie zatwierdzenia już istnieje dla tego dostawcy"
+
+#. placeholder {0}: num("max")
+msgid "An attribute combo can't exceed the cut quantity (max {0})"
+msgstr "A kombinacja atrybutów nie może przekroczyć ilości utrwalonej (max {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Przedmiot nie może być dodany do siebie."
@@ -897,7 +913,9 @@ msgstr "Czy na pewno chcesz dezaktywować tego użytkownika?"
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć {0} z tej operacji? Tej czynności nie można cofnąć."
 
+#. placeholder {0}: attribute.name
 #. placeholder {0}: selectedGroup.name
+#. placeholder {0}: set.name
 msgid "Are you sure you want to delete {0}?"
 msgstr "Czy na pewno chcesz usunąć {0}?"
 
@@ -932,6 +950,9 @@ msgstr "Czy chcesz usunąć konto: {0}{1}? To nie może być odwołane."
 #. placeholder {0}: apiKey.name
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć klucz API: {0}? Tej czynności nie można cofnąć."
+
+msgid "Are you sure you want to delete the assignment {name}?"
+msgstr "Czy na pewno chcesz usunąć przypisanie {name}?"
 
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
@@ -1075,14 +1096,6 @@ msgstr "Czy na pewno chcesz usunąć typ magazynu: {0}? Tej czynności nie możn
 #. placeholder {0}: storageUnit.name
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć jednostkę magazynową: {0}? Tej operacji nie można cofnąć."
-
-#. placeholder {0}: styleColor.colorCode
-msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
-msgstr "Czy na pewno chcesz usunąć kolor modelu {0}? Tej operacji nie można cofnąć."
-
-#. placeholder {0}: styleSize.sizeCode
-msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
-msgstr "Czy na pewno chcesz usunąć rozmiar modelu {0}? Tej operacji nie można cofnąć."
 
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
@@ -1343,11 +1356,29 @@ msgstr "Próby"
 msgid "Attribute"
 msgstr "Atrybut"
 
+msgid "Attribute not found"
+msgstr "Atrybut nie został znaleziony"
+
 msgid "Attribute recorded successfully"
 msgstr "Zapisano atrybut pomyślnie"
 
 msgid "Attribute sampling standard used to compute lot sample sizes and accept/reject numbers on inbound inspections."
 msgstr "Standard pobierania próbek atrybutów używany do obliczania wielkości próbek partii i liczb akceptacji/odrzucenia przy inspekcjach przychodzących."
+
+msgid "Attribute Set"
+msgstr "Zestaw Atrybutów"
+
+msgid "Attribute set is required"
+msgstr "Zdefiniowana zbiór atrybutów jest wymagany"
+
+msgid "Attribute set not found"
+msgstr "Zdefiniowany nie został zestaw atrybutów"
+
+msgid "Attribute Sets"
+msgstr "Zestawy Atrybutów"
+
+msgid "Attribute Values"
+msgstr "Wartości Atrybutów"
 
 msgid "Attributes"
 msgstr "Atrybuty"
@@ -1517,9 +1548,6 @@ msgstr "Rozmiar partii"
 
 msgid "Batch Tracking"
 msgstr "Śledzenie partii"
-
-msgid "Below reported"
-msgstr "Poniżej zgłoszone"
 
 msgid "Beta"
 msgstr "Beta"
@@ -1730,11 +1758,20 @@ msgstr "Nie można usunąć zatwierdzonej faktury"
 msgid "Cannot delete a posted shipment"
 msgstr "Nie można usunąć zatwierdzonej dostawy"
 
+msgid "Cannot delete a system item attributes set"
+msgstr "Nie można usunąć zestawu atrybutów systemowego"
+
 msgid "Cannot edit a protected customer type"
 msgstr "Nie można edytować zabezpieczonego typu klienta"
 
 msgid "Cannot edit a protected supplier type"
 msgstr "Nie można edytować chronionej rodziny dostawcy"
+
+msgid "Cannot edit a system attribute set"
+msgstr "Nie można edytować zestawu systemowych atrybutów"
+
+msgid "Cannot edit a system item attributes set"
+msgstr "Nie można edytować zestawu atrybutów systemowego"
 
 msgid "Cannot edit global material grade"
 msgstr "Nie można edytować globalnej kategorii materiału"
@@ -1748,11 +1785,11 @@ msgstr "Nie można edytować globalnej substancji materiałowej"
 msgid "Cannot edit global material type"
 msgstr "Nie można edytować globalnego typu materiału"
 
-msgid "Cannot edit global style color"
-msgstr "Nie można edytować globalnej koloru stylu"
+msgid "Cannot edit system attribute"
+msgstr "Nie można edytować systemowego atrybutu"
 
-msgid "Cannot edit global style size"
-msgstr "Nie można edytować globalnej wielkości stylu"
+msgid "Cannot edit system attribute value"
+msgstr "Nie można edytować wartości systemowego atrybutu"
 
 msgid "Cannot finish operation"
 msgstr "Nie można zakończyć operacji"
@@ -2000,18 +2037,6 @@ msgstr "Zwiń poddrzewo"
 
 msgid "Color"
 msgstr "Kolor"
-
-msgid "Color / Size"
-msgstr "Kolor / Rozmiar"
-
-msgid "Color Code"
-msgstr "Kod koloru"
-
-msgid "Color Name"
-msgstr "Nazwa koloru"
-
-msgid "Colors"
-msgstr "Kolory"
 
 msgid "Column"
 msgstr "Kolumna"
@@ -2653,6 +2678,15 @@ msgstr "Konto utworzone"
 msgid "Created At"
 msgstr "Utworzono"
 
+msgid "Created attribute"
+msgstr "Stworzony atrybut"
+
+msgid "Created attribute set"
+msgstr "Stworzony zestaw atrybutów"
+
+msgid "Created attribute value"
+msgstr "Stworzona wartość atrybutu"
+
 msgid "Created By"
 msgstr "Utworzono przez"
 
@@ -2683,6 +2717,9 @@ msgstr "Utworzony tryb awarii"
 
 msgid "Created gauge type"
 msgstr "Utworzono typ miernika"
+
+msgid "Created item attributes set"
+msgstr "Utworzony zestaw atrybutów elementu"
 
 msgid "Created item group"
 msgstr "Utworzona grupa artykułów"
@@ -3360,12 +3397,6 @@ msgstr "Usuń jednostkę magazynową"
 msgid "Delete Style"
 msgstr "Usuń model"
 
-msgid "Delete Style Color"
-msgstr "Usuń kolor modelu"
-
-msgid "Delete Style Size"
-msgstr "Usuń rozmiar modelu"
-
 msgid "Delete Substance"
 msgstr "Usuń substancję"
 
@@ -3408,8 +3439,17 @@ msgstr "Usuń transfer magazynowy"
 msgid "Delete Webhook"
 msgstr "Usuń Webhook"
 
+msgid "Deleted attribute"
+msgstr "Usunięto atrybut"
+
+msgid "Deleted attribute set"
+msgstr "Usunięta grupa atrybutów"
+
 msgid "Deleted attribute value"
 msgstr "Usunięto wartość atrybutu"
+
+msgid "Deleted item attributes set"
+msgstr "Usunięte atrybuty elementu zestawienie"
 
 msgid "Deleted warehouse transfer line"
 msgstr "Usunięta linia przenoszenia magazynowego"
@@ -3782,6 +3822,12 @@ msgstr "Edytuj atrybut"
 msgid "Edit Attribute Category"
 msgstr "Edytuj kategorię atrybutu"
 
+msgid "Edit Attribute Set"
+msgstr "Edytuj zestaw atrybutów"
+
+msgid "Edit Attribute Value"
+msgstr "Edytuj wartość atrybutu"
+
 msgid "Edit Category"
 msgstr "Edytuj kategorię"
 
@@ -3853,6 +3899,9 @@ msgstr "Edytuj dokument kontroli"
 
 msgid "Edit Invite"
 msgstr "Edytuj zap throughout"
+
+msgid "Edit Item Attributes Set"
+msgstr "Edytuj Atrybuty Elementu"
 
 msgid "Edit Item Group"
 msgstr "Edytuj grupę pozycji"
@@ -4003,12 +4052,6 @@ msgstr "Edytuj jednostkę magazynową"
 
 msgid "Edit Style"
 msgstr "Edytuj model"
-
-msgid "Edit Style Color"
-msgstr "Edytuj kolor modelu"
-
-msgid "Edit Style Size"
-msgstr "Edytuj rozmiar modelu"
 
 msgid "Edit Substance"
 msgstr "Edytuj substancję"
@@ -4286,6 +4329,15 @@ msgstr "Błąd załadowania stanu przypisania"
 msgid "Error loading attribute categories"
 msgstr "Błąd załadowania kategorii atrybutów"
 
+msgid "Error loading attribute sets"
+msgstr "Błąd załadowania zestawów atrybutów"
+
+msgid "Error loading attribute values"
+msgstr "Błąd ładowania wartości atrybutów"
+
+msgid "Error loading attributes"
+msgstr "Błąd ładowania atrybutów"
+
 msgid "Error loading console operators"
 msgstr "Błąd załadowania operatorów konsoli"
 
@@ -4297,6 +4349,9 @@ msgstr "Błąd załadowania pracowników"
 
 msgid "Error loading issues"
 msgstr "Błąd ładowania problemów"
+
+msgid "Error loading item attributes sets"
+msgstr "Błąd ładowania zestawów atrybutów elementu"
 
 msgid "Error loading item groups"
 msgstr "Błąd ładowania grup elementów"
@@ -4339,12 +4394,6 @@ msgstr "Błąd ładowania przenosin stoczek"
 
 msgid "Error loading storage types"
 msgstr "Błąd załadowania typów magazynowych"
-
-msgid "Error loading style colors"
-msgstr "Błąd załadowania kolorów stylizacyjnych"
-
-msgid "Error loading style sizes"
-msgstr "Błąd podczas ładowania rozmiarów stylu"
 
 msgid "Error loading supplier types"
 msgstr "Błąd załadowania typów dostawców"
@@ -4453,9 +4502,6 @@ msgstr "Wszystko z pakietu Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Przekracza {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB całkowite — usuń niektóre załączniki, aby wysłać."
-
-msgid "Exceeds cut"
-msgstr "Przekracza krojną ilość"
 
 msgid "Exceeds plan"
 msgstr "Przekracza plan"
@@ -4585,6 +4631,12 @@ msgstr "Ref. zewnętrzna"
 msgid "External Reference"
 msgstr "Odniesienie zewnętrzne"
 
+msgid "Fabric"
+msgstr "Tkanina"
+
+msgid "Fabric, Trim, etc. — drives which variant options this item can have"
+msgstr "Tkanina, obrzeża, itp. — jakie warianty ma ten element"
+
 msgid "Fail"
 msgstr "Nie powiodło się"
 
@@ -4605,9 +4657,6 @@ msgstr "Niedostępny centrum pracy"
 
 msgid "Failed to add a line"
 msgstr "Nie udało się dodać linii"
-
-msgid "Failed to add colors and sizes"
-msgstr "Nie udało się dodać kolorów i rozmiarów"
 
 msgid "Failed to add entry"
 msgstr "Nie udało się dodać wpisu"
@@ -4659,6 +4708,12 @@ msgstr "Nie udało się utworzyć atrybutu"
 
 msgid "Failed to create attribute category"
 msgstr "Nie udało się utworzyć kategorii atrybutu"
+
+msgid "Failed to create attribute set"
+msgstr "Nie udało się utworzyć zestawu atrybutów"
+
+msgid "Failed to create attribute value"
+msgstr "Nie udało się utworzyć wartości atrybutu"
 
 msgid "Failed to create auth session"
 msgstr "Nie udało się utworzyć sesji autoryzacyjnej"
@@ -4745,6 +4800,9 @@ msgstr "Nie udało się utworzyć dokumentu sprawdzianu"
 
 msgid "Failed to create invite link"
 msgstr "Nie udało się utworzyć linku do zaproszenia"
+
+msgid "Failed to create item attributes set"
+msgstr "Nie udało się utworzyć zbioru atrybutów produktu"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
@@ -4847,6 +4905,9 @@ msgstr "Nie udało się utworzyć zamówienia zakupów"
 msgid "Failed to create purchase order line."
 msgstr "Nie udało się utworzyć linii zamówienia zakupów."
 
+msgid "Failed to create purchase order lines for style variants"
+msgstr "Nie udało się utworzyć pozycji zamówienia zakupowego dla wariantów stylu"
+
 msgid "Failed to create quality issue"
 msgstr "Nie udało się utworzyć problemu jakości"
 
@@ -4891,6 +4952,9 @@ msgstr "Nie udało się utworzyć zamówienia sprzedaży"
 
 msgid "Failed to create sales order line."
 msgstr "Nie udało się utworzyć linii zamówienia sprzedaży."
+
+msgid "Failed to create sales order lines for style variants"
+msgstr "Nie udało się utworzyć linii zlecenia sprzedaży dla wariantów stylu"
 
 msgid "Failed to create samples"
 msgstr "Nie udało się utworzyć próbek"
@@ -5017,6 +5081,12 @@ msgstr "Niedostępna do usunięcia przypisania"
 msgid "Failed to delete association"
 msgstr "Niedostępna do usunięcia associated element"
 
+msgid "Failed to delete attribute"
+msgstr "Niedostępna do usunięcia atrybut"
+
+msgid "Failed to delete attribute set"
+msgstr "Niedostępna do usunięcia zestawu atrybutów"
+
 msgid "Failed to delete attribute value"
 msgstr "Niedostępna do usunięcia wartość atrybutu"
 
@@ -5088,6 +5158,9 @@ msgstr "Niedostępne do usunięcia problem"
 
 msgid "Failed to delete issue workflow"
 msgstr "Niedostępna do usunięcia przepływ pracy zadań"
+
+msgid "Failed to delete item attributes set"
+msgstr "Niedostępna do usunięcia ustawienia atrybutów elementu"
 
 msgid "Failed to delete item group"
 msgstr "Niedostępna do usunięcia grupa elementów"
@@ -5247,12 +5320,6 @@ msgstr "Niedostępna do usunięcia typ magazynowy"
 
 msgid "Failed to delete storage unit"
 msgstr "Niedostępna do usunięcia jednostka magazynowej"
-
-msgid "Failed to delete style color"
-msgstr "Nie udało się usunąć koloru stylu"
-
-msgid "Failed to delete style size"
-msgstr "Niedostępna do usunięcia styl rozmiaru"
 
 msgid "Failed to delete subsidiary"
 msgstr "Niedostępna do usunięcia pododdziału"
@@ -5566,12 +5633,6 @@ msgstr "Nie można uzyskać ID typu magazynowego"
 msgid "Failed to get a storageUnit id"
 msgstr "Nie można uzyskać ID jednostki magazynowej"
 
-msgid "Failed to get a style color id"
-msgstr "Nie można zdobyć identyfikatora koloru stylu"
-
-msgid "Failed to get a style size id"
-msgstr "Nie udało się uzyskać identyfikatora rozmiaru stylu"
-
 msgid "Failed to get a supplier contact id"
 msgstr "Nie można pobrać identyfikatora kontakту dostawcy"
 
@@ -5665,8 +5726,26 @@ msgstr "Nie można pobrać klasy aktuwa"
 msgid "Failed to get asset class id"
 msgstr "Nie można pobrać identyfikatora klasy zasobu"
 
+msgid "Failed to get assignment id"
+msgstr "Nie można pobrać identyfikatora przypisania"
+
 msgid "Failed to get attribute"
 msgstr "Nie można pobrać atrybutu"
+
+msgid "Failed to get attribute id"
+msgstr "Nie można pobrać identyfikatora atrybutu"
+
+msgid "Failed to get attribute set"
+msgstr "Nie można pobrać zbioru atrybutów"
+
+msgid "Failed to get attribute set id"
+msgstr "Nie można pobrać identyfikatora zestawu atrybutów"
+
+msgid "Failed to get attribute value"
+msgstr "Nie można pobrać wartości atrybutu"
+
+msgid "Failed to get attribute value id"
+msgstr "Nie można pobrać wartości atrybutu id"
 
 msgid "Failed to get chart of accounts"
 msgstr "Nie można pobrać planu kont"
@@ -5775,6 +5854,9 @@ msgstr "Nie udało się uzyskać ID święta"
 
 msgid "Failed to get issue type"
 msgstr "Nie można pobrać typu problemu"
+
+msgid "Failed to get item attributes set"
+msgstr "Nie udało się uzyskać ustawień atrybutów produktu"
 
 msgid "Failed to get item group"
 msgstr "Nie można pobrać grupy przedmiotu"
@@ -5934,12 +6016,6 @@ msgstr "Nie można uzyskać typu magazynowego"
 
 msgid "Failed to get storageUnit"
 msgstr "Nie można pobrać jednostki przechowywania"
-
-msgid "Failed to get style color"
-msgstr "Nie można pobrać koloru stylu"
-
-msgid "Failed to get style size"
-msgstr "Nie udało się zdobyć rozmiaru stylu"
 
 msgid "Failed to get subsidiary"
 msgstr "Nie można pobrać filii"
@@ -6223,14 +6299,8 @@ msgstr "Nie udało się wstawić rodzaju magazynowego"
 msgid "Failed to insert storageUnit"
 msgstr "Nie można wstawić jednostki magazynowej"
 
-msgid "Failed to insert style color"
-msgstr "Nie udało się wstawić koloru stylu"
-
 msgid "Failed to insert style inventory"
 msgstr "Nie udało się wstawić stanu magazynowego stylu"
-
-msgid "Failed to insert style size"
-msgstr "Nie udało się wstawić rozmiaru stylu"
 
 msgid "Failed to insert supplier quote"
 msgstr "Nie udało się wstawić dostawcy ceny"
@@ -6700,6 +6770,9 @@ msgstr "Nie można załadować stockTransfer"
 msgid "Failed to load storage rules"
 msgstr "Niedostępne zasady magazynowania"
 
+msgid "Failed to load style attributes"
+msgstr "Niedostępne/style atrybuty nie zostały załadowane"
+
 msgid "Failed to load style costing"
 msgstr "Nie удалось załadować kosztów stylizacji"
 
@@ -6889,9 +6962,6 @@ msgstr "Nie udało się odebrać identyfikatora operacji"
 msgid "Failed to record attribute"
 msgstr "Nie udało się zarejestrować atrybutu"
 
-msgid "Failed to record history"
-msgstr "Nie udało się zarejestrować historii"
-
 msgid "Failed to record rework quantity"
 msgstr "Niedostępna do zapisu ilość naprawy"
 
@@ -7015,6 +7085,9 @@ msgstr "Nie udało się zapisać nagłówka"
 msgid "Failed to save item"
 msgstr "Nie udało się zapisać elementu"
 
+msgid "Failed to save job variant quantities"
+msgstr "Nie udało się zapisać ilości wariantu zlecenia"
+
 msgid "Failed to save journal entry"
 msgstr "Nie udało się zapisać wpisu księgowego"
 
@@ -7029,6 +7102,9 @@ msgstr "Nie udało się zapisać planu próbkowania"
 
 msgid "Failed to save section"
 msgstr "Nie udało się zapisać sekcji"
+
+msgid "Failed to save variant quantities"
+msgstr "Nie udało się zapisać zmienionych ilości"
 
 msgid "Failed to search users"
 msgstr "Nie udało się wyszukać użytkowników"
@@ -7072,6 +7148,9 @@ msgstr "Niedostępny jest zaczynak evenu utrzymania"
 msgid "Failed to stop event"
 msgstr "Niedostępne do zatrzymania zdarzenie"
 
+msgid "Failed to sync consumable variants"
+msgstr "Nie udało się zsynchronizować wariantów zużycia"
+
 msgid "Failed to sync procedure"
 msgstr "Nie udało się zsynchronizować procedury"
 
@@ -7111,8 +7190,14 @@ msgstr "Nie udało się zaktualizować atrybutu"
 msgid "Failed to update attribute category"
 msgstr "Nie udało się zaktualizować kategorii atrybutu"
 
+msgid "Failed to update attribute set"
+msgstr "Nie udało się zaktualizować zbioru atrybutów"
+
 msgid "Failed to update attribute value"
 msgstr "Nie udało się zaktualizować wartości atrybutu"
+
+msgid "Failed to update attributes"
+msgstr "Nie udało się zaktualizować atrybutów"
 
 msgid "Failed to update avatar"
 msgstr "Nie udało się zaktualizować obrazka profilowego"
@@ -7137,6 +7222,9 @@ msgstr "Nie udało się zaktualizować parametru konfiguracji"
 
 msgid "Failed to update consumable"
 msgstr "Nie udało się zaktualizować zużycia"
+
+msgid "Failed to update consumable attributes"
+msgstr "Nie udało się zaktualizować atrybutów zużycia"
 
 msgid "Failed to update consumable costing"
 msgstr "Nie udało sięaktualizować kosztu zużycia"
@@ -7273,6 +7361,9 @@ msgstr "Nie udało się zaktualizować przepływu pracy zagadki"
 msgid "Failed to update item"
 msgstr "Nie udało się zaktualizować elementu"
 
+msgid "Failed to update item attributes set"
+msgstr "Nie udało się zaktualizować ustawień atrybutów produktu"
+
 msgid "Failed to update item cost"
 msgstr "Nie udało się zaktualizować kosztu pozycji"
 
@@ -7299,6 +7390,9 @@ msgstr "Nie udało się zaktualizować narzędzia operacji zadania"
 
 msgid "Failed to update job status"
 msgstr "Nie udało się zaktualizować stanu zadania"
+
+msgid "Failed to update job variant quantities"
+msgstr "Nie udało się zaktualizować ilości wariantów zlecenia"
 
 msgid "Failed to update kanban"
 msgstr "Nie udało sięaktualizować kabanu"
@@ -7441,6 +7535,9 @@ msgstr "Nie udało się zaktualizować dostawy zamówienia zakupów"
 msgid "Failed to update purchase order line"
 msgstr "Nie udało się zaktualizować linii zamówienia zakupów"
 
+msgid "Failed to update purchase order lines for style variants"
+msgstr "Nie udało się zaktualizować pozycji zamówienia zakupów dla wariantów stylu"
+
 msgid "Failed to update purchase order payment"
 msgstr "Nie udało się zaktualizować płatności zamówienia zakupowego"
 
@@ -7510,6 +7607,9 @@ msgstr "Nie udało się zaktualizować statusu faktury sprzedaży"
 msgid "Failed to update sales order line"
 msgstr "Nie udało się zaktualizować linii zamówienia sprzedaży"
 
+msgid "Failed to update sales order lines for style variants"
+msgstr "Nie udało się zaktualizować pozycji zamówienia sprzedaży dla wariantów stylu"
+
 msgid "Failed to update sales order payment"
 msgstr "Nie udało się zaktualizować płatności zlecenia sprzedaży"
 
@@ -7546,8 +7646,8 @@ msgstr "Nie udało się zaktualizować typu magazynowego"
 msgid "Failed to update storageUnit"
 msgstr "Nie udało się zaktualizować jednostki magazynowej"
 
-msgid "Failed to update style color"
-msgstr "Nie udało się zaktualizować koloru stylu"
+msgid "Failed to update style attributes"
+msgstr "Nie udało się zaktualizować atrybutów stylu"
 
 msgid "Failed to update style costing"
 msgstr "Nie udało się zaktualizować kosztów stylu"
@@ -7560,9 +7660,6 @@ msgstr "Nie udało się zaktualizować planowania stylu"
 
 msgid "Failed to update style sale price"
 msgstr "Nie udało sięaktualiziersprzedajaczej ceny stylu"
-
-msgid "Failed to update style size"
-msgstr "Nie udało się zaktualizować rozmiaru stylu"
 
 msgid "Failed to update subsidiary"
 msgstr "Nie udało się zaktualizować podkompresji"
@@ -7966,6 +8063,9 @@ msgstr "Zyski i straty ze zbycia"
 
 msgid "Gallon"
 msgstr "Galon"
+
+msgid "Garment"
+msgstr "Zbroda"
 
 msgid "Gauge"
 msgstr "Miernik"
@@ -8689,6 +8789,15 @@ msgstr "Pozycja {scannedItem} nie jest taka sama jak pozycja {expectedItem}"
 
 msgid "Item association not found"
 msgstr "Nie znaleziono powiązanej pozycji"
+
+msgid "Item Attribute Sets"
+msgstr "Zbiory Atrybutów Elementów"
+
+msgid "Item Attributes"
+msgstr "Atrybuty elementu"
+
+msgid "Item attributes set not found"
+msgstr "Ustawienia atrybutów elementu nie znaleziono"
 
 msgid "Item filters"
 msgstr "Filtry elementów"
@@ -9426,6 +9535,12 @@ msgstr "Zostala stworzona główna zlecenie produkcyjne"
 msgid "Master Work Orders"
 msgstr "Główne zlecenia"
 
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
+msgstr "Nie można zakończyć ani odebrać głównych zadań produkcji. Zamiast tego zakończ zadania w zestawach – magazyn odbiera te elementy."
+
+msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
+msgstr "Narzędzia główne nie mogą być zakończone ani odebrane do magazynu. Zamiast tego zakończ zadania w zestawach."
+
 msgid "Match"
 msgstr "Mezcza"
 
@@ -9732,6 +9847,9 @@ msgstr "Więcej opcji"
 msgid "Move"
 msgstr "Przenieś"
 
+msgid "Move down"
+msgstr "Przenieś w dół"
+
 msgid "Move entities"
 msgstr "Przenieś jednostki"
 
@@ -9749,6 +9867,9 @@ msgstr "Przenieś do"
 
 msgid "Move to Trash"
 msgstr "Przenieś do kosza"
+
+msgid "Move up"
+msgstr "Przenieś w górę"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -9851,6 +9972,12 @@ msgstr "Nowy atrybut"
 msgid "New Attribute Category"
 msgstr "Nowa Kategoria Atrybutu"
 
+msgid "New Attribute Set"
+msgstr "Nowy zestaw atrybutów"
+
+msgid "New Attribute Value"
+msgstr "Nowa wartość atrybutu"
+
 msgid "New chat"
 msgstr "Nowy czat"
 
@@ -9901,6 +10028,9 @@ msgstr "Nowy dokument inspekcji"
 
 msgid "New Invoice"
 msgstr "Nowa Faktura"
+
+msgid "New Item Attributes Set"
+msgstr "Nowe Atrybuty Elementu Zdefiniowane"
 
 msgid "New Item Group"
 msgstr "Nowa Grupa Pozycji"
@@ -10049,12 +10179,6 @@ msgstr "Nowa jednostka magazynowa"
 msgid "New Style"
 msgstr "Nowy model"
 
-msgid "New Style Color"
-msgstr "Nowy kolor modelu"
-
-msgid "New Style Size"
-msgstr "Nowy rozmiar modelu"
-
 msgid "New Supplier"
 msgstr "Nowy Dostawca"
 
@@ -10087,6 +10211,9 @@ msgstr "Nowa linia transferu"
 
 msgid "New Unit of Measure"
 msgstr "Nowa jednostka miary"
+
+msgid "New Value"
+msgstr "Nowa wartość"
 
 msgid "New Version"
 msgstr "Nowa wersja"
@@ -10180,6 +10307,9 @@ msgstr "Brak zarchiwizowanych dzienników. Dzienniki starsze niż {0} dni będą
 msgid "No attachments."
 msgstr "Brak załączników."
 
+msgid "No attributes yet."
+msgstr "Brak atrybutów jeszcze."
+
 msgid "No available filters"
 msgstr "Brak dostępnych filtrów"
 
@@ -10206,9 +10336,6 @@ msgstr "Brak historii czatów"
 
 msgid "No chats found"
 msgstr "Nie znaleziono czatów"
-
-msgid "No colors assigned"
-msgstr "Nie przypisano kolorów"
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Brak komentarzy. Bądź pierwszy i dodaj komentarz."
@@ -10420,9 +10547,6 @@ msgstr "Brak próbek do sprawdzenia."
 msgid "No selection"
 msgstr "Brak wyboru"
 
-msgid "No sizes assigned"
-msgstr "Nie przypisano rozmiarów"
-
 msgid "No sorts applied to this view"
 msgstr "Brak zastosowanych sortowań w tym widoku"
 
@@ -10560,6 +10684,9 @@ msgstr "OK"
 
 msgid "Oldest first"
 msgstr "Najstarsze:first"
+
+msgid "On hand"
+msgstr "Dostępne na magazynie"
 
 msgid "On Hand"
 msgstr "W magazynie"
@@ -10764,6 +10891,9 @@ msgstr "Sortowanie według"
 
 msgid "Order Date"
 msgstr "Data zamówienia"
+
+msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+msgstr "Zdefiniowana kolejność okresla wartości atrybutów wyświetlane w gridach i chipach (np. Kolor · Rozmiar)."
 
 msgid "Order Multiple"
 msgstr "Wielokrotność Zamówienia"
@@ -11662,6 +11792,9 @@ msgstr "Linia Zamówienia Zakupu"
 msgid "Purchase order line created"
 msgstr "Linia zamówienia zakupów utworzona"
 
+msgid "Purchase order lines created"
+msgstr "Linie zamówienia zakupów utworzone"
+
 msgid "Purchase Order Location"
 msgstr "Lokalizacja Zamówienia Zakupu"
 
@@ -11965,9 +12098,8 @@ msgstr "Należności"
 msgid "Receive"
 msgstr "Odbierz"
 
-#. placeholder {0}: job.jobId
-msgid "Receive {0} to Inventory"
-msgstr "Odbierz {0} do Magazynu"
+msgid "Receive {itemReadableId} to Inventory"
+msgstr "Odbierz {itemReadableId} do magazynu"
 
 msgid "Receive to Inventory"
 msgstr "Odbierz do Magazynu"
@@ -12644,6 +12776,9 @@ msgstr "Linia Zamówienia Sprzedaży"
 msgid "Sales order line created"
 msgstr "Linia zamówienia sprzedaży utworzona"
 
+msgid "Sales order lines created"
+msgstr "Linie zamówienia sprzedaży utworzone"
+
 msgid "Sales Order Location"
 msgstr "Lokalizacja Zamówienia Sprzedaży"
 
@@ -12722,6 +12857,9 @@ msgstr "Zapisz Widok"
 
 msgid "Saved"
 msgstr "Zapisano"
+
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr "Zapisane zestawy ({created} utworzonych, {updated} zaktualizowanych)"
 
 msgid "Saved document layout"
 msgstr "Zapisany układ dokumentu"
@@ -13064,11 +13202,17 @@ msgstr "Wybierz wartość"
 msgid "Select values"
 msgstr "Wybierz wartości"
 
+msgid "Select…"
+msgstr "Wybierz…"
+
 msgid "Selected"
 msgstr "Wybrane"
 
 msgid "Selected Operation"
 msgstr "Wybrana operacja"
+
+msgid "Selected values become variant SKUs"
+msgstr "Wybrane wartości stają się wariantami SKU"
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"
@@ -13488,12 +13632,6 @@ msgstr "Krok jednostkowy"
 msgid "Size"
 msgstr "Rozmiar"
 
-msgid "Size Code"
-msgstr "Kod rozmiaru"
-
-msgid "Size Name"
-msgstr "Nazwa rozmiaru"
-
 msgid "Sizes"
 msgstr "Rozmiary"
 
@@ -13511,6 +13649,12 @@ msgstr "Pomiń zaplanowaną konserwację w dni świąt firmowych"
 
 msgid "Skipped"
 msgstr "Pominięte"
+
+msgid "SKU"
+msgstr "Kod SKU"
+
+msgid "SKU quantities"
+msgstr "Kwanty SKU"
 
 msgid "Soft Deadline"
 msgstr "Terminiczna Data Odpowiedzialności"
@@ -13538,6 +13682,9 @@ msgstr "Sortuj według"
 
 msgid "Sort Descending"
 msgstr "Sortuj malejąco"
+
+msgid "Sort Order"
+msgstr "Kolejność sortowania"
 
 msgid "sorted ascending"
 msgstr "posortowane rosnąco"
@@ -13791,15 +13938,6 @@ msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wyg
 msgid "Style"
 msgstr "Model"
 
-msgid "Style Color"
-msgstr "Kolor modelu"
-
-msgid "Style color created"
-msgstr "Stylowa kolorówka utworzona"
-
-msgid "Style Colors"
-msgstr "Kolory modelu"
-
 msgid "Style Details"
 msgstr "Szczegóły modelu"
 
@@ -13809,23 +13947,11 @@ msgstr "ID modelu"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Styl wyjścia kanban do wyświetlenia w tabeli Kanban"
 
-msgid "Style Properties"
-msgstr "Właściwości modelu"
-
 msgid "Style quantity configuration is required"
 msgstr "Konfiguracja ilościowego stylu jest wymagana"
 
 msgid "Style quantity is required"
 msgstr "Ilość produktu jest wymagana"
-
-msgid "Style Size"
-msgstr "Rozmiar modelu"
-
-msgid "Style size created"
-msgstr "Styl rozmiaru utworzony"
-
-msgid "Style Sizes"
-msgstr "Rozmiary modelu"
 
 msgid "Styles"
 msgstr "Modele"
@@ -14099,12 +14225,6 @@ msgstr "Pomyślnie usunięto przenosinę stoczną"
 
 msgid "Successfully deleted storage type"
 msgstr "Pomyślnie usunięto typ magazynowy"
-
-msgid "Successfully deleted style color"
-msgstr "Pomyślnie usunięta kolorystyka stylu"
-
-msgid "Successfully deleted style size"
-msgstr "Pomyślnie usunięto rozmiar stylu"
 
 msgid "Successfully deleted subsidiary"
 msgstr "Pomyślnie usunięto pododdział"
@@ -14433,6 +14553,7 @@ msgstr "Podatek"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 #. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+#. placeholder {0}: percentFormatter.format(taxPercent)
 msgid "Tax ({0})"
 msgstr "Podatek ({0})"
 
@@ -14664,6 +14785,9 @@ msgstr "Ten numer seryjny nie został wysłany w tej przenosinie"
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Ten typ magazynu jest obecnie używany przez {usageCount} jednostkę magazynową{0}."
+
+msgid "This style has no attribute selections yet. Add attributes on the style first."
+msgstr "Ta styl jeszcze nie ma wybranych atrybutów. Dodaj atrybuty do styli:first"
 
 msgid "This updates the theme for all users of the application"
 msgstr "To aktualizuje motyw dla wszystkich użytkowników aplikacji"
@@ -14997,6 +15121,9 @@ msgstr "Rachunkowy bilans"
 msgid "Triggers"
 msgstr "Wyzwalacze"
 
+msgid "Trim"
+msgstr "Skróć"
+
 msgid "True"
 msgstr "Prawda"
 
@@ -15202,8 +15329,14 @@ msgstr "Zaktualizowany klucz API"
 msgid "Updated At"
 msgstr "Zaktualizowano"
 
+msgid "Updated attribute"
+msgstr "Zaktualizowana właściwość"
+
 msgid "Updated attribute category "
 msgstr "Zaktualizowana kategoria atrybutu "
+
+msgid "Updated attribute set"
+msgstr "Zaktualizowana zestaw atrybutów"
 
 msgid "Updated attribute value"
 msgstr "Zaktualizowana wartość atrybutu"
@@ -15216,6 +15349,9 @@ msgstr "Zaktualizowana firma"
 
 msgid "Updated consumable"
 msgstr "Zaktualizowany zużycie"
+
+msgid "Updated consumable attributes"
+msgstr "Zaktualizowane parametry zużycia"
 
 msgid "Updated consumable costing"
 msgstr "Zaktualizowane koszty zużycia"
@@ -15291,6 +15427,9 @@ msgstr "Zaktualizowana rodzaj problemu"
 
 msgid "Updated item"
 msgstr "Zaktualizowana element"
+
+msgid "Updated item attributes set"
+msgstr "Zaktualizowane atrybuty elementu zestawленo"
 
 msgid "Updated item group"
 msgstr "Zaktualizowana grupa elementów"
@@ -15460,8 +15599,8 @@ msgstr "Zaktualizowana forma magazynowania"
 msgid "Updated storageUnit"
 msgstr "Zaktualizowana jednostka przechowywania"
 
-msgid "Updated style color"
-msgstr "Zaktualizowana kolorystyka stylu"
+msgid "Updated style attributes"
+msgstr "Zaktualizowane atrybuty stylu"
 
 msgid "Updated style costing"
 msgstr "Zaktualizowane stylowe koszty"
@@ -15474,9 +15613,6 @@ msgstr "Zaktualizowana planowanie stylu"
 
 msgid "Updated style sale price"
 msgstr "Zaktualizowana cena sprzedawcy stylu"
-
-msgid "Updated style size"
-msgstr "Zaktualizowana wielkość stylu"
 
 msgid "Updated subsidiary"
 msgstr "Zaktualizowana filia"

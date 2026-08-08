@@ -13,18 +13,17 @@ import {
 } from "~/components/Overlay/overlay";
 import {
   createStyleSamples,
-  createStyleSampleValidator,
-  getStyleSizes
+  createStyleSampleValidator
 } from "~/modules/items";
+import { getItemAttributeSelectionsForItem } from "~/modules/items/itemAttribute.service";
 import { getUserDefaults } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 
-type StyleColor = { id: string; colorCode: string; colorName: string };
-type StyleSize = {
-  id: string;
-  sizeCode: string;
-  sizeName: string;
-  sortOrder?: number;
+type StyleAttrRow = {
+  attributeId: string;
+  code: string;
+  name: string;
+  values: Array<{ id: string; code: string; name: string }>;
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -51,36 +50,90 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const styleClient = client as typeof client & {
     from: (t: string) => any;
   };
-  const [style, allSizes, defaults] = await Promise.all([
+  const [style, defaults] = await Promise.all([
     styleClient
       .from("styles")
-      .select("colors, readableIdWithRevision")
+      .select("id, attributes, readableIdWithRevision")
       // route param is the style readableId (= style.id), not the item id
       .eq("readableId", styleId)
       .eq("companyId", companyId)
       .maybeSingle(),
-    getStyleSizes(client, companyId),
     getUserDefaults(client, userId, companyId)
   ]);
 
-  const colors = (style.data?.colors ?? []) as StyleColor[];
-  const sizes = ((allSizes.data ?? []) as StyleSize[])
-    .slice()
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  let attributes: StyleAttrRow[] = Array.isArray(style.data?.attributes)
+    ? (style.data.attributes as StyleAttrRow[])
+    : [];
 
-  // Offer every company size, ordered, and guarantee L (the sample default).
-  const sizeCodes = Array.from(new Set([...sizes.map((s) => s.sizeCode), "L"]));
+  // Fallback before migration: load selections for the style item.
+  if (attributes.length === 0 && style.data?.id) {
+    const state = await getItemAttributeSelectionsForItem(client, {
+      itemId: style.data.id,
+      companyId
+    });
+    if (!state.error && state.data.attributeSetId) {
+      const db = client as any;
+      const { data: setAttrs } = await db
+        .from("itemAttributeSetAttribute")
+        .select(
+          "attributeId, sortOrder, itemAttribute:attributeId(id, code, name)"
+        )
+        .eq("attributeSetId", state.data.attributeSetId)
+        .order("sortOrder", { ascending: true });
+      const valueIds = Object.values(state.data.selections).flat();
+      const { data: values } = valueIds.length
+        ? await db
+            .from("itemAttributeValue")
+            .select("id, attributeId, code, name, sortOrder")
+            .in("id", valueIds)
+        : { data: [] };
+      attributes = (
+        (setAttrs ?? []) as Array<{
+          attributeId: string;
+          itemAttribute: { id: string; code: string; name: string } | null;
+        }>
+      )
+        .map((row) => {
+          const opts = (
+            (values ?? []) as Array<{
+              id: string;
+              attributeId: string;
+              code: string;
+              name: string | null;
+            }>
+          )
+            .filter((v) => v.attributeId === row.attributeId)
+            .map((v) => ({
+              id: v.id,
+              code: v.code,
+              name: v.name ?? v.code
+            }));
+          if (opts.length === 0) return null;
+          return {
+            attributeId: row.attributeId,
+            code: row.itemAttribute?.code ?? row.attributeId,
+            name: row.itemAttribute?.name ?? row.itemAttribute?.code ?? "",
+            values: opts
+          };
+        })
+        .filter(Boolean) as StyleAttrRow[];
+    }
+  }
 
   return {
     styleId,
     styleDisplayId: style.data?.readableIdWithRevision ?? styleId,
-    colorOptions: colors.map((c) => ({
-      value: c.id,
-      label: c.colorName || c.colorCode
+    attributes: attributes.map((a) => ({
+      attributeId: a.attributeId,
+      code: a.code,
+      name: a.name,
+      options: (a.values ?? []).map((v) => ({
+        value: v.id,
+        label: v.name || v.code,
+        // Keep the code so the form can localize the display name per locale.
+        code: v.code
+      }))
     })),
-    sizeOptions: sizeCodes.map((code) => ({ value: code, label: code })),
-    defaultColorIds: colors.map((c) => c.id),
-    defaultSize: "L",
     defaultLocationId: defaults.data?.locationId ?? ""
   };
 }
@@ -99,9 +152,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   );
   if (validation.error) return validationError(validation.error);
 
-  // Placing samples writes to itemLedger, whose RLS requires inventory_create.
-  // Sample creators only need parts_create (checked above), so do the privileged
-  // ledger/tracked-entity writes with the service-role client.
   const serviceRole = getCarbonServiceRole();
   const result = await createStyleSamples(serviceRole, {
     ...validation.data,

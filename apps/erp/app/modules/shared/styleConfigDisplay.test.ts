@@ -68,6 +68,93 @@ describe("getStyleConfigDisplay", () => {
   });
 });
 
+describe("getStyleConfigDisplayFromVariants", () => {
+  it("aggregates Color · Size chips from variant lines", async () => {
+    const { getStyleConfigDisplayFromVariants } = await import(
+      "./styleConfigDisplay"
+    );
+    const display = getStyleConfigDisplayFromVariants(
+      [
+        { colorCode: "BG", sizeCode: "S", quantity: 3 },
+        { colorCode: "BK", sizeCode: "S", quantity: 4 },
+        { colorCode: "BG", sizeCode: "S", quantity: 2 }
+      ],
+      { BG: "米色", BK: "黑色" }
+    );
+    expect(display?.chips.map((c) => c.label)).toEqual([
+      "米色 · S ×5",
+      "黑色 · S ×4"
+    ]);
+  });
+
+  it("renders color-only chips for consumable variants (no size)", async () => {
+    const { getStyleConfigDisplayFromVariants } = await import(
+      "./styleConfigDisplay"
+    );
+    const display = getStyleConfigDisplayFromVariants(
+      [
+        { colorCode: "BG", sizeCode: "", quantity: 3 },
+        { colorCode: "BK", sizeCode: "", quantity: 4 },
+        { colorCode: "BG", sizeCode: "", quantity: 2 }
+      ],
+      { BG: "米色", BK: "黑色" }
+    );
+    expect(display?.chips.map((c) => c.label)).toEqual(["米色 ×5", "黑色 ×4"]);
+  });
+});
+
+describe("groupLinesForStyleDisplay", () => {
+  it("collapses variant SKUs under the parent Style", async () => {
+    const { groupLinesForStyleDisplay } = await import("./styleConfigDisplay");
+    const groups = groupLinesForStyleDisplay(
+      [
+        {
+          id: "parent",
+          itemId: "p1",
+          configuration: {
+            configTable: [{ color: "BK", S: 5 }],
+            configTablePrimaryKeys: ["S"]
+          },
+          purchaseQuantity: 5
+        },
+        { id: "v1", itemId: "c1", purchaseQuantity: 4 },
+        { id: "v2", itemId: "c2", purchaseQuantity: 3 }
+      ],
+      {
+        c1: {
+          variantItemId: "c1",
+          parentItemId: "p1",
+          parentReadableId: "111333",
+          parentName: "1113333",
+          parentThumbnailPath: null,
+          attributeCodes: ["BK", "S"]
+        },
+        c2: {
+          variantItemId: "c2",
+          parentItemId: "p1",
+          parentReadableId: "111333",
+          parentName: "1113333",
+          parentThumbnailPath: null,
+          attributeCodes: ["BG", "S"]
+        }
+      },
+      { BK: "黑色", BG: "米色" },
+      (line) =>
+        Number((line as { purchaseQuantity?: number }).purchaseQuantity ?? 0)
+    );
+    expect(groups).toHaveLength(1);
+    expect(groups[0]?.kind).toBe("style-group");
+    if (groups[0]?.kind === "style-group") {
+      expect(groups[0].parentReadableId).toBe("111333");
+      expect(groups[0].totalLines.map((l) => l.id)).toEqual(["v1", "v2"]);
+      expect(groups[0].styleConfig?.chips.map((c) => c.label)).toEqual([
+        "黑色 · S ×4",
+        "米色 · S ×3"
+      ]);
+    }
+  });
+});
+
 describe("buildStyleColorNames", () => {
   it("maps colorCode and English aliases from the seed reference", () => {
     const names = buildStyleColorNames([

@@ -58,7 +58,11 @@ import {
   useRouteData
 } from "~/hooks";
 import JobStatus from "~/modules/production/ui/Jobs/JobStatus";
-import { getStyleConfigDisplay } from "~/modules/shared/styleConfigDisplay";
+import {
+  getStyleConfigDisplay,
+  groupLinesForStyleDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/styleConfigDisplay";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isSalesOrderLocked } from "../../sales.models";
 import type {
@@ -85,6 +89,7 @@ const SalesOrderSummary = ({
     salesOrder: SalesOrder;
     lines: SalesOrderLine[];
     colorNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
     customer: Customer;
     quote: Quotation;
     invoiceSummary: {
@@ -237,6 +242,7 @@ const SalesOrderSummary = ({
             formatter={formatter}
             lines={routeData?.lines ?? []}
             colorNames={routeData?.colorNames}
+            styleVariantByItemId={routeData?.styleVariantByItemId ?? {}}
           />
 
           {canAddLine && (
@@ -372,13 +378,24 @@ const SalesOrderSummary = ({
   );
 };
 
+function lineSaleTotal(line: SalesOrderLine) {
+  return (
+    ((line.convertedUnitPrice ?? 0) * (line.saleQuantity ?? 0) +
+      (line.convertedAddOnCost ?? 0) +
+      (line.convertedShippingCost ?? 0)) *
+      (1 + (line.taxPercent ?? 0)) +
+    (line.convertedNonTaxableAddOnCost ?? 0)
+  );
+}
+
 function LineItems({
   currencyCode,
   locale,
   formatter,
   lines,
   salesOrder,
-  colorNames
+  colorNames,
+  styleVariantByItemId
 }: {
   currencyCode: string;
   formatter: Intl.NumberFormat;
@@ -386,6 +403,7 @@ function LineItems({
   lines: SalesOrderLine[];
   salesOrder?: SalesOrder;
   colorNames?: Record<string, string>;
+  styleVariantByItemId: Record<string, StyleVariantLineMeta>;
 }) {
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
@@ -414,37 +432,124 @@ function LineItems({
     deleteLineDisclosure.onClose();
   };
 
+  const displayGroups = groupLinesForStyleDisplay(
+    lines,
+    styleVariantByItemId,
+    colorNames,
+    (line) => Number(line.saleQuantity ?? 0),
+    locale
+  );
+
   return (
     <VStack spacing={8} className="w-full overflow-hidden">
-      {lines.map((line) => {
+      {displayGroups.map((group) => {
+        const line = group.kind === "line" ? group.line : group.primaryLine;
         if (!line.id) return null;
 
-        const isMade = line.methodType === "Make to Order";
-        const styleConfig = getStyleConfigDisplay(
-          line.configuration,
-          colorNames
-        );
+        const totalLines =
+          group.kind === "style-group" ? group.totalLines : [line];
+        const styleConfig =
+          group.kind === "style-group"
+            ? group.styleConfig
+            : (group.styleConfig ??
+              getStyleConfigDisplay(line.configuration, colorNames, locale));
 
-        const { jobLabel, jobVariant, jobs } = getSalesOrderJobStatus(
-          // @ts-expect-error TS2345 - TODO: fix type
-          salesOrder?.jobs as SalesOrderJob[] | undefined,
-          line as any
+        const itemReadableId =
+          group.kind === "style-group"
+            ? group.parentReadableId
+            : line.salesOrderLineType === "Fixed Asset"
+              ? (line as { assetReadableId?: string }).assetReadableId ||
+                "Fixed Asset"
+              : line.itemReadableId;
+        const itemDescription =
+          group.kind === "style-group"
+            ? (group.parentName ?? line.description)
+            : line.description;
+        const thumbnailPath =
+          group.kind === "style-group"
+            ? (group.parentThumbnailPath ?? line.thumbnailPath)
+            : line.thumbnailPath;
+
+        const saleQuantity = totalLines.reduce(
+          (acc, l) => acc + (l.saleQuantity ?? 0),
+          0
         );
+        const extendedPrice = totalLines.reduce(
+          (acc, l) => acc + (l.convertedUnitPrice ?? 0) * (l.saleQuantity ?? 0),
+          0
+        );
+        const addOnCost = totalLines.reduce(
+          (acc, l) => acc + (l.convertedAddOnCost ?? 0),
+          0
+        );
+        const nonTaxableAddOnCost = totalLines.reduce(
+          (acc, l) => acc + (l.convertedNonTaxableAddOnCost ?? 0),
+          0
+        );
+        const shippingCost = totalLines.reduce(
+          (acc, l) => acc + (l.convertedShippingCost ?? 0),
+          0
+        );
+        const unitPrice =
+          saleQuantity > 0
+            ? totalLines.reduce(
+                (acc, l) =>
+                  acc + (l.convertedUnitPrice ?? 0) * (l.saleQuantity ?? 0),
+                0
+              ) / saleQuantity
+            : (line.convertedUnitPrice ?? 0);
+        const displayUnitPrice =
+          saleQuantity > 0
+            ? totalLines.reduce(
+                (acc, l) => acc + (l.unitPrice ?? 0) * (l.saleQuantity ?? 0),
+                0
+              ) / saleQuantity
+            : (line.unitPrice ?? 0);
+        const taxAmount = totalLines.reduce((acc, l) => {
+          const taxable =
+            (l.convertedUnitPrice ?? 0) * (l.saleQuantity ?? 0) +
+            (l.convertedAddOnCost ?? 0) +
+            (l.convertedShippingCost ?? 0);
+          return acc + taxable * (l.taxPercent ?? 0);
+        }, 0);
+        const groupTotal = totalLines.reduce(
+          (acc, l) => acc + lineSaleTotal(l),
+          0
+        );
+        const taxPercent = line.taxPercent ?? 0;
+
+        const isMade = totalLines.some((l) => l.methodType === "Make to Order");
+        const jobsById = new Map<string, SalesOrderJob>();
+        let jobLabel = "";
+        let jobVariant: "green" | "red" | "orange" = "orange";
+        for (const totalLine of totalLines) {
+          const status = getSalesOrderJobStatus(
+            // @ts-expect-error TS2345 - TODO: fix type
+            salesOrder?.jobs as SalesOrderJob[] | undefined,
+            totalLine as any
+          );
+          jobLabel = status.jobLabel || jobLabel;
+          jobVariant = status.jobVariant || jobVariant;
+          for (const job of status.jobs) {
+            if (job.id) jobsById.set(job.id, job);
+          }
+        }
+        const jobs = [...jobsById.values()];
 
         return (
           <motion.div
-            key={line.id}
+            key={group.key}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="border-b border-input py-6 w-full"
           >
             <HStack spacing={4} className="items-start">
-              {line.thumbnailPath ? (
+              {thumbnailPath ? (
                 <img
-                  alt={line.itemReadableId!}
+                  alt={itemReadableId!}
                   className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg"
-                  src={getPrivateUrl(line.thumbnailPath)}
+                  src={getPrivateUrl(thumbnailPath)}
                 />
               ) : (
                 <div className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg p-4">
@@ -455,7 +560,7 @@ function LineItems({
               <VStack spacing={0} className="w-full">
                 <div
                   className="flex flex-col cursor-pointer w-full"
-                  onClick={() => toggleOpen(line.id!)}
+                  onClick={() => toggleOpen(group.key)}
                 >
                   <div className="flex items-center justify-between w-full">
                     <VStack
@@ -466,11 +571,7 @@ function LineItems({
                         spacing={2}
                         className="flex min-w-0 flex-shrink-0"
                       >
-                        <Heading className="truncate">
-                          {line.salesOrderLineType === "Fixed Asset"
-                            ? (line as any).assetReadableId || "Fixed Asset"
-                            : line.itemReadableId}
-                        </Heading>
+                        <Heading className="truncate">{itemReadableId}</Heading>
                         <Button
                           asChild
                           variant="link"
@@ -486,23 +587,25 @@ function LineItems({
                             <Trans>Edit</Trans>
                           </Link>
                         </Button>
-                        {isEditable && permissions.can("delete", "sales") && (
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="text-destructive flex-shrink-0"
-                            leftIcon={<LuTrash />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDeleteLine(line);
-                            }}
-                          >
-                            <Trans>Delete</Trans>
-                          </Button>
-                        )}
+                        {isEditable &&
+                          permissions.can("delete", "sales") &&
+                          group.kind !== "style-group" && (
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="text-destructive flex-shrink-0"
+                              leftIcon={<LuTrash />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteLine(line);
+                              }}
+                            >
+                              <Trans>Delete</Trans>
+                            </Button>
+                          )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
-                        {line.description}
+                        {itemDescription}
                       </span>
                       {styleConfig ? (
                         <StyleConfigChips chips={styleConfig.chips} />
@@ -515,14 +618,7 @@ function LineItems({
                       <HStack spacing={4}>
                         <MotionNumber
                           className="font-bold text-xl whitespace-nowrap"
-                          value={
-                            ((line?.convertedUnitPrice ?? 0) *
-                              (line?.saleQuantity ?? 0) +
-                              (line?.convertedAddOnCost ?? 0) +
-                              (line?.convertedShippingCost ?? 0)) *
-                              (1 + (line?.taxPercent ?? 0)) +
-                            (line?.convertedNonTaxableAddOnCost ?? 0)
-                          }
+                          value={groupTotal}
                           format={{
                             style: "currency",
                             currency: currencyCode
@@ -531,7 +627,7 @@ function LineItems({
                         />
                         <motion.div
                           animate={{
-                            rotate: openItems.includes(line.id) ? 90 : 0
+                            rotate: openItems.includes(group.key) ? 90 : 0
                           }}
                           transition={{ duration: 0.3 }}
                         >
@@ -543,7 +639,7 @@ function LineItems({
                           variant="outline"
                           className="flex items-center gap-2"
                         >
-                          {line.saleQuantity}
+                          {saleQuantity}
                           {line.salesOrderLineType !== "Fixed Asset" && (
                             <MethodIcon
                               type={line.methodType ?? "Pull from Inventory"}
@@ -551,14 +647,13 @@ function LineItems({
                           )}
                         </Badge>
                         <Badge variant="green">
-                          {formatter.format(line.unitPrice ?? 0)}{" "}
+                          {formatter.format(displayUnitPrice)}{" "}
                           {line.unitOfMeasureCode}
                         </Badge>
-                        {(line.taxPercent ?? 0) > 0 ? (
+                        {taxPercent > 0 ? (
                           <Badge variant="red">
                             <Trans>
-                              {percentFormatter.format(line.taxPercent ?? 0)}{" "}
-                              Tax
+                              {percentFormatter.format(taxPercent)} Tax
                             </Trans>
                           </Badge>
                         ) : null}
@@ -625,7 +720,7 @@ function LineItems({
 
                 <motion.div
                   initial="collapsed"
-                  animate={openItems.includes(line.id) ? "open" : "collapsed"}
+                  animate={openItems.includes(group.key) ? "open" : "collapsed"}
                   variants={{
                     open: { opacity: 1, height: "auto", marginTop: 16 },
                     collapsed: { opacity: 0, height: 0, marginTop: 0 }
@@ -643,7 +738,7 @@ function LineItems({
                           <Td>
                             <Trans>Quantity</Trans>
                           </Td>
-                          <Td className="text-right">{line.saleQuantity}</Td>
+                          <Td className="text-right">{saleQuantity}</Td>
                         </Tr>
                         <Tr>
                           <Td>
@@ -651,7 +746,7 @@ function LineItems({
                           </Td>
                           <Td className="text-right">
                             <MotionNumber
-                              value={line.convertedUnitPrice ?? 0}
+                              value={unitPrice}
                               format={{
                                 style: "currency",
                                 currency: currencyCode
@@ -666,10 +761,7 @@ function LineItems({
                           </Td>
                           <Td className="text-right">
                             <MotionNumber
-                              value={
-                                (line.convertedUnitPrice ?? 0) *
-                                (line.saleQuantity ?? 0)
-                              }
+                              value={extendedPrice}
                               format={{
                                 style: "currency",
                                 currency: currencyCode
@@ -679,14 +771,14 @@ function LineItems({
                           </Td>
                         </Tr>
 
-                        {Number(line.addOnCost ?? 0) > 0 && (
+                        {addOnCost > 0 && (
                           <Tr>
                             <Td>
                               <Trans>Additional Charges</Trans>
                             </Td>
                             <Td className="text-right">
                               <MotionNumber
-                                value={line.addOnCost ?? 0}
+                                value={addOnCost}
                                 format={{
                                   style: "currency",
                                   currency: currencyCode
@@ -697,14 +789,14 @@ function LineItems({
                           </Tr>
                         )}
 
-                        {Number(line.nonTaxableAddOnCost ?? 0) > 0 && (
+                        {nonTaxableAddOnCost > 0 && (
                           <Tr>
                             <Td>
                               <Trans>Non-Taxable Charges</Trans>
                             </Td>
                             <Td className="text-right">
                               <MotionNumber
-                                value={line.nonTaxableAddOnCost ?? 0}
+                                value={nonTaxableAddOnCost}
                                 format={{
                                   style: "currency",
                                   currency: currencyCode
@@ -722,11 +814,10 @@ function LineItems({
                           <Td className="text-right">
                             <MotionNumber
                               value={
-                                (line.convertedUnitPrice ?? 0) *
-                                  (line.saleQuantity ?? 0) +
-                                (line.convertedAddOnCost ?? 0) +
-                                (line.convertedNonTaxableAddOnCost ?? 0) +
-                                (line.convertedShippingCost ?? 0)
+                                extendedPrice +
+                                addOnCost +
+                                nonTaxableAddOnCost +
+                                shippingCost
                               }
                               format={{
                                 style: "currency",
@@ -740,19 +831,12 @@ function LineItems({
                         <Tr key="tax" className="border-b border-border">
                           <Td>
                             <Trans>
-                              Tax (
-                              {percentFormatter.format(line.taxPercent ?? 0)})
+                              Tax ({percentFormatter.format(taxPercent)})
                             </Trans>
                           </Td>
                           <Td className="text-right">
                             <MotionNumber
-                              value={
-                                ((line.convertedUnitPrice ?? 0) *
-                                  (line.saleQuantity ?? 0) +
-                                  (line.convertedAddOnCost ?? 0) +
-                                  (line.convertedShippingCost ?? 0)) *
-                                (line.taxPercent ?? 0)
-                              }
+                              value={taxAmount}
                               format={{
                                 style: "currency",
                                 currency: currencyCode
@@ -768,14 +852,7 @@ function LineItems({
                           </Td>
                           <Td className="text-right">
                             <MotionNumber
-                              value={
-                                ((line.convertedUnitPrice ?? 0) *
-                                  (line.saleQuantity ?? 0) +
-                                  (line.convertedAddOnCost ?? 0) +
-                                  (line.convertedShippingCost ?? 0)) *
-                                  (1 + (line.taxPercent ?? 0)) +
-                                (line.convertedNonTaxableAddOnCost ?? 0)
-                              }
+                              value={groupTotal}
                               format={{
                                 style: "currency",
                                 currency: currencyCode

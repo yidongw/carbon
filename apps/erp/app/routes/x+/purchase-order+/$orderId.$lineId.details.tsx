@@ -10,6 +10,10 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable
+} from "~/modules/items/styleOrderLines.server";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
   getPurchaseOrder,
@@ -17,6 +21,7 @@ import {
   getSupplierInteractionLineDocuments,
   isPurchaseOrderLocked,
   purchaseOrderLineValidator,
+  replacePurchaseOrderLinesWithStyleVariants,
   upsertPurchaseOrderLine
 } from "~/modules/purchasing";
 import { PurchaseOrderLineForm } from "~/modules/purchasing/ui/PurchaseOrder";
@@ -24,6 +29,7 @@ import {
   SupplierInteractionLineDocuments,
   SupplierInteractionLineNotes
 } from "~/modules/purchasing/ui/SupplierInteraction";
+import { getDatabaseClient } from "~/services/database.server";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -98,7 +104,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a confirmed purchase order."
   });
 
-  const { client, userId } = await requirePermissions(request, {
+  const { client, userId, companyId } = await requirePermissions(request, {
     update: "purchasing"
   });
 
@@ -121,17 +127,85 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   let purchaseQuantity = rawQuantity;
   let configurationUpdate: { configuration: Json | null } | undefined;
+  let configuration: Json | undefined;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = jobConfigurationUpdateFields(parsed);
       configurationUpdate = { configuration: fields.configuration };
+      configuration = fields.configuration;
       purchaseQuantity = fields.quantity;
     } catch {
       // Invalid JSON — keep typed quantity and leave existing configuration alone.
     }
   } else {
     // Explicit empty hidden field clears Style configuration.
+    configurationUpdate = { configuration: null };
+  }
+
+  // A stored config table means the per-variant quantity grid was used (Style
+  // color×size, or a Consumable color set) — expand into variant SKU lines
+  // regardless of the picker's line type.
+  if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
+    const expanded = await expandStyleConfigToVariantLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      configuration
+    });
+    if (!expanded.ok) {
+      throw redirect(
+        path.to.purchaseOrderLine(orderId, lineId),
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === d.itemId;
+
+    if (!onlyParent) {
+      try {
+        await replacePurchaseOrderLinesWithStyleVariants(getDatabaseClient(), {
+          companyId,
+          userId,
+          purchaseOrderId: orderId,
+          replaceLineId: lineId,
+          variants: expanded.variants,
+          base: {
+            purchaseOrderLineType: d.purchaseOrderLineType,
+            description: d.description,
+            locationId: d.locationId,
+            storageUnitId: d.storageUnitId,
+            purchaseUnitOfMeasureCode: d.purchaseUnitOfMeasureCode,
+            inventoryUnitOfMeasureCode: d.inventoryUnitOfMeasureCode,
+            conversionFactor: d.conversionFactor,
+            supplierUnitPrice: d.supplierUnitPrice,
+            setupPrice: undefined,
+            supplierShippingCost: d.supplierShippingCost,
+            supplierTaxAmount: d.supplierTaxAmount,
+            exchangeRate: d.exchangeRate,
+            requiredDate: d.requiredDate,
+            promisedDate: d.promisedDate
+          },
+          customFields: setCustomFields(formData)
+        });
+      } catch (err) {
+        throw redirect(
+          path.to.purchaseOrderLine(orderId, lineId),
+          await flash(
+            request,
+            error(
+              err,
+              "Failed to update purchase order lines for style variants"
+            )
+          )
+        );
+      }
+
+      throw redirect(path.to.purchaseOrderDetails(orderId));
+    }
+
+    purchaseQuantity = expanded.variants[0].quantity;
     configurationUpdate = { configuration: null };
   }
 

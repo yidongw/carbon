@@ -1,3 +1,4 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { usePrinting } from "@carbon/printing/ui";
 import {
   Button,
@@ -15,15 +16,13 @@ import { getLabelSizeLabel, labelSizes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo, useState } from "react";
 import { LuCheck, LuMonitor, LuPrinter } from "react-icons/lu";
-import { useLocalizeColor } from "~/hooks";
 import { path } from "~/utils/path";
 
 export type PrintableBundle = {
   id: string;
   jobReadableId: string | null;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel?: string | null;
+  valuesKey?: string | null;
   quantity: number | null;
   locationId: string | null;
 };
@@ -47,8 +46,7 @@ export function PrintTicketsModal({
   bundles: PrintableBundle[];
   onClose: () => void;
 }) {
-  const { t } = useLingui();
-  const localizeColor = useLocalizeColor();
+  const { t, i18n } = useLingui();
   const { printerRoutes } = usePrinting();
 
   const printable = useMemo(() => bundles.filter((b) => b.id), [bundles]);
@@ -182,12 +180,11 @@ export function PrintTicketsModal({
                         {b.jobReadableId}
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
-                        {[
-                          localizeColor(b.colorName || b.colorCode || ""),
-                          b.sizeCode
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
+                        {localizeVariantAttributeLabel(
+                          b.attributeLabel?.trim() ||
+                            b.valuesKey?.replace(/\|/g, " · ").trim(),
+                          i18n.locale
+                        ) || ""}
                       </span>
                     </div>
                     <span className="text-xs text-muted-foreground tabular-nums shrink-0">

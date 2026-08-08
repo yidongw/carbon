@@ -126,14 +126,28 @@ const JobProperties = ({
         .from("configurationParameterGroup")
         .select("*")
         .eq("itemId", itemId)
+        .eq("companyId", company.id),
+      // Attribute-based items no longer write configurationParameter rows, so
+      // also treat any attribute selection as "configured" — this is what makes
+      // the quantity grid editor show on the detail page (matches the list).
+      (carbon as unknown as { from: (t: string) => any })
+        .from("itemAttributeSelection")
+        .select("itemId")
+        .eq("itemId", itemId)
         .eq("companyId", company.id)
-    ]).then(([parameters, groups]) => {
-      const params = parameters.data ?? [];
-      if (params.length > 0) {
+        .limit(1)
+    ]).then(([parameters, groups, selections]) => {
+      const hasAttributeConfig = (selections.data?.length ?? 0) > 0;
+      // Qty table editor is attribute-backed only. Part flat configurationParameters
+      // use ConfiguratorModal on create / Make Method tools — not this grid.
+      if (hasAttributeConfig) {
         setConfigurationParameters({
-          parameters: params,
+          parameters: parameters.data ?? [],
           groups: groups.data ?? []
         });
+      } else {
+        // Clear sticky state when switching to a non-attribute item.
+        setConfigurationParameters(null);
       }
     });
   }, [routeData?.job?.itemId]);
@@ -254,13 +268,9 @@ const JobProperties = ({
 
   const quantity = routeData?.job?.quantity ?? 0;
 
-  // Only offer the config-table quantity editor when the job actually carries a
-  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
-  // they're a single fixed color/size — so their quantity is a plain field.
-  const jobConfig = (routeData?.job as { configuration?: unknown })
-    ?.configuration as { configTable?: unknown[] } | null | undefined;
-  const jobIsConfigured =
-    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+  // Show Style qty editor when the item has attribute selections (or legacy
+  // config params that still list). Plan data lives in jobVariantQuantity.
+  const jobIsConfigured = configurationParameters != null;
 
   return (
     <VStack

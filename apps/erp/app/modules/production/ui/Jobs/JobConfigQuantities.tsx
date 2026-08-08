@@ -8,7 +8,9 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
+import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
+import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
 import type { AdjustmentMode, Column, Row } from "./configTableShared";
 import {
   buildColumns,
@@ -19,9 +21,9 @@ import {
   getInitialRows,
   getMergeKey,
   hasValue,
+  isStyleComboParameters,
   jobConfigQuantitiesModalBodyClassName,
   jobConfigQuantitiesModalShellClassName,
-  makeDefaultRow,
   mergeRows,
   normalizeRow,
   ReadOnlyConfigTable,
@@ -126,12 +128,16 @@ function JobConfigQuantities({
   initialRows,
   jobDisplayId,
   history,
-  optionLabels,
+  optionLabels: rawOptionLabels,
   onDismiss,
   action: formAction,
   fetcher
 }: JobConfigQuantitiesProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
+  // Loader colorNames are the English base; translate to the user's locale so
+  // headers/cells/history show 米色 rather than "Beige" or the raw "BG" code.
+  const optionLabels =
+    localizeColorNameMap(rawOptionLabels, i18n.locale) ?? rawOptionLabels;
   const materialShapeOptions = useShape();
   const materialOptions = materialShapeOptions.map((shape) => ({
     label: <Enumerable value={shape.label} />,
@@ -139,18 +145,34 @@ function JobConfigQuantities({
   }));
 
   const defaultQuantityLabel = t`Quantities`;
+  const attributesLabel = t`Attributes`;
   const { primaryParam, primaryKeys, columns } = useMemo(
-    () => buildColumns(parameters, defaultQuantityLabel),
-    [parameters, defaultQuantityLabel]
+    () => buildColumns(parameters, defaultQuantityLabel, attributesLabel),
+    [parameters, defaultQuantityLabel, attributesLabel]
   );
 
-  const currentRows = useMemo(
-    () =>
-      initialRows && initialRows.length > 0
-        ? initialRows.map((row) => normalizeRow(row, columns))
-        : [],
-    [initialRows, columns]
-  );
+  const currentRows = useMemo(() => {
+    if (!initialRows || initialRows.length === 0) return [];
+    const isCombo = isStyleComboParameters(parameters);
+    const needsConvert =
+      isCombo &&
+      !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0);
+    const seed = needsConvert
+      ? (configTableToComboRows(
+          {
+            configTable: initialRows,
+            configTablePrimaryKeys: primaryKeys
+          },
+          optionLabels
+        ) as Row[])
+      : initialRows;
+    return seed.map((row) => {
+      const normalized = normalizeRow(row, columns);
+      const label = String(row.label ?? "").trim();
+      if (label) normalized.label = label;
+      return normalized;
+    });
+  }, [initialRows, columns, parameters, primaryKeys, optionLabels]);
 
   const [rows, setRows] = useState<Row[]>(() =>
     currentRows.length > 0

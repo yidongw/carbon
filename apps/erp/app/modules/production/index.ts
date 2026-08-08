@@ -1,4 +1,3 @@
-export * from "./bundleWorkOrder.models";
 export * from "./bundleWorkOrder.service";
 export * from "./jobOperationSupplierQuantityReport.models";
 export * from "./jobOperationSupplierQuantityReport.service";

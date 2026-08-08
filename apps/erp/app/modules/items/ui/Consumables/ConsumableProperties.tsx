@@ -36,6 +36,7 @@ import type {
   SupplierPart
 } from "../../types";
 import { FileBadge, ItemDescription } from "../Item";
+import ConsumableAttributeEditor from "./ConsumableAttributeEditor";
 
 type ConsumablePropertiesProps = {
   data?: {
@@ -399,6 +400,18 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
       <ItemDescription
         value={routeData?.consumableSummary?.description ?? ""}
         onChange={(value) => onUpdate("description", value)}
+      />
+
+      <ConsumableAttributeEditor
+        itemId={itemId}
+        attributeSetId={
+          (routeData as { attributeSetId?: string | null } | undefined)
+            ?.attributeSetId ?? null
+        }
+        selections={
+          (routeData as { attributeSelections?: Record<string, string[]> })
+            ?.attributeSelections ?? {}
+        }
       />
 
       <VStack spacing={2}>

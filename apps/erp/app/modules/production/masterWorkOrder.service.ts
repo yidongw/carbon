@@ -7,7 +7,11 @@ import {
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { computeConfigRemaining } from "./jobConfiguration";
-import { deadlineTypes } from "./production.models";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "./jobVariantQuantity.service";
+import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
 
 export type MasterCuttingProgress = {
@@ -41,18 +45,13 @@ export async function getMasterCuttingProgress(
     .filter((id): id is string => Boolean(id));
   if (jobIds.length === 0) return result;
 
-  const [ops, jobs] = await Promise.all([
+  const [ops] = await Promise.all([
     client
       .from("jobOperation")
       .select("id, jobId, tags, customFields, order, quantityComplete")
       .in("jobId", jobIds)
       .eq("companyId", companyId)
-      .order("order", { ascending: true }),
-    client
-      .from("job")
-      .select("id, configuration")
-      .in("id", jobIds)
-      .eq("companyId", companyId)
+      .order("order", { ascending: true })
   ]);
 
   const opsByJob = new Map<string, NonNullable<typeof ops.data>>();
@@ -62,8 +61,20 @@ export async function getMasterCuttingProgress(
     if (list) list.push(op);
     else opsByJob.set(op.jobId, [op]);
   }
-  const configByJob = new Map<string, Json>();
-  for (const job of jobs.data ?? []) configByJob.set(job.id, job.configuration);
+
+  // Planned Style qty lives on jobVariantQuantity (not job.configuration).
+  const planConfigByJob = new Map<string, Json>();
+  await Promise.all(
+    jobIds.map(async (jobId) => {
+      const planned = await getJobVariantQuantities(client, jobId, companyId);
+      if (planned.data.length > 0) {
+        planConfigByJob.set(
+          jobId,
+          jobVariantQuantitiesToConfigTable(planned.data) as unknown as Json
+        );
+      }
+    })
+  );
 
   // Resolve the cutting operation per job (tagged cutting, else first-in-BOP).
   const cuttingOpByJob = new Map<
@@ -111,7 +122,7 @@ export async function getMasterCuttingProgress(
     const reported = cuttingOp?.quantityComplete ?? 0;
     const plan = master.quantity ?? 0;
     const remaining = Math.max(0, plan - reported);
-    const planConfig = configByJob.get(master.jobId) ?? null;
+    const planConfig = planConfigByJob.get(master.jobId) ?? null;
     const remainingConfiguration = cuttingOp
       ? computeConfigRemaining(
           planConfig,
@@ -135,9 +146,9 @@ export async function getMasterCuttingProgress(
 export type MasterProcessBundle = {
   bundleWorkOrderId: string;
   jobReadableId: string;
-  colorCode: string | null;
-  colorName: string | null;
-  sizeCode: string | null;
+  attributeLabel: string | null;
+  attributeValues: Record<string, string> | null;
+  valuesKey: string | null;
   /**
    * The bundle's *operation* status for this process (Todo / In Progress /
    * Done …), not the bundle work order's own lifecycle status — this row
@@ -255,7 +266,7 @@ export async function getMasterProcessBreakdown(
   const bundles = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, colorCode, colorName, sizeCode, status, quantity, reportedQuantity, assignee, assignedAt, lastReportedAt"
+      "id, jobId, jobReadableId, attributeLabel, attributeValues, valuesKey, status, quantity, reportedQuantity, assignee, assignedAt, lastReportedAt"
     )
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
@@ -290,9 +301,10 @@ export async function getMasterProcessBreakdown(
     process.bundles.push({
       bundleWorkOrderId: bundle.id ?? "",
       jobReadableId: bundle.jobReadableId ?? "",
-      colorCode: bundle.colorCode,
-      colorName: bundle.colorName ?? null,
-      sizeCode: bundle.sizeCode,
+      attributeLabel: bundle.attributeLabel ?? null,
+      attributeValues:
+        (bundle.attributeValues as Record<string, string> | null) ?? null,
+      valuesKey: bundle.valuesKey ?? null,
       operationStatus: op.status ?? null,
       quantity,
       reportedQuantity: reported,
@@ -357,6 +369,22 @@ export async function getMasterCuttingReportSplitTarget(
   );
   if (!cuttingOpId || cuttingOpId !== jobOperationId) return null;
   return master.data.id;
+}
+
+/**
+ * True when this job backs a Master Work Order. Master jobs must not be
+ * completed / received to inventory — stock lands on bundle (child) jobs.
+ */
+export async function isMasterWorkOrderJob(
+  client: SupabaseClient<Database>,
+  jobId: string
+): Promise<boolean> {
+  const master = await client
+    .from("masterWorkOrder")
+    .select("id")
+    .eq("jobId", jobId)
+    .maybeSingle();
+  return !!master.data?.id;
 }
 
 export type MasterWorkOrder = NonNullable<

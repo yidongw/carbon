@@ -228,6 +228,10 @@ const SalesOrderLineForm = ({
     string[]
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+  // True when the selected item carries Color/Size attribute selections (a
+  // Consumable with a Fabric/Trim color set) — set on item select. Styles are
+  // covered by isStyleLine without waiting on the fetch.
+  const [hasVariantAttributes, setHasVariantAttributes] = useState(false);
 
   // Prefer the selected item's real type over the picker filter. Choosing a
   // Style under "All Items" leaves lineType as Part/Item, but the grid still
@@ -235,16 +239,20 @@ const SalesOrderLineForm = ({
   const selectedItemType =
     items.find((i) => i.id === itemData.itemId)?.type ?? lineType;
   const isStyleLine = selectedItemType === "Style" || lineType === "Style";
+  // Any item with variant attributes uses the per-variant quantity grid.
+  const isConfigurableLine = isStyleLine || hasVariantAttributes;
 
-  // Styles always use the color×size quantity grid — show the trigger as soon
-  // as a Style item is selected (don't wait on requiresConfiguration /
-  // configurable-items hydrate the way Job/Part forms do). Match PO.
-  const hasConfigurationParameters = isStyleLine && Boolean(itemData.itemId);
+  // Configurable items use the config-quantity grid when adding/editing a
+  // parent. Variant SKU lines (no stored configuration) use plain quantity.
+  const hasConfigurationParameters =
+    isConfigurableLine &&
+    Boolean(itemData.itemId) &&
+    !(isEditing && !initialValues.configuration);
 
-  // A Style line's quantity comes from the color×size grid, so it starts at 0
-  // and Save stays disabled until the grid supplies a quantity.
+  // A Style parent line's quantity comes from the color×size grid.
+  // Variant SKU lines use plain quantity and are not blocked here.
   const isMissingStyleQuantity =
-    isStyleLine && Boolean(itemData.itemId) && !(saleQuantity > 0);
+    hasConfigurationParameters && !(saleQuantity > 0);
 
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
@@ -438,6 +446,7 @@ const SalesOrderLineForm = ({
     if (!itemId) return;
     if (!carbon || !company.id) return;
     clearConfig();
+    setHasVariantAttributes(false);
     // Adopt the item before enriching it: the lookups below take several round
     // trips, and the quantity control (grid trigger for configurable styles)
     // keys off the selected item, so it must swap on selection, not on arrival.
@@ -464,7 +473,7 @@ const SalesOrderLineForm = ({
     if (isStyle || quantityForItem !== saleQuantity) {
       onQuantityChange(quantityForItem);
     }
-    const [item, price] = await Promise.all([
+    const [item, price, variantAttributes] = await Promise.all([
       carbon
         .from("item")
         .select(
@@ -478,15 +487,29 @@ const SalesOrderLineForm = ({
         .select("unitSalePrice")
         .eq("itemId", itemId)
         .eq("companyId", company.id)
-        .maybeSingle()
+        .maybeSingle(),
+      // Any item with Color/Size attribute selections (Style always; a
+      // Consumable with a Fabric/Trim color set) gets the config grid.
+      carbon
+        .from("itemAttributeSelection")
+        // Composite PK — no `id` column; select a real column.
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .in("attributeId", ["iat_color", "iat_size"])
+        .limit(1)
     ]);
 
     if (item.data?.type) {
       setLineType(item.data.type as SalesOrderLineType);
     }
 
-    // If the store missed the type, zero quantity once we know it's a Style.
-    if (item.data?.type === "Style" && !isStyle) {
+    // Any item carrying variant attributes is grid-driven: flag it and zero the
+    // quantity (the grid total fills it in). Styles are already handled above.
+    const itemHasVariantAttributes =
+      item.data?.type === "Style" || (variantAttributes?.data?.length ?? 0) > 0;
+    setHasVariantAttributes(itemHasVariantAttributes);
+    if (itemHasVariantAttributes && !isStyle) {
       onQuantityChange(0);
     }
 
@@ -769,7 +792,7 @@ const SalesOrderLineForm = ({
                         }));
                     }}
                   />
-                  {isStyleLine ? (
+                  {isConfigurableLine ? (
                     <QuantityWithConfigTable
                       name="saleQuantity"
                       label={t`Quantity`}
@@ -780,8 +803,8 @@ const SalesOrderLineForm = ({
                         hasConfigurationParameters ? openConfigTable : undefined
                       }
                       configTableTotal={configTableTotal}
-                      // Grid-backed styles are never typed by hand — quantity
-                      // only comes from confirmed color/size totals.
+                      // Grid-backed configs are never typed by hand — quantity
+                      // only comes from confirmed per-variant totals.
                       isReadOnly={hasConfigurationParameters}
                       minValue={0}
                     />

@@ -8,6 +8,7 @@ import type {
   PostgrestSingleResponse,
   SupabaseClient
 } from "@supabase/supabase-js";
+import { sql } from "kysely";
 import type { z } from "zod";
 import { getSupplierPriceBreaksForItems } from "~/modules/items/items.service";
 import { getEmployeeJob } from "~/modules/people";
@@ -2011,6 +2012,179 @@ export async function insertSalesOrderLines(
     taxPercent: line.taxPercent ?? 0
   }));
   return client.from("salesOrderLine").insert(linesWithDefaults).select("id");
+}
+
+/**
+ * Replace a Style parent+config submit with one salesOrderLine per variant SKU.
+ * Uses a Kysely transaction so delete+insert is atomic.
+ */
+export async function replaceSalesOrderLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    salesOrderId: string;
+    replaceLineId?: string;
+    exchangeRate: number;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      salesOrderLineType: z.infer<
+        typeof salesOrderLineValidator
+      >["salesOrderLineType"];
+      description?: string | null;
+      locationId?: string | null;
+      storageUnitId?: string | null;
+      methodType?: z.infer<typeof salesOrderLineValidator>["methodType"];
+      unitOfMeasureCode?: string | null;
+      unitPrice?: number | null;
+      setupPrice?: number | null;
+      shippingCost?: number | null;
+      addOnCost?: number | null;
+      nonTaxableAddOnCost?: number | null;
+      taxPercent?: number | null;
+      promisedDate?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    salesOrderId,
+    replaceLineId,
+    exchangeRate,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
+
+  // Cent-exact proportional split so the sum across the variant lines equals the
+  // original single-line amount (no floating-point drift). The remainder lands
+  // on the last line.
+  const allocate = (total: number | null | undefined): number[] => {
+    const cents = Math.round((total ?? 0) * 100);
+    const result: number[] = [];
+    let allocated = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (i === variants.length - 1) {
+        result.push((cents - allocated) / 100);
+      } else {
+        const c = Math.round((cents * variants[i].quantity) / totalQty);
+        allocated += c;
+        result.push(c / 100);
+      }
+    }
+    return result;
+  };
+  const shippingSplit = allocate(base.shippingCost);
+  const addOnSplit = allocate(base.addOnCost);
+  const nonTaxableSplit = allocate(base.nonTaxableAddOnCost);
+  // Setup is a one-time charge: apply it once (first line), not once per variant.
+  const setupTotal = base.setupPrice ?? 0;
+
+  return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
+    if (replaceLineId) {
+      const original = await trx
+        .selectFrom("salesOrderLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("salesOrderId", "=", salesOrderId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      // Refuse to reconfigure a line that already drives production: deleting it
+      // would orphan the jobs (job.salesOrderLineId ON DELETE SET NULL) and
+      // cascade-delete their fulfillment/shipment lines.
+      const jobCount = await trx
+        .selectFrom("job")
+        .select((eb) => eb.fn.countAll<string>().as("count"))
+        .where("salesOrderLineId", "=", replaceLineId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+      if (jobCount && Number(jobCount.count) > 0) {
+        throw new Error(
+          "This style line already has production jobs. Remove or complete the jobs before changing its color/size configuration."
+        );
+      }
+
+      await trx
+        .deleteFrom("salesOrderLine")
+        .where("id", "=", replaceLineId)
+        .where("salesOrderId", "=", salesOrderId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        // Preserve list position: shift the lines after the replaced one down by
+        // the number of extra variant lines we're inserting.
+        if (variants.length > 1) {
+          await trx
+            .updateTable("salesOrderLine")
+            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .where("salesOrderId", "=", salesOrderId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("salesOrderLine")
+          .select("sortOrder")
+          .where("salesOrderId", "=", salesOrderId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("salesOrderLine")
+        .select("sortOrder")
+        .where("salesOrderId", "=", salesOrderId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
+    }
+
+    const ids: string[] = [];
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      const inserted = await trx
+        .insertInto("salesOrderLine")
+        .values({
+          salesOrderId,
+          salesOrderLineType: base.salesOrderLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? null,
+          locationId: base.locationId ?? null,
+          storageUnitId: base.storageUnitId ?? null,
+          methodType: base.methodType ?? "Pull from Inventory",
+          unitOfMeasureCode: base.unitOfMeasureCode ?? "EA",
+          saleQuantity: variant.quantity,
+          unitPrice: base.unitPrice ?? 0,
+          setupPrice: i === 0 ? setupTotal : 0,
+          shippingCost: shippingSplit[i],
+          addOnCost: addOnSplit[i],
+          nonTaxableAddOnCost: nonTaxableSplit[i],
+          taxPercent: base.taxPercent ?? 0,
+          promisedDate: base.promisedDate || null,
+          exchangeRate,
+          companyId,
+          createdBy: userId,
+          sortOrder: startSortOrder + i,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
 }
 
 export async function finalizeQuote(

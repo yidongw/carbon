@@ -1,3 +1,8 @@
+import {
+  localizeStyleColorName,
+  localizeStyleColorNameByName,
+  localizeVariantAttributeLabel
+} from "@carbon/database/style-reference";
 import { Badge, HStack, IconButton, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -8,6 +13,7 @@ import { Hyperlink, ItemThumbnail, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import type { StyleSample } from "~/modules/items";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { path } from "~/utils/path";
 
 type SamplesTableProps = {
@@ -15,15 +21,48 @@ type SamplesTableProps = {
   count: number;
 };
 
+type StyleAttributeColumn = {
+  attributeId: string;
+  code: string;
+  name: string;
+  values: Array<{ id: string; code: string; name: string }>;
+};
+
+function styleAttributes(row: StyleSample): StyleAttributeColumn[] {
+  const attrs = (row as { attributes?: unknown }).attributes;
+  return Array.isArray(attrs) ? (attrs as StyleAttributeColumn[]) : [];
+}
+
 const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { openOverlay } = useOverlay();
   const revalidator = useRevalidator();
   const permissions = usePermissions();
   const canCreate = permissions.can("create", "parts");
 
+  const attrMeta = useMemo(() => {
+    const meta = new Map<string, { code: string; name: string }>();
+    for (const row of data) {
+      for (const a of styleAttributes(row)) {
+        if (!a.code) continue;
+        if (!meta.has(a.code)) {
+          meta.set(a.code, { code: a.code, name: a.name || a.code });
+        }
+      }
+    }
+    return meta;
+  }, [data]);
+
+  const attrCodes = useMemo(() => {
+    return Array.from(attrMeta.keys()).sort((a, b) => {
+      const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
+      const d = rank(a) - rank(b);
+      return d !== 0 ? d : a.localeCompare(b);
+    });
+  }, [attrMeta]);
+
   const columns = useMemo<ColumnDef<StyleSample>[]>(() => {
-    return [
+    const cols: ColumnDef<StyleSample>[] = [
       {
         accessorKey: "id",
         header: t`Style`,
@@ -47,93 +86,113 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
           </HStack>
         ),
         meta: { icon: <LuBookMarked /> }
-      },
-      {
-        accessorKey: "colors",
-        header: t`Colors`,
+      }
+    ];
+
+    for (const code of attrCodes) {
+      const meta = attrMeta.get(code)!;
+      cols.push({
+        id: `attr-${code}`,
+        header: translateItemAttributeCatalogName(meta.name || code, i18n),
         cell: ({ row }) => {
-          const colors = (row.original.colors ?? []) as Array<{
-            id: string;
-            colorCode: string;
-            colorName: string;
-          }>;
-          if (!Array.isArray(colors) || colors.length === 0) return null;
+          const attr = styleAttributes(row.original).find(
+            (a) => a.code === code
+          );
+          const values = attr?.values ?? [];
+          if (values.length === 0) {
+            return <span className="text-muted-foreground">—</span>;
+          }
           return (
             <HStack spacing={1} className="flex-wrap">
-              {colors.map((color) => (
-                <Badge key={color.id} variant="outline" title={color.colorCode}>
-                  {color.colorName || color.colorCode}
+              {values.map((v) => (
+                <Badge
+                  key={v.id}
+                  variant="outline"
+                  title={`${meta.name}: ${v.code}`}
+                >
+                  {localizeStyleColorName(v.code, i18n.locale) ||
+                    localizeStyleColorNameByName(v.name, i18n.locale) ||
+                    v.name ||
+                    v.code}
                 </Badge>
               ))}
             </HStack>
           );
         },
         meta: { icon: <LuPalette /> }
-      },
-      {
-        accessorKey: "sampleCount",
-        header: t`Samples`,
-        cell: ({ row }) => {
-          const samples = (row.original.samples ?? []) as Array<{
-            colorCode: string;
-            colorName: string;
-            size: string;
-            quantity: number;
-          }>;
-          const sampleItemId = row.original.sampleItemId;
-          const chips = samples.map((s, i) => (
+      });
+    }
+
+    cols.push({
+      accessorKey: "sampleCount",
+      header: t`Samples`,
+      cell: ({ row }) => {
+        const samples = (row.original.samples ?? []) as Array<{
+          label?: string;
+          attributes?: Record<string, string>;
+          quantity: number;
+        }>;
+        const sampleItemId = row.original.sampleItemId;
+        const chips = samples.map((s, i) => {
+          const rawLabel =
+            s.label ??
+            (s.attributes
+              ? Object.values(s.attributes).filter(Boolean).join(" · ")
+              : "");
+          // Localize each value code (BG -> 米色); non-color codes (sizes) pass through.
+          const label = localizeVariantAttributeLabel(rawLabel, i18n.locale);
+          return (
             <Badge
-              key={`${s.colorCode}-${s.size}-${i}`}
+              key={`${label}-${i}`}
               variant="outline"
               className="font-normal"
             >
-              {`${s.colorName || s.colorCode} · ${s.size}`}
+              {label || "—"}
               <span className="ml-1 font-mono text-muted-foreground">
                 ×{s.quantity}
               </span>
             </Badge>
-          ));
-          return (
-            <HStack spacing={1} className="flex-wrap py-1">
-              {sampleItemId && samples.length > 0 ? (
-                // Open the sample item's inventory page (serial list + move /
-                // reduce / ship live there — the standard serial-tracking UI).
-                <Hyperlink
-                  to={path.to.inventoryItem(sampleItemId)}
-                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                  className="flex flex-wrap items-center gap-1"
-                >
-                  {chips}
-                </Hyperlink>
-              ) : (
-                chips
-              )}
-              {canCreate && (
-                <IconButton
-                  aria-label={t`Add sample`}
-                  variant="secondary"
-                  size="sm"
-                  icon={<LuPlus />}
-                  onClick={(e) => {
-                    // row is a link; don't navigate to the style page
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openOverlay(
-                      overlay.to.newStyleSample({
-                        styleId: row.original.readableId!
-                      }),
-                      { onCreated: () => revalidator.revalidate() }
-                    );
-                  }}
-                />
-              )}
-            </HStack>
           );
-        },
-        meta: { icon: <LuScanBarcode /> }
-      }
-    ];
-  }, [t, canCreate, openOverlay, revalidator]);
+        });
+        return (
+          <HStack spacing={1} className="flex-wrap py-1">
+            {sampleItemId && samples.length > 0 ? (
+              <Hyperlink
+                to={path.to.inventoryItem(sampleItemId)}
+                onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                className="flex flex-wrap items-center gap-1"
+              >
+                {chips}
+              </Hyperlink>
+            ) : (
+              chips
+            )}
+            {canCreate && (
+              <IconButton
+                aria-label={t`Add sample`}
+                variant="secondary"
+                size="sm"
+                icon={<LuPlus />}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openOverlay(
+                    overlay.to.newStyleSample({
+                      styleId: row.original.readableId!
+                    }),
+                    { onCreated: () => revalidator.revalidate() }
+                  );
+                }}
+              />
+            )}
+          </HStack>
+        );
+      },
+      meta: { icon: <LuScanBarcode /> }
+    });
+
+    return cols;
+  }, [t, i18n, attrCodes, attrMeta, canCreate, openOverlay, revalidator]);
 
   return (
     <Table<StyleSample>

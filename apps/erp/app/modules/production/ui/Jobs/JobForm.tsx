@@ -1,6 +1,7 @@
 import { useCarbon } from "@carbon/auth";
 import { InputControlled, ValidatedForm } from "@carbon/form";
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
@@ -12,12 +13,15 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
+  toast,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuDiamond, LuLayers } from "react-icons/lu";
 import type { z } from "zod";
+import { ConfiguratorModal } from "~/components/Configurator/ConfiguratorForm";
 import {
   Customer,
   CustomFormFields,
@@ -34,8 +38,11 @@ import {
 import { useConfigurableItems } from "~/components/Form/Item";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
+import type {
+  ConfigurationParameter,
+  ConfigurationParameterGroup
+} from "~/modules/items/types";
 import type { MethodItemType } from "~/modules/shared";
-import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type { jobStatus } from "../../production.models";
@@ -69,10 +76,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
   const { company } = useUser();
   const { carbon } = useCarbon();
-  const [items] = useItems();
-  // Company-scoped list of configurable styles, served via the service role so it
-  // works for every employee — the itemReplenishment table itself is gated by
-  // `parts_view`, which production-only users lack.
+  // Company-scoped list of attribute-backed items (qty grid), served so it
+  // works for every employee — including production-only users without parts_view.
   const configurableItemIds = useConfigurableItems();
   const [type, setType] = useState<MethodItemType>(
     initialValues.itemType ?? "Item"
@@ -131,15 +136,27 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     "single"
   );
 
-  // Whether the selected style needs a config table. Seeded instantly from the
-  // preloaded items store (parts users) and corrected by the configurable-items
-  // endpoint so the trigger also shows for production-only users.
-  const hasConfigurationParameters =
-    (items.find((i) => i.id === itemData.itemId)?.requiresConfiguration ??
-      false) || configurableItemIds.includes(itemData.itemId);
+  // Attribute qty grid (Style/Consumable variants) — separate from Part wizard.
+  const hasAttributeQtyGrid = configurableItemIds.includes(itemData.itemId);
+
+  // Part method configurator (flat job.configuration params).
+  const configurationDisclosure = useDisclosure();
+  const [requiresConfiguration, setRequiresConfiguration] = useState(false);
+  const [isConfigured, setIsConfigured] = useState(false);
+  const [configurationParameters, setConfigurationParameters] = useState<{
+    parameters: ConfigurationParameter[];
+    groups: ConfigurationParameterGroup[];
+  } | null>(null);
+  const [configurationValues, setConfigurationValues] = useState<
+    Record<string, any> | ""
+  >("");
 
   const isCustomer = permissions.is("customer");
   const isEditing = initialValues.id !== undefined;
+
+  // Part Configure only when not using the attribute qty grid.
+  const needsPartConfigure =
+    !hasAttributeQtyGrid && requiresConfiguration && !isEditing;
 
   const onTypeChange = (t: MethodItemType | "Item") => {
     setType(t as MethodItemType);
@@ -157,6 +174,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     setConfigTableRows(null);
     setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
+    setRequiresConfiguration(false);
+    setIsConfigured(false);
+    setConfigurationParameters(null);
+    setConfigurationValues("");
   };
 
   const handleConfigTableSubmit = (
@@ -189,6 +210,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     setConfigTableRows(null);
     setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
+    setIsConfigured(false);
+    setConfigurationValues("");
     setItemData((prev) => ({ ...prev, jobCount: 1 }));
     const [item, manufacturing] = await Promise.all([
       carbon
@@ -201,7 +224,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         .single(),
       carbon
         .from("itemReplenishment")
-        .select("lotSize, leadTime, scrapPercentage")
+        .select("lotSize, leadTime, scrapPercentage, requiresConfiguration")
         .eq("itemId", itemId)
         .single()
     ]);
@@ -227,6 +250,35 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
     if (item.data?.type) {
       setType(item.data.type as MethodItemType);
+    }
+
+    if (manufacturing.data?.requiresConfiguration) {
+      setRequiresConfiguration(true);
+      const [parameters, groups] = await Promise.all([
+        carbon
+          .from("configurationParameter")
+          .select("*")
+          .eq("itemId", itemId)
+          .eq("companyId", company.id),
+        carbon
+          .from("configurationParameterGroup")
+          .select("*")
+          .eq("itemId", itemId)
+          .eq("companyId", company.id)
+      ]);
+
+      if (parameters.error || groups.error) {
+        toast.error(t`Failed to load configuration parameters`);
+        return;
+      }
+
+      setConfigurationParameters({
+        parameters: parameters.data ?? [],
+        groups: groups.data ?? []
+      });
+    } else {
+      setRequiresConfiguration(false);
+      setConfigurationParameters(null);
     }
   };
 
@@ -311,13 +363,19 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     value={itemData.modelUploadId ?? undefined}
                   />
                   <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                  {!isEditing && configTableRows && (
+                  {!isEditing && hasAttributeQtyGrid && configTableRows && (
                     <Hidden
                       name="configuration"
                       value={JSON.stringify({
                         configTable: configTableRows,
                         configTablePrimaryKeys
                       })}
+                    />
+                  )}
+                  {needsPartConfigure && (
+                    <Hidden
+                      name="configuration"
+                      value={JSON.stringify(configurationValues)}
                     />
                   )}
                   <VStack>
@@ -378,7 +436,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         }
                         configTableTotal={configTableTotal}
                         minValue={0}
-                        hasConfigurationParameters={hasConfigurationParameters}
+                        hasConfigurationParameters={hasAttributeQtyGrid}
                         onOpenConfigTable={() => openConfigTable("single")}
                       />
                       <NumberControlled
@@ -430,8 +488,18 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                   </VStack>
                 </CardContent>
                 <CardFooter>
+                  {needsPartConfigure && (
+                    <Button
+                      type="button"
+                      variant={isConfigured ? "secondary" : "primary"}
+                      onClick={() => configurationDisclosure.onOpen()}
+                    >
+                      <Trans>Configure</Trans>
+                    </Button>
+                  )}
                   <Submit
                     isDisabled={
+                      (needsPartConfigure && !isConfigured) ||
                       isDisabled ||
                       (isEditing
                         ? !permissions.can("update", "production")
@@ -471,13 +539,19 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       value={itemData.modelUploadId ?? undefined}
                     />
                     <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                    {!isEditing && configTableRows && (
+                    {!isEditing && hasAttributeQtyGrid && configTableRows && (
                       <Hidden
                         name="configuration"
                         value={JSON.stringify({
                           configTable: configTableRows,
                           configTablePrimaryKeys
                         })}
+                      />
+                    )}
+                    {needsPartConfigure && (
+                      <Hidden
+                        name="configuration"
+                        value={JSON.stringify(configurationValues)}
                       />
                     )}
                     <VStack>
@@ -526,7 +600,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           isReadOnly={configTableTotal > 0}
                           configTableTotal={configTableTotal}
                           minValue={0}
-                          hasConfigurationParameters={hasConfigurationParameters}
+                          hasConfigurationParameters={hasAttributeQtyGrid}
                           onOpenConfigTable={() => openConfigTable("bulk")}
                         />
 
@@ -575,9 +649,20 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     </VStack>
                   </CardContent>
                   <CardFooter>
+                    {needsPartConfigure && (
+                      <Button
+                        type="button"
+                        variant={isConfigured ? "secondary" : "primary"}
+                        onClick={() => configurationDisclosure.onOpen()}
+                      >
+                        <Trans>Configure</Trans>
+                      </Button>
+                    )}
                     <Submit
                       isDisabled={
-                        isDisabled || !permissions.can("create", "production")
+                        (needsPartConfigure && !isConfigured) ||
+                        isDisabled ||
+                        !permissions.can("create", "production")
                       }
                       withBlocker={false}
                     >
@@ -591,6 +676,22 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         </VStack>
       </Tabs>
       {configModal.node}
+      {needsPartConfigure &&
+        configurationDisclosure.isOpen &&
+        configurationParameters && (
+          <ConfiguratorModal
+            open
+            initialValues={configurationValues || {}}
+            groups={configurationParameters.groups ?? []}
+            parameters={configurationParameters.parameters ?? []}
+            onClose={configurationDisclosure.onClose}
+            onSubmit={(config: Record<string, any>) => {
+              setConfigurationValues(config);
+              setIsConfigured(true);
+              configurationDisclosure.onClose();
+            }}
+          />
+        )}
     </>
   );
 };
