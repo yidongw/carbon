@@ -13,8 +13,9 @@ set -euo pipefail
 
 BASE="${1:-https://app.jilio.xyz}"
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-DEST="$HERE/android/app/src/main/assets/webassets/assets"
-rm -rf "$DEST"; mkdir -p "$DEST"
+WEBROOT="$HERE/android/app/src/main/assets/webassets"
+DEST="$WEBROOT/assets"
+rm -rf "$WEBROOT"; mkdir -p "$DEST"
 
 work="$(mktemp -d)"
 curl -sL --max-time 30 "$BASE/login" -o "$work/login.html"
@@ -39,5 +40,22 @@ done | sort -u | while read -r a; do
   [ -n "$a" ] && [ ! -f "$DEST/$(basename "$a")" ] && curl -sf --max-time 40 -o "$DEST/$(basename "$a")" "$BASE$a" || true
 done
 
+# Root-level static files (logos, favicons, PWA icons, web manifest) referenced
+# from the app root — served at "/..." not "/assets/...", so bundle them too.
+STATICS=$(grep -oE '(src|href)="/[^"]+\.(svg|png|jpg|jpeg|webp|ico|gif|woff2?|ttf|webmanifest)"' \
+  "$work/login.html" 2>/dev/null | sed -E 's/.*"(\/[^"]+)"/\1/' | sort -u)
+STATICS="$STATICS /favicon.ico /favicon.svg /site.webmanifest /android-chrome-192x192.png /android-chrome-512x512.png"
+for s in $(echo "$STATICS" | tr ' ' '\n' | sort -u); do
+  [ -z "$s" ] && continue
+  mkdir -p "$WEBROOT$(dirname "$s")"
+  curl -sf --max-time 40 -o "$WEBROOT$s" "$BASE$s" || true
+done
+# Any icons the web manifest lists.
+if [ -f "$WEBROOT/site.webmanifest" ]; then
+  grep -oE '"/[^"]+\.(png|svg|ico|webp)"' "$WEBROOT/site.webmanifest" | tr -d '"' | sort -u | while read -r s; do
+    [ -n "$s" ] && [ ! -f "$WEBROOT$s" ] && { mkdir -p "$WEBROOT$(dirname "$s")"; curl -sf --max-time 40 -o "$WEBROOT$s" "$BASE$s" || true; }
+  done
+fi
+
 rm -rf "$work"
-echo "Bundled $(ls "$DEST" | wc -l) files, $(du -sh "$DEST" | cut -f1) into $DEST"
+echo "Bundled $(find "$WEBROOT" -type f | wc -l) files total, $(du -sh "$WEBROOT" | cut -f1) into $WEBROOT"

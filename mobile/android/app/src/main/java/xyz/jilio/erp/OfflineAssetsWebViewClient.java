@@ -38,10 +38,14 @@ public class OfflineAssetsWebViewClient extends BridgeWebViewClient {
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         try {
             String path = request.getUrl().getPath();
+            // Serve ANY path that has a bundled copy (hashed /assets/* build files
+            // AND root static files like /carbon-word-light.svg, /favicon.ico,
+            // /site.webmanifest). HTML documents and data routes aren't bundled,
+            // so they open-fail and fall through to the network.
             if (path != null
-                && path.startsWith("/assets/")
+                && !path.equals("/")
                 && "GET".equalsIgnoreCase(request.getMethod())) {
-                String assetPath = "webassets" + path; // webassets/assets/<file>
+                String assetPath = "webassets" + path; // webassets/<path>
                 try {
                     InputStream is = bridge.getContext().getAssets().open(assetPath);
                     Map<String, String> headers = new HashMap<>();
