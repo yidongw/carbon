@@ -346,7 +346,7 @@ Patterns learned from corrections. Review at the start of each session.
   when any cell exceeds its reference (inventory or plan).
 
 ## Language switch “broken” on production login
-- Symptom: changing language on `carbon-erp.vercel.app` (lands on `/login`) appears to do nothing / isn’t possible.
+- Symptom: changing language on the production ERP login page appears to do nothing / isn’t possible.
 - Cause: language picker lives only in the post-login avatar menu; login has no switcher even though `/api/locale` is public and catalogs work. Production `DEFAULT_LANGUAGE=zh` amplifies this.
 - Rule: if a preference endpoint is documented for public pages, keep a public UI (or remove the claim). Verify the actual surface the user hits (`/` → login) has the control.
 
