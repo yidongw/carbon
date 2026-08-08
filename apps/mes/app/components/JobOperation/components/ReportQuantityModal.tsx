@@ -1,3 +1,4 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import {
   Button,
   Combobox,
@@ -44,7 +45,7 @@ export function ReportQuantityModal({
   defaultEmployeeId: string;
   onClose: () => void;
 }) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const [people] = usePeople();
   const { ids: assignedEmployeeIds, isLoading: assignedEmployeesLoading } =
     useEmployeesByProcess(operation.processId);
@@ -89,10 +90,12 @@ export function ReportQuantityModal({
   const reported = completed + rework + scrap;
   const invalid = reported <= 0;
 
-  const colorSize =
+  const colorSize = localizeVariantAttributeLabel(
     bundle?.attributeLabel?.trim() ||
-    bundle?.valuesKey?.replace(/\|/g, " · ").trim() ||
-    "";
+      bundle?.valuesKey?.replace(/\|/g, " · ").trim() ||
+      "",
+    i18n.locale
+  );
 
   const statusLabels: Record<string, string> = {
     Todo: t`Todo`,

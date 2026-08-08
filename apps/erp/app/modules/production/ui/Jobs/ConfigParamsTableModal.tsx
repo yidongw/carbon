@@ -1,5 +1,5 @@
-import { Button, HStack, Loading, Modal, ModalContent } from "@carbon/react";
 import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
+import { Button, HStack, Loading, Modal, ModalContent } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
   type ReactNode,
@@ -18,15 +18,16 @@ import type { ConfigurationParameter } from "~/modules/items/types";
 import {
   buildConfigTableEditorState,
   type ConfigReferenceSource,
-  type ConfigTableReferenceContext
+  type ConfigTableReferenceContext,
+  configTableToComboRows
 } from "~/modules/production/configParamsTableColumns";
 import {
   buildConfigTableActionResponse,
   type ConfigTableOverlaySuccess,
   isConfigTableOverlaySuccess
 } from "~/modules/production/configTableOverlay";
-import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
+import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { path } from "~/utils/path";
 import {
   buildColumns,
@@ -93,19 +94,33 @@ function buildFlatColumns(
   return cols;
 }
 
-/** Combo rows are already flat: valuesKey + Quantities (+ optional label). */
-function comboRowsFromInitial(rows: Row[]): Row[] {
-  const flat: Row[] = [];
-  for (const mr of rows) {
-    const valuesKey = String(mr.valuesKey ?? "").trim();
-    const qty = Number(mr.Quantities) || 0;
-    if (!valuesKey || qty <= 0) continue;
-    const row: Row = { valuesKey, Quantities: qty };
-    const label = String(mr.label ?? "").trim();
-    if (label) row.label = label;
-    flat.push(row);
+/** Combo rows: pass-through valuesKey rows, or convert legacy matrices. */
+function comboRowsFromInitial(
+  rows: Row[],
+  primaryKeys: string[],
+  optionLabels?: Record<string, string>
+): Row[] {
+  const alreadyCombo = rows.some(
+    (r) => String(r.valuesKey ?? "").trim().length > 0
+  );
+  if (alreadyCombo) {
+    const flat: Row[] = [];
+    for (const mr of rows) {
+      const valuesKey = String(mr.valuesKey ?? "").trim();
+      const qty = Number(mr.Quantities) || 0;
+      if (!valuesKey || qty <= 0) continue;
+      const row: Row = { valuesKey, Quantities: qty };
+      const label = String(mr.label ?? "").trim();
+      if (label) row.label = label;
+      flat.push(row);
+    }
+    return flat;
   }
-  return flat;
+
+  return configTableToComboRows(
+    { configTable: rows, configTablePrimaryKeys: primaryKeys },
+    optionLabels
+  ) as Row[];
 }
 
 /** Explode merged/matrix rows into one flat row per non-zero color/size cell. */
@@ -255,7 +270,7 @@ function ConfigParamsTableModal({
       const seed =
         initialRows && initialRows.length > 0
           ? isCombo
-            ? comboRowsFromInitial(initialRows)
+            ? comboRowsFromInitial(initialRows, primaryKeys, optionLabels)
             : matrixRowsToFlatRows(
                 initialRows,
                 primaryParam,
@@ -275,7 +290,23 @@ function ConfigParamsTableModal({
       return isCombo ? [] : [makeDefaultRow(flatColumns)];
     }
     if (initialRows && initialRows.length > 0) {
-      return initialRows.map((row) => normalizeRow(row, columns));
+      const seedRows =
+        isCombo &&
+        !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0)
+          ? (configTableToComboRows(
+              {
+                configTable: initialRows,
+                configTablePrimaryKeys: primaryKeys
+              },
+              optionLabels
+            ) as Row[])
+          : initialRows;
+      return seedRows.map((row) => {
+        const normalized = normalizeRow(row, columns);
+        const label = String(row.label ?? "").trim();
+        if (label) normalized.label = label;
+        return normalized;
+      });
     }
     return getInitialRows(parameters, primaryParam, columns);
   });

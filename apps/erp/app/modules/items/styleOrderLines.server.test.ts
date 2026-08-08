@@ -32,6 +32,10 @@ function mockClient(handlers: {
     attributeId: string;
     itemAttributeValue: { code: string } | null;
   }>;
+  /** Parent item attributeSetId — null uses Color|Size fallback. */
+  attributeSetId?: string | null;
+  /** Ordered attribute codes on the set (e.g. ["Color"] for color-only). */
+  setAttributeCodes?: string[];
   variantsError?: Error;
   attrsError?: Error;
 }) {
@@ -56,6 +60,40 @@ function mockClient(handlers: {
               in: async () => ({
                 data: handlers.attrs ?? [],
                 error: handlers.attrsError ?? null
+              })
+            })
+          })
+        };
+      }
+      if (table === "item") {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: async () => ({
+                  data: {
+                    attributeSetId:
+                      handlers.attributeSetId === undefined
+                        ? null
+                        : handlers.attributeSetId
+                  },
+                  error: null
+                })
+              })
+            })
+          })
+        };
+      }
+      if (table === "itemAttributeSetAttribute") {
+        const codes = handlers.setAttributeCodes ?? [];
+        return {
+          select: () => ({
+            eq: () => ({
+              order: async () => ({
+                data: codes.map((code) => ({
+                  itemAttribute: { code }
+                })),
+                error: null
               })
             })
           })
@@ -122,6 +160,8 @@ describe("expandStyleConfigToVariantLines", () => {
     // A Fabric/Trim Consumable has only a color attribute, so its grid stores
     // the color codes AS the primary quantity columns with no color descriptor.
     const client = mockClient({
+      attributeSetId: "ias_fabric",
+      setAttributeCodes: ["Color"],
       variants: [
         { id: "iv1", variantItemId: "item_rd", valuesKey: "RD" },
         { id: "iv2", variantItemId: "item_bl", valuesKey: "BL" }
@@ -184,7 +224,7 @@ describe("expandStyleConfigToVariantLines", () => {
 
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.error).toMatch(/No variant SKU exists for BK \/ S/i);
+    expect(result.error).toMatch(/No variant SKU exists for BK\|S/i);
   });
 
   it("fails when configuration has no positive quantities", async () => {

@@ -1,3 +1,4 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { Combobox, Heading, toast } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo } from "react";
@@ -14,13 +15,16 @@ export type ReleasedBundle = {
   quantity: number | null;
 };
 
-function bundleAttrLabel(b: {
-  attributeLabel?: string | null;
-  valuesKey?: string | null;
-}): string {
-  return (
-    b.attributeLabel?.trim() || b.valuesKey?.replace(/\|/g, " · ").trim() || ""
-  );
+function bundleAttrLabel(
+  b: {
+    attributeLabel?: string | null;
+    valuesKey?: string | null;
+  },
+  locale?: string
+): string {
+  const raw =
+    b.attributeLabel?.trim() || b.valuesKey?.replace(/\|/g, " · ").trim() || "";
+  return localizeVariantAttributeLabel(raw, locale) || raw;
 }
 
 type BundleScanPageProps = {
@@ -36,7 +40,7 @@ export function BundleScanPage({
   description,
   releasedBundles
 }: BundleScanPageProps) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const navigate = useNavigate();
 
   const goToBundle = useCallback(
@@ -62,9 +66,11 @@ export function BundleScanPage({
     () =>
       releasedBundles.map((b) => ({
         value: b.id,
-        label: [b.jobReadableId, bundleAttrLabel(b)].filter(Boolean).join(" — ")
+        label: [b.jobReadableId, bundleAttrLabel(b, i18n.locale)]
+          .filter(Boolean)
+          .join(" — ")
       })),
-    [releasedBundles]
+    [releasedBundles, i18n.locale]
   );
 
   return (

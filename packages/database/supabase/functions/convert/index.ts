@@ -604,9 +604,15 @@ serve(async (req: Request) => {
                 expanded.forEach((v, i) => {
                   salesOrderLineInserts.push({
                     salesOrderId: insertedSalesOrderId,
-                    // Variant child SKUs are Style items; keep line type Style
-                    // (matches ERP replaceSalesOrderLinesWithStyleVariants).
-                    salesOrderLineType: "Style",
+                    // Keep the quote line's item type (Style / Consumable / …).
+                    salesOrderLineType: line.itemType as
+                      | "Part"
+                      | "Material"
+                      | "Tool"
+                      | "Service"
+                      | "Consumable"
+                      | "Fixture"
+                      | "Style",
                     addOnCost: addOnSplit[i],
                     nonTaxableAddOnCost: nonTaxableSplit[i],
                     description: line.description,

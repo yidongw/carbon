@@ -305,10 +305,10 @@ describe("getConfigQuantityCells", () => {
       { Red: "红色", Blue: "蓝色" }
     );
     expect(cells.map((c) => c.label)).toEqual([
-      "S · 红色",
-      "S · 蓝色",
-      "M · 红色",
-      "M · 蓝色"
+      "红色 · S",
+      "蓝色 · S",
+      "红色 · M",
+      "蓝色 · M"
     ]);
   });
 
@@ -330,5 +330,20 @@ describe("getConfigQuantityCells", () => {
       { key: "0:Quantities", label: "BK · S", quantity: 6 },
       { key: "1:Quantities", label: "红色 · M", quantity: 2 }
     ]);
+  });
+
+  it("configTableToComboRows converts legacy size-column matrices", async () => {
+    const { configTableToComboRows } = await import(
+      "./configParamsTableColumns"
+    );
+    expect(
+      configTableToComboRows(
+        {
+          configTable: [{ color: "BK", XS: 0, S: 6 }],
+          configTablePrimaryKeys: ["XS", "S"]
+        },
+        { BK: "黑色" }
+      )
+    ).toEqual([{ valuesKey: "BK|S", Quantities: 6, label: "黑色 · S" }]);
   });
 });

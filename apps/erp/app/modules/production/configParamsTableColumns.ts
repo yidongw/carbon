@@ -299,6 +299,96 @@ export function getConfigQuantityCells(
 
   return cells;
 }
+
+export type ComboConfigRow = {
+  valuesKey: string;
+  Quantities: number;
+  label?: string;
+};
+
+/**
+ * Dual-read stored config → combo editor rows (`valuesKey` + `Quantities`).
+ * Pass-through when already combo; convert legacy Color×Size (or color-column)
+ * matrices using Color-first / Size-last token order for `valuesKey`.
+ */
+export function configTableToComboRows(
+  configuration: unknown,
+  optionLabels?: Record<string, string>
+): ComboConfigRow[] {
+  if (
+    configuration === null ||
+    configuration === undefined ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return [];
+  }
+
+  const raw = configuration as Record<string, unknown>;
+  const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
+    ? raw.configTablePrimaryKeys.filter(
+        (k): k is string => typeof k === "string" && k.length > 0
+      )
+    : [];
+  if (primaryKeys.length === 0) return [];
+
+  const primaryKeySet = new Set(primaryKeys);
+  const labelOf = (value: string) => optionLabelOf(value, optionLabels);
+  const out: ComboConfigRow[] = [];
+
+  const isComboFlat =
+    primaryKeys.length === 1 && primaryKeys[0] === "Quantities";
+
+  for (const row of getConfigTableRows(configuration)) {
+    if (isComboFlat) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) continue;
+      const quantity = Number(row.Quantities) || 0;
+      if (quantity <= 0) continue;
+      const storedLabel = String(row.label ?? "").trim();
+      const label = storedLabel
+        ? storedLabel
+        : valuesKey
+            .split("|")
+            .map((part) => labelOf(part))
+            .join(" · ");
+      out.push({
+        valuesKey,
+        Quantities: quantity,
+        ...(label ? { label } : {})
+      });
+      continue;
+    }
+
+    const descriptorValues = Object.entries(row)
+      .filter(([key]) => !primaryKeySet.has(key))
+      .map(([, value]) => String(value ?? "").trim())
+      .filter(Boolean);
+
+    for (const qtyKey of primaryKeys) {
+      const rawQty = row[qtyKey];
+      if (isZeroOrEmpty(rawQty)) continue;
+      const quantity = Number(rawQty) || 0;
+      if (quantity <= 0) continue;
+
+      const tokens = [...descriptorValues, qtyKey];
+      const colorTokens = tokens.filter((tk) => !isSizeToken(tk));
+      const sizeTokens = tokens.filter(isSizeToken);
+      const ordered = [...colorTokens, ...sizeTokens];
+      const valuesKey = ordered.join("|");
+      if (!valuesKey) continue;
+      const label = ordered.map(labelOf).filter(Boolean).join(" · ");
+      out.push({
+        valuesKey,
+        Quantities: quantity,
+        ...(label ? { label } : {})
+      });
+    }
+  }
+
+  return out;
+}
+
 export function formatConfigRowLabel(
   row: ConfigTableRow,
   columns: ConfigColumn[],
