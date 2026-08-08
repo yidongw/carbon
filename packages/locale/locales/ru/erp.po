@@ -1758,7 +1758,7 @@ msgstr "Невозможно удалить отраженную поступк�
 msgid "Cannot delete a posted shipment"
 msgstr "Невозможно удалить отгруженную поставку"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -1770,7 +1770,7 @@ msgstr "Невозможно редактировать защищенный т�
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -2718,6 +2718,9 @@ msgstr "Режим отказа создан"
 msgid "Created gauge type"
 msgstr "Тип датчика создан"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created item group"
 msgstr "Группа товаров создана"
 
@@ -2771,9 +2774,6 @@ msgstr "Требуемое действие создано"
 
 msgid "Created scrap reason"
 msgstr "Причина брака создана"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created shipping method"
 msgstr "Способ доставки создан"
@@ -3448,7 +3448,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Удаленное значение атрибута"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -3900,6 +3900,9 @@ msgstr "Редактировать документ проверки"
 msgid "Edit Invite"
 msgstr "Изменить приглашение"
 
+msgid "Edit Item Attributes Set"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Редактировать группу товаров"
 
@@ -4019,9 +4022,6 @@ msgstr "Редактирование раздела"
 
 msgid "Edit Sequence"
 msgstr "Редактировать последовательность"
-
-msgid "Edit Set Assignment"
-msgstr ""
 
 msgid "Edit Shift"
 msgstr "Редактировать смену"
@@ -4329,9 +4329,6 @@ msgstr "Ошибка загрузки статуса назначения"
 msgid "Error loading attribute categories"
 msgstr "Ошибка загрузки категорий атрибутов"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -4352,6 +4349,9 @@ msgstr "Ошибка загрузки сотрудников"
 
 msgid "Error loading issues"
 msgstr "Ошибка загрузки задач"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "Ошибка загрузки групп элементов"
@@ -4801,6 +4801,9 @@ msgstr "Не удалось создать документ проверки"
 msgid "Failed to create invite link"
 msgstr "Не удалось создать ссылку для приглашения"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
 msgstr "Не удалось создать группу товаров: {0}"
@@ -4955,9 +4958,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Не удалось создать образцы"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "Не удалось создать смену"
@@ -5159,6 +5159,9 @@ msgstr "Не удалось удалить проблему"
 msgid "Failed to delete issue workflow"
 msgstr "Не удалось удалить рабочий процесс задачи"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "Не удалось удалить группу элементов"
 
@@ -5299,9 +5302,6 @@ msgstr "Не удалось удалить строку продажного з�
 
 msgid "Failed to delete section"
 msgstr "Не удалось удалить раздел"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Не удалось удалить смену"
@@ -5855,6 +5855,9 @@ msgstr "Не удалось получить идентификатор праз
 msgid "Failed to get issue type"
 msgstr "Не удалось получить тип проблемы"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "Не удалось получить группу элементов"
 
@@ -5995,9 +5998,6 @@ msgstr "Не удалось получить последовательност�
 
 msgid "Failed to get services"
 msgstr "Не удалось получить услуги"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Не удалось получить смену"
@@ -7358,6 +7358,9 @@ msgstr "Не удалось обновить рабочий процесс за�
 msgid "Failed to update item"
 msgstr "Не удалось обновить элемент"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item cost"
 msgstr "Не удалось обновить стоимость товара"
 
@@ -7615,9 +7618,6 @@ msgstr "Не удалось обновить причину потери мат�
 
 msgid "Failed to update sequence"
 msgstr "Не удалось обновить последовательность"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Не удалось обновить отгрузку"
@@ -8788,6 +8788,9 @@ msgid "Item Attribute Sets"
 msgstr ""
 
 msgid "Item Attributes"
+msgstr ""
+
+msgid "Item attributes set not found"
 msgstr ""
 
 msgid "Item filters"
@@ -10020,6 +10023,9 @@ msgstr "Новый документ проверки"
 msgid "New Invoice"
 msgstr "Новый счет"
 
+msgid "New Item Attributes Set"
+msgstr ""
+
 msgid "New Item Group"
 msgstr "Новая группа товаров"
 
@@ -10142,9 +10148,6 @@ msgstr "Новая строка заказа продажи"
 
 msgid "New Scheduled Maintenance"
 msgstr "Новое плановое обслуживание"
-
-msgid "New Set Assignment"
-msgstr ""
 
 msgid "New Shift"
 msgstr "Новая смена"
@@ -13309,9 +13312,6 @@ msgstr "Аккаунт для оплаты услуг"
 msgid "Session mismatch"
 msgstr "Сессия несоответствует"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "Установить время выхода"
 
@@ -15422,6 +15422,9 @@ msgstr "Обновленный тип проблемы"
 msgid "Updated item"
 msgstr "Обновленный элемент"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "Обновленная группа элементов"
 
@@ -15577,9 +15580,6 @@ msgstr "Обновленная причина потери материала"
 
 msgid "Updated sequence"
 msgstr "Обновлена последовательность"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "Обновленная поставка"

@@ -1759,8 +1759,8 @@ msgstr "不能删除已录入的单据"
 msgid "Cannot delete a posted shipment"
 msgstr "不能删除已发布发货单"
 
-msgid "Cannot delete a system attribute set assignment"
-msgstr "无法删除系统属性集分配"
+msgid "Cannot delete a system item attributes set"
+msgstr "无法删除系统物料属性集"
 
 msgid "Cannot edit a protected customer type"
 msgstr "不能编辑受保护的客户类型"
@@ -1771,8 +1771,8 @@ msgstr "不能编辑受保护的供应商类型"
 msgid "Cannot edit a system attribute set"
 msgstr "无法编辑系统属性集"
 
-msgid "Cannot edit a system attribute set assignment"
-msgstr "无法编辑系统属性集分配"
+msgid "Cannot edit a system item attributes set"
+msgstr "无法编辑系统物料属性集"
 
 msgid "Cannot edit global material grade"
 msgstr "不能编辑全局材料等级"
@@ -2719,6 +2719,9 @@ msgstr "已创建故障模式"
 msgid "Created gauge type"
 msgstr "已创建量具类型"
 
+msgid "Created item attributes set"
+msgstr "已创建物料属性集"
+
 msgid "Created item group"
 msgstr "已创建物品组"
 
@@ -2772,9 +2775,6 @@ msgstr "已创建所需操作"
 
 msgid "Created scrap reason"
 msgstr "已创建报废原因"
-
-msgid "Created set assignment"
-msgstr "已创建属性集分配"
 
 msgid "Created shipping method"
 msgstr "已创建配送方式"
@@ -3449,8 +3449,8 @@ msgstr "已删除属性集"
 msgid "Deleted attribute value"
 msgstr "已删除的属性值"
 
-msgid "Deleted set assignment"
-msgstr "已删除属性集分配"
+msgid "Deleted item attributes set"
+msgstr "已删除物料属性集"
 
 msgid "Deleted warehouse transfer line"
 msgstr "已删除仓库调拨行"
@@ -3901,6 +3901,9 @@ msgstr "编辑检验文件"
 msgid "Edit Invite"
 msgstr "编辑邀请"
 
+msgid "Edit Item Attributes Set"
+msgstr "编辑物料属性集"
+
 msgid "Edit Item Group"
 msgstr "编辑物品组"
 
@@ -4020,9 +4023,6 @@ msgstr "编辑区域"
 
 msgid "Edit Sequence"
 msgstr "编辑序列"
-
-msgid "Edit Set Assignment"
-msgstr "编辑属性集分配"
 
 msgid "Edit Shift"
 msgstr "编辑班次"
@@ -4330,9 +4330,6 @@ msgstr "加载分配状态出错"
 msgid "Error loading attribute categories"
 msgstr "加载属性类别时出错"
 
-msgid "Error loading attribute set assignments"
-msgstr "加载属性集分配时出错"
-
 msgid "Error loading attribute sets"
 msgstr "加载属性集时出错"
 
@@ -4353,6 +4350,9 @@ msgstr "加载员工信息出错"
 
 msgid "Error loading issues"
 msgstr "加载问题出错"
+
+msgid "Error loading item attributes sets"
+msgstr "加载物料属性集出错"
 
 msgid "Error loading item groups"
 msgstr "加载项组时出错"
@@ -4802,6 +4802,9 @@ msgstr "创建检验文件失败"
 msgid "Failed to create invite link"
 msgstr "创建邀请链接失败"
 
+msgid "Failed to create item attributes set"
+msgstr "创建物料属性集失败"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
 msgstr "创建物品组失败：{0}"
@@ -4956,9 +4959,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "创建样品失败"
-
-msgid "Failed to create set assignment"
-msgstr "创建属性集分配失败"
 
 msgid "Failed to create shift"
 msgstr "创建班次失败"
@@ -5160,6 +5160,9 @@ msgstr "删除问题失败"
 msgid "Failed to delete issue workflow"
 msgstr "删除问题工作流失败"
 
+msgid "Failed to delete item attributes set"
+msgstr "删除物料属性集失败"
+
 msgid "Failed to delete item group"
 msgstr "删除项组失败"
 
@@ -5300,9 +5303,6 @@ msgstr "删除销售订单行失败"
 
 msgid "Failed to delete section"
 msgstr "删除部分失败"
-
-msgid "Failed to delete set assignment"
-msgstr "删除属性集分配失败"
 
 msgid "Failed to delete shift"
 msgstr "删除班次失败"
@@ -5856,6 +5856,9 @@ msgstr "获取假期ID失败"
 msgid "Failed to get issue type"
 msgstr "获取问题类型失败"
 
+msgid "Failed to get item attributes set"
+msgstr "获取物料属性集失败"
+
 msgid "Failed to get item group"
 msgstr "获取项组失败"
 
@@ -5996,9 +5999,6 @@ msgstr "获取序列失败"
 
 msgid "Failed to get services"
 msgstr "获取服务失败"
-
-msgid "Failed to get set assignment"
-msgstr "获取属性集分配失败"
 
 msgid "Failed to get shift"
 msgstr "获取班次失败"
@@ -7359,6 +7359,9 @@ msgstr "更新问题流程失败"
 msgid "Failed to update item"
 msgstr "更新项目失败"
 
+msgid "Failed to update item attributes set"
+msgstr "更新物料属性集失败"
+
 msgid "Failed to update item cost"
 msgstr "更新物品成本失败"
 
@@ -7616,9 +7619,6 @@ msgstr "更新废料原因失败"
 
 msgid "Failed to update sequence"
 msgstr "更新序列失败"
-
-msgid "Failed to update set assignment"
-msgstr "更新属性集分配失败"
 
 msgid "Failed to update shipment"
 msgstr "更新发货信息失败"
@@ -8790,6 +8790,9 @@ msgstr "物品属性组"
 
 msgid "Item Attributes"
 msgstr "物料属性"
+
+msgid "Item attributes set not found"
+msgstr "未找到物料属性集"
 
 msgid "Item filters"
 msgstr "项目过滤器"
@@ -10021,6 +10024,9 @@ msgstr "新建检验文件"
 msgid "New Invoice"
 msgstr "新发票"
 
+msgid "New Item Attributes Set"
+msgstr "新建物料属性集"
+
 msgid "New Item Group"
 msgstr "新物品组"
 
@@ -10143,9 +10149,6 @@ msgstr "新销售订单行"
 
 msgid "New Scheduled Maintenance"
 msgstr "新的计划维护"
-
-msgid "New Set Assignment"
-msgstr "新建属性集分配"
 
 msgid "New Shift"
 msgstr "新班次"
@@ -13310,9 +13313,6 @@ msgstr "服务收费账户"
 msgid "Session mismatch"
 msgstr "会话不匹配"
 
-msgid "Set assignment not found"
-msgstr "未找到属性集分配"
-
 msgid "Set Clock Out"
 msgstr "设置下班时间"
 
@@ -15423,6 +15423,9 @@ msgstr "已更新问题类型"
 msgid "Updated item"
 msgstr "已更新项"
 
+msgid "Updated item attributes set"
+msgstr "已更新物料属性集"
+
 msgid "Updated item group"
 msgstr "已更新项目组"
 
@@ -15578,9 +15581,6 @@ msgstr "已更新废料原因"
 
 msgid "Updated sequence"
 msgstr "已更新顺序"
-
-msgid "Updated set assignment"
-msgstr "已更新属性集分配"
 
 msgid "Updated shipment"
 msgstr "已更新发货信息"

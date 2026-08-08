@@ -1758,7 +1758,7 @@ msgstr "Nie można usunąć zatwierdzonej faktury"
 msgid "Cannot delete a posted shipment"
 msgstr "Nie można usunąć zatwierdzonej dostawy"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -1770,7 +1770,7 @@ msgstr "Nie można edytować chronionej rodziny dostawcy"
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -2718,6 +2718,9 @@ msgstr "Utworzony tryb awarii"
 msgid "Created gauge type"
 msgstr "Utworzono typ miernika"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created item group"
 msgstr "Utworzona grupa artykułów"
 
@@ -2771,9 +2774,6 @@ msgstr "Utworzono wymaganą akcję"
 
 msgid "Created scrap reason"
 msgstr "Utworzono przyczynę złomu"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created shipping method"
 msgstr "Utworzono metodę wysyłki"
@@ -3448,7 +3448,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Usunięto wartość atrybutu"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -3900,6 +3900,9 @@ msgstr "Edytuj dokument kontroli"
 msgid "Edit Invite"
 msgstr "Edytuj zap throughout"
 
+msgid "Edit Item Attributes Set"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Edytuj grupę pozycji"
 
@@ -4019,9 +4022,6 @@ msgstr "Edytuj sekcję"
 
 msgid "Edit Sequence"
 msgstr "Edytuj sekwencję"
-
-msgid "Edit Set Assignment"
-msgstr ""
 
 msgid "Edit Shift"
 msgstr "Edytuj zmianę"
@@ -4329,9 +4329,6 @@ msgstr "Błąd załadowania stanu przypisania"
 msgid "Error loading attribute categories"
 msgstr "Błąd załadowania kategorii atrybutów"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -4352,6 +4349,9 @@ msgstr "Błąd załadowania pracowników"
 
 msgid "Error loading issues"
 msgstr "Błąd ładowania problemów"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "Błąd ładowania grup elementów"
@@ -4801,6 +4801,9 @@ msgstr "Nie udało się utworzyć dokumentu sprawdzianu"
 msgid "Failed to create invite link"
 msgstr "Nie udało się utworzyć linku do zaproszenia"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
 msgstr "Nie udało się utworzyć grupy pozycji: {0}"
@@ -4955,9 +4958,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Nie udało się utworzyć próbek"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "Nie udało się utworzyć zmiany"
@@ -5159,6 +5159,9 @@ msgstr "Niedostępne do usunięcia problem"
 msgid "Failed to delete issue workflow"
 msgstr "Niedostępna do usunięcia przepływ pracy zadań"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "Niedostępna do usunięcia grupa elementów"
 
@@ -5299,9 +5302,6 @@ msgstr "Niedostępna do usunięcia linia zamówienia sprzedaży"
 
 msgid "Failed to delete section"
 msgstr "Niedostępna do usunięcia sekcja"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Niedostępne do usunięcia zmiany"
@@ -5855,6 +5855,9 @@ msgstr "Nie udało się uzyskać ID święta"
 msgid "Failed to get issue type"
 msgstr "Nie można pobrać typu problemu"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "Nie można pobrać grupy przedmiotu"
 
@@ -5995,9 +5998,6 @@ msgstr "Nie można pobrać sekwencji"
 
 msgid "Failed to get services"
 msgstr "Nie można pobrać usług"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Nie można pobrać zmiany"
@@ -7358,6 +7358,9 @@ msgstr "Nie udało się zaktualizować przepływu pracy zagadki"
 msgid "Failed to update item"
 msgstr "Nie udało się zaktualizować elementu"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item cost"
 msgstr "Nie udało się zaktualizować kosztu pozycji"
 
@@ -7615,9 +7618,6 @@ msgstr "Nie udało się zaktualizować przyczyny odpadu"
 
 msgid "Failed to update sequence"
 msgstr "Nie udało się zaktualizować sekwencji"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Nie udało się zaktualizować wysyłki"
@@ -8788,6 +8788,9 @@ msgid "Item Attribute Sets"
 msgstr ""
 
 msgid "Item Attributes"
+msgstr ""
+
+msgid "Item attributes set not found"
 msgstr ""
 
 msgid "Item filters"
@@ -10020,6 +10023,9 @@ msgstr "Nowy dokument inspekcji"
 msgid "New Invoice"
 msgstr "Nowa Faktura"
 
+msgid "New Item Attributes Set"
+msgstr ""
+
 msgid "New Item Group"
 msgstr "Nowa Grupa Pozycji"
 
@@ -10142,9 +10148,6 @@ msgstr "Nowa linia zamówienia sprzedaży"
 
 msgid "New Scheduled Maintenance"
 msgstr "Nowa zaplanowana konserwacja"
-
-msgid "New Set Assignment"
-msgstr ""
 
 msgid "New Shift"
 msgstr "Nowa zmiana"
@@ -13309,9 +13312,6 @@ msgstr "Konto opłat serwisowych"
 msgid "Session mismatch"
 msgstr "Błąd zgodności sesji"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "Ustaw czas wyjścia"
 
@@ -15422,6 +15422,9 @@ msgstr "Zaktualizowana rodzaj problemu"
 msgid "Updated item"
 msgstr "Zaktualizowana element"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "Zaktualizowana grupa elementów"
 
@@ -15577,9 +15580,6 @@ msgstr "Zaktualizowana przyczyna odpadu"
 
 msgid "Updated sequence"
 msgstr "Zaktualizowana sekwencja"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "Zaktualizowana wysyłka"

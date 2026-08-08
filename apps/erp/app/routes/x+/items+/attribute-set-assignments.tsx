@@ -29,10 +29,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (assignments.error) {
     throw redirect(
       path.to.items,
-      await flash(
-        request,
-        error(null, "Error loading attribute set assignments")
-      )
+      await flash(request, error(null, "Error loading item attributes sets"))
     );
   }
 

@@ -1758,7 +1758,7 @@ msgstr "Impossible de supprimer une facture postée"
 msgid "Cannot delete a posted shipment"
 msgstr "Impossible de supprimer une expédition enregistrée"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -1770,7 +1770,7 @@ msgstr "Ne pouvez pas modifier un type de fournisseur protégé"
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -2718,6 +2718,9 @@ msgstr "Mode de défaillance créé"
 msgid "Created gauge type"
 msgstr "Type de jauge créé"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created item group"
 msgstr "Groupe d'articles créé"
 
@@ -2771,9 +2774,6 @@ msgstr "Action requise créée"
 
 msgid "Created scrap reason"
 msgstr "Raison de rebut créée"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created shipping method"
 msgstr "Méthode d'expédition créée"
@@ -3448,7 +3448,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Valeur d'attribut supprimée"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -3900,6 +3900,9 @@ msgstr "Modifier le document d'inspection"
 msgid "Edit Invite"
 msgstr "Modifier l'invitation"
 
+msgid "Edit Item Attributes Set"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Modifier le groupe d'articles"
 
@@ -4019,9 +4022,6 @@ msgstr "Éditer la section"
 
 msgid "Edit Sequence"
 msgstr "Modifier la séquence"
-
-msgid "Edit Set Assignment"
-msgstr ""
 
 msgid "Edit Shift"
 msgstr "Modifier le quart"
@@ -4329,9 +4329,6 @@ msgstr "Erreur chargement statut de l'affectation"
 msgid "Error loading attribute categories"
 msgstr "Erreur chargement des catégories d'attributs"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -4352,6 +4349,9 @@ msgstr "Erreur chargement employés"
 
 msgid "Error loading issues"
 msgstr "Erreur chargement des problèmes"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "Erreur chargement des groupes d'articles"
@@ -4801,6 +4801,9 @@ msgstr "Échec de la création du document d'inspection"
 msgid "Failed to create invite link"
 msgstr "Échec de la création du lien d'invitation"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
 msgstr "Échec de la création du groupe d'articles : {0}"
@@ -4955,9 +4958,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Échec de la création des échantillons"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "Échec de la création d'un horaire"
@@ -5159,6 +5159,9 @@ msgstr "Échec de la suppression du problème"
 msgid "Failed to delete issue workflow"
 msgstr "Échec de la suppression du flux de travail"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "Échec de la suppression du groupe d'articles"
 
@@ -5299,9 +5302,6 @@ msgstr "Échec de la suppression de l'item de commande de vente"
 
 msgid "Failed to delete section"
 msgstr "Échec de la suppression de la section"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Échec de la suppression de l'horaire"
@@ -5855,6 +5855,9 @@ msgstr "Échec de récupération de l'ID de congé"
 msgid "Failed to get issue type"
 msgstr "Échec de récupération du type d'incident"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "Échec de récupération du groupe d'articles"
 
@@ -5995,9 +5998,6 @@ msgstr "Échec de récupération de la séquence"
 
 msgid "Failed to get services"
 msgstr "Échec de récupération des services"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Échec de récupération du créneau"
@@ -7358,6 +7358,9 @@ msgstr "Échec de la mise à jour du flux de travail"
 msgid "Failed to update item"
 msgstr "Échec de la mise à jour de l'article"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item cost"
 msgstr "Échec de la mise à jour du coût de l'article"
 
@@ -7615,9 +7618,6 @@ msgstr "Échec de la mise à jour de la raison de rebut"
 
 msgid "Failed to update sequence"
 msgstr "Échec de la mise à jour de la séquence"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Échec de la mise à jour du transport"
@@ -8788,6 +8788,9 @@ msgid "Item Attribute Sets"
 msgstr ""
 
 msgid "Item Attributes"
+msgstr ""
+
+msgid "Item attributes set not found"
 msgstr ""
 
 msgid "Item filters"
@@ -10020,6 +10023,9 @@ msgstr "Nouveau document d'inspection"
 msgid "New Invoice"
 msgstr "Nouvelle facture"
 
+msgid "New Item Attributes Set"
+msgstr ""
+
 msgid "New Item Group"
 msgstr "Nouveau groupe d'articles"
 
@@ -10142,9 +10148,6 @@ msgstr "Nouvelle ligne de commande client"
 
 msgid "New Scheduled Maintenance"
 msgstr "Nouvelle Maintenance Planifiée"
-
-msgid "New Set Assignment"
-msgstr ""
 
 msgid "New Shift"
 msgstr "Nouveau Quart"
@@ -13309,9 +13312,6 @@ msgstr "Compte de frais de service"
 msgid "Session mismatch"
 msgstr "Échec de la session"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "Définir l'heure de départ"
 
@@ -15422,6 +15422,9 @@ msgstr "Type de problème mis à jour"
 msgid "Updated item"
 msgstr "Article mis à jour"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "Groupe d'articles mis à jour"
 
@@ -15577,9 +15580,6 @@ msgstr "Raison mise à jour de déchet"
 
 msgid "Updated sequence"
 msgstr "Séquence mise à jour"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "Mise à jour du transport"

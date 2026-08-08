@@ -332,7 +332,7 @@ msgstr "登録済の受注を削除できません"
 msgid "Cannot delete a posted shipment"
 msgstr "登録済みの出荷を削除できません"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -344,7 +344,7 @@ msgstr "保護されたサプライヤータイプは編集できません"
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -551,11 +551,11 @@ msgstr ""
 msgid "Created company"
 msgstr "作成した会社"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created maintenance dispatch"
 msgstr "メンテナンス派遣を作成しました"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created webhook"
 msgstr "作成したウェブハック"
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "削除された属性値"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -809,9 +809,6 @@ msgstr "エラー：割り当てステータスの読み込み中に発生しま
 msgid "Error loading attribute categories"
 msgstr "属性カテゴリの読み込みエラー"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -832,6 +829,9 @@ msgstr "社員の読み込みエラー"
 
 msgid "Error loading issues"
 msgstr "エラー：問題の読み込みに失敗しました"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "アイテムグループの読み込みエラー"
@@ -1052,6 +1052,9 @@ msgstr "検査ドキュメントの作成に失敗しました"
 msgid "Failed to create invite link"
 msgstr "招待リンクを作成できませんでした"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 msgid "Failed to create journal entry"
 msgstr "journals作成に失敗しました"
 
@@ -1150,9 +1153,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "サンプルの作成に失敗しました"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "シフトの作成に失敗しました"
@@ -1319,6 +1319,9 @@ msgstr "削除に失敗しました"
 msgid "Failed to delete issue workflow"
 msgstr "削除に失敗しました"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "アイテムグループの削除に失敗しました"
 
@@ -1459,9 +1462,6 @@ msgstr "売上注文行の削除に失敗しました"
 
 msgid "Failed to delete section"
 msgstr "セクションの削除に失敗しました"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "シフトの削除に失敗しました"
@@ -2009,6 +2009,9 @@ msgstr "休暇IDを取得できませんでした"
 msgid "Failed to get issue type"
 msgstr "ISSUE TYPE 取得に失敗しました"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "アイテムグループの取得に失敗しました"
 
@@ -2146,9 +2149,6 @@ msgstr "シーケンスの取得に失敗しました"
 
 msgid "Failed to get services"
 msgstr "サービスの取得に失敗しました"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "シフト取得に失敗しました"
@@ -3128,9 +3128,6 @@ msgstr "招待取り消しに失敗しました"
 msgid "Failed to run IC matching"
 msgstr "ICマッチングの実行に失敗しました"
 
-msgid "Failed to save bundles"
-msgstr "保存に失敗しました"
-
 msgid "Failed to save comment"
 msgstr "保存に失敗しました"
 
@@ -3404,6 +3401,9 @@ msgstr "更新 ISSUE ワークフローに失敗しました"
 msgid "Failed to update item"
 msgstr "アイテムの更新に失敗しました"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item group"
 msgstr "アイテムグループの更新に失敗しました"
 
@@ -3655,9 +3655,6 @@ msgstr "scrapped原因の更新に失敗しました"
 
 msgid "Failed to update sequence"
 msgstr "シーケンスの更新に失敗しました"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "荷物の更新に失敗しました"
@@ -4059,6 +4056,9 @@ msgstr "品目"
 
 msgid "Item association not found"
 msgstr "アイテムの関連付けが見つかりません"
+
+msgid "Item attributes set not found"
+msgstr ""
 
 msgid "Item Master"
 msgstr "品目マスター"
@@ -5329,9 +5329,6 @@ msgstr "シリアル番号"
 msgid "Session mismatch"
 msgstr "セッション不一致"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "退勤時間を設定"
 
@@ -5409,9 +5406,6 @@ msgstr "スペアパーツ"
 
 msgid "Spare Parts Used"
 msgstr "使用済みスペアパーツ"
-
-msgid "Split failed"
-msgstr "分割失敗"
 
 msgid "Split quantity too large"
 msgstr "分割数量が大きすぎます"
@@ -6085,6 +6079,9 @@ msgstr "更新された ISSUE 種別"
 msgid "Updated item"
 msgstr "更新された項目"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "更新された項目グループ"
 
@@ -6240,9 +6237,6 @@ msgstr "更新された廃棄理由"
 
 msgid "Updated sequence"
 msgstr "更新された順序"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "更新済みの荷物"

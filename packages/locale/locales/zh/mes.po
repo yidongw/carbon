@@ -333,7 +333,7 @@ msgstr "不能删除已录入的单据"
 msgid "Cannot delete a posted shipment"
 msgstr "不能删除已发布发货单"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -345,7 +345,7 @@ msgstr "不能编辑受保护的供应商类型"
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -552,11 +552,11 @@ msgstr ""
 msgid "Created company"
 msgstr "已创建公司"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created maintenance dispatch"
 msgstr "已创建维护派工单"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created webhook"
 msgstr "已创建webhook"
@@ -637,7 +637,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "已删除的属性值"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -810,9 +810,6 @@ msgstr "加载分配状态出错"
 msgid "Error loading attribute categories"
 msgstr "加载属性类别时出错"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -833,6 +830,9 @@ msgstr "加载员工信息出错"
 
 msgid "Error loading issues"
 msgstr "加载问题出错"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "加载项组时出错"
@@ -1053,6 +1053,9 @@ msgstr "创建检验文件失败"
 msgid "Failed to create invite link"
 msgstr "创建邀请链接失败"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 msgid "Failed to create journal entry"
 msgstr "创建日记项失败"
 
@@ -1151,9 +1154,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "创建样品失败"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "创建班次失败"
@@ -1320,6 +1320,9 @@ msgstr "删除问题失败"
 msgid "Failed to delete issue workflow"
 msgstr "删除问题工作流失败"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "删除项组失败"
 
@@ -1460,9 +1463,6 @@ msgstr "删除销售订单行失败"
 
 msgid "Failed to delete section"
 msgstr "删除部分失败"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "删除班次失败"
@@ -2010,6 +2010,9 @@ msgstr "获取假期ID失败"
 msgid "Failed to get issue type"
 msgstr "获取问题类型失败"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "获取项组失败"
 
@@ -2147,9 +2150,6 @@ msgstr "获取序列失败"
 
 msgid "Failed to get services"
 msgstr "获取服务失败"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "获取班次失败"
@@ -3129,9 +3129,6 @@ msgstr "撤销邀请失败"
 msgid "Failed to run IC matching"
 msgstr "IC匹配失败"
 
-msgid "Failed to save bundles"
-msgstr "保存分包失败"
-
 msgid "Failed to save comment"
 msgstr "保存评论失败"
 
@@ -3405,6 +3402,9 @@ msgstr "更新问题流程失败"
 msgid "Failed to update item"
 msgstr "更新项目失败"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item group"
 msgstr "更新项目组失败"
 
@@ -3656,9 +3656,6 @@ msgstr "更新废料原因失败"
 
 msgid "Failed to update sequence"
 msgstr "更新序列失败"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "更新发货信息失败"
@@ -4060,6 +4057,9 @@ msgstr "物品"
 
 msgid "Item association not found"
 msgstr "未找到项目关联"
+
+msgid "Item attributes set not found"
+msgstr ""
 
 msgid "Item Master"
 msgstr "物品主数据"
@@ -5330,9 +5330,6 @@ msgstr "序列号"
 msgid "Session mismatch"
 msgstr "会话不匹配"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "设置下班时间"
 
@@ -5410,9 +5407,6 @@ msgstr "备件"
 
 msgid "Spare Parts Used"
 msgstr "已使用备件"
-
-msgid "Split failed"
-msgstr "拆分失败"
 
 msgid "Split quantity too large"
 msgstr "分割数量太大"
@@ -6086,6 +6080,9 @@ msgstr "已更新问题类型"
 msgid "Updated item"
 msgstr "已更新项"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "已更新项目组"
 
@@ -6241,9 +6238,6 @@ msgstr "已更新废料原因"
 
 msgid "Updated sequence"
 msgstr "已更新顺序"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "已更新发货信息"

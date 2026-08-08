@@ -53,7 +53,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (assignment.error || !assignment.data) {
     throw redirect(
       path.to.itemAttributeSetAssignments,
-      await flash(request, error(assignment.error, "Set assignment not found"))
+      await flash(
+        request,
+        error(assignment.error, "Item attributes set not found")
+      )
     );
   }
   if (assignment.data.companyId === null) {
@@ -63,7 +66,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         request,
         error(
           new Error("Access denied"),
-          "Cannot edit a system attribute set assignment"
+          "Cannot edit a system item attributes set"
         )
       )
     );
@@ -93,21 +96,24 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const existing = await getItemAttributeSetAssignment(client, id);
   if (existing.error || !existing.data) {
     return data(
-      { ok: false as const, error: "Set assignment not found" },
-      await flash(request, error(existing.error, "Set assignment not found"))
+      { ok: false as const, error: "Item attributes set not found" },
+      await flash(
+        request,
+        error(existing.error, "Item attributes set not found")
+      )
     );
   }
   if (existing.data.companyId === null) {
     return data(
       {
         ok: false as const,
-        error: "Cannot edit a system attribute set assignment"
+        error: "Cannot edit a system item attributes set"
       },
       await flash(
         request,
         error(
           new Error("Access denied"),
-          "Cannot edit a system attribute set assignment"
+          "Cannot edit a system item attributes set"
         )
       )
     );
@@ -128,10 +134,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (result.error) {
     if (isOverlay) {
       return data(
-        { ok: false as const, error: "Failed to update set assignment" },
+        { ok: false as const, error: "Failed to update item attributes set" },
         await flash(
           request,
-          error(result.error, "Failed to update set assignment")
+          error(result.error, "Failed to update item attributes set")
         )
       );
     }
@@ -139,7 +145,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       path.to.itemAttributeSetAssignments,
       await flash(
         request,
-        error(result.error, "Failed to update set assignment")
+        error(result.error, "Failed to update item attributes set")
       )
     );
   }
@@ -147,13 +153,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (isOverlay) {
     return data(
       { ok: true as const },
-      await flash(request, success("Updated set assignment"))
+      await flash(request, success("Updated item attributes set"))
     );
   }
 
   throw redirect(
     path.to.itemAttributeSetAssignments,
-    await flash(request, success("Updated set assignment"))
+    await flash(request, success("Updated item attributes set"))
   );
 }
 

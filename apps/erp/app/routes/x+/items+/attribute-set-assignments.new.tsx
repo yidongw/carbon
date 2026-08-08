@@ -70,10 +70,10 @@ export async function action({ request }: ActionFunctionArgs) {
   if (insert.error) {
     if (isOverlay) {
       return data(
-        { ok: false as const, error: "Failed to create set assignment" },
+        { ok: false as const, error: "Failed to create item attributes set" },
         await flash(
           request,
-          error(insert.error, "Failed to create set assignment")
+          error(insert.error, "Failed to create item attributes set")
         )
       );
     }
@@ -81,7 +81,7 @@ export async function action({ request }: ActionFunctionArgs) {
       path.to.itemAttributeSetAssignments,
       await flash(
         request,
-        error(insert.error, "Failed to create set assignment")
+        error(insert.error, "Failed to create item attributes set")
       )
     );
   }
@@ -89,13 +89,13 @@ export async function action({ request }: ActionFunctionArgs) {
   if (isOverlay) {
     return data(
       { ok: true as const },
-      await flash(request, success("Created set assignment"))
+      await flash(request, success("Created item attributes set"))
     );
   }
 
   throw redirect(
     path.to.itemAttributeSetAssignments,
-    await flash(request, success("Created set assignment"))
+    await flash(request, success("Created item attributes set"))
   );
 }
 

@@ -332,7 +332,7 @@ msgstr "No se puede eliminar un recibido registrado"
 msgid "Cannot delete a posted shipment"
 msgstr "No se puede eliminar una carga registrada"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -344,7 +344,7 @@ msgstr "No se puede editar un tipo de proveedor protegido"
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -551,11 +551,11 @@ msgstr ""
 msgid "Created company"
 msgstr "Compañía creada"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created maintenance dispatch"
 msgstr "Se creó la asignación de mantenimiento"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created webhook"
 msgstr "Webhook creado"
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Valor de atributo eliminado"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -809,9 +809,6 @@ msgstr "Error cargando el estado de asignación"
 msgid "Error loading attribute categories"
 msgstr "Error cargando categorías de atributos"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -832,6 +829,9 @@ msgstr "Error cargando empleados"
 
 msgid "Error loading issues"
 msgstr "Error cargando problemas"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "Error cargando grupos de artículos"
@@ -1052,6 +1052,9 @@ msgstr "Falló al crear el documento de inspección"
 msgid "Failed to create invite link"
 msgstr "Falló al crear el enlace de invitación"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 msgid "Failed to create journal entry"
 msgstr "Falló al crear el entrada diario"
 
@@ -1150,9 +1153,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Falló al crear muestras"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "Falló al crear turno"
@@ -1319,6 +1319,9 @@ msgstr "Falló al eliminar el problema"
 msgid "Failed to delete issue workflow"
 msgstr "Falló al eliminar el flujo de trabajo de la incidencia"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "Falló al eliminar el grupo de artículos"
 
@@ -1459,9 +1462,6 @@ msgstr "Falló al eliminar la línea de pedido de ventas"
 
 msgid "Failed to delete section"
 msgstr "Falló al eliminar la sección"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Falló al eliminar la turno"
@@ -2009,6 +2009,9 @@ msgstr "Falló al obtener el ID de festivo"
 msgid "Failed to get issue type"
 msgstr "No se pudo obtener el tipo de problema"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "No se pudo obtener el grupo de ítems"
 
@@ -2146,9 +2149,6 @@ msgstr "Falló al obtener la secuencia"
 
 msgid "Failed to get services"
 msgstr "Falló al obtener los servicios"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Falló al obtener el turno"
@@ -3128,9 +3128,6 @@ msgstr "Falló al revocar las invitaciones"
 msgid "Failed to run IC matching"
 msgstr "Falló la ejecución del ajuste IC"
 
-msgid "Failed to save bundles"
-msgstr "Falló al guardar los paquetes"
-
 msgid "Failed to save comment"
 msgstr "Falló al guardar el comentario"
 
@@ -3404,6 +3401,9 @@ msgstr "Falló al actualizar el flujo de trabajo del problema"
 msgid "Failed to update item"
 msgstr "Falló al actualizar el artículo"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item group"
 msgstr "Falló al actualizar el grupo de artículos"
 
@@ -3655,9 +3655,6 @@ msgstr "Falló al actualizar la razón de desperdicio"
 
 msgid "Failed to update sequence"
 msgstr "Falló al actualizar la secuencia"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Falló al actualizar la remisión"
@@ -4059,6 +4056,9 @@ msgstr "Artículo"
 
 msgid "Item association not found"
 msgstr "Asociación de elemento no encontrada"
+
+msgid "Item attributes set not found"
+msgstr ""
 
 msgid "Item Master"
 msgstr "Maestro de artículos"
@@ -5329,9 +5329,6 @@ msgstr "Números de serie"
 msgid "Session mismatch"
 msgstr "Desconexión por coincidencia de sesión"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "Establecer salida"
 
@@ -5409,9 +5406,6 @@ msgstr "Repuestos"
 
 msgid "Spare Parts Used"
 msgstr "Repuestos utilizados"
-
-msgid "Split failed"
-msgstr "Split fallido"
 
 msgid "Split quantity too large"
 msgstr "Cantidad a dividir demasiado grande"
@@ -6085,6 +6079,9 @@ msgstr "Tipo de problema actualizado"
 msgid "Updated item"
 msgstr "Ítem actualizado"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "Grupo de elementos actualizado"
 
@@ -6240,9 +6237,6 @@ msgstr "Razón actualizada de desperdicio"
 
 msgid "Updated sequence"
 msgstr "Se actualizó la secuencia"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "Actualización de envío"

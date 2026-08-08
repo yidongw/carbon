@@ -63,9 +63,9 @@ const ItemAttributeSetAssignmentForm = ({
       <DrawerHeader>
         <DrawerTitle>
           {isEditing ? (
-            <Trans>Edit Set Assignment</Trans>
+            <Trans>Edit Item Attributes Set</Trans>
           ) : (
-            <Trans>New Set Assignment</Trans>
+            <Trans>New Item Attributes Set</Trans>
           )}
         </DrawerTitle>
       </DrawerHeader>

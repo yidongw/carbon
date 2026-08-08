@@ -335,7 +335,7 @@ msgstr "प्रदर्शित रिकेस्ट को हटा स�
 msgid "Cannot delete a posted shipment"
 msgstr "पोस्ट किए गए डिलीवरी को हटा सकते हैं नहीं"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -347,7 +347,7 @@ msgstr "अपने रोका हुआ विनियमन प्रक�
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -554,11 +554,11 @@ msgstr ""
 msgid "Created company"
 msgstr "संयमन बनाया.get(@,0)"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created maintenance dispatch"
 msgstr "संरक्षण डिपाच बनाया.get@#"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created webhook"
 msgstr "सीमेटर्स बनाया.get_app()"
@@ -639,7 +639,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "удаленा गए विशेषता का मूल्य"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -812,9 +812,6 @@ msgstr "लोड करते समय ताकता स्थिति म�
 msgid "Error loading attribute categories"
 msgstr "तत्सम प्रपाद लोड करने में विफल हो गए"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -835,6 +832,9 @@ msgstr "तैयारी में कर्मचारियों लोड
 
 msgid "Error loading issues"
 msgstr "किसी कार्रवाई को लोड करते समय त्रुटि"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "आइटम ग्रुप लोड करने में त्रुटि"
@@ -1055,6 +1055,9 @@ msgstr "गतिविधि डाकुमेंट की सफलताप
 msgid "Failed to create invite link"
 msgstr "नvide कीलिंक बनाने में असफलता"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 msgid "Failed to create journal entry"
 msgstr "कार्टेज निर्माण को फ़ैला दिया गया है"
 
@@ -1153,9 +1156,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "सैंपल्स की तैयारी में विफलता आई है"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "फिट नहीं हुआ शिफ्ट बनाना"
@@ -1325,6 +1325,9 @@ msgstr "समस्या हटाने में विफल रहा"
 msgid "Failed to delete issue workflow"
 msgstr "फाइल होम कर सकारात्मक नहीं किया गया"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "हालाँकि इंटम ग्रुप को हटाने में विफल रहा"
 
@@ -1465,9 +1468,6 @@ msgstr "बिक्री ऑर्डर पंक्ति हटाना �
 
 msgid "Failed to delete section"
 msgstr "सब्जिक्ट को हटाना फ़लेंदी सकता है"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "फिल्टर को हटाना बीच में व गया"
@@ -2015,6 +2015,9 @@ msgstr "कार्यक्रम दिनांक ID प्राप्त 
 msgid "Failed to get issue type"
 msgstr "समस्या प्रकार को अवश्ययतन से प्राप्त नहीं किया गया है"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "आइटम ग्रुप प्राप्त करने में व़िशा होई गई"
 
@@ -2152,9 +2155,6 @@ msgstr "क्रम लाने में विफल रहे"
 
 msgid "Failed to get services"
 msgstr "सेवाएँ प्राप्त नहीं की जा सकीं"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "शिफ्ट प्राप्त नहीं की जा सकी"
@@ -3134,9 +3134,6 @@ msgstr "नामित को रद्द करने में वा हु
 msgid "Failed to run IC matching"
 msgstr "IC मेटचिंग को चलाने में व़या"
 
-msgid "Failed to save bundles"
-msgstr "बंडल्स को बचाने में विफल रहे"
-
 msgid "Failed to save comment"
 msgstr "कमेंट संरचना नहीं की जा पाई"
 
@@ -3410,6 +3407,9 @@ msgstr "समस्या कार्यप्रक्रिया अपड�
 msgid "Failed to update item"
 msgstr "आइ템 अपडेट करने में वफ़ादरी नहीं की सकता है"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item group"
 msgstr "आइ템 ग्रुप अपडेट करने में व़िश्य हो रहा है"
 
@@ -3661,9 +3661,6 @@ msgstr "फ़ैला हुआ डाटा अपडेट करने म�
 
 msgid "Failed to update sequence"
 msgstr "क्रम अपडेट करने में वफ़ादरी नहीं की जा सकी"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "शipment अपडेट होने में फाल्टी रही"
@@ -4065,6 +4062,9 @@ msgstr "वस्तु"
 
 msgid "Item association not found"
 msgstr "आइटम संबन्ध नहीं मिला"
+
+msgid "Item attributes set not found"
+msgstr ""
 
 msgid "Item Master"
 msgstr "आइटम मास्टर"
@@ -5335,9 +5335,6 @@ msgstr "सीरियल नंबर"
 msgid "Session mismatch"
 msgstr "सिझन मिशमेटच्या साथी"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "क्लॉक आउट सेट करें"
 
@@ -5415,9 +5412,6 @@ msgstr "स्पेयर पार्ट्स"
 
 msgid "Spare Parts Used"
 msgstr "उपयोग किए गए स्पेयर पार्ट्स"
-
-msgid "Split failed"
-msgstr "सिपाह वधा हुई है"
 
 msgid "Split quantity too large"
 msgstr "दी गई कॉन्ट्रीट की मात्रा बहुत बड़ी है"
@@ -6091,6 +6085,9 @@ msgstr "अपडेट इस्सUE प्रकार"
 msgid "Updated item"
 msgstr "अपडेट इंजमेंट"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "अपडेट इंटम ग्रुप"
 
@@ -6246,9 +6243,6 @@ msgstr "अपडेट ड्राइवर का कारण"
 
 msgid "Updated sequence"
 msgstr "अपडेट श्रृंखला"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "अपडेट शिपमेंट"

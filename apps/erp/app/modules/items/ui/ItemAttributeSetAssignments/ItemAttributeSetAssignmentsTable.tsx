@@ -124,7 +124,7 @@ const ItemAttributeSetAssignmentsTable = memo(
               leftIcon={<LuCirclePlus />}
               onClick={openNewAssignment}
             >
-              <Trans>New Set Assignment</Trans>
+              <Trans>New Item Attributes Set</Trans>
             </Button>
           ) : undefined
         }

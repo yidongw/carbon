@@ -332,7 +332,7 @@ msgstr "Impossibile eliminare un ricevimento registrato"
 msgid "Cannot delete a posted shipment"
 msgstr "Impossibile eliminare una spedizione registrata"
 
-msgid "Cannot delete a system attribute set assignment"
+msgid "Cannot delete a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit a protected customer type"
@@ -344,7 +344,7 @@ msgstr "Non è possibile modificare un tipo di fornitore protetto"
 msgid "Cannot edit a system attribute set"
 msgstr ""
 
-msgid "Cannot edit a system attribute set assignment"
+msgid "Cannot edit a system item attributes set"
 msgstr ""
 
 msgid "Cannot edit global material grade"
@@ -551,11 +551,11 @@ msgstr ""
 msgid "Created company"
 msgstr "Creato azienda"
 
+msgid "Created item attributes set"
+msgstr ""
+
 msgid "Created maintenance dispatch"
 msgstr "Creato ordine di manutenzione"
-
-msgid "Created set assignment"
-msgstr ""
 
 msgid "Created webhook"
 msgstr "Creato webhook"
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Deleted attribute value"
 msgstr "Valore attributo eliminato"
 
-msgid "Deleted set assignment"
+msgid "Deleted item attributes set"
 msgstr ""
 
 msgid "Deleted warehouse transfer line"
@@ -809,9 +809,6 @@ msgstr "Errore caricamento stato assegnazione"
 msgid "Error loading attribute categories"
 msgstr "Errore caricamento categorie attributi"
 
-msgid "Error loading attribute set assignments"
-msgstr ""
-
 msgid "Error loading attribute sets"
 msgstr ""
 
@@ -832,6 +829,9 @@ msgstr "Errore caricamento dipendenti"
 
 msgid "Error loading issues"
 msgstr "Errore caricamento problemi"
+
+msgid "Error loading item attributes sets"
+msgstr ""
 
 msgid "Error loading item groups"
 msgstr "Errore caricamento gruppi articoli"
@@ -1052,6 +1052,9 @@ msgstr "Fallito nell'creazione del documento di verifica"
 msgid "Failed to create invite link"
 msgstr "Fallito nell'_creazione del collegamento di invito_"
 
+msgid "Failed to create item attributes set"
+msgstr ""
+
 msgid "Failed to create journal entry"
 msgstr "Impossibile creare la registrazione"
 
@@ -1150,9 +1153,6 @@ msgstr ""
 
 msgid "Failed to create samples"
 msgstr "Fallito nella creazione delle campioni"
-
-msgid "Failed to create set assignment"
-msgstr ""
 
 msgid "Failed to create shift"
 msgstr "Fallito nella creazione della turnata"
@@ -1319,6 +1319,9 @@ msgstr "Fallito nel eliminare l'issue"
 msgid "Failed to delete issue workflow"
 msgstr "Fallito durante l'eliminazione del flusso di lavoro"
 
+msgid "Failed to delete item attributes set"
+msgstr ""
+
 msgid "Failed to delete item group"
 msgstr "Impossibile eliminare il gruppo di elementi"
 
@@ -1459,9 +1462,6 @@ msgstr "Fallito durante il cancellamento della riga del preventivo vendita"
 
 msgid "Failed to delete section"
 msgstr "Fallito durante il cancellamento della sezione"
-
-msgid "Failed to delete set assignment"
-msgstr ""
 
 msgid "Failed to delete shift"
 msgstr "Fallito durante il cancellamento della turnata"
@@ -2009,6 +2009,9 @@ msgstr "Fallito nel recuperare l'ID festa"
 msgid "Failed to get issue type"
 msgstr "Impossibile ottenere il tipo di problema"
 
+msgid "Failed to get item attributes set"
+msgstr ""
+
 msgid "Failed to get item group"
 msgstr "Impossibile ottenere il gruppo articolo"
 
@@ -2146,9 +2149,6 @@ msgstr "Fallito nel recuperare la sequenza"
 
 msgid "Failed to get services"
 msgstr "Fallito nel recupero dei servizi"
-
-msgid "Failed to get set assignment"
-msgstr ""
 
 msgid "Failed to get shift"
 msgstr "Fallito nel recupero della turnata"
@@ -3136,9 +3136,6 @@ msgstr "Fallito il revoca degli inviti"
 msgid "Failed to run IC matching"
 msgstr "Fallito il lancio del matching IC"
 
-msgid "Failed to save bundles"
-msgstr "Fallito il salvataggio dei bundle"
-
 msgid "Failed to save comment"
 msgstr "Fallito il salvataggio del commento"
 
@@ -3412,6 +3409,9 @@ msgstr "Fallito aggiornamento flusso di lavoro"
 msgid "Failed to update item"
 msgstr "Fallito aggiornamento elemento"
 
+msgid "Failed to update item attributes set"
+msgstr ""
+
 msgid "Failed to update item group"
 msgstr "Fallito aggiornamento gruppo articoli"
 
@@ -3663,9 +3663,6 @@ msgstr "Fallito aggiornamento motivo sprecato"
 
 msgid "Failed to update sequence"
 msgstr "Fallito aggiornamento sequenza"
-
-msgid "Failed to update set assignment"
-msgstr ""
 
 msgid "Failed to update shipment"
 msgstr "Fallito aggiornamento spedizione"
@@ -4067,6 +4064,9 @@ msgstr "Articolo"
 
 msgid "Item association not found"
 msgstr "Associazione articolo non trovata"
+
+msgid "Item attributes set not found"
+msgstr ""
 
 msgid "Item Master"
 msgstr "Anagrafica Articolo"
@@ -5337,9 +5337,6 @@ msgstr "Numeri di Serie"
 msgid "Session mismatch"
 msgstr "Disconnessione imprevista"
 
-msgid "Set assignment not found"
-msgstr ""
-
 msgid "Set Clock Out"
 msgstr "Imposta Uscita"
 
@@ -5417,9 +5414,6 @@ msgstr "Ricambi"
 
 msgid "Spare Parts Used"
 msgstr "Ricambi Utilizzati"
-
-msgid "Split failed"
-msgstr "Split fallito"
 
 msgid "Split quantity too large"
 msgstr "Quantità da dividere troppo grande"
@@ -6093,6 +6087,9 @@ msgstr "Tipo di problema aggiornato"
 msgid "Updated item"
 msgstr "Elemento aggiornato"
 
+msgid "Updated item attributes set"
+msgstr ""
+
 msgid "Updated item group"
 msgstr "Gruppo elemento aggiornato"
 
@@ -6248,9 +6245,6 @@ msgstr "Motivo di sprecato aggiornato"
 
 msgid "Updated sequence"
 msgstr "Sequenza aggiornata"
-
-msgid "Updated set assignment"
-msgstr ""
 
 msgid "Updated shipment"
 msgstr "Aggiornata spedizione"

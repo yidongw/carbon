@@ -22,7 +22,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       path.to.itemAttributeSetAssignments,
       await flash(
         request,
-        error(assignment.error, "Failed to get set assignment")
+        error(assignment.error, "Failed to get item attributes set")
       )
     );
   }
@@ -33,7 +33,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         request,
         error(
           new Error("Access denied"),
-          "Cannot delete a system attribute set assignment"
+          "Cannot delete a system item attributes set"
         )
       )
     );
@@ -59,7 +59,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         request,
         error(
           new Error("Access denied"),
-          "Cannot delete a system attribute set assignment"
+          "Cannot delete a system item attributes set"
         )
       )
     );
@@ -74,14 +74,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
       `${path.to.itemAttributeSetAssignments}?${getParams(request)}`,
       await flash(
         request,
-        error(deleteError, "Failed to delete set assignment")
+        error(deleteError, "Failed to delete item attributes set")
       )
     );
   }
 
   throw redirect(
     `${path.to.itemAttributeSetAssignments}?${getParams(request)}`,
-    await flash(request, success("Deleted set assignment"))
+    await flash(request, success("Deleted item attributes set"))
   );
 }
 
