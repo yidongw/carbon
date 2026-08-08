@@ -13193,6 +13193,9 @@ msgstr "Escolher motivo de descarte de rascunho"
 msgid "Select source"
 msgstr "Selecione a fonte"
 
+msgid "Select storage unit"
+msgstr "Selecionar unidade de armazenamento"
+
 msgid "Select Supplier Status"
 msgstr "Selecionar Status do Fornecedor"
 

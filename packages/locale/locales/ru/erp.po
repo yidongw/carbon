@@ -13193,6 +13193,9 @@ msgstr "Выберите причину отходов"
 msgid "Select source"
 msgstr "Выберите источник"
 
+msgid "Select storage unit"
+msgstr "Выберите единицу хранения"
+
 msgid "Select Supplier Status"
 msgstr "Выберите статус поставщика"
 

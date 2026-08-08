@@ -13200,6 +13200,9 @@ msgstr "Scegliere ragione di scarto"
 msgid "Select source"
 msgstr "Seleziona la fonte"
 
+msgid "Select storage unit"
+msgstr "Seleziona unità di stoccaggio"
+
 msgid "Select Supplier Status"
 msgstr "Seleziona Stato Fornitore"
 

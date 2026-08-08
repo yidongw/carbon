@@ -13193,6 +13193,9 @@ msgstr "選択する Scrap の理由を選択してください"
 msgid "Select source"
 msgstr "ソースを選択してください"
 
+msgid "Select storage unit"
+msgstr "保管単位を選択"
+
 msgid "Select Supplier Status"
 msgstr "仕入先ステータスを選択"
 

@@ -13193,6 +13193,9 @@ msgstr "Sélectionner la raison de déchets"
 msgid "Select source"
 msgstr "Sélectionnez la source"
 
+msgid "Select storage unit"
+msgstr "Sélectionner une unité de stockage"
+
 msgid "Select Supplier Status"
 msgstr "Sélectionner le statut du fournisseur"
 

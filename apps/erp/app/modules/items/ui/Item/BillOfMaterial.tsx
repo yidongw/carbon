@@ -937,12 +937,16 @@ function MaterialForm({
             {itemData.methodType === "Make to Order" ? (
               <>
                 <LuGitPullRequestCreate />
-                <Label>Finish To</Label>
+                <Label>
+                  <Trans>Finish To</Trans>
+                </Label>
               </>
             ) : (
               <>
                 <LuGitPullRequest />
-                <Label>Pull From</Label>
+                <Label>
+                  <Trans>Pull From</Trans>
+                </Label>
               </>
             )}
           </HStack>
@@ -968,8 +972,8 @@ function MaterialForm({
                 (s) => s.value === itemData.storageUnitIds[locationId ?? ""]
               )?.label ??
                 (itemData.methodType === "Make to Order"
-                  ? "WIP"
-                  : "Default Storage Unit")}
+                  ? t`WIP`
+                  : t`Default Storage Unit`)}
             </Badge>
             <IconButton
               icon={<LuChevronRight />}
@@ -1063,8 +1067,8 @@ function MaterialForm({
               {itemData.methodOperationId
                 ? methodOperations.find(
                     (o) => o.id === itemData.methodOperationId
-                  )?.description || "Selected Operation"
-                : "First Operation"}
+                  )?.description || t`Selected Operation`
+                : t`First Operation`}
             </Badge>
             <IconButton
               icon={<LuChevronRight />}

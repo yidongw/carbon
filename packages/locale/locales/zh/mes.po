@@ -607,7 +607,7 @@ msgid "Default"
 msgstr "默认"
 
 msgid "Default Storage Unit"
-msgstr "默认存储单位"
+msgstr "默认存储单元"
 
 msgid "Delete"
 msgstr "删除"

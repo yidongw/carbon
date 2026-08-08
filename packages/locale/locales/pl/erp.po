@@ -13193,6 +13193,9 @@ msgstr "Wybierz przyczynę zniszczenia"
 msgid "Select source"
 msgstr "Wybierz źródło"
 
+msgid "Select storage unit"
+msgstr "Wybierz jednostkę magazynową"
+
 msgid "Select Supplier Status"
 msgstr "Wybierz Status Dostawcy"
 

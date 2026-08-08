@@ -13193,6 +13193,9 @@ msgstr "Select scrap reason"
 msgid "Select source"
 msgstr "Select source"
 
+msgid "Select storage unit"
+msgstr "Select storage unit"
+
 msgid "Select Supplier Status"
 msgstr "Select Supplier Status"
 
