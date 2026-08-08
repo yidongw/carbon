@@ -303,7 +303,7 @@ function JobConfigQuantities({
     <div className={jobConfigQuantitiesModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
-          <Trans>Configuration Parameters</Trans>
+          <Trans>Variants Quantity</Trans>
         </h3>
         {jobDisplayId ? (
           <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>

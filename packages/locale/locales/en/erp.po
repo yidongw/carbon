@@ -15835,6 +15835,9 @@ msgstr "Values"
 msgid "Variances"
 msgstr "Variances"
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "VAT Number"
 

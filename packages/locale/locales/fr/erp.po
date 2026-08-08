@@ -15835,6 +15835,9 @@ msgstr "Valeurs"
 msgid "Variances"
 msgstr "Variances"
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "Numéro de TVA"
 
@@ -16314,8 +16317,8 @@ msgid "You can only see this key once. Store it safely."
 msgstr "Vous ne pouvez voir cette clé qu'une seule fois. Conservez-la en sécurité."
 
 msgid "You cannot deactivate yourself"
-msgstr "Vous ne pouvez pas vous désactiver vous-même"
-"Vous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver你自己并没有在源字符串中，所以根据规则，我直接翻译：\n"
+msgstr ""
+"Vous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver你自己并没有在源字符串中，所以根据规则，我直接翻译：\n"
 "Vous ne pouvez pas vous désactiver"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)

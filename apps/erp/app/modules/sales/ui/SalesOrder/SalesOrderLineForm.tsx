@@ -76,12 +76,12 @@ import {
 } from "~/hooks";
 import { getDefaultStorageUnitForJob } from "~/modules/inventory/inventory.service";
 import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
-import {
-  toConfigTableValue,
-  useConfigTableModal
-} from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import {
+  toConfigTableValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import { methodType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -218,7 +218,7 @@ const SalesOrderLineForm = ({
     isFixedAsset ? "asset" : "item"
   );
 
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
   const [items] = useItems();
   const initialConfig = parseInitialConfig(initialValues.configuration);
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
@@ -265,7 +265,7 @@ const SalesOrderLineForm = ({
 
   const openConfigTable = () => {
     if (!itemData.itemId) return;
-    configModal.open({
+    variantsQuantityModal.open({
       itemId: itemData.itemId,
       configuration: toConfigTableValue(
         configTableRows,
@@ -1229,7 +1229,7 @@ const SalesOrderLineForm = ({
           </ModalCardProvider>
         )}
       </Tabs>
-      {configModal.node}
+      {variantsQuantityModal.node}
       {isEditing && deleteDisclosure.isOpen && (
         <DeleteSalesOrderLine
           line={initialValues as SalesOrderLine}

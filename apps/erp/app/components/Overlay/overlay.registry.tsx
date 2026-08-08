@@ -1,5 +1,5 @@
 import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
-import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
+import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { PurchaseOrderLineInitialValues } from "~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm";
 import type { SalesOrderLineFormInitialValues } from "~/modules/sales/ui/SalesOrder/SalesOrderLineForm";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
@@ -752,7 +752,7 @@ export const overlayRegistry = {
           optionLabels: data.colorNames
         };
       },
-      () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")
+      () => import("~/modules/production/ui/Jobs/VariantsQuantityModal")
     )
   },
   masterWorkOrderBundles: {

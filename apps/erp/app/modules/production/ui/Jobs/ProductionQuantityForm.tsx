@@ -33,10 +33,6 @@ import {
   productionQuantityValidator
 } from "../../production.models";
 import {
-  toConfigTableValue,
-  useConfigTableModal
-} from "./ConfigParamsTableModal";
-import {
   ProductionActorFields,
   selectionFromInitialValues
 } from "./ProductionActorFields";
@@ -50,6 +46,10 @@ import { getProductionFormCascadeState } from "./productionFormCascade";
 import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
 import { SupplierSubcontractPricingFields } from "./SupplierSubcontractPricingFields";
 import { useProductionJobPicker } from "./useProductionJobPicker";
+import {
+  toConfigTableValue,
+  useVariantsQuantityModal
+} from "./VariantsQuantityModal";
 
 type ConfigRow = Record<string, string | number | boolean>;
 
@@ -361,11 +361,11 @@ const ProductionQuantityForm = ({
     }
   };
 
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
 
   const openConfigTable = () => {
     if (!jobPicker.itemId) return;
-    configModal.open({
+    variantsQuantityModal.open({
       itemId: jobPicker.itemId,
       configuration: toConfigTableValue(
         configTableRows,
@@ -810,7 +810,7 @@ const ProductionQuantityForm = ({
           </HStack>
         </DrawerFooter>
       </ValidatedForm>
-      {configModal.node}
+      {variantsQuantityModal.node}
     </>
   );
 };

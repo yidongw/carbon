@@ -8147,6 +8147,9 @@ msgstr ""
 msgid "Warn when the person inspecting an inbound item is the same person who received it."
 msgstr ""
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "Warning"
 msgstr ""
 

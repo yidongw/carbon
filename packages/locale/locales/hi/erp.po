@@ -5064,8 +5064,8 @@ msgid "Failed to deactivate users"
 msgstr "अनुप्रयोगकर्ता की अक्षमता के कारण activate हो नहीं पड़ा"
 
 msgid "Failed to delete account"
-msgstr "खाता हटाने में विफल"
-"खाता हटाने में विफलअ户口所在地：印度\n"
+msgstr ""
+"खाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "फाइल होम工作地点：德里国家首都是：新德里"
 
@@ -15837,6 +15837,9 @@ msgstr "मूल्यांकन"
 
 msgid "Variances"
 msgstr "अनियमितताएं"
+
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
 
 msgid "VAT Number"
 msgstr "VAT संख्या"

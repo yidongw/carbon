@@ -15835,6 +15835,9 @@ msgstr "Значения"
 msgid "Variances"
 msgstr "Отклонения"
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "Номер НДС"
 

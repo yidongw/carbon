@@ -35,9 +35,6 @@ import {
   type Column,
   type ConfigurationParameterInput,
   computeTotal,
-  configParamsModalBodyClassName,
-  configParamsModalContentClassName,
-  configParamsModalShellClassName,
   EditableConfigGrid,
   getCellKey,
   getInitialRows,
@@ -47,7 +44,10 @@ import {
   mergeRows,
   normalizeRow,
   type Row,
-  validateCell
+  validateCell,
+  variantsQuantityModalBodyClassName,
+  variantsQuantityModalContentClassName,
+  variantsQuantityModalShellClassName
 } from "./configTableShared";
 
 type PlanCell = {
@@ -199,7 +199,7 @@ function flatRowsToMergedConfig(
   };
 }
 
-export type ConfigParamsTableModalProps = {
+export type VariantsQuantityModalProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
@@ -226,7 +226,7 @@ export type ConfigParamsTableModalProps = {
     confirmMode: OverlayFormInjectedProps["confirmMode"] | "client";
   };
 
-function ConfigParamsTableModal({
+function VariantsQuantityModal({
   parameters,
   initialRows,
   referenceByRowIndex,
@@ -239,7 +239,7 @@ function ConfigParamsTableModal({
   fetcher,
   confirmMode,
   onConfirmSuccess
-}: ConfigParamsTableModalProps) {
+}: VariantsQuantityModalProps) {
   const { t, i18n } = useLingui();
   // Loader colorNames are English base; translate to the locale so combo
   // labels + headers render 黑色 · S rather than "Black · S" or "BK · S".
@@ -754,16 +754,16 @@ function ConfigParamsTableModal({
   );
 
   return (
-    <div className={configParamsModalShellClassName}>
+    <div className={variantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
-          <Trans>Configuration Parameters</Trans>
+          <Trans>Variants Quantity</Trans>
         </h3>
         {jobDisplayId ? (
           <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>
         ) : null}
       </div>
-      <div className={configParamsModalBodyClassName}>{tableSection}</div>
+      <div className={variantsQuantityModalBodyClassName}>{tableSection}</div>
       <div className="shrink-0 border-t border-border px-6 py-4">{footer}</div>
     </div>
   );
@@ -845,7 +845,7 @@ function configSourceUrl(
  * parent supplies `buildReferenceContext(source)` (it owns the in-memory
  * reference inputs). Editor rows + hints are computed here, client-side.
  */
-export function ConfigParamsTableLocalModal({
+export function VariantsQuantityLocalModal({
   open,
   onClose,
   onConfirm,
@@ -910,9 +910,9 @@ export function ConfigParamsTableLocalModal({
         if (!next) onClose();
       }}
     >
-      <ModalContent className={configParamsModalContentClassName}>
+      <ModalContent className={variantsQuantityModalContentClassName}>
         {data?.parameters?.length ? (
-          <ConfigParamsTableModal
+          <VariantsQuantityModal
             parameters={data.parameters}
             initialRows={initialRows}
             referenceByRowIndex={referenceByRowIndex}
@@ -948,7 +948,7 @@ export function toConfigTableValue(
     : fallback;
 }
 
-type ConfigTableModalRequest = {
+type VariantsQuantityModalRequest = {
   itemId: string;
   configuration?: unknown;
   jobId?: string;
@@ -973,19 +973,21 @@ type ConfigTableModalRequest = {
  * render `node`. Handles open state, the success check, and closing — so callers
  * just describe what to fetch/pass and what to do on confirm.
  */
-export function useConfigTableModal(): {
-  open: (request: ConfigTableModalRequest) => void;
+export function useVariantsQuantityModal(): {
+  open: (request: VariantsQuantityModalRequest) => void;
   node: ReactNode;
 } {
-  const [request, setRequest] = useState<ConfigTableModalRequest | null>(null);
+  const [request, setRequest] = useState<VariantsQuantityModalRequest | null>(
+    null
+  );
   const open = useCallback(
-    (next: ConfigTableModalRequest) => setRequest(next),
+    (next: VariantsQuantityModalRequest) => setRequest(next),
     []
   );
   const close = useCallback(() => setRequest(null), []);
 
   const node = request ? (
-    <ConfigParamsTableLocalModal
+    <VariantsQuantityLocalModal
       open
       onClose={close}
       onConfirm={(data) => {
@@ -1008,5 +1010,5 @@ export function useConfigTableModal(): {
   return { open, node };
 }
 
-export { ConfigParamsTableModal };
-export default ConfigParamsTableModal;
+export { VariantsQuantityModal };
+export default VariantsQuantityModal;

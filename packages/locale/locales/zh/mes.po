@@ -257,12 +257,6 @@ msgstr "批次号 {0}"
 msgid "Batch number is required"
 msgstr "批次号为必填项"
 
-msgid "Beige"
-msgstr "米色"
-
-msgid "Black"
-msgstr "黑色"
-
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "被 {0} 阻塞"
@@ -270,14 +264,8 @@ msgstr "被 {0} 阻塞"
 msgid "Blocking"
 msgstr "阻塞中"
 
-msgid "Blue"
-msgstr "蓝色"
-
 msgid "Bot verification failed. Please try again."
 msgstr "验证码错误，请重试。"
-
-msgid "Brown"
-msgstr "棕色"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "浏览分包并打印分包标签"
@@ -3860,17 +3848,8 @@ msgstr "忘记打卡下班了？"
 msgid "Go back to operation"
 msgstr "返回操作"
 
-msgid "Gold"
-msgstr "金色"
-
 msgid "Grade created"
 msgstr "已创建等级"
-
-msgid "Gray"
-msgstr "灰色"
-
-msgid "Green"
-msgstr "绿色"
 
 msgid "Group created"
 msgstr "已创建组"
@@ -4142,9 +4121,6 @@ msgstr "日记条目已保存"
 msgid "Kanban created"
 msgstr "已创建看板"
 
-msgid "Khaki"
-msgstr "卡其色"
-
 msgid "Kit"
 msgstr "套件"
 
@@ -4407,9 +4383,6 @@ msgstr "我的薪水"
 msgid "Name"
 msgstr "名称"
 
-msgid "Navy"
-msgstr "藏青色"
-
 msgid "NCR closed"
 msgstr "已关闭NCR"
 
@@ -4657,9 +4630,6 @@ msgstr "操作员执行"
 msgid "Optional"
 msgstr "可选"
 
-msgid "Orange"
-msgstr "橙色"
-
 msgid "Other"
 msgstr "其他"
 
@@ -4777,9 +4747,6 @@ msgstr "退出登录"
 
 msgid "PIN reset successfully"
 msgstr "PIN重置成功"
-
-msgid "Pink"
-msgstr "粉色"
 
 msgid "Planned"
 msgstr "已计划"
@@ -4932,9 +4899,6 @@ msgstr "采购订单未找到"
 msgid "Purchase order submitted for approval"
 msgstr "采购订单已提交待审批"
 
-msgid "Purple"
-msgstr "紫色"
-
 msgid "Qty"
 msgstr "数量"
 
@@ -5012,9 +4976,6 @@ msgstr "记录数量"
 
 msgid "Record step"
 msgstr "记录步骤"
-
-msgid "Red"
-msgstr "红色"
 
 msgid "Redirecting to verification page..."
 msgstr "正在跳转到验证页面..."
@@ -5392,9 +5353,6 @@ msgstr "登录失败。请重试。"
 
 msgid "Signed in as {stationName}"
 msgstr "已登录为 {stationName}"
-
-msgid "Silver"
-msgstr "银色"
 
 msgid "Size"
 msgstr "大小"
@@ -6403,9 +6361,6 @@ msgstr "我们已向您发送了登录链接，请查收。"
 msgid "Welcome"
 msgstr "欢迎"
 
-msgid "White"
-msgstr "白色"
-
 msgid "WIP"
 msgstr "在制品"
 
@@ -6420,9 +6375,6 @@ msgstr "工单"
 
 msgid "Work scheduled at your work centers"
 msgstr "您的工作中心已排程工作"
-
-msgid "Yellow"
-msgstr "黄色"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "您属于多个公司。请选择工作所在的公司。"

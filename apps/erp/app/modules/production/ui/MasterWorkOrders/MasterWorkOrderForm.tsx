@@ -23,14 +23,14 @@ import { useConfigurableItems } from "~/components/Form/Item";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { usePermissions, useUser } from "~/hooks";
 import { deadlineTypes, masterWorkOrderValidator } from "~/modules/production";
-import {
-  toConfigTableValue,
-  useConfigTableModal
-} from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";
 import { useDeadlineTypeLabel } from "~/modules/production/ui/Jobs/jobLabels";
 import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import {
+  toConfigTableValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 
 type MasterWorkOrderFormProps = {
@@ -46,7 +46,7 @@ const MasterWorkOrderForm = ({
   const permissions = usePermissions();
   const { defaults } = useUser();
   const { t } = useLingui();
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
   // Company-scoped attribute-backed items for the qty grid.
   const configurableItemIds = useConfigurableItems();
@@ -81,7 +81,7 @@ const MasterWorkOrderForm = ({
 
   const openConfigTable = () => {
     if (!itemId) return;
-    configModal.open({
+    variantsQuantityModal.open({
       itemId,
       configuration: toConfigTableValue(
         configTableRows,
@@ -168,7 +168,7 @@ const MasterWorkOrderForm = ({
           </HStack>
         </DrawerFooter>
       </ValidatedForm>
-      {configModal.node}
+      {variantsQuantityModal.node}
     </>
   );
 };

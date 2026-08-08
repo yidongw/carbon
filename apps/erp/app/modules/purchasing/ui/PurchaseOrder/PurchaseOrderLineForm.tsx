@@ -62,12 +62,12 @@ import {
 } from "~/hooks";
 import { getSupplierPartPriceBreaks } from "~/modules/items";
 import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
-import {
-  toConfigTableValue,
-  useConfigTableModal
-} from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import {
+  toConfigTableValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { PurchaseOrder, PurchaseOrderLine } from "~/modules/purchasing";
 import {
   isPurchaseOrderLocked,
@@ -362,7 +362,7 @@ const PurchaseOrderLineForm = ({
   const currencyFormatter = useCurrencyFormatter();
   const percentFormatter = usePercentFormatter();
 
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
   const initialConfig = parseInitialConfig(initialValues.configuration);
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
     initialConfig.rows
@@ -408,7 +408,7 @@ const PurchaseOrderLineForm = ({
 
   const openConfigTable = () => {
     if (!itemData.itemId) return;
-    configModal.open({
+    variantsQuantityModal.open({
       itemId: itemData.itemId,
       configuration: toConfigTableValue(
         configTableRows,
@@ -1316,7 +1316,7 @@ const PurchaseOrderLineForm = ({
           </ModalCard>
         </ModalCardProvider>
       </Tabs>
-      {configModal.node}
+      {variantsQuantityModal.node}
       {isEditing && deleteDisclosure.isOpen && (
         <DeletePurchaseOrderLine
           line={initialValues as PurchaseOrderLine}

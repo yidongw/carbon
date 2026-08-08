@@ -52,13 +52,13 @@ import {
   isJobLocked,
   jobValidator
 } from "../../production.models";
-import {
-  toConfigTableValue,
-  useConfigTableModal
-} from "./ConfigParamsTableModal";
 import { getDeadlineIcon } from "./Deadline";
 import { useDeadlineTypeLabel } from "./jobLabels";
 import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+import {
+  toConfigTableValue,
+  useVariantsQuantityModal
+} from "./VariantsQuantityModal";
 
 type JobFormValues = z.infer<typeof jobValidator> & {
   description: string;
@@ -282,7 +282,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     }
   };
 
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
 
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
@@ -308,7 +308,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
     // Creating: the config is an in-memory draft applied back to this form, so
     // use a local modal rather than the overlay system.
-    configModal.open({
+    variantsQuantityModal.open({
       itemId: itemData.itemId,
       configuration: toConfigTableValue(
         configTableRows,
@@ -675,7 +675,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
           )}
         </VStack>
       </Tabs>
-      {configModal.node}
+      {variantsQuantityModal.node}
       {needsPartConfigure &&
         configurationDisclosure.isOpen &&
         configurationParameters && (

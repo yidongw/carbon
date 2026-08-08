@@ -21,8 +21,8 @@ import {
 } from "~/modules/production/configParamsTableColumns";
 import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
-import { useConfigTableModal } from "./ConfigParamsTableModal";
 import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
+import { useVariantsQuantityModal } from "./VariantsQuantityModal";
 
 type ConfigurationParameter = {
   key: string;
@@ -167,7 +167,7 @@ export function ProductionQuantityLinesEditor({
     [setLines]
   );
 
-  const lineConfigModal = useConfigTableModal();
+  const lineVariantsQuantityModal = useVariantsQuantityModal();
 
   const openLineConfig = useCallback(
     (lineKey: string) => {
@@ -175,7 +175,7 @@ export function ProductionQuantityLinesEditor({
       const line = lines.find((l) => l.key === lineKey);
       if (!line) return;
 
-      lineConfigModal.open({
+      lineVariantsQuantityModal.open({
         itemId,
         configuration: getConfigFromEditableLine(line),
         jobId,
@@ -217,7 +217,7 @@ export function ProductionQuantityLinesEditor({
       jobId,
       jobOperationId,
       lines,
-      lineConfigModal,
+      lineVariantsQuantityModal,
       updateLine
     ]
   );
@@ -384,7 +384,7 @@ export function ProductionQuantityLinesEditor({
           <Trans>Add line</Trans>
         </Button>
       ) : null}
-      {lineConfigModal.node}
+      {lineVariantsQuantityModal.node}
     </VStack>
   );
 }

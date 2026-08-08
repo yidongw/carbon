@@ -10,8 +10,8 @@ import type {
   MasterSplitRow
 } from "~/modules/production";
 import {
-  configParamsModalBodyClassName,
-  configParamsModalShellClassName
+  variantsQuantityModalBodyClassName,
+  variantsQuantityModalShellClassName
 } from "../Jobs/configTableShared";
 
 export type SplitBatchOverlayProps = {
@@ -172,7 +172,7 @@ export default function SplitBatchOverlay({
     "h-8 w-24 rounded-md border bg-transparent px-2 text-sm tabular-nums focus:outline-none focus:ring-1";
 
   return (
-    <div className={configParamsModalShellClassName}>
+    <div className={variantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
           <Trans>Split Batch</Trans>
@@ -184,7 +184,7 @@ export default function SplitBatchOverlay({
         ) : null}
       </div>
 
-      <div className={configParamsModalBodyClassName}>
+      <div className={variantsQuantityModalBodyClassName}>
         {rows.length === 0 && addableCells.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             <Trans>Nothing left to split for this work order.</Trans>
