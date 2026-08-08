@@ -13195,6 +13195,9 @@ msgstr "Seleccionar razón de desperdicio"
 msgid "Select source"
 msgstr "Seleccionar origen"
 
+msgid "Select storage unit"
+msgstr "Seleccionar unidad de almacenamiento"
+
 msgid "Select Supplier Status"
 msgstr "Seleccionar Estado del Proveedor"
 

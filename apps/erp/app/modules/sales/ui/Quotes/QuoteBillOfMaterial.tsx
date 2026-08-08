@@ -945,8 +945,8 @@ function MaterialForm({
                 (s) => s.value === itemData.storageUnitId
               )?.label ??
                 (itemData.methodType === "Make to Order"
-                  ? "WIP"
-                  : "Default Storage Unit")}
+                  ? t`WIP`
+                  : t`Default Storage Unit`)}
             </Badge>
             <IconButton
               icon={<LuChevronRight />}
@@ -1009,8 +1009,8 @@ function MaterialForm({
               {itemData.quoteOperationId
                 ? quoteOperations.find(
                     (o) => o.id === itemData.quoteOperationId
-                  )?.description || "Selected Operation"
-                : "First Operation"}
+                  )?.description || t`Selected Operation`
+                : t`First Operation`}
             </Badge>
             <IconButton
               icon={<LuChevronRight />}

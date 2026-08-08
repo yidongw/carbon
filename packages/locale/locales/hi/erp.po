@@ -13196,6 +13196,9 @@ msgstr "विस्थापित कारण चुनें"
 msgid "Select source"
 msgstr "स्रोत चुनें"
 
+msgid "Select storage unit"
+msgstr "भंडारण इकाई चुनें"
+
 msgid "Select Supplier Status"
 msgstr "आपूर्तिकर्ता स्थिति चुनें"
 

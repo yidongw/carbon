@@ -15,6 +15,7 @@ import {
   CreatableCombobox as CreatableComboboxBase,
   useDisclosure
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { MouseEventHandler } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
@@ -265,7 +266,7 @@ function StorageUnit({
   value,
   label,
   helperText,
-  placeholder = "Select storage unit",
+  placeholder,
   isReadOnly,
   isOptional,
   disabled,
@@ -277,6 +278,9 @@ function StorageUnit({
   allowCreate = true,
   onChange
 }: StorageUnitProps) {
+  const { t } = useLingui();
+  const resolvedPlaceholder = placeholder ?? t`Select storage unit`;
+  const resolvedLabel = label ?? t`Storage Unit`;
   const options = useStorageUnitLeafOptions(locationId, itemId);
   const { triggerRef, onCreateOption, node } =
     useNewStorageUnitModal(locationId);
@@ -290,9 +294,9 @@ function StorageUnit({
           name={name}
           value={value ?? undefined}
           options={options}
-          label={label ?? "Storage Unit"}
+          label={resolvedLabel}
           helperText={helperText}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           isReadOnly={readOnly}
           isOptional={isOptional}
           className={className}
@@ -322,7 +326,7 @@ function StorageUnit({
         value={value ?? undefined}
         isReadOnly={readOnly}
         isClearable
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         className={className}
         onClick={onClick}
         onCreateOption={allowCreate ? onCreateOption : undefined}

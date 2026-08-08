@@ -13193,6 +13193,9 @@ msgstr "Wählen Sie den Grund für das Materialabfall"
 msgid "Select source"
 msgstr "Wählen Sie die Quelle"
 
+msgid "Select storage unit"
+msgstr "Lagereinheit auswählen"
+
 msgid "Select Supplier Status"
 msgstr "Lieferantenstatus auswählen"
 

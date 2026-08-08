@@ -1475,7 +1475,7 @@ msgid "Back to traceability"
 msgstr "回到可追溯性"
 
 msgid "Backflush"
-msgstr "反冲"
+msgstr "完工扣料"
 
 msgid "Bad Debts Expense"
 msgstr "坏账损失"
@@ -3150,7 +3150,7 @@ msgid "Default Source"
 msgstr "默认来源"
 
 msgid "Default Storage Unit"
-msgstr "默认存储单位"
+msgstr "默认存储单元"
 
 msgid "Default Unit"
 msgstr "默认单位"
@@ -7942,7 +7942,7 @@ msgid "Finish created"
 msgstr "已创建表面处理"
 
 msgid "Finish To"
-msgstr "完成"
+msgstr "完工至"
 
 msgid "Finished {complete} of {target} units, {unassigned} unassigned"
 msgstr "已完成 {complete}/{target} 个单位，{unassigned} 未分配"
@@ -11761,7 +11761,7 @@ msgid "Published by Carbon"
 msgstr "由 Carbon 发布"
 
 msgid "Pull From"
-msgstr "拉取从"
+msgstr "领料来源"
 
 msgid "Pull from Inventory"
 msgstr "从库存中拉取"
@@ -13193,6 +13193,9 @@ msgstr "选择废料原因"
 
 msgid "Select source"
 msgstr "选择来源"
+
+msgid "Select storage unit"
+msgstr "选择存储单元"
 
 msgid "Select Supplier Status"
 msgstr "选择供应商状态"
