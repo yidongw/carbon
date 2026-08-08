@@ -31,9 +31,9 @@ import {
   isConfigTableOverlaySuccess,
   parseInitialConfigTable
 } from "~/modules/production/configTableOverlay";
-import { useConfigTableModal } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { MethodItemType } from "~/modules/shared/types";
 import { useItems } from "~/stores/items";
 import { path } from "~/utils/path";
@@ -106,7 +106,7 @@ const WarehouseTransferLineForm = ({
     items.find((item) => item.id === initialValues.itemId)?.type ?? "Item"
   );
 
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
   const initialConfig = parseInitialConfigTable(
     initialValues.variantQuantities
   );
@@ -134,7 +134,7 @@ const WarehouseTransferLineForm = ({
     try {
       // Sibling otherLineVariantQuantities omitted — line drawer edits one line.
       await openStyleConfigTableWithInventory({
-        configModal,
+        variantsQuantityModal,
         itemId,
         locationId: warehouseTransfer.fromLocationId,
         storageUnitId: fromStorageUnitId || null,
@@ -288,7 +288,7 @@ const WarehouseTransferLineForm = ({
           </DrawerFooter>
         </ValidatedForm>
       </DrawerContent>
-      {configModal.node}
+      {variantsQuantityModal.node}
     </Drawer>
   );
 };

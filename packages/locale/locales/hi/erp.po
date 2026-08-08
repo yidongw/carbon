@@ -15871,6 +15871,9 @@ msgstr "मूल्यांकन"
 msgid "Variances"
 msgstr "अनियमितताएं"
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "VAT संख्या"
 

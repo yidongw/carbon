@@ -15865,6 +15865,9 @@ msgstr "値"
 msgid "Variances"
 msgstr "変動"
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "VAT番号"
 

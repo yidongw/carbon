@@ -314,16 +314,16 @@ export function getCellKey(rowIndex: number, columnKey: string): string {
 }
 
 /** Modal shell shared by config-table overlays and the local editor modal. */
-export const configParamsModalContentClassName = cn(
+export const variantsQuantityModalContentClassName = cn(
   "flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0",
   "sm:w-fit md:w-fit sm:max-w-[calc(100vw-1.5rem)]",
   "[&>button]:z-20"
 );
 
-export const configParamsModalShellClassName =
+export const variantsQuantityModalShellClassName =
   "flex min-h-0 w-max min-w-full max-w-[calc(100vw-1.5rem)] flex-1 flex-col";
 
-export const configParamsModalBodyClassName =
+export const variantsQuantityModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 /** Job config overlay: keep a stable width while switching Delta/Total tabs. */

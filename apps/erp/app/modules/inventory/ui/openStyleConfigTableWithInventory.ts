@@ -3,8 +3,8 @@ import {
   EMPTY_VARIANT_QUANTITIES,
   type VariantQuantitiesPayload
 } from "~/modules/inventory/styleInventoryConfig";
-import type { useConfigTableModal } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
+import type { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import { path } from "~/utils/path";
 
 async function loadInventoryVariantQuantities(
@@ -37,7 +37,7 @@ async function loadInventoryVariantQuantities(
  * enforced (user can still assign combos up to `maxTotal`).
  */
 export async function openStyleConfigTableWithInventory({
-  configModal,
+  variantsQuantityModal,
   itemId,
   locationId,
   storageUnitId,
@@ -47,7 +47,7 @@ export async function openStyleConfigTableWithInventory({
   maxTotal,
   onConfirm
 }: {
-  configModal: ReturnType<typeof useConfigTableModal>;
+  variantsQuantityModal: ReturnType<typeof useVariantsQuantityModal>;
   itemId: string;
   locationId?: string | null;
   storageUnitId?: string | null;
@@ -77,7 +77,7 @@ export async function openStyleConfigTableWithInventory({
     (orderVariantQuantities as VariantQuantitiesPayload | null | undefined) ??
     inventoryVariantQuantities;
 
-  configModal.open({
+  variantsQuantityModal.open({
     itemId,
     // Combo rows only — modal derives quantity keys from item parameters.
     configuration: configTableRows

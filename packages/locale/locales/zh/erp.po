@@ -15866,6 +15866,9 @@ msgstr "值"
 msgid "Variances"
 msgstr "差异"
 
+msgid "Variants Quantity"
+msgstr "规格数量"
+
 msgid "VAT Number"
 msgstr "增值税编号"
 

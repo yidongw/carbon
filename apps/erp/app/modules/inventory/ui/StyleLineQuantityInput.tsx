@@ -5,9 +5,9 @@ import {
   isConfigTableOverlaySuccess,
   parseInitialConfigTable
 } from "~/modules/production/configTableOverlay";
-import { useConfigTableModal } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { ItemConfigQuantityInput } from "~/modules/production/ui/Jobs/ItemConfigQuantityInput";
+import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import { openStyleConfigTableWithInventory } from "./openStyleConfigTableWithInventory";
 
 type StyleLineQuantityInputProps = {
@@ -61,7 +61,7 @@ export function StyleLineQuantityInput({
   onQuantityChange
 }: StyleLineQuantityInputProps) {
   const { t } = useLingui();
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
   const initialConfig = parseInitialConfigTable(variantQuantities);
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
     initialConfig.rows
@@ -91,7 +91,7 @@ export function StyleLineQuantityInput({
     setOpening(true);
     try {
       await openStyleConfigTableWithInventory({
-        configModal,
+        variantsQuantityModal,
         itemId,
         locationId,
         storageUnitId,
@@ -124,7 +124,7 @@ export function StyleLineQuantityInput({
           openConfigAccessibilityLabel={t`Edit variant quantities`}
         />
       </div>
-      {configModal.node}
+      {variantsQuantityModal.node}
     </>
   );
 }

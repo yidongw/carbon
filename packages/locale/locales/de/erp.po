@@ -15865,6 +15865,9 @@ msgstr "Werte"
 msgid "Variances"
 msgstr "Abweichungen"
 
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "Umsatzsteuer-Identifikationsnummer"
 
