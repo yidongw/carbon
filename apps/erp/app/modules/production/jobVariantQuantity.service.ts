@@ -1,4 +1,5 @@
 import type { Database, Json } from "@carbon/database";
+import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { expandConfigTableToVariantQuantities } from "~/modules/items/itemAttribute.service";
 
@@ -39,9 +40,10 @@ export function isNonEmptyConfigTable(
  * Replace all planned variant quantities for a job and sync `job.quantity`.
  * Absence of a variant = qty 0 (no zero rows stored).
  * Writes run in one Kysely transaction (delete + insert + job update + optional history).
+ * Caller passes `getDatabaseClient()` — do not import database.server here (client graph).
  */
 export async function replaceJobVariantQuantities(
-  _client: Db,
+  db: Kysely<KyselyDatabase>,
   args: {
     jobId: string;
     companyId: string;
@@ -67,9 +69,6 @@ export async function replaceJobVariantQuantities(
 
   const quantity = lines.reduce((sum, l) => sum + Number(l.quantity), 0);
   const now = new Date().toISOString();
-  // Lazy import so unit tests of pure helpers do not open a DB pool.
-  const { getDatabaseClient } = await import("~/services/database.server");
-  const db = getDatabaseClient();
 
   try {
     await db.transaction().execute(async (trx) => {
@@ -237,6 +236,7 @@ async function attachValuesKeys(
 /** Expand a combo/matrix configTable payload into jobVariantQuantity rows. */
 export async function replaceJobVariantQuantitiesFromConfigTable(
   client: Db,
+  db: Kysely<KyselyDatabase>,
   args: {
     jobId: string;
     parentItemId: string;
@@ -259,7 +259,7 @@ export async function replaceJobVariantQuantitiesFromConfigTable(
     return { quantity: 0, error: expanded.error };
   }
 
-  return replaceJobVariantQuantities(client, {
+  return replaceJobVariantQuantities(db, {
     jobId: args.jobId,
     companyId: args.companyId,
     userId: args.userId,
@@ -278,6 +278,7 @@ export async function replaceJobVariantQuantitiesFromConfigTable(
  */
 export async function persistStyleJobConfiguration(
   client: Db,
+  db: Kysely<KyselyDatabase>,
   args: {
     jobId: string;
     parentItemId: string;
@@ -286,7 +287,7 @@ export async function persistStyleJobConfiguration(
     configuration: Record<string, unknown>;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
-  return replaceJobVariantQuantitiesFromConfigTable(client, {
+  return replaceJobVariantQuantitiesFromConfigTable(client, db, {
     jobId: args.jobId,
     parentItemId: args.parentItemId,
     companyId: args.companyId,

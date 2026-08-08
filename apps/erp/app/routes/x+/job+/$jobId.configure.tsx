@@ -11,6 +11,7 @@ import {
   isConfigTableConfiguration,
   persistStyleJobConfiguration
 } from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { path, requestReferrer } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -42,13 +43,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
   if (isConfigTableConfiguration(configuration)) {
-    const replaced = await persistStyleJobConfiguration(client, {
-      jobId,
-      parentItemId: job.data.itemId,
-      companyId,
-      userId,
-      configuration: configuration as Record<string, unknown>
-    });
+    const replaced = await persistStyleJobConfiguration(
+      client,
+      getDatabaseClient(),
+      {
+        jobId,
+        parentItemId: job.data.itemId,
+        companyId,
+        userId,
+        configuration: configuration as Record<string, unknown>
+      }
+    );
     if (replaced.error) {
       throw redirect(
         requestReferrer(request) ?? path.to.job(jobId),

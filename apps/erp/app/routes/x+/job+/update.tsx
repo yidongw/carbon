@@ -13,6 +13,7 @@ import {
   isConfigTableConfiguration,
   persistStyleJobConfiguration
 } from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -266,13 +267,17 @@ export async function action({ request }: ActionFunctionArgs) {
               data: null
             };
           }
-          const replaced = await persistStyleJobConfiguration(client, {
-            jobId: jobRow.id,
-            parentItemId: jobRow.itemId,
-            companyId,
-            userId,
-            configuration: configuration as Record<string, unknown>
-          });
+          const replaced = await persistStyleJobConfiguration(
+            client,
+            getDatabaseClient(),
+            {
+              jobId: jobRow.id,
+              parentItemId: jobRow.itemId,
+              companyId,
+              userId,
+              configuration: configuration as Record<string, unknown>
+            }
+          );
           if (replaced.error) {
             return { error: { message: replaced.error.message }, data: null };
           }

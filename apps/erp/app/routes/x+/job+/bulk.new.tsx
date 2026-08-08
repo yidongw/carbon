@@ -23,6 +23,7 @@ import {
   replaceJobVariantQuantitiesFromConfigTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { getNextSequence } from "~/modules/settings/settings.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
 
@@ -197,6 +198,7 @@ export async function action({ request }: ActionFunctionArgs) {
     if (styleConfigurationForJob) {
       const replaced = await replaceJobVariantQuantitiesFromConfigTable(
         serviceRole,
+        getDatabaseClient(),
         {
           jobId: id,
           parentItemId: jobData.itemId,

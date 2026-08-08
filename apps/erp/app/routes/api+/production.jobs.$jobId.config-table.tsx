@@ -22,6 +22,7 @@ import {
   jobVariantQuantitiesToConfigTable,
   replaceJobVariantQuantitiesFromConfigTable
 } from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -200,17 +201,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const replaced = await replaceJobVariantQuantitiesFromConfigTable(client, {
-    jobId,
-    parentItemId: job.data.itemId,
-    companyId,
-    userId,
-    configuration: merged.configuration,
-    history: {
-      configuration: adjustmentTable,
-      quantity: merged.deltaTotal
+  const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+    client,
+    getDatabaseClient(),
+    {
+      jobId,
+      parentItemId: job.data.itemId,
+      companyId,
+      userId,
+      configuration: merged.configuration,
+      history: {
+        configuration: adjustmentTable,
+        quantity: merged.deltaTotal
+      }
     }
-  });
+  );
   if (replaced.error) {
     return data(
       { ok: false as const, error: replaced.error.message },

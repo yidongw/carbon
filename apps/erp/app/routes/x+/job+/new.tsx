@@ -15,6 +15,7 @@ import {
 } from "~/modules/production/jobVariantQuantity.service";
 import { JobForm } from "~/modules/production/ui/Jobs";
 import type { MethodItemType } from "~/modules/shared";
+import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -81,6 +82,7 @@ export async function action({ request }: ActionFunctionArgs) {
   if (styleConfigTable) {
     const replaced = await replaceJobVariantQuantitiesFromConfigTable(
       getCarbonServiceRole(),
+      getDatabaseClient(),
       {
         jobId: result.data.id,
         parentItemId: data.itemId,
