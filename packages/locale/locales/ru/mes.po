@@ -208,19 +208,19 @@ msgid "Attach File"
 msgstr "Прикрепить файл"
 
 msgid "Attribute not found"
-msgstr ""
+msgstr "Атрибут не найден"
 
 msgid "Attribute recorded successfully"
 msgstr "Атрибут успешно зарегистрирован"
 
 msgid "Attribute set is required"
-msgstr ""
+msgstr "Сетка атрибутов обязательна"
 
 msgid "Attribute set not found"
-msgstr ""
+msgstr "Набор атрибутов не найден"
 
 msgid "Attributes"
-msgstr ""
+msgstr "Атрибуты"
 
 msgid "Audit logging disabled"
 msgstr "З记账审核禁用"
@@ -333,7 +333,7 @@ msgid "Cannot delete a posted shipment"
 msgstr "Невозможно удалить отгруженную поставку"
 
 msgid "Cannot delete a system item attributes set"
-msgstr ""
+msgstr "Невозможно удалить набор атрибутов системы"
 
 msgid "Cannot edit a protected customer type"
 msgstr "Невозможно редактировать защищенный тип клиента"
@@ -342,10 +342,10 @@ msgid "Cannot edit a protected supplier type"
 msgstr "Невозможно редактировать защищенный тип поставщика"
 
 msgid "Cannot edit a system attribute set"
-msgstr ""
+msgstr "Невозможно редактировать системный набор атрибутов"
 
 msgid "Cannot edit a system item attributes set"
-msgstr ""
+msgstr "Невозможно редактировать набор атрибутов системы"
 
 msgid "Cannot edit global material grade"
 msgstr "Невозможно редактировать глобальную материальную степень твердости"
@@ -360,10 +360,10 @@ msgid "Cannot edit global material type"
 msgstr "Невозможно редактировать глобальный тип материала"
 
 msgid "Cannot edit system attribute"
-msgstr ""
+msgstr "Невозможно редактировать системный атрибут"
 
 msgid "Cannot edit system attribute value"
-msgstr ""
+msgstr "Невозможно изменить значение системного атрибута"
 
 msgid "Cannot finish operation"
 msgstr "Невозможно завершить операцию"
@@ -540,19 +540,19 @@ msgid "Create Rework"
 msgstr "Создать повторную обработку"
 
 msgid "Created attribute"
-msgstr ""
+msgstr "Созданное атрибутство"
 
 msgid "Created attribute set"
-msgstr ""
+msgstr "Созданное набор атрибутов"
 
 msgid "Created attribute value"
-msgstr ""
+msgstr "Созданное значение атрибута"
 
 msgid "Created company"
 msgstr "Создана компания"
 
 msgid "Created item attributes set"
-msgstr ""
+msgstr "Созданные атрибуты элемента"
 
 msgid "Created maintenance dispatch"
 msgstr "Созданеи ремонтный вызов"
@@ -628,16 +628,16 @@ msgid "Delete Timecard ({0})"
 msgstr "Удалить табель ({0})"
 
 msgid "Deleted attribute"
-msgstr ""
+msgstr "Удаленный атрибут"
 
 msgid "Deleted attribute set"
-msgstr ""
+msgstr "Удаленная атрибутная группа"
 
 msgid "Deleted attribute value"
 msgstr "Удаленное значение атрибута"
 
 msgid "Deleted item attributes set"
-msgstr ""
+msgstr "Удалены атрибуты элемента"
 
 msgid "Deleted warehouse transfer line"
 msgstr "Удаленная складская транзакция"
@@ -810,13 +810,13 @@ msgid "Error loading attribute categories"
 msgstr "Ошибка загрузки категорий атрибутов"
 
 msgid "Error loading attribute sets"
-msgstr ""
+msgstr "Ошибка загрузки атрибутных наборов"
 
 msgid "Error loading attribute values"
-msgstr ""
+msgstr "Ошибка загрузки значений атрибутов"
 
 msgid "Error loading attributes"
-msgstr ""
+msgstr "Ошибка загрузки атрибутов"
 
 msgid "Error loading console operators"
 msgstr "Ошибка загрузки консольных операторов"
@@ -831,7 +831,7 @@ msgid "Error loading issues"
 msgstr "Ошибка загрузки задач"
 
 msgid "Error loading item attributes sets"
-msgstr ""
+msgstr "Ошибка загрузки атрибутов элементов"
 
 msgid "Error loading item groups"
 msgstr "Ошибка загрузки групп элементов"
@@ -993,10 +993,10 @@ msgid "Failed to create attribute category"
 msgstr "Не удалось создать категорию атрибутов"
 
 msgid "Failed to create attribute set"
-msgstr ""
+msgstr "Не удалось создать набор атрибутов"
 
 msgid "Failed to create attribute value"
-msgstr ""
+msgstr "Не удалось создать значение атрибута"
 
 msgid "Failed to create auth session"
 msgstr "Не удалось создать сессию аутентификации"
@@ -1053,7 +1053,7 @@ msgid "Failed to create invite link"
 msgstr "Не удалось создать ссылку на приглашение"
 
 msgid "Failed to create item attributes set"
-msgstr ""
+msgstr "Не удалось создать набор атрибутов элемента"
 
 msgid "Failed to create journal entry"
 msgstr "Не удалось создать запись в журнале"
@@ -1101,7 +1101,7 @@ msgid "Failed to create purchase order line."
 msgstr "Не удалось создать строку закупочного заказа."
 
 msgid "Failed to create purchase order lines for style variants"
-msgstr ""
+msgstr "Не удалось создать строки закупочного заказа для вариаций стиля"
 
 msgid "Failed to create quality issue"
 msgstr "Не удалось создать质量问题"
@@ -1149,7 +1149,7 @@ msgid "Failed to create sales order line."
 msgstr "Не удалось создать строку продажного заказа."
 
 msgid "Failed to create sales order lines for style variants"
-msgstr ""
+msgstr "Не удалось создать строки продаж для вариаций стиля"
 
 msgid "Failed to create samples"
 msgstr "Не удалось создать образцы"
@@ -1245,10 +1245,10 @@ msgid "Failed to delete association"
 msgstr "Не удалось удалить связь"
 
 msgid "Failed to delete attribute"
-msgstr ""
+msgstr "Не удалось удалить атрибут"
 
 msgid "Failed to delete attribute set"
-msgstr ""
+msgstr "Не удалось удалить набор атрибутов"
 
 msgid "Failed to delete attribute value"
 msgstr "Не удалось удалить значение атрибута"
@@ -1320,7 +1320,7 @@ msgid "Failed to delete issue workflow"
 msgstr "Не удалось удалить рабочий процесс задачи"
 
 msgid "Failed to delete item attributes set"
-msgstr ""
+msgstr "Не удалось удалить установленные атрибуты элемента"
 
 msgid "Failed to delete item group"
 msgstr "Не удалось удалить группу элементов"
@@ -1881,25 +1881,25 @@ msgid "Failed to get asset class id"
 msgstr "Не удалось получить идентификатор класса активов"
 
 msgid "Failed to get assignment id"
-msgstr ""
+msgstr "Не удалось получить идентификатор назначения"
 
 msgid "Failed to get attribute"
 msgstr "Не удалось получить атрибут"
 
 msgid "Failed to get attribute id"
-msgstr ""
+msgstr "Не удалось получить атрибут id"
 
 msgid "Failed to get attribute set"
-msgstr ""
+msgstr "Не удалось получить набор атрибутов"
 
 msgid "Failed to get attribute set id"
-msgstr ""
+msgstr "Не удалось получить идентификатор набора атрибутов"
 
 msgid "Failed to get attribute value"
-msgstr ""
+msgstr "Не удалось получить значение атрибута"
 
 msgid "Failed to get attribute value id"
-msgstr ""
+msgstr "Не удалось получить значение атрибута id"
 
 msgid "Failed to get chart of accounts"
 msgstr "Не удалось получить счета баланса"
@@ -2010,7 +2010,7 @@ msgid "Failed to get issue type"
 msgstr "Не удалось получить тип проблемы"
 
 msgid "Failed to get item attributes set"
-msgstr ""
+msgstr "Не удалось получить установку атрибутов элемента"
 
 msgid "Failed to get item group"
 msgstr "Не удалось получить группу элементов"
@@ -2865,7 +2865,7 @@ msgid "Failed to load storage rules"
 msgstr "Не удалось загрузить правила хранения"
 
 msgid "Failed to load style attributes"
-msgstr ""
+msgstr "Не удалось загрузить атрибуты стилей"
 
 msgid "Failed to load style costing"
 msgstr "Не удалось загрузить стиль ценообразования"
@@ -3147,7 +3147,7 @@ msgid "Failed to save item"
 msgstr "Не удалось сохранить элемент"
 
 msgid "Failed to save job variant quantities"
-msgstr ""
+msgstr "Не удалось сохранить количество вариантов работы"
 
 msgid "Failed to save journal entry"
 msgstr "Не удалось сохранить запись журнала"
@@ -3165,7 +3165,7 @@ msgid "Failed to save section"
 msgstr "Не удалось сохранить раздел"
 
 msgid "Failed to save variant quantities"
-msgstr ""
+msgstr "Не удалось сохранить вариационные количества"
 
 msgid "Failed to search users"
 msgstr "Не удалось найти пользователей"
@@ -3210,7 +3210,7 @@ msgid "Failed to stop event"
 msgstr "Не удалось остановить событие"
 
 msgid "Failed to sync consumable variants"
-msgstr ""
+msgstr "Не удалось синхронизировать варианты расходных материалов"
 
 msgid "Failed to sync procedure"
 msgstr "Не удалось синхронизировать процедуру"
@@ -3249,7 +3249,7 @@ msgid "Failed to update attribute category"
 msgstr "Не удалось обновить категорию атрибута"
 
 msgid "Failed to update attribute set"
-msgstr ""
+msgstr "Не удалось обновить набор атрибутов"
 
 msgid "Failed to update attribute value"
 msgstr "Не удалось обновить значение атрибута"
@@ -3270,7 +3270,7 @@ msgid "Failed to update consumable"
 msgstr "Не удалось обновить расходный материал"
 
 msgid "Failed to update consumable attributes"
-msgstr ""
+msgstr "Не удалось обновить параметры расходных материалов"
 
 msgid "Failed to update consumable costing"
 msgstr "Не удалось обновить затраты наsumeable"
@@ -3408,7 +3408,7 @@ msgid "Failed to update item"
 msgstr "Не удалось обновить элемент"
 
 msgid "Failed to update item attributes set"
-msgstr ""
+msgstr "Не удалось обновить параметры элемента"
 
 msgid "Failed to update item group"
 msgstr "Не удалось обновить группу элементов"
@@ -3573,7 +3573,7 @@ msgid "Failed to update purchase order line"
 msgstr "Не удалось обновить строку заказа на покупку"
 
 msgid "Failed to update purchase order lines for style variants"
-msgstr ""
+msgstr "Не удалось обновить строки заказа на покупку для вариантов стиля"
 
 msgid "Failed to update purchase order payment"
 msgstr "Не удалось обновить оплату заказа покупки"
@@ -3645,7 +3645,7 @@ msgid "Failed to update sales order line"
 msgstr "Не удалось обновить строку заказа на продажи"
 
 msgid "Failed to update sales order lines for style variants"
-msgstr ""
+msgstr "Не удалось обновить строки продаж для вариантов стиля"
 
 msgid "Failed to update sales order payment"
 msgstr "Не удалось обновить оплату заказа на продажи"
@@ -3684,7 +3684,7 @@ msgid "Failed to update storageUnit"
 msgstr "Не удалось обновить(storageUnit)"
 
 msgid "Failed to update style attributes"
-msgstr ""
+msgstr "Не удалось обновить атрибуты стиля"
 
 msgid "Failed to update style costing"
 msgstr "Не удалось обновить стиль затрат"
@@ -4064,7 +4064,7 @@ msgid "Item association not found"
 msgstr "Связь с элементом не найдена"
 
 msgid "Item attributes set not found"
-msgstr ""
+msgstr "Свойства элемента не найдены"
 
 msgid "Item Master"
 msgstr "Карточка номенклатуры"
@@ -4313,7 +4313,7 @@ msgid "Master Work Orders"
 msgstr "Основные производственные заказы"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr ""
+msgstr "Мастер-заказы не могут быть завершены или接收中，请稍候..."
 
 msgid "matches"
 msgstr "соответствует"
@@ -4923,7 +4923,7 @@ msgid "Purchase order line created"
 msgstr "Заказ на покупку строка создана"
 
 msgid "Purchase order lines created"
-msgstr ""
+msgstr "Линии закупочного заказа созданы"
 
 msgid "Purchase order not found"
 msgstr "Заказ не найден"
@@ -5154,7 +5154,7 @@ msgid "Sales order line created"
 msgstr "Линия продажного заказа создана"
 
 msgid "Sales order lines created"
-msgstr ""
+msgstr "Линии продажного заказа созданы"
 
 msgid "Sample recorded"
 msgstr "Запись выполнена"
@@ -5990,13 +5990,13 @@ msgid "Updated API key"
 msgstr "Обновленный API ключ"
 
 msgid "Updated attribute"
-msgstr ""
+msgstr "Обновленный атрибут"
 
 msgid "Updated attribute category "
 msgstr "Обновленная атрибутная категория "
 
 msgid "Updated attribute set"
-msgstr ""
+msgstr "Обновленный набор атрибутов"
 
 msgid "Updated attribute value"
 msgstr "Обновленное значение атрибута"
@@ -6008,7 +6008,7 @@ msgid "Updated consumable"
 msgstr "Обновленный расходник"
 
 msgid "Updated consumable attributes"
-msgstr ""
+msgstr "Обновленные характеристики расходных материалов"
 
 msgid "Updated consumable costing"
 msgstr "Обновленные затраты наsumeables"
@@ -6086,7 +6086,7 @@ msgid "Updated item"
 msgstr "Обновленный элемент"
 
 msgid "Updated item attributes set"
-msgstr ""
+msgstr "Обновлены атрибуты элемента"
 
 msgid "Updated item group"
 msgstr "Обновленная группа элементов"
@@ -6257,7 +6257,7 @@ msgid "Updated storageUnit"
 msgstr "Обновленный(storageUnit)"
 
 msgid "Updated style attributes"
-msgstr ""
+msgstr "Обновленные стили атрибуты"
 
 msgid "Updated style costing"
 msgstr "Обновленный стиль ценообразования"

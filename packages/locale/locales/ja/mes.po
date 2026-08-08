@@ -208,19 +208,19 @@ msgid "Attach File"
 msgstr "ファイルを添付"
 
 msgid "Attribute not found"
-msgstr ""
+msgstr "属性が見つかりません"
 
 msgid "Attribute recorded successfully"
 msgstr "属性が記録されました"
 
 msgid "Attribute set is required"
-msgstr ""
+msgstr "属性セットは必要です"
 
 msgid "Attribute set not found"
-msgstr ""
+msgstr "属性セットが見つかりません"
 
 msgid "Attributes"
-msgstr ""
+msgstr "属性"
 
 msgid "Audit logging disabled"
 msgstr "審査ログ記録が無効化されました"
@@ -333,7 +333,7 @@ msgid "Cannot delete a posted shipment"
 msgstr "登録済みの出荷を削除できません"
 
 msgid "Cannot delete a system item attributes set"
-msgstr ""
+msgstr "システム項目属性セットは削除できません"
 
 msgid "Cannot edit a protected customer type"
 msgstr "保護された顧客タイプは編集できません"
@@ -342,10 +342,10 @@ msgid "Cannot edit a protected supplier type"
 msgstr "保護されたサプライヤータイプは編集できません"
 
 msgid "Cannot edit a system attribute set"
-msgstr ""
+msgstr "システム属性セットは編集できません"
 
 msgid "Cannot edit a system item attributes set"
-msgstr ""
+msgstr "システム項目属性セットは編集できません"
 
 msgid "Cannot edit global material grade"
 msgstr "グローバル素材格階を編集できません"
@@ -360,10 +360,10 @@ msgid "Cannot edit global material type"
 msgstr "グローバル素材タイプを編集できません"
 
 msgid "Cannot edit system attribute"
-msgstr ""
+msgstr "システム属性を編集できません"
 
 msgid "Cannot edit system attribute value"
-msgstr ""
+msgstr "システム属性値を編集できません"
 
 msgid "Cannot finish operation"
 msgstr "操作を終了できません"
@@ -540,19 +540,19 @@ msgid "Create Rework"
 msgstr "再加工を作成"
 
 msgid "Created attribute"
-msgstr ""
+msgstr "作成した属性"
 
 msgid "Created attribute set"
-msgstr ""
+msgstr "作成した属性セット"
 
 msgid "Created attribute value"
-msgstr ""
+msgstr "作成された属性値"
 
 msgid "Created company"
 msgstr "作成した会社"
 
 msgid "Created item attributes set"
-msgstr ""
+msgstr "作成したアイテム属性セット"
 
 msgid "Created maintenance dispatch"
 msgstr "メンテナンス派遣を作成しました"
@@ -628,16 +628,16 @@ msgid "Delete Timecard ({0})"
 msgstr "タイムカードを削除（{0}）"
 
 msgid "Deleted attribute"
-msgstr ""
+msgstr "削除された属性"
 
 msgid "Deleted attribute set"
-msgstr ""
+msgstr "削除された属性セット"
 
 msgid "Deleted attribute value"
 msgstr "削除された属性値"
 
 msgid "Deleted item attributes set"
-msgstr ""
+msgstr "削除されたアイテム属性セット"
 
 msgid "Deleted warehouse transfer line"
 msgstr "削除した倉庫転送行"
@@ -810,13 +810,13 @@ msgid "Error loading attribute categories"
 msgstr "属性カテゴリの読み込みエラー"
 
 msgid "Error loading attribute sets"
-msgstr ""
+msgstr "属性セットの読み込みエラー"
 
 msgid "Error loading attribute values"
-msgstr ""
+msgstr "属性値の読み込みエラー"
 
 msgid "Error loading attributes"
-msgstr ""
+msgstr "属性の読み込みエラー"
 
 msgid "Error loading console operators"
 msgstr "コンソールオペレータの読み込みエラー"
@@ -831,7 +831,7 @@ msgid "Error loading issues"
 msgstr "エラー：問題の読み込みに失敗しました"
 
 msgid "Error loading item attributes sets"
-msgstr ""
+msgstr "アイテム属性セットの読み込みエラー"
 
 msgid "Error loading item groups"
 msgstr "アイテムグループの読み込みエラー"
@@ -993,10 +993,10 @@ msgid "Failed to create attribute category"
 msgstr "属性カテゴリの作成に失敗しました"
 
 msgid "Failed to create attribute set"
-msgstr ""
+msgstr "属性セットの作成に失敗しました"
 
 msgid "Failed to create attribute value"
-msgstr ""
+msgstr "属性値の作成に失敗しました"
 
 msgid "Failed to create auth session"
 msgstr "認証セッションの作成に失敗しました"
@@ -1053,7 +1053,7 @@ msgid "Failed to create invite link"
 msgstr "招待リンクを作成できませんでした"
 
 msgid "Failed to create item attributes set"
-msgstr ""
+msgstr "アイテム属性セットの作成に失敗しました"
 
 msgid "Failed to create journal entry"
 msgstr "journals作成に失敗しました"
@@ -1101,7 +1101,7 @@ msgid "Failed to create purchase order line."
 msgstr "購入注文行の作成に失敗しました。"
 
 msgid "Failed to create purchase order lines for style variants"
-msgstr ""
+msgstr "購入注文行の作成に失敗しました（スタイル変種）"
 
 msgid "Failed to create quality issue"
 msgstr "品質問題の作成に失敗しました"
@@ -1149,7 +1149,7 @@ msgid "Failed to create sales order line."
 msgstr "販売注文行の作成に失敗しました。"
 
 msgid "Failed to create sales order lines for style variants"
-msgstr ""
+msgstr "販売注文行の作成に失敗しました（スタイル変種）"
 
 msgid "Failed to create samples"
 msgstr "サンプルの作成に失敗しました"
@@ -1245,10 +1245,10 @@ msgid "Failed to delete association"
 msgstr "削除に失敗しました"
 
 msgid "Failed to delete attribute"
-msgstr ""
+msgstr "削除に失敗しました"
 
 msgid "Failed to delete attribute set"
-msgstr ""
+msgstr "属性セットの削除に失敗しました"
 
 msgid "Failed to delete attribute value"
 msgstr "削除に失敗しました"
@@ -1320,7 +1320,7 @@ msgid "Failed to delete issue workflow"
 msgstr "削除に失敗しました"
 
 msgid "Failed to delete item attributes set"
-msgstr ""
+msgstr "アイテム属性の削除に失敗しました"
 
 msgid "Failed to delete item group"
 msgstr "アイテムグループの削除に失敗しました"
@@ -1881,25 +1881,25 @@ msgid "Failed to get asset class id"
 msgstr "資産クラスIDを取得できませんでした"
 
 msgid "Failed to get assignment id"
-msgstr ""
+msgstr "割り当てIDを取得できませんでした"
 
 msgid "Failed to get attribute"
 msgstr "属性取得に失敗しました"
 
 msgid "Failed to get attribute id"
-msgstr ""
+msgstr "属性IDを取得できませんでした"
 
 msgid "Failed to get attribute set"
-msgstr ""
+msgstr "属性セットの取得に失敗しました"
 
 msgid "Failed to get attribute set id"
-msgstr ""
+msgstr "属性セットIDを取得できませんでした"
 
 msgid "Failed to get attribute value"
-msgstr ""
+msgstr "属性値取得に失敗しました"
 
 msgid "Failed to get attribute value id"
-msgstr ""
+msgstr "属性値idを取得できませんでした"
 
 msgid "Failed to get chart of accounts"
 msgstr "取引先階層情報の取得に失敗しました"
@@ -2010,7 +2010,7 @@ msgid "Failed to get issue type"
 msgstr "ISSUE TYPE 取得に失敗しました"
 
 msgid "Failed to get item attributes set"
-msgstr ""
+msgstr "アイテム属性の設定を取得できませんでした"
 
 msgid "Failed to get item group"
 msgstr "アイテムグループの取得に失敗しました"
@@ -2865,7 +2865,7 @@ msgid "Failed to load storage rules"
 msgstr "ストレージルールの読み込みに失敗しました"
 
 msgid "Failed to load style attributes"
-msgstr ""
+msgstr "スタイル属性の読み込みに失敗しました"
 
 msgid "Failed to load style costing"
 msgstr "スタイルコストの読み込みに失敗しました"
@@ -3147,7 +3147,7 @@ msgid "Failed to save item"
 msgstr "保存に失敗しました"
 
 msgid "Failed to save job variant quantities"
-msgstr ""
+msgstr "ジョブ変種の数量を保存できませんでした"
 
 msgid "Failed to save journal entry"
 msgstr "journals保存に失敗しました"
@@ -3165,7 +3165,7 @@ msgid "Failed to save section"
 msgstr "セクションの保存に失敗しました"
 
 msgid "Failed to save variant quantities"
-msgstr ""
+msgstr "変更した数量を保存できませんでした"
 
 msgid "Failed to search users"
 msgstr "ユーザー検索に失敗しました"
@@ -3210,7 +3210,7 @@ msgid "Failed to stop event"
 msgstr "イベント停止に失敗しました"
 
 msgid "Failed to sync consumable variants"
-msgstr ""
+msgstr "消費材変種同期に失敗しました"
 
 msgid "Failed to sync procedure"
 msgstr "同期に失敗しました"
@@ -3249,7 +3249,7 @@ msgid "Failed to update attribute category"
 msgstr "属性カテゴリの更新に失敗しました"
 
 msgid "Failed to update attribute set"
-msgstr ""
+msgstr "属性セットの更新に失敗しました"
 
 msgid "Failed to update attribute value"
 msgstr "属性値の更新に失敗しました"
@@ -3270,7 +3270,7 @@ msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
 
 msgid "Failed to update consumable attributes"
-msgstr ""
+msgstr "消費品属性の更新に失敗しました"
 
 msgid "Failed to update consumable costing"
 msgstr "消費材コスト更新に失敗しました"
@@ -3408,7 +3408,7 @@ msgid "Failed to update item"
 msgstr "アイテムの更新に失敗しました"
 
 msgid "Failed to update item attributes set"
-msgstr ""
+msgstr "アイテム属性の更新に失敗しました"
 
 msgid "Failed to update item group"
 msgstr "アイテムグループの更新に失敗しました"
@@ -3573,7 +3573,7 @@ msgid "Failed to update purchase order line"
 msgstr "購入注文行の更新に失敗しました"
 
 msgid "Failed to update purchase order lines for style variants"
-msgstr ""
+msgstr "購入注文行の更新に失敗しました（スタイル変種）"
 
 msgid "Failed to update purchase order payment"
 msgstr "購入注文の支払いを更新できませんでした"
@@ -3645,7 +3645,7 @@ msgid "Failed to update sales order line"
 msgstr "販売注文行の更新に失敗しました"
 
 msgid "Failed to update sales order lines for style variants"
-msgstr ""
+msgstr "販売注文行をスタイル変種で更新できませんでした"
 
 msgid "Failed to update sales order payment"
 msgstr "売上注文の支払いを更新できませんでした"
@@ -3684,7 +3684,7 @@ msgid "Failed to update storageUnit"
 msgstr "ストレージ単位の更新に失敗しました"
 
 msgid "Failed to update style attributes"
-msgstr ""
+msgstr "スタイル属性の更新に失敗しました"
 
 msgid "Failed to update style costing"
 msgstr "スタイルコスト更新に失敗しました"
@@ -4064,7 +4064,7 @@ msgid "Item association not found"
 msgstr "アイテムの関連付けが見つかりません"
 
 msgid "Item attributes set not found"
-msgstr ""
+msgstr "アイテム属性設定が見つかりません"
 
 msgid "Item Master"
 msgstr "品目マスター"
@@ -4313,7 +4313,7 @@ msgid "Master Work Orders"
 msgstr "マスターワークオーダーズ"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr ""
+msgstr "マスターワークオーダーは完成または在庫受入が不可能です。バンドルジョブを完了してください。"
 
 msgid "matches"
 msgstr "が一致"
@@ -4923,7 +4923,7 @@ msgid "Purchase order line created"
 msgstr "購入注文行が作成されました"
 
 msgid "Purchase order lines created"
-msgstr ""
+msgstr "購入注文行が作成されました"
 
 msgid "Purchase order not found"
 msgstr "購入注文が見つかりません"
@@ -5154,7 +5154,7 @@ msgid "Sales order line created"
 msgstr "販売注文行が作成されました"
 
 msgid "Sales order lines created"
-msgstr ""
+msgstr "販売注文行作成"
 
 msgid "Sample recorded"
 msgstr "サンプルが録音されました"
@@ -5990,13 +5990,13 @@ msgid "Updated API key"
 msgstr "更新されたAPIキー"
 
 msgid "Updated attribute"
-msgstr ""
+msgstr "更新された属性"
 
 msgid "Updated attribute category "
 msgstr "更新された属性カテゴリ "
 
 msgid "Updated attribute set"
-msgstr ""
+msgstr "更新された属性セット"
 
 msgid "Updated attribute value"
 msgstr "更新された属性値"
@@ -6008,7 +6008,7 @@ msgid "Updated consumable"
 msgstr "更新済みの消耗品"
 
 msgid "Updated consumable attributes"
-msgstr ""
+msgstr "更新された消耗品属性"
 
 msgid "Updated consumable costing"
 msgstr "更新された消耗品コスト"
@@ -6086,7 +6086,7 @@ msgid "Updated item"
 msgstr "更新された項目"
 
 msgid "Updated item attributes set"
-msgstr ""
+msgstr "更新されたアイテム属性セット"
 
 msgid "Updated item group"
 msgstr "更新された項目グループ"
@@ -6257,7 +6257,7 @@ msgid "Updated storageUnit"
 msgstr "更新されたstorageUnit"
 
 msgid "Updated style attributes"
-msgstr ""
+msgstr "更新されたスタイル属性"
 
 msgid "Updated style costing"
 msgstr "更新されたスタイルコストинг"

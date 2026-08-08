@@ -57,7 +57,7 @@ msgstr "{0} ऑर्डर"
 
 #. placeholder {0}: Math.abs(remaining)
 msgid "{0} over"
-msgstr ""
+msgstr "{0} और"
 
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
@@ -108,7 +108,7 @@ msgid "{name} deleted"
 msgstr "{name} की हटाई गई है"
 
 msgid "{remaining} left"
-msgstr ""
+msgstr "काम में शेष {remaining}"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} अनुमतियाँ"
@@ -164,7 +164,7 @@ msgstr "5MB फ़ाइल सीमा"
 
 #. placeholder {0}: num("reported")
 msgid "A bundle can't be set below its reported quantity ({0})"
-msgstr ""
+msgstr "एक बंडल की सेट किया जाने वाला मात्रा ({0}) से कम नहीं हो सकता"
 
 msgid "A consumable is a physical item used to make a part that can be used across multiple jobs"
 msgstr "एक उपभोग्य एक भौतिक वस्तु है जिसका उपयोग एक भाग बनाने के लिए किया जाता है जिसे कई नौकरियों में उपयोग किया जा सकता है"
@@ -431,7 +431,7 @@ msgid "Add attachments"
 msgstr "संलग्नताएं जोड़ें"
 
 msgid "Add attribute…"
-msgstr ""
+msgstr "अत्रिबर्यट को जोड़ें…"
 
 msgid "Add block"
 msgstr "ब्लॉक जोड़ें"
@@ -697,7 +697,7 @@ msgstr "इस विनियोजन के लिए पहले स्व�
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr ""
+msgstr "एक अत्याधिक संयोजन (मैx {0}) की मात्रा नहीं हो सकती"
 
 msgid "An item cannot be added to itself."
 msgstr "एक आइटम को स्वयं में नहीं जोड़ा जा सकता।"
@@ -952,7 +952,7 @@ msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप API कुंजी को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
 
 msgid "Are you sure you want to delete the assignment {name}?"
-msgstr ""
+msgstr "आपने दिलेली संकल्पना हटाण्यासाठी पुष्टी करून घ्या की आपण {name}चे वित्तीय विनिर्माण हटाण्याची पुष्टी करतात?"
 
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
@@ -1357,7 +1357,7 @@ msgid "Attribute"
 msgstr "विशेषता"
 
 msgid "Attribute not found"
-msgstr ""
+msgstr "सामग्री नहीं पाई गई"
 
 msgid "Attribute recorded successfully"
 msgstr "संरचना सफलतापूर्वक रिकॉर्ड की"
@@ -1366,19 +1366,19 @@ msgid "Attribute sampling standard used to compute lot sample sizes and accept/r
 msgstr "इनबाउंड निरीक्षणों पर लॉट नमूना आकार और स्वीकार/अस्वीकार संख्याओं की गणना करने के लिए उपयोग किया जाने वाला विशेषता नमूनाकरण मानक।"
 
 msgid "Attribute Set"
-msgstr ""
+msgstr "स्थिरांक सेट"
 
 msgid "Attribute set is required"
-msgstr ""
+msgstr "स्थापित गुण सेट का उपयोग करने के लिए इसकी आवश्यकता है"
 
 msgid "Attribute set not found"
-msgstr ""
+msgstr "स्थापित गुण सेट नहीं पाया"
 
 msgid "Attribute Sets"
-msgstr ""
+msgstr "संरचनाएँ"
 
 msgid "Attribute Values"
-msgstr ""
+msgstr "संरचना मूल्ये"
 
 msgid "Attributes"
 msgstr "विशेषताएं"
@@ -1759,7 +1759,7 @@ msgid "Cannot delete a posted shipment"
 msgstr "पोस्ट किए गए डिलीवरी को हटा सकते हैं नहीं"
 
 msgid "Cannot delete a system item attributes set"
-msgstr ""
+msgstr "सिस्टम आइटम संरचना सेट को हटाये नहीं मिलता"
 
 msgid "Cannot edit a protected customer type"
 msgstr "अपने रोका हुआ कास्टमर टाइप को संपादित नहीं कर सकते"
@@ -1768,10 +1768,10 @@ msgid "Cannot edit a protected supplier type"
 msgstr "अपने रोका हुआ विनियमन प्रकार को संपादित नहीं कर सकते"
 
 msgid "Cannot edit a system attribute set"
-msgstr ""
+msgstr "सिस्टम अट्रीबर्ट सेट को संपादित नहीं किया जा सकता"
 
 msgid "Cannot edit a system item attributes set"
-msgstr ""
+msgstr "सिस्टम आइटम संरचना संपादित नहीं की जा सकती"
 
 msgid "Cannot edit global material grade"
 msgstr "ग्लोबल मटेरियल ग्रेड को संपादित नहीं किया जा सकता"
@@ -1786,10 +1786,10 @@ msgid "Cannot edit global material type"
 msgstr "ग्लोबल मटेरियल टाइप को संपादित नहीं किया जा सकता"
 
 msgid "Cannot edit system attribute"
-msgstr ""
+msgstr "सिस्टम अट्रीबर्ट को संपादित नहीं किया जा सकता"
 
 msgid "Cannot edit system attribute value"
-msgstr ""
+msgstr "सिस्टम अट्रीबर्ट वैल्यू को संपादित नहीं किया जा सकता"
 
 msgid "Cannot finish operation"
 msgstr "निर्माण संचालन पूरा नहीं किया जा सकता है"
@@ -2679,13 +2679,13 @@ msgid "Created At"
 msgstr "बनाया गया"
 
 msgid "Created attribute"
-msgstr ""
+msgstr "सृजित गुणवत्ता"
 
 msgid "Created attribute set"
-msgstr ""
+msgstr "सूचना सेट बनाया गया है"
 
 msgid "Created attribute value"
-msgstr ""
+msgstr "सूचना गुण मान值"
 
 msgid "Created By"
 msgstr "द्वारा बनाया गया"
@@ -2719,7 +2719,7 @@ msgid "Created gauge type"
 msgstr "गेज प्रकार बनाया गया"
 
 msgid "Created item attributes set"
-msgstr ""
+msgstr "सृजित आइटम संरचनाएँ सेट"
 
 msgid "Created item group"
 msgstr "आइटम समूह बनाया गया"
@@ -3440,16 +3440,16 @@ msgid "Delete Webhook"
 msgstr "वेबहुक हटाएं"
 
 msgid "Deleted attribute"
-msgstr ""
+msgstr "удалене атрибут"
 
 msgid "Deleted attribute set"
-msgstr ""
+msgstr "удаленा गए प्रतिलिपि सेट"
 
 msgid "Deleted attribute value"
 msgstr "удаленा गए प्रतिकृपा मान"
 
 msgid "Deleted item attributes set"
-msgstr ""
+msgstr "удаленे आइटम संरचनाओं का सेट"
 
 msgid "Deleted warehouse transfer line"
 msgstr "удаленा तरहस्थ सॉफ्टवर क्रमांक"
@@ -3823,10 +3823,10 @@ msgid "Edit Attribute Category"
 msgstr "विशेषता श्रेणी संपादित करें"
 
 msgid "Edit Attribute Set"
-msgstr ""
+msgstr "संरचना सunting placeholders and formatting tags as instructed."
 
 msgid "Edit Attribute Value"
-msgstr ""
+msgstr "संपादित गुण मूल्य"
 
 msgid "Edit Category"
 msgstr "श्रेणी संपादित करें"
@@ -3901,7 +3901,7 @@ msgid "Edit Invite"
 msgstr "इत्याधीन आमंत्रित करें"
 
 msgid "Edit Item Attributes Set"
-msgstr ""
+msgstr "इंटिम इन्सेट के साहस सम्पादन"
 
 msgid "Edit Item Group"
 msgstr "आइटम ग्रुप संपादित करें"
@@ -4330,13 +4330,13 @@ msgid "Error loading attribute categories"
 msgstr "तत्सम प्रपाद लोड करने में विफल हो गए"
 
 msgid "Error loading attribute sets"
-msgstr ""
+msgstr "प्रतीक सेट लोड करणे मुश्किल झाले आहेत"
 
 msgid "Error loading attribute values"
-msgstr ""
+msgstr "प्रतीक के मूल्यों का लोड होने में त्रुटि"
 
 msgid "Error loading attributes"
-msgstr ""
+msgstr "आcharg लोड करने में त्रुटि"
 
 msgid "Error loading console operators"
 msgstr "कंसोल ऑपरेटर्स का लोड होने में गलती हुई"
@@ -4351,7 +4351,7 @@ msgid "Error loading issues"
 msgstr "किसी कार्रवाई को लोड करते समय त्रुटि"
 
 msgid "Error loading item attributes sets"
-msgstr ""
+msgstr "आइटम गुणात्मक सेटों का लोड होता नहीं"
 
 msgid "Error loading item groups"
 msgstr "आइटम ग्रुप लोड करने में त्रुटि"
@@ -4632,10 +4632,10 @@ msgid "External Reference"
 msgstr "बाहरी संदर्भ"
 
 msgid "Fabric"
-msgstr ""
+msgstr "फाइबर"
 
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
-msgstr ""
+msgstr "फाइबर, ट्रिम, आदि — यह वस्तु के परिवर्तन विकल्पों को निर्धारित करते हैं"
 
 msgid "Fail"
 msgstr "विफल"
@@ -4710,10 +4710,10 @@ msgid "Failed to create attribute category"
 msgstr "फलस्वरूप गुण क्लास संस्करण नहीं हो सका"
 
 msgid "Failed to create attribute set"
-msgstr ""
+msgstr "फलस्वरूप गुण सेट की बनाई गई है"
 
 msgid "Failed to create attribute value"
-msgstr ""
+msgstr "फलस्वरूप गुण मान समायोजित नहीं किए जा सके"
 
 msgid "Failed to create auth session"
 msgstr "अध्यात्मिक सत्र की बनावट नहीं की जा पाई"
@@ -4802,7 +4802,7 @@ msgid "Failed to create invite link"
 msgstr "नvide कीलिंक बनाने में असफलता"
 
 msgid "Failed to create item attributes set"
-msgstr ""
+msgstr "फाइल्मेंट इटीम प्रपरेट्स को बनाने में व़िशिष्ट विफल हुआ"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
@@ -4906,7 +4906,7 @@ msgid "Failed to create purchase order line."
 msgstr "पर्चे क्रियारेखा नहीं बनवाई जा सकी।"
 
 msgid "Failed to create purchase order lines for style variants"
-msgstr ""
+msgstr "ग्राहक विकल्पों के खरीद परिमिति बनाना फट गया है"
 
 msgid "Failed to create quality issue"
 msgstr "गैर सफल गुणांक समस्या की तैयारी"
@@ -4954,7 +4954,7 @@ msgid "Failed to create sales order line."
 msgstr "विक्रय आदेश पंक्ति नहीं बनाई जा सकी।"
 
 msgid "Failed to create sales order lines for style variants"
-msgstr ""
+msgstr "स्टाइल वैरिएंट के बिल्ड सॉल्स ऑर्डर लाइनें तैयार करने में फाइल हो गई"
 
 msgid "Failed to create samples"
 msgstr "सैंपल्स की तैयारी में विफलता हुई"
@@ -5064,7 +5064,7 @@ msgid "Failed to deactivate users"
 msgstr "अनुप्रयोगकर्ता की अक्षमता के कारण activate हो नहीं पड़ा"
 
 msgid "Failed to delete account"
-msgstr ""
+msgstr "खाता हटाने में विफल"
 "अ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "फाइल होम工作地点：德里国家首都是：新德里"
@@ -5085,10 +5085,10 @@ msgid "Failed to delete association"
 msgstr "फाइल्ड असोसिएशन को हटाने में वर्द आया है"
 
 msgid "Failed to delete attribute"
-msgstr ""
+msgstr "फाइल्मेंट डिलीट करने में व़ोटा हुआ है"
 
 msgid "Failed to delete attribute set"
-msgstr ""
+msgstr "फलस्वरूप अत्रिิट सेट को हटाया नहीं जा सका"
 
 msgid "Failed to delete attribute value"
 msgstr "फाइल्मेंट वैशिष्ट्य मूल्य को हटाने में फ़मत्री आया।"
@@ -5163,7 +5163,7 @@ msgid "Failed to delete issue workflow"
 msgstr "समस्या प्रक्रिया हटाने में विफल रहा"
 
 msgid "Failed to delete item attributes set"
-msgstr ""
+msgstr "फाइल्ड आइटम प्रपत्र से हटना मिलेना नहीं मिल पाया"
 
 msgid "Failed to delete item group"
 msgstr "हालाँकि इंटम ग्रुप को हटाने में विफल रहा"
@@ -5730,25 +5730,25 @@ msgid "Failed to get asset class id"
 msgstr "असेट क्लास आईडी प्राप्त करने में विफल रहा"
 
 msgid "Failed to get assignment id"
-msgstr ""
+msgstr "फैलाव आईडी प्राप्त करने में फालतू सफलता"
 
 msgid "Failed to get attribute"
 msgstr "गुणांक प्राप्त करने में विफल रहा"
 
 msgid "Failed to get attribute id"
-msgstr ""
+msgstr "फाइल्ड आइड को प्राप्त करने में व़िया हुआ है"
 
 msgid "Failed to get attribute set"
-msgstr ""
+msgstr "फाइल्ड अट्रिबर्यू सेट प्राप्त करने में वसकता हुई"
 
 msgid "Failed to get attribute set id"
-msgstr ""
+msgstr "फाइल्ड अट्रिबर्यू सेट आईडी को प्राप्त करने में वा हुआ है"
 
 msgid "Failed to get attribute value"
-msgstr ""
+msgstr "गुणांक का मूल्य प्राप्त नहीं किया जा सका"
 
 msgid "Failed to get attribute value id"
-msgstr ""
+msgstr "फाइल्ड वैल्यू आईडी प्राप्त करने में फाल्टी"
 
 msgid "Failed to get chart of accounts"
 msgstr "ग्राहक कार्ट ग्रहण नहीं किया जा सका"
@@ -5859,7 +5859,7 @@ msgid "Failed to get issue type"
 msgstr "समस्या प्रकार को अवश्य ही प्राप्त नहीं किया जा सका"
 
 msgid "Failed to get item attributes set"
-msgstr ""
+msgstr "आइटम गुणात्मक सेट प्राप्त करने में व़िया हुआ"
 
 msgid "Failed to get item group"
 msgstr "आइटम ग्रुप प्राप्त करने में विफल रहा"
@@ -6774,7 +6774,7 @@ msgid "Failed to load storage rules"
 msgstr "स्टोरेज नियमों का caricir हो रहा है"
 
 msgid "Failed to load style attributes"
-msgstr ""
+msgstr "stile की लोड होने में फाल्टी हुई"
 
 msgid "Failed to load style costing"
 msgstr "stile ka krishan na ho paya"
@@ -7092,7 +7092,7 @@ msgid "Failed to save item"
 msgstr "आइटम संरक्षित नहीं किया जा सका"
 
 msgid "Failed to save job variant quantities"
-msgstr ""
+msgstr "जॉब वरिएंट की मात्रा सेवन में फाल्टी हो गई"
 
 msgid "Failed to save journal entry"
 msgstr "कार्टेज नोट का संरक्षण विफल रहा"
@@ -7110,7 +7110,7 @@ msgid "Failed to save section"
 msgstr "सेक्शन बचाना फ़लेंदी हो गया"
 
 msgid "Failed to save variant quantities"
-msgstr ""
+msgstr "वेरिएंट की मात्रा बचाने में व रहीं"
 
 msgid "Failed to search users"
 msgstr "अकाउंट खोजना वधित हुआ था"
@@ -7155,7 +7155,7 @@ msgid "Failed to stop event"
 msgstr "अवस्थायों को रटने में व नहीं आया"
 
 msgid "Failed to sync consumable variants"
-msgstr ""
+msgstr "संपादित वेरिएंट्स को सकन में लाना फलताही रहा है"
 
 msgid "Failed to sync procedure"
 msgstr "प्रक्रिया सागन नहीं हो पया"
@@ -7197,13 +7197,13 @@ msgid "Failed to update attribute category"
 msgstr "फाइल अपडेट क्लास संशोधित नहीं किया जा सका"
 
 msgid "Failed to update attribute set"
-msgstr ""
+msgstr "फाइल अपडेट करने में व़ोट आया है संग्रह"
 
 msgid "Failed to update attribute value"
 msgstr "फाइल्ड मूल्य अपडेट होने में विफल रहा"
 
 msgid "Failed to update attributes"
-msgstr ""
+msgstr "अपडेट करने में व़कत हो गए"
 
 msgid "Failed to update avatar"
 msgstr "फाइल अपडेट करने में व़िरह हुआ"
@@ -7230,7 +7230,7 @@ msgid "Failed to update consumable"
 msgstr "गतिविधि अपडेट करने में फाल्टी"
 
 msgid "Failed to update consumable attributes"
-msgstr ""
+msgstr "अनुप्रयोग्य गुणधर्मों का अपडेट विफल रहा"
 
 msgid "Failed to update consumable costing"
 msgstr "अनुपयोगी लागत अपडेट करने में वफ़्दा है"
@@ -7368,7 +7368,7 @@ msgid "Failed to update item"
 msgstr "आइ템 अपडेट करने में वफ़ादरी नहीं की सकई"
 
 msgid "Failed to update item attributes set"
-msgstr ""
+msgstr "आइटम गुणात्मक सेट को अपडेट करने में व़िशिष्ट विफल हो गया है"
 
 msgid "Failed to update item cost"
 msgstr "आइटम लागत अपडेट करने में विफल"
@@ -7539,7 +7539,7 @@ msgid "Failed to update purchase order line"
 msgstr "पर्चेज ऑर्डर पंक्ति को अपडेट करने में वफ़ादारी नहीं की"
 
 msgid "Failed to update purchase order lines for style variants"
-msgstr ""
+msgstr "क्रय आर्डर पंजीकरणों को स्टाइल वैरिएंट्स के लिए अपडेट करने में फालतु आई"
 
 msgid "Failed to update purchase order payment"
 msgstr "किराए अपडेट करने में व़िला"
@@ -7611,7 +7611,7 @@ msgid "Failed to update sales order line"
 msgstr "विक्रय आदेश पंक्ति अपडेट करने में वाया गया"
 
 msgid "Failed to update sales order lines for style variants"
-msgstr ""
+msgstr "विस्तार संग्रहों के बिक्री आरक्षण पंजीकरण में व आया"
 
 msgid "Failed to update sales order payment"
 msgstr "विक्रय ऑर्डर का कलायोगी राशि अपडेट होने में फाल्स हुआ"
@@ -7650,7 +7650,7 @@ msgid "Failed to update storageUnit"
 msgstr "स्टोरेज यूनिट अपडेट करने में वासी हुआ"
 
 msgid "Failed to update style attributes"
-msgstr ""
+msgstr "stile अत्रिब्यूट्स अपडेट करने में वफ़ादार नहीं हो सके"
 
 msgid "Failed to update style costing"
 msgstr "stile की लागत अपडेट होने में फाल्टी रही"
@@ -8068,7 +8068,7 @@ msgid "Gallon"
 msgstr "गैलन"
 
 msgid "Garment"
-msgstr ""
+msgstr "सरंगी"
 
 msgid "Gauge"
 msgstr "गेज"
@@ -8794,13 +8794,13 @@ msgid "Item association not found"
 msgstr "आइटम संबन्ध नहीं मिला"
 
 msgid "Item Attribute Sets"
-msgstr ""
+msgstr "आइटम विशेषता सेट्स"
 
 msgid "Item Attributes"
-msgstr ""
+msgstr "आइटम विशेषताएँ"
 
 msgid "Item attributes set not found"
-msgstr ""
+msgstr "आइटम संरचनाएँ नहीं पाई गई हैं"
 
 msgid "Item filters"
 msgstr "आइ템 फिल्टर्स"
@@ -9539,10 +9539,10 @@ msgid "Master Work Orders"
 msgstr "मास्टर कार्य आदेश"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
-msgstr ""
+msgstr "मॉन्स्टर वर्क ऑर्डर को पूरा नहीं किया जा सकता और इनवेंटर में प्राप्त नहीं किया जा सकता। बन्ड जोब्स को पूरा करें - उन वस्तुओं पर इनवेंटर प्राप्त होती है।"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr ""
+msgstr "मैजर वर्क ऑर्डर को पूरा नहीं किया जा सकता और इनको स्टॉक में प्राप्त भी नहीं किया जा सकता। बल्ड जॉब्स को पूरा करें अन.getOwnPropertyNames.call(obj).join(\"\\n\");"
 
 msgid "Match"
 msgstr "मैच"
@@ -9851,7 +9851,7 @@ msgid "Move"
 msgstr "स्थानांतरित करें"
 
 msgid "Move down"
-msgstr ""
+msgstr "नीचे जाओ"
 
 msgid "Move entities"
 msgstr "संस्थाओं को स्थानांतरित करें"
@@ -9872,7 +9872,7 @@ msgid "Move to Trash"
 msgstr "ट्रैश में स्थानांतरित करें"
 
 msgid "Move up"
-msgstr ""
+msgstr "ऊपर जाएं"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -9976,10 +9976,10 @@ msgid "New Attribute Category"
 msgstr "नई विशेषता श्रेणी"
 
 msgid "New Attribute Set"
-msgstr ""
+msgstr "नई गुण सेट"
 
 msgid "New Attribute Value"
-msgstr ""
+msgstr "नया गुण मूल्य"
 
 msgid "New chat"
 msgstr "नई चैट"
@@ -10033,7 +10033,7 @@ msgid "New Invoice"
 msgstr "नया चालान"
 
 msgid "New Item Attributes Set"
-msgstr ""
+msgstr "नई आइटम संरचनाएँ सेट करें"
 
 msgid "New Item Group"
 msgstr "नया आइटम समूह"
@@ -10216,7 +10216,7 @@ msgid "New Unit of Measure"
 msgstr "नई माप की इकाई"
 
 msgid "New Value"
-msgstr ""
+msgstr "नया मूल्य"
 
 msgid "New Version"
 msgstr "नया संस्करण"
@@ -10311,7 +10311,7 @@ msgid "No attachments."
 msgstr "कोई अनुप्रयोग नहीं।"
 
 msgid "No attributes yet."
-msgstr ""
+msgstr "अभी कोई गुणधर्म नहीं।"
 
 msgid "No available filters"
 msgstr "कोई उपलब्ध फ़िल्टर नहीं"
@@ -10689,7 +10689,7 @@ msgid "Oldest first"
 msgstr "सबसे छोटा से बड़ा"
 
 msgid "On hand"
-msgstr ""
+msgstr "कार्यात उपलब्ध"
 
 msgid "On Hand"
 msgstr "हाथ में"
@@ -10896,7 +10896,7 @@ msgid "Order Date"
 msgstr "ऑर्डर तारीख"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
-msgstr ""
+msgstr "संग्रहों और टाइप्समेनट में प्रतीक के रंग · आका कैसे पढ़े जाते हैं (e.g. रंग · आका)."
 
 msgid "Order Multiple"
 msgstr "ऑर्डर मल्टीपल"
@@ -11796,7 +11796,7 @@ msgid "Purchase order line created"
 msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
 
 msgid "Purchase order lines created"
-msgstr ""
+msgstr "पर्चेज ऑर्डर पंक्तियाँ सृजनात्मक"
 
 msgid "Purchase Order Location"
 msgstr "क्रय आदेश स्थान"
@@ -12102,7 +12102,7 @@ msgid "Receive"
 msgstr "प्राप्त करें"
 
 msgid "Receive {itemReadableId} to Inventory"
-msgstr ""
+msgstr "स्टॉक में {itemReadableId} अनुमोदित करें"
 
 msgid "Receive to Inventory"
 msgstr "इन्वेंटरी में प्राप्त करें"
@@ -12780,7 +12780,7 @@ msgid "Sales order line created"
 msgstr "विक्रय आदेश पंक्ति बनाई गई"
 
 msgid "Sales order lines created"
-msgstr ""
+msgstr "सॉल्स ऑर्डर पंक्तियाँ बनाई गई हैं"
 
 msgid "Sales Order Location"
 msgstr "बिक्रय आदेश स्थान"
@@ -12862,7 +12862,7 @@ msgid "Saved"
 msgstr "बचाया गया"
 
 msgid "Saved bundles ({created} created, {updated} updated)"
-msgstr ""
+msgstr "बनाए गए ({created} बनाये गए, {updated} संशोधित)"
 
 msgid "Saved document layout"
 msgstr "बच्चा हुआ डॉक्युमेंट लायアウト"
@@ -13206,7 +13206,7 @@ msgid "Select values"
 msgstr "चुनें मूल्य"
 
 msgid "Select…"
-msgstr ""
+msgstr "चुनें…"
 
 msgid "Selected"
 msgstr "चयनित"
@@ -13215,7 +13215,7 @@ msgid "Selected Operation"
 msgstr "चयनित ऑपरेशन"
 
 msgid "Selected values become variant SKUs"
-msgstr ""
+msgstr "चयनित मूल्य वेरिएंट स्कयुआएस बनते हैं"
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"
@@ -13654,10 +13654,10 @@ msgid "Skipped"
 msgstr "छोड़ा गया"
 
 msgid "SKU"
-msgstr ""
+msgstr "स्टूकीआर"
 
 msgid "SKU quantities"
-msgstr ""
+msgstr "SKU की मात्रा"
 
 msgid "Soft Deadline"
 msgstr "अंतिम समय"
@@ -13687,7 +13687,7 @@ msgid "Sort Descending"
 msgstr "अवरोही क्रम में सॉर्ट करें"
 
 msgid "Sort Order"
-msgstr ""
+msgstr "सॉर्ट अर्डर"
 
 msgid "sorted ascending"
 msgstr "सॉर्ट किया गया अव?=.*"
@@ -14790,7 +14790,7 @@ msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "यह स्टोरेज प्रकार वर्तमान में {usageCount} स्टोरेज यूनिट{0} द्वारा उपयोग किया जा रहा है।"
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
-msgstr ""
+msgstr "इस स्टाइल में अभी कोई गुणधर्म नहीं है। पहले स्टाइल में गुणधर्म जोड़ें।"
 
 msgid "This updates the theme for all users of the application"
 msgstr "यह एप्लिकेशन के सभी उपयोगकर्ताओं के लिए थीम को अपडेट करता है"
@@ -15125,7 +15125,7 @@ msgid "Triggers"
 msgstr "ट्रिगगर्स"
 
 msgid "Trim"
-msgstr ""
+msgstr "ट्राइम"
 
 msgid "True"
 msgstr "स्वीकार"
@@ -15333,13 +15333,13 @@ msgid "Updated At"
 msgstr "अपडेट किया गया"
 
 msgid "Updated attribute"
-msgstr ""
+msgstr "अपडेट डिटाल्स"
 
 msgid "Updated attribute category "
 msgstr "अपडेट विशेषता क्लास संरचना "
 
 msgid "Updated attribute set"
-msgstr ""
+msgstr "अपडेट विशिष्टता सेट"
 
 msgid "Updated attribute value"
 msgstr "अपडेट दिए गए प्रांत का मूल्य"
@@ -15354,7 +15354,7 @@ msgid "Updated consumable"
 msgstr "अपडेट दिया गया संवर्धन"
 
 msgid "Updated consumable attributes"
-msgstr ""
+msgstr "अपडेट दिए गए परिस्परण के संप्रभावों"
 
 msgid "Updated consumable costing"
 msgstr "अपडेट खर्चित कस्टिंग"
@@ -15432,7 +15432,7 @@ msgid "Updated item"
 msgstr "अपडेट इंजमेंट"
 
 msgid "Updated item attributes set"
-msgstr ""
+msgstr "अपडेट इंटीम प्रियरिटी सेट"
 
 msgid "Updated item group"
 msgstr "अपडेट इंटम ग्रुप"
@@ -15603,7 +15603,7 @@ msgid "Updated storageUnit"
 msgstr "अपडेट डायनामिक स्टोरेज इकाई"
 
 msgid "Updated style attributes"
-msgstr ""
+msgstr "अपडेट डिजाइन सूत्रांक"
 
 msgid "Updated style costing"
 msgstr "अपडेट डिजाइन की लागत"

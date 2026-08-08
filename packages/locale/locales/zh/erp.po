@@ -58,7 +58,7 @@ msgstr "{0} 个订单"
 
 #. placeholder {0}: Math.abs(remaining)
 msgid "{0} over"
-msgstr ""
+msgstr "超过{0}"
 
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
@@ -109,7 +109,7 @@ msgid "{name} deleted"
 msgstr "{name} 已删除"
 
 msgid "{remaining} left"
-msgstr ""
+msgstr "剩余{remaining}"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 个权限"
@@ -4636,7 +4636,7 @@ msgid "Fabric"
 msgstr "面料"
 
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
-msgstr ""
+msgstr "面料, 辅料等——决定此物品可具有的变体选项"
 
 msgid "Fail"
 msgstr "失败"
@@ -4907,7 +4907,7 @@ msgid "Failed to create purchase order line."
 msgstr "创建采购订单行失败。"
 
 msgid "Failed to create purchase order lines for style variants"
-msgstr ""
+msgstr "创建购买订单行失败"
 
 msgid "Failed to create quality issue"
 msgstr "创建质量问题失败"
@@ -4955,7 +4955,7 @@ msgid "Failed to create sales order line."
 msgstr "创建销售订单行失败。"
 
 msgid "Failed to create sales order lines for style variants"
-msgstr ""
+msgstr "创建销售订单行失败"
 
 msgid "Failed to create samples"
 msgstr "创建样品失败"
@@ -6772,7 +6772,7 @@ msgid "Failed to load storage rules"
 msgstr "加载存储规则失败"
 
 msgid "Failed to load style attributes"
-msgstr ""
+msgstr "加载样式属性失败"
 
 msgid "Failed to load style costing"
 msgstr "加载款式成本失败"
@@ -7153,7 +7153,7 @@ msgid "Failed to stop event"
 msgstr "停止事件失败"
 
 msgid "Failed to sync consumable variants"
-msgstr ""
+msgstr "同步消耗件变体失败"
 
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
@@ -7537,7 +7537,7 @@ msgid "Failed to update purchase order line"
 msgstr "采购订单行更新失败"
 
 msgid "Failed to update purchase order lines for style variants"
-msgstr ""
+msgstr "更新购买订单行失败"
 
 msgid "Failed to update purchase order payment"
 msgstr "采购订单付款更新失败"
@@ -7609,7 +7609,7 @@ msgid "Failed to update sales order line"
 msgstr "更新销售订单行失败"
 
 msgid "Failed to update sales order lines for style variants"
-msgstr ""
+msgstr "更新销售订单行失败"
 
 msgid "Failed to update sales order payment"
 msgstr "更新销售订单付款失败"
@@ -7648,7 +7648,7 @@ msgid "Failed to update storageUnit"
 msgstr "更新存储单元失败"
 
 msgid "Failed to update style attributes"
-msgstr ""
+msgstr "更新样式属性失败"
 
 msgid "Failed to update style costing"
 msgstr "更新款式成本失败"
@@ -9537,10 +9537,10 @@ msgid "Master Work Orders"
 msgstr "主工单"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
-msgstr ""
+msgstr "主工作令无法完成或收货到库存。请完成分包工作——这些项目的库存将在分包上收到。"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr ""
+msgstr "完成或收货主工作令失败，请完成分包工作。"
 
 msgid "Match"
 msgstr "匹配"
@@ -10687,7 +10687,7 @@ msgid "Oldest first"
 msgstr "最旧"
 
 msgid "On hand"
-msgstr ""
+msgstr "库存"
 
 msgid "On Hand"
 msgstr "现有数量"
@@ -11794,7 +11794,7 @@ msgid "Purchase order line created"
 msgstr "已创建采购订单行"
 
 msgid "Purchase order lines created"
-msgstr ""
+msgstr "已创建采购订单行"
 
 msgid "Purchase Order Location"
 msgstr "采购订单位置"
@@ -12100,7 +12100,7 @@ msgid "Receive"
 msgstr "接收"
 
 msgid "Receive {itemReadableId} to Inventory"
-msgstr ""
+msgstr "接收{itemReadableId}到库存"
 
 msgid "Receive to Inventory"
 msgstr "接收到库存"
@@ -12778,7 +12778,7 @@ msgid "Sales order line created"
 msgstr "已创建销售订单行"
 
 msgid "Sales order lines created"
-msgstr ""
+msgstr "已创建销售订单行"
 
 msgid "Sales Order Location"
 msgstr "销售订单位置"
@@ -13213,7 +13213,7 @@ msgid "Selected Operation"
 msgstr "已选操作"
 
 msgid "Selected values become variant SKUs"
-msgstr ""
+msgstr "选择的值成为变体SKU"
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"
@@ -13652,10 +13652,10 @@ msgid "Skipped"
 msgstr "跳过"
 
 msgid "SKU"
-msgstr ""
+msgstr "物品编号"
 
 msgid "SKU quantities"
-msgstr ""
+msgstr "库存数量"
 
 msgid "Soft Deadline"
 msgstr "软截止日期"
@@ -13685,7 +13685,7 @@ msgid "Sort Descending"
 msgstr "降序排序"
 
 msgid "Sort Order"
-msgstr ""
+msgstr "排序顺序"
 
 msgid "sorted ascending"
 msgstr "升序排序"
@@ -14788,7 +14788,7 @@ msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "此存储类型当前被{usageCount}个存储单元{0}使用。"
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
-msgstr ""
+msgstr "此款式尚未添加属性，请先添加属性。"
 
 msgid "This updates the theme for all users of the application"
 msgstr "这将为所有应用用户更新主题"
@@ -15601,7 +15601,7 @@ msgid "Updated storageUnit"
 msgstr "已更新存储单元"
 
 msgid "Updated style attributes"
-msgstr ""
+msgstr "已更新样式属性"
 
 msgid "Updated style costing"
 msgstr "已更新款式成本估算"

@@ -57,7 +57,7 @@ msgstr "{0} Bestellungen"
 
 #. placeholder {0}: Math.abs(remaining)
 msgid "{0} over"
-msgstr ""
+msgstr "{0} über"
 
 #. placeholder {0}: fmt(diff)
 msgid "{0} over goal"
@@ -108,7 +108,7 @@ msgid "{name} deleted"
 msgstr "{name} gelöscht"
 
 msgid "{remaining} left"
-msgstr ""
+msgstr "{remaining} übrig"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} Berechtigungen"
@@ -164,7 +164,7 @@ msgstr "5MB Dateigrößenlimit"
 
 #. placeholder {0}: num("reported")
 msgid "A bundle can't be set below its reported quantity ({0})"
-msgstr ""
+msgstr "Ein Bundle kann nicht unter seiner gemeldeten Menge ({0}) gesetzt werden"
 
 msgid "A consumable is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Ein Verbrauchsmaterial ist ein physischer Artikel, der zur Herstellung eines Teils verwendet wird, das über mehrere Aufträge hinweg verwendet werden kann"
@@ -431,7 +431,7 @@ msgid "Add attachments"
 msgstr "Anhänge hinzufügen"
 
 msgid "Add attribute…"
-msgstr ""
+msgstr "Füge Attribut hinzu…"
 
 msgid "Add block"
 msgstr "Füge Blöcke hinzu"
@@ -697,7 +697,7 @@ msgstr "Eine Genehmigungsanfrage existiert bereits für diesen Lieferanten"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr ""
+msgstr "Ein Attribut-Kombinationswert darf nicht über die Schnittmenge (Max.{0}) verfügen."
 
 msgid "An item cannot be added to itself."
 msgstr "Ein Element kann nicht zu sich selbst hinzugefügt werden."
@@ -952,7 +952,7 @@ msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "Sind Sie sicher, dass Sie den API-Schlüssel: {0}? löschen möchten? Dies kann nicht rückgängig gemacht werden."
 
 msgid "Are you sure you want to delete the assignment {name}?"
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie die Zuweisung {name} löschen wollen?"
 
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
@@ -1357,7 +1357,7 @@ msgid "Attribute"
 msgstr "Attribut"
 
 msgid "Attribute not found"
-msgstr ""
+msgstr "Attribut nicht gefunden"
 
 msgid "Attribute recorded successfully"
 msgstr "Attribut erfolgreich aufgezeichnet"
@@ -1366,19 +1366,19 @@ msgid "Attribute sampling standard used to compute lot sample sizes and accept/r
 msgstr "Attribut-Stichprobenstandard zur Berechnung von Losgrößen und Annahme-/Ablehnungszahlen bei Wareneingangsprüfungen."
 
 msgid "Attribute Set"
-msgstr ""
+msgstr "Attributensatz"
 
 msgid "Attribute set is required"
-msgstr ""
+msgstr "Attributensatz ist erforderlich"
 
 msgid "Attribute set not found"
-msgstr ""
+msgstr "Attributensatz nicht gefunden"
 
 msgid "Attribute Sets"
-msgstr ""
+msgstr "Attributengruppen"
 
 msgid "Attribute Values"
-msgstr ""
+msgstr "Attribut-Werte"
 
 msgid "Attributes"
 msgstr "Attribute"
@@ -1759,7 +1759,7 @@ msgid "Cannot delete a posted shipment"
 msgstr "Kann ein veröffentlichtes Lieferverzeichnis nicht löschen"
 
 msgid "Cannot delete a system item attributes set"
-msgstr ""
+msgstr "Kann ein Systemelement-Attributensatz nicht löschen"
 
 msgid "Cannot edit a protected customer type"
 msgstr "Kann ein geschütztes Kunde.typ nicht bearbeiten"
@@ -1768,10 +1768,10 @@ msgid "Cannot edit a protected supplier type"
 msgstr "Kann ein geschütztes Lieferantentyp nicht bearbeiten"
 
 msgid "Cannot edit a system attribute set"
-msgstr ""
+msgstr "Kann ein Systemattributset nicht bearbeiten"
 
 msgid "Cannot edit a system item attributes set"
-msgstr ""
+msgstr "Kann ein Systemelement-Eigenschaften-Satz nicht bearbeiten"
 
 msgid "Cannot edit global material grade"
 msgstr "Kann-global-Materialgrade-nicht-aendern"
@@ -1786,10 +1786,10 @@ msgid "Cannot edit global material type"
 msgstr "Kann-global-Materialietyp-nicht-aendern"
 
 msgid "Cannot edit system attribute"
-msgstr ""
+msgstr "Kann Systemattribut nicht bearbeiten"
 
 msgid "Cannot edit system attribute value"
-msgstr ""
+msgstr "Kann Systemattribut-Wert nicht bearbeiten"
 
 msgid "Cannot finish operation"
 msgstr "Kann die Operation nicht beenden"
@@ -2679,13 +2679,13 @@ msgid "Created At"
 msgstr "Erstellt am"
 
 msgid "Created attribute"
-msgstr ""
+msgstr "Erstellte Attribute"
 
 msgid "Created attribute set"
-msgstr ""
+msgstr "Erstelltes Attributenset"
 
 msgid "Created attribute value"
-msgstr ""
+msgstr "Erstelltes Attributswert"
 
 msgid "Created By"
 msgstr "Erstellt von"
@@ -2719,7 +2719,7 @@ msgid "Created gauge type"
 msgstr "Messgaugetyp erstellt"
 
 msgid "Created item attributes set"
-msgstr ""
+msgstr "Erstellte Artikelattribute gesetzt"
 
 msgid "Created item group"
 msgstr "Artikelgruppe erstellt"
@@ -3440,16 +3440,16 @@ msgid "Delete Webhook"
 msgstr "Webhook löschen"
 
 msgid "Deleted attribute"
-msgstr ""
+msgstr "Löscherter Attribut"
 
 msgid "Deleted attribute set"
-msgstr ""
+msgstr "Löscherter Attributensatz"
 
 msgid "Deleted attribute value"
 msgstr "Löscherter Attributwert"
 
 msgid "Deleted item attributes set"
-msgstr ""
+msgstr "Löschte Item-Eigenschaftenuzuordnungen"
 
 msgid "Deleted warehouse transfer line"
 msgstr "Lagerübertragungszeile gelöscht"
@@ -3823,10 +3823,10 @@ msgid "Edit Attribute Category"
 msgstr "Attributkategorie bearbeiten"
 
 msgid "Edit Attribute Set"
-msgstr ""
+msgstr "Bearbeiten Attributset"
 
 msgid "Edit Attribute Value"
-msgstr ""
+msgstr "Bearbeiten Attributwert"
 
 msgid "Edit Category"
 msgstr "Kategorie bearbeiten"
@@ -3901,7 +3901,7 @@ msgid "Edit Invite"
 msgstr "Bearbeiten Einladung"
 
 msgid "Edit Item Attributes Set"
-msgstr ""
+msgstr "Bearbeiten der Artikelattributengruppe"
 
 msgid "Edit Item Group"
 msgstr "Artikelgruppe bearbeiten"
@@ -4330,13 +4330,13 @@ msgid "Error loading attribute categories"
 msgstr "Fehler beim Laden der Attributskategorien"
 
 msgid "Error loading attribute sets"
-msgstr ""
+msgstr "Fehler beim Laden der Attributsets"
 
 msgid "Error loading attribute values"
-msgstr ""
+msgstr "Fehler throughout Attributwerte"
 
 msgid "Error loading attributes"
-msgstr ""
+msgstr "Fehler throughout Attribute laden"
 
 msgid "Error loading console operators"
 msgstr "Fehler beim Laden der Konsole-Betreiber"
@@ -4351,7 +4351,7 @@ msgid "Error loading issues"
 msgstr "Fehler throughout装卸中出现的问题加载"
 
 msgid "Error loading item attributes sets"
-msgstr ""
+msgstr "Fehler beim Laden der Artikeleigenschaftensets"
 
 msgid "Error loading item groups"
 msgstr "Fehler throughout Itemgruppen laden"
@@ -4632,10 +4632,10 @@ msgid "External Reference"
 msgstr "Externe Referenz"
 
 msgid "Fabric"
-msgstr ""
+msgstr "Folie"
 
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
-msgstr ""
+msgstr "Folie, Borte, usw. – welche Variantenoptionen hat dieses Item"
 
 msgid "Fail"
 msgstr "Fehlgeschlagen"
@@ -4710,10 +4710,10 @@ msgid "Failed to create attribute category"
 msgstr "Fehler beim Erstellen der Attributskategorie"
 
 msgid "Failed to create attribute set"
-msgstr ""
+msgstr "Fehler beim Erstellen der Attributeigenschaften"
 
 msgid "Failed to create attribute value"
-msgstr ""
+msgstr "Fehler beim Erstellen des Attributwerts"
 
 msgid "Failed to create auth session"
 msgstr "Fehler beim Erstellen der Authentifizierungssession"
@@ -4802,7 +4802,7 @@ msgid "Failed to create invite link"
 msgstr "Fehler beim Erstellen des Einladungslinks"
 
 msgid "Failed to create item attributes set"
-msgstr ""
+msgstr "Fehler beim Erstellen der Artikelattributegruppe"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create item group: {0}"
@@ -4906,7 +4906,7 @@ msgid "Failed to create purchase order line."
 msgstr "Fehler beim Erstellen der Lieferanforderungseintrag."
 
 msgid "Failed to create purchase order lines for style variants"
-msgstr ""
+msgstr "Fehler beim Erstellen von Bestellpositionen für Stilvarianten"
 
 msgid "Failed to create quality issue"
 msgstr "Fehler beim Erstellen eines Qualitätsschlages"
@@ -4954,7 +4954,7 @@ msgid "Failed to create sales order line."
 msgstr "Fehler beim Erstellen der Verkaufsauftragsposition."
 
 msgid "Failed to create sales order lines for style variants"
-msgstr ""
+msgstr "Fehler beim Erstellen von Verkaufsbestandteilen für Stilvarianten"
 
 msgid "Failed to create samples"
 msgstr "Fehler beim Erstellen von Proben"
@@ -5082,10 +5082,10 @@ msgid "Failed to delete association"
 msgstr "Fehler beim Löschen der Zuordnung"
 
 msgid "Failed to delete attribute"
-msgstr ""
+msgstr "Fehler beim Löschen des Attributes"
 
 msgid "Failed to delete attribute set"
-msgstr ""
+msgstr "Fehler beim Löschen der Attributeigenschaften"
 
 msgid "Failed to delete attribute value"
 msgstr "Fehler beim Löschen des Attributwerts"
@@ -5160,7 +5160,7 @@ msgid "Failed to delete issue workflow"
 msgstr "Fehler beim Löschen des Problemworkflows"
 
 msgid "Failed to delete item attributes set"
-msgstr ""
+msgstr "Fehler beim Löschen der Artikelattribute"
 
 msgid "Failed to delete item group"
 msgstr "Fehler beim Löschen der Artigruppe"
@@ -5727,25 +5727,25 @@ msgid "Failed to get asset class id"
 msgstr "Fehler: Asset-Klasse-ID konnte nicht abgerufen werden"
 
 msgid "Failed to get assignment id"
-msgstr ""
+msgstr "Fehler beim Abrufen der Zuweisungs-ID"
 
 msgid "Failed to get attribute"
 msgstr "Fehler: Attribut konnte nicht abgerufen werden"
 
 msgid "Failed to get attribute id"
-msgstr ""
+msgstr "Fehler: Attribute-ID konnte nicht geladen werden"
 
 msgid "Failed to get attribute set"
-msgstr ""
+msgstr "Fehler beim Abrufen der Attributeigenschaft"
 
 msgid "Failed to get attribute set id"
-msgstr ""
+msgstr "Fehler: Attribute-ID konnte nicht abgerufen werden"
 
 msgid "Failed to get attribute value"
-msgstr ""
+msgstr "Fehler: Attribut-Wert konnte nicht abgerufen werden"
 
 msgid "Failed to get attribute value id"
-msgstr ""
+msgstr "Fehler: Attribute-Wert-ID konnte nicht abgerufen werden"
 
 msgid "Failed to get chart of accounts"
 msgstr "Fehler beim Abrufen der Kontodarstellung"
@@ -5856,7 +5856,7 @@ msgid "Failed to get issue type"
 msgstr "Fehler beim Abrufen des Problemtyps"
 
 msgid "Failed to get item attributes set"
-msgstr ""
+msgstr "Fehler beim Abrufen der Artikelattribute"
 
 msgid "Failed to get item group"
 msgstr "Fehler beim Abrufen der Artgruppe"
@@ -6771,7 +6771,7 @@ msgid "Failed to load storage rules"
 msgstr "Fehler beim Laden der Speicherregeln"
 
 msgid "Failed to load style attributes"
-msgstr ""
+msgstr "Fehler beim Laden der Stilattribute"
 
 msgid "Failed to load style costing"
 msgstr "Fehler beim Laden des Stilcostings"
@@ -7089,7 +7089,7 @@ msgid "Failed to save item"
 msgstr "Fehler beim Speichern des Artikels"
 
 msgid "Failed to save job variant quantities"
-msgstr ""
+msgstr "Fehler beim Speichern der Jobvariante-Mengen"
 
 msgid "Failed to save journal entry"
 msgstr "Fehler beim Speichern des Journal-Eintrags"
@@ -7107,7 +7107,7 @@ msgid "Failed to save section"
 msgstr "Fehler beim Speichern der Abschnittsdaten"
 
 msgid "Failed to save variant quantities"
-msgstr ""
+msgstr "Fehler beim Speichern der Varianzmenge"
 
 msgid "Failed to search users"
 msgstr "Fehler beim Suchen von Benutzern"
@@ -7152,7 +7152,7 @@ msgid "Failed to stop event"
 msgstr "Fehler beim Stoppen des Events"
 
 msgid "Failed to sync consumable variants"
-msgstr ""
+msgstr "Fehler beim Synchronisieren der Verbrauchsmaterialvarianten"
 
 msgid "Failed to sync procedure"
 msgstr "Fehler beim Synchronisieren des Verfahrens"
@@ -7194,13 +7194,13 @@ msgid "Failed to update attribute category"
 msgstr "Fehler beim Aktualisieren der Attributkategorie"
 
 msgid "Failed to update attribute set"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Attributgruppe"
 
 msgid "Failed to update attribute value"
 msgstr "Fehler beim Aktualisieren des Attributwerts"
 
 msgid "Failed to update attributes"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Attribute"
 
 msgid "Failed to update avatar"
 msgstr "Fehler beim Aktualisieren des Avatars"
@@ -7227,7 +7227,7 @@ msgid "Failed to update consumable"
 msgstr "Fehler beim Aktualisieren des Verbrauchsguts"
 
 msgid "Failed to update consumable attributes"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Verbrauchswerte"
 
 msgid "Failed to update consumable costing"
 msgstr "Fehler beim Aktualisieren der Verbrauchsmaterialkosten"
@@ -7365,7 +7365,7 @@ msgid "Failed to update item"
 msgstr "Fehler beim Aktualisieren des Artikels"
 
 msgid "Failed to update item attributes set"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Artikeleigenschaftensettungs"
 
 msgid "Failed to update item cost"
 msgstr "Fehler beim Aktualisieren der Artikelkosten"
@@ -7536,7 +7536,7 @@ msgid "Failed to update purchase order line"
 msgstr "Fehler beim Aktualisieren der Lieferantenummer"
 
 msgid "Failed to update purchase order lines for style variants"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Bestellpositionen für Stilvarianten"
 
 msgid "Failed to update purchase order payment"
 msgstr "Fehler beim Aktualisieren der Lieferantenzahlung"
@@ -7608,7 +7608,7 @@ msgid "Failed to update sales order line"
 msgstr "Fehler beim Aktualisieren der Verkaufsauftragsposition"
 
 msgid "Failed to update sales order lines for style variants"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Verkaufsauftragspositionen für Stilvarianten"
 
 msgid "Failed to update sales order payment"
 msgstr "Fehler beim Aktualisieren des Verkaufsbestandszahls"
@@ -7647,7 +7647,7 @@ msgid "Failed to update storageUnit"
 msgstr "Fehler beim Aktualisieren des Speicherunites"
 
 msgid "Failed to update style attributes"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Stilattribute"
 
 msgid "Failed to update style costing"
 msgstr "Fehler beim Aktualisieren des Stilpreises"
@@ -8065,7 +8065,7 @@ msgid "Gallon"
 msgstr "Gallone"
 
 msgid "Garment"
-msgstr ""
+msgstr "Kleidungsstück"
 
 msgid "Gauge"
 msgstr "Messinstrument"
@@ -8791,13 +8791,13 @@ msgid "Item association not found"
 msgstr "Artikelzuordnung nicht gefunden"
 
 msgid "Item Attribute Sets"
-msgstr ""
+msgstr "Artikelattributengruppen"
 
 msgid "Item Attributes"
-msgstr ""
+msgstr "Artikelattribute"
 
 msgid "Item attributes set not found"
-msgstr ""
+msgstr "Artikelattributenset nicht gefunden"
 
 msgid "Item filters"
 msgstr "Artikelfilter"
@@ -9536,10 +9536,10 @@ msgid "Master Work Orders"
 msgstr "Hauptarbeitsaufträge"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
-msgstr ""
+msgstr "Meisterarbeiten können nicht abgeschlossen oder an Lager übernommen werden. Führen Sie stattdessen Bundearbeiten aus – das Lager wird bei diesen Artikeln übernommen."
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr ""
+msgstr "Master-Aufträge können nicht abgeschlossen oder an Lager übernommen werden. Führen Sie stattdessen Bunderaufträge aus."
 
 msgid "Match"
 msgstr "Match"
@@ -9848,7 +9848,7 @@ msgid "Move"
 msgstr "Verschieben"
 
 msgid "Move down"
-msgstr ""
+msgstr "Verschieben nach unten"
 
 msgid "Move entities"
 msgstr "Entitäten verschieben"
@@ -9869,7 +9869,7 @@ msgid "Move to Trash"
 msgstr "In den Papierkorb verschieben"
 
 msgid "Move up"
-msgstr ""
+msgstr "Hochverschieben"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -9973,10 +9973,10 @@ msgid "New Attribute Category"
 msgstr "Neue Attributkategorie"
 
 msgid "New Attribute Set"
-msgstr ""
+msgstr "Neues Attributset"
 
 msgid "New Attribute Value"
-msgstr ""
+msgstr "Neuer Attributwert"
 
 msgid "New chat"
 msgstr "Neuer Chat"
@@ -10030,7 +10030,7 @@ msgid "New Invoice"
 msgstr "Neue Rechnung"
 
 msgid "New Item Attributes Set"
-msgstr ""
+msgstr "Neue Artikelattribute Setzen"
 
 msgid "New Item Group"
 msgstr "Neue Artikelgruppe"
@@ -10213,7 +10213,7 @@ msgid "New Unit of Measure"
 msgstr "Neue Maßeinheit"
 
 msgid "New Value"
-msgstr ""
+msgstr "Neuer Wert"
 
 msgid "New Version"
 msgstr "Neue Version"
@@ -10308,7 +10308,7 @@ msgid "No attachments."
 msgstr "Keine Anhänge."
 
 msgid "No attributes yet."
-msgstr ""
+msgstr "Keine Attribute noch."
 
 msgid "No available filters"
 msgstr "Keine verfügbaren Filter"
@@ -10686,7 +10686,7 @@ msgid "Oldest first"
 msgstr "Alte zuerst"
 
 msgid "On hand"
-msgstr ""
+msgstr "Verfügbarkeit"
 
 msgid "On Hand"
 msgstr "Verfügbar"
@@ -10893,7 +10893,7 @@ msgid "Order Date"
 msgstr "Bestelldatum"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
-msgstr ""
+msgstr "Bestellreihenfolge bestimmt, wie Attributwerte in Grids und Chips eingelesen werden (z.B. Farbe · Größe)."
 
 msgid "Order Multiple"
 msgstr "Bestellmenge"
@@ -11793,7 +11793,7 @@ msgid "Purchase order line created"
 msgstr "Bestellposition erstellt"
 
 msgid "Purchase order lines created"
-msgstr ""
+msgstr "Bestellpositionen erstellt"
 
 msgid "Purchase Order Location"
 msgstr "Bestellort"
@@ -12099,7 +12099,7 @@ msgid "Receive"
 msgstr "Empfangen"
 
 msgid "Receive {itemReadableId} to Inventory"
-msgstr ""
+msgstr "Empfange {itemReadableId} im Inventar"
 
 msgid "Receive to Inventory"
 msgstr "In Bestand empfangen"
@@ -12777,7 +12777,7 @@ msgid "Sales order line created"
 msgstr "Verkaufsbestellposition erstellt"
 
 msgid "Sales order lines created"
-msgstr ""
+msgstr "Verkaufsauftragspositionen erstellt"
 
 msgid "Sales Order Location"
 msgstr "Verkaufsauftrag-Standort"
@@ -12859,7 +12859,7 @@ msgid "Saved"
 msgstr "Gespeichert"
 
 msgid "Saved bundles ({created} created, {updated} updated)"
-msgstr ""
+msgstr "gespeicherte Bundles ({created} erstellt, {updated} aktualisiert)"
 
 msgid "Saved document layout"
 msgstr "Speicherter Dokumentenlayout"
@@ -13203,7 +13203,7 @@ msgid "Select values"
 msgstr "Wählen Sie Werte"
 
 msgid "Select…"
-msgstr ""
+msgstr "Wählen Sie…"
 
 msgid "Selected"
 msgstr "Ausgewählt"
@@ -13212,7 +13212,7 @@ msgid "Selected Operation"
 msgstr "Ausgewählter Vorgang"
 
 msgid "Selected values become variant SKUs"
-msgstr ""
+msgstr "Ausgewählte Werte werden Varianter-Standardsarten"
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"
@@ -13651,10 +13651,10 @@ msgid "Skipped"
 msgstr "Übersprungen"
 
 msgid "SKU"
-msgstr ""
+msgstr "Artikelnummer"
 
 msgid "SKU quantities"
-msgstr ""
+msgstr "Artikelquantitäten"
 
 msgid "Soft Deadline"
 msgstr "Fester Frist"
@@ -13684,7 +13684,7 @@ msgid "Sort Descending"
 msgstr "Absteigend sortieren"
 
 msgid "Sort Order"
-msgstr ""
+msgstr "Reihenfolge.Sortierung"
 
 msgid "sorted ascending"
 msgstr "sortiert aufsteigend"
@@ -14787,7 +14787,7 @@ msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Dieser Speichertyp wird derzeit von {usageCount} Speichereinheit{0} verwendet."
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
-msgstr ""
+msgstr "Dieses Stil hat noch keine Attributeauswahlen. Zuerst füge Attribute zum Stil hinzu."
 
 msgid "This updates the theme for all users of the application"
 msgstr "Dies aktualisiert das Design für alle Benutzer der Anwendung"
@@ -15122,7 +15122,7 @@ msgid "Triggers"
 msgstr "Auslöser"
 
 msgid "Trim"
-msgstr ""
+msgstr "Bearbeiten"
 
 msgid "True"
 msgstr "Ja"
@@ -15330,13 +15330,13 @@ msgid "Updated At"
 msgstr "Aktualisiert am"
 
 msgid "Updated attribute"
-msgstr ""
+msgstr "Aktualisierte Attribute"
 
 msgid "Updated attribute category "
 msgstr "Aktualisierte Attribute-Kategorie "
 
 msgid "Updated attribute set"
-msgstr ""
+msgstr "Aktualisierte Attribute-ID"
 
 msgid "Updated attribute value"
 msgstr "Aktualisierte Attributwerte"
@@ -15351,7 +15351,7 @@ msgid "Updated consumable"
 msgstr "Aktualisierte Verbrauchsmaterialien"
 
 msgid "Updated consumable attributes"
-msgstr ""
+msgstr "Aktualisierte Verbrauchsmaterialattribute"
 
 msgid "Updated consumable costing"
 msgstr "Aktualisierte Verbrauchsmaterialkosten"
@@ -15429,7 +15429,7 @@ msgid "Updated item"
 msgstr "Aktualisierte Artikel"
 
 msgid "Updated item attributes set"
-msgstr ""
+msgstr "Aktualisierte Artikelattribute festgelegt"
 
 msgid "Updated item group"
 msgstr "Aktualisierte Artikelgruppe"
@@ -15600,7 +15600,7 @@ msgid "Updated storageUnit"
 msgstr "aktualisiertes Speicherobjekt"
 
 msgid "Updated style attributes"
-msgstr ""
+msgstr "Aktualisierte Stilattribute"
 
 msgid "Updated style costing"
 msgstr "Aktualisierte Stilkosten"
