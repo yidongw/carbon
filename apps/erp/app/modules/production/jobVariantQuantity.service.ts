@@ -36,7 +36,6 @@ export async function replaceJobVariantQuantities(
     lines: Array<{ variantItemId: string; quantity: number }>;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
-  const db = client as any;
   const { jobId, companyId, userId } = args;
 
   const lines = args.lines.filter(
@@ -48,7 +47,7 @@ export async function replaceJobVariantQuantities(
 
   const quantity = lines.reduce((sum, l) => sum + Number(l.quantity), 0);
 
-  const { error: deleteError } = await db
+  const { error: deleteError } = await client
     .from("jobVariantQuantity")
     .delete()
     .eq("jobId", jobId)
@@ -63,15 +62,17 @@ export async function replaceJobVariantQuantities(
   }
 
   if (lines.length > 0) {
-    const { error: insertError } = await db.from("jobVariantQuantity").insert(
-      lines.map((l) => ({
-        jobId,
-        companyId,
-        variantItemId: l.variantItemId,
-        quantity: Number(l.quantity),
-        createdBy: userId
-      }))
-    );
+    const { error: insertError } = await client
+      .from("jobVariantQuantity")
+      .insert(
+        lines.map((l) => ({
+          jobId,
+          companyId,
+          variantItemId: l.variantItemId,
+          quantity: Number(l.quantity),
+          createdBy: userId
+        }))
+      );
     if (insertError) {
       return {
         quantity: 0,
@@ -82,7 +83,7 @@ export async function replaceJobVariantQuantities(
     }
   }
 
-  const { error: jobError } = await db
+  const { error: jobError } = await client
     .from("job")
     .update({
       quantity,
@@ -106,8 +107,7 @@ export async function getJobVariantQuantities(
   jobId: string,
   companyId: string
 ): Promise<{ data: JobVariantQuantityLine[]; error: Error | null }> {
-  const db = client as any;
-  const { data, error } = await db
+  const { data, error } = await client
     .from("jobVariantQuantity")
     .select("variantItemId, quantity")
     .eq("jobId", jobId)
@@ -127,7 +127,7 @@ export async function getJobVariantQuantities(
   if (rows.length === 0) return { data: [], error: null };
 
   const variantIds = rows.map((r) => r.variantItemId);
-  const { data: variants, error: variantError } = await db
+  const { data: variants, error: variantError } = await client
     .from("itemVariant")
     .select("variantItemId, valuesKey")
     .eq("companyId", companyId)
