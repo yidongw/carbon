@@ -9,7 +9,9 @@
 # (/assets/manifest-*.js), which references every route's module + imports.
 #
 # Usage: scripts/fetch-web-assets.sh [BASE_URL]   (default https://app.jilio.xyz)
-set -euo pipefail
+# No `set -e`: greps with no matches (exit 1) are expected and handled inline;
+# we don't want them to abort the whole fetch.
+set -uo pipefail
 
 BASE="${1:-https://app.jilio.xyz}"
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
