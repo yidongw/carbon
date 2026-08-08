@@ -7,8 +7,8 @@ import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service";
-import { getConfigurationParameters } from "~/modules/items/items.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
+import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
@@ -440,11 +440,7 @@ export async function insertBundleWorkOrder(
  * - Legacy matrix: primary list options are quantity columns; the other list
  *   param is a row descriptor. Mapped into valuesKey = code|code|….
  */
-function extractCuttingCells(
-  configuration: unknown,
-  colorParam: { key: string; listOptions: string[] | null } | undefined,
-  sizeParam: { key: string; listOptions: string[] | null } | undefined
-): CuttingCell[] {
+function extractCuttingCells(configuration: unknown): CuttingCell[] {
   const cfg = (configuration ?? null) as ConfigTable | null;
   const table = cfg?.configTable;
   const primaryKeys = cfg?.configTablePrimaryKeys ?? [];
@@ -497,43 +493,21 @@ function extractCuttingCells(
     return cells;
   }
 
-  const sizeOptions = new Set(sizeParam?.listOptions ?? []);
-  const sizeIsPrimary =
-    sizeOptions.size > 0 && primaryKeys.every((k) => sizeOptions.has(k));
-
-  const cells: CuttingCell[] = [];
-  for (const row of table) {
-    const descriptors = Object.fromEntries(
-      Object.entries(row).filter(([k]) => !primaryKeys.includes(k))
-    );
-    for (const key of primaryKeys) {
-      const quantity = Number(row[key]) || 0;
-      if (quantity <= 0) continue;
-
-      let colorCode: string | null;
-      let sizeCode: string | null;
-      if (sizeIsPrimary) {
-        sizeCode = key;
-        colorCode = colorParam
-          ? String(row[colorParam.key] ?? "") || null
-          : null;
-      } else {
-        colorCode = key;
-        sizeCode = sizeParam ? String(row[sizeParam.key] ?? "") || null : null;
-      }
-
-      const valuesKey = [colorCode, sizeCode].filter(Boolean).join("|");
-      if (!valuesKey) continue;
-
-      cells.push(
-        toCell(valuesKey, quantity, {
-          configTable: [{ ...descriptors, [key]: quantity }],
-          configTablePrimaryKeys: [key]
-        })
-      );
-    }
-  }
-  return cells;
+  // Legacy Color×Size (or similar) matrices → combo cells via shared dual-read.
+  return configTableToComboRows(configuration).map((row) => {
+    const cell = toCell(row.valuesKey, row.Quantities, {
+      configTable: [
+        {
+          valuesKey: row.valuesKey,
+          Quantities: row.Quantities,
+          ...(row.label ? { label: row.label } : {})
+        }
+      ],
+      configTablePrimaryKeys: ["Quantities"]
+    });
+    if (row.label) cell.attributeLabel = row.label;
+    return cell;
+  });
 }
 
 export type CuttingSplitBundle = {
@@ -634,23 +608,7 @@ export async function getCuttingSplitProposal(
   const itemId = job.data?.itemId;
   if (!itemId) return { ...empty, masterDisplayId };
 
-  const { parameters } = await getConfigurationParameters(
-    client,
-    itemId,
-    companyId
-  );
-  const colorParam =
-    parameters.find((p) => p.key === "color" || p.key === "Color") ??
-    parameters.find((p) => p.dataType === "list" && p.key !== "valuesKey");
-  const sizeParam = parameters.find(
-    (p) => (p.key === "size" || p.key === "Size") && p !== colorParam
-  );
-
-  const plannedCells = extractCuttingCells(
-    job.data?.configuration,
-    colorParam,
-    sizeParam
-  );
+  const plannedCells = extractCuttingCells(job.data?.configuration);
 
   const cuttingOperationId = await getMasterCuttingOperationId(
     client,
@@ -668,11 +626,7 @@ export async function getCuttingSplitProposal(
       .eq("type", "Production")
       .is("invalidatedAt", null);
     for (const row of cuts.data ?? []) {
-      const rowCells = extractCuttingCells(
-        row.configuration,
-        colorParam,
-        sizeParam
-      );
+      const rowCells = extractCuttingCells(row.configuration);
       if (rowCells.length === 0) {
         aggregateOnlyCut += Number(row.quantity) || 0;
         continue;
@@ -937,11 +891,30 @@ export async function saveBundleSplit(
         op.bundle.colorCode ?? null,
         op.bundle.sizeCode ?? null
       );
+    if (!valuesKey) {
+      return {
+        created: 0,
+        updated: 0,
+        error: new Error("Bundle is missing attribute combo (valuesKey)")
+      };
+    }
     const resolved = await resolveVariantByValuesKey(client, {
       parentItemId: itemId,
       companyId: input.companyId,
       valuesKey
     });
+    if (resolved.error) {
+      return { created: 0, updated: 0, error: resolved.error };
+    }
+    if (!resolved.data || resolved.data === itemId) {
+      return {
+        created: 0,
+        updated: 0,
+        error: new Error(
+          `No variant SKU exists for ${valuesKey.replace(/\|/g, " / ")}`
+        )
+      };
+    }
     const inserted = await insertBundleWorkOrder(client, {
       masterWorkOrderId: input.masterWorkOrderId,
       itemId: resolved.data,

@@ -8,6 +8,7 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
+import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
 import type { AdjustmentMode, Column, Row } from "./configTableShared";
@@ -20,6 +21,7 @@ import {
   getInitialRows,
   getMergeKey,
   hasValue,
+  isStyleComboParameters,
   jobConfigQuantitiesModalBodyClassName,
   jobConfigQuantitiesModalShellClassName,
   mergeRows,
@@ -149,13 +151,28 @@ function JobConfigQuantities({
     [parameters, defaultQuantityLabel, attributesLabel]
   );
 
-  const currentRows = useMemo(
-    () =>
-      initialRows && initialRows.length > 0
-        ? initialRows.map((row) => normalizeRow(row, columns))
-        : [],
-    [initialRows, columns]
-  );
+  const currentRows = useMemo(() => {
+    if (!initialRows || initialRows.length === 0) return [];
+    const isCombo = isStyleComboParameters(parameters);
+    const needsConvert =
+      isCombo &&
+      !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0);
+    const seed = needsConvert
+      ? (configTableToComboRows(
+          {
+            configTable: initialRows,
+            configTablePrimaryKeys: primaryKeys
+          },
+          optionLabels
+        ) as Row[])
+      : initialRows;
+    return seed.map((row) => {
+      const normalized = normalizeRow(row, columns);
+      const label = String(row.label ?? "").trim();
+      if (label) normalized.label = label;
+      return normalized;
+    });
+  }, [initialRows, columns, parameters, primaryKeys, optionLabels]);
 
   const [rows, setRows] = useState<Row[]>(() =>
     currentRows.length > 0
