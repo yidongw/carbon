@@ -28,6 +28,7 @@ import {
   resolveProductionQuantityCanAutoApprove,
   syncProductionQuantityReportApproval
 } from "~/modules/production";
+import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity.service";
 import {
   isProductionQuantityReportId,
   isSupplierQuantityLineId,
@@ -75,15 +76,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       value: operation.id
     })) ?? [];
 
-  // Show the config-params editor only when the job actually carries a
-  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
-  // they're a single fixed color/size — so they report a plain quantity.
-  const jobConfig = job.data?.configuration as
-    | { configTable?: unknown[] }
-    | null
-    | undefined;
-  const jobIsConfigured =
-    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+  // Style/attribute qty editor when the job has planned variant rows (or legacy
+  // configTable dual-read). Bundle jobs have none — plain quantity only.
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  const jobIsConfigured = (planned.data?.length ?? 0) > 0;
 
   const configurationParameters =
     job.data?.itemId && jobIsConfigured

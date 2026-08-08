@@ -6962,9 +6962,6 @@ msgstr "Falhou na recepção do ID da operação"
 msgid "Failed to record attribute"
 msgstr "Falhou ao registrar atributo"
 
-msgid "Failed to record history"
-msgstr "Falhou ao registrar histórico"
-
 msgid "Failed to record rework quantity"
 msgstr "Falhou ao registrar quantidade de rework"
 
@@ -7393,6 +7390,9 @@ msgstr "Falhou na atualização da ferramenta da operação do trabalho"
 
 msgid "Failed to update job status"
 msgstr "Falhou ao atualizar o status da tarefa"
+
+msgid "Failed to update job variant quantities"
+msgstr ""
 
 msgid "Failed to update kanban"
 msgstr "Falhou ao atualizar o kanban"

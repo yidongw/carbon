@@ -1,7 +1,6 @@
 import { assertIsPost, error, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import type { Json } from "@carbon/database";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
@@ -206,7 +205,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     parentItemId: job.data.itemId,
     companyId,
     userId,
-    configuration: merged.configuration
+    configuration: merged.configuration,
+    history: {
+      configuration: adjustmentTable,
+      quantity: merged.deltaTotal
+    }
   });
   if (replaced.error) {
     return data(
@@ -214,24 +217,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
       await flash(
         request,
         error(replaced.error, "Failed to update configuration")
-      )
-    );
-  }
-
-  const historyInsert = await client.from("jobConfigurationHistory").insert({
-    jobId,
-    companyId,
-    configuration: adjustmentTable as unknown as Json,
-    quantity: merged.deltaTotal,
-    createdBy: userId
-  });
-
-  if (historyInsert.error) {
-    return data(
-      { ok: false as const, error: historyInsert.error.message },
-      await flash(
-        request,
-        error(historyInsert.error, "Failed to record history")
       )
     );
   }

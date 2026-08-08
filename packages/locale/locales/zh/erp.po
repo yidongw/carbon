@@ -6963,9 +6963,6 @@ msgstr "未能接收操作ID"
 msgid "Failed to record attribute"
 msgstr "记录属性失败"
 
-msgid "Failed to record history"
-msgstr "记录历史失败"
-
 msgid "Failed to record rework quantity"
 msgstr "记录返工数量失败"
 
@@ -7394,6 +7391,9 @@ msgstr "更新工序工具失败"
 
 msgid "Failed to update job status"
 msgstr "更新作业状态失败"
+
+msgid "Failed to update job variant quantities"
+msgstr ""
 
 msgid "Failed to update kanban"
 msgstr "更新看板失败"

@@ -3050,9 +3050,6 @@ msgstr "Échec de réception de l'ID d'opération"
 msgid "Failed to record attribute"
 msgstr "Échec enregistrement attribut"
 
-msgid "Failed to record history"
-msgstr "Échec enregistrement historique"
-
 msgid "Failed to record rework quantity"
 msgstr "Échec enregistrement quantité de rétroussage"
 
@@ -3433,6 +3430,9 @@ msgstr "Échec de la mise à jour de l'outil d'opération de tâche"
 
 msgid "Failed to update job status"
 msgstr "Échec de mise à jour du statut de la tâche"
+
+msgid "Failed to update job variant quantities"
+msgstr ""
 
 msgid "Failed to update kanban"
 msgstr "Échec de la mise à jour du kanban"

@@ -22621,7 +22621,6 @@ export type Database = {
       masterWorkOrderSplitRow: {
         Row: {
           bundleWorkOrderId: string | null
-          colorCode: string | null
           companyId: string
           createdAt: string
           createdBy: string
@@ -22629,14 +22628,12 @@ export type Database = {
           masterWorkOrderId: string
           productionQuantityReportId: string | null
           quantity: number
-          sizeCode: string | null
           updatedAt: string | null
           updatedBy: string | null
           valuesKey: string | null
         }
         Insert: {
           bundleWorkOrderId?: string | null
-          colorCode?: string | null
           companyId: string
           createdAt?: string
           createdBy: string
@@ -22644,14 +22641,12 @@ export type Database = {
           masterWorkOrderId: string
           productionQuantityReportId?: string | null
           quantity?: number
-          sizeCode?: string | null
           updatedAt?: string | null
           updatedBy?: string | null
           valuesKey?: string | null
         }
         Update: {
           bundleWorkOrderId?: string | null
-          colorCode?: string | null
           companyId?: string
           createdAt?: string
           createdBy?: string
@@ -22659,7 +22654,6 @@ export type Database = {
           masterWorkOrderId?: string
           productionQuantityReportId?: string | null
           quantity?: number
-          sizeCode?: string | null
           updatedAt?: string | null
           updatedBy?: string | null
           valuesKey?: string | null

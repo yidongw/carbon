@@ -7,6 +7,10 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { upsertJobMethod } from "~/modules/production";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  isConfigTableConfiguration,
+  persistStyleJobConfiguration
+} from "~/modules/production/jobVariantQuantity.service";
 import { path, requestReferrer } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -19,30 +23,57 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const configuration = await request.json();
 
-  if (configuration) {
-    const [result, job] = await Promise.all([
-      client
-        .from("job")
-        .update({
-          ...jobConfigurationUpdateFields(configuration),
-          updatedAt: new Date().toISOString(),
-          updatedBy: userId
-        })
-        .eq("id", jobId),
-      client.from("job").select("itemId").eq("id", jobId).single()
-    ]);
+  if (!configuration) {
+    throw new Error("No configuration provided");
+  }
+
+  const job = await client
+    .from("job")
+    .select("itemId")
+    .eq("id", jobId)
+    .single();
+
+  if (job.error || !job.data?.itemId) {
+    throw redirect(
+      requestReferrer(request) ?? path.to.job(jobId),
+      await flash(request, error("Failed to get job"))
+    );
+  }
+
+  // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
+  if (isConfigTableConfiguration(configuration)) {
+    const replaced = await persistStyleJobConfiguration(client, {
+      jobId,
+      parentItemId: job.data.itemId,
+      companyId,
+      userId,
+      configuration: configuration as Record<string, unknown>
+    });
+    if (replaced.error) {
+      throw redirect(
+        requestReferrer(request) ?? path.to.job(jobId),
+        await flash(
+          request,
+          error(replaced.error, "Failed to update job variant quantities")
+        )
+      );
+    }
+  } else {
+    const result = await client
+      .from("job")
+      .update({
+        ...jobConfigurationUpdateFields(
+          configuration as Record<string, unknown>
+        ),
+        updatedAt: new Date().toISOString(),
+        updatedBy: userId
+      })
+      .eq("id", jobId);
 
     if (result.error) {
       throw redirect(
         requestReferrer(request) ?? path.to.job(jobId),
         await flash(request, error("Failed to update job"))
-      );
-    }
-
-    if (job.error) {
-      throw redirect(
-        requestReferrer(request) ?? path.to.job(jobId),
-        await flash(request, error("Failed to get job"))
       );
     }
 
@@ -61,16 +92,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
         await flash(request, error("Failed to update job method"))
       );
     }
-
-    await trigger("recalculate", {
-      type: "jobRequirements",
-      id: jobId,
-      companyId,
-      userId
-    });
-  } else {
-    throw new Error("No configuration provided");
   }
+
+  await trigger("recalculate", {
+    type: "jobRequirements",
+    id: jobId,
+    companyId,
+    userId
+  });
 
   throw redirect(
     requestReferrer(request) ?? path.to.job(jobId),

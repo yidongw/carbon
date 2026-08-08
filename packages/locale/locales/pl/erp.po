@@ -6962,9 +6962,6 @@ msgstr "Nie udało się odebrać identyfikatora operacji"
 msgid "Failed to record attribute"
 msgstr "Nie udało się zarejestrować atrybutu"
 
-msgid "Failed to record history"
-msgstr "Nie udało się zarejestrować historii"
-
 msgid "Failed to record rework quantity"
 msgstr "Niedostępna do zapisu ilość naprawy"
 
@@ -7393,6 +7390,9 @@ msgstr "Nie udało się zaktualizować narzędzia operacji zadania"
 
 msgid "Failed to update job status"
 msgstr "Nie udało się zaktualizować stanu zadania"
+
+msgid "Failed to update job variant quantities"
+msgstr ""
 
 msgid "Failed to update kanban"
 msgstr "Nie udało sięaktualizować kabanu"

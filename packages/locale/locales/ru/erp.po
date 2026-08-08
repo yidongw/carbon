@@ -6962,9 +6962,6 @@ msgstr "Не удалось получить идентификатор опер
 msgid "Failed to record attribute"
 msgstr "Не удалось записать атрибут"
 
-msgid "Failed to record history"
-msgstr "Не удалось записать историю"
-
 msgid "Failed to record rework quantity"
 msgstr "Не удалось записать количество переработки"
 
@@ -7393,6 +7390,9 @@ msgstr "Не удалось обновить инструмент операци
 
 msgid "Failed to update job status"
 msgstr "Не удалось обновить статус задачи"
+
+msgid "Failed to update job variant quantities"
+msgstr ""
 
 msgid "Failed to update kanban"
 msgstr "Не удалось обновить канбан"

@@ -4,3 +4,5 @@
 -- model fully replaces the color/size pair here. No view references these columns.
 ALTER TABLE "masterWorkOrderSplitRow" DROP COLUMN IF EXISTS "colorCode";
 ALTER TABLE "masterWorkOrderSplitRow" DROP COLUMN IF EXISTS "sizeCode";
+
+NOTIFY pgrst, 'reload schema';

@@ -6891,8 +6891,8 @@ msgid "Failed to notify user"
 msgstr "Fallito avviso utente"
 
 msgid "Failed to parse claims"
-msgstr "Impossibile analizzare le rivendicazioni"
-"Fallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
+msgstr ""
+"Impossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
 "\n"
 "Fallito nel parsing delle pretese"
 
@@ -6900,8 +6900,8 @@ msgid "Failed to parse permissions"
 msgstr "Impossibile analizzare i permessi"
 
 msgid "Failed to parse procedure content"
-msgstr "Impossibile analizzare il contenuto della procedura"
-"Fallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
+msgstr ""
+"Impossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
 "失败于解析程序内容"
 
 msgid "Failed to parse quality document content"
@@ -6911,8 +6911,8 @@ msgid "Failed to parse training content"
 msgstr "Impossibile analizzare il contenuto del training"
 
 msgid "Failed to parse updates"
-msgstr "Impossibile analizzare gli aggiornamenti"
-"Fallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
+msgstr ""
+"Impossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
 "Fallito nel parsingaggiornamenti"
 
 msgid "Failed to pick line"
@@ -6968,9 +6968,6 @@ msgstr "Fallito nel ricevere un ID operazione"
 
 msgid "Failed to record attribute"
 msgstr "Impossibile registrare l'attributo"
-
-msgid "Failed to record history"
-msgstr "Impossibile registrare la storia"
 
 msgid "Failed to record rework quantity"
 msgstr "Impossibile registrare la quantità di rimanufacturing"
@@ -7400,6 +7397,9 @@ msgstr "Fallito aggiornamento strumento operazione lavoro"
 
 msgid "Failed to update job status"
 msgstr "Fallito aggiornamento stato lavoro"
+
+msgid "Failed to update job variant quantities"
+msgstr ""
 
 msgid "Failed to update kanban"
 msgstr "Fallito aggiornamento kanban"
@@ -14718,8 +14718,8 @@ msgid "Theme Color"
 msgstr "Colore Tema"
 
 msgid "There are more shipped than ordered"
-msgstr "Ci sono più articoli spediti che ordinati"
-"Ci sono più articoli spediti rispetto ai订正： \n"
+msgstr ""
+"Ci sono più articoli spediti che ordinatiCi sono più articoli spediti rispetto ai订正： \n"
 "Ci sono più articoli spediti rispetto a quelli ordinati"
 
 msgid "There are no active supplier quotes to compare for this RFQ."

@@ -145,6 +145,9 @@ const JobProperties = ({
           parameters: parameters.data ?? [],
           groups: groups.data ?? []
         });
+      } else {
+        // Clear sticky state when switching to a non-attribute item.
+        setConfigurationParameters(null);
       }
     });
   }, [routeData?.job?.itemId]);
