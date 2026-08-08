@@ -503,7 +503,6 @@ const PurchaseOrderLineForm = ({
               .select("attributeValueId")
               .eq("itemId", itemId)
               .eq("companyId", company.id)
-              .in("attributeId", ["iat_color", "iat_size"])
               .limit(1)
           ]);
 

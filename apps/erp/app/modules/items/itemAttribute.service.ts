@@ -1432,14 +1432,15 @@ export async function expandConfigTableToVariantQuantities(
 
     const cells: Array<{ valuesKey: string; quantity: number }> = [];
 
+    const hasComboRows = table.some(
+      (row) =>
+        typeof row.valuesKey === "string" &&
+        String(row.valuesKey).trim().length > 0
+    );
     const isComboFlat =
-      primaryKeys.length === 1 &&
-      primaryKeys[0] === "Quantities" &&
-      table.some(
-        (row) =>
-          typeof row.valuesKey === "string" &&
-          String(row.valuesKey).trim().length > 0
-      );
+      hasComboRows &&
+      (primaryKeys.length === 0 ||
+        (primaryKeys.length === 1 && primaryKeys[0] === "Quantities"));
 
     if (isComboFlat) {
       for (const row of table) {

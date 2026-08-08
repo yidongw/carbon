@@ -216,6 +216,14 @@ export type ConfigParamsTableModalProps = {
    * original total instead, and the plan cap doesn't block confirming.
    */
   isEditingReport?: boolean;
+  /** Hard cap on the grid total (e.g. selected transfer source on-hand). */
+  maxTotal?: number;
+  /**
+   * When false, still show click-to-fill reference hints but do not block
+   * Confirm when a cell exceeds its hint (fungible Style: hints are 0).
+   * Defaults to true.
+   */
+  enforceReferenceCaps?: boolean;
 } & Omit<OverlayFormInjectedProps, "fetcher" | "action" | "confirmMode"> & {
     // Optional so the same content can render as a plain local modal (client
     // confirm) without the overlay's submit fetcher.
@@ -234,6 +242,8 @@ function ConfigParamsTableModal({
   jobDisplayId,
   optionLabels: rawOptionLabels,
   isEditingReport,
+  maxTotal,
+  enforceReferenceCaps = true,
   onDismiss,
   action: formAction,
   fetcher,
@@ -475,8 +485,13 @@ function ConfigParamsTableModal({
   // own quantity already counts against it, so the calc is always "over".
   const exceedsPlan = !isEditingReport && (overPlan || planRemaining < 0);
   // Mark the quantity cell red for every row whose aggregate exceeds its plan.
+  // Matrix mode with inventory/plan hints: any quantity cell above its
+  // reference cap blocks confirm (production splitMode uses flat exceedsPlan).
+  let exceedsReference = false;
   const overCellKeys = new Set<string>();
   if (flat) {
+    // Mark the quantity cell red for every row whose color/size aggregate exceeds
+    // its plan (same as Split Batch).
     rows.forEach((r, i) => {
       const k = isCombo
         ? String(r.valuesKey ?? "").trim()
@@ -489,7 +504,23 @@ function ConfigParamsTableModal({
         overCellKeys.add(getCellKey(i, "Quantities"));
       }
     });
+  } else if (hasReferences && enforceReferenceCaps) {
+    rows.forEach((row, rowIndex) => {
+      const refs = referenceByRowIndex?.[rowIndex] ?? {};
+      for (const col of columns) {
+        if (col.type !== "quantity") continue;
+        const entered = Number(row[col.key]) || 0;
+        const cap = refs[col.key];
+        if (cap !== undefined && entered > cap) {
+          exceedsReference = true;
+          overCellKeys.add(getCellKey(rowIndex, col.key));
+        }
+      }
+    });
   }
+  const exceedsMax =
+    (flat ? exceedsPlan : exceedsReference) ||
+    (maxTotal != null && total > maxTotal);
   const gridInvalidCells =
     overCellKeys.size > 0
       ? new Set([...invalidCells, ...overCellKeys])
@@ -514,8 +545,9 @@ function ConfigParamsTableModal({
     ]);
 
   const handleSubmit = () => {
-    // Can't confirm while the report exceeds its config-param plan.
-    if (flat && exceedsPlan) return;
+    // Can't confirm while any color×size cell exceeds its reference cap
+    // (production plan remaining, or inventory on-hand for transfers).
+    if (exceedsMax) return;
     const normalizedRows = rows.map((row) => normalizeRow(row, gridColumns));
     const populatedRows = normalizedRows
       .map((row, rowIndex) => ({ row, rowIndex }))
@@ -730,6 +762,25 @@ function ConfigParamsTableModal({
             </span>
           ) : null}
         </HStack>
+      ) : maxTotal != null && total > maxTotal ? (
+        <span className="text-sm text-amber-600 dark:text-amber-500">
+          <Trans>Exceeds available</Trans>
+          {` (${maxTotal})`}
+        </span>
+      ) : maxTotal != null ? (
+        <span className="text-sm text-muted-foreground">
+          <Trans>Available</Trans>
+          {`: `}
+          <strong className="tabular-nums text-foreground">{maxTotal}</strong>
+        </span>
+      ) : hasReferences ? (
+        exceedsReference ? (
+          <span className="text-sm text-amber-600 dark:text-amber-500">
+            <Trans>Exceeds available</Trans>
+          </span>
+        ) : (
+          <span />
+        )
       ) : (
         <span />
       )}
@@ -742,8 +793,7 @@ function ConfigParamsTableModal({
           variant="primary"
           isLoading={fetcher ? fetcher.state !== "idle" : false}
           isDisabled={
-            (fetcher ? fetcher.state !== "idle" : false) ||
-            (flat && exceedsPlan)
+            (fetcher ? fetcher.state !== "idle" : false) || exceedsMax
           }
           onClick={handleSubmit}
         >
@@ -811,10 +861,28 @@ export function buildConfigEditorRows({
     referenceContext,
     prefillFromReference
   });
-  return {
-    initialRows: editor.rows,
-    referenceByRowIndex: editor.referenceByRowIndex
-  };
+  if (editor.rows.length > 0) {
+    return {
+      initialRows: editor.rows,
+      referenceByRowIndex: editor.referenceByRowIndex
+    };
+  }
+
+  // Empty tagged inventory / fungible Style: no original rows, but we still want
+  // click-to-fill hints of 0 on the default parameter rows.
+  const { primaryParam, columns } = buildColumns(parameters, "Quantities");
+  const seed =
+    configTable && configTable.length > 0
+      ? configTable.map((row) => normalizeRow(row, columns))
+      : getInitialRows(parameters, primaryParam, columns);
+  const zeroRefs = seed.map(() => {
+    const refs: Record<string, number> = {};
+    for (const col of columns) {
+      if (col.type === "quantity") refs[col.key] = 0;
+    }
+    return refs;
+  });
+  return { initialRows: seed, referenceByRowIndex: zeroRefs };
 }
 
 /** Endpoint URL carrying only the fetch keys (ids) — never the draft config. */
@@ -858,7 +926,9 @@ export function ConfigParamsTableLocalModal({
   prefillFromReference = false,
   splitMode = false,
   jobDisplayId,
-  isEditingReport
+  isEditingReport,
+  maxTotal,
+  enforceReferenceCaps = true
 }: {
   open: boolean;
   onClose: () => void;
@@ -875,6 +945,8 @@ export function ConfigParamsTableLocalModal({
   splitMode?: boolean;
   jobDisplayId?: string | null;
   isEditingReport?: boolean;
+  maxTotal?: number;
+  enforceReferenceCaps?: boolean;
 }) {
   const fetcher = useFetcher<ItemConfigTableOverlayLoaderData | null>();
   const load = useRef(fetcher.load);
@@ -920,6 +992,8 @@ export function ConfigParamsTableLocalModal({
             splitMode={splitMode}
             jobDisplayId={jobDisplayId ?? data.itemReadableId}
             isEditingReport={isEditingReport}
+            maxTotal={maxTotal}
+            enforceReferenceCaps={enforceReferenceCaps}
             confirmMode="client"
             onConfirmSuccess={onConfirm}
             onDismiss={onClose}
@@ -964,6 +1038,13 @@ type ConfigTableModalRequest = {
   jobDisplayId?: string | null;
   /** Editing an existing report — footer shows the delta, not plan remaining. */
   isEditingReport?: boolean;
+  /** Hard cap on the grid total (e.g. selected transfer source on-hand). */
+  maxTotal?: number;
+  /**
+   * When false, show reference hints but do not block Confirm on cell exceed.
+   * Defaults to true.
+   */
+  enforceReferenceCaps?: boolean;
   /** Receives the validated edited config when the user confirms. */
   onConfirm: (result: ConfigTableOverlaySuccess) => void;
 };
@@ -1002,6 +1083,8 @@ export function useConfigTableModal(): {
       splitMode={request.splitMode}
       jobDisplayId={request.jobDisplayId}
       isEditingReport={request.isEditingReport}
+      maxTotal={request.maxTotal}
+      enforceReferenceCaps={request.enforceReferenceCaps}
     />
   ) : null;
 

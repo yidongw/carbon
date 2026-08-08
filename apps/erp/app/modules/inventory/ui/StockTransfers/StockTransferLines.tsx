@@ -88,6 +88,10 @@ function StockTransferLineComponent({
   const unitsOfMeasure = useUnitOfMeasure();
 
   const item = items.find((p) => p.id === line.itemId);
+  // Variant SKUs are excluded from the shared items store — use line join fields.
+  const itemName = item?.name ?? line.itemDescription ?? "";
+  const itemReadableId =
+    item?.readableIdWithRevision ?? line.itemReadableId ?? "";
   const isTracked = line.requiresSerialTracking || line.requiresBatchTracking;
   const isPicked = pickedQuantity > 0;
 
@@ -110,10 +114,10 @@ function StockTransferLineComponent({
             <VStack spacing={0} className="max-w-[380px] w-full">
               <div className="w-full overflow-hidden">
                 <span className="text-sm font-medium truncate block w-full">
-                  {item?.name}
+                  {itemName}
                 </span>
                 <span className="text-xs text-muted-foreground truncate block w-full">
-                  {item?.readableIdWithRevision}
+                  {itemReadableId}
                 </span>
                 {line.trackedEntityId && (
                   <span className="flex gap-1 text-xs text-muted-foreground truncate items-center w-full">

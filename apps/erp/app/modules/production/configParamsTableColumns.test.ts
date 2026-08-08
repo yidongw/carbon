@@ -332,6 +332,21 @@ describe("getConfigQuantityCells", () => {
     ]);
   });
 
+  it("reads combo rows when configTablePrimaryKeys is omitted", async () => {
+    const { getConfigQuantityCells, configTableToComboRows } = await import(
+      "./configParamsTableColumns"
+    );
+    const configuration = {
+      configTable: [{ valuesKey: "BK|S", Quantities: 4 }]
+    };
+    expect(getConfigQuantityCells(configuration, { BK: "黑色" })).toEqual([
+      { key: "0:Quantities", label: "黑色 · S", quantity: 4 }
+    ]);
+    expect(configTableToComboRows(configuration)).toEqual([
+      { valuesKey: "BK|S", Quantities: 4, label: "BK · S" }
+    ]);
+  });
+
   it("configTableToComboRows converts legacy size-column matrices", async () => {
     const { configTableToComboRows } = await import(
       "./configParamsTableColumns"

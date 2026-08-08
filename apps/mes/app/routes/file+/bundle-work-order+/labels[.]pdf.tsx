@@ -53,16 +53,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const locale =
     cookie.parse(request.headers.get("Cookie") ?? "")[localeCookieName] ??
     undefined;
-  const labels = built.map((label) => ({
-    ...label,
-    attributeLines: (label.attributeLines ?? []).map((line) => ({
-      ...line,
-      value:
-        line.name === "Color" || line.name === "颜色"
-          ? (localizeColorForLocale(line.value, locale) ?? line.value)
-          : line.value
+  const labels = await Promise.all(
+    built.map(async (label) => ({
+      ...label,
+      attributeLines: await Promise.all(
+        (label.attributeLines ?? []).map(async (line) => ({
+          ...line,
+          value:
+            line.name === "Color" || line.name === "颜色"
+              ? ((await localizeColorForLocale(line.value, locale, request)) ??
+                line.value)
+              : line.value
+        }))
+      )
     }))
-  }));
+  );
 
   // Optional tag size (LabelSize dimensions are inches).
   const labelSizeId = url.searchParams.get("labelSize") ?? undefined;

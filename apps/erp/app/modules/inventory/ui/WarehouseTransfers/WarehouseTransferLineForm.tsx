@@ -25,12 +25,21 @@ import {
   Submit,
   TextArea
 } from "~/components/Form";
+import { useConfigurableItems } from "~/components/Form/Item";
 import { usePermissions } from "~/hooks";
+import {
+  isConfigTableOverlaySuccess,
+  parseInitialConfigTable
+} from "~/modules/production/configTableOverlay";
+import { useConfigTableModal } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
+import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
+import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
 import type { MethodItemType } from "~/modules/shared/types";
 import { useItems } from "~/stores/items";
 import { path } from "~/utils/path";
 import { isWarehouseTransferLocked } from "../../inventory.models";
 import type { WarehouseTransfer } from "../../types";
+import { openStyleConfigTableWithInventory } from "../openStyleConfigTableWithInventory";
 
 const warehouseTransferLineFormValidator = z.discriminatedUnion("type", [
   z.object({
@@ -43,7 +52,8 @@ const warehouseTransferLineFormValidator = z.discriminatedUnion("type", [
     quantity: zfd.numeric(z.number().min(0.0001)),
     fromStorageUnitId: zfd.text(z.string().optional()),
     toStorageUnitId: zfd.text(z.string().optional()),
-    notes: zfd.text(z.string().optional())
+    notes: zfd.text(z.string().optional()),
+    variantQuantities: zfd.text(z.string().optional())
   }),
   z.object({
     type: z.literal("update"),
@@ -55,12 +65,15 @@ const warehouseTransferLineFormValidator = z.discriminatedUnion("type", [
     quantity: zfd.numeric(z.number().min(0.0001)),
     fromStorageUnitId: zfd.text(z.string().optional()),
     toStorageUnitId: zfd.text(z.string().optional()),
-    notes: zfd.text(z.string().optional())
+    notes: zfd.text(z.string().optional()),
+    variantQuantities: zfd.text(z.string().optional())
   })
 ]);
 
 type WarehouseTransferLineFormProps = {
-  initialValues: z.infer<typeof warehouseTransferLineFormValidator>;
+  initialValues: z.infer<typeof warehouseTransferLineFormValidator> & {
+    variantQuantities?: string | null;
+  };
   warehouseTransfer: WarehouseTransfer;
   onClose: () => void;
 };
@@ -81,14 +94,65 @@ const WarehouseTransferLineForm = ({
   const [itemId, setItemId] = useState<string>(
     initialValues.type === "update" ? initialValues.itemId : ""
   );
+  const [quantity, setQuantity] = useState<number>(initialValues.quantity ?? 1);
+  const [fromStorageUnitId, setFromStorageUnitId] = useState<string>(
+    initialValues.fromStorageUnitId ?? ""
+  );
 
   const [items] = useItems();
+  const configurableItemIds = useConfigurableItems();
   const [itemType, setItemType] = useState<MethodItemType>(
     // @ts-expect-error - Service
     items.find((item) => item.id === initialValues.itemId)?.type ?? "Item"
   );
 
+  const configModal = useConfigTableModal();
+  const initialConfig = parseInitialConfigTable(
+    initialValues.variantQuantities
+  );
+  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
+    initialConfig.rows
+  );
+  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+  const [openingConfig, setOpeningConfig] = useState(false);
+
+  const clearConfig = () => {
+    setConfigTableRows(null);
+    setConfigTableTotal(0);
+  };
+
+  const applyConfig = (data: unknown) => {
+    if (!isConfigTableOverlaySuccess(data)) return;
+    setConfigTableRows(data.configuration.configTable);
+    setConfigTableTotal(data.total);
+    if (data.total > 0) setQuantity(data.total);
+  };
+
+  const openConfigTable = async () => {
+    if (!itemId || openingConfig) return;
+    setOpeningConfig(true);
+    try {
+      // Sibling otherLineVariantQuantities omitted — line drawer edits one line.
+      await openStyleConfigTableWithInventory({
+        configModal,
+        itemId,
+        locationId: warehouseTransfer.fromLocationId,
+        storageUnitId: fromStorageUnitId || null,
+        configTableRows,
+        onConfirm: applyConfig
+      });
+    } finally {
+      setOpeningConfig(false);
+    }
+  };
+
   const isEditing = initialValues.id !== undefined;
+  // Configurable parent (any item with attrs / config params) → qty grid.
+  // Variant SKU lines (already expanded, no stored variant quantities) → plain qty.
+  const isConfigurableParent =
+    Boolean(itemId) && configurableItemIds.includes(itemId);
+  const hasConfigurationParameters =
+    isConfigurableParent && !(isEditing && !initialValues.variantQuantities);
   const isLocked = isWarehouseTransferLocked(warehouseTransfer.status);
   const isDisabled =
     isLocked ||
@@ -136,6 +200,14 @@ const WarehouseTransferLineForm = ({
             <Hidden name="fromLocationId" />
             <Hidden name="toLocationId" />
             <Hidden name="type" value={isEditing ? "update" : "create"} />
+            <Hidden
+              name="variantQuantities"
+              value={
+                configTableRows
+                  ? JSON.stringify({ configTable: configTableRows })
+                  : ""
+              }
+            />
 
             <VStack spacing={4}>
               <Item
@@ -143,23 +215,52 @@ const WarehouseTransferLineForm = ({
                 label={t`Item`}
                 type={itemType}
                 locationId={warehouseTransfer.fromLocationId}
-                onTypeChange={(t) => setItemType(t as MethodItemType)}
+                onTypeChange={(nextType) => {
+                  setItemType(nextType as MethodItemType);
+                  clearConfig();
+                  setItemId("");
+                }}
                 value={itemId}
                 onChange={(value) => {
-                  setItemId(value?.value as string);
+                  clearConfig();
+                  const nextId = (value?.value as string) ?? "";
+                  setItemId(nextId);
+                  setQuantity(
+                    nextId && configurableItemIds.includes(nextId) ? 0 : 1
+                  );
                 }}
               />
-              <Number
-                name="quantity"
-                label={t`Quantity`}
-                minValue={0.0001}
-                step={0.0001}
-              />
+              {isConfigurableParent ? (
+                <QuantityWithConfigTable
+                  name="quantity"
+                  label={t`Quantity`}
+                  minValue={0.0001}
+                  value={quantity}
+                  onChange={setQuantity}
+                  hasConfigurationParameters={hasConfigurationParameters}
+                  onOpenConfigTable={
+                    hasConfigurationParameters ? openConfigTable : undefined
+                  }
+                  configTableTotal={configTableTotal}
+                  isReadOnly={hasConfigurationParameters}
+                />
+              ) : (
+                <Number
+                  name="quantity"
+                  label={t`Quantity`}
+                  minValue={0.0001}
+                  step={0.0001}
+                />
+              )}
               <StorageUnit
                 name="fromStorageUnitId"
                 label={t`From Storage Unit`}
                 itemId={itemId ?? undefined}
                 locationId={warehouseTransfer.fromLocationId}
+                value={fromStorageUnitId || null}
+                onChange={(unit) => {
+                  setFromStorageUnitId(unit?.id ?? "");
+                }}
               />
               <StorageUnit
                 name="toStorageUnitId"
@@ -187,6 +288,7 @@ const WarehouseTransferLineForm = ({
           </DrawerFooter>
         </ValidatedForm>
       </DrawerContent>
+      {configModal.node}
     </Drawer>
   );
 };

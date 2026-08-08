@@ -334,3 +334,13 @@ Patterns learned from corrections. Review at the start of each session.
 - Cause: selecting closes the portaled list mid-gesture; the leftover click lands on Save. Method preload made the form valid, so that accidental Save succeeded (empty Method used to fail validation — looked like "Method made it save").
 - Fix: `suppressDocumentPointerEventsUntilGestureEnds()` (Radix DismissableLayer pattern) before `setOpen(false)` in Combobox/Creatable/GroupedCreatable + CommandItem `onMouseDown` preventDefault + flushSync disable Save while price resolves. Never submit-arm gates.
 
+
+## Style transfer modal: pass inventory as `buildReferenceContext`
+
+- Opening `useConfigTableModal` with only `itemId` + `configuration` shows the
+  color×size grid but **no** per-cell hints and **no** max enforcement.
+- Production reporting gets hints via `buildReferenceContext` → `referenceByRowIndex`
+  (plan remaining). Transfers need the same channel with **on-hand by color×size**
+  from `itemLedger` (`getStyleOnHandByColorSize` / `api/inventory/style-on-hand`).
+- Matrix mode historically only yellow-highlighted mismatches; hard-block Confirm
+  when any cell exceeds its reference (inventory or plan).

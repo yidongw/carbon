@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import type { Json } from "@carbon/database";
 import { Number, Submit, ValidatedForm } from "@carbon/form";
 import { getActiveI18n } from "@carbon/locale";
 import {
@@ -60,9 +61,11 @@ import {
 } from "react-router";
 import { Empty, ItemThumbnail, PrintButton } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { useConfigurableItems } from "~/components/Form/Item";
 import { useStorageUnits } from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
+import { StyleConfigChips } from "~/components/StyleConfigChips";
 import { useRouteData } from "~/hooks";
 import type {
   getBatchNumbersForItem,
@@ -73,9 +76,15 @@ import type {
   ShipmentLineTracking
 } from "~/modules/inventory";
 import { splitValidator } from "~/modules/inventory";
+import { getStyleConfigDisplay } from "~/modules/shared/styleConfigDisplay";
 import type { action as shipmentLinesUpdateAction } from "~/routes/x+/shipment+/lines.update";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
+import { StyleLineQuantityInput } from "../StyleLineQuantityInput";
+
+type ShipmentLineWithOrder = ShipmentLine & {
+  orderVariantQuantities?: Json | null;
+};
 
 const ShipmentLines = () => {
   const { shipmentId } = useParams();
@@ -86,7 +95,7 @@ const ShipmentLines = () => {
 
   const routeData = useRouteData<{
     shipment: Shipment;
-    shipmentLines: ShipmentLine[];
+    shipmentLines: ShipmentLineWithOrder[];
     shipmentLineTracking: ShipmentLineTracking[];
     fixedAssetLines: {
       id: string;
@@ -100,7 +109,7 @@ const ShipmentLines = () => {
     }[];
   }>(path.to.shipment(shipmentId));
 
-  const shipmentsById = new Map<string, ShipmentLine>(
+  const shipmentsById = new Map<string, ShipmentLineWithOrder>(
     // @ts-expect-error
     (routeData?.shipmentLines ?? []).map((line) => [line.id, line])
   );
@@ -111,7 +120,7 @@ const ShipmentLines = () => {
     let merged = item
       ? { ...item, ...pendingShipmentLine }
       : pendingShipmentLine;
-    shipmentsById.set(pendingShipmentLine.id, merged as ShipmentLine);
+    shipmentsById.set(pendingShipmentLine.id, merged as ShipmentLineWithOrder);
   }
 
   const shipmentLines = Array.from(shipmentsById.values()).map((line) => ({
@@ -199,23 +208,32 @@ const ShipmentLines = () => {
     async ({
       lineId,
       field,
-      value
+      value,
+      variantQuantities
     }:
       | {
           lineId: string;
           field: "shippedQuantity";
           value: number;
+          variantQuantities?: Json | null;
         }
       | {
           lineId: string;
           field: "storageUnitId";
           value: string;
+          variantQuantities?: never;
         }) => {
       const formData = new FormData();
 
       formData.append("ids", lineId);
       formData.append("field", field);
       formData.append("value", value.toString());
+      if (variantQuantities !== undefined) {
+        formData.append(
+          "variantQuantities",
+          variantQuantities ? JSON.stringify(variantQuantities) : ""
+        );
+      }
       fetcher.submit(formData, {
         method: "post",
         action: path.to.bulkUpdateShipmentLine
@@ -248,7 +266,12 @@ const ShipmentLines = () => {
               shipmentLines
                 .map((line) => ({
                   ...line,
-                  itemReadableId: getItemReadableId(items, line.itemId) ?? ""
+                  // Variant SKUs are excluded from the items store — prefer the
+                  // line join field (same as receipt/stock-transfer views).
+                  itemReadableId:
+                    line.itemReadableId ??
+                    getItemReadableId(items, line.itemId) ??
+                    ""
                 }))
                 .sort((a, b) =>
                   a.itemReadableId.localeCompare(b.itemReadableId)
@@ -402,7 +425,7 @@ function ShipmentLineItem({
   onUpdate,
   onSerialNumbersChange
 }: {
-  line: ShipmentLine;
+  line: ShipmentLineWithOrder;
   shipment?: Shipment;
   className?: string;
   hasTrackingLabel: boolean;
@@ -415,17 +438,20 @@ function ShipmentLineItem({
   onUpdate: ({
     lineId,
     field,
-    value
+    value,
+    variantQuantities
   }:
     | {
         lineId: string;
         field: "shippedQuantity";
         value: number;
+        variantQuantities?: Json | null;
       }
     | {
         lineId: string;
         field: "storageUnitId";
         value: string;
+        variantQuantities?: never;
       }) => Promise<void>;
 }) {
   const { t } = useLingui();
@@ -434,11 +460,47 @@ function ShipmentLineItem({
   const unitsOfMeasure = useUnitOfMeasure();
   const splitDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
+  // Parent lines with a stored config table, or configurable parents with an
+  // order-plan grid, use the attribute qty editor. Expanded variant SKUs → plain qty.
+  const configurableItemIds = useConfigurableItems();
+  const useConfigQuantity =
+    Boolean(line.itemId) &&
+    (line.variantQuantities != null ||
+      (line.orderVariantQuantities != null &&
+        configurableItemIds.includes(line.itemId)));
 
   // Check if shipped quantity exceeds job quantity for job fulfillments
   const isJobOverShipped =
     line.fulfillment?.type === "Job" &&
     (line.shippedQuantity || 0) > (line.fulfillment?.job?.quantity || 0);
+
+  const quantityDisabled =
+    isReadOnly ||
+    (line.fulfillment?.type === "Job" &&
+      (line.requiresSerialTracking ?? false));
+
+  const applyQuantity = (
+    safeValue: number,
+    variantQuantities?: Json | null
+  ) => {
+    onUpdate({
+      lineId: line.id!,
+      field: "shippedQuantity",
+      value: safeValue,
+      ...(variantQuantities !== undefined ? { variantQuantities } : {})
+    });
+    if (safeValue > serialNumbers.length) {
+      onSerialNumbersChange([
+        ...serialNumbers,
+        ...Array.from({ length: safeValue - serialNumbers.length }, (_, i) => ({
+          index: i,
+          id: ""
+        }))
+      ]);
+    } else if (safeValue < serialNumbers.length) {
+      onSerialNumbersChange(serialNumbers.slice(0, safeValue));
+    }
+  };
 
   return (
     <div className={cn("flex flex-col border-b p-6 gap-6 relative", className)}>
@@ -492,10 +554,10 @@ function ShipmentLineItem({
             <VStack spacing={0} className="max-w-[380px] w-full">
               <div className="w-full overflow-hidden">
                 <span className="text-sm font-medium truncate block w-full">
-                  {item?.readableIdWithRevision}
+                  {item?.readableIdWithRevision ?? line.itemReadableId}
                 </span>
                 <span className="text-xs text-muted-foreground truncate block w-full">
-                  {item?.name}
+                  {item?.name ?? line.description}
                 </span>
               </div>
               <div className="mt-2">
@@ -525,51 +587,57 @@ function ShipmentLineItem({
                   </Tooltip>
                 )}
               </div>
-              <NumberField
-                value={line.shippedQuantity || 0}
-                onChange={(value) => {
-                  // Default to 0 if value is NaN, null, or undefined
-                  const safeValue = isNaN(value) || value == null ? 0 : value;
-                  onUpdate({
-                    lineId: line.id!,
-                    field: "shippedQuantity",
-                    value: safeValue
-                  });
-                  // Adjust serial numbers array size while preserving existing values
-                  if (safeValue > serialNumbers.length) {
-                    onSerialNumbersChange([
-                      ...serialNumbers,
-                      ...Array.from(
-                        { length: safeValue - serialNumbers.length },
-                        (_, i) => ({
-                          index: i,
-                          id: ""
-                        })
-                      )
-                    ]);
-                  } else if (safeValue < serialNumbers.length) {
-                    onSerialNumbersChange(serialNumbers.slice(0, safeValue));
-                  }
-                }}
-              >
-                <NumberInput
+              {useConfigQuantity ? (
+                <StyleLineQuantityInput
+                  lineId={line.id!}
+                  itemId={line.itemId}
+                  value={line.shippedQuantity || 0}
+                  variantQuantities={line.variantQuantities}
+                  locationId={line.locationId ?? shipment?.locationId}
+                  orderVariantQuantities={line.orderVariantQuantities}
+                  isDisabled={quantityDisabled}
+                  isReadOnly={quantityDisabled}
                   className={cn(
-                    "disabled:bg-transparent disabled:opacity-100 min-w-[100px]",
-                    isJobOverShipped && "border-red-500 border-2"
+                    "min-w-[100px]",
+                    isJobOverShipped &&
+                      "[&_input]:border-red-500 [&_input]:border-2"
                   )}
-                  isDisabled={
-                    isReadOnly ||
-                    (line.fulfillment?.type === "Job" &&
-                      (line.requiresSerialTracking ?? false))
+                  onQuantityChange={({ quantity, variantQuantities }) =>
+                    applyQuantity(quantity, variantQuantities)
                   }
-                  size="sm"
-                  min={0}
                 />
-              </NumberField>
+              ) : (
+                <NumberField
+                  value={line.shippedQuantity || 0}
+                  onChange={(value) => {
+                    // Default to 0 if value is NaN, null, or undefined
+                    const safeValue = isNaN(value) || value == null ? 0 : value;
+                    applyQuantity(safeValue);
+                  }}
+                >
+                  <NumberInput
+                    className={cn(
+                      "disabled:bg-transparent disabled:opacity-100 min-w-[100px]",
+                      isJobOverShipped && "border-red-500 border-2"
+                    )}
+                    isDisabled={quantityDisabled}
+                    size="sm"
+                    min={0}
+                  />
+                </NumberField>
+              )}
             </VStack>
             <VStack spacing={1} className="text-center items-center">
               <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
               <span className="text-sm py-1.5">{line.orderQuantity || 0}</span>
+              {line.orderVariantQuantities ? (
+                <StyleConfigChips
+                  chips={
+                    getStyleConfigDisplay(line.orderVariantQuantities)?.chips ??
+                    []
+                  }
+                />
+              ) : null}
             </VStack>
 
             <VStack spacing={1} className="text-center items-center">

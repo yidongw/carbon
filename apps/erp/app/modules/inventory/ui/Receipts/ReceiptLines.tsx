@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import type { Json } from "@carbon/database";
 import { Number, Submit, ValidatedForm } from "@carbon/form";
 import { getActiveI18n } from "@carbon/locale";
 import {
@@ -69,9 +70,11 @@ import {
 import DocumentIcon from "~/components/DocumentIcon";
 import { Enumerable } from "~/components/Enumerable";
 import FileDropzone from "~/components/FileDropzone";
+import { useConfigurableItems } from "~/components/Form/Item";
 import StorageUnit from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
+import { StyleConfigChips } from "~/components/StyleConfigChips";
 import { useRouteData, useUser } from "~/hooks";
 import type {
   BatchProperty,
@@ -81,6 +84,7 @@ import type {
 } from "~/modules/inventory";
 import { splitValidator } from "~/modules/inventory";
 import { getDocumentType } from "~/modules/shared/shared.service";
+import { getStyleConfigDisplay } from "~/modules/shared/styleConfigDisplay";
 import { useItems } from "~/stores";
 import type { StorageItem } from "~/types";
 import { path } from "~/utils/path";
@@ -88,6 +92,11 @@ import { stripSpecialCharacters } from "~/utils/string";
 import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 import BatchPropertiesConfig from "../Batches/BatchPropertiesConfig";
 import { BatchPropertiesFields } from "../Batches/BatchPropertiesFields";
+import { StyleLineQuantityInput } from "../StyleLineQuantityInput";
+
+type ReceiptLineWithOrder = ReceiptLine & {
+  orderVariantQuantities?: Json | null;
+};
 
 const ReceiptLines = () => {
   const { receiptId } = useParams();
@@ -98,7 +107,7 @@ const ReceiptLines = () => {
   const { upload, deleteFile, getPath } = useReceiptFiles(receiptId);
   const routeData = useRouteData<{
     receipt: Receipt;
-    receiptLines: ReceiptLine[];
+    receiptLines: ReceiptLineWithOrder[];
     fixedAssetLines: {
       id: string;
       purchaseOrderLineId: string;
@@ -214,23 +223,32 @@ const ReceiptLines = () => {
     async ({
       lineId,
       field,
-      value
+      value,
+      variantQuantities
     }:
       | {
           lineId: string;
           field: "receivedQuantity";
           value: number;
+          variantQuantities?: Json | null;
         }
       | {
           lineId: string;
           field: "storageUnitId";
           value: string;
+          variantQuantities?: never;
         }) => {
       const formData = new FormData();
 
       formData.append("ids", lineId);
       formData.append("field", field);
       formData.append("value", value.toString());
+      if (variantQuantities !== undefined) {
+        formData.append(
+          "variantQuantities",
+          variantQuantities ? JSON.stringify(variantQuantities) : ""
+        );
+      }
       fetcher.submit(formData, {
         method: "post",
         action: path.to.bulkUpdateReceiptLine
@@ -417,7 +435,7 @@ function ReceiptLineItem({
   upload,
   deleteFile
 }: {
-  line: ReceiptLine;
+  line: ReceiptLineWithOrder;
   receipt?: Receipt;
   className?: string;
   isReadOnly: boolean;
@@ -438,17 +456,20 @@ function ReceiptLineItem({
   onUpdate: ({
     lineId,
     field,
-    value
+    value,
+    variantQuantities
   }:
     | {
         lineId: string;
         field: "receivedQuantity";
         value: number;
+        variantQuantities?: Json | null;
       }
     | {
         lineId: string;
         field: "storageUnitId";
         value: string;
+        variantQuantities?: never;
       }) => Promise<void>;
   upload: (files: File[]) => Promise<void>;
   deleteFile: (file: StorageItem) => Promise<void>;
@@ -459,6 +480,37 @@ function ReceiptLineItem({
   const unitsOfMeasure = useUnitOfMeasure();
   const splitDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
+  // Parent lines with a stored config table, or configurable parents with an
+  // order-plan grid, use the attribute qty editor. Expanded variant SKUs → plain qty.
+  const configurableItemIds = useConfigurableItems();
+  const useConfigQuantity =
+    Boolean(line.itemId) &&
+    (line.variantQuantities != null ||
+      (line.orderVariantQuantities != null &&
+        configurableItemIds.includes(line.itemId)));
+
+  const applyQuantity = (
+    safeValue: number,
+    variantQuantities?: Json | null
+  ) => {
+    onUpdate({
+      lineId: line.id!,
+      field: "receivedQuantity",
+      value: safeValue,
+      ...(variantQuantities !== undefined ? { variantQuantities } : {})
+    });
+    if (safeValue > serialNumbers.length) {
+      onSerialNumbersChange([
+        ...serialNumbers,
+        ...Array.from({ length: safeValue - serialNumbers.length }, () => ({
+          index: serialNumbers.length,
+          number: ""
+        }))
+      ]);
+    } else if (safeValue < serialNumbers.length) {
+      onSerialNumbersChange(serialNumbers.slice(0, safeValue));
+    }
+  };
 
   return (
     <div className={cn("flex flex-col border-b p-6 gap-6 relative", className)}>
@@ -500,9 +552,11 @@ function ReceiptLineItem({
               type={(item?.type as "Part") ?? "Part"}
             />
             <VStack spacing={0}>
-              <span className="text-sm font-medium">{item?.name}</span>
+              <span className="text-sm font-medium">
+                {item?.name ?? line.description}
+              </span>
               <span className="text-xs text-muted-foreground line-clamp-2">
-                {item?.readableIdWithRevision}
+                {item?.readableIdWithRevision ?? line.itemReadableId}
               </span>
               <div className="mt-2">
                 <Enumerable
@@ -516,40 +570,37 @@ function ReceiptLineItem({
             <VStack spacing={1}>
               <label className="text-xs text-muted-foreground">{t`Received`}</label>
 
-              <NumberField
-                value={line.receivedQuantity ?? 0}
-                onChange={(value) => {
-                  // Default to 0 if value is NaN, null, or undefined
-                  const safeValue = isNaN(value) || value == null ? 0 : value;
-                  onUpdate({
-                    lineId: line.id!,
-                    field: "receivedQuantity",
-                    value: safeValue
-                  });
-                  // Adjust serial numbers array size while preserving existing values
-                  if (safeValue > serialNumbers.length) {
-                    onSerialNumbersChange([
-                      ...serialNumbers,
-                      ...Array.from(
-                        { length: safeValue - serialNumbers.length },
-                        () => ({
-                          index: serialNumbers.length,
-                          number: ""
-                        })
-                      )
-                    ]);
-                  } else if (safeValue < serialNumbers.length) {
-                    onSerialNumbersChange(serialNumbers.slice(0, safeValue));
-                  }
-                }}
-              >
-                <NumberInput
-                  className="disabled:bg-transparent disabled:opacity-100 min-w-[100px]"
+              {useConfigQuantity ? (
+                <StyleLineQuantityInput
+                  lineId={line.id!}
+                  itemId={line.itemId}
+                  value={line.receivedQuantity ?? 0}
+                  variantQuantities={line.variantQuantities}
+                  orderVariantQuantities={line.orderVariantQuantities}
                   isDisabled={isReadOnly}
-                  size="sm"
-                  min={0}
+                  isReadOnly={isReadOnly}
+                  className="min-w-[100px]"
+                  onQuantityChange={({ quantity, variantQuantities }) =>
+                    applyQuantity(quantity, variantQuantities)
+                  }
                 />
-              </NumberField>
+              ) : (
+                <NumberField
+                  value={line.receivedQuantity ?? 0}
+                  onChange={(value) => {
+                    // Default to 0 if value is NaN, null, or undefined
+                    const safeValue = isNaN(value) || value == null ? 0 : value;
+                    applyQuantity(safeValue);
+                  }}
+                >
+                  <NumberInput
+                    className="disabled:bg-transparent disabled:opacity-100 min-w-[100px]"
+                    isDisabled={isReadOnly}
+                    size="sm"
+                    min={0}
+                  />
+                </NumberField>
+              )}
             </VStack>
           </HStack>
         </HStack>
@@ -558,6 +609,14 @@ function ReceiptLineItem({
             <VStack spacing={1} className="text-center items-center">
               <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
               <span className="text-sm py-1.5">{line.orderQuantity ?? 0}</span>
+              {line.orderVariantQuantities ? (
+                <StyleConfigChips
+                  chips={
+                    getStyleConfigDisplay(line.orderVariantQuantities)?.chips ??
+                    []
+                  }
+                />
+              ) : null}
             </VStack>
 
             <VStack spacing={1} className="text-center items-center">

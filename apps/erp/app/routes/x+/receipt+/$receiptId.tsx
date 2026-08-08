@@ -50,17 +50,61 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.receipts);
   }
 
+  // Attach source SO/PO Style color×size plan (Ordered chips / modal hints).
+  const rawReceiptLines = receiptLines.data ?? [];
+  const sourceLineIds = [
+    ...new Set(
+      rawReceiptLines
+        .map((line) => line.lineId)
+        .filter((id): id is string => typeof id === "string" && id.length > 0)
+    )
+  ];
+  const orderVariantQuantitiesByLineId = new Map<string, unknown>();
+  if (sourceLineIds.length > 0) {
+    if (receipt.data.sourceDocument === "Sales Order") {
+      const { data } = await serviceRole
+        .from("salesOrderLine")
+        .select("id, configuration")
+        .in("id", sourceLineIds);
+      for (const row of data ?? []) {
+        if (row.configuration != null) {
+          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
+        }
+      }
+    } else if (receipt.data.sourceDocument === "Purchase Order") {
+      const { data } = await serviceRole
+        .from("purchaseOrderLine")
+        .select("id, configuration")
+        .in("id", sourceLineIds);
+      for (const row of data ?? []) {
+        if (row.configuration != null) {
+          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
+        }
+      }
+    }
+  }
+  const receiptLinesWithOrderVariantQuantities = rawReceiptLines.map(
+    (line) => ({
+      ...line,
+      orderVariantQuantities: line.lineId
+        ? (orderVariantQuantitiesByLineId.get(line.lineId) ?? null)
+        : null
+    })
+  );
+
   let receiptLineIds: string[] = [];
   let itemsWithBatchProperties: string[] = [];
   let trackedItemIds: string[] = [];
 
-  if (receiptLines.data) {
-    receiptLineIds = receiptLines.data.map((line) => line.id!).filter(Boolean);
-    itemsWithBatchProperties = receiptLines.data
+  if (receiptLinesWithOrderVariantQuantities) {
+    receiptLineIds = receiptLinesWithOrderVariantQuantities
+      .map((line) => line.id!)
+      .filter(Boolean);
+    itemsWithBatchProperties = receiptLinesWithOrderVariantQuantities
       .filter((line) => line && line.itemId && line.requiresBatchTracking)
       .map((line) => line.itemId)
       .filter((itemId) => itemId !== null);
-    trackedItemIds = receiptLines.data
+    trackedItemIds = receiptLinesWithOrderVariantQuantities
       .filter(
         (line) =>
           line?.itemId &&
@@ -123,7 +167,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     receipt: receipt.data,
-    receiptLines: receiptLines.data ?? [],
+    receiptLines: receiptLinesWithOrderVariantQuantities,
     fixedAssetLines,
     shippedSerialsByLineId,
     receiptFiles: getReceiptFiles(serviceRole, companyId, receiptLineIds) ?? [],

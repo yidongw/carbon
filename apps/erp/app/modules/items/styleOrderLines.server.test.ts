@@ -145,7 +145,7 @@ describe("expandStyleConfigToVariantLines", () => {
     const result = await expandStyleConfigToVariantLines(client, {
       parentItemId,
       companyId,
-      configuration
+      variantQuantities: configuration
     });
 
     expect(result.ok).toBe(true);
@@ -183,7 +183,7 @@ describe("expandStyleConfigToVariantLines", () => {
     const result = await expandStyleConfigToVariantLines(client, {
       parentItemId,
       companyId,
-      configuration: {
+      variantQuantities: {
         configTable: [{ RD: 3, BL: 2 }],
         configTablePrimaryKeys: ["RD", "BL"]
       }
@@ -219,7 +219,7 @@ describe("expandStyleConfigToVariantLines", () => {
     const result = await expandStyleConfigToVariantLines(client, {
       parentItemId,
       companyId,
-      configuration
+      variantQuantities: configuration
     });
 
     expect(result.ok).toBe(false);
@@ -232,7 +232,7 @@ describe("expandStyleConfigToVariantLines", () => {
     const result = await expandStyleConfigToVariantLines(client, {
       parentItemId,
       companyId,
-      configuration: {
+      variantQuantities: {
         configTable: [{ color: "BK", XS: 0, S: 0 }],
         configTablePrimaryKeys: ["XS", "S"]
       }
@@ -240,5 +240,62 @@ describe("expandStyleConfigToVariantLines", () => {
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.error).toMatch(/no quantities/i);
+  });
+});
+
+describe("requireVariantQuantitiesIfAttributeParent", () => {
+  const parentItemId = "item_parent";
+  const companyId = "co_1";
+
+  it("rejects attribute parents without a grid", async () => {
+    const client = {
+      from: (table: string) => {
+        const chain: Record<string, unknown> = {};
+        chain.select = () => chain;
+        chain.eq = () => chain;
+        chain.limit = () =>
+          Promise.resolve({
+            data: table === "itemVariant" ? [{ id: "v1" }] : [],
+            error: null
+          });
+        return chain;
+      }
+    } as never;
+
+    const { requireVariantQuantitiesIfAttributeParent } = await import(
+      "./styleOrderLines.server"
+    );
+    const result = await requireVariantQuantitiesIfAttributeParent(client, {
+      parentItemId,
+      companyId,
+      variantQuantities: null,
+      quantity: 5
+    });
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error).toMatch(/variant quantities/i);
+  });
+
+  it("allows plain items without variants", async () => {
+    const client = {
+      from: () => {
+        const chain: Record<string, unknown> = {};
+        chain.select = () => chain;
+        chain.eq = () => chain;
+        chain.limit = () => Promise.resolve({ data: [], error: null });
+        return chain;
+      }
+    } as never;
+
+    const { requireVariantQuantitiesIfAttributeParent } = await import(
+      "./styleOrderLines.server"
+    );
+    const result = await requireVariantQuantitiesIfAttributeParent(client, {
+      parentItemId,
+      companyId,
+      variantQuantities: null,
+      quantity: 5
+    });
+    expect(result.ok).toBe(true);
   });
 });

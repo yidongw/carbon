@@ -17,18 +17,29 @@ import { useEffect, useState } from "react";
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Item, Number, StorageUnit, Submit } from "~/components/Form";
+import { useConfigurableItems } from "~/components/Form/Item";
 import { usePermissions, useRouteData } from "~/hooks";
 import {
   isStockTransferLocked,
   type StockTransfer,
   stockTransferLineValidator
 } from "~/modules/inventory";
+import {
+  isConfigTableOverlaySuccess,
+  parseInitialConfigTable
+} from "~/modules/production/configTableOverlay";
+import { useConfigTableModal } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
+import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
+import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
 import type { MethodItemType } from "~/modules/shared/types";
 import { useItems } from "~/stores/items";
 import { path } from "~/utils/path";
+import { openStyleConfigTableWithInventory } from "../openStyleConfigTableWithInventory";
 
 type StockTransferLineFormProps = {
-  initialValues: z.infer<typeof stockTransferLineValidator>;
+  initialValues: z.infer<typeof stockTransferLineValidator> & {
+    variantQuantities?: string | null;
+  };
   locationId: string;
   type?: "modal" | "drawer";
   open?: boolean;
@@ -52,8 +63,13 @@ const StockTransferLineForm = ({
   }>(path.to.stockTransfer(id));
   const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
   const [items] = useItems();
+  const configurableItemIds = useConfigurableItems();
   const [itemId, setItemId] = useState<string | null>(
     initialValues.itemId ?? null
+  );
+  const [quantity, setQuantity] = useState<number>(initialValues.quantity ?? 1);
+  const [fromStorageUnitId, setFromStorageUnitId] = useState<string>(
+    initialValues.fromStorageUnitId ?? ""
   );
 
   const [itemType, setItemType] = useState<MethodItemType | "Item">(() => {
@@ -78,18 +94,70 @@ const StockTransferLineForm = ({
     }
   );
 
+  const configModal = useConfigTableModal();
+  const initialConfig = parseInitialConfigTable(
+    initialValues.variantQuantities
+  );
+  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
+    initialConfig.rows
+  );
+  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+  const [openingConfig, setOpeningConfig] = useState(false);
+
+  const clearConfig = () => {
+    setConfigTableRows(null);
+    setConfigTableTotal(0);
+  };
+
+  const applyConfig = (data: unknown) => {
+    if (!isConfigTableOverlaySuccess(data)) return;
+    setConfigTableRows(data.configuration.configTable);
+    setConfigTableTotal(data.total);
+    if (data.total > 0) setQuantity(data.total);
+  };
+
+  const openConfigTable = async () => {
+    if (!itemId || openingConfig) return;
+    setOpeningConfig(true);
+    try {
+      // Sibling otherLineVariantQuantities omitted — line drawer edits one line.
+      await openStyleConfigTableWithInventory({
+        configModal,
+        itemId,
+        locationId,
+        storageUnitId: fromStorageUnitId || null,
+        configTableRows,
+        onConfirm: applyConfig
+      });
+    } finally {
+      setOpeningConfig(false);
+    }
+  };
+
+  const isEditing = initialValues.id !== undefined;
+  // Configurable parent (any item with attrs / config params) → qty grid.
+  // Variant SKU lines (already expanded, no stored variant quantities) → plain qty.
+  const isConfigurableParent =
+    Boolean(itemId) && configurableItemIds.includes(itemId!);
+  const hasConfigurationParameters =
+    isConfigurableParent && !(isEditing && !initialValues.variantQuantities);
+
   const onTypeChange = (t: MethodItemType | "Item") => {
     setItemType(t);
     setItemId(null);
+    clearConfig();
   };
 
-  const onItemChange = (itemId: string) => {
-    setItemId(itemId);
-    const item = items.find((item) => item.id === itemId);
-    const itemType = (item?.type as MethodItemType) ?? "Item";
+  const onItemChange = (nextItemId: string) => {
+    clearConfig();
+    setItemId(nextItemId);
+    const item = items.find((item) => item.id === nextItemId);
+    const nextType = (item?.type as MethodItemType) ?? "Item";
     const trackingType = item?.itemTrackingType ?? null;
-    setItemType(itemType);
+    setItemType(nextType);
     setItemTrackingType(trackingType);
+    // Configurable parents start at 0 until the attribute grid is confirmed.
+    setQuantity(configurableItemIds.includes(nextItemId) ? 0 : 1);
   };
 
   useEffect(() => {
@@ -105,7 +173,6 @@ const StockTransferLineForm = ({
     }
   }, [fetcher.data, fetcher.state, onClose, type, t]);
 
-  const isEditing = initialValues.id !== undefined;
   const isLocked = isStockTransferLocked(routeData?.stockTransfer?.status);
   const isDisabled =
     isLocked ||
@@ -150,6 +217,14 @@ const StockTransferLineForm = ({
                 name="requiresBatchTracking"
                 value={itemTrackingType === "Batch" ? "true" : "false"}
               />
+              <Hidden
+                name="variantQuantities"
+                value={
+                  configTableRows
+                    ? JSON.stringify({ configTable: configTableRows })
+                    : ""
+                }
+              />
               <VStack spacing={4}>
                 <Item
                   name="itemId"
@@ -163,18 +238,38 @@ const StockTransferLineForm = ({
                   }}
                   value={itemId ?? undefined}
                 />
-                <Number
-                  name="quantity"
-                  label={t`Quantity`}
-                  minValue={itemTrackingType === "Serial" ? 1 : 0}
-                  maxValue={itemTrackingType === "Serial" ? 1 : undefined}
-                  defaultValue={itemTrackingType === "Serial" ? 1 : undefined}
-                />
+                {isConfigurableParent ? (
+                  <QuantityWithConfigTable
+                    name="quantity"
+                    label={t`Quantity`}
+                    minValue={0}
+                    value={quantity}
+                    onChange={setQuantity}
+                    hasConfigurationParameters={hasConfigurationParameters}
+                    onOpenConfigTable={
+                      hasConfigurationParameters ? openConfigTable : undefined
+                    }
+                    configTableTotal={configTableTotal}
+                    isReadOnly={hasConfigurationParameters}
+                  />
+                ) : (
+                  <Number
+                    name="quantity"
+                    label={t`Quantity`}
+                    minValue={itemTrackingType === "Serial" ? 1 : 0}
+                    maxValue={itemTrackingType === "Serial" ? 1 : undefined}
+                    defaultValue={itemTrackingType === "Serial" ? 1 : undefined}
+                  />
+                )}
                 <StorageUnit
                   name="fromStorageUnitId"
                   label={t`From Storage Unit`}
                   locationId={locationId}
                   itemId={itemId ?? undefined}
+                  value={fromStorageUnitId || null}
+                  onChange={(unit) => {
+                    setFromStorageUnitId(unit?.id ?? "");
+                  }}
                 />
                 <StorageUnit
                   name="toStorageUnitId"
@@ -193,6 +288,7 @@ const StockTransferLineForm = ({
             </ModalDrawerFooter>
           </ValidatedForm>
         </ModalDrawerContent>
+        {configModal.node}
       </ModalDrawer>
     </ModalDrawerProvider>
   );

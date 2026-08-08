@@ -4092,6 +4092,9 @@ msgstr "स्थानांतरण लाइन संपादित कर
 msgid "Edit Unit of Measure"
 msgstr "माप की इकाई संपादित करें"
 
+msgid "Edit variant quantities"
+msgstr "वेरिएंट मात्रा संपादित करें"
+
 msgid "Edit View"
 msgstr "व्यू संपादित करें"
 
@@ -4502,6 +4505,9 @@ msgstr "स्टार्टर से सब कुछ"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "प्रतिबंध छाँटा गया है {PO_EMAIL_ATTACHMENT_LIMIT_MB} म्ब की सीमा से — कुछ अनुसंधानों को हटाएँ और पहुंचाइए।"
+
+msgid "Exceeds available"
+msgstr "उपलब्ध से अधिक"
 
 msgid "Exceeds plan"
 msgstr "योजना से अधिक"
@@ -5064,8 +5070,8 @@ msgid "Failed to deactivate users"
 msgstr "अनुप्रयोगकर्ता की अक्षमता के कारण activate हो नहीं पड़ा"
 
 msgid "Failed to delete account"
-msgstr "खाता हटाने में विफल"
-"खाता हटाने में विफलअ户口所在地：印度\n"
+msgstr ""
+"खाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "फाइल होम工作地点：德里国家首都是：新德里"
 

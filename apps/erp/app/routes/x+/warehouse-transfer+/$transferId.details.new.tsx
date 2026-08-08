@@ -1,4 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import type { Json } from "@carbon/database";
 import { validationError } from "@carbon/form";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect, useNavigate, useParams } from "react-router";
@@ -10,11 +11,19 @@ import type {
 import {
   checkTransferLineAvailability,
   getWarehouseTransfer,
+  insertWarehouseTransferLinesWithStyleVariants,
   isWarehouseTransferLocked,
   upsertWarehouseTransferLine,
   warehouseTransferLineValidator
 } from "~/modules/inventory";
 import { WarehouseTransferLineForm } from "~/modules/inventory/ui/WarehouseTransfers";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable,
+  requireVariantQuantitiesIfAttributeParent
+} from "~/modules/items/styleOrderLines.server";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -51,15 +60,99 @@ export async function action({ request, params }: ActionFunctionArgs) {
     };
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: configStr,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let variantQuantities: Json | undefined;
+  let quantity = rawQuantity;
+  if (configStr) {
+    try {
+      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const fields = jobConfigurationUpdateFields(parsed);
+      variantQuantities = fields.configuration;
+      quantity = fields.quantity;
+    } catch {
+      // invalid JSON — keep the typed quantity
+    }
+  }
+
+  // Style/Consumable parent + configTable → one warehouse-transfer line per variant SKU.
+  // jobConfigurationUpdateFields bridges the shared modal payload (still named
+  // `configuration`) into variantQuantities for inventory lines.
+  if (hasStyleConfigTable(variantQuantities)) {
+    const expanded = await expandStyleConfigToVariantLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      variantQuantities
+    });
+    if (!expanded.ok) {
+      return validationError({
+        fieldErrors: { quantity: expanded.error }
+      } as never);
+    }
+
+    for (const v of expanded.variants) {
+      const availability = await checkTransferLineAvailability(client, {
+        companyId,
+        locationId: transfer.data?.fromLocationId ?? d.fromLocationId,
+        itemId: v.variantItemId,
+        fromStorageUnitId: d.fromStorageUnitId || null,
+        quantity: v.quantity
+      });
+      if (!availability.ok) {
+        return validationError({
+          fieldErrors: { quantity: availability.message }
+        } as never);
+      }
+    }
+
+    try {
+      await insertWarehouseTransferLinesWithStyleVariants(getDatabaseClient(), {
+        companyId,
+        userId,
+        transferId,
+        fromLocationId: d.fromLocationId,
+        toLocationId: d.toLocationId,
+        fromStorageUnitId: d.fromStorageUnitId,
+        toStorageUnitId: d.toStorageUnitId,
+        notes: d.notes,
+        variants: expanded.variants.map((v) => ({
+          variantItemId: v.variantItemId,
+          quantity: v.quantity
+        }))
+      });
+    } catch {
+      return {
+        success: false,
+        message: "Failed to create warehouse transfer line"
+      };
+    }
+
+    return redirect(path.to.warehouseTransfer(transferId));
+  }
+
+  const required = await requireVariantQuantitiesIfAttributeParent(client, {
+    parentItemId: d.itemId,
+    companyId,
+    variantQuantities,
+    quantity
+  });
+  if (!required.ok) {
+    return validationError({
+      fieldErrors: { quantity: required.error }
+    } as never);
+  }
 
   const availability = await checkTransferLineAvailability(client, {
     companyId,
     locationId: transfer.data?.fromLocationId ?? d.fromLocationId,
     itemId: d.itemId,
     fromStorageUnitId: d.fromStorageUnitId || null,
-    quantity: d.quantity
+    quantity
   });
   if (!availability.ok) {
     return validationError({
@@ -71,7 +164,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
     client,
     {
       ...d,
-
+      quantity,
+      variantQuantities,
       companyId: companyId,
       createdBy: userId
     }

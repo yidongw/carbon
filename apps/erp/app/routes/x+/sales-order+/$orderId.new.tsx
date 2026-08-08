@@ -167,7 +167,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const expanded = await expandStyleConfigToVariantLines(client, {
       parentItemId: d.itemId,
       companyId,
-      configuration
+      variantQuantities: configuration
     });
     if (!expanded.ok) {
       if (isOverlay) {
