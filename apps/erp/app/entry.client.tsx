@@ -41,3 +41,19 @@ startTransition(() => {
     </Fragment>
   );
 });
+
+// On kiosk/tablet displays (the native app, or a URL with ?kiosk=1), register a
+// service worker that caches immutable static assets (hashed JS/CSS, fonts,
+// images) so repeat loads are fast and resilient on weak networks. Scoped to
+// kiosk so normal desktop browsers are unaffected. Data/HTML still hit the
+// network — this only speeds up asset delivery, it is not full offline.
+if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+  const isKiosk =
+    new URLSearchParams(window.location.search).get("kiosk") === "1" ||
+    !!(window as any).Capacitor?.isNativePlatform?.();
+  if (isKiosk) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/serviceWorker.js").catch(() => {});
+    });
+  }
+}
