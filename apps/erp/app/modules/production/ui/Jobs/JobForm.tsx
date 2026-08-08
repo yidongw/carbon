@@ -35,7 +35,6 @@ import { useConfigurableItems } from "~/components/Form/Item";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
 import type { MethodItemType } from "~/modules/shared";
-import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type { jobStatus } from "../../production.models";
@@ -69,10 +68,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
   const { company } = useUser();
   const { carbon } = useCarbon();
-  const [items] = useItems();
-  // Company-scoped list of configurable styles, served via the service role so it
-  // works for every employee — the itemReplenishment table itself is gated by
-  // `parts_view`, which production-only users lack.
+  // Company-scoped list of attribute-backed items (qty grid), served so it
+  // works for every employee — including production-only users without parts_view.
   const configurableItemIds = useConfigurableItems();
   const [type, setType] = useState<MethodItemType>(
     initialValues.itemType ?? "Item"
@@ -131,12 +128,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     "single"
   );
 
-  // Whether the selected style needs a config table. Seeded instantly from the
-  // preloaded items store (parts users) and corrected by the configurable-items
-  // endpoint so the trigger also shows for production-only users.
-  const hasConfigurationParameters =
-    (items.find((i) => i.id === itemData.itemId)?.requiresConfiguration ??
-      false) || configurableItemIds.includes(itemData.itemId);
+  // Qty grid only for items with attribute selections (Style/Consumable
+  // variants). Legacy Part configurationParameters no longer open this UI.
+  const hasConfigurationParameters = configurableItemIds.includes(
+    itemData.itemId
+  );
 
   const isCustomer = permissions.is("customer");
   const isEditing = initialValues.id !== undefined;
@@ -526,7 +522,9 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           isReadOnly={configTableTotal > 0}
                           configTableTotal={configTableTotal}
                           minValue={0}
-                          hasConfigurationParameters={hasConfigurationParameters}
+                          hasConfigurationParameters={
+                            hasConfigurationParameters
+                          }
                           onOpenConfigTable={() => openConfigTable("bulk")}
                         />
 

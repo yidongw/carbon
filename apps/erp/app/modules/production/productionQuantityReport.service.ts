@@ -1,6 +1,5 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { SYSTEM_ATTRIBUTE } from "~/modules/items/itemAttribute.service";
 import {
   canApproveRequest,
   cancelApprovalRequestsForDocument,
@@ -161,26 +160,14 @@ async function validateConfiguredLinesHaveConfiguration(
   // Bundle jobs carry a fixed color/size and report a plain quantity.
   if (bundle.data) return { error: null };
 
-  // "Configured" = the item has configuration parameters OR Style attribute
-  // selections (color/size). New Styles no longer write configurationParameter
-  // rows, so union in the attribute-based Styles. Mirrors api+/items.configurable.ts.
-  const [params, selections] = await Promise.all([
-    client
-      .from("configurationParameter")
-      .select("id")
-      .eq("itemId", itemId)
-      .eq("companyId", args.companyId)
-      .limit(1),
-    (client as any)
-      .from("itemAttributeSelection")
-      .select("itemId")
-      .eq("itemId", itemId)
-      .eq("companyId", args.companyId)
-      .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size])
-      .limit(1)
-  ]);
-  const isConfigured =
-    (params.data?.length ?? 0) > 0 || (selections.data?.length ?? 0) > 0;
+  // Qty-grid configured = attribute selections only (not legacy configurationParameter).
+  const selections = await (client as any)
+    .from("itemAttributeSelection")
+    .select("itemId")
+    .eq("itemId", itemId)
+    .eq("companyId", args.companyId)
+    .limit(1);
+  const isConfigured = (selections.data?.length ?? 0) > 0;
   if (!isConfigured) return { error: null };
 
   for (const line of linesToCheck) {

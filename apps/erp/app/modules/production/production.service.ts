@@ -10,7 +10,6 @@ import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import { getDefaultStorageUnitForJob } from "../inventory";
-import { SYSTEM_ATTRIBUTE } from "../items/itemAttribute.service";
 import { getEmployeeJob } from "../people";
 import type {
   operationParameterValidator,
@@ -2098,30 +2097,17 @@ export async function getItemIdsWithConfigurationParameters(
 ): Promise<string[]> {
   if (itemIds.length === 0) return [];
 
-  // "Configured" = the item has configuration parameters OR Style attribute
-  // selections (color/size). New Styles no longer write configurationParameter
-  // rows, so union in the attribute-based Styles. Mirrors api+/items.configurable.ts.
-  const [params, selections] = await Promise.all([
-    client
-      .from("configurationParameter")
-      .select("itemId")
-      .in("itemId", itemIds)
-      .eq("companyId", companyId),
-    (client as any)
-      .from("itemAttributeSelection")
-      .select("itemId")
-      .in("itemId", itemIds)
-      .eq("companyId", companyId)
-      .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size])
-  ]);
+  // Qty-grid configured = attribute selections only (mirrors api+/items.configurable).
+  const selections = await (client as any)
+    .from("itemAttributeSelection")
+    .select("itemId")
+    .in("itemId", itemIds)
+    .eq("companyId", companyId);
 
   return [
-    ...new Set([
-      ...(params.data ?? []).map((row) => row.itemId),
-      ...((selections.data ?? []) as { itemId: string }[]).map(
-        (row) => row.itemId
-      )
-    ])
+    ...new Set(
+      ((selections.data ?? []) as { itemId: string }[]).map((row) => row.itemId)
+    )
   ];
 }
 
