@@ -239,7 +239,7 @@ msgid "A user records the expiry date on each batch or serial when the goods are
 msgstr "Пользователь записывает дату истечения срока для каждой партии или серийного номера при получении товара. Используйте, когда поставщики отправляют партии с разными датами истечения срока."
 
 msgid "A value with this code already exists"
-msgstr ""
+msgstr "Значение с таким кодом уже существует"
 
 msgid "Abilities"
 msgstr "Способности"
@@ -2018,7 +2018,7 @@ msgid "Code"
 msgstr "Код"
 
 msgid "Code is required"
-msgstr ""
+msgstr "Код обязателен"
 
 msgid "Collapse"
 msgstr "Свернуть"
@@ -10581,7 +10581,7 @@ msgid "No values available"
 msgstr "Нет доступных значений"
 
 msgid "No values yet."
-msgstr ""
+msgstr "Пока нет значений."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
@@ -10908,7 +10908,7 @@ msgid "Order determines how attribute values read in grids and chips (e.g. Color
 msgstr "Порядок определяет, как значения атрибутов читаются в сетках и чипах (например, Цвет · Размер)."
 
 msgid "Order determines how values appear in pickers and grids."
-msgstr ""
+msgstr "Порядок определяет, как значения отображаются в списках выбора и сетках."
 
 msgid "Order Multiple"
 msgstr "Кратность заказа"

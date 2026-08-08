@@ -239,7 +239,7 @@ msgid "A user records the expiry date on each batch or serial when the goods are
 msgstr "Ein Benutzer erfasst das Verfallsdatum für jede Charge oder Seriennummer, wenn die Waren eingehen. Verwenden Sie dies, wenn Lieferanten Chargen mit unterschiedlichen Verfallsdaten versenden."
 
 msgid "A value with this code already exists"
-msgstr ""
+msgstr "Ein Wert mit diesem Code existiert bereits"
 
 msgid "Abilities"
 msgstr "Fähigkeiten"
@@ -2018,7 +2018,7 @@ msgid "Code"
 msgstr "Code"
 
 msgid "Code is required"
-msgstr ""
+msgstr "Code ist erforderlich"
 
 msgid "Collapse"
 msgstr "Zusammenfassen"
@@ -10581,7 +10581,7 @@ msgid "No values available"
 msgstr "Keine Werte verfügbar"
 
 msgid "No values yet."
-msgstr ""
+msgstr "Noch keine Werte."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Es gibt keine Lagerbestände für dieses Artikelnummer auf dem Record. Sie können es trotzdem auswählen – der verfügbare Bestand wird negativ gehen, bis die Reconciliation durchgeführt wurde."
@@ -10908,7 +10908,7 @@ msgid "Order determines how attribute values read in grids and chips (e.g. Color
 msgstr "Bestellreihenfolge bestimmt, wie Attributwerte in Grids und Chips eingelesen werden (z.B. Farbe · Größe)."
 
 msgid "Order determines how values appear in pickers and grids."
-msgstr ""
+msgstr "Die Reihenfolge bestimmt, wie Werte in Auswahlfeldern und Grids erscheinen."
 
 msgid "Order Multiple"
 msgstr "Bestellmenge"

@@ -239,7 +239,7 @@ msgid "A user records the expiry date on each batch or serial when the goods are
 msgstr "एक उपयोगकर्ता प्रत्येक बैच या सीरीज पर समाप्ति तिथि दर्ज करता है जब माल प्राप्त होता है। जब आपूर्तिकर्ता विभिन्न समाप्ति तिथियों के साथ लॉट भेजते हैं तो इसका उपयोग करें।"
 
 msgid "A value with this code already exists"
-msgstr ""
+msgstr "इस कोड वाला मान पहले से मौजूद है"
 
 msgid "Abilities"
 msgstr "क्षमताएं"
@@ -2018,7 +2018,7 @@ msgid "Code"
 msgstr "कोड"
 
 msgid "Code is required"
-msgstr ""
+msgstr "कोड आवश्यक है"
 
 msgid "Collapse"
 msgstr "रोशनी घुमाparagus"
@@ -10584,7 +10584,7 @@ msgid "No values available"
 msgstr "कोई मूल्य उपलब्ध नहीं हैं"
 
 msgid "No values yet."
-msgstr ""
+msgstr "अभी कोई मान नहीं।"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "इस आइटम के लिए कोई स्टॉक की रिकॉर्ड नहीं है। आप इसे भी चयन कर सकते हैं — अवशेष तकनीकी विवरणित हो जाएगा तill गणना की मेल-मिलान हो।"
@@ -10911,7 +10911,7 @@ msgid "Order determines how attribute values read in grids and chips (e.g. Color
 msgstr "संग्रहों और टाइप्समेनट में प्रतीक के रंग · आका कैसे पढ़े जाते हैं (e.g. रंग · आका)."
 
 msgid "Order determines how values appear in pickers and grids."
-msgstr ""
+msgstr "क्रम यह निर्धारित करता है कि मान पिकर और ग्रिड में कैसे दिखेंगे।"
 
 msgid "Order Multiple"
 msgstr "ऑर्डर मल्टीपल"

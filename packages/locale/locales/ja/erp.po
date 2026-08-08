@@ -239,7 +239,7 @@ msgid "A user records the expiry date on each batch or serial when the goods are
 msgstr "ユーザーが商品を受け取る際に、各バッチまたはシリアルの有効期限を記録します。サプライヤーが異なる有効期限のロットを出荷する場合に使用します。"
 
 msgid "A value with this code already exists"
-msgstr ""
+msgstr "このコードの値は既に存在します"
 
 msgid "Abilities"
 msgstr "能力"
@@ -2018,7 +2018,7 @@ msgid "Code"
 msgstr "コード"
 
 msgid "Code is required"
-msgstr ""
+msgstr "コードは必須です"
 
 msgid "Collapse"
 msgstr "折りたたむ"
@@ -10581,7 +10581,7 @@ msgid "No values available"
 msgstr "No values available"
 
 msgid "No values yet."
-msgstr ""
+msgstr "まだ値がありません。"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "このアイテムについて倉庫在庫は登録されていません。それでもピックすることは可能です——現在数値は負になる可能性がありますが、調整されるまで如此です。"
@@ -10908,7 +10908,7 @@ msgid "Order determines how attribute values read in grids and chips (e.g. Color
 msgstr "注文はグリッドやチップで表示される属性値の順序を決定します（例：色・サイズ）。"
 
 msgid "Order determines how values appear in pickers and grids."
-msgstr ""
+msgstr "順序は、ピッカーやグリッドでの値の表示方法を決めます。"
 
 msgid "Order Multiple"
 msgstr "注文倍数"

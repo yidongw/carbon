@@ -240,7 +240,7 @@ msgid "A user records the expiry date on each batch or serial when the goods are
 msgstr "当货物接收时，用户需要记录每个批次或序列的失效日期。用于供应商发货带有不同失效日期的情况。"
 
 msgid "A value with this code already exists"
-msgstr ""
+msgstr "已存在使用此代码的值"
 
 msgid "Abilities"
 msgstr "能力"
@@ -2019,7 +2019,7 @@ msgid "Code"
 msgstr "代码"
 
 msgid "Code is required"
-msgstr ""
+msgstr "代码为必填项"
 
 msgid "Collapse"
 msgstr "折叠"
@@ -10582,7 +10582,7 @@ msgid "No values available"
 msgstr "暂无数据可用"
 
 msgid "No values yet."
-msgstr ""
+msgstr "暂无值。"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
@@ -10909,7 +10909,7 @@ msgid "Order determines how attribute values read in grids and chips (e.g. Color
 msgstr "顺序决定属性值在网格和标签中的显示方式（例如 颜色 · 尺码）。"
 
 msgid "Order determines how values appear in pickers and grids."
-msgstr ""
+msgstr "顺序决定属性值在选择器和网格中的显示方式。"
 
 msgid "Order Multiple"
 msgstr "订购多件"
