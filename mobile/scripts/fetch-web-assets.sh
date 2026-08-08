@@ -42,22 +42,33 @@ done | sort -u | while read -r a; do
   [ -n "$a" ] && [ ! -f "$DEST/$(basename "$a")" ] && curl -sf --max-time 40 -o "$DEST/$(basename "$a")" "$BASE$a" || true
 done
 
-# Root-level static files (logos, favicons, PWA icons, web manifest) referenced
-# from the app root — served at "/..." not "/assets/...", so bundle them too.
-STATICS=$(grep -oE '(src|href)="/[^"]+\.(svg|png|jpg|jpeg|webp|ico|gif|woff2?|ttf|webmanifest)"' \
-  "$work/login.html" 2>/dev/null | sed -E 's/.*"(\/[^"]+)"/\1/' | sort -u)
-STATICS="$STATICS /favicon.ico /favicon.svg /site.webmanifest /android-chrome-192x192.png /android-chrome-512x512.png"
-for s in $(echo "$STATICS" | tr ' ' '\n' | sort -u); do
-  [ -z "$s" ] && continue
-  mkdir -p "$WEBROOT$(dirname "$s")"
-  curl -sf --max-time 40 -o "$WEBROOT$s" "$BASE$s" || true
-done
-# Any icons the web manifest lists.
-if [ -f "$WEBROOT/site.webmanifest" ]; then
-  grep -oE '"/[^"]+\.(png|svg|ico|webp)"' "$WEBROOT/site.webmanifest" | tr -d '"' | sort -u | while read -r s; do
-    [ -n "$s" ] && [ ! -f "$WEBROOT$s" ] && { mkdir -p "$WEBROOT$(dirname "$s")"; curl -sf --max-time 40 -o "$WEBROOT$s" "$BASE$s" || true; }
-  done
+# --- Comprehensive static-file bundling: miss nothing --------------------------
+# Source of truth #1: EVERY file in apps/erp/public is served at the site root.
+# Download all of them from prod (guaranteed complete list, not scraped).
+REPO_PUBLIC="$HERE/../apps/erp/public"
+staticList="$work/statics.txt"; : > "$staticList"
+if [ -d "$REPO_PUBLIC" ]; then
+  ( cd "$REPO_PUBLIC" && find . -type f ! -path '*/.*' | sed 's#^\./#/#' ) >> "$staticList"
 fi
+# Source #2: the login HTML's root references (favicon/logo/manifest links).
+grep -ohE '(src|href|content)="/[^"]+\.[A-Za-z0-9]+"' "$work/login.html" 2>/dev/null \
+  | sed -E 's/.*"(\/[^"]+)"/\1/' | grep -vE '^/assets/' >> "$staticList" || true
+# Source #3: any same-origin static path referenced INSIDE the downloaded JS/CSS
+# (fonts, images, workers, etc. under /fonts, /images, /… — belt and suspenders).
+grep -rhoE '"/[A-Za-z0-9_./-]+\.(woff2?|ttf|otf|eot|png|svg|jpe?g|webp|gif|ico|json|txt|webmanifest|wasm|mp3|wav)"' "$DEST" 2>/dev/null \
+  | tr -d '"' | grep -vE '^/assets/' >> "$staticList" || true
+# Always include the standard PWA/icon set.
+printf '%s\n' /favicon.ico /favicon.svg /site.webmanifest /manifest.json \
+  /apple-touch-icon.png /android-chrome-192x192.png /android-chrome-512x512.png \
+  /robots.txt >> "$staticList"
+
+sort -u "$staticList" | while read -r s; do
+  [ -z "$s" ] && continue
+  [ -f "$WEBROOT$s" ] && continue
+  mkdir -p "$WEBROOT$(dirname "$s")"
+  curl -sf --max-time 60 -o "$WEBROOT$s" "$BASE$s" || rm -f "$WEBROOT$s"
+done
 
 rm -rf "$work"
-echo "Bundled $(find "$WEBROOT" -type f | wc -l) files total, $(du -sh "$WEBROOT" | cut -f1) into $WEBROOT"
+echo "Bundled $(find "$WEBROOT" -type f | wc -l) files total, $(du -sh "$WEBROOT" | cut -f1)"
+echo "Root static files:"; find "$WEBROOT" -maxdepth 1 -type f -exec basename {} \; | sort | tr '\n' ' '; echo
