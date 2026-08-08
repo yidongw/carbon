@@ -51,6 +51,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import StorageUnit from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
+import { StyleQuantityCell } from "~/components/StyleQuantityCell";
 import { useFilters } from "~/components/Table/components/Filter/useFilters";
 import { useUrlParams } from "~/hooks";
 import {
@@ -146,12 +147,26 @@ const InventoryTable = memo(
         {
           accessorKey: "quantityOnHand",
           header: t`On Hand`,
-          cell: ({ row }) =>
-            row.original.itemTrackingType === "Non-Inventory" ? (
-              <TrackingTypeIcon type="Non-Inventory" />
-            ) : (
-              formatNumber(row.original.quantityOnHand)
-            ),
+          cell: ({ row }) => {
+            if (row.original.itemTrackingType === "Non-Inventory")
+              return <TrackingTypeIcon type="Non-Inventory" />;
+            // Every Style parent gets a breakdown trigger; when stock is
+            // untagged (on the parent ledger, no per-SKU split) the modal
+            // auto-pads a single total row.
+            if (
+              row.original.type === "Style" &&
+              row.original.quantityOnHand > 0
+            ) {
+              return (
+                <StyleQuantityCell
+                  value={row.original.quantityOnHand}
+                  breakdown={row.original.breakdown ?? []}
+                  title={row.original.readableIdWithRevision}
+                />
+              );
+            }
+            return formatNumber(row.original.quantityOnHand);
+          },
           meta: {
             icon: <LuPackage />,
             renderTotal: true,
@@ -161,7 +176,21 @@ const InventoryTable = memo(
         {
           accessorKey: "toShip",
           header: t`To Ship`,
-          cell: ({ row }) => formatNumber(row.original.toShip ?? 0),
+          cell: ({ row }) => {
+            const { toShip, type, readableIdWithRevision } = row.original;
+            const value = toShip ?? 0;
+            // No per-SKU split for transfers; the modal shows the total.
+            if (type === "Style" && value > 0) {
+              return (
+                <StyleQuantityCell
+                  value={value}
+                  breakdown={[]}
+                  title={readableIdWithRevision}
+                />
+              );
+            }
+            return formatNumber(value);
+          },
           meta: {
             icon: <LuMoveDown className="text-red-500" />,
             renderTotal: true,
@@ -171,7 +200,20 @@ const InventoryTable = memo(
         {
           accessorKey: "toReceive",
           header: t`To Receive`,
-          cell: ({ row }) => formatNumber(row.original.toReceive ?? 0),
+          cell: ({ row }) => {
+            const { toReceive, type, readableIdWithRevision } = row.original;
+            const value = toReceive ?? 0;
+            if (type === "Style" && value > 0) {
+              return (
+                <StyleQuantityCell
+                  value={value}
+                  breakdown={[]}
+                  title={readableIdWithRevision}
+                />
+              );
+            }
+            return formatNumber(value);
+          },
           meta: {
             icon: <LuMoveUp className="text-emerald-500" />,
             renderTotal: true,

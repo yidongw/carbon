@@ -916,6 +916,55 @@ export async function getItemStorageUnitQuantities(
   });
 }
 
+/**
+ * Storage-unit quantities for a Style item: on this model stock lives on the
+ * variant SKUs, so aggregate the per-storage-unit rows across the parent and
+ * all its variants (one query per SKU, concatenated). Same row shape as
+ * getItemStorageUnitQuantities.
+ */
+export async function getStyleStorageUnitQuantities(
+  client: SupabaseClient<Database>,
+  parentItemId: string,
+  companyId: string,
+  locationId: string
+) {
+  const db = client as SupabaseClient<Database & { public: any }>;
+  const variants = await db
+    .from("itemVariant")
+    .select("variantItemId, valuesKey")
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId);
+  const variantList = (variants.data ?? []) as {
+    variantItemId: string;
+    valuesKey: string | null;
+  }[];
+  // Tag each storage-unit row with the SKU it belongs to so the UI can
+  // aggregate rows by storage unit and still break them down per variant.
+  const valuesKeyById = new Map<string, string | null>(
+    variantList.map((v) => [v.variantItemId, v.valuesKey])
+  );
+  const ids = [parentItemId, ...variantList.map((v) => v.variantItemId)];
+  const results = await Promise.all(
+    ids.map((id) =>
+      client.rpc("get_item_quantities_by_tracking_id", {
+        item_id: id,
+        company_id: companyId,
+        location_id: locationId
+      })
+    )
+  );
+  const data = results.flatMap((r, i) => {
+    const valuesKey = valuesKeyById.get(ids[i]) ?? null;
+    const skuLabel = valuesKey ? valuesKey.replace("|", " · ") : null;
+    return ((r.data ?? []) as Record<string, unknown>[]).map((row) => ({
+      ...row,
+      valuesKey,
+      skuLabel
+    }));
+  });
+  return { data, error: null };
+}
+
 export async function getItemSupply(
   client: SupabaseClient<Database>,
   {
