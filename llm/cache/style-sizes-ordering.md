@@ -27,12 +27,12 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Read:** `getConfigurationParameters` for Style synthesizes a `valuesKey` list param (not separate Color/Size matrix columns). Legacy Color×Size `job.configuration` matrices are dual-read into combo rows via `configTableToComboRows` (job qty editor, production qty splitMode, cutting proposal). Legacy `configurationParameter` rows on Styles are ignored.
 
-**Configurable itemIds:** `api+/items.configurable.ts` unions parameter itemIds with attribute-selection itemIds.
+**Configurable itemIds (qty grid):** `api+/items.configurable.ts` returns attribute-selection itemIds only. Legacy `configurationParameter` items use `?for=methods` (Make Method tools). Job/MWO Quantity no longer opens from old Part config params or `requiresConfiguration`.
 
 Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md` § Style variant SKUs.
 
 **Bundle WO:** view exposes `valuesKey`, `attributeLabel`, `attributeValues` (table no longer has colorCode/sizeCode). Labels come from the variant’s attribute map.
 
-**Jobs / Master WO:** qty stored on backing `job.configuration` JSON. Split Batch / cutting split rows persist `masterWorkOrderSplitRow.valuesKey` (colorCode/sizeCode dual-written for garment 2-attr only).
+**Jobs / Master WO:** Style planned qty = `jobVariantQuantity(jobId, variantItemId, quantity)`. `job.configuration` = Part method params only (flat JSON). Create-job Part Configure wizard restored. Qty grid = attribute selections only.
 
 **MES:** bundle pickup/report/print use `attributeLabel` / `valuesKey` (not colorCode/sizeCode).

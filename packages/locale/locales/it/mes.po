@@ -3154,6 +3154,9 @@ msgstr "Fallito salvataggio intestazione"
 msgid "Failed to save item"
 msgstr "Fallito salvataggio elemento"
 
+msgid "Failed to save job variant quantities"
+msgstr ""
+
 msgid "Failed to save journal entry"
 msgstr "Fallito salvataggio del giornaletto"
 
@@ -3168,6 +3171,9 @@ msgstr "Fallito salvataggio piano campionamento"
 
 msgid "Failed to save section"
 msgstr "Fallito salvataggio sezione"
+
+msgid "Failed to save variant quantities"
+msgstr ""
 
 msgid "Failed to search users"
 msgstr "Fallito ricerca utenti"

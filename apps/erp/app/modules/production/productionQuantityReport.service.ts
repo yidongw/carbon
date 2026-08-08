@@ -1,6 +1,5 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { SYSTEM_ATTRIBUTE } from "~/modules/items/itemAttribute.service";
 import {
   canApproveRequest,
   cancelApprovalRequestsForDocument,
@@ -11,6 +10,10 @@ import {
   computeJobConfigTableTotal,
   reportsExceedConfigPlan
 } from "./jobConfiguration";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "./jobVariantQuantity.service";
 import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
@@ -161,26 +164,14 @@ async function validateConfiguredLinesHaveConfiguration(
   // Bundle jobs carry a fixed color/size and report a plain quantity.
   if (bundle.data) return { error: null };
 
-  // "Configured" = the item has configuration parameters OR Style attribute
-  // selections (color/size). New Styles no longer write configurationParameter
-  // rows, so union in the attribute-based Styles. Mirrors api+/items.configurable.ts.
-  const [params, selections] = await Promise.all([
-    client
-      .from("configurationParameter")
-      .select("id")
-      .eq("itemId", itemId)
-      .eq("companyId", args.companyId)
-      .limit(1),
-    (client as any)
-      .from("itemAttributeSelection")
-      .select("itemId")
-      .eq("itemId", itemId)
-      .eq("companyId", args.companyId)
-      .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size])
-      .limit(1)
-  ]);
-  const isConfigured =
-    (params.data?.length ?? 0) > 0 || (selections.data?.length ?? 0) > 0;
+  // Qty-grid configured = attribute selections only (not legacy configurationParameter).
+  const selections = await (client as any)
+    .from("itemAttributeSelection")
+    .select("itemId")
+    .eq("itemId", itemId)
+    .eq("companyId", args.companyId)
+    .limit(1);
+  const isConfigured = (selections.data?.length ?? 0) > 0;
   if (!isConfigured) return { error: null };
 
   for (const line of linesToCheck) {
@@ -222,7 +213,7 @@ export async function validateProductionQuantityRemaining(
   );
   const newProductionLines = args.lines.filter((l) => l.type === "Production");
 
-  const [operation, existing, job] = await Promise.all([
+  const [operation, existing] = await Promise.all([
     client
       .from("jobOperation")
       .select("targetQuantity, operationQuantity")
@@ -234,13 +225,7 @@ export async function validateProductionQuantityRemaining(
       .select("quantity, type, configuration")
       .eq("jobOperationId", args.jobOperationId)
       .eq("companyId", args.companyId)
-      .is("invalidatedAt", null),
-    client
-      .from("job")
-      .select("configuration")
-      .eq("id", args.jobId)
-      .eq("companyId", args.companyId)
-      .single()
+      .is("invalidatedAt", null)
   ]);
 
   const existingRows = existing.data ?? [];
@@ -263,8 +248,16 @@ export async function validateProductionQuantityRemaining(
     }
   }
 
-  // (1) Config-param plan cap (per color/size cell, produced units only).
-  const planned = job.data?.configuration ?? null;
+  // (1) Config-param plan cap (per variant cell, produced units only).
+  const plannedQty = await getJobVariantQuantities(
+    client,
+    args.jobId,
+    args.companyId
+  );
+  const planned =
+    plannedQty.data.length > 0
+      ? jobVariantQuantitiesToConfigTable(plannedQty.data)
+      : null;
   const reportedConfigs = [
     ...existingRows
       .filter((r) => r.type === "Production")

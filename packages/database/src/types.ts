@@ -16336,6 +16336,78 @@ export type Database = {
           },
         ]
       }
+      jobVariantQuantity: {
+        Row: {
+          companyId: string
+          createdAt: string
+          createdBy: string
+          id: string
+          jobId: string
+          quantity: number
+          updatedAt: string | null
+          updatedBy: string | null
+          variantItemId: string
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          id?: string
+          jobId: string
+          quantity: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+          variantItemId: string
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          id?: string
+          jobId?: string
+          quantity?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+          variantItemId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobVariantQuantity_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobVariantQuantity_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobVariantQuantity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobVariantQuantity_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobVariantQuantity_variantItemId_fkey"
+            columns: ["variantItemId"]
+            isOneToOne: false
+            referencedRelation: "item"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       jobFavorite: {
         Row: {
           jobId: string

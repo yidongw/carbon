@@ -15,6 +15,10 @@ import {
   masterWorkOrderValidator
 } from "~/modules/production";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  isConfigTableConfiguration,
+  replaceJobVariantQuantitiesFromConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -69,14 +73,19 @@ export async function action({ request }: ActionFunctionArgs) {
     ...rest
   } = validation.data;
 
-  // The config table (color/size plan) drives the quantity: its total.
+  // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
   let configuration: Record<string, unknown> | undefined;
+  let styleConfigTable: Record<string, unknown> | undefined;
   let quantity = rawQuantity;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      configuration = parsed;
-      quantity = jobConfigurationUpdateFields(parsed).quantity;
+      if (isConfigTableConfiguration(parsed)) {
+        styleConfigTable = parsed;
+        quantity = jobConfigurationUpdateFields(parsed).quantity;
+      } else {
+        configuration = parsed;
+      }
     } catch {
       // invalid JSON — keep the typed quantity
     }
@@ -98,6 +107,25 @@ export async function action({ request }: ActionFunctionArgs) {
         error(insert.error, "Failed to create master work order")
       )
     );
+  }
+
+  if (styleConfigTable && insert.data?.jobId) {
+    const replaced = await replaceJobVariantQuantitiesFromConfigTable(client, {
+      jobId: insert.data.jobId,
+      parentItemId: rest.itemId,
+      companyId,
+      userId,
+      configuration: styleConfigTable
+    });
+    if (replaced.error) {
+      return data(
+        { ok: false as const },
+        await flash(
+          request,
+          error(replaced.error, "Failed to save variant quantities")
+        )
+      );
+    }
   }
 
   if (isOverlay) {

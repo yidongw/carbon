@@ -96,7 +96,7 @@ const MakeMethodTools = ({
   }, [fetcher.data?.error]);
 
   const [includeInactive, setIncludeInactive] = useState<boolean>(true);
-  const configurableItemIds = useConfigurableItems();
+  const configurableItemIds = useConfigurableItems(true);
 
   const getMethodModal = useDisclosure();
   const saveMethodModal = useDisclosure();

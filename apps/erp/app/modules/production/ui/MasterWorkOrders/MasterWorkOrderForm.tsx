@@ -31,7 +31,6 @@ import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";
 import { useDeadlineTypeLabel } from "~/modules/production/ui/Jobs/jobLabels";
 import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
-import { useItems } from "~/stores";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 
 type MasterWorkOrderFormProps = {
@@ -49,22 +48,16 @@ const MasterWorkOrderForm = ({
   const { t } = useLingui();
   const configModal = useConfigTableModal();
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
-  const [items] = useItems();
-  // Company-scoped list of configurable styles, served via the service role so it
-  // works for every employee — the itemReplenishment table itself is gated by
-  // `parts_view`, which production-only users lack.
+  // Company-scoped attribute-backed items for the qty grid.
   const configurableItemIds = useConfigurableItems();
 
   const isDisabled = !permissions.can("create", "production");
 
   const [itemId, setItemId] = useState(initialValues.itemId ?? "");
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
-  // Whether the selected style needs a config table. Seeded instantly from the
-  // preloaded items store (parts users) and corrected by the configurable-items
-  // endpoint so the trigger also shows for production-only users.
-  const hasConfigurationParameters =
-    (items.find((i) => i.id === itemId)?.requiresConfiguration ?? false) ||
-    configurableItemIds.includes(itemId);
+  // Qty grid only for items with attribute selections — not legacy Part
+  // configurationParameters.
+  const hasConfigurationParameters = configurableItemIds.includes(itemId);
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(null);
   const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
     string[]

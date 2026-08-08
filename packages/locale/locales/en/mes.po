@@ -3146,6 +3146,9 @@ msgstr "Failed to save header"
 msgid "Failed to save item"
 msgstr "Failed to save item"
 
+msgid "Failed to save job variant quantities"
+msgstr "Failed to save job variant quantities"
+
 msgid "Failed to save journal entry"
 msgstr "Failed to save journal entry"
 
@@ -3160,6 +3163,9 @@ msgstr "Failed to save sampling plan"
 
 msgid "Failed to save section"
 msgstr "Failed to save section"
+
+msgid "Failed to save variant quantities"
+msgstr "Failed to save variant quantities"
 
 msgid "Failed to search users"
 msgstr "Failed to search users"

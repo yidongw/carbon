@@ -521,13 +521,17 @@ Item.displayName = "Item";
 
 export default Item;
 
-export const useConfigurableItems = () => {
+/** @param forMethods — legacy configurationParameter items (Make Method tools). */
+export const useConfigurableItems = (forMethods: boolean = false) => {
   const configurableItemsLoader = useFetcher<{
     data: { itemId: string }[] | null;
   }>();
 
   useMount(() => {
-    configurableItemsLoader.load(path.to.api.itemConfigurable);
+    const url = forMethods
+      ? `${path.to.api.itemConfigurable}?for=methods`
+      : path.to.api.itemConfigurable;
+    configurableItemsLoader.load(url);
   });
 
   const configurableItemIds = useMemo(() => {

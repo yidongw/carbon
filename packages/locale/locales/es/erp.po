@@ -7088,6 +7088,9 @@ msgstr "Falló al guardar encabezado"
 msgid "Failed to save item"
 msgstr "Falló al guardar el ítem"
 
+msgid "Failed to save job variant quantities"
+msgstr ""
+
 msgid "Failed to save journal entry"
 msgstr "Falló al guardar el entrada diario"
 
@@ -7102,6 +7105,9 @@ msgstr "Falló al guardar el plan de muestreo"
 
 msgid "Failed to save section"
 msgstr "Falló al guardar sección"
+
+msgid "Failed to save variant quantities"
+msgstr ""
 
 msgid "Failed to search users"
 msgstr "Falló la búsqueda de usuarios"

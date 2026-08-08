@@ -5,10 +5,7 @@ import type { Json } from "@carbon/database";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import {
-  getConfigurationParameters,
-  getStyleColorList
-} from "~/modules/items";
+import { getConfigurationParameters, getStyleColorList } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
   getJob,
@@ -17,11 +14,15 @@ import {
 } from "~/modules/production";
 import {
   buildConfigTableActionResponse,
-  jobConfigurationUpdateFields,
   parseConfigurationFormValue
 } from "~/modules/production/configTableOverlay.server";
 import type { ConfigRow } from "~/modules/production/jobConfiguration";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable,
+  replaceJobVariantQuantitiesFromConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -83,14 +84,12 @@ export async function loader({
   );
   if (parameters.length === 0) return null;
 
-  const existingConfig = job.data.configuration as Record<
-    string,
-    unknown
-  > | null;
-  const configTable = existingConfig?.configTable;
-  const initialRows = Array.isArray(configTable)
-    ? (configTable as ConfigRow[])
-    : undefined;
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  const fromTable = jobVariantQuantitiesToConfigTable(planned.data ?? []);
+  const initialRows =
+    fromTable.configTable.length > 0
+      ? (fromTable.configTable as ConfigRow[])
+      : undefined;
 
   const historyResult = await getJobConfigurationHistory(
     client,
@@ -153,6 +152,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked job. Reopen it first."
   });
 
+  if (!job.data?.itemId) {
+    return data(
+      { ok: false as const, error: "Job has no item" },
+      await flash(request, error("Job has no item", "Update failed"))
+    );
+  }
+
   const adjustment = parseConfigurationFormValue(
     (await request.formData()).get("adjustment")
   );
@@ -176,7 +182,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const merged = applyConfigAdjustment(job.data?.configuration, adjustment);
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  const currentConfiguration = jobVariantQuantitiesToConfigTable(
+    planned.data ?? []
+  );
+
+  const merged = applyConfigAdjustment(currentConfiguration, adjustment);
   if (merged.hasNegative) {
     return data(
       {
@@ -190,22 +201,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const update = await client
-    .from("job")
-    .update({
-      ...jobConfigurationUpdateFields(merged.configuration),
-      updatedBy: userId,
-      updatedAt: new Date().toISOString()
-    })
-    .eq("id", jobId)
-    .eq("companyId", companyId);
-
-  if (update.error) {
+  const replaced = await replaceJobVariantQuantitiesFromConfigTable(client, {
+    jobId,
+    parentItemId: job.data.itemId,
+    companyId,
+    userId,
+    configuration: merged.configuration
+  });
+  if (replaced.error) {
     return data(
-      { ok: false as const, error: update.error.message },
+      { ok: false as const, error: replaced.error.message },
       await flash(
         request,
-        error(update.error, "Failed to update configuration")
+        error(replaced.error, "Failed to update configuration")
       )
     );
   }
@@ -228,10 +236,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  // The quantity change is already committed; recalculation is a background
-  // side effect. Don't let a failure to enqueue it turn the committed mutation
-  // into a 500 (which would also prompt the user to retry and double-record
-  // the adjustment in history).
   try {
     await trigger("recalculate", {
       type: "jobRequirements",
@@ -246,6 +250,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  // Toast is shown client-side when the job config overlay closes (translated).
   return data(buildConfigTableActionResponse(merged.configuration));
 }
