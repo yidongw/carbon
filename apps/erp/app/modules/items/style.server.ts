@@ -3,11 +3,7 @@ import { sql } from "kysely";
 import type { z } from "zod";
 import { getDatabaseClient } from "~/services/database.server";
 import { sanitize } from "~/utils/supabase";
-import {
-  SYSTEM_ATTRIBUTE,
-  syncItemVariantsFromSelections,
-  syncStyleVariantsFromAssignments
-} from "./itemAttribute.service";
+import { syncItemVariantsFromSelections } from "./itemAttribute.service";
 import {
   upsertItemDefaultPickMethod,
   upsertItemShelfLife
@@ -365,36 +361,6 @@ async function insertStyleRecord(
   if (result.error) throw result.error;
 }
 
-/**
- * Resolve Color/Size attribute value ids currently selected on a Style item.
- */
-async function getStyleCatalogIdsFromSelections(
-  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
-  args: { itemId: string; companyId: string }
-): Promise<{ styleColorIds: string[]; styleSizeIds: string[] }> {
-  const db = client as any;
-  const { data: selections, error } = await db
-    .from("itemAttributeSelection")
-    .select("attributeId, attributeValueId")
-    .eq("itemId", args.itemId)
-    .eq("companyId", args.companyId)
-    .in("attributeId", [SYSTEM_ATTRIBUTE.color, SYSTEM_ATTRIBUTE.size]);
-  if (error) throw error;
-
-  const styleColorIds: string[] = [];
-  const styleSizeIds: string[] = [];
-  for (const row of selections ?? []) {
-    if (row.attributeId === SYSTEM_ATTRIBUTE.color) {
-      styleColorIds.push(row.attributeValueId);
-    }
-    if (row.attributeId === SYSTEM_ATTRIBUTE.size) {
-      styleSizeIds.push(row.attributeValueId);
-    }
-  }
-
-  return { styleColorIds, styleSizeIds };
-}
-
 export async function upsertStyle(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   style: StylePayload
@@ -538,66 +504,4 @@ export async function upsertStyle(
     data: null,
     error: new Error("upsertStyle only supports creating a style")
   };
-}
-
-// Add-only: append colors/sizes to an existing style. Editing/removing is
-// intentionally unsupported — a style's color/size *codes* are snapshotted into
-// production data (bundleWorkOrder, productionQuantity.configuration) with no
-// FK, so renaming/removing them would orphan that history.
-// Adding is safe: merge into attribute selections + variant SKUs.
-export async function addStyleColorsAndSizes(
-  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
-  args: {
-    itemId: string;
-    companyId: string;
-    userId: string;
-    styleColorIds: string[];
-    styleSizeIds: string[];
-  }
-): Promise<{ data: { id: string } | null; error: Error | null }> {
-  const { itemId, companyId, userId, styleColorIds, styleSizeIds } = args;
-
-  if (styleColorIds.length === 0 && styleSizeIds.length === 0) {
-    return { data: { id: itemId }, error: null };
-  }
-
-  const styleClient = client as any;
-
-  const itemRow = await styleClient
-    .from("item")
-    .select("readableId")
-    .eq("id", itemId)
-    .eq("companyId", companyId)
-    .single();
-  if (itemRow.error || !itemRow.data?.readableId) {
-    return { data: null, error: toError(itemRow.error, "Style not found") };
-  }
-
-  try {
-    const existing = await getStyleCatalogIdsFromSelections(client, {
-      itemId,
-      companyId
-    });
-    const allColorIds = [
-      ...new Set([...existing.styleColorIds, ...styleColorIds])
-    ];
-    const allSizeIds = [
-      ...new Set([...existing.styleSizeIds, ...styleSizeIds])
-    ];
-    const variantSync = await syncStyleVariantsFromAssignments(client, {
-      itemId,
-      companyId,
-      userId,
-      styleColorIds: allColorIds,
-      styleSizeIds: allSizeIds
-    });
-    if (variantSync.error) throw variantSync.error;
-  } catch (error) {
-    return {
-      data: null,
-      error: toError(error, "Failed to add style colors and sizes")
-    };
-  }
-
-  return { data: { id: itemId }, error: null };
 }

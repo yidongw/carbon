@@ -29,8 +29,6 @@ import type {
   getPickMethods,
   getServices,
   getStyle,
-  getStyleColors,
-  getStyleSizes,
   getStyles,
   getSupplierParts,
   getTool,
@@ -198,14 +196,6 @@ export type StyleSample = Style & {
   sampledVariantCount: number;
   samples: StyleSampleLine[];
 };
-
-export type StyleColor = NonNullable<
-  Awaited<ReturnType<typeof getStyleColors>>["data"]
->[number];
-
-export type StyleSize = NonNullable<
-  Awaited<ReturnType<typeof getStyleSizes>>["data"]
->[number];
 
 export type StyleSummary = NonNullable<
   Awaited<ReturnType<typeof getStyle>>

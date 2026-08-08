@@ -7,14 +7,12 @@ import {
 } from "@carbon/react";
 import { useDateFormatter } from "./useDateFormatter";
 import { useFormatPersonName } from "./useFormatPersonName";
-import { useLocalizeColor } from "./useLocalizeColor";
 import { useRealtime } from "./useRealtime";
 import { useUser } from "./useUser";
 
 export {
   useDateFormatter,
   useFormatPersonName,
-  useLocalizeColor,
   useNanoStore,
   useOptimisticLocation,
   usePrinting,

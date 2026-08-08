@@ -244,72 +244,6 @@ export async function getGarmentAttributeValueList(
   }
 }
 
-/**
- * Write itemAttributeSelection rows for a Style from Color/Size attribute
- * value ids (styleColorIds/styleSizeIds form fields now carry value ids).
- */
-export async function syncStyleAttributeSelections(
-  client: Db,
-  args: {
-    itemId: string;
-    companyId: string;
-    userId: string;
-    styleColorIds: string[];
-    styleSizeIds: string[];
-  }
-): Promise<{ error: Error | null }> {
-  const db = client as any;
-  const { itemId, companyId, userId, styleColorIds, styleSizeIds } = args;
-
-  try {
-    await db
-      .from("item")
-      .update({ attributeSetId: SYSTEM_ATTRIBUTE_SET.garment })
-      .eq("id", itemId)
-      .eq("companyId", companyId);
-
-    await db
-      .from("itemAttributeSelection")
-      .delete()
-      .eq("itemId", itemId)
-      .eq("companyId", companyId);
-
-    const insertSelections = async (
-      attributeId: string,
-      valueIds: string[]
-    ) => {
-      if (valueIds.length === 0) return;
-      const { data: values, error: valErr } = await db
-        .from("itemAttributeValue")
-        .select("id, attributeId")
-        .in("id", valueIds)
-        .eq("attributeId", attributeId);
-      if (valErr) throw valErr;
-      for (const v of values ?? []) {
-        const { error: selErr } = await db
-          .from("itemAttributeSelection")
-          .insert({
-            itemId,
-            attributeId,
-            attributeValueId: v.id,
-            companyId,
-            createdBy: userId
-          });
-        if (selErr) throw selErr;
-      }
-    };
-
-    await insertSelections(SYSTEM_ATTRIBUTE.color, styleColorIds);
-    await insertSelections(SYSTEM_ATTRIBUTE.size, styleSizeIds);
-
-    return { error: null };
-  } catch (error) {
-    return {
-      error: toError(error, "Failed to sync style attribute selections")
-    };
-  }
-}
-
 type AttrValue = {
   id: string;
   attributeId: string;
@@ -609,27 +543,6 @@ export async function syncItemVariants(
       error: toError(error, "Failed to sync item variants")
     };
   }
-}
-
-/** Sync Style Color/Size attribute value ids into selections + child SKUs */
-export async function syncStyleVariantsFromAssignments(
-  client: Db,
-  args: {
-    itemId: string;
-    companyId: string;
-    userId: string;
-    styleColorIds: string[];
-    styleSizeIds: string[];
-  }
-): Promise<{ error: Error | null }> {
-  const sel = await syncStyleAttributeSelections(client, args);
-  if (sel.error) return sel;
-  const variants = await syncItemVariants(client, {
-    parentItemId: args.itemId,
-    companyId: args.companyId,
-    userId: args.userId
-  });
-  return { error: variants.error };
 }
 
 /**
