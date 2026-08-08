@@ -52,7 +52,7 @@ export type SynthesizedConfigurationParameter = {
  *
  * Returns one list param with key `valuesKey` whose options are the cartesian
  * product of selected attribute codes in **set order** (pipe-joined), matching
- * `itemVariant.valuesKey`. Expand dual-reads legacy Color×Size matrices.
+ * `itemVariant.valuesKey`.
  */
 export async function getStyleConfigurationParametersFromAttributes(
   client: Db,
@@ -163,93 +163,49 @@ export async function getStyleConfigurationParametersFromAttributes(
 }
 
 /**
- * List Color or Size attribute values for Style pickers (system + company).
- * Shape mirrors legacy styleColor / styleSize list rows so form components
- * keep working with the same MultiSelect mapping.
+ * All attribute-value `code -> name` for a company (its own values + system
+ * values, company-scoped winning on code collisions). Attribute-agnostic —
+ * feeds the generic config/order-line label maps so any attribute's values
+ * render as names, not just Color, for any set (Garment, Shoes, ...).
  */
-export async function getGarmentAttributeValueList(
+export async function getAttributeValueNames(
   client: Db,
-  args: {
-    attributeId: typeof SYSTEM_ATTRIBUTE.color | typeof SYSTEM_ATTRIBUTE.size;
-    companyId: string;
-  }
+  companyId: string
 ): Promise<{
-  data: Array<{
-    id: string;
-    colorCode?: string;
-    colorName?: string;
-    sizeCode?: string;
-    sizeName?: string;
-    sortOrder: number;
-  }> | null;
+  data: Array<{ code: string; name: string }>;
   error: Error | null;
 }> {
   const db = client as any;
   try {
     const { data, error } = await db
       .from("itemAttributeValue")
-      .select("id, code, name, sortOrder, companyId")
-      .eq("attributeId", args.attributeId)
-      .or(`companyId.eq.${args.companyId},companyId.is.null`)
-      .order("sortOrder", { ascending: true })
-      .order("code", { ascending: true });
+      .select("code, name, companyId")
+      .or(`companyId.eq.${companyId},companyId.is.null`);
     if (error) throw error;
 
     // Prefer company-scoped rows when the same code exists as a system value.
     const byCode = new Map<
       string,
-      {
-        id: string;
-        code: string;
-        name: string | null;
-        sortOrder: number;
-        companyId: string | null;
-      }
+      { name: string; companyId: string | null }
     >();
     for (const v of data ?? []) {
+      if (!v.code) continue;
       const existing = byCode.get(v.code);
       if (!existing || (v.companyId && !existing.companyId)) {
-        byCode.set(v.code, v);
+        byCode.set(v.code, { name: v.name ?? v.code, companyId: v.companyId });
       }
     }
-
-    const rows = [...byCode.values()].map((v) =>
-      args.attributeId === SYSTEM_ATTRIBUTE.color
-        ? {
-            id: v.id,
-            colorCode: v.code,
-            colorName: v.name ?? v.code,
-            sortOrder: v.sortOrder ?? 100
-          }
-        : {
-            id: v.id,
-            sizeCode: v.code,
-            sizeName: v.name ?? v.code,
-            sortOrder: v.sortOrder ?? 100
-          }
-    );
-    rows.sort(
-      (a, b) =>
-        (a.sortOrder ?? 100) - (b.sortOrder ?? 100) ||
-        (a.colorCode ?? a.sizeCode ?? "").localeCompare(
-          b.colorCode ?? b.sizeCode ?? ""
-        )
-    );
-    return { data: rows, error: null };
+    return {
+      data: [...byCode.entries()].map(([code, v]) => ({ code, name: v.name })),
+      error: null
+    };
   } catch (error) {
     return {
-      data: null,
-      error: toError(error, "Failed to load attribute values")
+      data: [],
+      error: toError(error, "Failed to load attribute value names")
     };
   }
 }
-
-type AttrValue = {
-  id: string;
-  attributeId: string;
-  code: string;
-  name: string;
-};
 
 /**
  * Create missing child SKU items for a parent from its attribute selections.
@@ -1528,28 +1484,6 @@ export async function syncItemVariantsFromSelections(
   return { error: variants.error };
 }
 
-function firstAttributeCode(...vals: unknown[]): string | null {
-  for (const v of vals) {
-    if (typeof v === "string" && v.length > 0) return v;
-  }
-  return null;
-}
-
-function rowValueForAttrKey(
-  row: Record<string, unknown>,
-  attrCode: string
-): string | null {
-  const lower = attrCode.toLowerCase();
-  return firstAttributeCode(
-    row[attrCode],
-    row[lower],
-    row[`${lower}Code`],
-    // Legacy Style config tables used lowercase "color" even when the
-    // attribute code is "Color".
-    lower === "color" ? row.colorCode : null
-  );
-}
-
 /**
  * Load every variant SKU of a parent, keyed by valuesKey (codes joined by `|`
  * in attribute-set order).
@@ -1581,40 +1515,10 @@ async function loadVariantsByValuesKey(
   return map;
 }
 
-async function getParentSetAttributeCodes(
-  client: Db,
-  parentItemId: string,
-  companyId: string
-): Promise<string[]> {
-  const db = client as any;
-  const { data: item, error: itemErr } = await db
-    .from("item")
-    .select("attributeSetId")
-    .eq("id", parentItemId)
-    .eq("companyId", companyId)
-    .maybeSingle();
-  if (itemErr) throw itemErr;
-  if (!item?.attributeSetId) return [];
-
-  const { data: setAttrs, error: setAttrErr } = await db
-    .from("itemAttributeSetAttribute")
-    .select("sortOrder, itemAttribute:attributeId(code)")
-    .eq("attributeSetId", item.attributeSetId)
-    .order("sortOrder", { ascending: true });
-  if (setAttrErr) throw setAttrErr;
-
-  return ((setAttrs ?? []) as Array<{ itemAttribute: { code: string } | null }>)
-    .map((r) => r.itemAttribute?.code)
-    .filter((c): c is string => !!c);
-}
-
 /**
  * Expand a Style/Consumable configTable into { variantItemId, quantity } rows.
- * Matches variants by valuesKey (attribute codes in set order).
- *
- * Dual-read:
- * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey` → use directly.
- * - Legacy matrix: last set attribute = qty columns; earlier = row descriptors.
+ * Combo-only: each row is `{ valuesKey, Quantities }`; variants are matched by
+ * valuesKey (attribute codes in set order).
  */
 export async function expandConfigTableToVariantQuantities(
   client: Db,
@@ -1632,66 +1536,17 @@ export async function expandConfigTableToVariantQuantities(
     const table = Array.isArray(raw.configTable)
       ? (raw.configTable as Record<string, unknown>[])
       : [];
-    const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
-      ? (raw.configTablePrimaryKeys as string[])
-      : [];
 
     const cells: Array<{ valuesKey: string; quantity: number }> = [];
 
-    const hasComboRows = table.some(
-      (row) =>
-        typeof row.valuesKey === "string" &&
-        String(row.valuesKey).trim().length > 0
-    );
-    const isComboFlat =
-      hasComboRows &&
-      (primaryKeys.length === 0 ||
-        (primaryKeys.length === 1 && primaryKeys[0] === "Quantities"));
-
-    if (isComboFlat) {
-      for (const row of table) {
-        const valuesKey = String(row.valuesKey ?? "").trim();
-        if (!valuesKey) continue;
-        const qty = Number(row.Quantities ?? 0);
-        if (!Number.isFinite(qty) || qty <= 0) continue;
-        cells.push({ valuesKey, quantity: qty });
-      }
-    } else {
-      const attrCodes = await getParentSetAttributeCodes(
-        client,
-        args.parentItemId,
-        args.companyId
-      );
-      // Fallback for legacy Garment-shaped tables when set is missing.
-      const codes =
-        attrCodes.length > 0 ? attrCodes : (["Color", "Size"] as string[]);
-      const primaryAttrCode = codes[codes.length - 1]!;
-      const descriptorCodes = codes.slice(0, -1);
-
-      for (const row of table) {
-        for (const primaryValue of primaryKeys) {
-          const qty = Number(row[primaryValue] ?? 0);
-          if (!Number.isFinite(qty) || qty <= 0) continue;
-
-          const parts: string[] = [];
-          for (const code of descriptorCodes) {
-            const v = rowValueForAttrKey(row, code);
-            if (!v) {
-              throw new Error(
-                `Configuration row is missing ${code} for quantity column ${primaryValue}.`
-              );
-            }
-            parts.push(v);
-          }
-          // Single-attribute sets use the primary column value as the only code.
-          if (descriptorCodes.length === 0 && primaryAttrCode) {
-            parts.push(primaryValue);
-          } else {
-            parts.push(primaryValue);
-          }
-          cells.push({ valuesKey: parts.join("|"), quantity: qty });
-        }
-      }
+    // Combo-only: expand { valuesKey, Quantities } rows. Legacy Color×Size
+    // matrix configs are retired.
+    for (const row of table) {
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) continue;
+      const qty = Number(row.Quantities ?? 0);
+      if (!Number.isFinite(qty) || qty <= 0) continue;
+      cells.push({ valuesKey, quantity: qty });
     }
 
     if (cells.length === 0) {

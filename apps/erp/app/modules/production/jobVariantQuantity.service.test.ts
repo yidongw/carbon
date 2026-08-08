@@ -10,8 +10,7 @@ describe("jobVariantQuantity helpers", () => {
   it("detects configTable vs flat Part params", () => {
     expect(
       isConfigTableConfiguration({
-        configTable: [{ valuesKey: "BK|S", Quantities: 2 }],
-        configTablePrimaryKeys: ["Quantities"]
+        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
     ).toBe(true);
     expect(isConfigTableConfiguration({ color: "BK", finish: "matte" })).toBe(
@@ -44,8 +43,7 @@ describe("jobVariantQuantity helpers", () => {
         { variantItemId: "b", valuesKey: "BK|M", quantity: 0 }
       ])
     ).toEqual({
-      configTable: [{ valuesKey: "BK|S", Quantities: 2 }],
-      configTablePrimaryKeys: ["Quantities"]
+      configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
     });
   });
 

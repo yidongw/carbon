@@ -3971,8 +3971,9 @@ export async function seedDemoData(
   }
 
   // ─── Step 87b: Clothing manufacturing jobs with configuration instances ───
-  // configTable format mirrors real prod data: size labels ARE the keys, values are per-size quantities.
-  // e.g. {"configTable":[{"S":5,"M":10,"L":12,"XL":8,"2XL":5,"color":"Black"}],"configTablePrimaryKeys":["S","M","L","XL","2XL"]}
+  // configTable format mirrors real prod data: one attribute-combo row per cell,
+  // keyed by `valuesKey` (color|size codes) with a single `Quantities` value.
+  // e.g. {"configTable":[{"valuesKey":"Black|S","Quantities":5}]}
   console.log("87b. Seeding clothing manufacturing jobs...");
   {
     const tshirtId = itemIds["TSHIRT-001"];
@@ -4184,9 +4185,12 @@ export async function seedDemoData(
       const navyColor = L.configParams.colorOptions[2]!;
       const tshirtBlackConfig = JSON.stringify({
         configTable: [
-          { S: 5, M: 10, L: 12, XL: 8, "2XL": 5, color: blackColor }
-        ],
-        configTablePrimaryKeys: L.configParams.sizeOptions
+          { valuesKey: `${blackColor}|S`, Quantities: 5 },
+          { valuesKey: `${blackColor}|M`, Quantities: 10 },
+          { valuesKey: `${blackColor}|L`, Quantities: 12 },
+          { valuesKey: `${blackColor}|XL`, Quantities: 8 },
+          { valuesKey: `${blackColor}|2XL`, Quantities: 5 }
+        ]
       });
       await seedGarmentProdRecord(
         tshirt.jobId,
@@ -4205,12 +4209,22 @@ export async function seedDemoData(
       // Pickup: 30 pieces (S:5+M:7+L:10+XL:5+2XL:3=30). Production: 20 sewn (S:2+M:4+L:8+XL:4+2XL:2=20).
       // Remaining 10 still in worker's hands — pickup always ≥ production per size.
       const tshirtNavyConfig = JSON.stringify({
-        configTable: [{ S: 5, M: 7, L: 10, XL: 5, "2XL": 3, color: navyColor }],
-        configTablePrimaryKeys: L.configParams.sizeOptions
+        configTable: [
+          { valuesKey: `${navyColor}|S`, Quantities: 5 },
+          { valuesKey: `${navyColor}|M`, Quantities: 7 },
+          { valuesKey: `${navyColor}|L`, Quantities: 10 },
+          { valuesKey: `${navyColor}|XL`, Quantities: 5 },
+          { valuesKey: `${navyColor}|2XL`, Quantities: 3 }
+        ]
       });
       const tshirtNavyProdConfig = JSON.stringify({
-        configTable: [{ S: 2, M: 4, L: 8, XL: 4, "2XL": 2, color: navyColor }],
-        configTablePrimaryKeys: L.configParams.sizeOptions
+        configTable: [
+          { valuesKey: `${navyColor}|S`, Quantities: 2 },
+          { valuesKey: `${navyColor}|M`, Quantities: 4 },
+          { valuesKey: `${navyColor}|L`, Quantities: 8 },
+          { valuesKey: `${navyColor}|XL`, Quantities: 4 },
+          { valuesKey: `${navyColor}|2XL`, Quantities: 2 }
+        ]
       });
 
       // Pickup: 30 pieces taken to sewing station.

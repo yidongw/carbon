@@ -15,8 +15,7 @@ describe("validateProductionQuantityLines", () => {
         type: "Production",
         quantity: 10,
         configuration: {
-          configTable: [{ Quantities: 5 }],
-          configTablePrimaryKeys: ["Quantities"]
+          configTable: [{ Quantities: 5 }]
         }
       }
     ]);
@@ -29,8 +28,7 @@ describe("validateProductionQuantityLines", () => {
         type: "Production",
         quantity: 13,
         configuration: {
-          configTable: [{ Quantities: 13 }],
-          configTablePrimaryKeys: ["Quantities"]
+          configTable: [{ Quantities: 13 }]
         }
       },
       {

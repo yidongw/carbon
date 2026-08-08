@@ -59,22 +59,17 @@ const MasterWorkOrderForm = ({
   // configurationParameters.
   const hasConfigurationParameters = configurableItemIds.includes(itemId);
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(null);
-  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
-    string[]
-  >([]);
   const [configTableTotal, setConfigTableTotal] = useState(0);
 
   const onItemChange = (nextItemId: string) => {
     setItemId(nextItemId);
     setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
   };
 
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
     setConfigTableRows(data.configuration.configTable);
-    setConfigTablePrimaryKeys(data.primaryKeys);
     setConfigTableTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };
@@ -83,10 +78,7 @@ const MasterWorkOrderForm = ({
     if (!itemId) return;
     configModal.open({
       itemId,
-      configuration: toConfigTableValue(
-        configTableRows,
-        configTablePrimaryKeys
-      ),
+      configuration: toConfigTableValue(configTableRows),
       onConfirm: applyConfig
     });
   };
@@ -149,8 +141,7 @@ const MasterWorkOrderForm = ({
               value={
                 configTableRows
                   ? JSON.stringify({
-                      configTable: configTableRows,
-                      configTablePrimaryKeys
+                      configTable: configTableRows
                     })
                   : ""
               }

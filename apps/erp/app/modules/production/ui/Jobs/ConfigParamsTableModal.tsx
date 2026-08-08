@@ -33,7 +33,6 @@ import {
   buildColumns,
   buildComboColumns,
   type Column,
-  type ConfigurationParameterInput,
   computeTotal,
   configParamsModalBodyClassName,
   configParamsModalContentClassName,
@@ -42,7 +41,6 @@ import {
   getCellKey,
   getInitialRows,
   hasValue,
-  isStyleComboParameters,
   makeDefaultRow,
   mergeRows,
   normalizeRow,
@@ -53,8 +51,6 @@ import {
 type PlanCell = {
   valuesKey: string;
   attributeLabel: string;
-  colorCode: string;
-  sizeCode: string;
   cap: number;
 };
 
@@ -97,7 +93,6 @@ function buildFlatColumns(
 /** Combo rows: pass-through valuesKey rows, or convert legacy matrices. */
 function comboRowsFromInitial(
   rows: Row[],
-  primaryKeys: string[],
   optionLabels?: Record<string, string>
 ): Row[] {
   const alreadyCombo = rows.some(
@@ -117,85 +112,24 @@ function comboRowsFromInitial(
     return flat;
   }
 
-  return configTableToComboRows(
-    { configTable: rows, configTablePrimaryKeys: primaryKeys },
-    optionLabels
-  ) as Row[];
+  return configTableToComboRows({ configTable: rows }, optionLabels) as Row[];
 }
 
-/** Explode merged/matrix rows into one flat row per non-zero color/size cell. */
-function matrixRowsToFlatRows(
-  rows: Row[],
-  primaryParam: ConfigurationParameterInput | null,
-  primaryKeys: string[],
-  parameters: ConfigurationParameter[]
-): Row[] {
-  const descriptorKeys = parameters
-    .filter((p) => p.dataType === "list" && p.key !== primaryParam?.key)
-    .map((p) => p.key);
-  const flat: Row[] = [];
-  for (const mr of rows) {
-    for (const pk of primaryKeys) {
-      const qty = Number(mr[pk]) || 0;
-      if (qty <= 0) continue;
-      const row: Row = { Quantities: qty };
-      if (primaryParam) row[primaryParam.key] = pk;
-      for (const dk of descriptorKeys) row[dk] = (mr[dk] as string) ?? "";
-      flat.push(row);
-    }
-  }
-  return flat;
-}
-
-/** Merge flat rows back into the standard (matrix or combo) config table shape. */
-function flatRowsToMergedConfig(
-  flatRows: Row[],
-  parameters: ConfigurationParameter[],
-  primaryParam: ConfigurationParameterInput | null,
-  primaryKeys: string[],
-  columns: Column[]
-): { configTable: Row[]; configTablePrimaryKeys: string[] } {
-  if (isStyleComboParameters(parameters)) {
-    return {
-      configTable: flatRows
-        .map((fr) => {
-          const valuesKey = String(fr.valuesKey ?? "").trim();
-          if (!valuesKey) return null;
-          const row: Row = {
-            valuesKey,
-            Quantities: Number(fr.Quantities) || 0
-          };
-          const label = String(fr.label ?? "").trim();
-          if (label) row.label = label;
-          return row;
-        })
-        .filter((r): r is Row => r != null),
-      configTablePrimaryKeys: ["Quantities"]
-    };
-  }
-
-  if (!primaryParam) {
-    const total = flatRows.reduce((s, r) => s + (Number(r.Quantities) || 0), 0);
-    return {
-      configTable: [{ Quantities: total }],
-      configTablePrimaryKeys: ["Quantities"]
-    };
-  }
-  const descriptorKeys = parameters
-    .filter((p) => p.dataType === "list" && p.key !== primaryParam.key)
-    .map((p) => p.key);
-  const matrixRows: Row[] = [];
-  for (const fr of flatRows) {
-    const primaryValue = String(fr[primaryParam.key] ?? "");
-    if (!primaryKeys.includes(primaryValue)) continue;
-    const row: Row = Object.fromEntries(primaryKeys.map((k) => [k, 0]));
-    for (const dk of descriptorKeys) row[dk] = (fr[dk] as string) ?? "";
-    row[primaryValue] = Number(fr.Quantities) || 0;
-    matrixRows.push(row);
-  }
+/** Merge flat combo rows into the stored config table shape (valuesKey rows). */
+function flatRowsToMergedConfig(flatRows: Row[]): {
+  configTable: Row[];
+} {
   return {
-    configTable: mergeRows(matrixRows, columns),
-    configTablePrimaryKeys: primaryKeys
+    configTable: flatRows
+      .map((fr) => {
+        const valuesKey = String(fr.valuesKey ?? "").trim();
+        if (!valuesKey) return null;
+        const row: Row = { valuesKey, Quantities: Number(fr.Quantities) || 0 };
+        const label = String(fr.label ?? "").trim();
+        if (label) row.label = label;
+        return row;
+      })
+      .filter((r): r is Row => r != null)
   };
 }
 
@@ -258,13 +192,12 @@ function ConfigParamsTableModal({
   // `"none"` is a read-only view: cells are disabled and the only button closes.
   const readOnly = confirmMode === "none";
   const flat = Boolean(splitMode);
-  const isCombo = isStyleComboParameters(parameters);
   const materialShapeOptions = useShape();
   const materialOptions = materialShapeOptions.map((shape) => ({
     label: <Enumerable value={shape.label} />,
     value: shape.value
   }));
-  const { primaryParam, primaryKeys, columns } = buildColumns(
+  const { primaryParam, columns } = buildColumns(
     parameters,
     t`Quantities`,
     t`Attributes`
@@ -273,20 +206,12 @@ function ConfigParamsTableModal({
   // with a single Quantities column; the stored config is still merged on submit.
   const flatColumns = buildFlatColumns(parameters, t`Quantities`);
   const gridColumns = flat ? flatColumns : columns;
-  const gridPrimaryKeys = flat ? ["Quantities"] : primaryKeys;
 
   const [rows, setRows] = useState<Row[]>(() => {
     if (flat) {
       const seed =
         initialRows && initialRows.length > 0
-          ? isCombo
-            ? comboRowsFromInitial(initialRows, primaryKeys, optionLabels)
-            : matrixRowsToFlatRows(
-                initialRows,
-                primaryParam,
-                primaryKeys,
-                parameters
-              )
+          ? comboRowsFromInitial(initialRows, optionLabels)
           : [];
       if (seed.length > 0) {
         return seed.map((row) => {
@@ -296,21 +221,18 @@ function ConfigParamsTableModal({
           return normalized;
         });
       }
-      // Combo: wait for add buttons; matrix legacy keeps one blank seed row.
-      return isCombo ? [] : [makeDefaultRow(flatColumns)];
+      // Combo grid: wait for add buttons (no blank seed row).
+      return [];
     }
     if (initialRows && initialRows.length > 0) {
-      const seedRows =
-        isCombo &&
-        !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0)
-          ? (configTableToComboRows(
-              {
-                configTable: initialRows,
-                configTablePrimaryKeys: primaryKeys
-              },
-              optionLabels
-            ) as Row[])
-          : initialRows;
+      const seedRows = !initialRows.some(
+        (r) => String(r.valuesKey ?? "").trim().length > 0
+      )
+        ? (configTableToComboRows(
+            { configTable: initialRows },
+            optionLabels
+          ) as Row[])
+        : initialRows;
       return seedRows.map((row) => {
         const normalized = normalizeRow(row, columns);
         const label = String(row.label ?? "").trim();
@@ -324,7 +246,7 @@ function ConfigParamsTableModal({
   const [validationError, setValidationError] = useState("");
 
   const hasReferences = !flat && (referenceByRowIndex?.length ?? 0) > 0;
-  const total = computeTotal(rows, gridPrimaryKeys);
+  const total = computeTotal(rows);
 
   // When editing an existing report, measure the change against the report's
   // original total (its saved config = `initialRows`) rather than the plan.
@@ -332,14 +254,11 @@ function ConfigParamsTableModal({
     if (!isEditingReport) return 0;
     let sum = 0;
     for (const row of initialRows ?? []) {
-      for (const key of primaryKeys) sum += Number((row as Row)[key]) || 0;
+      sum += Number((row as Row).Quantities) || 0;
     }
     return sum;
-  }, [isEditingReport, initialRows, primaryKeys]);
+  }, [isEditingReport, initialRows]);
   const delta = total - baselineTotal;
-
-  const addRow = () =>
-    setRows((prev) => [...prev, makeDefaultRow(gridColumns)]);
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
@@ -354,10 +273,9 @@ function ConfigParamsTableModal({
       ),
     [rows]
   );
-  const missingCombos =
-    isCombo && !flat
-      ? (primaryParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
-      : [];
+  const missingCombos = !flat
+    ? (primaryParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
+    : [];
   const addComboRow = (combo: string) =>
     setRows((prev) => [
       ...prev,
@@ -389,79 +307,28 @@ function ConfigParamsTableModal({
   // reference, so we can offer a button per plannable cell and warn if a
   // cell's entered quantity exceeds its plan.
   //
-  // Legacy non-combo path: Color×Size-shaped matrices. Prefer explicit
-  // color/size keys when present; otherwise use primaryParam + the first
-  // other list param so cell keys still work when params use other names.
-  // Combo path uses valuesKey and ignores these keys.
-  const listParams = parameters.filter((p) => p.dataType === "list");
-  const sizeKey =
-    listParams.find((p) => p.key === "size")?.key ??
-    primaryParam?.key ??
-    "size";
-  const colorKey =
-    listParams.find((p) => p.key === "color")?.key ??
-    listParams.find((p) => p.key !== sizeKey)?.key ??
-    "color";
-  const cellKeyOf = (cell: {
-    valuesKey?: string;
-    colorCode?: string;
-    sizeCode?: string;
-  }) =>
-    isCombo
-      ? String(cell.valuesKey ?? "").trim()
-      : `${String(cell.colorCode ?? "")}|${String(cell.sizeCode ?? "")}`;
+  // Cell identity is the attribute combo's valuesKey.
+  const cellKeyOf = (cell: { valuesKey?: string }) =>
+    String(cell.valuesKey ?? "").trim();
 
   const planCells: PlanCell[] = [];
   if (flat) {
-    if (isCombo) {
-      (initialRows ?? []).forEach((row, i) => {
-        const refs = referenceByRowIndex?.[i] ?? {};
-        const cap = Number(refs.Quantities) || 0;
-        if (cap <= 0) return;
-        const valuesKey = String(row.valuesKey ?? "").trim();
-        if (!valuesKey) return;
-        planCells.push({
-          valuesKey,
-          attributeLabel: comboDisplayLabel(row, optionLabels),
-          colorCode: "",
-          sizeCode: "",
-          cap
-        });
+    (initialRows ?? []).forEach((row, i) => {
+      const refs = referenceByRowIndex?.[i] ?? {};
+      const cap = Number(refs.Quantities) || 0;
+      if (cap <= 0) return;
+      const valuesKey = String(row.valuesKey ?? "").trim();
+      if (!valuesKey) return;
+      planCells.push({
+        valuesKey,
+        attributeLabel: comboDisplayLabel(row, optionLabels),
+        cap
       });
-    } else {
-      // Legacy Color×Size-shaped flat matrix (non-combo). New Styles use the
-      // combo path above; keep this for older configurationParameter matrices.
-      const descriptorKeys = parameters
-        .filter((p) => p.dataType === "list" && p.key !== primaryParam?.key)
-        .map((p) => p.key);
-      (initialRows ?? []).forEach((row, i) => {
-        const refs = referenceByRowIndex?.[i] ?? {};
-        for (const pk of primaryKeys) {
-          const cap = Number(refs[pk]) || 0;
-          if (cap <= 0) continue;
-          const cellRow: Row = {};
-          if (primaryParam) cellRow[primaryParam.key] = pk;
-          for (const dk of descriptorKeys)
-            cellRow[dk] = (row[dk] as string) ?? "";
-          planCells.push({
-            valuesKey: "",
-            attributeLabel: "",
-            colorCode: String(cellRow[colorKey] ?? ""),
-            sizeCode: String(cellRow[sizeKey] ?? ""),
-            cap
-          });
-        }
-      });
-    }
+    });
   }
   const enteredByCell = new Map<string, number>();
   for (const r of rows) {
-    const k = isCombo
-      ? String(r.valuesKey ?? "").trim()
-      : cellKeyOf({
-          colorCode: String(r[colorKey] ?? ""),
-          sizeCode: String(r[sizeKey] ?? "")
-        });
+    const k = String(r.valuesKey ?? "").trim();
     enteredByCell.set(
       k,
       (enteredByCell.get(k) ?? 0) + (Number(r.Quantities) || 0)
@@ -493,12 +360,7 @@ function ConfigParamsTableModal({
     // Mark the quantity cell red for every row whose color/size aggregate exceeds
     // its plan (same as Split Batch).
     rows.forEach((r, i) => {
-      const k = isCombo
-        ? String(r.valuesKey ?? "").trim()
-        : cellKeyOf({
-            colorCode: String(r[colorKey] ?? ""),
-            sizeCode: String(r[sizeKey] ?? "")
-          });
+      const k = String(r.valuesKey ?? "").trim();
       const cap = capByCell.get(k);
       if (cap !== undefined && (enteredByCell.get(k) ?? 0) > cap) {
         overCellKeys.add(getCellKey(i, "Quantities"));
@@ -529,17 +391,11 @@ function ConfigParamsTableModal({
     setRows((prev) => [
       ...prev,
       normalizeRow(
-        isCombo
-          ? {
-              valuesKey: c.valuesKey,
-              label: c.attributeLabel,
-              Quantities: Math.max(0, remainingForCell(c))
-            }
-          : {
-              [colorKey]: c.colorCode,
-              [sizeKey]: c.sizeCode,
-              Quantities: Math.max(0, remainingForCell(c))
-            },
+        {
+          valuesKey: c.valuesKey,
+          label: c.attributeLabel,
+          Quantities: Math.max(0, remainingForCell(c))
+        },
         gridColumns
       )
     ]);
@@ -578,42 +434,18 @@ function ConfigParamsTableModal({
     if (flat) {
       // Store the merged config (unchanged downstream) + the raw rows so a master
       // WO cutting report can prefill one bundle per row in Split Batch.
-      const merged = flatRowsToMergedConfig(
-        rowsToSave,
-        parameters,
-        primaryParam,
-        primaryKeys,
-        columns
-      );
+      const merged = flatRowsToMergedConfig(rowsToSave);
       configuration = {
         ...merged,
-        splitRows: rowsToSave.map((r) => {
-          if (isCombo) {
-            const valuesKey = String(r.valuesKey ?? "").trim();
-            const parts = valuesKey.split("|").filter(Boolean);
-            return {
-              valuesKey,
-              attributeLabel: comboDisplayLabel(r, optionLabels),
-              colorCode: parts[0] ?? null,
-              sizeCode: parts.length > 1 ? (parts[1] ?? null) : null,
-              quantity: Number(r.Quantities) || 0
-            };
-          }
-          return {
-            valuesKey:
-              [String(r[colorKey] ?? ""), String(r[sizeKey] ?? "")]
-                .filter(Boolean)
-                .join("|") || null,
-            colorCode: String(r[colorKey] ?? "") || null,
-            sizeCode: String(r[sizeKey] ?? "") || null,
-            quantity: Number(r.Quantities) || 0
-          };
-        })
+        splitRows: rowsToSave.map((r) => ({
+          valuesKey: String(r.valuesKey ?? "").trim(),
+          attributeLabel: comboDisplayLabel(r, optionLabels),
+          quantity: Number(r.Quantities) || 0
+        }))
       };
     } else {
       configuration = {
-        configTable: mergeRows(rowsToSave, columns),
-        configTablePrimaryKeys: primaryKeys
+        configTable: mergeRows(rowsToSave, columns)
       };
     }
 
@@ -666,22 +498,12 @@ function ConfigParamsTableModal({
                 leftIcon={<LuPlus />}
                 onClick={() => addCellRow(c)}
               >
-                {isCombo ? (
-                  <>
-                    {c.attributeLabel} ·{" "}
-                    <span className="tabular-nums">{remainingForCell(c)}</span>
-                  </>
-                ) : (
-                  <>
-                    {c.sizeCode || "—"} ·{" "}
-                    {optionLabels?.[c.colorCode] || c.colorCode || "—"} ·{" "}
-                    <span className="tabular-nums">{remainingForCell(c)}</span>
-                  </>
-                )}
+                {c.attributeLabel} ·{" "}
+                <span className="tabular-nums">{remainingForCell(c)}</span>
               </Button>
             ))}
           </div>
-        ) : isCombo ? (
+        ) : (
           // Non-flat combo editor: one add button per missing combo (translated).
           <div className="flex flex-wrap gap-2">
             {missingCombos.map((combo) => (
@@ -700,16 +522,6 @@ function ConfigParamsTableModal({
               </Button>
             ))}
           </div>
-        ) : (
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={addRow}
-            leftIcon={<LuPlus />}
-          >
-            <Trans>Add Row</Trans>
-          </Button>
         )}
         <span className="shrink-0 text-sm text-muted-foreground">
           <Trans>Total</Trans>:{" "}
@@ -1014,12 +826,9 @@ export function ConfigParamsTableLocalModal({
  */
 export function toConfigTableValue(
   rows: Row[] | null | undefined,
-  primaryKeys: string[],
   fallback?: unknown
 ): unknown {
-  return rows && primaryKeys.length > 0
-    ? { configTable: rows, configTablePrimaryKeys: primaryKeys }
-    : fallback;
+  return rows ? { configTable: rows } : fallback;
 }
 
 type ConfigTableModalRequest = {

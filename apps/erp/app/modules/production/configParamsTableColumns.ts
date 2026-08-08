@@ -28,7 +28,6 @@ export function buildConfigColumns(
   defaultQuantityLabel: string
 ): {
   primaryParam: ConfigurationParameterColumnsInput | null;
-  primaryKeys: string[];
   columns: ConfigColumn[];
 } {
   // Style combo: single valuesKey list → row labels + Quantities (not matrix).
@@ -40,7 +39,6 @@ export function buildConfigColumns(
   if (isStyleCombo && firstList) {
     return {
       primaryParam: firstList,
-      primaryKeys: ["Quantities"],
       columns: [
         {
           key: "valuesKey",
@@ -57,40 +55,15 @@ export function buildConfigColumns(
     };
   }
 
-  const primaryParam = parameters.find((p) => p.dataType === "list") ?? null;
-  const otherParams = parameters.filter((p) => p !== primaryParam);
-
-  const columns: ConfigColumn[] = [];
-  const primaryKeys: string[] = [];
-
-  if (
-    primaryParam &&
-    primaryParam.listOptions &&
-    primaryParam.listOptions.length > 0
-  ) {
-    for (const option of primaryParam.listOptions) {
-      columns.push({ key: option, label: option, type: "quantity" });
-      primaryKeys.push(option);
-    }
-  } else {
-    columns.push({
-      key: "Quantities",
-      label: defaultQuantityLabel,
-      type: "quantity"
-    });
-    primaryKeys.push("Quantities");
-  }
-
-  for (const param of otherParams) {
-    columns.push({
-      key: param.key,
-      label: param.label,
-      type: param.dataType as ConfigColumnType,
-      options: param.listOptions ?? []
-    });
-  }
-
-  return { primaryParam, primaryKeys, columns };
+  // The legacy Color×Size matrix model is retired: every quantity config is now
+  // the attribute combo (valuesKey + Quantities) handled above. Any non-combo
+  // config collapses to a single plain Quantities column.
+  return {
+    primaryParam: null,
+    columns: [
+      { key: "Quantities", label: defaultQuantityLabel, type: "quantity" }
+    ]
+  };
 }
 
 function getMergeKey(row: ConfigTableRow, columns: ConfigColumn[]): string {
@@ -174,24 +147,6 @@ export type ConfigQuantityCell = {
   quantity: number;
 };
 
-/** Apparel size codes used as quantity-column keys in Style config tables. */
-const STYLE_SIZE_CODE_SET = new Set([
-  "XXS",
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "2XL",
-  "3XL",
-  "4XL",
-  "OS"
-]);
-
-function isSizeToken(value: string): boolean {
-  return STYLE_SIZE_CODE_SET.has(value.trim().toUpperCase());
-}
-
 function optionLabelOf(
   value: string,
   optionLabels?: Record<string, string>
@@ -207,13 +162,9 @@ function optionLabelOf(
 
 /**
  * Flatten a stored config table into one cell per non-zero quantity, for
- * summary badges (`BK · S ×2`) and expand lists — no parameter metadata
- * required; uses `configTablePrimaryKeys` from the JSON itself.
- *
- * Dual-read:
- * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey` → label from
- *   `label` or valuesKey with `|` → ` · `.
- * - Legacy matrix: join row descriptors with the quantity-column key using ` · `.
+ * summary badges (`BK · S ×2`) and expand lists. Combo-only: each row is a
+ * `valuesKey` + `Quantities`, labelled from `label` or the valuesKey
+ * (`|` → ` · `). Legacy Color×Size matrix configs are retired (yield nothing).
  */
 export function getConfigQuantityCells(
   configuration: unknown,
@@ -228,80 +179,25 @@ export function getConfigQuantityCells(
     return [];
   }
 
-  const raw = configuration as Record<string, unknown>;
-  const table = getConfigTableRows(configuration);
-  const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
-    ? raw.configTablePrimaryKeys.filter(
-        (k): k is string => typeof k === "string" && k.length > 0
-      )
-    : [];
-  const hasComboRows = table.some(
-    (row) => String(row.valuesKey ?? "").trim().length > 0
-  );
-  // Combo flat: valuesKey rows. primaryKeys may be omitted (inventory) or
-  // explicitly `["Quantities"]` (legacy writers).
-  const isComboFlat =
-    hasComboRows &&
-    (primaryKeys.length === 0 ||
-      (primaryKeys.length === 1 && primaryKeys[0] === "Quantities"));
-  if (!isComboFlat && primaryKeys.length === 0) return [];
-
-  const primaryKeySet = new Set(primaryKeys);
+  // Combo-only: quantity configs are { valuesKey, Quantities } rows. Legacy
+  // Color×Size matrices are retired.
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const cells: ConfigQuantityCell[] = [];
 
-  for (const [rowIndex, row] of table.entries()) {
-    if (isComboFlat) {
-      const valuesKey = String(row.valuesKey ?? "").trim();
-      if (valuesKey) {
-        const rawQty = row.Quantities;
-        if (isZeroOrEmpty(rawQty)) continue;
-        const quantity = Number(rawQty) || 0;
-        if (quantity === 0) continue;
+  for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
+    const valuesKey = String(row.valuesKey ?? "").trim();
+    if (!valuesKey) continue;
+    const rawQty = row.Quantities;
+    if (isZeroOrEmpty(rawQty)) continue;
+    const quantity = Number(rawQty) || 0;
+    if (quantity === 0) continue;
 
-        const storedLabel = String(row.label ?? "").trim();
-        const label = storedLabel
-          ? storedLabel
-          : valuesKey
-              .split("|")
-              .map((part) => labelOf(part))
-              .join(" · ");
+    const storedLabel = String(row.label ?? "").trim();
+    const label = storedLabel
+      ? storedLabel
+      : valuesKey.split("|").map(labelOf).join(" · ");
 
-        cells.push({
-          key: `${rowIndex}:Quantities`,
-          label,
-          quantity
-        });
-        continue;
-      }
-    }
-
-    const descriptorValues = Object.entries(row)
-      .filter(([key]) => !primaryKeySet.has(key))
-      .map(([, value]) => String(value ?? "").trim())
-      .filter(Boolean);
-
-    for (const qtyKey of primaryKeys) {
-      const rawQty = row[qtyKey];
-      if (isZeroOrEmpty(rawQty)) continue;
-      const quantity = Number(rawQty) || 0;
-      if (quantity === 0) continue;
-
-      // Always render Color · Size: whichever dimension is the quantity column
-      // (sizes for the Style default, colors for legacy color-column grids), the
-      // color token comes first and the size token last.
-      const tokens = [...descriptorValues, qtyKey];
-      const colorTokens = tokens.filter((tk) => !isSizeToken(tk));
-      const sizeTokens = tokens.filter(isSizeToken);
-      const parts = [...colorTokens, ...sizeTokens]
-        .map(labelOf)
-        .filter(Boolean);
-      cells.push({
-        key: `${rowIndex}:${qtyKey}`,
-        label: parts.join(" · "),
-        quantity
-      });
-    }
+    cells.push({ key: `${rowIndex}:Quantities`, label, quantity });
   }
 
   return cells;
@@ -314,9 +210,8 @@ export type ComboConfigRow = {
 };
 
 /**
- * Dual-read stored config → combo editor rows (`valuesKey` + `Quantities`).
- * Pass-through when already combo; convert legacy Color×Size (or color-column)
- * matrices using Color-first / Size-last token order for `valuesKey`.
+ * Read stored config → combo editor rows (`valuesKey` + `Quantities`).
+ * Configs are combo-only now; anything else yields no rows.
  */
 export function configTableToComboRows(
   configuration: unknown,
@@ -331,71 +226,21 @@ export function configTableToComboRows(
     return [];
   }
 
-  const raw = configuration as Record<string, unknown>;
-  const table = getConfigTableRows(configuration);
-  const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
-    ? raw.configTablePrimaryKeys.filter(
-        (k): k is string => typeof k === "string" && k.length > 0
-      )
-    : [];
-  const hasComboRows = table.some(
-    (row) => String(row.valuesKey ?? "").trim().length > 0
-  );
-  const isComboFlat =
-    hasComboRows &&
-    (primaryKeys.length === 0 ||
-      (primaryKeys.length === 1 && primaryKeys[0] === "Quantities"));
-  if (!isComboFlat && primaryKeys.length === 0) return [];
-
-  const primaryKeySet = new Set(primaryKeys);
+  // Combo-only: pass through { valuesKey, Quantities } rows. Legacy Color×Size
+  // matrix configs are retired.
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const out: ComboConfigRow[] = [];
 
-  for (const row of table) {
-    if (isComboFlat) {
-      const valuesKey = String(row.valuesKey ?? "").trim();
-      if (!valuesKey) continue;
-      const quantity = Number(row.Quantities) || 0;
-      if (quantity <= 0) continue;
-      const storedLabel = String(row.label ?? "").trim();
-      const label = storedLabel
-        ? storedLabel
-        : valuesKey
-            .split("|")
-            .map((part) => labelOf(part))
-            .join(" · ");
-      out.push({
-        valuesKey,
-        Quantities: quantity,
-        ...(label ? { label } : {})
-      });
-      continue;
-    }
-
-    const descriptorValues = Object.entries(row)
-      .filter(([key]) => !primaryKeySet.has(key))
-      .map(([, value]) => String(value ?? "").trim())
-      .filter(Boolean);
-
-    for (const qtyKey of primaryKeys) {
-      const rawQty = row[qtyKey];
-      if (isZeroOrEmpty(rawQty)) continue;
-      const quantity = Number(rawQty) || 0;
-      if (quantity <= 0) continue;
-
-      const tokens = [...descriptorValues, qtyKey];
-      const colorTokens = tokens.filter((tk) => !isSizeToken(tk));
-      const sizeTokens = tokens.filter(isSizeToken);
-      const ordered = [...colorTokens, ...sizeTokens];
-      const valuesKey = ordered.join("|");
-      if (!valuesKey) continue;
-      const label = ordered.map(labelOf).filter(Boolean).join(" · ");
-      out.push({
-        valuesKey,
-        Quantities: quantity,
-        ...(label ? { label } : {})
-      });
-    }
+  for (const row of getConfigTableRows(configuration)) {
+    const valuesKey = String(row.valuesKey ?? "").trim();
+    if (!valuesKey) continue;
+    const quantity = Number(row.Quantities) || 0;
+    if (quantity <= 0) continue;
+    const storedLabel = String(row.label ?? "").trim();
+    const label = storedLabel
+      ? storedLabel
+      : valuesKey.split("|").map(labelOf).join(" · ");
+    out.push({ valuesKey, Quantities: quantity, ...(label ? { label } : {}) });
   }
 
   return out;

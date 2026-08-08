@@ -1,6 +1,9 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { getConfigurationParameters, getStyleColorList } from "~/modules/items";
+import {
+  getAttributeValueNames,
+  getQuantityGridParameters
+} from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
 import {
@@ -8,6 +11,7 @@ import {
   getReportedConfigurationById,
   resolveJobIdForOperation
 } from "~/modules/production/configTableOverlay.server";
+import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 
 export type ItemConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
@@ -41,7 +45,7 @@ export async function loader({
   const { itemId } = params;
   if (!itemId) return null;
 
-  const { parameters } = await getConfigurationParameters(
+  const { parameters } = await getQuantityGridParameters(
     client,
     itemId,
     companyId
@@ -55,14 +59,10 @@ export async function loader({
     .eq("companyId", companyId)
     .maybeSingle();
 
-  // Map color code -> name so the config table displays names, not codes.
-  const styleColors = await getStyleColorList(client, companyId);
-  const colorNames: Record<string, string> = {};
-  for (const color of styleColors.data ?? []) {
-    if (color.colorCode) {
-      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
-    }
-  }
+  // Map attribute-value code -> name so the config table displays names, not
+  // codes (all attributes, not just Color).
+  const attributeValueNames = await getAttributeValueNames(client, companyId);
+  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
 
   const url = new URL(request.url);
   const jobOperationId = url.searchParams.get("jobOperationId") ?? undefined;

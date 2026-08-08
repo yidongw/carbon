@@ -1,21 +1,20 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildStyleColorNames,
+  buildAttributeValueNames,
   getStyleConfigDisplay
 } from "./styleConfigDisplay";
 
 describe("getStyleConfigDisplay", () => {
-  it("returns Color · Size chips for size-column Style configs", () => {
+  it("returns attribute-combo chips from valuesKey rows", () => {
     const display = getStyleConfigDisplay(
       {
-        configTable: [{ color: "BK", XS: 0, S: 6 }],
-        configTablePrimaryKeys: ["XS", "S"]
+        configTable: [{ valuesKey: "BK|S", Quantities: 6 }]
       },
       { BK: "黑色" }
     );
     expect(display?.chips).toEqual([
       {
-        key: "0:S",
+        key: "0:Quantities",
         colorSize: "黑色 · S",
         label: "黑色 · S ×6",
         quantity: 6
@@ -23,18 +22,19 @@ describe("getStyleConfigDisplay", () => {
     ]);
   });
 
-  it("returns Color · Size chips for color-column legacy configs", () => {
+  it("localizes each combo value via the name map", () => {
     const display = getStyleConfigDisplay(
       {
         configTable: [
-          { Size: "S", Red: 2, Blue: 1 },
-          { Size: "M", Red: 1, Blue: 2 }
-        ],
-        configTablePrimaryKeys: ["Red", "Blue"]
+          { valuesKey: "RD|S", Quantities: 2 },
+          { valuesKey: "BL|S", Quantities: 1 },
+          { valuesKey: "RD|M", Quantities: 1 },
+          { valuesKey: "BL|M", Quantities: 2 }
+        ]
       },
-      buildStyleColorNames([
-        { colorCode: "RD", colorName: "红色" },
-        { colorCode: "BL", colorName: "蓝色" }
+      buildAttributeValueNames([
+        { code: "RD", name: "红色" },
+        { code: "BL", name: "蓝色" }
       ])
     );
     expect(display?.chips.map((c) => c.label)).toEqual([
@@ -45,13 +45,12 @@ describe("getStyleConfigDisplay", () => {
     ]);
   });
 
-  it("aliases Light Gray from styleReference for legacy LGY columns", () => {
+  it("aliases Light Gray from styleReference", () => {
     const display = getStyleConfigDisplay(
       {
-        configTable: [{ Size: "M", "Light Gray": 3 }],
-        configTablePrimaryKeys: ["Light Gray"]
+        configTable: [{ valuesKey: "LGY|M", Quantities: 3 }]
       },
-      buildStyleColorNames([{ colorCode: "LGY", colorName: "浅灰色" }])
+      buildAttributeValueNames([{ code: "LGY", name: "浅灰色" }])
     );
     expect(display?.chips.map((c) => c.label)).toEqual(["浅灰色 · M ×3"]);
   });
@@ -59,8 +58,7 @@ describe("getStyleConfigDisplay", () => {
   it("parses JSON string configurations", () => {
     const display = getStyleConfigDisplay(
       JSON.stringify({
-        configTable: [{ color: "BG", L: 2 }],
-        configTablePrimaryKeys: ["L"]
+        configTable: [{ valuesKey: "BG|L", Quantities: 2 }]
       }),
       { BG: "米色" }
     );
@@ -75,9 +73,9 @@ describe("getStyleConfigDisplayFromVariants", () => {
     );
     const display = getStyleConfigDisplayFromVariants(
       [
-        { colorCode: "BG", sizeCode: "S", quantity: 3 },
-        { colorCode: "BK", sizeCode: "S", quantity: 4 },
-        { colorCode: "BG", sizeCode: "S", quantity: 2 }
+        { attributeCodes: ["BG", "S"], quantity: 3 },
+        { attributeCodes: ["BK", "S"], quantity: 4 },
+        { attributeCodes: ["BG", "S"], quantity: 2 }
       ],
       { BG: "米色", BK: "黑色" }
     );
@@ -93,9 +91,9 @@ describe("getStyleConfigDisplayFromVariants", () => {
     );
     const display = getStyleConfigDisplayFromVariants(
       [
-        { colorCode: "BG", sizeCode: "", quantity: 3 },
-        { colorCode: "BK", sizeCode: "", quantity: 4 },
-        { colorCode: "BG", sizeCode: "", quantity: 2 }
+        { attributeCodes: ["BG"], quantity: 3 },
+        { attributeCodes: ["BK"], quantity: 4 },
+        { attributeCodes: ["BG"], quantity: 2 }
       ],
       { BG: "米色", BK: "黑色" }
     );
@@ -112,8 +110,7 @@ describe("groupLinesForStyleDisplay", () => {
           id: "parent",
           itemId: "p1",
           configuration: {
-            configTable: [{ color: "BK", S: 5 }],
-            configTablePrimaryKeys: ["S"]
+            configTable: [{ valuesKey: "BK|S", Quantities: 5 }]
           },
           purchaseQuantity: 5
         },
@@ -155,11 +152,11 @@ describe("groupLinesForStyleDisplay", () => {
   });
 });
 
-describe("buildStyleColorNames", () => {
+describe("buildAttributeValueNames", () => {
   it("maps colorCode and English aliases from the seed reference", () => {
-    const names = buildStyleColorNames([
-      { colorCode: "RD", colorName: "红色" },
-      { colorCode: "GY", colorName: "灰色" }
+    const names = buildAttributeValueNames([
+      { code: "RD", name: "红色" },
+      { code: "GY", name: "灰色" }
     ]);
     expect(names.RD).toBe("红色");
     expect(names.Red).toBe("红色");

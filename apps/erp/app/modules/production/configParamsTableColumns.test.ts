@@ -6,28 +6,22 @@ import {
   fillValueFromReference
 } from "./configParamsTableColumns";
 
+// Combo model: a single valuesKey list param; each row is { valuesKey, Quantities }.
 const parameters = [
   {
-    key: "size",
-    label: "Size",
+    key: "valuesKey",
+    label: "Attributes",
     dataType: "list" as const,
-    listOptions: ["M", "L", "XL"]
-  },
-  {
-    key: "color",
-    label: "Color",
-    dataType: "list" as const,
-    listOptions: ["红色", "蓝色"]
+    listOptions: ["红色|M", "红色|L", "蓝色|XL"]
   }
 ];
 
 describe("buildConfigTableEditorState", () => {
   const originalConfiguration = {
     configTable: [
-      { color: "红色", size: "M", M: 14, L: 0, XL: 0 },
-      { color: "蓝色", size: "XL", M: 0, L: 0, XL: 6 }
-    ],
-    configTablePrimaryKeys: ["M", "L", "XL"]
+      { valuesKey: "红色|M", Quantities: 14 },
+      { valuesKey: "蓝色|XL", Quantities: 6 }
+    ]
   };
 
   it("shows original reported quantities for Production mode", () => {
@@ -43,8 +37,8 @@ describe("buildConfigTableEditorState", () => {
     });
 
     expect(rows).toHaveLength(2);
-    expect(referenceByRowIndex[0]?.M).toBe(14);
-    expect(referenceByRowIndex[1]?.XL).toBe(6);
+    expect(referenceByRowIndex[0]?.Quantities).toBe(14);
+    expect(referenceByRowIndex[1]?.Quantities).toBe(6);
   });
 
   it("shows remaining quantities for Rework mode", () => {
@@ -56,14 +50,12 @@ describe("buildConfigTableEditorState", () => {
         mode: "remaining",
         originalConfiguration,
         otherLineConfigurations: [
-          {
-            configTable: [{ color: "红色", size: "M", M: 10, L: 0, XL: 0 }]
-          }
+          { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
     });
 
-    expect(referenceByRowIndex[0]?.M).toBe(4);
+    expect(referenceByRowIndex[0]?.Quantities).toBe(4);
   });
 
   it("can show negative remaining when over-allocated", () => {
@@ -75,14 +67,12 @@ describe("buildConfigTableEditorState", () => {
         mode: "remaining",
         originalConfiguration,
         otherLineConfigurations: [
-          {
-            configTable: [{ color: "红色", size: "M", M: 16, L: 0, XL: 0 }]
-          }
+          { configTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
         ]
       }
     });
 
-    expect(referenceByRowIndex[0]?.M).toBe(-2);
+    expect(referenceByRowIndex[0]?.Quantities).toBe(-2);
   });
 
   it("seeds current line values into original rows", () => {
@@ -90,36 +80,31 @@ describe("buildConfigTableEditorState", () => {
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: {
-        configTable: [{ color: "红色", size: "M", M: 3, L: 0, XL: 0 }]
+        configTable: [{ valuesKey: "红色|M", Quantities: 3 }]
       },
       referenceContext: {
         mode: "remaining",
         originalConfiguration,
         otherLineConfigurations: [
-          {
-            configTable: [{ color: "红色", size: "M", M: 10, L: 0, XL: 0 }]
-          }
+          { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
     });
 
-    expect(rows[0]?.M).toBe(3);
+    expect(rows[0]?.Quantities).toBe(3);
   });
 });
 
 describe("buildJobRemainingReferenceContext", () => {
   const jobConfiguration = {
-    configTable: [{ color: "红色", size: "M", M: 14, L: 0, XL: 0 }],
-    configTablePrimaryKeys: ["M", "L", "XL"]
+    configTable: [{ valuesKey: "红色|M", Quantities: 14 }]
   };
 
   it("computes remaining quantities from job target minus reported", () => {
     const referenceContext = buildJobRemainingReferenceContext({
       jobConfiguration,
       reportedConfigurations: [
-        {
-          configTable: [{ color: "红色", size: "M", M: 10, L: 0, XL: 0 }]
-        }
+        { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
       ]
     });
 
@@ -130,37 +115,33 @@ describe("buildJobRemainingReferenceContext", () => {
       referenceContext
     });
 
-    expect(referenceByRowIndex[0]?.M).toBe(4);
+    expect(referenceByRowIndex[0]?.Quantities).toBe(4);
   });
 
   it("uses pickup-based hints for an employee with pickups", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
         jobConfiguration: {
-          configTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }],
-          configTablePrimaryKeys: ["M", "L", "XL"]
+          configTable: [
+            { valuesKey: "红色|M", Quantities: 100 },
+            { valuesKey: "红色|L", Quantities: 100 }
+          ]
         },
         reportedConfigurations: [
-          {
-            configTable: [{ color: "红色", size: "M", M: 50, L: 0, XL: 0 }]
-          }
+          { configTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
         ],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 1,
               configuration: {
-                configTable: [{ color: "红色", size: "M", M: 0, L: 1, XL: 0 }]
+                configTable: [{ valuesKey: "红色|L", Quantities: 1 }]
               }
             }
           ]
         },
         reportedConfigurationsByEmployee: {
-          emp1: [
-            {
-              configTable: [{ color: "红色", size: "M", M: 0, L: 0, XL: 0 }]
-            }
-          ]
+          emp1: [{ configTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
         }
       },
       { employeeId: "emp1" }
@@ -173,17 +154,16 @@ describe("buildJobRemainingReferenceContext", () => {
       referenceContext
     });
 
-    expect(referenceByRowIndex[0]?.M).toBe(0);
-    expect(referenceByRowIndex[0]?.L).toBe(1);
-    expect(referenceByRowIndex[0]?.XL).toBe(0);
+    // Row 0 = 红色|M (picked up 0), row 1 = 红色|L (picked up 1).
+    expect(referenceByRowIndex[0]?.Quantities).toBe(0);
+    expect(referenceByRowIndex[1]?.Quantities).toBe(1);
   });
 
   it("reduces pickup hints by the employee's already reported quantity", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
         jobConfiguration: {
-          configTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }],
-          configTablePrimaryKeys: ["M", "L", "XL"]
+          configTable: [{ valuesKey: "红色|L", Quantities: 100 }]
         },
         reportedConfigurations: [],
         pickupsByEmployee: {
@@ -191,17 +171,13 @@ describe("buildJobRemainingReferenceContext", () => {
             {
               quantity: 2,
               configuration: {
-                configTable: [{ color: "红色", size: "M", M: 0, L: 2, XL: 0 }]
+                configTable: [{ valuesKey: "红色|L", Quantities: 2 }]
               }
             }
           ]
         },
         reportedConfigurationsByEmployee: {
-          emp1: [
-            {
-              configTable: [{ color: "红色", size: "M", M: 0, L: 1, XL: 0 }]
-            }
-          ]
+          emp1: [{ configTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
         }
       },
       { employeeId: "emp1" }
@@ -214,7 +190,7 @@ describe("buildJobRemainingReferenceContext", () => {
       referenceContext
     });
 
-    expect(referenceByRowIndex[0]?.L).toBe(1);
+    expect(referenceByRowIndex[0]?.Quantities).toBe(1);
   });
 });
 
@@ -276,42 +252,6 @@ describe("fillValueFromReference", () => {
 });
 
 describe("getConfigQuantityCells", () => {
-  it("labels Color · Size when sizes are quantity columns", async () => {
-    const { getConfigQuantityCells } = await import(
-      "./configParamsTableColumns"
-    );
-    const cells = getConfigQuantityCells(
-      {
-        configTable: [{ color: "BK", XS: 0, S: 6 }],
-        configTablePrimaryKeys: ["XS", "S"]
-      },
-      { BK: "黑色" }
-    );
-    expect(cells).toEqual([{ key: "0:S", label: "黑色 · S", quantity: 6 }]);
-  });
-
-  it("labels Color · Size when colors are quantity columns", async () => {
-    const { getConfigQuantityCells } = await import(
-      "./configParamsTableColumns"
-    );
-    const cells = getConfigQuantityCells(
-      {
-        configTable: [
-          { Size: "S", Red: 2, Blue: 1 },
-          { Size: "M", Red: 1, Blue: 2 }
-        ],
-        configTablePrimaryKeys: ["Red", "Blue"]
-      },
-      { Red: "红色", Blue: "蓝色" }
-    );
-    expect(cells.map((c) => c.label)).toEqual([
-      "红色 · S",
-      "蓝色 · S",
-      "红色 · M",
-      "蓝色 · M"
-    ]);
-  });
-
   it("labels combo valuesKey + Quantities rows", async () => {
     const { getConfigQuantityCells } = await import(
       "./configParamsTableColumns"
@@ -321,8 +261,7 @@ describe("getConfigQuantityCells", () => {
         configTable: [
           { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
           { valuesKey: "RD|M", Quantities: 2 }
-        ],
-        configTablePrimaryKeys: ["Quantities"]
+        ]
       },
       { BK: "黑色", RD: "红色" }
     );
@@ -347,17 +286,16 @@ describe("getConfigQuantityCells", () => {
     ]);
   });
 
-  it("configTableToComboRows converts legacy size-column matrices", async () => {
+  it("configTableToComboRows passes through combo rows", async () => {
     const { configTableToComboRows } = await import(
       "./configParamsTableColumns"
     );
     expect(
       configTableToComboRows(
         {
-          configTable: [{ color: "BK", XS: 0, S: 6 }],
-          configTablePrimaryKeys: ["XS", "S"]
+          configTable: [{ valuesKey: "BK|S", Quantities: 6 }]
         },
-        { BK: "黑色" }
+        { BK: "黑色", S: "S" }
       )
     ).toEqual([{ valuesKey: "BK|S", Quantities: 6, label: "黑色 · S" }]);
   });

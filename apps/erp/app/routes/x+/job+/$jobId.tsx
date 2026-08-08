@@ -15,7 +15,7 @@ import {
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { ExplorerSkeleton } from "~/components/Skeletons";
 import { flattenTree } from "~/components/TreeView";
-import { getConfigurationParameters } from "~/modules/items";
+import { getQuantityGridParameters } from "~/modules/items";
 import type { JobMethodTreeItem } from "~/modules/production";
 import {
   getJob,
@@ -72,7 +72,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     files: getJobDocuments(client, companyId, job.data),
     trackedEntities: getTrackedEntitiesByJobId(client, jobId),
     method: getJobMethodTree(client, jobId), // returns a promise
-    configurationParameters: getConfigurationParameters(
+    configurationParameters: getQuantityGridParameters(
       client,
       job.data.itemId!,
       companyId

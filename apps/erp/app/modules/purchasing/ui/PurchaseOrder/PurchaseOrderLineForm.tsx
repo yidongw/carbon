@@ -94,10 +94,9 @@ type PurchaseOrderLineFormProps = {
 
 function parseInitialConfig(raw: unknown): {
   rows: Row[] | null;
-  primaryKeys: string[];
   total: number;
 } {
-  if (!raw) return { rows: null, primaryKeys: [], total: 0 };
+  if (!raw) return { rows: null, total: 0 };
   try {
     const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
     if (
@@ -105,29 +104,22 @@ function parseInitialConfig(raw: unknown): {
       parsed === null ||
       !("configTable" in parsed)
     ) {
-      return { rows: null, primaryKeys: [], total: 0 };
+      return { rows: null, total: 0 };
     }
     const config = parsed as {
       configTable?: Row[];
-      configTablePrimaryKeys?: string[];
     };
     const rows = Array.isArray(config.configTable) ? config.configTable : null;
-    const primaryKeys = Array.isArray(config.configTablePrimaryKeys)
-      ? config.configTablePrimaryKeys.filter(
-          (k): k is string => typeof k === "string"
-        )
-      : [];
+    // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
     if (rows) {
       for (const row of rows) {
-        for (const key of primaryKeys) {
-          total += Number(row[key]) || 0;
-        }
+        total += Number(row.Quantities) || 0;
       }
     }
-    return { rows, primaryKeys, total };
+    return { rows, total };
   } catch {
-    return { rows: null, primaryKeys: [], total: 0 };
+    return { rows: null, total: 0 };
   }
 }
 
@@ -367,9 +359,6 @@ const PurchaseOrderLineForm = ({
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
     initialConfig.rows
   );
-  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
-    string[]
-  >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
   // Items with variant attributes use the config-quantity grid when adding a
@@ -401,7 +390,6 @@ const PurchaseOrderLineForm = ({
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
     setConfigTableRows(data.configuration.configTable);
-    setConfigTablePrimaryKeys(data.primaryKeys);
     setConfigTableTotal(data.total);
     onQuantityChange(data.total);
   };
@@ -410,17 +398,13 @@ const PurchaseOrderLineForm = ({
     if (!itemData.itemId) return;
     configModal.open({
       itemId: itemData.itemId,
-      configuration: toConfigTableValue(
-        configTableRows,
-        configTablePrimaryKeys
-      ),
+      configuration: toConfigTableValue(configTableRows),
       onConfirm: applyConfig
     });
   };
 
   const clearConfig = () => {
     setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
   };
 
@@ -499,6 +483,8 @@ const PurchaseOrderLineForm = ({
             // Consumable with a Fabric/Trim color set) gets the config grid.
             carbon
               .from("itemAttributeSelection")
+              // Any attribute selection (not just color/size) makes the item
+              // variant/grid-driven — so non-color/size sets (e.g. Shoes) count.
               // Composite PK — no `id` column; select a real column.
               .select("attributeValueId")
               .eq("itemId", itemId)
@@ -741,8 +727,7 @@ const PurchaseOrderLineForm = ({
                       value={
                         configTableRows
                           ? JSON.stringify({
-                              configTable: configTableRows,
-                              configTablePrimaryKeys
+                              configTable: configTableRows
                             })
                           : ""
                       }

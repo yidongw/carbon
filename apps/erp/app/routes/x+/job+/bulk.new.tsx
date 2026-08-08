@@ -69,20 +69,13 @@ export async function action({ request }: ActionFunctionArgs) {
   const configTableRows = isStyleQty
     ? (configuration.configTable as Record<string, unknown>[])
     : [];
-  const configTablePrimaryKeys = isStyleQty
-    ? Array.isArray(configuration.configTablePrimaryKeys)
-      ? (configuration.configTablePrimaryKeys as string[])
-      : ["Quantities"]
-    : ["Quantities"];
   const hasConfiguredJobs = configTableRows.length > 0;
   const flatPartConfiguration = isStyleQty ? undefined : configuration;
   const jobs = Math.max(1, Math.ceil(jobCount));
 
+  // Combo-only: each row carries a single `Quantities` value.
   const getConfiguredJobQuantity = (row: Record<string, unknown>) =>
-    configTablePrimaryKeys.reduce(
-      (sum: number, key: string) => sum + (Number(row[key]) || 0),
-      0
-    );
+    Number(row.Quantities) || 0;
 
   const manufacturing = await getItemReplenishment(
     serviceRole,
@@ -152,8 +145,7 @@ export async function action({ request }: ActionFunctionArgs) {
       : undefined;
     const styleConfigurationForJob = configTableRow
       ? {
-          configTable: [configTableRow],
-          configTablePrimaryKeys
+          configTable: [configTableRow]
         }
       : undefined;
     const jobQuantity = configTableRow

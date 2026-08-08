@@ -34,7 +34,7 @@ import {
 type HistoryEntry = {
   id: string;
   quantity: number;
-  configuration: { configTable: Row[]; configTablePrimaryKeys: string[] };
+  configuration: { configTable: Row[] };
   createdAt: string;
   createdByName: string | null;
 };
@@ -146,7 +146,7 @@ function JobConfigQuantities({
 
   const defaultQuantityLabel = t`Quantities`;
   const attributesLabel = t`Attributes`;
-  const { primaryParam, primaryKeys, columns } = useMemo(
+  const { primaryParam, columns } = useMemo(
     () => buildColumns(parameters, defaultQuantityLabel, attributesLabel),
     [parameters, defaultQuantityLabel, attributesLabel]
   );
@@ -159,10 +159,7 @@ function JobConfigQuantities({
       !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0);
     const seed = needsConvert
       ? (configTableToComboRows(
-          {
-            configTable: initialRows,
-            configTablePrimaryKeys: primaryKeys
-          },
+          { configTable: initialRows },
           optionLabels
         ) as Row[])
       : initialRows;
@@ -172,7 +169,7 @@ function JobConfigQuantities({
       if (label) normalized.label = label;
       return normalized;
     });
-  }, [initialRows, columns, parameters, primaryKeys, optionLabels]);
+  }, [initialRows, columns, parameters, optionLabels]);
 
   const [rows, setRows] = useState<Row[]>(() =>
     currentRows.length > 0
@@ -209,15 +206,12 @@ function JobConfigQuantities({
 
   const preview = useMemo(
     () =>
-      applyConfigAdjustment(
-        { configTable: currentRows, configTablePrimaryKeys: primaryKeys },
-        { configTable: rows, configTablePrimaryKeys: primaryKeys }
-      ),
-    [currentRows, rows, primaryKeys]
+      applyConfigAdjustment({ configTable: currentRows }, { configTable: rows }),
+    [currentRows, rows]
   );
 
-  const hasAdjustment = rows.some((row) =>
-    primaryKeys.some((key) => (Number(row[key]) || 0) !== 0)
+  const hasAdjustment = rows.some(
+    (row) => (Number(row.Quantities) || 0) !== 0
   );
 
   const deleteRow = (index: number) =>
@@ -289,8 +283,7 @@ function JobConfigQuantities({
     formData.append(
       "adjustment",
       JSON.stringify({
-        configTable: mergedRows,
-        configTablePrimaryKeys: primaryKeys
+        configTable: mergedRows
       })
     );
     fetcher.submit(formData, { method: "post", action: formAction });
@@ -319,7 +312,7 @@ function JobConfigQuantities({
               <span className="text-sm text-muted-foreground">
                 <Trans>Total</Trans>:{" "}
                 <strong className="text-foreground">
-                  {computeTotal(currentRows, primaryKeys)}
+                  {computeTotal(currentRows)}
                 </strong>
               </span>
             </div>

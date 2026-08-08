@@ -103,7 +103,7 @@ type JobsTableProps = {
   tags: { name: string }[];
   currentProcessByJobId: Record<string, JobCurrentProcessInfo | null>;
   trackedEntities: Record<string, string>;
-  itemIdsWithConfigurationParameters: string[];
+  jobIdsWithVariantQuantities: string[];
 };
 
 const defaultColumnVisibility = {
@@ -129,13 +129,13 @@ function formatReportedQuantity(n: number): string {
 type JobsTableSupplementalData = {
   currentProcessByJobId: Record<string, JobCurrentProcessInfo | null>;
   trackedEntities: Record<string, string>;
-  itemIdsWithConfigurationParameters: Set<string>;
+  jobIdsWithVariantQuantities: Set<string>;
 };
 
 const JobsTableSupplementalContext = createContext<JobsTableSupplementalData>({
   currentProcessByJobId: {},
   trackedEntities: {},
-  itemIdsWithConfigurationParameters: new Set()
+  jobIdsWithVariantQuantities: new Set()
 });
 
 function useJobsTableSupplemental() {
@@ -315,13 +315,13 @@ const JobQuantityCell = memo(function JobQuantityCell({
   onOpenConfigTable: (e: MouseEvent, job: Job) => void;
 }) {
   const { t } = useLingui();
-  const { itemIdsWithConfigurationParameters } = useJobsTableSupplemental();
+  const { jobIdsWithVariantQuantities } = useJobsTableSupplemental();
   const permissions = usePermissions();
   const isCardCell = useIsCardCell();
   const quantity = job.quantity ?? 0;
   const quantityComplete = job.quantityComplete ?? 0;
   const showConfiguredQuantityUi =
-    !!job.itemId && itemIdsWithConfigurationParameters.has(job.itemId);
+    !!job.id && jobIdsWithVariantQuantities.has(job.id);
 
   if (showConfiguredQuantityUi) {
     const canConfigure =
@@ -372,7 +372,7 @@ const JobsTable = memo(
     tags,
     currentProcessByJobId,
     trackedEntities,
-    itemIdsWithConfigurationParameters: itemIdsWithConfigurationParametersList
+    jobIdsWithVariantQuantities: jobIdsWithVariantQuantitiesList
   }: JobsTableProps) => {
     const navigate = useNavigate();
     const { t } = useLingui();
@@ -399,15 +399,9 @@ const JobsTable = memo(
       () => ({
         currentProcessByJobId,
         trackedEntities,
-        itemIdsWithConfigurationParameters: new Set(
-          itemIdsWithConfigurationParametersList
-        )
+        jobIdsWithVariantQuantities: new Set(jobIdsWithVariantQuantitiesList)
       }),
-      [
-        currentProcessByJobId,
-        trackedEntities,
-        itemIdsWithConfigurationParametersList
-      ]
+      [currentProcessByJobId, trackedEntities, jobIdsWithVariantQuantitiesList]
     );
 
     const supplementalRef = useRef(supplementalData);

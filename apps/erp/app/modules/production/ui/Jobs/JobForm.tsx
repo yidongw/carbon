@@ -128,9 +128,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const [configTableRows, setConfigTableRows] = useState<
     Record<string, any>[] | null
   >(null);
-  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
-    string[]
-  >([]);
   const [configTableTotal, setConfigTableTotal] = useState(0);
   const [configTableMode, setConfigTableMode] = useState<"single" | "bulk">(
     "single"
@@ -172,7 +169,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
       modelUploadId: null
     });
     setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
     setRequiresConfiguration(false);
     setIsConfigured(false);
@@ -182,11 +178,9 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
   const handleConfigTableSubmit = (
     rows: Record<string, any>[],
-    total: number,
-    primaryKeys: string[]
+    total: number
   ) => {
     setConfigTableRows(rows);
-    setConfigTablePrimaryKeys(primaryKeys);
     setConfigTableTotal(total);
     if (configTableMode === "bulk") {
       setItemData((prev) => ({
@@ -208,7 +202,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     if (!itemId) return;
     if (!carbon || !company.id) return;
     setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
     setIsConfigured(false);
     setConfigurationValues("");
@@ -286,11 +279,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
-    handleConfigTableSubmit(
-      data.configuration.configTable,
-      data.total,
-      data.primaryKeys
-    );
+    handleConfigTableSubmit(data.configuration.configTable, data.total);
   };
 
   const openConfigTable = (mode: "single" | "bulk") => {
@@ -310,10 +299,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     // use a local modal rather than the overlay system.
     configModal.open({
       itemId: itemData.itemId,
-      configuration: toConfigTableValue(
-        configTableRows,
-        configTablePrimaryKeys
-      ),
+      configuration: toConfigTableValue(configTableRows),
       onConfirm: applyConfig
     });
   };
@@ -367,8 +353,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     <Hidden
                       name="configuration"
                       value={JSON.stringify({
-                        configTable: configTableRows,
-                        configTablePrimaryKeys
+                        configTable: configTableRows
                       })}
                     />
                   )}
@@ -543,8 +528,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       <Hidden
                         name="configuration"
                         value={JSON.stringify({
-                          configTable: configTableRows,
-                          configTablePrimaryKeys
+                          configTable: configTableRows
                         })}
                       />
                     )}

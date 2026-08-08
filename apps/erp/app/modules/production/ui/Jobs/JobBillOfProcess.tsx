@@ -127,7 +127,7 @@ import {
   useUrlParams,
   useUser
 } from "~/hooks";
-import { getConfigurationParameters } from "~/modules/items";
+import { getQuantityGridParameters } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import type {
   OperationParameter,
@@ -761,7 +761,7 @@ const JobBillOfProcess = ({
   useEffect(() => {
     if (!itemId || !carbon) return;
 
-    void getConfigurationParameters(carbon, itemId, companyId).then(
+    void getQuantityGridParameters(carbon, itemId, companyId).then(
       ({ parameters }) => {
         setConfigurationParameters(parameters.length > 0 ? parameters : null);
       }

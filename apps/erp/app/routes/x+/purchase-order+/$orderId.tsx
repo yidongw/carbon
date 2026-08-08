@@ -15,7 +15,7 @@ import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getPaymentTermsList } from "~/modules/accounting";
 import { upsertDocument } from "~/modules/documents";
-import { getStyleColorList } from "~/modules/items";
+import { getAttributeValueNames } from "~/modules/items";
 import {
   getDefaultAttachmentsForPO,
   getPurchaseOrder,
@@ -42,7 +42,7 @@ import {
   getLowerTierApproverUserIds,
   rejectRequest
 } from "~/modules/shared";
-import { buildStyleColorNames } from "~/modules/shared/styleConfigDisplay";
+import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import { getUser } from "~/modules/users/users.server";
 import { loader as pdfLoader } from "~/routes/file+/purchase-order+/$orderId[.]pdf";
@@ -473,25 +473,29 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     )
   );
   const supplierInteractionId = purchaseOrder.data?.supplierInteractionId;
-  const [defaultAttachments, adHocDocs, styleColors, styleVariantByItemId] =
-    await Promise.all([
-      getDefaultAttachmentsForPO(serviceRole, {
-        companyId,
-        supplierId: purchaseOrder.data?.supplierId ?? null,
-        itemIds
-      }),
-      supplierInteractionId
-        ? getSupplierInteractionDocuments(
-            serviceRole,
-            companyId,
-            supplierInteractionId
-          )
-        : Promise.resolve([]),
-      // Map color code → name so Style line expand views can show names.
-      getStyleColorList(client, companyId),
-      getStyleVariantLineMetaByItemIds(client, itemIds, companyId)
-    ]);
-  const colorNames = buildStyleColorNames(styleColors.data ?? []);
+  const [
+    defaultAttachments,
+    adHocDocs,
+    attributeValueNames,
+    styleVariantByItemId
+  ] = await Promise.all([
+    getDefaultAttachmentsForPO(serviceRole, {
+      companyId,
+      supplierId: purchaseOrder.data?.supplierId ?? null,
+      itemIds
+    }),
+    supplierInteractionId
+      ? getSupplierInteractionDocuments(
+          serviceRole,
+          companyId,
+          supplierInteractionId
+        )
+      : Promise.resolve([]),
+    // Map attribute-value code -> name so Style line expand views show names.
+    getAttributeValueNames(client, companyId),
+    getStyleVariantLineMetaByItemIds(client, itemIds, companyId)
+  ]);
+  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
   const adHocAttachments = adHocDocs.map((d) => ({
     source: "po" as const,
     name: d.name,

@@ -1,5 +1,5 @@
 export {
-  buildStyleColorNames,
+  buildAttributeValueNames,
   getStyleConfigDisplay,
   type StyleConfigChip,
   type StyleConfigDisplay

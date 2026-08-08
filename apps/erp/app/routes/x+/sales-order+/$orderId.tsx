@@ -7,7 +7,7 @@ import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
-import { getStyleColorList } from "~/modules/items";
+import { getAttributeValueNames } from "~/modules/items";
 import {
   getCustomer,
   getOpportunityDocuments,
@@ -25,7 +25,7 @@ import {
   SalesOrderProperties
 } from "~/modules/sales/ui/SalesOrder";
 import { getCompanySettings } from "~/modules/settings";
-import { buildStyleColorNames } from "~/modules/shared/styleConfigDisplay";
+import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -45,10 +45,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
 
-  const [salesOrder, lines, styleColors] = await Promise.all([
+  const [salesOrder, lines, attributeValueNames] = await Promise.all([
     getSalesOrder(client, orderId),
     getSalesOrderLines(client, orderId),
-    getStyleColorList(client, companyId)
+    getAttributeValueNames(client, companyId)
   ]);
 
   if (salesOrder.error) {
@@ -161,8 +161,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     ? customer.data.defaultCc
     : (companySettings.data?.defaultCustomerCc ?? []);
 
-  // Color code -> display name for Style config badges / expand rows.
-  const colorNames = buildStyleColorNames(styleColors.data ?? []);
+  // Attribute-value code -> display name for Style config badges / expand rows.
+  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
 
   return {
     salesOrder: salesOrder.data,

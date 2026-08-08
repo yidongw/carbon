@@ -23,37 +23,36 @@ function englishNameAliases(enName: string): string[] {
 }
 
 /**
- * Build color-code → localized name map for Style chips, including English-name
- * aliases from the seed reference so legacy grids that stored "Red"/"Blue" as
- * keys still translate. New standard colors pick up aliases automatically when
- * added to styleReference; custom company colors rely on colorCode keys.
+ * Build an attribute-value `code → localized name` map for Style chips, over ALL
+ * attributes (not just Color) so any set (Garment, Shoes, …) renders values as
+ * names. Standard color codes additionally get English-name aliases from the
+ * seed reference so legacy grids that stored "Red"/"Blue" as keys still
+ * translate; every other attribute value maps by its own code → name.
  */
-export function buildStyleColorNames(
-  colors: Array<{ colorCode?: string | null; colorName?: string | null }>
+export function buildAttributeValueNames(
+  values: Array<{ code?: string | null; name?: string | null }>
 ): Record<string, string> {
-  const colorNames: Record<string, string> = {};
-  for (const color of colors) {
-    if (color.colorCode) {
-      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
-    }
+  const names: Record<string, string> = {};
+  for (const v of values) {
+    if (v.code) names[v.code] = v.name ?? v.code;
   }
 
   const englishByCode = styleColorEnglishNamesByCode();
   for (const [code, enName] of Object.entries(englishByCode)) {
-    const localized = colorNames[code];
+    const localized = names[code];
     if (!localized) continue;
     for (const alias of englishNameAliases(enName)) {
-      colorNames[alias] = localized;
+      names[alias] = localized;
     }
     // Seed uses "Gray"; older grids sometimes used British spelling.
     if (code === "GY") {
       for (const alias of englishNameAliases("Grey")) {
-        colorNames[alias] = localized;
+        names[alias] = localized;
       }
     }
   }
 
-  return colorNames;
+  return names;
 }
 
 /**
@@ -126,10 +125,6 @@ export function getStyleConfigDisplay(
 export function getStyleConfigDisplayFromVariants(
   variants: Array<{
     attributeCodes?: string[];
-    /** @deprecated prefer attributeCodes */
-    colorCode?: string;
-    /** @deprecated prefer attributeCodes */
-    sizeCode?: string;
     quantity: number;
   }>,
   colorNames?: Record<string, string>,
@@ -138,15 +133,7 @@ export function getStyleConfigDisplayFromVariants(
   const localized = localizeColorNameMap(colorNames, locale);
   const byKey = new Map<string, StyleConfigChip>();
   for (const variant of variants) {
-    // Fall back to color/size when attributeCodes is absent OR empty (`??`
-    // alone wouldn't fire on an empty array passed by groupLinesForStyleDisplay).
-    const attrCodes = variant.attributeCodes?.filter(Boolean) ?? [];
-    const codes =
-      attrCodes.length > 0
-        ? attrCodes
-        : [variant.colorCode, variant.sizeCode].filter(
-            (c): c is string => !!c?.trim()
-          );
+    const codes = variant.attributeCodes?.filter(Boolean) ?? [];
     if (codes.length === 0) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;

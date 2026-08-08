@@ -4,7 +4,10 @@ import { flash } from "@carbon/auth/session.server";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { getConfigurationParameters, getStyleColorList } from "~/modules/items";
+import {
+  getAttributeValueNames,
+  getQuantityGridParameters
+} from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
   getJob,
@@ -22,6 +25,7 @@ import {
   jobVariantQuantitiesToConfigTable,
   replaceJobVariantQuantitiesFromConfigTable
 } from "~/modules/production/jobVariantQuantity.service";
+import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -29,7 +33,7 @@ import { path } from "~/utils/path";
 export type JobConfigurationHistoryEntry = {
   id: string;
   quantity: number;
-  configuration: { configTable: ConfigRow[]; configTablePrimaryKeys: string[] };
+  configuration: { configTable: ConfigRow[] };
   createdAt: string;
   createdByName: string | null;
 };
@@ -45,7 +49,6 @@ export type JobConfigTableOverlayLoaderData = {
 
 function normalizeConfigurationValue(value: unknown): {
   configTable: ConfigRow[];
-  configTablePrimaryKeys: string[];
 } {
   const cfg =
     typeof value === "object" && value !== null && !Array.isArray(value)
@@ -54,12 +57,7 @@ function normalizeConfigurationValue(value: unknown): {
   const configTable = Array.isArray(cfg?.configTable)
     ? (cfg?.configTable as ConfigRow[])
     : [];
-  const configTablePrimaryKeys = Array.isArray(cfg?.configTablePrimaryKeys)
-    ? (cfg?.configTablePrimaryKeys as unknown[]).filter(
-        (k): k is string => typeof k === "string"
-      )
-    : ["Quantities"];
-  return { configTable, configTablePrimaryKeys };
+  return { configTable };
 }
 
 export async function loader({
@@ -77,14 +75,21 @@ export async function loader({
   const job = await getJob(client, jobId);
   if (job.error || !job.data?.itemId) return null;
 
-  const { parameters } = await getConfigurationParameters(
+  // The combo quantity grid belongs to jobs that OWN a plan — master work orders
+  // and standalone configured Style jobs (which have jobVariantQuantity rows).
+  // Bundle/variant SKU jobs have none (their item resolves to the parent Style,
+  // so an item-centric check would wrongly show the full matrix), so they get
+  // plain quantity, not the grid.
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  if ((planned.data?.length ?? 0) === 0) return null;
+
+  const { parameters } = await getQuantityGridParameters(
     client,
     job.data.itemId,
     companyId
   );
   if (parameters.length === 0) return null;
 
-  const planned = await getJobVariantQuantities(client, jobId, companyId);
   const fromTable = jobVariantQuantitiesToConfigTable(planned.data ?? []);
   const initialRows =
     fromTable.configTable.length > 0
@@ -111,14 +116,10 @@ export async function loader({
     };
   });
 
-  // Map color code -> name so the config table displays names, not codes.
-  const styleColors = await getStyleColorList(client, companyId);
-  const colorNames: Record<string, string> = {};
-  for (const color of styleColors.data ?? []) {
-    if (color.colorCode) {
-      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
-    }
-  }
+  // Map attribute-value code -> name so the config table displays names, not
+  // codes (all attributes, not just Color).
+  const attributeValueNames = await getAttributeValueNames(client, companyId);
+  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
 
   return {
     jobDisplayId: job.data.jobId ?? null,
@@ -170,10 +171,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const adjustmentTable = normalizeConfigurationValue(adjustment);
-  const hasAdjustment = adjustmentTable.configTable.some((row) =>
-    adjustmentTable.configTablePrimaryKeys.some(
-      (key) => (Number(row[key]) || 0) !== 0
-    )
+  const hasAdjustment = adjustmentTable.configTable.some(
+    (row) => (Number(row.Quantities) || 0) !== 0
   );
   if (!hasAdjustment) {
     return data(

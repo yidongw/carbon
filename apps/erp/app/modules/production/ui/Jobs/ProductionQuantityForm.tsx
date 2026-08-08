@@ -62,7 +62,6 @@ function getInitialConfigState(configuration: unknown) {
   ) {
     return {
       rows: null as ConfigRow[] | null,
-      primaryKeys: [] as string[],
       total: 0
     };
   }
@@ -71,15 +70,9 @@ function getInitialConfigState(configuration: unknown) {
   const rows = Array.isArray(cfg.configTable)
     ? (cfg.configTable as ConfigRow[])
     : null;
-  const primaryKeys = Array.isArray(cfg.configTablePrimaryKeys)
-    ? cfg.configTablePrimaryKeys.filter(
-        (k): k is string => typeof k === "string"
-      )
-    : [];
 
   return {
     rows,
-    primaryKeys,
     total: computeJobConfigTableTotal(cfg)
   };
 }
@@ -216,7 +209,6 @@ const ProductionQuantityForm = ({
   const initialConfig = isCreateMultiLine
     ? {
         rows: null as ConfigRow[] | null,
-        primaryKeys: [] as string[],
         total: 0
       }
     : getInitialConfigState(
@@ -227,9 +219,6 @@ const ProductionQuantityForm = ({
   const [configTableRows, setConfigTableRows] = useState<ConfigRow[] | null>(
     initialConfig.rows
   );
-  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
-    string[]
-  >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
   const formBodyRef = useRef<HTMLDivElement>(null);
 
@@ -320,7 +309,6 @@ const ProductionQuantityForm = ({
     }
     setQuantity(initialQuantity);
     setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
   };
 
@@ -348,13 +336,8 @@ const ProductionQuantityForm = ({
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const handleConfigTableSubmit = (
-    rows: ConfigRow[],
-    total: number,
-    primaryKeys: string[]
-  ) => {
+  const handleConfigTableSubmit = (rows: ConfigRow[], total: number) => {
     setConfigTableRows(rows);
-    setConfigTablePrimaryKeys(primaryKeys);
     setConfigTableTotal(total);
     if (total > 0) {
       setQuantity(total);
@@ -369,7 +352,6 @@ const ProductionQuantityForm = ({
       itemId: jobPicker.itemId,
       configuration: toConfigTableValue(
         configTableRows,
-        configTablePrimaryKeys,
         (initialValues as z.infer<typeof productionQuantityValidator>)
           .configuration
       ),
@@ -384,11 +366,7 @@ const ProductionQuantityForm = ({
           employeeId: actorKind === "employee" ? employeeId : undefined
         }),
       onConfirm: (data) =>
-        handleConfigTableSubmit(
-          data.configuration.configTable,
-          data.total,
-          data.primaryKeys
-        )
+        handleConfigTableSubmit(data.configuration.configTable, data.total)
     });
   };
 
@@ -705,8 +683,7 @@ const ProductionQuantityForm = ({
                   <Hidden
                     name="configuration"
                     value={JSON.stringify({
-                      configTable: configTableRows,
-                      configTablePrimaryKeys
+                      configTable: configTableRows
                     })}
                   />
                 )}

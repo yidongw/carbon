@@ -163,11 +163,11 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
             ? JSON.parse(r.configuration)
             : r.configuration;
         for (const tableRow of config?.configTable ?? []) {
-          for (const [key, val] of Object.entries(tableRow)) {
-            if (key === "color" || key === "configTablePrimaryKeys") continue;
-            const k = `${key}|${(tableRow as Record<string, unknown>).color ?? ""}`;
-            totals[k] = (totals[k] ?? 0) + Number(val);
-          }
+          const row = tableRow as Record<string, unknown>;
+          const valuesKey = String(row.valuesKey ?? "");
+          if (!valuesKey) continue;
+          totals[valuesKey] =
+            (totals[valuesKey] ?? 0) + Number(row.Quantities ?? 0);
         }
       }
       return totals;

@@ -7,7 +7,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import {
   getCurrentProcessByJobIds,
-  getItemIdsWithConfigurationParameters,
+  getJobIdsWithVariantQuantities,
   getJobs,
   getTrackedEntitiesByJobMakeMethodIds
 } from "~/modules/production";
@@ -63,21 +63,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
         .filter((id): id is string => Boolean(id))
     )
   ];
-  const itemIds = [
+  const jobIds = [
     ...new Set(
-      jobRows.map((job) => job.itemId).filter((id): id is string => Boolean(id))
+      jobRows.map((job) => job.id).filter((id): id is string => Boolean(id))
     )
   ];
 
-  const [
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
-  ] = await Promise.all([
-    getTrackedEntitiesByJobMakeMethodIds(client, companyId, jobMakeMethodIds),
-    getItemIdsWithConfigurationParameters(client, companyId, itemIds),
-    getCurrentProcessByJobIds(client, jobRows)
-  ]);
+  const [trackedEntities, jobIdsWithVariantQuantities, currentProcessByJobId] =
+    await Promise.all([
+      getTrackedEntitiesByJobMakeMethodIds(client, companyId, jobMakeMethodIds),
+      getJobIdsWithVariantQuantities(client, companyId, jobIds),
+      getCurrentProcessByJobIds(client, jobRows)
+    ]);
 
   return {
     count: jobs.count ?? 0,
@@ -85,7 +82,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locations: locations.data ?? [],
     tags: tags.data ?? [],
     trackedEntities,
-    itemIdsWithConfigurationParameters,
+    jobIdsWithVariantQuantities,
     currentProcessByJobId
   };
 }
@@ -96,7 +93,7 @@ export default function JobsRoute() {
     tags,
     jobs,
     trackedEntities,
-    itemIdsWithConfigurationParameters,
+    jobIdsWithVariantQuantities,
     currentProcessByJobId
   } = useLoaderData<typeof loader>();
 
@@ -107,7 +104,7 @@ export default function JobsRoute() {
         count={count}
         tags={tags}
         trackedEntities={trackedEntities}
-        itemIdsWithConfigurationParameters={itemIdsWithConfigurationParameters}
+        jobIdsWithVariantQuantities={jobIdsWithVariantQuantities}
         currentProcessByJobId={currentProcessByJobId}
       />
       <Outlet />
