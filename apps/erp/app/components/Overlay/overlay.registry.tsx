@@ -162,7 +162,14 @@ export const overlayRegistry = {
     render: renderLazyOverlay(
       (ctx) =>
         ctx.loaderData
-          ? { initialValues: { code: "", name: "", sortOrder: 100 } }
+          ? {
+              initialValues: {
+                code: "",
+                name: "",
+                sortOrder: 100,
+                values: []
+              }
+            }
           : null,
       () => import("~/modules/items/ui/ItemAttributes/ItemAttributeForm")
     )
@@ -179,7 +186,15 @@ export const overlayRegistry = {
                 code: string | null;
                 name: string | null;
                 sortOrder: number | null;
+                companyId: string | null;
               };
+              values: Array<{
+                id: string;
+                code: string;
+                name: string;
+                sortOrder: number;
+                companyId: string | null;
+              }>;
             }
           | undefined;
         if (!data) return null;
@@ -188,8 +203,15 @@ export const overlayRegistry = {
             id: data.attribute.id,
             code: data.attribute.code ?? "",
             name: data.attribute.name ?? "",
-            sortOrder: data.attribute.sortOrder ?? 100
-          }
+            sortOrder: data.attribute.sortOrder ?? 100,
+            values: data.values.map((v) => ({
+              id: v.id,
+              code: v.code,
+              name: v.name,
+              isSystem: v.companyId === null
+            }))
+          },
+          isSystem: data.attribute.companyId === null
         };
       },
       () => import("~/modules/items/ui/ItemAttributes/ItemAttributeForm")

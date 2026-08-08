@@ -238,6 +238,9 @@ msgstr "Ein Werkzeug ist ein physischer Gegenstand, der zur Herstellung eines Te
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Ein Benutzer erfasst das Verfallsdatum für jede Charge oder Seriennummer, wenn die Waren eingehen. Verwenden Sie dies, wenn Lieferanten Chargen mit unterschiedlichen Verfallsdaten versenden."
 
+msgid "A value with this code already exists"
+msgstr "Ein Wert mit diesem Code existiert bereits"
+
 msgid "Abilities"
 msgstr "Fähigkeiten"
 
@@ -1785,9 +1788,6 @@ msgstr "Kann-global-Materialstoffs-eigentlich-nicht-verändert werden"
 msgid "Cannot edit global material type"
 msgstr "Kann-global-Materialietyp-nicht-aendern"
 
-msgid "Cannot edit system attribute"
-msgstr "Kann Systemattribut nicht bearbeiten"
-
 msgid "Cannot edit system attribute value"
 msgstr "Kann Systemattribut-Wert nicht bearbeiten"
 
@@ -2016,6 +2016,9 @@ msgstr "KABELJAU"
 
 msgid "Code"
 msgstr "Code"
+
+msgid "Code is required"
+msgstr "Code ist erforderlich"
 
 msgid "Collapse"
 msgstr "Zusammenfassen"
@@ -10577,6 +10580,9 @@ msgstr "Keine Werte erforderlich"
 msgid "No values available"
 msgstr "Keine Werte verfügbar"
 
+msgid "No values yet."
+msgstr "Noch keine Werte."
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Es gibt keine Lagerbestände für dieses Artikelnummer auf dem Record. Sie können es trotzdem auswählen – der verfügbare Bestand wird negativ gehen, bis die Reconciliation durchgeführt wurde."
 
@@ -10900,6 +10906,9 @@ msgstr "Bestelldatum"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Bestellreihenfolge bestimmt, wie Attributwerte in Grids und Chips eingelesen werden (z.B. Farbe · Größe)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr "Die Reihenfolge bestimmt, wie Werte in Auswahlfeldern und Grids erscheinen."
 
 msgid "Order Multiple"
 msgstr "Bestellmenge"

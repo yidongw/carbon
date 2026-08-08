@@ -597,7 +597,9 @@ export async function getItemAttributes(
   const db = client as any;
   let query = db
     .from("itemAttribute")
-    .select("*", { count: "exact" })
+    .select("*, itemAttributeValue(id, code, name, sortOrder, companyId)", {
+      count: "exact"
+    })
     .or(`companyId.eq.${companyId},companyId.is.null`)
     .order("sortOrder", { ascending: true })
     .order("code", { ascending: true });
@@ -605,13 +607,53 @@ export async function getItemAttributes(
   if (args?.search) {
     query = query.or(`code.ilike.%${args.search}%,name.ilike.%${args.search}%`);
   }
-  return query;
+
+  const result = await query;
+  if (result.error) return result;
+
+  // Prefer company-scoped values when the same code also exists as a system
+  // catalog row — matches getItemAttributeValues admin list behavior.
+  const data = (
+    (result.data ?? []) as Array<{
+      itemAttributeValue?: Array<{
+        id: string;
+        code: string;
+        name: string;
+        sortOrder: number;
+        companyId: string | null;
+      }> | null;
+    }>
+  ).map((attr) => {
+    const byCode = new Map<
+      string,
+      {
+        id: string;
+        code: string;
+        name: string;
+        sortOrder: number;
+        companyId: string | null;
+      }
+    >();
+    for (const row of attr.itemAttributeValue ?? []) {
+      const existing = byCode.get(row.code);
+      if (!existing || (row.companyId && !existing.companyId)) {
+        byCode.set(row.code, row);
+      }
+    }
+    const values = [...byCode.values()].sort((a, b) => {
+      if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+      return a.code.localeCompare(b.code);
+    });
+    return { ...attr, itemAttributeValue: values };
+  });
+
+  return { ...result, data };
 }
 
 export async function getItemAttribute(client: Db, id: string) {
   return (client as any)
     .from("itemAttribute")
-    .select("*")
+    .select("*, itemAttributeValue(id, code, name, sortOrder, companyId)")
     .eq("id", id)
     .single();
 }
@@ -626,6 +668,21 @@ export async function getItemAttributeSet(client: Db, id: string) {
     .single();
 }
 
+type ItemAttributeValueInput = {
+  id?: string;
+  code: string;
+  name: string;
+};
+
+/**
+ * Create/update an attribute and sync its ordered values.
+ * System attributes (`companyId` null on the attribute row): code/name are not
+ * updated; only company-scoped values are inserted/updated/deleted. System
+ * catalog values are left alone (RLS blocks mutating them anyway).
+ *
+ * `companyId` on update is the attribute's companyId (null = system).
+ * `tenantCompanyId` is always the acting company (used for value writes).
+ */
 export async function upsertItemAttribute(
   client: Db,
   payload:
@@ -633,6 +690,7 @@ export async function upsertItemAttribute(
         code: string;
         name: string;
         sortOrder?: number;
+        values: ItemAttributeValueInput[];
         companyId: string;
         createdBy: string;
       }
@@ -641,25 +699,47 @@ export async function upsertItemAttribute(
         code: string;
         name: string;
         sortOrder?: number;
+        values: ItemAttributeValueInput[];
         updatedBy: string;
+        /** Attribute's companyId — null for system (shared) attributes. */
+        companyId: string | null;
+        /** Acting tenant — always set; used when writing company values. */
+        tenantCompanyId: string;
       }
 ) {
   const db = client as any;
+
   if ("id" in payload) {
-    return db
-      .from("itemAttribute")
-      .update({
-        code: payload.code,
-        name: payload.name,
-        sortOrder: payload.sortOrder ?? 100,
-        updatedBy: payload.updatedBy,
-        updatedAt: new Date().toISOString()
-      })
-      .eq("id", payload.id)
-      .select("id")
-      .single();
+    const attributeId = payload.id;
+    const actorId = payload.updatedBy;
+
+    if (payload.companyId !== null) {
+      const updated = await db
+        .from("itemAttribute")
+        .update({
+          code: payload.code,
+          name: payload.name,
+          sortOrder: payload.sortOrder ?? 100,
+          updatedBy: actorId,
+          updatedAt: new Date().toISOString()
+        })
+        .eq("id", attributeId)
+        .select("id")
+        .single();
+      if (updated.error) return updated;
+    }
+
+    const sync = await syncItemAttributeValues(client, {
+      attributeId,
+      values: payload.values,
+      tenantCompanyId: payload.tenantCompanyId,
+      userId: actorId
+    });
+    if (sync.error) return sync;
+    return { data: { id: attributeId }, error: null };
   }
-  return db
+
+  const created = await db
     .from("itemAttribute")
     .insert([
       {
@@ -670,8 +750,134 @@ export async function upsertItemAttribute(
         createdBy: payload.createdBy
       }
     ])
-    .select("*")
+    .select("id")
     .single();
+  if (created.error || !created.data) return created;
+
+  const sync = await syncItemAttributeValues(client, {
+    attributeId: created.data.id,
+    values: payload.values,
+    tenantCompanyId: payload.companyId,
+    userId: payload.createdBy
+  });
+  if (sync.error) return sync;
+  return created;
+}
+
+/**
+ * Sync ordered values for an attribute. Company-scoped rows are
+ * inserted/updated/deleted with sortOrder = list index. System catalog rows
+ * (`companyId` null) in the list are skipped (not updated/deleted).
+ */
+async function syncItemAttributeValues(
+  client: Db,
+  args: {
+    attributeId: string;
+    values: ItemAttributeValueInput[];
+    tenantCompanyId: string;
+    userId: string;
+  }
+) {
+  const db = client as any;
+  const { attributeId, values, tenantCompanyId, userId } = args;
+
+  const existing = await db
+    .from("itemAttributeValue")
+    .select("id, code, companyId, sortOrder")
+    .eq("attributeId", attributeId)
+    .or(`companyId.eq.${tenantCompanyId},companyId.is.null`);
+  if (existing.error) return existing;
+
+  const existingById = new Map<
+    string,
+    { id: string; code: string; companyId: string | null; sortOrder: number }
+  >(
+    (
+      (existing.data ?? []) as Array<{
+        id: string;
+        code: string;
+        companyId: string | null;
+        sortOrder: number;
+      }>
+    ).map((row) => [row.id, row])
+  );
+
+  const keptCompanyIds = new Set<string>();
+
+  for (let index = 0; index < values.length; index++) {
+    const value = values[index];
+    const sortOrder = index;
+
+    if (value.id) {
+      const row = existingById.get(value.id);
+      if (!row) {
+        return {
+          data: null,
+          error: new Error(`Unknown attribute value: ${value.id}`)
+        };
+      }
+      // System catalog values: leave untouched.
+      if (row.companyId === null) {
+        continue;
+      }
+      keptCompanyIds.add(row.id);
+      const updated = await db
+        .from("itemAttributeValue")
+        .update({
+          code: value.code,
+          name: value.name,
+          sortOrder,
+          updatedBy: userId,
+          updatedAt: new Date().toISOString()
+        })
+        .eq("id", row.id)
+        .eq("companyId", tenantCompanyId);
+      if (updated.error) return updated;
+      continue;
+    }
+
+    const inserted = await db
+      .from("itemAttributeValue")
+      .insert([
+        {
+          attributeId,
+          code: value.code,
+          name: value.name,
+          sortOrder,
+          companyId: tenantCompanyId,
+          createdBy: userId
+        }
+      ])
+      .select("id")
+      .single();
+    if (inserted.error) return inserted;
+    if (inserted.data?.id) keptCompanyIds.add(inserted.data.id);
+  }
+
+  const toDelete = (
+    (existing.data ?? []) as Array<{ id: string; companyId: string | null }>
+  ).filter(
+    (row) => row.companyId === tenantCompanyId && !keptCompanyIds.has(row.id)
+  );
+
+  for (const row of toDelete) {
+    const deleted = await db
+      .from("itemAttributeValue")
+      .delete()
+      .eq("id", row.id)
+      .eq("companyId", tenantCompanyId);
+    if (deleted.error) {
+      return {
+        data: null,
+        error: toError(
+          deleted.error,
+          "Failed to delete attribute value (it may be in use)"
+        )
+      };
+    }
+  }
+
+  return { data: { id: attributeId }, error: null };
 }
 
 export async function deleteItemAttribute(client: Db, id: string) {

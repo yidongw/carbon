@@ -1,11 +1,35 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 
+const itemAttributeValueInputSchema = z.object({
+  id: z.string().optional(),
+  code: z.string().min(1, { message: "Code is required" }).max(50),
+  name: z.string().min(1, { message: "Name is required" }).max(255)
+});
+
 export const itemAttributeValidator = z.object({
   id: zfd.text(z.string().optional()),
   code: z.string().min(1, { message: "Code is required" }).max(50),
   name: z.string().min(1, { message: "Name is required" }).max(255),
-  sortOrder: zfd.numeric(z.number().int().optional())
+  sortOrder: zfd.numeric(z.number().int().optional()),
+  /** Ordered values managed in the attribute overlay (mirrors set attributeIds). */
+  values: z.preprocess(
+    (v) => {
+      if (Array.isArray(v)) return v;
+      if (typeof v === "string") {
+        try {
+          const parsed = JSON.parse(v);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+      return [];
+    },
+    z.array(itemAttributeValueInputSchema).min(1, {
+      message: "Add at least one value"
+    })
+  )
 });
 
 export const itemAttributeValueValidator = z.object({

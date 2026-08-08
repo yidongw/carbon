@@ -238,6 +238,9 @@ msgstr "Narzędzie to element fizyczny używany do wykonania części, którą m
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Użytkownik rejestruje datę wygaśnięcia dla każdej partii lub numeru seryjnego po otrzymaniu towaru. Używaj, gdy dostawcy wysyłają partie z różnymi datami wygaśnięcia."
 
+msgid "A value with this code already exists"
+msgstr "Wartość z tym kodem już istnieje"
+
 msgid "Abilities"
 msgstr "Umiejętności"
 
@@ -1785,9 +1788,6 @@ msgstr "Nie można edytować globalnej substancji materiałowej"
 msgid "Cannot edit global material type"
 msgstr "Nie można edytować globalnego typu materiału"
 
-msgid "Cannot edit system attribute"
-msgstr "Nie można edytować systemowego atrybutu"
-
 msgid "Cannot edit system attribute value"
 msgstr "Nie można edytować wartości systemowego atrybutu"
 
@@ -2016,6 +2016,9 @@ msgstr "COD"
 
 msgid "Code"
 msgstr "Kod"
+
+msgid "Code is required"
+msgstr "Kod jest wymagany"
 
 msgid "Collapse"
 msgstr "Zwiń"
@@ -10577,6 +10580,9 @@ msgstr "Nie jest wymagana wartość."
 msgid "No values available"
 msgstr "Nie dostępne wartości"
 
+msgid "No values yet."
+msgstr "Brak wartości jeszcze."
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Brak zaplanowanego stanu magazynowego dla tego produktu. Możesz nadal go wybrać – aktualny stan będzie ujemny do momentu zreconciliacji liczenia."
 
@@ -10900,6 +10906,9 @@ msgstr "Data zamówienia"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Zdefiniowana kolejność okresla wartości atrybutów wyświetlane w gridach i chipach (np. Kolor · Rozmiar)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr "Kolejność określa, jak wartości pojawiają się w selektorach i siatkach."
 
 msgid "Order Multiple"
 msgstr "Wielokrotność Zamówienia"

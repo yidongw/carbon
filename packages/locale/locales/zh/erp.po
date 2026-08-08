@@ -239,6 +239,9 @@ msgstr "工具是用于制造产品的实物物品，可以在多个工作中使
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "当货物接收时，用户需要记录每个批次或序列的失效日期。用于供应商发货带有不同失效日期的情况。"
 
+msgid "A value with this code already exists"
+msgstr "已存在使用此代码的值"
+
 msgid "Abilities"
 msgstr "能力"
 
@@ -1786,9 +1789,6 @@ msgstr "不能编辑全局物料成分"
 msgid "Cannot edit global material type"
 msgstr "不能编辑全局物料类型"
 
-msgid "Cannot edit system attribute"
-msgstr "无法编辑系统属性"
-
 msgid "Cannot edit system attribute value"
 msgstr "无法编辑系统属性值"
 
@@ -2017,6 +2017,9 @@ msgstr "货到付款"
 
 msgid "Code"
 msgstr "代码"
+
+msgid "Code is required"
+msgstr "代码为必填项"
 
 msgid "Collapse"
 msgstr "折叠"
@@ -10578,6 +10581,9 @@ msgstr "无需输入值"
 msgid "No values available"
 msgstr "暂无数据可用"
 
+msgid "No values yet."
+msgstr "暂无值。"
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
 
@@ -10901,6 +10907,9 @@ msgstr "订单日期"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "顺序决定属性值在网格和标签中的显示方式（例如 颜色 · 尺码）。"
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr "顺序决定属性值在选择器和网格中的显示方式。"
 
 msgid "Order Multiple"
 msgstr "订购多件"

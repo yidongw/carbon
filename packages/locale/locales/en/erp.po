@@ -238,6 +238,9 @@ msgstr "A tool is a physical item used to make a part that can be used across mu
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 
+msgid "A value with this code already exists"
+msgstr "A value with this code already exists"
+
 msgid "Abilities"
 msgstr "Abilities"
 
@@ -1785,9 +1788,6 @@ msgstr "Cannot edit global material substance"
 msgid "Cannot edit global material type"
 msgstr "Cannot edit global material type"
 
-msgid "Cannot edit system attribute"
-msgstr "Cannot edit system attribute"
-
 msgid "Cannot edit system attribute value"
 msgstr "Cannot edit system attribute value"
 
@@ -2016,6 +2016,9 @@ msgstr "COD"
 
 msgid "Code"
 msgstr "Code"
+
+msgid "Code is required"
+msgstr "Code is required"
 
 msgid "Collapse"
 msgstr "Collapse"
@@ -10577,6 +10580,9 @@ msgstr "No value needed"
 msgid "No values available"
 msgstr "No values available"
 
+msgid "No values yet."
+msgstr "No values yet."
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 
@@ -10900,6 +10906,9 @@ msgstr "Order Date"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr "Order determines how values appear in pickers and grids."
 
 msgid "Order Multiple"
 msgstr "Order Multiple"

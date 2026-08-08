@@ -238,6 +238,9 @@ msgstr "Инструмент — это физический предмет, и�
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Пользователь записывает дату истечения срока для каждой партии или серийного номера при получении товара. Используйте, когда поставщики отправляют партии с разными датами истечения срока."
 
+msgid "A value with this code already exists"
+msgstr "Значение с таким кодом уже существует"
+
 msgid "Abilities"
 msgstr "Способности"
 
@@ -1785,9 +1788,6 @@ msgstr "Невозможно редактировать глобальный м�
 msgid "Cannot edit global material type"
 msgstr "Невозможно редактировать глобальный тип материала"
 
-msgid "Cannot edit system attribute"
-msgstr "Невозможно редактировать системный атрибут"
-
 msgid "Cannot edit system attribute value"
 msgstr "Невозможно изменить значение системного атрибута"
 
@@ -2016,6 +2016,9 @@ msgstr "Дата ввода в коммерческую эксплуатацию
 
 msgid "Code"
 msgstr "Код"
+
+msgid "Code is required"
+msgstr "Код обязателен"
 
 msgid "Collapse"
 msgstr "Свернуть"
@@ -10577,6 +10580,9 @@ msgstr "Нет необходимости"
 msgid "No values available"
 msgstr "Нет доступных значений"
 
+msgid "No values yet."
+msgstr "Пока нет значений."
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
 
@@ -10900,6 +10906,9 @@ msgstr "Дата заказа"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Порядок определяет, как значения атрибутов читаются в сетках и чипах (например, Цвет · Размер)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr "Порядок определяет, как значения отображаются в списках выбора и сетках."
 
 msgid "Order Multiple"
 msgstr "Кратность заказа"

@@ -30,7 +30,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   await requirePermissions(request, { create: "parts" });
-  return {};
+  return {
+    initialValues: {
+      code: "",
+      name: "",
+      sortOrder: 100,
+      values: [] as Array<{ id?: string; code: string; name: string }>
+    }
+  };
 }
 
 export async function action({ request }: ActionFunctionArgs) {

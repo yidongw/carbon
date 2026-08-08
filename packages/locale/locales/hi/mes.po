@@ -362,9 +362,6 @@ msgstr "ग्लोबल मटेरियल स्ट्रास्ट क
 msgid "Cannot edit global material type"
 msgstr "ग्लोबल मटेरियल टाइप को संपादित नहीं किया जा सकता"
 
-msgid "Cannot edit system attribute"
-msgstr "सिस्टम अट्रीबर्ट को संपादित नहीं किया जा सकता"
-
 msgid "Cannot edit system attribute value"
 msgstr "सिस्टम अट्रीबर्ट वैल्यू को संपादित नहीं किया जा सकता"
 

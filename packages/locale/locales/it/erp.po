@@ -238,6 +238,9 @@ msgstr "Uno strumento è un articolo fisico utilizzato per realizzare una parte 
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Un utente registra la data di scadenza su ogni lotto o numero seriale quando i beni vengono ricevuti. Utilizzare quando i fornitori spediscono lotti con date di scadenza diverse."
 
+msgid "A value with this code already exists"
+msgstr "Esiste già un valore con questo codice"
+
 msgid "Abilities"
 msgstr "Competenze"
 
@@ -1785,9 +1788,6 @@ msgstr "Non è possibile modificare il materiale globale"
 msgid "Cannot edit global material type"
 msgstr "Non è possibile modificare il tipo materiale globale"
 
-msgid "Cannot edit system attribute"
-msgstr "Non è possibile modificare l'attributo sistema"
-
 msgid "Cannot edit system attribute value"
 msgstr "Non è possibile modificare il valore dell'attributo sistema"
 
@@ -2016,6 +2016,9 @@ msgstr "MERLUZZO"
 
 msgid "Code"
 msgstr "Codice"
+
+msgid "Code is required"
+msgstr "Il codice è obbligatorio"
 
 msgid "Collapse"
 msgstr "Collapsa"
@@ -10584,6 +10587,9 @@ msgstr "Non è necessario inserire un valore"
 msgid "No values available"
 msgstr "Nessun valore disponibile"
 
+msgid "No values yet."
+msgstr "Nessun valore ancora."
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Non ci sono dati di magazzino registrati per questo articolo. Puoi comunque prenderlo - il saldo attuale diventerà negativo fino a quando non verranno effettuate le rettifiche."
 
@@ -10907,6 +10913,9 @@ msgstr "Data dell'ordine"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Ordine determina come vengono letti i valori degli attributi nelle griglie e nei pezzi (ad esempio, Colore · Dimensione)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr "L'ordine determina come i valori appaiono nei selettori e nelle griglie."
 
 msgid "Order Multiple"
 msgstr "Multiplo d'Ordine"
