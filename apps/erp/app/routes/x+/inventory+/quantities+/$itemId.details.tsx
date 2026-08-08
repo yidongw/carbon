@@ -17,11 +17,13 @@ import {
   getItemQuantities,
   getItemShelfLife,
   getItemStorageUnitQuantities,
+  getItemVariantQuantities,
   getMakeMethodById,
   getMakeMethods,
   getMethodMaterialsByMakeMethod,
   getMethodOperationsByMakeMethodId,
   getPickMethod,
+  getStyleStorageUnitQuantities,
   upsertPickMethod
 } from "~/modules/items";
 import { getLocationsList } from "~/modules/resources";
@@ -110,11 +112,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   }
 
-  const [quantities, item, pendingTransfers] = await Promise.all([
-    getItemQuantities(client, itemId, companyId, locationId),
-    getItem(client, itemId),
-    getPendingTransferQuantities(client, companyId, itemId, locationId)
-  ]);
+  const [quantities, item, pendingTransfers, variantQuantities] =
+    await Promise.all([
+      getItemQuantities(client, itemId, companyId, locationId),
+      getItem(client, itemId),
+      getPendingTransferQuantities(client, companyId, itemId, locationId),
+      getItemVariantQuantities(client, itemId, companyId, locationId)
+    ]);
   if (quantities.error) {
     throw redirect(
       path.to.inventoryQuantities,
@@ -129,12 +133,22 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const itemStorageUnitQuantities = await getItemStorageUnitQuantities(
-    client,
-    itemId,
-    companyId,
-    locationId
-  );
+  // Style stock lives on the variant SKUs, so aggregate across them; other
+  // items keep the single-item lookup.
+  const itemStorageUnitQuantities =
+    item.data.type === "Style"
+      ? await getStyleStorageUnitQuantities(
+          client,
+          itemId,
+          companyId,
+          locationId
+        )
+      : await getItemStorageUnitQuantities(
+          client,
+          itemId,
+          companyId,
+          locationId
+        );
   if (itemStorageUnitQuantities.error || !itemStorageUnitQuantities.data) {
     throw redirect(
       path.to.inventoryQuantities,
@@ -214,6 +228,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     itemShelfLife: itemShelfLife.data ?? null,
     trackedEntityExpirations,
     pendingTransfers,
+    variantQuantities: variantQuantities.data ?? [],
     methodData,
     tags
   };
@@ -227,7 +242,8 @@ export default function ItemInventoryRoute() {
     item,
     itemShelfLife,
     trackedEntityExpirations,
-    pendingTransfers
+    pendingTransfers,
+    variantQuantities
   } = useLoaderData<typeof loader>();
 
   const [items] = useItems();
@@ -255,6 +271,7 @@ export default function ItemInventoryRoute() {
         quantities={quantities}
         pendingTransfers={pendingTransfers}
         storageUnits={storageUnits.options}
+        variantQuantities={variantQuantities}
       />
     </VStack>
   );

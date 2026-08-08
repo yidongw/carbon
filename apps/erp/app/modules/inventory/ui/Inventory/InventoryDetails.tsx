@@ -11,13 +11,16 @@ import { useState } from "react";
 import { LuMoveDown, LuMoveUp } from "react-icons/lu";
 import type { z } from "zod";
 import { DateSelect } from "~/components/DateSelect";
+import { StyleQuantityCell } from "~/components/StyleQuantityCell";
 import type {
   ItemQuantities,
   ItemStorageUnitQuantities,
   itemTrackingTypes,
   pickMethodValidator
 } from "~/modules/items";
+import type { BreakdownEntry } from "../../types";
 import InventoryStorageUnits from "./InventoryStorageUnits";
+import { SkuQuantitiesCard, type SkuQuantityRow } from "./SkuQuantitiesCard";
 
 type InventoryDetailsProps = {
   itemStorageUnitQuantities: ItemStorageUnitQuantities[];
@@ -32,6 +35,8 @@ type InventoryDetailsProps = {
   quantities: ItemQuantities | null;
   pendingTransfers?: { toShip: number; toReceive: number };
   storageUnits: { value: string; label: string }[];
+  // Per-variant (SKU) on-hand for Style items; empty for non-Style items.
+  variantQuantities?: SkuQuantityRow[];
 };
 
 const InventoryDetails = ({
@@ -43,7 +48,8 @@ const InventoryDetails = ({
   pickMethod,
   quantities,
   pendingTransfers,
-  storageUnits
+  storageUnits,
+  variantQuantities
 }: InventoryDetailsProps) => {
   const { locale } = useLocale();
   const formatter = Intl.NumberFormat(locale, {
@@ -57,6 +63,17 @@ const InventoryDetails = ({
       ? (quantities?.usageLast30Days ?? 0)
       : (quantities?.usageLast90Days ?? 0);
 
+  // Style items (with variant SKUs) get a clickable SKU breakdown on the
+  // On Hand / On Jobs cards, sourced from the RPC's variant-rollup jsonb.
+  const isStyle = (variantQuantities?.length ?? 0) > 0;
+  const breakdown =
+    (quantities as { breakdown?: BreakdownEntry[] } | null)?.breakdown ?? [];
+  const jobBreakdown =
+    (quantities as { jobBreakdown?: BreakdownEntry[] } | null)?.jobBreakdown ??
+    [];
+  const statCardClassName =
+    "flex items-center gap-2 text-4xl font-medium tracking-tighter hover:opacity-70 transition-opacity";
+
   return (
     <VStack>
       <div className="w-full grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
@@ -67,9 +84,17 @@ const InventoryDetails = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <h3 className="text-4xl font-medium tracking-tighter">
-              {formatter.format(quantities?.quantityOnHand ?? 0)}
-            </h3>
+            {isStyle && (quantities?.quantityOnHand ?? 0) > 0 ? (
+              <StyleQuantityCell
+                value={quantities?.quantityOnHand ?? 0}
+                breakdown={breakdown}
+                className={statCardClassName}
+              />
+            ) : (
+              <h3 className="text-4xl font-medium tracking-tighter">
+                {formatter.format(quantities?.quantityOnHand ?? 0)}
+              </h3>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -146,9 +171,20 @@ const InventoryDetails = ({
           <CardContent>
             <div className="flex items-start justify-start gap-2">
               <div className="flex justify-start items-center gap-1">
-                <h3 className="text-4xl font-medium tracking-tighter">
-                  {formatter.format(quantities?.quantityOnProductionOrder ?? 0)}
-                </h3>
+                {isStyle && (quantities?.quantityOnProductionOrder ?? 0) > 0 ? (
+                  <StyleQuantityCell
+                    value={quantities?.quantityOnProductionOrder ?? 0}
+                    breakdown={jobBreakdown}
+                    quantityHeader={<Trans>On Jobs</Trans>}
+                    className={statCardClassName}
+                  />
+                ) : (
+                  <h3 className="text-4xl font-medium tracking-tighter">
+                    {formatter.format(
+                      quantities?.quantityOnProductionOrder ?? 0
+                    )}
+                  </h3>
+                )}
                 <LuMoveUp className="text-emerald-500 text-lg" />
               </div>
               <div className="flex justify-start items-center gap-1">
@@ -172,9 +208,17 @@ const InventoryDetails = ({
               </CardHeader>
               <CardContent>
                 <div className="flex justify-start items-center gap-1">
-                  <h3 className="text-4xl font-medium tracking-tighter">
-                    {formatter.format(pendingTransfers.toShip ?? 0)}
-                  </h3>
+                  {isStyle && (pendingTransfers.toShip ?? 0) > 0 ? (
+                    <StyleQuantityCell
+                      value={pendingTransfers.toShip ?? 0}
+                      breakdown={[]}
+                      className={statCardClassName}
+                    />
+                  ) : (
+                    <h3 className="text-4xl font-medium tracking-tighter">
+                      {formatter.format(pendingTransfers.toShip ?? 0)}
+                    </h3>
+                  )}
                   <LuMoveDown className="text-red-500 text-lg" />
                 </div>
               </CardContent>
@@ -187,9 +231,17 @@ const InventoryDetails = ({
               </CardHeader>
               <CardContent>
                 <div className="flex justify-start items-center gap-1">
-                  <h3 className="text-4xl font-medium tracking-tighter">
-                    {formatter.format(pendingTransfers.toReceive ?? 0)}
-                  </h3>
+                  {isStyle && (pendingTransfers.toReceive ?? 0) > 0 ? (
+                    <StyleQuantityCell
+                      value={pendingTransfers.toReceive ?? 0}
+                      breakdown={[]}
+                      className={statCardClassName}
+                    />
+                  ) : (
+                    <h3 className="text-4xl font-medium tracking-tighter">
+                      {formatter.format(pendingTransfers.toReceive ?? 0)}
+                    </h3>
+                  )}
                   <LuMoveUp className="text-emerald-500 text-lg" />
                 </div>
               </CardContent>
@@ -197,6 +249,9 @@ const InventoryDetails = ({
           </>
         )}
       </div>
+      {variantQuantities && variantQuantities.length > 0 && (
+        <SkuQuantitiesCard variantQuantities={variantQuantities} />
+      )}
       <InventoryStorageUnits
         itemStorageUnitQuantities={itemStorageUnitQuantities}
         itemUnitOfMeasureCode={itemUnitOfMeasureCode}

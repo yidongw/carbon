@@ -3,10 +3,11 @@ import { getColorByValue } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
 import { useNumberFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useMemo } from "react";
+import { memo, type ReactNode, useMemo } from "react";
 import { LuMoveDown, LuMoveUp, LuPackage, LuSigma } from "react-icons/lu";
 import { Link } from "react-router";
 import { Hyperlink, ItemThumbnail, Table } from "~/components";
+import { StyleQuantityCell } from "~/components/StyleQuantityCell";
 import type { StockOverviewChip, StockOverviewItem } from "~/modules/inventory";
 import { path } from "~/utils/path";
 import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
@@ -31,10 +32,13 @@ const StockOverviewTable = memo(
       const chipCell = (
         total: number,
         chips: StockOverviewChip[],
-        direction?: "from" | "to"
+        direction?: "from" | "to",
+        quantityNode?: ReactNode
       ) => (
         <VStack spacing={1} className="items-end py-1">
-          <span className="font-medium tabular-nums">{format(total)}</span>
+          {quantityNode ?? (
+            <span className="font-medium tabular-nums">{format(total)}</span>
+          )}
           {chips.length > 0 && (
             <HStack className="gap-1 flex-wrap justify-end">
               {chips.map((c) => {
@@ -91,32 +95,97 @@ const StockOverviewTable = memo(
         {
           accessorKey: "onHand",
           header: t`On Hand`,
-          cell: ({ row }) =>
-            chipCell(row.original.onHand, row.original.onHandChips),
+          cell: ({ row }) => {
+            const {
+              onHand,
+              onHandChips,
+              breakdown,
+              breakdownLocations,
+              type,
+              readableIdWithRevision
+            } = row.original;
+            const isStyle = type === "Style" && onHand > 0;
+            const locationColumns = (breakdownLocations ?? []).map((loc) => ({
+              key: loc.id,
+              label: translateSeedDisplayName(loc.name, i18n)
+            }));
+            return chipCell(
+              onHand,
+              onHandChips,
+              undefined,
+              isStyle ? (
+                <StyleQuantityCell
+                  value={onHand}
+                  breakdown={breakdown ?? []}
+                  title={readableIdWithRevision}
+                  locationColumns={locationColumns}
+                />
+              ) : undefined
+            );
+          },
           meta: { icon: <LuPackage /> }
         },
         {
           accessorKey: "toSend",
           header: t`To Send`,
-          cell: ({ row }) =>
-            chipCell(row.original.toSend, row.original.toSendChips, "from"),
+          cell: ({ row }) => {
+            const { toSend, toSendChips, type, readableIdWithRevision } =
+              row.original;
+            // Transfers have no per-SKU split; the modal shows the total.
+            const isStyle = type === "Style" && toSend > 0;
+            return chipCell(
+              toSend,
+              toSendChips,
+              "from",
+              isStyle ? (
+                <StyleQuantityCell
+                  value={toSend}
+                  breakdown={[]}
+                  title={readableIdWithRevision}
+                />
+              ) : undefined
+            );
+          },
           meta: { icon: <LuMoveUp className="text-red-500" /> }
         },
         {
           accessorKey: "toReceive",
           header: t`To Receive`,
-          cell: ({ row }) =>
-            chipCell(row.original.toReceive, row.original.toReceiveChips, "to"),
+          cell: ({ row }) => {
+            const { toReceive, toReceiveChips, type, readableIdWithRevision } =
+              row.original;
+            const isStyle = type === "Style" && toReceive > 0;
+            return chipCell(
+              toReceive,
+              toReceiveChips,
+              "to",
+              isStyle ? (
+                <StyleQuantityCell
+                  value={toReceive}
+                  breakdown={[]}
+                  title={readableIdWithRevision}
+                />
+              ) : undefined
+            );
+          },
           meta: { icon: <LuMoveDown className="text-emerald-500" /> }
         },
         {
           accessorKey: "total",
           header: t`Total`,
-          cell: ({ row }) => (
-            <span className="font-medium tabular-nums">
-              {format(row.original.total)}
-            </span>
-          ),
+          cell: ({ row }) => {
+            const { total, breakdown, type, readableIdWithRevision } =
+              row.original;
+            return type === "Style" && total > 0 ? (
+              <StyleQuantityCell
+                value={total}
+                breakdown={breakdown ?? []}
+                title={readableIdWithRevision}
+              />
+            ) : (
+              <span className="font-medium tabular-nums">{format(total)}</span>
+            );
+          },
           meta: { icon: <LuSigma /> }
         }
       ];

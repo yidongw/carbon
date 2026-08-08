@@ -22,12 +22,28 @@ export type BatchProperty = NonNullable<
   Awaited<ReturnType<typeof getBatchProperties>>["data"]
 >[number];
 
+// One SKU row of a Style item's inventory breakdown, as returned by the
+// `breakdown` / `jobBreakdown` jsonb from get_inventory_quantities (rolled up
+// from the item's variant-SKU ledgers). Each element is one variant: `label`
+// is the display (e.g. "BK · M"), `valuesKey` its identity (e.g. "BK|M").
+export type BreakdownEntry = {
+  valuesKey?: string | null;
+  label?: string | null;
+  variantItemId?: string | null;
+  quantityOnHand: number;
+  // Optional per-location split of `quantityOnHand`, keyed by locationId — used
+  // by the cross-location Stock Overview grid to show one column per warehouse.
+  byLocation?: Record<string, number>;
+};
+
 export type InventoryItem = NonNullable<
   Awaited<ReturnType<typeof getInventoryItems>>["data"]
 >[number] & {
   // Merged in by the quantities loader from open warehouse transfers.
   toShip?: number;
   toReceive?: number;
+  // Per-color/size on-hand for Style items; absent/[] for other item types.
+  breakdown?: BreakdownEntry[] | null;
 };
 
 export type ItemLedger = NonNullable<
@@ -167,4 +183,8 @@ export type StockOverviewItem = {
   onHandChips: StockOverviewChip[];
   toSendChips: StockOverviewChip[];
   toReceiveChips: StockOverviewChip[];
+  // Per-color/size on-hand for Style items, each entry carrying a `byLocation`
+  // split; `breakdownLocations` lists the warehouses shown as quantity columns.
+  breakdown: BreakdownEntry[];
+  breakdownLocations: { id: string; name: string }[];
 };

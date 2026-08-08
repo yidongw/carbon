@@ -57,6 +57,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { Input, Location, Select, TextArea } from "~/components/Form";
 import StorageUnit from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
+import { StyleQuantityCell } from "~/components/StyleQuantityCell";
 import { usePermissions, usePrinting } from "~/hooks";
 import type {
   ItemStorageUnitQuantities,
@@ -65,10 +66,19 @@ import type {
 } from "~/modules/items";
 import { path } from "~/utils/path";
 import { inventoryAdjustmentValidator } from "../../inventory.models";
+import { aggregateStorageUnitsBySku } from "../../styleBreakdown";
+import type { BreakdownEntry } from "../../types";
+
+// Style storage rows carry the SKU (valuesKey/skuLabel) they belong to so the
+// card can aggregate one row per storage unit with a per-SKU breakdown.
+type StorageUnitRow = ItemStorageUnitQuantities & {
+  valuesKey?: string | null;
+  skuLabel?: string | null;
+};
 
 type InventoryStorageUnitsProps = {
   pickMethod: z.infer<typeof pickMethodValidator>;
-  itemStorageUnitQuantities: ItemStorageUnitQuantities[];
+  itemStorageUnitQuantities: StorageUnitRow[];
   itemUnitOfMeasureCode: string;
   itemTrackingType: (typeof itemTrackingTypes)[number];
   itemShelfLife: {
@@ -111,6 +121,47 @@ const InventoryStorageUnits = ({
     () => itemStorageUnitQuantities.filter((item) => item.quantity !== 0),
     [itemStorageUnitQuantities]
   );
+
+  // For Style items, rows are per-variant-per-storage-unit (the same bin
+  // repeats once per SKU). When rows carry SKU identity, collapse them to one
+  // row per storage unit and expose the per-SKU split via a breakdown trigger.
+  const aggregateSkus = useMemo(
+    () => visibleStorageUnitQuantities.some((r) => "skuLabel" in r),
+    [visibleStorageUnitQuantities]
+  );
+
+  const displayRows = useMemo(() => {
+    type Row = {
+      key: string;
+      storageUnitId: string | null;
+      quantity: number;
+      trackedEntityId: string | null | undefined;
+      readableId: string | null | undefined;
+      breakdown: BreakdownEntry[] | undefined;
+    };
+    if (!aggregateSkus) {
+      return visibleStorageUnitQuantities.map(
+        (item, index): Row => ({
+          key: String(index),
+          storageUnitId: item.storageUnitId,
+          quantity: item.quantity,
+          trackedEntityId: item.trackedEntityId,
+          readableId: item.readableId,
+          breakdown: undefined
+        })
+      );
+    }
+    return aggregateStorageUnitsBySku(visibleStorageUnitQuantities).map(
+      (u): Row => ({
+        key: u.key,
+        storageUnitId: u.storageUnitId,
+        quantity: u.quantity,
+        trackedEntityId: null,
+        readableId: null,
+        breakdown: u.breakdown
+      })
+    );
+  }, [aggregateSkus, visibleStorageUnitQuantities]);
 
   const showExpirationColumn = useMemo(
     () =>
@@ -265,80 +316,97 @@ const InventoryStorageUnits = ({
               </Tr>
             </Thead>
             <Tbody>
-              {visibleStorageUnitQuantities.map((item, index) => (
-                <Tr key={index}>
-                  <Td>
-                    {storageUnits.find((s) => s.value === item.storageUnitId)
-                      ?.label || item.storageUnitId}
-                  </Td>
+              {displayRows.map((item) => {
+                const storageUnitLabel =
+                  storageUnits.find((s) => s.value === item.storageUnitId)
+                    ?.label ||
+                  item.storageUnitId ||
+                  "";
+                return (
+                  <Tr key={item.key}>
+                    <Td>{storageUnitLabel}</Td>
 
-                  <Td>
-                    <span>{item.quantity}</span>
-                  </Td>
-                  <Td>
-                    {item.trackedEntityId && (
-                      <HStack>
-                        {item.readableId && <span>{item.readableId}</span>}
-                        <Copy
-                          icon={<LuQrCode />}
-                          text={item.trackedEntityId}
-                          withTextInTooltip
-                        />
-                      </HStack>
-                    )}
-                  </Td>
-                  {showExpirationColumn && (
                     <Td>
-                      {item.trackedEntityId &&
-                        trackedEntityExpirations[item.trackedEntityId] && (
-                          <span>
-                            {formatDate(
-                              trackedEntityExpirations[item.trackedEntityId],
-                              undefined,
-                              locale
-                            )}
-                          </span>
-                        )}
-                    </Td>
-                  )}
-                  <Td className="flex flex-shrink-0 justify-end items-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <IconButton
-                          aria-label={t`Actions`}
-                          variant="ghost"
-                          icon={<LuEllipsisVertical />}
+                      {item.breakdown ? (
+                        <StyleQuantityCell
+                          value={item.quantity}
+                          breakdown={item.breakdown}
+                          title={storageUnitLabel}
                         />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            openAdjustmentModal(
-                              item.storageUnitId,
-                              item.trackedEntityId,
-                              item.readableId,
-                              item.quantity
-                            )
-                          }
-                        >
-                          <DropdownMenuIcon icon={<LuPencil />} />
-                          <Trans>Update Quantity</Trans>
-                        </DropdownMenuItem>
-                        {item.trackedEntityId && (
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handlePrintLabel(item.trackedEntityId!)
-                            }
-                          >
-                            <DropdownMenuIcon icon={<LuPrinter />} />
-                            <Trans>Print Label</Trans>
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </Td>
-                </Tr>
-              ))}
+                      ) : (
+                        <span>{item.quantity}</span>
+                      )}
+                    </Td>
+                    <Td>
+                      {item.trackedEntityId && (
+                        <HStack>
+                          {item.readableId && <span>{item.readableId}</span>}
+                          <Copy
+                            icon={<LuQrCode />}
+                            text={item.trackedEntityId}
+                            withTextInTooltip
+                          />
+                        </HStack>
+                      )}
+                    </Td>
+                    {showExpirationColumn && (
+                      <Td>
+                        {item.trackedEntityId &&
+                          trackedEntityExpirations[item.trackedEntityId] && (
+                            <span>
+                              {formatDate(
+                                trackedEntityExpirations[item.trackedEntityId],
+                                undefined,
+                                locale
+                              )}
+                            </span>
+                          )}
+                      </Td>
+                    )}
+                    <Td className="flex flex-shrink-0 justify-end items-center">
+                      {/* Aggregated Style rows sum multiple SKUs in one bin, so
+                          a per-row adjustment can't target a SKU — use the
+                          card's Inventory Adjustment button instead. */}
+                      {!item.breakdown && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <IconButton
+                              aria-label={t`Actions`}
+                              variant="ghost"
+                              icon={<LuEllipsisVertical />}
+                            />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56">
+                            <DropdownMenuItem
+                              onClick={() =>
+                                openAdjustmentModal(
+                                  item.storageUnitId ?? undefined,
+                                  item.trackedEntityId ?? undefined,
+                                  item.readableId ?? undefined,
+                                  item.quantity
+                                )
+                              }
+                            >
+                              <DropdownMenuIcon icon={<LuPencil />} />
+                              <Trans>Update Quantity</Trans>
+                            </DropdownMenuItem>
+                            {item.trackedEntityId && (
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handlePrintLabel(item.trackedEntityId!)
+                                }
+                              >
+                                <DropdownMenuIcon icon={<LuPrinter />} />
+                                <Trans>Print Label</Trans>
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </Td>
+                  </Tr>
+                );
+              })}
             </Tbody>
           </Table>
         </CardContent>
