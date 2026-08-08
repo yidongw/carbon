@@ -167,8 +167,6 @@ export const path = {
       materialTypes: (substanceId: string, formId: string) =>
         generatePath(`${api}/items/types/${substanceId}/${formId}`),
       materialSubstances: `${api}/items/substances`,
-      styleColors: `${api}/items/style-colors`,
-      styleSizes: `${api}/items/style-sizes`,
       attributeSetsForType: (itemType: string) =>
         `${api}/items/attribute-sets-for-type?itemType=${encodeURIComponent(itemType)}`,
       messagingNotify: `${api}/messaging/notify`,

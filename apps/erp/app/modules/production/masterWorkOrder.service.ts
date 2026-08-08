@@ -128,7 +128,7 @@ export async function getMasterCuttingProgress(
           planConfig,
           reportedConfigsByOp.get(cuttingOp.id) ?? []
         )
-      : { configTable: [], configTablePrimaryKeys: [] };
+      : { configTable: [] };
 
     result[master.id] = {
       jobId: master.jobId,

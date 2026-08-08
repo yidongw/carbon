@@ -8,7 +8,6 @@ import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
-import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToConfigTable
@@ -21,7 +20,6 @@ import { insertJob } from "./production.service";
 type ConfigRow = Record<string, string | number | boolean>;
 type ConfigTable = {
   configTable?: ConfigRow[];
-  configTablePrimaryKeys?: string[];
 };
 
 /** Drop the `<prefix>_` from an internal id (e.g. `mwo_RWARP…` -> `RWARP…`). */
@@ -52,9 +50,6 @@ function shortestDistinctIdPrefix(id: string, others: string[]): string {
 type CuttingCell = {
   valuesKey: string;
   attributeLabel: string;
-  /** @deprecated Prefer valuesKey — kept for masterWorkOrderSplitRow columns */
-  colorCode: string | null;
-  sizeCode: string | null;
   quantity: number;
   configuration: ConfigTable;
 };
@@ -366,8 +361,6 @@ export async function insertBundleWorkOrder(
     itemId: string;
     quantity: number;
     sequence?: number;
-    colorCode?: string | null;
-    sizeCode?: string | null;
     cuttingProcessId?: string | null;
     /**
      * Descriptive id for the backing job (e.g. NE-BK-2XL-07). Used as the job's
@@ -437,18 +430,13 @@ export async function insertBundleWorkOrder(
 
 /**
  * Turn one reported cutting config table into individual attribute-combo cells —
- * one cell (→ one bundle) per non-zero quantity.
- *
- * Dual-read:
- * - Combo editor: primaryKeys `["Quantities"]` + row `valuesKey`.
- * - Legacy matrix: primary list options are quantity columns; the other list
- *   param is a row descriptor. Mapped into valuesKey = code|code|….
+ * one cell (→ one bundle) per non-zero quantity. Combo-only: each row is
+ * `{ valuesKey, Quantities }`.
  */
 function extractCuttingCells(configuration: unknown): CuttingCell[] {
   const cfg = (configuration ?? null) as ConfigTable | null;
   const table = cfg?.configTable;
-  const primaryKeys = cfg?.configTablePrimaryKeys ?? [];
-  if (!Array.isArray(table) || primaryKeys.length === 0) return [];
+  if (!Array.isArray(table)) return [];
 
   const toCell = (
     valuesKey: string,
@@ -459,59 +447,31 @@ function extractCuttingCells(configuration: unknown): CuttingCell[] {
     return {
       valuesKey,
       attributeLabel: parts.join(" · ") || valuesKey,
-      colorCode: parts[0] ?? null,
-      sizeCode: parts.length > 1 ? (parts[1] ?? null) : null,
       quantity,
       configuration
     };
   };
 
-  const isComboFlat =
-    primaryKeys.length === 1 &&
-    primaryKeys[0] === "Quantities" &&
-    table.some(
-      (row) => row.valuesKey != null && String(row.valuesKey).trim().length > 0
-    );
-
-  if (isComboFlat) {
-    const cells: CuttingCell[] = [];
-    for (const row of table) {
-      const valuesKey = String(row.valuesKey ?? "").trim();
-      if (!valuesKey) continue;
-      const quantity = Number(row.Quantities) || 0;
-      if (quantity <= 0) continue;
-      const label = String(row.label ?? "").trim();
-      const cell = toCell(valuesKey, quantity, {
-        configTable: [
-          {
-            valuesKey,
-            Quantities: quantity,
-            ...(label ? { label } : {})
-          }
-        ],
-        configTablePrimaryKeys: ["Quantities"]
-      });
-      if (label) cell.attributeLabel = label;
-      cells.push(cell);
-    }
-    return cells;
-  }
-
-  // Legacy Color×Size (or similar) matrices → combo cells via shared dual-read.
-  return configTableToComboRows(configuration).map((row) => {
-    const cell = toCell(row.valuesKey, row.Quantities, {
+  const cells: CuttingCell[] = [];
+  for (const row of table) {
+    const valuesKey = String(row.valuesKey ?? "").trim();
+    if (!valuesKey) continue;
+    const quantity = Number(row.Quantities) || 0;
+    if (quantity <= 0) continue;
+    const label = String(row.label ?? "").trim();
+    const cell = toCell(valuesKey, quantity, {
       configTable: [
         {
-          valuesKey: row.valuesKey,
-          Quantities: row.Quantities,
-          ...(row.label ? { label: row.label } : {})
+          valuesKey,
+          Quantities: quantity,
+          ...(label ? { label } : {})
         }
-      ],
-      configTablePrimaryKeys: ["Quantities"]
+      ]
     });
-    if (row.label) cell.attributeLabel = row.label;
-    return cell;
-  });
+    if (label) cell.attributeLabel = label;
+    cells.push(cell);
+  }
+  return cells;
 }
 
 export type CuttingSplitBundle = {
@@ -520,10 +480,6 @@ export type CuttingSplitBundle = {
   // Source cut split row this bundle is materialized from (new bundles only).
   splitRowId?: string | null;
   valuesKey: string | null;
-  /** @deprecated Prefer valuesKey */
-  colorCode?: string | null;
-  /** @deprecated Prefer valuesKey */
-  sizeCode?: string | null;
   quantity: number;
 };
 
@@ -568,18 +524,11 @@ function cellKey(valuesKey: string | null | undefined): string {
   return (valuesKey ?? "").trim();
 }
 
-function valuesKeyFromSplitRowParts(
-  colorCode: string | null,
-  sizeCode: string | null
-): string {
-  return [colorCode, sizeCode].filter(Boolean).join("|");
-}
-
 /**
- * The proposed bundle split for a Master Work Order, as a color/size matrix
- * matching the master's config-param plan. Each configured cell carries a
+ * The proposed bundle split for a Master Work Order: one cell per attribute
+ * combo (valuesKey) in the master's plan. Each configured cell carries a
  * suggested quantity and a cap of (reported cut − already bundled), so the split
- * can't create more than was actually cut for any color/size.
+ * can't create more than was actually cut for any combo.
  */
 export async function getCuttingSplitProposal(
   client: SupabaseClient<Database>,
@@ -836,12 +785,7 @@ export async function saveBundleSplit(
     }
     sequence += 1;
     // The bundle's descriptive id (also used as its backing job's readable id).
-    const valuesKey =
-      bundle.valuesKey?.trim() ||
-      valuesKeyFromSplitRowParts(
-        bundle.colorCode ?? null,
-        bundle.sizeCode ?? null
-      );
+    const valuesKey = bundle.valuesKey?.trim() ?? "";
     const jobReadableId = [
       styleReadableId,
       valuesKey.replace(/\|/g, "-") || "NA",
@@ -885,12 +829,7 @@ export async function saveBundleSplit(
       return { created: 0, updated: 1, error: null };
     }
 
-    const valuesKey =
-      op.bundle.valuesKey?.trim() ||
-      valuesKeyFromSplitRowParts(
-        op.bundle.colorCode ?? null,
-        op.bundle.sizeCode ?? null
-      );
+    const valuesKey = op.bundle.valuesKey?.trim() ?? "";
     if (!valuesKey) {
       return {
         created: 0,
@@ -978,8 +917,6 @@ export async function replaceMasterCuttingSplitRows(
     createdBy: string;
     rows: {
       valuesKey?: string | null;
-      colorCode?: string | null;
-      sizeCode?: string | null;
       quantity: number;
     }[];
   }
@@ -998,9 +935,7 @@ export async function replaceMasterCuttingSplitRows(
 
   const insert = await c.from("masterWorkOrderSplitRow").insert(
     rows.map((r) => {
-      const valuesKey =
-        (r.valuesKey && String(r.valuesKey).trim()) ||
-        valuesKeyFromSplitRowParts(r.colorCode ?? null, r.sizeCode ?? null);
+      const valuesKey = (r.valuesKey && String(r.valuesKey).trim()) || "";
       return {
         masterWorkOrderId: input.masterWorkOrderId,
         companyId: input.companyId,

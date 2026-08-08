@@ -2,8 +2,9 @@ import {
   localizeStyleColorName,
   localizeStyleColorNameByName
 } from "@carbon/database/style-reference";
-import { MultiSelect } from "@carbon/form";
+import { MultiSelect, Select } from "@carbon/form";
 import { useLingui } from "@lingui/react/macro";
+import { useEffect, useState } from "react";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { useItemAttributeSetOptions } from "~/modules/items/ui/useItemAttributeSetOptions";
 
@@ -14,31 +15,56 @@ type ItemAttributeSelectsProps = {
 };
 
 /**
- * Attribute-driven value selector for create forms. Reads the item type's
- * attribute set and renders one MultiSelect per attribute (options from
- * itemAttributeValue). Submits a native hidden `attributeSetId` input plus
- * `av__<attributeId>` arrays, which the action parses via
- * parseAttributeValueSelectionsFromFormData.
- * Shares its data with the Consumable properties editor via
- * useItemAttributeSetOptions.
+ * Attribute-driven value selector for create forms. Reads the attribute sets
+ * assigned to the item type; when more than one is assigned (e.g. Style ->
+ * Garment or Shoes) the user picks which set applies, then one MultiSelect
+ * renders per attribute of the chosen set (options from itemAttributeValue).
+ * Submits `attributeSetId` plus `av__<attributeId>` arrays, which the action
+ * parses via parseAttributeValueSelectionsFromFormData. Mirrors the Consumable
+ * create form's attribute-set picker so Style and Consumable behave the same.
  */
 const ItemAttributeSelects = ({
   itemType,
   maxPreview = 3
 }: ItemAttributeSelectsProps) => {
-  const { i18n } = useLingui();
+  const { t, i18n } = useLingui();
   const { sets } = useItemAttributeSetOptions(itemType);
-  // A single set is assigned per item type today (e.g. Style -> Garment).
-  const set = sets[0];
-  if (!set) return null;
+
+  const options = sets.map((s) => ({
+    value: s.id,
+    label: translateItemAttributeCatalogName(s.name, i18n)
+  }));
+
+  // Chosen set. One assigned set → auto-select it; more than one → the user
+  // picks (matching the Consumable form).
+  const [attributeSetId, setAttributeSetId] = useState<string>("");
+  useEffect(() => {
+    if (attributeSetId) return;
+    if (sets.length === 1) setAttributeSetId(sets[0].id);
+  }, [attributeSetId, sets]);
+
+  const selectedSet = sets.find(
+    (s) => s.id === (attributeSetId || (sets.length === 1 ? sets[0]?.id : ""))
+  );
+  if (sets.length === 0) return null;
 
   return (
     <>
-      {/* Native hidden input (display:none) so it doesn't consume a grid cell —
-          the FormControl-wrapped <Hidden> would push the attribute selects onto
-          their own line. */}
-      <input type="hidden" name="attributeSetId" value={set.id} />
-      {set.attributes.map((attr) => (
+      {sets.length === 1 ? (
+        // Native hidden input (display:none) so it doesn't consume a grid cell —
+        // a FormControl-wrapped field would push the attribute selects onto their
+        // own line.
+        <input type="hidden" name="attributeSetId" value={sets[0].id} />
+      ) : (
+        <Select
+          name="attributeSetId"
+          label={t`Attribute Set`}
+          options={options}
+          onChange={(option) => setAttributeSetId(option?.value ?? "")}
+          helperText={t`Which set of attributes this item's variants use`}
+        />
+      )}
+      {selectedSet?.attributes.map((attr) => (
         <MultiSelect
           key={attr.id}
           name={`av__${attr.id}`}
@@ -53,6 +79,7 @@ const ItemAttributeSelects = ({
               o.code,
             helper: o.code
           }))}
+          helperText={t`Selected values become variant SKUs`}
         />
       ))}
     </>

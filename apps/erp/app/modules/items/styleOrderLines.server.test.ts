@@ -8,8 +8,7 @@ describe("hasStyleConfigTable", () => {
   it("returns true when configTable has rows", () => {
     expect(
       hasStyleConfigTable({
-        configTable: [{ color: "BK", XS: 1 }],
-        configTablePrimaryKeys: ["XS"]
+        configTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
       })
     ).toBe(true);
   });
@@ -108,8 +107,10 @@ describe("expandStyleConfigToVariantLines", () => {
   const parentItemId = "item_parent";
   const companyId = "co_1";
   const configuration = {
-    configTable: [{ color: "BK", XS: 2, S: 4 }],
-    configTablePrimaryKeys: ["XS", "S"]
+    configTable: [
+      { valuesKey: "BK|XS", Quantities: 2 },
+      { valuesKey: "BK|S", Quantities: 4 }
+    ]
   };
 
   it("expands color×size cells to distinct variant SKUs", async () => {
@@ -157,8 +158,8 @@ describe("expandStyleConfigToVariantLines", () => {
   });
 
   it("expands a color-only consumable grid (no size dimension)", async () => {
-    // A Fabric/Trim Consumable has only a color attribute, so its grid stores
-    // the color codes AS the primary quantity columns with no color descriptor.
+    // A Fabric/Trim Consumable has only a color attribute, so each combo row's
+    // valuesKey is a single color code.
     const client = mockClient({
       attributeSetId: "ias_fabric",
       setAttributeCodes: ["Color"],
@@ -184,8 +185,10 @@ describe("expandStyleConfigToVariantLines", () => {
       parentItemId,
       companyId,
       variantQuantities: {
-        configTable: [{ RD: 3, BL: 2 }],
-        configTablePrimaryKeys: ["RD", "BL"]
+        configTable: [
+          { valuesKey: "RD", Quantities: 3 },
+          { valuesKey: "BL", Quantities: 2 }
+        ]
       }
     });
 
@@ -233,8 +236,10 @@ describe("expandStyleConfigToVariantLines", () => {
       parentItemId,
       companyId,
       variantQuantities: {
-        configTable: [{ color: "BK", XS: 0, S: 0 }],
-        configTablePrimaryKeys: ["XS", "S"]
+        configTable: [
+          { valuesKey: "BK|XS", Quantities: 0 },
+          { valuesKey: "BK|S", Quantities: 0 }
+        ]
       }
     });
     expect(result.ok).toBe(false);

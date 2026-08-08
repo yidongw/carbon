@@ -27,8 +27,6 @@ function splitConfigAndRows(configuration: unknown): {
   config: unknown;
   rows: {
     valuesKey: string | null;
-    colorCode: string | null;
-    sizeCode: string | null;
     quantity: number;
   }[];
 } {
@@ -45,16 +43,12 @@ function splitConfigAndRows(configuration: unknown): {
   const rows = Array.isArray(splitRows)
     ? splitRows.map((r) => {
         const row = (r ?? {}) as Record<string, unknown>;
-        const colorCode = (row.colorCode ?? null) as string | null;
-        const sizeCode = (row.sizeCode ?? null) as string | null;
         const valuesKey =
-          (typeof row.valuesKey === "string" && row.valuesKey.trim()) ||
-          [colorCode, sizeCode].filter(Boolean).join("|") ||
-          null;
+          typeof row.valuesKey === "string" && row.valuesKey.trim()
+            ? row.valuesKey.trim()
+            : null;
         return {
           valuesKey,
-          colorCode,
-          sizeCode,
           quantity: Number(row.quantity) || 0
         };
       })

@@ -12,7 +12,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
 import {
-  getGarmentAttributeValueList,
   getStyleConfigurationParametersFromAttributes,
   SYSTEM_ATTRIBUTE
 } from "~/modules/items/itemAttribute.service";
@@ -445,6 +444,33 @@ export async function getConfigurationParameters(
     groups: groups.data ?? [],
     parameters: parameters.data ?? []
   };
+}
+
+/**
+ * Quantity-grid parameters only. Unlike getConfigurationParameters — which also
+ * serves config *definitions* (the Part parameter editor, BOM/BOP formulas, and
+ * the make-method configurator modal) — this drives ONLY the per-variant
+ * quantity grid, which is attribute/combo-driven. Attribute items (Styles, and
+ * Consumables with a variant set) get the synthetic single `valuesKey` combo
+ * param; everything else (Parts/Templates) gets no params, so they never
+ * produce the legacy Color×Size matrix grid.
+ */
+export async function getQuantityGridParameters(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+) {
+  try {
+    const synthesized = await getStyleConfigurationParametersFromAttributes(
+      client,
+      itemId,
+      companyId
+    );
+    return { groups: [], parameters: synthesized };
+  } catch (error) {
+    console.error(error);
+    return { groups: [], parameters: [] };
+  }
 }
 
 export async function getConfigurationRules(
@@ -2034,112 +2060,6 @@ export async function createStyleSamples(
   return { data: { count: trackedEntities.length }, error: null };
 }
 
-type AttributeValueRow = {
-  id: string;
-  code: string;
-  name: string | null;
-  companyId: string | null;
-  sortOrder: number;
-  createdAt?: string;
-  createdBy?: string;
-  updatedAt?: string | null;
-  updatedBy?: string | null;
-};
-
-function mapAttributeValueToStyleColor(row: AttributeValueRow) {
-  return {
-    id: row.id,
-    colorCode: row.code,
-    colorName: row.name ?? row.code,
-    companyId: row.companyId,
-    sortOrder: row.sortOrder,
-    createdAt: row.createdAt,
-    createdBy: row.createdBy,
-    updatedAt: row.updatedAt,
-    updatedBy: row.updatedBy
-  };
-}
-
-function mapAttributeValueToStyleSize(row: AttributeValueRow) {
-  return {
-    id: row.id,
-    sizeCode: row.code,
-    sizeName: row.name ?? row.code,
-    companyId: row.companyId,
-    sortOrder: row.sortOrder,
-    createdAt: row.createdAt,
-    createdBy: row.createdBy,
-    updatedAt: row.updatedAt,
-    updatedBy: row.updatedBy
-  };
-}
-
-function remapAttributeValueQueryArgs(
-  args: GenericQueryFilters & { search: string | null },
-  map: Record<string, string>
-): GenericQueryFilters & { search: string | null } {
-  return {
-    ...args,
-    sorts: args.sorts?.map((sort) => ({
-      ...sort,
-      sortBy: map[sort.sortBy] ?? sort.sortBy
-    })),
-    filters: args.filters?.map((filter) => ({
-      ...filter,
-      column: map[filter.column] ?? filter.column
-    }))
-  };
-}
-
-export async function getStyleColors(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  args?: GenericQueryFilters & { search: string | null }
-) {
-  const styleClient = client as SupabaseClient<any>;
-  let query = styleClient
-    .from("itemAttributeValue")
-    .select("*", { count: "exact" })
-    .eq("attributeId", SYSTEM_ATTRIBUTE.color)
-    .eq("companyId", companyId);
-
-  if (args?.search) {
-    query = query.or(`code.ilike.%${args.search}%,name.ilike.%${args.search}%`);
-  }
-
-  if (args) {
-    query = setGenericQueryFilters(
-      query,
-      remapAttributeValueQueryArgs(args, {
-        colorCode: "code",
-        colorName: "name"
-      }),
-      [{ column: "code", ascending: true }]
-    );
-  }
-
-  const result = await query;
-  if (result.error) return result;
-  return {
-    ...result,
-    data: ((result.data ?? []) as AttributeValueRow[]).map(
-      mapAttributeValueToStyleColor
-    )
-  };
-}
-
-export async function getStyleColorList(
-  client: SupabaseClient<Database>,
-  companyId: string
-) {
-  // Color name maps and legacy callers now read itemAttributeValue (pickers
-  // already do). Keep this wrapper so SO/PO/config-table imports stay stable.
-  return getGarmentAttributeValueList(client, {
-    attributeId: SYSTEM_ATTRIBUTE.color,
-    companyId
-  });
-}
-
 /**
  * Seeds the standard apparel colors + sizes for a freshly created company, with
  * names localized to the company's language. Idempotent — re-running skips rows
@@ -2182,56 +2102,6 @@ export async function seedStyleReference(
       ignoreDuplicates: true
     })
   ]);
-}
-
-export async function getStyleSizes(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  args?: GenericQueryFilters & { search: string | null }
-) {
-  const styleClient = client as SupabaseClient<any>;
-  let query = styleClient
-    .from("itemAttributeValue")
-    .select("*", { count: "exact" })
-    .eq("attributeId", SYSTEM_ATTRIBUTE.size)
-    .eq("companyId", companyId);
-
-  if (args?.search) {
-    query = query.or(`code.ilike.%${args.search}%,name.ilike.%${args.search}%`);
-  }
-
-  if (args) {
-    query = setGenericQueryFilters(
-      query,
-      remapAttributeValueQueryArgs(args, {
-        sizeCode: "code",
-        sizeName: "name"
-      }),
-      [
-        { column: "sortOrder", ascending: true },
-        { column: "code", ascending: true }
-      ]
-    );
-  }
-
-  const result = await query;
-  if (result.error) return result;
-  return {
-    ...result,
-    data: ((result.data ?? []) as AttributeValueRow[]).map(
-      mapAttributeValueToStyleSize
-    )
-  };
-}
-
-export async function getStyleSizeList(
-  client: SupabaseClient<Database>,
-  companyId: string
-) {
-  return getGarmentAttributeValueList(client, {
-    attributeId: SYSTEM_ATTRIBUTE.size,
-    companyId
-  });
 }
 
 export async function getPartsList(

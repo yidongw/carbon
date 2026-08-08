@@ -16,7 +16,6 @@ export function isConfigTableConfiguration(
   configuration: unknown
 ): configuration is {
   configTable: unknown[];
-  configTablePrimaryKeys?: unknown[];
 } {
   if (!configuration || typeof configuration !== "object") return false;
   return Array.isArray(
@@ -28,7 +27,6 @@ export function isNonEmptyConfigTable(
   configuration: unknown
 ): configuration is {
   configTable: unknown[];
-  configTablePrimaryKeys?: unknown[];
 } {
   return (
     isConfigTableConfiguration(configuration) &&
@@ -302,7 +300,6 @@ export function jobVariantQuantitiesToConfigTable(
   lines: JobVariantQuantityLine[]
 ): {
   configTable: Array<{ valuesKey: string; Quantities: number }>;
-  configTablePrimaryKeys: ["Quantities"];
 } {
   return {
     configTable: lines
@@ -310,8 +307,7 @@ export function jobVariantQuantitiesToConfigTable(
       .map((l) => ({
         valuesKey: l.valuesKey,
         Quantities: l.quantity
-      })),
-    configTablePrimaryKeys: ["Quantities"]
+      }))
   };
 }
 

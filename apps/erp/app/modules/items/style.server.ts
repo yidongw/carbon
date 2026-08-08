@@ -43,8 +43,6 @@ type StyleSummary = {
   id: string;
   companyId: string;
   thumbnailPath: string | null;
-  colors: Array<{ id: string; colorCode: string; colorName: string }> | null;
-  sizes: Array<{ id: string; sizeCode: string; sizeName: string }> | null;
   revisions: unknown;
   customFields: Json | null;
   tags: string[] | null;

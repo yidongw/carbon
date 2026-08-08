@@ -12,7 +12,7 @@ import {
   overlayToken,
   serializeSearch
 } from "~/components/Overlay/overlay";
-import { getConfigurationParameters } from "~/modules/items";
+import { getQuantityGridParameters } from "~/modules/items";
 import {
   computeProductionQuantityReportEarnedAmount,
   getJob,
@@ -83,7 +83,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const configurationParameters =
     job.data?.itemId && jobIsConfigured
-      ? (await getConfigurationParameters(client, job.data.itemId, companyId))
+      ? (await getQuantityGridParameters(client, job.data.itemId, companyId))
           .parameters
       : [];
 

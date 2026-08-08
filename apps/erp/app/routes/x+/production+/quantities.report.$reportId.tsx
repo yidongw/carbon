@@ -2,7 +2,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { getConfigurationParameters } from "~/modules/items";
+import { getQuantityGridParameters } from "~/modules/items";
 import {
   getJobOperationActorContext,
   getProductionQuantityReportWithLines
@@ -41,7 +41,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const itemId = job?.itemId ?? null;
   const configurationParameters = itemId
-    ? (await getConfigurationParameters(client, itemId, companyId)).parameters
+    ? (await getQuantityGridParameters(client, itemId, companyId)).parameters
     : [];
 
   const actorContext = await getJobOperationActorContext(

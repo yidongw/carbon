@@ -2090,6 +2090,33 @@ export async function getTrackedEntitiesByJobMakeMethodIds(
   }, {});
 }
 
+/**
+ * Which of the given JOBS own a variant quantity plan (jobVariantQuantity rows).
+ * Job-centric — used for the Jobs list quantity-grid indicator so only jobs that
+ * own a plan (master work orders + standalone configured Style jobs) show the
+ * combo grid. Bundle/variant SKU jobs have no plan rows, so they show plain
+ * quantity even though their item resolves to the parent Style.
+ */
+export async function getJobIdsWithVariantQuantities(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  jobIds: string[]
+): Promise<string[]> {
+  if (jobIds.length === 0) return [];
+
+  const rows = await (client as any)
+    .from("jobVariantQuantity")
+    .select("jobId")
+    .in("jobId", jobIds)
+    .eq("companyId", companyId);
+
+  return [
+    ...new Set(
+      ((rows.data ?? []) as { jobId: string }[]).map((row) => row.jobId)
+    )
+  ];
+}
+
 export async function getItemIdsWithConfigurationParameters(
   client: SupabaseClient<Database>,
   companyId: string,

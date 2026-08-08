@@ -83,7 +83,6 @@ export function buildComboColumns(
   attributesLabel = "Attributes"
 ): {
   primaryParam: ConfigurationParameterInput | null;
-  primaryKeys: string[];
   columns: Column[];
 } | null {
   if (!isStyleComboParameters(parameters)) return null;
@@ -98,7 +97,6 @@ export function buildComboColumns(
 
   return {
     primaryParam: comboParam,
-    primaryKeys: ["Quantities"],
     columns: [
       {
         key: STYLE_COMBO_VALUES_KEY,
@@ -127,7 +125,6 @@ export function buildColumns(
   attributesLabel = "Attributes"
 ): {
   primaryParam: ConfigurationParameterInput | null;
-  primaryKeys: string[];
   columns: Column[];
 } {
   const combo = buildComboColumns(
@@ -137,40 +134,15 @@ export function buildColumns(
   );
   if (combo) return combo;
 
-  const primaryParam = parameters.find((p) => p.dataType === "list") ?? null;
-  const otherParams = parameters.filter((p) => p !== primaryParam);
-
-  const columns: Column[] = [];
-  const primaryKeys: string[] = [];
-
-  if (
-    primaryParam &&
-    primaryParam.listOptions &&
-    primaryParam.listOptions.length > 0
-  ) {
-    for (const option of primaryParam.listOptions) {
-      columns.push({ key: option, label: option, type: "quantity" });
-      primaryKeys.push(option);
-    }
-  } else {
-    columns.push({
-      key: "Quantities",
-      label: defaultQuantityLabel,
-      type: "quantity"
-    });
-    primaryKeys.push("Quantities");
-  }
-
-  for (const param of otherParams) {
-    columns.push({
-      key: param.key,
-      label: param.label,
-      type: param.dataType as ColumnType,
-      options: param.listOptions ?? []
-    });
-  }
-
-  return { primaryParam, primaryKeys, columns };
+  // The legacy Color×Size matrix model is retired: quantity configs are the
+  // attribute combo (valuesKey + Quantities) built above. Any non-combo config
+  // collapses to a single plain Quantities column.
+  return {
+    primaryParam: null,
+    columns: [
+      { key: "Quantities", label: defaultQuantityLabel, type: "quantity" }
+    ]
+  };
 }
 
 export function makeDefaultRow(columns: Column[]): Row {
@@ -228,13 +200,8 @@ export function zeroQuantities(row: Row, columns: Column[]): Row {
   return next;
 }
 
-export function computeTotal(rows: Row[], primaryKeys: string[]): number {
-  return rows.reduce(
-    (sum, row) =>
-      sum +
-      primaryKeys.reduce((rowSum, key) => rowSum + (Number(row[key]) || 0), 0),
-    0
-  );
+export function computeTotal(rows: Row[]): number {
+  return rows.reduce((sum, row) => sum + (Number(row.Quantities) || 0), 0);
 }
 
 export function normalizeNumberInputValue(value: string): number | "" {

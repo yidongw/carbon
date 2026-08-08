@@ -31,8 +31,10 @@ describe("purchaseOrderLineValidator", () => {
       itemId: "item_1",
       purchaseQuantity: 10,
       configuration: JSON.stringify({
-        configTable: [{ color: "Black", S: 2, M: 3 }],
-        configTablePrimaryKeys: ["S", "M"]
+        configTable: [
+          { valuesKey: "Black|S", Quantities: 2 },
+          { valuesKey: "Black|M", Quantities: 3 }
+        ]
       })
     });
 
