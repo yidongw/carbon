@@ -256,6 +256,12 @@ msgstr "Chargennummer {0}"
 msgid "Batch number is required"
 msgstr "Chargennummer ist erforderlich"
 
+msgid "Beige"
+msgstr "Beige"
+
+msgid "Black"
+msgstr "Schwarz"
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Blockiert durch {0}"
@@ -263,8 +269,14 @@ msgstr "Blockiert durch {0}"
 msgid "Blocking"
 msgstr "Blockierend"
 
+msgid "Blue"
+msgstr "Blau"
+
 msgid "Bot verification failed. Please try again."
 msgstr "Bot-Verifikation fehlgeschlagen. Bitte versuchen Sie es erneut."
+
+msgid "Brown"
+msgstr "Braun"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "Blättern Sie durch Bündel und Drucken von Bündeltickets"
@@ -3847,8 +3859,17 @@ msgstr "Vergessen auszustempeln?"
 msgid "Go back to operation"
 msgstr "Zurück zur Operation"
 
+msgid "Gold"
+msgstr "Gold"
+
 msgid "Grade created"
 msgstr "Klasse erstellt"
+
+msgid "Gray"
+msgstr "Grau"
+
+msgid "Green"
+msgstr "Grün"
 
 msgid "Group created"
 msgstr "Gruppe erstellt"
@@ -4120,6 +4141,9 @@ msgstr "Buchungszeile gespeichert"
 msgid "Kanban created"
 msgstr "Kanban erstellt"
 
+msgid "Khaki"
+msgstr "Khaki"
+
 msgid "Kit"
 msgstr "Bausatz"
 
@@ -4382,6 +4406,9 @@ msgstr "Mein Gehalt"
 msgid "Name"
 msgstr "Name"
 
+msgid "Navy"
+msgstr "Marineblau"
+
 msgid "NCR closed"
 msgstr "NCR geschlossen"
 
@@ -4629,6 +4656,9 @@ msgstr "Vom Bediener durchgeführt"
 msgid "Optional"
 msgstr "Optional"
 
+msgid "Orange"
+msgstr "Orange"
+
 msgid "Other"
 msgstr "Sonstige"
 
@@ -4746,6 +4776,9 @@ msgstr "Abmelden"
 
 msgid "PIN reset successfully"
 msgstr "PIN_RESET_ERGEBNIS_VERKNÜPFUNG_ERFOLGREICH"
+
+msgid "Pink"
+msgstr "Rosa"
 
 msgid "Planned"
 msgstr "Geplant"
@@ -4898,6 +4931,9 @@ msgstr "Bestellnummer nicht gefunden"
 msgid "Purchase order submitted for approval"
 msgstr "Kautionssumme wurde zur Genehmigung eingereicht"
 
+msgid "Purple"
+msgstr "Violett"
+
 msgid "Qty"
 msgstr "Menge"
 
@@ -4975,6 +5011,9 @@ msgstr "Anzahl der Einträge"
 
 msgid "Record step"
 msgstr "Schritt aufnehmen"
+
+msgid "Red"
+msgstr "Rot"
 
 msgid "Redirecting to verification page..."
 msgstr "Weiterleitung zur Verifizierungsseite..."
@@ -5352,6 +5391,9 @@ msgstr "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
 
 msgid "Signed in as {stationName}"
 msgstr "Angemeldet als {stationName}"
+
+msgid "Silver"
+msgstr "Silber"
 
 msgid "Size"
 msgstr "Größe"
@@ -6360,6 +6402,9 @@ msgstr "Wir haben Ihnen einen Magic Link zur Anmeldung an Ihrem Konto gesendet."
 msgid "Welcome"
 msgstr "Willkommen"
 
+msgid "White"
+msgstr "Weiß"
+
 msgid "WIP"
 msgstr "WIP"
 
@@ -6374,6 +6419,9 @@ msgstr "Arbeitsauftrag"
 
 msgid "Work scheduled at your work centers"
 msgstr "Planung an Ihren Werkzentrern"
+
+msgid "Yellow"
+msgstr "Gelb"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Sie gehören mehreren Unternehmen an. Wählen Sie, wo Sie arbeiten möchten."

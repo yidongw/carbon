@@ -259,6 +259,12 @@ msgstr "बैच नंबर {0}"
 msgid "Batch number is required"
 msgstr "बैच नंबर आवश्यक है"
 
+msgid "Beige"
+msgstr "बेज"
+
+msgid "Black"
+msgstr "काला"
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "{0} द्वारा अवरुद्ध"
@@ -266,8 +272,14 @@ msgstr "{0} द्वारा अवरुद्ध"
 msgid "Blocking"
 msgstr "अवरुद्ध"
 
+msgid "Blue"
+msgstr "नीला"
+
 msgid "Bot verification failed. Please try again."
 msgstr "बॉट वेरिफाइशन असफल रही। कृपया फिर से प्रयास करें।"
+
+msgid "Brown"
+msgstr "भूरा"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "बन्ड खोजें और बन्ड टिकट प्रिंट करें"
@@ -3853,8 +3865,17 @@ msgstr "घड़ी से बाहर निकलना भूल गए?"
 msgid "Go back to operation"
 msgstr "प्रणाली में पुनः वापस जाएं"
 
+msgid "Gold"
+msgstr "सुनहरा"
+
 msgid "Grade created"
 msgstr "ग्रेड बनाया.get@123"
+
+msgid "Gray"
+msgstr "धूसर"
+
+msgid "Green"
+msgstr "हरा"
 
 msgid "Group created"
 msgstr "समूह बनाया गया है"
@@ -4126,6 +4147,9 @@ msgstr "जनरल जर्नल प्रविष्टि संपाद
 msgid "Kanban created"
 msgstr "कैन्बैन तैयार किया गया"
 
+msgid "Khaki"
+msgstr "खाकी"
+
 msgid "Kit"
 msgstr "किट"
 
@@ -4388,6 +4412,9 @@ msgstr "मेरी वेतन"
 msgid "Name"
 msgstr "नाम"
 
+msgid "Navy"
+msgstr "गहरा नीला"
+
 msgid "NCR closed"
 msgstr "नीचे बंद"
 
@@ -4635,6 +4662,9 @@ msgstr "ऑपरेटर द्वारा निष्पादित"
 msgid "Optional"
 msgstr "वैकल्पिक"
 
+msgid "Orange"
+msgstr "नारंगी"
+
 msgid "Other"
 msgstr "अन्य"
 
@@ -4752,6 +4782,9 @@ msgstr "पिन आउट"
 
 msgid "PIN reset successfully"
 msgstr "PIN रीसेट सफलतापूर्वक"
+
+msgid "Pink"
+msgstr "गुलाबी"
 
 msgid "Planned"
 msgstr "नियोजित"
@@ -4904,6 +4937,9 @@ msgstr "पर्चेज ऑर्डर नहीं मिला"
 msgid "Purchase order submitted for approval"
 msgstr "प्रचारण आवश्यकता देखिए लिखा गया है"
 
+msgid "Purple"
+msgstr "बैंगनी"
+
 msgid "Qty"
 msgstr "क्वांटिटी"
 
@@ -4981,6 +5017,9 @@ msgstr "रिकॉर्ड गुणता"
 
 msgid "Record step"
 msgstr "रिकॉर्ड चरण"
+
+msgid "Red"
+msgstr "लाल"
 
 msgid "Redirecting to verification page..."
 msgstr "सत्यापन पृष्ठ पर पुनर्निर्देशित हो रहा है..."
@@ -5358,6 +5397,9 @@ msgstr "सIGH-IN वला गया। मालूम परीक्षण �
 
 msgid "Signed in as {stationName}"
 msgstr "के रूप में साइन इन किया गया {stationName}"
+
+msgid "Silver"
+msgstr "चांदी"
 
 msgid "Size"
 msgstr "आकार"
@@ -6366,6 +6408,9 @@ msgstr "हमने आपके खाते में साइन इन क
 msgid "Welcome"
 msgstr "पाठ्यक्रम स्वागत करता है"
 
+msgid "White"
+msgstr "सफेद"
+
 msgid "WIP"
 msgstr "WIP"
 
@@ -6380,6 +6425,9 @@ msgstr "कार्य अनुसंधान"
 
 msgid "Work scheduled at your work centers"
 msgstr "आपके कार्य संस्थानों पर अनुमानित कार्य"
+
+msgid "Yellow"
+msgstr "पीला"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "आपको एक से अधिक कंपनी में साझा है। काम करने वाली कंपनी चुनें।"

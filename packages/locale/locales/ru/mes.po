@@ -256,6 +256,12 @@ msgstr "Номер партии {0}"
 msgid "Batch number is required"
 msgstr "Номер партии обязателен"
 
+msgid "Beige"
+msgstr "Бежевый"
+
+msgid "Black"
+msgstr "Чёрный"
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Заблокировано {0}"
@@ -263,8 +269,14 @@ msgstr "Заблокировано {0}"
 msgid "Blocking"
 msgstr "Блокирующие"
 
+msgid "Blue"
+msgstr "Синий"
+
 msgid "Bot verification failed. Please try again."
 msgstr "Проверка бота не прошла. Пожалуйста, попробуйте снова."
+
+msgid "Brown"
+msgstr "Коричневый"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "Обзор пакетов и печать чеков на пакеты"
@@ -3847,8 +3859,17 @@ msgstr "Забыли отметить уход?"
 msgid "Go back to operation"
 msgstr "Вернуться к операции"
 
+msgid "Gold"
+msgstr "Золотой"
+
 msgid "Grade created"
 msgstr "Уровень создан"
+
+msgid "Gray"
+msgstr "Серый"
+
+msgid "Green"
+msgstr "Зелёный"
 
 msgid "Group created"
 msgstr "Группа создана"
@@ -4120,6 +4141,9 @@ msgstr "Запись журнала сохранена"
 msgid "Kanban created"
 msgstr "Канбан создан"
 
+msgid "Khaki"
+msgstr "Хаки"
+
 msgid "Kit"
 msgstr "Комплект"
 
@@ -4382,6 +4406,9 @@ msgstr "Мой заработок"
 msgid "Name"
 msgstr "Имя"
 
+msgid "Navy"
+msgstr "Тёмно-синий"
+
 msgid "NCR closed"
 msgstr "Закрыто НКР"
 
@@ -4629,6 +4656,9 @@ msgstr "Выполнено оператором"
 msgid "Optional"
 msgstr "Опционально"
 
+msgid "Orange"
+msgstr "Оранжевый"
+
 msgid "Other"
 msgstr "Другое"
 
@@ -4746,6 +4776,9 @@ msgstr "Выход по PIN"
 
 msgid "PIN reset successfully"
 msgstr "Сброс PIN успешно"
+
+msgid "Pink"
+msgstr "Розовый"
 
 msgid "Planned"
 msgstr "Плановое"
@@ -4898,6 +4931,9 @@ msgstr "Заказ не найден"
 msgid "Purchase order submitted for approval"
 msgstr "Заказ на покупку отправлен на审批"
 
+msgid "Purple"
+msgstr "Фиолетовый"
+
 msgid "Qty"
 msgstr "Количество"
 
@@ -4975,6 +5011,9 @@ msgstr "Записать количество"
 
 msgid "Record step"
 msgstr "Записать шаг"
+
+msgid "Red"
+msgstr "Красный"
 
 msgid "Redirecting to verification page..."
 msgstr "Перенаправление на страницу верификации..."
@@ -5352,6 +5391,9 @@ msgstr "Вход не успешен. Пожалуйста, попробуйте
 
 msgid "Signed in as {stationName}"
 msgstr "Вход выполнен как {stationName}"
+
+msgid "Silver"
+msgstr "Серебристый"
 
 msgid "Size"
 msgstr "Размер"
@@ -6360,6 +6402,9 @@ msgstr "Мы отправили вам ссылку для входа в ваш 
 msgid "Welcome"
 msgstr "Добро пожаловать"
 
+msgid "White"
+msgstr "Белый"
+
 msgid "WIP"
 msgstr "НЗП"
 
@@ -6374,6 +6419,9 @@ msgstr "Заказ производства"
 
 msgid "Work scheduled at your work centers"
 msgstr "Запланировано для выполнения на ваших рабочих центрах"
+
+msgid "Yellow"
+msgstr "Жёлтый"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Вы относитесь к нескольким компаниям. Выберите, где работать."

@@ -256,6 +256,12 @@ msgstr "Número de lote {0}"
 msgid "Batch number is required"
 msgstr "El número de lote es obligatorio"
 
+msgid "Beige"
+msgstr "Beige"
+
+msgid "Black"
+msgstr "Negro"
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Bloqueado por {0}"
@@ -263,8 +269,14 @@ msgstr "Bloqueado por {0}"
 msgid "Blocking"
 msgstr "Bloqueando"
 
+msgid "Blue"
+msgstr "Azul"
+
 msgid "Bot verification failed. Please try again."
 msgstr "Verificación de bot fallida. Por favor, inténtelo nuevamente."
+
+msgid "Brown"
+msgstr "Marrón"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "Navegar paquetes e imprimir tickets de paquete"
@@ -3847,8 +3859,17 @@ msgstr "¿Olvidó registrar la salida?"
 msgid "Go back to operation"
 msgstr "Volver a operación"
 
+msgid "Gold"
+msgstr "Dorado"
+
 msgid "Grade created"
 msgstr "Grado creado"
+
+msgid "Gray"
+msgstr "Gris"
+
+msgid "Green"
+msgstr "Verde"
 
 msgid "Group created"
 msgstr "Grupo creado"
@@ -4120,6 +4141,9 @@ msgstr "Entrada en el diario guardada"
 msgid "Kanban created"
 msgstr "Kanban creado"
 
+msgid "Khaki"
+msgstr "Caqui"
+
 msgid "Kit"
 msgstr "Kit"
 
@@ -4382,6 +4406,9 @@ msgstr "Mi salario"
 msgid "Name"
 msgstr "Nombre"
 
+msgid "Navy"
+msgstr "Azul marino"
+
 msgid "NCR closed"
 msgstr "NCR cerrada"
 
@@ -4629,6 +4656,9 @@ msgstr "Realizado por operador"
 msgid "Optional"
 msgstr "Opcional"
 
+msgid "Orange"
+msgstr "Naranja"
+
 msgid "Other"
 msgstr "Otro"
 
@@ -4746,6 +4776,9 @@ msgstr "Cerrar sesión con PIN"
 
 msgid "PIN reset successfully"
 msgstr "Reseteo del PIN realizado con éxito"
+
+msgid "Pink"
+msgstr "Rosa"
 
 msgid "Planned"
 msgstr "Planificado"
@@ -4898,6 +4931,9 @@ msgstr "Orden de compra no encontrada"
 msgid "Purchase order submitted for approval"
 msgstr "Orden de compra enviada para aprobación"
 
+msgid "Purple"
+msgstr "Morado"
+
 msgid "Qty"
 msgstr "Cantidad"
 
@@ -4975,6 +5011,9 @@ msgstr "Cantidad registrada"
 
 msgid "Record step"
 msgstr "Registrar paso"
+
+msgid "Red"
+msgstr "Rojo"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirigiendo a la página de verificación..."
@@ -5352,6 +5391,9 @@ msgstr "Ingreso fallido. Por favor, inténtelo de nuevo."
 
 msgid "Signed in as {stationName}"
 msgstr "Conectado como {stationName}"
+
+msgid "Silver"
+msgstr "Plateado"
 
 msgid "Size"
 msgstr "Tamaño"
@@ -6360,6 +6402,9 @@ msgstr "Le hemos enviado un enlace mágico para iniciar sesión en su cuenta."
 msgid "Welcome"
 msgstr "Bienvenido"
 
+msgid "White"
+msgstr "Blanco"
+
 msgid "WIP"
 msgstr "WIP"
 
@@ -6374,6 +6419,9 @@ msgstr "Orden de trabajo"
 
 msgid "Work scheduled at your work centers"
 msgstr "Trabajo programado en sus centros de trabajo"
+
+msgid "Yellow"
+msgstr "Amarillo"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Perteneces a más de una empresa. Elige donde trabajar."

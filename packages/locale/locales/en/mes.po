@@ -256,6 +256,12 @@ msgstr "Batch Number {0}"
 msgid "Batch number is required"
 msgstr "Batch number is required"
 
+msgid "Beige"
+msgstr "Beige"
+
+msgid "Black"
+msgstr "Black"
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Blocked by {0}"
@@ -263,8 +269,14 @@ msgstr "Blocked by {0}"
 msgid "Blocking"
 msgstr "Blocking"
 
+msgid "Blue"
+msgstr "Blue"
+
 msgid "Bot verification failed. Please try again."
 msgstr "Bot verification failed. Please try again."
+
+msgid "Brown"
+msgstr "Brown"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "Browse bundles and print bundle tickets"
@@ -3847,8 +3859,17 @@ msgstr "Forgot to Clock Out?"
 msgid "Go back to operation"
 msgstr "Go back to operation"
 
+msgid "Gold"
+msgstr "Gold"
+
 msgid "Grade created"
 msgstr "Grade created"
+
+msgid "Gray"
+msgstr "Gray"
+
+msgid "Green"
+msgstr "Green"
 
 msgid "Group created"
 msgstr "Group created"
@@ -4120,6 +4141,9 @@ msgstr "Journal entry saved"
 msgid "Kanban created"
 msgstr "Kanban created"
 
+msgid "Khaki"
+msgstr "Khaki"
+
 msgid "Kit"
 msgstr "Kit"
 
@@ -4382,6 +4406,9 @@ msgstr "My Salary"
 msgid "Name"
 msgstr "Name"
 
+msgid "Navy"
+msgstr "Navy"
+
 msgid "NCR closed"
 msgstr "NCR closed"
 
@@ -4629,6 +4656,9 @@ msgstr "Operator Performed"
 msgid "Optional"
 msgstr "Optional"
 
+msgid "Orange"
+msgstr "Orange"
+
 msgid "Other"
 msgstr "Other"
 
@@ -4746,6 +4776,9 @@ msgstr "Pin Out"
 
 msgid "PIN reset successfully"
 msgstr "PIN reset successfully"
+
+msgid "Pink"
+msgstr "Pink"
 
 msgid "Planned"
 msgstr "Planned"
@@ -4898,6 +4931,9 @@ msgstr "Purchase order not found"
 msgid "Purchase order submitted for approval"
 msgstr "Purchase order submitted for approval"
 
+msgid "Purple"
+msgstr "Purple"
+
 msgid "Qty"
 msgstr "Qty"
 
@@ -4975,6 +5011,9 @@ msgstr "Record Quantity"
 
 msgid "Record step"
 msgstr "Record step"
+
+msgid "Red"
+msgstr "Red"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirecting to verification page..."
@@ -5352,6 +5391,9 @@ msgstr "Sign-in failed. Please try again."
 
 msgid "Signed in as {stationName}"
 msgstr "Signed in as {stationName}"
+
+msgid "Silver"
+msgstr "Silver"
 
 msgid "Size"
 msgstr "Size"
@@ -6360,6 +6402,9 @@ msgstr "We've sent you a magic link to sign in to your account."
 msgid "Welcome"
 msgstr "Welcome"
 
+msgid "White"
+msgstr "White"
+
 msgid "WIP"
 msgstr "WIP"
 
@@ -6374,6 +6419,9 @@ msgstr "Work Order"
 
 msgid "Work scheduled at your work centers"
 msgstr "Work scheduled at your work centers"
+
+msgid "Yellow"
+msgstr "Yellow"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "You belong to more than one company. Pick where to work."

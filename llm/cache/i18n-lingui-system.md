@@ -21,3 +21,11 @@ Using the `t` backtick macro imported from `@lingui/core/macro` in render code t
 - If `t` is used inside `useMemo`/`useCallback`, include `t` in the dependency array (see `assignments.tsx` columns memo).
 
 So: `msg` from core/macro is fine; **never import `t` from `@lingui/core/macro`** in app code.
+
+## MES standard color names (tickets / labels)
+
+Do **not** use a static `COLOR_BY_LANGUAGE` map. Color display names live in `mes.po` (`Black`, `Red`, …).
+
+- Shared descriptors: `apps/mes/app/utils/standardColorMessages.ts` (`msg\`Red\`` …) — included in extract.
+- Client: `apps/mes/app/hooks/useLocalizeColor.tsx` via context `t(descriptor)`.
+- Server (PDF tickets): `localizeColor.server.ts` loads `mes.mjs` with `loadLinguiCatalogForRequest`, `setupI18n()` locally (never activate global), then `i18n._(descriptor)`. Catalog keys are **hashed**; plain `i18n._("Black")` will not work — always pass the `msg` descriptor.
