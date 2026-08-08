@@ -238,6 +238,9 @@ msgstr "एक उपकरण एक भौतिक वस्तु है ज
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "एक उपयोगकर्ता प्रत्येक बैच या सीरीज पर समाप्ति तिथि दर्ज करता है जब माल प्राप्त होता है। जब आपूर्तिकर्ता विभिन्न समाप्ति तिथियों के साथ लॉट भेजते हैं तो इसका उपयोग करें।"
 
+msgid "A value with this code already exists"
+msgstr ""
+
 msgid "Abilities"
 msgstr "क्षमताएं"
 
@@ -1785,9 +1788,6 @@ msgstr "ग्लोबल मूलभूत सामग्री को स�
 msgid "Cannot edit global material type"
 msgstr "ग्लोबल मटेरियल टाइप को संपादित नहीं किया जा सकता"
 
-msgid "Cannot edit system attribute"
-msgstr "सिस्टम अट्रीबर्ट को संपादित नहीं किया जा सकता"
-
 msgid "Cannot edit system attribute value"
 msgstr "सिस्टम अट्रीबर्ट वैल्यू को संपादित नहीं किया जा सकता"
 
@@ -2016,6 +2016,9 @@ msgstr "कॉड"
 
 msgid "Code"
 msgstr "कोड"
+
+msgid "Code is required"
+msgstr ""
 
 msgid "Collapse"
 msgstr "रोशनी घुमाparagus"
@@ -10580,6 +10583,9 @@ msgstr "न कोई मूल्य आवश्यक है"
 msgid "No values available"
 msgstr "कोई मूल्य उपलब्ध नहीं हैं"
 
+msgid "No values yet."
+msgstr ""
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "इस आइटम के लिए कोई स्टॉक की रिकॉर्ड नहीं है। आप इसे भी चयन कर सकते हैं — अवशेष तकनीकी विवरणित हो जाएगा तill गणना की मेल-मिलान हो।"
 
@@ -10903,6 +10909,9 @@ msgstr "ऑर्डर तारीख"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "संग्रहों और टाइप्समेनट में प्रतीक के रंग · आका कैसे पढ़े जाते हैं (e.g. रंग · आका)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "ऑर्डर मल्टीपल"

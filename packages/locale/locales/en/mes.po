@@ -359,9 +359,6 @@ msgstr "Cannot edit global material substance"
 msgid "Cannot edit global material type"
 msgstr "Cannot edit global material type"
 
-msgid "Cannot edit system attribute"
-msgstr "Cannot edit system attribute"
-
 msgid "Cannot edit system attribute value"
 msgstr "Cannot edit system attribute value"
 

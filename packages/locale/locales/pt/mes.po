@@ -359,9 +359,6 @@ msgstr "Não é possível editar o material substancial global"
 msgid "Cannot edit global material type"
 msgstr "Não é possível editar o tipo de material global"
 
-msgid "Cannot edit system attribute"
-msgstr "Não é possível editar atributo do sistema"
-
 msgid "Cannot edit system attribute value"
 msgstr "Não é possível editar o valor do atributo sistemático"
 

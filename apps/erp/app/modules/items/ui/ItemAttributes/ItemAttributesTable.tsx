@@ -1,8 +1,9 @@
-import { Button, MenuIcon, MenuItem } from "@carbon/react";
+import { localizeStyleColorName } from "@carbon/database/style-reference";
+import { Badge, Button, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
-import { LuCirclePlus, LuList, LuPencil, LuTrash } from "react-icons/lu";
+import { LuCirclePlus, LuPencil, LuTrash } from "react-icons/lu";
 import { useNavigate, useRevalidator } from "react-router";
 import { Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
@@ -16,6 +17,13 @@ type ItemAttributeRow = {
   name: string;
   sortOrder: number;
   companyId: string | null;
+  itemAttributeValue?: Array<{
+    id: string;
+    code: string;
+    name: string;
+    sortOrder?: number;
+    companyId?: string | null;
+  }> | null;
 };
 
 type ItemAttributesTableProps = {
@@ -37,13 +45,25 @@ const ItemAttributesTable = memo(
       });
     }, [openOverlay, revalidator]);
 
+    const openEditAttribute = useCallback(
+      (id: string) => {
+        openOverlay(overlay.to.editItemAttribute({ id }), {
+          onCreated: () => revalidator.revalidate()
+        });
+      },
+      [openOverlay, revalidator]
+    );
+
     const columns = useMemo<ColumnDef<ItemAttributeRow>[]>(
       () => [
         {
           accessorKey: "code",
           header: t`Code`,
           cell: ({ row }) => (
-            <Hyperlink to={path.to.itemAttributeValues(row.original.id)}>
+            <Hyperlink
+              className="cursor-pointer"
+              onClick={() => openEditAttribute(row.original.id)}
+            >
               <span className="font-mono">{row.original.code}</span>
             </Hyperlink>
           )
@@ -53,9 +73,30 @@ const ItemAttributesTable = memo(
           header: t`Name`,
           cell: ({ row }) =>
             translateItemAttributeCatalogName(row.original.name, i18n)
+        },
+        {
+          id: "values",
+          header: t`Values`,
+          cell: ({ row }) => {
+            const values = [...(row.original.itemAttributeValue ?? [])].sort(
+              (a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100)
+            );
+            if (values.length === 0) {
+              return <span className="text-muted-foreground">—</span>;
+            }
+            return (
+              <div className="flex flex-wrap items-center gap-1">
+                {values.map((v) => (
+                  <Badge key={v.id} variant="secondary">
+                    {localizeStyleColorName(v.code, i18n.locale) ?? v.name}
+                  </Badge>
+                ))}
+              </div>
+            );
+          }
         }
       ],
-      [t, i18n]
+      [openEditAttribute, t, i18n]
     );
 
     const renderContextMenu = useCallback(
@@ -63,38 +104,26 @@ const ItemAttributesTable = memo(
         return (
           <>
             <MenuItem
-              onClick={() => navigate(path.to.itemAttributeValues(row.id))}
+              disabled={!permissions.can("update", "parts")}
+              onClick={() => openEditAttribute(row.id)}
             >
-              <MenuIcon icon={<LuList />} />
-              <Trans>Values</Trans>
+              <MenuIcon icon={<LuPencil />} />
+              <Trans>Edit</Trans>
             </MenuItem>
             {row.companyId !== null ? (
-              <>
-                <MenuItem
-                  disabled={!permissions.can("update", "parts")}
-                  onClick={() =>
-                    openOverlay(overlay.to.editItemAttribute({ id: row.id }), {
-                      onCreated: () => revalidator.revalidate()
-                    })
-                  }
-                >
-                  <MenuIcon icon={<LuPencil />} />
-                  <Trans>Edit</Trans>
-                </MenuItem>
-                <MenuItem
-                  disabled={!permissions.can("delete", "parts")}
-                  destructive
-                  onClick={() => navigate(path.to.deleteItemAttribute(row.id))}
-                >
-                  <MenuIcon icon={<LuTrash />} />
-                  <Trans>Delete</Trans>
-                </MenuItem>
-              </>
+              <MenuItem
+                disabled={!permissions.can("delete", "parts")}
+                destructive
+                onClick={() => navigate(path.to.deleteItemAttribute(row.id))}
+              >
+                <MenuIcon icon={<LuTrash />} />
+                <Trans>Delete</Trans>
+              </MenuItem>
             ) : null}
           </>
         );
       },
-      [navigate, openOverlay, permissions, revalidator]
+      [navigate, openEditAttribute, permissions]
     );
 
     return (

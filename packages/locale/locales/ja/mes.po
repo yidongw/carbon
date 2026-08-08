@@ -359,9 +359,6 @@ msgstr "グローバル素材を編集できません"
 msgid "Cannot edit global material type"
 msgstr "グローバル素材タイプを編集できません"
 
-msgid "Cannot edit system attribute"
-msgstr "システム属性を編集できません"
-
 msgid "Cannot edit system attribute value"
 msgstr "システム属性値を編集できません"
 

@@ -238,6 +238,9 @@ msgstr "Uma ferramenta é um item físico usado para fazer uma peça que pode se
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Um utilizador regista a data de validade em cada lote ou série quando os bens são recebidos. Utilize quando os fornecedores enviam lotes com datas de validade diferentes."
 
+msgid "A value with this code already exists"
+msgstr ""
+
 msgid "Abilities"
 msgstr "Habilidades"
 
@@ -1785,9 +1788,6 @@ msgstr "Não é possível editar o material substancial global"
 msgid "Cannot edit global material type"
 msgstr "Não é possível editar o tipo de material global"
 
-msgid "Cannot edit system attribute"
-msgstr "Não é possível editar atributo do sistema"
-
 msgid "Cannot edit system attribute value"
 msgstr "Não é possível editar o valor do atributo sistemático"
 
@@ -2016,6 +2016,9 @@ msgstr "COD"
 
 msgid "Code"
 msgstr "Código"
+
+msgid "Code is required"
+msgstr ""
 
 msgid "Collapse"
 msgstr "Colapsar"
@@ -10577,6 +10580,9 @@ msgstr "Não é necessário fornecer um valor"
 msgid "No values available"
 msgstr "Nenhum valor disponível"
 
+msgid "No values yet."
+msgstr ""
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Não há registro de estoque no armazém para este item. Você ainda pode fazê-lo – o estoque disponível ficará negativo até que a contagem seja reconciliada."
 
@@ -10900,6 +10906,9 @@ msgstr "Data do Pedido"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Ordena como os valores de atributos são lidos em grades e chipsets (por exemplo, Cor · Tamanho)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "Múltiplo de Pedido"

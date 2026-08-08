@@ -56,7 +56,6 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Cannot edit global material shape": msg`Cannot edit global material shape`,
   "Cannot edit global material substance": msg`Cannot edit global material substance`,
   "Cannot edit global material type": msg`Cannot edit global material type`,
-  "Cannot edit system attribute": msg`Cannot edit system attribute`,
   "Cannot edit system attribute value": msg`Cannot edit system attribute value`,
   "Cannot finish operation": msg`Cannot finish operation`,
   "Cannot modify a locked picking list. Reopen it first.": msg`Cannot modify a locked picking list. Reopen it first.`,

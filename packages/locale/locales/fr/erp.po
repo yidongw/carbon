@@ -238,6 +238,9 @@ msgstr "Un outil est un article physique utilisé pour fabriquer une pièce qui 
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Un utilisateur enregistre la date d'expiration sur chaque lot ou numéro de série à la réception des marchandises. À utiliser lorsque les fournisseurs expédient des lots avec des dates d'expiration différentes."
 
+msgid "A value with this code already exists"
+msgstr ""
+
 msgid "Abilities"
 msgstr "Compétences"
 
@@ -1785,9 +1788,6 @@ msgstr "Impossible d'éditer la substance matérielle globale"
 msgid "Cannot edit global material type"
 msgstr "Ne pouvez pas modifier le type de matériau global"
 
-msgid "Cannot edit system attribute"
-msgstr "Impossible de modifier l'attribut système"
-
 msgid "Cannot edit system attribute value"
 msgstr "Ne pouvez pas modifier la valeur de l'attribut système"
 
@@ -2016,6 +2016,9 @@ msgstr "DCO"
 
 msgid "Code"
 msgstr "Code"
+
+msgid "Code is required"
+msgstr ""
 
 msgid "Collapse"
 msgstr "Réduire"
@@ -10577,6 +10580,9 @@ msgstr "Pas de valeur requise"
 msgid "No values available"
 msgstr "Aucune valeur disponible"
 
+msgid "No values yet."
+msgstr ""
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Aucun stock de magasin n'est enregistré pour cet article. Vous pouvez tout de même le sélectionner — le stock disponible sera négatif jusqu'à ce que le compte soit réconcilié."
 
@@ -10900,6 +10906,9 @@ msgstr "Date de commande"
 
 msgid "Order determines how attribute values read in grids and chips (e.g. Color · Size)."
 msgstr "Ordre détermine la manière dont les valeurs d'attributs sont lues dans les grilles et les copeaux (par exemple, Couleur · Taille)."
+
+msgid "Order determines how values appear in pickers and grids."
+msgstr ""
 
 msgid "Order Multiple"
 msgstr "Multiplicateur de commande"

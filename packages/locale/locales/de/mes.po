@@ -359,9 +359,6 @@ msgstr "Kann-global-Materialstoffs-eigentlich-nicht-verändert-werden"
 msgid "Cannot edit global material type"
 msgstr "Kann-global-Materialietyp-nicht-aendern"
 
-msgid "Cannot edit system attribute"
-msgstr "Kann Systemattribut nicht bearbeiten"
-
 msgid "Cannot edit system attribute value"
 msgstr "Kann Systemattribut-Wert nicht bearbeiten"
 

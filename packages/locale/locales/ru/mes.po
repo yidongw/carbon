@@ -359,9 +359,6 @@ msgstr "Невозможно редактировать глобальный м�
 msgid "Cannot edit global material type"
 msgstr "Невозможно редактировать глобальный тип материала"
 
-msgid "Cannot edit system attribute"
-msgstr "Невозможно редактировать системный атрибут"
-
 msgid "Cannot edit system attribute value"
 msgstr "Невозможно изменить значение системного атрибута"
 

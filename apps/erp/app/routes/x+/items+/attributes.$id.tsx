@@ -35,29 +35,53 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     view: "parts",
     role: "employee"
   });
 
   const attribute = await getItemAttribute(client, id);
   if (!attribute.data) throw notFound("Attribute not found");
-  if (attribute.data.companyId === null) {
-    throw redirect(
-      path.to.itemAttributes,
-      await flash(
-        request,
-        error(new Error("Access denied"), "Cannot edit system attribute")
-      )
-    );
-  }
 
-  return { attribute: attribute.data };
+  // Prefer company-scoped values when the same code also exists as a system row.
+  const byCode = new Map<
+    string,
+    {
+      id: string;
+      code: string;
+      name: string;
+      sortOrder: number;
+      companyId: string | null;
+    }
+  >();
+  for (const row of (attribute.data.itemAttributeValue ?? []) as Array<{
+    id: string;
+    code: string;
+    name: string;
+    sortOrder: number;
+    companyId: string | null;
+  }>) {
+    // Only include system + this company's values
+    if (row.companyId !== null && row.companyId !== companyId) continue;
+    const existing = byCode.get(row.code);
+    if (!existing || (row.companyId && !existing.companyId)) {
+      byCode.set(row.code, row);
+    }
+  }
+  const values = [...byCode.values()].sort((a, b) => {
+    if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+    return a.code.localeCompare(b.code);
+  });
+
+  return {
+    attribute: attribute.data,
+    values
+  };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, userId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     update: "parts"
   });
   const { id } = params;
@@ -65,14 +89,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
 
+  const existing = await getItemAttribute(client, id);
+  if (existing.error || !existing.data) {
+    return data(
+      { ok: false as const, error: "Attribute not found" },
+      await flash(request, error(existing.error, "Attribute not found"))
+    );
+  }
+
   const validation = await validator(itemAttributeValidator).validate(
     await request.formData()
   );
   if (validation.error) return validationError(validation.error);
 
+  const attributeCompanyId = (existing.data.companyId ?? null) as string | null;
+
   const update = await upsertItemAttribute(client, {
     id,
-    ...validation.data,
+    code: validation.data.code,
+    name: validation.data.name,
+    sortOrder: validation.data.sortOrder,
+    values: validation.data.values,
+    companyId: attributeCompanyId,
+    tenantCompanyId: companyId,
     updatedBy: userId
   });
   if (update.error) {

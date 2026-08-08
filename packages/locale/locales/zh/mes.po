@@ -360,9 +360,6 @@ msgstr "不能编辑全局物料成分"
 msgid "Cannot edit global material type"
 msgstr "不能编辑全局物料类型"
 
-msgid "Cannot edit system attribute"
-msgstr "无法编辑系统属性"
-
 msgid "Cannot edit system attribute value"
 msgstr "无法编辑系统属性值"
 
