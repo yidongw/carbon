@@ -1,5 +1,59 @@
 import { computeJobConfigTableTotal } from "./jobConfiguration";
 
+export type ParsedConfigTableValue = {
+  rows: Record<string, string | number | boolean>[] | null;
+  primaryKeys: string[];
+  total: number;
+};
+
+/** Parse a saved Style/job `configuration` JSON into rows, keys, and total. */
+export function parseInitialConfigTable(raw: unknown): ParsedConfigTableValue {
+  if (!raw) return { rows: null, primaryKeys: [], total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("configTable" in parsed)
+    ) {
+      return { rows: null, primaryKeys: [], total: 0 };
+    }
+    const config = parsed as {
+      configTable?: Record<string, string | number | boolean>[];
+      configTablePrimaryKeys?: string[];
+    };
+    const rows = Array.isArray(config.configTable) ? config.configTable : null;
+    const primaryKeys = Array.isArray(config.configTablePrimaryKeys)
+      ? config.configTablePrimaryKeys.filter(
+          (k): k is string => typeof k === "string"
+        )
+      : [];
+    let total = 0;
+    if (rows) {
+      const hasComboRows = rows.some(
+        (row) => String(row.valuesKey ?? "").trim().length > 0
+      );
+      if (
+        hasComboRows ||
+        (primaryKeys.length === 1 && primaryKeys[0] === "Quantities")
+      ) {
+        for (const row of rows) {
+          total += Number(row.Quantities) || 0;
+        }
+      } else {
+        for (const row of rows) {
+          for (const key of primaryKeys) {
+            total += Number(row[key]) || 0;
+          }
+        }
+      }
+    }
+    return { rows, primaryKeys, total };
+  } catch {
+    return { rows: null, primaryKeys: [], total: 0 };
+  }
+}
+
 export type ConfigTableOverlaySuccess = {
   ok: true;
   configuration: {

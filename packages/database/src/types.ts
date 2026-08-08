@@ -38492,6 +38492,7 @@ export type Database = {
         Row: {
           colorCode: string | null
           companyId: string
+          variantQuantities: Json | null
           conversionFactor: number | null
           createdAt: string
           createdBy: string
@@ -38517,6 +38518,7 @@ export type Database = {
         Insert: {
           colorCode?: string | null
           companyId: string
+          variantQuantities?: Json | null
           conversionFactor?: number | null
           createdAt?: string
           createdBy: string
@@ -38542,6 +38544,7 @@ export type Database = {
         Update: {
           colorCode?: string | null
           companyId?: string
+          variantQuantities?: Json | null
           conversionFactor?: number | null
           createdAt?: string
           createdBy?: string
@@ -43114,6 +43117,7 @@ export type Database = {
         Row: {
           colorCode: string | null
           companyId: string
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           deletedAt: string | null
@@ -43139,6 +43143,7 @@ export type Database = {
         Insert: {
           colorCode?: string | null
           companyId: string
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           deletedAt?: string | null
@@ -43164,6 +43169,7 @@ export type Database = {
         Update: {
           colorCode?: string | null
           companyId?: string
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           deletedAt?: string | null
@@ -44217,6 +44223,7 @@ export type Database = {
       stockTransferLine: {
         Row: {
           companyId: string
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           fromStorageUnitId: string | null
@@ -44237,6 +44244,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           fromStorageUnitId?: string | null
@@ -44257,6 +44265,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           fromStorageUnitId?: string | null
@@ -53430,6 +53439,7 @@ export type Database = {
       warehouseTransferLine: {
         Row: {
           companyId: string
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           customFields: Json | null
@@ -53452,6 +53462,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           customFields?: Json | null
@@ -53474,6 +53485,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
@@ -64792,6 +64804,7 @@ export type Database = {
       receiptLines: {
         Row: {
           companyId: string | null
+          variantQuantities: Json | null
           conversionFactor: number | null
           createdAt: string | null
           createdBy: string | null
@@ -67479,6 +67492,7 @@ export type Database = {
       shipmentLines: {
         Row: {
           companyId: string | null
+          variantQuantities: Json | null
           createdAt: string | null
           createdBy: string | null
           deletedAt: string | null
@@ -67664,6 +67678,7 @@ export type Database = {
       stockTransferLines: {
         Row: {
           companyId: string | null
+          variantQuantities: Json | null
           createdAt: string | null
           createdBy: string | null
           fromStorageUnitId: string | null

@@ -4092,6 +4092,9 @@ msgstr "Edit Transfer Line"
 msgid "Edit Unit of Measure"
 msgstr "Edit Unit of Measure"
 
+msgid "Edit variant quantities"
+msgstr "Edit variant quantities"
+
 msgid "Edit View"
 msgstr "Edit View"
 
@@ -4502,6 +4505,9 @@ msgstr "Everything from Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
+
+msgid "Exceeds available"
+msgstr "Exceeds available"
 
 msgid "Exceeds plan"
 msgstr "Exceeds plan"

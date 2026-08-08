@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
+import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
@@ -2074,13 +2075,21 @@ export async function upsertStockTransfer(
 export async function upsertStockTransferLine(
   client: SupabaseClient<Database>,
   stockTransferLine:
-    | (Omit<z.infer<typeof stockTransferLineValidator>, "id"> & {
+    | (Omit<
+        z.infer<typeof stockTransferLineValidator>,
+        "id" | "variantQuantities"
+      > & {
         companyId: string;
         createdBy: string;
+        variantQuantities?: Json;
       })
-    | (Omit<z.infer<typeof stockTransferLineValidator>, "id"> & {
+    | (Omit<
+        z.infer<typeof stockTransferLineValidator>,
+        "id" | "variantQuantities"
+      > & {
         id: string;
         updatedBy: string;
+        variantQuantities?: Json;
       })
 ) {
   if ("createdBy" in stockTransferLine) {
@@ -2197,6 +2206,199 @@ export async function upsertWarehouseTransferLine(
       .select()
       .single();
   }
+}
+
+/** Atomically expand a WT line into per-variant SKU lines (update first + insert rest). */
+export async function replaceWarehouseTransferLineWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    transferId: string;
+    replaceLineId: string;
+    fromLocationId: string;
+    toLocationId: string;
+    fromStorageUnitId?: string | null;
+    toStorageUnitId?: string | null;
+    notes?: string | null;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+  }
+) {
+  const [first, ...rest] = args.variants;
+  if (!first) throw new Error("No variant quantities to apply");
+
+  return db.transaction().execute(async (trx) => {
+    await trx
+      .updateTable("warehouseTransferLine")
+      .set({
+        itemId: first.variantItemId,
+        quantity: first.quantity,
+        variantQuantities: null,
+        fromStorageUnitId: args.fromStorageUnitId ?? null,
+        toStorageUnitId: args.toStorageUnitId ?? null,
+        notes: args.notes ?? null,
+        updatedBy: args.userId,
+        updatedAt: new Date().toISOString()
+      })
+      .where("id", "=", args.replaceLineId)
+      .where("transferId", "=", args.transferId)
+      .where("companyId", "=", args.companyId)
+      .execute();
+
+    for (const v of rest) {
+      await trx
+        .insertInto("warehouseTransferLine")
+        .values({
+          id: nanoid(),
+          transferId: args.transferId,
+          itemId: v.variantItemId,
+          quantity: v.quantity,
+          fromLocationId: args.fromLocationId,
+          toLocationId: args.toLocationId,
+          fromStorageUnitId: args.fromStorageUnitId ?? null,
+          toStorageUnitId: args.toStorageUnitId ?? null,
+          notes: args.notes ?? null,
+          variantQuantities: null,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          createdAt: new Date().toISOString()
+        })
+        .execute();
+    }
+  });
+}
+
+/** Atomically insert expanded WT variant lines (create path). */
+export async function insertWarehouseTransferLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    transferId: string;
+    fromLocationId: string;
+    toLocationId: string;
+    fromStorageUnitId?: string | null;
+    toStorageUnitId?: string | null;
+    notes?: string | null;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+  }
+) {
+  if (args.variants.length === 0) {
+    throw new Error("No variant quantities to apply");
+  }
+
+  return db.transaction().execute(async (trx) => {
+    for (const v of args.variants) {
+      await trx
+        .insertInto("warehouseTransferLine")
+        .values({
+          id: nanoid(),
+          transferId: args.transferId,
+          itemId: v.variantItemId,
+          quantity: v.quantity,
+          fromLocationId: args.fromLocationId,
+          toLocationId: args.toLocationId,
+          fromStorageUnitId: args.fromStorageUnitId ?? null,
+          toStorageUnitId: args.toStorageUnitId ?? null,
+          notes: args.notes ?? null,
+          variantQuantities: null,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          createdAt: new Date().toISOString()
+        })
+        .execute();
+    }
+  });
+}
+
+/** Atomically expand a stock-transfer line into per-variant SKU lines. */
+export async function replaceStockTransferLineWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    stockTransferId: string;
+    replaceLineId: string;
+    fromStorageUnitId?: string | null;
+    toStorageUnitId?: string | null;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+  }
+) {
+  const [first, ...rest] = args.variants;
+  if (!first) throw new Error("No variant quantities to apply");
+
+  return db.transaction().execute(async (trx) => {
+    await trx
+      .updateTable("stockTransferLine")
+      .set({
+        itemId: first.variantItemId,
+        quantity: first.quantity,
+        variantQuantities: null,
+        fromStorageUnitId: args.fromStorageUnitId ?? null,
+        toStorageUnitId: args.toStorageUnitId ?? null,
+        updatedBy: args.userId,
+        updatedAt: new Date().toISOString()
+      })
+      .where("id", "=", args.replaceLineId)
+      .where("stockTransferId", "=", args.stockTransferId)
+      .where("companyId", "=", args.companyId)
+      .execute();
+
+    for (const v of rest) {
+      await trx
+        .insertInto("stockTransferLine")
+        .values({
+          id: nanoid(),
+          stockTransferId: args.stockTransferId,
+          itemId: v.variantItemId,
+          quantity: v.quantity,
+          fromStorageUnitId: args.fromStorageUnitId ?? null,
+          toStorageUnitId: args.toStorageUnitId ?? null,
+          variantQuantities: null,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          createdAt: new Date().toISOString()
+        })
+        .execute();
+    }
+  });
+}
+
+/** Atomically insert expanded stock-transfer variant lines (create path). */
+export async function insertStockTransferLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    stockTransferId: string;
+    fromStorageUnitId?: string | null;
+    toStorageUnitId?: string | null;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+  }
+) {
+  if (args.variants.length === 0) {
+    throw new Error("No variant quantities to apply");
+  }
+
+  return db.transaction().execute(async (trx) => {
+    for (const v of args.variants) {
+      await trx
+        .insertInto("stockTransferLine")
+        .values({
+          id: nanoid(),
+          stockTransferId: args.stockTransferId,
+          itemId: v.variantItemId,
+          quantity: v.quantity,
+          fromStorageUnitId: args.fromStorageUnitId ?? null,
+          toStorageUnitId: args.toStorageUnitId ?? null,
+          variantQuantities: null,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          createdAt: new Date().toISOString()
+        })
+        .execute();
+    }
+  });
 }
 
 export async function getDefaultStorageUnitForJob(
@@ -3534,12 +3736,8 @@ export async function checkTransferLineAvailability(
 
   if (!itemId || !locationId || !(quantity > 0)) return { ok: true };
 
-  const [quantities, commitments] = await Promise.all([
-    client.rpc("get_item_quantities_by_tracking_id", {
-      item_id: itemId,
-      company_id: companyId,
-      location_id: locationId
-    }),
+  const [rows, commitments] = await Promise.all([
+    getTransferStockForItem(client, itemId, companyId, locationId),
     getOpenTransferCommitments(
       client,
       companyId,
@@ -3548,12 +3746,6 @@ export async function checkTransferLineAvailability(
       excludeLineId ? [excludeLineId] : undefined
     )
   ]);
-
-  const rows = (quantities.data ?? []) as Array<{
-    storageUnitId: string | null;
-    trackedEntityId: string | null;
-    quantity: number;
-  }>;
 
   // Serial: the exact unit must be in stock here and not on another open transfer.
   if (trackedEntityId) {
@@ -3602,6 +3794,7 @@ export async function insertStockTransfer(
       quantity?: number;
       requiresSerialTracking?: boolean;
       requiresBatchTracking?: boolean;
+      variantQuantities?: Json | null;
     }>;
     companyId: string;
     createdBy: string;
@@ -3826,4 +4019,173 @@ export async function updateWarehouseTransfer(
     .eq("id", id)
     .select("id")
     .single();
+}
+
+/** Variant children of a Style parent (empty if item is not a parent). */
+async function getStyleVariantChildren(
+  client: SupabaseClient<Database>,
+  parentItemId: string,
+  companyId: string
+): Promise<Array<{ variantItemId: string; valuesKey: string }>> {
+  const { data, error } = await client
+    .from("itemVariant")
+    .select("variantItemId, valuesKey")
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId);
+  if (error) {
+    console.error(error);
+    return [];
+  }
+  return (data ?? []).map((row) => ({
+    variantItemId: row.variantItemId,
+    valuesKey: String(row.valuesKey ?? "")
+  }));
+}
+
+export type TransferStockRow = {
+  storageUnitId: string | null;
+  storageUnitName: string | null;
+  trackedEntityId: string | null;
+  readableId: string | null;
+  quantity: number;
+};
+
+/**
+ * Bin/serial on-hand for transfer pickers. Style parents roll up child variant
+ * ledgers (inventory lives on SKUs); plain items stay single-id.
+ */
+export async function getTransferStockForItem(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string,
+  locationId: string
+): Promise<TransferStockRow[]> {
+  const children = await getStyleVariantChildren(client, itemId, companyId);
+  const itemIds = children.length
+    ? [itemId, ...children.map((c) => c.variantItemId)]
+    : [itemId];
+
+  const results = await Promise.all(
+    itemIds.map((id) =>
+      client.rpc("get_item_quantities_by_tracking_id", {
+        item_id: id,
+        company_id: companyId,
+        location_id: locationId
+      })
+    )
+  );
+
+  const byKey = new Map<string, TransferStockRow>();
+  for (const res of results) {
+    if (res.error) {
+      console.error(res.error);
+      continue;
+    }
+    for (const r of (res.data ?? []) as TransferStockRow[]) {
+      const key = `${r.storageUnitId ?? ""}::${r.trackedEntityId ?? ""}`;
+      const qty = Number(r.quantity) || 0;
+      if (qty === 0) continue;
+      const existing = byKey.get(key);
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        byKey.set(key, {
+          storageUnitId: r.storageUnitId,
+          storageUnitName: r.storageUnitName,
+          trackedEntityId: r.trackedEntityId,
+          readableId: r.readableId,
+          quantity: qty
+        });
+      }
+    }
+  }
+  return Array.from(byKey.values()).filter((r) => r.quantity > 0);
+}
+
+/** Style on-hand by color×size at a location (optional storage unit filter). */
+export async function getStyleOnHandByColorSize(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string,
+  locationId: string,
+  storageUnitId?: string | null
+): Promise<
+  {
+    valuesKey: string;
+    colorCode: string | null;
+    sizeCode: string | null;
+    quantityOnHand: number;
+  }[]
+> {
+  const children = await getStyleVariantChildren(client, itemId, companyId);
+  if (children.length === 0) return [];
+
+  const valuesKeyByVariant = new Map(
+    children.map((c) => [c.variantItemId, c.valuesKey] as const)
+  );
+
+  // Same availability RPC as transfer stock pickers (not raw ledger sums).
+  const results = await Promise.all(
+    children.map((c) =>
+      client.rpc("get_item_quantities_by_tracking_id", {
+        item_id: c.variantItemId,
+        company_id: companyId,
+        location_id: locationId
+      })
+    )
+  );
+
+  const byKey = new Map<
+    string,
+    {
+      valuesKey: string;
+      colorCode: string | null;
+      sizeCode: string | null;
+      quantityOnHand: number;
+    }
+  >();
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    const res = results[i];
+    if (res.error) {
+      console.error(res.error);
+      continue;
+    }
+    const valuesKey = (
+      valuesKeyByVariant.get(child.variantItemId) ?? ""
+    ).trim();
+    if (!valuesKey) continue;
+
+    let colorCode: string | null = null;
+    let sizeCode: string | null = null;
+    if (valuesKey.includes("|")) {
+      const [c, s] = valuesKey.split("|");
+      colorCode = c || null;
+      sizeCode = s || null;
+    } else {
+      colorCode = valuesKey || null;
+    }
+
+    for (const row of (res.data ?? []) as TransferStockRow[]) {
+      if (storageUnitId && (row.storageUnitId ?? null) !== storageUnitId) {
+        continue;
+      }
+      const qty = Number(row.quantity) || 0;
+      if (qty === 0) continue;
+      const existing = byKey.get(valuesKey);
+      if (existing) {
+        existing.quantityOnHand += qty;
+      } else {
+        byKey.set(valuesKey, {
+          valuesKey,
+          colorCode,
+          sizeCode,
+          quantityOnHand: qty
+        });
+      }
+    }
+  }
+
+  return Array.from(byKey.values()).filter((e) => e.quantityOnHand !== 0);
 }

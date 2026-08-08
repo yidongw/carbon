@@ -488,15 +488,14 @@ const SalesOrderLineForm = ({
         .eq("itemId", itemId)
         .eq("companyId", company.id)
         .maybeSingle(),
-      // Any item with Color/Size attribute selections (Style always; a
-      // Consumable with a Fabric/Trim color set) gets the config grid.
+      // Any item with attribute selections (Style, Consumable fabric/trim, …)
+      // gets the config grid — not limited to Color/Size system attrs.
       carbon
         .from("itemAttributeSelection")
         // Composite PK — no `id` column; select a real column.
         .select("attributeValueId")
         .eq("itemId", itemId)
         .eq("companyId", company.id)
-        .in("attributeId", ["iat_color", "iat_size"])
         .limit(1)
     ]);
 

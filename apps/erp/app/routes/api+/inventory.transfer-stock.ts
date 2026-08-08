@@ -1,10 +1,14 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { getOpenTransferCommitments } from "~/modules/inventory";
+import {
+  getOpenTransferCommitments,
+  getTransferStockForItem
+} from "~/modules/inventory";
 
 // An item's on-hand broken down by storage unit + tracked entity (serial/lot)
 // at a location, so the New Transfer line editor can let you pick the exact
-// unit/serial to move and see where it currently sits.
+// unit/serial to move and see where it currently sits. Style parents include
+// child variant SKU ledgers (inventory lives on variants).
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
     view: "inventory",
@@ -16,11 +20,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const locationId = url.searchParams.get("locationId");
   if (!itemId || !locationId) return { stock: [] };
 
-  const result = await client.rpc("get_item_quantities_by_tracking_id", {
-    item_id: itemId,
-    company_id: companyId,
-    location_id: locationId
-  });
+  const stockRows = await getTransferStockForItem(
+    client,
+    itemId,
+    companyId,
+    locationId
+  );
 
   // Subtract stock already committed to other open transfers so a unit/serial
   // can't be transferred twice (reservation).
@@ -34,15 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // which ones.
   const committedByBin = new Map(committedQtyByItemBin);
 
-  const stock = (
-    (result.data ?? []) as Array<{
-      storageUnitId: string | null;
-      storageUnitName: string | null;
-      trackedEntityId: string | null;
-      readableId: string | null;
-      quantity: number;
-    }>
-  )
+  const stock = stockRows
     .map((r) => {
       // A serial already named on an open transfer is fully spoken for → drop it.
       if (r.trackedEntityId && committedSerials.has(r.trackedEntityId)) {

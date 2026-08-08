@@ -26,9 +26,11 @@ import {
   Supplier,
   SupplierLocation
 } from "~/components/Form";
+import { useConfigurableItems } from "~/components/Form/Item";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { newTransferValidator } from "~/modules/inventory";
 import { path } from "~/utils/path";
+import { StyleLineQuantityInput } from "../StyleLineQuantityInput";
 
 export type TransferItem = {
   id: string;
@@ -37,6 +39,7 @@ export type TransferItem = {
   quantityOnHand: number;
   unitOfMeasureCode: string;
   itemTrackingType: string;
+  type?: string;
 };
 
 type StockRow = {
@@ -49,7 +52,7 @@ type StockRow = {
   size?: string | null;
 };
 
-// A serial configuration group (bin + color + size) with its candidate units.
+// A serial variant group (bin + color + size) with its candidate units.
 type SerialGroup = {
   key: string;
   storageUnitId: string | null;
@@ -98,6 +101,9 @@ type Line = {
   trackedEntityIds: string[];
   toStorageUnitId: string;
   quantity: number;
+  variantQuantities?: {
+    configTable: Record<string, string | number | boolean>[];
+  } | null;
 };
 
 // A stock row's stable identity: which bin + which tracked entity (if any).
@@ -123,6 +129,13 @@ const TransferForm = ({
 }: TransferFormProps) => {
   const { t } = useLingui();
   const isStock = mode === "stock";
+  // Parents with attribute selections (variant qty grid) — same set
+  // Job/MWOs use. Variant child SKUs are not included.
+  const configurableItemIds = useConfigurableItems();
+  const configurableItemIdSet = useMemo(
+    () => new Set(configurableItemIds),
+    [configurableItemIds]
+  );
 
   // Warehouse-transfer destination: a warehouse, or any customer/supplier (which
   // resolves server-side to that partner's dedicated warehouse).
@@ -219,13 +232,16 @@ const TransferForm = ({
     setLines((prev) => prev.filter((l) => l.key !== key));
 
   const selectItem = (line: Line, itemId: string) => {
+    const isConfigurable = configurableItemIdSet.has(itemId);
     updateLine(line.key, {
       itemId,
       sourceKey: "",
       fromStorageUnitId: "",
       trackedEntityId: "",
       trackedEntityIds: [],
-      quantity: 1
+      // Attribute qty comes from the combo grid — start at 0 until configured.
+      quantity: isConfigurable ? 0 : 1,
+      variantQuantities: null
     });
     if (itemId && fromLocationId && !stockByItem[itemId]) {
       pendingItemRef.current = itemId;
@@ -291,22 +307,29 @@ const TransferForm = ({
     const remaining = row
       ? Math.max(0, row.quantity - usedElsewhere(line.itemId, key, line.key))
       : 0;
+    const isConfigurable = configurableItemIdSet.has(line.itemId);
     updateLine(line.key, {
       sourceKey: key,
       fromStorageUnitId: row?.storageUnitId ?? "",
       trackedEntityId: row?.trackedEntityId ?? "",
       trackedEntityIds: [],
-      quantity: row
-        ? Math.max(1, Math.min(line.quantity || 1, remaining))
-        : line.quantity
+      // Attribute grid was for the previous source — clear so the modal
+      // reloads against this bin's on-hand.
+      variantQuantities: undefined,
+      quantity: !row
+        ? line.quantity
+        : isConfigurable
+          ? 0
+          : Math.max(1, Math.min(line.quantity || 1, remaining))
     });
   };
 
-  // A line is ready once it has an item and a resolved source (assigned serials,
-  // a bin, or a batch entity). Incomplete rows are ignored on submit.
+  // A line is ready once it has an item, a resolved source, and a positive qty
+  // (configurable lines stay at 0 until the attribute grid is confirmed).
   const preparedLines = lines.filter(
     (l) =>
       l.itemId &&
+      l.quantity > 0 &&
       // A source is chosen once sourceKey is set — this also covers stock held
       // in no storage unit (null bin), whose fromStorageUnitId is empty.
       (l.trackedEntityIds.length > 0 ||
@@ -332,7 +355,10 @@ const TransferForm = ({
               quantity: l.quantity,
               fromStorageUnitId: l.fromStorageUnitId,
               trackedEntityId: l.trackedEntityId,
-              toStorageUnitId: l.toStorageUnitId
+              toStorageUnitId: l.toStorageUnitId,
+              ...(l.variantQuantities
+                ? { variantQuantities: l.variantQuantities }
+                : {})
             }
           ]
     )
@@ -491,17 +517,18 @@ const TransferForm = ({
               {lines.map((line) => {
                 const item = itemById.get(line.itemId);
                 const uom = item?.unitOfMeasureCode ?? "EA";
+                const isConfigurable = configurableItemIdSet.has(line.itemId);
                 // A serial item is one physical unit per row — its quantity is
                 // always 1, so there's no quantity to choose.
                 const isSerial = item?.itemTrackingType === "Serial";
                 const stock = stockByItem[line.itemId] ?? [];
-                // Serial units grouped by color/size, so you pick a configuration
+                // Serial units grouped by color/size, so you pick a variant
                 // rather than an opaque serial number.
                 const serialGroups = isSerial ? groupSerials(stock) : [];
                 const selectedGroup = isSerial
                   ? serialGroups.find((g) => g.key === line.sourceKey)
                   : undefined;
-                // Units of the chosen config still free for this line.
+                // Units of the chosen variant still free for this line.
                 const serialAvailable = selectedGroup
                   ? selectedGroup.serialIds.filter(
                       (id) =>
@@ -716,6 +743,44 @@ const TransferForm = ({
                               }}
                             />
                           </div>
+                        ) : isConfigurable ? (
+                          <div className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {t`Quantity`}
+                            </span>
+                            <StyleLineQuantityInput
+                              key={`${line.key}:${line.sourceKey}`}
+                              lineId={line.key}
+                              itemId={line.itemId}
+                              value={line.quantity}
+                              variantQuantities={line.variantQuantities}
+                              locationId={fromLocationId}
+                              storageUnitId={selectedRow?.storageUnitId}
+                              maxTotal={maxQty}
+                              isDisabled={!line.sourceKey || !selectedRow}
+                              size="md"
+                              otherLineVariantQuantities={lines
+                                .filter(
+                                  (l) =>
+                                    l.key !== line.key &&
+                                    l.itemId === line.itemId &&
+                                    l.variantQuantities
+                                )
+                                .map((l) => l.variantQuantities)}
+                              onQuantityChange={({
+                                quantity,
+                                variantQuantities
+                              }) =>
+                                updateLine(line.key, {
+                                  quantity: Math.min(
+                                    maxQty || Infinity,
+                                    Math.max(0, quantity || 0)
+                                  ),
+                                  variantQuantities
+                                })
+                              }
+                            />
+                          </div>
                         ) : (
                           <div className="flex flex-col gap-1">
                             <span className="text-xs font-medium text-muted-foreground">
@@ -726,7 +791,9 @@ const TransferForm = ({
                               min={1}
                               max={maxQty || undefined}
                               value={String(line.quantity)}
-                              onChange={(e) =>
+                              disabled={!selectedRow}
+                              onChange={(e) => {
+                                if (!selectedRow) return;
                                 updateLine(line.key, {
                                   // Clamp to what's available at the chosen source
                                   // so a typed value can't over-transfer.
@@ -734,8 +801,8 @@ const TransferForm = ({
                                     maxQty || Infinity,
                                     Math.max(1, +e.target.value || 1)
                                   )
-                                })
-                              }
+                                });
+                              }}
                             />
                           </div>
                         )}

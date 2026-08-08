@@ -305,7 +305,7 @@ function SalesOrderLineBody({
         <ItemThumbnail thumbnailPath={line.thumbnailPath} type="Part" />
         <VStack spacing={0} className="min-w-0">
           <span className="font-semibold line-clamp-1">
-            {getItemReadableId(items, line.itemId)}
+            {getItemReadableId(items, line.itemId) ?? line.itemReadableId}
           </span>
           <span className="text-muted-foreground text-xs truncate line-clamp-1">
             {line.description}
@@ -372,7 +372,8 @@ function SalesOrderLineItem({
             <span className="font-semibold line-clamp-1">
               {line.salesOrderLineType === "Fixed Asset"
                 ? (line as any).assetReadableId || "Fixed Asset"
-                : getItemReadableId(items, line.itemId)}
+                : (getItemReadableId(items, line.itemId) ??
+                  line.itemReadableId)}
             </span>
             <span className="text-muted-foreground text-xs truncate line-clamp-1">
               {line.salesOrderLineType === "Fixed Asset"

@@ -89,7 +89,10 @@ const StockTransferPostModal = ({ onClose }: { onClose: () => void }) => {
             .single();
           if (trackedEntity.data?.status !== "Available") {
             errors.push({
-              itemReadableId: getItemReadableId(items, line.itemId) ?? null,
+              itemReadableId:
+                getItemReadableId(items, line.itemId) ??
+                line.itemReadableId ??
+                null,
               pickedQuantity: line.pickedQuantity ?? 0,
               pickedQuantityError: "Tracked entity is not available"
             });

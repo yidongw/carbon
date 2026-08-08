@@ -246,7 +246,8 @@ function PurchaseOrderLineBody({
               ? line.description || "Indirect Expense"
               : line.purchaseOrderLineType === "Fixed Asset"
                 ? (line as any).assetReadableId || "Fixed Asset"
-                : getItemReadableId(items, line.itemId)}
+                : (getItemReadableId(items, line.itemId) ??
+                  line.itemReadableId)}
           </span>
           <span className="text-muted-foreground text-xs truncate line-clamp-1">
             {line.purchaseOrderLineType === "G/L Account"
@@ -314,7 +315,8 @@ function PurchaseOrderLineItem({
                   ? line.description || "G/L Account"
                   : line.purchaseOrderLineType === "Fixed Asset"
                     ? (line as any).assetReadableId || "Fixed Asset"
-                    : getItemReadableId(items, line.itemId)}
+                    : (getItemReadableId(items, line.itemId) ??
+                      line.itemReadableId)}
               </span>
               <span className="text-muted-foreground text-xs truncate line-clamp-1">
                 {line.purchaseOrderLineType === "G/L Account"

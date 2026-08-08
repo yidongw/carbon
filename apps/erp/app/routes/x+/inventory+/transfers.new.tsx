@@ -17,6 +17,7 @@ import {
 import {
   getInventoryItems,
   getOpenTransferCommitments,
+  getTransferStockForItem,
   insertStockTransfer,
   insertWarehouseTransfer,
   newTransferValidator,
@@ -24,6 +25,11 @@ import {
   upsertWarehouseTransferLine
 } from "~/modules/inventory";
 import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable,
+  requireVariantQuantitiesIfAttributeParent
+} from "~/modules/items/styleOrderLines.server";
 import { getLocationsList } from "~/modules/resources";
 import { path } from "~/utils/path";
 import { getCompanyId, locationsQuery } from "~/utils/react-query";
@@ -37,7 +43,8 @@ const mapInventoryItems = (data: unknown): TransferItem[] =>
       name: i.name ?? "",
       quantityOnHand: Number(i.quantityOnHand ?? 0),
       unitOfMeasureCode: i.unitOfMeasureCode ?? "EA",
-      itemTrackingType: i.itemTrackingType ?? "Inventory"
+      itemTrackingType: i.itemTrackingType ?? "Inventory",
+      type: i.type ?? "Part"
     }));
 
 const resolveMode = (url: URL): "stock" | "warehouse" =>
@@ -124,8 +131,48 @@ export async function action({ request }: ActionFunctionArgs) {
     toSupplierId,
     toCustomerLocationId,
     toSupplierLocationId,
-    lines
+    lines: submittedLines
   } = validation.data;
+
+  // Style parent + configTable → one line per variant SKU (same as SO/PO).
+  const lines: typeof submittedLines = [];
+  for (const l of submittedLines) {
+    if (hasStyleConfigTable(l.variantQuantities)) {
+      const expanded = await expandStyleConfigToVariantLines(client, {
+        parentItemId: l.itemId,
+        companyId,
+        variantQuantities: l.variantQuantities
+      });
+      if (!expanded.ok) {
+        return validationError({
+          fieldErrors: { lines: expanded.error }
+        } as never);
+      }
+      for (const v of expanded.variants) {
+        lines.push({
+          itemId: v.variantItemId,
+          quantity: v.quantity,
+          fromStorageUnitId: l.fromStorageUnitId,
+          toStorageUnitId: l.toStorageUnitId,
+          trackedEntityId: undefined,
+          variantQuantities: null
+        });
+      }
+    } else {
+      const required = await requireVariantQuantitiesIfAttributeParent(client, {
+        parentItemId: l.itemId,
+        companyId,
+        variantQuantities: l.variantQuantities,
+        quantity: l.quantity
+      });
+      if (!required.ok) {
+        return validationError({
+          fieldErrors: { lines: required.error }
+        } as never);
+      }
+      lines.push(l);
+    }
+  }
 
   // Server-side guard: aggregated demand can't exceed availability — checked at
   // both the item level (whole source warehouse) and the chosen source bin. We
@@ -151,19 +198,19 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 
   // Per-bin availability for each item in play (sums serials/lots within a bin).
+  // Style parents are already expanded to variant SKUs above; still use the
+  // transfer-stock helper so any leftover parent-id lines roll up correctly.
   const uniqueItemIds = [...new Set(lines.map((l) => l.itemId))];
   const availByItemBin = new Map<string, number>();
   await Promise.all(
     uniqueItemIds.map(async (itemId) => {
-      const res = await client.rpc("get_item_quantities_by_tracking_id", {
-        item_id: itemId,
-        company_id: companyId,
-        location_id: fromLocationId
-      });
-      for (const r of (res.data ?? []) as {
-        storageUnitId: string | null;
-        quantity: number;
-      }[]) {
+      const stock = await getTransferStockForItem(
+        client,
+        itemId,
+        companyId,
+        fromLocationId
+      );
+      for (const r of stock) {
         const key = `${itemId}::${r.storageUnitId ?? ""}`;
         availByItemBin.set(
           key,
@@ -172,6 +219,17 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     })
   );
+
+  // Variant SKUs are excluded from get_inventory_quantities list rows — fill
+  // on-hand from the per-bin totals so expanded Style lines can validate.
+  for (const itemId of uniqueItemIds) {
+    if (onHandById.has(itemId)) continue;
+    let total = 0;
+    for (const [key, qty] of availByItemBin) {
+      if (key.startsWith(`${itemId}::`)) total += qty;
+    }
+    onHandById.set(itemId, total);
+  }
 
   // Net out stock already committed to other open transfers (reservation): a
   // serial on another open transfer can't be picked again, and its fungible
@@ -233,7 +291,8 @@ export async function action({ request }: ActionFunctionArgs) {
         quantity: l.quantity,
         fromStorageUnitId: l.fromStorageUnitId || null,
         toStorageUnitId: l.toStorageUnitId || null,
-        trackedEntityId: l.trackedEntityId || null
+        trackedEntityId: l.trackedEntityId || null,
+        variantQuantities: l.variantQuantities ?? null
       })),
       companyId,
       createdBy: userId
@@ -335,6 +394,7 @@ export async function action({ request }: ActionFunctionArgs) {
       fromStorageUnitId: line.fromStorageUnitId || null,
       toStorageUnitId: line.toStorageUnitId || null,
       trackedEntityId: line.trackedEntityId || null,
+      variantQuantities: line.variantQuantities ?? null,
       companyId,
       createdBy: userId
     } as never);

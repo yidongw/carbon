@@ -11,6 +11,10 @@ import {
   getShipmentRelatedItems,
   getShipmentTracking
 } from "~/modules/inventory";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -43,6 +47,79 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (shipment.data.companyId !== companyId) {
     throw redirect(path.to.shipments);
   }
+
+  // Attach source SO/PO/job Style color×size plan so Ordered can show chips and the
+  // ship modal can hint against what was ordered.
+  const rawLines = shipmentLines.data ?? [];
+  const sourceLineIds = [
+    ...new Set(
+      rawLines
+        .map((line) => line.lineId)
+        .filter((id): id is string => typeof id === "string" && id.length > 0)
+    )
+  ];
+  const orderVariantQuantitiesByLineId = new Map<string, unknown>();
+  if (sourceLineIds.length > 0) {
+    if (shipment.data.sourceDocument === "Sales Order") {
+      const { data } = await client
+        .from("salesOrderLine")
+        .select("id, configuration")
+        .in("id", sourceLineIds);
+      for (const row of data ?? []) {
+        if (row.configuration != null) {
+          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
+        }
+      }
+    } else if (shipment.data.sourceDocument === "Purchase Order") {
+      const { data } = await client
+        .from("purchaseOrderLine")
+        .select("id, configuration")
+        .in("id", sourceLineIds);
+      for (const row of data ?? []) {
+        if (row.configuration != null) {
+          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
+        }
+      }
+    }
+  }
+
+  // Style jobs store planned variant qty in jobVariantQuantity (not job.configuration).
+  const jobIds = [
+    ...new Set(
+      rawLines
+        .map((line) => {
+          const fulfillment = line.fulfillment as {
+            job?: { id?: string } | null;
+          } | null;
+          return fulfillment?.job?.id;
+        })
+        .filter((id): id is string => typeof id === "string" && id.length > 0)
+    )
+  ];
+  const jobVariantQuantitiesByJobId = new Map<string, unknown>();
+  await Promise.all(
+    jobIds.map(async (jobId) => {
+      const planned = await getJobVariantQuantities(client, jobId, companyId);
+      if (planned.error || planned.data.length === 0) return;
+      jobVariantQuantitiesByJobId.set(
+        jobId,
+        jobVariantQuantitiesToConfigTable(planned.data)
+      );
+    })
+  );
+
+  const linesWithOrderVariantQuantities = rawLines.map((line) => {
+    const fromSource = line.lineId
+      ? orderVariantQuantitiesByLineId.get(line.lineId)
+      : undefined;
+    const jobId = (line.fulfillment as { job?: { id?: string } | null } | null)
+      ?.job?.id;
+    const fromJob = jobId ? jobVariantQuantitiesByJobId.get(jobId) : undefined;
+    return {
+      ...line,
+      orderVariantQuantities: fromSource ?? fromJob ?? null
+    };
+  });
 
   let fixedAssetLines: {
     id: string;
@@ -86,7 +163,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     shipment: shipment.data,
-    shipmentLines: shipmentLines.data ?? [],
+    shipmentLines: linesWithOrderVariantQuantities,
     fixedAssetLines,
     shipmentLineTracking: shipmentLineTracking.data ?? [],
     relatedItems: getShipmentRelatedItems(

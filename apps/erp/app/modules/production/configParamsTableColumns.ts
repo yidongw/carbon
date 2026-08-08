@@ -229,21 +229,28 @@ export function getConfigQuantityCells(
   }
 
   const raw = configuration as Record<string, unknown>;
+  const table = getConfigTableRows(configuration);
   const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
     ? raw.configTablePrimaryKeys.filter(
         (k): k is string => typeof k === "string" && k.length > 0
       )
     : [];
-  if (primaryKeys.length === 0) return [];
+  const hasComboRows = table.some(
+    (row) => String(row.valuesKey ?? "").trim().length > 0
+  );
+  // Combo flat: valuesKey rows. primaryKeys may be omitted (inventory) or
+  // explicitly `["Quantities"]` (legacy writers).
+  const isComboFlat =
+    hasComboRows &&
+    (primaryKeys.length === 0 ||
+      (primaryKeys.length === 1 && primaryKeys[0] === "Quantities"));
+  if (!isComboFlat && primaryKeys.length === 0) return [];
 
   const primaryKeySet = new Set(primaryKeys);
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const cells: ConfigQuantityCell[] = [];
 
-  const isComboFlat =
-    primaryKeys.length === 1 && primaryKeys[0] === "Quantities";
-
-  for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
+  for (const [rowIndex, row] of table.entries()) {
     if (isComboFlat) {
       const valuesKey = String(row.valuesKey ?? "").trim();
       if (valuesKey) {
@@ -325,21 +332,26 @@ export function configTableToComboRows(
   }
 
   const raw = configuration as Record<string, unknown>;
+  const table = getConfigTableRows(configuration);
   const primaryKeys = Array.isArray(raw.configTablePrimaryKeys)
     ? raw.configTablePrimaryKeys.filter(
         (k): k is string => typeof k === "string" && k.length > 0
       )
     : [];
-  if (primaryKeys.length === 0) return [];
+  const hasComboRows = table.some(
+    (row) => String(row.valuesKey ?? "").trim().length > 0
+  );
+  const isComboFlat =
+    hasComboRows &&
+    (primaryKeys.length === 0 ||
+      (primaryKeys.length === 1 && primaryKeys[0] === "Quantities"));
+  if (!isComboFlat && primaryKeys.length === 0) return [];
 
   const primaryKeySet = new Set(primaryKeys);
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const out: ComboConfigRow[] = [];
 
-  const isComboFlat =
-    primaryKeys.length === 1 && primaryKeys[0] === "Quantities";
-
-  for (const row of getConfigTableRows(configuration)) {
+  for (const row of table) {
     if (isComboFlat) {
       const valuesKey = String(row.valuesKey ?? "").trim();
       if (!valuesKey) continue;

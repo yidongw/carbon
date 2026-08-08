@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-08T07:59:10.775Z",
-  "totalTools": 1266,
+  "generated": "2026-08-08T11:36:26.081Z",
+  "totalTools": 1272,
   "modules": 15,
   "tools": [
     {
@@ -5857,6 +5857,202 @@
       }
     },
     {
+      "name": "inventory_replaceWarehouseTransferLineWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "replace warehouse transfer line with style variants",
+      "paramCount": 8,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "transferId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "fromLocationId": {
+            "type": "string"
+          },
+          "toLocationId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "transferId",
+          "replaceLineId",
+          "fromLocationId",
+          "toLocationId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "inventory_insertWarehouseTransferLinesWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "insert warehouse transfer lines with style variants",
+      "paramCount": 7,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "transferId": {
+            "type": "string"
+          },
+          "fromLocationId": {
+            "type": "string"
+          },
+          "toLocationId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "transferId",
+          "fromLocationId",
+          "toLocationId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "inventory_replaceStockTransferLineWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "replace stock transfer line with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "stockTransferId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "stockTransferId",
+          "replaceLineId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "inventory_insertStockTransferLinesWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "insert stock transfer lines with style variants",
+      "paramCount": 4,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "stockTransferId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "stockTransferId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "inventory_getDefaultStorageUnitForJob",
       "module": "inventory",
       "classification": "READ",
@@ -7047,6 +7243,75 @@
         },
         "required": [
           "id"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getTransferStockForItem",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get transfer stock for item",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getStyleOnHandByColorSize",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get style on hand by color size",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId",
+        "locationId",
+        "storageUnitId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "storageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
         ]
       }
     },

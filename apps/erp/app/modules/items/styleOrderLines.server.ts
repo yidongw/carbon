@@ -19,19 +19,23 @@ export async function expandStyleConfigToVariantLines(
   args: {
     parentItemId: string;
     companyId: string;
-    configuration: unknown;
+    variantQuantities: unknown;
   }
 ): Promise<
   { ok: true; variants: StyleVariantQuantity[] } | { ok: false; error: string }
 > {
-  const expanded = await expandConfigTableToVariantQuantities(client, args);
+  const expanded = await expandConfigTableToVariantQuantities(client, {
+    parentItemId: args.parentItemId,
+    companyId: args.companyId,
+    configuration: args.variantQuantities
+  });
   if (expanded.error) {
     return { ok: false, error: expanded.error.message };
   }
   if (expanded.data.length === 0) {
     return {
       ok: false,
-      error: "Style quantity configuration has no quantities"
+      error: "Variant quantities have no quantities"
     };
   }
 
@@ -52,8 +56,54 @@ export async function expandStyleConfigToVariantLines(
   return { ok: true, variants: expanded.data };
 }
 
-export function hasStyleConfigTable(configuration: unknown): boolean {
-  if (!configuration || typeof configuration !== "object") return false;
-  const table = (configuration as Record<string, unknown>).configTable;
+export function hasStyleConfigTable(variantQuantities: unknown): boolean {
+  if (!variantQuantities || typeof variantQuantities !== "object") return false;
+  const table = (variantQuantities as Record<string, unknown>).configTable;
   return Array.isArray(table) && table.length > 0;
+}
+
+/**
+ * Attribute parents (Style/Consumable with variants or an attribute set) must
+ * submit a variant-quantities grid — never a bare parent qty while stock lives
+ * on child SKUs.
+ */
+export async function requireVariantQuantitiesIfAttributeParent(
+  client: Db,
+  args: {
+    parentItemId: string;
+    companyId: string;
+    variantQuantities: unknown;
+    quantity: number;
+  }
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!args.parentItemId || !(args.quantity > 0)) {
+    return { ok: true };
+  }
+  if (hasStyleConfigTable(args.variantQuantities)) {
+    return { ok: true };
+  }
+
+  const [variants, selections] = await Promise.all([
+    client
+      .from("itemVariant")
+      .select("id")
+      .eq("parentItemId", args.parentItemId)
+      .eq("companyId", args.companyId)
+      .limit(1),
+    client
+      .from("itemAttributeSelection")
+      .select("id")
+      .eq("itemId", args.parentItemId)
+      .eq("companyId", args.companyId)
+      .limit(1)
+  ]);
+
+  if ((variants.data?.length ?? 0) > 0 || (selections.data?.length ?? 0) > 0) {
+    return {
+      ok: false,
+      error: "Open the variant quantities grid to assign color/size quantities"
+    };
+  }
+
+  return { ok: true };
 }

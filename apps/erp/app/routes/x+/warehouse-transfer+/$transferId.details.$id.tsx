@@ -1,6 +1,7 @@
 import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
@@ -18,9 +19,17 @@ import {
   getWarehouseTransfer,
   getWarehouseTransferLine,
   isWarehouseTransferLocked,
+  replaceWarehouseTransferLineWithStyleVariants,
   upsertWarehouseTransferLine,
   WarehouseTransferLineForm
 } from "~/modules/inventory";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable,
+  requireVariantQuantitiesIfAttributeParent
+} from "~/modules/items/styleOrderLines.server";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -32,7 +41,8 @@ const warehouseTransferLineActionValidator = z.discriminatedUnion("type", [
     quantity: zfd.numeric(z.number().min(0.0001)),
     fromStorageUnitId: zfd.text(z.string().optional()),
     toStorageUnitId: zfd.text(z.string().optional()),
-    notes: zfd.text(z.string().optional())
+    notes: zfd.text(z.string().optional()),
+    variantQuantities: zfd.text(z.string().optional())
   }),
   z.object({
     type: z.literal("update"),
@@ -40,7 +50,8 @@ const warehouseTransferLineActionValidator = z.discriminatedUnion("type", [
     quantity: zfd.numeric(z.number().min(0.0001)),
     fromStorageUnitId: zfd.text(z.string().optional()),
     toStorageUnitId: zfd.text(z.string().optional()),
-    notes: zfd.text(z.string().optional())
+    notes: zfd.text(z.string().optional()),
+    variantQuantities: zfd.text(z.string().optional())
   }),
   z.object({
     type: z.literal("delete"),
@@ -119,14 +130,119 @@ export async function action({ request, params }: ActionFunctionArgs) {
         transferId,
         id
       );
-      // `d` is the union minus the discriminant, so narrow to the update shape.
-      const updateData = d as { quantity: number; fromStorageUnitId?: string };
+      const updateData = d as {
+        quantity: number;
+        fromStorageUnitId?: string;
+        variantQuantities?: string;
+      };
+
+      let variantQuantities: Json | undefined;
+      let quantity = updateData.quantity;
+      if (updateData.variantQuantities) {
+        try {
+          const parsed = JSON.parse(updateData.variantQuantities) as Record<
+            string,
+            unknown
+          >;
+          const fields = jobConfigurationUpdateFields(parsed);
+          variantQuantities = fields.configuration;
+          quantity = fields.quantity;
+        } catch {
+          // invalid JSON — keep the typed quantity
+        }
+      }
+
+      const { variantQuantities: _configStr, ...rest } = updateData;
+      const parentItemId = existingLine.data?.itemId ?? "";
+
+      if (hasStyleConfigTable(variantQuantities)) {
+        const expanded = await expandStyleConfigToVariantLines(client, {
+          parentItemId,
+          companyId,
+          variantQuantities
+        });
+        if (!expanded.ok) {
+          return validationError({
+            fieldErrors: { quantity: expanded.error }
+          } as never);
+        }
+
+        for (const v of expanded.variants) {
+          const availability = await checkTransferLineAvailability(client, {
+            companyId,
+            locationId: transfer.data?.fromLocationId ?? "",
+            itemId: v.variantItemId,
+            fromStorageUnitId: updateData.fromStorageUnitId || null,
+            quantity: v.quantity,
+            excludeLineId: id
+          });
+          if (!availability.ok) {
+            return validationError({
+              fieldErrors: { quantity: availability.message }
+            } as never);
+          }
+        }
+
+        try {
+          await replaceWarehouseTransferLineWithStyleVariants(
+            getDatabaseClient(),
+            {
+              companyId,
+              userId,
+              transferId,
+              replaceLineId: id,
+              fromLocationId:
+                existingLine.data?.fromLocationId ??
+                transfer.data?.fromLocationId ??
+                "",
+              toLocationId:
+                existingLine.data?.toLocationId ??
+                transfer.data?.toLocationId ??
+                "",
+              fromStorageUnitId: updateData.fromStorageUnitId,
+              toStorageUnitId: (rest as { toStorageUnitId?: string })
+                .toStorageUnitId,
+              notes: (rest as { notes?: string }).notes,
+              variants: expanded.variants.map((v) => ({
+                variantItemId: v.variantItemId,
+                quantity: v.quantity
+              }))
+            }
+          );
+        } catch (err) {
+          return data(
+            { error: err },
+            await flash(
+              request,
+              error(err, "Failed to update warehouse transfer line")
+            )
+          );
+        }
+
+        throw redirect(
+          path.to.warehouseTransferDetails(transferId),
+          await flash(request, success("Updated warehouse transfer line"))
+        );
+      }
+
+      const required = await requireVariantQuantitiesIfAttributeParent(client, {
+        parentItemId,
+        companyId,
+        variantQuantities,
+        quantity
+      });
+      if (!required.ok) {
+        return validationError({
+          fieldErrors: { quantity: required.error }
+        } as never);
+      }
+
       const availability = await checkTransferLineAvailability(client, {
         companyId,
         locationId: transfer.data?.fromLocationId ?? "",
-        itemId: existingLine.data?.itemId ?? "",
+        itemId: parentItemId,
         fromStorageUnitId: updateData.fromStorageUnitId || null,
-        quantity: updateData.quantity,
+        quantity,
         excludeLineId: id
       });
       if (!availability.ok) {
@@ -137,7 +253,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
       const result = await upsertWarehouseTransferLine(client, {
         id,
-        ...d,
+        ...rest,
+        quantity,
+        variantQuantities,
         transferId,
         companyId,
         updatedBy: userId
@@ -207,7 +325,10 @@ export default function WarehouseTransferLineDetailsRoute() {
     quantity: warehouseTransferLine.quantity ?? 1,
     fromStorageUnitId: warehouseTransferLine.fromStorageUnitId ?? "",
     toStorageUnitId: warehouseTransferLine.toStorageUnitId ?? "",
-    notes: warehouseTransferLine.notes ?? ""
+    notes: warehouseTransferLine.notes ?? "",
+    variantQuantities: warehouseTransferLine.variantQuantities
+      ? JSON.stringify(warehouseTransferLine.variantQuantities)
+      : undefined
   };
 
   const navigate = useNavigate();

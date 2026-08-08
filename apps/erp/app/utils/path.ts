@@ -260,6 +260,14 @@ export const path = {
         generatePath(
           `${api}/inventory/transfer-stock?itemId=${itemId}&locationId=${locationId}`
         ),
+      styleOnHand: (
+        itemId: string,
+        locationId: string,
+        storageUnitId?: string | null
+      ) => {
+        const base = `${api}/inventory/style-on-hand?itemId=${itemId}&locationId=${locationId}`;
+        return storageUnitId ? `${base}&storageUnitId=${storageUnitId}` : base;
+      },
       storageUnitsTree: (id: string) =>
         generatePath(`${api}/inventory/storage-units-tree?locationId=${id}`),
       storageUnitsWithQuantities: (locationId: string, itemId?: string) =>

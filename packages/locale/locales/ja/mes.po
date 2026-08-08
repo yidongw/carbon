@@ -256,12 +256,6 @@ msgstr "バッチ番号 {0}"
 msgid "Batch number is required"
 msgstr "バッチ番号は必須です"
 
-msgid "Beige"
-msgstr "ベージュ"
-
-msgid "Black"
-msgstr "ブラック"
-
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "{0} によりブロック中"
@@ -269,14 +263,8 @@ msgstr "{0} によりブロック中"
 msgid "Blocking"
 msgstr "ブロック中"
 
-msgid "Blue"
-msgstr "ブルー"
-
 msgid "Bot verification failed. Please try again."
 msgstr "ボット認証に失敗しました。もう一度試してください。"
-
-msgid "Brown"
-msgstr "ブラウン"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "バンドルを閲覧し、バンドル切符を印刷します"
@@ -3859,17 +3847,8 @@ msgstr "退勤打刻を忘れましたか？"
 msgid "Go back to operation"
 msgstr "作業に戻る"
 
-msgid "Gold"
-msgstr "ゴールド"
-
 msgid "Grade created"
 msgstr "グレードを作成しました"
-
-msgid "Gray"
-msgstr "グレー"
-
-msgid "Green"
-msgstr "グリーン"
 
 msgid "Group created"
 msgstr "グループを作成しました"
@@ -4141,9 +4120,6 @@ msgstr "journals事項保存完了"
 msgid "Kanban created"
 msgstr "看板を作成しました"
 
-msgid "Khaki"
-msgstr "カーキ"
-
 msgid "Kit"
 msgstr "キット"
 
@@ -4406,9 +4382,6 @@ msgstr "My Salary"
 msgid "Name"
 msgstr "名前"
 
-msgid "Navy"
-msgstr "ネイビー"
-
 msgid "NCR closed"
 msgstr "NCRが閉じられました"
 
@@ -4656,9 +4629,6 @@ msgstr "オペレーター実施"
 msgid "Optional"
 msgstr "オプション"
 
-msgid "Orange"
-msgstr "オレンジ"
-
 msgid "Other"
 msgstr "その他"
 
@@ -4776,9 +4746,6 @@ msgstr "ピンアウト"
 
 msgid "PIN reset successfully"
 msgstr "PIN再設定が成功しました"
-
-msgid "Pink"
-msgstr "ピンク"
 
 msgid "Planned"
 msgstr "計画済み"
@@ -4931,9 +4898,6 @@ msgstr "購入注文が見つかりません"
 msgid "Purchase order submitted for approval"
 msgstr "購入注文が承認待ちです"
 
-msgid "Purple"
-msgstr "パープル"
-
 msgid "Qty"
 msgstr "量"
 
@@ -5011,9 +4975,6 @@ msgstr "レコード数量"
 
 msgid "Record step"
 msgstr "レコードステップ"
-
-msgid "Red"
-msgstr "レッド"
 
 msgid "Redirecting to verification page..."
 msgstr "確認ページにリダイレクト中..."
@@ -5391,9 +5352,6 @@ msgstr "ログインに失敗しました。もう一度試してみてくださ
 
 msgid "Signed in as {stationName}"
 msgstr "{stationName} としてサインイン中"
-
-msgid "Silver"
-msgstr "シルバー"
 
 msgid "Size"
 msgstr "サイズ"
@@ -6402,9 +6360,6 @@ msgstr "アカウントにサインインするためのマジックリンクを
 msgid "Welcome"
 msgstr "ようこそ"
 
-msgid "White"
-msgstr "ホワイト"
-
 msgid "WIP"
 msgstr "仕掛品"
 
@@ -6419,9 +6374,6 @@ msgstr "作業指示書"
 
 msgid "Work scheduled at your work centers"
 msgstr "あなたの作業センタで予定された作業"
-
-msgid "Yellow"
-msgstr "イエロー"
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "あなたは複数の会社に所属しています。働く場所を選んでください。"

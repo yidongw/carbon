@@ -350,7 +350,8 @@ export const warehouseTransferLineValidator = z
     toLocationId: z.string().min(1, { message: "To Location is required" }),
     toStorageUnitId: zfd.text(z.string().optional()),
     unitOfMeasureCode: zfd.text(z.string().optional()),
-    notes: zfd.text(z.string().optional())
+    notes: zfd.text(z.string().optional()),
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine((data) => data.fromLocationId !== data.toLocationId, {
     message: "From and To locations must be different",
@@ -417,7 +418,8 @@ export const stockTransferLineValidator = z.object({
   ),
   requiresSerialTracking: zfd.text(
     z.string().transform((val) => val === "true")
-  )
+  ),
+  variantQuantities: zfd.text(z.string().optional())
 });
 
 export const stockTransferLineScanValidator = z.object({
@@ -525,7 +527,15 @@ export const newTransferValidator = z
             quantity: z.coerce.number().positive(),
             fromStorageUnitId: z.string().optional(),
             trackedEntityId: z.string().optional(),
-            toStorageUnitId: z.string().optional()
+            toStorageUnitId: z.string().optional(),
+            variantQuantities: z
+              .object({
+                configTable: z.array(
+                  z.record(z.union([z.string(), z.number(), z.boolean()]))
+                )
+              })
+              .optional()
+              .nullable()
           })
         )
         .min(1, { message: "Add at least one item" })

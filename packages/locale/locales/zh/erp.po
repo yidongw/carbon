@@ -4093,6 +4093,9 @@ msgstr "编辑转移行"
 msgid "Edit Unit of Measure"
 msgstr "编辑计量单位"
 
+msgid "Edit variant quantities"
+msgstr "编辑变体数量"
+
 msgid "Edit View"
 msgstr "编辑视图"
 
@@ -4503,6 +4506,9 @@ msgstr "Starter 中的所有功能"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "超过 {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB 总计 — 请先移除一些附件再发送。"
+
+msgid "Exceeds available"
+msgstr "超出可用量"
 
 msgid "Exceeds plan"
 msgstr "超出计划"

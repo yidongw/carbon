@@ -1,6 +1,7 @@
 import { assertIsPost, error, notFound, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import { useRouteData } from "@carbon/react";
 import type { ActionFunctionArgs } from "react-router";
@@ -9,6 +10,7 @@ import {
   checkTransferLineAvailability,
   getStockTransfer,
   isStockTransferLocked,
+  replaceStockTransferLineWithStyleVariants,
   stockTransferLineValidator,
   upsertStockTransferLine
 } from "~/modules/inventory";
@@ -17,6 +19,13 @@ import type {
   StockTransferLine
 } from "~/modules/inventory/types";
 import StockTransferLineForm from "~/modules/inventory/ui/StockTransfers/StockTransferLineForm";
+import {
+  expandStyleConfigToVariantLines,
+  hasStyleConfigTable,
+  requireVariantQuantitiesIfAttributeParent
+} from "~/modules/items/styleOrderLines.server";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
 import { path } from "~/utils/path";
@@ -52,14 +61,98 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id: _id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: configStr,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let variantQuantities: Json | undefined;
+  let quantity = rawQuantity;
+  if (configStr) {
+    try {
+      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const fields = jobConfigurationUpdateFields(parsed);
+      variantQuantities = fields.configuration;
+      quantity = fields.quantity;
+    } catch {
+      // invalid JSON — keep the typed quantity
+    }
+  }
+
+  if (hasStyleConfigTable(variantQuantities)) {
+    const expanded = await expandStyleConfigToVariantLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      variantQuantities
+    });
+    if (!expanded.ok) {
+      return validationError({
+        fieldErrors: { quantity: expanded.error }
+      } as never);
+    }
+
+    for (const v of expanded.variants) {
+      const availability = await checkTransferLineAvailability(client, {
+        companyId,
+        locationId: transfer.data?.locationId ?? "",
+        itemId: v.variantItemId,
+        fromStorageUnitId: d.fromStorageUnitId || null,
+        quantity: v.quantity,
+        excludeLineId: lineId
+      });
+      if (!availability.ok) {
+        return validationError({
+          fieldErrors: { quantity: availability.message }
+        } as never);
+      }
+    }
+
+    try {
+      await replaceStockTransferLineWithStyleVariants(getDatabaseClient(), {
+        companyId,
+        userId,
+        stockTransferId: id,
+        replaceLineId: lineId,
+        fromStorageUnitId: d.fromStorageUnitId,
+        toStorageUnitId: d.toStorageUnitId,
+        variants: expanded.variants.map((v) => ({
+          variantItemId: v.variantItemId,
+          quantity: v.quantity
+        }))
+      });
+    } catch (err) {
+      return data(
+        {},
+        await flash(request, error(err, "Failed to update line"))
+      );
+    }
+
+    return redirect(
+      path.to.stockTransfer(id),
+      await flash(request, success("Line updated"))
+    );
+  }
+
+  const required = await requireVariantQuantitiesIfAttributeParent(client, {
+    parentItemId: d.itemId,
+    companyId,
+    variantQuantities,
+    quantity
+  });
+  if (!required.ok) {
+    return validationError({
+      fieldErrors: { quantity: required.error }
+    } as never);
+  }
 
   const availability = await checkTransferLineAvailability(client, {
     companyId,
     locationId: transfer.data?.locationId ?? "",
     itemId: d.itemId,
     fromStorageUnitId: d.fromStorageUnitId || null,
-    quantity: d.quantity,
+    quantity,
     excludeLineId: lineId
   });
   if (!availability.ok) {
@@ -71,6 +164,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const updateStockTransferLine = await upsertStockTransferLine(client, {
     id: lineId,
     ...d,
+    quantity,
+    variantQuantities,
     updatedBy: userId
   });
   if (updateStockTransferLine.error) {
@@ -112,7 +207,10 @@ export default function NewStockTransferLinesRoute() {
     itemId: line?.itemId ?? "",
     quantity: line?.quantity ?? 1,
     fromStorageUnitId: line?.fromStorageUnitId ?? "",
-    toStorageUnitId: line?.toStorageUnitId ?? ""
+    toStorageUnitId: line?.toStorageUnitId ?? "",
+    variantQuantities: line?.variantQuantities
+      ? JSON.stringify(line.variantQuantities)
+      : undefined
   };
 
   return (

@@ -4092,6 +4092,9 @@ msgstr "Modifica Riga Trasferimento"
 msgid "Edit Unit of Measure"
 msgstr "Modifica Unità di Misura"
 
+msgid "Edit variant quantities"
+msgstr "Modifica quantità varianti"
+
 msgid "Edit View"
 msgstr "Modifica Vista"
 
@@ -4502,6 +4505,9 @@ msgstr "Tutto da Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "超cede i {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB totali — rimuovi alcune附件以发送。"
+
+msgid "Exceeds available"
+msgstr "Supera la disponibilità"
 
 msgid "Exceeds plan"
 msgstr "Supera il piano"
@@ -6891,8 +6897,8 @@ msgid "Failed to notify user"
 msgstr "Fallito avviso utente"
 
 msgid "Failed to parse claims"
-msgstr "Impossibile analizzare le rivendicazioni"
-"Impossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
+msgstr ""
+"Impossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
 "\n"
 "Fallito nel parsing delle pretese"
 
@@ -6900,8 +6906,8 @@ msgid "Failed to parse permissions"
 msgstr "Impossibile analizzare i permessi"
 
 msgid "Failed to parse procedure content"
-msgstr "Impossibile analizzare il contenuto della procedura"
-"Impossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
+msgstr ""
+"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
 "失败于解析程序内容"
 
 msgid "Failed to parse quality document content"
@@ -6911,8 +6917,8 @@ msgid "Failed to parse training content"
 msgstr "Impossibile analizzare il contenuto del training"
 
 msgid "Failed to parse updates"
-msgstr "Impossibile analizzare gli aggiornamenti"
-"Impossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
+msgstr ""
+"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
 "Fallito nel parsingaggiornamenti"
 
 msgid "Failed to pick line"
@@ -14718,8 +14724,8 @@ msgid "Theme Color"
 msgstr "Colore Tema"
 
 msgid "There are more shipped than ordered"
-msgstr "Ci sono più articoli spediti che ordinati"
-"Ci sono più articoli spediti che ordinatiCi sono più articoli spediti rispetto ai订正： \n"
+msgstr ""
+"Ci sono più articoli spediti che ordinatiCi sono più articoli spediti che ordinatiCi sono più articoli spediti rispetto ai订正： \n"
 "Ci sono più articoli spediti rispetto a quelli ordinati"
 
 msgid "There are no active supplier quotes to compare for this RFQ."

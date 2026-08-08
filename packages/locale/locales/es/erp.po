@@ -697,8 +697,8 @@ msgstr "Se ha realizado ya una solicitud de aprobación para este proveedor"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "Una combinación de atributos no puede superar la cantidad cortada (máx. {0})"
-"Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
+msgstr ""
+"Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
 "Un atributo combinado no puede exceder la cantidad de corte (max {0})"
 
 msgid "An item cannot be added to itself."
@@ -4094,6 +4094,9 @@ msgstr "Editar Línea de Transferencia"
 msgid "Edit Unit of Measure"
 msgstr "Editar Unidad de Medida"
 
+msgid "Edit variant quantities"
+msgstr "Editar cantidades de variante"
+
 msgid "Edit View"
 msgstr "Editar Vista"
 
@@ -4504,6 +4507,9 @@ msgstr "Todo de Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "超 pasa los {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB totales — elimine algunas anexos para enviar."
+
+msgid "Exceeds available"
+msgstr "Excede lo disponible"
 
 msgid "Exceeds plan"
 msgstr "Excede el plan"
