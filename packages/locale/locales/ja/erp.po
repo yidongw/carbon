@@ -162,6 +162,10 @@ msgstr "5ユーザー最小"
 msgid "5MB file limit"
 msgstr "5MBファイル制限"
 
+#. placeholder {0}: num("reported")
+msgid "A bundle can't be set below its reported quantity ({0})"
+msgstr ""
+
 msgid "A consumable is a physical item used to make a part that can be used across multiple jobs"
 msgstr "消耗品は、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
 
@@ -690,6 +694,10 @@ msgstr "金額タイプ"
 
 msgid "An approval request already exists for this supplier"
 msgstr "このサプライヤーに対する承認リクエストが既に存在します"
+
+#. placeholder {0}: num("max")
+msgid "An attribute combo can't exceed the cut quantity (max {0})"
+msgstr ""
 
 msgid "An item cannot be added to itself."
 msgstr "アイテムをそれ自体に追加することはできません。"

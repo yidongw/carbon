@@ -162,6 +162,10 @@ msgstr "Minimum 5 użytkowników"
 msgid "5MB file limit"
 msgstr "Limit pliku 5MB"
 
+#. placeholder {0}: num("reported")
+msgid "A bundle can't be set below its reported quantity ({0})"
+msgstr ""
+
 msgid "A consumable is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Materiał zużywalny to przedmiot fizyczny używany do wytworzenia części, którą można wykorzystać w wielu zadaniach"
 
@@ -690,6 +694,10 @@ msgstr "Typ kwoty"
 
 msgid "An approval request already exists for this supplier"
 msgstr "Zażądanie zatwierdzenia już istnieje dla tego dostawcy"
+
+#. placeholder {0}: num("max")
+msgid "An attribute combo can't exceed the cut quantity (max {0})"
+msgstr ""
 
 msgid "An item cannot be added to itself."
 msgstr "Przedmiot nie może być dodany do siebie."

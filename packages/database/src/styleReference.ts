@@ -450,18 +450,20 @@ export function localizeVariantAttributeLabel(
   separator = " · "
 ): string {
   if (!label) return "";
+  // Split on whatever separator the source used — " · ", a bare "·", or the raw
+  // valuesKey "|" — so a label never silently passes through untranslated when a
+  // caller's separator differs from the output one.
   return label
-    .split(separator)
-    .map((part) => {
-      const seg = part.trim();
-      // A segment may be a value CODE (BK) or an English base NAME (Black),
-      // depending on the source field — localize either; non-colors pass through.
-      return (
+    .split(/\s*[·|]\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map(
+      (seg) =>
+        // A segment may be a value CODE (BK) or an English base NAME (Black),
+        // depending on the source field — localize either; non-colors pass through.
         localizeStyleColorName(seg, language) ??
         localizeStyleColorNameByName(seg, language) ??
         seg
-      );
-    })
-    .filter(Boolean)
+    )
     .join(separator);
 }

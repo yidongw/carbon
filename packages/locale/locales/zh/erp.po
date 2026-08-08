@@ -163,6 +163,10 @@ msgstr "最少5个用户"
 msgid "5MB file limit"
 msgstr "5MB文件大小限制"
 
+#. placeholder {0}: num("reported")
+msgid "A bundle can't be set below its reported quantity ({0})"
+msgstr "分包数量不能低于已报数量（{0}）"
+
 msgid "A consumable is a physical item used to make a part that can be used across multiple jobs"
 msgstr "消耗品是用于制造产品的实物物品，可以在多个工作中使用"
 
@@ -691,6 +695,10 @@ msgstr "金额类型"
 
 msgid "An approval request already exists for this supplier"
 msgstr "此供应商已有审批请求"
+
+#. placeholder {0}: num("max")
+msgid "An attribute combo can't exceed the cut quantity (max {0})"
+msgstr "属性组合的数量不能超过裁剪数量（最多 {0}）"
 
 msgid "An item cannot be added to itself."
 msgstr "一个物品不能添加到自身。"

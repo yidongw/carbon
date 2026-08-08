@@ -16,8 +16,9 @@ type ItemAttributeSelectsProps = {
 /**
  * Attribute-driven value selector for create forms. Reads the item type's
  * attribute set and renders one MultiSelect per attribute (options from
- * itemAttributeValue). Submits a Hidden `attributeSetId` plus `av__<attributeId>`
- * arrays, which the action parses via parseAttributeValueSelectionsFromFormData.
+ * itemAttributeValue). Submits a native hidden `attributeSetId` input plus
+ * `av__<attributeId>` arrays, which the action parses via
+ * parseAttributeValueSelectionsFromFormData.
  * Shares its data with the Consumable properties editor via
  * useItemAttributeSetOptions.
  */

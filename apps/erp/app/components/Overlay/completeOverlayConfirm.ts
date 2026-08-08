@@ -14,6 +14,29 @@ function isFieldValidationFailure(data: object) {
   );
 }
 
+/** Split Batch's failures carry an interpolated `reason` (a cut/reported cap), so
+ * the message is translated here rather than as a catalog-unmatchable flash. */
+function splitBatchErrorMessage(data: object, i18n: I18n): string {
+  const num = (key: string) => {
+    const v = (data as Record<string, unknown>)[key];
+    return typeof v === "number" ? v : 0;
+  };
+  switch ((data as { reason?: unknown }).reason) {
+    case "cap":
+      return i18n._(
+        msg`An attribute combo can't exceed the cut quantity (max ${num("max")})`
+      );
+    case "reported":
+      return i18n._(
+        msg`A bundle can't be set below its reported quantity (${num("reported")})`
+      );
+    case "save":
+      return i18n._(msg`Failed to save bundles`);
+    default:
+      return i18n._(msg`Split failed`);
+  }
+}
+
 export function completeOverlayConfirm({
   data,
   instance,
@@ -35,6 +58,13 @@ export function completeOverlayConfirm({
   if (isFieldValidationFailure(data)) return;
 
   if ("ok" in data && data.ok === false) {
+    if (
+      confirmMode === "server" &&
+      instance.overlayId === "masterWorkOrderSplitBatch"
+    ) {
+      toast.error(splitBatchErrorMessage(data, i18n));
+      return;
+    }
     const message =
       "error" in data && typeof data.error === "string" && data.error
         ? data.error

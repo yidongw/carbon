@@ -1,6 +1,5 @@
-import { assertIsPost, error } from "@carbon/auth";
+import { assertIsPost } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 import {
@@ -33,12 +32,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     update: "production"
   });
 
+  // All outcomes are returned as structured data (no server flash): the counts
+  // and the reason are interpolated, which a catalog can't match, so the overlay
+  // host (completeOverlayConfirm) builds + translates the toast client-side.
   const { masterWorkOrderId } = params;
   if (!masterWorkOrderId) {
-    return data(
-      { ok: false as const },
-      await flash(request, error("Missing master work order", "Split failed"))
-    );
+    return data({ ok: false as const });
   }
 
   const formData = await request.formData();
@@ -53,10 +52,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // id update an existing bundle (may be any quantity ≥ its reported).
   const toSave = bundles.filter((b) => b.id || (Number(b?.quantity) || 0) > 0);
   if (toSave.length === 0) {
-    return data(
-      { ok: false as const },
-      await flash(request, error("Nothing to save", "Split failed"))
-    );
+    return data({ ok: false as const });
   }
 
   const proposal = await getCuttingSplitProposal(
@@ -85,16 +81,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   for (const [k, requested] of requestedByCell) {
     const cut = cutByCell.get(k) ?? 0;
     if (requested > cut + 0.0001) {
-      return data(
-        { ok: false as const },
-        await flash(
-          request,
-          error(
-            "Split exceeds the cut quantity for an attribute combo",
-            `An attribute combo can't exceed the cut quantity (max ${cut})`
-          )
-        )
-      );
+      return data({ ok: false as const, reason: "cap" as const, max: cut });
     }
   }
 
@@ -103,16 +90,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     if (!b.id) continue;
     const reported = reportedById.get(b.id) ?? 0;
     if ((Number(b.quantity) || 0) < reported) {
-      return data(
-        { ok: false as const },
-        await flash(
-          request,
-          error(
-            "Bundle quantity below reported",
-            `A bundle can't be set below its reported quantity (${reported})`
-          )
-        )
-      );
+      return data({
+        ok: false as const,
+        reason: "reported" as const,
+        reported
+      });
     }
   }
 
@@ -124,14 +106,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   });
 
   if (result.error) {
-    return data(
-      { ok: false as const },
-      await flash(request, error(result.error, "Failed to save bundles"))
-    );
+    return data({ ok: false as const, reason: "save" as const });
   }
 
-  // The success toast is shown + translated client-side (completeOverlayConfirm)
-  // from these counts — an interpolated flash string can't be catalog-matched.
   return data({
     ok: true as const,
     created: result.data.created,
