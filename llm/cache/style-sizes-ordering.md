@@ -33,6 +33,6 @@ Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md`
 
 **Bundle WO:** view exposes `valuesKey`, `attributeLabel`, `attributeValues` (table no longer has colorCode/sizeCode). Labels come from the variant’s attribute map.
 
-**Jobs / Master WO:** qty stored on backing `job.configuration` JSON. Split Batch / cutting split rows persist `masterWorkOrderSplitRow.valuesKey` (colorCode/sizeCode dual-written for garment 2-attr only).
+**Jobs / Master WO:** Style planned qty = `jobVariantQuantity(jobId, variantItemId, quantity)`. `job.configuration` = Part method params only (flat JSON). Create-job Part Configure wizard restored. Qty grid = attribute selections only.
 
 **MES:** bundle pickup/report/print use `attributeLabel` / `valuesKey` (not colorCode/sizeCode).

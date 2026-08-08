@@ -137,11 +137,12 @@ const JobProperties = ({
         .eq("companyId", company.id)
         .limit(1)
     ]).then(([parameters, groups, selections]) => {
-      const params = parameters.data ?? [];
       const hasAttributeConfig = (selections.data?.length ?? 0) > 0;
-      if (params.length > 0 || hasAttributeConfig) {
+      // Qty table editor is attribute-backed only. Part flat configurationParameters
+      // use ConfiguratorModal on create / Make Method tools — not this grid.
+      if (hasAttributeConfig) {
         setConfigurationParameters({
-          parameters: params,
+          parameters: parameters.data ?? [],
           groups: groups.data ?? []
         });
       }
@@ -264,13 +265,9 @@ const JobProperties = ({
 
   const quantity = routeData?.job?.quantity ?? 0;
 
-  // Only offer the config-table quantity editor when the job actually carries a
-  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
-  // they're a single fixed color/size — so their quantity is a plain field.
-  const jobConfig = (routeData?.job as { configuration?: unknown })
-    ?.configuration as { configTable?: unknown[] } | null | undefined;
-  const jobIsConfigured =
-    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+  // Show Style qty editor when the item has attribute selections (or legacy
+  // config params that still list). Plan data lives in jobVariantQuantity.
+  const jobIsConfigured = configurationParameters != null;
 
   return (
     <VStack

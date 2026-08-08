@@ -18,6 +18,10 @@ import {
   upsertJob,
   upsertJobMethod
 } from "~/modules/production";
+import {
+  isConfigTableConfiguration,
+  replaceJobVariantQuantitiesFromConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import { getNextSequence } from "~/modules/settings/settings.service";
 import { setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
@@ -60,15 +64,17 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  const configTableRows = Array.isArray(configuration?.configTable)
-    ? configuration.configTable
+  const isStyleQty = isConfigTableConfiguration(configuration);
+  const configTableRows = isStyleQty
+    ? (configuration.configTable as Record<string, unknown>[])
     : [];
-  const configTablePrimaryKeys = Array.isArray(
-    configuration?.configTablePrimaryKeys
-  )
-    ? configuration.configTablePrimaryKeys
+  const configTablePrimaryKeys = isStyleQty
+    ? Array.isArray(configuration.configTablePrimaryKeys)
+      ? (configuration.configTablePrimaryKeys as string[])
+      : ["Quantities"]
     : ["Quantities"];
   const hasConfiguredJobs = configTableRows.length > 0;
+  const flatPartConfiguration = isStyleQty ? undefined : configuration;
   const jobs = Math.max(1, Math.ceil(jobCount));
 
   const getConfiguredJobQuantity = (row: Record<string, unknown>) =>
@@ -143,12 +149,12 @@ export async function action({ request }: ActionFunctionArgs) {
     const configTableRow = hasConfiguredJobs
       ? configTableRows[i % configTableRows.length]
       : undefined;
-    const configurationForJob = configTableRow
+    const styleConfigurationForJob = configTableRow
       ? {
-          ...configuration,
-          configTable: [configTableRow]
+          configTable: [configTableRow],
+          configTablePrimaryKeys
         }
-      : configuration;
+      : undefined;
     const jobQuantity = configTableRow
       ? getConfiguredJobQuantity(configTableRow)
       : quantityPerJob;
@@ -167,7 +173,7 @@ export async function action({ request }: ActionFunctionArgs) {
             .toString()
         : undefined,
       storageUnitId: storageUnitId ?? undefined,
-      configuration: configurationForJob,
+      configuration: flatPartConfiguration,
       companyId,
       createdBy: userId,
       customFields: setCustomFields(formData)
@@ -188,12 +194,34 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
 
+    if (styleConfigurationForJob) {
+      const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+        serviceRole,
+        {
+          jobId: id,
+          parentItemId: jobData.itemId,
+          companyId,
+          userId,
+          configuration: styleConfigurationForJob
+        }
+      );
+      if (replaced.error) {
+        throw redirect(
+          path.to.newJob,
+          await flash(
+            request,
+            error(replaced.error, "Failed to save job variant quantities")
+          )
+        );
+      }
+    }
+
     const upsertMethod = await upsertJobMethod(serviceRole, "itemToJob", {
       sourceId: jobData.itemId,
       targetId: id,
       companyId,
       userId,
-      configuration: configurationForJob
+      configuration: flatPartConfiguration
     });
 
     if (upsertMethod.error) {

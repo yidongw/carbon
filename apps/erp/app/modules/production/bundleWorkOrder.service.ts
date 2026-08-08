@@ -9,6 +9,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service";
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
 import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
@@ -608,7 +612,10 @@ export async function getCuttingSplitProposal(
   const itemId = job.data?.itemId;
   if (!itemId) return { ...empty, masterDisplayId };
 
-  const plannedCells = extractCuttingCells(job.data?.configuration);
+  const plannedQty = await getJobVariantQuantities(client, jobId, companyId);
+  const plannedCells = extractCuttingCells(
+    jobVariantQuantitiesToConfigTable(plannedQty.data ?? [])
+  );
 
   const cuttingOperationId = await getMasterCuttingOperationId(
     client,

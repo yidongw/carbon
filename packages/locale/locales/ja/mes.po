@@ -3149,6 +3149,9 @@ msgstr "ヘッダーを保存できませんでした"
 msgid "Failed to save item"
 msgstr "保存に失敗しました"
 
+msgid "Failed to save job variant quantities"
+msgstr ""
+
 msgid "Failed to save journal entry"
 msgstr "journals保存に失敗しました"
 
@@ -3163,6 +3166,9 @@ msgstr "保存することができませんでしたsampling plan"
 
 msgid "Failed to save section"
 msgstr "セクションの保存に失敗しました"
+
+msgid "Failed to save variant quantities"
+msgstr ""
 
 msgid "Failed to search users"
 msgstr "ユーザー検索に失敗しました"

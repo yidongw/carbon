@@ -10,6 +10,10 @@ import {
   computeJobConfigTableTotal,
   reportsExceedConfigPlan
 } from "./jobConfiguration";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "./jobVariantQuantity.service";
 import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
@@ -209,7 +213,7 @@ export async function validateProductionQuantityRemaining(
   );
   const newProductionLines = args.lines.filter((l) => l.type === "Production");
 
-  const [operation, existing, job] = await Promise.all([
+  const [operation, existing] = await Promise.all([
     client
       .from("jobOperation")
       .select("targetQuantity, operationQuantity")
@@ -221,13 +225,7 @@ export async function validateProductionQuantityRemaining(
       .select("quantity, type, configuration")
       .eq("jobOperationId", args.jobOperationId)
       .eq("companyId", args.companyId)
-      .is("invalidatedAt", null),
-    client
-      .from("job")
-      .select("configuration")
-      .eq("id", args.jobId)
-      .eq("companyId", args.companyId)
-      .single()
+      .is("invalidatedAt", null)
   ]);
 
   const existingRows = existing.data ?? [];
@@ -250,8 +248,16 @@ export async function validateProductionQuantityRemaining(
     }
   }
 
-  // (1) Config-param plan cap (per color/size cell, produced units only).
-  const planned = job.data?.configuration ?? null;
+  // (1) Config-param plan cap (per variant cell, produced units only).
+  const plannedQty = await getJobVariantQuantities(
+    client,
+    args.jobId,
+    args.companyId
+  );
+  const planned =
+    plannedQty.data.length > 0
+      ? jobVariantQuantitiesToConfigTable(plannedQty.data)
+      : null;
   const reportedConfigs = [
     ...existingRows
       .filter((r) => r.type === "Production")

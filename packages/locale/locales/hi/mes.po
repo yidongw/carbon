@@ -3155,6 +3155,9 @@ msgstr "हेडर बचाने में विफल रहा"
 msgid "Failed to save item"
 msgstr "आइटम संरक्षित नहीं किया जा सका"
 
+msgid "Failed to save job variant quantities"
+msgstr ""
+
 msgid "Failed to save journal entry"
 msgstr "कार्ड नोट का संरक्षण विफल रहा"
 
@@ -3169,6 +3172,9 @@ msgstr "सैम्पलिंग प्लान को बचाना फ�
 
 msgid "Failed to save section"
 msgstr "सब्जिकेशन बचाव में फालटी हुई"
+
+msgid "Failed to save variant quantities"
+msgstr ""
 
 msgid "Failed to search users"
 msgstr "अकाउंट खोजना वधित हुआ था"

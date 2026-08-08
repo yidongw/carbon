@@ -7,6 +7,10 @@ import type {
 import { buildJobRemainingReferenceContext } from "./configParamsTableColumns";
 import { buildConfigTableActionResponse } from "./configTableOverlay";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
+import {
+  getJobVariantQuantities,
+  jobVariantQuantitiesToConfigTable
+} from "./jobVariantQuantity.service";
 import { getJob } from "./production.service";
 
 export { buildConfigTableActionResponse };
@@ -80,7 +84,11 @@ export async function getConfigReferenceSourceForOperation(
   }
 ): Promise<ConfigReferenceSource | null> {
   const job = await getJob(client, jobId);
-  const jobConfiguration = job.data?.configuration ?? null;
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  const jobConfiguration =
+    planned.data.length > 0
+      ? jobVariantQuantitiesToConfigTable(planned.data)
+      : (job.data?.configuration ?? null);
   if (!jobConfiguration) return null;
 
   if (!jobOperationId) {

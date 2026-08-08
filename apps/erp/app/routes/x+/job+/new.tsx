@@ -9,6 +9,10 @@ import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import { insertJob, jobValidator } from "~/modules/production";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  isConfigTableConfiguration,
+  replaceJobVariantQuantitiesFromConfigTable
+} from "~/modules/production/jobVariantQuantity.service";
 import { JobForm } from "~/modules/production/ui/Jobs";
 import type { MethodItemType } from "~/modules/shared";
 import { setCustomFields } from "~/utils/form";
@@ -37,14 +41,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { id: _id, configuration: configStr, ...data } = validation.data;
 
-  // Configuration drives the job quantity: sum of the config table totals.
+  // Two configuration shapes:
+  // - Style/attribute qty grid → jobVariantQuantity rows (not job.configuration)
+  // - Part flat params → job.configuration for method rules; quantity stays form value
   let configuration: Record<string, unknown> | undefined;
+  let styleConfigTable: Record<string, unknown> | undefined;
   let quantity = data.quantity;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      configuration = parsed;
-      quantity = jobConfigurationUpdateFields(parsed).quantity;
+      if (isConfigTableConfiguration(parsed)) {
+        styleConfigTable = parsed;
+        quantity = jobConfigurationUpdateFields(parsed).quantity;
+      } else {
+        configuration = parsed;
+      }
     } catch {
       // invalid JSON — skip configuration
     }
@@ -65,6 +76,28 @@ export async function action({ request }: ActionFunctionArgs) {
       path.to.jobs,
       await flash(request, error(result.error, "Failed to insert job"))
     );
+  }
+
+  if (styleConfigTable) {
+    const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+      getCarbonServiceRole(),
+      {
+        jobId: result.data.id,
+        parentItemId: data.itemId,
+        companyId,
+        userId,
+        configuration: styleConfigTable
+      }
+    );
+    if (replaced.error) {
+      throw redirect(
+        path.to.job(result.data.id),
+        await flash(
+          request,
+          error(replaced.error, "Failed to save job variant quantities")
+        )
+      );
+    }
   }
 
   throw redirect(path.to.job(result.data.id));

@@ -7080,6 +7080,9 @@ msgstr "Nie udało się zapisać nagłówka"
 msgid "Failed to save item"
 msgstr "Nie udało się zapisać elementu"
 
+msgid "Failed to save job variant quantities"
+msgstr ""
+
 msgid "Failed to save journal entry"
 msgstr "Nie udało się zapisać wpisu księgowego"
 
@@ -7094,6 +7097,9 @@ msgstr "Nie udało się zapisać planu próbkowania"
 
 msgid "Failed to save section"
 msgstr "Nie udało się zapisać sekcji"
+
+msgid "Failed to save variant quantities"
+msgstr ""
 
 msgid "Failed to search users"
 msgstr "Nie udało się wyszukać użytkowników"
