@@ -12848,6 +12848,9 @@ msgstr "Salva Vista"
 msgid "Saved"
 msgstr "Salvato"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "Layout salvato dokumento"
 

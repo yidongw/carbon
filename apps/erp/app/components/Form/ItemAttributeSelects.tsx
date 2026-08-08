@@ -1,4 +1,10 @@
-import { Hidden, MultiSelect } from "@carbon/form";
+import {
+  localizeStyleColorName,
+  localizeStyleColorNameByName
+} from "@carbon/database/style-reference";
+import { MultiSelect } from "@carbon/form";
+import { useLingui } from "@lingui/react/macro";
+import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { useItemAttributeSetOptions } from "~/modules/items/ui/useItemAttributeSetOptions";
 
 type ItemAttributeSelectsProps = {
@@ -19,6 +25,7 @@ const ItemAttributeSelects = ({
   itemType,
   maxPreview = 3
 }: ItemAttributeSelectsProps) => {
+  const { i18n } = useLingui();
   const { sets } = useItemAttributeSetOptions(itemType);
   // A single set is assigned per item type today (e.g. Style -> Garment).
   const set = sets[0];
@@ -26,16 +33,23 @@ const ItemAttributeSelects = ({
 
   return (
     <>
-      <Hidden name="attributeSetId" value={set.id} />
+      {/* Native hidden input (display:none) so it doesn't consume a grid cell —
+          the FormControl-wrapped <Hidden> would push the attribute selects onto
+          their own line. */}
+      <input type="hidden" name="attributeSetId" value={set.id} />
       {set.attributes.map((attr) => (
         <MultiSelect
           key={attr.id}
           name={`av__${attr.id}`}
-          label={attr.name}
+          label={translateItemAttributeCatalogName(attr.name, i18n)}
           maxPreview={maxPreview}
           options={attr.options.map((o) => ({
             value: o.id,
-            label: o.name || o.code,
+            label:
+              localizeStyleColorName(o.code, i18n.locale) ||
+              localizeStyleColorNameByName(o.name, i18n.locale) ||
+              o.name ||
+              o.code,
             helper: o.code
           }))}
         />

@@ -1,5 +1,5 @@
-import { Button, HStack, Loading, Modal, ModalContent } from "@carbon/react";
 import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
+import { Button, HStack, Loading, Modal, ModalContent } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
   type ReactNode,
@@ -25,8 +25,8 @@ import {
   type ConfigTableOverlaySuccess,
   isConfigTableOverlaySuccess
 } from "~/modules/production/configTableOverlay";
-import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
+import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { path } from "~/utils/path";
 import {
   buildColumns,

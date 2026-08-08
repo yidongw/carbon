@@ -12841,6 +12841,9 @@ msgstr "Enregistrer la vue"
 msgid "Saved"
 msgstr "Enregistré"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "Vue de document enregistrée"
 

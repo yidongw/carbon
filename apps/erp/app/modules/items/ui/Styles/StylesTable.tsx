@@ -1,4 +1,8 @@
 import {
+  localizeStyleColorName,
+  localizeStyleColorNameByName
+} from "@carbon/database/style-reference";
+import {
   Badge,
   Button,
   DropdownMenuContent,
@@ -164,7 +168,10 @@ const StylesTable = memo(
                     variant="outline"
                     title={`${meta.name}: ${v.code}`}
                   >
-                    {v.name || v.code}
+                    {localizeStyleColorName(v.code, i18n.locale) ||
+                      localizeStyleColorNameByName(v.name, i18n.locale) ||
+                      v.name ||
+                      v.code}
                   </Badge>
                 ))}
               </HStack>

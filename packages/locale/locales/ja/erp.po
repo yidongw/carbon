@@ -12841,6 +12841,9 @@ msgstr "ビューを保存"
 msgid "Saved"
 msgstr "保存しました"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "保存したドキュメントのレイアウト"
 

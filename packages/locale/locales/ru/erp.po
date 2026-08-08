@@ -12841,6 +12841,9 @@ msgstr "Сохранить представление"
 msgid "Saved"
 msgstr "Сохранено"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "Сохраненный шаблон документа"
 

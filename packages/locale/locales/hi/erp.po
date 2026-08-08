@@ -12844,6 +12844,9 @@ msgstr "दृश्य सहेजें"
 msgid "Saved"
 msgstr "बचाया गया"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "बच्चा हुआ डॉक्युमेंट लायアウト"
 

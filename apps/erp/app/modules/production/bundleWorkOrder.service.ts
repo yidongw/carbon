@@ -233,7 +233,10 @@ export async function getBundleTicketLabels(
                 ? [
                     {
                       name: translateAttributeName("Attributes"),
-                      value: localizeVariantAttributeLabel(attributeLabel, locale)
+                      value: localizeVariantAttributeLabel(
+                        attributeLabel,
+                        locale
+                      )
                     }
                   ]
                 : [],

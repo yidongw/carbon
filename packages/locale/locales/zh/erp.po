@@ -12842,6 +12842,9 @@ msgstr "保存视图"
 msgid "Saved"
 msgstr "已保存"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr "已保存分包（新建 {created} 个，更新 {updated} 个）"
+
 msgid "Saved document layout"
 msgstr "已保存文档布局"
 

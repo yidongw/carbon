@@ -12841,6 +12841,9 @@ msgstr "Ansicht speichern"
 msgid "Saved"
 msgstr "Gespeichert"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "Speicherter Dokumentenlayout"
 

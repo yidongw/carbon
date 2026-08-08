@@ -55,5 +55,21 @@ export function completeOverlayConfirm({
     toast.success(i18n._(msg`Quantity updated`));
   }
 
+  // Split Batch reports how many bundles it created/updated. The counts are
+  // dynamic, so the toast is built + translated here rather than as a server
+  // flash string (interpolated flash messages can't be catalog-matched).
+  if (
+    confirmMode === "server" &&
+    instance.overlayId === "masterWorkOrderSplitBatch"
+  ) {
+    const created =
+      "created" in data && typeof data.created === "number" ? data.created : 0;
+    const updated =
+      "updated" in data && typeof data.updated === "number" ? data.updated : 0;
+    toast.success(
+      i18n._(msg`Saved bundles (${created} created, ${updated} updated)`)
+    );
+  }
+
   onClose(instance.id);
 }

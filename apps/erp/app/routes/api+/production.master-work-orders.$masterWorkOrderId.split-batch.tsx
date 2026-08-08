@@ -1,4 +1,4 @@
-import { assertIsPost, error, success } from "@carbon/auth";
+import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -130,13 +130,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  return data(
-    { ok: true as const },
-    await flash(
-      request,
-      success(
-        `Saved bundles (${result.data.created} created, ${result.data.updated} updated)`
-      )
-    )
-  );
+  // The success toast is shown + translated client-side (completeOverlayConfirm)
+  // from these counts — an interpolated flash string can't be catalog-matched.
+  return data({
+    ok: true as const,
+    created: result.data.created,
+    updated: result.data.updated
+  });
 }

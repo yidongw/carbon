@@ -12841,6 +12841,9 @@ msgstr "Zapisz Widok"
 msgid "Saved"
 msgstr "Zapisano"
 
+msgid "Saved bundles ({created} created, {updated} updated)"
+msgstr ""
+
 msgid "Saved document layout"
 msgstr "Zapisany układ dokumentu"
 

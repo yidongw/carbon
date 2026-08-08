@@ -1,6 +1,7 @@
 import {
   localizeStyleColorName,
-  localizeStyleColorNameByName
+  localizeStyleColorNameByName,
+  localizeVariantAttributeLabel
 } from "@carbon/database/style-reference";
 import { Badge, HStack, IconButton, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
@@ -133,11 +134,13 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
         }>;
         const sampleItemId = row.original.sampleItemId;
         const chips = samples.map((s, i) => {
-          const label =
+          const rawLabel =
             s.label ??
             (s.attributes
               ? Object.values(s.attributes).filter(Boolean).join(" · ")
               : "");
+          // Localize each value code (BG -> 米色); non-color codes (sizes) pass through.
+          const label = localizeVariantAttributeLabel(rawLabel, i18n.locale);
           return (
             <Badge
               key={`${label}-${i}`}
