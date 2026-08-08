@@ -40,6 +40,7 @@ import {
   LuMonitor,
   LuMoon,
   LuPalette,
+  LuPrinter,
   LuShieldCheck,
   LuSun,
   LuUser
@@ -253,6 +254,12 @@ const AvatarMenu = () => {
             <Link to={path.to.accountDevice}>
               <DropdownMenuIcon icon={<LuMonitor />} />
               <Trans>This Device</Trans>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/print-test">
+              <DropdownMenuIcon icon={<LuPrinter />} />
+              <Trans>Printer Test</Trans>
             </Link>
           </DropdownMenuItem>
           {canSwitchCompany ? (
