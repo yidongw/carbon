@@ -16,3 +16,8 @@ Master backing jobs must **not** go through JobCompleteModal / receive-to-invent
 
 - Title uses the item readable ID (`itemReadableIdWithRevision` / `readableIdWithRevision`), not `job.jobId`: `Receive ${itemReadableId} to Inventory`.
 - Quantity preview / default `quantityComplete` uses `job.productionQuantity` (falls back to `job.quantity`).
+
+## Split rows / Style qty source
+
+- Master backing-job Style planned qty uses `jobVariantQuantity` (same as other Style jobs) — see `style-sizes-ordering.md`.
+- `masterWorkOrderSplitRow.colorCode` / `sizeCode` columns are **dropped** (`2026080808143927_drop_master_split_row_color_size.sql` + `NOTIFY pgrst, 'reload schema'`); generated DB/edge types no longer include them. Attribute identity comes from variant `valuesKey` / attribute maps, not color/size columns on the split row.

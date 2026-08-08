@@ -698,7 +698,7 @@ msgstr "Se ha realizado ya una solicitud de aprobación para este proveedor"
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
 msgstr "Una combinación de atributos no puede superar la cantidad cortada (máx. {0})"
-"Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
+"Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
 "Un atributo combinado no puede exceder la cantidad de corte (max {0})"
 
 msgid "An item cannot be added to itself."
@@ -6964,9 +6964,6 @@ msgstr "Falló al recibir un ID de operación"
 msgid "Failed to record attribute"
 msgstr "Falló al registrar atributo"
 
-msgid "Failed to record history"
-msgstr "Falló al registrar la historia"
-
 msgid "Failed to record rework quantity"
 msgstr "Falló al registrar la cantidad de rework"
 
@@ -7395,6 +7392,9 @@ msgstr "Falló al actualizar la herramienta de la operación del trabajo"
 
 msgid "Failed to update job status"
 msgstr "Falló al actualizar el estado del trabajo"
+
+msgid "Failed to update job variant quantities"
+msgstr "Falló al actualizar las cantidades de la variante de trabajo"
 
 msgid "Failed to update kanban"
 msgstr "Falló al actualizar el kanban"

@@ -1,7 +1,6 @@
 import { assertIsPost, error, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import type { Json } from "@carbon/database";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
@@ -23,6 +22,7 @@ import {
   jobVariantQuantitiesToConfigTable,
   replaceJobVariantQuantitiesFromConfigTable
 } from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -201,37 +201,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const replaced = await replaceJobVariantQuantitiesFromConfigTable(client, {
-    jobId,
-    parentItemId: job.data.itemId,
-    companyId,
-    userId,
-    configuration: merged.configuration
-  });
+  const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+    client,
+    getDatabaseClient(),
+    {
+      jobId,
+      parentItemId: job.data.itemId,
+      companyId,
+      userId,
+      configuration: merged.configuration,
+      history: {
+        configuration: adjustmentTable,
+        quantity: merged.deltaTotal
+      }
+    }
+  );
   if (replaced.error) {
     return data(
       { ok: false as const, error: replaced.error.message },
       await flash(
         request,
         error(replaced.error, "Failed to update configuration")
-      )
-    );
-  }
-
-  const historyInsert = await client.from("jobConfigurationHistory").insert({
-    jobId,
-    companyId,
-    configuration: adjustmentTable as unknown as Json,
-    quantity: merged.deltaTotal,
-    createdBy: userId
-  });
-
-  if (historyInsert.error) {
-    return data(
-      { ok: false as const, error: historyInsert.error.message },
-      await flash(
-        request,
-        error(historyInsert.error, "Failed to record history")
       )
     );
   }

@@ -5065,7 +5065,7 @@ msgstr "अनुप्रयोगकर्ता की अक्षमता 
 
 msgid "Failed to delete account"
 msgstr "खाता हटाने में विफल"
-"अ户口所在地：印度\n"
+"खाता हटाने में विफलअ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "फाइल होम工作地点：德里国家首都是：新德里"
 
@@ -6965,9 +6965,6 @@ msgstr "oprेशन आईडी का प्राप्त नहीं क�
 msgid "Failed to record attribute"
 msgstr "फलित गुण का रिकॉर्ड करने में व़ियाहो"
 
-msgid "Failed to record history"
-msgstr "इतिहास नकदी करने में वडा हुआ"
-
 msgid "Failed to record rework quantity"
 msgstr "रिउमॉक की मात्रा रिकॉर्ड होने में फाल्टी"
 
@@ -7396,6 +7393,9 @@ msgstr "कार्य उपकरण अपडेट करने में �
 
 msgid "Failed to update job status"
 msgstr "कार्य के स्थिति अपडेट होने में विफल रहा"
+
+msgid "Failed to update job variant quantities"
+msgstr "कार्य परिवर्तन की मात्रा अपडेट होने में फाल्टी रही"
 
 msgid "Failed to update kanban"
 msgstr "कान्बन अपडेट हो नहीं सका"

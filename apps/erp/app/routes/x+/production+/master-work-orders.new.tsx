@@ -19,6 +19,7 @@ import {
   isConfigTableConfiguration,
   replaceJobVariantQuantitiesFromConfigTable
 } from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -110,13 +111,17 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (styleConfigTable && insert.data?.jobId) {
-    const replaced = await replaceJobVariantQuantitiesFromConfigTable(client, {
-      jobId: insert.data.jobId,
-      parentItemId: rest.itemId,
-      companyId,
-      userId,
-      configuration: styleConfigTable
-    });
+    const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+      client,
+      getDatabaseClient(),
+      {
+        jobId: insert.data.jobId,
+        parentItemId: rest.itemId,
+        companyId,
+        userId,
+        configuration: styleConfigTable
+      }
+    );
     if (replaced.error) {
       return data(
         { ok: false as const },

@@ -57,6 +57,12 @@ CREATE TABLE "tableName" (
 
 ## 4. RLS (Row Level Security) Patterns
 
+### `jobVariantQuantity` write policies
+
+DELETE (and update) on `jobVariantQuantity` must use `production_update` (not a weaker/mismatched permission). Follow-up migration: `20260808144712_job-variant-quantity-rls-update-delete.sql`; the original create migration `20260808060640_job-variant-quantity.sql` is also corrected for fresh installs. App writers use `replaceJobVariantQuantities` with `getDatabaseClient()` (Kysely; bypasses RLS — auth at the route). See `style-sizes-ordering.md`.
+
+After schema/RLS changes that PostgREST must see, include `NOTIFY pgrst, 'reload schema'` (also used when dropping `masterWorkOrderSplitRow.colorCode`/`sizeCode` in `2026080808143927_drop_master_split_row_color_size.sql`).
+
 **IMPORTANT: ALWAYS use the new pattern below. NEVER use the old `has_role`/`has_company_permission` pattern — it is deprecated.**
 
 ### Current Pattern (REQUIRED)

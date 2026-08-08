@@ -9,6 +9,11 @@ import {
   upsertJobMethod
 } from "~/modules/production";
 import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  isConfigTableConfiguration,
+  persistStyleJobConfiguration
+} from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -241,6 +246,58 @@ export async function action({ request }: ActionFunctionArgs) {
       return quantityUpdate;
     case "configuration": {
       const configuration = value ? JSON.parse(value) : null;
+
+      // Style qty grid must land in jobVariantQuantity, never job.configuration.
+      if (
+        configuration &&
+        typeof configuration === "object" &&
+        isConfigTableConfiguration(configuration)
+      ) {
+        const jobsWithItems = await client
+          .from("job")
+          .select("id, itemId")
+          .in("id", ids as string[])
+          .eq("companyId", companyId);
+        if (jobsWithItems.error) return jobsWithItems;
+
+        for (const jobRow of jobsWithItems.data ?? []) {
+          if (!jobRow.itemId) {
+            return {
+              error: { message: `Job ${jobRow.id} has no item` },
+              data: null
+            };
+          }
+          const replaced = await persistStyleJobConfiguration(
+            client,
+            getDatabaseClient(),
+            {
+              jobId: jobRow.id,
+              parentItemId: jobRow.itemId,
+              companyId,
+              userId,
+              configuration: configuration as Record<string, unknown>
+            }
+          );
+          if (replaced.error) {
+            return { error: { message: replaced.error.message }, data: null };
+          }
+        }
+
+        for await (const id of ids) {
+          const recalculate = await recalculateJobRequirements(serviceRole, {
+            id: id as string,
+            companyId,
+            userId
+          });
+          if (recalculate.error) {
+            console.error(recalculate.error);
+            return recalculate;
+          }
+        }
+
+        return { data: null, error: null };
+      }
+
       const configurationUpdate = await client
         .from("job")
         .update({

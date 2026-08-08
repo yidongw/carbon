@@ -3050,9 +3050,6 @@ msgstr "操作IDの受信に失敗しました"
 msgid "Failed to record attribute"
 msgstr "属性の記録に失敗しました"
 
-msgid "Failed to record history"
-msgstr "履歴の記録に失敗しました"
-
 msgid "Failed to record rework quantity"
 msgstr "再加工数量を登録できませんでした"
 
@@ -3433,6 +3430,9 @@ msgstr "ジョブオペレーションツールの更新に失敗しました"
 
 msgid "Failed to update job status"
 msgstr "ジョブのステータスが更新できませんでした"
+
+msgid "Failed to update job variant quantities"
+msgstr "ジョブ変種の数量を更新できませんでした"
 
 msgid "Failed to update kanban"
 msgstr "kanbanの更新に失敗しました"

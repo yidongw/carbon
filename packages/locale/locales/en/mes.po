@@ -3050,9 +3050,6 @@ msgstr "Failed to receive an operation id"
 msgid "Failed to record attribute"
 msgstr "Failed to record attribute"
 
-msgid "Failed to record history"
-msgstr "Failed to record history"
-
 msgid "Failed to record rework quantity"
 msgstr "Failed to record rework quantity"
 
@@ -3433,6 +3430,9 @@ msgstr "Failed to update job operation tool"
 
 msgid "Failed to update job status"
 msgstr "Failed to update job status"
+
+msgid "Failed to update job variant quantities"
+msgstr "Failed to update job variant quantities"
 
 msgid "Failed to update kanban"
 msgstr "Failed to update kanban"

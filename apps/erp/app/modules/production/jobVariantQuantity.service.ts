@@ -1,4 +1,5 @@
-import type { Database } from "@carbon/database";
+import type { Database, Json } from "@carbon/database";
+import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { expandConfigTableToVariantQuantities } from "~/modules/items/itemAttribute.service";
 
@@ -23,17 +24,38 @@ export function isConfigTableConfiguration(
   );
 }
 
+export function isNonEmptyConfigTable(
+  configuration: unknown
+): configuration is {
+  configTable: unknown[];
+  configTablePrimaryKeys?: unknown[];
+} {
+  return (
+    isConfigTableConfiguration(configuration) &&
+    configuration.configTable.length > 0
+  );
+}
+
 /**
  * Replace all planned variant quantities for a job and sync `job.quantity`.
  * Absence of a variant = qty 0 (no zero rows stored).
+ * Writes run in one Kysely transaction (delete + insert + job update + optional history).
+ * Caller passes `getDatabaseClient()` — do not import database.server here (client graph).
  */
 export async function replaceJobVariantQuantities(
-  client: Db,
+  db: Kysely<KyselyDatabase>,
   args: {
     jobId: string;
     companyId: string;
     userId: string;
     lines: Array<{ variantItemId: string; quantity: number }>;
+    /** When set, written in the same transaction as the replace. */
+    history?: {
+      configuration: Record<string, unknown>;
+      quantity: number;
+    };
+    /** Clear legacy Style configTable JSON from job.configuration. */
+    clearJobConfiguration?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
   const { jobId, companyId, userId } = args;
@@ -46,60 +68,67 @@ export async function replaceJobVariantQuantities(
   );
 
   const quantity = lines.reduce((sum, l) => sum + Number(l.quantity), 0);
+  const now = new Date().toISOString();
 
-  const { error: deleteError } = await client
-    .from("jobVariantQuantity")
-    .delete()
-    .eq("jobId", jobId)
-    .eq("companyId", companyId);
-  if (deleteError) {
+  try {
+    await db.transaction().execute(async (trx) => {
+      await trx
+        .deleteFrom("jobVariantQuantity")
+        .where("jobId", "=", jobId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (lines.length > 0) {
+        await trx
+          .insertInto("jobVariantQuantity")
+          .values(
+            lines.map((l) => ({
+              jobId,
+              companyId,
+              variantItemId: l.variantItemId,
+              quantity: Number(l.quantity),
+              createdBy: userId
+            }))
+          )
+          .execute();
+      }
+
+      await trx
+        .updateTable("job")
+        .set({
+          quantity,
+          updatedBy: userId,
+          updatedAt: now,
+          ...(args.clearJobConfiguration ? { configuration: null } : {})
+        })
+        .where("id", "=", jobId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (args.history) {
+        await trx
+          .insertInto("jobConfigurationHistory")
+          .values({
+            jobId,
+            companyId,
+            configuration: args.history.configuration as Json,
+            quantity: args.history.quantity,
+            createdBy: userId
+          })
+          .execute();
+      }
+    });
+
+    return { quantity, error: null };
+  } catch (err) {
     return {
       quantity: 0,
-      error: new Error(
-        deleteError.message ?? "Failed to clear job variant quantities"
-      )
+      error:
+        err instanceof Error
+          ? err
+          : new Error("Failed to replace job variant quantities")
     };
   }
-
-  if (lines.length > 0) {
-    const { error: insertError } = await client
-      .from("jobVariantQuantity")
-      .insert(
-        lines.map((l) => ({
-          jobId,
-          companyId,
-          variantItemId: l.variantItemId,
-          quantity: Number(l.quantity),
-          createdBy: userId
-        }))
-      );
-    if (insertError) {
-      return {
-        quantity: 0,
-        error: new Error(
-          insertError.message ?? "Failed to insert job variant quantities"
-        )
-      };
-    }
-  }
-
-  const { error: jobError } = await client
-    .from("job")
-    .update({
-      quantity,
-      updatedBy: userId,
-      updatedAt: new Date().toISOString()
-    })
-    .eq("id", jobId)
-    .eq("companyId", companyId);
-  if (jobError) {
-    return {
-      quantity,
-      error: new Error(jobError.message ?? "Failed to sync job quantity")
-    };
-  }
-
-  return { quantity, error: null };
 }
 
 export async function getJobVariantQuantities(
@@ -124,8 +153,54 @@ export async function getJobVariantQuantities(
     variantItemId: string;
     quantity: number;
   }>;
-  if (rows.length === 0) return { data: [], error: null };
+  if (rows.length > 0) {
+    return attachValuesKeys(client, companyId, rows);
+  }
 
+  // Dual-read: legacy Style plans still stored as job.configuration.configTable
+  // before jobVariantQuantity existed (or before a backfill).
+  const { data: job, error: jobError } = await client
+    .from("job")
+    .select("itemId, configuration")
+    .eq("id", jobId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  if (jobError) {
+    return {
+      data: [],
+      error: new Error(jobError.message ?? "Failed to load job for dual-read")
+    };
+  }
+
+  if (!job?.itemId || !isNonEmptyConfigTable(job.configuration)) {
+    return { data: [], error: null };
+  }
+
+  const expanded = await expandConfigTableToVariantQuantities(client, {
+    parentItemId: job.itemId,
+    companyId,
+    configuration: job.configuration
+  });
+  if (expanded.error) {
+    return { data: [], error: expanded.error };
+  }
+
+  return {
+    data: expanded.data.map((r) => ({
+      variantItemId: r.variantItemId,
+      quantity: r.quantity,
+      valuesKey: r.valuesKey
+    })),
+    error: null
+  };
+}
+
+async function attachValuesKeys(
+  client: Db,
+  companyId: string,
+  rows: Array<{ variantItemId: string; quantity: number }>
+): Promise<{ data: JobVariantQuantityLine[]; error: Error | null }> {
   const variantIds = rows.map((r) => r.variantItemId);
   const { data: variants, error: variantError } = await client
     .from("itemVariant")
@@ -161,12 +236,18 @@ export async function getJobVariantQuantities(
 /** Expand a combo/matrix configTable payload into jobVariantQuantity rows. */
 export async function replaceJobVariantQuantitiesFromConfigTable(
   client: Db,
+  db: Kysely<KyselyDatabase>,
   args: {
     jobId: string;
     parentItemId: string;
     companyId: string;
     userId: string;
     configuration: unknown;
+    history?: {
+      configuration: Record<string, unknown>;
+      quantity: number;
+    };
+    clearJobConfiguration?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
   const expanded = await expandConfigTableToVariantQuantities(client, {
@@ -178,14 +259,41 @@ export async function replaceJobVariantQuantitiesFromConfigTable(
     return { quantity: 0, error: expanded.error };
   }
 
-  return replaceJobVariantQuantities(client, {
+  return replaceJobVariantQuantities(db, {
     jobId: args.jobId,
     companyId: args.companyId,
     userId: args.userId,
     lines: expanded.data.map((r) => ({
       variantItemId: r.variantItemId,
       quantity: r.quantity
-    }))
+    })),
+    history: args.history,
+    clearJobConfiguration: args.clearJobConfiguration
+  });
+}
+
+/**
+ * Persist Style qty to jobVariantQuantity and clear Style configTable from
+ * `job.configuration` so Part flat params remain the only JSON shape there.
+ */
+export async function persistStyleJobConfiguration(
+  client: Db,
+  db: Kysely<KyselyDatabase>,
+  args: {
+    jobId: string;
+    parentItemId: string;
+    companyId: string;
+    userId: string;
+    configuration: Record<string, unknown>;
+  }
+): Promise<{ quantity: number; error: Error | null }> {
+  return replaceJobVariantQuantitiesFromConfigTable(client, db, {
+    jobId: args.jobId,
+    parentItemId: args.parentItemId,
+    companyId: args.companyId,
+    userId: args.userId,
+    configuration: args.configuration,
+    clearJobConfiguration: true
   });
 }
 

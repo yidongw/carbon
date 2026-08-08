@@ -59,7 +59,7 @@ FOR UPDATE USING (
 CREATE POLICY "DELETE" ON "public"."jobVariantQuantity"
 FOR DELETE USING (
   "companyId" = ANY (
-    (SELECT get_companies_with_employee_permission('production_delete'))::text[]
+    (SELECT get_companies_with_employee_permission('production_update'))::text[]
   )
 );
 

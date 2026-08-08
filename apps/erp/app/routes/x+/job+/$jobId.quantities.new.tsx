@@ -28,6 +28,7 @@ import {
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
+import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity.service";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
@@ -76,15 +77,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     lockActorSelection: seededActor.lockActorSelection
   };
 
-  // Show the config-params editor only when the job actually carries a
-  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
-  // they're a single fixed color/size — so they report a plain quantity.
-  const jobConfig = job.data?.configuration as
-    | { configTable?: unknown[] }
-    | null
-    | undefined;
-  const jobIsConfigured =
-    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+  // Style/attribute qty editor when the job has planned variant rows (or legacy
+  // configTable dual-read). Bundle jobs have none — plain quantity only.
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  const jobIsConfigured = (planned.data?.length ?? 0) > 0;
 
   const configurationParameters =
     job.data?.itemId && jobIsConfigured
