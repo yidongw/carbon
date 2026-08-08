@@ -1,5 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import { CgProfile } from "react-icons/cg";
+import { LuMonitor } from "react-icons/lu";
 import type { Route } from "~/types";
 import { path } from "~/utils/path";
 
@@ -10,6 +11,11 @@ export default function useAccountSubmodules() {
       name: t`Profile`,
       to: path.to.profile,
       icon: <CgProfile />
+    },
+    {
+      name: t`This Device`,
+      to: path.to.accountDevice,
+      icon: <LuMonitor />
     }
   ];
   return { links: accountRoutes };

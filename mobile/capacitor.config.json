@@ -1,0 +1,13 @@
+{
+  "appId": "xyz.jilio.erp",
+  "appName": "Jilio",
+  "webDir": "www",
+  "server": {
+    "url": "https://app.jilio.xyz",
+    "cleartext": false,
+    "allowNavigation": ["*.jilio.xyz"]
+  },
+  "ios": {
+    "contentInset": "always"
+  }
+}
