@@ -1,5 +1,13 @@
 # Config Table Modals & Responsive Table
 
+
+## Naming (2026 rename)
+
+- UI: `VariantsQuantityModal`, `JobVariantsQuantity`, `VariantChips` / Variant Display.
+- Wire key: `variantTable` (dual-read legacy `configTable`).
+- Overlay success payload: flat `{ ok, variantTable, total, splitRows? }` with dual-read of legacy `{ ok, configuration: { variantTable }, total }`.
+- Helpers: `VariantQuantityParameterInput`, `getItemIdsWithVariantQuantityGrid`, `computeVariantTableRemaining`, `getOverlaySuccessVariantTable`.
+
 ## Components
 
 | Component | Path | Role |

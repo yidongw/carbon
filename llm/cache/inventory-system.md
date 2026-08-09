@@ -85,7 +85,7 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 
 **Jobs vs SO/PO (intentional split):** Style **jobs** persist planned variant qty in `jobVariantQuantity` and must not leave Style `variantTable` on `job.configuration` (`persistStyleJobConfiguration`). SO/PO still expand submitted `configuration.variantTable` to variant lines — that order-line path is intentionally out of scope for the job jvq work. Job details: `style-sizes-ordering.md` § Jobs / Master WO — `jobVariantQuantity`.
 
-**Quote → SO conversion** (`packages/database/supabase/functions/convert/index.ts`): Style quote lines with a config table expand to per-variant SO lines with cent-exact add-on/shipping splits. Expanded lines use `salesOrderLineType: "Style"` (same as ERP expand). Shared helpers live in `lib/item-variants.ts` (`hasConfigTable`, `expandVariantsQuantityTable`).
+**Quote → SO conversion** (`packages/database/supabase/functions/convert/index.ts`): Style quote lines with a config table expand to per-variant SO lines with cent-exact add-on/shipping splits. Expanded lines use `salesOrderLineType: "Style"` (same as ERP expand). Shared helpers live in `lib/item-variants.ts` (`hasVariantsQuantity`, `expandVariantsQuantityTable`).
 
 **Edge receive/ship fallback** (legacy parent+config lines still on the order): `packages/database/supabase/functions/create/index.ts` also imports `lib/item-variants.ts` and expands at receipt/shipment create — **fail loud** (no silent parent fallback) when a cell has no matching variant.
 
