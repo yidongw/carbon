@@ -77,7 +77,7 @@ import {
 import { getDefaultStorageUnitForJob } from "~/modules/inventory/inventory.service";
 import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
-import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
   toConfigTableValue,
   useVariantsQuantityModal
@@ -233,15 +233,14 @@ const SalesOrderLineForm = ({
 
   // Configurable items use the config-quantity grid when adding/editing a
   // parent. Variant SKU lines (no stored configuration) use plain quantity.
-  const hasConfigurationParameters =
+  const hasVariantsQuantity =
     isConfigurableLine &&
     Boolean(itemData.itemId) &&
     !(isEditing && !initialValues.configuration);
 
-  // A Style parent line's quantity comes from the variant quantities grid.
+  // A Style parent line's quantity comes from the variants quantity grid.
   // Variant SKU lines use plain quantity and are not blocked here.
-  const isMissingStyleQuantity =
-    hasConfigurationParameters && !(saleQuantity > 0);
+  const isMissingStyleQuantity = hasVariantsQuantity && !(saleQuantity > 0);
 
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
@@ -251,7 +250,7 @@ const SalesOrderLineForm = ({
     onQuantityChange(data.total);
   };
 
-  const openConfigTable = () => {
+  const openVariantsQuantity = () => {
     if (!itemData.itemId) return;
     variantsQuantityModal.open({
       itemId: itemData.itemId,
@@ -418,13 +417,13 @@ const SalesOrderLineForm = ({
   useEffect(() => {
     if (
       !isEditing &&
-      hasConfigurationParameters &&
+      hasVariantsQuantity &&
       configTableTotal <= 0 &&
       saleQuantity !== 0
     ) {
       setSaleQuantity(0);
     }
-  }, [isEditing, hasConfigurationParameters, configTableTotal, saleQuantity]);
+  }, [isEditing, hasVariantsQuantity, configTableTotal, saleQuantity]);
 
   const onChange = async (itemId: string) => {
     if (!itemId) return;
@@ -451,7 +450,7 @@ const SalesOrderLineForm = ({
     if (storeType) {
       setLineType(storeType as SalesOrderLineType);
     }
-    // Styles always get quantity from the variant quantities grid — start at 0.
+    // Styles always get quantity from the variants quantity grid — start at 0.
     const isStyle = storeType === "Style" || lineType === "Style";
     const quantityForItem = isStyle ? 0 : saleQuantity || 1;
     if (isStyle || quantityForItem !== saleQuantity) {
@@ -777,19 +776,19 @@ const SalesOrderLineForm = ({
                     }}
                   />
                   {isConfigurableLine ? (
-                    <QuantityWithConfigTable
+                    <QuantityWithVariantsQuantity
                       name="saleQuantity"
                       label={t`Quantity`}
                       value={saleQuantity}
                       onChange={onQuantityChange}
-                      hasConfigurationParameters={hasConfigurationParameters}
-                      onOpenConfigTable={
-                        hasConfigurationParameters ? openConfigTable : undefined
+                      hasVariantsQuantity={hasVariantsQuantity}
+                      onOpenVariantsQuantity={
+                        hasVariantsQuantity ? openVariantsQuantity : undefined
                       }
                       configTableTotal={configTableTotal}
                       // Grid-backed configs are never typed by hand — quantity
                       // only comes from confirmed per-variant totals.
-                      isReadOnly={hasConfigurationParameters}
+                      isReadOnly={hasVariantsQuantity}
                       minValue={0}
                     />
                   ) : (

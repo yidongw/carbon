@@ -54,7 +54,7 @@ import {
 } from "../../production.models";
 import { getDeadlineIcon } from "./Deadline";
 import { useDeadlineTypeLabel } from "./jobLabels";
-import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+import { QuantityWithVariantsQuantity } from "./QuantityWithVariantsQuantity";
 import {
   toConfigTableValue,
   useVariantsQuantityModal
@@ -282,7 +282,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     handleConfigTableSubmit(data.configuration.configTable, data.total);
   };
 
-  const openConfigTable = (mode: "single" | "bulk") => {
+  const openVariantsQuantity = (mode: "single" | "bulk") => {
     if (!itemData.itemId) return;
     setConfigTableMode(mode);
 
@@ -405,7 +405,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         />
                       )}
 
-                      <QuantityWithConfigTable
+                      <QuantityWithVariantsQuantity
                         name="quantity"
                         label={t`Quantity`}
                         value={itemData.quantity}
@@ -421,8 +421,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         }
                         configTableTotal={configTableTotal}
                         minValue={0}
-                        hasConfigurationParameters={hasAttributeQtyGrid}
-                        onOpenConfigTable={() => openConfigTable("single")}
+                        hasVariantsQuantity={hasAttributeQtyGrid}
+                        onOpenVariantsQuantity={() =>
+                          openVariantsQuantity("single")
+                        }
                       />
                       <NumberControlled
                         name="scrapQuantity"
@@ -571,7 +573,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           minValue={0}
                         />
 
-                        <QuantityWithConfigTable
+                        <QuantityWithVariantsQuantity
                           name="quantityPerJob"
                           label={t`Quantities Per Job`}
                           value={itemData.quantityPerJob}
@@ -584,8 +586,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           isReadOnly={configTableTotal > 0}
                           configTableTotal={configTableTotal}
                           minValue={0}
-                          hasConfigurationParameters={hasAttributeQtyGrid}
-                          onOpenConfigTable={() => openConfigTable("bulk")}
+                          hasVariantsQuantity={hasAttributeQtyGrid}
+                          onOpenVariantsQuantity={() =>
+                            openVariantsQuantity("bulk")
+                          }
                         />
 
                         <NumberControlled

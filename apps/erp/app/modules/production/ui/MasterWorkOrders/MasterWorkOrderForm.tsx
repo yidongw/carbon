@@ -26,7 +26,7 @@ import { deadlineTypes, masterWorkOrderValidator } from "~/modules/production";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";
 import { useDeadlineTypeLabel } from "~/modules/production/ui/Jobs/jobLabels";
-import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
   toConfigTableValue,
   useVariantsQuantityModal
@@ -57,7 +57,7 @@ const MasterWorkOrderForm = ({
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
   // Qty grid only for items with attribute selections — not legacy Part
   // configurationParameters.
-  const hasConfigurationParameters = configurableItemIds.includes(itemId);
+  const hasVariantsQuantity = configurableItemIds.includes(itemId);
   const [configTableRows, setConfigTableRows] = useState<Row[] | null>(null);
   const [configTableTotal, setConfigTableTotal] = useState(0);
 
@@ -74,7 +74,7 @@ const MasterWorkOrderForm = ({
     if (data.total > 0) setQuantity(data.total);
   };
 
-  const openConfigTable = () => {
+  const openVariantsQuantity = () => {
     if (!itemId) return;
     variantsQuantityModal.open({
       itemId,
@@ -110,7 +110,7 @@ const MasterWorkOrderForm = ({
               validItemTypes={["Style"]}
               onChange={(value) => onItemChange(value?.value ?? "")}
             />
-            <QuantityWithConfigTable
+            <QuantityWithVariantsQuantity
               name="quantity"
               label={t`Quantity`}
               value={quantity}
@@ -118,8 +118,8 @@ const MasterWorkOrderForm = ({
               isReadOnly={configTableTotal > 0}
               onChange={setQuantity}
               configTableTotal={configTableTotal}
-              hasConfigurationParameters={hasConfigurationParameters}
-              onOpenConfigTable={openConfigTable}
+              hasVariantsQuantity={hasVariantsQuantity}
+              onOpenVariantsQuantity={openVariantsQuantity}
             />
             <Location name="locationId" label={t`Location`} />
             <DatePicker name="dueDate" label={t`Due Date`} />

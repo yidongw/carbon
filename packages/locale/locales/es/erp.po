@@ -15942,9 +15942,6 @@ msgstr "Ver paquetes"
 msgid "View configuration parameters"
 msgstr "Ver parámetros de configuración"
 
-msgid "View configuration quantities"
-msgstr "Ver configuración de cantidades"
-
 msgid "View Contact"
 msgstr "Ver Contacto"
 
@@ -16055,6 +16052,9 @@ msgstr "Ver Gráfico de Trazabilidad"
 
 msgid "View Transfer"
 msgstr "Ver Transferencia"
+
+msgid "View variants quantity"
+msgstr ""
 
 msgid "Visibilities"
 msgstr "Visibilidades"
@@ -16222,7 +16222,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Cuando activada, esta regla se dispara para cada objetivo de su tipo. Se ignoran pero se preservan las filas de asignación."
 
 msgid "Which set of attributes this item's variants use"
-msgstr "Qué conjunto de atributos usan las variantes de este artículo"
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "Quién Puede Aprobar"

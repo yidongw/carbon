@@ -15940,9 +15940,6 @@ msgstr "Показать пачки"
 msgid "View configuration parameters"
 msgstr "Просмотр конфигурационных параметров"
 
-msgid "View configuration quantities"
-msgstr "Просмотр конфигурационных количеств"
-
 msgid "View Contact"
 msgstr "Просмотр контакта"
 
@@ -16053,6 +16050,9 @@ msgstr "Просмотр графика отслеживания"
 
 msgid "View Transfer"
 msgstr "Просмотр передачи"
+
+msgid "View variants quantity"
+msgstr ""
 
 msgid "Visibilities"
 msgstr "Видимость"
@@ -16220,7 +16220,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Когда включена, эта правило активируется для каждого объекта его типа. Строки назначения игнорируются, но сохраняются."
 
 msgid "Which set of attributes this item's variants use"
-msgstr "Какой набор атрибутов используют варианты этого элемента"
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "Кто может одобрить"

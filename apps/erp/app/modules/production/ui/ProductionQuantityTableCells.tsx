@@ -96,7 +96,7 @@ export function ProductionQuantityTableQuantityCell({
     hasConfigurationTable(row.configuration) ||
     Boolean(itemId && configurableItemIds?.has(itemId));
 
-  const openConfigTable = (event: MouseEvent) => {
+  const openVariantsQuantity = (event: MouseEvent) => {
     event.stopPropagation();
     if (!itemId) return;
     openOverlay(
@@ -129,7 +129,7 @@ export function ProductionQuantityTableQuantityCell({
           hasConfigurationTable(row.configuration) &&
             "text-emerald-500 hover:text-emerald-500"
         )}
-        onClick={openConfigTable}
+        onClick={openVariantsQuantity}
       />
     </HStack>
   );

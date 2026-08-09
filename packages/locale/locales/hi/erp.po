@@ -15946,9 +15946,6 @@ msgstr "बंडल देखें"
 msgid "View configuration parameters"
 msgstr "विन्यास पूरक पूरक वैॅपरीटर्स देखें"
 
-msgid "View configuration quantities"
-msgstr "विनिर्माण गुणतांत्रिकी देखें"
-
 msgid "View Contact"
 msgstr "संपर्क देखें"
 
@@ -16059,6 +16056,9 @@ msgstr "ट्रेसेबिलिटी ग्राफ देखें"
 
 msgid "View Transfer"
 msgstr "ट्रांसफर देखें"
+
+msgid "View variants quantity"
+msgstr ""
 
 msgid "Visibilities"
 msgstr "दृश्यता"
@@ -16226,7 +16226,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "जब चालू हो, तो यह नियम उसके प्रकार के हर लक्ष्य के लिए चलता है। असाइनमेंट पंक्तियाँ अनदेखी की जाती हैं लेकिन सुरक्षित रहती हैं।"
 
 msgid "Which set of attributes this item's variants use"
-msgstr "इस आइटम के वेरिएंट किस विशेषता-सेट का उपयोग करते हैं"
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "कौन अनुमोदन कर सकता है"

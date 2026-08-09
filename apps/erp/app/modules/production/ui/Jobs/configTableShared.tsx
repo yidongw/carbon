@@ -2,7 +2,7 @@ import { Combobox, cn, IconButton } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ReactElement } from "react";
 import { LuTrash2 } from "react-icons/lu";
-import { fillValueFromReference } from "~/modules/production/configParamsTableColumns";
+import { fillValueFromReference } from "~/modules/production/variantsQuantityTableColumns";
 import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
 
 export type Row = Record<string, string | number | boolean>;

@@ -4,7 +4,7 @@ import {
   buildJobRemainingReferenceContext,
   buildProductionConfigTableReferenceContext,
   fillValueFromReference
-} from "./configParamsTableColumns";
+} from "./variantsQuantityTableColumns";
 
 // Combo model: a single valuesKey list param; each row is { valuesKey, Quantities }.
 const parameters = [
@@ -254,7 +254,7 @@ describe("fillValueFromReference", () => {
 describe("getConfigQuantityCells", () => {
   it("labels combo valuesKey + Quantities rows", async () => {
     const { getConfigQuantityCells } = await import(
-      "./configParamsTableColumns"
+      "./variantsQuantityTableColumns"
     );
     const cells = getConfigQuantityCells(
       {
@@ -273,7 +273,7 @@ describe("getConfigQuantityCells", () => {
 
   it("reads combo rows when configTablePrimaryKeys is omitted", async () => {
     const { getConfigQuantityCells, configTableToComboRows } = await import(
-      "./configParamsTableColumns"
+      "./variantsQuantityTableColumns"
     );
     const configuration = {
       configTable: [{ valuesKey: "BK|S", Quantities: 4 }]
@@ -288,7 +288,7 @@ describe("getConfigQuantityCells", () => {
 
   it("configTableToComboRows passes through combo rows", async () => {
     const { configTableToComboRows } = await import(
-      "./configParamsTableColumns"
+      "./variantsQuantityTableColumns"
     );
     expect(
       configTableToComboRows(

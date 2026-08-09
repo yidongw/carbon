@@ -15940,9 +15940,6 @@ msgstr "Zobacz pakiety"
 msgid "View configuration parameters"
 msgstr "Zobacz parametry konfiguracji"
 
-msgid "View configuration quantities"
-msgstr "Wyświetl konfigurację ilości"
-
 msgid "View Contact"
 msgstr "Wyświetl Kontakt"
 
@@ -16053,6 +16050,9 @@ msgstr "Wyświetl Graf Możliwości Śledzenia"
 
 msgid "View Transfer"
 msgstr "Wyświetl Transfer"
+
+msgid "View variants quantity"
+msgstr ""
 
 msgid "Visibilities"
 msgstr "Widoczności"
@@ -16220,7 +16220,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Gdy włączona, ta reguła aktywuje się dla każdego obiektu tej samej kategorii. Wiersze przypisania są ignorowane, ale zapisywane."
 
 msgid "Which set of attributes this item's variants use"
-msgstr "Który zestaw atrybutów używają warianty tego elementu"
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "Kto może zatwierdzić"

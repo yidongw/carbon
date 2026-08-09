@@ -54,7 +54,7 @@ export type SynthesizedConfigurationParameter = {
  * product of selected attribute codes in **set order** (pipe-joined), matching
  * `itemVariant.valuesKey`.
  */
-export async function getStyleConfigurationParametersFromAttributes(
+export async function getStyleVariantQuantityParameters(
   client: Db,
   itemId: string,
   companyId: string

@@ -13,7 +13,7 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Source:** `getGarmentAttributeValueList` (`itemAttribute.service.ts`) — Color/Size `itemAttributeValue` rows for **catalog localization / samples / color-name maps**. Style **assign UI** uses the generic attribute set editor.
 
-**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Qty editor params are a single combo list (`valuesKey` options = cartesian of selected attribute values via `getStyleConfigurationParametersFromAttributes`). Editor submit shape for Style qty is `{ valuesKey, Quantities, label? }` (combo-only; no Color×Size matrix conversion). **Jobs persist that table into `jobVariantQuantity`** (via `persistStyleJobConfiguration` / `replaceJobVariantQuantities`), not as `job.configuration.configTable`.
+**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Qty editor params are a single combo list (`valuesKey` options = cartesian of selected attribute values via `getStyleVariantQuantityParameters`). Editor submit shape for Style qty is still `{ valuesKey, Quantities, label? }` with `configTablePrimaryKeys: ["Quantities"]`, but **jobs persist that table into `jobVariantQuantity`** (via `persistStyleJobConfiguration` / `replaceJobVariantQuantities`), not as `job.configuration.configTable`. Legacy Color×Size matrices are dual-read on expand when jvq is empty.
 
 ## Consumable Fabric / Trim variants
 

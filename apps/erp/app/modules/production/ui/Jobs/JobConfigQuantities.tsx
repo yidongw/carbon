@@ -8,8 +8,8 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { configTableToComboRows } from "~/modules/production/configParamsTableColumns";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
+import { configTableToComboRows } from "~/modules/production/variantsQuantityTableColumns";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
 import type { AdjustmentMode, Column, Row } from "./configTableShared";
 import {

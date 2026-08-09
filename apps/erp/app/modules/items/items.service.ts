@@ -12,7 +12,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
 import {
-  getStyleConfigurationParametersFromAttributes,
+  getStyleVariantQuantityParameters,
   SYSTEM_ATTRIBUTE
 } from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -395,7 +395,7 @@ export async function getConfigurationParameters(
   // configurationParameter rows (dual-read retired); other types fall back only
   // when they have no attribute selections.
   try {
-    const synthesized = await getStyleConfigurationParametersFromAttributes(
+    const synthesized = await getStyleVariantQuantityParameters(
       client,
       itemId,
       companyId
@@ -461,7 +461,7 @@ export async function getQuantityGridParameters(
   companyId: string
 ) {
   try {
-    const synthesized = await getStyleConfigurationParametersFromAttributes(
+    const synthesized = await getStyleVariantQuantityParameters(
       client,
       itemId,
       companyId

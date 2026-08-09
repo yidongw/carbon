@@ -6,7 +6,7 @@ import {
   parseInitialConfigTable
 } from "~/modules/production/configTableOverlay";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
-import { ItemConfigQuantityInput } from "~/modules/production/ui/Jobs/ItemConfigQuantityInput";
+import { ItemVariantsQuantityInput } from "~/modules/production/ui/Jobs/ItemVariantsQuantityInput";
 import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import { openStyleConfigTableWithInventory } from "./openStyleConfigTableWithInventory";
 
@@ -15,7 +15,7 @@ type StyleLineQuantityInputProps = {
   itemId: string;
   value: number;
   variantQuantities?: Json | null;
-  /** From-location for inventory variant combo hints / max caps. Omit on receipts. */
+  /** From-location for inventory variants quantity hints / max caps. Omit on receipts. */
   locationId?: string | null;
   /** Optional bin — scopes inventory hints to that storage unit. */
   storageUnitId?: string | null;
@@ -38,7 +38,7 @@ type StyleLineQuantityInputProps = {
 };
 
 /**
- * Inline shipped/received quantity for Style lines — click opens the variant
+ * Inline shipped/received quantity for Style lines — click opens the variants quantity
  * config modal (same control as production quantity / transfer line forms).
  * When `locationId` is set, cells show on-hand inventory hints (variant SKU
  * breakdown) and Confirm is blocked if any combo exceeds available stock —
@@ -86,7 +86,7 @@ export function StyleLineQuantityInput({
     });
   };
 
-  const openConfigTable = async () => {
+  const openVariantsQuantity = async () => {
     if (!itemId || isDisabled || opening) return;
     setOpening(true);
     try {
@@ -109,7 +109,7 @@ export function StyleLineQuantityInput({
   return (
     <>
       <div className={className}>
-        <ItemConfigQuantityInput
+        <ItemVariantsQuantityInput
           id={`style-qty-${lineId}`}
           hideLabel
           value={quantity}
@@ -118,10 +118,10 @@ export function StyleLineQuantityInput({
           size={size}
           isDisabled={isDisabled || opening}
           isReadOnly={isReadOnly || configTableTotal > 0}
-          hasConfigurationParameters
-          onOpenConfigTable={openConfigTable}
+          hasVariantsQuantity
+          onOpenVariantsQuantity={openVariantsQuantity}
           configTableTotal={configTableTotal}
-          openConfigAccessibilityLabel={t`Edit variant quantities`}
+          openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
         />
       </div>
       {variantsQuantityModal.node}

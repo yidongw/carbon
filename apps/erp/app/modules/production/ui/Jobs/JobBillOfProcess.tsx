@@ -148,10 +148,6 @@ import type { action as newJobOperationToolAction } from "~/routes/x+/job+/metho
 import { useItems, usePeople, useTools } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
-  buildReportedTargetRows,
-  type ReportedTargetRow
-} from "../../configParamsTableColumns";
-import {
   defaultOperationTypeFromProcess,
   disablesOutsideBopDetailTabs,
   isInsideOperationType,
@@ -166,6 +162,10 @@ import {
 } from "../../production.models";
 import { getProductionEventsPage } from "../../production.service";
 import type { Job, JobOperation } from "../../types";
+import {
+  buildReportedTargetRows,
+  type ReportedTargetRow
+} from "../../variantsQuantityTableColumns";
 import { OutsideOperationBadge } from "../OutsideOperationBadge";
 import {
   formatOperationTabSummary,
@@ -180,13 +180,13 @@ import {
   operationFormWorkCenterFieldClass,
   useOperationTypeSelectOptions
 } from "../operationBop";
-import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import {
   useProductionEventActivityMessage,
   useRelativeCreatedUpdatedText
 } from "./productionQuantityLabels";
+import { VariantsQuantityReportedTargetTable } from "./VariantsQuantityReportedTargetTable";
 
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
@@ -243,7 +243,7 @@ function makeItems(
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean
+  hasVariantsQuantity?: boolean
 ): ItemWithData[] {
   return operations.map((operation) =>
     makeItem(
@@ -257,7 +257,7 @@ function makeItems(
       job,
       onAddProductionQuantity,
       onOpenConfigSummary,
-      hasConfigurationParameters
+      hasVariantsQuantity
     )
   );
 }
@@ -273,7 +273,7 @@ function makeItem(
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean
+  hasVariantsQuantity?: boolean
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -325,8 +325,8 @@ function makeItem(
           onAddQuantity: onAddProductionQuantity
             ? () => onAddProductionQuantity(operation.id!)
             : undefined,
-          onOpenConfigTable:
-            hasConfigurationParameters && onOpenConfigSummary
+          onOpenVariantsQuantity:
+            hasVariantsQuantity && onOpenConfigSummary
               ? () => onOpenConfigSummary(operation.id!)
               : undefined
         },
@@ -756,7 +756,7 @@ const JobBillOfProcess = ({
   >([]);
   const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
 
-  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
+  const hasVariantsQuantity = (configurationParameters?.length ?? 0) > 0;
 
   useEffect(() => {
     if (!itemId || !carbon) return;
@@ -847,8 +847,8 @@ const JobBillOfProcess = ({
     jobQuantityTarget,
     jobData?.job,
     onAddProductionQuantity,
-    hasConfigurationParameters ? openConfigSummary : undefined,
-    hasConfigurationParameters
+    hasVariantsQuantity ? openConfigSummary : undefined,
+    hasVariantsQuantity
   ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
@@ -1240,7 +1240,7 @@ const JobBillOfProcess = ({
     ? operationsById.get(configSummaryOperationId)
     : undefined;
 
-  const configSummaryModalElement = hasConfigurationParameters ? (
+  const configSummaryModalElement = hasVariantsQuantity ? (
     <Modal
       open={configSummaryModal.isOpen}
       onOpenChange={(open) => {
@@ -1264,7 +1264,7 @@ const JobBillOfProcess = ({
           {configSummaryLoading ? (
             <Loading isLoading />
           ) : (
-            <ConfigParamsReportedTargetTable
+            <VariantsQuantityReportedTargetTable
               rows={configSummaryRows}
               parameters={configurationParameters ?? []}
             />

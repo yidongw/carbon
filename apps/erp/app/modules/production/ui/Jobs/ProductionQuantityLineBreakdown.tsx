@@ -2,7 +2,7 @@ import type { Json } from "@carbon/database";
 import { Badge, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { getConfigRowDisplayParts } from "~/modules/production/configParamsTableColumns";
+import { getConfigRowDisplayParts } from "~/modules/production/variantsQuantityTableColumns";
 import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 
 function getProductionQuantityBadgeVariant(type: string) {

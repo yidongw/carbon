@@ -4,7 +4,7 @@ import { getStyleOnHandByVariant } from "~/modules/inventory";
 import { breakdownToInventoryConfigTable } from "~/modules/inventory/styleInventoryConfig";
 
 /**
- * Style on-hand by variant valuesKey for transfer/shipment config-table hints + caps.
+ * Style on-hand by variants quantity for transfer/shipment config-table hints + caps.
  * Query: itemId, locationId, optional storageUnitId.
  */
 export async function loader({ request }: LoaderFunctionArgs) {

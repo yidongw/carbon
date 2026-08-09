@@ -162,7 +162,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // A stored config table means the per-variant quantity grid was used (Style
-  // attribute combo, or a Consumable attribute set) → one line per variant SKU
+  // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
   if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
     const expanded = await expandStyleConfigToVariantLines(client, {

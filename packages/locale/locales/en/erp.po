@@ -15940,9 +15940,6 @@ msgstr "View bundles"
 msgid "View configuration parameters"
 msgstr "View configuration parameters"
 
-msgid "View configuration quantities"
-msgstr "View configuration quantities"
-
 msgid "View Contact"
 msgstr "View Contact"
 
@@ -16053,6 +16050,9 @@ msgstr "View Traceability Graph"
 
 msgid "View Transfer"
 msgstr "View Transfer"
+
+msgid "View variants quantity"
+msgstr "View variants quantity"
 
 msgid "Visibilities"
 msgstr "Visibilities"

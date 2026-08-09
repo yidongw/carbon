@@ -476,7 +476,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const [
     defaultAttachments,
     adHocDocs,
-    attributeValueNames,
+    attributeValueNameRows,
     styleVariantByItemId
   ] = await Promise.all([
     getDefaultAttachmentsForPO(serviceRole, {
@@ -495,8 +495,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getAttributeValueNames(client, companyId),
     getStyleVariantLineMetaByItemIds(client, itemIds, companyId)
   ]);
-  const attributeValueNameMap = buildAttributeValueNames(
-    attributeValueNames.data ?? []
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
   );
   const adHocAttachments = adHocDocs.map((d) => ({
     source: "po" as const,
@@ -526,7 +526,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canDelete,
     defaultCc,
     resolvedAttachments,
-    attributeValueNames: attributeValueNameMap,
+    attributeValueNames,
     styleVariantByItemId
   };
 }

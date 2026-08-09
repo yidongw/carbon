@@ -1,10 +1,5 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type {
-  ConfigReferenceSource,
-  ConfigTableReferenceContext
-} from "./configParamsTableColumns";
-import { buildJobRemainingReferenceContext } from "./configParamsTableColumns";
 import { buildConfigTableActionResponse } from "./configTableOverlay";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
 import {
@@ -12,6 +7,11 @@ import {
   jobVariantQuantitiesToConfigTable
 } from "./jobVariantQuantity.service";
 import { getJob } from "./production.service";
+import type {
+  ConfigReferenceSource,
+  ConfigTableReferenceContext
+} from "./variantsQuantityTableColumns";
+import { buildJobRemainingReferenceContext } from "./variantsQuantityTableColumns";
 
 export { buildConfigTableActionResponse };
 

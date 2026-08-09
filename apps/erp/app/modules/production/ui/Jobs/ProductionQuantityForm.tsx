@@ -20,10 +20,6 @@ import { usePermissions } from "~/hooks";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import { path } from "~/utils/path";
 import {
-  buildProductionConfigTableReferenceContext,
-  type ConfigReferenceSource
-} from "../../configParamsTableColumns";
-import {
   computeConfigRemaining,
   computeJobConfigTableTotal
 } from "../../jobConfiguration";
@@ -32,6 +28,10 @@ import {
   productionQuantityCreateFormValidator,
   productionQuantityValidator
 } from "../../production.models";
+import {
+  buildProductionConfigTableReferenceContext,
+  type ConfigReferenceSource
+} from "../../variantsQuantityTableColumns";
 import {
   ProductionActorFields,
   selectionFromInitialValues
@@ -43,7 +43,7 @@ import {
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
 import { getProductionFormCascadeState } from "./productionFormCascade";
-import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+import { QuantityWithVariantsQuantity } from "./QuantityWithVariantsQuantity";
 import { SupplierSubcontractPricingFields } from "./SupplierSubcontractPricingFields";
 import { useProductionJobPicker } from "./useProductionJobPicker";
 import {
@@ -256,7 +256,7 @@ const ProductionQuantityForm = ({
     );
   });
 
-  const hasConfigurationParameters =
+  const hasVariantsQuantity =
     (jobPicker.configurationParameters?.length ?? 0) > 0;
 
   const hasZeroQuantityLine =
@@ -269,7 +269,7 @@ const ProductionQuantityForm = ({
   // the prefilled quantity would post with configuration = NULL.
   const hasUnconfiguredLine =
     isCreateMultiLine &&
-    hasConfigurationParameters &&
+    hasVariantsQuantity &&
     lines.some(
       (line) => computeJobConfigTableTotal(getConfigFromEditableLine(line)) <= 0
     );
@@ -346,7 +346,7 @@ const ProductionQuantityForm = ({
 
   const variantsQuantityModal = useVariantsQuantityModal();
 
-  const openConfigTable = () => {
+  const openVariantsQuantity = () => {
     if (!jobPicker.itemId) return;
     variantsQuantityModal.open({
       itemId: jobPicker.itemId,
@@ -551,9 +551,7 @@ const ProductionQuantityForm = ({
     ? lines.reduce((sum, line) => sum + (+line.quantity || 0), 0)
     : +quantity || 0;
   const showRemaining =
-    !isEditing &&
-    !hasConfigurationParameters &&
-    operationRemaining !== Infinity;
+    !isEditing && !hasVariantsQuantity && operationRemaining !== Infinity;
   const remaining = operationRemaining - reportedTotal;
   const exceedsRemaining = showRemaining && remaining < 0;
 
@@ -668,7 +666,7 @@ const ProductionQuantityForm = ({
                   // open before an actor is picked. Plain-quantity reports keep
                   // the stricter gate (need an actor before entering anything).
                   isDisabled={
-                    hasConfigurationParameters
+                    hasVariantsQuantity
                       ? configFieldsDisabled
                       : areDetailFieldsDisabled
                   }
@@ -687,8 +685,8 @@ const ProductionQuantityForm = ({
                     })}
                   />
                 )}
-                {hasConfigurationParameters ? (
-                  <QuantityWithConfigTable
+                {hasVariantsQuantity ? (
+                  <QuantityWithVariantsQuantity
                     name="quantity"
                     label={t`Quantity`}
                     value={quantity}
@@ -696,9 +694,9 @@ const ProductionQuantityForm = ({
                     isDisabled={configFieldsDisabled}
                     isReadOnly={configTableTotal > 0}
                     configTableTotal={configTableTotal}
-                    hasConfigurationParameters
-                    onOpenConfigTable={
-                      configFieldsDisabled ? undefined : openConfigTable
+                    hasVariantsQuantity
+                    onOpenVariantsQuantity={
+                      configFieldsDisabled ? undefined : openVariantsQuantity
                     }
                     onChange={setQuantity}
                   />
@@ -730,9 +728,7 @@ const ProductionQuantityForm = ({
             <TextArea
               name="notes"
               label={t`Notes`}
-              isDisabled={
-                hasConfigurationParameters ? areDetailFieldsDisabled : false
-              }
+              isDisabled={hasVariantsQuantity ? areDetailFieldsDisabled : false}
             />
           </VStack>
         </DrawerBody>
@@ -766,7 +762,7 @@ const ProductionQuantityForm = ({
                   isDisabled ||
                   exceedsRemaining ||
                   (isCreateMultiLine
-                    ? hasConfigurationParameters
+                    ? hasVariantsQuantity
                       ? !canSubmitCreate
                       : !hasOperationSelected || hasZeroQuantityLine
                     : hasZeroQuantityLine)

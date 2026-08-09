@@ -8,9 +8,9 @@ import {
 import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
+import { ItemVariantsQuantityInput } from "./ItemVariantsQuantityInput";
 
-export type QuantityWithConfigTableProps = {
+export type QuantityWithVariantsQuantityProps = {
   name: string;
   label?: ReactNode;
   helperText?: string;
@@ -20,8 +20,8 @@ export type QuantityWithConfigTableProps = {
   onConfigure?: () => void;
   value: number;
   onChange?: (value: number) => void;
-  hasConfigurationParameters: boolean;
-  onOpenConfigTable?: () => void;
+  hasVariantsQuantity: boolean;
+  onOpenVariantsQuantity?: () => void;
   /** Sum of configured quantity columns; drives adornment color. */
   configTableTotal?: number;
   minValue?: number;
@@ -33,10 +33,10 @@ export type QuantityWithConfigTableProps = {
 };
 
 /**
- * Form-connected quantity with optional config-table affordance (same layout
- * as {@link ItemConfigQuantityInput}).
+ * Form-connected quantity with optional variants-quantity affordance (same layout
+ * as {@link ItemVariantsQuantityInput}).
  */
-export function QuantityWithConfigTable({
+export function QuantityWithVariantsQuantity({
   name,
   label,
   helperText,
@@ -46,8 +46,8 @@ export function QuantityWithConfigTable({
   onConfigure,
   value,
   onChange,
-  hasConfigurationParameters,
-  onOpenConfigTable,
+  hasVariantsQuantity,
+  onOpenVariantsQuantity,
   configTableTotal = 0,
   minValue = 0,
   maxValue,
@@ -55,7 +55,7 @@ export function QuantityWithConfigTable({
   formatOptions,
   isReadOnly: isReadOnlyProp,
   isDisabled: isDisabledProp
-}: QuantityWithConfigTableProps) {
+}: QuantityWithVariantsQuantityProps) {
   const { t } = useLingui();
   const { getInputProps, error, isOptional: fieldIsOptional } = useField(name);
   const [controlValue, setControlValue] = useControlField<number>(name);
@@ -99,7 +99,7 @@ export function QuantityWithConfigTable({
           {label}
         </FormLabel>
       ) : null}
-      <ItemConfigQuantityInput
+      <ItemVariantsQuantityInput
         hideLabel
         id={name}
         numberFieldProps={getInputProps()}
@@ -111,12 +111,12 @@ export function QuantityWithConfigTable({
         isReadOnly={isReadOnly}
         size={size}
         formatOptions={resolvedFormat}
-        hasConfigurationParameters={hasConfigurationParameters}
-        onOpenConfigTable={
-          hasConfigurationParameters ? onOpenConfigTable : undefined
+        hasVariantsQuantity={hasVariantsQuantity}
+        onOpenVariantsQuantity={
+          hasVariantsQuantity ? onOpenVariantsQuantity : undefined
         }
         configTableTotal={configTableTotal}
-        openConfigAccessibilityLabel={t`Configure quantities`}
+        openVariantsQuantityAccessibilityLabel={t`Configure quantities`}
       />
       {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}

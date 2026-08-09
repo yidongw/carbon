@@ -19,11 +19,11 @@ export function StyleConfigChips({ chips }: { chips: StyleConfigChip[] }) {
   );
 }
 
-/** Expand-panel attribute combo quantity rows (same table as line pricing). */
+/** Expand-panel variant quantity rows (same table as line pricing). */
 export function StyleConfigExpandRows({ chips }: { chips: StyleConfigChip[] }) {
   return chips.map((chip) => (
     <Tr key={chip.key}>
-      <Td className="whitespace-nowrap">{chip.descriptor}</Td>
+      <Td className="whitespace-nowrap">{chip.variantLabel}</Td>
       <Td className="text-right">
         <span className="tabular-nums">{chip.quantity}</span>
       </Td>

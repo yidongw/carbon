@@ -43,7 +43,7 @@ export type JobConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
   initialRows?: ConfigRow[];
   history: JobConfigurationHistoryEntry[];
-  /** Attribute value code -> display name for the config table. */
+  /** Color code -> color name, so the config table shows names not codes. */
   attributeValueNames: Record<string, string>;
 };
 

@@ -1,4 +1,4 @@
-import type { ConfigRowDisplayPart } from "~/modules/production/configParamsTableColumns";
+import type { ConfigRowDisplayPart } from "~/modules/production/variantsQuantityTableColumns";
 
 function formatQuantityValue(value: number) {
   return Number.isInteger(value)

@@ -5,12 +5,12 @@ import {
   getQuantityGridParameters
 } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
 import {
   getConfigReferenceSourceForOperation,
   getReportedConfigurationById,
   resolveJobIdForOperation
 } from "~/modules/production/configTableOverlay.server";
+import type { ConfigReferenceSource } from "~/modules/production/variantsQuantityTableColumns";
 import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 
 export type ItemConfigTableOverlayLoaderData = {
@@ -29,7 +29,7 @@ export type ItemConfigTableOverlayLoaderData = {
    * so this stays `null` for the common path.
    */
   configuration: unknown;
-  /** Attribute value code -> display name for the config table. */
+  /** Color code -> color name, so the config table can show names not codes. */
   attributeValueNames: Record<string, string>;
 };
 

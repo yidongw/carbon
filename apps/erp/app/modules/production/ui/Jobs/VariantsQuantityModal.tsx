@@ -16,16 +16,16 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
-  buildConfigTableEditorState,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext,
-  configTableToComboRows
-} from "~/modules/production/configParamsTableColumns";
-import {
   buildConfigTableActionResponse,
   type ConfigTableOverlaySuccess,
   isConfigTableOverlaySuccess
 } from "~/modules/production/configTableOverlay";
+import {
+  buildConfigTableEditorState,
+  type ConfigReferenceSource,
+  type ConfigTableReferenceContext,
+  configTableToComboRows
+} from "~/modules/production/variantsQuantityTableColumns";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { path } from "~/utils/path";
@@ -401,7 +401,7 @@ function VariantsQuantityModal({
     ]);
 
   const handleSubmit = () => {
-    // Can't confirm while any combo cell exceeds its reference cap
+    // Can't confirm while any variants quantity cell exceeds its reference cap
     // (production plan remaining, or inventory on-hand for transfers).
     if (exceedsMax) return;
     const normalizedRows = rows.map((row) => normalizeRow(row, gridColumns));

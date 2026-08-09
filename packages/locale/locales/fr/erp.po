@@ -15940,9 +15940,6 @@ msgstr "Voir les lots"
 msgid "View configuration parameters"
 msgstr "Visualiser les paramètres de configuration"
 
-msgid "View configuration quantities"
-msgstr "Visualiser les quantités de configuration"
-
 msgid "View Contact"
 msgstr "Afficher le contact"
 
@@ -16053,6 +16050,9 @@ msgstr "Afficher le graphique de traçabilité"
 
 msgid "View Transfer"
 msgstr "Afficher le transfert"
+
+msgid "View variants quantity"
+msgstr ""
 
 msgid "Visibilities"
 msgstr "Visibilités"
@@ -16220,7 +16220,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Lorsque cette règle est activée, elle s'exécute pour chaque cible de son type. Les lignes d'affectation sont ignorées mais conservées."
 
 msgid "Which set of attributes this item's variants use"
-msgstr "Quel ensemble d'attributs utilisent les variantes de cet article"
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "Qui peut approuver"

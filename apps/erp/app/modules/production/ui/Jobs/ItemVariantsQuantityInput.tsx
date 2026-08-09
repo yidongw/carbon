@@ -17,7 +17,7 @@ const defaultFormatOptions = {
   maximumFractionDigits: 10
 } satisfies Intl.NumberFormatOptions;
 
-function ConfigTableAdornment({
+function VariantsQuantityAdornment({
   configTableTotal
 }: {
   configTableTotal: number;
@@ -35,10 +35,10 @@ function ConfigTableAdornment({
   );
 }
 
-export type ItemConfigQuantityInputProps = {
+export type ItemVariantsQuantityInputProps = {
   id: string;
   label?: ReactNode;
-  /** When the parent renders FormLabel (e.g. QuantityWithConfigTable). */
+  /** When the parent renders FormLabel (e.g. QuantityWithVariantsQuantity). */
   hideLabel?: boolean;
   value: number;
   onChange: (value: number) => void;
@@ -50,20 +50,20 @@ export type ItemConfigQuantityInputProps = {
   formatOptions?: Intl.NumberFormatOptions;
   /** Props merged onto {@link NumberField} (e.g. from form `getInputProps`). Later keys win over built-ins except `value` / `onChange`. */
   numberFieldProps?: Partial<NumberFieldProps>;
-  /** When set, show the item config-table strip inside the control. */
-  hasConfigurationParameters: boolean;
-  onOpenConfigTable?: () => void;
+  /** When set, show the variants quantity strip inside the control. */
+  hasVariantsQuantity: boolean;
+  onOpenVariantsQuantity?: () => void;
   /** Sum of configured quantity columns; drives adornment color. */
   configTableTotal?: number;
-  /** `role="button"` wrapper when opening the config overlay from the field. */
-  openConfigAccessibilityLabel?: string;
+  /** `role="button"` wrapper when opening the variants quantity overlay from the field. */
+  openVariantsQuantityAccessibilityLabel?: string;
 };
 
 /**
- * Quantity field with optional item configuration-parameters table affordance
- * (steppers when no config params; table icon opens the config overlay).
+ * Quantity field with optional variants quantity table affordance
+ * (steppers when no variants grid; table icon opens the variants quantity overlay).
  */
-export function ItemConfigQuantityInput({
+export function ItemVariantsQuantityInput({
   id,
   label,
   hideLabel = false,
@@ -76,15 +76,15 @@ export function ItemConfigQuantityInput({
   size = "md",
   formatOptions = defaultFormatOptions,
   numberFieldProps,
-  hasConfigurationParameters,
-  onOpenConfigTable,
+  hasVariantsQuantity,
+  onOpenVariantsQuantity,
   configTableTotal = 0,
-  openConfigAccessibilityLabel = "Configure quantities"
-}: ItemConfigQuantityInputProps) {
+  openVariantsQuantityAccessibilityLabel = "Configure quantities"
+}: ItemVariantsQuantityInputProps) {
   const safeValue = Number.isFinite(value) ? value : 0;
-  const canOpenConfigTable =
-    hasConfigurationParameters && onOpenConfigTable != null && !isDisabled;
-  const showAdornment = canOpenConfigTable;
+  const canOpenVariantsQuantity =
+    hasVariantsQuantity && onOpenVariantsQuantity != null && !isDisabled;
+  const showAdornment = canOpenVariantsQuantity;
   const showStepper =
     !showAdornment && !isReadOnly && !isDisabled && size !== "sm";
 
@@ -118,7 +118,7 @@ export function ItemConfigQuantityInput({
           )}
         />
         {showAdornment ? (
-          <ConfigTableAdornment configTableTotal={configTableTotal} />
+          <VariantsQuantityAdornment configTableTotal={configTableTotal} />
         ) : showStepper ? (
           <NumberInputStepper>
             <NumberIncrementStepper>
@@ -139,17 +139,17 @@ export function ItemConfigQuantityInput({
   return (
     <div className="flex w-full min-w-0 flex-col gap-1">
       {!hideLabel && label ? <Label htmlFor={id}>{label}</Label> : null}
-      {canOpenConfigTable ? (
+      {canOpenVariantsQuantity ? (
         <div
           role="button"
           tabIndex={0}
-          aria-label={openConfigAccessibilityLabel}
+          aria-label={openVariantsQuantityAccessibilityLabel}
           className={shellClassName}
-          onClick={onOpenConfigTable}
+          onClick={onOpenVariantsQuantity}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
-              onOpenConfigTable();
+              onOpenVariantsQuantity();
             }
           }}
         >

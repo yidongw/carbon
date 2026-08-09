@@ -3,7 +3,8 @@
  * `buildConfigTableEditorState` can use as inventory reference hints / caps.
  *
  * Style editors are combo-shaped (`valuesKey` + `Quantities`) after the
- * attributes refactor.
+ * attributes refactor; legacy variants quantity matrix shape is still accepted as input
+ * and converted to combo keys (`BK|M`).
  */
 
 export type StyleOnHandEntry = {

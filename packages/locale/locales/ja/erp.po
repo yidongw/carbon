@@ -15940,9 +15940,6 @@ msgstr "バンドルを表示"
 msgid "View configuration parameters"
 msgstr "設定パラメータを表示"
 
-msgid "View configuration quantities"
-msgstr "設定された数量を表示"
-
 msgid "View Contact"
 msgstr "連絡先を表示"
 
@@ -16053,6 +16050,9 @@ msgstr "トレーサビリティグラフを表示"
 
 msgid "View Transfer"
 msgstr "転送を表示"
+
+msgid "View variants quantity"
+msgstr ""
 
 msgid "Visibilities"
 msgstr "可視性"
@@ -16220,7 +16220,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "このルールはオンの場合は、そのタイプのすべてのターゲットに対して発動します。割り当て行は無視されますが保持されます。"
 
 msgid "Which set of attributes this item's variants use"
-msgstr "この品目のバリアントが使用する属性セット"
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "誰が承認できるか"

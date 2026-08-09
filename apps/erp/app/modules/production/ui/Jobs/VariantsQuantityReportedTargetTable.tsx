@@ -5,7 +5,7 @@ import {
   buildConfigColumns,
   type ConfigColumn,
   type ReportedTargetRow
-} from "~/modules/production/configParamsTableColumns";
+} from "~/modules/production/variantsQuantityTableColumns";
 import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
 
 function getColumnWidthClass(column: ConfigColumn): string {
@@ -155,15 +155,15 @@ function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
   return String(row[col.key] ?? "");
 }
 
-type ConfigParamsReportedTargetTableProps = {
+type VariantsQuantityReportedTargetTableProps = {
   rows: ReportedTargetRow[];
   parameters: Parameters<typeof buildConfigColumns>[0];
 };
 
-export function ConfigParamsReportedTargetTable({
+export function VariantsQuantityReportedTargetTable({
   rows,
   parameters
-}: ConfigParamsReportedTargetTableProps) {
+}: VariantsQuantityReportedTargetTableProps) {
   const { t } = useLingui();
   const { columns } = buildConfigColumns(parameters, t`Quantities`);
 

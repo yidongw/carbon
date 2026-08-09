@@ -2,14 +2,14 @@ import {
   localizeStyleColorName,
   styleColorEnglishNamesByCode
 } from "@carbon/database/style-reference";
-import { getConfigQuantityCells } from "~/modules/production/configParamsTableColumns";
+import { getConfigQuantityCells } from "~/modules/production/variantsQuantityTableColumns";
 
 export type StyleConfigChip = {
   key: string;
   /** Badge text, e.g. `米色 · L ×2` when attributeValueNames are provided */
   label: string;
   /** Expand-row left column, e.g. `米色 · L` when attributeValueNames are provided */
-  descriptor: string;
+  variantLabel: string;
   quantity: number;
 };
 
@@ -55,6 +55,14 @@ export function buildAttributeValueNames(
   return names;
 }
 
+/**
+ * Parse a Style line's stored `configuration` JSON into a flat list of every
+ * non-zero variant cell (for chips + expand quantity rows).
+ *
+ * Shared by Purchase Order and Sales Order summaries. Config tables may use
+ * either sizes or colors as quantity columns — labels are always variant.
+ * Pass `attributeValueNames` to show localized names instead of codes.
+ */
 /**
  * Re-point standard color codes (and their English-name aliases) in a
  * code→label map to the locale's color name, so chips read 黑色 · L in zh even
@@ -110,7 +118,7 @@ export function getStyleConfigDisplay(
   return {
     chips: cells.map((cell) => ({
       key: cell.key,
-      descriptor: cell.label,
+      variantLabel: cell.label,
       label: `${cell.label} ×${cell.quantity}`,
       quantity: cell.quantity
     }))
@@ -136,19 +144,19 @@ export function getStyleConfigDisplayFromVariants(
     if (codes.length === 0) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;
-    const descriptor = codes
+    const variantLabel = codes
       .map((code) => localized?.[code] ?? code)
       .join(" · ");
     const key = codes.join("|");
     const existing = byKey.get(key);
     if (existing) {
       existing.quantity += qty;
-      existing.label = `${descriptor} ×${existing.quantity}`;
+      existing.label = `${variantLabel} ×${existing.quantity}`;
     } else {
       byKey.set(key, {
         key,
-        descriptor,
-        label: `${descriptor} ×${qty}`,
+        variantLabel,
+        label: `${variantLabel} ×${qty}`,
         quantity: qty
       });
     }
@@ -224,7 +232,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       variantLinesByParent.set(meta.parentItemId, list);
       continue;
     }
-    // Parent Style still holding a variant combo grid (pre-expand).
+    // Parent Style still holding a variants quantity grid (pre-expand).
     if (
       getStyleConfigDisplay(line.configuration, attributeValueNames, locale)
     ) {

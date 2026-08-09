@@ -309,10 +309,10 @@ const TrackingCell = memo(function TrackingCell({ job }: { job: Job }) {
 
 const JobQuantityCell = memo(function JobQuantityCell({
   job,
-  onOpenConfigTable
+  onOpenVariantsQuantity
 }: {
   job: Job;
-  onOpenConfigTable: (e: MouseEvent, job: Job) => void;
+  onOpenVariantsQuantity: (e: MouseEvent, job: Job) => void;
 }) {
   const { t } = useLingui();
   const { jobIdsWithVariantQuantities } = useJobsTableSupplemental();
@@ -339,7 +339,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
             quantity > 0 && "text-emerald-500 hover:text-emerald-500"
           )}
           isDisabled={!canConfigure}
-          onClick={(e) => onOpenConfigTable(e, job)}
+          onClick={(e) => onOpenVariantsQuantity(e, job)}
         />
         {isCardCell && canConfigure && (
           <button
@@ -347,7 +347,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
             aria-label={t`Configure quantities`}
             data-card-action
             className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            onClick={(e) => onOpenConfigTable(e, job)}
+            onClick={(e) => onOpenVariantsQuantity(e, job)}
           />
         )}
       </HStack>
@@ -414,7 +414,7 @@ const JobsTable = memo(
       [openOverlay]
     );
 
-    const openConfigTable = useCallback(
+    const openVariantsQuantity = useCallback(
       (e: MouseEvent, job: Job) => {
         e.stopPropagation();
         if (!job.id) return;
@@ -538,7 +538,7 @@ const JobsTable = memo(
           cell: ({ row }) => (
             <JobQuantityCell
               job={row.original}
-              onOpenConfigTable={openConfigTable}
+              onOpenVariantsQuantity={openVariantsQuantity}
             />
           ),
           meta: {
@@ -905,7 +905,7 @@ const JobsTable = memo(
       items,
       locations,
       openBillOfProcessPreview,
-      openConfigTable,
+      openVariantsQuantity,
       people,
       tags,
       getDeadlineTypeLabel,

@@ -14,14 +14,14 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
+import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
+import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import {
   buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource,
   type ConfigTableReferenceContext
-} from "~/modules/production/configParamsTableColumns";
-import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
-import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
-import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
+} from "~/modules/production/variantsQuantityTableColumns";
+import { ItemVariantsQuantityInput } from "./ItemVariantsQuantityInput";
 import { useVariantsQuantityModal } from "./VariantsQuantityModal";
 
 type ConfigurationParameter = {
@@ -323,7 +323,7 @@ export function ProductionQuantityLinesEditor({
                 className="transition-transform active:scale-[0.96]"
               />
             </HStack>
-            <ItemConfigQuantityInput
+            <ItemVariantsQuantityInput
               id={`qty-${line.key}`}
               label={t`Quantity`}
               value={line.quantity}
@@ -331,14 +331,14 @@ export function ProductionQuantityLinesEditor({
               minValue={0}
               isDisabled={showConfig ? isDisabled : false}
               isReadOnly={configTotal > 0}
-              hasConfigurationParameters={showConfig}
-              onOpenConfigTable={
+              hasVariantsQuantity={showConfig}
+              onOpenVariantsQuantity={
                 showConfig && !isDisabled
                   ? () => openLineConfig(line.key)
                   : undefined
               }
               configTableTotal={configTotal}
-              openConfigAccessibilityLabel={t`Edit configuration`}
+              openVariantsQuantityAccessibilityLabel={t`Edit configuration`}
             />
             {line.type === "Scrap" ? (
               <VStack className="w-full min-w-0 gap-1">

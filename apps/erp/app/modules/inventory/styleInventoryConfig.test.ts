@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
+import { buildConfigTableEditorState } from "~/modules/production/variantsQuantityTableColumns";
 import {
   breakdownToInventoryConfigTable,
   buildInventoryConfigTableReferenceContext

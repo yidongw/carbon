@@ -29,7 +29,7 @@ import {
   parseInitialConfigTable
 } from "~/modules/production/configTableOverlay";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
-import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { MethodItemType } from "~/modules/shared/types";
 import { useItems } from "~/stores/items";
@@ -116,7 +116,7 @@ const StockTransferLineForm = ({
     if (data.total > 0) setQuantity(data.total);
   };
 
-  const openConfigTable = async () => {
+  const openVariantsQuantity = async () => {
     if (!itemId || openingConfig) return;
     setOpeningConfig(true);
     try {
@@ -135,11 +135,11 @@ const StockTransferLineForm = ({
   };
 
   const isEditing = initialValues.id !== undefined;
-  // Configurable parent (any item with attrs / config params) → qty grid.
+  // Configurable parent (any item with attrs / variants quantity) → qty grid.
   // Variant SKU lines (already expanded, no stored variant quantities) → plain qty.
   const isConfigurableParent =
     Boolean(itemId) && configurableItemIds.includes(itemId!);
-  const hasConfigurationParameters =
+  const hasVariantsQuantity =
     isConfigurableParent && !(isEditing && !initialValues.variantQuantities);
 
   const onTypeChange = (t: MethodItemType | "Item") => {
@@ -239,18 +239,18 @@ const StockTransferLineForm = ({
                   value={itemId ?? undefined}
                 />
                 {isConfigurableParent ? (
-                  <QuantityWithConfigTable
+                  <QuantityWithVariantsQuantity
                     name="quantity"
                     label={t`Quantity`}
                     minValue={0}
                     value={quantity}
                     onChange={setQuantity}
-                    hasConfigurationParameters={hasConfigurationParameters}
-                    onOpenConfigTable={
-                      hasConfigurationParameters ? openConfigTable : undefined
+                    hasVariantsQuantity={hasVariantsQuantity}
+                    onOpenVariantsQuantity={
+                      hasVariantsQuantity ? openVariantsQuantity : undefined
                     }
                     configTableTotal={configTableTotal}
-                    isReadOnly={hasConfigurationParameters}
+                    isReadOnly={hasVariantsQuantity}
                   />
                 ) : (
                   <Number

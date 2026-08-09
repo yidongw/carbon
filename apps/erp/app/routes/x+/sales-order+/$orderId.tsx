@@ -45,7 +45,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
 
-  const [salesOrder, lines, attributeValueNames] = await Promise.all([
+  const [salesOrder, lines, attributeValueNameRows] = await Promise.all([
     getSalesOrder(client, orderId),
     getSalesOrderLines(client, orderId),
     getAttributeValueNames(client, companyId)
@@ -162,14 +162,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     : (companySettings.data?.defaultCustomerCc ?? []);
 
   // Attribute-value code -> display name for Style config badges / expand rows.
-  const attributeValueNameMap = buildAttributeValueNames(
-    attributeValueNames.data ?? []
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
   );
 
   return {
     salesOrder: salesOrder.data,
     lines: lines.data ?? [],
-    attributeValueNames: attributeValueNameMap,
+    attributeValueNames,
     styleVariantByItemId,
     files: getOpportunityDocuments(client, companyId, opportunity.data.id),
     relatedItems: getSalesOrderRelatedItems(

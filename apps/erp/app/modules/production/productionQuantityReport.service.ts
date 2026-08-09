@@ -125,7 +125,7 @@ export function validateProductionQuantityLines(
  * and report a plain quantity. This guards the write layer so a configured report
  * can never be saved as a bare aggregate (configuration = NULL), regardless of
  * entry point (report form, edit, external API, import). Mirrors the report
- * form's config-table gate (item has config params AND the job is not a bundle).
+ * form's config-table gate (item has variants quantity AND the job is not a bundle).
  */
 async function validateConfiguredLinesHaveConfiguration(
   client: SupabaseClient<Database>,

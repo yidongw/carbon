@@ -99,7 +99,7 @@ const MasterWorkOrdersTable = memo(
       });
     }, [openOverlay, revalidator]);
 
-    const openConfigTable = useCallback(
+    const openVariantsQuantity = useCallback(
       (e: MouseEvent, jobId: string) => {
         e.stopPropagation();
         openOverlay(overlay.to.jobConfigTable({ jobId }), {
@@ -238,7 +238,7 @@ const MasterWorkOrdersTable = memo(
                     quantity > 0 && "text-emerald-500 hover:text-emerald-500"
                   )}
                   isDisabled={!canConfigure}
-                  onClick={(e) => openConfigTable(e, row.original.jobId!)}
+                  onClick={(e) => openVariantsQuantity(e, row.original.jobId!)}
                 />
               </HStack>
             );
@@ -568,7 +568,7 @@ const MasterWorkOrdersTable = memo(
       locations,
       getDeadlineTypeLabel,
       configuredItemIds,
-      openConfigTable,
+      openVariantsQuantity,
       canUpdateProduction,
       bundleCountByMasterId,
       openBundles,

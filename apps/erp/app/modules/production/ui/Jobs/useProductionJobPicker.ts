@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
-import type { ConfigReferenceSource } from "../../configParamsTableColumns";
+import type { ConfigReferenceSource } from "../../variantsQuantityTableColumns";
 
 export type ProductionJobPickerLoaderData = {
   jobId: string;

@@ -63,7 +63,7 @@ import {
 import { getSupplierPartPriceBreaks } from "~/modules/items";
 import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
 import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
-import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
   toConfigTableValue,
   useVariantsQuantityModal
@@ -362,16 +362,16 @@ const PurchaseOrderLineForm = ({
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
   // Items with variant attributes use the config-quantity grid when adding a
-  // parent line — Styles (variant grid) always, Consumables with an attribute set. The
+  // parent line — Styles (variants quantity) always, Consumables with a color set. The
   // expanded variant SKU lines (no stored configuration) use plain quantity.
-  const hasConfigurationParameters =
+  const hasVariantsQuantity =
     (itemType === "Style" || itemData.hasVariantAttributes) &&
     Boolean(itemData.itemId) &&
     !(isEditing && !initialValues.configuration);
 
   // A configurable parent line's quantity comes from the per-variant grid.
   const isMissingStyleQuantity =
-    hasConfigurationParameters && !(itemData.purchaseQuantity > 0);
+    hasVariantsQuantity && !(itemData.purchaseQuantity > 0);
 
   const onQuantityChange = (value: number) => {
     const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
@@ -394,7 +394,7 @@ const PurchaseOrderLineForm = ({
     onQuantityChange(data.total);
   };
 
-  const openConfigTable = () => {
+  const openVariantsQuantity = () => {
     if (!itemData.itemId) return;
     variantsQuantityModal.open({
       itemId: itemData.itemId,
@@ -790,18 +790,16 @@ const PurchaseOrderLineForm = ({
 
                         {itemType === "Style" ||
                         itemData.hasVariantAttributes ? (
-                          <QuantityWithConfigTable
+                          <QuantityWithVariantsQuantity
                             name="purchaseQuantity"
                             label={t`Quantity`}
                             minValue={itemData.minimumOrderQuantity}
                             value={itemData.purchaseQuantity}
                             onChange={onQuantityChange}
-                            hasConfigurationParameters={
-                              hasConfigurationParameters
-                            }
-                            onOpenConfigTable={
-                              hasConfigurationParameters
-                                ? openConfigTable
+                            hasVariantsQuantity={hasVariantsQuantity}
+                            onOpenVariantsQuantity={
+                              hasVariantsQuantity
+                                ? openVariantsQuantity
                                 : undefined
                             }
                             configTableTotal={configTableTotal}

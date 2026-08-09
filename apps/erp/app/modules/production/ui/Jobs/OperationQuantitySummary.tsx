@@ -8,14 +8,14 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { type ReactNode, useMemo, useState } from "react";
 import type { ConfigurationParameter } from "~/modules/items/types";
+import type { OperationQuantitySummary } from "~/modules/production/productionQuantityReport.service";
 import {
   buildConfigColumns,
   type ConfigRowDisplayPart,
   getConfigRowDisplayPart,
   getConfigTableRows,
   mergeConfigTableRows
-} from "~/modules/production/configParamsTableColumns";
-import type { OperationQuantitySummary } from "~/modules/production/productionQuantityReport.service";
+} from "~/modules/production/variantsQuantityTableColumns";
 import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 
 type OperationQuantitySummaryProps = {

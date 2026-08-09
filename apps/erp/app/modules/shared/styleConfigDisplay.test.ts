@@ -15,7 +15,7 @@ describe("getStyleConfigDisplay", () => {
     expect(display?.chips).toEqual([
       {
         key: "0:Quantities",
-        descriptor: "黑色 · S",
+        variantLabel: "黑色 · S",
         label: "黑色 · S ×6",
         quantity: 6
       }
@@ -67,7 +67,7 @@ describe("getStyleConfigDisplay", () => {
 });
 
 describe("getStyleConfigDisplayFromVariants", () => {
-  it("aggregates attribute combo chips from variant lines", async () => {
+  it("aggregates variant chips from variant lines", async () => {
     const { getStyleConfigDisplayFromVariants } = await import(
       "./styleConfigDisplay"
     );
