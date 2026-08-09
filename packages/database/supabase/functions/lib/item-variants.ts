@@ -47,12 +47,12 @@ export async function expandVariantsQuantityTable(
   args: {
     parentItemId: string;
     companyId: string;
-    configuration: unknown;
+    variantQuantities: unknown;
   }
 ): Promise<
   Array<{ variantItemId: string; quantity: number; valuesKey: string }>
 > {
-  const raw = (args.configuration ?? {}) as Record<string, unknown>;
+  const raw = (args.variantQuantities ?? {}) as Record<string, unknown>;
   const table = Array.isArray(raw.variantTable)
     ? (raw.variantTable as VariantsQuantityRow[])
     : [];
@@ -106,9 +106,8 @@ export async function expandVariantsQuantityTable(
   return out;
 }
 
-export function hasVariantsQuantityTable(configuration: unknown): boolean {
-  if (!configuration || typeof configuration !== "object") return false;
-  const cfg = configuration as Record<string, unknown>;
-  const table = cfg.variantTable;
-  return Array.isArray(table) && table.length > 0;
+export function hasVariantsQuantityTable(variantQuantities: unknown): boolean {
+  if (!variantQuantities || typeof variantQuantities !== "object") return false;
+  const cfg = variantQuantities as { variantTable?: unknown };
+  return Array.isArray(cfg.variantTable);
 }

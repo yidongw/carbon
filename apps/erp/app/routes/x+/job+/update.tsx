@@ -10,7 +10,7 @@ import {
 } from "~/modules/production";
 import {
   isVariantsQuantityConfiguration,
-  persistStyleJobConfiguration
+  persistStyleJobVariantQuantities
 } from "~/modules/production/jobVariantQuantity.service";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
@@ -266,7 +266,7 @@ export async function action({ request }: ActionFunctionArgs) {
               data: null
             };
           }
-          const replaced = await persistStyleJobConfiguration(
+          const replaced = await persistStyleJobVariantQuantities(
             client,
             getDatabaseClient(),
             {
@@ -274,7 +274,7 @@ export async function action({ request }: ActionFunctionArgs) {
               parentItemId: jobRow.itemId,
               companyId,
               userId,
-              configuration: configuration as Record<string, unknown>
+              variantQuantities: configuration as Record<string, unknown>
             }
           );
           if (replaced.error) {

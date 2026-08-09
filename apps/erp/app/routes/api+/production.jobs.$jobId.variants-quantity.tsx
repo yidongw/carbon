@@ -166,7 +166,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       parentItemId: job.data.itemId,
       companyId,
       userId,
-      configuration: merged.variantQuantities
+      variantQuantities: merged.variantQuantities
     }
   );
   if (replaced.error) {

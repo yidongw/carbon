@@ -584,7 +584,7 @@ serve(async (req: Request) => {
                 {
                   parentItemId: line.itemId,
                   companyId,
-                  configuration: line.configuration,
+                  variantQuantities: line.configuration,
                 }
               );
               if (expanded.length > 0) {

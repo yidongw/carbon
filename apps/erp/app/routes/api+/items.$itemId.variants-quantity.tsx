@@ -6,7 +6,7 @@ import {
 } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
-  getReportedConfigurationById,
+  getReportedVariantQuantitiesById,
   getVariantsQuantityReferenceSourceForOperation,
   resolveJobIdForOperation
 } from "~/modules/production/variantsQuantityOverlay.server";
@@ -99,7 +99,7 @@ export async function loader({
   // Deep-link fallback: rebuild a read-only view's saved variants from its id.
   const recordId = url.searchParams.get("recordId") ?? undefined;
   const savedConfiguration = recordId
-    ? await getReportedConfigurationById(client, {
+    ? await getReportedVariantQuantitiesById(client, {
         recordId,
         reportKind,
         companyId

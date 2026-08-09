@@ -8,7 +8,7 @@ import { redirect } from "react-router";
 import { upsertJobMethod } from "~/modules/production";
 import {
   isVariantsQuantityConfiguration,
-  persistStyleJobConfiguration
+  persistStyleJobVariantQuantities
 } from "~/modules/production/jobVariantQuantity.service";
 import { getDatabaseClient } from "~/services/database.server";
 import { path, requestReferrer } from "~/utils/path";
@@ -42,7 +42,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
   if (isVariantsQuantityConfiguration(configuration)) {
-    const replaced = await persistStyleJobConfiguration(
+    const replaced = await persistStyleJobVariantQuantities(
       client,
       getDatabaseClient(),
       {
@@ -50,7 +50,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         parentItemId: job.data.itemId,
         companyId,
         userId,
-        configuration: configuration as Record<string, unknown>
+        variantQuantities: configuration as Record<string, unknown>
       }
     );
     if (replaced.error) {

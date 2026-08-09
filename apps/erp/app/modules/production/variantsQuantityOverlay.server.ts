@@ -25,13 +25,6 @@ export function variantTableUpdateFields(
   };
 }
 
-/** @deprecated Prefer parseVariantQuantitiesFormValue */
-export function parseConfigurationFormValue(
-  raw: FormDataEntryValue | null
-): Record<string, unknown> | null {
-  return parseVariantQuantitiesFormValue(raw);
-}
-
 export function parseVariantQuantitiesFormValue(
   raw: FormDataEntryValue | null
 ): Record<string, unknown> | null {
@@ -208,9 +201,6 @@ export async function getReportedVariantQuantitiesById(
     .maybeSingle();
   return data?.variantQuantities ?? null;
 }
-
-/** @deprecated Prefer getReportedVariantQuantitiesById */
-export const getReportedConfigurationById = getReportedVariantQuantitiesById;
 
 export async function resolveJobIdForOperation(
   client: SupabaseClient<Database>,

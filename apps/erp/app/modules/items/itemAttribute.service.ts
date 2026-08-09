@@ -1525,14 +1525,14 @@ export async function expandVariantsQuantityTable(
   args: {
     parentItemId: string;
     companyId: string;
-    configuration: unknown;
+    variantQuantities: unknown;
   }
 ): Promise<{
   data: Array<{ variantItemId: string; quantity: number; valuesKey: string }>;
   error: Error | null;
 }> {
   try {
-    const raw = (args.configuration ?? {}) as Record<string, unknown>;
+    const raw = (args.variantQuantities ?? {}) as Record<string, unknown>;
     const table = Array.isArray(raw.variantTable)
       ? (raw.variantTable as Record<string, unknown>[])
       : [];

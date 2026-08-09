@@ -37,8 +37,8 @@ export async function replaceJobVariantQuantities(
     companyId: string;
     userId: string;
     lines: Array<{ variantItemId: string; quantity: number }>;
-    /** Clear legacy Style variantTable JSON from job.configuration. */
-    clearJobConfiguration?: boolean;
+    /** Clear legacy Style variantTable JSON left on job.configuration. */
+    clearStyleVariantQuantitiesFromJob?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
   const { jobId, companyId, userId } = args;
@@ -82,7 +82,9 @@ export async function replaceJobVariantQuantities(
           quantity,
           updatedBy: userId,
           updatedAt: now,
-          ...(args.clearJobConfiguration ? { configuration: null } : {})
+          ...(args.clearStyleVariantQuantitiesFromJob
+            ? { configuration: null }
+            : {})
         })
         .where("id", "=", jobId)
         .where("companyId", "=", companyId)
@@ -150,7 +152,7 @@ export async function getJobVariantQuantities(
   const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: job.itemId,
     companyId,
-    configuration: job.configuration
+    variantQuantities: job.configuration
   });
   if (expanded.error) {
     return { data: [], error: expanded.error };
@@ -212,14 +214,14 @@ export async function replaceJobVariantQuantitiesFromTable(
     parentItemId: string;
     companyId: string;
     userId: string;
-    configuration: unknown;
-    clearJobConfiguration?: boolean;
+    variantQuantities: unknown;
+    clearStyleVariantQuantitiesFromJob?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
   const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: args.parentItemId,
     companyId: args.companyId,
-    configuration: args.configuration
+    variantQuantities: args.variantQuantities
   });
   if (expanded.error) {
     return { quantity: 0, error: expanded.error };
@@ -233,15 +235,15 @@ export async function replaceJobVariantQuantitiesFromTable(
       variantItemId: r.variantItemId,
       quantity: r.quantity
     })),
-    clearJobConfiguration: args.clearJobConfiguration
+    clearStyleVariantQuantitiesFromJob: args.clearStyleVariantQuantitiesFromJob
   });
 }
 
 /**
- * Persist Style qty to jobVariantQuantity and clear Style variantTable from
- * `job.configuration` so Part flat params remain the only JSON shape there.
+ * Persist Style qty to jobVariantQuantity and clear any Style variantTable
+ * left on `job.configuration` so Part flat params remain the only JSON there.
  */
-export async function persistStyleJobConfiguration(
+export async function persistStyleJobVariantQuantities(
   client: Db,
   db: Kysely<KyselyDatabase>,
   args: {
@@ -249,7 +251,7 @@ export async function persistStyleJobConfiguration(
     parentItemId: string;
     companyId: string;
     userId: string;
-    configuration: Record<string, unknown>;
+    variantQuantities: Record<string, unknown>;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
   return replaceJobVariantQuantitiesFromTable(client, db, {
@@ -257,8 +259,8 @@ export async function persistStyleJobConfiguration(
     parentItemId: args.parentItemId,
     companyId: args.companyId,
     userId: args.userId,
-    configuration: args.configuration,
-    clearJobConfiguration: true
+    variantQuantities: args.variantQuantities,
+    clearStyleVariantQuantitiesFromJob: true
   });
 }
 

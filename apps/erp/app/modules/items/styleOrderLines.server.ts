@@ -27,7 +27,7 @@ export async function expandVariantTableToLines(
   const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: args.parentItemId,
     companyId: args.companyId,
-    configuration: args.variantQuantities
+    variantQuantities: args.variantQuantities
   });
   if (expanded.error) {
     return { ok: false, error: expanded.error.message };
