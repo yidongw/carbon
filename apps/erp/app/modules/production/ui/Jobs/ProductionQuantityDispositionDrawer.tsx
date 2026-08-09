@@ -84,7 +84,7 @@ export function ProductionQuantityDispositionDrawer({
       quantity: number;
       scrapReasonId?: string;
       notes?: string;
-      configuration?: unknown;
+      variantQuantities?: unknown;
     }>;
   }) => BodyInit;
   /** When provided, submits through this fetcher (e.g. quantity-review table actions). */
@@ -219,7 +219,7 @@ export function ProductionQuantityDispositionDrawer({
               setLines={setLines}
               variantQuantityParameters={variantQuantityParameters}
               itemId={itemId}
-              configReferenceContext={{
+              variantsQuantityReferenceContext={{
                 originalVariantTable: report.originalVariantTable
               }}
             />

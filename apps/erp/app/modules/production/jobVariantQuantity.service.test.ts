@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   isNonEmptyVariantsQuantity,
-  isVariantsQuantityConfiguration,
+  isVariantsQuantityPayload,
   jobVariantQuantitiesToTable,
   sumJobVariantQuantities
 } from "./jobVariantQuantity.service";
@@ -9,15 +9,15 @@ import {
 describe("jobVariantQuantity helpers", () => {
   it("detects variantTable vs flat Part params", () => {
     expect(
-      isVariantsQuantityConfiguration({
+      isVariantsQuantityPayload({
         variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
     ).toBe(true);
-    expect(
-      isVariantsQuantityConfiguration({ color: "BK", finish: "matte" })
-    ).toBe(false);
-    expect(isVariantsQuantityConfiguration(null)).toBe(false);
-    expect(isVariantsQuantityConfiguration({ variantTable: [] })).toBe(true);
+    expect(isVariantsQuantityPayload({ color: "BK", finish: "matte" })).toBe(
+      false
+    );
+    expect(isVariantsQuantityPayload(null)).toBe(false);
+    expect(isVariantsQuantityPayload({ variantTable: [] })).toBe(true);
   });
 
   it("requires non-empty variantTable for dual-read / qty gates", () => {

@@ -2185,9 +2185,6 @@ msgstr "Konfigurieren Sie Benachrichtigungen für den Fall, dass Wartungseinsät
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Konfigurieren Sie Benachrichtigungen für neue eingereichte Vorschläge."
 
-msgid "Configure quantities"
-msgstr "Konfiguriere Mengen"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Konfigurieren Sie die Standardkonten, die für verschiedene Transaktionstypen in Ihrem System verwendet werden"
 
@@ -15931,9 +15928,6 @@ msgstr "Anzeige Rechnungsvorgang"
 msgid "View bundles"
 msgstr "Bündel anzeigen"
 
-msgid "View configuration parameters"
-msgstr "Anzeigen Konfigurationsparameter"
-
 msgid "View Contact"
 msgstr "Kontakt anzeigen"
 
@@ -16044,6 +16038,9 @@ msgstr "Rückverfolgbarkeitsgraph anzeigen"
 
 msgid "View Transfer"
 msgstr "Transfer anzeigen"
+
+msgid "View variant quantities"
+msgstr ""
 
 msgid "View variants quantity"
 msgstr ""

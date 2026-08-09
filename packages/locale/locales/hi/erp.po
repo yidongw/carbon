@@ -2185,9 +2185,6 @@ msgstr "दुकान के फर्श से रखरखाव डिस�
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "नए सुझाव जमा किए जाने पर सूचनाएं कॉन्फ़िगर करें।"
 
-msgid "Configure quantities"
-msgstr "निर्धारित मात्रा"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "विभिन्न लेनदेन प्रकारों के लिए आपके सिस्टम में उपयोग किए जाने वाले डिफ़ॉल्ट खातों को कॉन्फ़िगर करें"
 
@@ -15937,9 +15934,6 @@ msgstr "देखें बिल प्रक्रिया"
 msgid "View bundles"
 msgstr "बंडल देखें"
 
-msgid "View configuration parameters"
-msgstr "विन्यास पूरक पूरक वैॅपरीटर्स देखें"
-
 msgid "View Contact"
 msgstr "संपर्क देखें"
 
@@ -16050,6 +16044,9 @@ msgstr "ट्रेसेबिलिटी ग्राफ देखें"
 
 msgid "View Transfer"
 msgstr "ट्रांसफर देखें"
+
+msgid "View variant quantities"
+msgstr ""
 
 msgid "View variants quantity"
 msgstr ""

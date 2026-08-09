@@ -2,7 +2,7 @@ import type { Json } from "@carbon/database";
 import { Badge, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { getConfigRowDisplayParts } from "~/modules/production/variantsQuantityTableColumns";
+import { getVariantQuantityRowDisplayParts } from "~/modules/production/variantsQuantityTableColumns";
 import { VariantsQuantityBreakdown } from "./VariantsQuantityBreakdown";
 
 function getProductionQuantityBadgeVariant(type: string) {
@@ -34,7 +34,7 @@ export function ProductionQuantityLineBreakdown({
   const { t } = useLingui();
   const parts =
     variantQuantityParameters?.length && line.variantQuantities
-      ? getConfigRowDisplayParts(
+      ? getVariantQuantityRowDisplayParts(
           line.variantQuantities,
           variantQuantityParameters,
           t`Quantities`,

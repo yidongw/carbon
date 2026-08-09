@@ -12,14 +12,14 @@ export type JobVariantQuantityLine = {
 type Db = SupabaseClient<Database>;
 
 /** True when payload is a Style/attribute qty table (not Part flat params). */
-export function isVariantsQuantityConfiguration(payload: unknown): boolean {
+export function isVariantsQuantityPayload(payload: unknown): boolean {
   if (!payload || typeof payload !== "object") return false;
   const cfg = payload as { variantTable?: unknown };
   return Array.isArray(cfg.variantTable);
 }
 
 export function isNonEmptyVariantsQuantity(payload: unknown): boolean {
-  if (!isVariantsQuantityConfiguration(payload)) return false;
+  if (!isVariantsQuantityPayload(payload)) return false;
   const cfg = payload as { variantTable?: unknown[] };
   return Array.isArray(cfg.variantTable) && cfg.variantTable.length > 0;
 }

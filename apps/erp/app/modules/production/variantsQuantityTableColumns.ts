@@ -17,7 +17,7 @@ export type VariantsQuantityColumn = {
   options?: string[];
 };
 
-/** Minimal parameter shape required to build config table columns. */
+/** Minimal parameter shape required to build variant quantities table columns. */
 export type VariantQuantityParameterColumnsInput = Pick<
   ConfigurationParameter,
   "key" | "label" | "dataType" | "listOptions"
@@ -130,21 +130,20 @@ export function hasVariantRowValue(
 
 /** Current wire key for Style/combo qty rows. */
 export const VARIANT_TABLE_KEY = "variantTable" as const;
-/** Legacy wire key — still dual-read from stored SO/PO/job JSON. */
 /** Read combo qty rows from `variantTable`. */
 export function getVariantsQuantityRows(
-  configuration: unknown
+  variantQuantities: unknown
 ): VariantsQuantityRow[] {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return [];
   }
 
-  const cfg = configuration as Record<string, unknown>;
+  const cfg = variantQuantities as Record<string, unknown>;
   const table = cfg[VARIANT_TABLE_KEY];
   if (!Array.isArray(table)) return [];
 
@@ -178,20 +177,20 @@ function optionLabelOf(
 }
 
 /**
- * Flatten a stored config table into one cell per non-zero quantity, for
+ * Flatten a stored variant quantities table into one cell per non-zero quantity, for
  * summary badges (`BK · S ×2`) and expand lists. Combo-only: each row is a
  * `valuesKey` + `Quantities`, labelled from `label` or the valuesKey
  * (`|` → ` · `). Legacy Color×Size matrix configs are retired (yield nothing).
  */
 export function getVariantsQuantityCells(
-  configuration: unknown,
+  variantQuantities: unknown,
   optionLabels?: Record<string, string>
 ): VariantsQuantityCell[] {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return [];
   }
@@ -202,7 +201,7 @@ export function getVariantsQuantityCells(
   const cells: VariantsQuantityCell[] = [];
 
   for (const [rowIndex, row] of getVariantsQuantityRows(
-    configuration
+    variantQuantities
   ).entries()) {
     const valuesKey = String(row.valuesKey ?? "").trim();
     if (!valuesKey) continue;
@@ -229,18 +228,18 @@ export type ComboVariantsQuantityRow = {
 };
 
 /**
- * Read stored config → combo editor rows (`valuesKey` + `Quantities`).
+ * Read stored variant quantities → combo editor rows (`valuesKey` + `Quantities`).
  * Configs are combo-only now; anything else yields no rows.
  */
 export function variantsQuantityToComboRows(
-  configuration: unknown,
+  variantQuantities: unknown,
   optionLabels?: Record<string, string>
 ): ComboVariantsQuantityRow[] {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return [];
   }
@@ -250,7 +249,7 @@ export function variantsQuantityToComboRows(
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const out: ComboVariantsQuantityRow[] = [];
 
-  for (const row of getVariantsQuantityRows(configuration)) {
+  for (const row of getVariantsQuantityRows(variantQuantities)) {
     const valuesKey = String(row.valuesKey ?? "").trim();
     if (!valuesKey) continue;
     const quantity = Number(row.Quantities) || 0;
@@ -310,7 +309,7 @@ export function formatVariantRowLabel(
 }
 
 export function formatVariantRowLabels(
-  configuration: unknown,
+  variantQuantities: unknown,
   parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
@@ -319,7 +318,7 @@ export function formatVariantRowLabels(
     parameters,
     defaultQuantityLabel
   );
-  const rows = getVariantsQuantityRows(configuration);
+  const rows = getVariantsQuantityRows(variantQuantities);
 
   return rows
     .filter((row) => hasVariantRowValue(row, columns))
@@ -331,7 +330,7 @@ export type VariantsQuantityRowDisplayPart = {
   quantities: { label: string; value: number }[];
 };
 
-export function getConfigRowDisplayPart(
+export function getVariantQuantityRowDisplayPart(
   row: VariantsQuantityRow,
   columns: VariantsQuantityColumn[],
   /** Display label per list-option value (e.g. color code -> color name). The
@@ -364,8 +363,8 @@ export function getConfigRowDisplayPart(
   return { descriptor, quantities };
 }
 
-export function getConfigRowDisplayParts(
-  configuration: unknown,
+export function getVariantQuantityRowDisplayParts(
+  variantQuantities: unknown,
   parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
@@ -374,11 +373,11 @@ export function getConfigRowDisplayParts(
     parameters,
     defaultQuantityLabel
   );
-  const rows = getVariantsQuantityRows(configuration);
+  const rows = getVariantsQuantityRows(variantQuantities);
 
   return rows
     .filter((row) => hasVariantRowValue(row, columns))
-    .map((row) => getConfigRowDisplayPart(row, columns, optionLabels));
+    .map((row) => getVariantQuantityRowDisplayPart(row, columns, optionLabels));
 }
 
 export type ReportedTargetCell = {
@@ -393,15 +392,15 @@ export type ReportedTargetRow = {
 };
 
 export function buildReportedTargetRows({
-  targetConfiguration,
+  targetVariantQuantities,
   reportedVariantQuantities,
-  pickupConfigurations = [],
+  pickupVariantQuantities = [],
   parameters,
   defaultQuantityLabel
 }: {
-  targetConfiguration: unknown;
+  targetVariantQuantities: unknown;
   reportedVariantQuantities: unknown[];
-  pickupConfigurations?: unknown[];
+  pickupVariantQuantities?: unknown[];
   parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
 }): ReportedTargetRow[] {
@@ -411,7 +410,7 @@ export function buildReportedTargetRows({
   );
 
   const targetRows = mergeVariantsQuantityRows(
-    getVariantsQuantityRows(targetConfiguration),
+    getVariantsQuantityRows(targetVariantQuantities),
     columns
   );
   const reportedRows = mergeVariantsQuantityRows(
@@ -421,7 +420,9 @@ export function buildReportedTargetRows({
     columns
   );
   const pickupRows = mergeVariantsQuantityRows(
-    pickupConfigurations.flatMap((config) => getVariantsQuantityRows(config)),
+    pickupVariantQuantities.flatMap((config) =>
+      getVariantsQuantityRows(config)
+    ),
     columns
   );
 
@@ -469,7 +470,7 @@ export type VariantsQuantityTableReferenceMode = "original" | "remaining";
 export type VariantsQuantityReferenceContext = {
   mode: VariantsQuantityTableReferenceMode;
   originalVariantTable: unknown;
-  /** Active sibling line configurations (excluding the line being edited). */
+  /** Active sibling line variant quantities (excluding the line being edited). */
   otherLineVariantTables: unknown[];
   /** When set, use pickup-based hints for this employee instead of job target hints */
   employeeId?: string;
@@ -479,24 +480,24 @@ export type VariantsQuantityReferenceContext = {
     { quantity: number; variantQuantities: unknown }[]
   >;
   /** Production quantities already reported by the selected employee */
-  employeeReportedConfigurations?: unknown[];
+  employeeReportedVariantQuantities?: unknown[];
   /** When set, the variants-quantity loader fetches fresh pickup/reported data for this job operation */
   jobId?: string;
   jobOperationId?: string;
   /** Sibling line configs in the current form (excluding the line being edited). */
-  siblingLineConfigurations?: unknown[];
+  siblingLineVariantQuantities?: unknown[];
 };
 
 export function buildVariantsQuantityEditorState({
   parameters,
   defaultQuantityLabel,
-  currentConfiguration,
+  currentVariantQuantities,
   referenceContext,
   prefillFromReference = false
 }: {
   parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
-  currentConfiguration: unknown;
+  currentVariantQuantities: unknown;
   referenceContext?: VariantsQuantityReferenceContext | null;
   /**
    * Seed each editable quantity cell that has no current draft value with its
@@ -515,7 +516,7 @@ export function buildVariantsQuantityEditorState({
 
   if (!referenceContext) {
     const currentRows = mergeVariantsQuantityRows(
-      getVariantsQuantityRows(currentConfiguration),
+      getVariantsQuantityRows(currentVariantQuantities),
       columns
     );
     return {
@@ -529,7 +530,7 @@ export function buildVariantsQuantityEditorState({
     columns
   );
   const currentRows = mergeVariantsQuantityRows(
-    getVariantsQuantityRows(currentConfiguration),
+    getVariantsQuantityRows(currentVariantQuantities),
     columns
   );
   const otherRows = mergeVariantsQuantityRows(
@@ -566,7 +567,7 @@ export function buildVariantsQuantityEditorState({
 
   const employeeProducedRows = usePickupHints
     ? mergeVariantsQuantityRows(
-        (referenceContext.employeeReportedConfigurations ?? []).flatMap(
+        (referenceContext.employeeReportedVariantQuantities ?? []).flatMap(
           (config) => getVariantsQuantityRows(config)
         ),
         columns
@@ -663,7 +664,7 @@ export function fillValueFromReference(referenceValue: number) {
   return Math.max(0, referenceValue);
 }
 
-/** Job target config plus already-reported line configs for an operation. */
+/** Job target variant quantities plus already-reported line configs for an operation. */
 export type VariantsQuantityReferenceSource = {
   jobVariantTable: unknown;
   reportedVariantQuantities: unknown[];
@@ -681,24 +682,24 @@ export type VariantsQuantityReferenceSource = {
 export function buildJobRemainingReferenceContext(
   source: VariantsQuantityReferenceSource,
   options?: {
-    excludeConfigurations?: unknown[];
+    excludeVariantQuantities?: unknown[];
     employeeId?: string;
     /** Sibling line configs in the current form (excluding the line being edited). */
-    siblingLineConfigurations?: unknown[];
+    siblingLineVariantQuantities?: unknown[];
   }
 ): VariantsQuantityReferenceContext {
   const exclude = new Set(
-    (options?.excludeConfigurations ?? []).filter((config) => config != null)
+    (options?.excludeVariantQuantities ?? []).filter((config) => config != null)
   );
-  const siblingLineConfigurations = (
-    options?.siblingLineConfigurations ?? []
+  const siblingLineVariantQuantities = (
+    options?.siblingLineVariantQuantities ?? []
   ).filter((config) => config != null && !exclude.has(config));
 
   const employeeId = options?.employeeId?.trim() || undefined;
-  const employeeReportedConfigurations = employeeId
+  const employeeReportedVariantQuantities = employeeId
     ? [
         ...(source.reportedVariantQuantitiesByEmployee?.[employeeId] ?? []),
-        ...siblingLineConfigurations
+        ...siblingLineVariantQuantities
       ].filter((config) => config != null && !exclude.has(config))
     : undefined;
 
@@ -707,11 +708,11 @@ export function buildJobRemainingReferenceContext(
     originalVariantTable: source.jobVariantTable,
     otherLineVariantTables: [
       ...source.reportedVariantQuantities,
-      ...siblingLineConfigurations
+      ...siblingLineVariantQuantities
     ].filter((config) => config != null && !exclude.has(config)),
     employeeId,
     pickupsByEmployee: source.pickupsByEmployee,
-    employeeReportedConfigurations
+    employeeReportedVariantQuantities
   };
 }
 
@@ -722,13 +723,13 @@ export function buildProductionVariantsQuantityReferenceContext({
   employeeId,
   jobId,
   jobOperationId,
-  siblingLineConfigurations = []
+  siblingLineVariantQuantities = []
 }: {
   source?: VariantsQuantityReferenceSource | null;
   employeeId?: string;
   jobId?: string;
   jobOperationId?: string;
-  siblingLineConfigurations?: unknown[];
+  siblingLineVariantQuantities?: unknown[];
 }): VariantsQuantityReferenceContext | undefined {
   const trimmedJobId = jobId?.trim();
   const trimmedJobOperationId = jobOperationId?.trim();
@@ -742,7 +743,7 @@ export function buildProductionVariantsQuantityReferenceContext({
       employeeId: trimmedEmployeeId,
       jobId: trimmedJobId,
       jobOperationId: trimmedJobOperationId,
-      siblingLineConfigurations
+      siblingLineVariantQuantities
     };
   }
 
@@ -750,6 +751,6 @@ export function buildProductionVariantsQuantityReferenceContext({
 
   return buildJobRemainingReferenceContext(source, {
     employeeId: trimmedEmployeeId,
-    siblingLineConfigurations
+    siblingLineVariantQuantities
   });
 }

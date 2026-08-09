@@ -11,7 +11,7 @@ import type { ConfigurationParameter } from "~/modules/items/types";
 import type { OperationQuantitySummary } from "~/modules/production/productionQuantityReport.service";
 import {
   buildVariantsQuantityColumns,
-  getConfigRowDisplayPart,
+  getVariantQuantityRowDisplayPart,
   getVariantsQuantityRows,
   mergeVariantsQuantityRows,
   type VariantsQuantityRowDisplayPart
@@ -31,7 +31,7 @@ function formatTotal(value: number) {
     : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
 }
 
-function useConfigParts(
+function useVariantQuantityDisplayParts(
   configurations: unknown[],
   variantQuantityParameters: ConfigurationParameter[] | null | undefined,
   optionLabels: Record<string, string> | undefined
@@ -51,7 +51,9 @@ function useConfigParts(
       columns
     );
     return merged
-      .map((row) => getConfigRowDisplayPart(row, columns, optionLabels))
+      .map((row) =>
+        getVariantQuantityRowDisplayPart(row, columns, optionLabels)
+      )
       .filter((part) => part.descriptor || part.quantities.length > 0);
   }, [configurations, variantQuantityParameters, optionLabels, t]);
 }
@@ -113,17 +115,17 @@ export function OperationQuantitySummaryView({
   variantQuantityParameters,
   optionLabels
 }: OperationQuantitySummaryProps) {
-  const productionParts = useConfigParts(
+  const productionParts = useVariantQuantityDisplayParts(
     summary?.productionVariantQuantities ?? [],
     variantQuantityParameters,
     optionLabels
   );
-  const scrapParts = useConfigParts(
+  const scrapParts = useVariantQuantityDisplayParts(
     summary?.scrapVariantQuantities ?? [],
     variantQuantityParameters,
     optionLabels
   );
-  const reworkParts = useConfigParts(
+  const reworkParts = useVariantQuantityDisplayParts(
     summary?.reworkVariantQuantities ?? [],
     variantQuantityParameters,
     optionLabels

@@ -9,7 +9,7 @@ import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import { insertJob, jobValidator } from "~/modules/production";
 import {
-  isVariantsQuantityConfiguration,
+  isVariantsQuantityPayload,
   replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { JobForm } from "~/modules/production/ui/Jobs";
@@ -59,7 +59,7 @@ export async function action({ request }: ActionFunctionArgs) {
         typeof variantQuantitiesStr === "string"
           ? (JSON.parse(variantQuantitiesStr) as Record<string, unknown>)
           : (variantQuantitiesStr as Record<string, unknown>);
-      if (isVariantsQuantityConfiguration(parsed)) {
+      if (isVariantsQuantityPayload(parsed)) {
         styleVariantsQuantity = parsed;
         quantity = variantTableUpdateFields(parsed).quantity;
       }
@@ -74,7 +74,7 @@ export async function action({ request }: ActionFunctionArgs) {
           ? (JSON.parse(configStr) as Record<string, unknown>)
           : (configStr as Record<string, unknown>);
       // Legacy dual-submit: Style grids used to share the configuration field.
-      if (isVariantsQuantityConfiguration(parsed)) {
+      if (isVariantsQuantityPayload(parsed)) {
         if (!styleVariantsQuantity) {
           styleVariantsQuantity = parsed;
           quantity = variantTableUpdateFields(parsed).quantity;

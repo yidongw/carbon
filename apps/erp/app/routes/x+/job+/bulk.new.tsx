@@ -19,7 +19,7 @@ import {
   upsertJobMethod
 } from "~/modules/production";
 import {
-  isVariantsQuantityConfiguration,
+  isVariantsQuantityPayload,
   replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { getNextSequence } from "~/modules/settings/settings.service";
@@ -82,10 +82,9 @@ export async function action({ request }: ActionFunctionArgs) {
   // Prefer dedicated variantQuantities FormData; legacy Style grids may still
   // arrive on configuration.
   const stylePayload =
-    styleVariantQuantities &&
-    isVariantsQuantityConfiguration(styleVariantQuantities)
+    styleVariantQuantities && isVariantsQuantityPayload(styleVariantQuantities)
       ? styleVariantQuantities
-      : isVariantsQuantityConfiguration(configuration)
+      : isVariantsQuantityPayload(configuration)
         ? configuration
         : undefined;
   const isStyleQty = !!stylePayload;

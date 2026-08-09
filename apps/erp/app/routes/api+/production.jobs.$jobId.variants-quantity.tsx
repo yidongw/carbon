@@ -142,9 +142,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const planned = await getJobVariantQuantities(client, jobId, companyId);
-  const currentConfiguration = jobVariantQuantitiesToTable(planned.data ?? []);
+  const currentVariantQuantities = jobVariantQuantitiesToTable(
+    planned.data ?? []
+  );
 
-  const merged = applyVariantTableAdjustment(currentConfiguration, adjustment);
+  const merged = applyVariantTableAdjustment(
+    currentVariantQuantities,
+    adjustment
+  );
   if (merged.hasNegative) {
     return data(
       {

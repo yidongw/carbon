@@ -634,22 +634,24 @@ function VariantsQuantityModal({
   );
 }
 
-function extractVariantsQuantity(configuration: unknown): Row[] | undefined {
+function extractVariantsQuantity(
+  variantQuantities: unknown
+): Row[] | undefined {
   if (
-    !configuration ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    !variantQuantities ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return undefined;
   }
-  const cfg = configuration as Record<string, unknown>;
+  const cfg = variantQuantities as Record<string, unknown>;
   const table = cfg.variantTable;
   return Array.isArray(table) ? (table as Row[]) : undefined;
 }
 
 /**
  * Compute editor rows + click-to-fill hints (client-side) from the raw inputs:
- * the fetched `parameters`, the in-memory draft `configuration`, and (when there
+ * the fetched `parameters`, the in-memory draft `variantQuantities`, and (when there
  * are reference hints) a fully-built `referenceContext`. Shared by the local
  * modal and the table-cell overlay render.
  */
@@ -672,7 +674,7 @@ export function buildVariantsQuantityEditorRows({
   const editor = buildVariantsQuantityEditorState({
     parameters,
     defaultQuantityLabel: "Quantities",
-    currentConfiguration:
+    currentVariantQuantities:
       variantTable !== undefined ? { variantTable } : undefined,
     referenceContext,
     prefillFromReference
@@ -702,7 +704,7 @@ export function buildVariantsQuantityEditorRows({
 }
 
 /** Endpoint URL carrying only the fetch keys (ids) — never the draft config. */
-function configSourceUrl(
+function variantsQuantitySourceUrl(
   itemId: string,
   keys: {
     jobId?: string;
@@ -725,7 +727,7 @@ function configSourceUrl(
  *
  * Clean fetch/pass split: only fetch keys (`itemId` + `jobId`/`jobOperationId`/
  * `reportKind`) go to the loader, which returns `parameters` + the DB-resolved
- * `referenceSource`. The in-memory draft `configuration` is a prop, and the
+ * `referenceSource`. The in-memory draft `variantQuantities` is a prop, and the
  * parent supplies `buildReferenceContext(source)` (it owns the in-memory
  * reference inputs). Editor rows + hints are computed here, client-side.
  */
@@ -771,7 +773,7 @@ export function VariantsQuantityLocalModal({
   useEffect(() => {
     if (!open || !itemId) return;
     void load.current(
-      configSourceUrl(itemId, { jobId, jobOperationId, reportKind })
+      variantsQuantitySourceUrl(itemId, { jobId, jobOperationId, reportKind })
     );
   }, [open, itemId, jobId, jobOperationId, reportKind]);
 

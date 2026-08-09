@@ -49,7 +49,7 @@ export type VariantTableAdjustmentResult = {
 };
 
 /**
- * Merges a signed `adjustment` config table into the `current` config table, matching
+ * Merges a signed `adjustment` variant quantities table into the `current` variant quantities table, matching
  * rows by their descriptor (non-quantity) columns and summing the quantity column.
  * All-zero rows are dropped. Flags when the result would go negative for any cell.
  */
@@ -111,19 +111,21 @@ export function applyVariantTableAdjustment(
 }
 
 /**
- * Folds many config tables into one by descriptor, summing the quantity column.
+ * Folds many variant quantity tables into one by descriptor, summing the quantity column.
  * Used to total reported production quantities per operation for display.
  */
 export function sumVariantTables(
-  configs: Array<Json | Record<string, unknown> | null | undefined>
+  variantQuantityTables: Array<
+    Json | Record<string, unknown> | null | undefined
+  >
 ): { variantQuantities: VariantsQuantityData; total: number } {
   let variantQuantities: VariantsQuantityData = {
     variantTable: []
   };
-  for (const config of configs) {
+  for (const table of variantQuantityTables) {
     variantQuantities = applyVariantTableAdjustment(
       variantQuantities,
-      config
+      table
     ).variantQuantities;
   }
   return {
@@ -133,18 +135,22 @@ export function sumVariantTables(
 }
 
 /**
- * The remaining config table: `planned - sum(reportedConfigs)` per cell, floored
+ * The remaining variant quantities table: `planned - sum(reportedVariantQuantities)` per cell, floored
  * at 0. Returns an empty table when there's no plan structure.
  */
 export function computeVariantTableRemaining(
   planned: Json | Record<string, unknown> | null | undefined,
-  reportedConfigs: Array<Json | Record<string, unknown> | null | undefined>
+  reportedVariantQuantities: Array<
+    Json | Record<string, unknown> | null | undefined
+  >
 ): VariantsQuantityData {
   if (getVariantsQuantityTable(planned).length === 0) {
     return { variantTable: [] };
   }
 
-  const reported = sumVariantTables(reportedConfigs).variantQuantities;
+  const reported = sumVariantTables(
+    reportedVariantQuantities
+  ).variantQuantities;
   const negated: VariantsQuantityData = {
     variantTable: reported.variantTable.map((row) => ({
       ...row,
@@ -164,18 +170,22 @@ export function computeVariantTableRemaining(
 }
 
 /**
- * True when the summed `reportedConfigs` would exceed the `planned` config for
+ * True when the summed `reportedVariantQuantities` would exceed the `planned` config for
  * any cell — i.e. `planned - sum(reported)` goes negative. No-op (returns false)
  * when there's no plan structure or nothing reported, so non-config-param jobs
  * are unaffected.
  */
-export function reportsExceedConfigPlan(
+export function reportsExceedVariantQuantitiesPlan(
   planned: Json | Record<string, unknown> | null | undefined,
-  reportedConfigs: Array<Json | Record<string, unknown> | null | undefined>
+  reportedVariantQuantities: Array<
+    Json | Record<string, unknown> | null | undefined
+  >
 ): boolean {
   if (getVariantsQuantityTable(planned).length === 0) return false;
 
-  const reported = sumVariantTables(reportedConfigs).variantQuantities;
+  const reported = sumVariantTables(
+    reportedVariantQuantities
+  ).variantQuantities;
   if (reported.variantTable.length === 0) return false;
 
   const negated: VariantsQuantityData = {

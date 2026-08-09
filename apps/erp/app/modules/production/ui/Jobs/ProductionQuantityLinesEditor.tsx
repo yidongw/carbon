@@ -65,7 +65,7 @@ export function normalizeUniqueLineTypes(
   });
 }
 
-export function getConfigFromEditableLine(
+export function getVariantQuantitiesFromEditableLine(
   line: EditableProductionQuantityLine
 ) {
   if (!line.variantQuantities || typeof line.variantQuantities !== "object") {
@@ -78,39 +78,40 @@ function buildReferenceContextForLine(
   line: EditableProductionQuantityLine,
   lineKey: string,
   lines: EditableProductionQuantityLine[],
-  configReferenceContext?: {
+  variantsQuantityReferenceContext?: {
     originalVariantTable?: unknown;
     variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   } | null,
   employeeId?: string
 ): VariantsQuantityReferenceContext | undefined {
-  if (!configReferenceContext) return undefined;
+  if (!variantsQuantityReferenceContext) return undefined;
 
-  if (configReferenceContext.originalVariantTable != null) {
+  if (variantsQuantityReferenceContext.originalVariantTable != null) {
     return {
       mode: line.type === "Production" ? "original" : "remaining",
-      originalVariantTable: configReferenceContext.originalVariantTable,
+      originalVariantTable:
+        variantsQuantityReferenceContext.originalVariantTable,
       otherLineVariantTables: lines
         .filter((l) => l.key !== lineKey)
-        .map((l) => getConfigFromEditableLine(l))
+        .map((l) => getVariantQuantitiesFromEditableLine(l))
         .filter(
           (config): config is Record<string, unknown> => config !== undefined
         )
     };
   }
 
-  if (configReferenceContext.variantsQuantityReferenceSource) {
-    const siblingLineConfigurations = lines
+  if (variantsQuantityReferenceContext.variantsQuantityReferenceSource) {
+    const siblingLineVariantQuantities = lines
       .filter((line) => line.key !== lineKey)
-      .map((line) => getConfigFromEditableLine(line))
+      .map((line) => getVariantQuantitiesFromEditableLine(line))
       .filter(
         (config): config is Record<string, unknown> => config !== undefined
       );
 
     return buildProductionVariantsQuantityReferenceContext({
-      source: configReferenceContext.variantsQuantityReferenceSource,
+      source: variantsQuantityReferenceContext.variantsQuantityReferenceSource,
       employeeId,
-      siblingLineConfigurations
+      siblingLineVariantQuantities
     });
   }
 
@@ -123,7 +124,7 @@ export function ProductionQuantityLinesEditor({
   variantQuantityParameters,
   itemId,
   isDisabled = false,
-  configReferenceContext,
+  variantsQuantityReferenceContext,
   variantsQuantityReferenceSource,
   employeeId,
   jobId,
@@ -137,7 +138,7 @@ export function ProductionQuantityLinesEditor({
   itemId?: string | null;
   isDisabled?: boolean;
   /** When set (disposition), config table shows original/remaining reference values. */
-  configReferenceContext?: {
+  variantsQuantityReferenceContext?: {
     originalVariantTable: unknown;
   } | null;
   /** When set (first submit), hints = job target − already reported on the operation. */
@@ -170,7 +171,7 @@ export function ProductionQuantityLinesEditor({
 
   const lineVariantsQuantityModal = useVariantsQuantityModal();
 
-  const openLineConfig = useCallback(
+  const openLineVariantsQuantity = useCallback(
     (lineKey: string) => {
       if (!itemId) return;
       const line = lines.find((l) => l.key === lineKey);
@@ -178,7 +179,7 @@ export function ProductionQuantityLinesEditor({
 
       lineVariantsQuantityModal.open({
         itemId,
-        variantQuantities: getConfigFromEditableLine(line),
+        variantQuantities: getVariantQuantitiesFromEditableLine(line),
         jobId,
         jobOperationId,
         reportKind: "productionQuantity",
@@ -196,10 +197,10 @@ export function ProductionQuantityLinesEditor({
             line,
             lineKey,
             lines,
-            configReferenceContext?.originalVariantTable != null
+            variantsQuantityReferenceContext?.originalVariantTable != null
               ? {
                   originalVariantTable:
-                    configReferenceContext.originalVariantTable
+                    variantsQuantityReferenceContext.originalVariantTable
                 }
               : { variantsQuantityReferenceSource: source },
             employeeId
@@ -214,7 +215,7 @@ export function ProductionQuantityLinesEditor({
       });
     },
     [
-      configReferenceContext,
+      variantsQuantityReferenceContext,
       employeeId,
       itemId,
       jobId,
@@ -250,13 +251,15 @@ export function ProductionQuantityLinesEditor({
     );
   };
 
-  const showConfig = Boolean(variantQuantityParameters?.length && itemId);
+  const showVariantsQuantityUi = Boolean(
+    variantQuantityParameters?.length && itemId
+  );
 
   return (
     <VStack className="w-full items-stretch gap-3">
       {lines.map((line) => {
-        const cfg = getConfigFromEditableLine(line);
-        const configTotal = computeVariantTableTotal(cfg);
+        const cfg = getVariantQuantitiesFromEditableLine(line);
+        const variantsQuantityTotal = computeVariantTableTotal(cfg);
 
         return (
           <div
@@ -266,7 +269,7 @@ export function ProductionQuantityLinesEditor({
             <HStack className="w-full min-w-0 items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <Select
-                  disabled={showConfig ? isDisabled : false}
+                  disabled={showVariantsQuantityUi ? isDisabled : false}
                   value={line.type}
                   onValueChange={(value) =>
                     updateLine(line.key, {
@@ -332,15 +335,15 @@ export function ProductionQuantityLinesEditor({
               value={line.quantity}
               onChange={(quantity) => updateLine(line.key, { quantity })}
               minValue={0}
-              isDisabled={showConfig ? isDisabled : false}
-              isReadOnly={configTotal > 0}
-              hasVariantsQuantity={showConfig}
+              isDisabled={showVariantsQuantityUi ? isDisabled : false}
+              isReadOnly={variantsQuantityTotal > 0}
+              hasVariantsQuantity={showVariantsQuantityUi}
               onOpenVariantsQuantity={
-                showConfig && !isDisabled
-                  ? () => openLineConfig(line.key)
+                showVariantsQuantityUi && !isDisabled
+                  ? () => openLineVariantsQuantity(line.key)
                   : undefined
               }
-              variantsQuantityTotal={configTotal}
+              variantsQuantityTotal={variantsQuantityTotal}
               openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
             />
             {line.type === "Scrap" ? (
@@ -379,7 +382,7 @@ export function ProductionQuantityLinesEditor({
           type="button"
           variant="secondary"
           size="sm"
-          isDisabled={showConfig ? isDisabled : false}
+          isDisabled={showVariantsQuantityUi ? isDisabled : false}
           onClick={addLine}
           className="transition-transform active:scale-[0.96]"
         >

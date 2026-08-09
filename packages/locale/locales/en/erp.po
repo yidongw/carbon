@@ -2185,9 +2185,6 @@ msgstr "Configure notifications for when maintenance dispatches are created from
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Configure notifications for when new suggestions are submitted."
 
-msgid "Configure quantities"
-msgstr "Configure quantities"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Configure the default accounts used for various transaction types across your system"
 
@@ -15931,9 +15928,6 @@ msgstr "View bill of process"
 msgid "View bundles"
 msgstr "View bundles"
 
-msgid "View configuration parameters"
-msgstr "View configuration parameters"
-
 msgid "View Contact"
 msgstr "View Contact"
 
@@ -16044,6 +16038,9 @@ msgstr "View Traceability Graph"
 
 msgid "View Transfer"
 msgstr "View Transfer"
+
+msgid "View variant quantities"
+msgstr "View variant quantities"
 
 msgid "View variants quantity"
 msgstr "View variants quantity"

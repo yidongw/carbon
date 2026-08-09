@@ -116,7 +116,7 @@ export function QuantityWithVariantsQuantity({
           hasVariantsQuantity ? onOpenVariantsQuantity : undefined
         }
         variantsQuantityTotal={variantsQuantityTotal}
-        openVariantsQuantityAccessibilityLabel={t`Configure quantities`}
+        openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
       />
       {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}

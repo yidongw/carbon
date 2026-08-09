@@ -9,7 +9,7 @@ import {
   upsertJobMethod
 } from "~/modules/production";
 import {
-  isVariantsQuantityConfiguration,
+  isVariantsQuantityPayload,
   persistStyleJobVariantQuantities
 } from "~/modules/production/jobVariantQuantity.service";
 import { getDatabaseClient } from "~/services/database.server";
@@ -250,7 +250,7 @@ export async function action({ request }: ActionFunctionArgs) {
       if (
         configuration &&
         typeof configuration === "object" &&
-        isVariantsQuantityConfiguration(configuration)
+        isVariantsQuantityPayload(configuration)
       ) {
         const jobsWithItems = await client
           .from("job")

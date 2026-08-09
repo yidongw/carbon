@@ -99,7 +99,7 @@ export async function getMasterCuttingProgress(
 
   // Reported cutting config tables, grouped by cutting operation.
   const cuttingOpIds = [...cuttingOpByJob.values()].map((c) => c.id);
-  const reportedConfigsByOp = new Map<string, Json[]>();
+  const reportedVariantQuantitiesByOp = new Map<string, Json[]>();
   if (cuttingOpIds.length > 0) {
     const pq = await client
       .from("productionQuantity")
@@ -110,9 +110,12 @@ export async function getMasterCuttingProgress(
       .is("invalidatedAt", null);
     for (const row of pq.data ?? []) {
       if (!row.jobOperationId) continue;
-      const list = reportedConfigsByOp.get(row.jobOperationId);
+      const list = reportedVariantQuantitiesByOp.get(row.jobOperationId);
       if (list) list.push(row.variantQuantities);
-      else reportedConfigsByOp.set(row.jobOperationId, [row.variantQuantities]);
+      else
+        reportedVariantQuantitiesByOp.set(row.jobOperationId, [
+          row.variantQuantities
+        ]);
     }
   }
 
@@ -126,7 +129,7 @@ export async function getMasterCuttingProgress(
     const remainingConfiguration = cuttingOp
       ? computeVariantTableRemaining(
           planConfig,
-          reportedConfigsByOp.get(cuttingOp.id) ?? []
+          reportedVariantQuantitiesByOp.get(cuttingOp.id) ?? []
         )
       : { variantTable: [] };
 

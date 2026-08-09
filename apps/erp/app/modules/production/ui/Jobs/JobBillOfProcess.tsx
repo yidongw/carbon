@@ -246,7 +246,7 @@ function makeItems(
   jobQuantityTarget: number,
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
-  onOpenConfigSummary?: (operationId: string) => void,
+  onOpenVariantsQuantitySummary?: (operationId: string) => void,
   hasVariantsQuantity?: boolean
 ): ItemWithData[] {
   return operations.map((operation) =>
@@ -260,7 +260,7 @@ function makeItems(
       jobQuantityTarget,
       job,
       onAddProductionQuantity,
-      onOpenConfigSummary,
+      onOpenVariantsQuantitySummary,
       hasVariantsQuantity
     )
   );
@@ -276,7 +276,7 @@ function makeItem(
   jobQuantityTarget: number,
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
-  onOpenConfigSummary?: (operationId: string) => void,
+  onOpenVariantsQuantitySummary?: (operationId: string) => void,
   hasVariantsQuantity?: boolean
 ): ItemWithData {
   return {
@@ -330,8 +330,8 @@ function makeItem(
             ? () => onAddProductionQuantity(operation.id!)
             : undefined,
           onOpenVariantsQuantity:
-            hasVariantsQuantity && onOpenConfigSummary
-              ? () => onOpenConfigSummary(operation.id!)
+            hasVariantsQuantity && onOpenVariantsQuantitySummary
+              ? () => onOpenVariantsQuantitySummary(operation.id!)
               : undefined
         },
     footer: temporaryItems[operation.id!] ? null : (
@@ -759,14 +759,14 @@ const JobBillOfProcess = ({
   const [variantQuantityParameters, setVariantQuantityParameters] = useState<
     ConfigurationParameter[] | null
   >(null);
-  const configSummaryModal = useDisclosure();
-  const [configSummaryOperationId, setConfigSummaryOperationId] = useState<
-    string | null
-  >(null);
-  const [configSummaryRows, setConfigSummaryRows] = useState<
+  const variantsQuantitySummaryModal = useDisclosure();
+  const [variantsQuantitySummaryOperationId, setConfigSummaryOperationId] =
+    useState<string | null>(null);
+  const [variantsQuantitySummaryRows, setConfigSummaryRows] = useState<
     ReportedTargetRow[]
   >([]);
-  const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
+  const [variantsQuantitySummaryLoading, setConfigSummaryLoading] =
+    useState(false);
 
   const hasVariantsQuantity = (variantQuantityParameters?.length ?? 0) > 0;
 
@@ -780,14 +780,14 @@ const JobBillOfProcess = ({
     );
   }, [carbon, companyId, itemId]);
 
-  const openConfigSummary = useCallback(
+  const openVariantsQuantitySummary = useCallback(
     async (operationId: string) => {
       if (!carbon || !variantQuantityParameters?.length) return;
 
       setConfigSummaryOperationId(operationId);
       setConfigSummaryRows([]);
       setConfigSummaryLoading(true);
-      configSummaryModal.onOpen();
+      variantsQuantitySummaryModal.onOpen();
 
       const [quantityResult, pickupResult] = await Promise.all([
         carbon
@@ -816,7 +816,7 @@ const JobBillOfProcess = ({
           (config): config is NonNullable<typeof config> => config != null
         );
 
-      const pickupConfigurations = (pickupResult.data ?? [])
+      const pickupVariantQuantities = (pickupResult.data ?? [])
         .map((row) => row.variantQuantities)
         .filter(
           (config): config is NonNullable<typeof config> => config != null
@@ -824,9 +824,9 @@ const JobBillOfProcess = ({
 
       setConfigSummaryRows(
         buildReportedTargetRows({
-          targetConfiguration: plannedVariantQuantities,
+          targetVariantQuantities: plannedVariantQuantities,
           reportedVariantQuantities,
-          pickupConfigurations,
+          pickupVariantQuantities,
           parameters: variantQuantityParameters,
           defaultQuantityLabel: t`Quantities`
         })
@@ -836,7 +836,7 @@ const JobBillOfProcess = ({
     [
       carbon,
       companyId,
-      configSummaryModal,
+      variantsQuantitySummaryModal,
       variantQuantityParameters,
       plannedVariantQuantities,
       t
@@ -859,7 +859,7 @@ const JobBillOfProcess = ({
     jobQuantityTarget,
     jobData?.job,
     onAddProductionQuantity,
-    hasVariantsQuantity ? openConfigSummary : undefined,
+    hasVariantsQuantity ? openVariantsQuantitySummary : undefined,
     hasVariantsQuantity
   ).map((item) => ({
     ...item,
@@ -1248,15 +1248,15 @@ const JobBillOfProcess = ({
     />
   );
 
-  const configSummaryOperation = configSummaryOperationId
-    ? operationsById.get(configSummaryOperationId)
+  const variantsQuantitySummaryOperation = variantsQuantitySummaryOperationId
+    ? operationsById.get(variantsQuantitySummaryOperationId)
     : undefined;
 
-  const configSummaryModalElement = hasVariantsQuantity ? (
+  const variantsQuantitySummaryModalElement = hasVariantsQuantity ? (
     <Modal
-      open={configSummaryModal.isOpen}
+      open={variantsQuantitySummaryModal.isOpen}
       onOpenChange={(open) => {
-        if (!open) configSummaryModal.onClose();
+        if (!open) variantsQuantitySummaryModal.onClose();
       }}
     >
       <ModalContent
@@ -1267,23 +1267,26 @@ const JobBillOfProcess = ({
       >
         <ModalHeader className="mb-4 shrink-0">
           <ModalTitle>
-            {configSummaryOperation?.description ?? (
+            {variantsQuantitySummaryOperation?.description ?? (
               <Trans>Variant quantities</Trans>
             )}
           </ModalTitle>
         </ModalHeader>
         <ModalBody className="mb-0 min-h-0 flex-1 overflow-y-auto overflow-x-auto pb-6">
-          {configSummaryLoading ? (
+          {variantsQuantitySummaryLoading ? (
             <Loading isLoading />
           ) : (
             <VariantsQuantityReportedTargetTable
-              rows={configSummaryRows}
+              rows={variantsQuantitySummaryRows}
               parameters={variantQuantityParameters ?? []}
             />
           )}
         </ModalBody>
         <ModalFooter className="shrink-0">
-          <Button variant="secondary" onClick={configSummaryModal.onClose}>
+          <Button
+            variant="secondary"
+            onClick={variantsQuantitySummaryModal.onClose}
+          >
             <Trans>Close</Trans>
           </Button>
         </ModalFooter>
@@ -1317,7 +1320,7 @@ const JobBillOfProcess = ({
             {list}
           </div>
         </div>
-        {configSummaryModalElement}
+        {variantsQuantitySummaryModalElement}
       </>
     );
   }
@@ -1350,7 +1353,7 @@ const JobBillOfProcess = ({
         </HStack>
         <CardContent>{list}</CardContent>
       </Card>
-      {configSummaryModalElement}
+      {variantsQuantitySummaryModalElement}
     </>
   );
 };

@@ -320,11 +320,11 @@ const JobQuantityCell = memo(function JobQuantityCell({
   const isCardCell = useIsCardCell();
   const quantity = job.quantity ?? 0;
   const quantityComplete = job.quantityComplete ?? 0;
-  const showConfiguredQuantityUi =
+  const showVariantsQuantityUi =
     !!job.id && jobIdsWithVariantQuantities.has(job.id);
 
-  if (showConfiguredQuantityUi) {
-    const canConfigure =
+  if (showVariantsQuantityUi) {
+    const canEditVariantsQuantity =
       permissions.can("update", "production") && !isJobLocked(job.status);
     return (
       <HStack spacing={1} className="relative">
@@ -332,19 +332,19 @@ const JobQuantityCell = memo(function JobQuantityCell({
         <IconButton
           type="button"
           icon={<LuTable size="1em" strokeWidth={3} />}
-          aria-label={t`Configure quantities`}
+          aria-label={t`Edit variant quantities`}
           size="sm"
           variant="secondary"
           className={cn(
             quantity > 0 && "text-emerald-500 hover:text-emerald-500"
           )}
-          isDisabled={!canConfigure}
+          isDisabled={!canEditVariantsQuantity}
           onClick={(e) => onOpenVariantsQuantity(e, job)}
         />
-        {isCardCell && canConfigure && (
+        {isCardCell && canEditVariantsQuantity && (
           <button
             type="button"
-            aria-label={t`Configure quantities`}
+            aria-label={t`Edit variant quantities`}
             data-card-action
             className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onClick={(e) => onOpenVariantsQuantity(e, job)}

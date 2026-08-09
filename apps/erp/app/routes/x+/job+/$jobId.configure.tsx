@@ -7,7 +7,7 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { upsertJobMethod } from "~/modules/production";
 import {
-  isVariantsQuantityConfiguration,
+  isVariantsQuantityPayload,
   persistStyleJobVariantQuantities
 } from "~/modules/production/jobVariantQuantity.service";
 import { getDatabaseClient } from "~/services/database.server";
@@ -41,7 +41,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
-  if (isVariantsQuantityConfiguration(configuration)) {
+  if (isVariantsQuantityPayload(configuration)) {
     const replaced = await persistStyleJobVariantQuantities(
       client,
       getDatabaseClient(),

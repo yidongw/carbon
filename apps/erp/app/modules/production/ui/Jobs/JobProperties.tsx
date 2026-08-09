@@ -477,7 +477,7 @@ const JobProperties = ({
             </span>
             <IconButton
               icon={<LuTable size="1em" strokeWidth="3" />}
-              aria-label={t`Configure quantities`}
+              aria-label={t`Edit variant quantities`}
               size="sm"
               variant="secondary"
               className={cn(

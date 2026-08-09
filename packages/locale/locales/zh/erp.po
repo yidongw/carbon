@@ -2186,9 +2186,6 @@ msgstr "在车间创建维护调度时配置通知。通知根据故障模式类
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "配置新建议提交时的通知设置。"
 
-msgid "Configure quantities"
-msgstr "配置数量"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "配置系统中各种交易类型使用的默认账户"
 
@@ -15932,9 +15929,6 @@ msgstr "查看工序清单"
 msgid "View bundles"
 msgstr "查看分包"
 
-msgid "View configuration parameters"
-msgstr "查看配置参数"
-
 msgid "View Contact"
 msgstr "查看联系人"
 
@@ -16045,6 +16039,9 @@ msgstr "查看追溯图示"
 
 msgid "View Transfer"
 msgstr "查看转移"
+
+msgid "View variant quantities"
+msgstr ""
 
 msgid "View variants quantity"
 msgstr ""

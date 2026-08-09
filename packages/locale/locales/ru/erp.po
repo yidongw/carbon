@@ -2185,9 +2185,6 @@ msgstr "Настройте уведомления для случаев, ког�
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Настройте уведомления для новых предложений."
 
-msgid "Configure quantities"
-msgstr "Настройка количества"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Настройте учетные записи по умолчанию, используемые для различных типов транзакций в вашей системе"
 
@@ -15931,9 +15928,6 @@ msgstr "Просматривать билет по процессу"
 msgid "View bundles"
 msgstr "Показать пачки"
 
-msgid "View configuration parameters"
-msgstr "Просмотр конфигурационных параметров"
-
 msgid "View Contact"
 msgstr "Просмотр контакта"
 
@@ -16044,6 +16038,9 @@ msgstr "Просмотр графика отслеживания"
 
 msgid "View Transfer"
 msgstr "Просмотр передачи"
+
+msgid "View variant quantities"
+msgstr ""
 
 msgid "View variants quantity"
 msgstr ""

@@ -63,12 +63,13 @@ export function StyleLineQuantityInput({
 }: StyleLineQuantityInputProps) {
   const { t } = useLingui();
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialVariantsQuantity(variantQuantities);
+  const initialVariantsQuantity =
+    parseInitialVariantsQuantity(variantQuantities);
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
-  >(initialConfig.rows);
+  >(initialVariantsQuantity.rows);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
-    initialConfig.total
+    initialVariantsQuantity.total
   );
   const [quantity, setQuantity] = useState(value);
   const [opening, setOpening] = useState(false);

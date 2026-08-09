@@ -96,14 +96,14 @@ const StockTransferLineForm = ({
   );
 
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialVariantsQuantity(
+  const initialVariantsQuantity = parseInitialVariantsQuantity(
     initialValues.variantQuantities
   );
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
-  >(initialConfig.rows);
+  >(initialVariantsQuantity.rows);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
-    initialConfig.total
+    initialVariantsQuantity.total
   );
   const [openingConfig, setOpeningConfig] = useState(false);
 

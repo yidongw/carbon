@@ -28,7 +28,7 @@ describe("buildVariantsQuantityEditorState", () => {
     const { rows, referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext: {
         mode: "original",
         originalVariantTable,
@@ -45,7 +45,7 @@ describe("buildVariantsQuantityEditorState", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
         originalVariantTable,
@@ -62,7 +62,7 @@ describe("buildVariantsQuantityEditorState", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
         originalVariantTable,
@@ -79,7 +79,7 @@ describe("buildVariantsQuantityEditorState", () => {
     const { rows } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: {
+      currentVariantQuantities: {
         variantTable: [{ valuesKey: "红色|M", Quantities: 3 }]
       },
       referenceContext: {
@@ -111,7 +111,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 
@@ -150,7 +150,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 
@@ -186,7 +186,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 
@@ -213,7 +213,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
       employeeId: "emp1",
       jobId: "job1",
       jobOperationId: "op1",
-      siblingLineConfigurations: []
+      siblingLineVariantQuantities: []
     });
   });
 
@@ -239,7 +239,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
       employeeId: "emp1",
       jobId: undefined,
       jobOperationId: "op1",
-      siblingLineConfigurations: []
+      siblingLineVariantQuantities: []
     });
   });
 });

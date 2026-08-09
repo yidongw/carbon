@@ -15,7 +15,7 @@ import {
   masterWorkOrderValidator
 } from "~/modules/production";
 import {
-  isVariantsQuantityConfiguration,
+  isVariantsQuantityPayload,
   replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
@@ -83,7 +83,7 @@ export async function action({ request }: ActionFunctionArgs) {
         string,
         unknown
       >;
-      if (isVariantsQuantityConfiguration(parsed)) {
+      if (isVariantsQuantityPayload(parsed)) {
         styleVariantsQuantity = parsed;
         quantity = variantTableUpdateFields(parsed).quantity;
       }

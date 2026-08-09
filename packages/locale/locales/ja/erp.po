@@ -2185,9 +2185,6 @@ msgstr "保全ディスパッチが作業現場から作成されるときの通
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "新しい提案が送信されたときの通知を設定します。"
 
-msgid "Configure quantities"
-msgstr "調整数量"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "様々なトランザクションタイプに使用されるデフォルトアカウントをシステム全体で設定します"
 
@@ -15931,9 +15928,6 @@ msgstr "見る請求書のプロセス"
 msgid "View bundles"
 msgstr "バンドルを表示"
 
-msgid "View configuration parameters"
-msgstr "設定パラメータを表示"
-
 msgid "View Contact"
 msgstr "連絡先を表示"
 
@@ -16044,6 +16038,9 @@ msgstr "トレーサビリティグラフを表示"
 
 msgid "View Transfer"
 msgstr "転送を表示"
+
+msgid "View variant quantities"
+msgstr ""
 
 msgid "View variants quantity"
 msgstr ""

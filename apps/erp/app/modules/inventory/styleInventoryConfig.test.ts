@@ -59,7 +59,7 @@ describe("buildInventoryVariantsQuantityReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters: comboParameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { variantTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 

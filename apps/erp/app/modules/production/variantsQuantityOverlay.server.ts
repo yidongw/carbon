@@ -249,7 +249,8 @@ export async function resolveVariantsQuantityReferenceContext(
 
   return buildJobRemainingReferenceContext(source, {
     employeeId: referenceContext.employeeId,
-    siblingLineConfigurations: referenceContext.siblingLineConfigurations ?? []
+    siblingLineVariantQuantities:
+      referenceContext.siblingLineVariantQuantities ?? []
   });
 }
 
@@ -293,8 +294,10 @@ export function parseReferenceContextFromRequest(
         typeof ctx.employeeId === "string" ? ctx.employeeId : undefined,
       jobId,
       jobOperationId,
-      siblingLineConfigurations: Array.isArray(ctx.siblingLineConfigurations)
-        ? ctx.siblingLineConfigurations
+      siblingLineVariantQuantities: Array.isArray(
+        ctx.siblingLineVariantQuantities
+      )
+        ? ctx.siblingLineVariantQuantities
         : undefined
     };
   } catch {

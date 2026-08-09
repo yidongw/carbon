@@ -39,7 +39,7 @@ import {
 } from "./ProductionActorFields";
 import {
   type EditableProductionQuantityLine,
-  getConfigFromEditableLine,
+  getVariantQuantitiesFromEditableLine,
   normalizeUniqueLineTypes,
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
@@ -54,12 +54,12 @@ import {
 
 type VariantsQuantityRow = Record<string, string | number | boolean>;
 
-function getInitialConfigState(configuration: unknown) {
+function getInitialVariantsQuantityState(variantQuantities: unknown) {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return {
       rows: null as VariantsQuantityRow[] | null,
@@ -67,7 +67,7 @@ function getInitialConfigState(configuration: unknown) {
     };
   }
 
-  const cfg = configuration as Record<string, unknown>;
+  const cfg = variantQuantities as Record<string, unknown>;
   const rows = Array.isArray(cfg.variantTable)
     ? (cfg.variantTable as VariantsQuantityRow[])
     : null;
@@ -207,21 +207,21 @@ const ProductionQuantityForm = ({
       : ((initialValues as z.infer<typeof productionQuantityValidator>)
           .quantity ?? 0)
   );
-  const initialConfig = isCreateMultiLine
+  const initialVariantsQuantity = isCreateMultiLine
     ? {
         rows: null as VariantsQuantityRow[] | null,
         total: 0
       }
-    : getInitialConfigState(
+    : getInitialVariantsQuantityState(
         (initialValues as z.infer<typeof productionQuantityValidator>)
           .variantQuantities
       );
 
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     VariantsQuantityRow[] | null
-  >(initialConfig.rows);
+  >(initialVariantsQuantity.rows);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
-    initialConfig.total
+    initialVariantsQuantity.total
   );
   const formBodyRef = useRef<HTMLDivElement>(null);
 
@@ -238,7 +238,7 @@ const ProductionQuantityForm = ({
     // empty config). This makes the report valid out of the box — Save is
     // enabled and the config table is prefilled/editable — rather than showing a
     // filled quantity next to a disabled Save. Falls through (empty config,
-    // Save gated by hasUnconfiguredLine) when there's no plan to seed from.
+    // Save gated by hasLineWithoutVariantQuantities) when there's no plan to seed from.
     if (
       !variantQuantityParameters?.length ||
       !variantsQuantityReferenceSource
@@ -256,7 +256,7 @@ const ProductionQuantityForm = ({
     if (remaining.variantTable.length === 0) return editable;
     const remainingTotal = computeVariantTableTotal(remaining);
     return editable.map((line) =>
-      line.type === "Production" && !getConfigFromEditableLine(line)
+      line.type === "Production" && !getVariantQuantitiesFromEditableLine(line)
         ? { ...line, variantQuantities: remaining, quantity: remainingTotal }
         : line
     );
@@ -270,14 +270,16 @@ const ProductionQuantityForm = ({
 
   // A variant-configured report must enter its quantity through the config
   // table. The line seeds a prefilled quantity (the operation's remaining) with
-  // an empty configuration, so `hasZeroQuantityLine` alone wouldn't catch it —
-  // block submit until every line carries a non-empty configuration, otherwise
-  // the prefilled quantity would post with configuration = NULL.
-  const hasUnconfiguredLine =
+  // an empty variant quantities, so `hasZeroQuantityLine` alone wouldn't catch it —
+  // block submit until every line carries a non-empty variant quantities, otherwise
+  // the prefilled quantity would post with variantQuantities = NULL.
+  const hasLineWithoutVariantQuantities =
     isCreateMultiLine &&
     hasVariantsQuantity &&
     lines.some(
-      (line) => computeVariantTableTotal(getConfigFromEditableLine(line)) <= 0
+      (line) =>
+        computeVariantTableTotal(getVariantQuantitiesFromEditableLine(line)) <=
+        0
     );
 
   const linesJsonForForm = useMemo(() => {
@@ -540,7 +542,9 @@ const ProductionQuantityForm = ({
     permissionDisabled: isDisabled
   });
   const canSubmitCreate =
-    canSubmitDetails && !hasZeroQuantityLine && !hasUnconfiguredLine;
+    canSubmitDetails &&
+    !hasZeroQuantityLine &&
+    !hasLineWithoutVariantQuantities;
 
   // Configured reports (e.g. master cutting) enter their quantity through the
   // variants-quantity modal, and opening it only needs the job/item + operation —
@@ -548,12 +552,12 @@ const ProductionQuantityForm = ({
   // soon as the operation is picked, instead of waiting for an employee to be
   // selected (submitting still requires one). Plain-quantity reports keep the
   // stricter `areDetailFieldsDisabled` gate.
-  const configFieldsDisabled =
+  const variantsQuantityFieldsDisabled =
     isDisabled || !hasJobSelected || !hasOperationSelected;
 
   // Plain-quantity reports (bundles / non-configured items) show the operation's
   // remaining (target − reported) and can't exceed it. Configured reports are
-  // handled per variant combo by the config editor instead.
+  // handled per variant combo by the variants-quantity editor instead.
   // NOTE: `Number` is shadowed by the imported `<Number>` form field, so we use
   // globals here (`Infinity`, unary `+`) — calling `Number(...)` would hit the
   // component and throw "Number is not a function".
@@ -683,7 +687,7 @@ const ProductionQuantityForm = ({
                   // the stricter gate (need an actor before entering anything).
                   isDisabled={
                     hasVariantsQuantity
-                      ? configFieldsDisabled
+                      ? variantsQuantityFieldsDisabled
                       : areDetailFieldsDisabled
                   }
                   employeeId={actorKind === "employee" ? employeeId : undefined}
@@ -707,12 +711,14 @@ const ProductionQuantityForm = ({
                     label={t`Quantity`}
                     value={quantity}
                     minValue={0}
-                    isDisabled={configFieldsDisabled}
+                    isDisabled={variantsQuantityFieldsDisabled}
                     isReadOnly={variantsQuantityTotal > 0}
                     variantsQuantityTotal={variantsQuantityTotal}
                     hasVariantsQuantity
                     onOpenVariantsQuantity={
-                      configFieldsDisabled ? undefined : openVariantsQuantity
+                      variantsQuantityFieldsDisabled
+                        ? undefined
+                        : openVariantsQuantity
                     }
                     onChange={setQuantity}
                   />

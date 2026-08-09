@@ -2185,9 +2185,6 @@ msgstr "Skonfiguruj powiadomienia dla dyspozycji konserwacyjnych tworzonych z ha
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Skonfiguruj powiadomienia dla nowych przesłanych sugestii."
 
-msgid "Configure quantities"
-msgstr "Konfigurowanie ilości"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Skonfiguruj domyślne konta używane dla różnych typów transakcji w całym systemie"
 
@@ -15931,9 +15928,6 @@ msgstr "Pokaż fakturę procesu"
 msgid "View bundles"
 msgstr "Zobacz pakiety"
 
-msgid "View configuration parameters"
-msgstr "Zobacz parametry konfiguracji"
-
 msgid "View Contact"
 msgstr "Wyświetl Kontakt"
 
@@ -16044,6 +16038,9 @@ msgstr "Wyświetl Graf Możliwości Śledzenia"
 
 msgid "View Transfer"
 msgstr "Wyświetl Transfer"
+
+msgid "View variant quantities"
+msgstr ""
 
 msgid "View variants quantity"
 msgstr ""

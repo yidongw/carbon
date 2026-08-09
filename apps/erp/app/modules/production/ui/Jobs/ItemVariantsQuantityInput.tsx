@@ -79,7 +79,7 @@ export function ItemVariantsQuantityInput({
   hasVariantsQuantity,
   onOpenVariantsQuantity,
   variantsQuantityTotal = 0,
-  openVariantsQuantityAccessibilityLabel = "Configure quantities"
+  openVariantsQuantityAccessibilityLabel = "Edit variant quantities"
 }: ItemVariantsQuantityInputProps) {
   const safeValue = Number.isFinite(value) ? value : 0;
   const canOpenVariantsQuantity =
