@@ -14,13 +14,13 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
-import { computeJobVariantsQuantityTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import {
   buildProductionVariantsQuantityReferenceContext,
   type VariantsQuantityReferenceContext,
   type VariantsQuantityReferenceSource
 } from "~/modules/production/variantsQuantityTableColumns";
+import { computeVariantTableTotal } from "~/modules/production/variantTable";
 import { ItemVariantsQuantityInput } from "./ItemVariantsQuantityInput";
 import { useVariantsQuantityModal } from "./VariantsQuantityModal";
 
@@ -78,18 +78,18 @@ function buildReferenceContextForLine(
   lineKey: string,
   lines: EditableProductionQuantityLine[],
   configReferenceContext?: {
-    originalConfiguration?: unknown;
+    originalVariantTable?: unknown;
     variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   } | null,
   employeeId?: string
 ): VariantsQuantityReferenceContext | undefined {
   if (!configReferenceContext) return undefined;
 
-  if (configReferenceContext.originalConfiguration != null) {
+  if (configReferenceContext.originalVariantTable != null) {
     return {
       mode: line.type === "Production" ? "original" : "remaining",
-      originalConfiguration: configReferenceContext.originalConfiguration,
-      otherLineConfigurations: lines
+      originalVariantTable: configReferenceContext.originalVariantTable,
+      otherLineVariantTables: lines
         .filter((l) => l.key !== lineKey)
         .map((l) => getConfigFromEditableLine(l))
         .filter(
@@ -119,7 +119,7 @@ function buildReferenceContextForLine(
 export function ProductionQuantityLinesEditor({
   lines,
   setLines,
-  configurationParameters,
+  variantQuantityParameters,
   itemId,
   isDisabled = false,
   configReferenceContext,
@@ -132,12 +132,12 @@ export function ProductionQuantityLinesEditor({
   setLines: React.Dispatch<
     React.SetStateAction<EditableProductionQuantityLine[]>
   >;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
   isDisabled?: boolean;
   /** When set (disposition), config table shows original/remaining reference values. */
   configReferenceContext?: {
-    originalConfiguration: unknown;
+    originalVariantTable: unknown;
   } | null;
   /** When set (first submit), hints = job target − already reported on the operation. */
   variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
@@ -195,10 +195,10 @@ export function ProductionQuantityLinesEditor({
             line,
             lineKey,
             lines,
-            configReferenceContext?.originalConfiguration != null
+            configReferenceContext?.originalVariantTable != null
               ? {
-                  originalConfiguration:
-                    configReferenceContext.originalConfiguration
+                  originalVariantTable:
+                    configReferenceContext.originalVariantTable
                 }
               : { variantsQuantityReferenceSource: source },
             employeeId
@@ -247,13 +247,13 @@ export function ProductionQuantityLinesEditor({
     );
   };
 
-  const showConfig = Boolean(configurationParameters?.length && itemId);
+  const showConfig = Boolean(variantQuantityParameters?.length && itemId);
 
   return (
     <VStack className="w-full items-stretch gap-3">
       {lines.map((line) => {
         const cfg = getConfigFromEditableLine(line);
-        const configTotal = computeJobVariantsQuantityTotal(cfg);
+        const configTotal = computeVariantTableTotal(cfg);
 
         return (
           <div

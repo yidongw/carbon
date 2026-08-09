@@ -20,7 +20,7 @@ import { VariantsQuantityBreakdown } from "./VariantsQuantityBreakdown";
 
 type OperationQuantitySummaryProps = {
   summary: OperationQuantitySummary | null;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   /** Display label per list-option value (e.g. color code -> color name). */
   optionLabels?: Record<string, string>;
 };
@@ -33,17 +33,17 @@ function formatTotal(value: number) {
 
 function useConfigParts(
   configurations: unknown[],
-  configurationParameters: ConfigurationParameter[] | null | undefined,
+  variantQuantityParameters: ConfigurationParameter[] | null | undefined,
   optionLabels: Record<string, string> | undefined
 ) {
   const { t } = useLingui();
 
   return useMemo(() => {
-    if (!configurations.length || !configurationParameters?.length) {
+    if (!configurations.length || !variantQuantityParameters?.length) {
       return [];
     }
     const { columns } = buildVariantsQuantityColumns(
-      configurationParameters,
+      variantQuantityParameters,
       t`Quantities`
     );
     const merged = mergeVariantsQuantityRows(
@@ -53,7 +53,7 @@ function useConfigParts(
     return merged
       .map((row) => getConfigRowDisplayPart(row, columns, optionLabels))
       .filter((part) => part.descriptor || part.quantities.length > 0);
-  }, [configurations, configurationParameters, optionLabels, t]);
+  }, [configurations, variantQuantityParameters, optionLabels, t]);
 }
 
 function OperationTotalBadge({
@@ -110,22 +110,22 @@ function OperationTotalBadge({
 
 export function OperationQuantitySummaryView({
   summary,
-  configurationParameters,
+  variantQuantityParameters,
   optionLabels
 }: OperationQuantitySummaryProps) {
   const productionParts = useConfigParts(
     summary?.productionConfigurations ?? [],
-    configurationParameters,
+    variantQuantityParameters,
     optionLabels
   );
   const scrapParts = useConfigParts(
     summary?.scrapConfigurations ?? [],
-    configurationParameters,
+    variantQuantityParameters,
     optionLabels
   );
   const reworkParts = useConfigParts(
     summary?.reworkConfigurations ?? [],
-    configurationParameters,
+    variantQuantityParameters,
     optionLabels
   );
 

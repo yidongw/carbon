@@ -40,7 +40,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     .single();
 
   const itemId = job?.itemId ?? null;
-  const configurationParameters = itemId
+  const variantQuantityParameters = itemId
     ? (await getQuantityGridParameters(client, itemId, companyId)).parameters
     : [];
 
@@ -53,8 +53,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     report,
     itemId,
-    configurationParameters:
-      configurationParameters.length > 0 ? configurationParameters : null,
+    variantQuantityParameters:
+      variantQuantityParameters.length > 0 ? variantQuantityParameters : null,
     ...actorContext
   };
 }

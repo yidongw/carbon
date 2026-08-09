@@ -37,7 +37,7 @@ function descriptorSignature(row: VariantsQuantityRow): string {
   );
 }
 
-export type ConfigAdjustmentResult = {
+export type VariantTableAdjustmentResult = {
   /** Merged configuration to persist as the job's new current config. */
   configuration: VariantsQuantityData;
   /** Grand total of the merged configuration. */
@@ -53,10 +53,10 @@ export type ConfigAdjustmentResult = {
  * rows by their descriptor (non-quantity) columns and summing the quantity column.
  * All-zero rows are dropped. Flags when the result would go negative for any cell.
  */
-export function applyConfigAdjustment(
+export function applyVariantTableAdjustment(
   current: Json | Record<string, unknown> | null | undefined,
   adjustment: Json | Record<string, unknown> | null | undefined
-): ConfigAdjustmentResult {
+): VariantTableAdjustmentResult {
   const rowsBySignature = new Map<string, VariantsQuantityRow>();
   const order: string[] = [];
 
@@ -104,7 +104,7 @@ export function applyConfigAdjustment(
 
   return {
     configuration,
-    total: computeJobVariantsQuantityTotal(configuration),
+    total: computeVariantTableTotal(configuration),
     deltaTotal,
     hasNegative
   };
@@ -114,18 +114,21 @@ export function applyConfigAdjustment(
  * Folds many config tables into one by descriptor, summing the quantity column.
  * Used to total reported production quantities per operation for display.
  */
-export function sumVariantsQuantityTables(
+export function sumVariantTables(
   configs: Array<Json | Record<string, unknown> | null | undefined>
 ): { configuration: VariantsQuantityData; total: number } {
   let configuration: VariantsQuantityData = {
     variantTable: []
   };
   for (const config of configs) {
-    configuration = applyConfigAdjustment(configuration, config).configuration;
+    configuration = applyVariantTableAdjustment(
+      configuration,
+      config
+    ).configuration;
   }
   return {
     configuration,
-    total: computeJobVariantsQuantityTotal(configuration)
+    total: computeVariantTableTotal(configuration)
   };
 }
 
@@ -141,14 +144,14 @@ export function computeConfigRemaining(
     return { variantTable: [] };
   }
 
-  const reported = sumVariantsQuantityTables(reportedConfigs).configuration;
+  const reported = sumVariantTables(reportedConfigs).configuration;
   const negated: VariantsQuantityData = {
     variantTable: reported.variantTable.map((row) => ({
       ...row,
       [QUANTITY_COLUMN]: -(Number(row[QUANTITY_COLUMN]) || 0)
     }))
   };
-  const merged = applyConfigAdjustment(planned, negated).configuration;
+  const merged = applyVariantTableAdjustment(planned, negated).configuration;
   return {
     variantTable: merged.variantTable.map((row) => ({
       ...row,
@@ -169,7 +172,7 @@ export function reportsExceedConfigPlan(
 ): boolean {
   if (getVariantsQuantityTable(planned).length === 0) return false;
 
-  const reported = sumVariantsQuantityTables(reportedConfigs).configuration;
+  const reported = sumVariantTables(reportedConfigs).configuration;
   if (reported.variantTable.length === 0) return false;
 
   const negated: VariantsQuantityData = {
@@ -178,14 +181,14 @@ export function reportsExceedConfigPlan(
       [QUANTITY_COLUMN]: -(Number(row[QUANTITY_COLUMN]) || 0)
     }))
   };
-  return applyConfigAdjustment(planned, negated).hasNegative;
+  return applyVariantTableAdjustment(planned, negated).hasNegative;
 }
 
 /**
  * Sums the `Quantities` column across `configuration.variantTable` (same rules as
  * the job sidebar).
  */
-export function computeJobVariantsQuantityTotal(
+export function computeVariantTableTotal(
   configuration: Json | Record<string, unknown> | null | undefined
 ): number {
   if (configuration === null || configuration === undefined) return 0;

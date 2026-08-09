@@ -28,7 +28,7 @@ import {
   hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -144,7 +144,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
             string,
             unknown
           >;
-          const fields = jobConfigurationUpdateFields(parsed);
+          const fields = variantTableUpdateFields(parsed);
           variantQuantities = fields.configuration;
           quantity = fields.quantity;
         } catch {

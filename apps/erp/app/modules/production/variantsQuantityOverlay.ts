@@ -1,4 +1,4 @@
-import { computeJobVariantsQuantityTotal } from "./jobConfiguration";
+import { computeVariantTableTotal } from "./variantTable";
 
 export type ParsedVariantsQuantityValue = {
   rows: Record<string, string | number | boolean>[] | null;
@@ -76,6 +76,6 @@ export function buildVariantsQuantityActionResponse(
     ok: true,
     configuration:
       configuration as VariantsQuantityOverlaySuccess["configuration"],
-    total: computeJobVariantsQuantityTotal(configuration)
+    total: computeVariantTableTotal(configuration)
   };
 }

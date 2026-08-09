@@ -92,7 +92,7 @@ type PurchaseOrderLineFormProps = {
   onClose?: () => void;
 } & Partial<OverlayFormInjectedProps>;
 
-function parseInitialConfig(raw: unknown): {
+function parseInitialVariantTable(raw: unknown): {
   rows: Row[] | null;
   total: number;
 } {
@@ -360,7 +360,7 @@ const PurchaseOrderLineForm = ({
   const percentFormatter = usePercentFormatter();
 
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialConfig(initialValues.configuration);
+  const initialConfig = parseInitialVariantTable(initialValues.configuration);
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
   >(initialConfig.rows);

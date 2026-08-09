@@ -1,5 +1,5 @@
 import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
-import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import { buildVariantsQuantityEditorRows } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { PurchaseOrderLineInitialValues } from "~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm";
 import type { SalesOrderLineFormInitialValues } from "~/modules/sales/ui/SalesOrder/SalesOrderLineForm";
 import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
@@ -391,7 +391,7 @@ export const overlayRegistry = {
               jobOperationId: string;
               jobOptions: { label: string; value: string }[];
               operationOptions: { label: string; value: string }[];
-              configurationParameters?:
+              variantQuantityParameters?:
                 | {
                     key: string;
                     label: string;
@@ -400,7 +400,7 @@ export const overlayRegistry = {
                   }[]
                 | null;
               variantsQuantityReferenceSource?: {
-                jobConfiguration: unknown;
+                jobVariantTable: unknown;
                 reportedConfigurations: unknown[];
               } | null;
               itemId?: string | null;
@@ -444,7 +444,7 @@ export const overlayRegistry = {
           },
           remainingByOperationId: data.remainingByOperationId ?? {},
           operationOptions: data.operationOptions ?? [],
-          configurationParameters: data.configurationParameters ?? null,
+          variantQuantityParameters: data.variantQuantityParameters ?? null,
           variantsQuantityReferenceSource:
             data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
@@ -467,7 +467,7 @@ export const overlayRegistry = {
               jobOption?: { label: string; value: string };
               jobOperationId: string;
               operationOptions: { label: string; value: string }[];
-              configurationParameters?:
+              variantQuantityParameters?:
                 | {
                     key: string;
                     label: string;
@@ -476,7 +476,7 @@ export const overlayRegistry = {
                   }[]
                 | null;
               variantsQuantityReferenceSource?: {
-                jobConfiguration: unknown;
+                jobVariantTable: unknown;
                 reportedConfigurations: unknown[];
               } | null;
               itemId?: string | null;
@@ -516,7 +516,7 @@ export const overlayRegistry = {
           },
           remainingByOperationId: data.remainingByOperationId ?? {},
           operationOptions: data.operationOptions ?? [],
-          configurationParameters: data.configurationParameters ?? null,
+          variantQuantityParameters: data.variantQuantityParameters ?? null,
           variantsQuantityReferenceSource:
             data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
@@ -583,7 +583,7 @@ export const overlayRegistry = {
                 configuration?: unknown;
               } | null;
               operationOptions: { label: string; value: string }[];
-              configurationParameters?:
+              variantQuantityParameters?:
                 | {
                     key: string;
                     label: string;
@@ -592,7 +592,7 @@ export const overlayRegistry = {
                   }[]
                 | null;
               variantsQuantityReferenceSource?: {
-                jobConfiguration: unknown;
+                jobVariantTable: unknown;
                 reportedConfigurations: unknown[];
               } | null;
               itemId?: string | null;
@@ -604,7 +604,7 @@ export const overlayRegistry = {
 
         const shared = {
           operationOptions: data.operationOptions ?? [],
-          configurationParameters: data.configurationParameters ?? null,
+          variantQuantityParameters: data.variantQuantityParameters ?? null,
           variantsQuantityReferenceSource:
             data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
@@ -765,10 +765,11 @@ export const overlayRegistry = {
         };
         const configuration =
           fromProps !== undefined ? fromProps : data.configuration;
-        const { initialRows, referenceByRowIndex } = buildConfigEditorRows({
-          parameters: data.parameters,
-          configuration
-        });
+        const { initialRows, referenceByRowIndex } =
+          buildVariantsQuantityEditorRows({
+            parameters: data.parameters,
+            configuration
+          });
         return {
           parameters: data.parameters,
           initialRows,

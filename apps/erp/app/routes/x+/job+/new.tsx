@@ -13,7 +13,7 @@ import {
   replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { JobForm } from "~/modules/production/ui/Jobs";
-import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import type { MethodItemType } from "~/modules/shared";
 import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
@@ -53,7 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       if (isVariantsQuantityConfiguration(parsed)) {
         styleVariantsQuantity = parsed;
-        quantity = jobConfigurationUpdateFields(parsed).quantity;
+        quantity = variantTableUpdateFields(parsed).quantity;
       } else {
         configuration = parsed;
       }

@@ -19,10 +19,6 @@ import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOv
 import { usePermissions } from "~/hooks";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import { path } from "~/utils/path";
-import {
-  computeConfigRemaining,
-  computeJobVariantsQuantityTotal
-} from "../../jobConfiguration";
 import type { productionActorKinds } from "../../production.models";
 import {
   productionQuantityCreateFormValidator,
@@ -32,6 +28,10 @@ import {
   buildProductionVariantsQuantityReferenceContext,
   type VariantsQuantityReferenceSource
 } from "../../variantsQuantityTableColumns";
+import {
+  computeConfigRemaining,
+  computeVariantTableTotal
+} from "../../variantTable";
 import {
   ProductionActorFields,
   selectionFromInitialValues
@@ -73,7 +73,7 @@ function getInitialConfigState(configuration: unknown) {
 
   return {
     rows,
-    total: computeJobVariantsQuantityTotal(cfg)
+    total: computeVariantTableTotal(cfg)
   };
 }
 
@@ -108,7 +108,7 @@ export type ProductionQuantityFormProps = {
   // Remaining quantity per operation — used to prefill the Production line when
   // an operation is selected.
   remainingByOperationId?: Record<string, number>;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   jobId?: string | null;
@@ -145,7 +145,7 @@ const ProductionQuantityForm = ({
   operationOptions = [],
   jobOptions,
   remainingByOperationId,
-  configurationParameters,
+  variantQuantityParameters,
   variantsQuantityReferenceSource,
   itemId,
   jobId: jobIdProp,
@@ -168,7 +168,7 @@ const ProductionQuantityForm = ({
     loaderPath: path.to.newProductionQuantity,
     jobIdProp,
     operationOptions,
-    configurationParameters,
+    variantQuantityParameters,
     variantsQuantityReferenceSource,
     itemId,
     processId,
@@ -238,11 +238,14 @@ const ProductionQuantityForm = ({
     // enabled and the config table is prefilled/editable — rather than showing a
     // filled quantity next to a disabled Save. Falls through (empty config,
     // Save gated by hasUnconfiguredLine) when there's no plan to seed from.
-    if (!configurationParameters?.length || !variantsQuantityReferenceSource) {
+    if (
+      !variantQuantityParameters?.length ||
+      !variantsQuantityReferenceSource
+    ) {
       return editable;
     }
     const remaining = computeConfigRemaining(
-      variantsQuantityReferenceSource.jobConfiguration as Parameters<
+      variantsQuantityReferenceSource.jobVariantTable as Parameters<
         typeof computeConfigRemaining
       >[0],
       variantsQuantityReferenceSource.reportedConfigurations as Parameters<
@@ -250,7 +253,7 @@ const ProductionQuantityForm = ({
       >[1]
     );
     if (remaining.variantTable.length === 0) return editable;
-    const remainingTotal = computeJobVariantsQuantityTotal(remaining);
+    const remainingTotal = computeVariantTableTotal(remaining);
     return editable.map((line) =>
       line.type === "Production" && !getConfigFromEditableLine(line)
         ? { ...line, configuration: remaining, quantity: remainingTotal }
@@ -259,7 +262,7 @@ const ProductionQuantityForm = ({
   });
 
   const hasVariantsQuantity =
-    (jobPicker.configurationParameters?.length ?? 0) > 0;
+    (jobPicker.variantQuantityParameters?.length ?? 0) > 0;
 
   const hasZeroQuantityLine =
     isCreateMultiLine && lines.some((line) => line.quantity <= 0);
@@ -273,8 +276,7 @@ const ProductionQuantityForm = ({
     isCreateMultiLine &&
     hasVariantsQuantity &&
     lines.some(
-      (line) =>
-        computeJobVariantsQuantityTotal(getConfigFromEditableLine(line)) <= 0
+      (line) => computeVariantTableTotal(getConfigFromEditableLine(line)) <= 0
     );
 
   const linesJsonForForm = useMemo(() => {
@@ -667,7 +669,9 @@ const ProductionQuantityForm = ({
                 <ProductionQuantityLinesEditor
                   lines={lines}
                   setLines={setLines}
-                  configurationParameters={jobPicker.configurationParameters}
+                  variantQuantityParameters={
+                    jobPicker.variantQuantityParameters
+                  }
                   variantsQuantityReferenceSource={
                     jobPicker.variantsQuantityReferenceSource
                   }

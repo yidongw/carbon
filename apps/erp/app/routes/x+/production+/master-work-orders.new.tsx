@@ -18,7 +18,7 @@ import {
   isVariantsQuantityConfiguration,
   replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
-import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { path } from "~/utils/path";
 
@@ -83,7 +83,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       if (isVariantsQuantityConfiguration(parsed)) {
         styleVariantsQuantity = parsed;
-        quantity = jobConfigurationUpdateFields(parsed).quantity;
+        quantity = variantTableUpdateFields(parsed).quantity;
       } else {
         configuration = parsed;
       }

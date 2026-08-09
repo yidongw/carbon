@@ -116,7 +116,7 @@ function isZeroOrEmpty(value: string | number | boolean | undefined): boolean {
   return Number(stringValue) === 0;
 }
 
-export function hasConfigRowValue(
+export function hasVariantRowValue(
   row: VariantsQuantityRow,
   columns: VariantsQuantityColumn[]
 ): boolean {
@@ -267,7 +267,7 @@ export function variantsQuantityToComboRows(
   return out;
 }
 
-export function formatConfigRowLabel(
+export function formatVariantRowLabel(
   row: VariantsQuantityRow,
   columns: VariantsQuantityColumn[],
   /** Display label per list-option value (e.g. color code -> color name). The
@@ -311,7 +311,7 @@ export function formatConfigRowLabel(
   return `${descriptorParts.join(", ")} ${quantityParts.join(", ")}`;
 }
 
-export function formatConfigRowLabels(
+export function formatVariantRowLabels(
   configuration: unknown,
   parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string,
@@ -324,8 +324,8 @@ export function formatConfigRowLabels(
   const rows = getVariantsQuantityRows(configuration);
 
   return rows
-    .filter((row) => hasConfigRowValue(row, columns))
-    .map((row) => formatConfigRowLabel(row, columns, optionLabels));
+    .filter((row) => hasVariantRowValue(row, columns))
+    .map((row) => formatVariantRowLabel(row, columns, optionLabels));
 }
 
 export type VariantsQuantityRowDisplayPart = {
@@ -379,7 +379,7 @@ export function getConfigRowDisplayParts(
   const rows = getVariantsQuantityRows(configuration);
 
   return rows
-    .filter((row) => hasConfigRowValue(row, columns))
+    .filter((row) => hasVariantRowValue(row, columns))
     .map((row) => getConfigRowDisplayPart(row, columns, optionLabels));
 }
 
@@ -468,9 +468,9 @@ export type VariantsQuantityTableReferenceMode = "original" | "remaining";
 /** Context for disposition variants-quantity editing with click-to-fill reference values. */
 export type VariantsQuantityReferenceContext = {
   mode: VariantsQuantityTableReferenceMode;
-  originalConfiguration: unknown;
+  originalVariantTable: unknown;
   /** Active sibling line configurations (excluding the line being edited). */
-  otherLineConfigurations: unknown[];
+  otherLineVariantTables: unknown[];
   /** When set, use pickup-based hints for this employee instead of job target hints */
   employeeId?: string;
   /** Pickup quantities by employee (for pickup-based hint calculation) */
@@ -525,7 +525,7 @@ export function buildVariantsQuantityEditorState({
   }
 
   const originalRows = mergeVariantsQuantityRows(
-    getVariantsQuantityRows(referenceContext.originalConfiguration),
+    getVariantsQuantityRows(referenceContext.originalVariantTable),
     columns
   );
   const currentRows = mergeVariantsQuantityRows(
@@ -533,7 +533,7 @@ export function buildVariantsQuantityEditorState({
     columns
   );
   const otherRows = mergeVariantsQuantityRows(
-    referenceContext.otherLineConfigurations.flatMap((config) =>
+    referenceContext.otherLineVariantTables.flatMap((config) =>
       getVariantsQuantityRows(config)
     ),
     columns
@@ -665,7 +665,7 @@ export function fillValueFromReference(referenceValue: number) {
 
 /** Job target config plus already-reported line configs for an operation. */
 export type VariantsQuantityReferenceSource = {
-  jobConfiguration: unknown;
+  jobVariantTable: unknown;
   reportedConfigurations: unknown[];
   /** Pickup data grouped by employee for pickup-based hints */
   pickupsByEmployee?: Record<
@@ -704,8 +704,8 @@ export function buildJobRemainingReferenceContext(
 
   return {
     mode: "remaining",
-    originalConfiguration: source.jobConfiguration,
-    otherLineConfigurations: [
+    originalVariantTable: source.jobVariantTable,
+    otherLineVariantTables: [
       ...source.reportedConfigurations,
       ...siblingLineConfigurations
     ].filter((config) => config != null && !exclude.has(config)),
@@ -737,8 +737,8 @@ export function buildProductionVariantsQuantityReferenceContext({
   if (trimmedJobOperationId) {
     return {
       mode: "remaining",
-      originalConfiguration: null,
-      otherLineConfigurations: [],
+      originalVariantTable: null,
+      otherLineVariantTables: [],
       employeeId: trimmedEmployeeId,
       jobId: trimmedJobId,
       jobOperationId: trimmedJobOperationId,

@@ -12,7 +12,7 @@ import {
   isVariantsQuantityConfiguration,
   persistStyleJobConfiguration
 } from "~/modules/production/jobVariantQuantity.service";
-import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
 
@@ -302,9 +302,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("job")
         .update({
           ...(configuration && typeof configuration === "object"
-            ? jobConfigurationUpdateFields(
-                configuration as Record<string, unknown>
-              )
+            ? variantTableUpdateFields(configuration as Record<string, unknown>)
             : { configuration: null }),
           updatedBy: userId,
           updatedAt: new Date().toISOString()

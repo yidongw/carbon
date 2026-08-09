@@ -8,8 +8,8 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
 import { variantsQuantityToComboRows } from "~/modules/production/variantsQuantityTableColumns";
+import { applyVariantTableAdjustment } from "~/modules/production/variantTable";
 import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
 import type { AdjustmentMode, Column, Row } from "./variantsQuantityShared";
 import {
@@ -206,7 +206,7 @@ function JobVariantsQuantity({
 
   const preview = useMemo(
     () =>
-      applyConfigAdjustment(
+      applyVariantTableAdjustment(
         { variantTable: currentRows },
         { variantTable: rows }
       ),

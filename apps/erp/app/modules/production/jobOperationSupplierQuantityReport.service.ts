@@ -404,7 +404,7 @@ export async function createJobOperationSupplierQuantityReport(
 
   const originalQuantity = sumLineQuantity(args.lines);
   const primaryLine = args.lines[0];
-  const originalConfiguration = primaryLine?.configuration ?? null;
+  const originalVariantTable = primaryLine?.configuration ?? null;
 
   const { data: report, error: reportError } = await client
     .from("jobOperationSupplierQuantityReport")
@@ -415,7 +415,7 @@ export async function createJobOperationSupplierQuantityReport(
       supplierProcessId: args.supplierProcessId,
       subcontractSnapshotId: snapshot.id,
       originalQuantity,
-      originalConfiguration: originalConfiguration as Json,
+      originalVariantTable: originalVariantTable as Json,
       notes: args.notes ?? null,
       createdBy: args.userId
     })

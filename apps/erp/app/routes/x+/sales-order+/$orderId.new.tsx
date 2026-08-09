@@ -15,7 +15,7 @@ import {
   expandVariantTableToLines,
   hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import type { SalesOrderLineType } from "~/modules/sales";
 import {
   getCustomer,
@@ -152,7 +152,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
+      const fields = variantTableUpdateFields(parsed);
       configuration = fields.configuration;
       saleQuantity = fields.quantity;
     } catch {

@@ -14,8 +14,6 @@ import {
   getJobConfigurationHistory,
   isJobLocked
 } from "~/modules/production";
-import type { VariantsQuantityRow } from "~/modules/production/jobConfiguration";
-import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable,
@@ -25,6 +23,8 @@ import {
   buildVariantsQuantityActionResponse,
   parseConfigurationFormValue
 } from "~/modules/production/variantsQuantityOverlay.server";
+import type { VariantsQuantityRow } from "~/modules/production/variantTable";
+import { applyVariantTableAdjustment } from "~/modules/production/variantTable";
 import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
@@ -189,7 +189,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const planned = await getJobVariantQuantities(client, jobId, companyId);
   const currentConfiguration = jobVariantQuantitiesToTable(planned.data ?? []);
 
-  const merged = applyConfigAdjustment(currentConfiguration, adjustment);
+  const merged = applyVariantTableAdjustment(currentConfiguration, adjustment);
   if (merged.hasNegative) {
     return data(
       {

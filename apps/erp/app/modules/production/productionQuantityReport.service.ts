@@ -7,16 +7,16 @@ import {
 } from "~/modules/shared";
 import { replaceMasterCuttingSplitRows } from "./bundleWorkOrder.service";
 import {
-  computeJobVariantsQuantityTotal,
-  reportsExceedConfigPlan
-} from "./jobConfiguration";
-import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
+import {
+  computeVariantTableTotal,
+  reportsExceedConfigPlan
+} from "./variantTable";
 
 /**
  * Split a line's `configuration` into the config to store (merged, unchanged
@@ -102,9 +102,7 @@ export function validateProductionQuantityLines(
       line.scrapReasonId = undefined;
     }
     if (line.configuration) {
-      const configTotal = computeJobVariantsQuantityTotal(
-        line.configuration as Json
-      );
+      const configTotal = computeVariantTableTotal(line.configuration as Json);
       if (configTotal > 0 && Math.abs(configTotal - line.quantity) > 0.0001) {
         return {
           error: new Error(
@@ -170,7 +168,7 @@ async function validateConfiguredLinesHaveConfiguration(
 
   for (const line of linesToCheck) {
     const configTotal = line.configuration
-      ? computeJobVariantsQuantityTotal(line.configuration as Json)
+      ? computeVariantTableTotal(line.configuration as Json)
       : 0;
     if (configTotal <= 0) {
       return {
@@ -313,7 +311,7 @@ export async function createProductionQuantityReport(
     line,
     ...splitConfigAndRows(line.configuration)
   }));
-  const originalConfiguration = prepared[0]?.config ?? null;
+  const originalVariantTable = prepared[0]?.config ?? null;
 
   const { data: report, error: reportError } = await client
     .from("productionQuantityReport")
@@ -323,7 +321,7 @@ export async function createProductionQuantityReport(
       jobOperationId: args.jobOperationId,
       employeeId: args.employeeId,
       originalQuantity,
-      originalConfiguration: originalConfiguration as Json,
+      originalVariantTable: originalVariantTable as Json,
       notes: args.notes ?? null,
       createdBy: args.userId
     })

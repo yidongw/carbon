@@ -111,7 +111,7 @@ type SalesOrderLineFormProps = {
   onClose?: () => void;
 } & Partial<Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">>;
 
-function parseInitialConfig(raw: unknown): {
+function parseInitialVariantTable(raw: unknown): {
   rows: Row[] | null;
   total: number;
 } {
@@ -217,7 +217,7 @@ const SalesOrderLineForm = ({
 
   const variantsQuantityModal = useVariantsQuantityModal();
   const [items] = useItems();
-  const initialConfig = parseInitialConfig(initialValues.configuration);
+  const initialConfig = parseInitialVariantTable(initialValues.configuration);
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
   >(initialConfig.rows);

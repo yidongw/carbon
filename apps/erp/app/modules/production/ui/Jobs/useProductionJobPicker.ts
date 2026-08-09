@@ -10,7 +10,7 @@ export type ProductionJobPickerLoaderData = {
    * operation picked in the dropdown (the job-level cascade only resolves the
    * seeded operation's processId). */
   processByOperationId?: Record<string, string>;
-  configurationParameters?:
+  variantQuantityParameters?:
     | {
         key: string;
         label: string;
@@ -33,7 +33,7 @@ type UseProductionJobPickerArgs = {
   jobIdProp?: string | null;
   initialJobId?: string;
   operationOptions?: { label: string; value: string }[];
-  configurationParameters?: ProductionJobPickerLoaderData["configurationParameters"];
+  variantQuantityParameters?: ProductionJobPickerLoaderData["variantQuantityParameters"];
   variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
@@ -52,7 +52,7 @@ export function useProductionJobPicker({
   jobIdProp,
   initialJobId,
   operationOptions = [],
-  configurationParameters,
+  variantQuantityParameters,
   variantsQuantityReferenceSource,
   itemId,
   processId,
@@ -103,8 +103,8 @@ export function useProductionJobPicker({
     isCascadeLoading,
     operationOptions: cascadeData?.operationOptions ?? operationOptions,
     processByOperationId: cascadeData?.processByOperationId ?? {},
-    configurationParameters:
-      cascadeData?.configurationParameters ?? configurationParameters,
+    variantQuantityParameters:
+      cascadeData?.variantQuantityParameters ?? variantQuantityParameters,
     variantsQuantityReferenceSource:
       cascadeData?.variantsQuantityReferenceSource ??
       variantsQuantityReferenceSource,

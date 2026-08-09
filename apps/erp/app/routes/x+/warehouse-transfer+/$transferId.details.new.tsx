@@ -22,7 +22,7 @@ import {
   hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -72,7 +72,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
+      const fields = variantTableUpdateFields(parsed);
       variantQuantities = fields.configuration;
       quantity = fields.quantity;
     } catch {
@@ -81,7 +81,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // Style/Consumable parent + variantTable → one warehouse-transfer line per variant SKU.
-  // jobConfigurationUpdateFields bridges the shared modal payload (still named
+  // variantTableUpdateFields bridges the shared modal payload (still named
   // `configuration`) into variantQuantities for inventory lines.
   if (hasStyleVariantsQuantity(variantQuantities)) {
     const expanded = await expandVariantTableToLines(client, {

@@ -6,13 +6,13 @@ import {
 } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
-import { computeConfigRemaining } from "./jobConfiguration";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
+import { computeConfigRemaining } from "./variantTable";
 
 export type MasterCuttingProgress = {
   jobId: string;

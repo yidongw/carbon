@@ -17,7 +17,7 @@ const parameters = [
 ];
 
 describe("buildVariantsQuantityEditorState", () => {
-  const originalConfiguration = {
+  const originalVariantTable = {
     variantTable: [
       { valuesKey: "红色|M", Quantities: 14 },
       { valuesKey: "蓝色|XL", Quantities: 6 }
@@ -31,8 +31,8 @@ describe("buildVariantsQuantityEditorState", () => {
       currentConfiguration: { variantTable: [] },
       referenceContext: {
         mode: "original",
-        originalConfiguration,
-        otherLineConfigurations: []
+        originalVariantTable,
+        otherLineVariantTables: []
       }
     });
 
@@ -48,8 +48,8 @@ describe("buildVariantsQuantityEditorState", () => {
       currentConfiguration: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
-        originalConfiguration,
-        otherLineConfigurations: [
+        originalVariantTable,
+        otherLineVariantTables: [
           { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
@@ -65,8 +65,8 @@ describe("buildVariantsQuantityEditorState", () => {
       currentConfiguration: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
-        originalConfiguration,
-        otherLineConfigurations: [
+        originalVariantTable,
+        otherLineVariantTables: [
           { variantTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
         ]
       }
@@ -84,8 +84,8 @@ describe("buildVariantsQuantityEditorState", () => {
       },
       referenceContext: {
         mode: "remaining",
-        originalConfiguration,
-        otherLineConfigurations: [
+        originalVariantTable,
+        otherLineVariantTables: [
           { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
@@ -96,13 +96,13 @@ describe("buildVariantsQuantityEditorState", () => {
 });
 
 describe("buildJobRemainingReferenceContext", () => {
-  const jobConfiguration = {
+  const jobVariantTable = {
     variantTable: [{ valuesKey: "红色|M", Quantities: 14 }]
   };
 
   it("computes remaining quantities from job target minus reported", () => {
     const referenceContext = buildJobRemainingReferenceContext({
-      jobConfiguration,
+      jobVariantTable,
       reportedConfigurations: [
         { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
       ]
@@ -121,7 +121,7 @@ describe("buildJobRemainingReferenceContext", () => {
   it("uses pickup-based hints for an employee with pickups", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
-        jobConfiguration: {
+        jobVariantTable: {
           variantTable: [
             { valuesKey: "红色|M", Quantities: 100 },
             { valuesKey: "红色|L", Quantities: 100 }
@@ -162,7 +162,7 @@ describe("buildJobRemainingReferenceContext", () => {
   it("reduces pickup hints by the employee's already reported quantity", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
-        jobConfiguration: {
+        jobVariantTable: {
           variantTable: [{ valuesKey: "红色|L", Quantities: 100 }]
         },
         reportedConfigurations: [],
@@ -198,7 +198,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
   it("defers pickup loading to the server when job and operation are known", () => {
     const context = buildProductionVariantsQuantityReferenceContext({
       source: {
-        jobConfiguration: { variantTable: [] },
+        jobVariantTable: { variantTable: [] },
         reportedConfigurations: []
       },
       employeeId: "emp1",
@@ -208,8 +208,8 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
 
     expect(context).toEqual({
       mode: "remaining",
-      originalConfiguration: null,
-      otherLineConfigurations: [],
+      originalVariantTable: null,
+      otherLineVariantTables: [],
       employeeId: "emp1",
       jobId: "job1",
       jobOperationId: "op1",
@@ -220,7 +220,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
   it("defers pickup loading when only job operation is known", () => {
     const context = buildProductionVariantsQuantityReferenceContext({
       source: {
-        jobConfiguration: {
+        jobVariantTable: {
           variantTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
         },
         reportedConfigurations: [],
@@ -234,8 +234,8 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
 
     expect(context).toEqual({
       mode: "remaining",
-      originalConfiguration: null,
-      otherLineConfigurations: [],
+      originalVariantTable: null,
+      otherLineVariantTables: [],
       employeeId: "emp1",
       jobId: undefined,
       jobOperationId: "op1",

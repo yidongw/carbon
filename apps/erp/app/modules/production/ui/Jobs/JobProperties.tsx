@@ -107,7 +107,7 @@ const JobProperties = ({
 
   const { openOverlay } = useOverlay();
   const { revalidate } = useRevalidator();
-  const [configurationParameters, setConfigurationParameters] = useState<{
+  const [variantQuantityParameters, setVariantQuantityParameters] = useState<{
     parameters: ConfigurationParameter[];
     groups: ConfigurationParameterGroup[];
   } | null>(null);
@@ -138,16 +138,16 @@ const JobProperties = ({
         .limit(1)
     ]).then(([parameters, groups, selections]) => {
       const hasAttributeConfig = (selections.data?.length ?? 0) > 0;
-      // Qty table editor is attribute-backed only. Part flat configurationParameters
+      // Qty table editor is attribute-backed only. Part flat configuration parameters
       // use ConfiguratorModal on create / Make Method tools — not this grid.
       if (hasAttributeConfig) {
-        setConfigurationParameters({
+        setVariantQuantityParameters({
           parameters: parameters.data ?? [],
           groups: groups.data ?? []
         });
       } else {
         // Clear sticky state when switching to a non-attribute item.
-        setConfigurationParameters(null);
+        setVariantQuantityParameters(null);
       }
     });
   }, [routeData?.job?.itemId]);
@@ -270,7 +270,7 @@ const JobProperties = ({
 
   // Show Style qty editor when the item has attribute selections (or legacy
   // config params that still list). Plan data lives in jobVariantQuantity.
-  const jobIsConfigured = configurationParameters != null;
+  const jobIsConfigured = variantQuantityParameters != null;
 
   return (
     <VStack
@@ -468,7 +468,7 @@ const JobProperties = ({
           }}
         />
       </ValidatedForm>
-      {configurationParameters && jobIsConfigured ? (
+      {variantQuantityParameters && jobIsConfigured ? (
         <VStack className="w-full">
           <span className="text-xs text-muted-foreground">{t`Quantity`}</span>
           <HStack spacing={0} className="w-full justify-between">

@@ -49,7 +49,7 @@ function lineFromActive(
 
 export function ProductionQuantityDispositionDrawer({
   report,
-  configurationParameters,
+  variantQuantityParameters,
   itemId,
   open,
   onClose,
@@ -62,7 +62,7 @@ export function ProductionQuantityDispositionDrawer({
   fetcher: externalFetcher
 }: {
   report: ProductionQuantityReportWithLines;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
   open: boolean;
   onClose: () => void;
@@ -217,10 +217,10 @@ export function ProductionQuantityDispositionDrawer({
             <ProductionQuantityLinesEditor
               lines={lines}
               setLines={setLines}
-              configurationParameters={configurationParameters}
+              variantQuantityParameters={variantQuantityParameters}
               itemId={itemId}
               configReferenceContext={{
-                originalConfiguration: report.originalConfiguration
+                originalVariantTable: report.originalVariantTable
               }}
             />
           </DrawerBody>

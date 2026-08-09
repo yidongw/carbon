@@ -72,7 +72,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     files: getJobDocuments(client, companyId, job.data),
     trackedEntities: getTrackedEntitiesByJobId(client, jobId),
     method: getJobMethodTree(client, jobId), // returns a promise
-    configurationParameters: getQuantityGridParameters(
+    variantQuantityParameters: getQuantityGridParameters(
       client,
       job.data.itemId!,
       companyId

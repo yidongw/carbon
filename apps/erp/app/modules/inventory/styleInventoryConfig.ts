@@ -65,7 +65,7 @@ export function buildInventoryVariantsQuantityReferenceContext({
   if (!variantQuantities) return undefined;
   return {
     mode: "remaining" as const,
-    originalConfiguration: variantQuantities,
-    otherLineConfigurations: otherLineVariantQuantities.filter((c) => c != null)
+    originalVariantTable: variantQuantities,
+    otherLineVariantTables: otherLineVariantQuantities.filter((c) => c != null)
   };
 }

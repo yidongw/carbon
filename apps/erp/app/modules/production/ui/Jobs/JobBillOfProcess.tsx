@@ -744,7 +744,7 @@ const JobBillOfProcess = ({
   const [hasMore, setHasMore] = useState(true);
 
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
-  const [configurationParameters, setConfigurationParameters] = useState<
+  const [variantQuantityParameters, setVariantQuantityParameters] = useState<
     ConfigurationParameter[] | null
   >(null);
   const configSummaryModal = useDisclosure();
@@ -756,21 +756,21 @@ const JobBillOfProcess = ({
   >([]);
   const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
 
-  const hasVariantsQuantity = (configurationParameters?.length ?? 0) > 0;
+  const hasVariantsQuantity = (variantQuantityParameters?.length ?? 0) > 0;
 
   useEffect(() => {
     if (!itemId || !carbon) return;
 
     void getQuantityGridParameters(carbon, itemId, companyId).then(
       ({ parameters }) => {
-        setConfigurationParameters(parameters.length > 0 ? parameters : null);
+        setVariantQuantityParameters(parameters.length > 0 ? parameters : null);
       }
     );
   }, [carbon, companyId, itemId]);
 
   const openConfigSummary = useCallback(
     async (operationId: string) => {
-      if (!carbon || !configurationParameters?.length) return;
+      if (!carbon || !variantQuantityParameters?.length) return;
 
       setConfigSummaryOperationId(operationId);
       setConfigSummaryRows([]);
@@ -815,7 +815,7 @@ const JobBillOfProcess = ({
           targetConfiguration: jobData?.job?.configuration,
           reportedConfigurations,
           pickupConfigurations,
-          parameters: configurationParameters,
+          parameters: variantQuantityParameters,
           defaultQuantityLabel: t`Quantities`
         })
       );
@@ -825,7 +825,7 @@ const JobBillOfProcess = ({
       carbon,
       companyId,
       configSummaryModal,
-      configurationParameters,
+      variantQuantityParameters,
       jobData?.job?.configuration,
       t
     ]
@@ -1266,7 +1266,7 @@ const JobBillOfProcess = ({
           ) : (
             <VariantsQuantityReportedTargetTable
               rows={configSummaryRows}
-              parameters={configurationParameters ?? []}
+              parameters={variantQuantityParameters ?? []}
             />
           )}
         </ModalBody>

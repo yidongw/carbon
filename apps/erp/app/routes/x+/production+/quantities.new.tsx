@@ -96,7 +96,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let jobOperations = null;
   let opContext = null;
   let itemId = null;
-  let configurationParameters = null;
+  let variantQuantityParameters = null;
   let variantsQuantityReferenceSource = null;
 
   if (jobId) {
@@ -126,7 +126,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     if (itemId && !bundle.data) {
       const params = await getQuantityGridParameters(client, itemId, companyId);
-      configurationParameters = params.parameters;
+      variantQuantityParameters = params.parameters;
     }
   }
 
@@ -218,9 +218,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // (e.g. a Master Work Order's cutting operation).
     lockJobSelection: lockOperation && Boolean(jobId),
     lockOperationSelection: lockOperation && Boolean(jobOperationId),
-    configurationParameters:
-      configurationParameters && configurationParameters.length > 0
-        ? configurationParameters
+    variantQuantityParameters:
+      variantQuantityParameters && variantQuantityParameters.length > 0
+        ? variantQuantityParameters
         : null,
     variantsQuantityReferenceSource,
     ...actorContext

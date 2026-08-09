@@ -653,7 +653,7 @@ function extractVariantsQuantity(configuration: unknown): Row[] | undefined {
  * are reference hints) a fully-built `referenceContext`. Shared by the local
  * modal and the table-cell overlay render.
  */
-export function buildConfigEditorRows({
+export function buildVariantsQuantityEditorRows({
   parameters,
   configuration,
   referenceContext,
@@ -783,7 +783,7 @@ export function VariantsQuantityLocalModal({
     ? buildReferenceContext?.(data.referenceSource)
     : undefined;
   const { initialRows, referenceByRowIndex } = data?.parameters?.length
-    ? buildConfigEditorRows({
+    ? buildVariantsQuantityEditorRows({
         parameters: data.parameters,
         configuration,
         referenceContext,

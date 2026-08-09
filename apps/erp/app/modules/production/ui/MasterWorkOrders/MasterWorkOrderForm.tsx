@@ -56,7 +56,7 @@ const MasterWorkOrderForm = ({
   const [itemId, setItemId] = useState(initialValues.itemId ?? "");
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
   // Qty grid only for items with attribute selections — not legacy Part
-  // configurationParameters.
+  // variantQuantityParameters.
   const hasVariantsQuantity = configurableItemIds.includes(itemId);
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null

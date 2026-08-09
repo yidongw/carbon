@@ -1,6 +1,5 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { computeJobVariantsQuantityTotal } from "./jobConfiguration";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable
@@ -12,16 +11,17 @@ import type {
   VariantsQuantityReferenceSource
 } from "./variantsQuantityTableColumns";
 import { buildJobRemainingReferenceContext } from "./variantsQuantityTableColumns";
+import { computeVariantTableTotal } from "./variantTable";
 
 export { buildVariantsQuantityActionResponse };
 
 /** Persist configuration and keep `job.quantity` in sync with the config table total. */
-export function jobConfigurationUpdateFields(
+export function variantTableUpdateFields(
   configuration: Record<string, unknown>
 ): { configuration: Json; quantity: number } {
   return {
     configuration: configuration as Json,
-    quantity: computeJobVariantsQuantityTotal(configuration)
+    quantity: computeVariantTableTotal(configuration)
   };
 }
 
@@ -45,7 +45,7 @@ export function parseConfigurationFormValue(
   }
 }
 
-export function parseInitialConfigurationFromRequest(
+export function parseInitialVariantTableFromRequest(
   request: Request
 ): Record<string, string | number | boolean>[] | undefined {
   const raw = new URL(request.url).searchParams.get("configuration");
@@ -60,7 +60,8 @@ export function parseInitialConfigurationFromRequest(
     ) {
       return undefined;
     }
-    const variantTable = (parsed as Record<string, unknown>).variantTable;
+    const cfg = parsed as Record<string, unknown>;
+    const variantTable = cfg.variantTable ?? cfg.configTable;
     return Array.isArray(variantTable)
       ? (variantTable as Record<string, string | number | boolean>[])
       : undefined;
@@ -85,14 +86,14 @@ export async function getVariantsQuantityReferenceSourceForOperation(
 ): Promise<VariantsQuantityReferenceSource | null> {
   const job = await getJob(client, jobId);
   const planned = await getJobVariantQuantities(client, jobId, companyId);
-  const jobConfiguration =
+  const jobVariantTable =
     planned.data.length > 0
       ? jobVariantQuantitiesToTable(planned.data)
       : (job.data?.configuration ?? null);
-  if (!jobConfiguration) return null;
+  if (!jobVariantTable) return null;
 
   if (!jobOperationId) {
-    return { jobConfiguration, reportedConfigurations: [] };
+    return { jobVariantTable, reportedConfigurations: [] };
   }
 
   if (reportKind === "pickup") {
@@ -116,7 +117,7 @@ export async function getVariantsQuantityReferenceSourceForOperation(
       .map((row) => row.configuration)
       .filter((config) => config != null);
 
-    return { jobConfiguration, reportedConfigurations };
+    return { jobVariantTable, reportedConfigurations };
   }
 
   const [quantities, pickups] = await Promise.all([
@@ -164,7 +165,7 @@ export async function getVariantsQuantityReferenceSourceForOperation(
   }
 
   return {
-    jobConfiguration,
+    jobVariantTable,
     reportedConfigurations,
     reportedConfigurationsByEmployee,
     pickupsByEmployee
@@ -273,23 +274,23 @@ export function parseReferenceContextFromRequest(
     if (ctx.mode !== "original" && ctx.mode !== "remaining") {
       return undefined;
     }
-    const otherLineConfigurations = Array.isArray(ctx.otherLineConfigurations)
-      ? ctx.otherLineConfigurations
+    const otherLineVariantTables = Array.isArray(ctx.otherLineVariantTables)
+      ? ctx.otherLineVariantTables
       : [];
     const jobId = typeof ctx.jobId === "string" ? ctx.jobId : undefined;
     const jobOperationId =
       typeof ctx.jobOperationId === "string" ? ctx.jobOperationId : undefined;
     if (
-      otherLineConfigurations.length === 0 &&
-      ctx.originalConfiguration == null &&
+      otherLineVariantTables.length === 0 &&
+      ctx.originalVariantTable == null &&
       !(jobId?.trim() && jobOperationId?.trim())
     ) {
       return undefined;
     }
     return {
       mode: ctx.mode,
-      originalConfiguration: ctx.originalConfiguration,
-      otherLineConfigurations,
+      originalVariantTable: ctx.originalVariantTable,
+      otherLineVariantTables,
       employeeId:
         typeof ctx.employeeId === "string" ? ctx.employeeId : undefined,
       jobId,

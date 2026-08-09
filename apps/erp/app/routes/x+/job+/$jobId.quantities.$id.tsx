@@ -81,7 +81,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const planned = await getJobVariantQuantities(client, jobId, companyId);
   const jobIsConfigured = (planned.data?.length ?? 0) > 0;
 
-  const configurationParameters =
+  const variantQuantityParameters =
     job.data?.itemId && jobIsConfigured
       ? (await getQuantityGridParameters(client, job.data.itemId, companyId))
           .parameters
@@ -90,8 +90,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const itemId = job.data?.itemId ?? null;
   const base = {
     operationOptions,
-    configurationParameters:
-      configurationParameters.length > 0 ? configurationParameters : null,
+    variantQuantityParameters:
+      variantQuantityParameters.length > 0 ? variantQuantityParameters : null,
     itemId
   };
 
