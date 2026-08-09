@@ -175,7 +175,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     if (!expanded.ok) {
       if (isOverlay) {
         return data(
-          { ok: false as const },
+          { ok: false as const, error: expanded.error },
           await flash(request, error(expanded.error, expanded.error))
         );
       }
@@ -217,7 +217,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       } catch (err) {
         if (isOverlay) {
           return data(
-            { ok: false as const },
+            {
+              ok: false as const,
+              error: "Failed to create purchase order lines for style variants"
+            },
             await flash(
               request,
               error(
@@ -266,8 +269,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (createPurchaseOrderLine.error) {
     if (isOverlay) {
+      const detail =
+        typeof createPurchaseOrderLine.error === "object" &&
+        createPurchaseOrderLine.error !== null &&
+        "message" in createPurchaseOrderLine.error &&
+        typeof createPurchaseOrderLine.error.message === "string"
+          ? createPurchaseOrderLine.error.message
+          : "Failed to create purchase order line";
       return data(
-        { ok: false as const },
+        { ok: false as const, error: detail },
         await flash(
           request,
           error(

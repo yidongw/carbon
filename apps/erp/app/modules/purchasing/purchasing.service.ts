@@ -1759,11 +1759,24 @@ export async function upsertPurchaseOrderLine(
         customFields?: Json;
       })
 ) {
-  if ("id" in purchaseOrderLine) {
+  // Validator may carry FormData-only fields (`variantQuantities`) and empty
+  // strings for optional FKs/dates — strip/null those before write.
+  const { variantQuantities: _variantQuantities, ...line } =
+    purchaseOrderLine as typeof purchaseOrderLine & {
+      variantQuantities?: unknown;
+    };
+
+  if ("id" in line) {
+    const row = Object.fromEntries(
+      Object.entries(line).map(([key, value]) => [
+        key,
+        value === "" ? null : value
+      ])
+    );
     return client
       .from("purchaseOrderLine")
-      .update(sanitize(purchaseOrderLine))
-      .eq("id", purchaseOrderLine.id)
+      .update(sanitize(row))
+      .eq("id", line.id)
       .select("id")
       .single();
   }
@@ -1771,16 +1784,23 @@ export async function upsertPurchaseOrderLine(
   const existing = await client
     .from("purchaseOrderLine")
     .select("sortOrder")
-    .eq("purchaseOrderId", purchaseOrderLine.purchaseOrderId);
+    .eq("purchaseOrderId", line.purchaseOrderId);
 
   const maxSortOrder = (existing.data ?? []).reduce(
     (max, row) => Math.max(max, row.sortOrder ?? 0),
     0
   );
 
+  const row = Object.fromEntries(
+    Object.entries({
+      ...line,
+      sortOrder: maxSortOrder + 1
+    }).map(([key, value]) => [key, value === "" ? null : value])
+  );
+
   return client
     .from("purchaseOrderLine")
-    .insert([{ ...purchaseOrderLine, sortOrder: maxSortOrder + 1 }])
+    .insert([sanitize(row)])
     .select("id")
     .single();
 }

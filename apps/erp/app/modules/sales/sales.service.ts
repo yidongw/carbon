@@ -5738,10 +5738,24 @@ export async function upsertSalesOrderLine(
       })
 ) {
   if ("id" in salesOrderLine) {
+    const {
+      variantQuantities: _variantQuantities,
+      serviceId: _serviceId,
+      ...line
+    } = salesOrderLine as typeof salesOrderLine & {
+      variantQuantities?: unknown;
+      serviceId?: unknown;
+    };
+    const row = Object.fromEntries(
+      Object.entries(line).map(([key, value]) => [
+        key,
+        value === "" ? null : value
+      ])
+    );
     return client
       .from("salesOrderLine")
-      .update(sanitize(salesOrderLine))
-      .eq("id", salesOrderLine.id)
+      .update(sanitize(row))
+      .eq("id", line.id)
       .select("id")
       .single();
   }
@@ -5759,10 +5773,17 @@ export async function upsertSalesOrderLine(
     0
   );
 
-  // Validator carries a few optional text fields that are not columns (or must
-  // be NULL rather than ""). Empty strings blow up FKs/dates on insert;
-  // `serviceId` is legacy and not on the table.
-  const { serviceId: _serviceId, ...line } = salesOrderLine;
+  // Validator carries FormData-only fields (`variantQuantities`) and optional
+  // text fields that are not columns (or must be NULL rather than ""). Empty
+  // strings blow up FKs/dates on insert; `serviceId` is legacy and not on the table.
+  const {
+    serviceId: _serviceId,
+    variantQuantities: _variantQuantities,
+    ...line
+  } = salesOrderLine as typeof salesOrderLine & {
+    serviceId?: unknown;
+    variantQuantities?: unknown;
+  };
   const row = Object.fromEntries(
     Object.entries({
       ...line,

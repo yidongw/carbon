@@ -27,7 +27,7 @@ import {
   LuSettings2,
   LuTrash
 } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useRevalidator } from "react-router";
 import { Empty, ItemThumbnail, MethodItemTypeIcon } from "~/components";
 import type { DragHandleBindings } from "~/components/LineReorder";
 import {
@@ -36,12 +36,9 @@ import {
   ReorderEditBar,
   useLineOrderEditMode
 } from "~/components/LineReorder";
-import {
-  useOptimisticLocation,
-  usePermissions,
-  useRouteData,
-  useUser
-} from "~/hooks";
+import { useOverlay } from "~/components/Overlay/OverlayProvider";
+import { overlay } from "~/components/Overlay/overlay";
+import { useOptimisticLocation, usePermissions, useRouteData } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
 import { methodItemType } from "~/modules/shared";
@@ -50,12 +47,10 @@ import { path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
 import type { PurchaseOrder, PurchaseOrderLine, Supplier } from "../../types";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
-import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
 
 export default function PurchaseOrderExplorer() {
   const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
-  const { defaults } = useUser();
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
   const purchaseOrderData = useRouteData<{
@@ -65,19 +60,6 @@ export default function PurchaseOrderExplorer() {
   }>(path.to.purchaseOrder(orderId));
   const permissions = usePermissions();
 
-  const purchaseOrderLineInitialValues = {
-    purchaseOrderId: orderId,
-    purchaseOrderLineType: "Item" as MethodItemType,
-    purchaseQuantity: 1,
-    supplierUnitPrice: 0,
-    locationId:
-      purchaseOrderData?.purchaseOrder?.locationId ?? defaults.locationId ?? "",
-    supplierTaxAmount: 0,
-    supplierShippingCost: 0,
-    exchangeRate: purchaseOrderData?.purchaseOrder?.exchangeRate ?? 1
-  };
-
-  const newPurchaseOrderLineDisclosure = useDisclosure();
   const deleteLineDisclosure = useDisclosure();
   const [deleteLine, setDeleteLine] = useState<PurchaseOrderLine | null>(null);
 
@@ -87,6 +69,15 @@ export default function PurchaseOrderExplorer() {
   const isDisabled = isLocked
     ? true
     : purchaseOrderData?.purchaseOrder?.status !== "Draft";
+
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
+
+  const openNewLine = () => {
+    openOverlay(overlay.to.newPurchaseOrderLine({ orderId }), {
+      onCreated: () => revalidate()
+    });
+  };
 
   const lines = useMemo(
     () => purchaseOrderData?.lines ?? [],
@@ -152,12 +143,12 @@ export default function PurchaseOrderExplorer() {
             )
           ) : (
             <Empty>
-              {permissions.can("update", "sales") && (
+              {permissions.can("update", "purchasing") && (
                 <Button
                   isDisabled={isDisabled}
                   leftIcon={<LuCirclePlus />}
                   variant="secondary"
-                  onClick={newPurchaseOrderLineDisclosure.onOpen}
+                  onClick={openNewLine}
                 >
                   <Trans>Add Line Item</Trans>
                 </Button>
@@ -181,11 +172,11 @@ export default function PurchaseOrderExplorer() {
                     ref={newButtonRef}
                     className="w-full"
                     isDisabled={
-                      isDisabled || !permissions.can("update", "sales")
+                      isDisabled || !permissions.can("update", "purchasing")
                     }
                     leftIcon={<LuCirclePlus />}
                     variant="secondary"
-                    onClick={newPurchaseOrderLineDisclosure.onOpen}
+                    onClick={openNewLine}
                   >
                     <Trans>Add Line Item</Trans>
                   </Button>
@@ -212,13 +203,6 @@ export default function PurchaseOrderExplorer() {
           )}
         </div>
       </VStack>
-      {newPurchaseOrderLineDisclosure.isOpen && (
-        <PurchaseOrderLineForm
-          initialValues={purchaseOrderLineInitialValues}
-          type="modal"
-          onClose={newPurchaseOrderLineDisclosure.onClose}
-        />
-      )}
       {deleteLineDisclosure.isOpen && (
         <DeletePurchaseOrderLine line={deleteLine!} onCancel={onDeleteCancel} />
       )}
