@@ -253,12 +253,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
       if (isOverlay) {
         return data(
           { ok: true as const },
-          await flash(request, success("Sales order lines created"))
+          await flash(request, success("Variant quantities added"))
         );
       }
       throw redirect(
         path.to.salesOrderDetails(orderId),
-        await flash(request, success("Sales order lines created"))
+        await flash(request, success("Variant quantities added"))
       );
     }
 

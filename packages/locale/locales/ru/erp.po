@@ -11795,9 +11795,6 @@ msgstr "Строка заказа на покупку"
 msgid "Purchase order line created"
 msgstr "Заказ на покупку строка создана"
 
-msgid "Purchase order lines created"
-msgstr "Линии закупочного заказа созданы"
-
 msgid "Purchase Order Location"
 msgstr "Местоположение заказа на покупку"
 
@@ -12781,9 +12778,6 @@ msgstr "Строка заказа продажи"
 
 msgid "Sales order line created"
 msgstr "Линия продажного заказа создана"
-
-msgid "Sales order lines created"
-msgstr "Линии продажного заказа созданы"
 
 msgid "Sales Order Location"
 msgstr "Местоположение заказа на продажу"
@@ -15854,6 +15848,9 @@ msgid "Variances"
 msgstr "Отклонения"
 
 msgid "Variant quantities"
+msgstr ""
+
+msgid "Variant quantities added"
 msgstr ""
 
 msgid "Variants Quantity"

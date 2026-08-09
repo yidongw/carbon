@@ -11795,9 +11795,6 @@ msgstr "購買注文行"
 msgid "Purchase order line created"
 msgstr "購入注文行が作成されました"
 
-msgid "Purchase order lines created"
-msgstr "購入注文行が作成されました"
-
 msgid "Purchase Order Location"
 msgstr "購入注文の場所"
 
@@ -12781,9 +12778,6 @@ msgstr "販売注文行"
 
 msgid "Sales order line created"
 msgstr "販売注文行が作成されました"
-
-msgid "Sales order lines created"
-msgstr "販売注文行作成"
 
 msgid "Sales Order Location"
 msgstr "販売注文の場所"
@@ -15854,6 +15848,9 @@ msgid "Variances"
 msgstr "変動"
 
 msgid "Variant quantities"
+msgstr ""
+
+msgid "Variant quantities added"
 msgstr ""
 
 msgid "Variants Quantity"

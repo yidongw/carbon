@@ -4931,9 +4931,6 @@ msgstr "पर्चेज ऑर्डर संपना हुई"
 msgid "Purchase order line created"
 msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
 
-msgid "Purchase order lines created"
-msgstr "पर्चेज ओर्डर पंक्तियाँ सृजनात्मक"
-
 msgid "Purchase order not found"
 msgstr "पर्चेज ऑर्डर नहीं मिला"
 
@@ -5164,9 +5161,6 @@ msgstr "विक्रय आदेश तैयार किया गया �
 
 msgid "Sales order line created"
 msgstr "विक्रय आदेश पंक्ति बनाई गई"
-
-msgid "Sales order lines created"
-msgstr "सॉल्स ऑर्डर पंक्तियाँ बनाई गई हैं"
 
 msgid "Sample recorded"
 msgstr "नमूना रिकॉर्ड किया गया है"
@@ -6386,6 +6380,9 @@ msgstr "उपयोगकर्ता नहीं मिला"
 
 msgid "User record not found"
 msgstr "उपयोगकर्ता रिकॉर्ड नहीं मिला"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"

@@ -4922,9 +4922,6 @@ msgstr "Bestellvertrag abgeschlossen"
 msgid "Purchase order line created"
 msgstr "Bestellposition erstellt"
 
-msgid "Purchase order lines created"
-msgstr "Bestellpositionen erstellt"
-
 msgid "Purchase order not found"
 msgstr "Bestellnummer nicht gefunden"
 
@@ -5155,9 +5152,6 @@ msgstr "Vertrag erstellt"
 
 msgid "Sales order line created"
 msgstr "Verkaufsauftragsposition erstellt"
-
-msgid "Sales order lines created"
-msgstr "Verkaufsauftragspositionen erstellt"
 
 msgid "Sample recorded"
 msgstr "Beispiel aufgezeichnet"
@@ -6377,6 +6371,9 @@ msgstr "Nutzer nicht gefunden"
 
 msgid "User record not found"
 msgstr "Nutzerkonto nicht gefunden"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "Verifizierungsfehler"

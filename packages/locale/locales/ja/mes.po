@@ -4922,9 +4922,6 @@ msgstr "購入注文完了"
 msgid "Purchase order line created"
 msgstr "購入注文行が作成されました"
 
-msgid "Purchase order lines created"
-msgstr "購入注文行が作成されました"
-
 msgid "Purchase order not found"
 msgstr "購入注文が見つかりません"
 
@@ -5155,9 +5152,6 @@ msgstr "販売注文を作成しました"
 
 msgid "Sales order line created"
 msgstr "販売注文行が作成されました"
-
-msgid "Sales order lines created"
-msgstr "販売注文行作成"
 
 msgid "Sample recorded"
 msgstr "サンプルが録音されました"
@@ -6377,6 +6371,9 @@ msgstr "ユーザーが見つかりません"
 
 msgid "User record not found"
 msgstr "ユーザー記録が見つかりません"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "確認エラー"

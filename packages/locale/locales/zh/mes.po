@@ -4923,9 +4923,6 @@ msgstr "采购订单已完成"
 msgid "Purchase order line created"
 msgstr "已创建采购订单行"
 
-msgid "Purchase order lines created"
-msgstr "已创建采购订单行"
-
 msgid "Purchase order not found"
 msgstr "采购订单未找到"
 
@@ -5156,9 +5153,6 @@ msgstr "已创建销售订单"
 
 msgid "Sales order line created"
 msgstr "已创建销售订单行"
-
-msgid "Sales order lines created"
-msgstr "创建销售订单行"
 
 msgid "Sample recorded"
 msgstr "样本已录制"
@@ -6378,6 +6372,9 @@ msgstr "用户未找到"
 
 msgid "User record not found"
 msgstr "用户记录未找到"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "验证错误"

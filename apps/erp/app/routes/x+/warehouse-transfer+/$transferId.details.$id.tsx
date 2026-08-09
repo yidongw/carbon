@@ -28,7 +28,10 @@ import {
   hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -138,9 +141,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
       let variantQuantities: Json | undefined;
       let quantity = updateData.quantity;
-      if (updateData.variantQuantities) {
+      const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+        formData,
+        updateData.variantQuantities
+      );
+      if (variantQuantitiesRaw) {
         try {
-          const parsed = JSON.parse(updateData.variantQuantities) as Record<
+          const parsed = JSON.parse(variantQuantitiesRaw) as Record<
             string,
             unknown
           >;
@@ -152,7 +159,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         }
       }
 
-      const { variantQuantities: _configStr, ...rest } = updateData;
+      const { variantQuantities: _variantQuantitiesForm, ...rest } = updateData;
       const parentItemId = existingLine.data?.itemId ?? "";
 
       if (hasStyleVariantsQuantity(variantQuantities)) {

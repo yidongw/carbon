@@ -11801,9 +11801,6 @@ msgstr "क्रय आदेश पंक्ति"
 msgid "Purchase order line created"
 msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
 
-msgid "Purchase order lines created"
-msgstr "पर्चेज ऑर्डर पंक्तियाँ सृजनात्मक"
-
 msgid "Purchase Order Location"
 msgstr "क्रय आदेश स्थान"
 
@@ -12787,9 +12784,6 @@ msgstr "बिक्रय आदेश पंक्ति"
 
 msgid "Sales order line created"
 msgstr "विक्रय आदेश पंक्ति बनाई गई"
-
-msgid "Sales order lines created"
-msgstr "सॉल्स ऑर्डर पंक्तियाँ बनाई गई हैं"
 
 msgid "Sales Order Location"
 msgstr "बिक्रय आदेश स्थान"
@@ -15860,6 +15854,9 @@ msgid "Variances"
 msgstr "अनियमितताएं"
 
 msgid "Variant quantities"
+msgstr ""
+
+msgid "Variant quantities added"
 msgstr ""
 
 msgid "Variants Quantity"

@@ -4930,9 +4930,6 @@ msgstr "Ordine d'acquisto finalizzato"
 msgid "Purchase order line created"
 msgstr "Linea di ordine d'acquisto creata"
 
-msgid "Purchase order lines created"
-msgstr "Linee della richiesta d'acquisto create"
-
 msgid "Purchase order not found"
 msgstr "Ordine d'acquisto non trovato"
 
@@ -5163,9 +5160,6 @@ msgstr "Ordine di vendita creato"
 
 msgid "Sales order line created"
 msgstr "Linea di ordine vendite creata"
-
-msgid "Sales order lines created"
-msgstr "Linee di ordine vendita create"
 
 msgid "Sample recorded"
 msgstr "Campione registrato"
@@ -6385,6 +6379,9 @@ msgstr "Utente non trovato"
 
 msgid "User record not found"
 msgstr "Utente non trovato"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "Errore di verifica"

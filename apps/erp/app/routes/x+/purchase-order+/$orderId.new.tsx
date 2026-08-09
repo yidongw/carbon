@@ -255,12 +255,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
       if (isOverlay) {
         return data(
           { ok: true as const },
-          await flash(request, success("Purchase order lines created"))
+          await flash(request, success("Variant quantities added"))
         );
       }
       throw redirect(
         path.to.purchaseOrderDetails(orderId),
-        await flash(request, success("Purchase order lines created"))
+        await flash(request, success("Variant quantities added"))
       );
     }
 

@@ -4922,9 +4922,6 @@ msgstr "Commande d'achat finalisée"
 msgid "Purchase order line created"
 msgstr "Ligne de commande d'achat créée"
 
-msgid "Purchase order lines created"
-msgstr "Lignes de commande d'achat créées"
-
 msgid "Purchase order not found"
 msgstr "Commande d'achat introuvable"
 
@@ -5155,9 +5152,6 @@ msgstr "Commande de vente créée"
 
 msgid "Sales order line created"
 msgstr "Ligne de commande vendus créée"
-
-msgid "Sales order lines created"
-msgstr "Lignes de commande vendues créées"
 
 msgid "Sample recorded"
 msgstr "Échantillon enregistré"
@@ -6377,6 +6371,9 @@ msgstr "Utilisateur non trouvé"
 
 msgid "User record not found"
 msgstr "Enregistrement utilisateur non trouvé"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "Erreur de vérification"

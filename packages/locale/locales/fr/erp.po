@@ -11795,9 +11795,6 @@ msgstr "Ligne de bon de commande"
 msgid "Purchase order line created"
 msgstr "Ligne de commande d'achat créée"
 
-msgid "Purchase order lines created"
-msgstr "Lignes de commande d'achat créées"
-
 msgid "Purchase Order Location"
 msgstr "Localisation de la commande d'achat"
 
@@ -12781,9 +12778,6 @@ msgstr "Ligne de commande client"
 
 msgid "Sales order line created"
 msgstr "Ligne de commande vendus créée"
-
-msgid "Sales order lines created"
-msgstr "Lignes de commande vendues créées"
 
 msgid "Sales Order Location"
 msgstr "Localisation de la commande client"
@@ -15854,6 +15848,9 @@ msgid "Variances"
 msgstr "Variances"
 
 msgid "Variant quantities"
+msgstr ""
+
+msgid "Variant quantities added"
 msgstr ""
 
 msgid "Variants Quantity"

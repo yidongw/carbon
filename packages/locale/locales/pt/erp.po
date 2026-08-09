@@ -11795,9 +11795,6 @@ msgstr "Linha de Ordem de Compra"
 msgid "Purchase order line created"
 msgstr "Linha de pedido de compra criada"
 
-msgid "Purchase order lines created"
-msgstr "Linhas de pedido de compra criadas"
-
 msgid "Purchase Order Location"
 msgstr "Localização da Ordem de Compra"
 
@@ -12781,9 +12778,6 @@ msgstr "Linha de Pedido de Venda"
 
 msgid "Sales order line created"
 msgstr "Linha de pedido de venda criada"
-
-msgid "Sales order lines created"
-msgstr "Linhas de pedido de venda criadas"
 
 msgid "Sales Order Location"
 msgstr "Localização da Ordem de Venda"
@@ -15854,6 +15848,9 @@ msgid "Variances"
 msgstr "Variações"
 
 msgid "Variant quantities"
+msgstr ""
+
+msgid "Variant quantities added"
 msgstr ""
 
 msgid "Variants Quantity"

@@ -24,7 +24,10 @@ import {
   hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
@@ -63,16 +66,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    variantQuantities: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     quantity: rawQuantity,
     ...d
   } = validation.data;
 
   let variantQuantities: Json | undefined;
   let quantity = rawQuantity;
-  if (configStr) {
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
       const fields = variantTableUpdateFields(parsed);
       variantQuantities = fields.variantQuantities;
       quantity = fields.quantity;

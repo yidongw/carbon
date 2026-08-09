@@ -4922,9 +4922,6 @@ msgstr "Заказ на покупку завершен"
 msgid "Purchase order line created"
 msgstr "Заказ на покупку строка создана"
 
-msgid "Purchase order lines created"
-msgstr "Линии закупочного заказа созданы"
-
 msgid "Purchase order not found"
 msgstr "Заказ не найден"
 
@@ -5155,9 +5152,6 @@ msgstr "Заказ продаж создан"
 
 msgid "Sales order line created"
 msgstr "Линия продажного заказа создана"
-
-msgid "Sales order lines created"
-msgstr "Линии продажного заказа созданы"
 
 msgid "Sample recorded"
 msgstr "Запись выполнена"
@@ -6377,6 +6371,9 @@ msgstr "Пользователь не найден"
 
 msgid "User record not found"
 msgstr "Пользователь не найден"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "Ошибка верификации"

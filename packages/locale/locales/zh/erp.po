@@ -11796,9 +11796,6 @@ msgstr "采购订单行"
 msgid "Purchase order line created"
 msgstr "已创建采购订单行"
 
-msgid "Purchase order lines created"
-msgstr "已创建采购订单行"
-
 msgid "Purchase Order Location"
 msgstr "采购订单位置"
 
@@ -12781,9 +12778,6 @@ msgid "Sales Order Line"
 msgstr "销售订单行"
 
 msgid "Sales order line created"
-msgstr "已创建销售订单行"
-
-msgid "Sales order lines created"
 msgstr "已创建销售订单行"
 
 msgid "Sales Order Location"
@@ -15855,6 +15849,9 @@ msgid "Variances"
 msgstr "差异"
 
 msgid "Variant quantities"
+msgstr ""
+
+msgid "Variant quantities added"
 msgstr ""
 
 msgid "Variants Quantity"

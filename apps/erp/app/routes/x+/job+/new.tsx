@@ -42,7 +42,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    configuration: configStr,
+    configuration: configurationRaw,
     variantQuantities: variantQuantitiesStr,
     ...data
   } = validation.data;
@@ -67,12 +67,12 @@ export async function action({ request }: ActionFunctionArgs) {
       // invalid JSON — skip variant quantities
     }
   }
-  if (configStr) {
+  if (configurationRaw) {
     try {
       const parsed =
-        typeof configStr === "string"
-          ? (JSON.parse(configStr) as Record<string, unknown>)
-          : (configStr as Record<string, unknown>);
+        typeof configurationRaw === "string"
+          ? (JSON.parse(configurationRaw) as Record<string, unknown>)
+          : (configurationRaw as Record<string, unknown>);
       // Legacy dual-submit: Style grids used to share the configuration field.
       if (isVariantsQuantityPayload(parsed)) {
         if (!styleVariantsQuantity) {

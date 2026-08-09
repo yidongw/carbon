@@ -4922,9 +4922,6 @@ msgstr "Zamówienie zakupowe zakończone"
 msgid "Purchase order line created"
 msgstr "Linia zamówienia zakupów utworzona"
 
-msgid "Purchase order lines created"
-msgstr "Linie zamówienia zakupów utworzone"
-
 msgid "Purchase order not found"
 msgstr "Zamówienie zakupowe nie zostało znalezione"
 
@@ -5155,9 +5152,6 @@ msgstr "Zamówienie sprzedawniczne utworzone"
 
 msgid "Sales order line created"
 msgstr "Linia zamówienia sprzedaży utworzona"
-
-msgid "Sales order lines created"
-msgstr "Linie zamówienia sprzedazy utworzone"
 
 msgid "Sample recorded"
 msgstr "Zapisane próbki"
@@ -6377,6 +6371,9 @@ msgstr "Użytkownik nie został znaleziony"
 
 msgid "User record not found"
 msgstr "Rekord użytkownika nie został znaleziony"
+
+msgid "Variant quantities added"
+msgstr ""
 
 msgid "Verification Error"
 msgstr "Błąd weryfikacji"
