@@ -160,7 +160,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  // A stored config table means the per-variant quantity grid was used (Style
+  // FormData variantTable means the per-variant quantity grid was used (Style
   // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
   if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
@@ -253,10 +253,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     configuration = undefined;
   }
 
+  // FormData `configuration` is expand-only; never persist on the line.
   const createSalesOrderLine = await upsertSalesOrderLine(client, {
     ...d,
     saleQuantity,
-    ...(configuration !== undefined ? { configuration } : {}),
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)

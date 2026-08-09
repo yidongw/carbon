@@ -33311,7 +33311,6 @@ export type Database = {
           accountId: string | null
           assetId: string | null
           companyId: string
-          configuration: Json | null
           conversionFactor: number | null
           costCenterId: string | null
           createdAt: string
@@ -33364,7 +33363,6 @@ export type Database = {
           accountId?: string | null
           assetId?: string | null
           companyId: string
-          configuration?: Json | null
           conversionFactor?: number | null
           costCenterId?: string | null
           createdAt?: string
@@ -33417,7 +33415,6 @@ export type Database = {
           accountId?: string | null
           assetId?: string | null
           companyId?: string
-          configuration?: Json | null
           conversionFactor?: number | null
           costCenterId?: string | null
           createdAt?: string
@@ -40228,7 +40225,6 @@ export type Database = {
           addOnCost: number
           assetId: string | null
           companyId: string
-          configuration: Json | null
           convertedAddOnCost: number | null
           convertedNonTaxableAddOnCost: number | null
           convertedShippingCost: number | null
@@ -40278,7 +40274,6 @@ export type Database = {
           addOnCost?: number
           assetId?: string | null
           companyId: string
-          configuration?: Json | null
           convertedAddOnCost?: number | null
           convertedNonTaxableAddOnCost?: number | null
           convertedShippingCost?: number | null
@@ -40328,7 +40323,6 @@ export type Database = {
           addOnCost?: number
           assetId?: string | null
           companyId?: string
-          configuration?: Json | null
           convertedAddOnCost?: number | null
           convertedNonTaxableAddOnCost?: number | null
           convertedShippingCost?: number | null
@@ -66026,7 +66020,6 @@ export type Database = {
           assetReadableId: string | null
           autodeskUrn: string | null
           companyId: string | null
-          configuration: Json | null
           convertedAddOnCost: number | null
           convertedNonTaxableAddOnCost: number | null
           convertedShippingCost: number | null

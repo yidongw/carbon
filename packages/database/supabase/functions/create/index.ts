@@ -12,8 +12,6 @@ import {
   toPurchaseOrderItemLineType,
 } from "../lib/outside-processing-pricing.ts";
 import {
-  expandVariantsQuantityTable,
-  hasVariantsQuantityTable,
 } from "../lib/item-variants.ts";
 
 const pool = getConnectionPool(1);
@@ -888,29 +886,6 @@ serve(async (req: Request) => {
             continue;
           }
 
-          // Any line whose per-variant grid was filled (Style color×size, or a
-          // Consumable color set) expands into variant SKU lines — the parent
-          // must never receive. A config table only exists when the grid ran.
-          if (hasVariantsQuantityTable(d.configuration)) {
-            const variants = await expandVariantsQuantityTable(
-              client,
-              {
-                parentItemId: d.itemId,
-                companyId,
-                configuration: d.configuration,
-              }
-            );
-            if (variants.length > 0) {
-              for (const v of variants) {
-                expandedSources.push({
-                  line: d,
-                  itemId: v.variantItemId,
-                  quantity: v.quantity,
-                });
-              }
-              continue;
-            }
-          }
 
           expandedSources.push({
             line: d,
@@ -1950,29 +1925,6 @@ serve(async (req: Request) => {
           ) {
             continue;
           }
-          // Any line whose per-variant grid was filled (Style color×size, or a
-          // Consumable color set) expands into variant SKU lines — the parent
-          // must never receive. A config table only exists when the grid ran.
-          if (hasVariantsQuantityTable(d.configuration)) {
-            const variants = await expandVariantsQuantityTable(
-              client,
-              {
-                parentItemId: d.itemId,
-                companyId,
-                configuration: d.configuration,
-              }
-            );
-            if (variants.length > 0) {
-              for (const v of variants) {
-                expandedPoShipSources.push({
-                  line: d,
-                  itemId: v.variantItemId,
-                  quantity: v.quantity,
-                });
-              }
-              continue;
-            }
-          }
           expandedPoShipSources.push({
             line: d,
             itemId: d.itemId,
@@ -2230,31 +2182,6 @@ serve(async (req: Request) => {
             line.salesOrderLineType === "Service"
           ) {
             continue;
-          }
-          // Expand any grid-filled line (Style color×size, or a Consumable
-          // color set) into variant SKU lines; Make-to-Order keeps its own path.
-          if (
-            line.methodType !== "Make to Order" &&
-            hasVariantsQuantityTable(line.configuration)
-          ) {
-            const variants = await expandVariantsQuantityTable(
-              client,
-              {
-                parentItemId: line.itemId,
-                companyId,
-                configuration: line.configuration,
-              }
-            );
-            if (variants.length > 0) {
-              for (const v of variants) {
-                expandedShipSources.push({
-                  line,
-                  itemId: v.variantItemId,
-                  quantity: v.quantity,
-                });
-              }
-              continue;
-            }
           }
           expandedShipSources.push({
             line,
@@ -2648,27 +2575,6 @@ serve(async (req: Request) => {
         };
         const expandedSingleSources: ExpandedSingleShipSource[] = [];
         const sol = salesOrderLine.data;
-        // Expand any grid-filled line (Style color×size, or a Consumable color
-        // set) into variant SKU lines; Make-to-Order keeps its own path.
-        if (
-          sol.methodType !== "Make to Order" &&
-          sol.itemId &&
-          hasVariantsQuantityTable(sol.configuration)
-        ) {
-          const variants = await expandVariantsQuantityTable(client, {
-            parentItemId: sol.itemId,
-            companyId,
-            configuration: sol.configuration,
-          });
-          if (variants.length > 0) {
-            for (const v of variants) {
-              expandedSingleSources.push({
-                itemId: v.variantItemId,
-                quantity: v.quantity,
-              });
-            }
-          }
-        }
         if (expandedSingleSources.length === 0 && sol.itemId) {
           expandedSingleSources.push({
             itemId: sol.itemId,

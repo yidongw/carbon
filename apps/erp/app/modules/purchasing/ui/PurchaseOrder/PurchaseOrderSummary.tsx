@@ -55,7 +55,6 @@ import type {
   Supplier
 } from "../../types";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
-import { getVariantDisplay } from "./variantDisplay";
 
 const LineItems = ({
   currencyCode,
@@ -130,15 +129,7 @@ const LineItems = ({
 
         const totalLines =
           group.kind === "style-group" ? group.totalLines : [line];
-        const variantDisplay =
-          group.kind === "style-group"
-            ? group.variantDisplay
-            : (group.variantDisplay ??
-              getVariantDisplay(
-                line.configuration,
-                attributeValueNames,
-                locale
-              ));
+        const variantDisplay = group.variantDisplay;
 
         const isGlAccount = line.purchaseOrderLineType === "G/L Account";
         const isFixedAsset = line.purchaseOrderLineType === "Fixed Asset";

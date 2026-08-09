@@ -56,7 +56,6 @@ import {
 } from "~/hooks";
 import JobStatus from "~/modules/production/ui/Jobs/JobStatus";
 import {
-  getVariantDisplay,
   groupLinesForStyleDisplay,
   type StyleVariantLineMeta
 } from "~/modules/shared/variantDisplay";
@@ -445,15 +444,7 @@ function LineItems({
 
         const totalLines =
           group.kind === "style-group" ? group.totalLines : [line];
-        const variantDisplay =
-          group.kind === "style-group"
-            ? group.variantDisplay
-            : (group.variantDisplay ??
-              getVariantDisplay(
-                line.configuration,
-                attributeValueNames,
-                locale
-              ));
+        const variantDisplay = group.variantDisplay;
 
         const itemReadableId =
           group.kind === "style-group"

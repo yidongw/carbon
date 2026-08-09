@@ -45,3 +45,5 @@ Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md`
 - **Out of scope (intentional):** SO/PO still expand Style `configuration.variantTable` to per-variant order lines — see `inventory-system.md`.
 
 **MES:** bundle pickup/report/print use `attributeLabel` / `valuesKey` (not colorCode/sizeCode).
+
+**SO/PO note:** `salesOrderLine.configuration` / `purchaseOrderLine.configuration` were dropped. Style qty grid is FormData-only → expand to child SKU lines; no JSONB plan column on SO/PO lines.

@@ -1999,7 +1999,6 @@ export async function insertSalesOrderLines(
     companyId: string;
     createdBy: string;
     customFields?: Json;
-    configuration?: Json;
   })[]
 ) {
   const linesWithDefaults = salesOrderLines.map((line) => ({
@@ -5734,13 +5733,11 @@ export async function upsertSalesOrderLine(
         companyId: string;
         createdBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
     | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
 ) {
   if ("id" in salesOrderLine) {

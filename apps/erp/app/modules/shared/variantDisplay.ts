@@ -172,7 +172,6 @@ export type StyleVariantLineMeta = {
 type GroupableOrderLine = {
   id: string | null;
   itemId: string | null;
-  configuration?: unknown;
 };
 
 export type StyleDisplayLineGroup<T extends GroupableOrderLine> =
@@ -198,9 +197,7 @@ export type StyleDisplayLineGroup<T extends GroupableOrderLine> =
 
 /**
  * Collapse expanded Style variant SKU lines under their parent for summary UI.
- * Parent lines that still carry a variantTable (not yet expanded) stay as-is.
- * If both a configured parent and sibling variants exist, prefer the variants
- * for chips/totals so quantities are not double-counted.
+ * SO/PO persist expanded variant SKU lines only (no parent+grid column).
  */
 export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
   lines: T[],
@@ -210,7 +207,6 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
   locale?: string
 ): StyleDisplayLineGroup<T>[] {
   const variantLinesByParent = new Map<string, T[]>();
-  const parentLinesByItemId = new Map<string, T>();
   const passthrough: T[] = [];
 
   for (const line of lines) {
@@ -225,21 +221,13 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       variantLinesByParent.set(meta.parentItemId, list);
       continue;
     }
-    // Parent Style still holding a variants quantity grid (pre-expand).
-    if (getVariantDisplay(line.configuration, attributeValueNames, locale)) {
-      parentLinesByItemId.set(line.itemId, line);
-      continue;
-    }
     passthrough.push(line);
   }
 
   const groups: StyleDisplayLineGroup<T>[] = [];
-  const consumedParents = new Set<string>();
 
   for (const [parentItemId, variantLines] of variantLinesByParent) {
     const meta = variantByItemId[variantLines[0]!.itemId!];
-    const parentLine = parentLinesByItemId.get(parentItemId);
-    if (parentLine) consumedParents.add(parentItemId);
 
     const variantDisplay = getVariantDisplayFromVariants(
       variantLines.map((line) => {
@@ -259,28 +247,10 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       parentItemId,
       parentReadableId: meta.parentReadableId,
       parentName: meta.parentName,
-      parentThumbnailPath:
-        meta.parentThumbnailPath ??
-        (parentLine as { thumbnailPath?: string | null } | undefined)
-          ?.thumbnailPath ??
-        null,
-      primaryLine: parentLine ?? variantLines[0]!,
+      parentThumbnailPath: meta.parentThumbnailPath ?? null,
+      primaryLine: variantLines[0]!,
       totalLines: variantLines,
       variantDisplay
-    });
-  }
-
-  for (const [parentItemId, parentLine] of parentLinesByItemId) {
-    if (consumedParents.has(parentItemId)) continue;
-    groups.push({
-      kind: "line",
-      key: parentLine.id!,
-      line: parentLine,
-      variantDisplay: getVariantDisplay(
-        parentLine.configuration,
-        attributeValueNames,
-        locale
-      )
     });
   }
 
@@ -289,11 +259,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       kind: "line",
       key: line.id!,
       line,
-      variantDisplay: getVariantDisplay(
-        line.configuration,
-        attributeValueNames,
-        locale
-      )
+      variantDisplay: null
     });
   }
 

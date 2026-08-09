@@ -35,3 +35,5 @@
 ## Breakpoint
 
 Uses Tailwind `md:` (768px) — same pattern as ERP list tables (`TableCardRow`).
+
+**SO/PO:** `salesOrderLine` / `purchaseOrderLine` `configuration` columns were dropped; FormData-only expand remains.

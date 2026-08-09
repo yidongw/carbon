@@ -144,24 +144,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   let saleQuantity = rawQuantity;
-  let configurationUpdate: { configuration: Json | null } | undefined;
   let configuration: Json | undefined;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = variantTableUpdateFields(parsed);
-      configurationUpdate = { configuration: fields.configuration };
       configuration = fields.configuration;
       saleQuantity = fields.quantity;
     } catch {
-      // Invalid JSON — keep typed quantity and leave existing configuration alone.
+      // Invalid JSON — keep typed quantity; FormData config is expand-only.
     }
-  } else {
-    // Explicit empty hidden field clears Style configuration.
-    configurationUpdate = { configuration: null };
   }
 
-  // A stored config table means the per-variant quantity grid was used (Style
+  // FormData variantTable means the per-variant quantity grid was used (Style
   // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
   if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
@@ -221,14 +216,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
 
     saleQuantity = expanded.variants[0].quantity;
-    configurationUpdate = { configuration: null };
   }
 
+  // FormData `configuration` is expand-only; never persist on the line.
   const updateSalesOrderLine = await upsertSalesOrderLine(client, {
     id: lineId,
     ...d,
     saleQuantity,
-    ...configurationUpdate,
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -286,9 +280,8 @@ export default function EditSalesOrderLineRoute() {
     unitPrice: line?.unitPrice ?? 0,
     taxPercent: line?.taxPercent ?? 0,
     shippingCost: line?.shippingCost ?? 0,
-    configuration: line?.configuration
-      ? JSON.stringify(line.configuration)
-      : undefined,
+    // Style qty grid is FormData-only on create/edit; not stored on the line.
+    configuration: undefined,
     assetReadableId: (line as any)?.assetReadableId ?? undefined,
     assetName: (line as any)?.assetName ?? undefined,
     ...getCustomFields(line?.customFields)

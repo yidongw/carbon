@@ -1755,7 +1755,6 @@ export async function upsertPurchaseOrderLine(
         companyId: string;
         createdBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
     | (Omit<
         z.infer<typeof purchaseOrderLineValidator>,
@@ -1764,7 +1763,6 @@ export async function upsertPurchaseOrderLine(
         id: string;
         updatedBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
 ) {
   if ("id" in purchaseOrderLine) {
@@ -1883,7 +1881,9 @@ export async function replacePurchaseOrderLinesWithStyleVariants(
         if (variants.length > 1) {
           await trx
             .updateTable("purchaseOrderLine")
-            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .set({
+              sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}`
+            })
             .where("purchaseOrderId", "=", purchaseOrderId)
             .where("companyId", "=", companyId)
             .where("sortOrder", ">", original.sortOrder)

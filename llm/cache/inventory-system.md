@@ -112,3 +112,5 @@ Do not re-apply / “fix” these on the shared preview DB — they are already 
 `consumables` view excludes variant children (`20260806162513`), same pattern as `styles`.
 
 SKU breakdown for variant children uses `get_inventory_quantities_for_items` (`20260806163128`) because the list RPC excludes child SKUs.
+
+**SO/PO note:** `salesOrderLine.configuration` / `purchaseOrderLine.configuration` were dropped. Style qty grid is FormData-only → expand to child SKU lines; no JSONB plan column on SO/PO lines.

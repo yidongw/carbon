@@ -52,37 +52,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   // Attach source SO/PO Style variants quantity plan (Ordered chips / modal hints).
   const rawReceiptLines = receiptLines.data ?? [];
-  const sourceLineIds = [
-    ...new Set(
-      rawReceiptLines
-        .map((line) => line.lineId)
-        .filter((id): id is string => typeof id === "string" && id.length > 0)
-    )
-  ];
+  // SO/PO lines no longer store a variants-quantity JSON column; Ordered chips
+  // for Style come from expanded variant SKU lines (and jobVariantQuantity for jobs).
   const orderVariantQuantitiesByLineId = new Map<string, unknown>();
-  if (sourceLineIds.length > 0) {
-    if (receipt.data.sourceDocument === "Sales Order") {
-      const { data } = await serviceRole
-        .from("salesOrderLine")
-        .select("id, configuration")
-        .in("id", sourceLineIds);
-      for (const row of data ?? []) {
-        if (row.configuration != null) {
-          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
-        }
-      }
-    } else if (receipt.data.sourceDocument === "Purchase Order") {
-      const { data } = await serviceRole
-        .from("purchaseOrderLine")
-        .select("id, configuration")
-        .in("id", sourceLineIds);
-      for (const row of data ?? []) {
-        if (row.configuration != null) {
-          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
-        }
-      }
-    }
-  }
   const receiptLinesWithOrderVariantQuantities = rawReceiptLines.map(
     (line) => ({
       ...line,

@@ -99,14 +99,6 @@ describe("groupLinesForStyleDisplay", () => {
     const { groupLinesForStyleDisplay } = await import("./variantDisplay");
     const groups = groupLinesForStyleDisplay(
       [
-        {
-          id: "parent",
-          itemId: "p1",
-          configuration: {
-            variantTable: [{ valuesKey: "BK|S", Quantities: 5 }]
-          },
-          purchaseQuantity: 5
-        },
         { id: "v1", itemId: "c1", purchaseQuantity: 4 },
         { id: "v2", itemId: "c2", purchaseQuantity: 3 }
       ],

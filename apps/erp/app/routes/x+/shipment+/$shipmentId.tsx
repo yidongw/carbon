@@ -51,37 +51,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   // Attach source SO/PO/job Style variants quantity plan so Ordered can show chips and the
   // ship modal can hint against what was ordered.
   const rawLines = shipmentLines.data ?? [];
-  const sourceLineIds = [
-    ...new Set(
-      rawLines
-        .map((line) => line.lineId)
-        .filter((id): id is string => typeof id === "string" && id.length > 0)
-    )
-  ];
+  // SO/PO lines no longer store a variants-quantity JSON column; Ordered chips
+  // for Style come from expanded variant SKU lines (and jobVariantQuantity for jobs).
   const orderVariantQuantitiesByLineId = new Map<string, unknown>();
-  if (sourceLineIds.length > 0) {
-    if (shipment.data.sourceDocument === "Sales Order") {
-      const { data } = await client
-        .from("salesOrderLine")
-        .select("id, configuration")
-        .in("id", sourceLineIds);
-      for (const row of data ?? []) {
-        if (row.configuration != null) {
-          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
-        }
-      }
-    } else if (shipment.data.sourceDocument === "Purchase Order") {
-      const { data } = await client
-        .from("purchaseOrderLine")
-        .select("id, configuration")
-        .in("id", sourceLineIds);
-      for (const row of data ?? []) {
-        if (row.configuration != null) {
-          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
-        }
-      }
-    }
-  }
 
   // Style jobs store planned variant qty in jobVariantQuantity (not job.configuration).
   const jobIds = [
