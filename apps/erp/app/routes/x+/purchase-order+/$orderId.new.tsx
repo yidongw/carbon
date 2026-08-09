@@ -15,7 +15,10 @@ import {
   expandVariantTableToLines,
   hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import {
   getPurchaseOrder,
   isPurchaseOrderLocked,
@@ -141,16 +144,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Omit `id` — create path must not send a client id.
   const {
     id: _id,
-    variantQuantities: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     purchaseQuantity: rawQuantity,
     ...d
   } = validation.data;
 
   let purchaseQuantity = rawQuantity;
   let variantQuantities: Json | undefined;
-  if (configStr) {
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
       const fields = variantTableUpdateFields(parsed);
       variantQuantities = fields.variantQuantities;
       purchaseQuantity = fields.quantity;

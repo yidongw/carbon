@@ -22,6 +22,7 @@ import {
 } from "~/modules/production/variantsQuantityOverlay";
 import {
   buildVariantsQuantityEditorState,
+  getVariantsQuantityRows,
   type VariantsQuantityReferenceContext,
   type VariantsQuantityReferenceSource,
   variantsQuantityToComboRows
@@ -637,16 +638,8 @@ function VariantsQuantityModal({
 function extractVariantsQuantity(
   variantQuantities: unknown
 ): Row[] | undefined {
-  if (
-    !variantQuantities ||
-    typeof variantQuantities !== "object" ||
-    Array.isArray(variantQuantities)
-  ) {
-    return undefined;
-  }
-  const cfg = variantQuantities as Record<string, unknown>;
-  const table = cfg.variantTable;
-  return Array.isArray(table) ? (table as Row[]) : undefined;
+  const table = getVariantsQuantityRows(variantQuantities);
+  return table.length > 0 ? (table as Row[]) : undefined;
 }
 
 /**

@@ -10,9 +10,11 @@ import type {
 import { sql } from "kysely";
 import type { z } from "zod";
 import { getEmployeeJob } from "~/modules/people";
+import { sanitizeOrderLineWriteRow } from "~/modules/shared/orderLineWrite";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
+
 import { getCurrencyByCode } from "../accounting/accounting.service";
 import type { PurchaseInvoice } from "../invoicing/types";
 import {
@@ -1761,21 +1763,14 @@ export async function upsertPurchaseOrderLine(
 ) {
   // Validator may carry FormData-only fields (`variantQuantities`) and empty
   // strings for optional FKs/dates — strip/null those before write.
-  const { variantQuantities: _variantQuantities, ...line } =
-    purchaseOrderLine as typeof purchaseOrderLine & {
-      variantQuantities?: unknown;
-    };
+  const line = sanitizeOrderLineWriteRow(
+    purchaseOrderLine as unknown as Record<string, unknown>
+  ) as typeof purchaseOrderLine;
 
   if ("id" in line) {
-    const row = Object.fromEntries(
-      Object.entries(line).map(([key, value]) => [
-        key,
-        value === "" ? null : value
-      ])
-    );
     return client
       .from("purchaseOrderLine")
-      .update(sanitize(row))
+      .update(sanitize(line))
       .eq("id", line.id)
       .select("id")
       .single();
@@ -1791,16 +1786,9 @@ export async function upsertPurchaseOrderLine(
     0
   );
 
-  const row = Object.fromEntries(
-    Object.entries({
-      ...line,
-      sortOrder: maxSortOrder + 1
-    }).map(([key, value]) => [key, value === "" ? null : value])
-  );
-
   return client
     .from("purchaseOrderLine")
-    .insert([sanitize(row)])
+    .insert([sanitize({ ...line, sortOrder: maxSortOrder + 1 })])
     .select("id")
     .single();
 }

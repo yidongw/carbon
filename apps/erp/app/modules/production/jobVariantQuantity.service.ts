@@ -2,6 +2,7 @@ import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { expandVariantsQuantityTable } from "~/modules/items/itemAttribute.service";
+import { readVariantTableRows } from "~/modules/production/variantTableWire";
 
 export type JobVariantQuantityLine = {
   variantItemId: string;
@@ -14,14 +15,13 @@ type Db = SupabaseClient<Database>;
 /** True when payload is a Style/attribute qty table (not Part flat params). */
 export function isVariantsQuantityPayload(payload: unknown): boolean {
   if (!payload || typeof payload !== "object") return false;
-  const cfg = payload as { variantTable?: unknown };
-  return Array.isArray(cfg.variantTable);
+  const cfg = payload as Record<string, unknown>;
+  // Dual-read legacy `configTable` during the wire-key rename window.
+  return Array.isArray(cfg.variantTable) || Array.isArray(cfg.configTable);
 }
 
 export function isNonEmptyVariantsQuantity(payload: unknown): boolean {
-  if (!isVariantsQuantityPayload(payload)) return false;
-  const cfg = payload as { variantTable?: unknown[] };
-  return Array.isArray(cfg.variantTable) && cfg.variantTable.length > 0;
+  return readVariantTableRows(payload).length > 0;
 }
 
 /**

@@ -13,10 +13,19 @@ describe("hasStyleVariantsQuantity", () => {
     ).toBe(true);
   });
 
+  it("dual-reads legacy configTable", () => {
+    expect(
+      hasStyleVariantsQuantity({
+        configTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
+      })
+    ).toBe(true);
+  });
+
   it("returns false for empty or missing tables", () => {
     expect(hasStyleVariantsQuantity(null)).toBe(false);
     expect(hasStyleVariantsQuantity({})).toBe(false);
     expect(hasStyleVariantsQuantity({ variantTable: [] })).toBe(false);
+    expect(hasStyleVariantsQuantity({ configTable: [] })).toBe(false);
   });
 });
 

@@ -13,17 +13,28 @@ describe("jobVariantQuantity helpers", () => {
         variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
     ).toBe(true);
+    expect(
+      isVariantsQuantityPayload({
+        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+      })
+    ).toBe(true);
     expect(isVariantsQuantityPayload({ color: "BK", finish: "matte" })).toBe(
       false
     );
     expect(isVariantsQuantityPayload(null)).toBe(false);
     expect(isVariantsQuantityPayload({ variantTable: [] })).toBe(true);
+    expect(isVariantsQuantityPayload({ configTable: [] })).toBe(true);
   });
 
   it("requires non-empty variantTable for dual-read / qty gates", () => {
     expect(
       isNonEmptyVariantsQuantity({
         variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+      })
+    ).toBe(true);
+    expect(
+      isNonEmptyVariantsQuantity({
+        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
     ).toBe(true);
     expect(isNonEmptyVariantsQuantity({ variantTable: [] })).toBe(false);

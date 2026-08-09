@@ -1,4 +1,5 @@
 import type { Json } from "@carbon/database";
+import { readVariantTableRows } from "./variantTableWire";
 
 export type VariantsQuantityRow = Record<string, string | number | boolean>;
 
@@ -17,14 +18,7 @@ const QUANTITY_COLUMN = "Quantities";
 function getVariantsQuantityTable(
   variantQuantities: Json | Record<string, unknown> | null | undefined
 ): VariantsQuantityRow[] {
-  const cfg =
-    typeof variantQuantities === "object" &&
-    variantQuantities !== null &&
-    !Array.isArray(variantQuantities)
-      ? (variantQuantities as Record<string, unknown>)
-      : null;
-  const table = cfg?.variantTable;
-  return Array.isArray(table) ? (table as VariantsQuantityRow[]) : [];
+  return readVariantTableRows(variantQuantities) as VariantsQuantityRow[];
 }
 
 /** Signature for matching rows by their non-quantity (descriptor) columns. */
@@ -198,24 +192,16 @@ export function reportsExceedVariantQuantitiesPlan(
 }
 
 /**
- * Sums the `Quantities` column across `variantQuantities.variantTable`.
+ * Sums the `Quantities` column across `variantQuantities.variantTable`
+ * (dual-reads legacy `configTable`).
  */
 export function computeVariantTableTotal(
   variantQuantities: Json | Record<string, unknown> | null | undefined
 ): number {
-  if (variantQuantities === null || variantQuantities === undefined) return 0;
-  const cfg =
-    typeof variantQuantities === "object" && !Array.isArray(variantQuantities)
-      ? (variantQuantities as Record<string, unknown>)
-      : null;
-  if (!cfg) return 0;
+  const table = getVariantsQuantityTable(variantQuantities);
+  if (table.length === 0) return 0;
 
-  const table = cfg.variantTable;
-  if (!Array.isArray(table) || table.length === 0) return 0;
-
-  return table.reduce((sum: number, row: unknown) => {
-    if (typeof row !== "object" || row === null) return sum;
-    const r = row as Record<string, unknown>;
-    return sum + (Number(r[QUANTITY_COLUMN]) || 0);
+  return table.reduce((sum, row) => {
+    return sum + (Number(row[QUANTITY_COLUMN]) || 0);
   }, 0);
 }

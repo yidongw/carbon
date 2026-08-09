@@ -8,16 +8,21 @@ import type {
 } from "./variantsQuantityTableColumns";
 import { buildJobRemainingReferenceContext } from "./variantsQuantityTableColumns";
 import { computeVariantTableTotal } from "./variantTable";
+import {
+  normalizeVariantQuantitiesPayload,
+  readVariantQuantitiesFormRaw
+} from "./variantTableWire";
 
-export { buildVariantsQuantityActionResponse };
+export { buildVariantsQuantityActionResponse, readVariantQuantitiesFormRaw };
 
 /** Normalize Style qty FormData payload and sync quantity with the table total. */
 export function variantTableUpdateFields(
   variantQuantities: Record<string, unknown>
 ): { variantQuantities: Json; quantity: number } {
+  const normalized = normalizeVariantQuantitiesPayload(variantQuantities);
   return {
-    variantQuantities: variantQuantities as Json,
-    quantity: computeVariantTableTotal(variantQuantities)
+    variantQuantities: normalized as Json,
+    quantity: computeVariantTableTotal(normalized)
   };
 }
 

@@ -1,5 +1,6 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { readVariantTableRows } from "../production/variantTableWire";
 import { expandVariantsQuantityTable } from "./itemAttribute.service";
 
 type Db = SupabaseClient<Database>;
@@ -57,10 +58,8 @@ export async function expandVariantTableToLines(
 }
 
 export function hasStyleVariantsQuantity(variantQuantities: unknown): boolean {
-  if (!variantQuantities || typeof variantQuantities !== "object") return false;
-  const cfg = variantQuantities as Record<string, unknown>;
-  const table = cfg.variantTable;
-  return Array.isArray(table) && table.length > 0;
+  // Dual-read legacy `configTable` so stale FormData still expands.
+  return readVariantTableRows(variantQuantities).length > 0;
 }
 
 /**

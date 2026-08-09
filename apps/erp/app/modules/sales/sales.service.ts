@@ -12,6 +12,7 @@ import { sql } from "kysely";
 import type { z } from "zod";
 import { getSupplierPriceBreaksForItems } from "~/modules/items/items.service";
 import { getEmployeeJob } from "~/modules/people";
+import { sanitizeOrderLineWriteRow } from "~/modules/shared/orderLineWrite";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
@@ -5738,23 +5739,12 @@ export async function upsertSalesOrderLine(
       })
 ) {
   if ("id" in salesOrderLine) {
-    const {
-      variantQuantities: _variantQuantities,
-      serviceId: _serviceId,
-      ...line
-    } = salesOrderLine as typeof salesOrderLine & {
-      variantQuantities?: unknown;
-      serviceId?: unknown;
-    };
-    const row = Object.fromEntries(
-      Object.entries(line).map(([key, value]) => [
-        key,
-        value === "" ? null : value
-      ])
-    );
+    const line = sanitizeOrderLineWriteRow(
+      salesOrderLine as unknown as Record<string, unknown>
+    ) as typeof salesOrderLine & { id: string };
     return client
       .from("salesOrderLine")
-      .update(sanitize(row))
+      .update(sanitize(line))
       .eq("id", line.id)
       .select("id")
       .single();
@@ -5774,33 +5764,22 @@ export async function upsertSalesOrderLine(
   );
 
   // Validator carries FormData-only fields (`variantQuantities`) and optional
-  // text fields that are not columns (or must be NULL rather than ""). Empty
-  // strings blow up FKs/dates on insert; `serviceId` is legacy and not on the table.
-  const {
-    serviceId: _serviceId,
-    variantQuantities: _variantQuantities,
-    ...line
-  } = salesOrderLine as typeof salesOrderLine & {
-    serviceId?: unknown;
-    variantQuantities?: unknown;
-  };
-  const row = Object.fromEntries(
-    Object.entries({
-      ...line,
-      setupPrice: salesOrderLine.setupPrice ?? 0,
-      unitPrice: salesOrderLine.unitPrice ?? 0,
-      shippingCost: salesOrderLine.shippingCost ?? 0,
-      addOnCost: salesOrderLine.addOnCost ?? 0,
-      nonTaxableAddOnCost: salesOrderLine.nonTaxableAddOnCost ?? 0,
-      taxPercent: salesOrderLine.taxPercent ?? 0,
-      exchangeRate: salesOrder.data?.exchangeRate ?? 1,
-      sortOrder: maxSortOrder + 1
-    }).map(([key, value]) => [key, value === "" ? null : value])
-  );
+  // text fields that are not columns (or must be NULL rather than "").
+  const line = sanitizeOrderLineWriteRow({
+    ...(salesOrderLine as unknown as Record<string, unknown>),
+    setupPrice: salesOrderLine.setupPrice ?? 0,
+    unitPrice: salesOrderLine.unitPrice ?? 0,
+    shippingCost: salesOrderLine.shippingCost ?? 0,
+    addOnCost: salesOrderLine.addOnCost ?? 0,
+    nonTaxableAddOnCost: salesOrderLine.nonTaxableAddOnCost ?? 0,
+    taxPercent: salesOrderLine.taxPercent ?? 0,
+    exchangeRate: salesOrder.data?.exchangeRate ?? 1,
+    sortOrder: maxSortOrder + 1
+  });
 
   return client
     .from("salesOrderLine")
-    .insert([sanitize(row)])
+    .insert([sanitize(line)])
     .select("id")
     .single();
 }

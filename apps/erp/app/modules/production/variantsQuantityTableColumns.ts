@@ -1,4 +1,10 @@
 import type { ConfigurationParameter } from "~/modules/items/types";
+import { readVariantTableRows, VARIANT_TABLE_KEY } from "./variantTableWire";
+
+export {
+  LEGACY_VARIANT_TABLE_KEY,
+  VARIANT_TABLE_KEY
+} from "./variantTableWire";
 
 export type VariantsQuantityRow = Record<string, string | number | boolean>;
 
@@ -128,26 +134,11 @@ export function hasVariantRowValue(
   return columns.some((col) => !isZeroOrEmpty(row[col.key]));
 }
 
-/** Current wire key for Style/combo qty rows. */
-export const VARIANT_TABLE_KEY = "variantTable" as const;
-/** Read combo qty rows from `variantTable`. */
+/** Read combo qty rows from `variantTable` (dual-reads legacy `configTable`). */
 export function getVariantsQuantityRows(
   variantQuantities: unknown
 ): VariantsQuantityRow[] {
-  if (
-    variantQuantities === null ||
-    variantQuantities === undefined ||
-    typeof variantQuantities !== "object" ||
-    Array.isArray(variantQuantities)
-  ) {
-    return [];
-  }
-
-  const cfg = variantQuantities as Record<string, unknown>;
-  const table = cfg[VARIANT_TABLE_KEY];
-  if (!Array.isArray(table)) return [];
-
-  return table as VariantsQuantityRow[];
+  return readVariantTableRows(variantQuantities) as VariantsQuantityRow[];
 }
 
 /** Persist combo qty rows under the current wire key. */

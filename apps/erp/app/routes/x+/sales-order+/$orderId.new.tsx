@@ -15,7 +15,10 @@ import {
   expandVariantTableToLines,
   hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import type { SalesOrderLineType } from "~/modules/sales";
 import {
   getCustomer,
@@ -130,7 +133,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    variantQuantities: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     saleQuantity: rawQuantity,
     ...d
   } = validation.data;
@@ -149,9 +152,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   let variantQuantities: Json | undefined;
   let saleQuantity = rawQuantity;
-  if (configStr) {
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
       const fields = variantTableUpdateFields(parsed);
       variantQuantities = fields.variantQuantities;
       saleQuantity = fields.quantity;
