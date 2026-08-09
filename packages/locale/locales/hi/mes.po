@@ -59,7 +59,7 @@ msgstr "के बारे में"
 
 msgid "Account created"
 msgstr ""
-"खाता बनाया गयाखाता बनाया गयाअ户口所在地：印度\n"
+"खाता बनाया गयाखाता बनाया गयाखाता बनाया गयाअ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "आccount created"
 
@@ -1228,7 +1228,7 @@ msgstr "अनुप्रयोगकर्ता की अक्षमता 
 
 msgid "Failed to delete account"
 msgstr ""
-"खाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
+"खाता हटाने में विफलखाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "फाइल होम工作地点：德里国家首都是：新德里"
 
@@ -4629,6 +4629,12 @@ msgstr "प्रकाशित दृश्य समय चुनाव स�
 msgid "Open Jobs"
 msgstr "दीपक जोब्स"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr ""
+"मात्रा असाइन करने के लिए वेरिएंट मात्रा ग्रिड खोलेंवैकल्पिक मात्राओं ग्रिड को खोलें और मात्राएँ य委派\n"
+"<|im_start|><|im_start|>user\n"
+"请重试，确保翻译符合目标语言的规范。"
+
 msgid "Operation finished successfully"
 msgstr "oprasiya कानून से पूरा हो गई"
 
@@ -5063,6 +5069,9 @@ msgstr "मात्रा रिपोर्ट करें"
 msgid "Reported"
 msgstr "रिपोर्टेड"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "एक या एक से अधिक वैरिएंट कंबो में रिपोर्ट की गई मात्रा शेमेन्ड प्लानेड मात्रा से अधिक है।"
+
 msgid "Reprint job created"
 msgstr "रिप्रिंट कार्य बनाया गया है"
 
@@ -5470,6 +5479,9 @@ msgstr "स्टोरेज इकाई बनाई गई"
 msgid "Style"
 msgstr "स्टाइल"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "स्टाइल वैरिएंट्स कम हैं एक या और कई संप्रेषण कोम्बो के लिए। पहले स्टाइल को खोलें और स्वीकार्य चयनों को सेव करें।"
+
 msgid "Submit anonymously"
 msgstr "गुमनाम रूप से सबमिट करें"
 
@@ -5832,6 +5844,9 @@ msgstr "इस ऑपरेशन के लिए पूर्ण मात्�
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "बिल ऑफ मेटेरियल पर सीरियल या बैच ट्रैक किए गए मेटेरियल हैं जो पूरी तरह से जारी नहीं किए गए हैं। जारी किए बिना पूरा करने से गलत ट्रेसेबिलिटी रिकॉर्ड हो सकते हैं।"
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "इस आइटम को संरचनाओं से कonfigुर किया जाता है — पहले वैरिएंट के मूल्यांकन की रिपोर्ट करने से पहले प्रति-वैरिएंट का विस्तार दर्ज करें."
+
 msgid "This lot is expired and can't be picked."
 msgstr "इस लोट की उम्र है जितनी कि इसे चयन करने में अनुमति नहीं है।"
 
@@ -5846,6 +5861,9 @@ msgstr "यह प्रक्रिया किसी और को सौं�
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "इस सीरियल नंबर का इन्हीं परिवहन में भेजा नहीं गया है"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "इस स्टाइल लाइन पर उत्पादन कार्यक्रम हैं। कार्यक्रमों को समाप्त करें या हटाएं फिर से इसकी वेरिएंट मात्राओं को परिवर्तित कर सकते हैं।"
 
 msgid "Thumbnail"
 msgstr "थंबनेल"

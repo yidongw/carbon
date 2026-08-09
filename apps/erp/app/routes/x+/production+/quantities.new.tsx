@@ -116,8 +116,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
 
-    // A Bundle Work Order's job already has a fixed color/size, so reporting on
-    // it is a plain quantity — don't surface the style's color/size config table.
+    // A Bundle Work Order's job already has a fixed variant, so reporting on
+    // it is a plain quantity — don't surface the style's variant config table.
     const bundle = await client
       .from("bundleWorkOrder")
       .select("id")

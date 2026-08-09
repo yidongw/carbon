@@ -544,9 +544,6 @@ msgstr "リスクを追加"
 msgid "Add row"
 msgstr "行を追加"
 
-msgid "Add Row"
-msgstr "行を追加"
-
 msgid "Add rule"
 msgstr "追加ルールを追加"
 
@@ -700,7 +697,7 @@ msgstr "このサプライヤーに対する承認リクエストが既に存在
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "属性コンボはカット量（最大{0}）を超えてはいけません"
+msgstr "属性の組み合わせは裁断数量を超えてはいけません（最大 {0}）"
 
 msgid "An item cannot be added to itself."
 msgstr "アイテムをそれ自体に追加することはできません。"
@@ -10826,6 +10823,9 @@ msgstr "タスク詳細を開く"
 msgid "Open Template"
 msgstr "オープントemplates"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "数量を割り当てるにはバリアント数量グリッドを開いてください"
+
 msgid "Operating Expenses"
 msgstr "経費"
 
@@ -12397,6 +12397,9 @@ msgstr "報告済み<0>{totalQuantity}</0>個"
 
 msgid "Reported At"
 msgstr "報告日時"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "報告数量が、1つ以上のバリアント組み合わせの残計画数量を超えています。"
 
 msgid "Reports"
 msgstr "レポート"
@@ -13971,6 +13974,9 @@ msgstr "スタイル数量設定が必要です"
 msgid "Style quantity is required"
 msgstr "スタイル数量は必要です"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "1つ以上の属性組み合わせにスタイルバリアントがありません。先にスタイルを開き、属性の選択を保存してください。"
+
 msgid "Styles"
 msgstr "スタイル"
 
@@ -14773,6 +14779,9 @@ msgstr "これはあなたの会計年度が始まる月です。"
 msgid "This is the month your tax year starts."
 msgstr "これはあなたの税務年度が始まる月です。"
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "この品目は属性で構成されています。報告前にバリアント別の内訳を入力してください。"
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "このアイテムの部品表には、棚卸し有効期限が有効になっている入力がないため、BOMから有効期限は計算されません。"
 
@@ -14806,6 +14815,9 @@ msgstr "このストレージタイプは現在{usageCount}個のストレージ
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "このスタイルにはまだ属性選択がありません。まずスタイルに属性を追加してください。"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "このスタイル明細には既に生産ジョブがあります。バリアント数量を変更する前に、ジョブを削除または完了してください。"
 
 msgid "This updates the theme for all users of the application"
 msgstr "これはアプリケーションのすべてのユーザーのテーマを更新します"
@@ -16203,6 +16215,9 @@ msgstr "期限切れの在庫が使用される場合"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "このルールはオンの場合は、そのタイプのすべてのターゲットに対して発動します。割り当て行は無視されますが保持されます。"
+
+msgid "Which set of attributes this item's variants use"
+msgstr "この品目のバリアントが使用する属性セット"
 
 msgid "Who Can Approve"
 msgstr "誰が承認できるか"

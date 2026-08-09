@@ -90,7 +90,7 @@ export function ReportQuantityModal({
   const reported = completed + rework + scrap;
   const invalid = reported <= 0;
 
-  const colorSize = localizeVariantAttributeLabel(
+  const attributeLabel = localizeVariantAttributeLabel(
     bundle?.attributeLabel?.trim() ||
       bundle?.valuesKey?.replace(/\|/g, " · ").trim() ||
       "",
@@ -147,9 +147,9 @@ export function ReportQuantityModal({
           <ModalTitle>
             {t`Record completed quantity for ${operation.itemReadableId}`}
           </ModalTitle>
-          {colorSize && (
+          {attributeLabel && (
             <ModalDescription>
-              {`${operation.itemReadableId} — ${colorSize}`}
+              {`${operation.itemReadableId} — ${attributeLabel}`}
             </ModalDescription>
           )}
         </ModalHeader>

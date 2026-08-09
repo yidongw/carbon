@@ -2977,7 +2977,7 @@ msgstr "Fallito avviso utente"
 
 msgid "Failed to parse claims"
 msgstr ""
-"Impossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
+"Impossibile analizzare i claimImpossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
 "\n"
 "Fallito nel parsing delle pretese"
 
@@ -2986,7 +2986,7 @@ msgstr "Impossibile analizzare i permessi"
 
 msgid "Failed to parse procedure content"
 msgstr ""
-"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语重写。继续翻译：\n"
+"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语重写。继续翻译：\n"
 "\n"
 "Fallito nel parsing del contenuto del procedimento"
 
@@ -2998,7 +2998,7 @@ msgstr "Impossibile analizzare il contenuto del training"
 
 msgid "Failed to parse updates"
 msgstr ""
-"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
+"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
 "Fallito nel parsingaggiornamenti"
 
 msgid "Failed to pick line"
@@ -4631,6 +4631,9 @@ msgstr "Apri selezione data e ora"
 msgid "Open Jobs"
 msgstr "Pendenti"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Apri il griglia delle quantità di variante per assegnare le quantità"
+
 msgid "Operation finished successfully"
 msgstr "Operazione completata con successo"
 
@@ -5065,6 +5068,9 @@ msgstr "Registra quantità"
 msgid "Reported"
 msgstr "Rapportato"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Quantità riportata supera la quantità pianificata rimanente per una o più combinazioni di varianti."
+
 msgid "Reprint job created"
 msgstr "Reimpressione del lavoro creata"
 
@@ -5472,6 +5478,9 @@ msgstr "Unità di magazzino creata"
 msgid "Style"
 msgstr "Stile"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "I sono mancanti varianti di stile per uno o più combini attributi. Apri il estilo e salva le selezioni degli attributi in primo luogo."
+
 msgid "Submit anonymously"
 msgstr "Invia in forma anonima"
 
@@ -5834,6 +5843,9 @@ msgstr "La quantità completata per questa operazione è inferiore alla quantit�
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Ci sono materiali tracciati per numero di serie o lotto nella distinta base che non sono stati completamente prelevati. Completare senza prelevare potrebbe causare registrazioni di tracciabilità errate."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Questo elemento è configurato tramite attributi — inserisci il sottototale per variante prima di inviare."
+
 msgid "This lot is expired and can't be picked."
 msgstr "Questa partita è scaduta e non può essere selezionata."
 
@@ -5848,6 +5860,9 @@ msgstr "Questo processo è assegnato a un'altra persona. Subentrando si ferma il
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "Questo numero di serie non è stato inviato con questo trasferimento"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Questa linea di stile già ha lavori in produzione. Rimuovere o completare i lavori prima di modificare le quantità della sua variante."
 
 msgid "Thumbnail"
 msgstr "Miniatura"

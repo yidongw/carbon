@@ -4623,6 +4623,9 @@ msgstr "Otwórz wybieracz daty i czasu"
 msgid "Open Jobs"
 msgstr "Otwarte zadania"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Otwórz siatkę wariantowych ilości, aby przypisać ilości"
+
 msgid "Operation finished successfully"
 msgstr "Operacja zakończona pomyślnie"
 
@@ -5057,6 +5060,9 @@ msgstr "Zgłoś ilości"
 msgid "Reported"
 msgstr "Zgłoszone"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Ilość zgłoszona przekracza pozostałą planowaną ilość dla jednego lub wielu kombinacji wariantów."
+
 msgid "Reprint job created"
 msgstr "Zaplanowana praca ponownie wydrukowana"
 
@@ -5464,6 +5470,9 @@ msgstr "Zaplecze utworzone"
 msgid "Style"
 msgstr "Styl"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Warianty stylu brakują dla jednego lub większej liczby kombinacji atrybutów. Otwórz styl i zapisz wybrane opcje atrybutów najpierw."
+
 msgid "Submit anonymously"
 msgstr "Wyślij anonimowo"
 
@@ -5826,6 +5835,9 @@ msgstr "Ukończona ilość dla tej operacji jest mniejsza niż wymagana ilość 
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Na liście materiałowej znajdują się materiały śledzone seryjnie lub partiami, które nie zostały w pełni wydane. Ukończenie bez wydania może skutkować nieprawidłowymi rekordami śledzenia."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Ten element jest skonfigurowany za pomocą atrybutów — wprowadź podział na warianty przed raportowaniem."
+
 msgid "This lot is expired and can't be picked."
 msgstr "Ten lote nie może zostać wybrany, ponieważ wygasł."
 
@@ -5840,6 +5852,9 @@ msgstr "Ta operacja jest przypisana do kogoś innego. Przejęcie zatrzyma jego b
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "Ten numer seryjny nie został wysłany w tym przeniesieniu"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Ta linia stylu już ma zadania produkcyjne. Usuń je lub zakończ przed zmianą ilości wariantów."
 
 msgid "Thumbnail"
 msgstr "Miniatura"

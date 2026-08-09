@@ -230,7 +230,7 @@ const ProductionQuantityForm = ({
       )
     );
 
-    // For a color/size-configured item, seed the Production line with the
+    // For a variant-configured item, seed the Production line with the
     // remaining plan per cell (instead of only a bare prefilled quantity with an
     // empty config). This makes the report valid out of the box — Save is
     // enabled and the config table is prefilled/editable — rather than showing a
@@ -262,7 +262,7 @@ const ProductionQuantityForm = ({
   const hasZeroQuantityLine =
     isCreateMultiLine && lines.some((line) => line.quantity <= 0);
 
-  // A color/size-configured report must enter its quantity through the config
+  // A variant-configured report must enter its quantity through the config
   // table. The line seeds a prefilled quantity (the operation's remaining) with
   // an empty configuration, so `hasZeroQuantityLine` alone wouldn't catch it —
   // block submit until every line carries a non-empty configuration, otherwise
@@ -541,7 +541,7 @@ const ProductionQuantityForm = ({
 
   // Plain-quantity reports (bundles / non-configured items) show the operation's
   // remaining (target − reported) and can't exceed it. Configured reports are
-  // handled per color/size by the config editor instead.
+  // handled per variant combo by the config editor instead.
   // NOTE: `Number` is shadowed by the imported `<Number>` form field, so we use
   // globals here (`Infinity`, unary `+`) — calling `Number(...)` would hit the
   // component and throw "Number is not a function".

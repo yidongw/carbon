@@ -1,6 +1,6 @@
 import type { BreakdownEntry } from "./types";
 
-// Sort a Style breakdown by SKU identity (valuesKey = "color|size"), keeping
+// Sort a Style breakdown by SKU identity (valuesKey = "code|code|…"), keeping
 // untagged rows (no valuesKey) last.
 export function sortBreakdown(breakdown: BreakdownEntry[]): BreakdownEntry[] {
   return [...breakdown].sort((a, b) => {

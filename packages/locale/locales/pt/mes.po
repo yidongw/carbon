@@ -4623,6 +4623,9 @@ msgstr "Abrir seleção de data e hora"
 msgid "Open Jobs"
 msgstr "Empregos Abertos"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Abra o quadro de quantidades variante para atribuir quantidades"
+
 msgid "Operation finished successfully"
 msgstr "Operação concluída com sucesso"
 
@@ -5057,6 +5060,9 @@ msgstr "Reportar quantidades"
 msgid "Reported"
 msgstr "Relatado"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "A quantidade relatada excede a quantidade planejada restante para uma ou mais combinações de variante."
+
 msgid "Reprint job created"
 msgstr "Imprensa de trabalho criada"
 
@@ -5464,6 +5470,9 @@ msgstr "Unidade de armazenamento criada"
 msgid "Style"
 msgstr "Estilo"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Variações de estilo estão faltando para um ou mais combinações de atributos. Abra o estilo e salve as seleções de atributo primeiro."
+
 msgid "Submit anonymously"
 msgstr "Enviar anonimamente"
 
@@ -5826,6 +5835,9 @@ msgstr "A quantidade concluída para esta operação é menor que a quantidade r
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Existem materiais rastreados por série ou lote na lista de materiais que não foram totalmente emitidos. Concluir sem emitir pode resultar em registros de rastreabilidade incorretos."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Este item está configurado por atributos — insira o desgloce por variante antes de relatar."
+
 msgid "This lot is expired and can't be picked."
 msgstr "Este lote venceu e não pode ser selecionado."
 
@@ -5840,6 +5852,9 @@ msgstr "Este processo está atribuído a outra pessoa. Ao assumir, o cronômetro
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "Este número de série não foi embarcado nesta transferência"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Esta linha de estilo já possui trabalhos em produção. Remova ou conclua os trabalhos antes de alterar suas quantidades de variante."
 
 msgid "Thumbnail"
 msgstr "Miniatura"

@@ -181,10 +181,10 @@ export function ProductionQuantityLinesEditor({
         jobId,
         jobOperationId,
         reportKind: "productionQuantity",
-        // Report config uses the flat one-row-per-color/size editor (multiple
+        // Report config uses the flat one-row-per-combo editor (multiple
         // rows per cell), which also captures the raw cut breakdown.
         splitMode: true,
-        // Production reports what's planned/remaining per color/size, so seed the
+        // Production reports what's planned/remaining per variant combo, so seed the
         // cells from the reference. Scrap/Rework start empty (you don't scrap the
         // whole remaining by default).
         prefillFromReference: line.type === "Production",

@@ -15,7 +15,7 @@ describe("getStyleConfigDisplay", () => {
     expect(display?.chips).toEqual([
       {
         key: "0:Quantities",
-        colorSize: "黑色 · S",
+        descriptor: "黑色 · S",
         label: "黑色 · S ×6",
         quantity: 6
       }
@@ -67,7 +67,7 @@ describe("getStyleConfigDisplay", () => {
 });
 
 describe("getStyleConfigDisplayFromVariants", () => {
-  it("aggregates Color · Size chips from variant lines", async () => {
+  it("aggregates attribute combo chips from variant lines", async () => {
     const { getStyleConfigDisplayFromVariants } = await import(
       "./styleConfigDisplay"
     );
@@ -153,7 +153,7 @@ describe("groupLinesForStyleDisplay", () => {
 });
 
 describe("buildAttributeValueNames", () => {
-  it("maps colorCode and English aliases from the seed reference", () => {
+  it("maps color codes and English aliases from the seed reference", () => {
     const names = buildAttributeValueNames([
       { code: "RD", name: "红色" },
       { code: "GY", name: "灰色" }

@@ -155,7 +155,7 @@ const MasterWorkOrdersTable = memo(
       [openOverlay, revalidate]
     );
 
-    // Read-only config table of what's left to cut per color/size cell.
+    // Read-only config table of what's left to cut per variant combo.
     const openRemainingConfig = useCallback(
       (e: MouseEvent, progress: MasterCuttingProgress) => {
         e.stopPropagation();

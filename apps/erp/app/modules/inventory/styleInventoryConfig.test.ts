@@ -18,9 +18,9 @@ describe("breakdownToInventoryConfigTable", () => {
   it("aggregates on-hand into combo valuesKey rows", () => {
     const result = breakdownToInventoryConfigTable([
       { valuesKey: "BG|M", quantityOnHand: 6 },
-      { colorCode: "BG", sizeCode: "M", quantityOnHand: 4 },
-      { colorCode: "BG", sizeCode: "L", quantityOnHand: 2 },
-      { colorCode: null, sizeCode: null, quantityOnHand: 50 },
+      { valuesKey: "BG|M", quantityOnHand: 4 },
+      { valuesKey: "BG|L", quantityOnHand: 2 },
+      { valuesKey: null, quantityOnHand: 50 },
       { valuesKey: "BK|S", quantityOnHand: 1 }
     ]);
 
@@ -33,11 +33,9 @@ describe("breakdownToInventoryConfigTable", () => {
     });
   });
 
-  it("returns null when nothing is tagged by combo/color/size", () => {
+  it("returns null when nothing is tagged by valuesKey", () => {
     expect(
-      breakdownToInventoryConfigTable([
-        { colorCode: null, sizeCode: null, quantityOnHand: 9 }
-      ])
+      breakdownToInventoryConfigTable([{ valuesKey: null, quantityOnHand: 9 }])
     ).toBeNull();
   });
 });

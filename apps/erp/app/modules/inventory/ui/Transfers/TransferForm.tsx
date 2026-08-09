@@ -96,7 +96,7 @@ type Line = {
   fromStorageUnitId: string;
   // The exact serial/lot picked (batch/single) so it carries + reserves.
   trackedEntityId: string;
-  // For serial items: the specific units auto-assigned from the chosen color/size
+  // For serial items: the specific units auto-assigned from the chosen variant
   // group (length = quantity). One transfer line is emitted per serial.
   trackedEntityIds: string[];
   toStorageUnitId: string;
@@ -267,7 +267,7 @@ const TransferForm = ({
       .reduce((sum, l) => sum + (l.quantity || 0), 0);
 
   // Serials already assigned to OTHER lines of the same item, so each serial
-  // line grabs distinct physical units from the chosen color/size group.
+  // line grabs distinct physical units from the chosen variant group.
   const serialsUsedByOtherLines = (itemId: string, exceptKey: string) =>
     new Set(
       lines
@@ -275,7 +275,7 @@ const TransferForm = ({
         .flatMap((l) => l.trackedEntityIds)
     );
 
-  // Assign `qty` units from a color/size group to a serial line.
+  // Assign `qty` units from a variant group to a serial line.
   //
   // Warehouse transfers are physically picked and scanned at ship, so we only
   // pin the exact serials when moving the ENTIRE available group (unambiguous —
@@ -522,7 +522,7 @@ const TransferForm = ({
                 // always 1, so there's no quantity to choose.
                 const isSerial = item?.itemTrackingType === "Serial";
                 const stock = stockByItem[line.itemId] ?? [];
-                // Serial units grouped by color/size, so you pick a variant
+                // Serial units grouped by attributes, so you pick a variant
                 // rather than an opaque serial number.
                 const serialGroups = isSerial ? groupSerials(stock) : [];
                 const selectedGroup = isSerial
@@ -585,7 +585,7 @@ const TransferForm = ({
                             {t`From (current location)`}
                           </span>
                           {isSerial ? (
-                            // Serial items: pick a color/size group; units are
+                            // Serial items: pick a variant group; units are
                             // auto-assigned by quantity (send all → fully auto;
                             // send fewer → re-scannable at ship).
                             <Select

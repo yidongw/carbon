@@ -4623,6 +4623,9 @@ msgstr "開く日時ピッカー"
 msgid "Open Jobs"
 msgstr "開いたジョブ"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "変更量グリッドを開き、数量を割り当てる"
+
 msgid "Operation finished successfully"
 msgstr "操作が成功しました"
 
@@ -5057,6 +5060,9 @@ msgstr "数量を報告"
 msgid "Reported"
 msgstr "報告済み"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "1つのまたは複数のバリエーション組合せに対して、報告された数量が残りの計画数量を超過しています。"
+
 msgid "Reprint job created"
 msgstr "再印刷ジョブ作成"
 
@@ -5464,6 +5470,9 @@ msgstr "ストレージ単位を作成しました"
 msgid "Style"
 msgstr "スタイル"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "スタイル変種が一つ以上の属性組合せに欠けています。まずスタイルを開き、属性選択を保存してください。"
+
 msgid "Submit anonymously"
 msgstr "匿名で送信"
 
@@ -5826,6 +5835,9 @@ msgstr "この工程の完了数量が必要数量 {0} を下回っています�
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "部品表にシリアルまたはバッチ追跡対象の材料が完全に払い出されていません。払出なしで完了すると、トレーサビリティ記録が不正確になる可能性があります。"
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "このアイテムは属性で構成されています — 品種別に分解した値を入力してから報告してください。"
+
 msgid "This lot is expired and can't be picked."
 msgstr "このロットは期限が过了できClassNotFoundException被拣选。"
 
@@ -5840,6 +5852,9 @@ msgstr "この工程は他の担当者に割り当てられています。引き
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "このシリアル番号はこの移動で出荷されていません"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "このスタイルラインには既に生産ジョブが存在します。ジョブを削除或者完成后再变更变体数量。"
 
 msgid "Thumbnail"
 msgstr "サムネイル"

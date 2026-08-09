@@ -1830,8 +1830,7 @@ export async function getStyleSamples(
     search: string | null;
   }
 ) {
-  // "styleSamples" is the styles view + per-style sample count. Typed as any
-  // because the view isn't in the generated Database types yet.
+  // "styleSamples" is the styles view + per-style sample count.
   const sampleClient = client as SupabaseClient<any>;
   let query = sampleClient
     .from("styleSamples")
@@ -1849,17 +1848,6 @@ export async function getStyleSamples(
   const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
-
-  // View still exposes distinct variants as `sampledColorCount` (alias of
-  // subquery sampledVariantCount). Normalize for app types without a migration.
-  if (result.data) {
-    result.data = result.data.map((row: Record<string, unknown>) => {
-      const sampledVariantCount =
-        row.sampledVariantCount ?? row.sampledColorCount ?? 0;
-      const { sampledColorCount: _legacy, ...rest } = row;
-      return { ...rest, sampledVariantCount };
-    });
-  }
 
   return result;
 }

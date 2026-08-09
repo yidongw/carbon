@@ -67,7 +67,7 @@ const LineItems = ({
   locale,
   lines,
   shouldConvertCurrency,
-  colorNames,
+  attributeValueNames,
   styleVariantByItemId,
   purchaseOrderStatus
 }: {
@@ -77,7 +77,7 @@ const LineItems = ({
   locale: string;
   lines: PurchaseOrderLine[];
   shouldConvertCurrency: boolean;
-  colorNames: Record<string, string>;
+  attributeValueNames: Record<string, string>;
   styleVariantByItemId: Record<string, StyleVariantLineMeta>;
   purchaseOrderStatus: PurchaseOrder["status"] | null | undefined;
 }) => {
@@ -117,7 +117,7 @@ const LineItems = ({
   const displayGroups = groupLinesForStyleDisplay(
     lines,
     styleVariantByItemId,
-    colorNames,
+    attributeValueNames,
     (line) => Number(line.purchaseQuantity ?? 0),
     locale
   );
@@ -137,7 +137,11 @@ const LineItems = ({
           group.kind === "style-group"
             ? group.styleConfig
             : (group.styleConfig ??
-              getStyleConfigDisplay(line.configuration, colorNames, locale));
+              getStyleConfigDisplay(
+                line.configuration,
+                attributeValueNames,
+                locale
+              ));
 
         const isGlAccount = line.purchaseOrderLineType === "G/L Account";
         const isFixedAsset = line.purchaseOrderLineType === "Fixed Asset";
@@ -498,7 +502,7 @@ const PurchaseOrderSummary = ({
     lines: PurchaseOrderLine[];
     purchaseOrderDelivery: PurchaseOrderDelivery;
     supplier: Supplier;
-    colorNames?: Record<string, string>;
+    attributeValueNames?: Record<string, string>;
     styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(path.to.purchaseOrder(orderId));
 
@@ -597,7 +601,7 @@ const PurchaseOrderSummary = ({
             locale={locale}
             lines={routeData?.lines ?? []}
             shouldConvertCurrency={shouldConvertCurrency}
-            colorNames={routeData?.colorNames ?? {}}
+            attributeValueNames={routeData?.attributeValueNames ?? {}}
             styleVariantByItemId={routeData?.styleVariantByItemId ?? {}}
             purchaseOrderStatus={routeData?.purchaseOrder?.status}
           />

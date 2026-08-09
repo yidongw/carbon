@@ -471,7 +471,7 @@ export function buildConfigTableEditorState({
   /**
    * Seed each editable quantity cell that has no current draft value with its
    * reference (remaining) quantity, so e.g. reporting cutting starts pre-filled
-   * with what's still planned per color/size instead of all zeros.
+   * with what's still planned per variant combo instead of all zeros.
    */
   prefillFromReference?: boolean;
 }): {

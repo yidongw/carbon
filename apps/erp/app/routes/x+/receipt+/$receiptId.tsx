@@ -50,7 +50,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.receipts);
   }
 
-  // Attach source SO/PO Style color×size plan (Ordered chips / modal hints).
+  // Attach source SO/PO Style variant plan (Ordered chips / modal hints).
   const rawReceiptLines = receiptLines.data ?? [];
   const sourceLineIds = [
     ...new Set(

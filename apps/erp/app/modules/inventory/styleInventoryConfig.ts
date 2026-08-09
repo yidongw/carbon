@@ -3,15 +3,12 @@
  * `buildConfigTableEditorState` can use as inventory reference hints / caps.
  *
  * Style editors are combo-shaped (`valuesKey` + `Quantities`) after the
- * attributes refactor; legacy color×size matrix shape is still accepted as input
- * and converted to combo keys (`BK|M`).
+ * attributes refactor.
  */
 
 export type StyleOnHandEntry = {
-  /** Canonical combo key (e.g. `BK|M`). Preferred when present. */
+  /** Canonical combo key (e.g. `BK|M`). */
   valuesKey?: string | null;
-  colorCode?: string | null;
-  sizeCode?: string | null;
   quantityOnHand: number;
 };
 
@@ -25,12 +22,7 @@ export const EMPTY_VARIANT_QUANTITIES: VariantQuantitiesPayload = {
 };
 
 function valuesKeyOf(entry: StyleOnHandEntry): string {
-  const fromKey = entry.valuesKey?.trim();
-  if (fromKey) return fromKey;
-  const color = entry.colorCode?.trim() ?? "";
-  const size = entry.sizeCode?.trim() ?? "";
-  if (color && size) return `${color}|${size}`;
-  return color || size;
+  return entry.valuesKey?.trim() ?? "";
 }
 
 /**

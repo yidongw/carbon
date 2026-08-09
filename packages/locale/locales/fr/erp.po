@@ -544,9 +544,6 @@ msgstr "Ajouter un risque"
 msgid "Add row"
 msgstr "Ajouter une ligne"
 
-msgid "Add Row"
-msgstr "Ajouter une ligne"
-
 msgid "Add rule"
 msgstr "Ajouter une règle"
 
@@ -700,7 +697,7 @@ msgstr "Une demande d'approbation existe déjà pour ce fournisseur"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "Une combinaison d'attributs ne peut pas dépasser la quantité de coupure (max {0})"
+msgstr "Une combinaison d'attributs ne peut pas dépasser la quantité de coupe (max. {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Un article ne peut pas être ajouté à lui-même."
@@ -10826,6 +10823,9 @@ msgstr "Ouvrir les détails de la tâche"
 msgid "Open Template"
 msgstr "Ouvrir modèle"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Ouvrez la grille des quantités par variante pour attribuer les quantités"
+
 msgid "Operating Expenses"
 msgstr "Depenses Opératoires"
 
@@ -12397,6 +12397,9 @@ msgstr "Rapporté <0>{totalQuantity}</0> unités"
 
 msgid "Reported At"
 msgstr "Signalé le"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "La quantité déclarée dépasse la quantité planifiée restante pour une ou plusieurs combinaisons de variantes."
 
 msgid "Reports"
 msgstr "Rapports"
@@ -13971,6 +13974,9 @@ msgstr "La configuration de la quantité de style est requise"
 msgid "Style quantity is required"
 msgstr "La quantité de style est requise"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Des variantes de style manquent pour une ou plusieurs combinaisons d'attributs. Ouvrez le style et enregistrez d'abord les sélections d'attributs."
+
 msgid "Styles"
 msgstr "Modèles"
 
@@ -14773,6 +14779,9 @@ msgstr "C'est le mois où votre exercice fiscal commence."
 msgid "This is the month your tax year starts."
 msgstr "C'est le mois où votre année fiscale commence."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Cet article est configuré par attributs — saisissez la répartition par variante avant de déclarer."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "La nomenclature de cet article n'a aucune entrée avec la gestion de la durée de vie activée, donc aucune date d'expiration ne sera calculée à partir de la nomenclature."
 
@@ -14806,6 +14815,9 @@ msgstr "Ce type de stockage est actuellement utilisé par {usageCount} unité de
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "Ce style n'a pas encore d'attributs sélectionnés. Ajoutez des attributs au style en premier."
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Cette ligne de style a déjà des ordres de fabrication. Supprimez ou terminez les ordres avant de modifier ses quantités par variante."
 
 msgid "This updates the theme for all users of the application"
 msgstr "Cela met à jour le thème pour tous les utilisateurs de l'application"
@@ -16204,6 +16216,9 @@ msgstr "Lorsque du stock expiré est utilisé"
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "Lorsque cette règle est activée, elle s'exécute pour chaque cible de son type. Les lignes d'affectation sont ignorées mais conservées."
 
+msgid "Which set of attributes this item's variants use"
+msgstr "Quel ensemble d'attributs utilisent les variantes de cet article"
+
 msgid "Who Can Approve"
 msgstr "Qui peut approuver"
 
@@ -16333,7 +16348,7 @@ msgstr "Vous ne pouvez voir cette clé qu'une seule fois. Conservez-la en sécur
 
 msgid "You cannot deactivate yourself"
 msgstr ""
-"Vous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver你自己并没有在源字符串中，所以根据规则，我直接翻译：\n"
+"Vous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver你自己并没有在源字符串中，所以根据规则，我直接翻译：\n"
 "Vous ne pouvez pas vous désactiver"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)

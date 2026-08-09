@@ -20,14 +20,14 @@ export type MasterCuttingProgress = {
   cuttingOperationId: string | null;
   reported: number;
   remaining: number;
-  // Remaining planned quantity per color/size cell (for the read-only modal).
+  // Remaining planned quantity per variant combo (for the read-only modal).
   remainingConfiguration: unknown;
 };
 
 /**
  * Per master work order: how much of the plan has been cut (the cutting
  * operation's completed quantity) and what remains, plus the remaining
- * quantity per color/size cell. Batched for a page of masters.
+ * quantity per variant combo. Batched for a page of masters.
  */
 export async function getMasterCuttingProgress(
   client: SupabaseClient<Database>,
@@ -450,7 +450,6 @@ export async function insertMasterWorkOrder(
     dueDate?: string;
     deadlineType?: (typeof deadlineTypes)[number];
     configuration?: Record<string, unknown>;
-    colorSize?: Database["public"]["Tables"]["masterWorkOrder"]["Insert"]["colorSize"];
   }
 ) {
   const job = await insertJob(client, {
@@ -494,8 +493,7 @@ export async function insertMasterWorkOrder(
     .insert({
       jobId: job.data.id,
       companyId: input.companyId,
-      createdBy: input.createdBy,
-      colorSize: input.colorSize ?? null
+      createdBy: input.createdBy
     })
     .select("id, jobId")
     .single();

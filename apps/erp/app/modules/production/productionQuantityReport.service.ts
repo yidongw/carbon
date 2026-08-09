@@ -118,10 +118,10 @@ export function validateProductionQuantityLines(
 }
 
 /**
- * A color/size-configured (config-param) item must report per cell: every line
+ * A variant-configured (attribute combo) item must report per cell: every line
  * for such a job has to carry a configuration whose total > 0. The report editor
  * gates all line types (Production/Scrap/Rework) through the config table, so the
- * guard covers them all. Bundle jobs are excluded — they have a fixed color/size
+ * guard covers them all. Bundle jobs are excluded — they have a fixed variant
  * and report a plain quantity. This guards the write layer so a configured report
  * can never be saved as a bare aggregate (configuration = NULL), regardless of
  * entry point (report form, edit, external API, import). Mirrors the report
@@ -155,7 +155,7 @@ async function validateConfiguredLinesHaveConfiguration(
   ]);
   const itemId = job.data?.itemId;
   if (!itemId) return { error: null };
-  // Bundle jobs carry a fixed color/size and report a plain quantity.
+  // Bundle jobs carry a fixed variant and report a plain quantity.
   if (bundle.data) return { error: null };
 
   // Qty-grid configured = attribute selections only (not legacy configurationParameter).
@@ -175,7 +175,7 @@ async function validateConfiguredLinesHaveConfiguration(
     if (configTotal <= 0) {
       return {
         error: new Error(
-          "This item is configured by color/size — enter the per color/size breakdown before reporting."
+          "This item is configured by attributes — enter the per-variant breakdown before reporting."
         )
       };
     }
@@ -186,7 +186,7 @@ async function validateConfiguredLinesHaveConfiguration(
 /**
  * Guard a production report against over-reporting: (1) a config-param job's
  * reported (produced) quantities can't exceed the planned quantity for any
- * color/size cell, and (2) an operation's total reported quantity — completed +
+ * variant combo, and (2) an operation's total reported quantity — completed +
  * scrapped + reworked — can't exceed its target quantity. Both mean "remaining
  * can't go negative".
  */
@@ -261,7 +261,7 @@ export async function validateProductionQuantityRemaining(
   if (reportsExceedConfigPlan(planned, reportedConfigs)) {
     return {
       error: new Error(
-        "Reported quantity exceeds the remaining planned quantity for one or more color/size cells."
+        "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
       )
     };
   }

@@ -362,7 +362,7 @@ const PurchaseOrderLineForm = ({
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
   // Items with variant attributes use the config-quantity grid when adding a
-  // parent line — Styles (color×size) always, Consumables with a color set. The
+  // parent line — Styles (variant grid) always, Consumables with an attribute set. The
   // expanded variant SKU lines (no stored configuration) use plain quantity.
   const hasConfigurationParameters =
     (itemType === "Style" || itemData.hasVariantAttributes) &&
@@ -483,8 +483,8 @@ const PurchaseOrderLineForm = ({
             // Consumable with a Fabric/Trim color set) gets the config grid.
             carbon
               .from("itemAttributeSelection")
-              // Any attribute selection (not just color/size) makes the item
-              // variant/grid-driven — so non-color/size sets (e.g. Shoes) count.
+              // Any attribute selection makes the item
+              // variant/grid-driven — including non-garment sets (e.g. Shoes).
               // Composite PK — no `id` column; select a real column.
               .select("attributeValueId")
               .eq("itemId", itemId)

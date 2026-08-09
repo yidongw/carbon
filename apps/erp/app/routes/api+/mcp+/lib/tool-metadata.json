@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-08T13:10:23.005Z",
-  "totalTools": 1272,
+  "generated": "2026-08-09T02:35:50.394Z",
+  "totalTools": 1271,
   "modules": 15,
   "tools": [
     {
@@ -7278,10 +7278,10 @@
       }
     },
     {
-      "name": "inventory_getStyleOnHandByColorSize",
+      "name": "inventory_getStyleOnHandByVariant",
       "module": "inventory",
       "classification": "READ",
-      "description": "get style on hand by color size",
+      "description": "get style on hand by variant",
       "paramCount": 3,
       "serviceParams": [
         "client",
@@ -9232,6 +9232,32 @@
       }
     },
     {
+      "name": "items_getQuantityGridParameters",
+      "module": "items",
+      "classification": "READ",
+      "description": "get quantity grid parameters",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
       "name": "items_getConfigurationRules",
       "module": "items",
       "classification": "READ",
@@ -9827,6 +9853,37 @@
         },
         "required": [
           "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "items_getStyleStorageUnitQuantities",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style storage unit quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId",
           "locationId"
         ]
       }
@@ -11101,63 +11158,6 @@
       }
     },
     {
-      "name": "items_getStyleColors",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style colors",
-      "paramCount": 3,
-      "serviceParams": [
-        "client",
-        "companyId",
-        "args"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "args": {
-            "type": "object",
-            "properties": {
-              "limit": {
-                "type": "integer",
-                "default": 100
-              },
-              "offset": {
-                "type": "integer",
-                "default": 0
-              },
-              "search": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "items_getStyleColorList",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style color list",
-      "paramCount": 0,
-      "serviceParams": [
-        "client",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
       "name": "items_seedStyleReference",
       "module": "items",
       "classification": "WRITE",
@@ -11179,63 +11179,6 @@
             "type": "string"
           }
         }
-      }
-    },
-    {
-      "name": "items_getStyleSizes",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style sizes",
-      "paramCount": 3,
-      "serviceParams": [
-        "client",
-        "companyId",
-        "args"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "args": {
-            "type": "object",
-            "properties": {
-              "limit": {
-                "type": "integer",
-                "default": 100
-              },
-              "offset": {
-                "type": "integer",
-                "default": 0
-              },
-              "search": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "items_getStyleSizeList",
-      "module": "items",
-      "classification": "READ",
-      "description": "get style size list",
-      "paramCount": 0,
-      "serviceParams": [
-        "client",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {}
       }
     },
     {
@@ -17849,6 +17792,35 @@
         },
         "required": [
           "jobMakeMethodIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobIdsWithVariantQuantities",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job ids with variant quantities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "jobIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "jobIds"
         ]
       }
     },

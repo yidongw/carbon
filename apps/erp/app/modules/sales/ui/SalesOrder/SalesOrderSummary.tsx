@@ -88,7 +88,7 @@ const SalesOrderSummary = ({
   const routeData = useRouteData<{
     salesOrder: SalesOrder;
     lines: SalesOrderLine[];
-    colorNames?: Record<string, string>;
+    attributeValueNames?: Record<string, string>;
     styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
     customer: Customer;
     quote: Quotation;
@@ -241,7 +241,7 @@ const SalesOrderSummary = ({
             locale={locale}
             formatter={formatter}
             lines={routeData?.lines ?? []}
-            colorNames={routeData?.colorNames}
+            attributeValueNames={routeData?.attributeValueNames}
             styleVariantByItemId={routeData?.styleVariantByItemId ?? {}}
           />
 
@@ -394,7 +394,7 @@ function LineItems({
   formatter,
   lines,
   salesOrder,
-  colorNames,
+  attributeValueNames,
   styleVariantByItemId
 }: {
   currencyCode: string;
@@ -402,7 +402,7 @@ function LineItems({
   locale: string;
   lines: SalesOrderLine[];
   salesOrder?: SalesOrder;
-  colorNames?: Record<string, string>;
+  attributeValueNames?: Record<string, string>;
   styleVariantByItemId: Record<string, StyleVariantLineMeta>;
 }) {
   const { orderId } = useParams();
@@ -435,7 +435,7 @@ function LineItems({
   const displayGroups = groupLinesForStyleDisplay(
     lines,
     styleVariantByItemId,
-    colorNames,
+    attributeValueNames,
     (line) => Number(line.saleQuantity ?? 0),
     locale
   );
@@ -452,7 +452,11 @@ function LineItems({
           group.kind === "style-group"
             ? group.styleConfig
             : (group.styleConfig ??
-              getStyleConfigDisplay(line.configuration, colorNames, locale));
+              getStyleConfigDisplay(
+                line.configuration,
+                attributeValueNames,
+                locale
+              ));
 
         const itemReadableId =
           group.kind === "style-group"

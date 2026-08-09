@@ -544,9 +544,6 @@ msgstr "Adicionar Risco"
 msgid "Add row"
 msgstr "Adicionar linha"
 
-msgid "Add Row"
-msgstr "Adicionar Linha"
-
 msgid "Add rule"
 msgstr "Adicionar regra"
 
@@ -700,7 +697,7 @@ msgstr "Uma solicitação de aprovação já existe para este fornecedor"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "Um atributo combo não pode ultrapassar a quantidade de corte (max {0})."
+msgstr "Uma combinação de atributos não pode exceder a quantidade de corte (máx. {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Um item não pode ser adicionado a si mesmo."
@@ -10826,6 +10823,9 @@ msgstr "Abrir detalhes da tarefa"
 msgid "Open Template"
 msgstr "Abrir Modelo"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Abra a grade de quantidades por variante para atribuir quantidades"
+
 msgid "Operating Expenses"
 msgstr "Custos Operacionais"
 
@@ -12397,6 +12397,9 @@ msgstr "Relatórios <0>{totalQuantity}</0> unidades"
 
 msgid "Reported At"
 msgstr "Reportado em"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "A quantidade reportada excede a quantidade planejada restante para uma ou mais combinações de variantes."
 
 msgid "Reports"
 msgstr "Relatórios"
@@ -13971,6 +13974,9 @@ msgstr "A configuração da quantidade de estilo é necessária"
 msgid "Style quantity is required"
 msgstr "A quantidade de estilo é necessária"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Faltam variantes de estilo para uma ou mais combinações de atributos. Abra o estilo e salve primeiro as seleções de atributos."
+
 msgid "Styles"
 msgstr "Estilos"
 
@@ -14773,6 +14779,9 @@ msgstr "Este é o mês em que seu ano fiscal começa."
 msgid "This is the month your tax year starts."
 msgstr "Este é o mês em que seu ano fiscal começa."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Este item é configurado por atributos — informe a divisão por variante antes de reportar."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "A lista de materiais deste item não possui entradas com shelf-life ativado, portanto nenhuma data de validade será calculada a partir da BOM."
 
@@ -14806,6 +14815,9 @@ msgstr "Este tipo de armazenamento está sendo usado por {usageCount} unidade de
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "Este estilo ainda não possui seleções de atributos. Adicione os atributos primeiro."
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Esta linha de estilo já tem ordens de produção. Remova ou conclua as ordens antes de alterar as quantidades por variante."
 
 msgid "This updates the theme for all users of the application"
 msgstr "Isto atualiza o tema para todos os utilizadores da aplicação"
@@ -16203,6 +16215,9 @@ msgstr "Quando estoque expirado é utilizado"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "Quando ativo, essa regra é disparada para todo alvo do seu tipo. As linhas de atribuição são ignoradas mas preservadas."
+
+msgid "Which set of attributes this item's variants use"
+msgstr "Qual conjunto de atributos as variantes deste item usam"
 
 msgid "Who Can Approve"
 msgstr "Quem Pode Aprovar"

@@ -48,7 +48,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.shipments);
   }
 
-  // Attach source SO/PO/job Style color×size plan so Ordered can show chips and the
+  // Attach source SO/PO/job Style variant plan so Ordered can show chips and the
   // ship modal can hint against what was ordered.
   const rawLines = shipmentLines.data ?? [];
   const sourceLineIds = [

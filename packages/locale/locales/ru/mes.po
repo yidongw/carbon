@@ -4623,6 +4623,9 @@ msgstr "Открыть выбор даты и времени"
 msgid "Open Jobs"
 msgstr "Открытые задачи"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Откройте сетку вариантов количеств для присвоения количества"
+
 msgid "Operation finished successfully"
 msgstr "Операция завершена успешно"
 
@@ -5057,6 +5060,9 @@ msgstr "Отчёт по количеству"
 msgid "Reported"
 msgstr "Отправлено"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Количество, указанное в отчете, превышает оставшееся плановое количество для одной или нескольких комбинаций вариантов."
+
 msgid "Reprint job created"
 msgstr "Задача повторной печати создана"
 
@@ -5464,6 +5470,9 @@ msgstr "Складская единица создана"
 msgid "Style"
 msgstr "Стиль"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Отсутствуют стили для одного или нескольких комбинаций атрибутов. Сначала откройте стиль и сохраните выбранные атрибуты."
+
 msgid "Submit anonymously"
 msgstr "Отправить анонимно"
 
@@ -5826,6 +5835,9 @@ msgstr "Количество готовой продукции по этой о�
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "В спецификации есть материалы с серийным или партионным учётом, которые не были полностью выданы. Завершение без выдачи может привести к некорректным записям прослеживаемости."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Этот элемент настроен с помощью атрибутов — введите разбивку по вариантам перед отчетом."
+
 msgid "This lot is expired and can't be picked."
 msgstr "Эта партия истекла и не может быть выбрана."
 
@@ -5840,6 +5852,9 @@ msgstr "Эта операция назначена другому. Переня�
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "Этот серийный номер не был отправлен в этом перемещении"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Эта стилистическая линия уже имеет производственные задачи. Удалите или выполните задачи перед изменением количества её вариантов."
 
 msgid "Thumbnail"
 msgstr "Миниатюра"

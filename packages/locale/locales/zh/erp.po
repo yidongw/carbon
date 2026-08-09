@@ -545,9 +545,6 @@ msgstr "添加风险"
 msgid "Add row"
 msgstr "添加行"
 
-msgid "Add Row"
-msgstr "添加行"
-
 msgid "Add rule"
 msgstr "添加规则"
 
@@ -701,7 +698,7 @@ msgstr "此供应商已有审批请求"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "属性组合的数量不能超过裁剪数量（最多 {0}）"
+msgstr "属性组合数量不能超过裁剪数量（最多 {0}）"
 
 msgid "An item cannot be added to itself."
 msgstr "一个物品不能添加到自身。"
@@ -4097,7 +4094,7 @@ msgid "Edit Unit of Measure"
 msgstr "编辑计量单位"
 
 msgid "Edit variant quantities"
-msgstr "编辑变体数量"
+msgstr "编辑规格数量"
 
 msgid "Edit View"
 msgstr "编辑视图"
@@ -4645,7 +4642,7 @@ msgid "Fabric"
 msgstr "面料"
 
 msgid "Fabric, Trim, etc. — drives which variant options this item can have"
-msgstr "面料, 辅料等——决定此物品可具有的变体选项"
+msgstr "面料, 辅料等——决定此物品可具有的规格选项"
 
 msgid "Fail"
 msgstr "失败"
@@ -7096,7 +7093,7 @@ msgid "Failed to save item"
 msgstr "保存项目失败"
 
 msgid "Failed to save job variant quantities"
-msgstr "保存工作变体数量失败"
+msgstr "保存工作规格数量失败"
 
 msgid "Failed to save journal entry"
 msgstr "保存日记项失败"
@@ -7114,7 +7111,7 @@ msgid "Failed to save section"
 msgstr "保存部分失败"
 
 msgid "Failed to save variant quantities"
-msgstr "保存变体数量失败"
+msgstr "保存规格数量失败"
 
 msgid "Failed to search users"
 msgstr "搜索用户失败"
@@ -7159,7 +7156,7 @@ msgid "Failed to stop event"
 msgstr "停止事件失败"
 
 msgid "Failed to sync consumable variants"
-msgstr "同步消耗件变体失败"
+msgstr "同步消耗件规格失败"
 
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
@@ -7402,7 +7399,7 @@ msgid "Failed to update job status"
 msgstr "更新作业状态失败"
 
 msgid "Failed to update job variant quantities"
-msgstr "更新工作变体数量失败"
+msgstr "更新工作规格数量失败"
 
 msgid "Failed to update kanban"
 msgstr "更新看板失败"
@@ -10827,6 +10824,9 @@ msgstr "打开任务详情"
 msgid "Open Template"
 msgstr "打开模板"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "打开规格数量表以分配数量"
+
 msgid "Operating Expenses"
 msgstr "运营费用"
 
@@ -12399,6 +12399,9 @@ msgstr "报告了<0>{totalQuantity}</0>个单位"
 msgid "Reported At"
 msgstr "报告时间"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "报工数量超过一个或多个规格组合的剩余计划数量。"
+
 msgid "Reports"
 msgstr "报表"
 
@@ -13231,7 +13234,7 @@ msgid "Selected Operation"
 msgstr "已选操作"
 
 msgid "Selected values become variant SKUs"
-msgstr "选择的值成为变体SKU"
+msgstr "选择的值成为规格SKU"
 
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"
@@ -13971,6 +13974,9 @@ msgstr "款式数量配置是必填项"
 
 msgid "Style quantity is required"
 msgstr "款式数量是必填项"
+
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "一个或多个属性组合缺少款式规格。请先打开款式并保存属性选择。"
 
 msgid "Styles"
 msgstr "款式"
@@ -14774,6 +14780,9 @@ msgstr "这是本财政年度开始的月份。"
 msgid "This is the month your tax year starts."
 msgstr "这是您的税务年度开始的月份。"
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "此物料按属性配置 — 请先填写各规格明细再报工。"
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "此物品的物料清单没有启用保质期的输入，因此不会从BOM计算有效期。"
 
@@ -14807,6 +14816,9 @@ msgstr "此存储类型当前被{usageCount}个存储单元{0}使用。"
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "此款式尚未添加属性，请先添加属性。"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "此款式行已有生产工单。更改规格数量前请先删除或完成这些工单。"
 
 msgid "This updates the theme for all users of the application"
 msgstr "这将为所有应用用户更新主题"
@@ -16204,6 +16216,9 @@ msgstr "当过期库存被使用时"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "当启用时，此规则对其类型的所有目标生效。分配行会被忽略但保留。"
+
+msgid "Which set of attributes this item's variants use"
+msgstr "此物料规格使用的属性集"
 
 msgid "Who Can Approve"
 msgstr "谁可以审批"

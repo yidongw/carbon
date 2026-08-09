@@ -42,7 +42,7 @@ export type InventoryItem = NonNullable<
   // Merged in by the quantities loader from open warehouse transfers.
   toShip?: number;
   toReceive?: number;
-  // Per-color/size on-hand for Style items; absent/[] for other item types.
+  // Per-variant on-hand for Style items; absent/[] for other item types.
   breakdown?: BreakdownEntry[] | null;
 };
 
@@ -183,7 +183,7 @@ export type StockOverviewItem = {
   onHandChips: StockOverviewChip[];
   toSendChips: StockOverviewChip[];
   toReceiveChips: StockOverviewChip[];
-  // Per-color/size on-hand for Style items, each entry carrying a `byLocation`
+  // Per-variant on-hand for Style items, each entry carrying a `byLocation`
   // split; `breakdownLocations` lists the warehouses shown as quantity columns.
   breakdown: BreakdownEntry[];
   breakdownLocations: { id: string; name: string }[];

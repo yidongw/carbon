@@ -29,8 +29,8 @@ export type ItemConfigTableOverlayLoaderData = {
    * so this stays `null` for the common path.
    */
   configuration: unknown;
-  /** Color code -> color name, so the config table can show names not codes. */
-  colorNames: Record<string, string>;
+  /** Attribute value code -> display name for the config table. */
+  attributeValueNames: Record<string, string>;
 };
 
 export async function loader({
@@ -61,8 +61,13 @@ export async function loader({
 
   // Map attribute-value code -> name so the config table displays names, not
   // codes (all attributes, not just Color).
-  const attributeValueNames = await getAttributeValueNames(client, companyId);
-  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
+  const attributeValueNameRows = await getAttributeValueNames(
+    client,
+    companyId
+  );
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
+  );
 
   const url = new URL(request.url);
   const jobOperationId = url.searchParams.get("jobOperationId") ?? undefined;
@@ -106,6 +111,6 @@ export async function loader({
     itemReadableId: item.data?.readableIdWithRevision ?? null,
     referenceSource,
     configuration,
-    colorNames
+    attributeValueNames
   };
 }
