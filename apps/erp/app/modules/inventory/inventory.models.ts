@@ -530,7 +530,7 @@ export const newTransferValidator = z
             toStorageUnitId: z.string().optional(),
             variantQuantities: z
               .object({
-                configTable: z.array(
+                variantTable: z.array(
                   z.record(z.union([z.string(), z.number(), z.boolean()]))
                 )
               })

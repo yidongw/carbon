@@ -70,7 +70,7 @@ export async function openStyleVariantsQuantityWithInventory({
       )) ?? EMPTY_VARIANT_QUANTITIES;
     // Empty tagged/variant breakdown → 0 hints; don't block typing into cells.
     enforceReferenceCaps =
-      (inventoryVariantQuantities.configTable?.length ?? 0) > 0;
+      (inventoryVariantQuantities.variantTable?.length ?? 0) > 0;
   }
 
   const referenceVariantQuantities =
@@ -81,7 +81,7 @@ export async function openStyleVariantsQuantityWithInventory({
     itemId,
     // Combo rows only — modal derives quantity keys from item parameters.
     configuration: variantsQuantityRows
-      ? { configTable: variantsQuantityRows }
+      ? { variantTable: variantsQuantityRows }
       : undefined,
     maxTotal,
     enforceReferenceCaps,

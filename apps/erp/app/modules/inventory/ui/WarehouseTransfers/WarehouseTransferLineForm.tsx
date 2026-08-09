@@ -125,7 +125,7 @@ const WarehouseTransferLineForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityRows(data.configuration.variantTable);
     setVariantsQuantityTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };
@@ -206,7 +206,7 @@ const WarehouseTransferLineForm = ({
               name="variantQuantities"
               value={
                 variantsQuantityRows
-                  ? JSON.stringify({ configTable: variantsQuantityRows })
+                  ? JSON.stringify({ variantTable: variantsQuantityRows })
                   : ""
               }
             />

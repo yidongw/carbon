@@ -102,7 +102,7 @@ type Line = {
   toStorageUnitId: string;
   quantity: number;
   variantQuantities?: {
-    configTable: Record<string, string | number | boolean>[];
+    variantTable: Record<string, string | number | boolean>[];
   } | null;
 };
 

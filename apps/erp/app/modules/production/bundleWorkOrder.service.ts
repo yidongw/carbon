@@ -19,7 +19,7 @@ import { insertJob } from "./production.service";
 
 type VariantsQuantityRow = Record<string, string | number | boolean>;
 type VariantsQuantityTable = {
-  configTable?: VariantsQuantityRow[];
+  variantTable?: VariantsQuantityRow[];
 };
 
 /** Drop the `<prefix>_` from an internal id (e.g. `mwo_RWARP…` -> `RWARP…`). */
@@ -435,7 +435,7 @@ export async function insertBundleWorkOrder(
  */
 function extractCuttingCells(configuration: unknown): CuttingCell[] {
   const cfg = (configuration ?? null) as VariantsQuantityTable | null;
-  const table = cfg?.configTable;
+  const table = cfg?.variantTable;
   if (!Array.isArray(table)) return [];
 
   const toCell = (
@@ -460,7 +460,7 @@ function extractCuttingCells(configuration: unknown): CuttingCell[] {
     if (quantity <= 0) continue;
     const label = String(row.label ?? "").trim();
     const cell = toCell(valuesKey, quantity, {
-      configTable: [
+      variantTable: [
         {
           valuesKey,
           Quantities: quantity,

@@ -25,7 +25,7 @@ import {
   buildVariantsQuantityActionResponse,
   parseConfigurationFormValue
 } from "~/modules/production/variantsQuantityOverlay.server";
-import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -33,7 +33,7 @@ import { path } from "~/utils/path";
 export type JobConfigurationHistoryEntry = {
   id: string;
   quantity: number;
-  configuration: { configTable: VariantsQuantityRow[] };
+  configuration: { variantTable: VariantsQuantityRow[] };
   createdAt: string;
   createdByName: string | null;
 };
@@ -48,16 +48,16 @@ export type JobVariantsQuantityOverlayLoaderData = {
 };
 
 function normalizeConfigurationValue(value: unknown): {
-  configTable: VariantsQuantityRow[];
+  variantTable: VariantsQuantityRow[];
 } {
   const cfg =
     typeof value === "object" && value !== null && !Array.isArray(value)
       ? (value as Record<string, unknown>)
       : null;
-  const configTable = Array.isArray(cfg?.configTable)
-    ? (cfg?.configTable as VariantsQuantityRow[])
+  const variantTable = Array.isArray(cfg?.variantTable)
+    ? (cfg?.variantTable as VariantsQuantityRow[])
     : [];
-  return { configTable };
+  return { variantTable };
 }
 
 export async function loader({
@@ -92,8 +92,8 @@ export async function loader({
 
   const fromTable = jobVariantQuantitiesToTable(planned.data ?? []);
   const initialRows =
-    fromTable.configTable.length > 0
-      ? (fromTable.configTable as VariantsQuantityRow[])
+    fromTable.variantTable.length > 0
+      ? (fromTable.variantTable as VariantsQuantityRow[])
       : undefined;
 
   const historyResult = await getJobConfigurationHistory(
@@ -176,7 +176,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const adjustmentTable = normalizeConfigurationValue(adjustment);
-  const hasAdjustment = adjustmentTable.configTable.some(
+  const hasAdjustment = adjustmentTable.variantTable.some(
     (row) => (Number(row.Quantities) || 0) !== 0
   );
   if (!hasAdjustment) {

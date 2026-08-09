@@ -32,10 +32,7 @@ import { MethodIcon, SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { overlay, useOverlay } from "~/components/Overlay";
-import {
-  StyleConfigChips,
-  StyleConfigExpandRows
-} from "~/components/StyleConfigChips";
+import { VariantChips, VariantExpandRows } from "~/components/VariantChips";
 import {
   useCurrencyFormatter,
   useDateFormatter,
@@ -47,7 +44,7 @@ import {
 import {
   groupLinesForStyleDisplay,
   type StyleVariantLineMeta
-} from "~/modules/shared/styleConfigDisplay";
+} from "~/modules/shared/variantDisplay";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
@@ -58,7 +55,7 @@ import type {
   Supplier
 } from "../../types";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
-import { getStyleConfigDisplay } from "./styleConfigDisplay";
+import { getVariantDisplay } from "./variantDisplay";
 
 const LineItems = ({
   currencyCode,
@@ -133,11 +130,11 @@ const LineItems = ({
 
         const totalLines =
           group.kind === "style-group" ? group.totalLines : [line];
-        const styleConfig =
+        const variantDisplay =
           group.kind === "style-group"
-            ? group.styleConfig
-            : (group.styleConfig ??
-              getStyleConfigDisplay(
+            ? group.variantDisplay
+            : (group.variantDisplay ??
+              getVariantDisplay(
                 line.configuration,
                 attributeValueNames,
                 locale
@@ -279,8 +276,8 @@ const LineItems = ({
                       <span className="text-muted-foreground text-base truncate">
                         {itemDescription}
                       </span>
-                      {styleConfig ? (
-                        <StyleConfigChips chips={styleConfig.chips} />
+                      {variantDisplay ? (
+                        <VariantChips chips={variantDisplay.chips} />
                       ) : null}
                     </VStack>
                     <VStack
@@ -354,8 +351,8 @@ const LineItems = ({
                   <div className="w-full space-y-4">
                     <Table>
                       <Tbody>
-                        <StyleConfigExpandRows
-                          chips={styleConfig?.chips ?? []}
+                        <VariantExpandRows
+                          chips={variantDisplay?.chips ?? []}
                         />
                         <Tr>
                           <Td className="whitespace-nowrap">

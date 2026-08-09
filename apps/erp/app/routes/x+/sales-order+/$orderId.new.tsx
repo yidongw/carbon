@@ -12,7 +12,7 @@ import {
   serializeSearch
 } from "~/components/Overlay/overlay";
 import {
-  expandStyleConfigToVariantLines,
+  expandVariantTableToLines,
   hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
 import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
@@ -164,7 +164,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
   if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
       variantQuantities: configuration

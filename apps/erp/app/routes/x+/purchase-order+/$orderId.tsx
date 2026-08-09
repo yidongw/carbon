@@ -42,8 +42,8 @@ import {
   getLowerTierApproverUserIds,
   rejectRequest
 } from "~/modules/shared";
-import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import { getUser } from "~/modules/users/users.server";
 import { loader as pdfLoader } from "~/routes/file+/purchase-order+/$orderId[.]pdf";
 import { getDatabaseClient } from "~/services/database.server";

@@ -25,7 +25,7 @@ describe("breakdownToInventoryVariantsQuantity", () => {
     ]);
 
     expect(result).toEqual({
-      configTable: [
+      variantTable: [
         { valuesKey: "BG|M", Quantities: 10 },
         { valuesKey: "BG|L", Quantities: 2 },
         { valuesKey: "BK|S", Quantities: 1 }
@@ -51,7 +51,7 @@ describe("buildInventoryVariantsQuantityReferenceContext", () => {
       variantQuantities: inventory,
       otherLineVariantQuantities: [
         {
-          configTable: [{ valuesKey: "BG|M", Quantities: 3 }]
+          variantTable: [{ valuesKey: "BG|M", Quantities: 3 }]
         }
       ]
     });
@@ -59,7 +59,7 @@ describe("buildInventoryVariantsQuantityReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters: comboParameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext
     });
 

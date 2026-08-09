@@ -74,7 +74,7 @@ export function StyleLineQuantityInput({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityRows(data.configuration.variantTable);
     setVariantsQuantityTotal(data.total);
     const nextQty = data.total > 0 ? data.total : quantity;
     if (data.total > 0) setQuantity(data.total);
@@ -83,7 +83,7 @@ export function StyleLineQuantityInput({
       quantity: nextQty,
       // Persist combo rows only (valuesKey + Quantities).
       variantQuantities: {
-        configTable: data.configuration.configTable
+        variantTable: data.configuration.variantTable
       }
     });
   };

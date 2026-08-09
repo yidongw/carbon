@@ -279,7 +279,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    handleVariantsQuantitySubmit(data.configuration.configTable, data.total);
+    handleVariantsQuantitySubmit(data.configuration.variantTable, data.total);
   };
 
   const openVariantsQuantity = (mode: "single" | "bulk") => {
@@ -355,7 +355,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       <Hidden
                         name="configuration"
                         value={JSON.stringify({
-                          configTable: variantsQuantityRows
+                          variantTable: variantsQuantityRows
                         })}
                       />
                     )}
@@ -534,7 +534,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         <Hidden
                           name="configuration"
                           value={JSON.stringify({
-                            configTable: variantsQuantityRows
+                            variantTable: variantsQuantityRows
                           })}
                         />
                       )}

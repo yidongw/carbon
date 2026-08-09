@@ -10,7 +10,7 @@ const baseStyle = {
   saleQuantity: 10,
   taxPercent: 0,
   configuration: JSON.stringify({
-    configTable: [{ valuesKey: "Black|M", Quantities: 10 }]
+    variantTable: [{ valuesKey: "Black|M", Quantities: 10 }]
   })
 };
 

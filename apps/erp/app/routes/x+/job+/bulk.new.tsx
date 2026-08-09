@@ -67,7 +67,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const isStyleQty = isVariantsQuantityConfiguration(configuration);
   const variantsQuantityRows = isStyleQty
-    ? (configuration.configTable as Record<string, unknown>[])
+    ? (configuration.variantTable as Record<string, unknown>[])
     : [];
   const hasConfiguredJobs = variantsQuantityRows.length > 0;
   const flatPartConfiguration = isStyleQty ? undefined : configuration;
@@ -145,7 +145,7 @@ export async function action({ request }: ActionFunctionArgs) {
       : undefined;
     const styleConfigurationForJob = variantsQuantityRow
       ? {
-          configTable: [variantsQuantityRow]
+          variantTable: [variantsQuantityRow]
         }
       : undefined;
     const jobQuantity = variantsQuantityRow

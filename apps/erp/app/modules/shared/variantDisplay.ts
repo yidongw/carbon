@@ -4,7 +4,7 @@ import {
 } from "@carbon/database/style-reference";
 import { getVariantsQuantityCells } from "~/modules/production/variantsQuantityTableColumns";
 
-export type StyleConfigChip = {
+export type VariantChip = {
   key: string;
   /** Badge text, e.g. `米色 · L ×2` when attributeValueNames are provided */
   label: string;
@@ -13,8 +13,8 @@ export type StyleConfigChip = {
   quantity: number;
 };
 
-export type StyleConfigDisplay = {
-  chips: StyleConfigChip[];
+export type VariantDisplay = {
+  chips: VariantChip[];
 };
 
 function englishNameAliases(enName: string): string[] {
@@ -86,18 +86,11 @@ export function localizeColorNameMap(
   return out;
 }
 
-/**
- * Parse a Style line's stored `configuration` JSON into a flat list of every
- * non-zero attribute combo cell (for chips + expand quantity rows).
- *
- * Shared by Purchase Order and Sales Order summaries.
- * Pass `attributeValueNames` to show localized names instead of codes.
- */
-export function getStyleConfigDisplay(
+export function getVariantDisplay(
   configuration: unknown,
   attributeValueNames?: Record<string, string>,
   locale?: string
-): StyleConfigDisplay | null {
+): VariantDisplay | null {
   if (!configuration) return null;
 
   let parsed: unknown = configuration;
@@ -126,19 +119,19 @@ export function getStyleConfigDisplay(
 }
 
 /**
- * Build attribute chips from expanded variant lines (no configTable).
+ * Build attribute chips from expanded variant lines (no variantTable).
  * Used when PO/SO lines were replaced with child SKUs after expand.
  */
-export function getStyleConfigDisplayFromVariants(
+export function getVariantDisplayFromVariants(
   variants: Array<{
     attributeCodes?: string[];
     quantity: number;
   }>,
   attributeValueNames?: Record<string, string>,
   locale?: string
-): StyleConfigDisplay | null {
+): VariantDisplay | null {
   const localized = localizeColorNameMap(attributeValueNames, locale);
-  const byKey = new Map<string, StyleConfigChip>();
+  const byKey = new Map<string, VariantChip>();
   for (const variant of variants) {
     const codes = variant.attributeCodes?.filter(Boolean) ?? [];
     if (codes.length === 0) continue;
@@ -187,7 +180,7 @@ export type StyleDisplayLineGroup<T extends GroupableOrderLine> =
       kind: "line";
       key: string;
       line: T;
-      styleConfig: StyleConfigDisplay | null;
+      variantDisplay: VariantDisplay | null;
     }
   | {
       kind: "style-group";
@@ -200,12 +193,12 @@ export type StyleDisplayLineGroup<T extends GroupableOrderLine> =
       primaryLine: T;
       /** Lines that contribute to totals (variants when expanded; else parent). */
       totalLines: T[];
-      styleConfig: StyleConfigDisplay | null;
+      variantDisplay: VariantDisplay | null;
     };
 
 /**
  * Collapse expanded Style variant SKU lines under their parent for summary UI.
- * Parent lines that still carry a configTable (not yet expanded) stay as-is.
+ * Parent lines that still carry a variantTable (not yet expanded) stay as-is.
  * If both a configured parent and sibling variants exist, prefer the variants
  * for chips/totals so quantities are not double-counted.
  */
@@ -233,9 +226,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       continue;
     }
     // Parent Style still holding a variants quantity grid (pre-expand).
-    if (
-      getStyleConfigDisplay(line.configuration, attributeValueNames, locale)
-    ) {
+    if (getVariantDisplay(line.configuration, attributeValueNames, locale)) {
       parentLinesByItemId.set(line.itemId, line);
       continue;
     }
@@ -250,7 +241,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
     const parentLine = parentLinesByItemId.get(parentItemId);
     if (parentLine) consumedParents.add(parentItemId);
 
-    const styleConfig = getStyleConfigDisplayFromVariants(
+    const variantDisplay = getVariantDisplayFromVariants(
       variantLines.map((line) => {
         const m = variantByItemId[line.itemId!];
         return {
@@ -275,7 +266,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
         null,
       primaryLine: parentLine ?? variantLines[0]!,
       totalLines: variantLines,
-      styleConfig
+      variantDisplay
     });
   }
 
@@ -285,7 +276,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       kind: "line",
       key: parentLine.id!,
       line: parentLine,
-      styleConfig: getStyleConfigDisplay(
+      variantDisplay: getVariantDisplay(
         parentLine.configuration,
         attributeValueNames,
         locale
@@ -298,7 +289,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       kind: "line",
       key: line.id!,
       line,
-      styleConfig: getStyleConfigDisplay(
+      variantDisplay: getVariantDisplay(
         line.configuration,
         attributeValueNames,
         locale

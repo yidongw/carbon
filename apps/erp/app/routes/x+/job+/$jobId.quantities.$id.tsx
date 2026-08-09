@@ -77,7 +77,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     })) ?? [];
 
   // Style/attribute qty editor when the job has planned variant rows (or legacy
-  // configTable dual-read). Bundle jobs have none — plain quantity only.
+  // variantTable dual-read). Bundle jobs have none — plain quantity only.
   const planned = await getJobVariantQuantities(client, jobId, companyId);
   const jobIsConfigured = (planned.data?.length ?? 0) > 0;
 

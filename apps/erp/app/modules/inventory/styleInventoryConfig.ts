@@ -14,12 +14,12 @@ export type StyleOnHandEntry = {
 };
 
 export type VariantQuantitiesPayload = {
-  configTable: Record<string, unknown>[];
+  variantTable: Record<string, unknown>[];
 };
 
 /** Empty tagged breakdown — every combo hint reads as 0. */
 export const EMPTY_VARIANT_QUANTITIES: VariantQuantitiesPayload = {
-  configTable: []
+  variantTable: []
 };
 
 function valuesKeyOf(entry: StyleOnHandEntry): string {
@@ -44,14 +44,14 @@ export function breakdownToInventoryVariantsQuantity(
 
   if (byKey.size === 0) return null;
 
-  const configTable = Array.from(byKey.entries()).map(
+  const variantTable = Array.from(byKey.entries()).map(
     ([valuesKey, Quantities]) => ({
       valuesKey,
       Quantities
     })
   );
 
-  return { configTable };
+  return { variantTable };
 }
 
 /** Build remaining-mode reference context from inventory config + sibling lines. */

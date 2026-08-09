@@ -1516,7 +1516,7 @@ async function loadVariantsByValuesKey(
 }
 
 /**
- * Expand a Style/Consumable configTable into { variantItemId, quantity } rows.
+ * Expand a Style/Consumable variantTable into { variantItemId, quantity } rows.
  * Combo-only: each row is `{ valuesKey, Quantities }`; variants are matched by
  * valuesKey (attribute codes in set order).
  */
@@ -1533,9 +1533,11 @@ export async function expandVariantsQuantityTable(
 }> {
   try {
     const raw = (args.configuration ?? {}) as Record<string, unknown>;
-    const table = Array.isArray(raw.configTable)
-      ? (raw.configTable as Record<string, unknown>[])
-      : [];
+    const table = Array.isArray(raw.variantTable)
+      ? (raw.variantTable as Record<string, unknown>[])
+      : Array.isArray(raw.configTable)
+        ? (raw.configTable as Record<string, unknown>[])
+        : [];
 
     const cells: Array<{ valuesKey: string; quantity: number }> = [];
 

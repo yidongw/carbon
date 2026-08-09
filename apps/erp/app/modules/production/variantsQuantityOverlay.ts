@@ -15,14 +15,19 @@ export function parseInitialVariantsQuantity(
     if (
       typeof parsed !== "object" ||
       parsed === null ||
-      !("configTable" in parsed)
+      (!("variantTable" in parsed) && !("configTable" in parsed))
     ) {
       return { rows: null, total: 0 };
     }
     const config = parsed as {
+      variantTable?: Record<string, string | number | boolean>[];
       configTable?: Record<string, string | number | boolean>[];
     };
-    const rows = Array.isArray(config.configTable) ? config.configTable : null;
+    const rows = Array.isArray(config.variantTable)
+      ? config.variantTable
+      : Array.isArray(config.configTable)
+        ? config.configTable
+        : null;
     // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
     if (rows) {
@@ -39,7 +44,7 @@ export function parseInitialVariantsQuantity(
 export type VariantsQuantityOverlaySuccess = {
   ok: true;
   configuration: {
-    configTable: Record<string, string | number | boolean>[];
+    variantTable: Record<string, string | number | boolean>[];
     // Flat cut breakdown (report split editor) — stripped server-side before the
     // config is stored; persisted to masterWorkOrderSplitRow for cutting reports.
     splitRows?: {

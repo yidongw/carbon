@@ -119,7 +119,7 @@ export function getItemInternalId(row: {
   return item?.id?.trim() || null;
 }
 
-export function hasConfigurationTable(configuration: unknown): boolean {
+export function hasVariantTable(configuration: unknown): boolean {
   if (
     configuration === null ||
     configuration === undefined ||
@@ -128,6 +128,7 @@ export function hasConfigurationTable(configuration: unknown): boolean {
   ) {
     return false;
   }
-  const configTable = (configuration as Record<string, unknown>).configTable;
-  return Array.isArray(configTable) && configTable.length > 0;
+  const cfg = configuration as Record<string, unknown>;
+  const variantTable = cfg.variantTable ?? cfg.configTable;
+  return Array.isArray(variantTable) && variantTable.length > 0;
 }

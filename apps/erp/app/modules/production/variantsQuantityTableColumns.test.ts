@@ -18,7 +18,7 @@ const parameters = [
 
 describe("buildVariantsQuantityEditorState", () => {
   const originalConfiguration = {
-    configTable: [
+    variantTable: [
       { valuesKey: "红色|M", Quantities: 14 },
       { valuesKey: "蓝色|XL", Quantities: 6 }
     ]
@@ -28,7 +28,7 @@ describe("buildVariantsQuantityEditorState", () => {
     const { rows, referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext: {
         mode: "original",
         originalConfiguration,
@@ -45,12 +45,12 @@ describe("buildVariantsQuantityEditorState", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
         originalConfiguration,
         otherLineConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
     });
@@ -62,12 +62,12 @@ describe("buildVariantsQuantityEditorState", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
         originalConfiguration,
         otherLineConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
         ]
       }
     });
@@ -80,13 +80,13 @@ describe("buildVariantsQuantityEditorState", () => {
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: {
-        configTable: [{ valuesKey: "红色|M", Quantities: 3 }]
+        variantTable: [{ valuesKey: "红色|M", Quantities: 3 }]
       },
       referenceContext: {
         mode: "remaining",
         originalConfiguration,
         otherLineConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
     });
@@ -97,21 +97,21 @@ describe("buildVariantsQuantityEditorState", () => {
 
 describe("buildJobRemainingReferenceContext", () => {
   const jobConfiguration = {
-    configTable: [{ valuesKey: "红色|M", Quantities: 14 }]
+    variantTable: [{ valuesKey: "红色|M", Quantities: 14 }]
   };
 
   it("computes remaining quantities from job target minus reported", () => {
     const referenceContext = buildJobRemainingReferenceContext({
       jobConfiguration,
       reportedConfigurations: [
-        { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+        { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
       ]
     });
 
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext
     });
 
@@ -122,26 +122,26 @@ describe("buildJobRemainingReferenceContext", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
         jobConfiguration: {
-          configTable: [
+          variantTable: [
             { valuesKey: "红色|M", Quantities: 100 },
             { valuesKey: "红色|L", Quantities: 100 }
           ]
         },
         reportedConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
         ],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 1,
               configuration: {
-                configTable: [{ valuesKey: "红色|L", Quantities: 1 }]
+                variantTable: [{ valuesKey: "红色|L", Quantities: 1 }]
               }
             }
           ]
         },
         reportedConfigurationsByEmployee: {
-          emp1: [{ configTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
+          emp1: [{ variantTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
         }
       },
       { employeeId: "emp1" }
@@ -150,7 +150,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext
     });
 
@@ -163,7 +163,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
         jobConfiguration: {
-          configTable: [{ valuesKey: "红色|L", Quantities: 100 }]
+          variantTable: [{ valuesKey: "红色|L", Quantities: 100 }]
         },
         reportedConfigurations: [],
         pickupsByEmployee: {
@@ -171,13 +171,13 @@ describe("buildJobRemainingReferenceContext", () => {
             {
               quantity: 2,
               configuration: {
-                configTable: [{ valuesKey: "红色|L", Quantities: 2 }]
+                variantTable: [{ valuesKey: "红色|L", Quantities: 2 }]
               }
             }
           ]
         },
         reportedConfigurationsByEmployee: {
-          emp1: [{ configTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
+          emp1: [{ variantTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
         }
       },
       { employeeId: "emp1" }
@@ -186,7 +186,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentConfiguration: { variantTable: [] },
       referenceContext
     });
 
@@ -198,7 +198,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
   it("defers pickup loading to the server when job and operation are known", () => {
     const context = buildProductionVariantsQuantityReferenceContext({
       source: {
-        jobConfiguration: { configTable: [] },
+        jobConfiguration: { variantTable: [] },
         reportedConfigurations: []
       },
       employeeId: "emp1",
@@ -221,11 +221,11 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
     const context = buildProductionVariantsQuantityReferenceContext({
       source: {
         jobConfiguration: {
-          configTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
+          variantTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
         },
         reportedConfigurations: [],
         pickupsByEmployee: {
-          emp1: [{ quantity: 1, configuration: { configTable: [] } }]
+          emp1: [{ quantity: 1, configuration: { variantTable: [] } }]
         }
       },
       employeeId: "emp1",
@@ -258,7 +258,7 @@ describe("getVariantsQuantityCells", () => {
     );
     const cells = getVariantsQuantityCells(
       {
-        configTable: [
+        variantTable: [
           { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
           { valuesKey: "RD|M", Quantities: 2 }
         ]
@@ -275,7 +275,7 @@ describe("getVariantsQuantityCells", () => {
     const { getVariantsQuantityCells, variantsQuantityToComboRows } =
       await import("./variantsQuantityTableColumns");
     const configuration = {
-      configTable: [{ valuesKey: "BK|S", Quantities: 4 }]
+      variantTable: [{ valuesKey: "BK|S", Quantities: 4 }]
     };
     expect(getVariantsQuantityCells(configuration, { BK: "黑色" })).toEqual([
       { key: "0:Quantities", label: "黑色 · S", quantity: 4 }
@@ -292,7 +292,7 @@ describe("getVariantsQuantityCells", () => {
     expect(
       variantsQuantityToComboRows(
         {
-          configTable: [{ valuesKey: "BK|S", Quantities: 6 }]
+          variantTable: [{ valuesKey: "BK|S", Quantities: 6 }]
         },
         { BK: "黑色", S: "S" }
       )

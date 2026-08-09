@@ -3,7 +3,7 @@ import type { Json } from "@carbon/database";
 export type VariantsQuantityRow = Record<string, string | number | boolean>;
 
 export type VariantsQuantityData = {
-  configTable: VariantsQuantityRow[];
+  variantTable: VariantsQuantityRow[];
 };
 
 /**
@@ -23,7 +23,7 @@ function getVariantsQuantityTable(
     !Array.isArray(configuration)
       ? (configuration as Record<string, unknown>)
       : null;
-  const table = cfg?.configTable;
+  const table = cfg?.variantTable ?? cfg?.configTable;
   return Array.isArray(table) ? (table as VariantsQuantityRow[]) : [];
 }
 
@@ -99,7 +99,7 @@ export function applyConfigAdjustment(
   }
 
   const configuration: VariantsQuantityData = {
-    configTable: mergedRows
+    variantTable: mergedRows
   };
 
   return {
@@ -118,7 +118,7 @@ export function sumVariantsQuantityTables(
   configs: Array<Json | Record<string, unknown> | null | undefined>
 ): { configuration: VariantsQuantityData; total: number } {
   let configuration: VariantsQuantityData = {
-    configTable: []
+    variantTable: []
   };
   for (const config of configs) {
     configuration = applyConfigAdjustment(configuration, config).configuration;
@@ -138,19 +138,19 @@ export function computeConfigRemaining(
   reportedConfigs: Array<Json | Record<string, unknown> | null | undefined>
 ): VariantsQuantityData {
   if (getVariantsQuantityTable(planned).length === 0) {
-    return { configTable: [] };
+    return { variantTable: [] };
   }
 
   const reported = sumVariantsQuantityTables(reportedConfigs).configuration;
   const negated: VariantsQuantityData = {
-    configTable: reported.configTable.map((row) => ({
+    variantTable: reported.variantTable.map((row) => ({
       ...row,
       [QUANTITY_COLUMN]: -(Number(row[QUANTITY_COLUMN]) || 0)
     }))
   };
   const merged = applyConfigAdjustment(planned, negated).configuration;
   return {
-    configTable: merged.configTable.map((row) => ({
+    variantTable: merged.variantTable.map((row) => ({
       ...row,
       [QUANTITY_COLUMN]: Math.max(0, Number(row[QUANTITY_COLUMN]) || 0)
     }))
@@ -170,10 +170,10 @@ export function reportsExceedConfigPlan(
   if (getVariantsQuantityTable(planned).length === 0) return false;
 
   const reported = sumVariantsQuantityTables(reportedConfigs).configuration;
-  if (reported.configTable.length === 0) return false;
+  if (reported.variantTable.length === 0) return false;
 
   const negated: VariantsQuantityData = {
-    configTable: reported.configTable.map((row) => ({
+    variantTable: reported.variantTable.map((row) => ({
       ...row,
       [QUANTITY_COLUMN]: -(Number(row[QUANTITY_COLUMN]) || 0)
     }))
@@ -182,7 +182,7 @@ export function reportsExceedConfigPlan(
 }
 
 /**
- * Sums the `Quantities` column across `configuration.configTable` (same rules as
+ * Sums the `Quantities` column across `configuration.variantTable` (same rules as
  * the job sidebar).
  */
 export function computeJobVariantsQuantityTotal(
@@ -195,7 +195,7 @@ export function computeJobVariantsQuantityTotal(
       : null;
   if (!cfg) return 0;
 
-  const table = cfg.configTable;
+  const table = cfg.variantTable;
   if (!Array.isArray(table) || table.length === 0) return 0;
 
   return table.reduce((sum: number, row: unknown) => {

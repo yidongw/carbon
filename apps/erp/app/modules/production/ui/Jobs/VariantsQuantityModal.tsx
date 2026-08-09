@@ -26,7 +26,7 @@ import {
   type VariantsQuantityReferenceSource,
   variantsQuantityToComboRows
 } from "~/modules/production/variantsQuantityTableColumns";
-import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
+import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
 import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
 import { path } from "~/utils/path";
 import {
@@ -113,17 +113,17 @@ function comboRowsFromInitial(
   }
 
   return variantsQuantityToComboRows(
-    { configTable: rows },
+    { variantTable: rows },
     optionLabels
   ) as Row[];
 }
 
 /** Merge flat combo rows into the stored config table shape (valuesKey rows). */
 function flatRowsToMergedConfig(flatRows: Row[]): {
-  configTable: Row[];
+  variantTable: Row[];
 } {
   return {
-    configTable: flatRows
+    variantTable: flatRows
       .map((fr) => {
         const valuesKey = String(fr.valuesKey ?? "").trim();
         if (!valuesKey) return null;
@@ -232,7 +232,7 @@ function VariantsQuantityModal({
         (r) => String(r.valuesKey ?? "").trim().length > 0
       )
         ? (variantsQuantityToComboRows(
-            { configTable: initialRows },
+            { variantTable: initialRows },
             optionLabels
           ) as Row[])
         : initialRows;
@@ -448,7 +448,7 @@ function VariantsQuantityModal({
       };
     } else {
       configuration = {
-        configTable: mergeRows(rowsToSave, columns)
+        variantTable: mergeRows(rowsToSave, columns)
       };
     }
 
@@ -642,7 +642,8 @@ function extractVariantsQuantity(configuration: unknown): Row[] | undefined {
   ) {
     return undefined;
   }
-  const table = (configuration as Record<string, unknown>).configTable;
+  const cfg = configuration as Record<string, unknown>;
+  const table = cfg.variantTable ?? cfg.configTable;
   return Array.isArray(table) ? (table as Row[]) : undefined;
 }
 
@@ -666,13 +667,13 @@ export function buildConfigEditorRows({
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
 } {
-  const configTable = extractVariantsQuantity(configuration);
-  if (!referenceContext) return { initialRows: configTable };
+  const variantTable = extractVariantsQuantity(configuration);
+  if (!referenceContext) return { initialRows: variantTable };
   const editor = buildVariantsQuantityEditorState({
     parameters,
     defaultQuantityLabel: "Quantities",
     currentConfiguration:
-      configTable !== undefined ? { configTable } : undefined,
+      variantTable !== undefined ? { variantTable } : undefined,
     referenceContext,
     prefillFromReference
   });
@@ -687,8 +688,8 @@ export function buildConfigEditorRows({
   // click-to-fill hints of 0 on the default parameter rows.
   const { comboParam, columns } = buildColumns(parameters, "Quantities");
   const seed =
-    configTable && configTable.length > 0
-      ? configTable.map((row) => normalizeRow(row, columns))
+    variantTable && variantTable.length > 0
+      ? variantTable.map((row) => normalizeRow(row, columns))
       : getInitialRows(parameters, comboParam, columns);
   const zeroRefs = seed.map(() => {
     const refs: Record<string, number> = {};
@@ -831,7 +832,7 @@ export function toVariantsQuantityValue(
   rows: Row[] | null | undefined,
   fallback?: unknown
 ): unknown {
-  return rows ? { configTable: rows } : fallback;
+  return rows ? { variantTable: rows } : fallback;
 }
 
 type VariantsQuantityModalRequest = {

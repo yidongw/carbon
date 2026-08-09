@@ -11,7 +11,7 @@ import {
   resolveJobIdForOperation
 } from "~/modules/production/variantsQuantityOverlay.server";
 import type { VariantsQuantityReferenceSource } from "~/modules/production/variantsQuantityTableColumns";
-import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 
 export type ItemVariantsQuantityOverlayLoaderData = {
   parameters: ConfigurationParameter[];

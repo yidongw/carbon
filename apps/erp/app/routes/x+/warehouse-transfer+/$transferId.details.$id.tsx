@@ -24,7 +24,7 @@ import {
   WarehouseTransferLineForm
 } from "~/modules/inventory";
 import {
-  expandStyleConfigToVariantLines,
+  expandVariantTableToLines,
   hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
@@ -156,7 +156,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       const parentItemId = existingLine.data?.itemId ?? "";
 
       if (hasStyleVariantsQuantity(variantQuantities)) {
-        const expanded = await expandStyleConfigToVariantLines(client, {
+        const expanded = await expandVariantTableToLines(client, {
           parentItemId,
           companyId,
           variantQuantities

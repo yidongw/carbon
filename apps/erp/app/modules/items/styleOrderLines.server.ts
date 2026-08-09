@@ -11,10 +11,10 @@ export type StyleVariantQuantity = {
 };
 
 /**
- * Expand Style configTable into variant SKU quantities, failing if multi-cell
+ * Expand Style variantTable into variant SKU quantities, failing if multi-cell
  * configs still resolve to the parent (variants not synced yet).
  */
-export async function expandStyleConfigToVariantLines(
+export async function expandVariantTableToLines(
   client: Db,
   args: {
     parentItemId: string;
@@ -58,7 +58,8 @@ export async function expandStyleConfigToVariantLines(
 
 export function hasStyleVariantsQuantity(variantQuantities: unknown): boolean {
   if (!variantQuantities || typeof variantQuantities !== "object") return false;
-  const table = (variantQuantities as Record<string, unknown>).configTable;
+  const cfg = variantQuantities as Record<string, unknown>;
+  const table = cfg.variantTable ?? cfg.configTable;
   return Array.isArray(table) && table.length > 0;
 }
 

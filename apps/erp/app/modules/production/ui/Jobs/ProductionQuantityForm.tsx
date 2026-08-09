@@ -67,8 +67,8 @@ function getInitialConfigState(configuration: unknown) {
   }
 
   const cfg = configuration as Record<string, unknown>;
-  const rows = Array.isArray(cfg.configTable)
-    ? (cfg.configTable as VariantsQuantityRow[])
+  const rows = Array.isArray(cfg.variantTable)
+    ? (cfg.variantTable as VariantsQuantityRow[])
     : null;
 
   return {
@@ -249,7 +249,7 @@ const ProductionQuantityForm = ({
         typeof computeConfigRemaining
       >[1]
     );
-    if (remaining.configTable.length === 0) return editable;
+    if (remaining.variantTable.length === 0) return editable;
     const remainingTotal = computeJobVariantsQuantityTotal(remaining);
     return editable.map((line) =>
       line.type === "Production" && !getConfigFromEditableLine(line)
@@ -372,7 +372,10 @@ const ProductionQuantityForm = ({
           employeeId: actorKind === "employee" ? employeeId : undefined
         }),
       onConfirm: (data) =>
-        handleVariantsQuantitySubmit(data.configuration.configTable, data.total)
+        handleVariantsQuantitySubmit(
+          data.configuration.variantTable,
+          data.total
+        )
     });
   };
 
@@ -689,7 +692,7 @@ const ProductionQuantityForm = ({
                   <Hidden
                     name="configuration"
                     value={JSON.stringify({
-                      configTable: variantsQuantityRows
+                      variantTable: variantsQuantityRows
                     })}
                   />
                 )}

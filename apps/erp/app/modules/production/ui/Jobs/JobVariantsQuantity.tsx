@@ -10,7 +10,7 @@ import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
 import { variantsQuantityToComboRows } from "~/modules/production/variantsQuantityTableColumns";
-import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
+import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
 import type { AdjustmentMode, Column, Row } from "./variantsQuantityShared";
 import {
   buildColumns,
@@ -34,7 +34,7 @@ import {
 type HistoryEntry = {
   id: string;
   quantity: number;
-  configuration: { configTable: Row[] };
+  configuration: { variantTable: Row[] };
   createdAt: string;
   createdByName: string | null;
 };
@@ -110,7 +110,7 @@ function HistoryList({
               <div className="border-t border-border px-3 py-2">
                 <ReadOnlyVariantsQuantityTable
                   columns={columns}
-                  rows={entry.configuration.configTable ?? []}
+                  rows={entry.configuration.variantTable ?? []}
                   optionLabels={optionLabels}
                   signed
                 />
@@ -159,7 +159,7 @@ function JobVariantsQuantity({
       !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0);
     const seed = needsConvert
       ? (variantsQuantityToComboRows(
-          { configTable: initialRows },
+          { variantTable: initialRows },
           optionLabels
         ) as Row[])
       : initialRows;
@@ -207,8 +207,8 @@ function JobVariantsQuantity({
   const preview = useMemo(
     () =>
       applyConfigAdjustment(
-        { configTable: currentRows },
-        { configTable: rows }
+        { variantTable: currentRows },
+        { variantTable: rows }
       ),
     [currentRows, rows]
   );
@@ -284,7 +284,7 @@ function JobVariantsQuantity({
     formData.append(
       "adjustment",
       JSON.stringify({
-        configTable: mergedRows
+        variantTable: mergedRows
       })
     );
     fetcher.submit(formData, { method: "post", action: formAction });

@@ -60,9 +60,9 @@ export function parseInitialConfigurationFromRequest(
     ) {
       return undefined;
     }
-    const configTable = (parsed as Record<string, unknown>).configTable;
-    return Array.isArray(configTable)
-      ? (configTable as Record<string, string | number | boolean>[])
+    const variantTable = (parsed as Record<string, unknown>).variantTable;
+    return Array.isArray(variantTable)
+      ? (variantTable as Record<string, string | number | boolean>[])
       : undefined;
   } catch {
     return undefined;

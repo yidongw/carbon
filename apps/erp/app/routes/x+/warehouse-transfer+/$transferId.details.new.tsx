@@ -18,7 +18,7 @@ import {
 } from "~/modules/inventory";
 import { WarehouseTransferLineForm } from "~/modules/inventory/ui/WarehouseTransfers";
 import {
-  expandStyleConfigToVariantLines,
+  expandVariantTableToLines,
   hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
@@ -80,11 +80,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  // Style/Consumable parent + configTable → one warehouse-transfer line per variant SKU.
+  // Style/Consumable parent + variantTable → one warehouse-transfer line per variant SKU.
   // jobConfigurationUpdateFields bridges the shared modal payload (still named
   // `configuration`) into variantQuantities for inventory lines.
   if (hasStyleVariantsQuantity(variantQuantities)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
       variantQuantities

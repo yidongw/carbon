@@ -14,24 +14,25 @@ type Db = SupabaseClient<Database>;
 /** True when configuration is a Style/attribute qty table (not Part flat params). */
 export function isVariantsQuantityConfiguration(
   configuration: unknown
-): configuration is {
-  configTable: unknown[];
-} {
+): boolean {
   if (!configuration || typeof configuration !== "object") return false;
-  return Array.isArray(
-    (configuration as { configTable?: unknown }).configTable
-  );
+  const cfg = configuration as {
+    variantTable?: unknown;
+    configTable?: unknown;
+  };
+  return Array.isArray(cfg.variantTable) || Array.isArray(cfg.configTable);
 }
 
-export function isNonEmptyVariantsQuantity(
-  configuration: unknown
-): configuration is {
-  configTable: unknown[];
-} {
-  return (
-    isVariantsQuantityConfiguration(configuration) &&
-    configuration.configTable.length > 0
-  );
+export function isNonEmptyVariantsQuantity(configuration: unknown): boolean {
+  if (!isVariantsQuantityConfiguration(configuration)) return false;
+  const cfg = configuration as {
+    variantTable?: unknown[];
+    configTable?: unknown[];
+  };
+  const table = Array.isArray(cfg.variantTable)
+    ? cfg.variantTable
+    : cfg.configTable;
+  return Array.isArray(table) && table.length > 0;
 }
 
 /**
@@ -52,7 +53,7 @@ export async function replaceJobVariantQuantities(
       configuration: Record<string, unknown>;
       quantity: number;
     };
-    /** Clear legacy Style configTable JSON from job.configuration. */
+    /** Clear legacy Style variantTable JSON from job.configuration. */
     clearJobConfiguration?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
@@ -155,7 +156,7 @@ export async function getJobVariantQuantities(
     return attachValuesKeys(client, companyId, rows);
   }
 
-  // Dual-read: legacy Style plans still stored as job.configuration.configTable
+  // Dual-read: legacy Style plans still stored as job.configuration.variantTable
   // before jobVariantQuantity existed (or before a backfill).
   const { data: job, error: jobError } = await client
     .from("job")
@@ -231,7 +232,7 @@ async function attachValuesKeys(
   };
 }
 
-/** Expand a combo/matrix configTable payload into jobVariantQuantity rows. */
+/** Expand a combo/matrix variantTable payload into jobVariantQuantity rows. */
 export async function replaceJobVariantQuantitiesFromTable(
   client: Db,
   db: Kysely<KyselyDatabase>,
@@ -271,7 +272,7 @@ export async function replaceJobVariantQuantitiesFromTable(
 }
 
 /**
- * Persist Style qty to jobVariantQuantity and clear Style configTable from
+ * Persist Style qty to jobVariantQuantity and clear Style variantTable from
  * `job.configuration` so Part flat params remain the only JSON shape there.
  */
 export async function persistStyleJobConfiguration(
@@ -297,10 +298,10 @@ export async function persistStyleJobConfiguration(
 
 /** Build combo editor rows from stored jobVariantQuantity lines. */
 export function jobVariantQuantitiesToTable(lines: JobVariantQuantityLine[]): {
-  configTable: Array<{ valuesKey: string; Quantities: number }>;
+  variantTable: Array<{ valuesKey: string; Quantities: number }>;
 } {
   return {
-    configTable: lines
+    variantTable: lines
       .filter((l) => l.quantity > 0)
       .map((l) => ({
         valuesKey: l.valuesKey,

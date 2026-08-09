@@ -48,7 +48,7 @@ In `apps/erp/app/utils/path.ts`:
 
 ## Job quantity report overlays (Style config editor gate)
 
-Job-scoped qty report routes (`apps/erp/app/routes/x+/job+/$jobId.quantities.new.tsx`, `.$id.tsx`) gate the Style config editor on whether `getJobVariantQuantities` returns rows — **not** on raw `job.configuration.configTable`. Dual-read in `getJobVariantQuantities` covers legacy jobs that still only have a configTable. Details: `style-sizes-ordering.md` § Jobs / Master WO — `jobVariantQuantity`.
+Job-scoped qty report routes (`apps/erp/app/routes/x+/job+/$jobId.quantities.new.tsx`, `.$id.tsx`) gate the Style config editor on whether `getJobVariantQuantities` returns rows — **not** on raw `job.configuration.variantTable`. Dual-read in `getJobVariantQuantities` covers legacy jobs that still only have a configTable. Details: `style-sizes-ordering.md` § Jobs / Master WO — `jobVariantQuantity`.
 
 ## Data Models
 

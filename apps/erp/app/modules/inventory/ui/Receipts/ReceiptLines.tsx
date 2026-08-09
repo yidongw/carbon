@@ -74,7 +74,7 @@ import { useConfigurableItems } from "~/components/Form/Item";
 import StorageUnit from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
-import { StyleConfigChips } from "~/components/StyleConfigChips";
+import { VariantChips } from "~/components/VariantChips";
 import { useRouteData, useUser } from "~/hooks";
 import type {
   BatchProperty,
@@ -84,7 +84,7 @@ import type {
 } from "~/modules/inventory";
 import { splitValidator } from "~/modules/inventory";
 import { getDocumentType } from "~/modules/shared/shared.service";
-import { getStyleConfigDisplay } from "~/modules/shared/styleConfigDisplay";
+import { getVariantDisplay } from "~/modules/shared/variantDisplay";
 import { useItems } from "~/stores";
 import type { StorageItem } from "~/types";
 import { path } from "~/utils/path";
@@ -610,10 +610,9 @@ function ReceiptLineItem({
               <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
               <span className="text-sm py-1.5">{line.orderQuantity ?? 0}</span>
               {line.orderVariantQuantities ? (
-                <StyleConfigChips
+                <VariantChips
                   chips={
-                    getStyleConfigDisplay(line.orderVariantQuantities)?.chips ??
-                    []
+                    getVariantDisplay(line.orderVariantQuantities)?.chips ?? []
                   }
                 />
               ) : null}

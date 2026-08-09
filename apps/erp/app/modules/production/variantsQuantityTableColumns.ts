@@ -128,6 +128,12 @@ export function hasConfigRowValue(
   return columns.some((col) => !isZeroOrEmpty(row[col.key]));
 }
 
+/** Current wire key for Style/combo qty rows. */
+export const VARIANT_TABLE_KEY = "variantTable" as const;
+/** Legacy wire key — still dual-read from stored SO/PO/job JSON. */
+export const LEGACY_CONFIG_TABLE_KEY = "configTable" as const;
+
+/** Read combo qty rows from `variantTable`, falling back to legacy `configTable`. */
 export function getVariantsQuantityRows(
   configuration: unknown
 ): VariantsQuantityRow[] {
@@ -140,10 +146,18 @@ export function getVariantsQuantityRows(
     return [];
   }
 
-  const configTable = (configuration as Record<string, unknown>).configTable;
-  if (!Array.isArray(configTable)) return [];
+  const cfg = configuration as Record<string, unknown>;
+  const table = cfg[VARIANT_TABLE_KEY] ?? cfg[LEGACY_CONFIG_TABLE_KEY];
+  if (!Array.isArray(table)) return [];
 
-  return configTable as VariantsQuantityRow[];
+  return table as VariantsQuantityRow[];
+}
+
+/** Persist combo qty rows under the current wire key. */
+export function toVariantTablePayload(rows: VariantsQuantityRow[]): {
+  variantTable: VariantsQuantityRow[];
+} {
+  return { [VARIANT_TABLE_KEY]: rows };
 }
 
 export type VariantsQuantityCell = {

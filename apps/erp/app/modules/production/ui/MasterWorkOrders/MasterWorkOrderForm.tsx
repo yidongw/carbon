@@ -71,7 +71,7 @@ const MasterWorkOrderForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityRows(data.configuration.variantTable);
     setVariantsQuantityTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };
@@ -143,7 +143,7 @@ const MasterWorkOrderForm = ({
               value={
                 variantsQuantityRows
                   ? JSON.stringify({
-                      configTable: variantsQuantityRows
+                      variantTable: variantsQuantityRows
                     })
                   : ""
               }

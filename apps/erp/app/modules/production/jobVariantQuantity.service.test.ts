@@ -7,26 +7,26 @@ import {
 } from "./jobVariantQuantity.service";
 
 describe("jobVariantQuantity helpers", () => {
-  it("detects configTable vs flat Part params", () => {
+  it("detects variantTable vs flat Part params", () => {
     expect(
       isVariantsQuantityConfiguration({
-        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
     ).toBe(true);
     expect(
       isVariantsQuantityConfiguration({ color: "BK", finish: "matte" })
     ).toBe(false);
     expect(isVariantsQuantityConfiguration(null)).toBe(false);
-    expect(isVariantsQuantityConfiguration({ configTable: [] })).toBe(true);
+    expect(isVariantsQuantityConfiguration({ variantTable: [] })).toBe(true);
   });
 
-  it("requires non-empty configTable for dual-read / qty gates", () => {
+  it("requires non-empty variantTable for dual-read / qty gates", () => {
     expect(
       isNonEmptyVariantsQuantity({
-        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
     ).toBe(true);
-    expect(isNonEmptyVariantsQuantity({ configTable: [] })).toBe(false);
+    expect(isNonEmptyVariantsQuantity({ variantTable: [] })).toBe(false);
     expect(isNonEmptyVariantsQuantity({ color: "BK" })).toBe(false);
     expect(isNonEmptyVariantsQuantity(null)).toBe(false);
   });
@@ -36,14 +36,14 @@ describe("jobVariantQuantity helpers", () => {
     expect(sumJobVariantQuantities([])).toBe(0);
   });
 
-  it("builds combo configTable for the editor", () => {
+  it("builds combo variantTable for the editor", () => {
     expect(
       jobVariantQuantitiesToTable([
         { variantItemId: "a", valuesKey: "BK|S", quantity: 2 },
         { variantItemId: "b", valuesKey: "BK|M", quantity: 0 }
       ])
     ).toEqual({
-      configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+      variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
     });
   });
 
@@ -53,7 +53,7 @@ describe("jobVariantQuantity helpers", () => {
         { variantItemId: "a", valuesKey: "BK|S", quantity: -1 },
         { variantItemId: "b", valuesKey: "BK|M", quantity: 0 },
         { variantItemId: "c", valuesKey: "RD|L", quantity: 4 }
-      ]).configTable
+      ]).variantTable
     ).toEqual([{ valuesKey: "RD|L", Quantities: 4 }]);
   });
 });

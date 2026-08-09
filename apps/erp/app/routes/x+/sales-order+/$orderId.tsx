@@ -25,8 +25,8 @@ import {
   SalesOrderProperties
 } from "~/modules/sales/ui/SalesOrder";
 import { getCompanySettings } from "~/modules/settings";
-import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 

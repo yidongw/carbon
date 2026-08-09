@@ -65,7 +65,7 @@ import { useConfigurableItems } from "~/components/Form/Item";
 import { useStorageUnits } from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
-import { StyleConfigChips } from "~/components/StyleConfigChips";
+import { VariantChips } from "~/components/VariantChips";
 import { useRouteData } from "~/hooks";
 import type {
   getBatchNumbersForItem,
@@ -76,7 +76,7 @@ import type {
   ShipmentLineTracking
 } from "~/modules/inventory";
 import { splitValidator } from "~/modules/inventory";
-import { getStyleConfigDisplay } from "~/modules/shared/styleConfigDisplay";
+import { getVariantDisplay } from "~/modules/shared/variantDisplay";
 import type { action as shipmentLinesUpdateAction } from "~/routes/x+/shipment+/lines.update";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -631,10 +631,9 @@ function ShipmentLineItem({
               <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
               <span className="text-sm py-1.5">{line.orderQuantity || 0}</span>
               {line.orderVariantQuantities ? (
-                <StyleConfigChips
+                <VariantChips
                   chips={
-                    getStyleConfigDisplay(line.orderVariantQuantities)?.chips ??
-                    []
+                    getVariantDisplay(line.orderVariantQuantities)?.chips ?? []
                   }
                 />
               ) : null}

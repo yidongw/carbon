@@ -102,14 +102,19 @@ function parseInitialConfig(raw: unknown): {
     if (
       typeof parsed !== "object" ||
       parsed === null ||
-      !("configTable" in parsed)
+      (!("variantTable" in parsed) && !("configTable" in parsed))
     ) {
       return { rows: null, total: 0 };
     }
     const config = parsed as {
+      variantTable?: Row[];
       configTable?: Row[];
     };
-    const rows = Array.isArray(config.configTable) ? config.configTable : null;
+    const rows = Array.isArray(config.variantTable)
+      ? config.variantTable
+      : Array.isArray(config.configTable)
+        ? config.configTable
+        : null;
     // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
     if (rows) {
@@ -391,7 +396,7 @@ const PurchaseOrderLineForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityRows(data.configuration.variantTable);
     setVariantsQuantityTotal(data.total);
     onQuantityChange(data.total);
   };
@@ -729,7 +734,7 @@ const PurchaseOrderLineForm = ({
                       value={
                         variantsQuantityRows
                           ? JSON.stringify({
-                              configTable: variantsQuantityRows
+                              variantTable: variantsQuantityRows
                             })
                           : ""
                       }

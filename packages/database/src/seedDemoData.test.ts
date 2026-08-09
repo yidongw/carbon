@@ -162,7 +162,7 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
           typeof r.configuration === "string"
             ? JSON.parse(r.configuration)
             : r.configuration;
-        for (const tableRow of config?.configTable ?? []) {
+        for (const tableRow of config?.variantTable ?? []) {
           const row = tableRow as Record<string, unknown>;
           const valuesKey = String(row.valuesKey ?? "");
           if (!valuesKey) continue;

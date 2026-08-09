@@ -10,7 +10,7 @@ import {
   getItemReadableIdWithRevision,
   getJobInternalId,
   getJobReadableId,
-  hasConfigurationTable,
+  hasVariantTable,
   type ProductionQuantityJobOperationRow
 } from "~/modules/production/productionQuantityDisplay.utils";
 import { path } from "~/utils/path";
@@ -93,7 +93,7 @@ export function ProductionQuantityTableQuantityCell({
   const itemId = getItemInternalId(row);
   const quantity = row.quantity ?? 0;
   const showConfiguredQuantityUi =
-    hasConfigurationTable(row.configuration) ||
+    hasVariantTable(row.configuration) ||
     Boolean(itemId && configurableItemIds?.has(itemId));
 
   const openVariantsQuantity = (event: MouseEvent) => {
@@ -126,7 +126,7 @@ export function ProductionQuantityTableQuantityCell({
         size="sm"
         variant="secondary"
         className={cn(
-          hasConfigurationTable(row.configuration) &&
+          hasVariantTable(row.configuration) &&
             "text-emerald-500 hover:text-emerald-500"
         )}
         onClick={openVariantsQuantity}

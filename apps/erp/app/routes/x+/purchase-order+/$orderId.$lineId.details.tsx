@@ -11,7 +11,7 @@ import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
 import {
-  expandStyleConfigToVariantLines,
+  expandVariantTableToLines,
   hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
 import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
@@ -147,7 +147,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // variants quantity, or a Consumable color set) — expand into variant SKU lines
   // regardless of the picker's line type.
   if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
       variantQuantities: configuration

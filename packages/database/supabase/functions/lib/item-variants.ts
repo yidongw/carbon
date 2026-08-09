@@ -53,9 +53,11 @@ export async function expandVariantsQuantityTable(
   Array<{ variantItemId: string; quantity: number; valuesKey: string }>
 > {
   const raw = (args.configuration ?? {}) as Record<string, unknown>;
-  const table = Array.isArray(raw.configTable)
-    ? (raw.configTable as VariantsQuantityRow[])
-    : [];
+  const table = Array.isArray(raw.variantTable)
+    ? (raw.variantTable as VariantsQuantityRow[])
+    : Array.isArray(raw.configTable)
+      ? (raw.configTable as VariantsQuantityRow[])
+      : [];
 
   const cells: Array<{ valuesKey: string; quantity: number }> = [];
 
@@ -108,6 +110,7 @@ export async function expandVariantsQuantityTable(
 
 export function hasVariantsQuantityTable(configuration: unknown): boolean {
   if (!configuration || typeof configuration !== "object") return false;
-  const table = (configuration as Record<string, unknown>).configTable;
+  const cfg = configuration as Record<string, unknown>;
+  const table = cfg.variantTable ?? cfg.configTable;
   return Array.isArray(table) && table.length > 0;
 }

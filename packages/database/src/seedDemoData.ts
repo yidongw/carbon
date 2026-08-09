@@ -3971,9 +3971,9 @@ export async function seedDemoData(
   }
 
   // ─── Step 87b: Clothing manufacturing jobs with configuration instances ───
-  // configTable format mirrors real prod data: one attribute-combo row per cell,
+  // variantTable format mirrors real prod data: one attribute-combo row per cell,
   // keyed by `valuesKey` (color|size codes) with a single `Quantities` value.
-  // e.g. {"configTable":[{"valuesKey":"Black|S","Quantities":5}]}
+  // e.g. {"variantTable":[{"valuesKey":"Black|S","Quantities":5}]}
   console.log("87b. Seeding clothing manufacturing jobs...");
   {
     const tshirtId = itemIds["TSHIRT-001"];
@@ -4184,7 +4184,7 @@ export async function seedDemoData(
       const blackColor = L.configParams.colorOptions[0]!;
       const navyColor = L.configParams.colorOptions[2]!;
       const tshirtBlackConfig = JSON.stringify({
-        configTable: [
+        variantTable: [
           { valuesKey: `${blackColor}|S`, Quantities: 5 },
           { valuesKey: `${blackColor}|M`, Quantities: 10 },
           { valuesKey: `${blackColor}|L`, Quantities: 12 },
@@ -4209,7 +4209,7 @@ export async function seedDemoData(
       // Pickup: 30 pieces (S:5+M:7+L:10+XL:5+2XL:3=30). Production: 20 sewn (S:2+M:4+L:8+XL:4+2XL:2=20).
       // Remaining 10 still in worker's hands — pickup always ≥ production per size.
       const tshirtNavyConfig = JSON.stringify({
-        configTable: [
+        variantTable: [
           { valuesKey: `${navyColor}|S`, Quantities: 5 },
           { valuesKey: `${navyColor}|M`, Quantities: 7 },
           { valuesKey: `${navyColor}|L`, Quantities: 10 },
@@ -4218,7 +4218,7 @@ export async function seedDemoData(
         ]
       });
       const tshirtNavyProdConfig = JSON.stringify({
-        configTable: [
+        variantTable: [
           { valuesKey: `${navyColor}|S`, Quantities: 2 },
           { valuesKey: `${navyColor}|M`, Quantities: 4 },
           { valuesKey: `${navyColor}|L`, Quantities: 8 },
