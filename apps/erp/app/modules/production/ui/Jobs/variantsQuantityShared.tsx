@@ -159,7 +159,7 @@ export function makeDefaultRow(columns: Column[]): Row {
 }
 
 export function getInitialRows(
-  parameters: ConfigurationParameterInput[],
+  _parameters: ConfigurationParameterInput[],
   comboParam: ConfigurationParameterInput | null,
   columns: Column[]
 ): Row[] {
