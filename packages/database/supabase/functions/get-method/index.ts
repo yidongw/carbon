@@ -399,8 +399,9 @@ serve(async (req: Request) => {
           const isStyleQtyConfig =
             configuration != null &&
             typeof configuration === "object" &&
-            Array.isArray((configuration as { variantTable?: unknown; configTable?: unknown }).variantTable) ||
-            Array.isArray((configuration as { configTable?: unknown }).configTable);
+            Array.isArray(
+              (configuration as { variantTable?: unknown }).variantTable
+            );
           if (isConfigured && !isStyleQtyConfig) {
             await trx.updateTable("job")
               .set({

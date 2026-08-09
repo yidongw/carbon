@@ -129,6 +129,6 @@ export function hasVariantTable(variantQuantities: unknown): boolean {
     return false;
   }
   const cfg = variantQuantities as Record<string, unknown>;
-  const variantTable = cfg.variantTable ?? cfg.configTable;
+  const variantTable = cfg.variantTable;
   return Array.isArray(variantTable) && variantTable.length > 0;
 }

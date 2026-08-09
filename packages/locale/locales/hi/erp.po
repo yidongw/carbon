@@ -10337,9 +10337,6 @@ msgstr "कोई अंशांकन रिकॉर्ड नहीं म�
 msgid "No changes recorded"
 msgstr "कोई परिवर्तन दर्ज नहीं किया गया"
 
-msgid "No changes yet."
-msgstr "अभी तक कोई परिवर्तन नहीं।"
-
 msgid "No chat history"
 msgstr "कोई चैट इतिहास नहीं"
 

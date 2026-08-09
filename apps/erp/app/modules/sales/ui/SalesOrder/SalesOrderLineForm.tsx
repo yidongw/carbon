@@ -124,19 +124,16 @@ function parseInitialVariantTable(raw: unknown): {
     if (
       typeof parsed !== "object" ||
       parsed === null ||
-      (!("variantTable" in parsed) && !("configTable" in parsed))
+      !("variantTable" in parsed)
     ) {
       return { rows: null, total: 0 };
     }
     const config = parsed as {
       variantTable?: Row[];
-      configTable?: Row[];
     };
     const rows = Array.isArray(config.variantTable)
       ? config.variantTable
-      : Array.isArray(config.configTable)
-        ? config.configTable
-        : null;
+      : null;
     // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
     if (rows) {

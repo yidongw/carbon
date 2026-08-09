@@ -738,7 +738,6 @@ export const overlayRegistry = {
           parameters: data.parameters,
           initialRows: data.initialRows,
           jobDisplayId: data.jobDisplayId,
-          history: data.history,
           optionLabels: data.attributeValueNames
         };
       },

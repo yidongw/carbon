@@ -10334,9 +10334,6 @@ msgstr "Записи о калибровке не найдены"
 msgid "No changes recorded"
 msgstr "Изменений не записано"
 
-msgid "No changes yet."
-msgstr "Нет изменений еще."
-
 msgid "No chat history"
 msgstr "Нет истории чатов"
 

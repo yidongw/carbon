@@ -37,3 +37,5 @@
 Uses Tailwind `md:` (768px) — same pattern as ERP list tables (`TableCardRow`).
 
 **SO/PO:** `salesOrderLine` / `purchaseOrderLine` `configuration` columns were dropped; FormData-only expand remains.
+
+Style job variants-quantity no longer writes/shows `jobConfigurationHistory`. Overlay success is flat `{ ok, variantTable, total }` only (no nested `configuration` / `configTable` dual-read).

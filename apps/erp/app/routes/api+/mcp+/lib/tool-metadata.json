@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-09T06:41:34.500Z",
-  "totalTools": 1271,
+  "generated": "2026-08-09T06:54:25.430Z",
+  "totalTools": 1270,
   "modules": 15,
   "tools": [
     {
@@ -15987,32 +15987,6 @@
         },
         "required": [
           "id"
-        ]
-      }
-    },
-    {
-      "name": "production_getJobConfigurationHistory",
-      "module": "production",
-      "classification": "READ",
-      "description": "get job configuration history",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "jobId",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "jobId": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "jobId"
         ]
       }
     },

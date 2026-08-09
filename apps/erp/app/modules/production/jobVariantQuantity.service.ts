@@ -1,4 +1,4 @@
-import type { Database, Json } from "@carbon/database";
+import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { expandVariantsQuantityTable } from "~/modules/items/itemAttribute.service";
@@ -11,34 +11,23 @@ export type JobVariantQuantityLine = {
 
 type Db = SupabaseClient<Database>;
 
-/** True when configuration is a Style/attribute qty table (not Part flat params). */
-export function isVariantsQuantityConfiguration(
-  configuration: unknown
-): boolean {
-  if (!configuration || typeof configuration !== "object") return false;
-  const cfg = configuration as {
-    variantTable?: unknown;
-    configTable?: unknown;
-  };
-  return Array.isArray(cfg.variantTable) || Array.isArray(cfg.configTable);
+/** True when payload is a Style/attribute qty table (not Part flat params). */
+export function isVariantsQuantityConfiguration(payload: unknown): boolean {
+  if (!payload || typeof payload !== "object") return false;
+  const cfg = payload as { variantTable?: unknown };
+  return Array.isArray(cfg.variantTable);
 }
 
-export function isNonEmptyVariantsQuantity(configuration: unknown): boolean {
-  if (!isVariantsQuantityConfiguration(configuration)) return false;
-  const cfg = configuration as {
-    variantTable?: unknown[];
-    configTable?: unknown[];
-  };
-  const table = Array.isArray(cfg.variantTable)
-    ? cfg.variantTable
-    : cfg.configTable;
-  return Array.isArray(table) && table.length > 0;
+export function isNonEmptyVariantsQuantity(payload: unknown): boolean {
+  if (!isVariantsQuantityConfiguration(payload)) return false;
+  const cfg = payload as { variantTable?: unknown[] };
+  return Array.isArray(cfg.variantTable) && cfg.variantTable.length > 0;
 }
 
 /**
  * Replace all planned variant quantities for a job and sync `job.quantity`.
  * Absence of a variant = qty 0 (no zero rows stored).
- * Writes run in one Kysely transaction (delete + insert + job update + optional history).
+ * Writes run in one Kysely transaction (delete + insert + job update).
  * Caller passes `getDatabaseClient()` — do not import database.server here (client graph).
  */
 export async function replaceJobVariantQuantities(
@@ -48,11 +37,6 @@ export async function replaceJobVariantQuantities(
     companyId: string;
     userId: string;
     lines: Array<{ variantItemId: string; quantity: number }>;
-    /** When set, written in the same transaction as the replace. */
-    history?: {
-      configuration: Record<string, unknown>;
-      quantity: number;
-    };
     /** Clear legacy Style variantTable JSON from job.configuration. */
     clearJobConfiguration?: boolean;
   }
@@ -103,19 +87,6 @@ export async function replaceJobVariantQuantities(
         .where("id", "=", jobId)
         .where("companyId", "=", companyId)
         .execute();
-
-      if (args.history) {
-        await trx
-          .insertInto("jobConfigurationHistory")
-          .values({
-            jobId,
-            companyId,
-            configuration: args.history.configuration as Json,
-            quantity: args.history.quantity,
-            createdBy: userId
-          })
-          .execute();
-      }
     });
 
     return { quantity, error: null };
@@ -242,10 +213,6 @@ export async function replaceJobVariantQuantitiesFromTable(
     companyId: string;
     userId: string;
     configuration: unknown;
-    history?: {
-      configuration: Record<string, unknown>;
-      quantity: number;
-    };
     clearJobConfiguration?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
@@ -266,7 +233,6 @@ export async function replaceJobVariantQuantitiesFromTable(
       variantItemId: r.variantItemId,
       quantity: r.quantity
     })),
-    history: args.history,
     clearJobConfiguration: args.clearJobConfiguration
   });
 }

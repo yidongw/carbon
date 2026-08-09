@@ -59,7 +59,7 @@ export async function expandVariantTableToLines(
 export function hasStyleVariantsQuantity(variantQuantities: unknown): boolean {
   if (!variantQuantities || typeof variantQuantities !== "object") return false;
   const cfg = variantQuantities as Record<string, unknown>;
-  const table = cfg.variantTable ?? cfg.configTable;
+  const table = cfg.variantTable;
   return Array.isArray(table) && table.length > 0;
 }
 

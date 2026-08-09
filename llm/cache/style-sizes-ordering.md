@@ -48,3 +48,5 @@ Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md`
 **MES:** bundle pickup/report/print use `attributeLabel` / `valuesKey` (not colorCode/sizeCode).
 
 **SO/PO note:** `salesOrderLine.configuration` / `purchaseOrderLine.configuration` were dropped. Style qty grid is FormData-only → expand to child SKU lines; no JSONB plan column on SO/PO lines.
+
+Style job variants-quantity no longer writes/shows `jobConfigurationHistory`. Overlay success is flat `{ ok, variantTable, total }` only (no nested `configuration` / `configTable` dual-read).

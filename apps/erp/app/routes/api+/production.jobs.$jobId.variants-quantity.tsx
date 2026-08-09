@@ -9,11 +9,7 @@ import {
   getQuantityGridParameters
 } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import {
-  getJob,
-  getJobConfigurationHistory,
-  isJobLocked
-} from "~/modules/production";
+import { getJob, isJobLocked } from "~/modules/production";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable,
@@ -21,7 +17,7 @@ import {
 } from "~/modules/production/jobVariantQuantity.service";
 import {
   buildVariantsQuantityActionResponse,
-  parseConfigurationFormValue
+  parseVariantQuantitiesFormValue
 } from "~/modules/production/variantsQuantityOverlay.server";
 import type { VariantsQuantityRow } from "~/modules/production/variantTable";
 import { applyVariantTableAdjustment } from "~/modules/production/variantTable";
@@ -30,39 +26,13 @@ import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
-export type JobVariantsQuantityHistoryEntry = {
-  id: string;
-  quantity: number;
-  /** Style qty snapshot from jobConfigurationHistory.configuration JSONB. */
-  variantQuantities: { variantTable: VariantsQuantityRow[] };
-  createdAt: string;
-  createdByName: string | null;
-};
-
-/** @deprecated Prefer JobVariantsQuantityHistoryEntry */
-export type JobConfigurationHistoryEntry = JobVariantsQuantityHistoryEntry;
-
 export type JobVariantsQuantityOverlayLoaderData = {
   jobDisplayId: string | null;
   parameters: ConfigurationParameter[];
   initialRows?: VariantsQuantityRow[];
-  history: JobVariantsQuantityHistoryEntry[];
   /** Attribute value code -> name for the variants quantity grid. */
   attributeValueNames: Record<string, string>;
 };
-
-function normalizeVariantQuantitiesValue(value: unknown): {
-  variantTable: VariantsQuantityRow[];
-} {
-  const cfg =
-    typeof value === "object" && value !== null && !Array.isArray(value)
-      ? (value as Record<string, unknown>)
-      : null;
-  const variantTable = Array.isArray(cfg?.variantTable)
-    ? (cfg?.variantTable as VariantsQuantityRow[])
-    : [];
-  return { variantTable };
-}
 
 export async function loader({
   request,
@@ -100,28 +70,6 @@ export async function loader({
       ? (fromTable.variantTable as VariantsQuantityRow[])
       : undefined;
 
-  const historyResult = await getJobConfigurationHistory(
-    client,
-    jobId,
-    companyId
-  );
-  const history: JobVariantsQuantityHistoryEntry[] = (
-    historyResult.data ?? []
-  ).map((entry) => {
-    const createdByUser = Array.isArray(entry.createdByUser)
-      ? entry.createdByUser[0]
-      : entry.createdByUser;
-    return {
-      id: entry.id,
-      quantity: Number(entry.quantity) || 0,
-      variantQuantities: normalizeVariantQuantitiesValue(entry.configuration),
-      createdAt: entry.createdAt,
-      createdByName: createdByUser?.fullName ?? null
-    };
-  });
-
-  // Map attribute-value code -> name so the qty grid displays names, not
-  // codes (all attributes, not just Color).
   const attributeValueNameRows = await getAttributeValueNames(
     client,
     companyId
@@ -134,7 +82,6 @@ export async function loader({
     jobDisplayId: job.data.jobId ?? null,
     parameters,
     initialRows,
-    history,
     attributeValueNames
   };
 }
@@ -169,7 +116,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const adjustment = parseConfigurationFormValue(
+  const adjustment = parseVariantQuantitiesFormValue(
     (await request.formData()).get("adjustment")
   );
   if (!adjustment) {
@@ -179,8 +126,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const adjustmentTable = normalizeVariantQuantitiesValue(adjustment);
-  const hasAdjustment = adjustmentTable.variantTable.some(
+  const adjustmentRows = Array.isArray(
+    (adjustment as { variantTable?: unknown }).variantTable
+  )
+    ? (adjustment as { variantTable: VariantsQuantityRow[] }).variantTable
+    : [];
+  const hasAdjustment = adjustmentRows.some(
     (row) => (Number(row.Quantities) || 0) !== 0
   );
   if (!hasAdjustment) {
@@ -215,11 +166,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       parentItemId: job.data.itemId,
       companyId,
       userId,
-      configuration: merged.variantQuantities,
-      history: {
-        configuration: adjustmentTable,
-        quantity: merged.deltaTotal
-      }
+      configuration: merged.variantQuantities
     }
   );
   if (replaced.error) {

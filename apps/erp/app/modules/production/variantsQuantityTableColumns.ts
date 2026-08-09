@@ -131,9 +131,7 @@ export function hasVariantRowValue(
 /** Current wire key for Style/combo qty rows. */
 export const VARIANT_TABLE_KEY = "variantTable" as const;
 /** Legacy wire key — still dual-read from stored SO/PO/job JSON. */
-export const LEGACY_CONFIG_TABLE_KEY = "configTable" as const;
-
-/** Read combo qty rows from `variantTable`, falling back to legacy `configTable`. */
+/** Read combo qty rows from `variantTable`. */
 export function getVariantsQuantityRows(
   configuration: unknown
 ): VariantsQuantityRow[] {
@@ -147,7 +145,7 @@ export function getVariantsQuantityRows(
   }
 
   const cfg = configuration as Record<string, unknown>;
-  const table = cfg[VARIANT_TABLE_KEY] ?? cfg[LEGACY_CONFIG_TABLE_KEY];
+  const table = cfg[VARIANT_TABLE_KEY];
   if (!Array.isArray(table)) return [];
 
   return table as VariantsQuantityRow[];

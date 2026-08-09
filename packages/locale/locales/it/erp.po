@@ -10341,9 +10341,6 @@ msgstr "Nessun record di calibrazione trovato"
 msgid "No changes recorded"
 msgstr "Nessuna modifica registrata"
 
-msgid "No changes yet."
-msgstr "Ancora nessun cambio."
-
 msgid "No chat history"
 msgstr "Nessuna cronologia chat"
 

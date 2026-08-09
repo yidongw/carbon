@@ -10334,9 +10334,6 @@ msgstr "Aucun enregistrement d'étalonnage trouvé"
 msgid "No changes recorded"
 msgstr "Aucune modification enregistrée"
 
-msgid "No changes yet."
-msgstr "Aucune modification pour le moment."
-
 msgid "No chat history"
 msgstr "Aucun historique de chat"
 

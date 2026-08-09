@@ -1,17 +1,15 @@
 import { Button, cn, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
-import { LuChevronRight } from "react-icons/lu";
 import { PillSegmentedControl } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
-import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { variantsQuantityToComboRows } from "~/modules/production/variantsQuantityTableColumns";
 import { applyVariantTableAdjustment } from "~/modules/production/variantTable";
 import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
-import type { AdjustmentMode, Column, Row } from "./variantsQuantityShared";
+import type { AdjustmentMode, Row } from "./variantsQuantityShared";
 import {
   buildColumns,
   computeTotal,
@@ -31,103 +29,18 @@ import {
   zeroQuantities
 } from "./variantsQuantityShared";
 
-type HistoryEntry = {
-  id: string;
-  quantity: number;
-  configuration: { variantTable: Row[] };
-  createdAt: string;
-  createdByName: string | null;
-};
-
 export type JobVariantsQuantityProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   jobDisplayId?: string | null;
-  history?: HistoryEntry[];
   /** Display label per list-option value (e.g. color code -> color name). */
   optionLabels?: Record<string, string>;
 } & OverlayFormInjectedProps;
-
-function HistoryList({
-  history,
-  columns,
-  optionLabels
-}: {
-  history: HistoryEntry[];
-  columns: Column[];
-  optionLabels?: Record<string, string>;
-}) {
-  const { formatDateTime } = useDateFormatter();
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-
-  const toggle = (id: string) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-
-  if (history.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        <Trans>No changes yet.</Trans>
-      </p>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-1">
-      {history.map((entry) => {
-        const isExpanded = expanded.has(entry.id);
-        return (
-          <div key={entry.id} className="rounded border border-border bg-card">
-            <button
-              type="button"
-              onClick={() => toggle(entry.id)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted/50"
-            >
-              <LuChevronRight
-                className={cn(
-                  "shrink-0 text-muted-foreground transition-transform",
-                  isExpanded && "rotate-90"
-                )}
-              />
-              <span
-                className={cn(
-                  "w-16 shrink-0 font-medium tabular-nums",
-                  entry.quantity < 0 ? "text-destructive" : "text-emerald-600"
-                )}
-              >
-                {formatSignedTotal(entry.quantity)}
-              </span>
-              <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                {entry.createdByName ? `${entry.createdByName} · ` : ""}
-                {formatDateTime(entry.createdAt)}
-              </span>
-            </button>
-            {isExpanded ? (
-              <div className="border-t border-border px-3 py-2">
-                <ReadOnlyVariantsQuantityTable
-                  columns={columns}
-                  rows={entry.variantQuantities.variantTable ?? []}
-                  optionLabels={optionLabels}
-                  signed
-                />
-              </div>
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 function JobVariantsQuantity({
   parameters,
   initialRows,
   jobDisplayId,
-  history,
   optionLabels: rawOptionLabels,
   onDismiss,
   action: formAction,
@@ -135,7 +48,7 @@ function JobVariantsQuantity({
 }: JobVariantsQuantityProps) {
   const { t, i18n } = useLingui();
   // Loader attributeValueNames are the English base; translate to the user's locale so
-  // headers/cells/history show 米色 rather than "Beige" or the raw "BG" code.
+  // headers/cells show 米色 rather than "Beige" or the raw "BG" code.
   const optionLabels =
     localizeColorNameMap(rawOptionLabels, i18n.locale) ?? rawOptionLabels;
   const materialShapeOptions = useShape();
@@ -186,7 +99,7 @@ function JobVariantsQuantity({
   const [validationError, setValidationError] = useState("");
   // Delta = enter the change (default); Total = enter the target quantity.
   // Either way the underlying state stays the signed delta, so the two tabs
-  // are just different views of the same pending edit and history keeps deltas.
+  // are just different views of the same pending edit.
   const [mode, setMode] = useState<AdjustmentMode>("delta");
 
   // Match an adjustment row to its current-quantity baseline by descriptor
@@ -394,17 +307,6 @@ function JobVariantsQuantity({
                 {preview.total}
               </strong>
             </div>
-          </section>
-
-          <section className="flex flex-col gap-2">
-            <h4 className="text-sm font-medium text-foreground">
-              <Trans>History</Trans>
-            </h4>
-            <HistoryList
-              history={history ?? []}
-              columns={columns}
-              optionLabels={optionLabels}
-            />
           </section>
         </div>
       </div>

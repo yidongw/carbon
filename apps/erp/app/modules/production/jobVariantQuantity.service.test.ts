@@ -47,7 +47,7 @@ describe("jobVariantQuantity helpers", () => {
     });
   });
 
-  it("filters zero and negative lines out of editor configTable", () => {
+  it("filters zero and negative lines out of editor variantTable", () => {
     expect(
       jobVariantQuantitiesToTable([
         { variantItemId: "a", valuesKey: "BK|S", quantity: -1 },

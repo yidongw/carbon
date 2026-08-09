@@ -55,9 +55,7 @@ export function parseVariantQuantitiesFormValue(
 export function parseInitialVariantTableFromRequest(
   request: Request
 ): Record<string, string | number | boolean>[] | undefined {
-  const raw =
-    new URL(request.url).searchParams.get("variantQuantities") ??
-    new URL(request.url).searchParams.get("configuration");
+  const raw = new URL(request.url).searchParams.get("variantQuantities");
   if (!raw) return undefined;
 
   try {
@@ -70,7 +68,7 @@ export function parseInitialVariantTableFromRequest(
       return undefined;
     }
     const cfg = parsed as Record<string, unknown>;
-    const variantTable = cfg.variantTable ?? cfg.configTable;
+    const variantTable = cfg.variantTable;
     return Array.isArray(variantTable)
       ? (variantTable as Record<string, string | number | boolean>[])
       : undefined;

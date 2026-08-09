@@ -10334,9 +10334,6 @@ msgstr "キャリブレーション記録が見つかりません"
 msgid "No changes recorded"
 msgstr "変更が記録されていません"
 
-msgid "No changes yet."
-msgstr "まだ変更はありません。"
-
 msgid "No chat history"
 msgstr "チャット履歴がありません"
 

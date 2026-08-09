@@ -643,7 +643,7 @@ function extractVariantsQuantity(configuration: unknown): Row[] | undefined {
     return undefined;
   }
   const cfg = configuration as Record<string, unknown>;
-  const table = cfg.variantTable ?? cfg.configTable;
+  const table = cfg.variantTable;
   return Array.isArray(table) ? (table as Row[]) : undefined;
 }
 

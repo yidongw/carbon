@@ -10334,9 +10334,6 @@ msgstr "Nie znaleziono rekordów kalibracji"
 msgid "No changes recorded"
 msgstr "Brak zarejestrowanych zmian"
 
-msgid "No changes yet."
-msgstr "Brak zmian do tej pory."
-
 msgid "No chat history"
 msgstr "Brak historii czatów"
 

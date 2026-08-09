@@ -23,7 +23,7 @@ function getVariantsQuantityTable(
     !Array.isArray(variantQuantities)
       ? (variantQuantities as Record<string, unknown>)
       : null;
-  const table = cfg?.variantTable ?? cfg?.configTable;
+  const table = cfg?.variantTable;
   return Array.isArray(table) ? (table as VariantsQuantityRow[]) : [];
 }
 

@@ -10335,9 +10335,6 @@ msgstr "未找到校准记录"
 msgid "No changes recorded"
 msgstr "未记录任何更改"
 
-msgid "No changes yet."
-msgstr "暂无更改。"
-
 msgid "No chat history"
 msgstr "没有聊天记录"
 

@@ -1535,9 +1535,7 @@ export async function expandVariantsQuantityTable(
     const raw = (args.configuration ?? {}) as Record<string, unknown>;
     const table = Array.isArray(raw.variantTable)
       ? (raw.variantTable as Record<string, unknown>[])
-      : Array.isArray(raw.configTable)
-        ? (raw.configTable as Record<string, unknown>[])
-        : [];
+      : [];
 
     const cells: Array<{ valuesKey: string; quantity: number }> = [];
 

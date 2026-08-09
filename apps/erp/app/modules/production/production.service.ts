@@ -852,22 +852,6 @@ export async function getJob(client: SupabaseClient<Database>, id: string) {
   return client.from("jobs").select("*").eq("id", id).limit(1).single();
 }
 
-export async function getJobConfigurationHistory(
-  client: SupabaseClient<Database>,
-  jobId: string,
-  companyId: string
-) {
-  return client
-    .from("jobConfigurationHistory")
-    .select(
-      `id, quantity, configuration, createdAt, createdBy,
-       createdByUser:user!jobConfigurationHistory_createdBy_fkey(id, fullName, avatarUrl)`
-    )
-    .eq("jobId", jobId)
-    .eq("companyId", companyId)
-    .order("createdAt", { ascending: false });
-}
-
 export async function getJobProductionQuantitySummary(
   client: SupabaseClient<Database>,
   jobId: string,
