@@ -38,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const { templateId, ...styleData } = validation.data;
   // Attribute-set-driven selection: the create form submits a Hidden
   // attributeSetId + av__<attributeId>[] arrays (parsed generically), replacing
-  // the old color/size-specific fields.
+  // the old hardcoded size/color fields.
   const attributeSetId = String(formData.get("attributeSetId") ?? "");
   const selections = parseAttributeValueSelectionsFromFormData(formData);
   const { upsertStyle } = await import("~/modules/items/style.server");

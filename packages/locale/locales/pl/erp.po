@@ -544,9 +544,6 @@ msgstr "Dodaj ryzyko"
 msgid "Add row"
 msgstr "Dodaj wiersz"
 
-msgid "Add Row"
-msgstr "Dodaj wiersz"
-
 msgid "Add rule"
 msgstr "Dodaj regułę"
 
@@ -700,7 +697,7 @@ msgstr "Zażądanie zatwierdzenia już istnieje dla tego dostawcy"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "A kombinacja atrybutów nie może przekroczyć ilości utrwalonej (max {0})"
+msgstr "Kombinacja atrybutów nie może przekroczyć ilości kroju (maks. {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Przedmiot nie może być dodany do siebie."
@@ -10826,6 +10823,9 @@ msgstr "Otwórz szczegóły zadania"
 msgid "Open Template"
 msgstr "Otwórz szablon"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Otwórz siatkę ilości wariantów, aby przypisać ilości"
+
 msgid "Operating Expenses"
 msgstr "Koszty operacyjne"
 
@@ -12397,6 +12397,9 @@ msgstr "Pointrowany <0>{totalQuantity}</0> jednostek"
 
 msgid "Reported At"
 msgstr "Zgłoszono"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Zgłoszona ilość przekracza pozostałą zaplanowaną ilość dla jednej lub więcej kombinacji wariantów."
 
 msgid "Reports"
 msgstr "Raporty"
@@ -13971,6 +13974,9 @@ msgstr "Konfiguracja ilościowego stylu jest wymagana"
 msgid "Style quantity is required"
 msgstr "Ilość produktu jest wymagana"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Brakuje wariantów stylu dla jednej lub więcej kombinacji atrybutów. Otwórz styl i najpierw zapisz wybór atrybutów."
+
 msgid "Styles"
 msgstr "Modele"
 
@@ -14773,6 +14779,9 @@ msgstr "To jest miesiąc, w którym rozpoczyna się Twój rok obrachunkowy."
 msgid "This is the month your tax year starts."
 msgstr "To jest miesiąc, w którym rozpoczyna się Twój rok podatkowy."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Ten element jest skonfigurowany atrybutami — przed raportowaniem wprowadź podział na warianty."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "Rachunek materiałów tego artykułu nie ma wejść z włączoną polityką przechowywania, dlatego żaden termin ważności nie będzie obliczony z rachunku materiałów."
 
@@ -14806,6 +14815,9 @@ msgstr "Ten typ magazynu jest obecnie używany przez {usageCount} jednostkę mag
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "Ta styl jeszcze nie ma wybranych atrybutów. Dodaj atrybuty do styli:first"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Ta linia stylu ma już zlecenia produkcyjne. Usuń lub zakończ zlecenia przed zmianą ilości wariantów."
 
 msgid "This updates the theme for all users of the application"
 msgstr "To aktualizuje motyw dla wszystkich użytkowników aplikacji"
@@ -16203,6 +16215,9 @@ msgstr "Gdy używany jest wygasły zapas"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "Gdy włączona, ta reguła aktywuje się dla każdego obiektu tej samej kategorii. Wiersze przypisania są ignorowane, ale zapisywane."
+
+msgid "Which set of attributes this item's variants use"
+msgstr "Który zestaw atrybutów używają warianty tego elementu"
 
 msgid "Who Can Approve"
 msgstr "Kto może zatwierdzić"

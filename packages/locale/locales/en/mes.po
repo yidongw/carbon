@@ -4623,6 +4623,9 @@ msgstr "Open date time picker"
 msgid "Open Jobs"
 msgstr "Open Jobs"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Open the variant quantities grid to assign quantities"
+
 msgid "Operation finished successfully"
 msgstr "Operation finished successfully"
 
@@ -5057,6 +5060,9 @@ msgstr "Report Quantities"
 msgid "Reported"
 msgstr "Reported"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+
 msgid "Reprint job created"
 msgstr "Reprint job created"
 
@@ -5464,6 +5470,9 @@ msgstr "Storage unit created"
 msgid "Style"
 msgstr "Style"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+
 msgid "Submit anonymously"
 msgstr "Submit anonymously"
 
@@ -5826,6 +5835,9 @@ msgstr "The completed quantity for this operation is less than the required quan
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "This item is configured by attributes — enter the per-variant breakdown before reporting."
+
 msgid "This lot is expired and can't be picked."
 msgstr "This lot is expired and can't be picked."
 
@@ -5840,6 +5852,9 @@ msgstr "This process is assigned to someone else. Taking over stops their runnin
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "This serial number was not shipped on this transfer"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
 
 msgid "Thumbnail"
 msgstr "Thumbnail"

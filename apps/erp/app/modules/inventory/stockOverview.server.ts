@@ -129,7 +129,7 @@ export async function getStockOverview(
         });
       }
 
-      // Merge this location's color/size breakdown into the item aggregate,
+      // Merge this location's variant breakdown into the item aggregate,
       // keeping the per-location split.
       const entries = row.breakdown as BreakdownEntry[] | null;
       if (entries?.length) {
@@ -282,7 +282,7 @@ export async function getStockOverview(
             byLocation: Object.fromEntries(e.byLocation)
           }))
         : [];
-    // The RPC breakdown only tags color/size-labelled stock. Per location, the
+    // The RPC breakdown only tags variant-labelled stock. Per location, the
     // untagged remainder becomes a "—" row so columns still sum to on-hand.
     if (isStyle) {
       const untaggedByLocation: Record<string, number> = {};

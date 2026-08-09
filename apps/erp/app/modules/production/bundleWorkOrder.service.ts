@@ -352,7 +352,7 @@ export async function getBundleProcessReports(
 /**
  * Create a bundle work order under a master. A child job (parentJobId = the
  * master's backing job) is created through `insertJob` for downstream execution,
- * then wrapped by the bundle work order carrying the color/size identity.
+ * then wrapped by the bundle work order carrying the variant identity.
  */
 export async function insertBundleWorkOrder(
   client: SupabaseClient<Database>,

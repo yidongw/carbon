@@ -43,8 +43,8 @@ export type JobConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
   initialRows?: ConfigRow[];
   history: JobConfigurationHistoryEntry[];
-  /** Color code -> color name, so the config table shows names not codes. */
-  colorNames: Record<string, string>;
+  /** Attribute value code -> display name for the config table. */
+  attributeValueNames: Record<string, string>;
 };
 
 function normalizeConfigurationValue(value: unknown): {
@@ -118,15 +118,20 @@ export async function loader({
 
   // Map attribute-value code -> name so the config table displays names, not
   // codes (all attributes, not just Color).
-  const attributeValueNames = await getAttributeValueNames(client, companyId);
-  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
+  const attributeValueNameRows = await getAttributeValueNames(
+    client,
+    companyId
+  );
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
+  );
 
   return {
     jobDisplayId: job.data.jobId ?? null,
     parameters,
     initialRows,
     history,
-    colorNames
+    attributeValueNames
   };
 }
 

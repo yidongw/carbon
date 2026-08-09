@@ -544,9 +544,6 @@ msgstr "Aggiungi Rischio"
 msgid "Add row"
 msgstr "Aggiungi riga"
 
-msgid "Add Row"
-msgstr "Aggiungi Riga"
-
 msgid "Add rule"
 msgstr "Aggiungi regola"
 
@@ -700,7 +697,7 @@ msgstr "Un'istanza di approvazione esiste già per questo fornitore"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "Un attributo combo non può superare la quantità di taglio (massimo {0})"
+msgstr "Una combinazione di attributi non può superare la quantità di taglio (max {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Un articolo non può essere aggiunto a se stesso."
@@ -6901,7 +6898,7 @@ msgstr "Fallito avviso utente"
 
 msgid "Failed to parse claims"
 msgstr ""
-"Impossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
+"Impossibile analizzare i claimImpossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
 "\n"
 "Fallito nel parsing delle pretese"
 
@@ -6910,7 +6907,7 @@ msgstr "Impossibile analizzare i permessi"
 
 msgid "Failed to parse procedure content"
 msgstr ""
-"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
+"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
 "失败于解析程序内容"
 
 msgid "Failed to parse quality document content"
@@ -6921,7 +6918,7 @@ msgstr "Impossibile analizzare il contenuto del training"
 
 msgid "Failed to parse updates"
 msgstr ""
-"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
+"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
 "Fallito nel parsingaggiornamenti"
 
 msgid "Failed to pick line"
@@ -10833,6 +10830,9 @@ msgstr "Apri dettagli attività"
 msgid "Open Template"
 msgstr "Apri Template"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Apri la griglia delle quantità per variante per assegnare le quantità"
+
 msgid "Operating Expenses"
 msgstr "Spese Operative"
 
@@ -12404,6 +12404,9 @@ msgstr "Rapportato <0>{totalQuantity}</0> unità"
 
 msgid "Reported At"
 msgstr "Segnalato il"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "La quantità registrata supera la quantità pianificata rimanente per una o più combinazioni di varianti."
 
 msgid "Reports"
 msgstr "Rapporti"
@@ -13978,6 +13981,9 @@ msgstr "La configurazione della quantità di stile è richiesta"
 msgid "Style quantity is required"
 msgstr "La quantità di stile è richiesta"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Mancano varianti di stile per una o più combinazioni di attributi. Apri lo stile e salva prima le selezioni degli attributi."
+
 msgid "Styles"
 msgstr "Modelli"
 
@@ -14737,7 +14743,7 @@ msgstr "Colore Tema"
 
 msgid "There are more shipped than ordered"
 msgstr ""
-"Ci sono più articoli spediti che ordinatiCi sono più articoli spediti che ordinatiCi sono più articoli spediti rispetto ai订正： \n"
+"Sono state spedite più quantità di quelle ordinateCi sono più articoli spediti che ordinatiCi sono più articoli spediti che ordinatiCi sono più articoli spediti rispetto ai订正： \n"
 "Ci sono più articoli spediti rispetto a quelli ordinati"
 
 msgid "There are no active supplier quotes to compare for this RFQ."
@@ -14782,6 +14788,9 @@ msgstr "Questo è il mese in cui inizia il tuo anno fiscale."
 msgid "This is the month your tax year starts."
 msgstr "Questo è il mese in cui inizia il tuo anno fiscale."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Questo articolo è configurato per attributi — inserisci il dettaglio per variante prima di registrare."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "La distinta base di questo articolo non ha input con shelf-life abilitato, quindi nessuna scadenza verrà calcolata dalla distinta base."
 
@@ -14815,6 +14824,9 @@ msgstr "Questo tipo di archiviazione è attualmente utilizzato da {usageCount} u
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "Questa stile non ha ancora selezioni di attributi. Aggiungi gli attributi al stile prima."
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Questa riga di stile ha già job di produzione. Rimuovi o completa i job prima di modificare le quantità per variante."
 
 msgid "This updates the theme for all users of the application"
 msgstr "Questo aggiorna il tema per tutti gli utenti dell'applicazione"
@@ -16212,6 +16224,9 @@ msgstr "Quando viene utilizzato stock scaduto"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "Quando attivo, questa regola si esegue per ogni destinatario del suo tipo. Le righe di assegnazione vengono ignorate ma conservate."
+
+msgid "Which set of attributes this item's variants use"
+msgstr "Quale set di attributi usano le varianti di questo articolo"
 
 msgid "Who Can Approve"
 msgstr "Chi Può Approvare"

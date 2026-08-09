@@ -68,7 +68,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       quantity: Number(r.quantity)
     }));
 
-  // Attach color/size (from the serial's attributes) so the picker can group
+  // Attach attribute combo (from the serial's attributes) so the picker can group
   // serial units by configuration instead of listing opaque serial numbers.
   const serialIds = stock
     .map((r) => r.trackedEntityId)

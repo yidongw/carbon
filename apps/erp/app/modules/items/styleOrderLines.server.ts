@@ -49,7 +49,7 @@ export async function expandStyleConfigToVariantLines(
     return {
       ok: false,
       error:
-        "Style variants are missing for one or more color/size cells. Open the style and save color/size selections first."
+        "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
     };
   }
 
@@ -101,7 +101,7 @@ export async function requireVariantQuantitiesIfAttributeParent(
   if ((variants.data?.length ?? 0) > 0 || (selections.data?.length ?? 0) > 0) {
     return {
       ok: false,
-      error: "Open the variant quantities grid to assign color/size quantities"
+      error: "Open the variant quantities grid to assign quantities"
     };
   }
 

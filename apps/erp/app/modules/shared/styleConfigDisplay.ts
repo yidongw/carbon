@@ -6,10 +6,10 @@ import { getConfigQuantityCells } from "~/modules/production/configParamsTableCo
 
 export type StyleConfigChip = {
   key: string;
-  /** Badge text, e.g. `米色 · L ×2` when colorNames are provided */
+  /** Badge text, e.g. `米色 · L ×2` when attributeValueNames are provided */
   label: string;
-  /** Expand-row left column, e.g. `米色 · L` when colorNames are provided */
-  colorSize: string;
+  /** Expand-row left column, e.g. `米色 · L` when attributeValueNames are provided */
+  descriptor: string;
   quantity: number;
 };
 
@@ -56,25 +56,17 @@ export function buildAttributeValueNames(
 }
 
 /**
- * Parse a Style line's stored `configuration` JSON into a flat list of every
- * non-zero Color · Size cell (for chips + expand quantity rows).
- *
- * Shared by Purchase Order and Sales Order summaries. Config tables may use
- * either sizes or colors as quantity columns — labels are always Color · Size.
- * Pass `colorNames` to show localized names instead of codes.
- */
-/**
  * Re-point standard color codes (and their English-name aliases) in a
  * code→label map to the locale's color name, so chips read 黑色 · L in zh even
- * when the stored/loader name is the English base. Non-standard codes and size
- * columns are left untouched.
+ * when the stored/loader name is the English base. Non-standard codes and other
+ * attribute values are left untouched.
  */
 export function localizeColorNameMap(
-  colorNames: Record<string, string> | undefined,
+  attributeValueNames: Record<string, string> | undefined,
   locale: string | undefined
 ): Record<string, string> | undefined {
-  if (!colorNames || !locale) return colorNames;
-  const out = { ...colorNames };
+  if (!attributeValueNames || !locale) return attributeValueNames;
+  const out = { ...attributeValueNames };
   for (const [code, enName] of Object.entries(styleColorEnglishNamesByCode())) {
     const localized = localizeStyleColorName(code, locale);
     if (!localized) continue;
@@ -86,9 +78,16 @@ export function localizeColorNameMap(
   return out;
 }
 
+/**
+ * Parse a Style line's stored `configuration` JSON into a flat list of every
+ * non-zero attribute combo cell (for chips + expand quantity rows).
+ *
+ * Shared by Purchase Order and Sales Order summaries.
+ * Pass `attributeValueNames` to show localized names instead of codes.
+ */
 export function getStyleConfigDisplay(
   configuration: unknown,
-  colorNames?: Record<string, string>,
+  attributeValueNames?: Record<string, string>,
   locale?: string
 ): StyleConfigDisplay | null {
   if (!configuration) return null;
@@ -104,14 +103,14 @@ export function getStyleConfigDisplay(
 
   const cells = getConfigQuantityCells(
     parsed,
-    localizeColorNameMap(colorNames, locale)
+    localizeColorNameMap(attributeValueNames, locale)
   );
   if (cells.length === 0) return null;
 
   return {
     chips: cells.map((cell) => ({
       key: cell.key,
-      colorSize: cell.label,
+      descriptor: cell.label,
       label: `${cell.label} ×${cell.quantity}`,
       quantity: cell.quantity
     }))
@@ -127,29 +126,29 @@ export function getStyleConfigDisplayFromVariants(
     attributeCodes?: string[];
     quantity: number;
   }>,
-  colorNames?: Record<string, string>,
+  attributeValueNames?: Record<string, string>,
   locale?: string
 ): StyleConfigDisplay | null {
-  const localized = localizeColorNameMap(colorNames, locale);
+  const localized = localizeColorNameMap(attributeValueNames, locale);
   const byKey = new Map<string, StyleConfigChip>();
   for (const variant of variants) {
     const codes = variant.attributeCodes?.filter(Boolean) ?? [];
     if (codes.length === 0) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;
-    const colorSize = codes
+    const descriptor = codes
       .map((code) => localized?.[code] ?? code)
       .join(" · ");
     const key = codes.join("|");
     const existing = byKey.get(key);
     if (existing) {
       existing.quantity += qty;
-      existing.label = `${colorSize} ×${existing.quantity}`;
+      existing.label = `${descriptor} ×${existing.quantity}`;
     } else {
       byKey.set(key, {
         key,
-        colorSize,
-        label: `${colorSize} ×${qty}`,
+        descriptor,
+        label: `${descriptor} ×${qty}`,
         quantity: qty
       });
     }
@@ -205,7 +204,7 @@ export type StyleDisplayLineGroup<T extends GroupableOrderLine> =
 export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
   lines: T[],
   variantByItemId: Record<string, StyleVariantLineMeta>,
-  colorNames?: Record<string, string>,
+  attributeValueNames?: Record<string, string>,
   quantityOf: (line: T) => number = () => 0,
   locale?: string
 ): StyleDisplayLineGroup<T>[] {
@@ -225,8 +224,10 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       variantLinesByParent.set(meta.parentItemId, list);
       continue;
     }
-    // Parent Style still holding a color×size grid (pre-expand).
-    if (getStyleConfigDisplay(line.configuration, colorNames, locale)) {
+    // Parent Style still holding a variant combo grid (pre-expand).
+    if (
+      getStyleConfigDisplay(line.configuration, attributeValueNames, locale)
+    ) {
       parentLinesByItemId.set(line.itemId, line);
       continue;
     }
@@ -249,7 +250,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
           quantity: quantityOf(line)
         };
       }),
-      colorNames,
+      attributeValueNames,
       locale
     );
 
@@ -278,7 +279,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       line: parentLine,
       styleConfig: getStyleConfigDisplay(
         parentLine.configuration,
-        colorNames,
+        attributeValueNames,
         locale
       )
     });
@@ -289,7 +290,11 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       kind: "line",
       key: line.id!,
       line,
-      styleConfig: getStyleConfigDisplay(line.configuration, colorNames, locale)
+      styleConfig: getStyleConfigDisplay(
+        line.configuration,
+        attributeValueNames,
+        locale
+      )
     });
   }
 

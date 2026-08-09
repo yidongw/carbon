@@ -113,7 +113,7 @@ describe("expandStyleConfigToVariantLines", () => {
     ]
   };
 
-  it("expands color×size cells to distinct variant SKUs", async () => {
+  it("expands attribute combo cells to distinct variant SKUs", async () => {
     const client = mockClient({
       variants: [
         { id: "iv1", variantItemId: "item_bk_xs", valuesKey: "BK|XS" },

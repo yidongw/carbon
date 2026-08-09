@@ -90,7 +90,7 @@ function buildFlatColumns(
   return cols;
 }
 
-/** Combo rows: pass-through valuesKey rows, or convert legacy matrices. */
+/** Combo rows: pass-through valuesKey rows. */
 function comboRowsFromInitial(
   rows: Row[],
   optionLabels?: Record<string, string>
@@ -137,7 +137,7 @@ export type ConfigParamsTableModalProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
-  // Flat "one row per color/size" editor (multiple rows per cell) that also emits
+  // Flat "one row per variant combo" editor (multiple rows per cell) that also emits
   // raw `splitRows` — used by production-quantity reporting.
   splitMode?: boolean;
   jobDisplayId?: string | null;
@@ -185,7 +185,7 @@ function ConfigParamsTableModal({
   onConfirmSuccess
 }: ConfigParamsTableModalProps) {
   const { t, i18n } = useLingui();
-  // Loader colorNames are English base; translate to the locale so combo
+  // Loader attributeValueNames are English base; translate to the locale so combo
   // labels + headers render 黑色 · S rather than "Black · S" or "BK · S".
   const optionLabels =
     localizeColorNameMap(rawOptionLabels, i18n.locale) ?? rawOptionLabels;
@@ -357,7 +357,7 @@ function ConfigParamsTableModal({
   let exceedsReference = false;
   const overCellKeys = new Set<string>();
   if (flat) {
-    // Mark the quantity cell red for every row whose color/size aggregate exceeds
+    // Mark the quantity cell red for every row whose combo aggregate exceeds
     // its plan (same as Split Batch).
     rows.forEach((r, i) => {
       const k = String(r.valuesKey ?? "").trim();
@@ -401,7 +401,7 @@ function ConfigParamsTableModal({
     ]);
 
   const handleSubmit = () => {
-    // Can't confirm while any color×size cell exceeds its reference cap
+    // Can't confirm while any combo cell exceeds its reference cap
     // (production plan remaining, or inventory on-hand for transfers).
     if (exceedsMax) return;
     const normalizedRows = rows.map((row) => normalizeRow(row, gridColumns));
@@ -800,7 +800,7 @@ export function ConfigParamsTableLocalModal({
             parameters={data.parameters}
             initialRows={initialRows}
             referenceByRowIndex={referenceByRowIndex}
-            optionLabels={data.colorNames}
+            optionLabels={data.attributeValueNames}
             splitMode={splitMode}
             jobDisplayId={jobDisplayId ?? data.itemReadableId}
             isEditingReport={isEditingReport}
@@ -842,7 +842,7 @@ type ConfigTableModalRequest = {
   ) => ConfigTableReferenceContext | undefined;
   /** Seed empty quantity cells with their remaining reference on first open. */
   prefillFromReference?: boolean;
-  /** Flat one-row-per-color/size editor that also emits raw `splitRows`. */
+  /** Flat one-row-per-combo editor that also emits raw `splitRows`. */
   splitMode?: boolean;
   jobDisplayId?: string | null;
   /** Editing an existing report — footer shows the delta, not plan remaining. */

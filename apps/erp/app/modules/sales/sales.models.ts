@@ -828,7 +828,7 @@ export const salesOrderLineValidator = z
   .refine(
     (data) => {
       if (data.salesOrderLineType !== "Style" || !data.itemId) return true;
-      // Parent Style uses the color×size grid; variant SKU lines use plain qty.
+      // Parent Style uses the variant quantities grid; variant SKU lines use plain qty.
       return (data.saleQuantity ?? 0) > 0;
     },
     {

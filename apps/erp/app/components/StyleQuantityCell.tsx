@@ -36,7 +36,7 @@ export function StyleQuantityCell({
   const numberFormatter = useNumberFormatter();
   const format = numberFormatter.format.bind(numberFormatter);
 
-  // Ensure the breakdown always sums to `value`. If the DB only has color/size
+  // Ensure the breakdown always sums to `value`. If the DB only has variant
   // tags for part of the stock, the remainder shows as an untagged catch-all row.
   const adjustedBreakdown = useMemo(
     () => padBreakdownToTotal(breakdown, value),
@@ -44,7 +44,7 @@ export function StyleQuantityCell({
   );
 
   if (adjustedBreakdown.length === 0) {
-    // No color/size trigger, but keep the caller's sizing (e.g. the text-4xl
+    // No variant breakdown trigger, but keep the caller's sizing (e.g. the text-4xl
     // stat cards) so a zero value matches the other cards instead of shrinking.
     return <span className={className ?? "tabular-nums"}>{format(value)}</span>;
   }

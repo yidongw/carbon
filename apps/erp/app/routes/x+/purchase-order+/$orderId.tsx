@@ -495,7 +495,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getAttributeValueNames(client, companyId),
     getStyleVariantLineMetaByItemIds(client, itemIds, companyId)
   ]);
-  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
+  const attributeValueNameMap = buildAttributeValueNames(
+    attributeValueNames.data ?? []
+  );
   const adHocAttachments = adHocDocs.map((d) => ({
     source: "po" as const,
     name: d.name,
@@ -524,7 +526,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canDelete,
     defaultCc,
     resolvedAttachments,
-    colorNames,
+    attributeValueNames: attributeValueNameMap,
     styleVariantByItemId
   };
 }

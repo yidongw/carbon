@@ -544,9 +544,6 @@ msgstr "जोखिम जोड़ें"
 msgid "Add row"
 msgstr "पंक्ति जोड़ें"
 
-msgid "Add Row"
-msgstr "पंक्ति जोड़ें"
-
 msgid "Add rule"
 msgstr "नियम जोड़ें"
 
@@ -700,7 +697,7 @@ msgstr "इस विनियोजन के लिए पहले स्व�
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "एक अत्याधिक संयोजन (मैx {0}) की मात्रा नहीं हो सकती"
+msgstr "विशेषता संयोजन कट मात्रा से अधिक नहीं हो सकता (अधिकतम {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "एक आइटम को स्वयं में नहीं जोड़ा जा सकता।"
@@ -5074,7 +5071,7 @@ msgstr "अनुप्रयोगकर्ता की अक्षमता 
 
 msgid "Failed to delete account"
 msgstr ""
-"खाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
+"खाता हटाने में विफलखाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
 "字符串翻译结果：\n"
 "फाइल होम工作地点：德里国家首都是：新德里"
 
@@ -10829,6 +10826,12 @@ msgstr "कार्य विवरण खोलें"
 msgid "Open Template"
 msgstr "ओपन टेम्पलेट"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr ""
+"मात्रा असाइन करने के लिए वेरिएंट मात्रा ग्रिड खोलेंवैकल्पिक मात्राओं ग्रिड को खोलें और मात्राएँ य委派\n"
+"<|im_start|><|im_start|>user\n"
+"请重试，确保翻译符合目标语言的规范。"
+
 msgid "Operating Expenses"
 msgstr "कार्यात्मक खर्च"
 
@@ -12400,6 +12403,9 @@ msgstr "प्रतिपादित <0> {totalQuantity} </0> इकाइय�
 
 msgid "Reported At"
 msgstr "रिपोर्ट किया गया"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "रिपोर्ट की गई मात्रा एक या अधिक वेरिएंट संयोजनों की शेष नियोजित मात्रा से अधिक है।"
 
 msgid "Reports"
 msgstr "रिपोर्ट"
@@ -13974,6 +13980,9 @@ msgstr "स्टाइल गुणता कonfiguration आवश्यक �
 msgid "Style quantity is required"
 msgstr "स्टाइल की मात्रा आवश्यक है"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "एक या अधिक विशेषता संयोजनों के लिए स्टाइल वेरिएंट गायब हैं। पहले स्टाइल खोलें और विशेषता चयन सहेजें।"
+
 msgid "Styles"
 msgstr "शैलियाँ"
 
@@ -14776,6 +14785,9 @@ msgstr "यह वह महीना है जब आपका वित्त
 msgid "This is the month your tax year starts."
 msgstr "यह वह महीना है जब आपका कर वर्ष शुरू होता है।"
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "यह आइटम विशेषताओं से कॉन्फ़िगर है — रिपोर्ट करने से पहले प्रति-वेरिएंट विवरण दर्ज करें।"
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "इस आइटम के बिल ऑफ मेटेरियल्स में शेल्फ-लाइफ सक्षम इनपुट नहीं हैं, इसलिए BOM से कोई एक्सपायरी की गणना नहीं की जाएगी।"
 
@@ -14809,6 +14821,9 @@ msgstr "यह स्टोरेज प्रकार वर्तमान �
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "इस स्टाइल में अभी कोई गुणधर्म नहीं है। पहले स्टाइल में गुणधर्म जोड़ें।"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "इस स्टाइल लाइन में पहले से उत्पादन जॉब हैं। वेरिएंट मात्रा बदलने से पहले जॉब हटाएँ या पूरा करें।"
 
 msgid "This updates the theme for all users of the application"
 msgstr "यह एप्लिकेशन के सभी उपयोगकर्ताओं के लिए थीम को अपडेट करता है"
@@ -16206,6 +16221,9 @@ msgstr "जब समाप्त हो चुका स्टॉक उपय�
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "जब चालू हो, तो यह नियम उसके प्रकार के हर लक्ष्य के लिए चलता है। असाइनमेंट पंक्तियाँ अनदेखी की जाती हैं लेकिन सुरक्षित रहती हैं।"
+
+msgid "Which set of attributes this item's variants use"
+msgstr "इस आइटम के वेरिएंट किस विशेषता-सेट का उपयोग करते हैं"
 
 msgid "Who Can Approve"
 msgstr "कौन अनुमोदन कर सकता है"

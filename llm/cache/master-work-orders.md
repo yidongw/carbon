@@ -21,3 +21,4 @@ Master backing jobs must **not** go through JobCompleteModal / receive-to-invent
 
 - Master backing-job Style planned qty uses `jobVariantQuantity` (same as other Style jobs) — see `style-sizes-ordering.md`.
 - `masterWorkOrderSplitRow.colorCode` / `sizeCode` columns are **dropped** (`2026080808143927_drop_master_split_row_color_size.sql` + `NOTIFY pgrst, 'reload schema'`); generated DB/edge types no longer include them. Attribute identity comes from variant `valuesKey` / attribute maps, not color/size columns on the split row.
+- `masterWorkOrder.colorSize` JSONB is **dropped** (`20260809011753_drop_obsolete_size_color_props.sql`); create inserts without it.

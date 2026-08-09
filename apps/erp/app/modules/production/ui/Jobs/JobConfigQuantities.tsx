@@ -134,7 +134,7 @@ function JobConfigQuantities({
   fetcher
 }: JobConfigQuantitiesProps) {
   const { t, i18n } = useLingui();
-  // Loader colorNames are the English base; translate to the user's locale so
+  // Loader attributeValueNames are the English base; translate to the user's locale so
   // headers/cells/history show 米色 rather than "Beige" or the raw "BG" code.
   const optionLabels =
     localizeColorNameMap(rawOptionLabels, i18n.locale) ?? rawOptionLabels;
@@ -206,13 +206,14 @@ function JobConfigQuantities({
 
   const preview = useMemo(
     () =>
-      applyConfigAdjustment({ configTable: currentRows }, { configTable: rows }),
+      applyConfigAdjustment(
+        { configTable: currentRows },
+        { configTable: rows }
+      ),
     [currentRows, rows]
   );
 
-  const hasAdjustment = rows.some(
-    (row) => (Number(row.Quantities) || 0) !== 0
-  );
+  const hasAdjustment = rows.some((row) => (Number(row.Quantities) || 0) !== 0);
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));

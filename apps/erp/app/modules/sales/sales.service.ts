@@ -2106,7 +2106,7 @@ export async function replaceSalesOrderLinesWithStyleVariants(
         .executeTakeFirst();
       if (jobCount && Number(jobCount.count) > 0) {
         throw new Error(
-          "This style line already has production jobs. Remove or complete the jobs before changing its color/size configuration."
+          "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
         );
       }
 
@@ -2124,7 +2124,9 @@ export async function replaceSalesOrderLinesWithStyleVariants(
         if (variants.length > 1) {
           await trx
             .updateTable("salesOrderLine")
-            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .set({
+              sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}`
+            })
             .where("salesOrderId", "=", salesOrderId)
             .where("companyId", "=", companyId)
             .where("sortOrder", ">", original.sortOrder)

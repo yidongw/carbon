@@ -106,7 +106,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     .eq("id", operationId)
     .maybeSingle();
 
-  // Garment bundles carry a color/size — surface it in the report modal.
+  // Garment bundles carry an attribute label — surface it in the report modal.
   // A bundle job (or its parent master job) tracks output by reporting
   // quantities, not by the start/stop production clock, so we also detect the
   // master job to hide the start button for both.

@@ -238,7 +238,7 @@ const SalesOrderLineForm = ({
     Boolean(itemData.itemId) &&
     !(isEditing && !initialValues.configuration);
 
-  // A Style parent line's quantity comes from the color×size grid.
+  // A Style parent line's quantity comes from the variant quantities grid.
   // Variant SKU lines use plain quantity and are not blocked here.
   const isMissingStyleQuantity =
     hasConfigurationParameters && !(saleQuantity > 0);
@@ -451,7 +451,7 @@ const SalesOrderLineForm = ({
     if (storeType) {
       setLineType(storeType as SalesOrderLineType);
     }
-    // Styles always get quantity from the color×size grid — start at 0.
+    // Styles always get quantity from the variant quantities grid — start at 0.
     const isStyle = storeType === "Style" || lineType === "Style";
     const quantityForItem = isStyle ? 0 : saleQuantity || 1;
     if (isStyle || quantityForItem !== saleQuantity) {
@@ -476,8 +476,8 @@ const SalesOrderLineForm = ({
       // gets the config grid — not limited to Color/Size system attrs.
       carbon
         .from("itemAttributeSelection")
-        // Any attribute selection (not just color/size) makes the item
-        // variant/grid-driven — so non-color/size sets (e.g. Shoes) count too.
+        // Any attribute selection makes the item
+        // variant/grid-driven — including non-garment sets (e.g. Shoes).
         // Composite PK — no `id` column; select a real column.
         .select("attributeValueId")
         .eq("itemId", itemId)

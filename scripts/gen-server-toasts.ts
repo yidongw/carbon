@@ -190,8 +190,17 @@ for (const file of files) {
 }
 
 // Defaults from the Result builders (their fallback param values aren't inline
-// call arguments, so the scan can't see them).
-for (const extra of ["Request succeeded", "Request failed"]) {
+// call arguments, so the scan can't see them). Also include Error/string
+// messages returned from services and flashed via `error(cause, messageVar)`.
+for (const extra of [
+  "Request succeeded",
+  "Request failed",
+  "This item is configured by attributes — enter the per-variant breakdown before reporting.",
+  "Reported quantity exceeds the remaining planned quantity for one or more variant combos.",
+  "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first.",
+  "Open the variant quantities grid to assign quantities",
+  "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+]) {
   messages.add(extra);
 }
 

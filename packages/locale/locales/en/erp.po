@@ -544,9 +544,6 @@ msgstr "Add Risk"
 msgid "Add row"
 msgstr "Add row"
 
-msgid "Add Row"
-msgstr "Add Row"
-
 msgid "Add rule"
 msgstr "Add rule"
 
@@ -10826,6 +10823,9 @@ msgstr "Open task details"
 msgid "Open Template"
 msgstr "Open Template"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Open the variant quantities grid to assign quantities"
+
 msgid "Operating Expenses"
 msgstr "Operating Expenses"
 
@@ -12397,6 +12397,9 @@ msgstr "Reported <0>{totalQuantity}</0> units"
 
 msgid "Reported At"
 msgstr "Reported At"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 
 msgid "Reports"
 msgstr "Reports"
@@ -13971,6 +13974,9 @@ msgstr "Style quantity configuration is required"
 msgid "Style quantity is required"
 msgstr "Style quantity is required"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+
 msgid "Styles"
 msgstr "Styles"
 
@@ -14773,6 +14779,9 @@ msgstr "This is the month your fiscal year starts."
 msgid "This is the month your tax year starts."
 msgstr "This is the month your tax year starts."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "This item is configured by attributes — enter the per-variant breakdown before reporting."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 
@@ -14806,6 +14815,9 @@ msgstr "This storage type is currently used by {usageCount} storage unit{0}."
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "This style has no attribute selections yet. Add attributes on the style first."
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
 
 msgid "This updates the theme for all users of the application"
 msgstr "This updates the theme for all users of the application"
@@ -16203,6 +16215,9 @@ msgstr "When expired stock is used"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
+
+msgid "Which set of attributes this item's variants use"
+msgstr "Which set of attributes this item's variants use"
 
 msgid "Who Can Approve"
 msgstr "Who Can Approve"

@@ -15,7 +15,7 @@ type StyleLineQuantityInputProps = {
   itemId: string;
   value: number;
   variantQuantities?: Json | null;
-  /** From-location for inventory color×size hints / max caps. Omit on receipts. */
+  /** From-location for inventory variant combo hints / max caps. Omit on receipts. */
   locationId?: string | null;
   /** Optional bin — scopes inventory hints to that storage unit. */
   storageUnitId?: string | null;
@@ -38,7 +38,7 @@ type StyleLineQuantityInputProps = {
 };
 
 /**
- * Inline shipped/received quantity for Style lines — click opens the color×size
+ * Inline shipped/received quantity for Style lines — click opens the variant
  * config modal (same control as production quantity / transfer line forms).
  * When `locationId` is set, cells show on-hand inventory hints (variant SKU
  * breakdown) and Confirm is blocked if any combo exceeds available stock —

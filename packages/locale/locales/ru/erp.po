@@ -544,9 +544,6 @@ msgstr "Добавить риск"
 msgid "Add row"
 msgstr "Добавить строку"
 
-msgid "Add Row"
-msgstr "Добавить строку"
-
 msgid "Add rule"
 msgstr "Добавить правило"
 
@@ -700,7 +697,7 @@ msgstr "Уже существует запрос на одобрение для 
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr "Атрибут комбо не может превышать количество вырезки (макс {0})"
+msgstr "Комбинация атрибутов не может превышать количество раскроя (макс. {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Элемент не может быть добавлен к самому себе."
@@ -10826,6 +10823,9 @@ msgstr "Открыть детали задачи"
 msgid "Open Template"
 msgstr "Открыть шаблон"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Откройте сетку количеств вариантов, чтобы назначить количества"
+
 msgid "Operating Expenses"
 msgstr "Операционные расходы"
 
@@ -12397,6 +12397,9 @@ msgstr "Отчет <0>{totalQuantity}</0> единиц"
 
 msgid "Reported At"
 msgstr "Сообщено"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "Заявленное количество превышает оставшееся плановое количество для одной или нескольких комбинаций вариантов."
 
 msgid "Reports"
 msgstr "Отчеты"
@@ -13971,6 +13974,9 @@ msgstr "Конфигурация количества стилей требуе�
 msgid "Style quantity is required"
 msgstr "Количество стиля обязательно"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Отсутствуют варианты стиля для одной или нескольких комбинаций атрибутов. Откройте стиль и сначала сохраните выбор атрибутов."
+
 msgid "Styles"
 msgstr "Модели"
 
@@ -14773,6 +14779,9 @@ msgstr "Это месяц, когда начинается ваш финансо
 msgid "This is the month your tax year starts."
 msgstr "Это месяц, когда начинается ваш налоговый год."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Этот элемент настроен атрибутами — перед отчётом укажите разбивку по вариантам."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "У этого товара в спецификации материалов нет входов с включенной политикой срока хранения, поэтому срок годности не будет рассчитан на основе спецификации."
 
@@ -14806,6 +14815,9 @@ msgstr "Этот тип хранилища в настоящее время ис
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "Этот стиль еще не имеет выбранных атрибутов. Сначала добавьте атрибуты к стилю."
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "У этой строки стиля уже есть производственные задания. Удалите или завершите задания перед изменением количеств вариантов."
 
 msgid "This updates the theme for all users of the application"
 msgstr "Это обновляет тему для всех пользователей приложения"
@@ -16203,6 +16215,9 @@ msgstr "Когда используется истекший товар"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "Когда включена, эта правило активируется для каждого объекта его типа. Строки назначения игнорируются, но сохраняются."
+
+msgid "Which set of attributes this item's variants use"
+msgstr "Какой набор атрибутов используют варианты этого элемента"
 
 msgid "Who Can Approve"
 msgstr "Кто может одобрить"

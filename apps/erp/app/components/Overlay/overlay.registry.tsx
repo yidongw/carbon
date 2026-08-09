@@ -736,7 +736,7 @@ export const overlayRegistry = {
           initialRows: data.initialRows,
           jobDisplayId: data.jobDisplayId,
           history: data.history,
-          optionLabels: data.colorNames
+          optionLabels: data.attributeValueNames
         };
       },
       () => import("~/modules/production/ui/Jobs/JobConfigQuantities")
@@ -771,7 +771,7 @@ export const overlayRegistry = {
           initialRows,
           referenceByRowIndex,
           jobDisplayId: data.itemReadableId,
-          optionLabels: data.colorNames
+          optionLabels: data.attributeValueNames
         };
       },
       () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")

@@ -162,12 +162,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     : (companySettings.data?.defaultCustomerCc ?? []);
 
   // Attribute-value code -> display name for Style config badges / expand rows.
-  const colorNames = buildAttributeValueNames(attributeValueNames.data ?? []);
+  const attributeValueNameMap = buildAttributeValueNames(
+    attributeValueNames.data ?? []
+  );
 
   return {
     salesOrder: salesOrder.data,
     lines: lines.data ?? [],
-    colorNames,
+    attributeValueNames: attributeValueNameMap,
     styleVariantByItemId,
     files: getOpportunityDocuments(client, companyId, opportunity.data.id),
     relatedItems: getSalesOrderRelatedItems(

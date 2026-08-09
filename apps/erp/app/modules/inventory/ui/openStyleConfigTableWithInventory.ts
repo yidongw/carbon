@@ -27,14 +27,14 @@ async function loadInventoryVariantQuantities(
 }
 
 /**
- * Open the Style config modal with color×size / combo hints + max caps.
+ * Open the Style config modal with variant combo hints + max caps.
  * Prefer `orderVariantQuantities` (SO/PO/job plan) when present so ship/receive
  * shows what was ordered; otherwise load on-hand inventory (including Style
  * variant child ledgers). Cap total with `maxTotal` when the selected transfer
  * source quantity is known.
  *
  * When on-hand has no combo breakdown, hints are 0 and per-cell caps are not
- * enforced (user can still assign color×size up to `maxTotal`).
+ * enforced (user can still assign combos up to `maxTotal`).
  */
 export async function openStyleConfigTableWithInventory({
   configModal,

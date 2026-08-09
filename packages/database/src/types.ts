@@ -2191,8 +2191,6 @@ export type Database = {
       bundle: {
         Row: {
           bundleNumber: string
-          colorCode: string
-          colorName: string
           companyId: string
           createdAt: string
           createdBy: string
@@ -2202,7 +2200,6 @@ export type Database = {
           quantity: number
           sequence: number
           shadeLot: string | null
-          sizeCode: string | null
           splitBatchId: string
           status: Database["public"]["Enums"]["bundleStatus"]
           updatedAt: string | null
@@ -2210,8 +2207,6 @@ export type Database = {
         }
         Insert: {
           bundleNumber: string
-          colorCode: string
-          colorName: string
           companyId: string
           createdAt?: string
           createdBy: string
@@ -2221,7 +2216,6 @@ export type Database = {
           quantity: number
           sequence: number
           shadeLot?: string | null
-          sizeCode?: string | null
           splitBatchId: string
           status?: Database["public"]["Enums"]["bundleStatus"]
           updatedAt?: string | null
@@ -2229,8 +2223,6 @@ export type Database = {
         }
         Update: {
           bundleNumber?: string
-          colorCode?: string
-          colorName?: string
           companyId?: string
           createdAt?: string
           createdBy?: string
@@ -2240,7 +2232,6 @@ export type Database = {
           quantity?: number
           sequence?: number
           shadeLot?: string | null
-          sizeCode?: string | null
           splitBatchId?: string
           status?: Database["public"]["Enums"]["bundleStatus"]
           updatedAt?: string | null
@@ -13476,7 +13467,6 @@ export type Database = {
       }
       itemLedger: {
         Row: {
-          colorCode: string | null
           comment: string | null
           companyId: string
           createdAt: string
@@ -13494,7 +13484,6 @@ export type Database = {
           locationId: string | null
           postingDate: string
           quantity: number
-          sizeCode: string | null
           storageUnitId: string | null
           trackedEntityId: string | null
           trackedEntityStatus:
@@ -13502,7 +13491,6 @@ export type Database = {
             | null
         }
         Insert: {
-          colorCode?: string | null
           comment?: string | null
           companyId: string
           createdAt?: string
@@ -13520,7 +13508,6 @@ export type Database = {
           locationId?: string | null
           postingDate?: string
           quantity: number
-          sizeCode?: string | null
           storageUnitId?: string | null
           trackedEntityId?: string | null
           trackedEntityStatus?:
@@ -13528,7 +13515,6 @@ export type Database = {
             | null
         }
         Update: {
-          colorCode?: string | null
           comment?: string | null
           companyId?: string
           createdAt?: string
@@ -13546,7 +13532,6 @@ export type Database = {
           locationId?: string | null
           postingDate?: string
           quantity?: number
-          sizeCode?: string | null
           storageUnitId?: string | null
           trackedEntityId?: string | null
           trackedEntityStatus?:
@@ -22461,7 +22446,6 @@ export type Database = {
       }
       masterWorkOrder: {
         Row: {
-          colorSize: Json | null
           companyId: string
           createdAt: string
           createdBy: string
@@ -22473,7 +22457,6 @@ export type Database = {
           updatedBy: string | null
         }
         Insert: {
-          colorSize?: Json | null
           companyId: string
           createdAt?: string
           createdBy: string
@@ -22485,7 +22468,6 @@ export type Database = {
           updatedBy?: string | null
         }
         Update: {
-          colorSize?: Json | null
           companyId?: string
           createdAt?: string
           createdBy?: string
@@ -31357,7 +31339,6 @@ export type Database = {
       }
       productionQuantitySplitRow: {
         Row: {
-          colorCode: string
           companyId: string
           configurationKey: string
           createdAt: string
@@ -31372,12 +31353,10 @@ export type Database = {
           rowConfiguration: Json | null
           rowKey: string
           shadeLot: string | null
-          sizeCode: string | null
           updatedAt: string | null
           updatedBy: string | null
         }
         Insert: {
-          colorCode: string
           companyId: string
           configurationKey: string
           createdAt?: string
@@ -31392,12 +31371,10 @@ export type Database = {
           rowConfiguration?: Json | null
           rowKey: string
           shadeLot?: string | null
-          sizeCode?: string | null
           updatedAt?: string | null
           updatedBy?: string | null
         }
         Update: {
-          colorCode?: string
           companyId?: string
           configurationKey?: string
           createdAt?: string
@@ -31412,7 +31389,6 @@ export type Database = {
           rowConfiguration?: Json | null
           rowKey?: string
           shadeLot?: string | null
-          sizeCode?: string | null
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -33334,7 +33310,6 @@ export type Database = {
         Row: {
           accountId: string | null
           assetId: string | null
-          colorCode: string | null
           companyId: string
           configuration: Json | null
           conversionFactor: number | null
@@ -33373,7 +33348,6 @@ export type Database = {
           requiresInspection: boolean
           setupPrice: number | null
           shippingCost: number | null
-          sizeCode: string | null
           storageUnitId: string | null
           supplierExtendedPrice: number | null
           supplierShippingCost: number
@@ -33389,7 +33363,6 @@ export type Database = {
         Insert: {
           accountId?: string | null
           assetId?: string | null
-          colorCode?: string | null
           companyId: string
           configuration?: Json | null
           conversionFactor?: number | null
@@ -33428,7 +33401,6 @@ export type Database = {
           requiresInspection?: boolean
           setupPrice?: number | null
           shippingCost?: number | null
-          sizeCode?: string | null
           storageUnitId?: string | null
           supplierExtendedPrice?: number | null
           supplierShippingCost?: number
@@ -33444,7 +33416,6 @@ export type Database = {
         Update: {
           accountId?: string | null
           assetId?: string | null
-          colorCode?: string | null
           companyId?: string
           configuration?: Json | null
           conversionFactor?: number | null
@@ -33483,7 +33454,6 @@ export type Database = {
           requiresInspection?: boolean
           setupPrice?: number | null
           shippingCost?: number | null
-          sizeCode?: string | null
           storageUnitId?: string | null
           supplierExtendedPrice?: number | null
           supplierShippingCost?: number
@@ -38490,7 +38460,6 @@ export type Database = {
       }
       receiptLine: {
         Row: {
-          colorCode: string | null
           companyId: string
           variantQuantities: Json | null
           conversionFactor: number | null
@@ -38508,7 +38477,6 @@ export type Database = {
           receivedQuantity: number
           requiresBatchTracking: boolean
           requiresSerialTracking: boolean
-          sizeCode: string | null
           storageUnitId: string | null
           unitOfMeasure: string
           unitPrice: number
@@ -38516,7 +38484,6 @@ export type Database = {
           updatedBy: string | null
         }
         Insert: {
-          colorCode?: string | null
           companyId: string
           variantQuantities?: Json | null
           conversionFactor?: number | null
@@ -38534,7 +38501,6 @@ export type Database = {
           receivedQuantity?: number
           requiresBatchTracking?: boolean
           requiresSerialTracking?: boolean
-          sizeCode?: string | null
           storageUnitId?: string | null
           unitOfMeasure: string
           unitPrice: number
@@ -38542,7 +38508,6 @@ export type Database = {
           updatedBy?: string | null
         }
         Update: {
-          colorCode?: string | null
           companyId?: string
           variantQuantities?: Json | null
           conversionFactor?: number | null
@@ -38560,7 +38525,6 @@ export type Database = {
           receivedQuantity?: number
           requiresBatchTracking?: boolean
           requiresSerialTracking?: boolean
-          sizeCode?: string | null
           storageUnitId?: string | null
           unitOfMeasure?: string
           unitPrice?: number
@@ -40263,7 +40227,6 @@ export type Database = {
           accountId: string | null
           addOnCost: number
           assetId: string | null
-          colorCode: string | null
           companyId: string
           configuration: Json | null
           convertedAddOnCost: number | null
@@ -40301,7 +40264,6 @@ export type Database = {
           sentDate: string | null
           setupPrice: number | null
           shippingCost: number
-          sizeCode: string | null
           sortOrder: number
           status: Database["public"]["Enums"]["salesOrderLineStatus"]
           storageUnitId: string | null
@@ -40315,7 +40277,6 @@ export type Database = {
           accountId?: string | null
           addOnCost?: number
           assetId?: string | null
-          colorCode?: string | null
           companyId: string
           configuration?: Json | null
           convertedAddOnCost?: number | null
@@ -40353,7 +40314,6 @@ export type Database = {
           sentDate?: string | null
           setupPrice?: number | null
           shippingCost?: number
-          sizeCode?: string | null
           sortOrder?: number
           status?: Database["public"]["Enums"]["salesOrderLineStatus"]
           storageUnitId?: string | null
@@ -40367,7 +40327,6 @@ export type Database = {
           accountId?: string | null
           addOnCost?: number
           assetId?: string | null
-          colorCode?: string | null
           companyId?: string
           configuration?: Json | null
           convertedAddOnCost?: number | null
@@ -40405,7 +40364,6 @@ export type Database = {
           sentDate?: string | null
           setupPrice?: number | null
           shippingCost?: number
-          sizeCode?: string | null
           sortOrder?: number
           status?: Database["public"]["Enums"]["salesOrderLineStatus"]
           storageUnitId?: string | null
@@ -43115,7 +43073,6 @@ export type Database = {
       }
       shipmentLine: {
         Row: {
-          colorCode: string | null
           companyId: string
           variantQuantities: Json | null
           createdAt: string
@@ -43133,7 +43090,6 @@ export type Database = {
           requiresSerialTracking: boolean
           shipmentId: string
           shippedQuantity: number
-          sizeCode: string | null
           storageUnitId: string | null
           unitOfMeasure: string
           unitPrice: number
@@ -43141,7 +43097,6 @@ export type Database = {
           updatedBy: string | null
         }
         Insert: {
-          colorCode?: string | null
           companyId: string
           variantQuantities?: Json | null
           createdAt?: string
@@ -43159,7 +43114,6 @@ export type Database = {
           requiresSerialTracking?: boolean
           shipmentId: string
           shippedQuantity?: number
-          sizeCode?: string | null
           storageUnitId?: string | null
           unitOfMeasure: string
           unitPrice: number
@@ -43167,7 +43121,6 @@ export type Database = {
           updatedBy?: string | null
         }
         Update: {
-          colorCode?: string | null
           companyId?: string
           variantQuantities?: Json | null
           createdAt?: string
@@ -43185,7 +43138,6 @@ export type Database = {
           requiresSerialTracking?: boolean
           shipmentId?: string
           shippedQuantity?: number
-          sizeCode?: string | null
           storageUnitId?: string | null
           unitOfMeasure?: string
           unitPrice?: number
@@ -59614,7 +59566,6 @@ export type Database = {
       masterWorkOrders: {
         Row: {
           assignee: string | null
-          colorSize: Json | null
           companyId: string | null
           createdAt: string | null
           createdBy: string | null
@@ -66074,8 +66025,6 @@ export type Database = {
           assetName: string | null
           assetReadableId: string | null
           autodeskUrn: string | null
-          colorCode: string | null
-          colorName: string | null
           companyId: string | null
           configuration: Json | null
           convertedAddOnCost: number | null
@@ -66125,8 +66074,6 @@ export type Database = {
           sentDate: string | null
           setupPrice: number | null
           shippingCost: number | null
-          sizeCode: string | null
-          sizeName: string | null
           sortOrder: number | null
           status: Database["public"]["Enums"]["salesOrderLineStatus"] | null
           storageUnitId: string | null
@@ -68164,7 +68111,7 @@ export type Database = {
           revision: string | null
           revisions: Json | null
           sampleCount: number | null
-          sampledColorCount: number | null
+          sampledVariantCount: number | null
           sampleItemId: string | null
           samples: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null

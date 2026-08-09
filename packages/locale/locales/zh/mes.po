@@ -3142,7 +3142,7 @@ msgid "Failed to save item"
 msgstr "保存项目失败"
 
 msgid "Failed to save job variant quantities"
-msgstr "保存工作变体数量失败"
+msgstr "保存工作规格数量失败"
 
 msgid "Failed to save journal entry"
 msgstr "保存日记项失败"
@@ -3160,7 +3160,7 @@ msgid "Failed to save section"
 msgstr "保存部分失败"
 
 msgid "Failed to save variant quantities"
-msgstr "保存变型数量失败"
+msgstr "保存规格数量失败"
 
 msgid "Failed to search users"
 msgstr "搜索用户失败"
@@ -3205,7 +3205,7 @@ msgid "Failed to stop event"
 msgstr "停止事件失败"
 
 msgid "Failed to sync consumable variants"
-msgstr "同步消耗件变体失败"
+msgstr "同步消耗件规格失败"
 
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
@@ -3430,7 +3430,7 @@ msgid "Failed to update job status"
 msgstr "更新作业状态失败"
 
 msgid "Failed to update job variant quantities"
-msgstr "更新工作变体数量失败"
+msgstr "更新工作规格数量失败"
 
 msgid "Failed to update kanban"
 msgstr "更新看板失败"
@@ -4624,6 +4624,9 @@ msgstr "打开日期时间选择器"
 msgid "Open Jobs"
 msgstr "打开工单"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "打开规格数量网格以分配数量"
+
 msgid "Operation finished successfully"
 msgstr "操作成功完成"
 
@@ -5058,6 +5061,9 @@ msgstr "报工数量"
 msgid "Reported"
 msgstr "已报"
 
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "剩余计划数量不足一种或多种规格组合。报告的数量超出。"
+
 msgid "Reprint job created"
 msgstr "已创建重新打印作业"
 
@@ -5465,6 +5471,9 @@ msgstr "已创建存储单元"
 msgid "Style"
 msgstr "款式"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "缺少一种或多种属性组合的款式规格。请先打开款式并保存属性选择再操作。"
+
 msgid "Submit anonymously"
 msgstr "匿名提交"
 
@@ -5827,6 +5836,9 @@ msgstr "此工序的完成数量小于所需数量 {0}。"
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "此物品由属性配置——在上报前请输入各规格的明细。"
+
 msgid "This lot is expired and can't be picked."
 msgstr "此批号已过期，无法拣选。"
 
@@ -5841,6 +5853,9 @@ msgstr "该工序已分配给他人。接手将停止其正在计时的工时。
 
 msgid "This serial number was not shipped on this transfer"
 msgstr "未在本次转移中发货此序列号"
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "此款式已有生产工作。请先删除或完成这些工作再更改其规格数量。"
 
 msgid "Thumbnail"
 msgstr "缩略图"

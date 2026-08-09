@@ -544,9 +544,6 @@ msgstr "Agregar Riesgo"
 msgid "Add row"
 msgstr "Añadir fila"
 
-msgid "Add Row"
-msgstr "Agregar Fila"
-
 msgid "Add rule"
 msgstr "Añar regla"
 
@@ -701,7 +698,7 @@ msgstr "Se ha realizado ya una solicitud de aprobación para este proveedor"
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
 msgstr ""
-"Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
+"Una combinación de atributos no puede superar la cantidad de corte (máx. {0})Una combinación de atributos no puede superar la cantidad de corte (máx. {0})Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
 "Un atributo combinado no puede exceder la cantidad de corte (max {0})"
 
 msgid "An item cannot be added to itself."
@@ -10828,6 +10825,9 @@ msgstr "Abrir detalles de la tarea"
 msgid "Open Template"
 msgstr "Plantilla abierta"
 
+msgid "Open the variant quantities grid to assign quantities"
+msgstr "Abra la cuadrícula de cantidades por variante para asignar cantidades"
+
 msgid "Operating Expenses"
 msgstr "Gastos Operativos"
 
@@ -12399,6 +12399,9 @@ msgstr "Reportados <0>{totalQuantity}</0> unidades"
 
 msgid "Reported At"
 msgstr "Informado el"
+
+msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
+msgstr "La cantidad reportada supera la cantidad planificada restante para una o más combinaciones de variantes."
 
 msgid "Reports"
 msgstr "Informes"
@@ -13973,6 +13976,9 @@ msgstr "Se requiere la configuración de la cantidad de estilo"
 msgid "Style quantity is required"
 msgstr "Se requiere cantidad de estilo"
 
+msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
+msgstr "Faltan variantes de estilo para una o más combinaciones de atributos. Abra el estilo y guarde primero las selecciones de atributos."
+
 msgid "Styles"
 msgstr "Estilos"
 
@@ -14775,6 +14781,9 @@ msgstr "Este es el mes en que comienza tu año fiscal."
 msgid "This is the month your tax year starts."
 msgstr "Este es el mes en que comienza tu año fiscal."
 
+msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
+msgstr "Este artículo está configurado por atributos: introduzca el desglose por variante antes de reportar."
+
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "La lista de materiales de este artículo no tiene entradas con vida útil habilitada, por lo que no se calculará ninguna fecha de vencimiento a partir de la lista de materiales."
 
@@ -14808,6 +14817,9 @@ msgstr "Este tipo de almacenamiento está siendo utilizado actualmente por {usag
 
 msgid "This style has no attribute selections yet. Add attributes on the style first."
 msgstr "Este estilo aún no tiene selecciones de atributos. Agregue atributos al estilo primero."
+
+msgid "This style line already has production jobs. Remove or complete the jobs before changing its variant quantities."
+msgstr "Esta línea de estilo ya tiene trabajos de producción. Elimine o complete los trabajos antes de cambiar sus cantidades de variante."
 
 msgid "This updates the theme for all users of the application"
 msgstr "Esto actualiza el tema para todos los usuarios de la aplicación"
@@ -16205,6 +16217,9 @@ msgstr "Cuando se utiliza stock vencido"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr "Cuando activada, esta regla se dispara para cada objetivo de su tipo. Se ignoran pero se preservan las filas de asignación."
+
+msgid "Which set of attributes this item's variants use"
+msgstr "Qué conjunto de atributos usan las variantes de este artículo"
 
 msgid "Who Can Approve"
 msgstr "Quién Puede Aprobar"

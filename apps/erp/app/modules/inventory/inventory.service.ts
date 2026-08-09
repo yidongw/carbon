@@ -4102,8 +4102,8 @@ export async function getTransferStockForItem(
   return Array.from(byKey.values()).filter((r) => r.quantity > 0);
 }
 
-/** Style on-hand by color×size at a location (optional storage unit filter). */
-export async function getStyleOnHandByColorSize(
+/** Style on-hand by variant valuesKey at a location (optional storage unit filter). */
+export async function getStyleOnHandByVariant(
   client: SupabaseClient<Database>,
   itemId: string,
   companyId: string,
@@ -4112,8 +4112,6 @@ export async function getStyleOnHandByColorSize(
 ): Promise<
   {
     valuesKey: string;
-    colorCode: string | null;
-    sizeCode: string | null;
     quantityOnHand: number;
   }[]
 > {
@@ -4139,8 +4137,6 @@ export async function getStyleOnHandByColorSize(
     string,
     {
       valuesKey: string;
-      colorCode: string | null;
-      sizeCode: string | null;
       quantityOnHand: number;
     }
   >();
@@ -4157,16 +4153,6 @@ export async function getStyleOnHandByColorSize(
     ).trim();
     if (!valuesKey) continue;
 
-    let colorCode: string | null = null;
-    let sizeCode: string | null = null;
-    if (valuesKey.includes("|")) {
-      const [c, s] = valuesKey.split("|");
-      colorCode = c || null;
-      sizeCode = s || null;
-    } else {
-      colorCode = valuesKey || null;
-    }
-
     for (const row of (res.data ?? []) as TransferStockRow[]) {
       if (storageUnitId && (row.storageUnitId ?? null) !== storageUnitId) {
         continue;
@@ -4179,8 +4165,6 @@ export async function getStyleOnHandByColorSize(
       } else {
         byKey.set(valuesKey, {
           valuesKey,
-          colorCode,
-          sizeCode,
           quantityOnHand: qty
         });
       }
