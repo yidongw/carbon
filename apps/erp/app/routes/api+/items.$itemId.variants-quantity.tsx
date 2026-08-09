@@ -28,7 +28,7 @@ export type ItemVariantsQuantityOverlayLoaderData = {
    * only for the deep-link case. In-app the overlay receives this via props
    * instead, so this stays `null` for the common path.
    */
-  savedConfiguration: unknown;
+  savedVariantQuantities: unknown;
   /** Attribute value code -> name for Variant Display chips / qty grid. */
   attributeValueNames: Record<string, string>;
 };
@@ -98,7 +98,7 @@ export async function loader({
 
   // Deep-link fallback: rebuild a read-only view's saved variants from its id.
   const recordId = url.searchParams.get("recordId") ?? undefined;
-  const savedConfiguration = recordId
+  const savedVariantQuantities = recordId
     ? await getReportedVariantQuantitiesById(client, {
         recordId,
         reportKind,
@@ -110,7 +110,7 @@ export async function loader({
     parameters,
     itemReadableId: item.data?.readableIdWithRevision ?? null,
     referenceSource,
-    savedConfiguration,
+    savedVariantQuantities,
     attributeValueNames
   };
 }

@@ -2155,9 +2155,6 @@ msgstr "Config Params"
 msgid "Configuration Parameters"
 msgstr "Configuration Parameters"
 
-msgid "Configuration quantities"
-msgstr "Configuration quantities"
-
 msgid "Configurator"
 msgstr "Configurator"
 
@@ -3833,9 +3830,6 @@ msgstr "Edit Category"
 
 msgid "Edit column visibility"
 msgstr "Edit column visibility"
-
-msgid "Edit configuration"
-msgstr "Edit configuration"
 
 msgid "Edit Contact"
 msgstr "Edit Contact"
@@ -8139,8 +8133,8 @@ msgstr "GL Account"
 msgid "Go to App"
 msgstr "Go to App"
 
-msgid "Goal quantity for this configuration."
-msgstr "Goal quantity for this configuration."
+msgid "Goal quantity for this variant."
+msgstr "Goal quantity for this variant."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10352,9 +10346,6 @@ msgstr "No condition may match"
 msgid "No conditions — rule matches all jobs"
 msgstr "No conditions — rule matches all jobs"
 
-msgid "No configuration quantities recorded yet."
-msgstr "No configuration quantities recorded yet."
-
 msgid "No conversion is required"
 msgstr "No conversion is required"
 
@@ -10576,6 +10567,9 @@ msgstr "No values available"
 
 msgid "No values yet."
 msgstr "No values yet."
+
+msgid "No variant quantities recorded yet."
+msgstr "No variant quantities recorded yet."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
@@ -15861,6 +15855,9 @@ msgstr "Values"
 
 msgid "Variances"
 msgstr "Variances"
+
+msgid "Variant quantities"
+msgstr "Variant quantities"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

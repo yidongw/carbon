@@ -7,6 +7,7 @@ import {
   getJobMakeMethodById,
   getJobMaterialsByMethodId,
   getJobOperationsByMethodId,
+  getJobPlannedVariantQuantities,
   getRootMakeMethod
 } from "~/modules/production";
 import type JobBillOfProcess from "~/modules/production/ui/Jobs/JobBillOfProcess";
@@ -43,12 +44,14 @@ export async function loader({
 
   const methodId = rootMethod.data.id;
 
-  const [materials, operations, tags, makeMethod] = await Promise.all([
-    getJobMaterialsByMethodId(client, methodId),
-    getJobOperationsByMethodId(client, methodId),
-    getTagsList(client, companyId, "operation"),
-    getJobMakeMethodById(client, methodId, companyId)
-  ]);
+  const [materials, operations, tags, makeMethod, plannedVariantQuantities] =
+    await Promise.all([
+      getJobMaterialsByMethodId(client, methodId),
+      getJobOperationsByMethodId(client, methodId),
+      getTagsList(client, companyId, "operation"),
+      getJobMakeMethodById(client, methodId, companyId),
+      getJobPlannedVariantQuantities(client, jobId, companyId)
+    ]);
 
   if (!makeMethod.data?.id) {
     return { jobDisplayId: job.data.jobId ?? null, billOfProcess: null };
@@ -59,6 +62,7 @@ export async function loader({
     billOfProcess: {
       routeJobId: job.data.id!,
       routeJob: job.data,
+      plannedVariantQuantities,
       customerId: job.data.customerId ?? "",
       itemId: makeMethod.data.itemId ?? "",
       jobMakeMethodId: makeMethod.data.id,

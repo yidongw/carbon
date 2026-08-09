@@ -1,10 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import {
-  getJobVariantQuantities,
-  jobVariantQuantitiesToTable
-} from "./jobVariantQuantity.service";
-import { getJob } from "./production.service";
+import { getJobPlannedVariantQuantities } from "./jobVariantQuantity.service";
 import { buildVariantsQuantityActionResponse } from "./variantsQuantityOverlay";
 import type {
   VariantsQuantityReferenceContext,
@@ -84,12 +80,12 @@ export async function getVariantsQuantityReferenceSourceForOperation(
     reportKind: "pickup" | "productionQuantity";
   }
 ): Promise<VariantsQuantityReferenceSource | null> {
-  const job = await getJob(client, jobId);
-  const planned = await getJobVariantQuantities(client, jobId, companyId);
-  const jobVariantTable =
-    planned.data.length > 0
-      ? jobVariantQuantitiesToTable(planned.data)
-      : (job.data?.configuration ?? null);
+  const plannedVariantQuantities = await getJobPlannedVariantQuantities(
+    client,
+    jobId,
+    companyId
+  );
+  const jobVariantTable = plannedVariantQuantities;
   if (!jobVariantTable) return null;
 
   if (!jobOperationId) {

@@ -2155,9 +2155,6 @@ msgstr "Конфигурационные параметры"
 msgid "Configuration Parameters"
 msgstr "Параметры конфигурации"
 
-msgid "Configuration quantities"
-msgstr "Количество конфигурации"
-
 msgid "Configurator"
 msgstr "Конфигуратор"
 
@@ -3833,9 +3830,6 @@ msgstr "Редактировать категорию"
 
 msgid "Edit column visibility"
 msgstr "Изменить видимость столбцов"
-
-msgid "Edit configuration"
-msgstr "Редактировать настройки"
 
 msgid "Edit Contact"
 msgstr "Редактировать контакт"
@@ -8139,8 +8133,8 @@ msgstr "Окончательный счет"
 msgid "Go to App"
 msgstr "Перейти к приложению"
 
-msgid "Goal quantity for this configuration."
-msgstr "Количество целевых единиц для этой конфигурации."
+msgid "Goal quantity for this variant."
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10352,9 +10346,6 @@ msgstr "Ни одна условность не может соответств�
 msgid "No conditions — rule matches all jobs"
 msgstr "Ни условий нет — правило применимо ко всем заданиям"
 
-msgid "No configuration quantities recorded yet."
-msgstr "Нет зарегистрированных конфигурационных количеств."
-
 msgid "No conversion is required"
 msgstr "Преобразование не требуется"
 
@@ -10576,6 +10567,9 @@ msgstr "Нет доступных значений"
 
 msgid "No values yet."
 msgstr "Пока нет значений."
+
+msgid "No variant quantities recorded yet."
+msgstr ""
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
@@ -15861,6 +15855,9 @@ msgstr "Значения"
 
 msgid "Variances"
 msgstr "Отклонения"
+
+msgid "Variant quantities"
+msgstr ""
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

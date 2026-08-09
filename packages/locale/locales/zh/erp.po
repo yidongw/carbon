@@ -2156,9 +2156,6 @@ msgstr "配置参数"
 msgid "Configuration Parameters"
 msgstr "配置参数"
 
-msgid "Configuration quantities"
-msgstr "配置数量"
-
 msgid "Configurator"
 msgstr "配置器"
 
@@ -3834,9 +3831,6 @@ msgstr "编辑类别"
 
 msgid "Edit column visibility"
 msgstr "编辑列显示"
-
-msgid "Edit configuration"
-msgstr "编辑配置"
 
 msgid "Edit Contact"
 msgstr "编辑联系人"
@@ -8140,8 +8134,8 @@ msgstr "总账科目"
 msgid "Go to App"
 msgstr "进入应用"
 
-msgid "Goal quantity for this configuration."
-msgstr "此配置的目标数量。"
+msgid "Goal quantity for this variant."
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10353,9 +10347,6 @@ msgstr "没有条件匹配"
 msgid "No conditions — rule matches all jobs"
 msgstr "无条件——规则适用于所有工作"
 
-msgid "No configuration quantities recorded yet."
-msgstr "尚未记录任何配置数量。"
-
 msgid "No conversion is required"
 msgstr "无需转换"
 
@@ -10577,6 +10568,9 @@ msgstr "暂无数据可用"
 
 msgid "No values yet."
 msgstr "暂无值。"
+
+msgid "No variant quantities recorded yet."
+msgstr ""
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
@@ -15862,6 +15856,9 @@ msgstr "值"
 
 msgid "Variances"
 msgstr "差异"
+
+msgid "Variant quantities"
+msgstr ""
 
 msgid "Variants Quantity"
 msgstr "规格数量"

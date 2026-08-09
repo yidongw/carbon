@@ -130,7 +130,7 @@ function QuantityTripletCell({
       <span className="text-muted-foreground/50 text-xs">/</span>
       <QuantityTooltip
         label={t`Target quantity`}
-        description={t`Goal quantity for this configuration.`}
+        description={t`Goal quantity for this variant.`}
         value={target}
         target={target}
         showDelta={false}
@@ -173,7 +173,7 @@ export function VariantsQuantityReportedTargetTable({
   if (rows.length === 0) {
     return (
       <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-        <Trans>No configuration quantities recorded yet.</Trans>
+        <Trans>No variant quantities recorded yet.</Trans>
       </p>
     );
   }

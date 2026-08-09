@@ -4,8 +4,8 @@
 ## Naming (2026 rename)
 
 - UI: `VariantsQuantityModal`, `JobVariantsQuantity`, `VariantChips` / Variant Display.
-- Wire key: `variantTable` (dual-read legacy `configTable`).
-- Overlay success payload: flat `{ ok, variantTable, total, splitRows? }` with dual-read of legacy `{ ok, configuration: { variantTable }, total }`.
+- Wire key: `variantTable` (legacy `configTable` dual-read removed).
+- Overlay success payload: flat `{ ok, variantTable, total, splitRows? }` only.
 - Helpers: `VariantQuantityParameterInput`, `getItemIdsWithVariantQuantityGrid`, `computeVariantTableRemaining`, `getOverlaySuccessVariantTable`.
 
 ## Components

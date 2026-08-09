@@ -230,6 +230,10 @@ type JobBillOfProcessProps = {
   /** When rendered outside `/x/job/:jobId` (e.g. jobs table preview modal). */
   routeJobId?: string;
   routeJob?: Job;
+  /** Style planned qty from jobVariantQuantity (not job.configuration). */
+  plannedVariantQuantities?: {
+    variantTable: Array<{ valuesKey: string; Quantities: number }>;
+  } | null;
 };
 
 function makeItems(
@@ -481,7 +485,8 @@ const JobBillOfProcess = ({
   salesOrderLineId,
   customerId,
   routeJobId,
-  routeJob
+  routeJob,
+  plannedVariantQuantities: plannedVariantQuantitiesProp
 }: JobBillOfProcessProps) => {
   const { t } = useLingui();
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -505,8 +510,15 @@ const JobBillOfProcess = ({
   const paramsJobId = useParams().jobId;
   const jobId = routeJobId ?? paramsJobId;
   if (!jobId) throw new Error("jobId not found");
-  const routeJobData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const routeJobData = useRouteData<{
+    job: Job;
+    plannedVariantQuantities?: JobBillOfProcessProps["plannedVariantQuantities"];
+  }>(path.to.job(jobId));
   const jobData = routeJob ? { job: routeJob } : routeJobData;
+  const plannedVariantQuantities =
+    plannedVariantQuantitiesProp ??
+    routeJobData?.plannedVariantQuantities ??
+    null;
   const [temporaryItems, setTemporaryItems] = useState<TemporaryItems>({});
   const [workInstructions, setWorkInstructions] =
     useState<PendingWorkInstructions>(() => {
@@ -812,7 +824,7 @@ const JobBillOfProcess = ({
 
       setConfigSummaryRows(
         buildReportedTargetRows({
-          targetConfiguration: jobData?.job?.configuration,
+          targetConfiguration: plannedVariantQuantities,
           reportedVariantQuantities,
           pickupConfigurations,
           parameters: variantQuantityParameters,
@@ -826,7 +838,7 @@ const JobBillOfProcess = ({
       companyId,
       configSummaryModal,
       variantQuantityParameters,
-      jobData?.job?.configuration,
+      plannedVariantQuantities,
       t
     ]
   );
@@ -1256,7 +1268,7 @@ const JobBillOfProcess = ({
         <ModalHeader className="mb-4 shrink-0">
           <ModalTitle>
             {configSummaryOperation?.description ?? (
-              <Trans>Configuration quantities</Trans>
+              <Trans>Variant quantities</Trans>
             )}
           </ModalTitle>
         </ModalHeader>

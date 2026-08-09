@@ -2155,9 +2155,6 @@ msgstr "Konfigurationseinstellungen"
 msgid "Configuration Parameters"
 msgstr "Konfigurationsparameter"
 
-msgid "Configuration quantities"
-msgstr "Konfigurationsmengen"
-
 msgid "Configurator"
 msgstr "Konfigurator"
 
@@ -3833,9 +3830,6 @@ msgstr "Kategorie bearbeiten"
 
 msgid "Edit column visibility"
 msgstr "Spaltensichtbarkeit bearbeiten"
-
-msgid "Edit configuration"
-msgstr "Bearbeiten der Konfiguration"
 
 msgid "Edit Contact"
 msgstr "Kontakt bearbeiten"
@@ -8139,8 +8133,8 @@ msgstr "Kontenkskonto"
 msgid "Go to App"
 msgstr "Wechseln Sie zur Anwendung"
 
-msgid "Goal quantity for this configuration."
-msgstr "Zimenge für diese Konfiguration."
+msgid "Goal quantity for this variant."
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10352,9 +10346,6 @@ msgstr "Keine Bedingung darf übereinstimmen"
 msgid "No conditions — rule matches all jobs"
 msgstr "Keine Bedingungen – die Regel passt alle Jobs ab"
 
-msgid "No configuration quantities recorded yet."
-msgstr "Keine Konfigurationsmenge gespeichert."
-
 msgid "No conversion is required"
 msgstr "Keine Umrechnung erforderlich"
 
@@ -10576,6 +10567,9 @@ msgstr "Keine Werte verfügbar"
 
 msgid "No values yet."
 msgstr "Noch keine Werte."
+
+msgid "No variant quantities recorded yet."
+msgstr ""
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Es gibt keine Lagerbestände für dieses Artikelnummer auf dem Record. Sie können es trotzdem auswählen – der verfügbare Bestand wird negativ gehen, bis die Reconciliation durchgeführt wurde."
@@ -15861,6 +15855,9 @@ msgstr "Werte"
 
 msgid "Variances"
 msgstr "Abweichungen"
+
+msgid "Variant quantities"
+msgstr ""
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

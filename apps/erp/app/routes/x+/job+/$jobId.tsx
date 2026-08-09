@@ -21,6 +21,7 @@ import {
   getJob,
   getJobDocuments,
   getJobMethodTree,
+  getJobPlannedVariantQuantities,
   getTrackedEntitiesByJobId,
   isMasterWorkOrderJob
 } from "~/modules/production";
@@ -65,6 +66,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const plannedVariantQuantities = await getJobPlannedVariantQuantities(
+    client,
+    jobId,
+    companyId
+  );
+
   return {
     job: job.data,
     isMasterWorkOrder,
@@ -76,7 +83,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       client,
       job.data.itemId!,
       companyId
-    )
+    ),
+    plannedVariantQuantities
   };
 }
 

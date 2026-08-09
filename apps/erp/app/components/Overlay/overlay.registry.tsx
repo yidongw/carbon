@@ -758,12 +758,12 @@ export const overlayRegistry = {
           | undefined;
         if (!data?.parameters?.length) return null;
         // Variant quantities come via props in-app; on a deep link props is
-        // empty, so fall back to the row's saved config from the loader.
+        // empty, so fall back to the row's saved variantQuantities from the loader.
         const { variantQuantities: fromProps } = ctx.props as {
           variantQuantities?: unknown;
         };
         const variantQuantities =
-          fromProps !== undefined ? fromProps : data.savedConfiguration;
+          fromProps !== undefined ? fromProps : data.savedVariantQuantities;
         const { initialRows, referenceByRowIndex } =
           buildVariantsQuantityEditorRows({
             parameters: data.parameters,

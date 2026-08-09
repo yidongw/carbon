@@ -341,7 +341,7 @@ export function ProductionQuantityLinesEditor({
                   : undefined
               }
               variantsQuantityTotal={configTotal}
-              openVariantsQuantityAccessibilityLabel={t`Edit configuration`}
+              openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
             />
             {line.type === "Scrap" ? (
               <VStack className="w-full min-w-0 gap-1">

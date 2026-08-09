@@ -278,6 +278,22 @@ export function jobVariantQuantitiesToTable(lines: JobVariantQuantityLine[]): {
   };
 }
 
+/**
+ * Planned Style qty payload for editors / BOP targets.
+ * Uses `getJobVariantQuantities` (includes legacy dual-read expand).
+ */
+export async function getJobPlannedVariantQuantities(
+  client: Db,
+  jobId: string,
+  companyId: string
+): Promise<{
+  variantTable: Array<{ valuesKey: string; Quantities: number }>;
+} | null> {
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  if (planned.error || planned.data.length === 0) return null;
+  return jobVariantQuantitiesToTable(planned.data);
+}
+
 export function sumJobVariantQuantities(
   lines: Array<{ quantity: number }>
 ): number {

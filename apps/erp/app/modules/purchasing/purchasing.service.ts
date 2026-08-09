@@ -1748,18 +1748,12 @@ export async function upsertPurchaseOrderDelivery(
 export async function upsertPurchaseOrderLine(
   client: SupabaseClient<Database>,
   purchaseOrderLine:
-    | (Omit<
-        z.infer<typeof purchaseOrderLineValidator>,
-        "id" | "configuration"
-      > & {
+    | (Omit<z.infer<typeof purchaseOrderLineValidator>, "id"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
       })
-    | (Omit<
-        z.infer<typeof purchaseOrderLineValidator>,
-        "id" | "configuration"
-      > & {
+    | (Omit<z.infer<typeof purchaseOrderLineValidator>, "id"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;

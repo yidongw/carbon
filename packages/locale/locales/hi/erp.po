@@ -2155,9 +2155,6 @@ msgstr "सेटिंग्स पैरामीटर"
 msgid "Configuration Parameters"
 msgstr "कॉन्फ़िगरेशन पैरामीटर"
 
-msgid "Configuration quantities"
-msgstr "सेटिंग्स की मात्रा"
-
 msgid "Configurator"
 msgstr "कॉन्फ़िगरेटर"
 
@@ -3833,9 +3830,6 @@ msgstr "श्रेणी संपादित करें"
 
 msgid "Edit column visibility"
 msgstr "कॉलम दृश्यता संपादित करें"
-
-msgid "Edit configuration"
-msgstr "सेटिंग्स संपादित करें"
 
 msgid "Edit Contact"
 msgstr "संपर्क संपादित करें"
@@ -8142,8 +8136,8 @@ msgstr "क्रेडिट अकाउंट"
 msgid "Go to App"
 msgstr "अpp जाओ"
 
-msgid "Goal quantity for this configuration."
-msgstr "इस कonfiguration के लिए उद्देश्य मात्रा।"
+msgid "Goal quantity for this variant."
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10355,9 +10349,6 @@ msgstr "कोई स्थिति नहीं मेल कर सकती 
 msgid "No conditions — rule matches all jobs"
 msgstr "नियमों के बिना - नियम सभी नौकरियों को मैच करता है"
 
-msgid "No configuration quantities recorded yet."
-msgstr "कॉन्फ़िगरेशन मात्राएँ अभी तक रिकॉर्ड नहीं की गई हैं।"
-
 msgid "No conversion is required"
 msgstr "कोई रूपांतरण आवश्यक नहीं है"
 
@@ -10579,6 +10570,9 @@ msgstr "कोई मूल्य उपलब्ध नहीं हैं"
 
 msgid "No values yet."
 msgstr "अभी कोई मान नहीं।"
+
+msgid "No variant quantities recorded yet."
+msgstr ""
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "इस आइटम के लिए कोई स्टॉक की रिकॉर्ड नहीं है। आप इसे भी चयन कर सकते हैं — अवशेष तकनीकी विवरणित हो जाएगा तill गणना की मेल-मिलान हो।"
@@ -15867,6 +15861,9 @@ msgstr "मूल्यांकन"
 
 msgid "Variances"
 msgstr "अनियमितताएं"
+
+msgid "Variant quantities"
+msgstr ""
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

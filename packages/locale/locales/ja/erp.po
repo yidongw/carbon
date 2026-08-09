@@ -2155,9 +2155,6 @@ msgstr "設定パラメータ"
 msgid "Configuration Parameters"
 msgstr "設定パラメータ"
 
-msgid "Configuration quantities"
-msgstr "調整量"
-
 msgid "Configurator"
 msgstr "コンフィギュレーター"
 
@@ -3833,9 +3830,6 @@ msgstr "カテゴリを編集"
 
 msgid "Edit column visibility"
 msgstr "列の表示/非表示を編集"
-
-msgid "Edit configuration"
-msgstr "編集設定"
 
 msgid "Edit Contact"
 msgstr "連絡先を編集"
@@ -8139,8 +8133,8 @@ msgstr "Gl Akānto"
 msgid "Go to App"
 msgstr "アプリへ-go"
 
-msgid "Goal quantity for this configuration."
-msgstr "この構成の目標数量。"
+msgid "Goal quantity for this variant."
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10352,9 +10346,6 @@ msgstr "No condition may match"
 msgid "No conditions — rule matches all jobs"
 msgstr "No conditions — rule matches all jobs"
 
-msgid "No configuration quantities recorded yet."
-msgstr "No configuration quantities recorded yet."
-
 msgid "No conversion is required"
 msgstr "変換は不要です"
 
@@ -10576,6 +10567,9 @@ msgstr "No values available"
 
 msgid "No values yet."
 msgstr "まだ値がありません。"
+
+msgid "No variant quantities recorded yet."
+msgstr ""
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "このアイテムについて倉庫在庫は登録されていません。それでもピックすることは可能です——現在数値は負になる可能性がありますが、調整されるまで如此です。"
@@ -15861,6 +15855,9 @@ msgstr "値"
 
 msgid "Variances"
 msgstr "変動"
+
+msgid "Variant quantities"
+msgstr ""
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

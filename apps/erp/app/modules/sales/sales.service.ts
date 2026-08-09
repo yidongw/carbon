@@ -1992,10 +1992,7 @@ export async function insertCustomerLocation(
 
 export async function insertSalesOrderLines(
   client: SupabaseClient<Database>,
-  salesOrderLines: (Omit<
-    z.infer<typeof salesOrderLineValidator>,
-    "id" | "configuration"
-  > & {
+  salesOrderLines: (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
     companyId: string;
     createdBy: string;
     customFields?: Json;
@@ -5729,12 +5726,12 @@ export async function upsertSalesOrderShipment(
 export async function upsertSalesOrderLine(
   client: SupabaseClient<Database>,
   salesOrderLine:
-    | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
+    | (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
       })
-    | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
+    | (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
