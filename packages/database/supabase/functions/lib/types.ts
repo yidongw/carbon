@@ -17970,7 +17970,7 @@ export type Database = {
       jobOperationPickup: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           deletedAt: string | null
@@ -17985,7 +17985,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           deletedAt?: string | null
@@ -18000,7 +18000,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           deletedAt?: string | null
@@ -18637,7 +18637,7 @@ export type Database = {
       jobOperationSupplierPickup: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           id: string
@@ -18651,7 +18651,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           id?: string
@@ -18665,7 +18665,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           id?: string
@@ -18830,7 +18830,7 @@ export type Database = {
       jobOperationSupplierQuantity: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           id: string
@@ -18846,7 +18846,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           id?: string
@@ -18862,7 +18862,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           id?: string
@@ -30892,7 +30892,7 @@ export type Database = {
       productionQuantity: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           employeeId: string
@@ -30915,7 +30915,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           employeeId: string
@@ -30938,7 +30938,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           employeeId?: string

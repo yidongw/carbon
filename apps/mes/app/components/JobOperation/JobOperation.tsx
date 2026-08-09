@@ -1773,9 +1773,9 @@ export const JobOperation = ({
                                 const recordedByOther =
                                   quantity.createdBy !== quantity.employeeId &&
                                   quantity.createdByUser;
-                                const configText = quantity.configuration
+                                const configText = quantity.variantQuantities
                                   ? Object.values(
-                                      quantity.configuration as Record<
+                                      quantity.variantQuantities as Record<
                                         string,
                                         unknown
                                       >

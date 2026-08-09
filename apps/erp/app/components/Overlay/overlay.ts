@@ -303,8 +303,8 @@ export const overlay = {
       };
     },
 
-    // Read-only view of a reported row's saved config. In-app the
-    // `configuration` rides the props channel; `recordId`/`reportKind` are the
+    // Read-only view of a reported row's saved variant quantities. In-app the
+    // `variantQuantities` ride the props channel; `recordId`/`reportKind` are the
     // fetch keys so a deep link can restore it server-side (route loader).
     itemVariantsQuantity(
       {
@@ -316,7 +316,7 @@ export const overlay = {
         recordId?: string;
         reportKind?: "pickup" | "productionQuantity";
       },
-      props?: { configuration?: unknown }
+      props?: { variantQuantities?: unknown }
     ): OverlayTarget {
       const base = path.to.api.itemVariantsQuantity(itemId);
       const query = new URLSearchParams();
@@ -328,8 +328,8 @@ export const overlay = {
         url: qs ? `${base}?${qs}` : base,
         params: overlayParams({ itemId, recordId, reportKind }),
         props:
-          props?.configuration !== undefined
-            ? { configuration: props.configuration }
+          props?.variantQuantities !== undefined
+            ? { variantQuantities: props.variantQuantities }
             : undefined
       };
     }

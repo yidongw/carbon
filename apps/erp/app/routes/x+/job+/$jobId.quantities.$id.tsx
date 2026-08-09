@@ -134,7 +134,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
     const { data: activeLines } = await client
       .from("productionQuantity")
-      .select("id, type, quantity, configuration, scrapReasonId, notes")
+      .select("id, type, quantity, variantQuantities, scrapReasonId, notes")
       .eq("reportId", id)
       .eq("companyId", companyId)
       .is("invalidatedAt", null);
@@ -349,7 +349,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: lineId,
-    configuration: rawConfiguration,
+    variantQuantities: rawVariantQuantities,
     // employeeId is intentionally dropped: the credited employee is derived
     // from the report inside replaceProductionQuantityReportLines.
     employeeId: _employeeId,
@@ -361,13 +361,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     rest.scrapReasonId = undefined;
   }
 
-  let configuration: unknown;
-  if (rawConfiguration) {
+  let variantQuantities: unknown;
+  if (rawVariantQuantities) {
     try {
-      configuration =
-        typeof rawConfiguration === "string"
-          ? JSON.parse(rawConfiguration)
-          : rawConfiguration;
+      variantQuantities =
+        typeof rawVariantQuantities === "string"
+          ? JSON.parse(rawVariantQuantities)
+          : rawVariantQuantities;
     } catch (parseError) {
       console.error(parseError);
     }
@@ -398,7 +398,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { data: activeLines, error: linesError } = await client
     .from(linesTable)
-    .select("id, type, quantity, configuration, scrapReasonId, notes")
+    .select("id, type, quantity, variantQuantities, scrapReasonId, notes")
     .eq("reportId", reportId)
     .eq("companyId", companyId)
     .is("invalidatedAt", null);
@@ -415,14 +415,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
       ? {
           type: rest.type,
           quantity: rest.quantity,
-          configuration,
+          variantQuantities,
           scrapReasonId: rest.scrapReasonId,
           notes: rest.notes
         }
       : {
           type: line.type,
           quantity: line.quantity,
-          configuration: line.configuration ?? undefined,
+          variantQuantities: line.variantQuantities ?? undefined,
           scrapReasonId: line.scrapReasonId ?? undefined,
           notes: line.notes ?? undefined
         }

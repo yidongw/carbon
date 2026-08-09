@@ -83,7 +83,7 @@ const MasterWorkOrderForm = ({
     if (!itemId) return;
     variantsQuantityModal.open({
       itemId,
-      configuration: toVariantsQuantityValue(variantsQuantityRows),
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
@@ -142,7 +142,7 @@ const MasterWorkOrderForm = ({
               }))}
             />
             <Hidden
-              name="configuration"
+              name="variantQuantities"
               value={
                 variantsQuantityRows
                   ? JSON.stringify({

@@ -93,7 +93,7 @@ export function ProductionQuantityTableQuantityCell({
   const itemId = getItemInternalId(row);
   const quantity = row.quantity ?? 0;
   const showConfiguredQuantityUi =
-    hasVariantTable(row.configuration) ||
+    hasVariantTable(row.variantQuantities) ||
     Boolean(itemId && configurableItemIds?.has(itemId));
 
   const openVariantsQuantity = (event: MouseEvent) => {
@@ -103,9 +103,10 @@ export function ProductionQuantityTableQuantityCell({
       overlay.to.itemVariantsQuantity(
         { itemId, recordId: row.id, reportKind },
         {
-          configuration:
-            row.configuration !== undefined && row.configuration !== null
-              ? row.configuration
+          variantQuantities:
+            row.variantQuantities !== undefined &&
+            row.variantQuantities !== null
+              ? row.variantQuantities
               : undefined
         }
       )
@@ -126,7 +127,7 @@ export function ProductionQuantityTableQuantityCell({
         size="sm"
         variant="secondary"
         className={cn(
-          hasVariantTable(row.configuration) &&
+          hasVariantTable(row.variantQuantities) &&
             "text-emerald-500 hover:text-emerald-500"
         )}
         onClick={openVariantsQuantity}

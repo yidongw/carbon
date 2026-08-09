@@ -12,7 +12,7 @@ export const masterWorkOrderValidator = z.object({
   deadlineType: z.enum(deadlineTypes, {
     errorMap: () => ({ message: "Deadline type is required" })
   }),
-  // JSON-encoded { variantTable } captured by the config modal (attribute combo
-  // plan). Read + applied server-side.
-  configuration: zfd.text(z.string().optional())
+  // JSON-encoded { variantTable } captured by the variants-quantity modal.
+  // Read + applied server-side into jobVariantQuantity.
+  variantQuantities: zfd.text(z.string().optional())
 });

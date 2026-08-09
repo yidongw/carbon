@@ -69,23 +69,23 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const {
-    configuration: configStr,
+    variantQuantities: variantQuantitiesStr,
     quantity: rawQuantity,
     ...rest
   } = validation.data;
 
-  // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
-  let configuration: Record<string, unknown> | undefined;
+  // Style qty grid → jobVariantQuantity (MWO is Style-only).
   let styleVariantsQuantity: Record<string, unknown> | undefined;
   let quantity = rawQuantity;
-  if (configStr) {
+  if (variantQuantitiesStr) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const parsed = JSON.parse(variantQuantitiesStr) as Record<
+        string,
+        unknown
+      >;
       if (isVariantsQuantityConfiguration(parsed)) {
         styleVariantsQuantity = parsed;
         quantity = variantTableUpdateFields(parsed).quantity;
-      } else {
-        configuration = parsed;
       }
     } catch {
       // invalid JSON — keep the typed quantity
@@ -95,7 +95,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const insert = await insertMasterWorkOrder(client, {
     ...rest,
     quantity,
-    configuration,
     companyId,
     createdBy: userId
   });

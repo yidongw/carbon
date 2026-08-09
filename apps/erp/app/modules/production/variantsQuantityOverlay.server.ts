@@ -15,17 +15,24 @@ import { computeVariantTableTotal } from "./variantTable";
 
 export { buildVariantsQuantityActionResponse };
 
-/** Persist configuration and keep `job.quantity` in sync with the config table total. */
+/** Normalize Style qty FormData payload and sync quantity with the table total. */
 export function variantTableUpdateFields(
-  configuration: Record<string, unknown>
-): { configuration: Json; quantity: number } {
+  variantQuantities: Record<string, unknown>
+): { variantQuantities: Json; quantity: number } {
   return {
-    configuration: configuration as Json,
-    quantity: computeVariantTableTotal(configuration)
+    variantQuantities: variantQuantities as Json,
+    quantity: computeVariantTableTotal(variantQuantities)
   };
 }
 
+/** @deprecated Prefer parseVariantQuantitiesFormValue */
 export function parseConfigurationFormValue(
+  raw: FormDataEntryValue | null
+): Record<string, unknown> | null {
+  return parseVariantQuantitiesFormValue(raw);
+}
+
+export function parseVariantQuantitiesFormValue(
   raw: FormDataEntryValue | null
 ): Record<string, unknown> | null {
   if (typeof raw !== "string" || !raw) return null;
@@ -48,7 +55,9 @@ export function parseConfigurationFormValue(
 export function parseInitialVariantTableFromRequest(
   request: Request
 ): Record<string, string | number | boolean>[] | undefined {
-  const raw = new URL(request.url).searchParams.get("configuration");
+  const raw =
+    new URL(request.url).searchParams.get("variantQuantities") ??
+    new URL(request.url).searchParams.get("configuration");
   if (!raw) return undefined;
 
   try {
@@ -93,65 +102,67 @@ export async function getVariantsQuantityReferenceSourceForOperation(
   if (!jobVariantTable) return null;
 
   if (!jobOperationId) {
-    return { jobVariantTable, reportedConfigurations: [] };
+    return { jobVariantTable, reportedVariantQuantities: [] };
   }
 
   if (reportKind === "pickup") {
     const [employeePickups, supplierPickups] = await Promise.all([
       client
         .from("jobOperationPickup")
-        .select("configuration")
+        .select("variantQuantities")
         .eq("jobOperationId", jobOperationId)
         .eq("companyId", companyId),
       client
         .from("jobOperationSupplierPickup")
-        .select("configuration")
+        .select("variantQuantities")
         .eq("jobOperationId", jobOperationId)
         .eq("companyId", companyId)
     ]);
 
-    const reportedConfigurations = [
+    const reportedVariantQuantities = [
       ...(employeePickups.data ?? []),
       ...(supplierPickups.data ?? [])
     ]
-      .map((row) => row.configuration)
+      .map((row) => row.variantQuantities)
       .filter((config) => config != null);
 
-    return { jobVariantTable, reportedConfigurations };
+    return { jobVariantTable, reportedVariantQuantities };
   }
 
   const [quantities, pickups] = await Promise.all([
     client
       .from("productionQuantity")
-      .select("employeeId, configuration")
+      .select("employeeId, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null),
     client
       .from("jobOperationPickup")
-      .select("employeeId, quantity, configuration")
+      .select("employeeId, quantity, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
   ]);
 
-  const reportedConfigurations = (quantities.data ?? [])
-    .map((row) => row.configuration)
+  const reportedVariantQuantities = (quantities.data ?? [])
+    .map((row) => row.variantQuantities)
     .filter((config) => config != null);
 
-  const reportedConfigurationsByEmployee: Record<string, unknown[]> = {};
+  const reportedVariantQuantitiesByEmployee: Record<string, unknown[]> = {};
   for (const row of quantities.data ?? []) {
-    if (!row.employeeId || row.configuration == null) continue;
-    if (!reportedConfigurationsByEmployee[row.employeeId]) {
-      reportedConfigurationsByEmployee[row.employeeId] = [];
+    if (!row.employeeId || row.variantQuantities == null) continue;
+    if (!reportedVariantQuantitiesByEmployee[row.employeeId]) {
+      reportedVariantQuantitiesByEmployee[row.employeeId] = [];
     }
-    reportedConfigurationsByEmployee[row.employeeId].push(row.configuration);
+    reportedVariantQuantitiesByEmployee[row.employeeId].push(
+      row.variantQuantities
+    );
   }
 
   // Group pickups by employee
   const pickupsByEmployee: Record<
     string,
-    { quantity: number; configuration: unknown }[]
+    { quantity: number; variantQuantities: unknown }[]
   > = {};
   for (const pickup of pickups.data ?? []) {
     if (!pickup.employeeId) continue;
@@ -160,14 +171,14 @@ export async function getVariantsQuantityReferenceSourceForOperation(
     }
     pickupsByEmployee[pickup.employeeId].push({
       quantity: pickup.quantity,
-      configuration: pickup.configuration
+      variantQuantities: pickup.variantQuantities
     });
   }
 
   return {
     jobVariantTable,
-    reportedConfigurations,
-    reportedConfigurationsByEmployee,
+    reportedVariantQuantities,
+    reportedVariantQuantitiesByEmployee,
     pickupsByEmployee
   };
 }
@@ -177,7 +188,7 @@ export async function getVariantsQuantityReferenceSourceForOperation(
  * deep-link fallback for the read-only `itemVariantsQuantity` overlay: in-app it
  * gets the config via props, but a pasted URL has only the record id.
  */
-export async function getReportedConfigurationById(
+export async function getReportedVariantQuantitiesById(
   client: SupabaseClient<Database>,
   {
     recordId,
@@ -193,12 +204,15 @@ export async function getReportedConfigurationById(
     reportKind === "pickup" ? "jobOperationPickup" : "productionQuantity";
   const { data } = await client
     .from(table)
-    .select("configuration")
+    .select("variantQuantities")
     .eq("id", recordId)
     .eq("companyId", companyId)
     .maybeSingle();
-  return data?.configuration ?? null;
+  return data?.variantQuantities ?? null;
 }
+
+/** @deprecated Prefer getReportedVariantQuantitiesById */
+export const getReportedConfigurationById = getReportedVariantQuantitiesById;
 
 export async function resolveJobIdForOperation(
   client: SupabaseClient<Database>,

@@ -57,17 +57,40 @@ export async function action({ request }: ActionFunctionArgs) {
   } = validation.data;
 
   let configuration = undefined;
+  let styleVariantQuantities = undefined;
+  if (jobData.variantQuantities) {
+    try {
+      styleVariantQuantities =
+        typeof jobData.variantQuantities === "string"
+          ? JSON.parse(jobData.variantQuantities)
+          : jobData.variantQuantities;
+    } catch (error) {
+      console.error(error);
+    }
+  }
   if (jobData.configuration) {
     try {
-      configuration = JSON.parse(jobData.configuration);
+      configuration =
+        typeof jobData.configuration === "string"
+          ? JSON.parse(jobData.configuration)
+          : jobData.configuration;
     } catch (error) {
       console.error(error);
     }
   }
 
-  const isStyleQty = isVariantsQuantityConfiguration(configuration);
+  // Prefer dedicated variantQuantities FormData; legacy Style grids may still
+  // arrive on configuration.
+  const stylePayload =
+    styleVariantQuantities &&
+    isVariantsQuantityConfiguration(styleVariantQuantities)
+      ? styleVariantQuantities
+      : isVariantsQuantityConfiguration(configuration)
+        ? configuration
+        : undefined;
+  const isStyleQty = !!stylePayload;
   const variantsQuantityRows = isStyleQty
-    ? (configuration.variantTable as Record<string, unknown>[])
+    ? (stylePayload.variantTable as Record<string, unknown>[])
     : [];
   const hasConfiguredJobs = variantsQuantityRows.length > 0;
   const flatPartConfiguration = isStyleQty ? undefined : configuration;

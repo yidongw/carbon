@@ -73,7 +73,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = variantTableUpdateFields(parsed);
-      variantQuantities = fields.configuration;
+      variantQuantities = fields.variantQuantities;
       quantity = fields.quantity;
     } catch {
       // invalid JSON — keep the typed quantity
@@ -81,8 +81,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // Style/Consumable parent + variantTable → one warehouse-transfer line per variant SKU.
-  // variantTableUpdateFields bridges the shared modal payload (still named
-  // `configuration`) into variantQuantities for inventory lines.
+  // variantTableUpdateFields syncs quantity with the variantQuantities table total.
   if (hasStyleVariantsQuantity(variantQuantities)) {
     const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,

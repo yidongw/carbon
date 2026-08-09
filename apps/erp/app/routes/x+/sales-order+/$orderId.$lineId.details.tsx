@@ -126,7 +126,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    configuration: configStr,
+    variantQuantities: configStr,
     saleQuantity: rawQuantity,
     ...d
   } = validation.data;
@@ -144,12 +144,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   let saleQuantity = rawQuantity;
-  let configuration: Json | undefined;
+  let variantQuantities: Json | undefined;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = variantTableUpdateFields(parsed);
-      configuration = fields.configuration;
+      variantQuantities = fields.variantQuantities;
       saleQuantity = fields.quantity;
     } catch {
       // Invalid JSON — keep typed quantity; FormData config is expand-only.
@@ -159,11 +159,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // FormData variantTable means the per-variant quantity grid was used (Style
   // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
     const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
-      variantQuantities: configuration
+      variantQuantities
     });
     if (!expanded.ok) {
       throw redirect(
@@ -218,7 +222,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     saleQuantity = expanded.variants[0].quantity;
   }
 
-  // FormData `configuration` is expand-only; never persist on the line.
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const updateSalesOrderLine = await upsertSalesOrderLine(client, {
     id: lineId,
     ...d,
@@ -281,7 +285,7 @@ export default function EditSalesOrderLineRoute() {
     taxPercent: line?.taxPercent ?? 0,
     shippingCost: line?.shippingCost ?? 0,
     // Style qty grid is FormData-only on create/edit; not stored on the line.
-    configuration: undefined,
+    variantQuantities: undefined,
     assetReadableId: (line as any)?.assetReadableId ?? undefined,
     assetName: (line as any)?.assetName ?? undefined,
     ...getCustomFields(line?.customFields)

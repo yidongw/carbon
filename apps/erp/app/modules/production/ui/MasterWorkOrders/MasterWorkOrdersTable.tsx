@@ -163,7 +163,7 @@ const MasterWorkOrdersTable = memo(
         openOverlay(
           overlay.to.itemVariantsQuantity(
             { itemId: progress.itemId },
-            { configuration: progress.remainingConfiguration }
+            { variantQuantities: progress.remainingConfiguration }
           )
         );
       },

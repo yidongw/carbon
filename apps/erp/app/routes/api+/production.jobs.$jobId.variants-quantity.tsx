@@ -211,7 +211,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       parentItemId: job.data.itemId,
       companyId,
       userId,
-      configuration: merged.configuration,
+      configuration: merged.variantQuantities,
       history: {
         configuration: adjustmentTable,
         quantity: merged.deltaTotal
@@ -242,5 +242,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  return data(buildVariantsQuantityActionResponse(merged.configuration));
+  return data(buildVariantsQuantityActionResponse(merged.variantQuantities));
 }

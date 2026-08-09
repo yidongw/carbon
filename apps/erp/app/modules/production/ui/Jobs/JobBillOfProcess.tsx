@@ -780,14 +780,14 @@ const JobBillOfProcess = ({
       const [quantityResult, pickupResult] = await Promise.all([
         carbon
           .from("productionQuantity")
-          .select("configuration")
+          .select("variantQuantities")
           .eq("jobOperationId", operationId)
           .eq("companyId", companyId)
           .eq("type", "Production")
           .is("invalidatedAt", null),
         carbon
           .from("jobOperationPickup")
-          .select("configuration")
+          .select("variantQuantities")
           .eq("jobOperationId", operationId)
           .eq("companyId", companyId)
       ]);
@@ -798,14 +798,14 @@ const JobBillOfProcess = ({
         return;
       }
 
-      const reportedConfigurations = (quantityResult.data ?? [])
-        .map((row) => row.configuration)
+      const reportedVariantQuantities = (quantityResult.data ?? [])
+        .map((row) => row.variantQuantities)
         .filter(
           (config): config is NonNullable<typeof config> => config != null
         );
 
       const pickupConfigurations = (pickupResult.data ?? [])
-        .map((row) => row.configuration)
+        .map((row) => row.variantQuantities)
         .filter(
           (config): config is NonNullable<typeof config> => config != null
         );
@@ -813,7 +813,7 @@ const JobBillOfProcess = ({
       setConfigSummaryRows(
         buildReportedTargetRows({
           targetConfiguration: jobData?.job?.configuration,
-          reportedConfigurations,
+          reportedVariantQuantities,
           pickupConfigurations,
           parameters: variantQuantityParameters,
           defaultQuantityLabel: t`Quantities`

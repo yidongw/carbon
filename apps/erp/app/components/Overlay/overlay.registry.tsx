@@ -401,7 +401,7 @@ export const overlayRegistry = {
                 | null;
               variantsQuantityReferenceSource?: {
                 jobVariantTable: unknown;
-                reportedConfigurations: unknown[];
+                reportedVariantQuantities: unknown[];
               } | null;
               itemId?: string | null;
               remainingByOperationId?: Record<string, number>;
@@ -477,7 +477,7 @@ export const overlayRegistry = {
                 | null;
               variantsQuantityReferenceSource?: {
                 jobVariantTable: unknown;
-                reportedConfigurations: unknown[];
+                reportedVariantQuantities: unknown[];
               } | null;
               itemId?: string | null;
               remainingByOperationId?: Record<string, number>;
@@ -554,7 +554,7 @@ export const overlayRegistry = {
                   quantity: number;
                   scrapReasonId: string | null;
                   notes: string | null;
-                  configuration?: unknown;
+                  variantQuantities?: unknown;
                 }[];
               };
               employeeReport?: {
@@ -567,7 +567,7 @@ export const overlayRegistry = {
                   quantity: number;
                   scrapReasonId: string | null;
                   notes: string | null;
-                  configuration?: unknown;
+                  variantQuantities?: unknown;
                 }[];
               };
               productionQuantity: {
@@ -580,7 +580,7 @@ export const overlayRegistry = {
                 employeeId?: string | null;
                 supplierProcessId?: string | null;
                 supplierProcess?: { id: string; supplierId: string } | null;
-                configuration?: unknown;
+                variantQuantities?: unknown;
               } | null;
               operationOptions: { label: string; value: string }[];
               variantQuantityParameters?:
@@ -593,7 +593,7 @@ export const overlayRegistry = {
                 | null;
               variantsQuantityReferenceSource?: {
                 jobVariantTable: unknown;
-                reportedConfigurations: unknown[];
+                reportedVariantQuantities: unknown[];
               } | null;
               itemId?: string | null;
               processId?: string | null;
@@ -627,7 +627,7 @@ export const overlayRegistry = {
                 quantity: line.quantity,
                 scrapReasonId: line.scrapReasonId ?? undefined,
                 notes: line.notes ?? undefined,
-                configuration: line.configuration ?? undefined
+                variantQuantities: line.variantQuantities ?? undefined
               }))
             },
             defaultActorKind: "supplier" as const
@@ -648,7 +648,7 @@ export const overlayRegistry = {
                 quantity: line.quantity,
                 scrapReasonId: line.scrapReasonId ?? undefined,
                 notes: line.notes ?? undefined,
-                configuration: line.configuration ?? undefined
+                variantQuantities: line.variantQuantities ?? undefined
               }))
             },
             defaultActorKind: "employee" as const
@@ -686,7 +686,7 @@ export const overlayRegistry = {
             supplierId: isSupplierLine
               ? (supplierProcess?.supplierId ?? "")
               : "",
-            configuration: pq.configuration ?? undefined
+            variantQuantities: pq.variantQuantities ?? undefined
           },
           defaultActorKind: (isSupplierLine ? "supplier" : "employee") as
             | "employee"
@@ -760,15 +760,15 @@ export const overlayRegistry = {
         if (!data?.parameters?.length) return null;
         // Variant quantities come via props in-app; on a deep link props is
         // empty, so fall back to the row's saved config from the loader.
-        const { configuration: fromProps } = ctx.props as {
-          configuration?: unknown;
+        const { variantQuantities: fromProps } = ctx.props as {
+          variantQuantities?: unknown;
         };
-        const configuration =
+        const variantQuantities =
           fromProps !== undefined ? fromProps : data.savedConfiguration;
         const { initialRows, referenceByRowIndex } =
           buildVariantsQuantityEditorRows({
             parameters: data.parameters,
-            configuration
+            variantQuantities
           });
         return {
           parameters: data.parameters,

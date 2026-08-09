@@ -24,13 +24,13 @@ describe("purchaseOrderLineValidator", () => {
     expect(result.error?.issues[0]?.path).toEqual(["itemId"]);
   });
 
-  it("accepts Style configuration JSON on purchase order lines", () => {
+  it("accepts Style variantQuantities JSON on purchase order lines", () => {
     const result = purchaseOrderLineValidator.safeParse({
       purchaseOrderId: "po_1",
       purchaseOrderLineType: "Style",
       itemId: "item_1",
       purchaseQuantity: 10,
-      configuration: JSON.stringify({
+      variantQuantities: JSON.stringify({
         variantTable: [
           { valuesKey: "Black|S", Quantities: 2 },
           { valuesKey: "Black|M", Quantities: 3 }

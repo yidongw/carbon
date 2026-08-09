@@ -103,7 +103,7 @@ export async function getMasterCuttingProgress(
   if (cuttingOpIds.length > 0) {
     const pq = await client
       .from("productionQuantity")
-      .select("jobOperationId, configuration")
+      .select("jobOperationId, variantQuantities")
       .in("jobOperationId", cuttingOpIds)
       .eq("companyId", companyId)
       .eq("type", "Production")
@@ -111,8 +111,8 @@ export async function getMasterCuttingProgress(
     for (const row of pq.data ?? []) {
       if (!row.jobOperationId) continue;
       const list = reportedConfigsByOp.get(row.jobOperationId);
-      if (list) list.push(row.configuration);
-      else reportedConfigsByOp.set(row.jobOperationId, [row.configuration]);
+      if (list) list.push(row.variantQuantities);
+      else reportedConfigsByOp.set(row.jobOperationId, [row.variantQuantities]);
     }
   }
 

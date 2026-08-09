@@ -80,7 +80,7 @@ export async function openStyleVariantsQuantityWithInventory({
   variantsQuantityModal.open({
     itemId,
     // Combo rows only — modal derives quantity keys from item parameters.
-    configuration: variantsQuantityRows
+    variantQuantities: variantsQuantityRows
       ? { variantTable: variantsQuantityRows }
       : undefined,
     maxTotal,

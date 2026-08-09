@@ -40,20 +40,45 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id: _id, configuration: configStr, ...data } = validation.data;
+  const {
+    id: _id,
+    configuration: configStr,
+    variantQuantities: variantQuantitiesStr,
+    ...data
+  } = validation.data;
 
-  // Two configuration shapes:
-  // - Style/attribute qty grid → jobVariantQuantity rows (not job.configuration)
-  // - Part flat params → job.configuration for method rules; quantity stays form value
+  // Two FormData fields:
+  // - variantQuantities (Style/attribute qty grid) → jobVariantQuantity rows
+  // - configuration (Part flat params) → job.configuration for method rules
   let configuration: Record<string, unknown> | undefined;
   let styleVariantsQuantity: Record<string, unknown> | undefined;
   let quantity = data.quantity;
-  if (configStr) {
+  if (variantQuantitiesStr) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      const parsed =
+        typeof variantQuantitiesStr === "string"
+          ? (JSON.parse(variantQuantitiesStr) as Record<string, unknown>)
+          : (variantQuantitiesStr as Record<string, unknown>);
       if (isVariantsQuantityConfiguration(parsed)) {
         styleVariantsQuantity = parsed;
         quantity = variantTableUpdateFields(parsed).quantity;
+      }
+    } catch {
+      // invalid JSON — skip variant quantities
+    }
+  }
+  if (configStr) {
+    try {
+      const parsed =
+        typeof configStr === "string"
+          ? (JSON.parse(configStr) as Record<string, unknown>)
+          : (configStr as Record<string, unknown>);
+      // Legacy dual-submit: Style grids used to share the configuration field.
+      if (isVariantsQuantityConfiguration(parsed)) {
+        if (!styleVariantsQuantity) {
+          styleVariantsQuantity = parsed;
+          quantity = variantTableUpdateFields(parsed).quantity;
+        }
       } else {
         configuration = parsed;
       }

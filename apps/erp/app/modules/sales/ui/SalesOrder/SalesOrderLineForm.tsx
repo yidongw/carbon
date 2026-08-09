@@ -220,7 +220,9 @@ const SalesOrderLineForm = ({
 
   const variantsQuantityModal = useVariantsQuantityModal();
   const [items] = useItems();
-  const initialConfig = parseInitialVariantTable(initialValues.configuration);
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
+  );
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
   >(initialConfig.rows);
@@ -246,7 +248,7 @@ const SalesOrderLineForm = ({
   const hasVariantsQuantity =
     isConfigurableLine &&
     Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.configuration);
+    !(isEditing && !initialValues.variantQuantities);
 
   // A Style parent line's quantity comes from the variants quantity grid.
   // Variant SKU lines use plain quantity and are not blocked here.
@@ -264,7 +266,7 @@ const SalesOrderLineForm = ({
     if (!itemData.itemId) return;
     variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toVariantsQuantityValue(variantsQuantityRows),
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
@@ -714,7 +716,7 @@ const SalesOrderLineForm = ({
           />
           <Hidden name="unitOfMeasureCode" value={itemData.uom} />
           <Hidden
-            name="configuration"
+            name="variantQuantities"
             value={
               variantsQuantityRows
                 ? JSON.stringify({

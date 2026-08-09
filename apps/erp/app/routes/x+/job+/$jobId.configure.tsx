@@ -10,7 +10,6 @@ import {
   isVariantsQuantityConfiguration,
   persistStyleJobConfiguration
 } from "~/modules/production/jobVariantQuantity.service";
-import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { path, requestReferrer } from "~/utils/path";
 
@@ -67,7 +66,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const result = await client
       .from("job")
       .update({
-        ...variantTableUpdateFields(configuration as Record<string, unknown>),
+        configuration: configuration as Record<string, unknown>,
         updatedAt: new Date().toISOString(),
         updatedBy: userId
       })

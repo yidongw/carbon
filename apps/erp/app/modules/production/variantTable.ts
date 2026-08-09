@@ -15,13 +15,13 @@ export type VariantsQuantityData = {
 const QUANTITY_COLUMN = "Quantities";
 
 function getVariantsQuantityTable(
-  configuration: Json | Record<string, unknown> | null | undefined
+  variantQuantities: Json | Record<string, unknown> | null | undefined
 ): VariantsQuantityRow[] {
   const cfg =
-    typeof configuration === "object" &&
-    configuration !== null &&
-    !Array.isArray(configuration)
-      ? (configuration as Record<string, unknown>)
+    typeof variantQuantities === "object" &&
+    variantQuantities !== null &&
+    !Array.isArray(variantQuantities)
+      ? (variantQuantities as Record<string, unknown>)
       : null;
   const table = cfg?.variantTable ?? cfg?.configTable;
   return Array.isArray(table) ? (table as VariantsQuantityRow[]) : [];
@@ -38,9 +38,9 @@ function descriptorSignature(row: VariantsQuantityRow): string {
 }
 
 export type VariantTableAdjustmentResult = {
-  /** Merged configuration to persist as the job's new current config. */
-  configuration: VariantsQuantityData;
-  /** Grand total of the merged configuration. */
+  /** Merged variant quantities to persist as the job's new current plan. */
+  variantQuantities: VariantsQuantityData;
+  /** Grand total of the merged variant quantities. */
   total: number;
   /** Signed sum of the adjustment's quantity column. */
   deltaTotal: number;
@@ -98,13 +98,13 @@ export function applyVariantTableAdjustment(
     if (value !== 0) mergedRows.push(row);
   }
 
-  const configuration: VariantsQuantityData = {
+  const variantQuantities: VariantsQuantityData = {
     variantTable: mergedRows
   };
 
   return {
-    configuration,
-    total: computeVariantTableTotal(configuration),
+    variantQuantities,
+    total: computeVariantTableTotal(variantQuantities),
     deltaTotal,
     hasNegative
   };
@@ -116,19 +116,19 @@ export function applyVariantTableAdjustment(
  */
 export function sumVariantTables(
   configs: Array<Json | Record<string, unknown> | null | undefined>
-): { configuration: VariantsQuantityData; total: number } {
-  let configuration: VariantsQuantityData = {
+): { variantQuantities: VariantsQuantityData; total: number } {
+  let variantQuantities: VariantsQuantityData = {
     variantTable: []
   };
   for (const config of configs) {
-    configuration = applyVariantTableAdjustment(
-      configuration,
+    variantQuantities = applyVariantTableAdjustment(
+      variantQuantities,
       config
-    ).configuration;
+    ).variantQuantities;
   }
   return {
-    configuration,
-    total: computeVariantTableTotal(configuration)
+    variantQuantities,
+    total: computeVariantTableTotal(variantQuantities)
   };
 }
 
@@ -144,14 +144,17 @@ export function computeVariantTableRemaining(
     return { variantTable: [] };
   }
 
-  const reported = sumVariantTables(reportedConfigs).configuration;
+  const reported = sumVariantTables(reportedConfigs).variantQuantities;
   const negated: VariantsQuantityData = {
     variantTable: reported.variantTable.map((row) => ({
       ...row,
       [QUANTITY_COLUMN]: -(Number(row[QUANTITY_COLUMN]) || 0)
     }))
   };
-  const merged = applyVariantTableAdjustment(planned, negated).configuration;
+  const merged = applyVariantTableAdjustment(
+    planned,
+    negated
+  ).variantQuantities;
   return {
     variantTable: merged.variantTable.map((row) => ({
       ...row,
@@ -172,7 +175,7 @@ export function reportsExceedConfigPlan(
 ): boolean {
   if (getVariantsQuantityTable(planned).length === 0) return false;
 
-  const reported = sumVariantTables(reportedConfigs).configuration;
+  const reported = sumVariantTables(reportedConfigs).variantQuantities;
   if (reported.variantTable.length === 0) return false;
 
   const negated: VariantsQuantityData = {
@@ -185,16 +188,15 @@ export function reportsExceedConfigPlan(
 }
 
 /**
- * Sums the `Quantities` column across `configuration.variantTable` (same rules as
- * the job sidebar).
+ * Sums the `Quantities` column across `variantQuantities.variantTable`.
  */
 export function computeVariantTableTotal(
-  configuration: Json | Record<string, unknown> | null | undefined
+  variantQuantities: Json | Record<string, unknown> | null | undefined
 ): number {
-  if (configuration === null || configuration === undefined) return 0;
+  if (variantQuantities === null || variantQuantities === undefined) return 0;
   const cfg =
-    typeof configuration === "object" && !Array.isArray(configuration)
-      ? (configuration as Record<string, unknown>)
+    typeof variantQuantities === "object" && !Array.isArray(variantQuantities)
+      ? (variantQuantities as Record<string, unknown>)
       : null;
   if (!cfg) return 0;
 

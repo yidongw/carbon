@@ -396,13 +396,13 @@ export type ReportedTargetRow = {
 
 export function buildReportedTargetRows({
   targetConfiguration,
-  reportedConfigurations,
+  reportedVariantQuantities,
   pickupConfigurations = [],
   parameters,
   defaultQuantityLabel
 }: {
   targetConfiguration: unknown;
-  reportedConfigurations: unknown[];
+  reportedVariantQuantities: unknown[];
   pickupConfigurations?: unknown[];
   parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
@@ -417,7 +417,9 @@ export function buildReportedTargetRows({
     columns
   );
   const reportedRows = mergeVariantsQuantityRows(
-    reportedConfigurations.flatMap((config) => getVariantsQuantityRows(config)),
+    reportedVariantQuantities.flatMap((config) =>
+      getVariantsQuantityRows(config)
+    ),
     columns
   );
   const pickupRows = mergeVariantsQuantityRows(
@@ -476,7 +478,7 @@ export type VariantsQuantityReferenceContext = {
   /** Pickup quantities by employee (for pickup-based hint calculation) */
   pickupsByEmployee?: Record<
     string,
-    { quantity: number; configuration: unknown }[]
+    { quantity: number; variantQuantities: unknown }[]
   >;
   /** Production quantities already reported by the selected employee */
   employeeReportedConfigurations?: unknown[];
@@ -558,7 +560,7 @@ export function buildVariantsQuantityEditorState({
   const pickupRows = usePickupHints
     ? mergeVariantsQuantityRows(
         employeePickups.flatMap((pickup) =>
-          getVariantsQuantityRows(pickup.configuration)
+          getVariantsQuantityRows(pickup.variantQuantities)
         ),
         columns
       )
@@ -619,7 +621,7 @@ export function buildVariantsQuantityEditorState({
         let pickupQty = 0;
         for (const pickup of employeePickups) {
           for (const pickupRow of getVariantsQuantityRows(
-            pickup.configuration
+            pickup.variantQuantities
           )) {
             if (getMergeKey(pickupRow, columns) === key) {
               pickupQty += Number(pickupRow[col.key]) || 0;
@@ -666,14 +668,14 @@ export function fillValueFromReference(referenceValue: number) {
 /** Job target config plus already-reported line configs for an operation. */
 export type VariantsQuantityReferenceSource = {
   jobVariantTable: unknown;
-  reportedConfigurations: unknown[];
+  reportedVariantQuantities: unknown[];
   /** Pickup data grouped by employee for pickup-based hints */
   pickupsByEmployee?: Record<
     string,
-    { quantity: number; configuration: unknown }[]
+    { quantity: number; variantQuantities: unknown }[]
   >;
   /** Production quantities grouped by employee */
-  reportedConfigurationsByEmployee?: Record<string, unknown[]>;
+  reportedVariantQuantitiesByEmployee?: Record<string, unknown[]>;
 };
 
 /** Hint quantities = job required − already reported (per config row/column).
@@ -697,7 +699,7 @@ export function buildJobRemainingReferenceContext(
   const employeeId = options?.employeeId?.trim() || undefined;
   const employeeReportedConfigurations = employeeId
     ? [
-        ...(source.reportedConfigurationsByEmployee?.[employeeId] ?? []),
+        ...(source.reportedVariantQuantitiesByEmployee?.[employeeId] ?? []),
         ...siblingLineConfigurations
       ].filter((config) => config != null && !exclude.has(config))
     : undefined;
@@ -706,7 +708,7 @@ export function buildJobRemainingReferenceContext(
     mode: "remaining",
     originalVariantTable: source.jobVariantTable,
     otherLineVariantTables: [
-      ...source.reportedConfigurations,
+      ...source.reportedVariantQuantities,
       ...siblingLineConfigurations
     ].filter((config) => config != null && !exclude.has(config)),
     employeeId,

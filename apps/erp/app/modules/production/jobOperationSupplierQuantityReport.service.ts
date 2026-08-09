@@ -404,7 +404,7 @@ export async function createJobOperationSupplierQuantityReport(
 
   const originalQuantity = sumLineQuantity(args.lines);
   const primaryLine = args.lines[0];
-  const originalVariantTable = primaryLine?.configuration ?? null;
+  const originalVariantTable = primaryLine?.variantQuantities ?? null;
 
   const { data: report, error: reportError } = await client
     .from("jobOperationSupplierQuantityReport")
@@ -433,7 +433,7 @@ export async function createJobOperationSupplierQuantityReport(
     supplierProcessId: args.supplierProcessId,
     type: line.type,
     quantity: line.quantity,
-    configuration: (line.configuration ?? null) as Json,
+    variantQuantities: (line.variantQuantities ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId
@@ -532,7 +532,7 @@ export async function replaceJobOperationSupplierQuantityReportLines(
     supplierProcessId: report.data.supplierProcessId,
     type: line.type,
     quantity: line.quantity,
-    configuration: (line.configuration ?? null) as Json,
+    variantQuantities: (line.variantQuantities ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId

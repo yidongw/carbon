@@ -24,7 +24,7 @@ export function ProductionQuantityLineBreakdown({
   line: {
     type: string;
     quantity: number;
-    configuration: Json | null;
+    variantQuantities: Json | null;
     scrapReason?: { name: string | null } | null;
   };
   variantQuantityParameters?: ConfigurationParameter[] | null;
@@ -33,9 +33,9 @@ export function ProductionQuantityLineBreakdown({
 }) {
   const { t } = useLingui();
   const parts =
-    variantQuantityParameters?.length && line.configuration
+    variantQuantityParameters?.length && line.variantQuantities
       ? getConfigRowDisplayParts(
-          line.configuration,
+          line.variantQuantities,
           variantQuantityParameters,
           t`Quantities`,
           optionLabels

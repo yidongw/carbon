@@ -74,7 +74,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = variantTableUpdateFields(parsed);
-      variantQuantities = fields.configuration;
+      variantQuantities = fields.variantQuantities;
       quantity = fields.quantity;
     } catch {
       // invalid JSON — keep the typed quantity

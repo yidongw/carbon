@@ -19,11 +19,11 @@ import {
 } from "./variantTable";
 
 /**
- * Split a line's `configuration` into the config to store (merged, unchanged
+ * Split a line's `variantQuantities` into the config to store (merged, unchanged
  * downstream) and any raw cut rows the editor tucked under `splitRows` (kept
  * only for a master WO cutting report → masterWorkOrderSplitRow).
  */
-function splitConfigAndRows(configuration: unknown): {
+function splitConfigAndRows(variantQuantities: unknown): {
   config: unknown;
   rows: {
     valuesKey: string | null;
@@ -31,13 +31,16 @@ function splitConfigAndRows(configuration: unknown): {
   }[];
 } {
   if (
-    !configuration ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    !variantQuantities ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
-    return { config: configuration ?? null, rows: [] };
+    return { config: variantQuantities ?? null, rows: [] };
   }
-  const { splitRows, ...config } = configuration as Record<string, unknown> & {
+  const { splitRows, ...config } = variantQuantities as Record<
+    string,
+    unknown
+  > & {
     splitRows?: unknown;
   };
   const rows = Array.isArray(splitRows)
@@ -101,8 +104,10 @@ export function validateProductionQuantityLines(
     if (line.type !== "Scrap") {
       line.scrapReasonId = undefined;
     }
-    if (line.configuration) {
-      const configTotal = computeVariantTableTotal(line.configuration as Json);
+    if (line.variantQuantities) {
+      const configTotal = computeVariantTableTotal(
+        line.variantQuantities as Json
+      );
       if (configTotal > 0 && Math.abs(configTotal - line.quantity) > 0.0001) {
         return {
           error: new Error(
@@ -167,8 +172,8 @@ async function validateConfiguredLinesHaveConfiguration(
   if (!isConfigured) return { error: null };
 
   for (const line of linesToCheck) {
-    const configTotal = line.configuration
-      ? computeVariantTableTotal(line.configuration as Json)
+    const configTotal = line.variantQuantities
+      ? computeVariantTableTotal(line.variantQuantities as Json)
       : 0;
     if (configTotal <= 0) {
       return {
@@ -214,7 +219,7 @@ export async function validateProductionQuantityRemaining(
       .single(),
     client
       .from("productionQuantity")
-      .select("quantity, type, configuration")
+      .select("quantity, type, variantQuantities")
       .eq("jobOperationId", args.jobOperationId)
       .eq("companyId", args.companyId)
       .is("invalidatedAt", null)
@@ -253,8 +258,8 @@ export async function validateProductionQuantityRemaining(
   const reportedConfigs = [
     ...existingRows
       .filter((r) => r.type === "Production")
-      .map((r) => r.configuration),
-    ...newProductionLines.map((l) => l.configuration ?? null)
+      .map((r) => r.variantQuantities),
+    ...newProductionLines.map((l) => l.variantQuantities ?? null)
   ];
   if (reportsExceedConfigPlan(planned, reportedConfigs)) {
     return {
@@ -309,7 +314,7 @@ export async function createProductionQuantityReport(
   // Peel raw cut rows out of each line's config (config stays merged/unchanged).
   const prepared = args.lines.map((line) => ({
     line,
-    ...splitConfigAndRows(line.configuration)
+    ...splitConfigAndRows(line.variantQuantities)
   }));
   const originalVariantTable = prepared[0]?.config ?? null;
 
@@ -338,7 +343,7 @@ export async function createProductionQuantityReport(
     reportId: report.id,
     type: line.type,
     quantity: line.quantity,
-    configuration: (config ?? null) as Json,
+    variantQuantities: (config ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
@@ -502,7 +507,7 @@ export async function replaceProductionQuantityReportLines(
 
   const prepared = args.lines.map((line) => ({
     line,
-    ...splitConfigAndRows(line.configuration)
+    ...splitConfigAndRows(line.variantQuantities)
   }));
   const lineRows = prepared.map(({ line, config }) => ({
     companyId: args.companyId,
@@ -510,7 +515,7 @@ export async function replaceProductionQuantityReportLines(
     reportId: args.reportId,
     type: line.type,
     quantity: line.quantity,
-    configuration: (config ?? null) as Json,
+    variantQuantities: (config ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
@@ -731,7 +736,7 @@ export async function resolveProductionQuantityCanAutoApprove(
 }
 
 function accumulateConfigBreakdown(
-  lines: { type: string; configuration: Json | null }[] | null,
+  lines: { type: string; variantQuantities: Json | null }[] | null,
   totals: {
     productionConfigurations: Json[];
     scrapConfigurations: Json[];
@@ -739,16 +744,16 @@ function accumulateConfigBreakdown(
   }
 ) {
   for (const line of lines ?? []) {
-    if (!line.configuration) continue;
+    if (!line.variantQuantities) continue;
     switch (line.type) {
       case "Production":
-        totals.productionConfigurations.push(line.configuration);
+        totals.productionConfigurations.push(line.variantQuantities);
         break;
       case "Scrap":
-        totals.scrapConfigurations.push(line.configuration);
+        totals.scrapConfigurations.push(line.variantQuantities);
         break;
       case "Rework":
-        totals.reworkConfigurations.push(line.configuration);
+        totals.reworkConfigurations.push(line.variantQuantities);
         break;
       default:
         break;
@@ -768,13 +773,13 @@ export async function getOperationQuantitySummary(
   ] = await Promise.all([
     client
       .from("productionQuantity")
-      .select("type, quantity, configuration")
+      .select("type, quantity, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
       .is("invalidatedAt", null),
     client
       .from("jobOperationSupplierQuantity")
-      .select("type, quantity, configuration")
+      .select("type, quantity, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
       .is("invalidatedAt", null),

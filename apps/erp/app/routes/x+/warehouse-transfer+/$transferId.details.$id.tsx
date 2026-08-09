@@ -145,7 +145,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
             unknown
           >;
           const fields = variantTableUpdateFields(parsed);
-          variantQuantities = fields.configuration;
+          variantQuantities = fields.variantQuantities;
           quantity = fields.quantity;
         } catch {
           // invalid JSON — keep the typed quantity

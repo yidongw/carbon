@@ -130,7 +130,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    configuration: configStr,
+    variantQuantities: configStr,
     saleQuantity: rawQuantity,
     ...d
   } = validation.data;
@@ -147,13 +147,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     d.assetId = undefined;
   }
 
-  let configuration: Json | undefined;
+  let variantQuantities: Json | undefined;
   let saleQuantity = rawQuantity;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = variantTableUpdateFields(parsed);
-      configuration = fields.configuration;
+      variantQuantities = fields.variantQuantities;
       saleQuantity = fields.quantity;
     } catch {
       // Invalid JSON — create without configuration; keep typed quantity.
@@ -163,11 +163,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // FormData variantTable means the per-variant quantity grid was used (Style
   // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
     const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
-      variantQuantities: configuration
+      variantQuantities
     });
     if (!expanded.ok) {
       if (isOverlay) {
@@ -250,10 +254,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
     // Single parent SKU (no children) — fall through to one-line upsert.
     saleQuantity = expanded.variants[0].quantity;
-    configuration = undefined;
+    variantQuantities = undefined;
   }
 
-  // FormData `configuration` is expand-only; never persist on the line.
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const createSalesOrderLine = await upsertSalesOrderLine(client, {
     ...d,
     saleQuantity,

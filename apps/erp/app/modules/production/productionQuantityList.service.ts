@@ -36,7 +36,7 @@ const employeePendingSalaryCompletionSelect = `
 `;
 
 const productionPayApprovalSelect = `
-  id, quantity, createdAt, employeeId, createdBy, paymentYear, paymentMonth, invalidatedAt, reportId, configuration,
+  id, quantity, createdAt, employeeId, createdBy, paymentYear, paymentMonth, invalidatedAt, reportId, variantQuantities,
   employee:user!productionQuantity_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
@@ -421,9 +421,16 @@ export async function getProductionQuantityReportFilterOptions(
         itemRow.id;
       itemsMap.set(itemRow.id, { id: itemRow.id, label });
     }
-    type JoRow = { process: { id: string; name: string } | Array<{ id: string; name: string }> | null } | null;
+    type JoRow = {
+      process:
+        | { id: string; name: string }
+        | Array<{ id: string; name: string }>
+        | null;
+    } | null;
     const joRaw = (row as Record<string, unknown>).jobOperation;
-    const jo: JoRow = (Array.isArray(joRaw) ? (joRaw[0] ?? null) : joRaw) as JoRow;
+    const jo: JoRow = (
+      Array.isArray(joRaw) ? (joRaw[0] ?? null) : joRaw
+    ) as JoRow;
     if (jo) {
       const proc = Array.isArray(jo.process) ? jo.process[0] : jo.process;
       if (proc?.id && proc.name) {
@@ -1112,7 +1119,7 @@ export async function getProductionQuantityReportPayRows(
       paymentYear,
       paymentMonth,
       invalidatedAt: primary?.invalidatedAt ?? null,
-      configuration: primary?.configuration ?? null,
+      variantQuantities: primary?.variantQuantities ?? null,
       employee: primary?.employee ?? report.employee ?? null,
       jobOperation
     });

@@ -141,18 +141,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Omit `id` — create path must not send a client id.
   const {
     id: _id,
-    configuration: configStr,
+    variantQuantities: configStr,
     purchaseQuantity: rawQuantity,
     ...d
   } = validation.data;
 
   let purchaseQuantity = rawQuantity;
-  let configuration: Json | undefined;
+  let variantQuantities: Json | undefined;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
       const fields = variantTableUpdateFields(parsed);
-      configuration = fields.configuration;
+      variantQuantities = fields.variantQuantities;
       purchaseQuantity = fields.quantity;
     } catch {
       // Invalid JSON — create without configuration; keep typed quantity.
@@ -162,11 +162,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // FormData variantTable means the per-variant quantity grid was used (Style
   // variants quantity, or a Consumable color set) — expand into variant SKU lines
   // regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
     const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
-      variantQuantities: configuration
+      variantQuantities
     });
     if (!expanded.ok) {
       if (isOverlay) {
@@ -248,10 +252,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
 
     purchaseQuantity = expanded.variants[0].quantity;
-    configuration = undefined;
+    variantQuantities = undefined;
   }
 
-  // FormData `configuration` is expand-only; never persist on the line.
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const createPurchaseOrderLine = await upsertPurchaseOrderLine(client, {
     ...d,
     purchaseQuantity,

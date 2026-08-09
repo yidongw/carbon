@@ -68,10 +68,10 @@ export function normalizeUniqueLineTypes(
 export function getConfigFromEditableLine(
   line: EditableProductionQuantityLine
 ) {
-  if (!line.configuration || typeof line.configuration !== "object") {
+  if (!line.variantQuantities || typeof line.variantQuantities !== "object") {
     return undefined;
   }
-  return line.configuration as Record<string, unknown>;
+  return line.variantQuantities as Record<string, unknown>;
 }
 
 function buildReferenceContextForLine(
@@ -178,7 +178,7 @@ export function ProductionQuantityLinesEditor({
 
       lineVariantsQuantityModal.open({
         itemId,
-        configuration: getConfigFromEditableLine(line),
+        variantQuantities: getConfigFromEditableLine(line),
         jobId,
         jobOperationId,
         reportKind: "productionQuantity",
@@ -206,7 +206,7 @@ export function ProductionQuantityLinesEditor({
           ),
         onConfirm: (data) =>
           updateLine(lineKey, {
-            configuration: {
+            variantQuantities: {
               variantTable: getOverlaySuccessVariantTable(data)
             },
             quantity: data.total > 0 ? data.total : line.quantity

@@ -43,7 +43,7 @@ function lineFromActive(
     quantity: line.quantity,
     scrapReasonId: line.scrapReasonId ?? undefined,
     notes: line.notes ?? undefined,
-    configuration: line.configuration ?? undefined
+    variantQuantities: line.variantQuantities ?? undefined
   };
 }
 

@@ -576,13 +576,13 @@ export async function getCuttingSplitProposal(
   if (cuttingOperationId) {
     const cuts = await client
       .from("productionQuantity")
-      .select("quantity, configuration")
+      .select("quantity, variantQuantities")
       .eq("jobOperationId", cuttingOperationId)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null);
     for (const row of cuts.data ?? []) {
-      const rowCells = extractCuttingCells(row.configuration);
+      const rowCells = extractCuttingCells(row.variantQuantities);
       if (rowCells.length === 0) {
         aggregateOnlyCut += Number(row.quantity) || 0;
         continue;

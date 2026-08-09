@@ -55,4 +55,13 @@ Job-scoped qty report routes (`apps/erp/app/routes/x+/job+/$jobId.quantities.new
 ### Production Quantity Report
 - `productionQuantityCreateFormValidator` from `production.models.ts`
 - Fields: `jobOperationId`, `actorKind`, `employeeId?`, `supplierProcessId?`, `operationUnitCost?`, `operationMinimumCost?`, `snapshotPricingEdited?`, `notes?`, `lines` (JSON array)
-- Lines use `productionQuantityLineJsonValidator` with fields: `type` (Production/Scrap/Rework), `quantity`, `configuration?`, `scrapReasonId?`
+- Lines use `productionQuantityLineJsonValidator` with fields: `type` (Production/Scrap/Rework), `quantity`, `variantQuantities?`, `scrapReasonId?`
+
+## Style/variants-quantity column rename
+
+`productionQuantity`, `jobOperationPickup`, `jobOperationSupplierPickup`, and
+`jobOperationSupplierQuantity` store Style combo qty under **`variantQuantities`**
+(not `configuration`). FormData / overlay props for Style qty grids use
+`variantQuantities`; Part method flat params still use `job.configuration` /
+FormData `configuration`. Overlay reference source uses
+`reportedVariantQuantities` (formerly `reportedConfigurations`).

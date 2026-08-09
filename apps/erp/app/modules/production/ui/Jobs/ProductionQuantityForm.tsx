@@ -214,7 +214,7 @@ const ProductionQuantityForm = ({
       }
     : getInitialConfigState(
         (initialValues as z.infer<typeof productionQuantityValidator>)
-          .configuration
+          .variantQuantities
       );
 
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
@@ -249,7 +249,7 @@ const ProductionQuantityForm = ({
       variantsQuantityReferenceSource.jobVariantTable as Parameters<
         typeof computeVariantTableRemaining
       >[0],
-      variantsQuantityReferenceSource.reportedConfigurations as Parameters<
+      variantsQuantityReferenceSource.reportedVariantQuantities as Parameters<
         typeof computeVariantTableRemaining
       >[1]
     );
@@ -257,7 +257,7 @@ const ProductionQuantityForm = ({
     const remainingTotal = computeVariantTableTotal(remaining);
     return editable.map((line) =>
       line.type === "Production" && !getConfigFromEditableLine(line)
-        ? { ...line, configuration: remaining, quantity: remainingTotal }
+        ? { ...line, variantQuantities: remaining, quantity: remainingTotal }
         : line
     );
   });
@@ -359,10 +359,10 @@ const ProductionQuantityForm = ({
     if (!jobPicker.itemId) return;
     variantsQuantityModal.open({
       itemId: jobPicker.itemId,
-      configuration: toVariantsQuantityValue(
+      variantQuantities: toVariantsQuantityValue(
         variantsQuantityRows,
         (initialValues as z.infer<typeof productionQuantityValidator>)
-          .configuration
+          .variantQuantities
       ),
       jobId: jobId ?? undefined,
       jobOperationId: jobOperationIdState || undefined,
@@ -695,7 +695,7 @@ const ProductionQuantityForm = ({
               <>
                 {variantsQuantityRows && (
                   <Hidden
-                    name="configuration"
+                    name="variantQuantities"
                     value={JSON.stringify({
                       variantTable: variantsQuantityRows
                     })}

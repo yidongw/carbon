@@ -801,7 +801,7 @@ export const salesOrderLineValidator = z
     unitOfMeasureCode: zfd.text(z.string().optional()),
     unitPrice: zfd.numeric(z.number().optional()),
     exchangeRate: zfd.numeric(z.number().optional()),
-    configuration: zfd.text(z.string().optional())
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine(
     (data) => {

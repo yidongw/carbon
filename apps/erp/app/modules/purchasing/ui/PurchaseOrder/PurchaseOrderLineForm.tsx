@@ -363,7 +363,9 @@ const PurchaseOrderLineForm = ({
   const percentFormatter = usePercentFormatter();
 
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialVariantTable(initialValues.configuration);
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
+  );
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
   >(initialConfig.rows);
@@ -377,7 +379,7 @@ const PurchaseOrderLineForm = ({
   const hasVariantsQuantity =
     (itemType === "Style" || itemData.hasVariantAttributes) &&
     Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.configuration);
+    !(isEditing && !initialValues.variantQuantities);
 
   // A configurable parent line's quantity comes from the per-variant grid.
   const isMissingStyleQuantity =
@@ -408,7 +410,7 @@ const PurchaseOrderLineForm = ({
     if (!itemData.itemId) return;
     variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toVariantsQuantityValue(variantsQuantityRows),
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
@@ -733,7 +735,7 @@ const PurchaseOrderLineForm = ({
                     />
                     {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
                     <Hidden
-                      name="configuration"
+                      name="variantQuantities"
                       value={
                         variantsQuantityRows
                           ? JSON.stringify({

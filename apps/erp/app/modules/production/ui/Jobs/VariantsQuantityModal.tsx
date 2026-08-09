@@ -460,7 +460,7 @@ function VariantsQuantityModal({
     if (!formAction || !fetcher) return;
 
     const formData = new FormData();
-    formData.append("configuration", JSON.stringify(configuration));
+    formData.append("variantQuantities", JSON.stringify(configuration));
     fetcher.submit(formData, { method: "post", action: formAction });
   };
 
@@ -655,19 +655,19 @@ function extractVariantsQuantity(configuration: unknown): Row[] | undefined {
  */
 export function buildVariantsQuantityEditorRows({
   parameters,
-  configuration,
+  variantQuantities,
   referenceContext,
   prefillFromReference = false
 }: {
   parameters: ConfigurationParameter[];
-  configuration?: unknown;
+  variantQuantities?: unknown;
   referenceContext?: VariantsQuantityReferenceContext;
   prefillFromReference?: boolean;
 }): {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
 } {
-  const variantTable = extractVariantsQuantity(configuration);
+  const variantTable = extractVariantsQuantity(variantQuantities);
   if (!referenceContext) return { initialRows: variantTable };
   const editor = buildVariantsQuantityEditorState({
     parameters,
@@ -737,7 +737,7 @@ export function VariantsQuantityLocalModal({
   jobId,
   jobOperationId,
   reportKind,
-  configuration,
+  variantQuantities,
   buildReferenceContext,
   prefillFromReference = false,
   splitMode = false,
@@ -753,7 +753,7 @@ export function VariantsQuantityLocalModal({
   jobId?: string;
   jobOperationId?: string;
   reportKind?: "pickup" | "productionQuantity";
-  configuration?: unknown;
+  variantQuantities?: unknown;
   buildReferenceContext?: (
     source: VariantsQuantityReferenceSource | null
   ) => VariantsQuantityReferenceContext | undefined;
@@ -785,7 +785,7 @@ export function VariantsQuantityLocalModal({
   const { initialRows, referenceByRowIndex } = data?.parameters?.length
     ? buildVariantsQuantityEditorRows({
         parameters: data.parameters,
-        configuration,
+        variantQuantities,
         referenceContext,
         prefillFromReference
       })
@@ -825,8 +825,8 @@ export function VariantsQuantityLocalModal({
 }
 
 /**
- * Build the editor's `configuration` input from the current table rows, falling
- * back to a saved/initial configuration when nothing has been edited yet.
+ * Build the editor's `variantQuantities` input from the current table rows, falling
+ * back to a saved/initial variantQuantities when nothing has been edited yet.
  */
 export function toVariantsQuantityValue(
   rows: Row[] | null | undefined,
@@ -837,7 +837,7 @@ export function toVariantsQuantityValue(
 
 type VariantsQuantityModalRequest = {
   itemId: string;
-  configuration?: unknown;
+  variantQuantities?: unknown;
   jobId?: string;
   jobOperationId?: string;
   reportKind?: "pickup" | "productionQuantity";
@@ -892,7 +892,7 @@ export function useVariantsQuantityModal(): {
       jobId={request.jobId}
       jobOperationId={request.jobOperationId}
       reportKind={request.reportKind}
-      configuration={request.configuration}
+      variantQuantities={request.variantQuantities}
       buildReferenceContext={request.buildReferenceContext}
       prefillFromReference={request.prefillFromReference}
       splitMode={request.splitMode}

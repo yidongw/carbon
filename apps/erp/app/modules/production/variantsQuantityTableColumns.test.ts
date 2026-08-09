@@ -103,7 +103,7 @@ describe("buildJobRemainingReferenceContext", () => {
   it("computes remaining quantities from job target minus reported", () => {
     const referenceContext = buildJobRemainingReferenceContext({
       jobVariantTable,
-      reportedConfigurations: [
+      reportedVariantQuantities: [
         { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
       ]
     });
@@ -127,20 +127,20 @@ describe("buildJobRemainingReferenceContext", () => {
             { valuesKey: "红色|L", Quantities: 100 }
           ]
         },
-        reportedConfigurations: [
+        reportedVariantQuantities: [
           { variantTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
         ],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 1,
-              configuration: {
+              variantQuantities: {
                 variantTable: [{ valuesKey: "红色|L", Quantities: 1 }]
               }
             }
           ]
         },
-        reportedConfigurationsByEmployee: {
+        reportedVariantQuantitiesByEmployee: {
           emp1: [{ variantTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
         }
       },
@@ -165,18 +165,18 @@ describe("buildJobRemainingReferenceContext", () => {
         jobVariantTable: {
           variantTable: [{ valuesKey: "红色|L", Quantities: 100 }]
         },
-        reportedConfigurations: [],
+        reportedVariantQuantities: [],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 2,
-              configuration: {
+              variantQuantities: {
                 variantTable: [{ valuesKey: "红色|L", Quantities: 2 }]
               }
             }
           ]
         },
-        reportedConfigurationsByEmployee: {
+        reportedVariantQuantitiesByEmployee: {
           emp1: [{ variantTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
         }
       },
@@ -199,7 +199,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
     const context = buildProductionVariantsQuantityReferenceContext({
       source: {
         jobVariantTable: { variantTable: [] },
-        reportedConfigurations: []
+        reportedVariantQuantities: []
       },
       employeeId: "emp1",
       jobId: "job1",
@@ -223,9 +223,9 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
         jobVariantTable: {
           variantTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
         },
-        reportedConfigurations: [],
+        reportedVariantQuantities: [],
         pickupsByEmployee: {
-          emp1: [{ quantity: 1, configuration: { variantTable: [] } }]
+          emp1: [{ quantity: 1, variantQuantities: { variantTable: [] } }]
         }
       },
       employeeId: "emp1",

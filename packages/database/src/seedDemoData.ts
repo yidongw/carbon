@@ -4100,25 +4100,25 @@ export async function seedDemoData(
       );
       if ((exPQ.rowCount ?? 0) === 0) {
         await client.query(
-          `INSERT INTO "productionQuantity" ("reportId","jobOperationId",type,quantity,"laborProductionEventId","employeeId",configuration,"companyId","createdBy")
+          `INSERT INTO "productionQuantity" ("reportId","jobOperationId",type,quantity,"laborProductionEventId","employeeId","variantQuantities","companyId","createdBy")
              VALUES ($1,$2,'Production'::"productionQuantityType",$3,$4,$5,$6::jsonb,$7,$8)`,
           [pqrId, opId, qty, peId, employeeId, configJson, companyId, userId]
         );
       } else {
         // Ensure configuration is set on any existing record
         await client.query(
-          `UPDATE "productionQuantity" SET configuration=$1::jsonb WHERE "jobOperationId"=$2 AND configuration IS NULL`,
+          `UPDATE "productionQuantity" SET "variantQuantities"=$1::jsonb WHERE "jobOperationId"=$2 AND "variantQuantities" IS NULL`,
           [configJson, opId]
         );
       }
       const exJOP = await client.query(
-        `SELECT 1 FROM "jobOperationPickup" WHERE "jobOperationId"=$1 AND configuration IS NOT NULL LIMIT 1`,
+        `SELECT 1 FROM "jobOperationPickup" WHERE "jobOperationId"=$1 AND "variantQuantities" IS NOT NULL LIMIT 1`,
         [opId]
       );
       if ((exJOP.rowCount ?? 0) === 0) {
         // Insert new pickup with config, or update existing null-config pickups
         await client.query(
-          `UPDATE "jobOperationPickup" SET configuration=$1::jsonb WHERE "jobOperationId"=$2 AND configuration IS NULL`,
+          `UPDATE "jobOperationPickup" SET "variantQuantities"=$1::jsonb WHERE "jobOperationId"=$2 AND "variantQuantities" IS NULL`,
           [configJson, opId]
         );
         const stillMissing = await client.query(
@@ -4127,7 +4127,7 @@ export async function seedDemoData(
         );
         if ((stillMissing.rowCount ?? 0) === 0) {
           await client.query(
-            `INSERT INTO "jobOperationPickup" ("jobOperationId","employeeId",quantity,configuration,"companyId","createdBy")
+            `INSERT INTO "jobOperationPickup" ("jobOperationId","employeeId",quantity,"variantQuantities","companyId","createdBy")
                VALUES ($1,$2,$3,$4::jsonb,$5,$6)`,
             [opId, employeeId, qty, configJson, companyId, userId]
           );
@@ -4234,7 +4234,7 @@ export async function seedDemoData(
         [sewOpId]
       );
       await client.query(
-        `INSERT INTO "jobOperationPickup" ("jobOperationId","employeeId",quantity,configuration,"companyId","createdBy")
+        `INSERT INTO "jobOperationPickup" ("jobOperationId","employeeId",quantity,"variantQuantities","companyId","createdBy")
            VALUES ($1,$2,30,$3::jsonb,$4,$5)`,
         [sewOpId, employeeId, tshirtNavyConfig, companyId, userId]
       );
@@ -4276,7 +4276,7 @@ export async function seedDemoData(
       );
       if ((exSewPQ.rowCount ?? 0) === 0) {
         await client.query(
-          `INSERT INTO "productionQuantity" ("reportId","jobOperationId",type,quantity,"laborProductionEventId","employeeId",configuration,"companyId","createdBy")
+          `INSERT INTO "productionQuantity" ("reportId","jobOperationId",type,quantity,"laborProductionEventId","employeeId","variantQuantities","companyId","createdBy")
              VALUES ($1,$2,'Production'::"productionQuantityType",20,$3,$4,$5::jsonb,$6,$7)`,
           [
             sewPqrId,
@@ -4290,7 +4290,7 @@ export async function seedDemoData(
         );
       } else {
         await client.query(
-          `UPDATE "productionQuantity" SET configuration=$1::jsonb WHERE "jobOperationId"=$2 AND configuration IS NULL`,
+          `UPDATE "productionQuantity" SET "variantQuantities"=$1::jsonb WHERE "jobOperationId"=$2 AND "variantQuantities" IS NULL`,
           [tshirtNavyProdConfig, sewOpId]
         );
       }
@@ -6158,7 +6158,7 @@ export async function seedDemoData(
       JOIN job j ON j.id = jo."jobId"
       JOIN item i ON i.id = j."itemId"
       WHERE i."readableId" IN ('TSHIRT-001','JACKET-001')
-        AND pq.configuration IS NULL
+        AND pq."variantQuantities" IS NULL
         AND pq."companyId" = $1
     )
   `,
@@ -6173,7 +6173,7 @@ export async function seedDemoData(
       JOIN job j ON j.id = jo."jobId"
       JOIN item i ON i.id = j."itemId"
       WHERE i."readableId" IN ('TSHIRT-001','JACKET-001')
-        AND jop.configuration IS NULL
+        AND jop."variantQuantities" IS NULL
         AND jop."companyId" = $1
     )
   `,

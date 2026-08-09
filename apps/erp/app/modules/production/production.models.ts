@@ -131,7 +131,10 @@ const baseJobValidator = z.object({
     .string()
     .min(1, { message: "Unit of measure is required" }),
   modelUploadId: zfd.text(z.string().optional()),
-  configuration: z.any().optional()
+  // Part flat method params
+  configuration: z.any().optional(),
+  // Style/Consumable variants-quantity grid
+  variantQuantities: z.any().optional()
 });
 
 export const bulkJobValidator = z
@@ -151,7 +154,10 @@ export const bulkJobValidator = z
     locationId: z.string().min(1, { message: "Location is required" }),
     customerId: zfd.text(z.string().optional()),
     modelUploadId: zfd.text(z.string().optional()),
-    configuration: z.any().optional()
+    // Part flat method params
+    configuration: z.any().optional(),
+    // Style/Consumable variants-quantity grid
+    variantQuantities: z.any().optional()
   })
   .refine(
     (data) => {
@@ -900,7 +906,7 @@ export const productionQuantityValidator = z.object({
   notes: zfd.text(z.string().optional()),
   employeeId: zfd.text(z.string().optional()),
   quantity: zfd.numeric(z.number().min(0)),
-  configuration: z.any().optional()
+  variantQuantities: z.any().optional()
 });
 
 export const productionActorKinds = ["employee", "supplier"] as const;

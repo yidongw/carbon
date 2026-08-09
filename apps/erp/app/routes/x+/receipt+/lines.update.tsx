@@ -34,7 +34,7 @@ export async function action({ request }: ActionFunctionArgs) {
         unknown
       >;
       const fields = variantTableUpdateFields(parsed);
-      variantQuantities = fields.configuration;
+      variantQuantities = fields.variantQuantities;
       if (field === "receivedQuantity") {
         nextValue = fields.quantity;
       }

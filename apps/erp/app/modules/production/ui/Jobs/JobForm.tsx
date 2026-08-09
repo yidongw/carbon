@@ -305,7 +305,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     // use a local modal rather than the overlay system.
     variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toVariantsQuantityValue(variantsQuantityRows),
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
@@ -359,7 +359,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     hasAttributeQtyGrid &&
                     variantsQuantityRows && (
                       <Hidden
-                        name="configuration"
+                        name="variantQuantities"
                         value={JSON.stringify({
                           variantTable: variantsQuantityRows
                         })}
@@ -538,7 +538,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       hasAttributeQtyGrid &&
                       variantsQuantityRows && (
                         <Hidden
-                          name="configuration"
+                          name="variantQuantities"
                           value={JSON.stringify({
                             variantTable: variantsQuantityRows
                           })}
