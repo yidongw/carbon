@@ -85,6 +85,13 @@ export async function getConfigReferenceSourceForOperation(
 ): Promise<ConfigReferenceSource | null> {
   const job = await getJob(client, jobId);
   const planned = await getJobVariantQuantities(client, jobId, companyId);
+  if (planned.error) {
+    // Falls back to the raw job.configuration below (safe for a display-only
+    // reference), but surface the failure rather than swallowing it silently.
+    console.warn(
+      `getConfigReferenceSourceForOperation: failed to load plan for job ${jobId}: ${planned.error.message}`
+    );
+  }
   const jobConfiguration =
     planned.data.length > 0
       ? jobVariantQuantitiesToConfigTable(planned.data)

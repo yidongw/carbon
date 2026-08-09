@@ -140,7 +140,9 @@ export async function getJobVariantQuantities(
     .from("jobVariantQuantity")
     .select("variantItemId, quantity")
     .eq("jobId", jobId)
-    .eq("companyId", companyId);
+    .eq("companyId", companyId)
+    // Stable order so downstream aggregate-cut spreading is deterministic.
+    .order("variantItemId", { ascending: true });
 
   if (error) {
     return {
@@ -194,6 +196,119 @@ export async function getJobVariantQuantities(
     })),
     error: null
   };
+}
+
+/**
+ * Batched form of {@link getJobVariantQuantities} for a list of jobs. Resolves
+ * the common (jobVariantQuantity-backed) case in two queries total — one for all
+ * rows, one for all valuesKeys — and only falls back to the per-job dual-read for
+ * legacy jobs that have no jobVariantQuantity rows. Avoids the N×(2–4) round-trip
+ * fan-out of mapping getJobVariantQuantities over every job on list pages.
+ */
+export async function getJobVariantQuantitiesForJobs(
+  client: Db,
+  jobIds: string[],
+  companyId: string
+): Promise<{
+  data: Map<string, JobVariantQuantityLine[]>;
+  error: Error | null;
+}> {
+  const result = new Map<string, JobVariantQuantityLine[]>();
+  if (jobIds.length === 0) return { data: result, error: null };
+
+  const { data, error } = await client
+    .from("jobVariantQuantity")
+    .select("jobId, variantItemId, quantity")
+    .eq("companyId", companyId)
+    .in("jobId", jobIds)
+    // Stable order so downstream aggregate-cut spreading is deterministic.
+    .order("variantItemId", { ascending: true });
+  if (error) {
+    return {
+      data: result,
+      error: new Error(error.message ?? "Failed to load job variant quantities")
+    };
+  }
+
+  const rowsByJob = new Map<
+    string,
+    Array<{ variantItemId: string; quantity: number }>
+  >();
+  for (const row of (data ?? []) as Array<{
+    jobId: string;
+    variantItemId: string;
+    quantity: number;
+  }>) {
+    const list = rowsByJob.get(row.jobId);
+    if (list)
+      list.push({ variantItemId: row.variantItemId, quantity: row.quantity });
+    else
+      rowsByJob.set(row.jobId, [
+        { variantItemId: row.variantItemId, quantity: row.quantity }
+      ]);
+  }
+
+  // Batch the valuesKey lookup across every variant referenced by any job.
+  const allVariantIds = [
+    ...new Set(
+      [...rowsByJob.values()].flatMap((rows) =>
+        rows.map((r) => r.variantItemId)
+      )
+    )
+  ];
+  const keyByVariant = new Map<string, string>();
+  if (allVariantIds.length > 0) {
+    const { data: variants, error: variantError } = await client
+      .from("itemVariant")
+      .select("variantItemId, valuesKey")
+      .eq("companyId", companyId)
+      .in("variantItemId", allVariantIds);
+    if (variantError) {
+      return {
+        data: result,
+        error: new Error(
+          variantError.message ?? "Failed to load variant valuesKeys"
+        )
+      };
+    }
+    for (const v of (variants ?? []) as Array<{
+      variantItemId: string;
+      valuesKey: string;
+    }>) {
+      keyByVariant.set(v.variantItemId, v.valuesKey);
+    }
+  }
+
+  const legacyJobIds: string[] = [];
+  for (const jobId of jobIds) {
+    const rows = rowsByJob.get(jobId);
+    if (!rows || rows.length === 0) {
+      legacyJobIds.push(jobId);
+      continue;
+    }
+    result.set(
+      jobId,
+      rows.map((r) => ({
+        variantItemId: r.variantItemId,
+        quantity: Number(r.quantity) || 0,
+        valuesKey: keyByVariant.get(r.variantItemId) ?? r.variantItemId
+      }))
+    );
+  }
+
+  // Legacy jobs (no live rows) still need the per-job dual-read expansion.
+  const fallbacks = await Promise.all(
+    legacyJobIds.map(async (jobId) => ({
+      jobId,
+      res: await getJobVariantQuantities(client, jobId, companyId)
+    }))
+  );
+  for (const { jobId, res } of fallbacks) {
+    if (res.error) return { data: result, error: res.error };
+    if (res.data.length > 0) result.set(jobId, res.data);
+  }
+
+  return { data: result, error: null };
 }
 
 async function attachValuesKeys(

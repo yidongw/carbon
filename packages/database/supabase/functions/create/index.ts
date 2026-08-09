@@ -900,16 +900,17 @@ serve(async (req: Request) => {
                 configuration: d.configuration,
               }
             );
-            if (variants.length > 0) {
-              for (const v of variants) {
-                expandedSources.push({
-                  line: d,
-                  itemId: v.variantItemId,
-                  quantity: v.quantity,
-                });
-              }
-              continue;
+            for (const v of variants) {
+              expandedSources.push({
+                line: d,
+                itemId: v.variantItemId,
+                quantity: v.quantity,
+              });
             }
+            // Variant-backed line: the parent must never receive. If the grid
+            // summed to no positive cells, receive nothing rather than falling
+            // back to an unfulfillable parent-Style line.
+            continue;
           }
 
           expandedSources.push({
@@ -1962,16 +1963,17 @@ serve(async (req: Request) => {
                 configuration: d.configuration,
               }
             );
-            if (variants.length > 0) {
-              for (const v of variants) {
-                expandedPoShipSources.push({
-                  line: d,
-                  itemId: v.variantItemId,
-                  quantity: v.quantity,
-                });
-              }
-              continue;
+            for (const v of variants) {
+              expandedPoShipSources.push({
+                line: d,
+                itemId: v.variantItemId,
+                quantity: v.quantity,
+              });
             }
+            // Variant-backed line: the parent must never receive. If the grid
+            // summed to no positive cells, receive nothing rather than falling
+            // back to an unfulfillable parent-Style line.
+            continue;
           }
           expandedPoShipSources.push({
             line: d,
@@ -2077,16 +2079,21 @@ serve(async (req: Request) => {
             const sources = expandedPoShipSources.filter(
               (s) => s.line.id === purchaseOrderLine.id
             );
+            // A variant-backed line that expanded to no positive cells has no
+            // sources — ship nothing rather than falling back to the parent
+            // Style SKU (which the parent must never ship).
             const lineSources =
               sources.length > 0
                 ? sources
-                : [
-                    {
-                      line: purchaseOrderLine,
-                      itemId: purchaseOrderLine.itemId,
-                      quantity: purchaseOrderLine.purchaseQuantity,
-                    },
-                  ];
+                : hasConfigTable(purchaseOrderLine.configuration)
+                  ? []
+                  : [
+                      {
+                        line: purchaseOrderLine,
+                        itemId: purchaseOrderLine.itemId,
+                        quantity: purchaseOrderLine.purchaseQuantity,
+                      },
+                    ];
 
             const purchaseQty = purchaseOrderLine.purchaseQuantity ?? 0;
             const outstandingParent =
@@ -2245,16 +2252,18 @@ serve(async (req: Request) => {
                 configuration: line.configuration,
               }
             );
-            if (variants.length > 0) {
-              for (const v of variants) {
-                expandedShipSources.push({
-                  line,
-                  itemId: v.variantItemId,
-                  quantity: v.quantity,
-                });
-              }
-              continue;
+            for (const v of variants) {
+              expandedShipSources.push({
+                line,
+                itemId: v.variantItemId,
+                quantity: v.quantity,
+              });
             }
+            // Variant-backed line: the parent must never ship. If the grid
+            // summed to no positive cells, ship nothing rather than falling
+            // back to an unfulfillable parent-Style line. (MTO keeps its own
+            // path via the guard above.)
+            continue;
           }
           expandedShipSources.push({
             line,
@@ -2481,16 +2490,21 @@ serve(async (req: Request) => {
               const sources = expandedShipSources.filter(
                 (s) => s.line.id === salesOrderLine.id
               );
+              // A variant-backed line that expanded to no positive cells has no
+              // sources — ship nothing rather than falling back to the parent
+              // Style SKU (which the parent must never ship).
               const lineSources =
                 sources.length > 0
                   ? sources
-                  : [
-                      {
-                        line: salesOrderLine,
-                        itemId: salesOrderLine.itemId!,
-                        quantity: salesOrderLine.saleQuantity ?? 0,
-                      },
-                    ];
+                  : hasConfigTable(salesOrderLine.configuration)
+                    ? []
+                    : [
+                        {
+                          line: salesOrderLine,
+                          itemId: salesOrderLine.itemId!,
+                          quantity: salesOrderLine.saleQuantity ?? 0,
+                        },
+                      ];
 
               for (const source of lineSources) {
                 const saleQty = salesOrderLine.saleQuantity ?? 0;
@@ -2650,26 +2664,26 @@ serve(async (req: Request) => {
         const sol = salesOrderLine.data;
         // Expand any grid-filled line (Style color×size, or a Consumable color
         // set) into variant SKU lines; Make-to-Order keeps its own path.
-        if (
+        const isVariantBacked =
           sol.methodType !== "Make to Order" &&
-          sol.itemId &&
-          hasConfigTable(sol.configuration)
-        ) {
+          !!sol.itemId &&
+          hasConfigTable(sol.configuration);
+        if (isVariantBacked) {
           const variants = await expandConfigTableToVariantQuantities(client, {
-            parentItemId: sol.itemId,
+            parentItemId: sol.itemId!,
             companyId,
             configuration: sol.configuration,
           });
-          if (variants.length > 0) {
-            for (const v of variants) {
-              expandedSingleSources.push({
-                itemId: v.variantItemId,
-                quantity: v.quantity,
-              });
-            }
+          for (const v of variants) {
+            expandedSingleSources.push({
+              itemId: v.variantItemId,
+              quantity: v.quantity,
+            });
           }
         }
-        if (expandedSingleSources.length === 0 && sol.itemId) {
+        // Only ship the parent for non-variant (or MTO) lines. A variant-backed
+        // line whose grid summed to nothing ships nothing, never the parent.
+        if (!isVariantBacked && sol.itemId) {
           expandedSingleSources.push({
             itemId: sol.itemId,
             quantity: sol.saleQuantity ?? 0,

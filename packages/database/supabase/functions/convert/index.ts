@@ -587,57 +587,58 @@ serve(async (req: Request) => {
                   configuration: line.configuration,
                 }
               );
-              if (expanded.length > 0) {
-                const quantities = expanded.map((v) => v.quantity);
-                const totalQty = quantities.reduce((s, q) => s + q, 0) || 1;
-                const addOnSplit = allocateCost(addOn, quantities, totalQty);
-                const nonTaxableSplit = allocateCost(
-                  nonTaxableAddOn,
-                  quantities,
-                  totalQty
-                );
-                const shippingSplit = allocateCost(
-                  sel.shippingCost,
-                  quantities,
-                  totalQty
-                );
-                expanded.forEach((v, i) => {
-                  salesOrderLineInserts.push({
-                    salesOrderId: insertedSalesOrderId,
-                    // Keep the quote line's item type (Style / Consumable / …).
-                    salesOrderLineType: line.itemType as
-                      | "Part"
-                      | "Material"
-                      | "Tool"
-                      | "Service"
-                      | "Consumable"
-                      | "Fixture"
-                      | "Style",
-                    addOnCost: addOnSplit[i],
-                    nonTaxableAddOnCost: nonTaxableSplit[i],
-                    description: line.description,
-                    itemId: v.variantItemId,
-                    locationId: line.locationId ?? quote.data.locationId,
-                    methodType: line.methodType,
-                    storageUnitId:
-                      pickMethodDefaultsByLineId.get(line.id!) ?? null,
-                    internalNotes: line.internalNotes,
-                    externalNotes: line.externalNotes,
-                    saleQuantity: v.quantity,
-                    status: "Ordered",
-                    unitOfMeasureCode: line.unitOfMeasureCode,
-                    unitPrice: sel.netUnitPrice,
-                    promisedDate,
-                    createdBy: userId,
-                    companyId,
-                    exchangeRate: quote.data.exchangeRate ?? 1,
-                    taxPercent: line.taxPercent,
-                    shippingCost: shippingSplit[i],
-                    sortOrder: (line.sortOrder ?? 1) + i,
-                  });
+              const quantities = expanded.map((v) => v.quantity);
+              const totalQty = quantities.reduce((s, q) => s + q, 0) || 1;
+              const addOnSplit = allocateCost(addOn, quantities, totalQty);
+              const nonTaxableSplit = allocateCost(
+                nonTaxableAddOn,
+                quantities,
+                totalQty
+              );
+              const shippingSplit = allocateCost(
+                sel.shippingCost,
+                quantities,
+                totalQty
+              );
+              expanded.forEach((v, i) => {
+                salesOrderLineInserts.push({
+                  salesOrderId: insertedSalesOrderId,
+                  // Keep the quote line's item type (Style / Consumable / …).
+                  salesOrderLineType: line.itemType as
+                    | "Part"
+                    | "Material"
+                    | "Tool"
+                    | "Service"
+                    | "Consumable"
+                    | "Fixture"
+                    | "Style",
+                  addOnCost: addOnSplit[i],
+                  nonTaxableAddOnCost: nonTaxableSplit[i],
+                  description: line.description,
+                  itemId: v.variantItemId,
+                  locationId: line.locationId ?? quote.data.locationId,
+                  methodType: line.methodType,
+                  storageUnitId:
+                    pickMethodDefaultsByLineId.get(line.id!) ?? null,
+                  internalNotes: line.internalNotes,
+                  externalNotes: line.externalNotes,
+                  saleQuantity: v.quantity,
+                  status: "Ordered",
+                  unitOfMeasureCode: line.unitOfMeasureCode,
+                  unitPrice: sel.netUnitPrice,
+                  promisedDate,
+                  createdBy: userId,
+                  companyId,
+                  exchangeRate: quote.data.exchangeRate ?? 1,
+                  taxPercent: line.taxPercent,
+                  shippingCost: shippingSplit[i],
+                  sortOrder: (line.sortOrder ?? 1) + i,
                 });
-                continue;
-              }
+              });
+              // Variant-backed line: the parent must never be ordered. If the
+              // grid summed to no positive cells, create no line rather than
+              // falling back to an unfulfillable parent-Style order line.
+              continue;
             }
 
             salesOrderLineInserts.push({

@@ -270,6 +270,11 @@ export async function syncItemVariants(
   const db = client as any;
   const { parentItemId, companyId, userId } = args;
   const empty = { created: 0, archived: 0, reactivated: 0 };
+  // Child items are created without a wrapping transaction (PostgREST client).
+  // Track newly-created child item ids so a mid-loop failure can roll them back
+  // instead of orphaning active standalone items (the parent's delete cascade
+  // only reaches itemVariant links, not the child item rows themselves).
+  const createdItemIds: string[] = [];
 
   try {
     const { data: parent, error: parentErr } = await db
@@ -487,6 +492,7 @@ export async function syncItemVariants(
           .single();
         if (itemErr) throw itemErr;
         variantItemId = variantItem.id;
+        createdItemIds.push(variantItemId);
         created += 1;
 
         await db
@@ -538,6 +544,16 @@ export async function syncItemVariants(
 
     return { data: { created, archived, reactivated }, error: null };
   } catch (error) {
+    // Best-effort rollback of child items created before the failure so we don't
+    // leave orphaned active SKUs behind. Deleting a child item cascades its own
+    // itemVariant / itemVariantAttribute rows.
+    if (createdItemIds.length > 0) {
+      await db
+        .from("item")
+        .delete()
+        .in("id", createdItemIds)
+        .eq("companyId", companyId);
+    }
     return {
       data: empty,
       error: toError(error, "Failed to sync item variants")
@@ -1227,18 +1243,30 @@ export async function syncItemAttributeSelections(
   const { itemId, companyId, userId, attributeSetId, selections } = args;
 
   try {
-    await db
+    // attributeSetId is written only here; a silent failure would leave the
+    // parent with no set and syncItemVariants would then create zero variants
+    // while the caller reports success — check the error explicitly.
+    const { error: setErr } = await db
       .from("item")
       .update({ attributeSetId })
       .eq("id", itemId)
       .eq("companyId", companyId);
+    if (setErr) throw setErr;
 
-    await db
+    const { error: delErr } = await db
       .from("itemAttributeSelection")
       .delete()
       .eq("itemId", itemId)
       .eq("companyId", companyId);
+    if (delErr) throw delErr;
 
+    const rows: Array<{
+      itemId: string;
+      attributeId: string;
+      attributeValueId: string;
+      companyId: string;
+      createdBy: string;
+    }> = [];
     for (const [attributeId, valueIds] of Object.entries(selections)) {
       const uniqueIds = [...new Set(valueIds.filter(Boolean))];
       if (uniqueIds.length === 0) continue;
@@ -1251,17 +1279,21 @@ export async function syncItemAttributeSelections(
       if (valErr) throw valErr;
 
       for (const v of values ?? []) {
-        const { error: selErr } = await db
-          .from("itemAttributeSelection")
-          .insert({
-            itemId,
-            attributeId,
-            attributeValueId: v.id,
-            companyId,
-            createdBy: userId
-          });
-        if (selErr) throw selErr;
+        rows.push({
+          itemId,
+          attributeId,
+          attributeValueId: v.id,
+          companyId,
+          createdBy: userId
+        });
       }
+    }
+
+    if (rows.length > 0) {
+      const { error: insErr } = await db
+        .from("itemAttributeSelection")
+        .insert(rows);
+      if (insErr) throw insErr;
     }
 
     return { error: null };
@@ -1458,7 +1490,6 @@ export async function expandConfigTableToVariantQuantities(
       // Fallback for legacy Garment-shaped tables when set is missing.
       const codes =
         attrCodes.length > 0 ? attrCodes : (["Color", "Size"] as string[]);
-      const primaryAttrCode = codes[codes.length - 1]!;
       const descriptorCodes = codes.slice(0, -1);
 
       for (const row of table) {
@@ -1476,12 +1507,9 @@ export async function expandConfigTableToVariantQuantities(
             }
             parts.push(v);
           }
-          // Single-attribute sets use the primary column value as the only code.
-          if (descriptorCodes.length === 0 && primaryAttrCode) {
-            parts.push(primaryValue);
-          } else {
-            parts.push(primaryValue);
-          }
+          // The primary (quantity) column value is the last code in the key;
+          // single-attribute sets use it as the only code.
+          parts.push(primaryValue);
           cells.push({ valuesKey: parts.join("|"), quantity: qty });
         }
       }

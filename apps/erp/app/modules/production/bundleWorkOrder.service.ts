@@ -613,6 +613,14 @@ export async function getCuttingSplitProposal(
   if (!itemId) return { ...empty, masterDisplayId };
 
   const plannedQty = await getJobVariantQuantities(client, jobId, companyId);
+  if (plannedQty.error) {
+    // The proposal falls back to an empty (non-splittable) plan below, which is
+    // safe, but the underlying failure (e.g. a legacy configuration referencing
+    // an un-backfilled variant SKU) would otherwise be invisible.
+    console.warn(
+      `getCuttingSplitProposal: failed to load plan for master ${masterWorkOrderId}: ${plannedQty.error.message}`
+    );
+  }
   const plannedCells = extractCuttingCells(
     jobVariantQuantitiesToConfigTable(plannedQty.data ?? [])
   );

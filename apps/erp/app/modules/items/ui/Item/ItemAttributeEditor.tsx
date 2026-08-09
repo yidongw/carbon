@@ -112,27 +112,26 @@ const ItemAttributeEditor = ({
     save(next, nextSetId);
   };
 
+  // Compute the next selection outside the state updater: a setState updater must
+  // be pure, and React double-invokes it in StrictMode/dev, which would fire a
+  // duplicate POST if the save() call lived inside it.
   const addValue = (attrId: string, valueId: string) => {
     if (!valueId || !setId) return;
-    setSelected((prev) => {
-      const current = prev[attrId] ?? [];
-      if (current.includes(valueId)) return prev;
-      const next = { ...prev, [attrId]: [...current, valueId] };
-      save(next, setId);
-      return next;
-    });
+    const current = selected[attrId] ?? [];
+    if (current.includes(valueId)) return;
+    const next = { ...selected, [attrId]: [...current, valueId] };
+    setSelected(next);
+    save(next, setId);
   };
 
   const removeValue = (attrId: string, valueId: string) => {
     if (!setId) return;
-    setSelected((prev) => {
-      const next = {
-        ...prev,
-        [attrId]: (prev[attrId] ?? []).filter((id) => id !== valueId)
-      };
-      save(next, setId);
-      return next;
-    });
+    const next = {
+      ...selected,
+      [attrId]: (selected[attrId] ?? []).filter((id) => id !== valueId)
+    };
+    setSelected(next);
+    save(next, setId);
   };
 
   if (!canEdit) {

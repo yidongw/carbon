@@ -2,12 +2,11 @@ import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import { data } from "react-router";
 import {
   parseAttributeValueSelectionsFromFormData,
   syncItemVariantsFromSelections
 } from "~/modules/items/itemAttribute.service";
-import { path } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
@@ -21,8 +20,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
   const attributeSetId = String(formData.get("attributeSetId") ?? "").trim();
   if (!attributeSetId) {
-    throw redirect(
-      path.to.style(itemId),
+    // Driven by an inline fetcher; return data (not a redirect) so the caller's
+    // query state (e.g. ?methodId=…) is preserved instead of being navigated away.
+    return data(
+      { success: false },
       await flash(request, error(null, "Attribute set is required"))
     );
   }
@@ -46,8 +47,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  throw redirect(
-    path.to.style(itemId),
+  // Inline autosave: return data so the fetcher stays inline (a redirect would
+  // trigger a navigation to the bare style URL and drop query params). The
+  // parent loader revalidates automatically, refreshing the selection badges.
+  return data(
+    { success: true },
     await flash(request, success("Updated style attributes"))
   );
 }

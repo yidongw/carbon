@@ -254,6 +254,13 @@ export async function validateProductionQuantityRemaining(
     args.jobId,
     args.companyId
   );
+  // Fail closed: if the plan can't be resolved (e.g. a legacy configuration
+  // references a variant with no generated SKU) we must not silently drop the
+  // per-cell cap and let operators over-report. A genuinely unconfigured job
+  // returns empty data with no error and is unaffected.
+  if (plannedQty.error) {
+    return { error: plannedQty.error };
+  }
   const planned =
     plannedQty.data.length > 0
       ? jobVariantQuantitiesToConfigTable(plannedQty.data)

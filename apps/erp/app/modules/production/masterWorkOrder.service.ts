@@ -8,7 +8,7 @@ import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { computeConfigRemaining } from "./jobConfiguration";
 import {
-  getJobVariantQuantities,
+  getJobVariantQuantitiesForJobs,
   jobVariantQuantitiesToConfigTable
 } from "./jobVariantQuantity.service";
 import type { deadlineTypes } from "./production.models";
@@ -63,18 +63,21 @@ export async function getMasterCuttingProgress(
   }
 
   // Planned Style qty lives on jobVariantQuantity (not job.configuration).
+  // Batched to avoid an N×(2–4) round-trip fan-out across the master list.
   const planConfigByJob = new Map<string, Json>();
-  await Promise.all(
-    jobIds.map(async (jobId) => {
-      const planned = await getJobVariantQuantities(client, jobId, companyId);
-      if (planned.data.length > 0) {
-        planConfigByJob.set(
-          jobId,
-          jobVariantQuantitiesToConfigTable(planned.data) as unknown as Json
-        );
-      }
-    })
+  const plannedByJob = await getJobVariantQuantitiesForJobs(
+    client,
+    jobIds,
+    companyId
   );
+  for (const [jobId, lines] of plannedByJob.data) {
+    if (lines.length > 0) {
+      planConfigByJob.set(
+        jobId,
+        jobVariantQuantitiesToConfigTable(lines) as unknown as Json
+      );
+    }
+  }
 
   // Resolve the cutting operation per job (tagged cutting, else first-in-BOP).
   const cuttingOpByJob = new Map<

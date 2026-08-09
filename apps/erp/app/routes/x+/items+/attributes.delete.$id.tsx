@@ -23,6 +23,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(request, error(attribute.error, "Failed to get attribute"))
     );
   }
+  if (attribute.data?.companyId === null) {
+    throw redirect(
+      path.to.itemAttributes,
+      await flash(
+        request,
+        error(new Error("Access denied"), "Cannot delete a system attribute")
+      )
+    );
+  }
   return { attribute: attribute.data };
 }
 
@@ -33,6 +42,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
     throw redirect(
       path.to.itemAttributes,
       await flash(request, error(params, "Failed to get attribute id"))
+    );
+  }
+
+  const existing = await getItemAttribute(client, id);
+  if (existing.data?.companyId === null) {
+    throw redirect(
+      path.to.itemAttributes,
+      await flash(
+        request,
+        error(new Error("Access denied"), "Cannot delete a system attribute")
+      )
     );
   }
 

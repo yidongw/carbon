@@ -67,6 +67,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  if (attributeState.error) {
+    throw redirect(
+      path.to.consumables,
+      await flash(
+        request,
+        error(attributeState.error, "Failed to load consumable attributes")
+      )
+    );
+  }
+
   return {
     consumableSummary: consumableSummary.data,
     files: getItemFiles(client, itemId, companyId),

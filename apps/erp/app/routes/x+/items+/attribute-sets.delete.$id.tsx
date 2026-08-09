@@ -23,6 +23,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(request, error(set.error, "Failed to get attribute set"))
     );
   }
+  if (set.data?.companyId === null) {
+    throw redirect(
+      path.to.itemAttributeSets,
+      await flash(
+        request,
+        error(
+          new Error("Access denied"),
+          "Cannot delete a system attribute set"
+        )
+      )
+    );
+  }
   return { set: set.data };
 }
 
@@ -33,6 +45,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
     throw redirect(
       path.to.itemAttributeSets,
       await flash(request, error(params, "Failed to get attribute set id"))
+    );
+  }
+
+  const existing = await getItemAttributeSet(client, id);
+  if (existing.data?.companyId === null) {
+    throw redirect(
+      path.to.itemAttributeSets,
+      await flash(
+        request,
+        error(
+          new Error("Access denied"),
+          "Cannot delete a system attribute set"
+        )
+      )
     );
   }
 
