@@ -7223,9 +7223,6 @@ msgstr "क्लेम अपडेट करने में वफ़ाद�
 msgid "Failed to update company"
 msgstr "कंपनी अपडेट करणे मित्र झाला"
 
-msgid "Failed to update configuration"
-msgstr "कonfiguration अपडेट करणे मिलायला वैवधी रहिंदा आला होता"
-
 msgid "Failed to update configuration parameter"
 msgstr "कॉन्फ़िगरेशन पैरामीटर को अपडेट करने में विफल"
 
@@ -7756,6 +7753,9 @@ msgstr "यक्ष्मा इकाई को अपडेट करने �
 
 msgid "Failed to update user permissions"
 msgstr "सउदाहरण अनुप्रयोग का परिवर्तन नहीं हुआ"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "गैर सफल तरक्षण अपडेट"

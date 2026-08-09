@@ -7220,9 +7220,6 @@ msgstr "Не удалось обновить претензии"
 msgid "Failed to update company"
 msgstr "Не удалось обновить компанию"
 
-msgid "Failed to update configuration"
-msgstr "Не удалось обновить конфигурацию"
-
 msgid "Failed to update configuration parameter"
 msgstr "Ошибка при обновлении параметра конфигурации"
 
@@ -7753,6 +7750,9 @@ msgstr "Не удалось обновить единицу измерения"
 
 msgid "Failed to update user permissions"
 msgstr "Не удалось обновить права пользователя"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "Не удалось обновить перемещение склада"

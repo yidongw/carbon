@@ -74,9 +74,9 @@ export type OperationQuantitySummary = {
   production: number;
   scrap: number;
   rework: number;
-  productionConfigurations: Json[];
-  scrapConfigurations: Json[];
-  reworkConfigurations: Json[];
+  productionVariantQuantities: Json[];
+  scrapVariantQuantities: Json[];
+  reworkVariantQuantities: Json[];
 };
 
 function sumLineQuantity(lines: ProductionQuantityLineInput[]) {
@@ -111,7 +111,7 @@ export function validateProductionQuantityLines(
       if (configTotal > 0 && Math.abs(configTotal - line.quantity) > 0.0001) {
         return {
           error: new Error(
-            `Line quantity (${line.quantity}) must match configuration total (${configTotal})`
+            `Line quantity (${line.quantity}) must match variants quantity total (${configTotal})`
           )
         };
       }
@@ -122,15 +122,15 @@ export function validateProductionQuantityLines(
 
 /**
  * A variant-configured (attribute combo) item must report per cell: every line
- * for such a job has to carry a configuration whose total > 0. The report editor
+ * for such a job has to carry variant quantities whose total > 0. The report editor
  * gates all line types (Production/Scrap/Rework) through the config table, so the
  * guard covers them all. Bundle jobs are excluded — they have a fixed variant
  * and report a plain quantity. This guards the write layer so a configured report
- * can never be saved as a bare aggregate (configuration = NULL), regardless of
+ * can never be saved as a bare aggregate (variantQuantities = NULL), regardless of
  * entry point (report form, edit, external API, import). Mirrors the report
  * form's variants-quantity gate (item has variants quantity AND the job is not a bundle).
  */
-async function validateConfiguredLinesHaveConfiguration(
+async function validateConfiguredLinesHaveVariantQuantities(
   client: SupabaseClient<Database>,
   args: {
     companyId: string;
@@ -291,11 +291,14 @@ export async function createProductionQuantityReport(
     return { data: null, error: lineValidation.error };
   }
 
-  const configCheck = await validateConfiguredLinesHaveConfiguration(client, {
-    companyId: args.companyId,
-    jobId: args.jobId,
-    lines: args.lines
-  });
+  const configCheck = await validateConfiguredLinesHaveVariantQuantities(
+    client,
+    {
+      companyId: args.companyId,
+      jobId: args.jobId,
+      lines: args.lines
+    }
+  );
   if (configCheck.error) {
     return { data: null, error: configCheck.error };
   }
@@ -454,11 +457,14 @@ export async function replaceProductionQuantityReportLines(
     return { data: null, error: report.error };
   }
 
-  const configCheck = await validateConfiguredLinesHaveConfiguration(client, {
-    companyId: args.companyId,
-    jobId: report.data.jobId,
-    lines: args.lines
-  });
+  const configCheck = await validateConfiguredLinesHaveVariantQuantities(
+    client,
+    {
+      companyId: args.companyId,
+      jobId: report.data.jobId,
+      lines: args.lines
+    }
+  );
   if (configCheck.error) {
     return { data: null, error: configCheck.error };
   }
@@ -738,22 +744,22 @@ export async function resolveProductionQuantityCanAutoApprove(
 function accumulateConfigBreakdown(
   lines: { type: string; variantQuantities: Json | null }[] | null,
   totals: {
-    productionConfigurations: Json[];
-    scrapConfigurations: Json[];
-    reworkConfigurations: Json[];
+    productionVariantQuantities: Json[];
+    scrapVariantQuantities: Json[];
+    reworkVariantQuantities: Json[];
   }
 ) {
   for (const line of lines ?? []) {
     if (!line.variantQuantities) continue;
     switch (line.type) {
       case "Production":
-        totals.productionConfigurations.push(line.variantQuantities);
+        totals.productionVariantQuantities.push(line.variantQuantities);
         break;
       case "Scrap":
-        totals.scrapConfigurations.push(line.variantQuantities);
+        totals.scrapVariantQuantities.push(line.variantQuantities);
         break;
       case "Rework":
-        totals.reworkConfigurations.push(line.variantQuantities);
+        totals.reworkVariantQuantities.push(line.variantQuantities);
         break;
       default:
         break;
@@ -802,9 +808,9 @@ export async function getOperationQuantitySummary(
     production: jobOperation?.quantityComplete ?? 0,
     scrap: jobOperation?.quantityScrapped ?? 0,
     rework: jobOperation?.quantityReworked ?? 0,
-    productionConfigurations: [] as Json[],
-    scrapConfigurations: [] as Json[],
-    reworkConfigurations: [] as Json[]
+    productionVariantQuantities: [] as Json[],
+    scrapVariantQuantities: [] as Json[],
+    reworkVariantQuantities: [] as Json[]
   };
 
   // Headline totals come from jobOperation rollups; config breakdown unions active lines.
@@ -816,9 +822,9 @@ export async function getOperationQuantitySummary(
       production: totals.production,
       scrap: totals.scrap,
       rework: totals.rework,
-      productionConfigurations: totals.productionConfigurations,
-      scrapConfigurations: totals.scrapConfigurations,
-      reworkConfigurations: totals.reworkConfigurations
+      productionVariantQuantities: totals.productionVariantQuantities,
+      scrapVariantQuantities: totals.scrapVariantQuantities,
+      reworkVariantQuantities: totals.reworkVariantQuantities
     },
     error: null
   };

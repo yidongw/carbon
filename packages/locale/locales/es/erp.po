@@ -7222,9 +7222,6 @@ msgstr "Falló al actualizar las reclamaciones"
 msgid "Failed to update company"
 msgstr "Falló al actualizar la empresa"
 
-msgid "Failed to update configuration"
-msgstr "Falló al actualizar la configuración"
-
 msgid "Failed to update configuration parameter"
 msgstr "Error al actualizar el parámetro de configuración"
 
@@ -7755,6 +7752,9 @@ msgstr "Falló al actualizar la unidad de medida"
 
 msgid "Failed to update user permissions"
 msgstr "Falló al actualizar los permisos del usuario"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "Falló la actualización del traslado al almacén"

@@ -65,3 +65,5 @@ Job-scoped qty report routes (`apps/erp/app/routes/x+/job+/$jobId.quantities.new
 `variantQuantities`; Part method flat params still use `job.configuration` /
 FormData `configuration`. Overlay reference source uses
 `reportedVariantQuantities` (formerly `reportedConfigurations`).
+
+Operation quantity summary stores Style grids as `productionVariantQuantities` / `scrapVariantQuantities` / `reworkVariantQuantities` (not `*Configurations`).

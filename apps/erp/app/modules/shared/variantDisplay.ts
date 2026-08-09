@@ -56,7 +56,7 @@ export function buildAttributeValueNames(
 }
 
 /**
- * Parse a Style line's stored `configuration` JSON into a flat list of every
+ * Parse a Style line's stored variant-quantities JSON into a flat list of every
  * non-zero variant cell (for chips + expand quantity rows).
  *
  * Shared by Purchase Order and Sales Order summaries. Config tables may use
@@ -87,16 +87,16 @@ export function localizeColorNameMap(
 }
 
 export function getVariantDisplay(
-  configuration: unknown,
+  variantQuantities: unknown,
   attributeValueNames?: Record<string, string>,
   locale?: string
 ): VariantDisplay | null {
-  if (!configuration) return null;
+  if (!variantQuantities) return null;
 
-  let parsed: unknown = configuration;
-  if (typeof configuration === "string") {
+  let parsed: unknown = variantQuantities;
+  if (typeof variantQuantities === "string") {
     try {
-      parsed = JSON.parse(configuration);
+      parsed = JSON.parse(variantQuantities);
     } catch {
       return null;
     }

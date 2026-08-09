@@ -20,7 +20,7 @@ export type ItemVariantsQuantityOverlayLoaderData = {
    * DB-resolved reference source for the selected operation (pickups / reported
    * configs) used to compute click-to-fill hints. The client builds the actual
    * reference context + editor rows from this + its in-memory inputs — only ids
-   * are sent here, never the draft configuration or sibling configs.
+   * are sent here, never the draft variantQuantities or sibling payloads.
    */
   referenceSource: VariantsQuantityReferenceSource | null;
   /**

@@ -156,7 +156,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       variantQuantities = fields.variantQuantities;
       saleQuantity = fields.quantity;
     } catch {
-      // Invalid JSON — create without configuration; keep typed quantity.
+      // Invalid JSON — create without variantQuantities; keep typed quantity.
     }
   }
 

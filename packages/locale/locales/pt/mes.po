@@ -3257,9 +3257,6 @@ msgstr "Falhou na atualização das reivindicações"
 msgid "Failed to update company"
 msgstr "Falhou na atualização da empresa"
 
-msgid "Failed to update configuration"
-msgstr "Falhou ao atualizar a configuração"
-
 msgid "Failed to update consumable"
 msgstr "Falhou ao atualizar o consumo"
 
@@ -3769,6 +3766,9 @@ msgstr "Falhou na atualização da unidade de medida"
 
 msgid "Failed to update user permissions"
 msgstr "Falhou ao atualizar permissões do usuário"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "Falhou na atualização do transferência de estoque"

@@ -7220,9 +7220,6 @@ msgstr "Nie udało się zaktualizować reklamacji"
 msgid "Failed to update company"
 msgstr "Nie udało się zaktualizować firmy"
 
-msgid "Failed to update configuration"
-msgstr "Nie udało się zaktualizować konfiguracji"
-
 msgid "Failed to update configuration parameter"
 msgstr "Nie udało się zaktualizować parametru konfiguracji"
 
@@ -7753,6 +7750,9 @@ msgstr "Nie udało się zaktualizować jednostki miary"
 
 msgid "Failed to update user permissions"
 msgstr "Nie udało się zaktualizować uprawnień użytkownika"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "Nie udało się zaktualizować przenoszenia magazynowego"

@@ -30,7 +30,7 @@ export type ProductionQuantityListRow = {
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;
-  configuration?: unknown;
+  variantQuantities?: unknown;
   employee?: {
     id: string;
     firstName: string | null;

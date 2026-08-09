@@ -3257,9 +3257,6 @@ msgstr "更新に失敗しました"
 msgid "Failed to update company"
 msgstr "会社の更新に失敗しました"
 
-msgid "Failed to update configuration"
-msgstr "設定の更新に失敗しました"
-
 msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
 
@@ -3769,6 +3766,9 @@ msgstr "単位を更新できませんでした"
 
 msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "倉庫移動の更新に失敗しました"

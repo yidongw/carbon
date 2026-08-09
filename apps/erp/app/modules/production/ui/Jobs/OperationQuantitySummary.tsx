@@ -114,17 +114,17 @@ export function OperationQuantitySummaryView({
   optionLabels
 }: OperationQuantitySummaryProps) {
   const productionParts = useConfigParts(
-    summary?.productionConfigurations ?? [],
+    summary?.productionVariantQuantities ?? [],
     variantQuantityParameters,
     optionLabels
   );
   const scrapParts = useConfigParts(
-    summary?.scrapConfigurations ?? [],
+    summary?.scrapVariantQuantities ?? [],
     variantQuantityParameters,
     optionLabels
   );
   const reworkParts = useConfigParts(
-    summary?.reworkConfigurations ?? [],
+    summary?.reworkVariantQuantities ?? [],
     variantQuantityParameters,
     optionLabels
   );

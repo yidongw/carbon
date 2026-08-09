@@ -13,7 +13,7 @@ export type OverlayTarget = {
   /**
    * In-memory data passed straight to the overlay component (surfaced as
    * `ctx.props` in the renderer). Unlike `url`/`params` it never touches the URL
-   * — it's for parent-owned data (e.g. a draft `configuration`) the loader can't
+   * — it's for parent-owned data (e.g. a draft `variantQuantities`) the loader can't
    * fetch. Absent when the overlay is restored from a URL alone.
    */
   props?: Record<string, unknown>;

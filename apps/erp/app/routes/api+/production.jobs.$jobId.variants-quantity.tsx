@@ -30,24 +30,28 @@ import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
-export type JobConfigurationHistoryEntry = {
+export type JobVariantsQuantityHistoryEntry = {
   id: string;
   quantity: number;
-  configuration: { variantTable: VariantsQuantityRow[] };
+  /** Style qty snapshot from jobConfigurationHistory.configuration JSONB. */
+  variantQuantities: { variantTable: VariantsQuantityRow[] };
   createdAt: string;
   createdByName: string | null;
 };
+
+/** @deprecated Prefer JobVariantsQuantityHistoryEntry */
+export type JobConfigurationHistoryEntry = JobVariantsQuantityHistoryEntry;
 
 export type JobVariantsQuantityOverlayLoaderData = {
   jobDisplayId: string | null;
   parameters: ConfigurationParameter[];
   initialRows?: VariantsQuantityRow[];
-  history: JobConfigurationHistoryEntry[];
+  history: JobVariantsQuantityHistoryEntry[];
   /** Attribute value code -> name for the variants quantity grid. */
   attributeValueNames: Record<string, string>;
 };
 
-function normalizeConfigurationValue(value: unknown): {
+function normalizeVariantQuantitiesValue(value: unknown): {
   variantTable: VariantsQuantityRow[];
 } {
   const cfg =
@@ -101,7 +105,7 @@ export async function loader({
     jobId,
     companyId
   );
-  const history: JobConfigurationHistoryEntry[] = (
+  const history: JobVariantsQuantityHistoryEntry[] = (
     historyResult.data ?? []
   ).map((entry) => {
     const createdByUser = Array.isArray(entry.createdByUser)
@@ -110,13 +114,13 @@ export async function loader({
     return {
       id: entry.id,
       quantity: Number(entry.quantity) || 0,
-      configuration: normalizeConfigurationValue(entry.configuration),
+      variantQuantities: normalizeVariantQuantitiesValue(entry.configuration),
       createdAt: entry.createdAt,
       createdByName: createdByUser?.fullName ?? null
     };
   });
 
-  // Map attribute-value code -> name so the config table displays names, not
+  // Map attribute-value code -> name so the qty grid displays names, not
   // codes (all attributes, not just Color).
   const attributeValueNameRows = await getAttributeValueNames(
     client,
@@ -175,7 +179,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const adjustmentTable = normalizeConfigurationValue(adjustment);
+  const adjustmentTable = normalizeVariantQuantitiesValue(adjustment);
   const hasAdjustment = adjustmentTable.variantTable.some(
     (row) => (Number(row.Quantities) || 0) !== 0
   );
@@ -223,7 +227,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       { ok: false as const, error: replaced.error.message },
       await flash(
         request,
-        error(replaced.error, "Failed to update configuration")
+        error(replaced.error, "Failed to update variants quantity")
       )
     );
   }

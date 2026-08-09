@@ -3263,9 +3263,6 @@ msgstr "केंद्रित करणे माहिती अपडेट
 msgid "Failed to update company"
 msgstr "कंपनी अपडेट करणे मित्र झाला"
 
-msgid "Failed to update configuration"
-msgstr "रचनात्मक अपडेट करणे विफल झाले आहे"
-
 msgid "Failed to update consumable"
 msgstr "अनुप्रयोगिता अपडेट करने में वायल्सION"
 
@@ -3775,6 +3772,9 @@ msgstr "यक्ष्मा इकाई को अपडेट करने �
 
 msgid "Failed to update user permissions"
 msgstr "सउदाहरण अधिकारों का आधिकारिक प्रतिबद्ध होने में वफ़्डा नहीं आया"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "गैर सफल तरक्षण अपडेट"

@@ -110,7 +110,7 @@ function HistoryList({
               <div className="border-t border-border px-3 py-2">
                 <ReadOnlyVariantsQuantityTable
                   columns={columns}
-                  rows={entry.configuration.variantTable ?? []}
+                  rows={entry.variantQuantities.variantTable ?? []}
                   optionLabels={optionLabels}
                   signed
                 />

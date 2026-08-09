@@ -3257,9 +3257,6 @@ msgstr "Échec de la mise à jour des revendications"
 msgid "Failed to update company"
 msgstr "Échec de la mise à jour de l'entreprise"
 
-msgid "Failed to update configuration"
-msgstr "Échec de la mise à jour de la configuration"
-
 msgid "Failed to update consumable"
 msgstr "Échec de la mise à jour du consommable"
 
@@ -3769,6 +3766,9 @@ msgstr "Échec de la mise à jour de l'unité de mesure"
 
 msgid "Failed to update user permissions"
 msgstr "Échec de la mise à jour des permissions utilisateur"
+
+msgid "Failed to update variants quantity"
+msgstr ""
 
 msgid "Failed to update warehouse transfer"
 msgstr "Échec de la mise à jour du transfert entre magasins"
