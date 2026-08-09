@@ -100,7 +100,7 @@ export function ProductionQuantityTableQuantityCell({
     event.stopPropagation();
     if (!itemId) return;
     openOverlay(
-      overlay.to.itemConfigTable(
+      overlay.to.itemVariantsQuantity(
         { itemId, recordId: row.id, reportKind },
         {
           configuration:

@@ -1,6 +1,6 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { expandConfigTableToVariantQuantities } from "./itemAttribute.service";
+import { expandVariantsQuantityTable } from "./itemAttribute.service";
 
 type Db = SupabaseClient<Database>;
 
@@ -24,7 +24,7 @@ export async function expandStyleConfigToVariantLines(
 ): Promise<
   { ok: true; variants: StyleVariantQuantity[] } | { ok: false; error: string }
 > {
-  const expanded = await expandConfigTableToVariantQuantities(client, {
+  const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: args.parentItemId,
     companyId: args.companyId,
     configuration: args.variantQuantities
@@ -56,7 +56,7 @@ export async function expandStyleConfigToVariantLines(
   return { ok: true, variants: expanded.data };
 }
 
-export function hasStyleConfigTable(variantQuantities: unknown): boolean {
+export function hasStyleVariantsQuantity(variantQuantities: unknown): boolean {
   if (!variantQuantities || typeof variantQuantities !== "object") return false;
   const table = (variantQuantities as Record<string, unknown>).configTable;
   return Array.isArray(table) && table.length > 0;
@@ -79,7 +79,7 @@ export async function requireVariantQuantitiesIfAttributeParent(
   if (!args.parentItemId || !(args.quantity > 0)) {
     return { ok: true };
   }
-  if (hasStyleConfigTable(args.variantQuantities)) {
+  if (hasStyleVariantsQuantity(args.variantQuantities)) {
     return { ok: true };
   }
 

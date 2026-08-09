@@ -14,12 +14,12 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
-import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
+import { computeJobVariantsQuantityTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import {
-  buildProductionConfigTableReferenceContext,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext
+  buildProductionVariantsQuantityReferenceContext,
+  type VariantsQuantityReferenceContext,
+  type VariantsQuantityReferenceSource
 } from "~/modules/production/variantsQuantityTableColumns";
 import { ItemVariantsQuantityInput } from "./ItemVariantsQuantityInput";
 import { useVariantsQuantityModal } from "./VariantsQuantityModal";
@@ -79,10 +79,10 @@ function buildReferenceContextForLine(
   lines: EditableProductionQuantityLine[],
   configReferenceContext?: {
     originalConfiguration?: unknown;
-    configReferenceSource?: ConfigReferenceSource | null;
+    variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   } | null,
   employeeId?: string
-): ConfigTableReferenceContext | undefined {
+): VariantsQuantityReferenceContext | undefined {
   if (!configReferenceContext) return undefined;
 
   if (configReferenceContext.originalConfiguration != null) {
@@ -98,7 +98,7 @@ function buildReferenceContextForLine(
     };
   }
 
-  if (configReferenceContext.configReferenceSource) {
+  if (configReferenceContext.variantsQuantityReferenceSource) {
     const siblingLineConfigurations = lines
       .filter((line) => line.key !== lineKey)
       .map((line) => getConfigFromEditableLine(line))
@@ -106,8 +106,8 @@ function buildReferenceContextForLine(
         (config): config is Record<string, unknown> => config !== undefined
       );
 
-    return buildProductionConfigTableReferenceContext({
-      source: configReferenceContext.configReferenceSource,
+    return buildProductionVariantsQuantityReferenceContext({
+      source: configReferenceContext.variantsQuantityReferenceSource,
       employeeId,
       siblingLineConfigurations
     });
@@ -123,7 +123,7 @@ export function ProductionQuantityLinesEditor({
   itemId,
   isDisabled = false,
   configReferenceContext,
-  configReferenceSource,
+  variantsQuantityReferenceSource,
   employeeId,
   jobId,
   jobOperationId
@@ -140,7 +140,7 @@ export function ProductionQuantityLinesEditor({
     originalConfiguration: unknown;
   } | null;
   /** When set (first submit), hints = job target − already reported on the operation. */
-  configReferenceSource?: ConfigReferenceSource | null;
+  variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   /** When set, use pickup-based hints for this employee */
   employeeId?: string;
   jobId?: string;
@@ -200,7 +200,7 @@ export function ProductionQuantityLinesEditor({
                   originalConfiguration:
                     configReferenceContext.originalConfiguration
                 }
-              : { configReferenceSource: source },
+              : { variantsQuantityReferenceSource: source },
             employeeId
           ),
         onConfirm: (data) =>
@@ -253,7 +253,7 @@ export function ProductionQuantityLinesEditor({
     <VStack className="w-full items-stretch gap-3">
       {lines.map((line) => {
         const cfg = getConfigFromEditableLine(line);
-        const configTotal = computeJobConfigTableTotal(cfg);
+        const configTotal = computeJobVariantsQuantityTotal(cfg);
 
         return (
           <div
@@ -337,7 +337,7 @@ export function ProductionQuantityLinesEditor({
                   ? () => openLineConfig(line.key)
                   : undefined
               }
-              configTableTotal={configTotal}
+              variantsQuantityTotal={configTotal}
               openVariantsQuantityAccessibilityLabel={t`Edit configuration`}
             />
             {line.type === "Scrap" ? (

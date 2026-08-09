@@ -1,12 +1,14 @@
-import { computeJobConfigTableTotal } from "./jobConfiguration";
+import { computeJobVariantsQuantityTotal } from "./jobConfiguration";
 
-export type ParsedConfigTableValue = {
+export type ParsedVariantsQuantityValue = {
   rows: Record<string, string | number | boolean>[] | null;
   total: number;
 };
 
 /** Parse a saved Style/job `configuration` JSON into rows and total (combo-only). */
-export function parseInitialConfigTable(raw: unknown): ParsedConfigTableValue {
+export function parseInitialVariantsQuantity(
+  raw: unknown
+): ParsedVariantsQuantityValue {
   if (!raw) return { rows: null, total: 0 };
   try {
     const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
@@ -34,7 +36,7 @@ export function parseInitialConfigTable(raw: unknown): ParsedConfigTableValue {
   }
 }
 
-export type ConfigTableOverlaySuccess = {
+export type VariantsQuantityOverlaySuccess = {
   ok: true;
   configuration: {
     configTable: Record<string, string | number | boolean>[];
@@ -49,9 +51,9 @@ export type ConfigTableOverlaySuccess = {
   total: number;
 };
 
-export function isConfigTableOverlaySuccess(
+export function isVariantsQuantityOverlaySuccess(
   data: unknown
-): data is ConfigTableOverlaySuccess {
+): data is VariantsQuantityOverlaySuccess {
   return (
     typeof data === "object" &&
     data !== null &&
@@ -62,12 +64,13 @@ export function isConfigTableOverlaySuccess(
   );
 }
 
-export function buildConfigTableActionResponse(
+export function buildVariantsQuantityActionResponse(
   configuration: Record<string, unknown>
-): ConfigTableOverlaySuccess {
+): VariantsQuantityOverlaySuccess {
   return {
     ok: true,
-    configuration: configuration as ConfigTableOverlaySuccess["configuration"],
-    total: computeJobConfigTableTotal(configuration)
+    configuration:
+      configuration as VariantsQuantityOverlaySuccess["configuration"],
+    total: computeJobVariantsQuantityTotal(configuration)
   };
 }

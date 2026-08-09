@@ -8,11 +8,11 @@ import {
   recalculateJobRequirements,
   upsertJobMethod
 } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
+  isVariantsQuantityConfiguration,
   persistStyleJobConfiguration
 } from "~/modules/production/jobVariantQuantity.service";
+import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
 
@@ -251,7 +251,7 @@ export async function action({ request }: ActionFunctionArgs) {
       if (
         configuration &&
         typeof configuration === "object" &&
-        isConfigTableConfiguration(configuration)
+        isVariantsQuantityConfiguration(configuration)
       ) {
         const jobsWithItems = await client
           .from("job")

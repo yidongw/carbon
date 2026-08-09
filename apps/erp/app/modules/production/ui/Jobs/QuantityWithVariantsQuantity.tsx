@@ -23,7 +23,7 @@ export type QuantityWithVariantsQuantityProps = {
   hasVariantsQuantity: boolean;
   onOpenVariantsQuantity?: () => void;
   /** Sum of configured quantity columns; drives adornment color. */
-  configTableTotal?: number;
+  variantsQuantityTotal?: number;
   minValue?: number;
   maxValue?: number;
   size?: "sm" | "md" | "lg";
@@ -48,7 +48,7 @@ export function QuantityWithVariantsQuantity({
   onChange,
   hasVariantsQuantity,
   onOpenVariantsQuantity,
-  configTableTotal = 0,
+  variantsQuantityTotal = 0,
   minValue = 0,
   maxValue,
   size = "md",
@@ -115,7 +115,7 @@ export function QuantityWithVariantsQuantity({
         onOpenVariantsQuantity={
           hasVariantsQuantity ? onOpenVariantsQuantity : undefined
         }
-        configTableTotal={configTableTotal}
+        variantsQuantityTotal={variantsQuantityTotal}
         openVariantsQuantityAccessibilityLabel={t`Configure quantities`}
       />
       {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}

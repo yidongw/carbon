@@ -1,8 +1,8 @@
 import type { ConfigurationParameter } from "~/modules/items/types";
 
-export type ConfigTableRow = Record<string, string | number | boolean>;
+export type VariantsQuantityRow = Record<string, string | number | boolean>;
 
-export type ConfigColumnType =
+export type VariantsQuantityColumnType =
   | "quantity"
   | "text"
   | "numeric"
@@ -10,10 +10,10 @@ export type ConfigColumnType =
   | "list"
   | "material";
 
-export type ConfigColumn = {
+export type VariantsQuantityColumn = {
   key: string;
   label: string;
-  type: ConfigColumnType;
+  type: VariantsQuantityColumnType;
   options?: string[];
 };
 
@@ -23,12 +23,12 @@ export type ConfigurationParameterColumnsInput = Pick<
   "key" | "label" | "dataType" | "listOptions"
 >;
 
-export function buildConfigColumns(
+export function buildVariantsQuantityColumns(
   parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string
 ): {
   primaryParam: ConfigurationParameterColumnsInput | null;
-  columns: ConfigColumn[];
+  columns: VariantsQuantityColumn[];
 } {
   // Style combo: single valuesKey list → row labels + Quantities (not matrix).
   const firstList = parameters.find((p) => p.dataType === "list");
@@ -66,7 +66,10 @@ export function buildConfigColumns(
   };
 }
 
-function getMergeKey(row: ConfigTableRow, columns: ConfigColumn[]): string {
+function getMergeKey(
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[]
+): string {
   const descriptorColumns = columns.filter((col) => col.type !== "quantity");
 
   if (descriptorColumns.length === 0) {
@@ -78,11 +81,11 @@ function getMergeKey(row: ConfigTableRow, columns: ConfigColumn[]): string {
   );
 }
 
-export function mergeConfigTableRows(
-  rows: ConfigTableRow[],
-  columns: ConfigColumn[]
-): ConfigTableRow[] {
-  const rowsByKey = new Map<string, ConfigTableRow>();
+export function mergeVariantsQuantityRows(
+  rows: VariantsQuantityRow[],
+  columns: VariantsQuantityColumn[]
+): VariantsQuantityRow[] {
+  const rowsByKey = new Map<string, VariantsQuantityRow>();
 
   for (const row of rows) {
     const key = getMergeKey(row, columns);
@@ -114,8 +117,8 @@ function isZeroOrEmpty(value: string | number | boolean | undefined): boolean {
 }
 
 export function hasConfigRowValue(
-  row: ConfigTableRow,
-  columns: ConfigColumn[]
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[]
 ): boolean {
   const quantityColumns = columns.filter((col) => col.type === "quantity");
   if (quantityColumns.length > 0) {
@@ -125,7 +128,9 @@ export function hasConfigRowValue(
   return columns.some((col) => !isZeroOrEmpty(row[col.key]));
 }
 
-export function getConfigTableRows(configuration: unknown): ConfigTableRow[] {
+export function getVariantsQuantityRows(
+  configuration: unknown
+): VariantsQuantityRow[] {
   if (
     configuration === null ||
     configuration === undefined ||
@@ -138,10 +143,10 @@ export function getConfigTableRows(configuration: unknown): ConfigTableRow[] {
   const configTable = (configuration as Record<string, unknown>).configTable;
   if (!Array.isArray(configTable)) return [];
 
-  return configTable as ConfigTableRow[];
+  return configTable as VariantsQuantityRow[];
 }
 
-export type ConfigQuantityCell = {
+export type VariantsQuantityCell = {
   key: string;
   label: string;
   quantity: number;
@@ -166,10 +171,10 @@ function optionLabelOf(
  * `valuesKey` + `Quantities`, labelled from `label` or the valuesKey
  * (`|` → ` · `). Legacy Color×Size matrix configs are retired (yield nothing).
  */
-export function getConfigQuantityCells(
+export function getVariantsQuantityCells(
   configuration: unknown,
   optionLabels?: Record<string, string>
-): ConfigQuantityCell[] {
+): VariantsQuantityCell[] {
   if (
     configuration === null ||
     configuration === undefined ||
@@ -182,9 +187,11 @@ export function getConfigQuantityCells(
   // Combo-only: quantity configs are { valuesKey, Quantities } rows. Legacy
   // Color×Size matrices are retired.
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
-  const cells: ConfigQuantityCell[] = [];
+  const cells: VariantsQuantityCell[] = [];
 
-  for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
+  for (const [rowIndex, row] of getVariantsQuantityRows(
+    configuration
+  ).entries()) {
     const valuesKey = String(row.valuesKey ?? "").trim();
     if (!valuesKey) continue;
     const rawQty = row.Quantities;
@@ -203,7 +210,7 @@ export function getConfigQuantityCells(
   return cells;
 }
 
-export type ComboConfigRow = {
+export type ComboVariantsQuantityRow = {
   valuesKey: string;
   Quantities: number;
   label?: string;
@@ -213,10 +220,10 @@ export type ComboConfigRow = {
  * Read stored config → combo editor rows (`valuesKey` + `Quantities`).
  * Configs are combo-only now; anything else yields no rows.
  */
-export function configTableToComboRows(
+export function variantsQuantityToComboRows(
   configuration: unknown,
   optionLabels?: Record<string, string>
-): ComboConfigRow[] {
+): ComboVariantsQuantityRow[] {
   if (
     configuration === null ||
     configuration === undefined ||
@@ -229,9 +236,9 @@ export function configTableToComboRows(
   // Combo-only: pass through { valuesKey, Quantities } rows. Legacy Color×Size
   // matrix configs are retired.
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
-  const out: ComboConfigRow[] = [];
+  const out: ComboVariantsQuantityRow[] = [];
 
-  for (const row of getConfigTableRows(configuration)) {
+  for (const row of getVariantsQuantityRows(configuration)) {
     const valuesKey = String(row.valuesKey ?? "").trim();
     if (!valuesKey) continue;
     const quantity = Number(row.Quantities) || 0;
@@ -247,8 +254,8 @@ export function configTableToComboRows(
 }
 
 export function formatConfigRowLabel(
-  row: ConfigTableRow,
-  columns: ConfigColumn[],
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[],
   /** Display label per list-option value (e.g. color code -> color name). The
    * stored value stays the code; only the shown text changes. */
   optionLabels?: Record<string, string>
@@ -296,26 +303,29 @@ export function formatConfigRowLabels(
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
 ): string[] {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
-  const rows = getConfigTableRows(configuration);
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
+  const rows = getVariantsQuantityRows(configuration);
 
   return rows
     .filter((row) => hasConfigRowValue(row, columns))
     .map((row) => formatConfigRowLabel(row, columns, optionLabels));
 }
 
-export type ConfigRowDisplayPart = {
+export type VariantsQuantityRowDisplayPart = {
   descriptor: string | null;
   quantities: { label: string; value: number }[];
 };
 
 export function getConfigRowDisplayPart(
-  row: ConfigTableRow,
-  columns: ConfigColumn[],
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[],
   /** Display label per list-option value (e.g. color code -> color name). The
    * stored value stays the code; only the shown text changes. */
   optionLabels?: Record<string, string>
-): ConfigRowDisplayPart {
+): VariantsQuantityRowDisplayPart {
   const descriptorColumns = columns.filter((col) => col.type !== "quantity");
   const quantityColumns = columns.filter((col) => col.type === "quantity");
 
@@ -347,9 +357,12 @@ export function getConfigRowDisplayParts(
   parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
-): ConfigRowDisplayPart[] {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
-  const rows = getConfigTableRows(configuration);
+): VariantsQuantityRowDisplayPart[] {
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
+  const rows = getVariantsQuantityRows(configuration);
 
   return rows
     .filter((row) => hasConfigRowValue(row, columns))
@@ -380,18 +393,21 @@ export function buildReportedTargetRows({
   parameters: ConfigurationParameterColumnsInput[];
   defaultQuantityLabel: string;
 }): ReportedTargetRow[] {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
 
-  const targetRows = mergeConfigTableRows(
-    getConfigTableRows(targetConfiguration),
+  const targetRows = mergeVariantsQuantityRows(
+    getVariantsQuantityRows(targetConfiguration),
     columns
   );
-  const reportedRows = mergeConfigTableRows(
-    reportedConfigurations.flatMap((config) => getConfigTableRows(config)),
+  const reportedRows = mergeVariantsQuantityRows(
+    reportedConfigurations.flatMap((config) => getVariantsQuantityRows(config)),
     columns
   );
-  const pickupRows = mergeConfigTableRows(
-    pickupConfigurations.flatMap((config) => getConfigTableRows(config)),
+  const pickupRows = mergeVariantsQuantityRows(
+    pickupConfigurations.flatMap((config) => getVariantsQuantityRows(config)),
     columns
   );
 
@@ -415,7 +431,7 @@ export function buildReportedTargetRows({
     const targetRow = targetByKey.get(key);
     const reportedRow = reportedByKey.get(key);
     const pickupRow = pickupByKey.get(key);
-    const baseRow: ConfigTableRow = {
+    const baseRow: VariantsQuantityRow = {
       ...(targetRow ?? reportedRow ?? pickupRow ?? {})
     };
 
@@ -433,11 +449,11 @@ export function buildReportedTargetRows({
   });
 }
 
-export type ConfigTableReferenceMode = "original" | "remaining";
+export type VariantsQuantityTableReferenceMode = "original" | "remaining";
 
-/** Context for disposition config-table editing with click-to-fill reference values. */
-export type ConfigTableReferenceContext = {
-  mode: ConfigTableReferenceMode;
+/** Context for disposition variants-quantity editing with click-to-fill reference values. */
+export type VariantsQuantityReferenceContext = {
+  mode: VariantsQuantityTableReferenceMode;
   originalConfiguration: unknown;
   /** Active sibling line configurations (excluding the line being edited). */
   otherLineConfigurations: unknown[];
@@ -450,14 +466,14 @@ export type ConfigTableReferenceContext = {
   >;
   /** Production quantities already reported by the selected employee */
   employeeReportedConfigurations?: unknown[];
-  /** When set, the config-table loader fetches fresh pickup/reported data for this job operation */
+  /** When set, the variants-quantity loader fetches fresh pickup/reported data for this job operation */
   jobId?: string;
   jobOperationId?: string;
   /** Sibling line configs in the current form (excluding the line being edited). */
   siblingLineConfigurations?: unknown[];
 };
 
-export function buildConfigTableEditorState({
+export function buildVariantsQuantityEditorState({
   parameters,
   defaultQuantityLabel,
   currentConfiguration,
@@ -467,7 +483,7 @@ export function buildConfigTableEditorState({
   parameters: ConfigurationParameterColumnsInput[];
   defaultQuantityLabel: string;
   currentConfiguration: unknown;
-  referenceContext?: ConfigTableReferenceContext | null;
+  referenceContext?: VariantsQuantityReferenceContext | null;
   /**
    * Seed each editable quantity cell that has no current draft value with its
    * reference (remaining) quantity, so e.g. reporting cutting starts pre-filled
@@ -475,14 +491,17 @@ export function buildConfigTableEditorState({
    */
   prefillFromReference?: boolean;
 }): {
-  rows: ConfigTableRow[];
+  rows: VariantsQuantityRow[];
   referenceByRowIndex: Array<Record<string, number>>;
 } {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
 
   if (!referenceContext) {
-    const currentRows = mergeConfigTableRows(
-      getConfigTableRows(currentConfiguration),
+    const currentRows = mergeVariantsQuantityRows(
+      getVariantsQuantityRows(currentConfiguration),
       columns
     );
     return {
@@ -491,17 +510,17 @@ export function buildConfigTableEditorState({
     };
   }
 
-  const originalRows = mergeConfigTableRows(
-    getConfigTableRows(referenceContext.originalConfiguration),
+  const originalRows = mergeVariantsQuantityRows(
+    getVariantsQuantityRows(referenceContext.originalConfiguration),
     columns
   );
-  const currentRows = mergeConfigTableRows(
-    getConfigTableRows(currentConfiguration),
+  const currentRows = mergeVariantsQuantityRows(
+    getVariantsQuantityRows(currentConfiguration),
     columns
   );
-  const otherRows = mergeConfigTableRows(
+  const otherRows = mergeVariantsQuantityRows(
     referenceContext.otherLineConfigurations.flatMap((config) =>
-      getConfigTableRows(config)
+      getVariantsQuantityRows(config)
     ),
     columns
   );
@@ -523,18 +542,18 @@ export function buildConfigTableEditorState({
   const usePickupHints = employeePickups.length > 0;
 
   const pickupRows = usePickupHints
-    ? mergeConfigTableRows(
+    ? mergeVariantsQuantityRows(
         employeePickups.flatMap((pickup) =>
-          getConfigTableRows(pickup.configuration)
+          getVariantsQuantityRows(pickup.configuration)
         ),
         columns
       )
     : [];
 
   const employeeProducedRows = usePickupHints
-    ? mergeConfigTableRows(
+    ? mergeVariantsQuantityRows(
         (referenceContext.employeeReportedConfigurations ?? []).flatMap(
-          (config) => getConfigTableRows(config)
+          (config) => getVariantsQuantityRows(config)
         ),
         columns
       )
@@ -557,14 +576,16 @@ export function buildConfigTableEditorState({
       )
   ];
 
-  const rows: ConfigTableRow[] = [];
+  const rows: VariantsQuantityRow[] = [];
   const referenceByRowIndex: Array<Record<string, number>> = [];
 
   for (const key of orderedKeys) {
     const template =
-      originalByKey.get(key) ?? currentByKey.get(key) ?? ({} as ConfigTableRow);
+      originalByKey.get(key) ??
+      currentByKey.get(key) ??
+      ({} as VariantsQuantityRow);
     const current = currentByKey.get(key);
-    const row: ConfigTableRow = { ...template };
+    const row: VariantsQuantityRow = { ...template };
 
     for (const col of columns) {
       if (
@@ -583,7 +604,9 @@ export function buildConfigTableEditorState({
       if (usePickupHints) {
         let pickupQty = 0;
         for (const pickup of employeePickups) {
-          for (const pickupRow of getConfigTableRows(pickup.configuration)) {
+          for (const pickupRow of getVariantsQuantityRows(
+            pickup.configuration
+          )) {
             if (getMergeKey(pickupRow, columns) === key) {
               pickupQty += Number(pickupRow[col.key]) || 0;
             }
@@ -627,7 +650,7 @@ export function fillValueFromReference(referenceValue: number) {
 }
 
 /** Job target config plus already-reported line configs for an operation. */
-export type ConfigReferenceSource = {
+export type VariantsQuantityReferenceSource = {
   jobConfiguration: unknown;
   reportedConfigurations: unknown[];
   /** Pickup data grouped by employee for pickup-based hints */
@@ -642,14 +665,14 @@ export type ConfigReferenceSource = {
 /** Hint quantities = job required − already reported (per config row/column).
  * When employeeId is provided, uses pickup-based hints (pickup - produced) instead. */
 export function buildJobRemainingReferenceContext(
-  source: ConfigReferenceSource,
+  source: VariantsQuantityReferenceSource,
   options?: {
     excludeConfigurations?: unknown[];
     employeeId?: string;
     /** Sibling line configs in the current form (excluding the line being edited). */
     siblingLineConfigurations?: unknown[];
   }
-): ConfigTableReferenceContext {
+): VariantsQuantityReferenceContext {
   const exclude = new Set(
     (options?.excludeConfigurations ?? []).filter((config) => config != null)
   );
@@ -678,21 +701,21 @@ export function buildJobRemainingReferenceContext(
   };
 }
 
-/** Build reference context for the item config-table overlay.
+/** Build reference context for the item variants-quantity overlay.
  * When job + operation ids are available, the server reloads pickup/reported data. */
-export function buildProductionConfigTableReferenceContext({
+export function buildProductionVariantsQuantityReferenceContext({
   source,
   employeeId,
   jobId,
   jobOperationId,
   siblingLineConfigurations = []
 }: {
-  source?: ConfigReferenceSource | null;
+  source?: VariantsQuantityReferenceSource | null;
   employeeId?: string;
   jobId?: string;
   jobOperationId?: string;
   siblingLineConfigurations?: unknown[];
-}): ConfigTableReferenceContext | undefined {
+}): VariantsQuantityReferenceContext | undefined {
   const trimmedJobId = jobId?.trim();
   const trimmedJobOperationId = jobOperationId?.trim();
   const trimmedEmployeeId = employeeId?.trim() || undefined;

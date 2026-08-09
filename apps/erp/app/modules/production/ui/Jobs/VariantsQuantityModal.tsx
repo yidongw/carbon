@@ -16,25 +16,25 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
-  buildConfigTableActionResponse,
-  type ConfigTableOverlaySuccess,
-  isConfigTableOverlaySuccess
-} from "~/modules/production/configTableOverlay";
+  buildVariantsQuantityActionResponse,
+  isVariantsQuantityOverlaySuccess,
+  type VariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import {
-  buildConfigTableEditorState,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext,
-  configTableToComboRows
+  buildVariantsQuantityEditorState,
+  type VariantsQuantityReferenceContext,
+  type VariantsQuantityReferenceSource,
+  variantsQuantityToComboRows
 } from "~/modules/production/variantsQuantityTableColumns";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
-import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
+import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
 import { path } from "~/utils/path";
 import {
   buildColumns,
   buildComboColumns,
   type Column,
   computeTotal,
-  EditableConfigGrid,
+  EditableVariantsQuantityGrid,
   getCellKey,
   getInitialRows,
   hasValue,
@@ -46,7 +46,7 @@ import {
   variantsQuantityModalBodyClassName,
   variantsQuantityModalContentClassName,
   variantsQuantityModalShellClassName
-} from "./configTableShared";
+} from "./variantsQuantityShared";
 
 type PlanCell = {
   valuesKey: string;
@@ -112,7 +112,10 @@ function comboRowsFromInitial(
     return flat;
   }
 
-  return configTableToComboRows({ configTable: rows }, optionLabels) as Row[];
+  return variantsQuantityToComboRows(
+    { configTable: rows },
+    optionLabels
+  ) as Row[];
 }
 
 /** Merge flat combo rows into the stored config table shape (valuesKey rows). */
@@ -228,7 +231,7 @@ function VariantsQuantityModal({
       const seedRows = !initialRows.some(
         (r) => String(r.valuesKey ?? "").trim().length > 0
       )
-        ? (configTableToComboRows(
+        ? (variantsQuantityToComboRows(
             { configTable: initialRows },
             optionLabels
           ) as Row[])
@@ -450,7 +453,7 @@ function VariantsQuantityModal({
     }
 
     if (confirmMode === "client") {
-      onConfirmSuccess(buildConfigTableActionResponse(configuration));
+      onConfirmSuccess(buildVariantsQuantityActionResponse(configuration));
       return;
     }
 
@@ -463,7 +466,7 @@ function VariantsQuantityModal({
 
   const tableSection = (
     <>
-      <EditableConfigGrid
+      <EditableVariantsQuantityGrid
         columns={gridColumns}
         rows={rows}
         invalidCells={gridInvalidCells}
@@ -631,7 +634,7 @@ function VariantsQuantityModal({
   );
 }
 
-function extractConfigTable(configuration: unknown): Row[] | undefined {
+function extractVariantsQuantity(configuration: unknown): Row[] | undefined {
   if (
     !configuration ||
     typeof configuration !== "object" ||
@@ -657,15 +660,15 @@ export function buildConfigEditorRows({
 }: {
   parameters: ConfigurationParameter[];
   configuration?: unknown;
-  referenceContext?: ConfigTableReferenceContext;
+  referenceContext?: VariantsQuantityReferenceContext;
   prefillFromReference?: boolean;
 }): {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
 } {
-  const configTable = extractConfigTable(configuration);
+  const configTable = extractVariantsQuantity(configuration);
   if (!referenceContext) return { initialRows: configTable };
-  const editor = buildConfigTableEditorState({
+  const editor = buildVariantsQuantityEditorState({
     parameters,
     defaultQuantityLabel: "Quantities",
     currentConfiguration:
@@ -706,7 +709,7 @@ function configSourceUrl(
     reportKind?: "pickup" | "productionQuantity";
   }
 ): string {
-  const base = path.to.api.itemConfigTable(itemId);
+  const base = path.to.api.itemVariantsQuantity(itemId);
   const params = new URLSearchParams();
   if (keys.jobId) params.set("jobId", keys.jobId);
   if (keys.jobOperationId) params.set("jobOperationId", keys.jobOperationId);
@@ -716,7 +719,7 @@ function configSourceUrl(
 }
 
 /**
- * Local (non-overlay) config-table editor. A parent form owns the open state and
+ * Local (non-overlay) variants-quantity editor. A parent form owns the open state and
  * gets the edited config via `onConfirm`.
  *
  * Clean fetch/pass split: only fetch keys (`itemId` + `jobId`/`jobOperationId`/
@@ -751,8 +754,8 @@ export function VariantsQuantityLocalModal({
   reportKind?: "pickup" | "productionQuantity";
   configuration?: unknown;
   buildReferenceContext?: (
-    source: ConfigReferenceSource | null
-  ) => ConfigTableReferenceContext | undefined;
+    source: VariantsQuantityReferenceSource | null
+  ) => VariantsQuantityReferenceContext | undefined;
   prefillFromReference?: boolean;
   splitMode?: boolean;
   jobDisplayId?: string | null;
@@ -760,7 +763,7 @@ export function VariantsQuantityLocalModal({
   maxTotal?: number;
   enforceReferenceCaps?: boolean;
 }) {
-  const fetcher = useFetcher<ItemConfigTableOverlayLoaderData | null>();
+  const fetcher = useFetcher<ItemVariantsQuantityOverlayLoaderData | null>();
   const load = useRef(fetcher.load);
   load.current = fetcher.load;
 
@@ -824,7 +827,7 @@ export function VariantsQuantityLocalModal({
  * Build the editor's `configuration` input from the current table rows, falling
  * back to a saved/initial configuration when nothing has been edited yet.
  */
-export function toConfigTableValue(
+export function toVariantsQuantityValue(
   rows: Row[] | null | undefined,
   fallback?: unknown
 ): unknown {
@@ -838,8 +841,8 @@ type VariantsQuantityModalRequest = {
   jobOperationId?: string;
   reportKind?: "pickup" | "productionQuantity";
   buildReferenceContext?: (
-    source: ConfigReferenceSource | null
-  ) => ConfigTableReferenceContext | undefined;
+    source: VariantsQuantityReferenceSource | null
+  ) => VariantsQuantityReferenceContext | undefined;
   /** Seed empty quantity cells with their remaining reference on first open. */
   prefillFromReference?: boolean;
   /** Flat one-row-per-combo editor that also emits raw `splitRows`. */
@@ -855,11 +858,11 @@ type VariantsQuantityModalRequest = {
    */
   enforceReferenceCaps?: boolean;
   /** Receives the validated edited config when the user confirms. */
-  onConfirm: (result: ConfigTableOverlaySuccess) => void;
+  onConfirm: (result: VariantsQuantityOverlaySuccess) => void;
 };
 
 /**
- * Manage a single local config-table editor. Call `open(request)` to show it;
+ * Manage a single local variants-quantity editor. Call `open(request)` to show it;
  * render `node`. Handles open state, the success check, and closing — so callers
  * just describe what to fetch/pass and what to do on confirm.
  */
@@ -881,7 +884,7 @@ export function useVariantsQuantityModal(): {
       open
       onClose={close}
       onConfirm={(data) => {
-        if (isConfigTableOverlaySuccess(data)) request.onConfirm(data);
+        if (isVariantsQuantityOverlaySuccess(data)) request.onConfirm(data);
         close();
       }}
       itemId={request.itemId}

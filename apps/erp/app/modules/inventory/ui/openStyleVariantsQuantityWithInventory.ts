@@ -1,10 +1,10 @@
 import {
-  buildInventoryConfigTableReferenceContext,
+  buildInventoryVariantsQuantityReferenceContext,
   EMPTY_VARIANT_QUANTITIES,
   type VariantQuantitiesPayload
 } from "~/modules/inventory/styleInventoryConfig";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import type { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import { path } from "~/utils/path";
 
 async function loadInventoryVariantQuantities(
@@ -36,13 +36,13 @@ async function loadInventoryVariantQuantities(
  * When on-hand has no combo breakdown, hints are 0 and per-cell caps are not
  * enforced (user can still assign variants quantity up to `maxTotal`).
  */
-export async function openStyleConfigTableWithInventory({
+export async function openStyleVariantsQuantityWithInventory({
   variantsQuantityModal,
   itemId,
   locationId,
   storageUnitId,
   orderVariantQuantities,
-  configTableRows,
+  variantsQuantityRows,
   otherLineVariantQuantities = [],
   maxTotal,
   onConfirm
@@ -52,7 +52,7 @@ export async function openStyleConfigTableWithInventory({
   locationId?: string | null;
   storageUnitId?: string | null;
   orderVariantQuantities?: unknown;
-  configTableRows: Row[] | null;
+  variantsQuantityRows: Row[] | null;
   otherLineVariantQuantities?: unknown[];
   /** Hard cap on confirmed grid total (selected source remaining qty). */
   maxTotal?: number;
@@ -80,14 +80,14 @@ export async function openStyleConfigTableWithInventory({
   variantsQuantityModal.open({
     itemId,
     // Combo rows only — modal derives quantity keys from item parameters.
-    configuration: configTableRows
-      ? { configTable: configTableRows }
+    configuration: variantsQuantityRows
+      ? { configTable: variantsQuantityRows }
       : undefined,
     maxTotal,
     enforceReferenceCaps,
     buildReferenceContext: referenceVariantQuantities
       ? () =>
-          buildInventoryConfigTableReferenceContext({
+          buildInventoryVariantsQuantityReferenceContext({
             variantQuantities: referenceVariantQuantities,
             otherLineVariantQuantities
           })

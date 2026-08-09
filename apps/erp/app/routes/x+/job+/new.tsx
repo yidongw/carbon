@@ -8,12 +8,12 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import { insertJob, jobValidator } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
-  replaceJobVariantQuantitiesFromConfigTable
+  isVariantsQuantityConfiguration,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { JobForm } from "~/modules/production/ui/Jobs";
+import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import type { MethodItemType } from "~/modules/shared";
 import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
@@ -46,13 +46,13 @@ export async function action({ request }: ActionFunctionArgs) {
   // - Style/attribute qty grid → jobVariantQuantity rows (not job.configuration)
   // - Part flat params → job.configuration for method rules; quantity stays form value
   let configuration: Record<string, unknown> | undefined;
-  let styleConfigTable: Record<string, unknown> | undefined;
+  let styleVariantsQuantity: Record<string, unknown> | undefined;
   let quantity = data.quantity;
   if (configStr) {
     try {
       const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      if (isConfigTableConfiguration(parsed)) {
-        styleConfigTable = parsed;
+      if (isVariantsQuantityConfiguration(parsed)) {
+        styleVariantsQuantity = parsed;
         quantity = jobConfigurationUpdateFields(parsed).quantity;
       } else {
         configuration = parsed;
@@ -79,8 +79,8 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  if (styleConfigTable) {
-    const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+  if (styleVariantsQuantity) {
+    const replaced = await replaceJobVariantQuantitiesFromTable(
       getCarbonServiceRole(),
       getDatabaseClient(),
       {
@@ -88,7 +88,7 @@ export async function action({ request }: ActionFunctionArgs) {
         parentItemId: data.itemId,
         companyId,
         userId,
-        configuration: styleConfigTable
+        configuration: styleVariantsQuantity
       }
     );
     if (replaced.error) {

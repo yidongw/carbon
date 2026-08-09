@@ -102,7 +102,7 @@ const MasterWorkOrdersTable = memo(
     const openVariantsQuantity = useCallback(
       (e: MouseEvent, jobId: string) => {
         e.stopPropagation();
-        openOverlay(overlay.to.jobConfigTable({ jobId }), {
+        openOverlay(overlay.to.jobVariantsQuantity({ jobId }), {
           onCreated: revalidate
         });
       },
@@ -161,7 +161,7 @@ const MasterWorkOrdersTable = memo(
         e.stopPropagation();
         if (!progress.itemId) return;
         openOverlay(
-          overlay.to.itemConfigTable(
+          overlay.to.itemVariantsQuantity(
             { itemId: progress.itemId },
             { configuration: progress.remainingConfiguration }
           )

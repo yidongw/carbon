@@ -2,7 +2,7 @@ import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
 import { useFetcher, useFetchers, useRevalidator } from "react-router";
-import { variantsQuantityModalContentClassName } from "~/modules/production/ui/Jobs/configTableShared";
+import { variantsQuantityModalContentClassName } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
 import { useOverlay } from "./OverlayProvider";
 import { buildOverlayTarget, type OverlayTarget } from "./overlay";

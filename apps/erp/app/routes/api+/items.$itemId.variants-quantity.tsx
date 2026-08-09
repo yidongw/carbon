@@ -6,14 +6,14 @@ import {
 } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
-  getConfigReferenceSourceForOperation,
   getReportedConfigurationById,
+  getVariantsQuantityReferenceSourceForOperation,
   resolveJobIdForOperation
-} from "~/modules/production/configTableOverlay.server";
-import type { ConfigReferenceSource } from "~/modules/production/variantsQuantityTableColumns";
+} from "~/modules/production/variantsQuantityOverlay.server";
+import type { VariantsQuantityReferenceSource } from "~/modules/production/variantsQuantityTableColumns";
 import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 
-export type ItemConfigTableOverlayLoaderData = {
+export type ItemVariantsQuantityOverlayLoaderData = {
   parameters: ConfigurationParameter[];
   itemReadableId: string | null;
   /**
@@ -22,7 +22,7 @@ export type ItemConfigTableOverlayLoaderData = {
    * reference context + editor rows from this + its in-memory inputs — only ids
    * are sent here, never the draft configuration or sibling configs.
    */
-  referenceSource: ConfigReferenceSource | null;
+  referenceSource: VariantsQuantityReferenceSource | null;
   /**
    * Saved configuration for a single reported row, fetched by `recordId` only
    * for the deep-link case. In-app the overlay receives this via props instead,
@@ -36,7 +36,7 @@ export type ItemConfigTableOverlayLoaderData = {
 export async function loader({
   request,
   params
-}: LoaderFunctionArgs): Promise<ItemConfigTableOverlayLoaderData | null> {
+}: LoaderFunctionArgs): Promise<ItemVariantsQuantityOverlayLoaderData | null> {
   const { client, companyId } = await requirePermissions(request, {
     view: "production",
     bypassRls: true
@@ -88,7 +88,7 @@ export async function loader({
 
   const referenceSource =
     jobId && jobOperationId
-      ? await getConfigReferenceSourceForOperation(client, {
+      ? await getVariantsQuantityReferenceSourceForOperation(client, {
           jobId,
           jobOperationId,
           companyId,

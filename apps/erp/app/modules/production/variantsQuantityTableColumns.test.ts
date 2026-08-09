@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildConfigTableEditorState,
   buildJobRemainingReferenceContext,
-  buildProductionConfigTableReferenceContext,
+  buildProductionVariantsQuantityReferenceContext,
+  buildVariantsQuantityEditorState,
   fillValueFromReference
 } from "./variantsQuantityTableColumns";
 
@@ -16,7 +16,7 @@ const parameters = [
   }
 ];
 
-describe("buildConfigTableEditorState", () => {
+describe("buildVariantsQuantityEditorState", () => {
   const originalConfiguration = {
     configTable: [
       { valuesKey: "红色|M", Quantities: 14 },
@@ -25,7 +25,7 @@ describe("buildConfigTableEditorState", () => {
   };
 
   it("shows original reported quantities for Production mode", () => {
-    const { rows, referenceByRowIndex } = buildConfigTableEditorState({
+    const { rows, referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: { configTable: [] },
@@ -42,7 +42,7 @@ describe("buildConfigTableEditorState", () => {
   });
 
   it("shows remaining quantities for Rework mode", () => {
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: { configTable: [] },
@@ -59,7 +59,7 @@ describe("buildConfigTableEditorState", () => {
   });
 
   it("can show negative remaining when over-allocated", () => {
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: { configTable: [] },
@@ -76,7 +76,7 @@ describe("buildConfigTableEditorState", () => {
   });
 
   it("seeds current line values into original rows", () => {
-    const { rows } = buildConfigTableEditorState({
+    const { rows } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: {
@@ -108,7 +108,7 @@ describe("buildJobRemainingReferenceContext", () => {
       ]
     });
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: { configTable: [] },
@@ -147,7 +147,7 @@ describe("buildJobRemainingReferenceContext", () => {
       { employeeId: "emp1" }
     );
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: { configTable: [] },
@@ -183,7 +183,7 @@ describe("buildJobRemainingReferenceContext", () => {
       { employeeId: "emp1" }
     );
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentConfiguration: { configTable: [] },
@@ -194,9 +194,9 @@ describe("buildJobRemainingReferenceContext", () => {
   });
 });
 
-describe("buildProductionConfigTableReferenceContext", () => {
+describe("buildProductionVariantsQuantityReferenceContext", () => {
   it("defers pickup loading to the server when job and operation are known", () => {
-    const context = buildProductionConfigTableReferenceContext({
+    const context = buildProductionVariantsQuantityReferenceContext({
       source: {
         jobConfiguration: { configTable: [] },
         reportedConfigurations: []
@@ -218,7 +218,7 @@ describe("buildProductionConfigTableReferenceContext", () => {
   });
 
   it("defers pickup loading when only job operation is known", () => {
-    const context = buildProductionConfigTableReferenceContext({
+    const context = buildProductionVariantsQuantityReferenceContext({
       source: {
         jobConfiguration: {
           configTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
@@ -251,12 +251,12 @@ describe("fillValueFromReference", () => {
   });
 });
 
-describe("getConfigQuantityCells", () => {
+describe("getVariantsQuantityCells", () => {
   it("labels combo valuesKey + Quantities rows", async () => {
-    const { getConfigQuantityCells } = await import(
+    const { getVariantsQuantityCells } = await import(
       "./variantsQuantityTableColumns"
     );
-    const cells = getConfigQuantityCells(
+    const cells = getVariantsQuantityCells(
       {
         configTable: [
           { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
@@ -272,26 +272,25 @@ describe("getConfigQuantityCells", () => {
   });
 
   it("reads combo rows when configTablePrimaryKeys is omitted", async () => {
-    const { getConfigQuantityCells, configTableToComboRows } = await import(
-      "./variantsQuantityTableColumns"
-    );
+    const { getVariantsQuantityCells, variantsQuantityToComboRows } =
+      await import("./variantsQuantityTableColumns");
     const configuration = {
       configTable: [{ valuesKey: "BK|S", Quantities: 4 }]
     };
-    expect(getConfigQuantityCells(configuration, { BK: "黑色" })).toEqual([
+    expect(getVariantsQuantityCells(configuration, { BK: "黑色" })).toEqual([
       { key: "0:Quantities", label: "黑色 · S", quantity: 4 }
     ]);
-    expect(configTableToComboRows(configuration)).toEqual([
+    expect(variantsQuantityToComboRows(configuration)).toEqual([
       { valuesKey: "BK|S", Quantities: 4, label: "BK · S" }
     ]);
   });
 
-  it("configTableToComboRows passes through combo rows", async () => {
-    const { configTableToComboRows } = await import(
+  it("variantsQuantityToComboRows passes through combo rows", async () => {
+    const { variantsQuantityToComboRows } = await import(
       "./variantsQuantityTableColumns"
     );
     expect(
-      configTableToComboRows(
+      variantsQuantityToComboRows(
         {
           configTable: [{ valuesKey: "BK|S", Quantities: 6 }]
         },

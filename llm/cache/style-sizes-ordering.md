@@ -25,7 +25,7 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 ## Style qty matrix / variants
 
-**Read:** `getConfigurationParameters` for Style synthesizes a `valuesKey` list param (not separate Color/Size matrix columns). `configTableToComboRows` / expand helpers read **combo `valuesKey` rows** only (legacy Color×Size matrices yield nothing). Empty-jvq fallback still dual-reads non-empty `job.configuration.configTable` combo rows via `expandConfigTableToVariantQuantities`. Legacy `configurationParameter` rows on Styles are ignored.
+**Read:** `getConfigurationParameters` for Style synthesizes a `valuesKey` list param (not separate Color/Size matrix columns). Legacy Color×Size `job.configuration` matrices are dual-read into combo rows via `variantsQuantityToComboRows` (job qty editor, production qty splitMode, cutting proposal). Legacy `configurationParameter` rows on Styles are ignored.
 
 **Configurable itemIds (qty grid):** `api+/items.configurable.ts` returns attribute-selection itemIds only. Legacy `configurationParameter` items use `?for=methods` (Make Method tools). Job/MWO Quantity no longer opens from old Part config params or `requiresConfiguration`.
 
@@ -36,7 +36,7 @@ Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md`
 **Jobs / Master WO — `jobVariantQuantity`:** Style planned qty lives in `jobVariantQuantity(jobId, variantItemId, quantity)`, not in `job.configuration.configTable`.
 
 - **Write (`replaceJobVariantQuantities`):** Kysely transaction via `getDatabaseClient()` (bypasses RLS; auth at the route): delete existing jvq rows for the job → insert new rows → sync `job.quantity` → optional `jobConfigurationHistory` → optional clear `job.configuration`. Service: `apps/erp/app/modules/production/jobVariantQuantity.service.ts`.
-- **Read (`getJobVariantQuantities`):** dual-read — if no jvq rows, expand legacy non-empty `job.configuration.configTable` via `expandConfigTableToVariantQuantities`.
+- **Read (`getJobVariantQuantities`):** dual-read — if no jvq rows, expand legacy non-empty `job.configuration.configTable` via `expandVariantsQuantityTable`.
 - **Style writers must not store configTable on `job.configuration`:** `$jobId.configure.tsx` and `job+/update.tsx` route Style configTable through `persistStyleJobConfiguration` (writes jvq + clears Style qty JSON from `job.configuration`). Part flat method params still use `jobConfigurationUpdateFields`.
 - **`job.configuration`:** Part method params only (flat JSON). Create-job Part Configure wizard restored. Qty grid = attribute selections only.
 - **Qty report loaders** (`$jobId.quantities.new` / `.$id`): gate the config editor on `getJobVariantQuantities` length, not raw `configTable`.

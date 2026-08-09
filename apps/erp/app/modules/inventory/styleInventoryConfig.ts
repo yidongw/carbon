@@ -1,6 +1,6 @@
 /**
- * Map Style ledger on-hand into a config-table shape that
- * `buildConfigTableEditorState` can use as inventory reference hints / caps.
+ * Map Style ledger on-hand into a variants-quantity shape that
+ * `buildVariantsQuantityEditorState` can use as inventory reference hints / caps.
  *
  * Style editors are combo-shaped (`valuesKey` + `Quantities`) after the
  * attributes refactor; legacy variants quantity matrix shape is still accepted as input
@@ -30,7 +30,7 @@ function valuesKeyOf(entry: StyleOnHandEntry): string {
  * Aggregate on-hand into Style combo config rows (`valuesKey` + `Quantities`).
  * Returns null when nothing is tagged / no variant breakdown.
  */
-export function breakdownToInventoryConfigTable(
+export function breakdownToInventoryVariantsQuantity(
   entries: StyleOnHandEntry[]
 ): VariantQuantitiesPayload | null {
   const byKey = new Map<string, number>();
@@ -55,7 +55,7 @@ export function breakdownToInventoryConfigTable(
 }
 
 /** Build remaining-mode reference context from inventory config + sibling lines. */
-export function buildInventoryConfigTableReferenceContext({
+export function buildInventoryVariantsQuantityReferenceContext({
   variantQuantities,
   otherLineVariantQuantities = []
 }: {

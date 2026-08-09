@@ -2,7 +2,7 @@ import {
   localizeStyleColorName,
   styleColorEnglishNamesByCode
 } from "@carbon/database/style-reference";
-import { getConfigQuantityCells } from "~/modules/production/variantsQuantityTableColumns";
+import { getVariantsQuantityCells } from "~/modules/production/variantsQuantityTableColumns";
 
 export type StyleConfigChip = {
   key: string;
@@ -109,7 +109,7 @@ export function getStyleConfigDisplay(
     }
   }
 
-  const cells = getConfigQuantityCells(
+  const cells = getVariantsQuantityCells(
     parsed,
     localizeColorNameMap(attributeValueNames, locale)
   );

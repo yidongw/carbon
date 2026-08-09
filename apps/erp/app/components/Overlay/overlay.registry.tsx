@@ -2,10 +2,10 @@ import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm
 import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { PurchaseOrderLineInitialValues } from "~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm";
 import type { SalesOrderLineFormInitialValues } from "~/modules/sales/ui/SalesOrder/SalesOrderLineForm";
-import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
+import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
 import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
-import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
+import type { JobVariantsQuantityOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.variants-quantity";
 import type { MasterWorkOrderBundlesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.bundles";
 import type { MasterWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.processes";
 import type { MasterWorkOrderSplitBatchLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.split-batch";
@@ -399,7 +399,7 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
-              configReferenceSource?: {
+              variantsQuantityReferenceSource?: {
                 jobConfiguration: unknown;
                 reportedConfigurations: unknown[];
               } | null;
@@ -445,7 +445,8 @@ export const overlayRegistry = {
           remainingByOperationId: data.remainingByOperationId ?? {},
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
-          configReferenceSource: data.configReferenceSource ?? null,
+          variantsQuantityReferenceSource:
+            data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
@@ -474,7 +475,7 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
-              configReferenceSource?: {
+              variantsQuantityReferenceSource?: {
                 jobConfiguration: unknown;
                 reportedConfigurations: unknown[];
               } | null;
@@ -516,7 +517,8 @@ export const overlayRegistry = {
           remainingByOperationId: data.remainingByOperationId ?? {},
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
-          configReferenceSource: data.configReferenceSource ?? null,
+          variantsQuantityReferenceSource:
+            data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
@@ -589,7 +591,7 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
-              configReferenceSource?: {
+              variantsQuantityReferenceSource?: {
                 jobConfiguration: unknown;
                 reportedConfigurations: unknown[];
               } | null;
@@ -603,7 +605,8 @@ export const overlayRegistry = {
         const shared = {
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
-          configReferenceSource: data.configReferenceSource ?? null,
+          variantsQuantityReferenceSource:
+            data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null
@@ -722,12 +725,12 @@ export const overlayRegistry = {
       () => import("~/modules/production/ui/Jobs/JobBillOfProcess")
     )
   },
-  jobConfigTable: {
+  jobVariantsQuantity: {
     type: "modal",
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
-          | JobConfigTableOverlayLoaderData
+          | JobVariantsQuantityOverlayLoaderData
           | null
           | undefined;
         if (!data?.parameters?.length) return null;
@@ -739,10 +742,10 @@ export const overlayRegistry = {
           optionLabels: data.attributeValueNames
         };
       },
-      () => import("~/modules/production/ui/Jobs/JobConfigQuantities")
+      () => import("~/modules/production/ui/Jobs/JobVariantsQuantity")
     )
   },
-  itemConfigTable: {
+  itemVariantsQuantity: {
     type: "modal",
     // Read-only view: its only button dismisses (never POSTs). Url-addressable
     // like the rest — config rides props in-app, with a server-fetched fallback
@@ -751,7 +754,7 @@ export const overlayRegistry = {
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
-          | ItemConfigTableOverlayLoaderData
+          | ItemVariantsQuantityOverlayLoaderData
           | null
           | undefined;
         if (!data?.parameters?.length) return null;

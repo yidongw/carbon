@@ -2,11 +2,11 @@ import { Button, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { JobOperation } from "~/modules/production";
+import JobOperationsTable from "../Jobs/JobOperationsTable";
 import {
   variantsQuantityModalBodyClassName,
   variantsQuantityModalShellClassName
-} from "../Jobs/configTableShared";
-import JobOperationsTable from "../Jobs/JobOperationsTable";
+} from "../Jobs/variantsQuantityShared";
 
 export type BundleWorkOrderProcessesOverlayProps = {
   operations: JobOperation[];

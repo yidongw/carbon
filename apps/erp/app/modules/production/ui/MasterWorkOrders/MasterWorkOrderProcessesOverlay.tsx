@@ -5,7 +5,7 @@ import type { MasterProcess } from "~/modules/production";
 import {
   variantsQuantityModalBodyClassName,
   variantsQuantityModalShellClassName
-} from "../Jobs/configTableShared";
+} from "../Jobs/variantsQuantityShared";
 import MasterProcessesTable from "./MasterProcessesTable";
 
 export type MasterWorkOrderProcessesOverlayProps = {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
-import type { ConfigReferenceSource } from "../../variantsQuantityTableColumns";
+import type { VariantsQuantityReferenceSource } from "../../variantsQuantityTableColumns";
 
 export type ProductionJobPickerLoaderData = {
   jobId: string;
@@ -18,7 +18,7 @@ export type ProductionJobPickerLoaderData = {
         listOptions?: string[] | null;
       }[]
     | null;
-  configReferenceSource?: ConfigReferenceSource | null;
+  variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
   operationType?: string | null;
@@ -34,7 +34,7 @@ type UseProductionJobPickerArgs = {
   initialJobId?: string;
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ProductionJobPickerLoaderData["configurationParameters"];
-  configReferenceSource?: ConfigReferenceSource | null;
+  variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
   operationType?: string | null;
@@ -53,7 +53,7 @@ export function useProductionJobPicker({
   initialJobId,
   operationOptions = [],
   configurationParameters,
-  configReferenceSource,
+  variantsQuantityReferenceSource,
   itemId,
   processId,
   operationType,
@@ -105,8 +105,9 @@ export function useProductionJobPicker({
     processByOperationId: cascadeData?.processByOperationId ?? {},
     configurationParameters:
       cascadeData?.configurationParameters ?? configurationParameters,
-    configReferenceSource:
-      cascadeData?.configReferenceSource ?? configReferenceSource,
+    variantsQuantityReferenceSource:
+      cascadeData?.variantsQuantityReferenceSource ??
+      variantsQuantityReferenceSource,
     itemId: cascadeData?.itemId ?? itemId,
     processId: cascadeData?.processId ?? processId,
     operationType: cascadeData?.operationType ?? operationType,

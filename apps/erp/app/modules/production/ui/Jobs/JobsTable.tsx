@@ -418,7 +418,7 @@ const JobsTable = memo(
       (e: MouseEvent, job: Job) => {
         e.stopPropagation();
         if (!job.id) return;
-        openOverlay(overlay.to.jobConfigTable({ jobId: job.id }), {
+        openOverlay(overlay.to.jobVariantsQuantity({ jobId: job.id }), {
           onCreated: revalidate
         });
       },

@@ -13,7 +13,7 @@ import {
 } from "~/modules/inventory";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "~/modules/production/jobVariantQuantity.service";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -103,7 +103,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       if (planned.error || planned.data.length === 0) return;
       jobVariantQuantitiesByJobId.set(
         jobId,
-        jobVariantQuantitiesToConfigTable(planned.data)
+        jobVariantQuantitiesToTable(planned.data)
       );
     })
   );

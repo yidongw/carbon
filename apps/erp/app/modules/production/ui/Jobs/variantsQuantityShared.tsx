@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro";
 import type { ReactElement } from "react";
 import { LuTrash2 } from "react-icons/lu";
 import { fillValueFromReference } from "~/modules/production/variantsQuantityTableColumns";
-import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
+import { ResponsiveVariantsQuantityTable } from "./ResponsiveVariantsQuantityTable";
 
 export type Row = Record<string, string | number | boolean>;
 
@@ -313,7 +313,7 @@ export function getCellKey(rowIndex: number, columnKey: string): string {
   return `${rowIndex}:${columnKey}`;
 }
 
-/** Modal shell shared by config-table overlays and the local editor modal. */
+/** Modal shell shared by variants-quantity overlays and the local editor modal. */
 export const variantsQuantityModalContentClassName = cn(
   "flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0",
   "sm:w-fit md:w-fit sm:max-w-[calc(100vw-1.5rem)]",
@@ -327,10 +327,10 @@ export const variantsQuantityModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 /** Job config overlay: keep a stable width while switching Delta/Total tabs. */
-export const jobConfigQuantitiesModalShellClassName =
+export const jobVariantsQuantityModalShellClassName =
   "flex min-h-0 w-max min-w-full max-w-full flex-1 flex-col";
 
-export const jobConfigQuantitiesModalBodyClassName =
+export const jobVariantsQuantityModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 export function validateCell(
@@ -383,7 +383,7 @@ function quantityCellMatchesReference(
 /** Read-only rendering of a config table (used for the current snapshot, history
  * rows, and reported-by-process rows). When `onQuantityClick` is set, quantity
  * cells become buttons that pull the value into the adjustment editor. */
-export function ReadOnlyConfigTable({
+export function ReadOnlyVariantsQuantityTable({
   columns,
   rows,
   signed,
@@ -398,7 +398,7 @@ export function ReadOnlyConfigTable({
   optionLabels?: Record<string, string>;
 }) {
   return (
-    <ResponsiveConfigTable
+    <ResponsiveVariantsQuantityTable
       columns={columns}
       rows={rows}
       hasReferences={false}
@@ -443,7 +443,7 @@ export function ReadOnlyConfigTable({
 /** The editable quantity grid shared by the item draft editor and the job
  * adjustment editor. In `mode === "total"` quantity inputs show current + delta
  * and convert the entered total back to a delta via `baselineFor`. */
-export function EditableConfigGrid({
+export function EditableVariantsQuantityGrid({
   columns,
   rows,
   invalidCells,
@@ -680,7 +680,7 @@ export function EditableConfigGrid({
   };
 
   return (
-    <ResponsiveConfigTable
+    <ResponsiveVariantsQuantityTable
       columns={columns}
       rows={rows}
       hasReferences={hasReferences}

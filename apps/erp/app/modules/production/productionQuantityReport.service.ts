@@ -7,12 +7,12 @@ import {
 } from "~/modules/shared";
 import { replaceMasterCuttingSplitRows } from "./bundleWorkOrder.service";
 import {
-  computeJobConfigTableTotal,
+  computeJobVariantsQuantityTotal,
   reportsExceedConfigPlan
 } from "./jobConfiguration";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
@@ -102,7 +102,7 @@ export function validateProductionQuantityLines(
       line.scrapReasonId = undefined;
     }
     if (line.configuration) {
-      const configTotal = computeJobConfigTableTotal(
+      const configTotal = computeJobVariantsQuantityTotal(
         line.configuration as Json
       );
       if (configTotal > 0 && Math.abs(configTotal - line.quantity) > 0.0001) {
@@ -125,7 +125,7 @@ export function validateProductionQuantityLines(
  * and report a plain quantity. This guards the write layer so a configured report
  * can never be saved as a bare aggregate (configuration = NULL), regardless of
  * entry point (report form, edit, external API, import). Mirrors the report
- * form's config-table gate (item has variants quantity AND the job is not a bundle).
+ * form's variants-quantity gate (item has variants quantity AND the job is not a bundle).
  */
 async function validateConfiguredLinesHaveConfiguration(
   client: SupabaseClient<Database>,
@@ -170,7 +170,7 @@ async function validateConfiguredLinesHaveConfiguration(
 
   for (const line of linesToCheck) {
     const configTotal = line.configuration
-      ? computeJobConfigTableTotal(line.configuration as Json)
+      ? computeJobVariantsQuantityTotal(line.configuration as Json)
       : 0;
     if (configTotal <= 0) {
       return {
@@ -250,7 +250,7 @@ export async function validateProductionQuantityRemaining(
   );
   const planned =
     plannedQty.data.length > 0
-      ? jobVariantQuantitiesToConfigTable(plannedQty.data)
+      ? jobVariantQuantitiesToTable(plannedQty.data)
       : null;
   const reportedConfigs = [
     ...existingRows

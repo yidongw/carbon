@@ -12,8 +12,8 @@ import {
   toPurchaseOrderItemLineType,
 } from "../lib/outside-processing-pricing.ts";
 import {
-  expandConfigTableToVariantQuantities,
-  hasConfigTable,
+  expandVariantsQuantityTable,
+  hasVariantsQuantityTable,
 } from "../lib/item-variants.ts";
 
 const pool = getConnectionPool(1);
@@ -891,8 +891,8 @@ serve(async (req: Request) => {
           // Any line whose per-variant grid was filled (Style color×size, or a
           // Consumable color set) expands into variant SKU lines — the parent
           // must never receive. A config table only exists when the grid ran.
-          if (hasConfigTable(d.configuration)) {
-            const variants = await expandConfigTableToVariantQuantities(
+          if (hasVariantsQuantityTable(d.configuration)) {
+            const variants = await expandVariantsQuantityTable(
               client,
               {
                 parentItemId: d.itemId,
@@ -1953,8 +1953,8 @@ serve(async (req: Request) => {
           // Any line whose per-variant grid was filled (Style color×size, or a
           // Consumable color set) expands into variant SKU lines — the parent
           // must never receive. A config table only exists when the grid ran.
-          if (hasConfigTable(d.configuration)) {
-            const variants = await expandConfigTableToVariantQuantities(
+          if (hasVariantsQuantityTable(d.configuration)) {
+            const variants = await expandVariantsQuantityTable(
               client,
               {
                 parentItemId: d.itemId,
@@ -2235,9 +2235,9 @@ serve(async (req: Request) => {
           // color set) into variant SKU lines; Make-to-Order keeps its own path.
           if (
             line.methodType !== "Make to Order" &&
-            hasConfigTable(line.configuration)
+            hasVariantsQuantityTable(line.configuration)
           ) {
-            const variants = await expandConfigTableToVariantQuantities(
+            const variants = await expandVariantsQuantityTable(
               client,
               {
                 parentItemId: line.itemId,
@@ -2653,9 +2653,9 @@ serve(async (req: Request) => {
         if (
           sol.methodType !== "Make to Order" &&
           sol.itemId &&
-          hasConfigTable(sol.configuration)
+          hasVariantsQuantityTable(sol.configuration)
         ) {
-          const variants = await expandConfigTableToVariantQuantities(client, {
+          const variants = await expandVariantsQuantityTable(client, {
             parentItemId: sol.itemId,
             companyId,
             configuration: sol.configuration,

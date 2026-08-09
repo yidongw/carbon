@@ -75,13 +75,13 @@ import {
   useUser
 } from "~/hooks";
 import { getDefaultStorageUnitForJob } from "~/modules/inventory/inventory.service";
-import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
-  toConfigTableValue,
+  toVariantsQuantityValue,
   useVariantsQuantityModal
 } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import { isVariantsQuantityOverlaySuccess } from "~/modules/production/variantsQuantityOverlay";
 import { methodType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -213,10 +213,12 @@ const SalesOrderLineForm = ({
   const variantsQuantityModal = useVariantsQuantityModal();
   const [items] = useItems();
   const initialConfig = parseInitialConfig(initialValues.configuration);
-  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
-    initialConfig.rows
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
   );
-  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
   // True when the selected item carries Color/Size attribute selections (a
   // Consumable with a Fabric/Trim color set) — set on item select. Styles are
   // covered by isStyleLine without waiting on the fetch.
@@ -243,9 +245,9 @@ const SalesOrderLineForm = ({
   const isMissingStyleQuantity = hasVariantsQuantity && !(saleQuantity > 0);
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    setConfigTableRows(data.configuration.configTable);
-    setConfigTableTotal(data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityTotal(data.total);
     // Always mirror the grid total — a zero confirm must wipe a prior quantity.
     onQuantityChange(data.total);
   };
@@ -254,14 +256,14 @@ const SalesOrderLineForm = ({
     if (!itemData.itemId) return;
     variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toConfigTableValue(configTableRows),
+      configuration: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
 
   const clearConfig = () => {
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
   };
 
   const [assetOptions, setAssetOptions] = useState<
@@ -418,12 +420,12 @@ const SalesOrderLineForm = ({
     if (
       !isEditing &&
       hasVariantsQuantity &&
-      configTableTotal <= 0 &&
+      variantsQuantityTotal <= 0 &&
       saleQuantity !== 0
     ) {
       setSaleQuantity(0);
     }
-  }, [isEditing, hasVariantsQuantity, configTableTotal, saleQuantity]);
+  }, [isEditing, hasVariantsQuantity, variantsQuantityTotal, saleQuantity]);
 
   const onChange = async (itemId: string) => {
     if (!itemId) return;
@@ -706,9 +708,9 @@ const SalesOrderLineForm = ({
           <Hidden
             name="configuration"
             value={
-              configTableRows
+              variantsQuantityRows
                 ? JSON.stringify({
-                    configTable: configTableRows
+                    configTable: variantsQuantityRows
                   })
                 : ""
             }
@@ -785,7 +787,7 @@ const SalesOrderLineForm = ({
                       onOpenVariantsQuantity={
                         hasVariantsQuantity ? openVariantsQuantity : undefined
                       }
-                      configTableTotal={configTableTotal}
+                      variantsQuantityTotal={variantsQuantityTotal}
                       // Grid-backed configs are never typed by hand — quantity
                       // only comes from confirmed per-variant totals.
                       isReadOnly={hasVariantsQuantity}

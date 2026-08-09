@@ -44,7 +44,6 @@ import type {
 } from "~/modules/items/types";
 import type { MethodItemType } from "~/modules/shared";
 import { path } from "~/utils/path";
-import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type { jobStatus } from "../../production.models";
 import {
   bulkJobValidator,
@@ -52,11 +51,12 @@ import {
   isJobLocked,
   jobValidator
 } from "../../production.models";
+import { isVariantsQuantityOverlaySuccess } from "../../variantsQuantityOverlay";
 import { getDeadlineIcon } from "./Deadline";
 import { useDeadlineTypeLabel } from "./jobLabels";
 import { QuantityWithVariantsQuantity } from "./QuantityWithVariantsQuantity";
 import {
-  toConfigTableValue,
+  toVariantsQuantityValue,
   useVariantsQuantityModal
 } from "./VariantsQuantityModal";
 
@@ -125,13 +125,13 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   });
 
   const { openOverlay } = useOverlay();
-  const [configTableRows, setConfigTableRows] = useState<
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Record<string, any>[] | null
   >(null);
-  const [configTableTotal, setConfigTableTotal] = useState(0);
-  const [configTableMode, setConfigTableMode] = useState<"single" | "bulk">(
-    "single"
-  );
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
+  const [variantsQuantityMode, setVariantsQuantityMode] = useState<
+    "single" | "bulk"
+  >("single");
 
   // Attribute qty grid (Style/Consumable variants) — separate from Part wizard.
   const hasAttributeQtyGrid = configurableItemIds.includes(itemData.itemId);
@@ -168,21 +168,21 @@ const JobForm = ({ initialValues }: JobFormProps) => {
       scrapQuantity: 0,
       modelUploadId: null
     });
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
     setRequiresConfiguration(false);
     setIsConfigured(false);
     setConfigurationParameters(null);
     setConfigurationValues("");
   };
 
-  const handleConfigTableSubmit = (
+  const handleVariantsQuantitySubmit = (
     rows: Record<string, any>[],
     total: number
   ) => {
-    setConfigTableRows(rows);
-    setConfigTableTotal(total);
-    if (configTableMode === "bulk") {
+    setVariantsQuantityRows(rows);
+    setVariantsQuantityTotal(total);
+    if (variantsQuantityMode === "bulk") {
       setItemData((prev) => ({
         ...prev,
         quantityPerJob: total,
@@ -201,8 +201,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const onItemChange = async (itemId: string) => {
     if (!itemId) return;
     if (!carbon || !company.id) return;
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
     setIsConfigured(false);
     setConfigurationValues("");
     setItemData((prev) => ({ ...prev, jobCount: 1 }));
@@ -278,18 +278,18 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   const variantsQuantityModal = useVariantsQuantityModal();
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    handleConfigTableSubmit(data.configuration.configTable, data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    handleVariantsQuantitySubmit(data.configuration.configTable, data.total);
   };
 
   const openVariantsQuantity = (mode: "single" | "bulk") => {
     if (!itemData.itemId) return;
-    setConfigTableMode(mode);
+    setVariantsQuantityMode(mode);
 
     // Editing an existing job: the job's saved config is server-owned, so keep
-    // the server-confirm jobConfigTable overlay.
+    // the server-confirm jobVariantsQuantity overlay.
     if (isEditing && initialValues.id) {
-      openOverlay(overlay.to.jobConfigTable({ jobId: initialValues.id }), {
+      openOverlay(overlay.to.jobVariantsQuantity({ jobId: initialValues.id }), {
         onSuccess: applyConfig
       });
       return;
@@ -299,7 +299,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     // use a local modal rather than the overlay system.
     variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toConfigTableValue(configTableRows),
+      configuration: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
@@ -349,14 +349,16 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     value={itemData.modelUploadId ?? undefined}
                   />
                   <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                  {!isEditing && hasAttributeQtyGrid && configTableRows && (
-                    <Hidden
-                      name="configuration"
-                      value={JSON.stringify({
-                        configTable: configTableRows
-                      })}
-                    />
-                  )}
+                  {!isEditing &&
+                    hasAttributeQtyGrid &&
+                    variantsQuantityRows && (
+                      <Hidden
+                        name="configuration"
+                        value={JSON.stringify({
+                          configTable: variantsQuantityRows
+                        })}
+                      />
+                    )}
                   {needsPartConfigure && (
                     <Hidden
                       name="configuration"
@@ -409,7 +411,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         name="quantity"
                         label={t`Quantity`}
                         value={itemData.quantity}
-                        isReadOnly={configTableTotal > 0}
+                        isReadOnly={variantsQuantityTotal > 0}
                         onChange={(value) =>
                           setItemData((prev) => ({
                             ...prev,
@@ -419,7 +421,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             )
                           }))
                         }
-                        configTableTotal={configTableTotal}
+                        variantsQuantityTotal={variantsQuantityTotal}
                         minValue={0}
                         hasVariantsQuantity={hasAttributeQtyGrid}
                         onOpenVariantsQuantity={() =>
@@ -526,14 +528,16 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       value={itemData.modelUploadId ?? undefined}
                     />
                     <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                    {!isEditing && hasAttributeQtyGrid && configTableRows && (
-                      <Hidden
-                        name="configuration"
-                        value={JSON.stringify({
-                          configTable: configTableRows
-                        })}
-                      />
-                    )}
+                    {!isEditing &&
+                      hasAttributeQtyGrid &&
+                      variantsQuantityRows && (
+                        <Hidden
+                          name="configuration"
+                          value={JSON.stringify({
+                            configTable: variantsQuantityRows
+                          })}
+                        />
+                      )}
                     {needsPartConfigure && (
                       <Hidden
                         name="configuration"
@@ -583,8 +587,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                               quantityPerJob: value
                             }))
                           }
-                          isReadOnly={configTableTotal > 0}
-                          configTableTotal={configTableTotal}
+                          isReadOnly={variantsQuantityTotal > 0}
+                          variantsQuantityTotal={variantsQuantityTotal}
                           minValue={0}
                           hasVariantsQuantity={hasAttributeQtyGrid}
                           onOpenVariantsQuantity={() =>

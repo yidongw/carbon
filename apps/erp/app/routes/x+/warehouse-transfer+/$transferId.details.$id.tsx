@@ -25,10 +25,10 @@ import {
 } from "~/modules/inventory";
 import {
   expandStyleConfigToVariantLines,
-  hasStyleConfigTable,
+  hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -155,7 +155,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       const { variantQuantities: _configStr, ...rest } = updateData;
       const parentItemId = existingLine.data?.itemId ?? "";
 
-      if (hasStyleConfigTable(variantQuantities)) {
+      if (hasStyleVariantsQuantity(variantQuantities)) {
         const expanded = await expandStyleConfigToVariantLines(client, {
           parentItemId,
           companyId,

@@ -27,9 +27,9 @@ import {
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
-import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity.service";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
+import { getVariantsQuantityReferenceSourceForOperation } from "~/modules/production/variantsQuantityOverlay.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
@@ -94,15 +94,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     value: jobId
   };
 
-  const configReferenceSource = await getConfigReferenceSourceForOperation(
-    client,
-    {
+  const variantsQuantityReferenceSource =
+    await getVariantsQuantityReferenceSourceForOperation(client, {
       jobId,
       jobOperationId: jobOperationId || undefined,
       companyId,
       reportKind: "productionQuantity"
-    }
-  );
+    });
 
   // A master work order carries only its cutting operation (sew/finish are
   // reported on the bundles), so no operation filtering is needed here.
@@ -132,7 +130,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     remainingByOperationId,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
-    configReferenceSource,
+    variantsQuantityReferenceSource,
     itemId,
     ...actorContext
   };

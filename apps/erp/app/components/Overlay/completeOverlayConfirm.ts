@@ -81,7 +81,10 @@ export function completeOverlayConfirm({
   instance.onSuccess?.(data);
   instance.onCreated?.();
 
-  if (confirmMode === "server" && instance.overlayId === "jobConfigTable") {
+  if (
+    confirmMode === "server" &&
+    instance.overlayId === "jobVariantsQuantity"
+  ) {
     toast.success(i18n._(msg`Quantity updated`));
   }
 

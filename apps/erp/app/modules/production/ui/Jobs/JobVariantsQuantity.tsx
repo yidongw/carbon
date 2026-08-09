@@ -9,27 +9,27 @@ import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOv
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
-import { configTableToComboRows } from "~/modules/production/variantsQuantityTableColumns";
+import { variantsQuantityToComboRows } from "~/modules/production/variantsQuantityTableColumns";
 import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
-import type { AdjustmentMode, Column, Row } from "./configTableShared";
+import type { AdjustmentMode, Column, Row } from "./variantsQuantityShared";
 import {
   buildColumns,
   computeTotal,
-  EditableConfigGrid,
+  EditableVariantsQuantityGrid,
   formatSignedTotal,
   getCellKey,
   getInitialRows,
   getMergeKey,
   hasValue,
   isStyleComboParameters,
-  jobConfigQuantitiesModalBodyClassName,
-  jobConfigQuantitiesModalShellClassName,
+  jobVariantsQuantityModalBodyClassName,
+  jobVariantsQuantityModalShellClassName,
   mergeRows,
   normalizeRow,
-  ReadOnlyConfigTable,
+  ReadOnlyVariantsQuantityTable,
   validateCell,
   zeroQuantities
-} from "./configTableShared";
+} from "./variantsQuantityShared";
 
 type HistoryEntry = {
   id: string;
@@ -39,7 +39,7 @@ type HistoryEntry = {
   createdByName: string | null;
 };
 
-export type JobConfigQuantitiesProps = {
+export type JobVariantsQuantityProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   jobDisplayId?: string | null;
@@ -108,7 +108,7 @@ function HistoryList({
             </button>
             {isExpanded ? (
               <div className="border-t border-border px-3 py-2">
-                <ReadOnlyConfigTable
+                <ReadOnlyVariantsQuantityTable
                   columns={columns}
                   rows={entry.configuration.configTable ?? []}
                   optionLabels={optionLabels}
@@ -123,7 +123,7 @@ function HistoryList({
   );
 }
 
-function JobConfigQuantities({
+function JobVariantsQuantity({
   parameters,
   initialRows,
   jobDisplayId,
@@ -132,7 +132,7 @@ function JobConfigQuantities({
   onDismiss,
   action: formAction,
   fetcher
-}: JobConfigQuantitiesProps) {
+}: JobVariantsQuantityProps) {
   const { t, i18n } = useLingui();
   // Loader attributeValueNames are the English base; translate to the user's locale so
   // headers/cells/history show 米色 rather than "Beige" or the raw "BG" code.
@@ -158,7 +158,7 @@ function JobConfigQuantities({
       isCombo &&
       !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0);
     const seed = needsConvert
-      ? (configTableToComboRows(
+      ? (variantsQuantityToComboRows(
           { configTable: initialRows },
           optionLabels
         ) as Row[])
@@ -294,7 +294,7 @@ function JobConfigQuantities({
     fetcher.state !== "idle" || !hasAdjustment || preview.hasNegative;
 
   return (
-    <div className={jobConfigQuantitiesModalShellClassName}>
+    <div className={jobVariantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
           <Trans>Variants Quantity</Trans>
@@ -303,7 +303,7 @@ function JobConfigQuantities({
           <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>
         ) : null}
       </div>
-      <div className={jobConfigQuantitiesModalBodyClassName}>
+      <div className={jobVariantsQuantityModalBodyClassName}>
         <div className="flex flex-col gap-6">
           <section className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -318,7 +318,7 @@ function JobConfigQuantities({
               </span>
             </div>
             {currentRows.length > 0 ? (
-              <ReadOnlyConfigTable
+              <ReadOnlyVariantsQuantityTable
                 columns={columns}
                 rows={currentRows}
                 optionLabels={optionLabels}
@@ -355,7 +355,7 @@ function JobConfigQuantities({
                 <Trans>Enter the target quantity for each size.</Trans>
               )}
             </p>
-            <EditableConfigGrid
+            <EditableVariantsQuantityGrid
               columns={columns}
               rows={rows}
               invalidCells={invalidCells}
@@ -428,5 +428,5 @@ function JobConfigQuantities({
   );
 }
 
-export { JobConfigQuantities };
-export default JobConfigQuantities;
+export { JobVariantsQuantity };
+export default JobVariantsQuantity;

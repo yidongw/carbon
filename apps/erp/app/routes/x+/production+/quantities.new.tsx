@@ -27,8 +27,8 @@ import {
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
-import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
+import { getVariantsQuantityReferenceSourceForOperation } from "~/modules/production/variantsQuantityOverlay.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -97,7 +97,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let opContext = null;
   let itemId = null;
   let configurationParameters = null;
-  let configReferenceSource = null;
+  let variantsQuantityReferenceSource = null;
 
   if (jobId) {
     const [job, operations] = await Promise.all([
@@ -138,15 +138,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
 
     if (jobId) {
-      configReferenceSource = await getConfigReferenceSourceForOperation(
-        client,
-        {
+      variantsQuantityReferenceSource =
+        await getVariantsQuantityReferenceSourceForOperation(client, {
           jobId,
           jobOperationId,
           companyId,
           reportKind: "productionQuantity"
-        }
-      );
+        });
     }
   }
 
@@ -224,7 +222,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       configurationParameters && configurationParameters.length > 0
         ? configurationParameters
         : null,
-    configReferenceSource,
+    variantsQuantityReferenceSource,
     ...actorContext
   };
 }

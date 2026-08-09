@@ -6,11 +6,11 @@ import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { upsertJobMethod } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
+  isVariantsQuantityConfiguration,
   persistStyleJobConfiguration
 } from "~/modules/production/jobVariantQuantity.service";
+import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { path, requestReferrer } from "~/utils/path";
 
@@ -42,7 +42,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
-  if (isConfigTableConfiguration(configuration)) {
+  if (isVariantsQuantityConfiguration(configuration)) {
     const replaced = await persistStyleJobConfiguration(
       client,
       getDatabaseClient(),

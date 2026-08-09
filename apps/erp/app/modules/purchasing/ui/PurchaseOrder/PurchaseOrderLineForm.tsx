@@ -61,13 +61,13 @@ import {
   useUser
 } from "~/hooks";
 import { getSupplierPartPriceBreaks } from "~/modules/items";
-import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
-  toConfigTableValue,
+  toVariantsQuantityValue,
   useVariantsQuantityModal
 } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import { isVariantsQuantityOverlaySuccess } from "~/modules/production/variantsQuantityOverlay";
 import type { PurchaseOrder, PurchaseOrderLine } from "~/modules/purchasing";
 import {
   isPurchaseOrderLocked,
@@ -356,10 +356,12 @@ const PurchaseOrderLineForm = ({
 
   const variantsQuantityModal = useVariantsQuantityModal();
   const initialConfig = parseInitialConfig(initialValues.configuration);
-  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
-    initialConfig.rows
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
   );
-  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
   // Items with variant attributes use the config-quantity grid when adding a
   // parent line — Styles (variants quantity) always, Consumables with a color set. The
@@ -388,9 +390,9 @@ const PurchaseOrderLineForm = ({
   };
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    setConfigTableRows(data.configuration.configTable);
-    setConfigTableTotal(data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityTotal(data.total);
     onQuantityChange(data.total);
   };
 
@@ -398,14 +400,14 @@ const PurchaseOrderLineForm = ({
     if (!itemData.itemId) return;
     variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toConfigTableValue(configTableRows),
+      configuration: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
 
   const clearConfig = () => {
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
   };
 
   const onTypeChange = (t: MethodItemType | "Item") => {
@@ -725,9 +727,9 @@ const PurchaseOrderLineForm = ({
                     <Hidden
                       name="configuration"
                       value={
-                        configTableRows
+                        variantsQuantityRows
                           ? JSON.stringify({
-                              configTable: configTableRows
+                              configTable: variantsQuantityRows
                             })
                           : ""
                       }
@@ -802,8 +804,8 @@ const PurchaseOrderLineForm = ({
                                 ? openVariantsQuantity
                                 : undefined
                             }
-                            configTableTotal={configTableTotal}
-                            isReadOnly={configTableTotal > 0}
+                            variantsQuantityTotal={variantsQuantityTotal}
+                            isReadOnly={variantsQuantityTotal > 0}
                           />
                         ) : (
                           <NumberControlled

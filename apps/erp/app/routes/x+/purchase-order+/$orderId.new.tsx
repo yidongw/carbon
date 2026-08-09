@@ -13,9 +13,9 @@ import {
 } from "~/components/Overlay/overlay";
 import {
   expandStyleConfigToVariantLines,
-  hasStyleConfigTable
+  hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import {
   getPurchaseOrder,
   isPurchaseOrderLocked,
@@ -162,7 +162,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // A stored config table means the per-variant quantity grid was used (Style
   // variants quantity, or a Consumable color set) — expand into variant SKU lines
   // regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
+  if (d.itemId && configuration && hasStyleVariantsQuantity(configuration)) {
     const expanded = await expandStyleConfigToVariantLines(client, {
       parentItemId: d.itemId,
       companyId,

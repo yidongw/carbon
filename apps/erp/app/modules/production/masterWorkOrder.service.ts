@@ -9,7 +9,7 @@ import { setGenericQueryFilters } from "~/utils/query";
 import { computeConfigRemaining } from "./jobConfiguration";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
@@ -70,7 +70,7 @@ export async function getMasterCuttingProgress(
       if (planned.data.length > 0) {
         planConfigByJob.set(
           jobId,
-          jobVariantQuantitiesToConfigTable(planned.data) as unknown as Json
+          jobVariantQuantitiesToTable(planned.data) as unknown as Json
         );
       }
     })

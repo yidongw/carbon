@@ -23,15 +23,15 @@ import { useConfigurableItems } from "~/components/Form/Item";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { usePermissions, useUser } from "~/hooks";
 import { deadlineTypes, masterWorkOrderValidator } from "~/modules/production";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";
 import { useDeadlineTypeLabel } from "~/modules/production/ui/Jobs/jobLabels";
 import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
-  toConfigTableValue,
+  toVariantsQuantityValue,
   useVariantsQuantityModal
 } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
-import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import { isVariantsQuantityOverlaySuccess } from "../../variantsQuantityOverlay";
 
 type MasterWorkOrderFormProps = {
   initialValues: z.infer<typeof masterWorkOrderValidator>;
@@ -58,19 +58,21 @@ const MasterWorkOrderForm = ({
   // Qty grid only for items with attribute selections — not legacy Part
   // configurationParameters.
   const hasVariantsQuantity = configurableItemIds.includes(itemId);
-  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(null);
-  const [configTableTotal, setConfigTableTotal] = useState(0);
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(null);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
 
   const onItemChange = (nextItemId: string) => {
     setItemId(nextItemId);
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
   };
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    setConfigTableRows(data.configuration.configTable);
-    setConfigTableTotal(data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };
 
@@ -78,7 +80,7 @@ const MasterWorkOrderForm = ({
     if (!itemId) return;
     variantsQuantityModal.open({
       itemId,
-      configuration: toConfigTableValue(configTableRows),
+      configuration: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
@@ -115,9 +117,9 @@ const MasterWorkOrderForm = ({
               label={t`Quantity`}
               value={quantity}
               minValue={0}
-              isReadOnly={configTableTotal > 0}
+              isReadOnly={variantsQuantityTotal > 0}
               onChange={setQuantity}
-              configTableTotal={configTableTotal}
+              variantsQuantityTotal={variantsQuantityTotal}
               hasVariantsQuantity={hasVariantsQuantity}
               onOpenVariantsQuantity={openVariantsQuantity}
             />
@@ -139,9 +141,9 @@ const MasterWorkOrderForm = ({
             <Hidden
               name="configuration"
               value={
-                configTableRows
+                variantsQuantityRows
                   ? JSON.stringify({
-                      configTable: configTableRows
+                      configTable: variantsQuantityRows
                     })
                   : ""
               }

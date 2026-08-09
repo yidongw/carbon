@@ -4,12 +4,12 @@
 
 | Component | Path | Role |
 |---|---|---|
-| `ResponsiveConfigTable` | `apps/erp/app/modules/production/ui/Jobs/ResponsiveConfigTable.tsx` | Generic layout wrapper: horizontal table at `md+`, vertical transpose below `md`; accepts custom column/row types via `renderCell` |
-| `ReadOnlyConfigTable` | `configTableShared.tsx` | Read-only config snapshot; hides zero-value columns in vertical mobile view |
-| `EditableConfigGrid` | `configTableShared.tsx` | Editable grid with add/delete row; `readOnly` prop hides zero values in vertical view |
-| `VariantsQuantityModal` | `VariantsQuantityModal.tsx` | Item-level config modal; uses `EditableConfigGrid` |
-| `JobConfigQuantities` | `JobConfigQuantities.tsx` | Job-level config overlay; uses `ReadOnlyConfigTable` + `EditableConfigGrid` |
-| `VariantsQuantityReportedTargetTable` | `VariantsQuantityReportedTargetTable.tsx` | BOP grid-icon modal table (reported/pickup/target triplets); uses same responsive transpose as `ResponsiveConfigTable` |
+| `ResponsiveVariantsQuantityTable` | `apps/erp/app/modules/production/ui/Jobs/ResponsiveVariantsQuantityTable.tsx` | Generic layout wrapper: horizontal table at `md+`, vertical transpose below `md`; accepts custom column/row types via `renderCell` |
+| `ReadOnlyVariantsQuantityTable` | `variantsQuantityShared.tsx` | Read-only config snapshot; hides zero-value columns in vertical mobile view |
+| `EditableVariantsQuantityGrid` | `variantsQuantityShared.tsx` | Editable grid with add/delete row; `readOnly` prop hides zero values in vertical view |
+| `VariantsQuantityModal` | `VariantsQuantityModal.tsx` | Item-level config modal; uses `EditableVariantsQuantityGrid` |
+| `JobVariantsQuantity` | `JobVariantsQuantity.tsx` | Job-level config overlay; uses `ReadOnlyVariantsQuantityTable` + `EditableVariantsQuantityGrid` |
+| `VariantsQuantityReportedTargetTable` | `VariantsQuantityReportedTargetTable.tsx` | BOP grid-icon modal table (reported/pickup/target triplets); uses same responsive transpose as `ResponsiveVariantsQuantityTable` |
 
 ## Responsive Behavior
 
@@ -21,8 +21,8 @@
 ## Modal Usage
 
 - `VariantsQuantityModal` / `VariantsQuantityLocalModal` / `useVariantsQuantityModal()`
-- `JobConfigQuantities` overlay (`jobConfigTable`)
-- Item read-only overlay (`itemConfigTable`, `confirmMode: "none"`)
+- `JobVariantsQuantity` overlay (`jobVariantsQuantity`)
+- Item read-only overlay (`itemVariantsQuantity`, `confirmMode: "none"`)
 
 ## Breakpoint
 

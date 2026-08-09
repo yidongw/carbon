@@ -1,7 +1,7 @@
 import type { Database, Json } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { expandConfigTableToVariantQuantities } from "~/modules/items/itemAttribute.service";
+import { expandVariantsQuantityTable } from "~/modules/items/itemAttribute.service";
 
 export type JobVariantQuantityLine = {
   variantItemId: string;
@@ -12,7 +12,7 @@ export type JobVariantQuantityLine = {
 type Db = SupabaseClient<Database>;
 
 /** True when configuration is a Style/attribute qty table (not Part flat params). */
-export function isConfigTableConfiguration(
+export function isVariantsQuantityConfiguration(
   configuration: unknown
 ): configuration is {
   configTable: unknown[];
@@ -23,13 +23,13 @@ export function isConfigTableConfiguration(
   );
 }
 
-export function isNonEmptyConfigTable(
+export function isNonEmptyVariantsQuantity(
   configuration: unknown
 ): configuration is {
   configTable: unknown[];
 } {
   return (
-    isConfigTableConfiguration(configuration) &&
+    isVariantsQuantityConfiguration(configuration) &&
     configuration.configTable.length > 0
   );
 }
@@ -171,11 +171,11 @@ export async function getJobVariantQuantities(
     };
   }
 
-  if (!job?.itemId || !isNonEmptyConfigTable(job.configuration)) {
+  if (!job?.itemId || !isNonEmptyVariantsQuantity(job.configuration)) {
     return { data: [], error: null };
   }
 
-  const expanded = await expandConfigTableToVariantQuantities(client, {
+  const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: job.itemId,
     companyId,
     configuration: job.configuration
@@ -232,7 +232,7 @@ async function attachValuesKeys(
 }
 
 /** Expand a combo/matrix configTable payload into jobVariantQuantity rows. */
-export async function replaceJobVariantQuantitiesFromConfigTable(
+export async function replaceJobVariantQuantitiesFromTable(
   client: Db,
   db: Kysely<KyselyDatabase>,
   args: {
@@ -248,7 +248,7 @@ export async function replaceJobVariantQuantitiesFromConfigTable(
     clearJobConfiguration?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
-  const expanded = await expandConfigTableToVariantQuantities(client, {
+  const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: args.parentItemId,
     companyId: args.companyId,
     configuration: args.configuration
@@ -285,7 +285,7 @@ export async function persistStyleJobConfiguration(
     configuration: Record<string, unknown>;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
-  return replaceJobVariantQuantitiesFromConfigTable(client, db, {
+  return replaceJobVariantQuantitiesFromTable(client, db, {
     jobId: args.jobId,
     parentItemId: args.parentItemId,
     companyId: args.companyId,
@@ -296,9 +296,7 @@ export async function persistStyleJobConfiguration(
 }
 
 /** Build combo editor rows from stored jobVariantQuantity lines. */
-export function jobVariantQuantitiesToConfigTable(
-  lines: JobVariantQuantityLine[]
-): {
+export function jobVariantQuantitiesToTable(lines: JobVariantQuantityLine[]): {
   configTable: Array<{ valuesKey: string; Quantities: number }>;
 } {
   return {

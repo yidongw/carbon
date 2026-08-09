@@ -1520,7 +1520,7 @@ async function loadVariantsByValuesKey(
  * Combo-only: each row is `{ valuesKey, Quantities }`; variants are matched by
  * valuesKey (attribute codes in set order).
  */
-export async function expandConfigTableToVariantQuantities(
+export async function expandVariantsQuantityTable(
   client: Db,
   args: {
     parentItemId: string;

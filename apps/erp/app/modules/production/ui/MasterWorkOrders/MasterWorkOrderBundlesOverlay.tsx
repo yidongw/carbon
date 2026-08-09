@@ -7,7 +7,7 @@ import type { BundleWorkOrder } from "~/modules/production";
 import {
   variantsQuantityModalBodyClassName,
   variantsQuantityModalShellClassName
-} from "../Jobs/configTableShared";
+} from "../Jobs/variantsQuantityShared";
 import BundleWorkOrdersTable from "./BundleWorkOrdersTable";
 import PrintBundleTicketsModal from "./PrintBundleTicketsModal";
 

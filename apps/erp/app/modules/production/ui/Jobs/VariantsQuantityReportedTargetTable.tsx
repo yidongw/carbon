@@ -2,13 +2,13 @@ import { cn, Popover, PopoverContent, PopoverTrigger } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { type ReactNode, useState } from "react";
 import {
-  buildConfigColumns,
-  type ConfigColumn,
-  type ReportedTargetRow
+  buildVariantsQuantityColumns,
+  type ReportedTargetRow,
+  type VariantsQuantityColumn
 } from "~/modules/production/variantsQuantityTableColumns";
-import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
+import { ResponsiveVariantsQuantityTable } from "./ResponsiveVariantsQuantityTable";
 
-function getColumnWidthClass(column: ConfigColumn): string {
+function getColumnWidthClass(column: VariantsQuantityColumn): string {
   switch (column.type) {
     case "quantity":
       return "w-[10rem] min-w-[10rem] max-w-[10rem]";
@@ -141,7 +141,10 @@ function QuantityTripletCell({
   );
 }
 
-function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
+function renderReportedTargetCell(
+  col: VariantsQuantityColumn,
+  row: ReportedTargetRow
+) {
   if (col.type === "quantity") {
     return (
       <QuantityTripletCell
@@ -157,7 +160,7 @@ function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
 
 type VariantsQuantityReportedTargetTableProps = {
   rows: ReportedTargetRow[];
-  parameters: Parameters<typeof buildConfigColumns>[0];
+  parameters: Parameters<typeof buildVariantsQuantityColumns>[0];
 };
 
 export function VariantsQuantityReportedTargetTable({
@@ -165,7 +168,7 @@ export function VariantsQuantityReportedTargetTable({
   parameters
 }: VariantsQuantityReportedTargetTableProps) {
   const { t } = useLingui();
-  const { columns } = buildConfigColumns(parameters, t`Quantities`);
+  const { columns } = buildVariantsQuantityColumns(parameters, t`Quantities`);
 
   if (rows.length === 0) {
     return (
@@ -176,7 +179,7 @@ export function VariantsQuantityReportedTargetTable({
   }
 
   return (
-    <ResponsiveConfigTable
+    <ResponsiveVariantsQuantityTable
       columns={columns}
       rows={rows}
       getColumnWidthClass={(col) => getColumnWidthClass(col)}

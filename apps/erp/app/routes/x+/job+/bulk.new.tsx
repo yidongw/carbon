@@ -19,8 +19,8 @@ import {
   upsertJobMethod
 } from "~/modules/production";
 import {
-  isConfigTableConfiguration,
-  replaceJobVariantQuantitiesFromConfigTable
+  isVariantsQuantityConfiguration,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { getNextSequence } from "~/modules/settings/settings.service";
 import { getDatabaseClient } from "~/services/database.server";
@@ -65,11 +65,11 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  const isStyleQty = isConfigTableConfiguration(configuration);
-  const configTableRows = isStyleQty
+  const isStyleQty = isVariantsQuantityConfiguration(configuration);
+  const variantsQuantityRows = isStyleQty
     ? (configuration.configTable as Record<string, unknown>[])
     : [];
-  const hasConfiguredJobs = configTableRows.length > 0;
+  const hasConfiguredJobs = variantsQuantityRows.length > 0;
   const flatPartConfiguration = isStyleQty ? undefined : configuration;
   const jobs = Math.max(1, Math.ceil(jobCount));
 
@@ -140,16 +140,16 @@ export async function action({ request }: ActionFunctionArgs) {
       "T"
     )[0];
 
-    const configTableRow = hasConfiguredJobs
-      ? configTableRows[i % configTableRows.length]
+    const variantsQuantityRow = hasConfiguredJobs
+      ? variantsQuantityRows[i % variantsQuantityRows.length]
       : undefined;
-    const styleConfigurationForJob = configTableRow
+    const styleConfigurationForJob = variantsQuantityRow
       ? {
-          configTable: [configTableRow]
+          configTable: [variantsQuantityRow]
         }
       : undefined;
-    const jobQuantity = configTableRow
-      ? getConfiguredJobQuantity(configTableRow)
+    const jobQuantity = variantsQuantityRow
+      ? getConfiguredJobQuantity(variantsQuantityRow)
       : quantityPerJob;
     const scrapRatio =
       quantityPerJob > 0 ? scrapQuantityPerJob / quantityPerJob : 0;
@@ -188,7 +188,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     if (styleConfigurationForJob) {
-      const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+      const replaced = await replaceJobVariantQuantitiesFromTable(
         serviceRole,
         getDatabaseClient(),
         {

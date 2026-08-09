@@ -10,16 +10,16 @@ import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "~/modules/production/jobVariantQuantity.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
 import { insertJob } from "./production.service";
 
-type ConfigRow = Record<string, string | number | boolean>;
-type ConfigTable = {
-  configTable?: ConfigRow[];
+type VariantsQuantityRow = Record<string, string | number | boolean>;
+type VariantsQuantityTable = {
+  configTable?: VariantsQuantityRow[];
 };
 
 /** Drop the `<prefix>_` from an internal id (e.g. `mwo_RWARP…` -> `RWARP…`). */
@@ -51,7 +51,7 @@ type CuttingCell = {
   valuesKey: string;
   attributeLabel: string;
   quantity: number;
-  configuration: ConfigTable;
+  configuration: VariantsQuantityTable;
 };
 
 export type BundleWorkOrder = NonNullable<
@@ -434,14 +434,14 @@ export async function insertBundleWorkOrder(
  * `{ valuesKey, Quantities }`.
  */
 function extractCuttingCells(configuration: unknown): CuttingCell[] {
-  const cfg = (configuration ?? null) as ConfigTable | null;
+  const cfg = (configuration ?? null) as VariantsQuantityTable | null;
   const table = cfg?.configTable;
   if (!Array.isArray(table)) return [];
 
   const toCell = (
     valuesKey: string,
     quantity: number,
-    configuration: ConfigTable
+    configuration: VariantsQuantityTable
   ): CuttingCell => {
     const parts = valuesKey.split("|").filter(Boolean);
     return {
@@ -563,7 +563,7 @@ export async function getCuttingSplitProposal(
 
   const plannedQty = await getJobVariantQuantities(client, jobId, companyId);
   const plannedCells = extractCuttingCells(
-    jobVariantQuantitiesToConfigTable(plannedQty.data ?? [])
+    jobVariantQuantitiesToTable(plannedQty.data ?? [])
   );
 
   const cuttingOperationId = await getMasterCuttingOperationId(

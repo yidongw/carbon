@@ -18,15 +18,15 @@ const defaultFormatOptions = {
 } satisfies Intl.NumberFormatOptions;
 
 function VariantsQuantityAdornment({
-  configTableTotal
+  variantsQuantityTotal
 }: {
-  configTableTotal: number;
+  variantsQuantityTotal: number;
 }) {
   return (
     <div
       className={cn(
         "pointer-events-none absolute right-0 top-0 z-10 m-px flex h-[calc(100%-2px)] w-10 items-center justify-center rounded-r-md border-l border-border transition-colors",
-        configTableTotal > 0 ? "text-emerald-500" : "text-muted-foreground"
+        variantsQuantityTotal > 0 ? "text-emerald-500" : "text-muted-foreground"
       )}
       aria-hidden
     >
@@ -54,7 +54,7 @@ export type ItemVariantsQuantityInputProps = {
   hasVariantsQuantity: boolean;
   onOpenVariantsQuantity?: () => void;
   /** Sum of configured quantity columns; drives adornment color. */
-  configTableTotal?: number;
+  variantsQuantityTotal?: number;
   /** `role="button"` wrapper when opening the variants quantity overlay from the field. */
   openVariantsQuantityAccessibilityLabel?: string;
 };
@@ -78,7 +78,7 @@ export function ItemVariantsQuantityInput({
   numberFieldProps,
   hasVariantsQuantity,
   onOpenVariantsQuantity,
-  configTableTotal = 0,
+  variantsQuantityTotal = 0,
   openVariantsQuantityAccessibilityLabel = "Configure quantities"
 }: ItemVariantsQuantityInputProps) {
   const safeValue = Number.isFinite(value) ? value : 0;
@@ -113,12 +113,14 @@ export function ItemVariantsQuantityInput({
             "tabular-nums",
             showAdornment && "pr-10",
             isReadOnly &&
-              configTableTotal > 0 &&
+              variantsQuantityTotal > 0 &&
               "cursor-pointer text-foreground"
           )}
         />
         {showAdornment ? (
-          <VariantsQuantityAdornment configTableTotal={configTableTotal} />
+          <VariantsQuantityAdornment
+            variantsQuantityTotal={variantsQuantityTotal}
+          />
         ) : showStepper ? (
           <NumberInputStepper>
             <NumberIncrementStepper>

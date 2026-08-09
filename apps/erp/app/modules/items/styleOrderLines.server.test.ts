@@ -1,22 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
   expandStyleConfigToVariantLines,
-  hasStyleConfigTable
+  hasStyleVariantsQuantity
 } from "./styleOrderLines.server";
 
-describe("hasStyleConfigTable", () => {
+describe("hasStyleVariantsQuantity", () => {
   it("returns true when configTable has rows", () => {
     expect(
-      hasStyleConfigTable({
+      hasStyleVariantsQuantity({
         configTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
       })
     ).toBe(true);
   });
 
   it("returns false for empty or missing tables", () => {
-    expect(hasStyleConfigTable(null)).toBe(false);
-    expect(hasStyleConfigTable({})).toBe(false);
-    expect(hasStyleConfigTable({ configTable: [] })).toBe(false);
+    expect(hasStyleVariantsQuantity(null)).toBe(false);
+    expect(hasStyleVariantsQuantity({})).toBe(false);
+    expect(hasStyleVariantsQuantity({ configTable: [] })).toBe(false);
   });
 });
 

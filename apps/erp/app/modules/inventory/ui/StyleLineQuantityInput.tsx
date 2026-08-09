@@ -1,14 +1,14 @@
 import type { Json } from "@carbon/database";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import {
-  isConfigTableOverlaySuccess,
-  parseInitialConfigTable
-} from "~/modules/production/configTableOverlay";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
 import { ItemVariantsQuantityInput } from "~/modules/production/ui/Jobs/ItemVariantsQuantityInput";
 import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
-import { openStyleConfigTableWithInventory } from "./openStyleConfigTableWithInventory";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  isVariantsQuantityOverlaySuccess,
+  parseInitialVariantsQuantity
+} from "~/modules/production/variantsQuantityOverlay";
+import { openStyleVariantsQuantityWithInventory } from "./openStyleVariantsQuantityWithInventory";
 
 type StyleLineQuantityInputProps = {
   lineId: string;
@@ -62,18 +62,20 @@ export function StyleLineQuantityInput({
 }: StyleLineQuantityInputProps) {
   const { t } = useLingui();
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialConfigTable(variantQuantities);
-  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
-    initialConfig.rows
+  const initialConfig = parseInitialVariantsQuantity(variantQuantities);
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
   );
-  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
   const [quantity, setQuantity] = useState(value);
   const [opening, setOpening] = useState(false);
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    setConfigTableRows(data.configuration.configTable);
-    setConfigTableTotal(data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(data.configuration.configTable);
+    setVariantsQuantityTotal(data.total);
     const nextQty = data.total > 0 ? data.total : quantity;
     if (data.total > 0) setQuantity(data.total);
     onQuantityChange({
@@ -90,13 +92,13 @@ export function StyleLineQuantityInput({
     if (!itemId || isDisabled || opening) return;
     setOpening(true);
     try {
-      await openStyleConfigTableWithInventory({
+      await openStyleVariantsQuantityWithInventory({
         variantsQuantityModal,
         itemId,
         locationId,
         storageUnitId,
         orderVariantQuantities,
-        configTableRows,
+        variantsQuantityRows,
         otherLineVariantQuantities,
         maxTotal,
         onConfirm: applyConfig
@@ -117,10 +119,10 @@ export function StyleLineQuantityInput({
           minValue={0}
           size={size}
           isDisabled={isDisabled || opening}
-          isReadOnly={isReadOnly || configTableTotal > 0}
+          isReadOnly={isReadOnly || variantsQuantityTotal > 0}
           hasVariantsQuantity
           onOpenVariantsQuantity={openVariantsQuantity}
-          configTableTotal={configTableTotal}
+          variantsQuantityTotal={variantsQuantityTotal}
           openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
         />
       </div>

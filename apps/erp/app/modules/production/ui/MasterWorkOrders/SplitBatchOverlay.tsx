@@ -12,7 +12,7 @@ import type {
 import {
   variantsQuantityModalBodyClassName,
   variantsQuantityModalShellClassName
-} from "../Jobs/configTableShared";
+} from "../Jobs/variantsQuantityShared";
 
 export type SplitBatchOverlayProps = {
   cells: CuttingSplitCell[];

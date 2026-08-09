@@ -14,17 +14,17 @@ import {
   getJobConfigurationHistory,
   isJobLocked
 } from "~/modules/production";
-import {
-  buildConfigTableActionResponse,
-  parseConfigurationFormValue
-} from "~/modules/production/configTableOverlay.server";
-import type { ConfigRow } from "~/modules/production/jobConfiguration";
+import type { VariantsQuantityRow } from "~/modules/production/jobConfiguration";
 import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable,
-  replaceJobVariantQuantitiesFromConfigTable
+  jobVariantQuantitiesToTable,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
+import {
+  buildVariantsQuantityActionResponse,
+  parseConfigurationFormValue
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
@@ -33,29 +33,29 @@ import { path } from "~/utils/path";
 export type JobConfigurationHistoryEntry = {
   id: string;
   quantity: number;
-  configuration: { configTable: ConfigRow[] };
+  configuration: { configTable: VariantsQuantityRow[] };
   createdAt: string;
   createdByName: string | null;
 };
 
-export type JobConfigTableOverlayLoaderData = {
+export type JobVariantsQuantityOverlayLoaderData = {
   jobDisplayId: string | null;
   parameters: ConfigurationParameter[];
-  initialRows?: ConfigRow[];
+  initialRows?: VariantsQuantityRow[];
   history: JobConfigurationHistoryEntry[];
   /** Color code -> color name, so the config table shows names not codes. */
   attributeValueNames: Record<string, string>;
 };
 
 function normalizeConfigurationValue(value: unknown): {
-  configTable: ConfigRow[];
+  configTable: VariantsQuantityRow[];
 } {
   const cfg =
     typeof value === "object" && value !== null && !Array.isArray(value)
       ? (value as Record<string, unknown>)
       : null;
   const configTable = Array.isArray(cfg?.configTable)
-    ? (cfg?.configTable as ConfigRow[])
+    ? (cfg?.configTable as VariantsQuantityRow[])
     : [];
   return { configTable };
 }
@@ -63,7 +63,7 @@ function normalizeConfigurationValue(value: unknown): {
 export async function loader({
   request,
   params
-}: LoaderFunctionArgs): Promise<JobConfigTableOverlayLoaderData | null> {
+}: LoaderFunctionArgs): Promise<JobVariantsQuantityOverlayLoaderData | null> {
   const { client, companyId } = await requirePermissions(request, {
     view: "production",
     bypassRls: true
@@ -90,10 +90,10 @@ export async function loader({
   );
   if (parameters.length === 0) return null;
 
-  const fromTable = jobVariantQuantitiesToConfigTable(planned.data ?? []);
+  const fromTable = jobVariantQuantitiesToTable(planned.data ?? []);
   const initialRows =
     fromTable.configTable.length > 0
-      ? (fromTable.configTable as ConfigRow[])
+      ? (fromTable.configTable as VariantsQuantityRow[])
       : undefined;
 
   const historyResult = await getJobConfigurationHistory(
@@ -187,9 +187,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const planned = await getJobVariantQuantities(client, jobId, companyId);
-  const currentConfiguration = jobVariantQuantitiesToConfigTable(
-    planned.data ?? []
-  );
+  const currentConfiguration = jobVariantQuantitiesToTable(planned.data ?? []);
 
   const merged = applyConfigAdjustment(currentConfiguration, adjustment);
   if (merged.hasNegative) {
@@ -205,7 +203,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+  const replaced = await replaceJobVariantQuantitiesFromTable(
     client,
     getDatabaseClient(),
     {
@@ -239,10 +237,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     });
   } catch (recalcError) {
     console.error(
-      "[job config-table] failed to enqueue recalculate",
+      "[job variants-quantity] failed to enqueue recalculate",
       recalcError
     );
   }
 
-  return data(buildConfigTableActionResponse(merged.configuration));
+  return data(buildVariantsQuantityActionResponse(merged.configuration));
 }

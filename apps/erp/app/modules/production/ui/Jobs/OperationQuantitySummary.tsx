@@ -10,13 +10,13 @@ import { type ReactNode, useMemo, useState } from "react";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import type { OperationQuantitySummary } from "~/modules/production/productionQuantityReport.service";
 import {
-  buildConfigColumns,
-  type ConfigRowDisplayPart,
+  buildVariantsQuantityColumns,
   getConfigRowDisplayPart,
-  getConfigTableRows,
-  mergeConfigTableRows
+  getVariantsQuantityRows,
+  mergeVariantsQuantityRows,
+  type VariantsQuantityRowDisplayPart
 } from "~/modules/production/variantsQuantityTableColumns";
-import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
+import { VariantsQuantityBreakdown } from "./VariantsQuantityBreakdown";
 
 type OperationQuantitySummaryProps = {
   summary: OperationQuantitySummary | null;
@@ -42,12 +42,12 @@ function useConfigParts(
     if (!configurations.length || !configurationParameters?.length) {
       return [];
     }
-    const { columns } = buildConfigColumns(
+    const { columns } = buildVariantsQuantityColumns(
       configurationParameters,
       t`Quantities`
     );
-    const merged = mergeConfigTableRows(
-      configurations.flatMap((config) => getConfigTableRows(config)),
+    const merged = mergeVariantsQuantityRows(
+      configurations.flatMap((config) => getVariantsQuantityRows(config)),
       columns
     );
     return merged
@@ -65,7 +65,7 @@ function OperationTotalBadge({
   label: ReactNode;
   variant: "green" | "orange" | "red";
   total: number;
-  parts: ConfigRowDisplayPart[];
+  parts: VariantsQuantityRowDisplayPart[];
 }) {
   const [open, setOpen] = useState(false);
   const hasBreakdown = parts.length > 0;
@@ -102,7 +102,7 @@ function OperationTotalBadge({
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
       >
-        <ConfigQuantityBreakdown parts={parts} />
+        <VariantsQuantityBreakdown parts={parts} />
       </PopoverContent>
     </Popover>
   );

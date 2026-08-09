@@ -18,10 +18,10 @@ import type { StockTransfer } from "~/modules/inventory/types";
 import StockTransferLineForm from "~/modules/inventory/ui/StockTransfers/StockTransferLineForm";
 import {
   expandStyleConfigToVariantLines,
-  hasStyleConfigTable,
+  hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { jobConfigurationUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
@@ -85,7 +85,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  if (hasStyleConfigTable(variantQuantities)) {
+  if (hasStyleVariantsQuantity(variantQuantities)) {
     const expanded = await expandStyleConfigToVariantLines(client, {
       parentItemId: d.itemId,
       companyId,

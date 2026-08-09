@@ -3,7 +3,7 @@ import { Badge, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { getConfigRowDisplayParts } from "~/modules/production/variantsQuantityTableColumns";
-import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
+import { VariantsQuantityBreakdown } from "./VariantsQuantityBreakdown";
 
 function getProductionQuantityBadgeVariant(type: string) {
   switch (type) {
@@ -69,7 +69,7 @@ export function ProductionQuantityLineBreakdown({
           </span>
         ) : null}
       </HStack>
-      {parts.length > 0 ? <ConfigQuantityBreakdown parts={parts} /> : null}
+      {parts.length > 0 ? <VariantsQuantityBreakdown parts={parts} /> : null}
     </div>
   );
 }

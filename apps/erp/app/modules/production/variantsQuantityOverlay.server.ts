@@ -1,19 +1,19 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { buildConfigTableActionResponse } from "./configTableOverlay";
-import { computeJobConfigTableTotal } from "./jobConfiguration";
+import { computeJobVariantsQuantityTotal } from "./jobConfiguration";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import { getJob } from "./production.service";
+import { buildVariantsQuantityActionResponse } from "./variantsQuantityOverlay";
 import type {
-  ConfigReferenceSource,
-  ConfigTableReferenceContext
+  VariantsQuantityReferenceContext,
+  VariantsQuantityReferenceSource
 } from "./variantsQuantityTableColumns";
 import { buildJobRemainingReferenceContext } from "./variantsQuantityTableColumns";
 
-export { buildConfigTableActionResponse };
+export { buildVariantsQuantityActionResponse };
 
 /** Persist configuration and keep `job.quantity` in sync with the config table total. */
 export function jobConfigurationUpdateFields(
@@ -21,7 +21,7 @@ export function jobConfigurationUpdateFields(
 ): { configuration: Json; quantity: number } {
   return {
     configuration: configuration as Json,
-    quantity: computeJobConfigTableTotal(configuration)
+    quantity: computeJobVariantsQuantityTotal(configuration)
   };
 }
 
@@ -69,7 +69,7 @@ export function parseInitialConfigurationFromRequest(
   }
 }
 
-export async function getConfigReferenceSourceForOperation(
+export async function getVariantsQuantityReferenceSourceForOperation(
   client: SupabaseClient<Database>,
   {
     jobId,
@@ -82,12 +82,12 @@ export async function getConfigReferenceSourceForOperation(
     companyId: string;
     reportKind: "pickup" | "productionQuantity";
   }
-): Promise<ConfigReferenceSource | null> {
+): Promise<VariantsQuantityReferenceSource | null> {
   const job = await getJob(client, jobId);
   const planned = await getJobVariantQuantities(client, jobId, companyId);
   const jobConfiguration =
     planned.data.length > 0
-      ? jobVariantQuantitiesToConfigTable(planned.data)
+      ? jobVariantQuantitiesToTable(planned.data)
       : (job.data?.configuration ?? null);
   if (!jobConfiguration) return null;
 
@@ -173,7 +173,7 @@ export async function getConfigReferenceSourceForOperation(
 
 /**
  * Read a single reported row's saved configuration by record id. Used as the
- * deep-link fallback for the read-only `itemConfigTable` overlay: in-app it
+ * deep-link fallback for the read-only `itemVariantsQuantity` overlay: in-app it
  * gets the config via props, but a pasted URL has only the record id.
  */
 export async function getReportedConfigurationById(
@@ -218,11 +218,11 @@ export async function resolveJobIdForOperation(
   return operation?.jobId?.trim() || undefined;
 }
 
-export async function resolveConfigTableReferenceContext(
+export async function resolveVariantsQuantityReferenceContext(
   client: SupabaseClient<Database>,
   companyId: string,
-  referenceContext: ConfigTableReferenceContext
-): Promise<ConfigTableReferenceContext> {
+  referenceContext: VariantsQuantityReferenceContext
+): Promise<VariantsQuantityReferenceContext> {
   const jobOperationId = referenceContext.jobOperationId?.trim();
   if (!jobOperationId) {
     return referenceContext;
@@ -238,7 +238,7 @@ export async function resolveConfigTableReferenceContext(
     return referenceContext;
   }
 
-  const source = await getConfigReferenceSourceForOperation(client, {
+  const source = await getVariantsQuantityReferenceSourceForOperation(client, {
     jobId,
     jobOperationId,
     companyId,
@@ -256,7 +256,7 @@ export async function resolveConfigTableReferenceContext(
 
 export function parseReferenceContextFromRequest(
   request: Request
-): ConfigTableReferenceContext | undefined {
+): VariantsQuantityReferenceContext | undefined {
   const raw = new URL(request.url).searchParams.get("referenceContext");
   if (!raw) return undefined;
 

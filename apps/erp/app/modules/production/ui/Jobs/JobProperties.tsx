@@ -485,7 +485,7 @@ const JobProperties = ({
               )}
               isDisabled={isDisabled}
               onClick={() =>
-                openOverlay(overlay.to.jobConfigTable({ jobId }), {
+                openOverlay(overlay.to.jobVariantsQuantity({ jobId }), {
                   onCreated: revalidate
                 })
               }

@@ -483,7 +483,7 @@ function ReceiptLineItem({
   // Parent lines with a stored config table, or configurable parents with an
   // order-plan grid, use the attribute qty editor. Expanded variant SKUs → plain qty.
   const configurableItemIds = useConfigurableItems();
-  const useConfigQuantity =
+  const useVariantsQuantity =
     Boolean(line.itemId) &&
     (line.variantQuantities != null ||
       (line.orderVariantQuantities != null &&
@@ -570,7 +570,7 @@ function ReceiptLineItem({
             <VStack spacing={1}>
               <label className="text-xs text-muted-foreground">{t`Received`}</label>
 
-              {useConfigQuantity ? (
+              {useVariantsQuantity ? (
                 <StyleLineQuantityInput
                   lineId={line.id!}
                   itemId={line.itemId}
