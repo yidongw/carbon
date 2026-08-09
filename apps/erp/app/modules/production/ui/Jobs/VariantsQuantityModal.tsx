@@ -200,7 +200,7 @@ function VariantsQuantityModal({
     label: <Enumerable value={shape.label} />,
     value: shape.value
   }));
-  const { primaryParam, columns } = buildColumns(
+  const { comboParam, columns } = buildColumns(
     parameters,
     t`Quantities`,
     t`Attributes`
@@ -243,7 +243,7 @@ function VariantsQuantityModal({
         return normalized;
       });
     }
-    return getInitialRows(parameters, primaryParam, columns);
+    return getInitialRows(parameters, comboParam, columns);
   });
   const [invalidCells, setInvalidCells] = useState<Set<string>>(new Set());
   const [validationError, setValidationError] = useState("");
@@ -277,7 +277,7 @@ function VariantsQuantityModal({
     [rows]
   );
   const missingCombos = !flat
-    ? (primaryParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
+    ? (comboParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
     : [];
   const addComboRow = (combo: string) =>
     setRows((prev) => [
@@ -685,11 +685,11 @@ export function buildConfigEditorRows({
 
   // Empty tagged inventory / fungible Style: no original rows, but we still want
   // click-to-fill hints of 0 on the default parameter rows.
-  const { primaryParam, columns } = buildColumns(parameters, "Quantities");
+  const { comboParam, columns } = buildColumns(parameters, "Quantities");
   const seed =
     configTable && configTable.length > 0
       ? configTable.map((row) => normalizeRow(row, columns))
-      : getInitialRows(parameters, primaryParam, columns);
+      : getInitialRows(parameters, comboParam, columns);
   const zeroRefs = seed.map(() => {
     const refs: Record<string, number> = {};
     for (const col of columns) {

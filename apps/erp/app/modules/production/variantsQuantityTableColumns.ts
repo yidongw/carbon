@@ -27,7 +27,7 @@ export function buildVariantsQuantityColumns(
   parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string
 ): {
-  primaryParam: ConfigurationParameterColumnsInput | null;
+  comboParam: ConfigurationParameterColumnsInput | null;
   columns: VariantsQuantityColumn[];
 } {
   // Style combo: single valuesKey list → row labels + Quantities (not matrix).
@@ -38,7 +38,7 @@ export function buildVariantsQuantityColumns(
 
   if (isStyleCombo && firstList) {
     return {
-      primaryParam: firstList,
+      comboParam: firstList,
       columns: [
         {
           key: "valuesKey",
@@ -59,7 +59,7 @@ export function buildVariantsQuantityColumns(
   // the attribute combo (valuesKey + Quantities) handled above. Any non-combo
   // config collapses to a single plain Quantities column.
   return {
-    primaryParam: null,
+    comboParam: null,
     columns: [
       { key: "Quantities", label: defaultQuantityLabel, type: "quantity" }
     ]

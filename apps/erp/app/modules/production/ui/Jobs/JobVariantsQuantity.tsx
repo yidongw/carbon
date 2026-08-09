@@ -146,7 +146,7 @@ function JobVariantsQuantity({
 
   const defaultQuantityLabel = t`Quantities`;
   const attributesLabel = t`Attributes`;
-  const { primaryParam, columns } = useMemo(
+  const { comboParam, columns } = useMemo(
     () => buildColumns(parameters, defaultQuantityLabel, attributesLabel),
     [parameters, defaultQuantityLabel, attributesLabel]
   );
@@ -174,7 +174,7 @@ function JobVariantsQuantity({
   const [rows, setRows] = useState<Row[]>(() =>
     currentRows.length > 0
       ? currentRows.map((row) => zeroQuantities(row, columns))
-      : getInitialRows(parameters, primaryParam, columns)
+      : getInitialRows(parameters, comboParam, columns)
   );
   const initialRowKeysRef = useRef<Set<string> | null>(null);
   if (initialRowKeysRef.current === null) {

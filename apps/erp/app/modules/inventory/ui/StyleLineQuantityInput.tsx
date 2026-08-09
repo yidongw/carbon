@@ -81,7 +81,7 @@ export function StyleLineQuantityInput({
     onQuantityChange({
       lineId,
       quantity: nextQty,
-      // Persist combo rows only — no configTablePrimaryKeys.
+      // Persist combo rows only (valuesKey + Quantities).
       variantQuantities: {
         configTable: data.configuration.configTable
       }

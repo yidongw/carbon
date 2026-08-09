@@ -82,7 +82,7 @@ export function buildComboColumns(
   defaultQuantityLabel: string,
   attributesLabel = "Attributes"
 ): {
-  primaryParam: ConfigurationParameterInput | null;
+  comboParam: ConfigurationParameterInput | null;
   columns: Column[];
 } | null {
   if (!isStyleComboParameters(parameters)) return null;
@@ -96,7 +96,7 @@ export function buildComboColumns(
   if (!comboParam) return null;
 
   return {
-    primaryParam: comboParam,
+    comboParam,
     columns: [
       {
         key: STYLE_COMBO_VALUES_KEY,
@@ -124,7 +124,7 @@ export function buildColumns(
   defaultQuantityLabel: string,
   attributesLabel = "Attributes"
 ): {
-  primaryParam: ConfigurationParameterInput | null;
+  comboParam: ConfigurationParameterInput | null;
   columns: Column[];
 } {
   const combo = buildComboColumns(
@@ -138,7 +138,7 @@ export function buildColumns(
   // attribute combo (valuesKey + Quantities) built above. Any non-combo config
   // collapses to a single plain Quantities column.
   return {
-    primaryParam: null,
+    comboParam: null,
     columns: [
       { key: "Quantities", label: defaultQuantityLabel, type: "quantity" }
     ]
@@ -160,12 +160,12 @@ export function makeDefaultRow(columns: Column[]): Row {
 
 export function getInitialRows(
   parameters: ConfigurationParameterInput[],
-  primaryParam: ConfigurationParameterInput | null,
+  comboParam: ConfigurationParameterInput | null,
   columns: Column[]
 ): Row[] {
-  // Style combo: one row per valuesKey option (not a Color×Size matrix).
-  if (primaryParam?.key === STYLE_COMBO_VALUES_KEY) {
-    return (primaryParam.listOptions ?? []).map((option) => ({
+  // Style combo: one row per valuesKey option.
+  if (comboParam?.key === STYLE_COMBO_VALUES_KEY) {
+    return (comboParam.listOptions ?? []).map((option) => ({
       ...makeDefaultRow(columns),
       [STYLE_COMBO_VALUES_KEY]: option,
       label: String(option).replace(/\|/g, " · "),
@@ -173,22 +173,7 @@ export function getInitialRows(
     }));
   }
 
-  const nonPrimaryListParams = parameters.filter(
-    (p) =>
-      p !== primaryParam &&
-      p.dataType === "list" &&
-      (p.listOptions?.length ?? 0) > 0
-  );
-
-  if (nonPrimaryListParams.length === 0) {
-    return [makeDefaultRow(columns)];
-  }
-
-  const firstListParam = nonPrimaryListParams[0];
-  return (firstListParam.listOptions ?? []).map((option) => ({
-    ...makeDefaultRow(columns),
-    [firstListParam.key]: option
-  }));
+  return [makeDefaultRow(columns)];
 }
 
 /** Copy a row but reset all quantity columns to 0 (keeps descriptor columns). */

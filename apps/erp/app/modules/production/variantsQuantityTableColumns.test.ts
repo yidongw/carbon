@@ -271,7 +271,7 @@ describe("getVariantsQuantityCells", () => {
     ]);
   });
 
-  it("reads combo rows when configTablePrimaryKeys is omitted", async () => {
+  it("reads combo rows without legacy primary-keys field", async () => {
     const { getVariantsQuantityCells, variantsQuantityToComboRows } =
       await import("./variantsQuantityTableColumns");
     const configuration = {
