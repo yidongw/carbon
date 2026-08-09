@@ -133,7 +133,7 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
     type Row = {
       op_id: string;
       description: string;
-      configuration: unknown;
+      variantQuantities: unknown;
       qty: string;
       type: string;
     };
