@@ -15849,10 +15849,10 @@ msgid "Variances"
 msgstr "差异"
 
 msgid "Variant quantities"
-msgstr ""
+msgstr "规格数量"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "已添加规格数量"
 
 msgid "Variants Quantity"
 msgstr "规格数量"

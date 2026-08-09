@@ -15848,10 +15848,10 @@ msgid "Variances"
 msgstr "Warianty"
 
 msgid "Variant quantities"
-msgstr ""
+msgstr "Ilości wariantów"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "Dodano ilości wariantów"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

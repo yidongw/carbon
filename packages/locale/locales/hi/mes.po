@@ -6382,7 +6382,7 @@ msgid "User record not found"
 msgstr "उपयोगकर्ता रिकॉर्ड नहीं मिला"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "वेरिएंट मात्राएँ जोड़ी गईं"
 
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"

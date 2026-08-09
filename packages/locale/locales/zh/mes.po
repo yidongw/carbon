@@ -6374,7 +6374,7 @@ msgid "User record not found"
 msgstr "用户记录未找到"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "已添加规格数量"
 
 msgid "Verification Error"
 msgstr "验证错误"

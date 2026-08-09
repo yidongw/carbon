@@ -6373,7 +6373,7 @@ msgid "User record not found"
 msgstr "Registo do utilizador não encontrado"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "Quantidades da variante adicionadas"
 
 msgid "Verification Error"
 msgstr "Erro de verificação"

@@ -6381,7 +6381,7 @@ msgid "User record not found"
 msgstr "Utente non trovato"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "Quantità varianti aggiunte"
 
 msgid "Verification Error"
 msgstr "Errore di verifica"

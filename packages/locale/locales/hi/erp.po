@@ -15854,10 +15854,10 @@ msgid "Variances"
 msgstr "अनियमितताएं"
 
 msgid "Variant quantities"
-msgstr ""
+msgstr "वेरिएंट मात्राएँ"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "वेरिएंट मात्राएँ जोड़ी गईं"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

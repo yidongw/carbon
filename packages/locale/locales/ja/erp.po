@@ -15848,10 +15848,10 @@ msgid "Variances"
 msgstr "変動"
 
 msgid "Variant quantities"
-msgstr ""
+msgstr "バリアント数量"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "バリアント数量を追加しました"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

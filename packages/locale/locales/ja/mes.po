@@ -6373,7 +6373,7 @@ msgid "User record not found"
 msgstr "ユーザー記録が見つかりません"
 
 msgid "Variant quantities added"
-msgstr ""
+msgstr "バリアント数量を追加しました"
 
 msgid "Verification Error"
 msgstr "確認エラー"
