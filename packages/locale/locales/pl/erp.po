@@ -1813,7 +1813,7 @@ msgid "Cannot start operation"
 msgstr "Nie można rozpocząć operacji"
 
 msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
-msgstr "Nie można aktualizować-statusu wersji初稿发票请先确认。"
+msgstr "Nie można aktualizować stanu szkicowej faktury zakupowej. Proszę najpierw weryfikować fakturę."
 
 msgid "Cannot upload — supplier interaction not yet created"
 msgstr "Nie można załadować — interakcja z dostawcą nie została jeszcze utworzona"
@@ -2271,7 +2271,7 @@ msgid "Consumed"
 msgstr "Zużyte"
 
 msgid "Consumed by"
-msgstr "Z让消费者消耗的"
+msgstr "Zastąpiony przez"
 
 msgid "Contact"
 msgstr "Kontakt"
@@ -2722,7 +2722,7 @@ msgid "Created location"
 msgstr "Lokalizacja utworzona"
 
 msgid "Created maintenance dispatch"
-msgstr "Stworzony哈哈哈哈维护派工单哈哈哈哈"
+msgstr "Stworzono zadanie naprawy"
 
 msgid "Created maintenance schedule"
 msgstr "Utworzono harmonogram konserwacji"
@@ -4558,7 +4558,7 @@ msgid "Expired"
 msgstr "Wygasło"
 
 msgid "Expired {date}"
-msgstr "Z期kszycy {date}"
+msgstr "Scadł {date}"
 
 msgid "Expired batch"
 msgstr "Wygasła partia"
@@ -4568,7 +4568,7 @@ msgstr "Wygasłe partie"
 
 #. placeholder {0}: w.expirationDate
 msgid "Expired on {0}"
-msgstr "Z期过期于 {0}"
+msgstr "Wygasa {0}"
 
 msgid "Expires"
 msgstr "Wygasa"
@@ -6852,7 +6852,7 @@ msgid "Failed to load trial balance"
 msgstr "Niedostępna próba bilansu probne"
 
 msgid "Failed to load users"
-msgstr "Niedostępni użytkownicy tải失败了"
+msgstr "Nieruchome są użytkownicy"
 
 msgid "Failed to load warehouse transfer"
 msgstr "Nie można załadować przenoszenia magazynowego"
@@ -6885,7 +6885,7 @@ msgid "Failed to move file"
 msgstr "Nie udało się przenieść pliku"
 
 msgid "Failed to notify user"
-msgstr "Nie udało się通知用户"
+msgstr "Nie udało się przesłać powiadomienia użytkownikowi"
 
 msgid "Failed to parse claims"
 msgstr "Nie udało się przetworzyć wiadomościшек"
@@ -6912,7 +6912,7 @@ msgid "Failed to pick up"
 msgstr "Nie udało się zabrać"
 
 msgid "Failed to post asset disposal"
-msgstr "Nie udało się zatwierdzić处置失败（此翻译不符合要求，因源字符串为英文，目标语言应保持一致）"
+msgstr "Nie udało się zatwierdzić zapisu do dyspozycji aktivości"
 
 msgid "Failed to post depreciation run"
 msgstr "Nie udało się zatwierdzić wykonywania deprekcji"
@@ -7743,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "Nie udało się zaktualizować uprawnień użytkownika"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Nie udało się zaktualizować ilości wariantów"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Nie udało się zaktualizować przenoszenia magazynowego"
@@ -8131,7 +8131,7 @@ msgid "Go to App"
 msgstr "Przejdź do Aplikacji"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "Kwota docelowa dla tej wariacji."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10566,7 +10566,7 @@ msgid "No values yet."
 msgstr "Brak wartości jeszcze."
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "Brak zarejestrowanych ilości wariantów."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Brak zaplanowanego stanu magazynowego dla tego produktu. Możesz nadal go wybrać – aktualny stan będzie ujemny do momentu zreconciliacji liczenia."
@@ -12877,7 +12877,7 @@ msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "Skanuj lub wprowadź identyfikator śledzonej jednostki, numer seryjny lub partię"
 
 msgid "Scan or enter tracking number"
-msgstr "Skanuj lub wprowadź numer跟踪中止助手未能接收到有效输入，请检查后重试。"
+msgstr "Skanuj lub wprowadź numer śledzenia"
 
 msgid "Scan or search..."
 msgstr "Skanuj lub szukaj..."
@@ -15011,7 +15011,7 @@ msgid "Track tax depreciation separately"
 msgstr "Śledź wydatki podatkowe oddzielnie"
 
 msgid "Track tax depreciation separately from book depreciation and automatically post deferred tax liability entries."
-msgstr "Śledź z支线任务减值与账面折旧分开，并自动记录递延税负债条目。"
+msgstr "Śledź zatratę podatkową oddzielnie od księgowej i automatycznie wprowadzaj wpisy zwolnienia obciążeń podatkowych."
 
 msgid "Track when batches or serials of this item expire."
 msgstr "Śledź, kiedy partie lub numery seryjne tego artykułu wygasają."
@@ -16037,10 +16037,10 @@ msgid "View Transfer"
 msgstr "Wyświetl Transfer"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "Podgląd ilości wariantów"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "Wiersze wariantów"
 
 msgid "Visibilities"
 msgstr "Widoczności"
@@ -16208,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Gdy włączona, ta reguła aktywuje się dla każdego obiektu tej samej kategorii. Wiersze przypisania są ignorowane, ale zapisywane."
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "Jakie zestawy atrybutów używają warianty tego elementu"
 
 msgid "Who Can Approve"
 msgstr "Kto może zatwierdzić"

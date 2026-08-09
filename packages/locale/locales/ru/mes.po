@@ -223,7 +223,7 @@ msgid "Attributes"
 msgstr "Атрибуты"
 
 msgid "Audit logging disabled"
-msgstr "З记账审核禁用"
+msgstr "Запись аудита отключена"
 
 msgid "Audit logging enabled"
 msgstr "Запись аудита включена"
@@ -531,7 +531,7 @@ msgid "Create Issue"
 msgstr "Создать проблему"
 
 msgid "Create Quality Issue"
-msgstr "Создать质量问题"
+msgstr "Создать проблему качества"
 
 msgid "Create Rework"
 msgstr "Создать повторную обработку"
@@ -1101,7 +1101,7 @@ msgid "Failed to create purchase order lines for style variants"
 msgstr "Не удалось создать строки закупочного заказа для вариаций стиля"
 
 msgid "Failed to create quality issue"
-msgstr "Не удалось создать质量问题"
+msgstr "Невозможно создать качественный вопрос о качестве"
 
 msgid "Failed to create quality issue tasks"
 msgstr "Не удалось создать задачи по качественным вопросам"
@@ -1560,7 +1560,7 @@ msgid "Failed to favorite purchase order"
 msgstr "Не удалось добавить заказ на покупку в избранное"
 
 msgid "Failed to favorite Quote"
-msgstr "Не удалось добавить报价为收藏"
+msgstr "Не удалось добавить цитату в избранное"
 
 msgid "Failed to favorite rfq"
 msgstr "Не удалось добавить запрос на поставку в избранное"
@@ -2409,7 +2409,7 @@ msgid "Failed to insert quote operation parameter"
 msgstr "Не удалось вставить параметр операции цитирования"
 
 msgid "Failed to insert quote operation step"
-msgstr "Не удалось вставить шаг операции报价"
+msgstr "Не удалось вставить операционный шаг цитаты"
 
 msgid "Failed to insert quote operation tool"
 msgstr "Не удалось вставить инструмент операции цитаты"
@@ -2445,7 +2445,7 @@ msgid "Failed to insert style inventory"
 msgstr "Не удалось вставить стиль инвентаризации"
 
 msgid "Failed to insert supplier quote"
-msgstr "Не удалось вставить поставщика报价"
+msgstr "Не удалось добавить предложение поставщика"
 
 msgid "Failed to insert supplier type"
 msgstr "Не удалось вставить тип поставщика"
@@ -2478,7 +2478,7 @@ msgid "Failed to link email"
 msgstr "Не удалось связать электронную почту"
 
 msgid "Failed to link quality issue to MES context"
-msgstr "Не удалось связать质量问题与MES上下文"
+msgstr "Не удалось связать качество проблемы с контекстом MES"
 
 msgid "Failed to load account"
 msgstr "Не удалось загрузить аккаунт"
@@ -2505,7 +2505,7 @@ msgid "Failed to load balance sheet"
 msgstr "Не удалось загрузить балансовую ведомость"
 
 msgid "Failed to load bundle work orders"
-msgstr "Не удалось загрузить пакетыbynд工作订单"
+msgstr "Не удалось загрузить пакеты заказов на работу"
 
 msgid "Failed to load companies"
 msgstr "Не удалось загрузить компании"
@@ -2838,7 +2838,7 @@ msgid "Failed to load sales RFQ summary"
 msgstr "Не удалось загрузить Zusammenfassung Angebotsanfrage Verkauf"
 
 msgid "Failed to load salesOrder"
-msgstr "Не удалось загрузить销售订单"
+msgstr "Не удалось загрузить salesOrder"
 
 msgid "Failed to load shifts"
 msgstr "Не удалось загрузить смены"
@@ -2874,13 +2874,13 @@ msgid "Failed to load style planning"
 msgstr "Не удалось загрузить стили планирования"
 
 msgid "Failed to load style quantities"
-msgstr "Не удалось загрузить стили化的数量"
+msgstr "Не удалось загрузить стили количеств"
 
 msgid "Failed to load style summary"
 msgstr "Не удалось загрузить сводку стилей"
 
 msgid "Failed to load style unit sale price"
-msgstr "Не удалось загрузить стили单价销售价格"
+msgstr "Не удалось загрузить стили.unit продажной цены"
 
 msgid "Failed to load subsidiary"
 msgstr "Не удалось загрузить филиал"
@@ -3000,7 +3000,7 @@ msgid "Failed to pick up"
 msgstr "Не удалось выбрать"
 
 msgid "Failed to post asset disposal"
-msgstr "Не удалось опубликовать处置资产"
+msgstr "Не удалось зарегистировать выбытие актива"
 
 msgid "Failed to post depreciation run"
 msgstr "Не удалось опубликовать процесс амортизации"
@@ -3015,7 +3015,7 @@ msgid "Failed to post shipment"
 msgstr "Не удалось опубликовать отгрузку"
 
 msgid "Failed to reassign tracked entities"
-msgstr "Не удалось пере指派跟踪实体"
+msgstr "Не удалось перераспределить отслеживаемые объекты"
 
 msgid "Failed to recalculate dependencies"
 msgstr "Не удалось пересчитать зависимости"
@@ -3294,7 +3294,7 @@ msgid "Failed to update customer contact"
 msgstr "Не удалось обновить контакт клиента"
 
 msgid "Failed to update customer part"
-msgstr "Не удалось обновить零件信息"
+msgstr "Не удалось обновить заказную деталь"
 
 msgid "Failed to update customer payment terms"
 msgstr "Не удалось обновить условия оплаты для клиента"
@@ -3630,10 +3630,10 @@ msgid "Failed to update sales invoice line"
 msgstr "Не удалось обновить строку счета на продажи"
 
 msgid "Failed to update sales invoice shipping"
-msgstr "Не удалось обновить отгрузку сales发票shipping"
+msgstr "Не удалось обновить транспортную накладную счета-фактуры"
 
 msgid "Failed to update sales invoice status"
-msgstr "Не удалось обновить статус продажного发票状态更新失败"
+msgstr "Не удалось обновить статус продажного чека"
 
 msgid "Failed to update sales order line"
 msgstr "Не удалось обновить строку заказа на продажи"
@@ -3768,7 +3768,7 @@ msgid "Failed to update user permissions"
 msgstr "Не удалось обновить права пользователя"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Не удалось обновить количество вариантов"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Не удалось обновить перемещение склада"
@@ -4130,7 +4130,7 @@ msgid "Journal entry posted"
 msgstr "Запись журнала опубликована"
 
 msgid "Journal entry reversed"
-msgstr "Справка о переводе журнального за记"
+msgstr "Запись отконтролирована"
 
 msgid "Journal entry saved"
 msgstr "Запись журнала сохранена"
@@ -4310,7 +4310,7 @@ msgid "Master Work Orders"
 msgstr "Основные производственные заказы"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr "Мастер-заказы не могут быть завершены или接收中，请稍候..."
+msgstr "Основные производственные заказы не могут быть завершены или приняты на склад. Завершите набор рабочих операций вместо этого."
 
 msgid "matches"
 msgstr "соответствует"
@@ -4597,7 +4597,7 @@ msgid "Only active assets can be sold"
 msgstr "Только активные актива можно продать"
 
 msgid "Only Active or Fully Depreciated assets can be disposed"
-msgstr "Только активные или полностью списанные активы могут быть выбраны для处置"
+msgstr "Только активные или полностью списанные активы могут быть выброшены"
 
 msgid "Only Draft assets can be purchased"
 msgstr "Только черновые активы могут быть приобретены"
@@ -4751,7 +4751,7 @@ msgid "Picked"
 msgstr "Выбрано"
 
 msgid "Picked quantity"
-msgstr "Выбранная量"
+msgstr "Выбранная величина"
 
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
@@ -4926,7 +4926,7 @@ msgid "Purchase order not found"
 msgstr "Заказ не найден"
 
 msgid "Purchase order submitted for approval"
-msgstr "Заказ на покупку отправлен на审批"
+msgstr "Заявка на покупку подлежит утверждению"
 
 msgid "Purple"
 msgstr "Фиолетовый"
@@ -5645,10 +5645,10 @@ msgid "Successfully deleted purchase order line"
 msgstr "Успешно удалена строка закупочного заказа"
 
 msgid "Successfully deleted quality document"
-msgstr "Успешно удалена质量管理文档"
+msgstr "Успешно удалена качественная документация"
 
 msgid "Successfully deleted quantity"
-msgstr "Успешно удалена量"
+msgstr "Успешно удалена величина"
 
 msgid "Successfully deleted quantity report"
 msgstr "Успешно удалена отчетность по количеству"
@@ -5660,7 +5660,7 @@ msgid "Successfully deleted receipt"
 msgstr "Успешно удалена приходка"
 
 msgid "Successfully deleted sales invoice line"
-msgstr "Успешно удалена строка сales发票行"
+msgstr "Успешно удалена строка сales инвойса"
 
 msgid "Successfully deleted sales order line"
 msgstr "Успешно удалена строка продажного заказа"
@@ -5891,7 +5891,7 @@ msgid "Toggle setup"
 msgstr "Переключить настройку"
 
 msgid "Toggle Sidebar"
-msgstr "Переключить панель侧边栏"
+msgstr "Переключить панель навигации"
 
 msgid "Tools"
 msgstr "Инструменты"
@@ -6197,7 +6197,7 @@ msgid "Updated purchase order delivery"
 msgstr "Обновленная поставка заказа на покупку"
 
 msgid "Updated purchase order payment"
-msgstr "Обновленный платеж по закупочной订单已更新的采购订单付款"
+msgstr "Обновленный заказ на покупку с оплатой"
 
 msgid "Updated purchasing order status"
 msgstr "Обновленный статус закупочного заказа"

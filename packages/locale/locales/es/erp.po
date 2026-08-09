@@ -697,9 +697,7 @@ msgstr "Se ha realizado ya una solicitud de aprobación para este proveedor"
 
 #. placeholder {0}: num("max")
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
-msgstr ""
-"Una combinación de atributos no puede superar la cantidad de corte (máx. {0})Una combinación de atributos no puede superar la cantidad de corte (máx. {0})Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Una combinación de atributos no puede superar la cantidad cortada (máx. {0})Un atributo combinado no puede超出手动输入的限制，这里应该保持与源字符串一致，所以输出为：\n"
-"Un atributo combinado no puede exceder la cantidad de corte (max {0})"
+msgstr "Un atributo combina no puede superar la cantidad de corte (máx {0})"
 
 msgid "An item cannot be added to itself."
 msgstr "Un elemento no puede agregarse a sí mismo."
@@ -4497,7 +4495,7 @@ msgid "Everything from Starter"
 msgstr "Todo de Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
-msgstr "超 pasa los {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB totales — elimine algunas anexos para enviar."
+msgstr "Supera el límite de {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — elimina algunos archivos adjuntos para enviar."
 
 msgid "Exceeds available"
 msgstr "Excede lo disponible"
@@ -6851,7 +6849,7 @@ msgid "Failed to load training"
 msgstr "Falló al cargar el entrenamiento"
 
 msgid "Failed to load trial balance"
-msgstr "No se pudo cargar el estado试算表"
+msgstr "Falló al cargar el estado trial"
 
 msgid "Failed to load users"
 msgstr "Falló al cargar usuarios"
@@ -7217,7 +7215,7 @@ msgid "Failed to update configuration parameter"
 msgstr "Error al actualizar el parámetro de configuración"
 
 msgid "Failed to update consumable"
-msgstr "Falló al actualizar el消耗性材料"
+msgstr "Falló al actualizar el consumo"
 
 msgid "Failed to update consumable attributes"
 msgstr "Falló al actualizar los atributos del consumo"
@@ -7745,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "Falló al actualizar los permisos del usuario"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Falló al actualizar la cantidad de variantes"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Falló la actualización del traslado al almacén"
@@ -7790,7 +7788,7 @@ msgid "Failed to upload model"
 msgstr "Error al cargar el modelo"
 
 msgid "Failed to upload PDF"
-msgstr "Falló el上传过程中出现错误，请重试。"
+msgstr "Falló al subir el PDF"
 
 msgid "Failed to upload thumbnail"
 msgstr "Error al cargar la miniatura"
@@ -8133,7 +8131,7 @@ msgid "Go to App"
 msgstr "Ir a la App"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "Cantidad objetivo para esta variante."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10568,7 +10566,7 @@ msgid "No values yet."
 msgstr "Aún no hay valores."
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "Aún no se han registrado cantidades de variante."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "No se registra ningún inventario para este artículo. Aún puedes seleccionarlo — el inventario disponible pasará a negativo hasta que se reconcilie la cuenta."
@@ -12011,7 +12009,7 @@ msgid "Quote operation parameter updated"
 msgstr "Parámetro de operación actualizado"
 
 msgid "Quote operation tool updated"
-msgstr "Herramienta de报价操作已更新"
+msgstr "Herramienta de operación de cita actualizada"
 
 msgid "Quoted Date"
 msgstr "Fecha de Cotización"
@@ -12879,7 +12877,7 @@ msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "Escanear o ingresar ID de entidad rastreada, serie o lote"
 
 msgid "Scan or enter tracking number"
-msgstr "Escanear o ingresar número de跟踪 (不适用，保持原文)"
+msgstr "Escanear o ingresar número de seguimiento"
 
 msgid "Scan or search..."
 msgstr "Escanear o buscar"
@@ -13299,7 +13297,7 @@ msgid "Serial numbers are missing"
 msgstr "Los números de serie están faltando"
 
 msgid "Serial numbers are missing or unavailable"
-msgstr "Los números de serie están缺失或不可用"
+msgstr "Los números de serie están faltantes o no disponibles"
 
 #. placeholder {0}: invalidSerials.join(", ")
 msgid "Serial numbers not shipped on this transfer: {0}"
@@ -14677,7 +14675,7 @@ msgid "The lot will be marked Passed. {fails} sampled failure(s) are recorded fo
 msgstr "El lote será marcado como Aprobado. {fails} fallo(s) de muestreo se han registrado para su referencia."
 
 msgid "The lot will still be rejected, but an NCR cannot be created until at least one Issue Type is configured."
-msgstr "El lote仍将被拒收，但在创建NCR之前至少需要配置一种问题类型。"
+msgstr "La lotación seguirá siendo rechazada, pero no se puede crear una NCR hasta que al menos uno de los tipos de problema esté configurado."
 
 msgid "The new version number of the method"
 msgstr "El nuevo número de versión del método"
@@ -16039,10 +16037,10 @@ msgid "View Transfer"
 msgstr "Ver Transferencia"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "Ver cantidades de variante"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "Ver cantidad de variantes"
 
 msgid "Visibilities"
 msgstr "Visibilidades"
@@ -16210,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Cuando activada, esta regla se dispara para cada objetivo de su tipo. Se ignoran pero se preservan las filas de asignación."
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "¿Qué conjunto de atributos utilizan los variantes de este artículo?"
 
 msgid "Who Can Approve"
 msgstr "Quién Puede Aprobar"

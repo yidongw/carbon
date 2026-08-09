@@ -375,7 +375,7 @@ msgid "Cannot start operation"
 msgstr "Impossibile avviare l'operazione"
 
 msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
-msgstr "Non è possibile aggiornare lo stato della fattura da acq.草稿请先发布该发票。"
+msgstr "Non è possibile aggiornare lo stato della fattura da acq. bozza. Si prega di registrare la fattura prima."
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Canvas che visualizza il modello nel Visualizzatore 3D"
@@ -767,7 +767,7 @@ msgid "End Operations"
 msgstr "Termina Operazioni"
 
 msgid "Enter a quantity greater than zero"
-msgstr "Inserire una quantità maggiore di零"
+msgstr "Inserire una quantità maggiore di zero"
 
 #. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
@@ -1119,7 +1119,7 @@ msgid "Failed to create receipt"
 msgstr "Fallito nel creare il ricevimento"
 
 msgid "Failed to create repeat depreciation run"
-msgstr "Fallito nel creare la nuova depreciazione周期性"
+msgstr "Fallito nel creare la ripetizione della depreciazione"
 
 msgid "Failed to create reprint"
 msgstr "Fallito durante la creazione della riproduzione"
@@ -1185,7 +1185,7 @@ msgid "Failed to create transfer"
 msgstr "Fallito durante la creazione della trasferenza"
 
 msgid "Failed to create user account"
-msgstr "Impossibile creare il账户创建失败"
+msgstr "Fallito nell'_creazione dell'account utente"
 
 msgid "Failed to create user from WeChat"
 msgstr "Fallito nell'_creazione_dell'utente_da_Wechat"
@@ -1560,7 +1560,7 @@ msgid "Failed to favorite purchase order"
 msgstr "Fallito nel salvare l'ordine d'acquisto come preferito"
 
 msgid "Failed to favorite Quote"
-msgstr "Fallito nel salvare il预防措施：这里没有需要翻译的意大利语内容，且源字符串已经是英文。请确认输入内容是否正确。"
+msgstr "Fallito nel salvare la citazione come preferita"
 
 msgid "Failed to favorite rfq"
 msgstr "Fallito nel salvare come preferito l'rfq"
@@ -2898,7 +2898,7 @@ msgid "Failed to load supplier payment terms"
 msgstr "Fallito caricamento termini di pagamento fornitore"
 
 msgid "Failed to load supplier quote"
-msgstr "Caricamento del预防措施：源字符串中有中文，但根据规则应保持一致，故保留。如有误，请告知。"
+msgstr "Fallito caricamento preventivo fornitore"
 
 msgid "Failed to load supplier shipping"
 msgstr "Fallito caricamento spedizione fornitore"
@@ -2976,30 +2976,22 @@ msgid "Failed to notify user"
 msgstr "Fallito avviso utente"
 
 msgid "Failed to parse claims"
-msgstr ""
-"Impossibile analizzare i claimImpossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
-"\n"
-"Fallito nel parsing delle pretese"
+msgstr "Impossibile analizzare le pretese"
 
 msgid "Failed to parse permissions"
 msgstr "Impossibile analizzare i permessi"
 
 msgid "Failed to parse procedure content"
-msgstr ""
-"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语重写。继续翻译：\n"
-"\n"
-"Fallito nel parsing del contenuto del procedimento"
+msgstr "Impossibile analizzare il contenuto del procedimento"
 
 msgid "Failed to parse quality document content"
-msgstr "Fallito nel解析错误，应为：失败于解析质量文档内容"
+msgstr "Impossibile analizzare il contenuto del documento di qualità"
 
 msgid "Failed to parse training content"
 msgstr "Impossibile analizzare il contenuto del training"
 
 msgid "Failed to parse updates"
-msgstr ""
-"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
-"Fallito nel parsingaggiornamenti"
+msgstr "Fallito nel parsing delle aggiornamenti"
 
 msgid "Failed to pick line"
 msgstr "Fallito nel selezionare riga"
@@ -3203,7 +3195,7 @@ msgid "Failed to start checkout"
 msgstr "Fallito avvio del controllo"
 
 msgid "Failed to start event"
-msgstr "Fallito il启动事件"
+msgstr "Fallito l'avvio dell'evento"
 
 msgid "Failed to start maintenance event"
 msgstr "Fallito avvio evento manutenzione"
@@ -3776,7 +3768,7 @@ msgid "Failed to update user permissions"
 msgstr "Fallito aggiornamento dei permessi utente"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Fallito aggiornamento quantità varianti"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Fallito aggiornamento trasferimento magazzino"
@@ -4695,7 +4687,7 @@ msgid "Passed Inspection"
 msgstr "Ispezione Superata"
 
 msgid "Passkey name must be 100 characters or fewer"
-msgstr "Il nome della pass键名称必须为100个字符或更少"
+msgstr "Il nome della passkey deve essere di 100 caratteri o meno"
 
 msgid "Passkey removed"
 msgstr "Codice di accesso rimosso"
@@ -5890,7 +5882,7 @@ msgid "Toggle"
 msgstr "Attiva/disattiva"
 
 msgid "Toggle labor"
-msgstr "Attiva la工具有误，应为：切换劳动力状态"
+msgstr "Attiva/lancia lavoro"
 
 msgid "Toggle machine"
 msgstr "Attiva macchina"
@@ -6034,7 +6026,7 @@ msgid "Updated consumable planning"
 msgstr "Pianificazione dei consumabili aggiornata"
 
 msgid "Updated consumable purchasing"
-msgstr "Aggiornato acquisto di materiali耗时较长，正在努力优化中..."
+msgstr "Aggiornato acquisto di materiali consumabili"
 
 msgid "Updated customer"
 msgstr "Aggiornato cliente"
@@ -6298,7 +6290,7 @@ msgid "Updated supplier payment terms"
 msgstr "Termini di pagamento fornitori aggiornati"
 
 msgid "Updated supplier quote status"
-msgstr "Stato aggiornato del预防措施：源字符串已经是英文，无需翻译。请确认目标语言是否正确或提供需要翻译的其他字符串。"
+msgstr "Stato aggiornato del preventivo fornitore"
 
 msgid "Updated supplier shipping"
 msgstr "Aggiornato invio fornitore"

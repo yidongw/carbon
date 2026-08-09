@@ -46,7 +46,8 @@ STRICT RULES:
 - Some strings contain placeholders (words or numbers inside curly braces, percent-sign tokens) or formatting tags (numbered angle brackets). Reproduce every such placeholder and tag exactly as it appears in the source, in the same position. Never translate the text inside them.
 - Do NOT add any placeholder or tag that is not already present in the source. If the source has none, your output must have none.
 - Keep it concise and natural for a UI label/button/message.
-- Do not add surrounding quotation marks or trailing punctuation that is not in the source.`;
+- Do not add surrounding quotation marks or trailing punctuation that is not in the source.
+- Use only the target language's script. Never insert Chinese characters unless the target language is Simplified Chinese or Japanese.`;
 
 // Per-locale terminology + word-order guidance appended to SYSTEM for that
 // target language. Keeps a small local model consistent with the catalog's
@@ -118,13 +119,20 @@ async function callOllama(text, localeName, temperature) {
   return clean(json.message?.content ?? "");
 }
 
+// Han script is expected for zh/ja only. Small models often leak Chinese into
+// other locales; reject those outputs so we retry (or leave empty for re-run).
+const HAN = /[\u4e00-\u9fff]/;
+const ALLOWS_HAN = new Set(["Simplified Chinese", "Japanese"]);
+
 async function translateOne(src, localeName) {
   for (const temperature of TEMPS) {
     try {
       let out = await callOllama(src, localeName, temperature);
       if (!out) continue;
       out = matchOuterWhitespace(src, out);
-      if (out.trim() && placeholdersMatch(src, out)) return out;
+      if (!out.trim() || !placeholdersMatch(src, out)) continue;
+      if (!ALLOWS_HAN.has(localeName) && HAN.test(out)) continue;
+      return out;
     } catch {
       /* network/parse hiccup — try next temperature */
     }

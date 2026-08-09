@@ -1809,7 +1809,7 @@ msgid "Failed to get an customer status id"
 msgstr "Échec de récupération de l'identifiant du statut client"
 
 msgid "Failed to get an customer type id"
-msgstr "Échec de récupération du type d'客户类型ID"
+msgstr "Échec pour obtenir l'ID d'un type de client"
 
 msgid "Failed to get an employee type id"
 msgstr "Échec de récupération du type d'employé"
@@ -3768,7 +3768,7 @@ msgid "Failed to update user permissions"
 msgstr "Échec de la mise à jour des permissions utilisateur"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Échec de la mise à jour de la quantité des variantes"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Échec de la mise à jour du transfert entre magasins"
@@ -4618,7 +4618,7 @@ msgid "Open date picker"
 msgstr "Ouvrir le calendrier"
 
 msgid "Open date time picker"
-msgstr "Ouvrir le sélectionneur de日期已过期，请联系客服。"
+msgstr "Ouvrir le sélectionneur de date et heure"
 
 msgid "Open Jobs"
 msgstr "Emplois ouverts"
@@ -5139,7 +5139,7 @@ msgid "Rule unassigned"
 msgstr "Règle non affectée"
 
 msgid "Run is not in Draft status"
-msgstr "L'exécution n'est pas en statut草稿"
+msgstr "L'exécution n'est pas dans l'état Esquisse"
 
 msgid "Sales invoice voided"
 msgstr "Facture de vente annulée"
@@ -6173,7 +6173,7 @@ msgid "Updated picking list status"
 msgstr "Mise à jour de l'état de la liste de picking"
 
 msgid "Updated process completion"
-msgstr "Mise à jour de la完工过程"
+msgstr "Mise à jour de la complétion du processus"
 
 msgid "Updated production event"
 msgstr "Événement de production mis à jour"

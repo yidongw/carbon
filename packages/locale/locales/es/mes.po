@@ -2226,7 +2226,7 @@ msgid "Failed to insert account"
 msgstr "Falló al insertar la cuenta"
 
 msgid "Failed to insert consumable"
-msgstr "Falló al insertar el消耗性材料"
+msgstr "Falló al insertar el consumible"
 
 msgid "Failed to insert consumable inventory"
 msgstr "Falló al insertar el inventario de suministros"
@@ -2937,7 +2937,7 @@ msgid "Failed to load training"
 msgstr "Falló al cargar el entrenamiento"
 
 msgid "Failed to load trial balance"
-msgstr "No se pudo cargar el estado试算表"
+msgstr "No se pudo cargar el estado trial"
 
 msgid "Failed to load users"
 msgstr "Falló al cargar usuarios"
@@ -3258,7 +3258,7 @@ msgid "Failed to update company"
 msgstr "Falló al actualizar la empresa"
 
 msgid "Failed to update consumable"
-msgstr "Falló al actualizar el消耗性材料"
+msgstr "Falló al actualizar el consumo"
 
 msgid "Failed to update consumable attributes"
 msgstr "Falló al actualizar los atributos del consumo"
@@ -3768,7 +3768,7 @@ msgid "Failed to update user permissions"
 msgstr "Falló al actualizar los permisos del usuario"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Falló al actualizar la cantidad de variantes"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Falló la actualización del traslado al almacén"
@@ -3786,7 +3786,7 @@ msgid "Failed to update work center"
 msgstr "Falló al actualizar el centro de trabajo"
 
 msgid "Failed to upload file"
-msgstr "Falló el上传过程中出现错误，请稍后再试。"
+msgstr "No se pudo subir archivo"
 
 #. placeholder {0}: fileUpload.name
 msgid "Failed to upload file: {0}"
@@ -4966,7 +4966,7 @@ msgid "Quote operation parameter updated"
 msgstr "Parámetro de operación actualizado"
 
 msgid "Quote operation tool updated"
-msgstr "Herramienta de报价操作已更新"
+msgstr "Herramienta de operación actualizada"
 
 msgid "Rate limit exceeded"
 msgstr "Se ha superado el límite de tasa"

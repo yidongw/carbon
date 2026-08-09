@@ -3768,7 +3768,7 @@ msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "変更を保存できませんでした"
 
 msgid "Failed to update warehouse transfer"
 msgstr "倉庫移動の更新に失敗しました"

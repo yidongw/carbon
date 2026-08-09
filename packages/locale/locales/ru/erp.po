@@ -763,7 +763,7 @@ msgid "Applies to"
 msgstr "Нападается"
 
 msgid "Applies to all"
-msgstr "Применяется к的一切内容保持不变"
+msgstr "Нападает на всех"
 
 msgid "Applies to all work centers"
 msgstr "Применяется ко всем центрам обработки"
@@ -2192,7 +2192,7 @@ msgid "Configure the start months for your fiscal and tax years"
 msgstr "Настройте месяцы начала для вашей фискальной и налоговой годности"
 
 msgid "Configure when purchased item costs should be updated from supplier transactions."
-msgstr "Настройте.when приобретенное товары的成本应从供应商交易中更新。"
+msgstr "Настройте.when приобретенные статьи должны обновляться на основании транзакций поставщиков."
 
 msgid "Configure who should receive notifications when a supplier submits a quote."
 msgstr "Настройте, кто должен получать уведомления при отправке поставщиком предложения."
@@ -4906,7 +4906,7 @@ msgid "Failed to create purchase order lines for style variants"
 msgstr "Не удалось создать строки закупочного заказа для вариаций стиля"
 
 msgid "Failed to create quality issue"
-msgstr "Не удалось создать质量问题"
+msgstr "Не удалось создать качество проблемы"
 
 msgid "Failed to create quality issue tasks"
 msgstr "Не удалось создать задачи по качественным вопросам"
@@ -5271,7 +5271,7 @@ msgid "Failed to delete quote line"
 msgstr "Не удалось удалить строку запроса"
 
 msgid "Failed to delete quote material"
-msgstr "Не удалось удалить материал запроса报价材料未能删除"
+msgstr "Не удалось удалить материал запроса цен"
 
 msgid "Failed to delete quote operation step"
 msgstr "Не удалось удалить этап цитаты"
@@ -5514,7 +5514,7 @@ msgid "Failed to fetch quotes"
 msgstr "Не удалось получить цитаты"
 
 msgid "Failed to fetch RFQs"
-msgstr "Не удалось получить запросы на报价"
+msgstr "Не удалось получить запросы на цитирование"
 
 msgid "Failed to fetch risks"
 msgstr "Ошибка при получении рисков"
@@ -6264,7 +6264,7 @@ msgid "Failed to insert quote operation parameter"
 msgstr "Не удалось вставить параметр операции цитирования"
 
 msgid "Failed to insert quote operation step"
-msgstr "Не удалось вставить шаг операции报价"
+msgstr "Не удалось вставить шаг операции котировке"
 
 msgid "Failed to insert quote operation tool"
 msgstr "Не удалось вставить инструмент операции цитаты"
@@ -6300,7 +6300,7 @@ msgid "Failed to insert style inventory"
 msgstr "Не удалось вставить стиль инвентаризации"
 
 msgid "Failed to insert supplier quote"
-msgstr "Не удалось вставить поставщика报价"
+msgstr "Не удалось вставить поставщикную оферту"
 
 msgid "Failed to insert supplier quote line"
 msgstr "Ошибка при добавлении строки предложения поставщика"
@@ -6336,7 +6336,7 @@ msgid "Failed to link email"
 msgstr "Не удалось связать электронную почту"
 
 msgid "Failed to link quality issue to MES context"
-msgstr "Не удалось связать质量问题与MES上下文"
+msgstr "Не удалось связать качество проблемы с контекстом MES"
 
 msgid "Failed to link WeChat"
 msgstr "Не удалось привязать WeChat"
@@ -6738,7 +6738,7 @@ msgid "Failed to load sales RFQ summary"
 msgstr "Не удалось загрузить Zusammenfassung Angebotsanfrage Verkauf"
 
 msgid "Failed to load salesOrder"
-msgstr "Не удалось загрузить销售订单"
+msgstr "Не удалось загрузить salesOrder"
 
 msgid "Failed to load shifts"
 msgstr "Не удалось загрузить смены"
@@ -6780,13 +6780,13 @@ msgid "Failed to load style planning"
 msgstr "Не удалось загрузить стиль планирования"
 
 msgid "Failed to load style quantities"
-msgstr "Не удалось загрузить стили化的数量"
+msgstr "Не удалось загрузить стилиzed"
 
 msgid "Failed to load style summary"
 msgstr "Не удалось загрузить Zusammenfassung стилей"
 
 msgid "Failed to load style unit sale price"
-msgstr "Не удалось загрузить стили单价销售价格"
+msgstr "Не удалось загрузить стилевую единицу продажной цены"
 
 msgid "Failed to load subsidiary"
 msgstr "Не удалось загрузить филиал"
@@ -6912,7 +6912,7 @@ msgid "Failed to pick up"
 msgstr "Не удалось выбрать"
 
 msgid "Failed to post asset disposal"
-msgstr "Не удалось опубликовать处置资产"
+msgstr "Не удалось зарегистировать выбытие актива"
 
 msgid "Failed to post depreciation run"
 msgstr "Не удалось опубликовать процесс амортизации"
@@ -6927,7 +6927,7 @@ msgid "Failed to post shipment"
 msgstr "Не удалось опубликовать отгрузку"
 
 msgid "Failed to reassign tracked entities"
-msgstr "Не удалось пере指派跟踪实体"
+msgstr "Не удалось перераспределить отслеживаемые объекты"
 
 msgid "Failed to recalculate dependencies"
 msgstr "Не удалось пересчитать зависимости"
@@ -7251,7 +7251,7 @@ msgid "Failed to update customer contact"
 msgstr "Не удалось обновить контакт клиента"
 
 msgid "Failed to update customer part"
-msgstr "Не удалось обновить零件信息"
+msgstr "Невозможно обновить часть клиента"
 
 msgid "Failed to update customer payment terms"
 msgstr "Не удалось обновить условия оплаты для клиента"
@@ -7596,7 +7596,7 @@ msgid "Failed to update sales invoice shipping"
 msgstr "Не удалось обновить транспортную накладную счета-фактуры"
 
 msgid "Failed to update sales invoice status"
-msgstr "Не удалось обновить статус продажного发票状态更新失败"
+msgstr "Не удалось обновить статус продажной накладной"
 
 msgid "Failed to update sales order line"
 msgstr "Не удалось обновить строку заказа на продажи"
@@ -7743,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "Не удалось обновить права пользователя"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Не удалось обновить количество вариантов"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Не удалось обновить перемещение склада"
@@ -8131,7 +8131,7 @@ msgid "Go to App"
 msgstr "Перейти к приложению"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "Количество целевого продукта для этой вариации."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -8266,7 +8266,7 @@ msgid "IC transaction created"
 msgstr "Транзакция IC создана"
 
 msgid "Icon view"
-msgstr "Вид图标"
+msgstr "Просмотр иконок"
 
 msgid "Icons"
 msgstr "Иконки"
@@ -9051,7 +9051,7 @@ msgid "Last used {lastUsedAt}"
 msgstr "Последнее использование {lastUsedAt}"
 
 msgid "Layout spacing"
-msgstr "Промежуточное пространство布局间距（已替换为符合俄语文本的表述）"
+msgstr "Промежуточное пространство макета"
 
 msgid "Lead Time"
 msgstr "Время поставки"
@@ -9533,10 +9533,10 @@ msgid "Master Work Orders"
 msgstr "Основные наряды"
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead — inventory is received on those items."
-msgstr "Мастер-заказы не могут быть завершены или接收中，请稍候..."
+msgstr "Основные производственные заказы не могут быть завершены или получены на склад. Завершите пакетные задания — склад получает этиItems."
 
 msgid "Master work orders cannot be completed or received to inventory. Complete the bundle jobs instead."
-msgstr "Мастер-заказы не могут быть завершены или接收中，请稍候..."
+msgstr "Мастер-заказы не могут быть завершены или получены на склад. Завершите наборные работы вместо этого."
 
 msgid "Match"
 msgstr "Сопоставление"
@@ -10566,7 +10566,7 @@ msgid "No values yet."
 msgstr "Пока нет значений."
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "Нет зарегистрированных количеств вариантов еще."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
@@ -10716,7 +10716,7 @@ msgid "Only active assets can be sold"
 msgstr "Только активные актива могут быть проданы"
 
 msgid "Only Active or Fully Depreciated assets can be disposed"
-msgstr "Только активные или полностью списанные активы могут быть выбраны для处置"
+msgstr "Только активные или полно depreciированные активы могут быть разобрано"
 
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Только присвоенные сотрудникам отображаются в отчете о количестве. Оставьте поле пустым для того, чтобы разрешить все."
@@ -11285,7 +11285,7 @@ msgid "Pick tracked item"
 msgstr "Выберите отслеживаемый элемент"
 
 msgid "Picked quantity"
-msgstr "Выбранная量"
+msgstr "Выбранная량itetity"
 
 msgid "Picking Lines"
 msgstr "Линии выборки"
@@ -11805,7 +11805,7 @@ msgid "Purchase order removed successfully"
 msgstr "Заказ на покупку успешно удален"
 
 msgid "Purchase order submitted for approval"
-msgstr "Заказ на покупку отправлен на审批"
+msgstr "Заявка на покупку подлежит утверждению"
 
 msgid "Purchase Orders"
 msgstr "Заказы на покупку"
@@ -11911,7 +11911,7 @@ msgid "Quantity Completed"
 msgstr "Завершено количество"
 
 msgid "Quantity finished and reported for this operation."
-msgstr "Количество成品和报告的此操作的数量。"
+msgstr "Количество выполнено и отчетно представлено для этой операции."
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "Количество определяется на основе завершенных серийных номеров/партий в MES и не может быть отредактировано."
@@ -13564,7 +13564,7 @@ msgid "Show Durations"
 msgstr "Показать длительность"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
-msgstr "Показывать фамилию перед именем, как это используется в Китае和其他东亚地区。"
+msgstr "Показывать фамилию перед именем, как это используется в Китае и других восточноазиатских регионах."
 
 msgid "Show legend"
 msgstr "Показать легенду"
@@ -13879,7 +13879,7 @@ msgid "Stock Transfer ID"
 msgstr "ID передачи запасов"
 
 msgid "Stock transfer is not in progress or released"
-msgstr "Передача запасов не正在进行或已释放"
+msgstr "Трансфер складских мест не выполняется или не был опущен"
 
 msgid "Stock transfer line not found"
 msgstr "Линия передачи запасов не найдена"
@@ -14194,7 +14194,7 @@ msgid "Successfully deleted quality document"
 msgstr "Успешно удалена качественная документация"
 
 msgid "Successfully deleted quantity"
-msgstr "Успешно удалена量"
+msgstr "Успешно удалено количество"
 
 msgid "Successfully deleted quantity report"
 msgstr "Успешно удалена отчетность по количеству"
@@ -14206,7 +14206,7 @@ msgid "Successfully deleted receipt"
 msgstr "Успешно удалена приходка"
 
 msgid "Successfully deleted sales invoice line"
-msgstr "Успешно удалена строка сales发票行"
+msgstr "Успешно удалена строка сales инвойса"
 
 msgid "Successfully deleted sales order line"
 msgstr "Успешно удалена строка продажного заказа"
@@ -14663,7 +14663,7 @@ msgid "The following line items are missing prices or lead times:"
 msgstr "Следующие позиции отсутствуют цены или сроки поставки:"
 
 msgid "The invite link will expire on the selected date"
-msgstr "Ссылка на приглашение истечет в选定日期将会过期"
+msgstr "Ссылка на приглашение истечет в выбранную дату"
 
 msgid "The latest date to place this PO so it arrives by the need-by date, given the supplier's lead time."
 msgstr "Дата последней поставки для этого ПО, чтобы оно прибыло к дате необходимости, учитывая срок поставки поставщика."
@@ -14930,7 +14930,7 @@ msgid "Toggle Properties"
 msgstr "Переключить свойства"
 
 msgid "Toggle Sidebar"
-msgstr "Переключить панель侧边栏"
+msgstr "Переключить боковую панель"
 
 msgid "Toggle views"
 msgstr "Переключить представления"
@@ -15107,13 +15107,13 @@ msgid "Transfer To"
 msgstr "Передать в"
 
 msgid "transferred {q} units"
-msgstr "пере转入 {q} 单位"
+msgstr "переходящих {q} единиц"
 
 msgid "transferred {q} units from {unit}"
-msgstr "пере转入 {q} 单位从 {unit}"
+msgstr "переведено {q} единиц из {unit}"
 
 msgid "transferred {q} units to {unit}"
-msgstr "пере转入 {q} 单位到 {unit}"
+msgstr "пере transferred {q} единиц в {unit}"
 
 msgid "Transfers"
 msgstr "Передачи"
@@ -16037,10 +16037,10 @@ msgid "View Transfer"
 msgstr "Просмотр передачи"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "Просмотр количественных вариантов"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "Количество вариантов просмотра"
 
 msgid "Visibilities"
 msgstr "Видимость"
@@ -16208,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Когда включена, эта правило активируется для каждого объекта его типа. Строки назначения игнорируются, но сохраняются."
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "Какие наборы атрибутов используются у вариантов этого элемента"
 
 msgid "Who Can Approve"
 msgstr "Кто может одобрить"

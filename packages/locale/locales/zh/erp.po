@@ -7744,7 +7744,7 @@ msgid "Failed to update user permissions"
 msgstr "更新用户权限失败"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "更新规格数量失败"
 
 msgid "Failed to update warehouse transfer"
 msgstr "库存转移更新失败"
@@ -8132,7 +8132,7 @@ msgid "Go to App"
 msgstr "进入应用"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "此规格的目标数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10567,7 +10567,7 @@ msgid "No values yet."
 msgstr "暂无值。"
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "尚未记录规格数量。"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
@@ -16038,10 +16038,10 @@ msgid "View Transfer"
 msgstr "查看转移"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "查看规格数量"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "查看规格数量"
 
 msgid "Visibilities"
 msgstr "可见性"
@@ -16209,7 +16209,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "当启用时，此规则对其类型的所有目标生效。分配行会被忽略但保留。"
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "此物品规格使用哪组属性"
 
 msgid "Who Can Approve"
 msgstr "谁可以审批"

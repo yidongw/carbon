@@ -3769,7 +3769,7 @@ msgid "Failed to update user permissions"
 msgstr "更新用户权限失败"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "更新规格数量失败"
 
 msgid "Failed to update warehouse transfer"
 msgstr "库存转移更新失败"

@@ -2324,7 +2324,7 @@ msgstr "Convertir et envoyer l'invitation"
 #. placeholder {0}: operator.firstName
 #. placeholder {1}: operator.lastName
 msgid "Convert <0>{0} {1}</0> from a console operator to a full user. They will receive an email invitation and be able to log in independently."
-msgstr "Convertez <0>{0} {1}</0> d'un opérateur de console à un utilisateur complet. Ils recevront une invitation par email et pourront se connecter独立地。"
+msgstr "Convertez <0>{0} {1}</0> d'un opérateur de console à un utilisateur complet. Ils recevront une invitation par email et pourront se connecter indépendamment."
 
 msgid "Convert Line to Job"
 msgstr "Convertir la ligne en travail"
@@ -2979,7 +2979,7 @@ msgid "Customers"
 msgstr "Clients"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
-msgstr "Personnalisez l'佈局 của您的PDF文件——重新排列部分，隐藏不需要的内容，并添加您自己的区块。"
+msgstr "Personnalisez l'layout de vos documents PDF — réordez les sections, masquez ce que vous n'avez pas besoin et ajoutez des blocs personnels."
 
 msgid "Cutting"
 msgstr "Coupure"
@@ -4495,7 +4495,7 @@ msgid "Everything from Starter"
 msgstr "Tout de Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
-msgstr "Dépasse {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — supprimez某些字符无法识别，假设为“一些”附件以发送。"
+msgstr "Depassez {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB au total — supprimez quelques pièces jointes pour envoyer."
 
 msgid "Exceeds available"
 msgstr "Dépasse le disponible"
@@ -5655,7 +5655,7 @@ msgid "Failed to get an customer status id"
 msgstr "Échec de récupération de l'identifiant du statut client"
 
 msgid "Failed to get an customer type id"
-msgstr "Échec de récupération du type d'客户类型ID"
+msgstr "Échec pour obtenir l'ID d'un type de client"
 
 msgid "Failed to get an employee type id"
 msgstr "Échec de récupération du type d'employé"
@@ -7743,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "Échec de la mise à jour des permissions utilisateur"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Échec de la mise à jour de la quantité des variantes"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Échec de la mise à jour du transfert entre magasins"
@@ -7941,7 +7941,7 @@ msgid "Finishes"
 msgstr "Finitions"
 
 msgid "Fire on receipts, shipments, transfers, inventory adjustments and bin moves (place/pick)."
-msgstr "En cours de réception, de livraison, de transfert, d'ajustement en库存调整和料位移动（放置/拾取）。"
+msgstr "Enregistrement des réceptions, expéditions, transferts, ajustements d'inventaire et déplacements de bins (placer/drailler)."
 
 msgid "First Name"
 msgstr "Prénom"
@@ -8131,7 +8131,7 @@ msgid "Go to App"
 msgstr "Aller à l'App"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "Quantité cible pour cette variante."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10566,7 +10566,7 @@ msgid "No values yet."
 msgstr "Aucune valeur pour l'instant."
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "Aucune quantité de variantes enregistrée encore."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Aucun stock de magasin n'est enregistré pour cet article. Vous pouvez tout de même le sélectionner — le stock disponible sera négatif jusqu'à ce que le compte soit réconcilié."
@@ -10803,7 +10803,7 @@ msgid "Open Scheduled"
 msgstr "Planifiés ouverts"
 
 msgid "Open source document"
-msgstr "Ouvrir le document源代码"
+msgstr "Ouvrir le document source"
 
 msgid "Open task details"
 msgstr "Ouvrir les détails de la tâche"
@@ -12699,7 +12699,7 @@ msgid "Run ID"
 msgstr "ID de l'exécution"
 
 msgid "Run is not in Draft status"
-msgstr "L'exécution n'est pas en statut草稿"
+msgstr "L'exécution n'est pas en statut Esquisse"
 
 msgid "Run Matching"
 msgstr "Exécuter le matching"
@@ -15522,7 +15522,7 @@ msgid "Updated picking list status"
 msgstr "Mise à jour du statut de la liste de picking"
 
 msgid "Updated process completion"
-msgstr "Mise à jour de la完工过程"
+msgstr "Mise à jour de la complétion du processus"
 
 msgid "Updated production event"
 msgstr "Événement de production mis à jour"
@@ -16037,10 +16037,10 @@ msgid "View Transfer"
 msgstr "Afficher le transfert"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "Visualiser les quantités de variante"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "Visualiser la quantité des variantes"
 
 msgid "Visibilities"
 msgstr "Visibilités"
@@ -16208,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Lorsque cette règle est activée, elle s'exécute pour chaque cible de son type. Les lignes d'affectation sont ignorées mais conservées."
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "Quel ensemble d'attributs utilisent les variantes de cet article"
 
 msgid "Who Can Approve"
 msgstr "Qui peut approuver"
@@ -16338,9 +16338,7 @@ msgid "You can only see this key once. Store it safely."
 msgstr "Vous ne pouvez voir cette clé qu'une seule fois. Conservez-la en sécurité."
 
 msgid "You cannot deactivate yourself"
-msgstr ""
-"Vous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver vous-mêmeVous ne pouvez pas vous désactiver你自己并没有在源字符串中，所以根据规则，我直接翻译：\n"
-"Vous ne pouvez pas vous désactiver"
+msgstr "Vous ne pouvez pas vous désactiver vous-même"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

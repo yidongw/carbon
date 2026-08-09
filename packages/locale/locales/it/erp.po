@@ -1813,7 +1813,7 @@ msgid "Cannot start operation"
 msgstr "Impossibile avviare l'operazione"
 
 msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
-msgstr "Non è possibile aggiornare lo stato della fattura da acquisizione草稿. Si prega di registrare la fattura prima."
+msgstr "Non è possibile aggiornare lo stato della fattura da acq. bozza. Si prega di registrare la fattura prima."
 
 msgid "Cannot upload — supplier interaction not yet created"
 msgstr "Non è possibile caricare — l'interazione con il fornitore non è stata ancora creata"
@@ -4210,7 +4210,7 @@ msgid "Enter a positive number to add or a negative number to subtract."
 msgstr "Inserire un numero positivo per aggiungere o un numero negativo per sottrarre."
 
 msgid "Enter a quantity greater than zero"
-msgstr "Inserire una quantità maggiore di零"
+msgstr "Inserire una quantità maggiore di zero"
 
 msgid "Enter an adjustment before saving."
 msgstr "Inserire un'adattamento prima di salvare."
@@ -4495,7 +4495,7 @@ msgid "Everything from Starter"
 msgstr "Tutto da Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
-msgstr "超cede i {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB totali — rimuovi alcune附件以发送。"
+msgstr "Ecco il limite di email con allegati superato {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB - rimuovi alcuni allegati per inviare."
 
 msgid "Exceeds available"
 msgstr "Supera la disponibilità"
@@ -4924,7 +4924,7 @@ msgid "Failed to create receipt"
 msgstr "Fallito nel creare il ricevimento"
 
 msgid "Failed to create repeat depreciation run"
-msgstr "Fallito nel creare la nuova depreciazione周期性"
+msgstr "Fallito nel creare la ripetizione della depreciazione"
 
 msgid "Failed to create reprint"
 msgstr "Fallito durante la creazione della riproduzione"
@@ -5014,7 +5014,7 @@ msgid "Failed to create transfer"
 msgstr "Fallito durante la creazione della trasferenza"
 
 msgid "Failed to create user account"
-msgstr "Impossibile creare il账户创建失败"
+msgstr "Impossibile creare il account utente"
 
 msgid "Failed to create user from WeChat"
 msgstr "Fallito nell'_creazione_dell'utente_da_Wechat"
@@ -5400,7 +5400,7 @@ msgid "Failed to favorite purchase order"
 msgstr "Fallito nel salvare l'ordine d'acquisto come preferito"
 
 msgid "Failed to favorite Quote"
-msgstr "Fallito nel salvare il预防措施：这里没有需要翻译的意大利语内容，且源字符串已经是英文。请确认输入内容是否正确。"
+msgstr "Fallito nel preferire la Richiesta Preventiva"
 
 msgid "Failed to favorite rfq"
 msgstr "Fallito nel salvare come preferito l'rfq"
@@ -6807,7 +6807,7 @@ msgid "Failed to load supplier payment terms"
 msgstr "Fallito caricamento condizioni di pagamento fornitore"
 
 msgid "Failed to load supplier quote"
-msgstr "Caricamento del预防措施：源字符串中有中文，但根据规则应保持一致，故保留。如有误，请告知。"
+msgstr "Impossibile caricare il preventivo del fornitore"
 
 msgid "Failed to load supplier shipping"
 msgstr "Fallito caricamento spedizione fornitore"
@@ -6888,18 +6888,13 @@ msgid "Failed to notify user"
 msgstr "Fallito avviso utente"
 
 msgid "Failed to parse claims"
-msgstr ""
-"Impossibile analizzare i claimImpossibile analizzare le rivendicazioniImpossibile analizzare le rivendicazioniFallito nel解析错误，这里似乎有一个编码问题。正确的意大利翻译应该是：\n"
-"\n"
-"Fallito nel parsing delle pretese"
+msgstr "Fallito nel parsing delle pretese"
 
 msgid "Failed to parse permissions"
 msgstr "Impossibile analizzare i permessi"
 
 msgid "Failed to parse procedure content"
-msgstr ""
-"Impossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraImpossibile analizzare il contenuto della proceduraFallito nel解析错误，应该使用意大利语翻译，请稍候...\n"
-"失败于解析程序内容"
+msgstr "Impossibile analizzare il contenuto del procedimento"
 
 msgid "Failed to parse quality document content"
 msgstr "Impossibile analizzare il contenuto del documento di qualità"
@@ -6908,9 +6903,7 @@ msgid "Failed to parse training content"
 msgstr "Impossibile analizzare il contenuto del training"
 
 msgid "Failed to parse updates"
-msgstr ""
-"Impossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiImpossibile analizzare gli aggiornamentiFallito nel解析错误，这里似乎有一个编码问题。正确的翻译应该是：\n"
-"Fallito nel parsingaggiornamenti"
+msgstr "Fallita analisi aggiornamenti"
 
 msgid "Failed to pick line"
 msgstr "Fallita la selezione della riga"
@@ -7750,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "Fallito aggiornamento dei permessi utente"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Fallito aggiornamento quantità varianti"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Fallito aggiornamento trasferimento magazzino"
@@ -8138,7 +8131,7 @@ msgid "Go to App"
 msgstr "Vai all'App"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "Quantità di destinazione per questa variante."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10573,7 +10566,7 @@ msgid "No values yet."
 msgstr "Nessun valore ancora."
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "Nessuna quantità di variante registrata ancora."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Non ci sono dati di magazzino registrati per questo articolo. Puoi comunque prenderlo - il saldo attuale diventerà negativo fino a quando non verranno effettuate le rettifiche."
@@ -11118,7 +11111,7 @@ msgid "Passkey name"
 msgstr "Nome passkey"
 
 msgid "Passkey name must be 100 characters or fewer"
-msgstr "Il nome della pass键名称必须为100个字符或更少"
+msgstr "Il nome della passkey deve essere di 100 caratteri o meno"
 
 msgid "Passkey removed"
 msgstr "Codice di accesso rimosso"
@@ -14036,7 +14029,7 @@ msgid "Successfully converted quote to order"
 msgstr "Conversione del preventivo in ordine avvenuta con successo"
 
 msgid "Successfully converted RFQ to quote"
-msgstr "Conversione del预防性维护RFQ in preventivo avvenuta con successo"
+msgstr "Conversione del Preventivo al Richiesta di Preventivo avvenuta con successo"
 
 msgid "Successfully copied quote"
 msgstr "Preventivo copiato con successo"
@@ -14724,9 +14717,7 @@ msgid "Theme Color"
 msgstr "Colore Tema"
 
 msgid "There are more shipped than ordered"
-msgstr ""
-"Sono state spedite più quantità di quelle ordinateCi sono più articoli spediti che ordinatiCi sono più articoli spediti che ordinatiCi sono più articoli spediti rispetto ai订正： \n"
-"Ci sono più articoli spediti rispetto a quelli ordinati"
+msgstr "Ci sono più articoli spediti di quelli ordinati"
 
 msgid "There are no active supplier quotes to compare for this RFQ."
 msgstr "Non ci sono preventivi fornitori attivi da confrontare per questa RFQ."
@@ -14747,7 +14738,7 @@ msgid "These jobs have operations assigned to this work center:"
 msgstr "Questi lavori hanno operazioni assegnate a questo centro di lavoro:"
 
 msgid "This adjustment would take a quantity below zero."
-msgstr "Questa modifica prevede una quantità inferiore a零"
+msgstr "Questa modifica prevederebbe una quantità inferiore a zero."
 
 msgid "This information will be used on document headers"
 msgstr "Queste informazioni verranno utilizzate nelle intestazioni dei documenti"
@@ -15648,7 +15639,7 @@ msgid "Updated supplier payment terms"
 msgstr "Termini di pagamento fornitori aggiornati"
 
 msgid "Updated supplier quote status"
-msgstr "Stato aggiornato del预防措施：源字符串已经是英文，无需翻译。请确认目标语言是否正确或提供需要翻译的其他字符串。"
+msgstr "Stato aggiornato della quotazione fornitore"
 
 msgid "Updated supplier shipping"
 msgstr "Aggiornato invio fornitore"
@@ -16046,10 +16037,10 @@ msgid "View Transfer"
 msgstr "Visualizza Trasferimento"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "Visualizza quantità variante"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "Visualizza quantità varianti"
 
 msgid "Visibilities"
 msgstr "Visibilità"
@@ -16217,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Quando attivo, questa regola si esegue per ogni destinatario del suo tipo. Le righe di assegnazione vengono ignorate ma conservate."
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "Quali insiemi di attributi usano i varianti di questo articolo"
 
 msgid "Who Can Approve"
 msgstr "Chi Può Approvare"

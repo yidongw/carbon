@@ -7743,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "変更を保存できませんでした"
 
 msgid "Failed to update warehouse transfer"
 msgstr "倉庫移動の更新に失敗しました"
@@ -8131,7 +8131,7 @@ msgid "Go to App"
 msgstr "アプリへ-go"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "この変種の目標数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10566,7 +10566,7 @@ msgid "No values yet."
 msgstr "まだ値がありません。"
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "まだ変種数量が記録されていません。"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "このアイテムについて倉庫在庫は登録されていません。それでもピックすることは可能です——現在数値は負になる可能性がありますが、調整されるまで如此です。"
@@ -16037,10 +16037,10 @@ msgid "View Transfer"
 msgstr "転送を表示"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "変種数量を見る"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "変種数量を見る"
 
 msgid "Visibilities"
 msgstr "可視性"
@@ -16208,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "このルールはオンの場合は、そのタイプのすべてのターゲットに対して発動します。割り当て行は無視されますが保持されます。"
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "このアイテムの変種が使用している属性は？"
 
 msgid "Who Can Approve"
 msgstr "誰が承認できるか"

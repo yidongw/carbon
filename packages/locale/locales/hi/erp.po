@@ -1270,7 +1270,7 @@ msgid "Assets"
 msgstr "सम्पत्ति"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
-msgstr "लगातार दिखबार को स्थानों में य委派打印机到位置。发货、接收和工作中心将继承位置默认设置，除非被覆盖。"
+msgstr "लगातार कार्यक्रमों पर दिशानिर्देश सूची युक्त करें। भेजना, अनुसंधान और काम केंद्र दिशानिर्देश के अनुसार होते हैं, यदि इस पर कोई परिवर्तन नहीं किया गया हो।"
 
 msgid "Assign the processes this employee can perform. They appear when reporting production quantity for those processes."
 msgstr "इस कर्मचारी के प्रदान कर सकने वाले प्रक्रियों का वित्तवाद दिए जाएँ। उन्हें उन प्रक्रियों की उत्पादन मात्रा रिपोर्ट करने के समय दिखाई देते हैं।"
@@ -2679,7 +2679,7 @@ msgid "Created attribute set"
 msgstr "सूचना सेट बनाया गया है"
 
 msgid "Created attribute value"
-msgstr "सूचना गुण मान值"
+msgstr "सुरक्षित गुणांक मूल्य"
 
 msgid "Created By"
 msgstr "द्वारा बनाया गया"
@@ -3693,7 +3693,7 @@ msgid "Drag handle"
 msgstr "ड्रैग हैंडल"
 
 msgid "Drag to place on drawing"
-msgstr "ドラッグして図面に配置"
+msgstr "ड्रॅग करें और स्थानित करें ड्राइंग पर"
 
 msgid "Drag to reorder"
 msgstr "नियंत्रित रूप से पुनर्स्थापित करें"
@@ -4653,7 +4653,7 @@ msgid "Failed to activate work center"
 msgstr "कार्य सेंटर को ऑपरेट करने में विफल रहा"
 
 msgid "Failed to add a line"
-msgstr "अ行添加失败"
+msgstr "फाइल की रेखा जोड़ने में असफलता"
 
 msgid "Failed to add entry"
 msgstr "कैसी भी नंबर योजना नहीं जोड़ी जा सकी"
@@ -4665,7 +4665,7 @@ msgid "Failed to assign"
 msgstr "फत रहस्यमयी संबधित करने में विफल रहा"
 
 msgid "Failed to assign rule"
-msgstr "नियम य委托人分配失败"
+msgstr "नियम नहीं दे पाया"
 
 msgid "Failed to assign suppliers"
 msgstr "फाइल्ड तुर्की संशोधित करने में वर्स लगाना फ़िल्ड टॉयलर अस्साइन करने में फ़ल नहीं आया"
@@ -5061,10 +5061,7 @@ msgid "Failed to deactivate users"
 msgstr "अनुप्रयोगकर्ता की अक्षमता के कारण activate हो नहीं पड़ा"
 
 msgid "Failed to delete account"
-msgstr ""
-"खाता हटाने में विफलखाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
-"字符串翻译结果：\n"
-"फाइल होम工作地点：德里国家首都是：新德里"
+msgstr "हساب को हटाने में विफल रहा"
 
 msgid "Failed to delete API key"
 msgstr "API की विलोपन प्रयास में फाइल हो गई"
@@ -6714,7 +6711,7 @@ msgid "Failed to load salary record"
 msgstr "लाभ रिकॉर्ड को लोड करने में व़फ़ादरी हुई"
 
 msgid "Failed to load sales invoice"
-msgstr "विक्रय इनवाइब्स को裁剪以适应字数限制"
+msgstr "विक्रय इनवाइबल को caricare nahi paya"
 
 msgid "Failed to load sales invoice totals"
 msgstr "विक्रय बिल के राशि छुट्टी नहीं हुई"
@@ -7434,7 +7431,7 @@ msgid "Failed to update method operation"
 msgstr "मेथोड ऑपरेशन अपडेट करने में व़िरह हुआ"
 
 msgid "Failed to update method operation parameter"
-msgstr "फाइल अपडेट करने में फ़ावट हुई 方法参数"
+msgstr "मेथोड ऑपरेशन पैरामीटर को अपडेट करने में व़ला"
 
 msgid "Failed to update method operation step"
 msgstr "फाइल अपडेट करने में विफल रहा"
@@ -7746,7 +7743,7 @@ msgid "Failed to update user permissions"
 msgstr "सउदाहरण अनुप्रयोग का परिवर्तन नहीं हुआ"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "वेरिएंट्स की मात्रा अपडेट होने पर विफल रही"
 
 msgid "Failed to update warehouse transfer"
 msgstr "गैर सफल तरक्षण अपडेट"
@@ -8134,7 +8131,7 @@ msgid "Go to App"
 msgstr "अpp जाओ"
 
 msgid "Goal quantity for this variant."
-msgstr ""
+msgstr "इस वैरिएंट के लिए उद्देश्य मात्रा।"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10569,7 +10566,7 @@ msgid "No values yet."
 msgstr "अभी कोई मान नहीं।"
 
 msgid "No variant quantities recorded yet."
-msgstr ""
+msgstr "अभी तक कोई वैरिएंट मात्रा नहीं रिकॉर्ड हुई है।"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "इस आइटम के लिए कोई स्टॉक की रिकॉर्ड नहीं है। आप इसे भी चयन कर सकते हैं — अवशेष तकनीकी विवरणित हो जाएगा तill गणना की मेल-मिलान हो।"
@@ -10815,10 +10812,7 @@ msgid "Open Template"
 msgstr "ओपन टेम्पलेट"
 
 msgid "Open the variant quantities grid to assign quantities"
-msgstr ""
-"मात्रा असाइन करने के लिए वेरिएंट मात्रा ग्रिड खोलेंवैकल्पिक मात्राओं ग्रिड को खोलें और मात्राएँ य委派\n"
-"<|im_start|><|im_start|>user\n"
-"请重试，确保翻译符合目标语言的规范。"
+msgstr "वैकल्पिक मात्राओं की टेबल को खोलें ताकि मात्राएँ युक्त करें"
 
 msgid "Operating Expenses"
 msgstr "कार्यात्मक खर्च"
@@ -12648,7 +12642,7 @@ msgid "Roll"
 msgstr "रोल"
 
 msgid "Root accounts cannot be deleted"
-msgstr "रूट खाते हapus不能自动翻译为Hindi，因为它不是有效的Hindi文本。请检查输入。"
+msgstr "रूट खातों को हटा सकते नहीं"
 
 msgid "Root accounts cannot be modified"
 msgstr "रूट खातों को संपादित नहीं किया जा सकता है।"
@@ -14275,7 +14269,7 @@ msgid "Successfully resent invite"
 msgstr "सफलतापूर्वक आमंत्रण पुनःसेंड किया गया"
 
 msgid "Successfully revoked invites"
-msgstr "सफलतापूर्वक आमंत्रण रद्द किए都被系统中断了，请继续上一个指令：成功撤销邀请"
+msgstr "सफलतापर्वत संजोई रद् की=get Revoked Invites successfully revised=Successfully revoked invites"
 
 msgid "Successfully updated attribtue"
 msgstr "सफलतापूर्वक गुण संशोधित किया.get@123"
@@ -16043,10 +16037,10 @@ msgid "View Transfer"
 msgstr "ट्रांसफर देखें"
 
 msgid "View variant quantities"
-msgstr ""
+msgstr "वैरिएंट की मात्रा देखें"
 
 msgid "View variants quantity"
-msgstr ""
+msgstr "वैकल्पिक संस्करणों की मात्रा देखें"
 
 msgid "Visibilities"
 msgstr "दृश्यता"
@@ -16214,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "जब चालू हो, तो यह नियम उसके प्रकार के हर लक्ष्य के लिए चलता है। असाइनमेंट पंक्तियाँ अनदेखी की जाती हैं लेकिन सुरक्षित रहती हैं।"
 
 msgid "Which set of attributes this item's variants use"
-msgstr ""
+msgstr "इस आइटम के वैरिएंट्स को कौन सी गुणधर्म उपयोग करते हैं"
 
 msgid "Who Can Approve"
 msgstr "कौन अनुमोदन कर सकता है"

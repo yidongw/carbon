@@ -2721,7 +2721,7 @@ msgid "Failed to load part summary"
 msgstr "Fehler beim Laden der Teilszusammenfassung"
 
 msgid "Failed to load part unit sale price"
-msgstr "Fehler beim Laden der Teile单一单位销售价格"
+msgstr "Fehler beim Laden der Teileenhungen Verkaufspreise"
 
 msgid "Failed to load partners"
 msgstr "Fehler beim Laden der Partner"
@@ -2979,7 +2979,7 @@ msgid "Failed to parse claims"
 msgstr "Fehler during Claims Parsing"
 
 msgid "Failed to parse permissions"
-msgstr "Fehler beim Berechtigungen zu解析中止，未找到匹配的翻译，请使用英文尝试再次请求或稍后再试。"
+msgstr "Fehler beim Analysieren der Berechtigungen"
 
 msgid "Failed to parse procedure content"
 msgstr "Fehler beim Analysieren des Verarbeitungs-Inhalts"
@@ -3768,7 +3768,7 @@ msgid "Failed to update user permissions"
 msgstr "Fehler beim Aktualisieren der Benutzerrechte"
 
 msgid "Failed to update variants quantity"
-msgstr ""
+msgstr "Fehlgeschlagen beim Aktualisieren der Variante-Anzahl"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Fehler beim Aktualisieren des Lagerumsatzes"
@@ -4960,7 +4960,7 @@ msgid "Quote finalized successfully"
 msgstr "Zitat erfolgreich finalisiert"
 
 msgid "Quote operation attribute updated"
-msgstr "Operationseigenschaft aktualisiert报价操作属性已更新"
+msgstr "Befehlsoption aktualisiert"
 
 msgid "Quote operation parameter updated"
 msgstr "Operationstyp Parameter aktualisiert"
@@ -5564,7 +5564,7 @@ msgid "Successfully deleted failure mode"
 msgstr "Erfolgreich Fehlermodus gelöscht"
 
 msgid "Successfully deleted fixed asset"
-msgstr "Erfolgreich固定资产删除"
+msgstr "Erfolgreich gelöschtes Vermögenswert"
 
 msgid "Successfully deleted gauge"
 msgstr "Erfolgreich gelöscht"
@@ -6364,7 +6364,7 @@ msgid "Use the entity picker to split this row"
 msgstr "Verwenden Sie den Entity-Wahlmechanismus, um diese Zeile zu teilen"
 
 msgid "User already deactivated"
-msgstr "Benutzer已被停用"
+msgstr "Benutzer wurde bereits deaktiviert"
 
 msgid "User not found"
 msgstr "Nutzer nicht gefunden"
