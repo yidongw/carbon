@@ -5,7 +5,7 @@ export type ParsedVariantsQuantityValue = {
   total: number;
 };
 
-/** Parse a saved Style/job `configuration` JSON into rows and total (combo-only). */
+/** Parse a saved Style/job variant-table JSON into rows and total (combo-only). */
 export function parseInitialVariantsQuantity(
   raw: unknown
 ): ParsedVariantsQuantityValue {
@@ -43,39 +43,78 @@ export function parseInitialVariantsQuantity(
 
 export type VariantsQuantityOverlaySuccess = {
   ok: true;
-  configuration: {
-    variantTable: Record<string, string | number | boolean>[];
-    // Flat cut breakdown (report split editor) — stripped server-side before the
-    // config is stored; persisted to masterWorkOrderSplitRow for cutting reports.
-    splitRows?: {
-      valuesKey?: string | null;
-      attributeLabel?: string | null;
-      quantity: number;
-    }[];
-  };
+  variantTable: Record<string, string | number | boolean>[];
+  // Flat cut breakdown (report split editor) — stripped server-side before the
+  // table is stored; persisted to masterWorkOrderSplitRow for cutting reports.
+  splitRows?: {
+    valuesKey?: string | null;
+    attributeLabel?: string | null;
+    quantity: number;
+  }[];
   total: number;
 };
 
 export function isVariantsQuantityOverlaySuccess(
   data: unknown
 ): data is VariantsQuantityOverlaySuccess {
-  return (
-    typeof data === "object" &&
-    data !== null &&
-    "ok" in data &&
-    data.ok === true &&
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("ok" in data) ||
+    data.ok !== true ||
+    !("total" in data)
+  ) {
+    return false;
+  }
+  // Current shape: { ok, variantTable, total, splitRows? }
+  if ("variantTable" in data && Array.isArray(data.variantTable)) {
+    return true;
+  }
+  // Legacy nested shape: { ok, configuration: { variantTable }, total }
+  if (
     "configuration" in data &&
-    "total" in data
-  );
+    typeof data.configuration === "object" &&
+    data.configuration !== null &&
+    "variantTable" in data.configuration &&
+    Array.isArray(
+      (data.configuration as { variantTable?: unknown }).variantTable
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/** Normalize success payloads (current + legacy nested) to the flat shape. */
+export function getOverlaySuccessVariantTable(
+  data: VariantsQuantityOverlaySuccess
+): Record<string, string | number | boolean>[] {
+  if (Array.isArray(data.variantTable)) return data.variantTable;
+  const nested = (
+    data as unknown as {
+      configuration?: {
+        variantTable?: Record<string, string | number | boolean>[];
+      };
+    }
+  ).configuration?.variantTable;
+  return Array.isArray(nested) ? nested : [];
 }
 
 export function buildVariantsQuantityActionResponse(
-  configuration: Record<string, unknown>
+  payload: Record<string, unknown>
 ): VariantsQuantityOverlaySuccess {
+  const variantTable = Array.isArray(payload.variantTable)
+    ? (payload.variantTable as Record<string, string | number | boolean>[])
+    : Array.isArray(payload.configTable)
+      ? (payload.configTable as Record<string, string | number | boolean>[])
+      : [];
+  const splitRows = Array.isArray(payload.splitRows)
+    ? (payload.splitRows as VariantsQuantityOverlaySuccess["splitRows"])
+    : undefined;
   return {
     ok: true,
-    configuration:
-      configuration as VariantsQuantityOverlaySuccess["configuration"],
-    total: computeVariantTableTotal(configuration)
+    variantTable,
+    ...(splitRows ? { splitRows } : {}),
+    total: computeVariantTableTotal(payload)
   };
 }

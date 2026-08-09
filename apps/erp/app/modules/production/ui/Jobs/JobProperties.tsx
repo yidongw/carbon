@@ -269,7 +269,7 @@ const JobProperties = ({
   const quantity = routeData?.job?.quantity ?? 0;
 
   // Show Style qty editor when the item has attribute selections (or legacy
-  // config params that still list). Plan data lives in jobVariantQuantity.
+  // parameters that still list). Plan data lives in jobVariantQuantity.
   const jobIsConfigured = variantQuantityParameters != null;
 
   return (

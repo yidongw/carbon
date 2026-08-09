@@ -51,7 +51,10 @@ import {
   isJobLocked,
   jobValidator
 } from "../../production.models";
-import { isVariantsQuantityOverlaySuccess } from "../../variantsQuantityOverlay";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "../../variantsQuantityOverlay";
 import { getDeadlineIcon } from "./Deadline";
 import { useDeadlineTypeLabel } from "./jobLabels";
 import { QuantityWithVariantsQuantity } from "./QuantityWithVariantsQuantity";
@@ -279,7 +282,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    handleVariantsQuantitySubmit(data.configuration.variantTable, data.total);
+    handleVariantsQuantitySubmit(
+      getOverlaySuccessVariantTable(data),
+      data.total
+    );
   };
 
   const openVariantsQuantity = (mode: "single" | "bulk") => {

@@ -31,7 +31,10 @@ import {
   useVariantsQuantityModal
 } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
-import { isVariantsQuantityOverlaySuccess } from "../../variantsQuantityOverlay";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "../../variantsQuantityOverlay";
 
 type MasterWorkOrderFormProps = {
   initialValues: z.infer<typeof masterWorkOrderValidator>;
@@ -71,7 +74,7 @@ const MasterWorkOrderForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.variantTable);
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
     setVariantsQuantityTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };

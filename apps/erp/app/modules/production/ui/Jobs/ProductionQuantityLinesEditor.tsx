@@ -21,10 +21,11 @@ import {
   type VariantsQuantityReferenceSource
 } from "~/modules/production/variantsQuantityTableColumns";
 import { computeVariantTableTotal } from "~/modules/production/variantTable";
+import { getOverlaySuccessVariantTable } from "../../variantsQuantityOverlay";
 import { ItemVariantsQuantityInput } from "./ItemVariantsQuantityInput";
 import { useVariantsQuantityModal } from "./VariantsQuantityModal";
 
-type ConfigurationParameter = {
+type VariantQuantityParameter = {
   key: string;
   label: string;
   dataType: string;
@@ -132,7 +133,7 @@ export function ProductionQuantityLinesEditor({
   setLines: React.Dispatch<
     React.SetStateAction<EditableProductionQuantityLine[]>
   >;
-  variantQuantityParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: VariantQuantityParameter[] | null;
   itemId?: string | null;
   isDisabled?: boolean;
   /** When set (disposition), config table shows original/remaining reference values. */
@@ -205,7 +206,9 @@ export function ProductionQuantityLinesEditor({
           ),
         onConfirm: (data) =>
           updateLine(lineKey, {
-            configuration: data.configuration,
+            configuration: {
+              variantTable: getOverlaySuccessVariantTable(data)
+            },
             quantity: data.total > 0 ? data.total : line.quantity
           })
       });

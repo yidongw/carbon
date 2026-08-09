@@ -28,6 +28,7 @@ import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/Quant
 import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import {
+  getOverlaySuccessVariantTable,
   isVariantsQuantityOverlaySuccess,
   parseInitialVariantsQuantity
 } from "~/modules/production/variantsQuantityOverlay";
@@ -113,7 +114,7 @@ const StockTransferLineForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.variantTable);
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
     setVariantsQuantityTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };

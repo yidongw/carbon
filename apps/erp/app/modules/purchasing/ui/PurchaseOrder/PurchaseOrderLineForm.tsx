@@ -67,7 +67,10 @@ import {
   useVariantsQuantityModal
 } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
-import { isVariantsQuantityOverlaySuccess } from "~/modules/production/variantsQuantityOverlay";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type { PurchaseOrder, PurchaseOrderLine } from "~/modules/purchasing";
 import {
   isPurchaseOrderLocked,
@@ -396,7 +399,7 @@ const PurchaseOrderLineForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.variantTable);
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
     setVariantsQuantityTotal(data.total);
     onQuantityChange(data.total);
   };

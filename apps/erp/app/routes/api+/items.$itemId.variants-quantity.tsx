@@ -24,12 +24,12 @@ export type ItemVariantsQuantityOverlayLoaderData = {
    */
   referenceSource: VariantsQuantityReferenceSource | null;
   /**
-   * Saved configuration for a single reported row, fetched by `recordId` only
-   * for the deep-link case. In-app the overlay receives this via props instead,
-   * so this stays `null` for the common path.
+   * Saved variant quantities for a single reported row, fetched by `recordId`
+   * only for the deep-link case. In-app the overlay receives this via props
+   * instead, so this stays `null` for the common path.
    */
-  configuration: unknown;
-  /** Color code -> color name, so the config table can show names not codes. */
+  savedConfiguration: unknown;
+  /** Attribute value code -> name for Variant Display chips / qty grid. */
   attributeValueNames: Record<string, string>;
 };
 
@@ -59,7 +59,7 @@ export async function loader({
     .eq("companyId", companyId)
     .maybeSingle();
 
-  // Map attribute-value code -> name so the config table displays names, not
+  // Map attribute-value code -> name so the qty grid displays names, not
   // codes (all attributes, not just Color).
   const attributeValueNameRows = await getAttributeValueNames(
     client,
@@ -96,9 +96,9 @@ export async function loader({
         })
       : null;
 
-  // Deep-link fallback: rebuild a read-only view's saved config from its id.
+  // Deep-link fallback: rebuild a read-only view's saved variants from its id.
   const recordId = url.searchParams.get("recordId") ?? undefined;
-  const configuration = recordId
+  const savedConfiguration = recordId
     ? await getReportedConfigurationById(client, {
         recordId,
         reportKind,
@@ -110,7 +110,7 @@ export async function loader({
     parameters,
     itemReadableId: item.data?.readableIdWithRevision ?? null,
     referenceSource,
-    configuration,
+    savedConfiguration,
     attributeValueNames
   };
 }

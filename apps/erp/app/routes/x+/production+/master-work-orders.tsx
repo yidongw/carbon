@@ -6,7 +6,7 @@ import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData } from "react-router";
 import {
-  getItemIdsWithConfigurationParameters,
+  getItemIdsWithVariantQuantityGrid,
   getMasterCuttingProgress,
   getMasterWorkOrders
 } from "~/modules/production";
@@ -62,7 +62,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     .filter((id): id is string => Boolean(id));
 
   const [itemIdsWithConfigurationParameters, bundleRows] = await Promise.all([
-    getItemIdsWithConfigurationParameters(client, companyId, itemIds),
+    getItemIdsWithVariantQuantityGrid(client, companyId, itemIds),
     masterIds.length > 0
       ? client
           .from("bundleWorkOrders")
@@ -70,7 +70,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
           .eq("companyId", companyId)
           .in("masterWorkOrderId", masterIds)
       : Promise.resolve({
-          data: [] as { masterWorkOrderId: string | null; jobId: string | null }[]
+          data: [] as {
+            masterWorkOrderId: string | null;
+            jobId: string | null;
+          }[]
         })
   ]);
 
@@ -102,11 +105,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     for (const op of ops.data ?? []) {
       const masterId = op.jobId ? masterIdByMasterJobId[op.jobId] : undefined;
       if (!masterId) continue;
-      (processDescByMasterId[masterId] ??= new Set()).add(op.description ?? "—");
+      (processDescByMasterId[masterId] ??= new Set()).add(
+        op.description ?? "—"
+      );
     }
   }
   const processCountByMasterId: Record<string, number> = {};
-  for (const [masterId, descriptions] of Object.entries(processDescByMasterId)) {
+  for (const [masterId, descriptions] of Object.entries(
+    processDescByMasterId
+  )) {
     processCountByMasterId[masterId] = descriptions.size;
   }
 
@@ -146,9 +153,7 @@ export default function MasterWorkOrdersRoute() {
       <MasterWorkOrdersTable
         data={masterWorkOrders}
         count={count}
-        itemIdsWithConfigurationParameters={
-          itemIdsWithConfigurationParameters
-        }
+        itemIdsWithConfigurationParameters={itemIdsWithConfigurationParameters}
         bundleCountByMasterId={bundleCountByMasterId}
         processCountByMasterId={processCountByMasterId}
         cuttingProgressByMasterId={cuttingProgressByMasterId}

@@ -81,7 +81,10 @@ import {
   useVariantsQuantityModal
 } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
-import { isVariantsQuantityOverlaySuccess } from "~/modules/production/variantsQuantityOverlay";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import { methodType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -251,7 +254,7 @@ const SalesOrderLineForm = ({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.variantTable);
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
     setVariantsQuantityTotal(data.total);
     // Always mirror the grid total — a zero confirm must wipe a prior quantity.
     onQuantityChange(data.total);

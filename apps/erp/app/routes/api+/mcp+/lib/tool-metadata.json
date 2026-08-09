@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-09T01:50:49.313Z",
+  "generated": "2026-08-09T02:12:55.384Z",
   "totalTools": 1271,
   "modules": 15,
   "tools": [
@@ -17825,10 +17825,10 @@
       }
     },
     {
-      "name": "production_getItemIdsWithConfigurationParameters",
+      "name": "production_getItemIdsWithVariantQuantityGrid",
       "module": "production",
       "classification": "READ",
-      "description": "get item ids with configuration parameters",
+      "description": "get item ids with variant quantity grid",
       "paramCount": 1,
       "serviceParams": [
         "client",

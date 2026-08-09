@@ -18,16 +18,16 @@ export type VariantsQuantityColumn = {
 };
 
 /** Minimal parameter shape required to build config table columns. */
-export type ConfigurationParameterColumnsInput = Pick<
+export type VariantQuantityParameterColumnsInput = Pick<
   ConfigurationParameter,
   "key" | "label" | "dataType" | "listOptions"
 >;
 
 export function buildVariantsQuantityColumns(
-  parameters: ConfigurationParameterColumnsInput[],
+  parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string
 ): {
-  comboParam: ConfigurationParameterColumnsInput | null;
+  comboParam: VariantQuantityParameterColumnsInput | null;
   columns: VariantsQuantityColumn[];
 } {
   // Style combo: single valuesKey list → row labels + Quantities (not matrix).
@@ -313,7 +313,7 @@ export function formatVariantRowLabel(
 
 export function formatVariantRowLabels(
   configuration: unknown,
-  parameters: ConfigurationParameterColumnsInput[],
+  parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
 ): string[] {
@@ -368,7 +368,7 @@ export function getConfigRowDisplayPart(
 
 export function getConfigRowDisplayParts(
   configuration: unknown,
-  parameters: ConfigurationParameterColumnsInput[],
+  parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
 ): VariantsQuantityRowDisplayPart[] {
@@ -404,7 +404,7 @@ export function buildReportedTargetRows({
   targetConfiguration: unknown;
   reportedConfigurations: unknown[];
   pickupConfigurations?: unknown[];
-  parameters: ConfigurationParameterColumnsInput[];
+  parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
 }): ReportedTargetRow[] {
   const { columns } = buildVariantsQuantityColumns(
@@ -494,7 +494,7 @@ export function buildVariantsQuantityEditorState({
   referenceContext,
   prefillFromReference = false
 }: {
-  parameters: ConfigurationParameterColumnsInput[];
+  parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
   currentConfiguration: unknown;
   referenceContext?: VariantsQuantityReferenceContext | null;

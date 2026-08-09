@@ -5,6 +5,7 @@ import { ItemVariantsQuantityInput } from "~/modules/production/ui/Jobs/ItemVari
 import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import {
+  getOverlaySuccessVariantTable,
   isVariantsQuantityOverlaySuccess,
   parseInitialVariantsQuantity
 } from "~/modules/production/variantsQuantityOverlay";
@@ -74,7 +75,7 @@ export function StyleLineQuantityInput({
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(data.configuration.variantTable);
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
     setVariantsQuantityTotal(data.total);
     const nextQty = data.total > 0 ? data.total : quantity;
     if (data.total > 0) setQuantity(data.total);
@@ -83,7 +84,7 @@ export function StyleLineQuantityInput({
       quantity: nextQty,
       // Persist combo rows only (valuesKey + Quantities).
       variantQuantities: {
-        variantTable: data.configuration.variantTable
+        variantTable: getOverlaySuccessVariantTable(data)
       }
     });
   };

@@ -12,7 +12,7 @@ import {
 } from "./jobVariantQuantity.service";
 import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
-import { computeConfigRemaining } from "./variantTable";
+import { computeVariantTableRemaining } from "./variantTable";
 
 export type MasterCuttingProgress = {
   jobId: string;
@@ -124,7 +124,7 @@ export async function getMasterCuttingProgress(
     const remaining = Math.max(0, plan - reported);
     const planConfig = planConfigByJob.get(master.jobId) ?? null;
     const remainingConfiguration = cuttingOp
-      ? computeConfigRemaining(
+      ? computeVariantTableRemaining(
           planConfig,
           reportedConfigsByOp.get(cuttingOp.id) ?? []
         )

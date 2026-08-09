@@ -27,7 +27,7 @@ function toError(error: unknown, fallback: string) {
 }
 
 /** Synthetic configurationParameter-shaped rows for Style qty editors. */
-export type SynthesizedConfigurationParameter = {
+export type SynthesizedVariantQuantityParameter = {
   id: string;
   itemId: string;
   companyId: string;
@@ -58,7 +58,7 @@ export async function getStyleVariantQuantityParameters(
   client: Db,
   itemId: string,
   companyId: string
-): Promise<SynthesizedConfigurationParameter[]> {
+): Promise<SynthesizedVariantQuantityParameter[]> {
   const db = client as any;
 
   const { data: item, error: itemErr } = await db

@@ -43,7 +43,7 @@ export type JobVariantsQuantityOverlayLoaderData = {
   parameters: ConfigurationParameter[];
   initialRows?: VariantsQuantityRow[];
   history: JobConfigurationHistoryEntry[];
-  /** Color code -> color name, so the config table shows names not codes. */
+  /** Attribute value code -> name for the variants quantity grid. */
   attributeValueNames: Record<string, string>;
 };
 

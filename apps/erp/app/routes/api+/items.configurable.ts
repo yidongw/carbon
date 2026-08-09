@@ -6,7 +6,7 @@ import type { LoaderFunctionArgs } from "react-router";
  *
  * Query `for=methods` returns items with legacy `configurationParameter` rows
  * (Make Method get/save/configure). Default is attributes only — old Part
- * config params must not open the job Quantity grid.
+ * Part configuration parameters must not open the job Quantity grid.
  */
 export async function loader({ request }: LoaderFunctionArgs) {
   // Any authenticated employee — no parts_view required.

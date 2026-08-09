@@ -2117,7 +2117,7 @@ export async function getJobIdsWithVariantQuantities(
   ];
 }
 
-export async function getItemIdsWithConfigurationParameters(
+export async function getItemIdsWithVariantQuantityGrid(
   client: SupabaseClient<Database>,
   companyId: string,
   itemIds: string[]
@@ -2137,6 +2137,10 @@ export async function getItemIdsWithConfigurationParameters(
     )
   ];
 }
+
+/** @deprecated Prefer getItemIdsWithVariantQuantityGrid. Kept for MCP tool name. */
+export const getItemIdsWithConfigurationParameters =
+  getItemIdsWithVariantQuantityGrid;
 
 /** Root routing only: first operation by `order` where status is not Done/Canceled. */
 export async function getCurrentProcessByJobIds(

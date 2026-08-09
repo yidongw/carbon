@@ -10,7 +10,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useLocation } from "react-router";
 import {
   computeProductionQuantityReportEarnedAmount,
-  getItemIdsWithConfigurationParameters,
+  getItemIdsWithVariantQuantityGrid,
   getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
   replaceProductionQuantityReportLines,
@@ -150,7 +150,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         .filter((id): id is string => Boolean(id))
     )
   ];
-  const configurableItemIds = await getItemIdsWithConfigurationParameters(
+  const configurableItemIds = await getItemIdsWithVariantQuantityGrid(
     client,
     companyId,
     itemIds

@@ -136,7 +136,7 @@ export function sumVariantTables(
  * The remaining config table: `planned - sum(reportedConfigs)` per cell, floored
  * at 0. Returns an empty table when there's no plan structure.
  */
-export function computeConfigRemaining(
+export function computeVariantTableRemaining(
   planned: Json | Record<string, unknown> | null | undefined,
   reportedConfigs: Array<Json | Record<string, unknown> | null | undefined>
 ): VariantsQuantityData {

@@ -24,12 +24,13 @@ import {
   productionQuantityCreateFormValidator,
   productionQuantityValidator
 } from "../../production.models";
+import { getOverlaySuccessVariantTable } from "../../variantsQuantityOverlay";
 import {
   buildProductionVariantsQuantityReferenceContext,
   type VariantsQuantityReferenceSource
 } from "../../variantsQuantityTableColumns";
 import {
-  computeConfigRemaining,
+  computeVariantTableRemaining,
   computeVariantTableTotal
 } from "../../variantTable";
 import {
@@ -244,12 +245,12 @@ const ProductionQuantityForm = ({
     ) {
       return editable;
     }
-    const remaining = computeConfigRemaining(
+    const remaining = computeVariantTableRemaining(
       variantsQuantityReferenceSource.jobVariantTable as Parameters<
-        typeof computeConfigRemaining
+        typeof computeVariantTableRemaining
       >[0],
       variantsQuantityReferenceSource.reportedConfigurations as Parameters<
-        typeof computeConfigRemaining
+        typeof computeVariantTableRemaining
       >[1]
     );
     if (remaining.variantTable.length === 0) return editable;
@@ -375,7 +376,7 @@ const ProductionQuantityForm = ({
         }),
       onConfirm: (data) =>
         handleVariantsQuantitySubmit(
-          data.configuration.variantTable,
+          getOverlaySuccessVariantTable(data),
           data.total
         )
     });

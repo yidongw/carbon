@@ -29,7 +29,7 @@ export type AdjustmentMode = "delta" | "total";
 
 export type MaterialOption = { label: string | ReactElement; value: string };
 
-export type ConfigurationParameterInput = {
+export type VariantQuantityParameterInput = {
   key: string;
   label: string;
   dataType: string;
@@ -61,7 +61,7 @@ function localizeComboLabel(
 
 /** Style attribute-backed qty editor: one list param of cartesian valuesKeys. */
 export function isStyleComboParameters(
-  parameters: ConfigurationParameterInput[]
+  parameters: VariantQuantityParameterInput[]
 ): boolean {
   if (
     parameters.length === 1 &&
@@ -78,11 +78,11 @@ export function isStyleComboParameters(
  * List options are row values, not quantity columns.
  */
 export function buildComboColumns(
-  parameters: ConfigurationParameterInput[],
+  parameters: VariantQuantityParameterInput[],
   defaultQuantityLabel: string,
   attributesLabel = "Attributes"
 ): {
-  comboParam: ConfigurationParameterInput | null;
+  comboParam: VariantQuantityParameterInput | null;
   columns: Column[];
 } | null {
   if (!isStyleComboParameters(parameters)) return null;
@@ -120,11 +120,11 @@ export function buildComboColumns(
 }
 
 export function buildColumns(
-  parameters: ConfigurationParameterInput[],
+  parameters: VariantQuantityParameterInput[],
   defaultQuantityLabel: string,
   attributesLabel = "Attributes"
 ): {
-  comboParam: ConfigurationParameterInput | null;
+  comboParam: VariantQuantityParameterInput | null;
   columns: Column[];
 } {
   const combo = buildComboColumns(
@@ -159,8 +159,8 @@ export function makeDefaultRow(columns: Column[]): Row {
 }
 
 export function getInitialRows(
-  _parameters: ConfigurationParameterInput[],
-  comboParam: ConfigurationParameterInput | null,
+  _parameters: VariantQuantityParameterInput[],
+  comboParam: VariantQuantityParameterInput | null,
   columns: Column[]
 ): Row[] {
   // Style combo: one row per valuesKey option.
