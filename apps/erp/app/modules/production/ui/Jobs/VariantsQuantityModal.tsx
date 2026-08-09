@@ -433,12 +433,12 @@ function VariantsQuantityModal({
     setValidationError("");
     const rowsToSave = populatedRows.map(({ row }) => row);
 
-    let configuration: Record<string, unknown>;
+    let variantQuantities: Record<string, unknown>;
     if (flat) {
-      // Store the merged config (unchanged downstream) + the raw rows so a master
+      // Store the merged table (unchanged downstream) + the raw rows so a master
       // WO cutting report can prefill one bundle per row in Split Batch.
       const merged = flatRowsToMergedConfig(rowsToSave);
-      configuration = {
+      variantQuantities = {
         ...merged,
         splitRows: rowsToSave.map((r) => ({
           valuesKey: String(r.valuesKey ?? "").trim(),
@@ -447,20 +447,20 @@ function VariantsQuantityModal({
         }))
       };
     } else {
-      configuration = {
+      variantQuantities = {
         variantTable: mergeRows(rowsToSave, columns)
       };
     }
 
     if (confirmMode === "client") {
-      onConfirmSuccess(buildVariantsQuantityActionResponse(configuration));
+      onConfirmSuccess(buildVariantsQuantityActionResponse(variantQuantities));
       return;
     }
 
     if (!formAction || !fetcher) return;
 
     const formData = new FormData();
-    formData.append("variantQuantities", JSON.stringify(configuration));
+    formData.append("variantQuantities", JSON.stringify(variantQuantities));
     fetcher.submit(formData, { method: "post", action: formAction });
   };
 
