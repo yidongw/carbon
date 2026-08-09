@@ -53,14 +53,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   // Attach source SO/PO Style variants quantity plan (Ordered chips / modal hints).
   const rawReceiptLines = receiptLines.data ?? [];
   // SO/PO lines no longer store a variants-quantity JSON column; Ordered chips
-  // for Style come from expanded variant SKU lines (and jobVariantQuantity for jobs).
-  const orderVariantQuantitiesByLineId = new Map<string, unknown>();
+  // for Style come from expanded variant SKU lines. Receipts have no job source,
+  // so there is no per-line ordered breakdown to attach.
   const receiptLinesWithOrderVariantQuantities = rawReceiptLines.map(
     (line) => ({
       ...line,
-      orderVariantQuantities: line.lineId
-        ? (orderVariantQuantitiesByLineId.get(line.lineId) ?? null)
-        : null
+      orderVariantQuantities: null
     })
   );
 

@@ -53,7 +53,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const rawLines = shipmentLines.data ?? [];
   // SO/PO lines no longer store a variants-quantity JSON column; Ordered chips
   // for Style come from expanded variant SKU lines (and jobVariantQuantity for jobs).
-  const orderVariantQuantitiesByLineId = new Map<string, unknown>();
 
   // Style jobs store planned variant qty in jobVariantQuantity (not job.configuration).
   const jobIds = [
@@ -81,15 +80,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   );
 
   const linesWithOrderVariantQuantities = rawLines.map((line) => {
-    const fromSource = line.lineId
-      ? orderVariantQuantitiesByLineId.get(line.lineId)
-      : undefined;
     const jobId = (line.fulfillment as { job?: { id?: string } | null } | null)
       ?.job?.id;
     const fromJob = jobId ? jobVariantQuantitiesByJobId.get(jobId) : undefined;
     return {
       ...line,
-      orderVariantQuantities: fromSource ?? fromJob ?? null
+      orderVariantQuantities: fromJob ?? null
     };
   });
 

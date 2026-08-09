@@ -18920,7 +18920,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes: string | null
-          originalConfiguration: Json | null
+          originalVariantTable: Json | null
           originalQuantity: number
           purchaseOrderLineId: string | null
           subcontractSnapshotId: string
@@ -18936,7 +18936,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           purchaseOrderLineId?: string | null
           subcontractSnapshotId: string
@@ -18952,7 +18952,7 @@ export type Database = {
           jobId?: string
           jobOperationId?: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           purchaseOrderLineId?: string | null
           subcontractSnapshotId?: string
@@ -31011,7 +31011,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes: string | null
-          originalConfiguration: Json | null
+          originalVariantTable: Json | null
           originalQuantity: number
           updatedAt: string | null
           updatedBy: string | null
@@ -31025,7 +31025,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           updatedAt?: string | null
           updatedBy?: string | null
@@ -31039,7 +31039,7 @@ export type Database = {
           jobId?: string
           jobOperationId?: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           updatedAt?: string | null
           updatedBy?: string | null

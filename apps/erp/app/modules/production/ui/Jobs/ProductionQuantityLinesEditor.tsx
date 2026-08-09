@@ -208,7 +208,10 @@ export function ProductionQuantityLinesEditor({
         onConfirm: (data) =>
           updateLine(lineKey, {
             variantQuantities: {
-              variantTable: getOverlaySuccessVariantTable(data)
+              variantTable: getOverlaySuccessVariantTable(data),
+              // Keep the raw cut breakdown so report creation persists it
+              // (splitVariantQuantitiesAndRows peels it back out).
+              ...(data.splitRows ? { splitRows: data.splitRows } : {})
             },
             quantity: data.total > 0 ? data.total : line.quantity
           })

@@ -11,8 +11,6 @@ import {
   calculateOutsideProcessingPurchaseOrderLines,
   toPurchaseOrderItemLineType,
 } from "../lib/outside-processing-pricing.ts";
-import {
-} from "../lib/item-variants.ts";
 
 const pool = getConnectionPool(1);
 const db = getDatabaseClient<DB>(pool);
