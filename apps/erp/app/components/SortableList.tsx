@@ -28,7 +28,7 @@ export interface Item {
     complete: number;
     target: number;
     onAddQuantity?: () => void;
-    onOpenConfigTable?: () => void;
+    onOpenVariantsQuantity?: () => void;
   } | null;
 }
 
@@ -361,7 +361,7 @@ function QuantityProgressStrip({
   progress: NonNullable<Item["quantityProgress"]>;
 }) {
   const { t } = useLingui();
-  const { complete, target, onAddQuantity, onOpenConfigTable } = progress;
+  const { complete, target, onAddQuantity, onOpenVariantsQuantity } = progress;
   const completePercent = getPercent(complete, target);
   const isOverTarget = target > 0 && complete > target;
   const unassigned = Math.max(0, target - complete);
@@ -403,14 +403,14 @@ function QuantityProgressStrip({
         </span>
       </span>
       {/* Target + config summary */}
-      {onOpenConfigTable ? (
+      {onOpenVariantsQuantity ? (
         <button
           type="button"
           className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`View configuration quantities`}
+          aria-label={t`View variants quantity`}
           onClick={(event) => {
             event.stopPropagation();
-            onOpenConfigTable();
+            onOpenVariantsQuantity();
           }}
         >
           <LuTable

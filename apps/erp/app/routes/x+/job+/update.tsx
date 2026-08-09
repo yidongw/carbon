@@ -8,10 +8,9 @@ import {
   recalculateJobRequirements,
   upsertJobMethod
 } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
-  persistStyleJobConfiguration
+  isVariantsQuantityPayload,
+  persistStyleJobVariantQuantities
 } from "~/modules/production/jobVariantQuantity.service";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
@@ -251,7 +250,7 @@ export async function action({ request }: ActionFunctionArgs) {
       if (
         configuration &&
         typeof configuration === "object" &&
-        isConfigTableConfiguration(configuration)
+        isVariantsQuantityPayload(configuration)
       ) {
         const jobsWithItems = await client
           .from("job")
@@ -267,7 +266,7 @@ export async function action({ request }: ActionFunctionArgs) {
               data: null
             };
           }
-          const replaced = await persistStyleJobConfiguration(
+          const replaced = await persistStyleJobVariantQuantities(
             client,
             getDatabaseClient(),
             {
@@ -275,7 +274,7 @@ export async function action({ request }: ActionFunctionArgs) {
               parentItemId: jobRow.itemId,
               companyId,
               userId,
-              configuration: configuration as Record<string, unknown>
+              variantQuantities: configuration as Record<string, unknown>
             }
           );
           if (replaced.error) {
@@ -301,11 +300,10 @@ export async function action({ request }: ActionFunctionArgs) {
       const configurationUpdate = await client
         .from("job")
         .update({
-          ...(configuration && typeof configuration === "object"
-            ? jobConfigurationUpdateFields(
-                configuration as Record<string, unknown>
-              )
-            : { configuration: null }),
+          configuration:
+            configuration && typeof configuration === "object"
+              ? (configuration as Record<string, unknown>)
+              : null,
           updatedBy: userId,
           updatedAt: new Date().toISOString()
         })

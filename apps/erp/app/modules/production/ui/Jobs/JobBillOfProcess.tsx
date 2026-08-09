@@ -148,10 +148,6 @@ import type { action as newJobOperationToolAction } from "~/routes/x+/job+/metho
 import { useItems, usePeople, useTools } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
-  buildReportedTargetRows,
-  type ReportedTargetRow
-} from "../../configParamsTableColumns";
-import {
   defaultOperationTypeFromProcess,
   disablesOutsideBopDetailTabs,
   isInsideOperationType,
@@ -166,6 +162,10 @@ import {
 } from "../../production.models";
 import { getProductionEventsPage } from "../../production.service";
 import type { Job, JobOperation } from "../../types";
+import {
+  buildReportedTargetRows,
+  type ReportedTargetRow
+} from "../../variantsQuantityTableColumns";
 import { OutsideOperationBadge } from "../OutsideOperationBadge";
 import {
   formatOperationTabSummary,
@@ -180,13 +180,13 @@ import {
   operationFormWorkCenterFieldClass,
   useOperationTypeSelectOptions
 } from "../operationBop";
-import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import {
   useProductionEventActivityMessage,
   useRelativeCreatedUpdatedText
 } from "./productionQuantityLabels";
+import { VariantsQuantityReportedTargetTable } from "./VariantsQuantityReportedTargetTable";
 
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
@@ -230,6 +230,10 @@ type JobBillOfProcessProps = {
   /** When rendered outside `/x/job/:jobId` (e.g. jobs table preview modal). */
   routeJobId?: string;
   routeJob?: Job;
+  /** Style planned qty from jobVariantQuantity (not job.configuration). */
+  plannedVariantQuantities?: {
+    variantTable: Array<{ valuesKey: string; Quantities: number }>;
+  } | null;
 };
 
 function makeItems(
@@ -242,8 +246,8 @@ function makeItems(
   jobQuantityTarget: number,
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
-  onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean
+  onOpenVariantsQuantitySummary?: (operationId: string) => void,
+  hasVariantsQuantity?: boolean
 ): ItemWithData[] {
   return operations.map((operation) =>
     makeItem(
@@ -256,8 +260,8 @@ function makeItems(
       jobQuantityTarget,
       job,
       onAddProductionQuantity,
-      onOpenConfigSummary,
-      hasConfigurationParameters
+      onOpenVariantsQuantitySummary,
+      hasVariantsQuantity
     )
   );
 }
@@ -272,8 +276,8 @@ function makeItem(
   jobQuantityTarget: number,
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
-  onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean
+  onOpenVariantsQuantitySummary?: (operationId: string) => void,
+  hasVariantsQuantity?: boolean
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -325,9 +329,9 @@ function makeItem(
           onAddQuantity: onAddProductionQuantity
             ? () => onAddProductionQuantity(operation.id!)
             : undefined,
-          onOpenConfigTable:
-            hasConfigurationParameters && onOpenConfigSummary
-              ? () => onOpenConfigSummary(operation.id!)
+          onOpenVariantsQuantity:
+            hasVariantsQuantity && onOpenVariantsQuantitySummary
+              ? () => onOpenVariantsQuantitySummary(operation.id!)
               : undefined
         },
     footer: temporaryItems[operation.id!] ? null : (
@@ -481,7 +485,8 @@ const JobBillOfProcess = ({
   salesOrderLineId,
   customerId,
   routeJobId,
-  routeJob
+  routeJob,
+  plannedVariantQuantities: plannedVariantQuantitiesProp
 }: JobBillOfProcessProps) => {
   const { t } = useLingui();
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -505,8 +510,15 @@ const JobBillOfProcess = ({
   const paramsJobId = useParams().jobId;
   const jobId = routeJobId ?? paramsJobId;
   if (!jobId) throw new Error("jobId not found");
-  const routeJobData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const routeJobData = useRouteData<{
+    job: Job;
+    plannedVariantQuantities?: JobBillOfProcessProps["plannedVariantQuantities"];
+  }>(path.to.job(jobId));
   const jobData = routeJob ? { job: routeJob } : routeJobData;
+  const plannedVariantQuantities =
+    plannedVariantQuantitiesProp ??
+    routeJobData?.plannedVariantQuantities ??
+    null;
   const [temporaryItems, setTemporaryItems] = useState<TemporaryItems>({});
   const [workInstructions, setWorkInstructions] =
     useState<PendingWorkInstructions>(() => {
@@ -744,50 +756,50 @@ const JobBillOfProcess = ({
   const [hasMore, setHasMore] = useState(true);
 
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
-  const [configurationParameters, setConfigurationParameters] = useState<
+  const [variantQuantityParameters, setVariantQuantityParameters] = useState<
     ConfigurationParameter[] | null
   >(null);
-  const configSummaryModal = useDisclosure();
-  const [configSummaryOperationId, setConfigSummaryOperationId] = useState<
-    string | null
-  >(null);
-  const [configSummaryRows, setConfigSummaryRows] = useState<
+  const variantsQuantitySummaryModal = useDisclosure();
+  const [variantsQuantitySummaryOperationId, setConfigSummaryOperationId] =
+    useState<string | null>(null);
+  const [variantsQuantitySummaryRows, setConfigSummaryRows] = useState<
     ReportedTargetRow[]
   >([]);
-  const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
+  const [variantsQuantitySummaryLoading, setConfigSummaryLoading] =
+    useState(false);
 
-  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
+  const hasVariantsQuantity = (variantQuantityParameters?.length ?? 0) > 0;
 
   useEffect(() => {
     if (!itemId || !carbon) return;
 
     void getQuantityGridParameters(carbon, itemId, companyId).then(
       ({ parameters }) => {
-        setConfigurationParameters(parameters.length > 0 ? parameters : null);
+        setVariantQuantityParameters(parameters.length > 0 ? parameters : null);
       }
     );
   }, [carbon, companyId, itemId]);
 
-  const openConfigSummary = useCallback(
+  const openVariantsQuantitySummary = useCallback(
     async (operationId: string) => {
-      if (!carbon || !configurationParameters?.length) return;
+      if (!carbon || !variantQuantityParameters?.length) return;
 
       setConfigSummaryOperationId(operationId);
       setConfigSummaryRows([]);
       setConfigSummaryLoading(true);
-      configSummaryModal.onOpen();
+      variantsQuantitySummaryModal.onOpen();
 
       const [quantityResult, pickupResult] = await Promise.all([
         carbon
           .from("productionQuantity")
-          .select("configuration")
+          .select("variantQuantities")
           .eq("jobOperationId", operationId)
           .eq("companyId", companyId)
           .eq("type", "Production")
           .is("invalidatedAt", null),
         carbon
           .from("jobOperationPickup")
-          .select("configuration")
+          .select("variantQuantities")
           .eq("jobOperationId", operationId)
           .eq("companyId", companyId)
       ]);
@@ -798,24 +810,24 @@ const JobBillOfProcess = ({
         return;
       }
 
-      const reportedConfigurations = (quantityResult.data ?? [])
-        .map((row) => row.configuration)
+      const reportedVariantQuantities = (quantityResult.data ?? [])
+        .map((row) => row.variantQuantities)
         .filter(
           (config): config is NonNullable<typeof config> => config != null
         );
 
-      const pickupConfigurations = (pickupResult.data ?? [])
-        .map((row) => row.configuration)
+      const pickupVariantQuantities = (pickupResult.data ?? [])
+        .map((row) => row.variantQuantities)
         .filter(
           (config): config is NonNullable<typeof config> => config != null
         );
 
       setConfigSummaryRows(
         buildReportedTargetRows({
-          targetConfiguration: jobData?.job?.configuration,
-          reportedConfigurations,
-          pickupConfigurations,
-          parameters: configurationParameters,
+          targetVariantQuantities: plannedVariantQuantities,
+          reportedVariantQuantities,
+          pickupVariantQuantities,
+          parameters: variantQuantityParameters,
           defaultQuantityLabel: t`Quantities`
         })
       );
@@ -824,9 +836,9 @@ const JobBillOfProcess = ({
     [
       carbon,
       companyId,
-      configSummaryModal,
-      configurationParameters,
-      jobData?.job?.configuration,
+      variantsQuantitySummaryModal,
+      variantQuantityParameters,
+      plannedVariantQuantities,
       t
     ]
   );
@@ -847,8 +859,8 @@ const JobBillOfProcess = ({
     jobQuantityTarget,
     jobData?.job,
     onAddProductionQuantity,
-    hasConfigurationParameters ? openConfigSummary : undefined,
-    hasConfigurationParameters
+    hasVariantsQuantity ? openVariantsQuantitySummary : undefined,
+    hasVariantsQuantity
   ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
@@ -1236,15 +1248,15 @@ const JobBillOfProcess = ({
     />
   );
 
-  const configSummaryOperation = configSummaryOperationId
-    ? operationsById.get(configSummaryOperationId)
+  const variantsQuantitySummaryOperation = variantsQuantitySummaryOperationId
+    ? operationsById.get(variantsQuantitySummaryOperationId)
     : undefined;
 
-  const configSummaryModalElement = hasConfigurationParameters ? (
+  const variantsQuantitySummaryModalElement = hasVariantsQuantity ? (
     <Modal
-      open={configSummaryModal.isOpen}
+      open={variantsQuantitySummaryModal.isOpen}
       onOpenChange={(open) => {
-        if (!open) configSummaryModal.onClose();
+        if (!open) variantsQuantitySummaryModal.onClose();
       }}
     >
       <ModalContent
@@ -1255,23 +1267,26 @@ const JobBillOfProcess = ({
       >
         <ModalHeader className="mb-4 shrink-0">
           <ModalTitle>
-            {configSummaryOperation?.description ?? (
-              <Trans>Configuration quantities</Trans>
+            {variantsQuantitySummaryOperation?.description ?? (
+              <Trans>Variant quantities</Trans>
             )}
           </ModalTitle>
         </ModalHeader>
         <ModalBody className="mb-0 min-h-0 flex-1 overflow-y-auto overflow-x-auto pb-6">
-          {configSummaryLoading ? (
+          {variantsQuantitySummaryLoading ? (
             <Loading isLoading />
           ) : (
-            <ConfigParamsReportedTargetTable
-              rows={configSummaryRows}
-              parameters={configurationParameters ?? []}
+            <VariantsQuantityReportedTargetTable
+              rows={variantsQuantitySummaryRows}
+              parameters={variantQuantityParameters ?? []}
             />
           )}
         </ModalBody>
         <ModalFooter className="shrink-0">
-          <Button variant="secondary" onClick={configSummaryModal.onClose}>
+          <Button
+            variant="secondary"
+            onClick={variantsQuantitySummaryModal.onClose}
+          >
             <Trans>Close</Trans>
           </Button>
         </ModalFooter>
@@ -1305,7 +1320,7 @@ const JobBillOfProcess = ({
             {list}
           </div>
         </div>
-        {configSummaryModalElement}
+        {variantsQuantitySummaryModalElement}
       </>
     );
   }
@@ -1338,7 +1353,7 @@ const JobBillOfProcess = ({
         </HStack>
         <CardContent>{list}</CardContent>
       </Card>
-      {configSummaryModalElement}
+      {variantsQuantitySummaryModalElement}
     </>
   );
 };

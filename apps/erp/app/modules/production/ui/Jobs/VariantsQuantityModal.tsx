@@ -16,28 +16,26 @@ import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
-  buildConfigTableEditorState,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext,
-  configTableToComboRows
-} from "~/modules/production/configParamsTableColumns";
+  buildVariantsQuantityActionResponse,
+  isVariantsQuantityOverlaySuccess,
+  type VariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import {
-  buildConfigTableActionResponse,
-  type ConfigTableOverlaySuccess,
-  isConfigTableOverlaySuccess
-} from "~/modules/production/configTableOverlay";
-import { localizeColorNameMap } from "~/modules/shared/styleConfigDisplay";
-import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
+  buildVariantsQuantityEditorState,
+  getVariantsQuantityRows,
+  type VariantsQuantityReferenceContext,
+  type VariantsQuantityReferenceSource,
+  variantsQuantityToComboRows
+} from "~/modules/production/variantsQuantityTableColumns";
+import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
+import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
 import { path } from "~/utils/path";
 import {
   buildColumns,
   buildComboColumns,
   type Column,
   computeTotal,
-  configParamsModalBodyClassName,
-  configParamsModalContentClassName,
-  configParamsModalShellClassName,
-  EditableConfigGrid,
+  EditableVariantsQuantityGrid,
   getCellKey,
   getInitialRows,
   hasValue,
@@ -45,8 +43,11 @@ import {
   mergeRows,
   normalizeRow,
   type Row,
-  validateCell
-} from "./configTableShared";
+  validateCell,
+  variantsQuantityModalBodyClassName,
+  variantsQuantityModalContentClassName,
+  variantsQuantityModalShellClassName
+} from "./variantsQuantityShared";
 
 type PlanCell = {
   valuesKey: string;
@@ -112,15 +113,18 @@ function comboRowsFromInitial(
     return flat;
   }
 
-  return configTableToComboRows({ configTable: rows }, optionLabels) as Row[];
+  return variantsQuantityToComboRows(
+    { variantTable: rows },
+    optionLabels
+  ) as Row[];
 }
 
 /** Merge flat combo rows into the stored config table shape (valuesKey rows). */
 function flatRowsToMergedConfig(flatRows: Row[]): {
-  configTable: Row[];
+  variantTable: Row[];
 } {
   return {
-    configTable: flatRows
+    variantTable: flatRows
       .map((fr) => {
         const valuesKey = String(fr.valuesKey ?? "").trim();
         if (!valuesKey) return null;
@@ -133,7 +137,7 @@ function flatRowsToMergedConfig(flatRows: Row[]): {
   };
 }
 
-export type ConfigParamsTableModalProps = {
+export type VariantsQuantityModalProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
@@ -168,7 +172,7 @@ export type ConfigParamsTableModalProps = {
     confirmMode: OverlayFormInjectedProps["confirmMode"] | "client";
   };
 
-function ConfigParamsTableModal({
+function VariantsQuantityModal({
   parameters,
   initialRows,
   referenceByRowIndex,
@@ -183,7 +187,7 @@ function ConfigParamsTableModal({
   fetcher,
   confirmMode,
   onConfirmSuccess
-}: ConfigParamsTableModalProps) {
+}: VariantsQuantityModalProps) {
   const { t, i18n } = useLingui();
   // Loader attributeValueNames are English base; translate to the locale so combo
   // labels + headers render 黑色 · S rather than "Black · S" or "BK · S".
@@ -197,7 +201,7 @@ function ConfigParamsTableModal({
     label: <Enumerable value={shape.label} />,
     value: shape.value
   }));
-  const { primaryParam, columns } = buildColumns(
+  const { comboParam, columns } = buildColumns(
     parameters,
     t`Quantities`,
     t`Attributes`
@@ -228,8 +232,8 @@ function ConfigParamsTableModal({
       const seedRows = !initialRows.some(
         (r) => String(r.valuesKey ?? "").trim().length > 0
       )
-        ? (configTableToComboRows(
-            { configTable: initialRows },
+        ? (variantsQuantityToComboRows(
+            { variantTable: initialRows },
             optionLabels
           ) as Row[])
         : initialRows;
@@ -240,7 +244,7 @@ function ConfigParamsTableModal({
         return normalized;
       });
     }
-    return getInitialRows(parameters, primaryParam, columns);
+    return getInitialRows(parameters, comboParam, columns);
   });
   const [invalidCells, setInvalidCells] = useState<Set<string>>(new Set());
   const [validationError, setValidationError] = useState("");
@@ -274,7 +278,7 @@ function ConfigParamsTableModal({
     [rows]
   );
   const missingCombos = !flat
-    ? (primaryParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
+    ? (comboParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
     : [];
   const addComboRow = (combo: string) =>
     setRows((prev) => [
@@ -401,7 +405,7 @@ function ConfigParamsTableModal({
     ]);
 
   const handleSubmit = () => {
-    // Can't confirm while any combo cell exceeds its reference cap
+    // Can't confirm while any variants quantity cell exceeds its reference cap
     // (production plan remaining, or inventory on-hand for transfers).
     if (exceedsMax) return;
     const normalizedRows = rows.map((row) => normalizeRow(row, gridColumns));
@@ -430,12 +434,12 @@ function ConfigParamsTableModal({
     setValidationError("");
     const rowsToSave = populatedRows.map(({ row }) => row);
 
-    let configuration: Record<string, unknown>;
+    let variantQuantities: Record<string, unknown>;
     if (flat) {
-      // Store the merged config (unchanged downstream) + the raw rows so a master
+      // Store the merged table (unchanged downstream) + the raw rows so a master
       // WO cutting report can prefill one bundle per row in Split Batch.
       const merged = flatRowsToMergedConfig(rowsToSave);
-      configuration = {
+      variantQuantities = {
         ...merged,
         splitRows: rowsToSave.map((r) => ({
           valuesKey: String(r.valuesKey ?? "").trim(),
@@ -444,26 +448,26 @@ function ConfigParamsTableModal({
         }))
       };
     } else {
-      configuration = {
-        configTable: mergeRows(rowsToSave, columns)
+      variantQuantities = {
+        variantTable: mergeRows(rowsToSave, columns)
       };
     }
 
     if (confirmMode === "client") {
-      onConfirmSuccess(buildConfigTableActionResponse(configuration));
+      onConfirmSuccess(buildVariantsQuantityActionResponse(variantQuantities));
       return;
     }
 
     if (!formAction || !fetcher) return;
 
     const formData = new FormData();
-    formData.append("configuration", JSON.stringify(configuration));
+    formData.append("variantQuantities", JSON.stringify(variantQuantities));
     fetcher.submit(formData, { method: "post", action: formAction });
   };
 
   const tableSection = (
     <>
-      <EditableConfigGrid
+      <EditableVariantsQuantityGrid
         columns={gridColumns}
         rows={rows}
         invalidCells={gridInvalidCells}
@@ -616,60 +620,55 @@ function ConfigParamsTableModal({
   );
 
   return (
-    <div className={configParamsModalShellClassName}>
+    <div className={variantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
-          <Trans>Configuration Parameters</Trans>
+          <Trans>Variants Quantity</Trans>
         </h3>
         {jobDisplayId ? (
           <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>
         ) : null}
       </div>
-      <div className={configParamsModalBodyClassName}>{tableSection}</div>
+      <div className={variantsQuantityModalBodyClassName}>{tableSection}</div>
       <div className="shrink-0 border-t border-border px-6 py-4">{footer}</div>
     </div>
   );
 }
 
-function extractConfigTable(configuration: unknown): Row[] | undefined {
-  if (
-    !configuration ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
-  ) {
-    return undefined;
-  }
-  const table = (configuration as Record<string, unknown>).configTable;
-  return Array.isArray(table) ? (table as Row[]) : undefined;
+function extractVariantsQuantity(
+  variantQuantities: unknown
+): Row[] | undefined {
+  const table = getVariantsQuantityRows(variantQuantities);
+  return table.length > 0 ? (table as Row[]) : undefined;
 }
 
 /**
  * Compute editor rows + click-to-fill hints (client-side) from the raw inputs:
- * the fetched `parameters`, the in-memory draft `configuration`, and (when there
+ * the fetched `parameters`, the in-memory draft `variantQuantities`, and (when there
  * are reference hints) a fully-built `referenceContext`. Shared by the local
  * modal and the table-cell overlay render.
  */
-export function buildConfigEditorRows({
+export function buildVariantsQuantityEditorRows({
   parameters,
-  configuration,
+  variantQuantities,
   referenceContext,
   prefillFromReference = false
 }: {
   parameters: ConfigurationParameter[];
-  configuration?: unknown;
-  referenceContext?: ConfigTableReferenceContext;
+  variantQuantities?: unknown;
+  referenceContext?: VariantsQuantityReferenceContext;
   prefillFromReference?: boolean;
 }): {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
 } {
-  const configTable = extractConfigTable(configuration);
-  if (!referenceContext) return { initialRows: configTable };
-  const editor = buildConfigTableEditorState({
+  const variantTable = extractVariantsQuantity(variantQuantities);
+  if (!referenceContext) return { initialRows: variantTable };
+  const editor = buildVariantsQuantityEditorState({
     parameters,
     defaultQuantityLabel: "Quantities",
-    currentConfiguration:
-      configTable !== undefined ? { configTable } : undefined,
+    currentVariantQuantities:
+      variantTable !== undefined ? { variantTable } : undefined,
     referenceContext,
     prefillFromReference
   });
@@ -682,11 +681,11 @@ export function buildConfigEditorRows({
 
   // Empty tagged inventory / fungible Style: no original rows, but we still want
   // click-to-fill hints of 0 on the default parameter rows.
-  const { primaryParam, columns } = buildColumns(parameters, "Quantities");
+  const { comboParam, columns } = buildColumns(parameters, "Quantities");
   const seed =
-    configTable && configTable.length > 0
-      ? configTable.map((row) => normalizeRow(row, columns))
-      : getInitialRows(parameters, primaryParam, columns);
+    variantTable && variantTable.length > 0
+      ? variantTable.map((row) => normalizeRow(row, columns))
+      : getInitialRows(parameters, comboParam, columns);
   const zeroRefs = seed.map(() => {
     const refs: Record<string, number> = {};
     for (const col of columns) {
@@ -698,7 +697,7 @@ export function buildConfigEditorRows({
 }
 
 /** Endpoint URL carrying only the fetch keys (ids) — never the draft config. */
-function configSourceUrl(
+function variantsQuantitySourceUrl(
   itemId: string,
   keys: {
     jobId?: string;
@@ -706,7 +705,7 @@ function configSourceUrl(
     reportKind?: "pickup" | "productionQuantity";
   }
 ): string {
-  const base = path.to.api.itemConfigTable(itemId);
+  const base = path.to.api.itemVariantsQuantity(itemId);
   const params = new URLSearchParams();
   if (keys.jobId) params.set("jobId", keys.jobId);
   if (keys.jobOperationId) params.set("jobOperationId", keys.jobOperationId);
@@ -716,16 +715,16 @@ function configSourceUrl(
 }
 
 /**
- * Local (non-overlay) config-table editor. A parent form owns the open state and
+ * Local (non-overlay) variants-quantity editor. A parent form owns the open state and
  * gets the edited config via `onConfirm`.
  *
  * Clean fetch/pass split: only fetch keys (`itemId` + `jobId`/`jobOperationId`/
  * `reportKind`) go to the loader, which returns `parameters` + the DB-resolved
- * `referenceSource`. The in-memory draft `configuration` is a prop, and the
+ * `referenceSource`. The in-memory draft `variantQuantities` is a prop, and the
  * parent supplies `buildReferenceContext(source)` (it owns the in-memory
  * reference inputs). Editor rows + hints are computed here, client-side.
  */
-export function ConfigParamsTableLocalModal({
+export function VariantsQuantityLocalModal({
   open,
   onClose,
   onConfirm,
@@ -733,7 +732,7 @@ export function ConfigParamsTableLocalModal({
   jobId,
   jobOperationId,
   reportKind,
-  configuration,
+  variantQuantities,
   buildReferenceContext,
   prefillFromReference = false,
   splitMode = false,
@@ -749,10 +748,10 @@ export function ConfigParamsTableLocalModal({
   jobId?: string;
   jobOperationId?: string;
   reportKind?: "pickup" | "productionQuantity";
-  configuration?: unknown;
+  variantQuantities?: unknown;
   buildReferenceContext?: (
-    source: ConfigReferenceSource | null
-  ) => ConfigTableReferenceContext | undefined;
+    source: VariantsQuantityReferenceSource | null
+  ) => VariantsQuantityReferenceContext | undefined;
   prefillFromReference?: boolean;
   splitMode?: boolean;
   jobDisplayId?: string | null;
@@ -760,14 +759,14 @@ export function ConfigParamsTableLocalModal({
   maxTotal?: number;
   enforceReferenceCaps?: boolean;
 }) {
-  const fetcher = useFetcher<ItemConfigTableOverlayLoaderData | null>();
+  const fetcher = useFetcher<ItemVariantsQuantityOverlayLoaderData | null>();
   const load = useRef(fetcher.load);
   load.current = fetcher.load;
 
   useEffect(() => {
     if (!open || !itemId) return;
     void load.current(
-      configSourceUrl(itemId, { jobId, jobOperationId, reportKind })
+      variantsQuantitySourceUrl(itemId, { jobId, jobOperationId, reportKind })
     );
   }, [open, itemId, jobId, jobOperationId, reportKind]);
 
@@ -779,9 +778,9 @@ export function ConfigParamsTableLocalModal({
     ? buildReferenceContext?.(data.referenceSource)
     : undefined;
   const { initialRows, referenceByRowIndex } = data?.parameters?.length
-    ? buildConfigEditorRows({
+    ? buildVariantsQuantityEditorRows({
         parameters: data.parameters,
-        configuration,
+        variantQuantities,
         referenceContext,
         prefillFromReference
       })
@@ -794,9 +793,9 @@ export function ConfigParamsTableLocalModal({
         if (!next) onClose();
       }}
     >
-      <ModalContent className={configParamsModalContentClassName}>
+      <ModalContent className={variantsQuantityModalContentClassName}>
         {data?.parameters?.length ? (
-          <ConfigParamsTableModal
+          <VariantsQuantityModal
             parameters={data.parameters}
             initialRows={initialRows}
             referenceByRowIndex={referenceByRowIndex}
@@ -821,25 +820,25 @@ export function ConfigParamsTableLocalModal({
 }
 
 /**
- * Build the editor's `configuration` input from the current table rows, falling
- * back to a saved/initial configuration when nothing has been edited yet.
+ * Build the editor's `variantQuantities` input from the current table rows, falling
+ * back to a saved/initial variantQuantities when nothing has been edited yet.
  */
-export function toConfigTableValue(
+export function toVariantsQuantityValue(
   rows: Row[] | null | undefined,
   fallback?: unknown
 ): unknown {
-  return rows ? { configTable: rows } : fallback;
+  return rows ? { variantTable: rows } : fallback;
 }
 
-type ConfigTableModalRequest = {
+type VariantsQuantityModalRequest = {
   itemId: string;
-  configuration?: unknown;
+  variantQuantities?: unknown;
   jobId?: string;
   jobOperationId?: string;
   reportKind?: "pickup" | "productionQuantity";
   buildReferenceContext?: (
-    source: ConfigReferenceSource | null
-  ) => ConfigTableReferenceContext | undefined;
+    source: VariantsQuantityReferenceSource | null
+  ) => VariantsQuantityReferenceContext | undefined;
   /** Seed empty quantity cells with their remaining reference on first open. */
   prefillFromReference?: boolean;
   /** Flat one-row-per-combo editor that also emits raw `splitRows`. */
@@ -855,38 +854,40 @@ type ConfigTableModalRequest = {
    */
   enforceReferenceCaps?: boolean;
   /** Receives the validated edited config when the user confirms. */
-  onConfirm: (result: ConfigTableOverlaySuccess) => void;
+  onConfirm: (result: VariantsQuantityOverlaySuccess) => void;
 };
 
 /**
- * Manage a single local config-table editor. Call `open(request)` to show it;
+ * Manage a single local variants-quantity editor. Call `open(request)` to show it;
  * render `node`. Handles open state, the success check, and closing — so callers
  * just describe what to fetch/pass and what to do on confirm.
  */
-export function useConfigTableModal(): {
-  open: (request: ConfigTableModalRequest) => void;
+export function useVariantsQuantityModal(): {
+  open: (request: VariantsQuantityModalRequest) => void;
   node: ReactNode;
 } {
-  const [request, setRequest] = useState<ConfigTableModalRequest | null>(null);
+  const [request, setRequest] = useState<VariantsQuantityModalRequest | null>(
+    null
+  );
   const open = useCallback(
-    (next: ConfigTableModalRequest) => setRequest(next),
+    (next: VariantsQuantityModalRequest) => setRequest(next),
     []
   );
   const close = useCallback(() => setRequest(null), []);
 
   const node = request ? (
-    <ConfigParamsTableLocalModal
+    <VariantsQuantityLocalModal
       open
       onClose={close}
       onConfirm={(data) => {
-        if (isConfigTableOverlaySuccess(data)) request.onConfirm(data);
+        if (isVariantsQuantityOverlaySuccess(data)) request.onConfirm(data);
         close();
       }}
       itemId={request.itemId}
       jobId={request.jobId}
       jobOperationId={request.jobOperationId}
       reportKind={request.reportKind}
-      configuration={request.configuration}
+      variantQuantities={request.variantQuantities}
       buildReferenceContext={request.buildReferenceContext}
       prefillFromReference={request.prefillFromReference}
       splitMode={request.splitMode}
@@ -900,5 +901,5 @@ export function useConfigTableModal(): {
   return { open, node };
 }
 
-export { ConfigParamsTableModal };
-export default ConfigParamsTableModal;
+export { VariantsQuantityModal };
+export default VariantsQuantityModal;

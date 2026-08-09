@@ -18,11 +18,14 @@ import {
 } from "~/modules/inventory";
 import { WarehouseTransferLineForm } from "~/modules/inventory/ui/WarehouseTransfers";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable,
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -62,29 +65,35 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    variantQuantities: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     quantity: rawQuantity,
     ...d
   } = validation.data;
 
   let variantQuantities: Json | undefined;
   let quantity = rawQuantity;
-  if (configStr) {
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
-      variantQuantities = fields.configuration;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
       quantity = fields.quantity;
     } catch {
       // invalid JSON — keep the typed quantity
     }
   }
 
-  // Style/Consumable parent + configTable → one warehouse-transfer line per variant SKU.
-  // jobConfigurationUpdateFields bridges the shared modal payload (still named
-  // `configuration`) into variantQuantities for inventory lines.
-  if (hasStyleConfigTable(variantQuantities)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+  // Style/Consumable parent + variantTable → one warehouse-transfer line per variant SKU.
+  // variantTableUpdateFields syncs quantity with the variantQuantities table total.
+  if (hasStyleVariantsQuantity(variantQuantities)) {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
       variantQuantities

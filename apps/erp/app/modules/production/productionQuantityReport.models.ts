@@ -8,7 +8,7 @@ export const productionQuantityLineInputValidator = z.object({
   ),
   scrapReasonId: zfd.text(z.string().optional()),
   notes: zfd.text(z.string().optional()),
-  configuration: z.any().optional()
+  variantQuantities: z.any().optional()
 });
 
 /** Line payload parsed from `JSON.stringify` (browser); `quantity` is a JSON number. */
@@ -19,7 +19,7 @@ export const productionQuantityLineJsonValidator = z.object({
     .positive({ message: "Quantity must be greater than zero" }),
   scrapReasonId: z.string().optional(),
   notes: z.string().optional(),
-  configuration: z.any().optional()
+  variantQuantities: z.any().optional()
 });
 
 export const createProductionQuantityReportValidator = z.object({

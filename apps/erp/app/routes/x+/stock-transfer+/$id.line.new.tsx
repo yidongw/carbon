@@ -17,11 +17,14 @@ import {
 import type { StockTransfer } from "~/modules/inventory/types";
 import StockTransferLineForm from "~/modules/inventory/ui/StockTransfers/StockTransferLineForm";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable,
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
@@ -67,26 +70,33 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _lineId,
-    variantQuantities: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     quantity: rawQuantity,
     ...d
   } = validation.data;
 
   let variantQuantities: Json | undefined;
   let quantity = rawQuantity;
-  if (configStr) {
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
-      variantQuantities = fields.configuration;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
       quantity = fields.quantity;
     } catch {
       // invalid JSON — keep the typed quantity
     }
   }
 
-  if (hasStyleConfigTable(variantQuantities)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+  if (hasStyleVariantsQuantity(variantQuantities)) {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
       variantQuantities

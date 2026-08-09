@@ -1,15 +1,15 @@
 import { cn, Table, Tbody, Td, Th, Thead, Tr } from "@carbon/react";
 import type { ReactNode } from "react";
-import type { Column, Row } from "./configTableShared";
-import { getColumnWidthClass as defaultGetColumnWidthClass } from "./configTableShared";
+import type { Column, Row } from "./variantsQuantityShared";
+import { getColumnWidthClass as defaultGetColumnWidthClass } from "./variantsQuantityShared";
 
-export type ResponsiveConfigTableColumn = {
+export type ResponsiveVariantsQuantityTableColumn = {
   key: string;
   label: string;
 };
 
-type ResponsiveConfigTableProps<
-  TColumn extends ResponsiveConfigTableColumn,
+type ResponsiveVariantsQuantityTableProps<
+  TColumn extends ResponsiveVariantsQuantityTableColumn,
   TRow
 > = {
   columns: TColumn[];
@@ -43,7 +43,7 @@ function defaultIsFieldEmpty(row: Row, column: Column): boolean {
 }
 
 function visibleFieldsForVerticalReadOnly<
-  TColumn extends ResponsiveConfigTableColumn,
+  TColumn extends ResponsiveVariantsQuantityTableColumn,
   TRow
 >(
   rows: TRow[],
@@ -61,8 +61,8 @@ const stickyLabelClass =
  * transposed table on smaller viewports (field labels in a sticky left column,
  * values scrolling horizontally to the right).
  */
-export function ResponsiveConfigTable<
-  TColumn extends ResponsiveConfigTableColumn,
+export function ResponsiveVariantsQuantityTable<
+  TColumn extends ResponsiveVariantsQuantityTableColumn,
   TRow
 >({
   columns,
@@ -78,7 +78,7 @@ export function ResponsiveConfigTable<
   renderCell,
   renderRowActions,
   optionLabels
-}: ResponsiveConfigTableProps<TColumn, TRow>) {
+}: ResponsiveVariantsQuantityTableProps<TColumn, TRow>) {
   if (rows.length === 0) return null;
 
   const headerLabel = (col: TColumn) => optionLabels?.[col.key] ?? col.label;

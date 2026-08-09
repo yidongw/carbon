@@ -11,8 +11,8 @@ import { DB, getConnectionPool, getDatabaseClient } from "../lib/database.ts";
 import { format } from "https://deno.land/std@0.205.0/datetime/format.ts";
 import { corsHeaders } from "../lib/headers.ts";
 import {
-  expandConfigTableToVariantQuantities,
-  hasConfigTable,
+  expandVariantsQuantityTable,
+  hasVariantsQuantityTable,
 } from "../lib/item-variants.ts";
 import { requirePermissions } from "../lib/supabase.ts";
 import { Database } from "../lib/types.ts";
@@ -577,14 +577,14 @@ serve(async (req: Request) => {
             // parent-Style line with the configuration silently dropped.
             if (
               line.itemId &&
-              hasConfigTable(line.configuration)
+              hasVariantsQuantityTable(line.configuration)
             ) {
-              const expanded = await expandConfigTableToVariantQuantities(
+              const expanded = await expandVariantsQuantityTable(
                 client,
                 {
                   parentItemId: line.itemId,
                   companyId,
-                  configuration: line.configuration,
+                  variantQuantities: line.configuration,
                 }
               );
               if (expanded.length > 0) {

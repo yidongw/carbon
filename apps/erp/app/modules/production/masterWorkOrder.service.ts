@@ -6,13 +6,13 @@ import {
 } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
-import { computeConfigRemaining } from "./jobConfiguration";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
+import { computeVariantTableRemaining } from "./variantTable";
 
 export type MasterCuttingProgress = {
   jobId: string;
@@ -70,7 +70,7 @@ export async function getMasterCuttingProgress(
       if (planned.data.length > 0) {
         planConfigByJob.set(
           jobId,
-          jobVariantQuantitiesToConfigTable(planned.data) as unknown as Json
+          jobVariantQuantitiesToTable(planned.data) as unknown as Json
         );
       }
     })
@@ -99,20 +99,23 @@ export async function getMasterCuttingProgress(
 
   // Reported cutting config tables, grouped by cutting operation.
   const cuttingOpIds = [...cuttingOpByJob.values()].map((c) => c.id);
-  const reportedConfigsByOp = new Map<string, Json[]>();
+  const reportedVariantQuantitiesByOp = new Map<string, Json[]>();
   if (cuttingOpIds.length > 0) {
     const pq = await client
       .from("productionQuantity")
-      .select("jobOperationId, configuration")
+      .select("jobOperationId, variantQuantities")
       .in("jobOperationId", cuttingOpIds)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null);
     for (const row of pq.data ?? []) {
       if (!row.jobOperationId) continue;
-      const list = reportedConfigsByOp.get(row.jobOperationId);
-      if (list) list.push(row.configuration);
-      else reportedConfigsByOp.set(row.jobOperationId, [row.configuration]);
+      const list = reportedVariantQuantitiesByOp.get(row.jobOperationId);
+      if (list) list.push(row.variantQuantities);
+      else
+        reportedVariantQuantitiesByOp.set(row.jobOperationId, [
+          row.variantQuantities
+        ]);
     }
   }
 
@@ -124,11 +127,11 @@ export async function getMasterCuttingProgress(
     const remaining = Math.max(0, plan - reported);
     const planConfig = planConfigByJob.get(master.jobId) ?? null;
     const remainingConfiguration = cuttingOp
-      ? computeConfigRemaining(
+      ? computeVariantTableRemaining(
           planConfig,
-          reportedConfigsByOp.get(cuttingOp.id) ?? []
+          reportedVariantQuantitiesByOp.get(cuttingOp.id) ?? []
         )
-      : { configTable: [] };
+      : { variantTable: [] };
 
     result[master.id] = {
       jobId: master.jobId,

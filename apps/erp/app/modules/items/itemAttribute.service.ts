@@ -27,7 +27,7 @@ function toError(error: unknown, fallback: string) {
 }
 
 /** Synthetic configurationParameter-shaped rows for Style qty editors. */
-export type SynthesizedConfigurationParameter = {
+export type SynthesizedVariantQuantityParameter = {
   id: string;
   itemId: string;
   companyId: string;
@@ -54,11 +54,11 @@ export type SynthesizedConfigurationParameter = {
  * product of selected attribute codes in **set order** (pipe-joined), matching
  * `itemVariant.valuesKey`.
  */
-export async function getStyleConfigurationParametersFromAttributes(
+export async function getStyleVariantQuantityParameters(
   client: Db,
   itemId: string,
   companyId: string
-): Promise<SynthesizedConfigurationParameter[]> {
+): Promise<SynthesizedVariantQuantityParameter[]> {
   const db = client as any;
 
   const { data: item, error: itemErr } = await db
@@ -1516,26 +1516,29 @@ async function loadVariantsByValuesKey(
 }
 
 /**
- * Expand a Style/Consumable configTable into { variantItemId, quantity } rows.
+ * Expand a Style/Consumable variantTable into { variantItemId, quantity } rows.
  * Combo-only: each row is `{ valuesKey, Quantities }`; variants are matched by
  * valuesKey (attribute codes in set order).
  */
-export async function expandConfigTableToVariantQuantities(
+export async function expandVariantsQuantityTable(
   client: Db,
   args: {
     parentItemId: string;
     companyId: string;
-    configuration: unknown;
+    variantQuantities: unknown;
   }
 ): Promise<{
   data: Array<{ variantItemId: string; quantity: number; valuesKey: string }>;
   error: Error | null;
 }> {
   try {
-    const raw = (args.configuration ?? {}) as Record<string, unknown>;
-    const table = Array.isArray(raw.configTable)
-      ? (raw.configTable as Record<string, unknown>[])
-      : [];
+    const raw = (args.variantQuantities ?? {}) as Record<string, unknown>;
+    // Dual-read legacy `configTable` during the wire-key rename window.
+    const table = Array.isArray(raw.variantTable)
+      ? (raw.variantTable as Record<string, unknown>[])
+      : Array.isArray(raw.configTable)
+        ? (raw.configTable as Record<string, unknown>[])
+        : [];
 
     const cells: Array<{ valuesKey: string; quantity: number }> = [];
 

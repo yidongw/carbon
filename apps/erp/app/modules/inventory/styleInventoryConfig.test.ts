@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
+import { buildVariantsQuantityEditorState } from "~/modules/production/variantsQuantityTableColumns";
 import {
-  breakdownToInventoryConfigTable,
-  buildInventoryConfigTableReferenceContext
+  breakdownToInventoryVariantsQuantity,
+  buildInventoryVariantsQuantityReferenceContext
 } from "./styleInventoryConfig";
 
 const comboParameters = [
@@ -14,9 +14,9 @@ const comboParameters = [
   }
 ];
 
-describe("breakdownToInventoryConfigTable", () => {
+describe("breakdownToInventoryVariantsQuantity", () => {
   it("aggregates on-hand into combo valuesKey rows", () => {
-    const result = breakdownToInventoryConfigTable([
+    const result = breakdownToInventoryVariantsQuantity([
       { valuesKey: "BG|M", quantityOnHand: 6 },
       { valuesKey: "BG|M", quantityOnHand: 4 },
       { valuesKey: "BG|L", quantityOnHand: 2 },
@@ -25,7 +25,7 @@ describe("breakdownToInventoryConfigTable", () => {
     ]);
 
     expect(result).toEqual({
-      configTable: [
+      variantTable: [
         { valuesKey: "BG|M", Quantities: 10 },
         { valuesKey: "BG|L", Quantities: 2 },
         { valuesKey: "BK|S", Quantities: 1 }
@@ -35,29 +35,31 @@ describe("breakdownToInventoryConfigTable", () => {
 
   it("returns null when nothing is tagged by valuesKey", () => {
     expect(
-      breakdownToInventoryConfigTable([{ valuesKey: null, quantityOnHand: 9 }])
+      breakdownToInventoryVariantsQuantity([
+        { colorCode: null, sizeCode: null, quantityOnHand: 9 }
+      ])
     ).toBeNull();
   });
 });
 
-describe("buildInventoryConfigTableReferenceContext", () => {
+describe("buildInventoryVariantsQuantityReferenceContext", () => {
   it("feeds inventory caps into the combo editor state", () => {
-    const inventory = breakdownToInventoryConfigTable([
+    const inventory = breakdownToInventoryVariantsQuantity([
       { valuesKey: "BG|M", quantityOnHand: 10 }
     ]);
-    const referenceContext = buildInventoryConfigTableReferenceContext({
+    const referenceContext = buildInventoryVariantsQuantityReferenceContext({
       variantQuantities: inventory,
       otherLineVariantQuantities: [
         {
-          configTable: [{ valuesKey: "BG|M", Quantities: 3 }]
+          variantTable: [{ valuesKey: "BG|M", Quantities: 3 }]
         }
       ]
     });
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters: comboParameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 

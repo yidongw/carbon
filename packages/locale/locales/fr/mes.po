@@ -1809,7 +1809,7 @@ msgid "Failed to get an customer status id"
 msgstr "Échec de récupération de l'identifiant du statut client"
 
 msgid "Failed to get an customer type id"
-msgstr "Échec de récupération du type d'客户类型ID"
+msgstr "Échec pour obtenir l'ID d'un type de client"
 
 msgid "Failed to get an employee type id"
 msgstr "Échec de récupération du type d'employé"
@@ -3257,9 +3257,6 @@ msgstr "Échec de la mise à jour des revendications"
 msgid "Failed to update company"
 msgstr "Échec de la mise à jour de l'entreprise"
 
-msgid "Failed to update configuration"
-msgstr "Échec de la mise à jour de la configuration"
-
 msgid "Failed to update consumable"
 msgstr "Échec de la mise à jour du consommable"
 
@@ -3769,6 +3766,9 @@ msgstr "Échec de la mise à jour de l'unité de mesure"
 
 msgid "Failed to update user permissions"
 msgstr "Échec de la mise à jour des permissions utilisateur"
+
+msgid "Failed to update variants quantity"
+msgstr "Échec de la mise à jour de la quantité des variantes"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Échec de la mise à jour du transfert entre magasins"
@@ -4618,7 +4618,7 @@ msgid "Open date picker"
 msgstr "Ouvrir le calendrier"
 
 msgid "Open date time picker"
-msgstr "Ouvrir le sélectionneur de日期已过期，请联系客服。"
+msgstr "Ouvrir le sélectionneur de date et heure"
 
 msgid "Open Jobs"
 msgstr "Emplois ouverts"
@@ -4922,9 +4922,6 @@ msgstr "Commande d'achat finalisée"
 msgid "Purchase order line created"
 msgstr "Ligne de commande d'achat créée"
 
-msgid "Purchase order lines created"
-msgstr "Lignes de commande d'achat créées"
-
 msgid "Purchase order not found"
 msgstr "Commande d'achat introuvable"
 
@@ -5142,7 +5139,7 @@ msgid "Rule unassigned"
 msgstr "Règle non affectée"
 
 msgid "Run is not in Draft status"
-msgstr "L'exécution n'est pas en statut草稿"
+msgstr "L'exécution n'est pas dans l'état Esquisse"
 
 msgid "Sales invoice voided"
 msgstr "Facture de vente annulée"
@@ -5155,9 +5152,6 @@ msgstr "Commande de vente créée"
 
 msgid "Sales order line created"
 msgstr "Ligne de commande vendus créée"
-
-msgid "Sales order lines created"
-msgstr "Lignes de commande vendues créées"
 
 msgid "Sample recorded"
 msgstr "Échantillon enregistré"
@@ -6179,7 +6173,7 @@ msgid "Updated picking list status"
 msgstr "Mise à jour de l'état de la liste de picking"
 
 msgid "Updated process completion"
-msgstr "Mise à jour de la完工过程"
+msgstr "Mise à jour de la complétion du processus"
 
 msgid "Updated production event"
 msgstr "Événement de production mis à jour"
@@ -6377,6 +6371,9 @@ msgstr "Utilisateur non trouvé"
 
 msgid "User record not found"
 msgstr "Enregistrement utilisateur non trouvé"
+
+msgid "Variant quantities added"
+msgstr "Quantités de variante ajoutées"
 
 msgid "Verification Error"
 msgstr "Erreur de vérification"

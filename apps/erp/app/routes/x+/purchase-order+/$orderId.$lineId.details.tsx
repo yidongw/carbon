@@ -11,10 +11,13 @@ import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import {
   getPurchaseOrder,
   getPurchaseOrderLine,
@@ -120,37 +123,43 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Omit `id` — the route param is the source of truth.
   const {
     id: _id,
-    configuration: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     purchaseQuantity: rawQuantity,
     ...d
   } = validation.data;
 
   let purchaseQuantity = rawQuantity;
-  let configurationUpdate: { configuration: Json | null } | undefined;
-  let configuration: Json | undefined;
-  if (configStr) {
+  let variantQuantities: Json | undefined;
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
-      configurationUpdate = { configuration: fields.configuration };
-      configuration = fields.configuration;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
       purchaseQuantity = fields.quantity;
     } catch {
-      // Invalid JSON — keep typed quantity and leave existing configuration alone.
+      // Invalid JSON — keep typed quantity; FormData config is expand-only.
     }
-  } else {
-    // Explicit empty hidden field clears Style configuration.
-    configurationUpdate = { configuration: null };
   }
 
-  // A stored config table means the per-variant quantity grid was used (Style
-  // attribute combo, or a Consumable attribute set) — expand into variant SKU lines
+  // FormData variantTable means the per-variant quantity grid was used (Style
+  // variants quantity, or a Consumable color set) — expand into variant SKU lines
   // regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
-      variantQuantities: configuration
+      variantQuantities
     });
     if (!expanded.ok) {
       throw redirect(
@@ -206,14 +215,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
 
     purchaseQuantity = expanded.variants[0].quantity;
-    configurationUpdate = { configuration: null };
   }
 
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const updatePurchaseOrderLine = await upsertPurchaseOrderLine(client, {
     id: lineId,
     ...d,
     purchaseQuantity,
-    ...configurationUpdate,
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -275,9 +283,8 @@ export default function EditPurchaseOrderLineRoute() {
     supplierUnitPrice: line?.supplierUnitPrice ?? 0,
     costCenterId: line?.costCenterId ?? "",
     taxPercent: line?.taxPercent ?? 0,
-    configuration: line?.configuration
-      ? JSON.stringify(line.configuration)
-      : undefined,
+    // Style qty grid is FormData-only on create/edit; not stored on the line.
+    variantQuantities: undefined,
     assetReadableId: (line as any)?.assetReadableId ?? "",
     assetName: (line as any)?.assetName ?? "",
     ...getCustomFields(line?.customFields)

@@ -12,10 +12,13 @@ import {
   serializeSearch
 } from "~/components/Overlay/overlay";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import type { SalesOrderLineType } from "~/modules/sales";
 import {
   getCustomer,
@@ -130,7 +133,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const {
     id: _id,
-    configuration: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     saleQuantity: rawQuantity,
     ...d
   } = validation.data;
@@ -147,27 +150,38 @@ export async function action({ request, params }: ActionFunctionArgs) {
     d.assetId = undefined;
   }
 
-  let configuration: Json | undefined;
+  let variantQuantities: Json | undefined;
   let saleQuantity = rawQuantity;
-  if (configStr) {
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
-      configuration = fields.configuration;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
       saleQuantity = fields.quantity;
     } catch {
-      // Invalid JSON — create without configuration; keep typed quantity.
+      // Invalid JSON — create without variantQuantities; keep typed quantity.
     }
   }
 
-  // A stored config table means the per-variant quantity grid was used (Style
-  // attribute combo, or a Consumable attribute set) → one line per variant SKU
+  // FormData variantTable means the per-variant quantity grid was used (Style
+  // variants quantity, or a Consumable color set) → one line per variant SKU
   // (inventory identity), regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
-      variantQuantities: configuration
+      variantQuantities
     });
     if (!expanded.ok) {
       if (isOverlay) {
@@ -239,24 +253,24 @@ export async function action({ request, params }: ActionFunctionArgs) {
       if (isOverlay) {
         return data(
           { ok: true as const },
-          await flash(request, success("Sales order lines created"))
+          await flash(request, success("Variant quantities added"))
         );
       }
       throw redirect(
         path.to.salesOrderDetails(orderId),
-        await flash(request, success("Sales order lines created"))
+        await flash(request, success("Variant quantities added"))
       );
     }
 
     // Single parent SKU (no children) — fall through to one-line upsert.
     saleQuantity = expanded.variants[0].quantity;
-    configuration = undefined;
+    variantQuantities = undefined;
   }
 
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const createSalesOrderLine = await upsertSalesOrderLine(client, {
     ...d,
     saleQuantity,
-    ...(configuration !== undefined ? { configuration } : {}),
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)

@@ -6,10 +6,9 @@ import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { upsertJobMethod } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
-  persistStyleJobConfiguration
+  isVariantsQuantityPayload,
+  persistStyleJobVariantQuantities
 } from "~/modules/production/jobVariantQuantity.service";
 import { getDatabaseClient } from "~/services/database.server";
 import { path, requestReferrer } from "~/utils/path";
@@ -42,8 +41,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
-  if (isConfigTableConfiguration(configuration)) {
-    const replaced = await persistStyleJobConfiguration(
+  if (isVariantsQuantityPayload(configuration)) {
+    const replaced = await persistStyleJobVariantQuantities(
       client,
       getDatabaseClient(),
       {
@@ -51,7 +50,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         parentItemId: job.data.itemId,
         companyId,
         userId,
-        configuration: configuration as Record<string, unknown>
+        variantQuantities: configuration as Record<string, unknown>
       }
     );
     if (replaced.error) {
@@ -67,9 +66,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const result = await client
       .from("job")
       .update({
-        ...jobConfigurationUpdateFields(
-          configuration as Record<string, unknown>
-        ),
+        configuration: configuration as Record<string, unknown>,
         updatedAt: new Date().toISOString(),
         updatedBy: userId
       })

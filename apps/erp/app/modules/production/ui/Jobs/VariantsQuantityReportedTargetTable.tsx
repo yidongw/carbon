@@ -2,13 +2,13 @@ import { cn, Popover, PopoverContent, PopoverTrigger } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { type ReactNode, useState } from "react";
 import {
-  buildConfigColumns,
-  type ConfigColumn,
-  type ReportedTargetRow
-} from "~/modules/production/configParamsTableColumns";
-import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
+  buildVariantsQuantityColumns,
+  type ReportedTargetRow,
+  type VariantsQuantityColumn
+} from "~/modules/production/variantsQuantityTableColumns";
+import { ResponsiveVariantsQuantityTable } from "./ResponsiveVariantsQuantityTable";
 
-function getColumnWidthClass(column: ConfigColumn): string {
+function getColumnWidthClass(column: VariantsQuantityColumn): string {
   switch (column.type) {
     case "quantity":
       return "w-[10rem] min-w-[10rem] max-w-[10rem]";
@@ -130,7 +130,7 @@ function QuantityTripletCell({
       <span className="text-muted-foreground/50 text-xs">/</span>
       <QuantityTooltip
         label={t`Target quantity`}
-        description={t`Goal quantity for this configuration.`}
+        description={t`Goal quantity for this variant.`}
         value={target}
         target={target}
         showDelta={false}
@@ -141,7 +141,10 @@ function QuantityTripletCell({
   );
 }
 
-function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
+function renderReportedTargetCell(
+  col: VariantsQuantityColumn,
+  row: ReportedTargetRow
+) {
   if (col.type === "quantity") {
     return (
       <QuantityTripletCell
@@ -155,28 +158,28 @@ function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
   return String(row[col.key] ?? "");
 }
 
-type ConfigParamsReportedTargetTableProps = {
+type VariantsQuantityReportedTargetTableProps = {
   rows: ReportedTargetRow[];
-  parameters: Parameters<typeof buildConfigColumns>[0];
+  parameters: Parameters<typeof buildVariantsQuantityColumns>[0];
 };
 
-export function ConfigParamsReportedTargetTable({
+export function VariantsQuantityReportedTargetTable({
   rows,
   parameters
-}: ConfigParamsReportedTargetTableProps) {
+}: VariantsQuantityReportedTargetTableProps) {
   const { t } = useLingui();
-  const { columns } = buildConfigColumns(parameters, t`Quantities`);
+  const { columns } = buildVariantsQuantityColumns(parameters, t`Quantities`);
 
   if (rows.length === 0) {
     return (
       <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-        <Trans>No configuration quantities recorded yet.</Trans>
+        <Trans>No variant quantities recorded yet.</Trans>
       </p>
     );
   }
 
   return (
-    <ResponsiveConfigTable
+    <ResponsiveVariantsQuantityTable
       columns={columns}
       rows={rows}
       getColumnWidthClass={(col) => getColumnWidthClass(col)}

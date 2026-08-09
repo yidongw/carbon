@@ -9,61 +9,35 @@ import {
   getQuantityGridParameters
 } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import {
-  getJob,
-  getJobConfigurationHistory,
-  isJobLocked
-} from "~/modules/production";
-import {
-  buildConfigTableActionResponse,
-  parseConfigurationFormValue
-} from "~/modules/production/configTableOverlay.server";
-import type { ConfigRow } from "~/modules/production/jobConfiguration";
-import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
+import { getJob, isJobLocked } from "~/modules/production";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable,
-  replaceJobVariantQuantitiesFromConfigTable
+  jobVariantQuantitiesToTable,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
-import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
+import {
+  buildVariantsQuantityActionResponse,
+  parseVariantQuantitiesFormValue
+} from "~/modules/production/variantsQuantityOverlay.server";
+import type { VariantsQuantityRow } from "~/modules/production/variantTable";
+import { applyVariantTableAdjustment } from "~/modules/production/variantTable";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
-export type JobConfigurationHistoryEntry = {
-  id: string;
-  quantity: number;
-  configuration: { configTable: ConfigRow[] };
-  createdAt: string;
-  createdByName: string | null;
-};
-
-export type JobConfigTableOverlayLoaderData = {
+export type JobVariantsQuantityOverlayLoaderData = {
   jobDisplayId: string | null;
   parameters: ConfigurationParameter[];
-  initialRows?: ConfigRow[];
-  history: JobConfigurationHistoryEntry[];
-  /** Attribute value code -> display name for the config table. */
+  initialRows?: VariantsQuantityRow[];
+  /** Attribute value code -> name for the variants quantity grid. */
   attributeValueNames: Record<string, string>;
 };
-
-function normalizeConfigurationValue(value: unknown): {
-  configTable: ConfigRow[];
-} {
-  const cfg =
-    typeof value === "object" && value !== null && !Array.isArray(value)
-      ? (value as Record<string, unknown>)
-      : null;
-  const configTable = Array.isArray(cfg?.configTable)
-    ? (cfg?.configTable as ConfigRow[])
-    : [];
-  return { configTable };
-}
 
 export async function loader({
   request,
   params
-}: LoaderFunctionArgs): Promise<JobConfigTableOverlayLoaderData | null> {
+}: LoaderFunctionArgs): Promise<JobVariantsQuantityOverlayLoaderData | null> {
   const { client, companyId } = await requirePermissions(request, {
     view: "production",
     bypassRls: true
@@ -90,34 +64,12 @@ export async function loader({
   );
   if (parameters.length === 0) return null;
 
-  const fromTable = jobVariantQuantitiesToConfigTable(planned.data ?? []);
+  const fromTable = jobVariantQuantitiesToTable(planned.data ?? []);
   const initialRows =
-    fromTable.configTable.length > 0
-      ? (fromTable.configTable as ConfigRow[])
+    fromTable.variantTable.length > 0
+      ? (fromTable.variantTable as VariantsQuantityRow[])
       : undefined;
 
-  const historyResult = await getJobConfigurationHistory(
-    client,
-    jobId,
-    companyId
-  );
-  const history: JobConfigurationHistoryEntry[] = (
-    historyResult.data ?? []
-  ).map((entry) => {
-    const createdByUser = Array.isArray(entry.createdByUser)
-      ? entry.createdByUser[0]
-      : entry.createdByUser;
-    return {
-      id: entry.id,
-      quantity: Number(entry.quantity) || 0,
-      configuration: normalizeConfigurationValue(entry.configuration),
-      createdAt: entry.createdAt,
-      createdByName: createdByUser?.fullName ?? null
-    };
-  });
-
-  // Map attribute-value code -> name so the config table displays names, not
-  // codes (all attributes, not just Color).
   const attributeValueNameRows = await getAttributeValueNames(
     client,
     companyId
@@ -130,7 +82,6 @@ export async function loader({
     jobDisplayId: job.data.jobId ?? null,
     parameters,
     initialRows,
-    history,
     attributeValueNames
   };
 }
@@ -165,7 +116,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const adjustment = parseConfigurationFormValue(
+  const adjustment = parseVariantQuantitiesFormValue(
     (await request.formData()).get("adjustment")
   );
   if (!adjustment) {
@@ -175,8 +126,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const adjustmentTable = normalizeConfigurationValue(adjustment);
-  const hasAdjustment = adjustmentTable.configTable.some(
+  const adjustmentRows = Array.isArray(
+    (adjustment as { variantTable?: unknown }).variantTable
+  )
+    ? (adjustment as { variantTable: VariantsQuantityRow[] }).variantTable
+    : [];
+  const hasAdjustment = adjustmentRows.some(
     (row) => (Number(row.Quantities) || 0) !== 0
   );
   if (!hasAdjustment) {
@@ -187,11 +142,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const planned = await getJobVariantQuantities(client, jobId, companyId);
-  const currentConfiguration = jobVariantQuantitiesToConfigTable(
+  const currentVariantQuantities = jobVariantQuantitiesToTable(
     planned.data ?? []
   );
 
-  const merged = applyConfigAdjustment(currentConfiguration, adjustment);
+  const merged = applyVariantTableAdjustment(
+    currentVariantQuantities,
+    adjustment
+  );
   if (merged.hasNegative) {
     return data(
       {
@@ -205,7 +163,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+  const replaced = await replaceJobVariantQuantitiesFromTable(
     client,
     getDatabaseClient(),
     {
@@ -213,11 +171,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       parentItemId: job.data.itemId,
       companyId,
       userId,
-      configuration: merged.configuration,
-      history: {
-        configuration: adjustmentTable,
-        quantity: merged.deltaTotal
-      }
+      variantQuantities: merged.variantQuantities
     }
   );
   if (replaced.error) {
@@ -225,7 +179,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       { ok: false as const, error: replaced.error.message },
       await flash(
         request,
-        error(replaced.error, "Failed to update configuration")
+        error(replaced.error, "Failed to update variants quantity")
       )
     );
   }
@@ -239,10 +193,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     });
   } catch (recalcError) {
     console.error(
-      "[job config-table] failed to enqueue recalculate",
+      "[job variants-quantity] failed to enqueue recalculate",
       recalcError
     );
   }
 
-  return data(buildConfigTableActionResponse(merged.configuration));
+  return data(buildVariantsQuantityActionResponse(merged.variantQuantities));
 }

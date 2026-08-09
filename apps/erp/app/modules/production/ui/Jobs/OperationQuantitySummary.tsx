@@ -8,19 +8,19 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { type ReactNode, useMemo, useState } from "react";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import {
-  buildConfigColumns,
-  type ConfigRowDisplayPart,
-  getConfigRowDisplayPart,
-  getConfigTableRows,
-  mergeConfigTableRows
-} from "~/modules/production/configParamsTableColumns";
 import type { OperationQuantitySummary } from "~/modules/production/productionQuantityReport.service";
-import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
+import {
+  buildVariantsQuantityColumns,
+  getVariantQuantityRowDisplayPart,
+  getVariantsQuantityRows,
+  mergeVariantsQuantityRows,
+  type VariantsQuantityRowDisplayPart
+} from "~/modules/production/variantsQuantityTableColumns";
+import { VariantsQuantityBreakdown } from "./VariantsQuantityBreakdown";
 
 type OperationQuantitySummaryProps = {
   summary: OperationQuantitySummary | null;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   /** Display label per list-option value (e.g. color code -> color name). */
   optionLabels?: Record<string, string>;
 };
@@ -31,29 +31,31 @@ function formatTotal(value: number) {
     : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
 }
 
-function useConfigParts(
+function useVariantQuantityDisplayParts(
   configurations: unknown[],
-  configurationParameters: ConfigurationParameter[] | null | undefined,
+  variantQuantityParameters: ConfigurationParameter[] | null | undefined,
   optionLabels: Record<string, string> | undefined
 ) {
   const { t } = useLingui();
 
   return useMemo(() => {
-    if (!configurations.length || !configurationParameters?.length) {
+    if (!configurations.length || !variantQuantityParameters?.length) {
       return [];
     }
-    const { columns } = buildConfigColumns(
-      configurationParameters,
+    const { columns } = buildVariantsQuantityColumns(
+      variantQuantityParameters,
       t`Quantities`
     );
-    const merged = mergeConfigTableRows(
-      configurations.flatMap((config) => getConfigTableRows(config)),
+    const merged = mergeVariantsQuantityRows(
+      configurations.flatMap((config) => getVariantsQuantityRows(config)),
       columns
     );
     return merged
-      .map((row) => getConfigRowDisplayPart(row, columns, optionLabels))
+      .map((row) =>
+        getVariantQuantityRowDisplayPart(row, columns, optionLabels)
+      )
       .filter((part) => part.descriptor || part.quantities.length > 0);
-  }, [configurations, configurationParameters, optionLabels, t]);
+  }, [configurations, variantQuantityParameters, optionLabels, t]);
 }
 
 function OperationTotalBadge({
@@ -65,7 +67,7 @@ function OperationTotalBadge({
   label: ReactNode;
   variant: "green" | "orange" | "red";
   total: number;
-  parts: ConfigRowDisplayPart[];
+  parts: VariantsQuantityRowDisplayPart[];
 }) {
   const [open, setOpen] = useState(false);
   const hasBreakdown = parts.length > 0;
@@ -102,7 +104,7 @@ function OperationTotalBadge({
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
       >
-        <ConfigQuantityBreakdown parts={parts} />
+        <VariantsQuantityBreakdown parts={parts} />
       </PopoverContent>
     </Popover>
   );
@@ -110,22 +112,22 @@ function OperationTotalBadge({
 
 export function OperationQuantitySummaryView({
   summary,
-  configurationParameters,
+  variantQuantityParameters,
   optionLabels
 }: OperationQuantitySummaryProps) {
-  const productionParts = useConfigParts(
-    summary?.productionConfigurations ?? [],
-    configurationParameters,
+  const productionParts = useVariantQuantityDisplayParts(
+    summary?.productionVariantQuantities ?? [],
+    variantQuantityParameters,
     optionLabels
   );
-  const scrapParts = useConfigParts(
-    summary?.scrapConfigurations ?? [],
-    configurationParameters,
+  const scrapParts = useVariantQuantityDisplayParts(
+    summary?.scrapVariantQuantities ?? [],
+    variantQuantityParameters,
     optionLabels
   );
-  const reworkParts = useConfigParts(
-    summary?.reworkConfigurations ?? [],
-    configurationParameters,
+  const reworkParts = useVariantQuantityDisplayParts(
+    summary?.reworkVariantQuantities ?? [],
+    variantQuantityParameters,
     optionLabels
   );
 

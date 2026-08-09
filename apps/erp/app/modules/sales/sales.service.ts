@@ -12,6 +12,7 @@ import { sql } from "kysely";
 import type { z } from "zod";
 import { getSupplierPriceBreaksForItems } from "~/modules/items/items.service";
 import { getEmployeeJob } from "~/modules/people";
+import { sanitizeOrderLineWriteRow } from "~/modules/shared/orderLineWrite";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
@@ -1992,14 +1993,10 @@ export async function insertCustomerLocation(
 
 export async function insertSalesOrderLines(
   client: SupabaseClient<Database>,
-  salesOrderLines: (Omit<
-    z.infer<typeof salesOrderLineValidator>,
-    "id" | "configuration"
-  > & {
+  salesOrderLines: (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
     companyId: string;
     createdBy: string;
     customFields?: Json;
-    configuration?: Json;
   })[]
 ) {
   const linesWithDefaults = salesOrderLines.map((line) => ({
@@ -5730,24 +5727,25 @@ export async function upsertSalesOrderShipment(
 export async function upsertSalesOrderLine(
   client: SupabaseClient<Database>,
   salesOrderLine:
-    | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
+    | (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
-    | (Omit<z.infer<typeof salesOrderLineValidator>, "id" | "configuration"> & {
+    | (Omit<z.infer<typeof salesOrderLineValidator>, "id"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
 ) {
   if ("id" in salesOrderLine) {
+    const line = sanitizeOrderLineWriteRow(
+      salesOrderLine as unknown as Record<string, unknown>
+    ) as typeof salesOrderLine & { id: string };
     return client
       .from("salesOrderLine")
-      .update(sanitize(salesOrderLine))
-      .eq("id", salesOrderLine.id)
+      .update(sanitize(line))
+      .eq("id", line.id)
       .select("id")
       .single();
   }
@@ -5765,27 +5763,23 @@ export async function upsertSalesOrderLine(
     0
   );
 
-  // Validator carries a few optional text fields that are not columns (or must
-  // be NULL rather than ""). Empty strings blow up FKs/dates on insert;
-  // `serviceId` is legacy and not on the table.
-  const { serviceId: _serviceId, ...line } = salesOrderLine;
-  const row = Object.fromEntries(
-    Object.entries({
-      ...line,
-      setupPrice: salesOrderLine.setupPrice ?? 0,
-      unitPrice: salesOrderLine.unitPrice ?? 0,
-      shippingCost: salesOrderLine.shippingCost ?? 0,
-      addOnCost: salesOrderLine.addOnCost ?? 0,
-      nonTaxableAddOnCost: salesOrderLine.nonTaxableAddOnCost ?? 0,
-      taxPercent: salesOrderLine.taxPercent ?? 0,
-      exchangeRate: salesOrder.data?.exchangeRate ?? 1,
-      sortOrder: maxSortOrder + 1
-    }).map(([key, value]) => [key, value === "" ? null : value])
-  );
+  // Validator carries FormData-only fields (`variantQuantities`) and optional
+  // text fields that are not columns (or must be NULL rather than "").
+  const line = sanitizeOrderLineWriteRow({
+    ...(salesOrderLine as unknown as Record<string, unknown>),
+    setupPrice: salesOrderLine.setupPrice ?? 0,
+    unitPrice: salesOrderLine.unitPrice ?? 0,
+    shippingCost: salesOrderLine.shippingCost ?? 0,
+    addOnCost: salesOrderLine.addOnCost ?? 0,
+    nonTaxableAddOnCost: salesOrderLine.nonTaxableAddOnCost ?? 0,
+    taxPercent: salesOrderLine.taxPercent ?? 0,
+    exchangeRate: salesOrder.data?.exchangeRate ?? 1,
+    sortOrder: maxSortOrder + 1
+  });
 
   return client
     .from("salesOrderLine")
-    .insert([sanitize(row)])
+    .insert([sanitize(line)])
     .select("id")
     .single();
 }

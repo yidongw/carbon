@@ -99,10 +99,10 @@ const MasterWorkOrdersTable = memo(
       });
     }, [openOverlay, revalidator]);
 
-    const openConfigTable = useCallback(
+    const openVariantsQuantity = useCallback(
       (e: MouseEvent, jobId: string) => {
         e.stopPropagation();
-        openOverlay(overlay.to.jobConfigTable({ jobId }), {
+        openOverlay(overlay.to.jobVariantsQuantity({ jobId }), {
           onCreated: revalidate
         });
       },
@@ -161,9 +161,9 @@ const MasterWorkOrdersTable = memo(
         e.stopPropagation();
         if (!progress.itemId) return;
         openOverlay(
-          overlay.to.itemConfigTable(
+          overlay.to.itemVariantsQuantity(
             { itemId: progress.itemId },
-            { configuration: progress.remainingConfiguration }
+            { variantQuantities: progress.remainingConfiguration }
           )
         );
       },
@@ -218,12 +218,12 @@ const MasterWorkOrdersTable = memo(
           header: t`Quantity`,
           cell: ({ row }) => {
             const quantity = row.original.quantity ?? 0;
-            const showConfig =
+            const showVariantsQuantityUi =
               !!row.original.itemId &&
               !!row.original.jobId &&
               configuredItemIds.has(row.original.itemId);
-            if (!showConfig) return quantity;
-            const canConfigure =
+            if (!showVariantsQuantityUi) return quantity;
+            const canEditVariantsQuantity =
               canUpdateProduction && !isJobLocked(row.original.status);
             return (
               <HStack spacing={1}>
@@ -231,14 +231,14 @@ const MasterWorkOrdersTable = memo(
                 <IconButton
                   type="button"
                   icon={<LuTable size="1em" strokeWidth={3} />}
-                  aria-label={t`Configure quantities`}
+                  aria-label={t`Edit variant quantities`}
                   size="sm"
                   variant="secondary"
                   className={cn(
                     quantity > 0 && "text-emerald-500 hover:text-emerald-500"
                   )}
-                  isDisabled={!canConfigure}
-                  onClick={(e) => openConfigTable(e, row.original.jobId!)}
+                  isDisabled={!canEditVariantsQuantity}
+                  onClick={(e) => openVariantsQuantity(e, row.original.jobId!)}
                 />
               </HStack>
             );
@@ -568,7 +568,7 @@ const MasterWorkOrdersTable = memo(
       locations,
       getDeadlineTypeLabel,
       configuredItemIds,
-      openConfigTable,
+      openVariantsQuantity,
       canUpdateProduction,
       bundleCountByMasterId,
       openBundles,

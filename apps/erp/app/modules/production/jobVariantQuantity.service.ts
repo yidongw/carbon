@@ -1,7 +1,8 @@
-import type { Database, Json } from "@carbon/database";
+import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { expandConfigTableToVariantQuantities } from "~/modules/items/itemAttribute.service";
+import { expandVariantsQuantityTable } from "~/modules/items/itemAttribute.service";
+import { readVariantTableRows } from "~/modules/production/variantTableWire";
 
 export type JobVariantQuantityLine = {
   variantItemId: string;
@@ -11,33 +12,22 @@ export type JobVariantQuantityLine = {
 
 type Db = SupabaseClient<Database>;
 
-/** True when configuration is a Style/attribute qty table (not Part flat params). */
-export function isConfigTableConfiguration(
-  configuration: unknown
-): configuration is {
-  configTable: unknown[];
-} {
-  if (!configuration || typeof configuration !== "object") return false;
-  return Array.isArray(
-    (configuration as { configTable?: unknown }).configTable
-  );
+/** True when payload is a Style/attribute qty table (not Part flat params). */
+export function isVariantsQuantityPayload(payload: unknown): boolean {
+  if (!payload || typeof payload !== "object") return false;
+  const cfg = payload as Record<string, unknown>;
+  // Dual-read legacy `configTable` during the wire-key rename window.
+  return Array.isArray(cfg.variantTable) || Array.isArray(cfg.configTable);
 }
 
-export function isNonEmptyConfigTable(
-  configuration: unknown
-): configuration is {
-  configTable: unknown[];
-} {
-  return (
-    isConfigTableConfiguration(configuration) &&
-    configuration.configTable.length > 0
-  );
+export function isNonEmptyVariantsQuantity(payload: unknown): boolean {
+  return readVariantTableRows(payload).length > 0;
 }
 
 /**
  * Replace all planned variant quantities for a job and sync `job.quantity`.
  * Absence of a variant = qty 0 (no zero rows stored).
- * Writes run in one Kysely transaction (delete + insert + job update + optional history).
+ * Writes run in one Kysely transaction (delete + insert + job update).
  * Caller passes `getDatabaseClient()` — do not import database.server here (client graph).
  */
 export async function replaceJobVariantQuantities(
@@ -47,13 +37,8 @@ export async function replaceJobVariantQuantities(
     companyId: string;
     userId: string;
     lines: Array<{ variantItemId: string; quantity: number }>;
-    /** When set, written in the same transaction as the replace. */
-    history?: {
-      configuration: Record<string, unknown>;
-      quantity: number;
-    };
-    /** Clear legacy Style configTable JSON from job.configuration. */
-    clearJobConfiguration?: boolean;
+    /** Clear legacy Style variantTable JSON left on job.configuration. */
+    clearStyleVariantQuantitiesFromJob?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
   const { jobId, companyId, userId } = args;
@@ -97,24 +82,13 @@ export async function replaceJobVariantQuantities(
           quantity,
           updatedBy: userId,
           updatedAt: now,
-          ...(args.clearJobConfiguration ? { configuration: null } : {})
+          ...(args.clearStyleVariantQuantitiesFromJob
+            ? { configuration: null }
+            : {})
         })
         .where("id", "=", jobId)
         .where("companyId", "=", companyId)
         .execute();
-
-      if (args.history) {
-        await trx
-          .insertInto("jobConfigurationHistory")
-          .values({
-            jobId,
-            companyId,
-            configuration: args.history.configuration as Json,
-            quantity: args.history.quantity,
-            createdBy: userId
-          })
-          .execute();
-      }
     });
 
     return { quantity, error: null };
@@ -155,7 +129,7 @@ export async function getJobVariantQuantities(
     return attachValuesKeys(client, companyId, rows);
   }
 
-  // Dual-read: legacy Style plans still stored as job.configuration.configTable
+  // Dual-read: legacy Style plans still stored as job.configuration.variantTable
   // before jobVariantQuantity existed (or before a backfill).
   const { data: job, error: jobError } = await client
     .from("job")
@@ -171,14 +145,14 @@ export async function getJobVariantQuantities(
     };
   }
 
-  if (!job?.itemId || !isNonEmptyConfigTable(job.configuration)) {
+  if (!job?.itemId || !isNonEmptyVariantsQuantity(job.configuration)) {
     return { data: [], error: null };
   }
 
-  const expanded = await expandConfigTableToVariantQuantities(client, {
+  const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: job.itemId,
     companyId,
-    configuration: job.configuration
+    variantQuantities: job.configuration
   });
   if (expanded.error) {
     return { data: [], error: expanded.error };
@@ -231,8 +205,8 @@ async function attachValuesKeys(
   };
 }
 
-/** Expand a combo/matrix configTable payload into jobVariantQuantity rows. */
-export async function replaceJobVariantQuantitiesFromConfigTable(
+/** Expand a combo/matrix variantTable payload into jobVariantQuantity rows. */
+export async function replaceJobVariantQuantitiesFromTable(
   client: Db,
   db: Kysely<KyselyDatabase>,
   args: {
@@ -240,18 +214,14 @@ export async function replaceJobVariantQuantitiesFromConfigTable(
     parentItemId: string;
     companyId: string;
     userId: string;
-    configuration: unknown;
-    history?: {
-      configuration: Record<string, unknown>;
-      quantity: number;
-    };
-    clearJobConfiguration?: boolean;
+    variantQuantities: unknown;
+    clearStyleVariantQuantitiesFromJob?: boolean;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
-  const expanded = await expandConfigTableToVariantQuantities(client, {
+  const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: args.parentItemId,
     companyId: args.companyId,
-    configuration: args.configuration
+    variantQuantities: args.variantQuantities
   });
   if (expanded.error) {
     return { quantity: 0, error: expanded.error };
@@ -265,16 +235,15 @@ export async function replaceJobVariantQuantitiesFromConfigTable(
       variantItemId: r.variantItemId,
       quantity: r.quantity
     })),
-    history: args.history,
-    clearJobConfiguration: args.clearJobConfiguration
+    clearStyleVariantQuantitiesFromJob: args.clearStyleVariantQuantitiesFromJob
   });
 }
 
 /**
- * Persist Style qty to jobVariantQuantity and clear Style configTable from
- * `job.configuration` so Part flat params remain the only JSON shape there.
+ * Persist Style qty to jobVariantQuantity and clear any Style variantTable
+ * left on `job.configuration` so Part flat params remain the only JSON there.
  */
-export async function persistStyleJobConfiguration(
+export async function persistStyleJobVariantQuantities(
   client: Db,
   db: Kysely<KyselyDatabase>,
   args: {
@@ -282,33 +251,47 @@ export async function persistStyleJobConfiguration(
     parentItemId: string;
     companyId: string;
     userId: string;
-    configuration: Record<string, unknown>;
+    variantQuantities: Record<string, unknown>;
   }
 ): Promise<{ quantity: number; error: Error | null }> {
-  return replaceJobVariantQuantitiesFromConfigTable(client, db, {
+  return replaceJobVariantQuantitiesFromTable(client, db, {
     jobId: args.jobId,
     parentItemId: args.parentItemId,
     companyId: args.companyId,
     userId: args.userId,
-    configuration: args.configuration,
-    clearJobConfiguration: true
+    variantQuantities: args.variantQuantities,
+    clearStyleVariantQuantitiesFromJob: true
   });
 }
 
 /** Build combo editor rows from stored jobVariantQuantity lines. */
-export function jobVariantQuantitiesToConfigTable(
-  lines: JobVariantQuantityLine[]
-): {
-  configTable: Array<{ valuesKey: string; Quantities: number }>;
+export function jobVariantQuantitiesToTable(lines: JobVariantQuantityLine[]): {
+  variantTable: Array<{ valuesKey: string; Quantities: number }>;
 } {
   return {
-    configTable: lines
+    variantTable: lines
       .filter((l) => l.quantity > 0)
       .map((l) => ({
         valuesKey: l.valuesKey,
         Quantities: l.quantity
       }))
   };
+}
+
+/**
+ * Planned Style qty payload for editors / BOP targets.
+ * Uses `getJobVariantQuantities` (includes legacy dual-read expand).
+ */
+export async function getJobPlannedVariantQuantities(
+  client: Db,
+  jobId: string,
+  companyId: string
+): Promise<{
+  variantTable: Array<{ valuesKey: string; Quantities: number }>;
+} | null> {
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
+  if (planned.error || planned.data.length === 0) return null;
+  return jobVariantQuantitiesToTable(planned.data);
 }
 
 export function sumJobVariantQuantities(

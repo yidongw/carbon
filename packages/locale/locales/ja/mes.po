@@ -3257,9 +3257,6 @@ msgstr "更新に失敗しました"
 msgid "Failed to update company"
 msgstr "会社の更新に失敗しました"
 
-msgid "Failed to update configuration"
-msgstr "設定の更新に失敗しました"
-
 msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
 
@@ -3769,6 +3766,9 @@ msgstr "単位を更新できませんでした"
 
 msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
+
+msgid "Failed to update variants quantity"
+msgstr "変更を保存できませんでした"
 
 msgid "Failed to update warehouse transfer"
 msgstr "倉庫移動の更新に失敗しました"
@@ -4922,9 +4922,6 @@ msgstr "購入注文完了"
 msgid "Purchase order line created"
 msgstr "購入注文行が作成されました"
 
-msgid "Purchase order lines created"
-msgstr "購入注文行が作成されました"
-
 msgid "Purchase order not found"
 msgstr "購入注文が見つかりません"
 
@@ -5155,9 +5152,6 @@ msgstr "販売注文を作成しました"
 
 msgid "Sales order line created"
 msgstr "販売注文行が作成されました"
-
-msgid "Sales order lines created"
-msgstr "販売注文行作成"
 
 msgid "Sample recorded"
 msgstr "サンプルが録音されました"
@@ -6377,6 +6371,9 @@ msgstr "ユーザーが見つかりません"
 
 msgid "User record not found"
 msgstr "ユーザー記録が見つかりません"
+
+msgid "Variant quantities added"
+msgstr "バリアント数量を追加しました"
 
 msgid "Verification Error"
 msgstr "確認エラー"

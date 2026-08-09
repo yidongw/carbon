@@ -47,10 +47,7 @@ import { CustomerAvatar, Hyperlink, MethodIcon } from "~/components";
 import { Confirm } from "~/components/Modals";
 import { useOverlay } from "~/components/Overlay/OverlayProvider";
 import { overlay } from "~/components/Overlay/overlay";
-import {
-  StyleConfigChips,
-  StyleConfigExpandRows
-} from "~/components/StyleConfigChips";
+import { VariantChips, VariantExpandRows } from "~/components/VariantChips";
 import {
   useDateFormatter,
   usePercentFormatter,
@@ -59,10 +56,9 @@ import {
 } from "~/hooks";
 import JobStatus from "~/modules/production/ui/Jobs/JobStatus";
 import {
-  getStyleConfigDisplay,
   groupLinesForStyleDisplay,
   type StyleVariantLineMeta
-} from "~/modules/shared/styleConfigDisplay";
+} from "~/modules/shared/variantDisplay";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isSalesOrderLocked } from "../../sales.models";
 import type {
@@ -448,15 +444,7 @@ function LineItems({
 
         const totalLines =
           group.kind === "style-group" ? group.totalLines : [line];
-        const styleConfig =
-          group.kind === "style-group"
-            ? group.styleConfig
-            : (group.styleConfig ??
-              getStyleConfigDisplay(
-                line.configuration,
-                attributeValueNames,
-                locale
-              ));
+        const variantDisplay = group.variantDisplay;
 
         const itemReadableId =
           group.kind === "style-group"
@@ -611,8 +599,8 @@ function LineItems({
                       <span className="text-muted-foreground text-base truncate">
                         {itemDescription}
                       </span>
-                      {styleConfig ? (
-                        <StyleConfigChips chips={styleConfig.chips} />
+                      {variantDisplay ? (
+                        <VariantChips chips={variantDisplay.chips} />
                       ) : null}
                     </VStack>
                     <VStack
@@ -735,8 +723,8 @@ function LineItems({
                   <div className="flex flex-col gap-y-4 w-full">
                     <Table>
                       <Tbody>
-                        <StyleConfigExpandRows
-                          chips={styleConfig?.chips ?? []}
+                        <VariantExpandRows
+                          chips={variantDisplay?.chips ?? []}
                         />
                         <Tr>
                           <Td>

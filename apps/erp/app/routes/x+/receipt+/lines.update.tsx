@@ -1,7 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { Json } from "@carbon/database";
 import type { ActionFunctionArgs } from "react-router";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { client, companyId, userId } = await requirePermissions(request, {
@@ -33,8 +33,8 @@ export async function action({ request }: ActionFunctionArgs) {
         string,
         unknown
       >;
-      const fields = jobConfigurationUpdateFields(parsed);
-      variantQuantities = fields.configuration;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
       if (field === "receivedQuantity") {
         nextValue = fields.quantity;
       }

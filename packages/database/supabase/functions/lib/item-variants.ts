@@ -1,6 +1,6 @@
 /**
  * Variant SKU helpers for edge functions (Deno).
- * Mirrors apps/erp/.../itemAttribute.service.ts expandConfigTableToVariantQuantities.
+ * Mirrors apps/erp/.../itemAttribute.service.ts expandVariantsQuantityTable.
  *
  * Matches by valuesKey (attribute value codes joined by `|` in set order) from
  * combo flat rows (valuesKey + Quantities). Fails loud if a config cell has no
@@ -11,7 +11,7 @@ type SupabaseLike = {
   from: (table: string) => any;
 };
 
-type ConfigRow = Record<string, unknown>;
+type VariantsQuantityRow = Record<string, unknown>;
 
 type VariantMatch = { variantItemId: string; valuesKey: string };
 
@@ -42,19 +42,19 @@ async function loadVariantsByValuesKey(
   return map;
 }
 
-export async function expandConfigTableToVariantQuantities(
+export async function expandVariantsQuantityTable(
   client: SupabaseLike,
   args: {
     parentItemId: string;
     companyId: string;
-    configuration: unknown;
+    variantQuantities: unknown;
   }
 ): Promise<
   Array<{ variantItemId: string; quantity: number; valuesKey: string }>
 > {
-  const raw = (args.configuration ?? {}) as Record<string, unknown>;
-  const table = Array.isArray(raw.configTable)
-    ? (raw.configTable as ConfigRow[])
+  const raw = (args.variantQuantities ?? {}) as Record<string, unknown>;
+  const table = Array.isArray(raw.variantTable)
+    ? (raw.variantTable as VariantsQuantityRow[])
     : [];
 
   const cells: Array<{ valuesKey: string; quantity: number }> = [];
@@ -106,8 +106,8 @@ export async function expandConfigTableToVariantQuantities(
   return out;
 }
 
-export function hasConfigTable(configuration: unknown): boolean {
-  if (!configuration || typeof configuration !== "object") return false;
-  const table = (configuration as Record<string, unknown>).configTable;
-  return Array.isArray(table) && table.length > 0;
+export function hasVariantsQuantityTable(variantQuantities: unknown): boolean {
+  if (!variantQuantities || typeof variantQuantities !== "object") return false;
+  const cfg = variantQuantities as { variantTable?: unknown };
+  return Array.isArray(cfg.variantTable);
 }

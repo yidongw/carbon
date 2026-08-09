@@ -26,8 +26,8 @@ import {
 } from "~/modules/inventory";
 import type { TransferItem } from "~/modules/inventory/ui/Transfers/TransferForm";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable,
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
 import { getLocationsList } from "~/modules/resources";
@@ -134,11 +134,11 @@ export async function action({ request }: ActionFunctionArgs) {
     lines: submittedLines
   } = validation.data;
 
-  // Style parent + configTable → one line per variant SKU (same as SO/PO).
+  // Style parent + variantTable → one line per variant SKU (same as SO/PO).
   const lines: typeof submittedLines = [];
   for (const l of submittedLines) {
-    if (hasStyleConfigTable(l.variantQuantities)) {
-      const expanded = await expandStyleConfigToVariantLines(client, {
+    if (hasStyleVariantsQuantity(l.variantQuantities)) {
+      const expanded = await expandVariantTableToLines(client, {
         parentItemId: l.itemId,
         companyId,
         variantQuantities: l.variantQuantities

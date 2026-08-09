@@ -2155,9 +2155,6 @@ msgstr "設定パラメータ"
 msgid "Configuration Parameters"
 msgstr "設定パラメータ"
 
-msgid "Configuration quantities"
-msgstr "調整量"
-
 msgid "Configurator"
 msgstr "コンフィギュレーター"
 
@@ -2187,9 +2184,6 @@ msgstr "保全ディスパッチが作業現場から作成されるときの通
 
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "新しい提案が送信されたときの通知を設定します。"
-
-msgid "Configure quantities"
-msgstr "調整数量"
 
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "様々なトランザクションタイプに使用されるデフォルトアカウントをシステム全体で設定します"
@@ -3833,9 +3827,6 @@ msgstr "カテゴリを編集"
 
 msgid "Edit column visibility"
 msgstr "列の表示/非表示を編集"
-
-msgid "Edit configuration"
-msgstr "編集設定"
 
 msgid "Edit Contact"
 msgstr "連絡先を編集"
@@ -7220,9 +7211,6 @@ msgstr "更新に失敗しました"
 msgid "Failed to update company"
 msgstr "会社の更新に失敗しました"
 
-msgid "Failed to update configuration"
-msgstr "設定の更新に失敗しました"
-
 msgid "Failed to update configuration parameter"
 msgstr "設定パラメータの更新に失敗しました"
 
@@ -7754,6 +7742,9 @@ msgstr "単位を更新できませんでした"
 msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
 
+msgid "Failed to update variants quantity"
+msgstr "変更を保存できませんでした"
+
 msgid "Failed to update warehouse transfer"
 msgstr "倉庫移動の更新に失敗しました"
 
@@ -8139,8 +8130,8 @@ msgstr "Gl Akānto"
 msgid "Go to App"
 msgstr "アプリへ-go"
 
-msgid "Goal quantity for this configuration."
-msgstr "この構成の目標数量。"
+msgid "Goal quantity for this variant."
+msgstr "この変種の目標数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10334,9 +10325,6 @@ msgstr "キャリブレーション記録が見つかりません"
 msgid "No changes recorded"
 msgstr "変更が記録されていません"
 
-msgid "No changes yet."
-msgstr "まだ変更はありません。"
-
 msgid "No chat history"
 msgstr "チャット履歴がありません"
 
@@ -10354,9 +10342,6 @@ msgstr "No condition may match"
 
 msgid "No conditions — rule matches all jobs"
 msgstr "No conditions — rule matches all jobs"
-
-msgid "No configuration quantities recorded yet."
-msgstr "No configuration quantities recorded yet."
 
 msgid "No conversion is required"
 msgstr "変換は不要です"
@@ -10579,6 +10564,9 @@ msgstr "No values available"
 
 msgid "No values yet."
 msgstr "まだ値がありません。"
+
+msgid "No variant quantities recorded yet."
+msgstr "まだ変種数量が記録されていません。"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "このアイテムについて倉庫在庫は登録されていません。それでもピックすることは可能です——現在数値は負になる可能性がありますが、調整されるまで如此です。"
@@ -11807,9 +11795,6 @@ msgstr "購買注文行"
 msgid "Purchase order line created"
 msgstr "購入注文行が作成されました"
 
-msgid "Purchase order lines created"
-msgstr "購入注文行が作成されました"
-
 msgid "Purchase Order Location"
 msgstr "購入注文の場所"
 
@@ -12793,9 +12778,6 @@ msgstr "販売注文行"
 
 msgid "Sales order line created"
 msgstr "販売注文行が作成されました"
-
-msgid "Sales order lines created"
-msgstr "販売注文行作成"
 
 msgid "Sales Order Location"
 msgstr "販売注文の場所"
@@ -15865,6 +15847,15 @@ msgstr "値"
 msgid "Variances"
 msgstr "変動"
 
+msgid "Variant quantities"
+msgstr "バリアント数量"
+
+msgid "Variant quantities added"
+msgstr "バリアント数量を追加しました"
+
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "VAT番号"
 
@@ -15933,12 +15924,6 @@ msgstr "見る請求書のプロセス"
 
 msgid "View bundles"
 msgstr "バンドルを表示"
-
-msgid "View configuration parameters"
-msgstr "設定パラメータを表示"
-
-msgid "View configuration quantities"
-msgstr "設定された数量を表示"
 
 msgid "View Contact"
 msgstr "連絡先を表示"
@@ -16050,6 +16035,12 @@ msgstr "トレーサビリティグラフを表示"
 
 msgid "View Transfer"
 msgstr "転送を表示"
+
+msgid "View variant quantities"
+msgstr "変種数量を見る"
+
+msgid "View variants quantity"
+msgstr "変種数量を見る"
 
 msgid "Visibilities"
 msgstr "可視性"
@@ -16217,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "このルールはオンの場合は、そのタイプのすべてのターゲットに対して発動します。割り当て行は無視されますが保持されます。"
 
 msgid "Which set of attributes this item's variants use"
-msgstr "この品目のバリアントが使用する属性セット"
+msgstr "このアイテムの変種が使用している属性は？"
 
 msgid "Who Can Approve"
 msgstr "誰が承認できるか"

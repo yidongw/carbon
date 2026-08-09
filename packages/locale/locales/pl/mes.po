@@ -375,7 +375,7 @@ msgid "Cannot start operation"
 msgstr "Nie można rozpocząć operacji"
 
 msgid "Cannot update status of draft purchase invoice. Please post the invoice first."
-msgstr "Nie można aktualizować-statusu wersji初稿发票，请先确认发票。"
+msgstr "Nie możnaaktualizowaćstatusuprzedniozłożonejfakturyzakupowej. Proszę najpierwprzyjętfakturę."
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Kanvas pokazujący model w 3D Viewer"
@@ -909,7 +909,7 @@ msgid "Expiration date updated"
 msgstr "Data wygaśnięcia zaktualizowana"
 
 msgid "Expired"
-msgstr "Z期kszony"
+msgstr "Wygasła"
 
 msgid "Expired {date}"
 msgstr "Wygasł {date}"
@@ -2973,7 +2973,7 @@ msgid "Failed to move file"
 msgstr "Nie udało się przenieść pliku"
 
 msgid "Failed to notify user"
-msgstr "Nie udało się通知用户"
+msgstr "Niestety nie udało sięawiadamić użytkownika"
 
 msgid "Failed to parse claims"
 msgstr "Nie udało się przetworzyć wniosków"
@@ -3256,9 +3256,6 @@ msgstr "Nie udało się zaktualizować reklamacji"
 
 msgid "Failed to update company"
 msgstr "Nie udało się zaktualizować firmy"
-
-msgid "Failed to update configuration"
-msgstr "Nie udało się zaktualizować konfiguracji"
 
 msgid "Failed to update consumable"
 msgstr "Nie udało się zaktualizować zużycia"
@@ -3769,6 +3766,9 @@ msgstr "Nie udało się zaktualizować jednostki miary"
 
 msgid "Failed to update user permissions"
 msgstr "Nie udało się zaktualizować uprawnień użytkownika"
+
+msgid "Failed to update variants quantity"
+msgstr "Nie udało się zaktualizować ilości wariantów"
 
 msgid "Failed to update warehouse transfer"
 msgstr "Nie udało się zaktualizować przenoszenia magazynowego"
@@ -4922,9 +4922,6 @@ msgstr "Zamówienie zakupowe zakończone"
 msgid "Purchase order line created"
 msgstr "Linia zamówienia zakupów utworzona"
 
-msgid "Purchase order lines created"
-msgstr "Linie zamówienia zakupów utworzone"
-
 msgid "Purchase order not found"
 msgstr "Zamówienie zakupowe nie zostało znalezione"
 
@@ -5019,7 +5016,7 @@ msgid "Redirecting to verification page..."
 msgstr "Przekierowanie do strony weryfikacji..."
 
 msgid "Remaining"
-msgstr "残여량"
+msgstr "Ostatnie"
 
 msgid "Remove"
 msgstr "Usuń"
@@ -5156,9 +5153,6 @@ msgstr "Zamówienie sprzedawniczne utworzone"
 msgid "Sales order line created"
 msgstr "Linia zamówienia sprzedaży utworzona"
 
-msgid "Sales order lines created"
-msgstr "Linie zamówienia sprzedazy utworzone"
-
 msgid "Sample recorded"
 msgstr "Zapisane próbki"
 
@@ -5196,7 +5190,7 @@ msgid "Scan or enter serial number"
 msgstr "Skanuj lub wprowadź numer seryjny"
 
 msgid "Scan or enter tracking number"
-msgstr "Skanuj lub wprowadź numer跟踪中止助手未能接收到有效输入，请检查后重试。"
+msgstr "Skanuj lub wprowadź numer śledzenia"
 
 msgid "Scan or search serial number..."
 msgstr "Skanuj lub wyszukaj numer seryjny..."
@@ -6377,6 +6371,9 @@ msgstr "Użytkownik nie został znaleziony"
 
 msgid "User record not found"
 msgstr "Rekord użytkownika nie został znaleziony"
+
+msgid "Variant quantities added"
+msgstr "Dodano ilości wariantów"
 
 msgid "Verification Error"
 msgstr "Błąd weryfikacji"

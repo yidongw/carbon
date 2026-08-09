@@ -14,17 +14,18 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
-import {
-  buildProductionConfigTableReferenceContext,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext
-} from "~/modules/production/configParamsTableColumns";
-import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
-import { useConfigTableModal } from "./ConfigParamsTableModal";
-import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
+import {
+  buildProductionVariantsQuantityReferenceContext,
+  type VariantsQuantityReferenceContext,
+  type VariantsQuantityReferenceSource
+} from "~/modules/production/variantsQuantityTableColumns";
+import { computeVariantTableTotal } from "~/modules/production/variantTable";
+import { getOverlaySuccessVariantTable } from "../../variantsQuantityOverlay";
+import { ItemVariantsQuantityInput } from "./ItemVariantsQuantityInput";
+import { useVariantsQuantityModal } from "./VariantsQuantityModal";
 
-type ConfigurationParameter = {
+type VariantQuantityParameter = {
   key: string;
   label: string;
   dataType: string;
@@ -64,52 +65,53 @@ export function normalizeUniqueLineTypes(
   });
 }
 
-export function getConfigFromEditableLine(
+export function getVariantQuantitiesFromEditableLine(
   line: EditableProductionQuantityLine
 ) {
-  if (!line.configuration || typeof line.configuration !== "object") {
+  if (!line.variantQuantities || typeof line.variantQuantities !== "object") {
     return undefined;
   }
-  return line.configuration as Record<string, unknown>;
+  return line.variantQuantities as Record<string, unknown>;
 }
 
 function buildReferenceContextForLine(
   line: EditableProductionQuantityLine,
   lineKey: string,
   lines: EditableProductionQuantityLine[],
-  configReferenceContext?: {
-    originalConfiguration?: unknown;
-    configReferenceSource?: ConfigReferenceSource | null;
+  variantsQuantityReferenceContext?: {
+    originalVariantTable?: unknown;
+    variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   } | null,
   employeeId?: string
-): ConfigTableReferenceContext | undefined {
-  if (!configReferenceContext) return undefined;
+): VariantsQuantityReferenceContext | undefined {
+  if (!variantsQuantityReferenceContext) return undefined;
 
-  if (configReferenceContext.originalConfiguration != null) {
+  if (variantsQuantityReferenceContext.originalVariantTable != null) {
     return {
       mode: line.type === "Production" ? "original" : "remaining",
-      originalConfiguration: configReferenceContext.originalConfiguration,
-      otherLineConfigurations: lines
+      originalVariantTable:
+        variantsQuantityReferenceContext.originalVariantTable,
+      otherLineVariantTables: lines
         .filter((l) => l.key !== lineKey)
-        .map((l) => getConfigFromEditableLine(l))
+        .map((l) => getVariantQuantitiesFromEditableLine(l))
         .filter(
           (config): config is Record<string, unknown> => config !== undefined
         )
     };
   }
 
-  if (configReferenceContext.configReferenceSource) {
-    const siblingLineConfigurations = lines
+  if (variantsQuantityReferenceContext.variantsQuantityReferenceSource) {
+    const siblingLineVariantQuantities = lines
       .filter((line) => line.key !== lineKey)
-      .map((line) => getConfigFromEditableLine(line))
+      .map((line) => getVariantQuantitiesFromEditableLine(line))
       .filter(
         (config): config is Record<string, unknown> => config !== undefined
       );
 
-    return buildProductionConfigTableReferenceContext({
-      source: configReferenceContext.configReferenceSource,
+    return buildProductionVariantsQuantityReferenceContext({
+      source: variantsQuantityReferenceContext.variantsQuantityReferenceSource,
       employeeId,
-      siblingLineConfigurations
+      siblingLineVariantQuantities
     });
   }
 
@@ -119,11 +121,11 @@ function buildReferenceContextForLine(
 export function ProductionQuantityLinesEditor({
   lines,
   setLines,
-  configurationParameters,
+  variantQuantityParameters,
   itemId,
   isDisabled = false,
-  configReferenceContext,
-  configReferenceSource,
+  variantsQuantityReferenceContext,
+  variantsQuantityReferenceSource,
   employeeId,
   jobId,
   jobOperationId
@@ -132,15 +134,15 @@ export function ProductionQuantityLinesEditor({
   setLines: React.Dispatch<
     React.SetStateAction<EditableProductionQuantityLine[]>
   >;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: VariantQuantityParameter[] | null;
   itemId?: string | null;
   isDisabled?: boolean;
   /** When set (disposition), config table shows original/remaining reference values. */
-  configReferenceContext?: {
-    originalConfiguration: unknown;
+  variantsQuantityReferenceContext?: {
+    originalVariantTable: unknown;
   } | null;
   /** When set (first submit), hints = job target − already reported on the operation. */
-  configReferenceSource?: ConfigReferenceSource | null;
+  variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   /** When set, use pickup-based hints for this employee */
   employeeId?: string;
   jobId?: string;
@@ -167,17 +169,17 @@ export function ProductionQuantityLinesEditor({
     [setLines]
   );
 
-  const lineConfigModal = useConfigTableModal();
+  const lineVariantsQuantityModal = useVariantsQuantityModal();
 
-  const openLineConfig = useCallback(
+  const openLineVariantsQuantity = useCallback(
     (lineKey: string) => {
       if (!itemId) return;
       const line = lines.find((l) => l.key === lineKey);
       if (!line) return;
 
-      lineConfigModal.open({
+      lineVariantsQuantityModal.open({
         itemId,
-        configuration: getConfigFromEditableLine(line),
+        variantQuantities: getVariantQuantitiesFromEditableLine(line),
         jobId,
         jobOperationId,
         reportKind: "productionQuantity",
@@ -195,29 +197,34 @@ export function ProductionQuantityLinesEditor({
             line,
             lineKey,
             lines,
-            configReferenceContext?.originalConfiguration != null
+            variantsQuantityReferenceContext?.originalVariantTable != null
               ? {
-                  originalConfiguration:
-                    configReferenceContext.originalConfiguration
+                  originalVariantTable:
+                    variantsQuantityReferenceContext.originalVariantTable
                 }
-              : { configReferenceSource: source },
+              : { variantsQuantityReferenceSource: source },
             employeeId
           ),
         onConfirm: (data) =>
           updateLine(lineKey, {
-            configuration: data.configuration,
+            variantQuantities: {
+              variantTable: getOverlaySuccessVariantTable(data),
+              // Keep the raw cut breakdown so report creation persists it
+              // (splitVariantQuantitiesAndRows peels it back out).
+              ...(data.splitRows ? { splitRows: data.splitRows } : {})
+            },
             quantity: data.total > 0 ? data.total : line.quantity
           })
       });
     },
     [
-      configReferenceContext,
+      variantsQuantityReferenceContext,
       employeeId,
       itemId,
       jobId,
       jobOperationId,
       lines,
-      lineConfigModal,
+      lineVariantsQuantityModal,
       updateLine
     ]
   );
@@ -247,13 +254,15 @@ export function ProductionQuantityLinesEditor({
     );
   };
 
-  const showConfig = Boolean(configurationParameters?.length && itemId);
+  const showVariantsQuantityUi = Boolean(
+    variantQuantityParameters?.length && itemId
+  );
 
   return (
     <VStack className="w-full items-stretch gap-3">
       {lines.map((line) => {
-        const cfg = getConfigFromEditableLine(line);
-        const configTotal = computeJobConfigTableTotal(cfg);
+        const cfg = getVariantQuantitiesFromEditableLine(line);
+        const variantsQuantityTotal = computeVariantTableTotal(cfg);
 
         return (
           <div
@@ -263,7 +272,7 @@ export function ProductionQuantityLinesEditor({
             <HStack className="w-full min-w-0 items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <Select
-                  disabled={showConfig ? isDisabled : false}
+                  disabled={showVariantsQuantityUi ? isDisabled : false}
                   value={line.type}
                   onValueChange={(value) =>
                     updateLine(line.key, {
@@ -323,22 +332,22 @@ export function ProductionQuantityLinesEditor({
                 className="transition-transform active:scale-[0.96]"
               />
             </HStack>
-            <ItemConfigQuantityInput
+            <ItemVariantsQuantityInput
               id={`qty-${line.key}`}
               label={t`Quantity`}
               value={line.quantity}
               onChange={(quantity) => updateLine(line.key, { quantity })}
               minValue={0}
-              isDisabled={showConfig ? isDisabled : false}
-              isReadOnly={configTotal > 0}
-              hasConfigurationParameters={showConfig}
-              onOpenConfigTable={
-                showConfig && !isDisabled
-                  ? () => openLineConfig(line.key)
+              isDisabled={showVariantsQuantityUi ? isDisabled : false}
+              isReadOnly={variantsQuantityTotal > 0}
+              hasVariantsQuantity={showVariantsQuantityUi}
+              onOpenVariantsQuantity={
+                showVariantsQuantityUi && !isDisabled
+                  ? () => openLineVariantsQuantity(line.key)
                   : undefined
               }
-              configTableTotal={configTotal}
-              openConfigAccessibilityLabel={t`Edit configuration`}
+              variantsQuantityTotal={variantsQuantityTotal}
+              openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
             />
             {line.type === "Scrap" ? (
               <VStack className="w-full min-w-0 gap-1">
@@ -376,7 +385,7 @@ export function ProductionQuantityLinesEditor({
           type="button"
           variant="secondary"
           size="sm"
-          isDisabled={showConfig ? isDisabled : false}
+          isDisabled={showVariantsQuantityUi ? isDisabled : false}
           onClick={addLine}
           className="transition-transform active:scale-[0.96]"
         >
@@ -384,7 +393,7 @@ export function ProductionQuantityLinesEditor({
           <Trans>Add line</Trans>
         </Button>
       ) : null}
-      {lineConfigModal.node}
+      {lineVariantsQuantityModal.node}
     </VStack>
   );
 }

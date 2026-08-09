@@ -27,9 +27,9 @@ import {
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
-import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity.service";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
+import { getVariantsQuantityReferenceSourceForOperation } from "~/modules/production/variantsQuantityOverlay.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
@@ -78,11 +78,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   };
 
   // Style/attribute qty editor when the job has planned variant rows (or legacy
-  // configTable dual-read). Bundle jobs have none — plain quantity only.
+  // variantTable dual-read). Bundle jobs have none — plain quantity only.
   const planned = await getJobVariantQuantities(client, jobId, companyId);
   const jobIsConfigured = (planned.data?.length ?? 0) > 0;
 
-  const configurationParameters =
+  const variantQuantityParameters =
     job.data?.itemId && jobIsConfigured
       ? (await getQuantityGridParameters(client, job.data.itemId, companyId))
           .parameters
@@ -94,15 +94,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     value: jobId
   };
 
-  const configReferenceSource = await getConfigReferenceSourceForOperation(
-    client,
-    {
+  const variantsQuantityReferenceSource =
+    await getVariantsQuantityReferenceSourceForOperation(client, {
       jobId,
       jobOperationId: jobOperationId || undefined,
       companyId,
       reportKind: "productionQuantity"
-    }
-  );
+    });
 
   // A master work order carries only its cutting operation (sew/finish are
   // reported on the bundles), so no operation filtering is needed here.
@@ -130,9 +128,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     jobOperationId,
     operationOptions,
     remainingByOperationId,
-    configurationParameters:
-      configurationParameters.length > 0 ? configurationParameters : null,
-    configReferenceSource,
+    variantQuantityParameters:
+      variantQuantityParameters.length > 0 ? variantQuantityParameters : null,
+    variantsQuantityReferenceSource,
     itemId,
     ...actorContext
   };

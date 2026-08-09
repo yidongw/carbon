@@ -24,11 +24,14 @@ import {
   WarehouseTransferLineForm
 } from "~/modules/inventory";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable,
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity,
   requireVariantQuantitiesIfAttributeParent
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -138,25 +141,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
       let variantQuantities: Json | undefined;
       let quantity = updateData.quantity;
-      if (updateData.variantQuantities) {
+      const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+        formData,
+        updateData.variantQuantities
+      );
+      if (variantQuantitiesRaw) {
         try {
-          const parsed = JSON.parse(updateData.variantQuantities) as Record<
+          const parsed = JSON.parse(variantQuantitiesRaw) as Record<
             string,
             unknown
           >;
-          const fields = jobConfigurationUpdateFields(parsed);
-          variantQuantities = fields.configuration;
+          const fields = variantTableUpdateFields(parsed);
+          variantQuantities = fields.variantQuantities;
           quantity = fields.quantity;
         } catch {
           // invalid JSON — keep the typed quantity
         }
       }
 
-      const { variantQuantities: _configStr, ...rest } = updateData;
+      const { variantQuantities: _variantQuantitiesForm, ...rest } = updateData;
       const parentItemId = existingLine.data?.itemId ?? "";
 
-      if (hasStyleConfigTable(variantQuantities)) {
-        const expanded = await expandStyleConfigToVariantLines(client, {
+      if (hasStyleVariantsQuantity(variantQuantities)) {
+        const expanded = await expandVariantTableToLines(client, {
           parentItemId,
           companyId,
           variantQuantities

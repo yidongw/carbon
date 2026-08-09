@@ -2155,9 +2155,6 @@ msgstr "Config Params"
 msgid "Configuration Parameters"
 msgstr "Configuration Parameters"
 
-msgid "Configuration quantities"
-msgstr "Configuration quantities"
-
 msgid "Configurator"
 msgstr "Configurator"
 
@@ -2187,9 +2184,6 @@ msgstr "Configure notifications for when maintenance dispatches are created from
 
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Configure notifications for when new suggestions are submitted."
-
-msgid "Configure quantities"
-msgstr "Configure quantities"
 
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Configure the default accounts used for various transaction types across your system"
@@ -3833,9 +3827,6 @@ msgstr "Edit Category"
 
 msgid "Edit column visibility"
 msgstr "Edit column visibility"
-
-msgid "Edit configuration"
-msgstr "Edit configuration"
 
 msgid "Edit Contact"
 msgstr "Edit Contact"
@@ -7220,9 +7211,6 @@ msgstr "Failed to update claims"
 msgid "Failed to update company"
 msgstr "Failed to update company"
 
-msgid "Failed to update configuration"
-msgstr "Failed to update configuration"
-
 msgid "Failed to update configuration parameter"
 msgstr "Failed to update configuration parameter"
 
@@ -7754,6 +7742,9 @@ msgstr "Failed to update unit of measure"
 msgid "Failed to update user permissions"
 msgstr "Failed to update user permissions"
 
+msgid "Failed to update variants quantity"
+msgstr "Failed to update variants quantity"
+
 msgid "Failed to update warehouse transfer"
 msgstr "Failed to update warehouse transfer"
 
@@ -8139,8 +8130,8 @@ msgstr "GL Account"
 msgid "Go to App"
 msgstr "Go to App"
 
-msgid "Goal quantity for this configuration."
-msgstr "Goal quantity for this configuration."
+msgid "Goal quantity for this variant."
+msgstr "Goal quantity for this variant."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10334,9 +10325,6 @@ msgstr "No calibration records found"
 msgid "No changes recorded"
 msgstr "No changes recorded"
 
-msgid "No changes yet."
-msgstr "No changes yet."
-
 msgid "No chat history"
 msgstr "No chat history"
 
@@ -10354,9 +10342,6 @@ msgstr "No condition may match"
 
 msgid "No conditions — rule matches all jobs"
 msgstr "No conditions — rule matches all jobs"
-
-msgid "No configuration quantities recorded yet."
-msgstr "No configuration quantities recorded yet."
 
 msgid "No conversion is required"
 msgstr "No conversion is required"
@@ -10579,6 +10564,9 @@ msgstr "No values available"
 
 msgid "No values yet."
 msgstr "No values yet."
+
+msgid "No variant quantities recorded yet."
+msgstr "No variant quantities recorded yet."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
@@ -11807,9 +11795,6 @@ msgstr "Purchase Order Line"
 msgid "Purchase order line created"
 msgstr "Purchase order line created"
 
-msgid "Purchase order lines created"
-msgstr "Purchase order lines created"
-
 msgid "Purchase Order Location"
 msgstr "Purchase Order Location"
 
@@ -12793,9 +12778,6 @@ msgstr "Sales Order Line"
 
 msgid "Sales order line created"
 msgstr "Sales order line created"
-
-msgid "Sales order lines created"
-msgstr "Sales order lines created"
 
 msgid "Sales Order Location"
 msgstr "Sales Order Location"
@@ -15865,6 +15847,15 @@ msgstr "Values"
 msgid "Variances"
 msgstr "Variances"
 
+msgid "Variant quantities"
+msgstr "Variant quantities"
+
+msgid "Variant quantities added"
+msgstr "Variant quantities added"
+
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "VAT Number"
 
@@ -15933,12 +15924,6 @@ msgstr "View bill of process"
 
 msgid "View bundles"
 msgstr "View bundles"
-
-msgid "View configuration parameters"
-msgstr "View configuration parameters"
-
-msgid "View configuration quantities"
-msgstr "View configuration quantities"
 
 msgid "View Contact"
 msgstr "View Contact"
@@ -16050,6 +16035,12 @@ msgstr "View Traceability Graph"
 
 msgid "View Transfer"
 msgstr "View Transfer"
+
+msgid "View variant quantities"
+msgstr "View variant quantities"
+
+msgid "View variants quantity"
+msgstr "View variants quantity"
 
 msgid "Visibilities"
 msgstr "Visibilities"

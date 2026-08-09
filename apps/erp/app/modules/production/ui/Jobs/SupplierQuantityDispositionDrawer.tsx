@@ -34,20 +34,20 @@ function lineFromActive(
     quantity: line.quantity,
     scrapReasonId: line.scrapReasonId ?? undefined,
     notes: line.notes ?? undefined,
-    configuration: line.configuration ?? undefined
+    variantQuantities: line.variantQuantities ?? undefined
   };
 }
 
 export function SupplierQuantityDispositionDrawer({
   report,
-  configurationParameters,
+  variantQuantityParameters,
   itemId,
   open,
   onClose,
   onSaved
 }: {
   report: JobOperationSupplierQuantityReportWithLines;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
   open: boolean;
   onClose: () => void;
@@ -120,7 +120,7 @@ export function SupplierQuantityDispositionDrawer({
           <ProductionQuantityLinesEditor
             lines={lines}
             setLines={setLines}
-            configurationParameters={configurationParameters}
+            variantQuantityParameters={variantQuantityParameters}
             itemId={itemId}
             isDisabled={fetcher.state !== "idle"}
           />

@@ -43,13 +43,13 @@ function lineFromActive(
     quantity: line.quantity,
     scrapReasonId: line.scrapReasonId ?? undefined,
     notes: line.notes ?? undefined,
-    configuration: line.configuration ?? undefined
+    variantQuantities: line.variantQuantities ?? undefined
   };
 }
 
 export function ProductionQuantityDispositionDrawer({
   report,
-  configurationParameters,
+  variantQuantityParameters,
   itemId,
   open,
   onClose,
@@ -62,7 +62,7 @@ export function ProductionQuantityDispositionDrawer({
   fetcher: externalFetcher
 }: {
   report: ProductionQuantityReportWithLines;
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
   open: boolean;
   onClose: () => void;
@@ -84,7 +84,7 @@ export function ProductionQuantityDispositionDrawer({
       quantity: number;
       scrapReasonId?: string;
       notes?: string;
-      configuration?: unknown;
+      variantQuantities?: unknown;
     }>;
   }) => BodyInit;
   /** When provided, submits through this fetcher (e.g. quantity-review table actions). */
@@ -217,10 +217,10 @@ export function ProductionQuantityDispositionDrawer({
             <ProductionQuantityLinesEditor
               lines={lines}
               setLines={setLines}
-              configurationParameters={configurationParameters}
+              variantQuantityParameters={variantQuantityParameters}
               itemId={itemId}
-              configReferenceContext={{
-                originalConfiguration: report.originalConfiguration
+              variantsQuantityReferenceContext={{
+                originalVariantTable: report.originalVariantTable
               }}
             />
           </DrawerBody>

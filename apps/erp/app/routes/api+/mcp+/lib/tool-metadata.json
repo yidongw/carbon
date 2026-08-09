@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-09T02:35:50.394Z",
-  "totalTools": 1271,
+  "generated": "2026-08-09T13:26:38.529Z",
+  "totalTools": 1270,
   "modules": 15,
   "tools": [
     {
@@ -7278,10 +7278,10 @@
       }
     },
     {
-      "name": "inventory_getStyleOnHandByVariant",
+      "name": "inventory_getStyleOnHandByColorSize",
       "module": "inventory",
       "classification": "READ",
-      "description": "get style on hand by variant",
+      "description": "get style on hand by color size",
       "paramCount": 3,
       "serviceParams": [
         "client",
@@ -15991,32 +15991,6 @@
       }
     },
     {
-      "name": "production_getJobConfigurationHistory",
-      "module": "production",
-      "classification": "READ",
-      "description": "get job configuration history",
-      "paramCount": 1,
-      "serviceParams": [
-        "client",
-        "jobId",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {
-          "jobId": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "jobId"
-        ]
-      }
-    },
-    {
       "name": "production_getJobProductionQuantitySummary",
       "module": "production",
       "classification": "READ",
@@ -17825,10 +17799,10 @@
       }
     },
     {
-      "name": "production_getItemIdsWithConfigurationParameters",
+      "name": "production_getItemIdsWithVariantQuantityGrid",
       "module": "production",
       "classification": "READ",
-      "description": "get item ids with configuration parameters",
+      "description": "get item ids with variant quantity grid",
       "paramCount": 1,
       "serviceParams": [
         "client",

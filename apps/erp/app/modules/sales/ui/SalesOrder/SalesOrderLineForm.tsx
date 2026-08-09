@@ -75,13 +75,16 @@ import {
   useUser
 } from "~/hooks";
 import { getDefaultStorageUnitForJob } from "~/modules/inventory/inventory.service";
-import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
-  toConfigTableValue,
-  useConfigTableModal
-} from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
-import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import { methodType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -111,7 +114,7 @@ type SalesOrderLineFormProps = {
   onClose?: () => void;
 } & Partial<Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">>;
 
-function parseInitialConfig(raw: unknown): {
+function parseInitialVariantTable(raw: unknown): {
   rows: Row[] | null;
   total: number;
 } {
@@ -121,14 +124,16 @@ function parseInitialConfig(raw: unknown): {
     if (
       typeof parsed !== "object" ||
       parsed === null ||
-      !("configTable" in parsed)
+      !("variantTable" in parsed)
     ) {
       return { rows: null, total: 0 };
     }
     const config = parsed as {
-      configTable?: Row[];
+      variantTable?: Row[];
     };
-    const rows = Array.isArray(config.configTable) ? config.configTable : null;
+    const rows = Array.isArray(config.variantTable)
+      ? config.variantTable
+      : null;
     // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
     if (rows) {
@@ -210,13 +215,17 @@ const SalesOrderLineForm = ({
     isFixedAsset ? "asset" : "item"
   );
 
-  const configModal = useConfigTableModal();
+  const variantsQuantityModal = useVariantsQuantityModal();
   const [items] = useItems();
-  const initialConfig = parseInitialConfig(initialValues.configuration);
-  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
-    initialConfig.rows
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
   );
-  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
+  );
   // True when the selected item carries Color/Size attribute selections (a
   // Consumable with a Fabric/Trim color set) — set on item select. Styles are
   // covered by isStyleLine without waiting on the fetch.
@@ -233,36 +242,35 @@ const SalesOrderLineForm = ({
 
   // Configurable items use the config-quantity grid when adding/editing a
   // parent. Variant SKU lines (no stored configuration) use plain quantity.
-  const hasConfigurationParameters =
+  const hasVariantsQuantity =
     isConfigurableLine &&
     Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.configuration);
+    !(isEditing && !initialValues.variantQuantities);
 
-  // A Style parent line's quantity comes from the variant quantities grid.
+  // A Style parent line's quantity comes from the variants quantity grid.
   // Variant SKU lines use plain quantity and are not blocked here.
-  const isMissingStyleQuantity =
-    hasConfigurationParameters && !(saleQuantity > 0);
+  const isMissingStyleQuantity = hasVariantsQuantity && !(saleQuantity > 0);
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    setConfigTableRows(data.configuration.configTable);
-    setConfigTableTotal(data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
     // Always mirror the grid total — a zero confirm must wipe a prior quantity.
     onQuantityChange(data.total);
   };
 
-  const openConfigTable = () => {
+  const openVariantsQuantity = () => {
     if (!itemData.itemId) return;
-    configModal.open({
+    variantsQuantityModal.open({
       itemId: itemData.itemId,
-      configuration: toConfigTableValue(configTableRows),
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
       onConfirm: applyConfig
     });
   };
 
   const clearConfig = () => {
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
   };
 
   const [assetOptions, setAssetOptions] = useState<
@@ -418,13 +426,13 @@ const SalesOrderLineForm = ({
   useEffect(() => {
     if (
       !isEditing &&
-      hasConfigurationParameters &&
-      configTableTotal <= 0 &&
+      hasVariantsQuantity &&
+      variantsQuantityTotal <= 0 &&
       saleQuantity !== 0
     ) {
       setSaleQuantity(0);
     }
-  }, [isEditing, hasConfigurationParameters, configTableTotal, saleQuantity]);
+  }, [isEditing, hasVariantsQuantity, variantsQuantityTotal, saleQuantity]);
 
   const onChange = async (itemId: string) => {
     if (!itemId) return;
@@ -451,7 +459,7 @@ const SalesOrderLineForm = ({
     if (storeType) {
       setLineType(storeType as SalesOrderLineType);
     }
-    // Styles always get quantity from the variant quantities grid — start at 0.
+    // Styles always get quantity from the variants quantity grid — start at 0.
     const isStyle = storeType === "Style" || lineType === "Style";
     const quantityForItem = isStyle ? 0 : saleQuantity || 1;
     if (isStyle || quantityForItem !== saleQuantity) {
@@ -705,11 +713,11 @@ const SalesOrderLineForm = ({
           />
           <Hidden name="unitOfMeasureCode" value={itemData.uom} />
           <Hidden
-            name="configuration"
+            name="variantQuantities"
             value={
-              configTableRows
+              variantsQuantityRows
                 ? JSON.stringify({
-                    configTable: configTableRows
+                    variantTable: variantsQuantityRows
                   })
                 : ""
             }
@@ -777,19 +785,19 @@ const SalesOrderLineForm = ({
                     }}
                   />
                   {isConfigurableLine ? (
-                    <QuantityWithConfigTable
+                    <QuantityWithVariantsQuantity
                       name="saleQuantity"
                       label={t`Quantity`}
                       value={saleQuantity}
                       onChange={onQuantityChange}
-                      hasConfigurationParameters={hasConfigurationParameters}
-                      onOpenConfigTable={
-                        hasConfigurationParameters ? openConfigTable : undefined
+                      hasVariantsQuantity={hasVariantsQuantity}
+                      onOpenVariantsQuantity={
+                        hasVariantsQuantity ? openVariantsQuantity : undefined
                       }
-                      configTableTotal={configTableTotal}
+                      variantsQuantityTotal={variantsQuantityTotal}
                       // Grid-backed configs are never typed by hand — quantity
                       // only comes from confirmed per-variant totals.
-                      isReadOnly={hasConfigurationParameters}
+                      isReadOnly={hasVariantsQuantity}
                       minValue={0}
                     />
                   ) : (
@@ -1213,7 +1221,7 @@ const SalesOrderLineForm = ({
           </ModalCardProvider>
         )}
       </Tabs>
-      {configModal.node}
+      {variantsQuantityModal.node}
       {isEditing && deleteDisclosure.isOpen && (
         <DeleteSalesOrderLine
           line={initialValues as SalesOrderLine}

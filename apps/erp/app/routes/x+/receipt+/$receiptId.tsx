@@ -50,45 +50,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.receipts);
   }
 
-  // Attach source SO/PO Style variant plan (Ordered chips / modal hints).
+  // Attach source SO/PO Style variants quantity plan (Ordered chips / modal hints).
   const rawReceiptLines = receiptLines.data ?? [];
-  const sourceLineIds = [
-    ...new Set(
-      rawReceiptLines
-        .map((line) => line.lineId)
-        .filter((id): id is string => typeof id === "string" && id.length > 0)
-    )
-  ];
-  const orderVariantQuantitiesByLineId = new Map<string, unknown>();
-  if (sourceLineIds.length > 0) {
-    if (receipt.data.sourceDocument === "Sales Order") {
-      const { data } = await serviceRole
-        .from("salesOrderLine")
-        .select("id, configuration")
-        .in("id", sourceLineIds);
-      for (const row of data ?? []) {
-        if (row.configuration != null) {
-          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
-        }
-      }
-    } else if (receipt.data.sourceDocument === "Purchase Order") {
-      const { data } = await serviceRole
-        .from("purchaseOrderLine")
-        .select("id, configuration")
-        .in("id", sourceLineIds);
-      for (const row of data ?? []) {
-        if (row.configuration != null) {
-          orderVariantQuantitiesByLineId.set(row.id, row.configuration);
-        }
-      }
-    }
-  }
+  // SO/PO lines no longer store a variants-quantity JSON column; Ordered chips
+  // for Style come from expanded variant SKU lines. Receipts have no job source,
+  // so there is no per-line ordered breakdown to attach.
   const receiptLinesWithOrderVariantQuantities = rawReceiptLines.map(
     (line) => ({
       ...line,
-      orderVariantQuantities: line.lineId
-        ? (orderVariantQuantitiesByLineId.get(line.lineId) ?? null)
-        : null
+      orderVariantQuantities: null
     })
   );
 

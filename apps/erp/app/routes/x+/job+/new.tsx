@@ -8,12 +8,12 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import { insertJob, jobValidator } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
-  replaceJobVariantQuantitiesFromConfigTable
+  isVariantsQuantityPayload,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { JobForm } from "~/modules/production/ui/Jobs";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import type { MethodItemType } from "~/modules/shared";
 import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
@@ -40,20 +40,45 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id: _id, configuration: configStr, ...data } = validation.data;
+  const {
+    id: _id,
+    configuration: configurationRaw,
+    variantQuantities: variantQuantitiesStr,
+    ...data
+  } = validation.data;
 
-  // Two configuration shapes:
-  // - Style/attribute qty grid → jobVariantQuantity rows (not job.configuration)
-  // - Part flat params → job.configuration for method rules; quantity stays form value
+  // Two FormData fields:
+  // - variantQuantities (Style/attribute qty grid) → jobVariantQuantity rows
+  // - configuration (Part flat params) → job.configuration for method rules
   let configuration: Record<string, unknown> | undefined;
-  let styleConfigTable: Record<string, unknown> | undefined;
+  let styleVariantsQuantity: Record<string, unknown> | undefined;
   let quantity = data.quantity;
-  if (configStr) {
+  if (variantQuantitiesStr) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      if (isConfigTableConfiguration(parsed)) {
-        styleConfigTable = parsed;
-        quantity = jobConfigurationUpdateFields(parsed).quantity;
+      const parsed =
+        typeof variantQuantitiesStr === "string"
+          ? (JSON.parse(variantQuantitiesStr) as Record<string, unknown>)
+          : (variantQuantitiesStr as Record<string, unknown>);
+      if (isVariantsQuantityPayload(parsed)) {
+        styleVariantsQuantity = parsed;
+        quantity = variantTableUpdateFields(parsed).quantity;
+      }
+    } catch {
+      // invalid JSON — skip variant quantities
+    }
+  }
+  if (configurationRaw) {
+    try {
+      const parsed =
+        typeof configurationRaw === "string"
+          ? (JSON.parse(configurationRaw) as Record<string, unknown>)
+          : (configurationRaw as Record<string, unknown>);
+      // Legacy dual-submit: Style grids used to share the configuration field.
+      if (isVariantsQuantityPayload(parsed)) {
+        if (!styleVariantsQuantity) {
+          styleVariantsQuantity = parsed;
+          quantity = variantTableUpdateFields(parsed).quantity;
+        }
       } else {
         configuration = parsed;
       }
@@ -79,8 +104,8 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  if (styleConfigTable) {
-    const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+  if (styleVariantsQuantity) {
+    const replaced = await replaceJobVariantQuantitiesFromTable(
       getCarbonServiceRole(),
       getDatabaseClient(),
       {
@@ -88,7 +113,7 @@ export async function action({ request }: ActionFunctionArgs) {
         parentItemId: data.itemId,
         companyId,
         userId,
-        configuration: styleConfigTable
+        configuration: styleVariantsQuantity
       }
     );
     if (replaced.error) {

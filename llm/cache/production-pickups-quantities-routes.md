@@ -46,13 +46,24 @@ In `apps/erp/app/utils/path.ts`:
 - `createJobOperationSupplierQuantityReport()` - create supplier quantity report
 - `validateActorMatchesOperationSupplierRouting()` - validate supplier routing
 
-## Job quantity report overlays (Style config editor gate)
+## Job quantity report overlays (Style variants-quantity editor gate)
 
-Job-scoped qty report routes (`apps/erp/app/routes/x+/job+/$jobId.quantities.new.tsx`, `.$id.tsx`) gate the Style config editor on whether `getJobVariantQuantities` returns rows — **not** on raw `job.configuration.configTable`. Dual-read in `getJobVariantQuantities` covers legacy jobs that still only have a configTable. Details: `style-sizes-ordering.md` § Jobs / Master WO — `jobVariantQuantity`.
+Job-scoped qty report routes (`apps/erp/app/routes/x+/job+/$jobId.quantities.new.tsx`, `.$id.tsx`) gate the Style variants-quantity editor on whether `getJobVariantQuantities` returns rows — **not** on raw `job.configuration.variantTable`. Dual-read in `getJobVariantQuantities` covers legacy jobs that still only have legacy `job.configuration.variantTable`. Details: `style-sizes-ordering.md` § Jobs / Master WO — `jobVariantQuantity`.
 
 ## Data Models
 
 ### Production Quantity Report
 - `productionQuantityCreateFormValidator` from `production.models.ts`
 - Fields: `jobOperationId`, `actorKind`, `employeeId?`, `supplierProcessId?`, `operationUnitCost?`, `operationMinimumCost?`, `snapshotPricingEdited?`, `notes?`, `lines` (JSON array)
-- Lines use `productionQuantityLineJsonValidator` with fields: `type` (Production/Scrap/Rework), `quantity`, `configuration?`, `scrapReasonId?`
+- Lines use `productionQuantityLineJsonValidator` with fields: `type` (Production/Scrap/Rework), `quantity`, `variantQuantities?`, `scrapReasonId?`
+
+## Style/variants-quantity column rename
+
+`productionQuantity`, `jobOperationPickup`, `jobOperationSupplierPickup`, and
+`jobOperationSupplierQuantity` store Style combo qty under **`variantQuantities`**
+(not `configuration`). FormData / overlay props for Style qty grids use
+`variantQuantities`; Part method flat params still use `job.configuration` /
+FormData `configuration`. Overlay reference source uses
+`reportedVariantQuantities` (formerly `reportedConfigurations`).
+
+Operation quantity summary stores Style grids as `productionVariantQuantities` / `scrapVariantQuantities` / `reworkVariantQuantities` (not `*Configurations`).

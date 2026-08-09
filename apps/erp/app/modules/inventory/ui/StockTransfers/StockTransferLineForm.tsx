@@ -24,17 +24,18 @@ import {
   type StockTransfer,
   stockTransferLineValidator
 } from "~/modules/inventory";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import {
-  isConfigTableOverlaySuccess,
-  parseInitialConfigTable
-} from "~/modules/production/configTableOverlay";
-import { useConfigTableModal } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
-import type { Row } from "~/modules/production/ui/Jobs/configTableShared";
-import { QuantityWithConfigTable } from "~/modules/production/ui/Jobs/QuantityWithConfigTable";
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess,
+  parseInitialVariantsQuantity
+} from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType } from "~/modules/shared/types";
 import { useItems } from "~/stores/items";
 import { path } from "~/utils/path";
-import { openStyleConfigTableWithInventory } from "../openStyleConfigTableWithInventory";
+import { openStyleVariantsQuantityWithInventory } from "../openStyleVariantsQuantityWithInventory";
 
 type StockTransferLineFormProps = {
   initialValues: z.infer<typeof stockTransferLineValidator> & {
@@ -94,39 +95,41 @@ const StockTransferLineForm = ({
     }
   );
 
-  const configModal = useConfigTableModal();
-  const initialConfig = parseInitialConfigTable(
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const initialVariantsQuantity = parseInitialVariantsQuantity(
     initialValues.variantQuantities
   );
-  const [configTableRows, setConfigTableRows] = useState<Row[] | null>(
-    initialConfig.rows
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialVariantsQuantity.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialVariantsQuantity.total
   );
-  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
   const [openingConfig, setOpeningConfig] = useState(false);
 
   const clearConfig = () => {
-    setConfigTableRows(null);
-    setConfigTableTotal(0);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
   };
 
   const applyConfig = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    setConfigTableRows(data.configuration.configTable);
-    setConfigTableTotal(data.total);
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
     if (data.total > 0) setQuantity(data.total);
   };
 
-  const openConfigTable = async () => {
+  const openVariantsQuantity = async () => {
     if (!itemId || openingConfig) return;
     setOpeningConfig(true);
     try {
       // Sibling otherLineVariantQuantities omitted — line drawer edits one line.
-      await openStyleConfigTableWithInventory({
-        configModal,
+      await openStyleVariantsQuantityWithInventory({
+        variantsQuantityModal,
         itemId,
         locationId,
         storageUnitId: fromStorageUnitId || null,
-        configTableRows,
+        variantsQuantityRows,
         onConfirm: applyConfig
       });
     } finally {
@@ -135,11 +138,11 @@ const StockTransferLineForm = ({
   };
 
   const isEditing = initialValues.id !== undefined;
-  // Configurable parent (any item with attrs / config params) → qty grid.
+  // Configurable parent (any item with attrs / variants quantity) → qty grid.
   // Variant SKU lines (already expanded, no stored variant quantities) → plain qty.
   const isConfigurableParent =
     Boolean(itemId) && configurableItemIds.includes(itemId!);
-  const hasConfigurationParameters =
+  const hasVariantsQuantity =
     isConfigurableParent && !(isEditing && !initialValues.variantQuantities);
 
   const onTypeChange = (t: MethodItemType | "Item") => {
@@ -220,8 +223,8 @@ const StockTransferLineForm = ({
               <Hidden
                 name="variantQuantities"
                 value={
-                  configTableRows
-                    ? JSON.stringify({ configTable: configTableRows })
+                  variantsQuantityRows
+                    ? JSON.stringify({ variantTable: variantsQuantityRows })
                     : ""
                 }
               />
@@ -239,18 +242,18 @@ const StockTransferLineForm = ({
                   value={itemId ?? undefined}
                 />
                 {isConfigurableParent ? (
-                  <QuantityWithConfigTable
+                  <QuantityWithVariantsQuantity
                     name="quantity"
                     label={t`Quantity`}
                     minValue={0}
                     value={quantity}
                     onChange={setQuantity}
-                    hasConfigurationParameters={hasConfigurationParameters}
-                    onOpenConfigTable={
-                      hasConfigurationParameters ? openConfigTable : undefined
+                    hasVariantsQuantity={hasVariantsQuantity}
+                    onOpenVariantsQuantity={
+                      hasVariantsQuantity ? openVariantsQuantity : undefined
                     }
-                    configTableTotal={configTableTotal}
-                    isReadOnly={hasConfigurationParameters}
+                    variantsQuantityTotal={variantsQuantityTotal}
+                    isReadOnly={hasVariantsQuantity}
                   />
                 ) : (
                   <Number
@@ -288,7 +291,7 @@ const StockTransferLineForm = ({
             </ModalDrawerFooter>
           </ValidatedForm>
         </ModalDrawerContent>
-        {configModal.node}
+        {variantsQuantityModal.node}
       </ModalDrawer>
     </ModalDrawerProvider>
   );

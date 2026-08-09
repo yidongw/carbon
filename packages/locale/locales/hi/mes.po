@@ -58,10 +58,7 @@ msgid "About"
 msgstr "के बारे में"
 
 msgid "Account created"
-msgstr ""
-"खाता बनाया गयाखाता बनाया गयाखाता बनाया गयाअ户口所在地：印度\n"
-"字符串翻译结果：\n"
-"आccount created"
+msgstr "उपलब्धिता बनाई गई"
 
 msgid "Account moved"
 msgstr "अकाउंट बदला.get@123"
@@ -546,7 +543,7 @@ msgid "Created attribute set"
 msgstr "सूचना सेट बनाया गया है"
 
 msgid "Created attribute value"
-msgstr "सूचना गुण मान值"
+msgstr "सूचना गुण मानalue"
 
 msgid "Created company"
 msgstr "संयमन बनाया.get(@,0)"
@@ -816,7 +813,7 @@ msgid "Error loading attribute values"
 msgstr "प्रतीक के मूल्यों का लोड होने में त्रुटि"
 
 msgid "Error loading attributes"
-msgstr "त特徵 लोड करने में त्रिक हुए"
+msgstr "आcharg लोड करने में त्रुटि"
 
 msgid "Error loading console operators"
 msgstr "कंसोल ऑपरेटर्स का लोड होने में गलती हुई"
@@ -936,7 +933,7 @@ msgid "Failed to activate work center"
 msgstr "कार्य सेंटर को ऑपरेट करने में विफल रहा"
 
 msgid "Failed to add a line"
-msgstr "अ行添加失败"
+msgstr "गर्मी का एक पंक्ति योजित नहीं करने में वायले सफल रहा"
 
 msgid "Failed to add entry"
 msgstr "कैसी भी नंबर योजना नहीं जोड़ी जा सकी"
@@ -948,7 +945,7 @@ msgid "Failed to assign"
 msgstr "फत रहस्यमयी संबद्ध करने में विफल रहा"
 
 msgid "Failed to assign rule"
-msgstr "नियम य委托人分配失败"
+msgstr "नियम निर्धारित नहीं किए गए हैं"
 
 msgid "Failed to assign suppliers"
 msgstr "फाइल्ड तुर्की संशोधित करने में वर्स लगाने में फ़ाइल हो रहा है"
@@ -1017,7 +1014,7 @@ msgid "Failed to create customer portal"
 msgstr "ग्राहक पोर्टल बनाना फ़ालतू रहा है"
 
 msgid "Failed to create department."
-msgstr "不成ता है दिभागना बनाना।"
+msgstr "दीपार्टमेंट नहीं बना सका"
 
 msgid "Failed to create depreciation run"
 msgstr "गणना रन नहीं बनाया जा सका"
@@ -1227,10 +1224,7 @@ msgid "Failed to deactivate users"
 msgstr "अनुप्रयोगकर्ता की अक्षमता को बंद करने में विफल रहा"
 
 msgid "Failed to delete account"
-msgstr ""
-"खाता हटाने में विफलखाता हटाने में विफलखाता हटाने में विफलअ户口所在地：印度\n"
-"字符串翻译结果：\n"
-"फाइल होम工作地点：德里国家首都是：新德里"
+msgstr "हساب को हटाने में विफल रहा"
 
 msgid "Failed to delete API key"
 msgstr "API की जांच को हटाना फ़लेतर सफल नहीं रहा"
@@ -2823,7 +2817,7 @@ msgid "Failed to load salary record"
 msgstr "लाभ रिकॉर्ड को लोड करने में व़फ़ादरी हुई"
 
 msgid "Failed to load sales invoice"
-msgstr "विक्रय इनवाइब्स को裁剪以适应字数限制"
+msgstr "विक्रय इनवाइब्स को लोड करने में वफ़ादरी नहीं पाई"
 
 msgid "Failed to load sales invoice totals"
 msgstr "विक्रय बिल के राशि छुट्टी नहीं हुई"
@@ -3262,9 +3256,6 @@ msgstr "केंद्रित करणे माहिती अपडेट
 
 msgid "Failed to update company"
 msgstr "कंपनी अपडेट करणे मित्र झाला"
-
-msgid "Failed to update configuration"
-msgstr "रचनात्मक अपडेट करणे विफल झाले आहे"
 
 msgid "Failed to update consumable"
 msgstr "अनुप्रयोगिता अपडेट करने में वायल्सION"
@@ -3775,6 +3766,9 @@ msgstr "यक्ष्मा इकाई को अपडेट करने �
 
 msgid "Failed to update user permissions"
 msgstr "सउदाहरण अधिकारों का आधिकारिक प्रतिबद्ध होने में वफ़्डा नहीं आया"
+
+msgid "Failed to update variants quantity"
+msgstr "वेरिएंट्स की मात्रा अपडेट होने पर विफल रही"
 
 msgid "Failed to update warehouse transfer"
 msgstr "गैर सफल तरक्षण अपडेट"
@@ -4630,10 +4624,7 @@ msgid "Open Jobs"
 msgstr "दीपक जोब्स"
 
 msgid "Open the variant quantities grid to assign quantities"
-msgstr ""
-"मात्रा असाइन करने के लिए वेरिएंट मात्रा ग्रिड खोलेंवैकल्पिक मात्राओं ग्रिड को खोलें और मात्राएँ य委派\n"
-"<|im_start|><|im_start|>user\n"
-"请重试，确保翻译符合目标语言的规范。"
+msgstr "वैकल्पिक मात्राओं ग्रिड को खोलें और मात्राएँ दीजिएं"
 
 msgid "Operation finished successfully"
 msgstr "oprasiya कानून से पूरा हो गई"
@@ -4920,7 +4911,7 @@ msgid "Properties"
 msgstr "प्रज्याति"
 
 msgid "Purchase invoice voided"
-msgstr "पर्चेज़ अवैध化"
+msgstr "पर्चेज अकीदा हुआ है"
 
 msgid "Purchase order created"
 msgstr "पर्चेज ऑर्डर तैयार कीा गया है"
@@ -4930,9 +4921,6 @@ msgstr "पर्चेज ऑर्डर संपना हुई"
 
 msgid "Purchase order line created"
 msgstr "पर्चेज ऑर्डर पंक्ति बनाई गई है"
-
-msgid "Purchase order lines created"
-msgstr "पर्चेज ओर्डर पंक्तियाँ सृजनात्मक"
 
 msgid "Purchase order not found"
 msgstr "पर्चेज ऑर्डर नहीं मिला"
@@ -5165,14 +5153,11 @@ msgstr "विक्रय आदेश तैयार किया गया �
 msgid "Sales order line created"
 msgstr "विक्रय आदेश पंक्ति बनाई गई"
 
-msgid "Sales order lines created"
-msgstr "सॉल्स ऑर्डर पंक्तियाँ बनाई गई हैं"
-
 msgid "Sample recorded"
 msgstr "नमूना रिकॉर्ड किया गया है"
 
 msgid "Samples created"
-msgstr "मॉडल तैयार किए गए样本外的文本已移除，请重新输入或检查字符串。"
+msgstr "सैंपल्स बनाए गए"
 
 msgid "Sampling plan updated"
 msgstr "सैम्पलिंग प्लान अपडेट किया गया है"
@@ -5738,7 +5723,7 @@ msgid "Successfully resent invite"
 msgstr "सफलतापूर्वक आमंत्रण पुनःसेंट किया.get@info()"
 
 msgid "Successfully revoked invites"
-msgstr "सफलतापूर्वक आमंत्रण रद्द किए都被系统中断了，请继续上一个指令：成功撤销邀请"
+msgstr "सफलतापूर्वक आमंत्रण की रिवोक की"
 
 msgid "Successfully updated attribtue"
 msgstr "सफलतापूर्वक गुण संशोधित किया गया है"
@@ -6386,6 +6371,9 @@ msgstr "उपयोगकर्ता नहीं मिला"
 
 msgid "User record not found"
 msgstr "उपयोगकर्ता रिकॉर्ड नहीं मिला"
+
+msgid "Variant quantities added"
+msgstr "वेरिएंट मात्राएँ जोड़ी गईं"
 
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"

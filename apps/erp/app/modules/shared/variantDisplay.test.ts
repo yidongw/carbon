@@ -1,21 +1,18 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildAttributeValueNames,
-  getStyleConfigDisplay
-} from "./styleConfigDisplay";
+import { buildAttributeValueNames, getVariantDisplay } from "./variantDisplay";
 
-describe("getStyleConfigDisplay", () => {
+describe("getVariantDisplay", () => {
   it("returns attribute-combo chips from valuesKey rows", () => {
-    const display = getStyleConfigDisplay(
+    const display = getVariantDisplay(
       {
-        configTable: [{ valuesKey: "BK|S", Quantities: 6 }]
+        variantTable: [{ valuesKey: "BK|S", Quantities: 6 }]
       },
       { BK: "黑色" }
     );
     expect(display?.chips).toEqual([
       {
         key: "0:Quantities",
-        descriptor: "黑色 · S",
+        variantLabel: "黑色 · S",
         label: "黑色 · S ×6",
         quantity: 6
       }
@@ -23,9 +20,9 @@ describe("getStyleConfigDisplay", () => {
   });
 
   it("localizes each combo value via the name map", () => {
-    const display = getStyleConfigDisplay(
+    const display = getVariantDisplay(
       {
-        configTable: [
+        variantTable: [
           { valuesKey: "RD|S", Quantities: 2 },
           { valuesKey: "BL|S", Quantities: 1 },
           { valuesKey: "RD|M", Quantities: 1 },
@@ -46,9 +43,9 @@ describe("getStyleConfigDisplay", () => {
   });
 
   it("aliases Light Gray from styleReference", () => {
-    const display = getStyleConfigDisplay(
+    const display = getVariantDisplay(
       {
-        configTable: [{ valuesKey: "LGY|M", Quantities: 3 }]
+        variantTable: [{ valuesKey: "LGY|M", Quantities: 3 }]
       },
       buildAttributeValueNames([{ code: "LGY", name: "浅灰色" }])
     );
@@ -56,9 +53,9 @@ describe("getStyleConfigDisplay", () => {
   });
 
   it("parses JSON string configurations", () => {
-    const display = getStyleConfigDisplay(
+    const display = getVariantDisplay(
       JSON.stringify({
-        configTable: [{ valuesKey: "BG|L", Quantities: 2 }]
+        variantTable: [{ valuesKey: "BG|L", Quantities: 2 }]
       }),
       { BG: "米色" }
     );
@@ -66,12 +63,10 @@ describe("getStyleConfigDisplay", () => {
   });
 });
 
-describe("getStyleConfigDisplayFromVariants", () => {
-  it("aggregates attribute combo chips from variant lines", async () => {
-    const { getStyleConfigDisplayFromVariants } = await import(
-      "./styleConfigDisplay"
-    );
-    const display = getStyleConfigDisplayFromVariants(
+describe("getVariantDisplayFromVariants", () => {
+  it("aggregates variant chips from variant lines", async () => {
+    const { getVariantDisplayFromVariants } = await import("./variantDisplay");
+    const display = getVariantDisplayFromVariants(
       [
         { attributeCodes: ["BG", "S"], quantity: 3 },
         { attributeCodes: ["BK", "S"], quantity: 4 },
@@ -86,10 +81,8 @@ describe("getStyleConfigDisplayFromVariants", () => {
   });
 
   it("renders color-only chips for consumable variants (no size)", async () => {
-    const { getStyleConfigDisplayFromVariants } = await import(
-      "./styleConfigDisplay"
-    );
-    const display = getStyleConfigDisplayFromVariants(
+    const { getVariantDisplayFromVariants } = await import("./variantDisplay");
+    const display = getVariantDisplayFromVariants(
       [
         { attributeCodes: ["BG"], quantity: 3 },
         { attributeCodes: ["BK"], quantity: 4 },
@@ -103,17 +96,9 @@ describe("getStyleConfigDisplayFromVariants", () => {
 
 describe("groupLinesForStyleDisplay", () => {
   it("collapses variant SKUs under the parent Style", async () => {
-    const { groupLinesForStyleDisplay } = await import("./styleConfigDisplay");
+    const { groupLinesForStyleDisplay } = await import("./variantDisplay");
     const groups = groupLinesForStyleDisplay(
       [
-        {
-          id: "parent",
-          itemId: "p1",
-          configuration: {
-            configTable: [{ valuesKey: "BK|S", Quantities: 5 }]
-          },
-          purchaseQuantity: 5
-        },
         { id: "v1", itemId: "c1", purchaseQuantity: 4 },
         { id: "v2", itemId: "c2", purchaseQuantity: 3 }
       ],
@@ -144,7 +129,7 @@ describe("groupLinesForStyleDisplay", () => {
     if (groups[0]?.kind === "style-group") {
       expect(groups[0].parentReadableId).toBe("111333");
       expect(groups[0].totalLines.map((l) => l.id)).toEqual(["v1", "v2"]);
-      expect(groups[0].styleConfig?.chips.map((c) => c.label)).toEqual([
+      expect(groups[0].variantDisplay?.chips.map((c) => c.label)).toEqual([
         "黑色 · S ×4",
         "米色 · S ×3"
       ]);

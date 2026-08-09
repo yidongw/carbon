@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
-import type { ConfigReferenceSource } from "../../configParamsTableColumns";
+import type { VariantsQuantityReferenceSource } from "../../variantsQuantityTableColumns";
 
 export type ProductionJobPickerLoaderData = {
   jobId: string;
@@ -10,7 +10,7 @@ export type ProductionJobPickerLoaderData = {
    * operation picked in the dropdown (the job-level cascade only resolves the
    * seeded operation's processId). */
   processByOperationId?: Record<string, string>;
-  configurationParameters?:
+  variantQuantityParameters?:
     | {
         key: string;
         label: string;
@@ -18,7 +18,7 @@ export type ProductionJobPickerLoaderData = {
         listOptions?: string[] | null;
       }[]
     | null;
-  configReferenceSource?: ConfigReferenceSource | null;
+  variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
   operationType?: string | null;
@@ -33,8 +33,8 @@ type UseProductionJobPickerArgs = {
   jobIdProp?: string | null;
   initialJobId?: string;
   operationOptions?: { label: string; value: string }[];
-  configurationParameters?: ProductionJobPickerLoaderData["configurationParameters"];
-  configReferenceSource?: ConfigReferenceSource | null;
+  variantQuantityParameters?: ProductionJobPickerLoaderData["variantQuantityParameters"];
+  variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
   operationType?: string | null;
@@ -52,8 +52,8 @@ export function useProductionJobPicker({
   jobIdProp,
   initialJobId,
   operationOptions = [],
-  configurationParameters,
-  configReferenceSource,
+  variantQuantityParameters,
+  variantsQuantityReferenceSource,
   itemId,
   processId,
   operationType,
@@ -103,10 +103,11 @@ export function useProductionJobPicker({
     isCascadeLoading,
     operationOptions: cascadeData?.operationOptions ?? operationOptions,
     processByOperationId: cascadeData?.processByOperationId ?? {},
-    configurationParameters:
-      cascadeData?.configurationParameters ?? configurationParameters,
-    configReferenceSource:
-      cascadeData?.configReferenceSource ?? configReferenceSource,
+    variantQuantityParameters:
+      cascadeData?.variantQuantityParameters ?? variantQuantityParameters,
+    variantsQuantityReferenceSource:
+      cascadeData?.variantsQuantityReferenceSource ??
+      variantsQuantityReferenceSource,
     itemId: cascadeData?.itemId ?? itemId,
     processId: cascadeData?.processId ?? processId,
     operationType: cascadeData?.operationType ?? operationType,

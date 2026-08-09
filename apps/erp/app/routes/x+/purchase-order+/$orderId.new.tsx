@@ -12,10 +12,13 @@ import {
   serializeSearch
 } from "~/components/Overlay/overlay";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity
 } from "~/modules/items/styleOrderLines.server";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import {
   getPurchaseOrder,
   isPurchaseOrderLocked,
@@ -141,37 +144,48 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Omit `id` — create path must not send a client id.
   const {
     id: _id,
-    configuration: configStr,
+    variantQuantities: variantQuantitiesFromValidator,
     purchaseQuantity: rawQuantity,
     ...d
   } = validation.data;
 
   let purchaseQuantity = rawQuantity;
-  let configuration: Json | undefined;
-  if (configStr) {
+  let variantQuantities: Json | undefined;
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      const fields = jobConfigurationUpdateFields(parsed);
-      configuration = fields.configuration;
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
       purchaseQuantity = fields.quantity;
     } catch {
-      // Invalid JSON — create without configuration; keep typed quantity.
+      // Invalid JSON — create without variantQuantities; keep typed quantity.
     }
   }
 
-  // A stored config table means the per-variant quantity grid was used (Style
-  // attribute combo, or a Consumable attribute set) — expand into variant SKU lines
+  // FormData variantTable means the per-variant quantity grid was used (Style
+  // variants quantity, or a Consumable color set) — expand into variant SKU lines
   // regardless of the picker's line type.
-  if (d.itemId && configuration && hasStyleConfigTable(configuration)) {
-    const expanded = await expandStyleConfigToVariantLines(client, {
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
+    const expanded = await expandVariantTableToLines(client, {
       parentItemId: d.itemId,
       companyId,
-      variantQuantities: configuration
+      variantQuantities
     });
     if (!expanded.ok) {
       if (isOverlay) {
         return data(
-          { ok: false as const },
+          { ok: false as const, error: expanded.error },
           await flash(request, error(expanded.error, expanded.error))
         );
       }
@@ -213,7 +227,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       } catch (err) {
         if (isOverlay) {
           return data(
-            { ok: false as const },
+            {
+              ok: false as const,
+              error: "Failed to create purchase order lines for style variants"
+            },
             await flash(
               request,
               error(
@@ -238,23 +255,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
       if (isOverlay) {
         return data(
           { ok: true as const },
-          await flash(request, success("Purchase order lines created"))
+          await flash(request, success("Variant quantities added"))
         );
       }
       throw redirect(
         path.to.purchaseOrderDetails(orderId),
-        await flash(request, success("Purchase order lines created"))
+        await flash(request, success("Variant quantities added"))
       );
     }
 
     purchaseQuantity = expanded.variants[0].quantity;
-    configuration = undefined;
+    variantQuantities = undefined;
   }
 
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const createPurchaseOrderLine = await upsertPurchaseOrderLine(client, {
     ...d,
     purchaseQuantity,
-    ...(configuration !== undefined ? { configuration } : {}),
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)
@@ -262,8 +279,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (createPurchaseOrderLine.error) {
     if (isOverlay) {
+      const detail =
+        typeof createPurchaseOrderLine.error === "object" &&
+        createPurchaseOrderLine.error !== null &&
+        "message" in createPurchaseOrderLine.error &&
+        typeof createPurchaseOrderLine.error.message === "string"
+          ? createPurchaseOrderLine.error.message
+          : "Failed to create purchase order line";
       return data(
-        { ok: false as const },
+        { ok: false as const, error: detail },
         await flash(
           request,
           error(

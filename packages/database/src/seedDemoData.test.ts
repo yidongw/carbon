@@ -133,25 +133,25 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
     type Row = {
       op_id: string;
       description: string;
-      configuration: unknown;
+      variantQuantities: unknown;
       qty: string;
       type: string;
     };
 
     const pickups = await client.query<Row>(
-      `SELECT jo.id AS op_id, jo.description, jop.configuration, jop.quantity AS qty, 'pickup' AS type
+      `SELECT jo.id AS op_id, jo.description, jop."variantQuantities", jop.quantity AS qty, 'pickup' AS type
        FROM "jobOperationPickup" jop
        JOIN "jobOperation" jo ON jo.id = jop."jobOperationId"
        JOIN job j ON j.id = jo."jobId"
-       WHERE j."companyId" = $1 AND jop.configuration IS NOT NULL`,
+       WHERE j."companyId" = $1 AND jop."variantQuantities" IS NOT NULL`,
       [COMPANY_ID]
     );
     const productions = await client.query<Row>(
-      `SELECT jo.id AS op_id, jo.description, pq.configuration, pq.quantity AS qty, 'production' AS type
+      `SELECT jo.id AS op_id, jo.description, pq."variantQuantities", pq.quantity AS qty, 'production' AS type
        FROM "productionQuantity" pq
        JOIN "jobOperation" jo ON jo.id = pq."jobOperationId"
        JOIN job j ON j.id = jo."jobId"
-       WHERE j."companyId" = $1 AND pq.configuration IS NOT NULL`,
+       WHERE j."companyId" = $1 AND pq."variantQuantities" IS NOT NULL`,
       [COMPANY_ID]
     );
 
@@ -159,10 +159,10 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
       const totals: Record<string, number> = {};
       for (const r of rows.filter((x) => x.op_id === opId)) {
         const config =
-          typeof r.configuration === "string"
-            ? JSON.parse(r.configuration)
-            : r.configuration;
-        for (const tableRow of config?.configTable ?? []) {
+          typeof r.variantQuantities === "string"
+            ? JSON.parse(r.variantQuantities)
+            : r.variantQuantities;
+        for (const tableRow of config?.variantTable ?? []) {
           const row = tableRow as Record<string, unknown>;
           const valuesKey = String(row.valuesKey ?? "");
           if (!valuesKey) continue;

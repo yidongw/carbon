@@ -1,6 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { expandConfigTableToVariantQuantities } from "./itemAttribute.service";
+import { readVariantTableRows } from "../production/variantTableWire";
+import { expandVariantsQuantityTable } from "./itemAttribute.service";
 
 type Db = SupabaseClient<Database>;
 
@@ -11,10 +12,10 @@ export type StyleVariantQuantity = {
 };
 
 /**
- * Expand Style configTable into variant SKU quantities, failing if multi-cell
+ * Expand Style variantTable into variant SKU quantities, failing if multi-cell
  * configs still resolve to the parent (variants not synced yet).
  */
-export async function expandStyleConfigToVariantLines(
+export async function expandVariantTableToLines(
   client: Db,
   args: {
     parentItemId: string;
@@ -24,10 +25,10 @@ export async function expandStyleConfigToVariantLines(
 ): Promise<
   { ok: true; variants: StyleVariantQuantity[] } | { ok: false; error: string }
 > {
-  const expanded = await expandConfigTableToVariantQuantities(client, {
+  const expanded = await expandVariantsQuantityTable(client, {
     parentItemId: args.parentItemId,
     companyId: args.companyId,
-    configuration: args.variantQuantities
+    variantQuantities: args.variantQuantities
   });
   if (expanded.error) {
     return { ok: false, error: expanded.error.message };
@@ -56,10 +57,9 @@ export async function expandStyleConfigToVariantLines(
   return { ok: true, variants: expanded.data };
 }
 
-export function hasStyleConfigTable(variantQuantities: unknown): boolean {
-  if (!variantQuantities || typeof variantQuantities !== "object") return false;
-  const table = (variantQuantities as Record<string, unknown>).configTable;
-  return Array.isArray(table) && table.length > 0;
+export function hasStyleVariantsQuantity(variantQuantities: unknown): boolean {
+  // Dual-read legacy `configTable` so stale FormData still expands.
+  return readVariantTableRows(variantQuantities).length > 0;
 }
 
 /**
@@ -79,7 +79,7 @@ export async function requireVariantQuantitiesIfAttributeParent(
   if (!args.parentItemId || !(args.quantity > 0)) {
     return { ok: true };
   }
-  if (hasStyleConfigTable(args.variantQuantities)) {
+  if (hasStyleVariantsQuantity(args.variantQuantities)) {
     return { ok: true };
   }
 

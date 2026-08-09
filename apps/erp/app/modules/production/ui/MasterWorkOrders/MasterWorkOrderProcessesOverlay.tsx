@@ -3,9 +3,9 @@ import { Trans } from "@lingui/react/macro";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { MasterProcess } from "~/modules/production";
 import {
-  configParamsModalBodyClassName,
-  configParamsModalShellClassName
-} from "../Jobs/configTableShared";
+  variantsQuantityModalBodyClassName,
+  variantsQuantityModalShellClassName
+} from "../Jobs/variantsQuantityShared";
 import MasterProcessesTable from "./MasterProcessesTable";
 
 export type MasterWorkOrderProcessesOverlayProps = {
@@ -23,7 +23,7 @@ export default function MasterWorkOrderProcessesOverlay({
   onDismiss
 }: MasterWorkOrderProcessesOverlayProps) {
   return (
-    <div className={configParamsModalShellClassName}>
+    <div className={variantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
           <Trans>Processes</Trans>
@@ -34,7 +34,7 @@ export default function MasterWorkOrderProcessesOverlay({
           </p>
         ) : null}
       </div>
-      <div className={configParamsModalBodyClassName}>
+      <div className={variantsQuantityModalBodyClassName}>
         <div className="h-[65vh] w-[80vw] max-w-full">
           <MasterProcessesTable data={processes} withHeader={false} />
         </div>

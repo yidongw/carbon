@@ -86,8 +86,8 @@ export const path = {
         ),
       jobBillOfProcessPreview: (jobId: string) =>
         generatePath(`${api}/production/jobs/${jobId}/bill-of-process`),
-      jobConfigTable: (jobId: string) =>
-        generatePath(`${api}/production/jobs/${jobId}/config-table`),
+      jobVariantsQuantity: (jobId: string) =>
+        generatePath(`${api}/production/jobs/${jobId}/variants-quantity`),
       masterWorkOrderBundles: (masterWorkOrderId: string) =>
         generatePath(
           `${api}/production/master-work-orders/${masterWorkOrderId}/bundles`
@@ -138,8 +138,8 @@ export const path = {
         generatePath(
           `${api}/production/supplier-quantity-reports/${reportId}/create-po`
         ),
-      itemConfigTable: (itemId: string) =>
-        generatePath(`${api}/items/${itemId}/config-table`),
+      itemVariantsQuantity: (itemId: string) =>
+        generatePath(`${api}/items/${itemId}/variants-quantity`),
       jobs: `${api}/production/jobs`,
       kanban: (id: string) => generatePath(`${api}/kanban/${id}`),
       kanbanCollision: (id: string) =>

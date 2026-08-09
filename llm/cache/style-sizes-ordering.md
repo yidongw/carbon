@@ -13,7 +13,7 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 **Source:** `getGarmentAttributeValueList` (`itemAttribute.service.ts`) — Color/Size `itemAttributeValue` rows for **catalog localization / samples / color-name maps**. Style **assign UI** uses the generic attribute set editor.
 
-**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Qty editor params are a single combo list (`valuesKey` options = cartesian of selected attribute values via `getStyleConfigurationParametersFromAttributes`). Editor submit shape for Style qty is `{ valuesKey, Quantities, label? }` (combo-only; no Color×Size matrix conversion). **Jobs persist that table into `jobVariantQuantity`** (via `persistStyleJobConfiguration` / `replaceJobVariantQuantities`), not as `job.configuration.configTable`.
+**Style edit (attributes-only):** `ItemAttributeEditor` + `style/$itemId/attributes` → `syncItemVariantsFromSelections`. Qty editor params are a single combo list (`valuesKey` options = cartesian of selected attribute values via `getStyleVariantQuantityParameters`). Editor submit shape for Style qty is still `{ valuesKey, Quantities, label? }`, but **jobs persist that table into `jobVariantQuantity`** (via `persistStyleJobVariantQuantities` / `replaceJobVariantQuantities`), not as `job.configuration.variantTable`. Legacy Color×Size matrices are dual-read on expand when jvq is empty.
 
 ## Consumable Fabric / Trim variants
 
@@ -25,7 +25,7 @@ When adding a new size read/display, order by `sortOrder`, not code.
 
 ## Style qty matrix / variants
 
-**Read:** `getConfigurationParameters` for Style synthesizes a `valuesKey` list param (not separate Color/Size matrix columns). `configTableToComboRows` / expand helpers read **combo `valuesKey` rows** only (legacy Color×Size matrices yield nothing). Empty-jvq fallback still dual-reads non-empty `job.configuration.configTable` combo rows via `expandConfigTableToVariantQuantities`. Legacy `configurationParameter` rows on Styles are ignored.
+**Read:** `getConfigurationParameters` for Style synthesizes a `valuesKey` list param (not separate Color/Size matrix columns). Legacy Color×Size `job.configuration` matrices are dual-read into combo rows via `variantsQuantityToComboRows` (job qty editor, production qty splitMode, cutting proposal). Legacy `configurationParameter` rows on Styles are ignored.
 
 **Configurable itemIds (qty grid):** `api+/items.configurable.ts` returns attribute-selection itemIds only. Legacy `configurationParameter` items use `?for=methods` (Make Method tools). Job/MWO Quantity no longer opens from old Part config params or `requiresConfiguration`.
 
@@ -33,18 +33,20 @@ Variant SKUs: `valuesKey` = sorted `code|code|…` — see `inventory-system.md`
 
 **Bundle WO:** view exposes `valuesKey`, `attributeLabel`, `attributeValues` (table no longer has colorCode/sizeCode). Labels come from the variant’s attribute map.
 
-**Jobs / Master WO — `jobVariantQuantity`:** Style planned qty lives in `jobVariantQuantity(jobId, variantItemId, quantity)`, not in `job.configuration.configTable`.
+**Jobs / Master WO — `jobVariantQuantity`:** Style planned qty lives in `jobVariantQuantity(jobId, variantItemId, quantity)`, not in `job.configuration.variantTable`. BOP reported/target summary uses `getJobPlannedVariantQuantities` (same dual-read), not raw `job.configuration`.
 
-- **Write (`replaceJobVariantQuantities`):** Kysely transaction via `getDatabaseClient()` (bypasses RLS; auth at the route): delete existing jvq rows for the job → insert new rows → sync `job.quantity` → optional `jobConfigurationHistory` → optional clear `job.configuration`. Service: `apps/erp/app/modules/production/jobVariantQuantity.service.ts`.
-- **Read (`getJobVariantQuantities`):** dual-read — if no jvq rows, expand legacy non-empty `job.configuration.configTable` via `expandConfigTableToVariantQuantities`.
-- **Style writers must not store configTable on `job.configuration`:** `$jobId.configure.tsx` and `job+/update.tsx` route Style configTable through `persistStyleJobConfiguration` (writes jvq + clears Style qty JSON from `job.configuration`). Part flat method params still use `jobConfigurationUpdateFields`.
+- **Write (`replaceJobVariantQuantities`):** Kysely transaction via `getDatabaseClient()` (bypasses RLS; auth at the route): delete existing jvq rows for the job → insert new rows → sync `job.quantity` → optional clear Style variantTable left on `job.configuration`. Service: `apps/erp/app/modules/production/jobVariantQuantity.service.ts`.
+- **Read (`getJobVariantQuantities`):** dual-read — if no jvq rows, expand legacy non-empty `job.configuration.variantTable` via `expandVariantsQuantityTable`.
+- **Style writers must not store variantTable on `job.configuration`:** `$jobId.configure.tsx` and `job+/update.tsx` route Style variantTable through `persistStyleJobVariantQuantities` (writes jvq + clears Style qty JSON from `job.configuration`). Part flat method params write `job.configuration` directly. Job/MWO create forms submit Style grids as FormData `variantQuantities` (Part stays `configuration`).
+- **Reported qty/pickup rows:** `productionQuantity` / pickup / supplier qty tables use column `variantQuantities` (renamed from `configuration`).
 - **`job.configuration`:** Part method params only (flat JSON). Create-job Part Configure wizard restored. Qty grid = attribute selections only.
-- **Qty report loaders** (`$jobId.quantities.new` / `.$id`): gate the config editor on `getJobVariantQuantities` length, not raw `configTable`.
+- **Qty report loaders** (`$jobId.quantities.new` / `.$id`): gate the config editor on `getJobVariantQuantities` length, not raw `variantTable`.
 - **RLS:** `jobVariantQuantity` DELETE policy uses `production_update` (migration `20260808144712_job-variant-quantity-rls-update-delete.sql`; also fixed in original create migration `20260808060640_job-variant-quantity.sql` for fresh installs). Both drop + RLS migrations `NOTIFY pgrst, 'reload schema'`.
 - **`masterWorkOrderSplitRow`:** `colorCode` / `sizeCode` columns dropped (`2026080808143927_drop_master_split_row_color_size.sql`); generated types cleaned.
-- **`masterWorkOrder.colorSize`:** dropped (`20260809011753_drop_obsolete_size_color_props.sql`); view `masterWorkOrders` no longer selects it. Create path does not write it.
-- **`styleSamples.sampledVariantCount`:** view column renamed from `sampledColorCount` (same migration).
-- **Style on-hand:** `getStyleOnHandByVariant` returns `{ valuesKey, quantityOnHand }` only (MCP: `inventory_getStyleOnHandByVariant`). Display maps use `attributeValueNames`; chips use `descriptor`.
-- **Out of scope (intentional):** SO/PO still expand Style `configuration.configTable` to per-variant order lines — see `inventory-system.md`.
+- **SO/PO:** expand Style FormData `variantQuantities.variantTable` to per-variant order lines (no line `configuration` column) — see `inventory-system.md`.
 
 **MES:** bundle pickup/report/print use `attributeLabel` / `valuesKey` (not colorCode/sizeCode).
+
+**SO/PO note:** `salesOrderLine.configuration` / `purchaseOrderLine.configuration` were dropped. Style qty grid is FormData-only → expand to child SKU lines; no JSONB plan column on SO/PO lines.
+
+Style job variants-quantity no longer writes/shows `jobConfigurationHistory`. Overlay success is flat `{ ok, variantTable, total }` only (no nested `configuration` / `configTable` dual-read).

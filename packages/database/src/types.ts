@@ -16206,121 +16206,6 @@ export type Database = {
           },
         ]
       }
-      jobConfigurationHistory: {
-        Row: {
-          companyId: string
-          configuration: Json
-          createdAt: string
-          createdBy: string
-          id: string
-          jobId: string
-          quantity: number
-        }
-        Insert: {
-          companyId: string
-          configuration: Json
-          createdAt?: string
-          createdBy: string
-          id?: string
-          jobId: string
-          quantity?: number
-        }
-        Update: {
-          companyId?: string
-          configuration?: Json
-          createdAt?: string
-          createdBy?: string
-          id?: string
-          jobId?: string
-          quantity?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "jobConfigurationHistory_companyId_fkey"
-            columns: ["companyId"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_companyId_fkey"
-            columns: ["companyId"]
-            isOneToOne: false
-            referencedRelation: "company"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_companyId_fkey"
-            columns: ["companyId"]
-            isOneToOne: false
-            referencedRelation: "customFieldTables"
-            referencedColumns: ["companyId"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_companyId_fkey"
-            columns: ["companyId"]
-            isOneToOne: false
-            referencedRelation: "integrations"
-            referencedColumns: ["companyId"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
-            columns: ["createdBy"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
-            columns: ["createdBy"]
-            isOneToOne: false
-            referencedRelation: "employeesAcrossCompanies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
-            columns: ["createdBy"]
-            isOneToOne: false
-            referencedRelation: "employeeSummary"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
-            columns: ["createdBy"]
-            isOneToOne: false
-            referencedRelation: "user"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
-            columns: ["createdBy"]
-            isOneToOne: false
-            referencedRelation: "userDefaults"
-            referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_jobId_fkey"
-            columns: ["jobId"]
-            isOneToOne: false
-            referencedRelation: "job"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_jobId_fkey"
-            columns: ["jobId"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "jobConfigurationHistory_jobId_fkey"
-            columns: ["jobId"]
-            isOneToOne: false
-            referencedRelation: "openProductionOrders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       jobVariantQuantity: {
         Row: {
           companyId: string
@@ -17970,7 +17855,7 @@ export type Database = {
       jobOperationPickup: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           deletedAt: string | null
@@ -17985,7 +17870,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           deletedAt?: string | null
@@ -18000,7 +17885,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           deletedAt?: string | null
@@ -18637,7 +18522,7 @@ export type Database = {
       jobOperationSupplierPickup: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           id: string
@@ -18651,7 +18536,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           id?: string
@@ -18665,7 +18550,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           id?: string
@@ -18830,7 +18715,7 @@ export type Database = {
       jobOperationSupplierQuantity: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           id: string
@@ -18846,7 +18731,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           id?: string
@@ -18862,7 +18747,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           id?: string
@@ -19035,7 +18920,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes: string | null
-          originalConfiguration: Json | null
+          originalVariantTable: Json | null
           originalQuantity: number
           purchaseOrderLineId: string | null
           subcontractSnapshotId: string
@@ -19051,7 +18936,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           purchaseOrderLineId?: string | null
           subcontractSnapshotId: string
@@ -19067,7 +18952,7 @@ export type Database = {
           jobId?: string
           jobOperationId?: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           purchaseOrderLineId?: string | null
           subcontractSnapshotId?: string
@@ -30892,7 +30777,7 @@ export type Database = {
       productionQuantity: {
         Row: {
           companyId: string
-          configuration: Json | null
+          variantQuantities: Json | null
           createdAt: string
           createdBy: string
           employeeId: string
@@ -30915,7 +30800,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy: string
           employeeId: string
@@ -30938,7 +30823,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
-          configuration?: Json | null
+          variantQuantities?: Json | null
           createdAt?: string
           createdBy?: string
           employeeId?: string
@@ -31126,7 +31011,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes: string | null
-          originalConfiguration: Json | null
+          originalVariantTable: Json | null
           originalQuantity: number
           updatedAt: string | null
           updatedBy: string | null
@@ -31140,7 +31025,7 @@ export type Database = {
           jobId: string
           jobOperationId: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           updatedAt?: string | null
           updatedBy?: string | null
@@ -31154,7 +31039,7 @@ export type Database = {
           jobId?: string
           jobOperationId?: string
           notes?: string | null
-          originalConfiguration?: Json | null
+          originalVariantTable?: Json | null
           originalQuantity?: number
           updatedAt?: string | null
           updatedBy?: string | null
@@ -33311,7 +33196,6 @@ export type Database = {
           accountId: string | null
           assetId: string | null
           companyId: string
-          configuration: Json | null
           conversionFactor: number | null
           costCenterId: string | null
           createdAt: string
@@ -33364,7 +33248,6 @@ export type Database = {
           accountId?: string | null
           assetId?: string | null
           companyId: string
-          configuration?: Json | null
           conversionFactor?: number | null
           costCenterId?: string | null
           createdAt?: string
@@ -33417,7 +33300,6 @@ export type Database = {
           accountId?: string | null
           assetId?: string | null
           companyId?: string
-          configuration?: Json | null
           conversionFactor?: number | null
           costCenterId?: string | null
           createdAt?: string
@@ -40228,7 +40110,6 @@ export type Database = {
           addOnCost: number
           assetId: string | null
           companyId: string
-          configuration: Json | null
           convertedAddOnCost: number | null
           convertedNonTaxableAddOnCost: number | null
           convertedShippingCost: number | null
@@ -40278,7 +40159,6 @@ export type Database = {
           addOnCost?: number
           assetId?: string | null
           companyId: string
-          configuration?: Json | null
           convertedAddOnCost?: number | null
           convertedNonTaxableAddOnCost?: number | null
           convertedShippingCost?: number | null
@@ -40328,7 +40208,6 @@ export type Database = {
           addOnCost?: number
           assetId?: string | null
           companyId?: string
-          configuration?: Json | null
           convertedAddOnCost?: number | null
           convertedNonTaxableAddOnCost?: number | null
           convertedShippingCost?: number | null
@@ -66026,7 +65905,6 @@ export type Database = {
           assetReadableId: string | null
           autodeskUrn: string | null
           companyId: string | null
-          configuration: Json | null
           convertedAddOnCost: number | null
           convertedNonTaxableAddOnCost: number | null
           convertedShippingCost: number | null

@@ -1338,7 +1338,7 @@ msgid "Failed to delete job operation tool"
 msgstr "Falhou na exclusão da ferramenta da operação do trabalho"
 
 msgid "Failed to delete journal entry"
-msgstr "Falhou na exclusão do registro日记"
+msgstr "Falhou na eliminação do registo_journalístico"
 
 msgid "Failed to delete kanban"
 msgstr "Falhou na exclusão do kanban"
@@ -1794,7 +1794,7 @@ msgid "Failed to get a work center id"
 msgstr "Falhou ao obter o ID do centro de trabalho"
 
 msgid "Failed to get account"
-msgstr "Falhou ao obter o账户信息"
+msgstr "Falhou ao obter o account"
 
 msgid "Failed to get accounting period"
 msgstr "Falhou ao obter o período contábil"
@@ -2229,7 +2229,7 @@ msgid "Failed to insert consumable"
 msgstr "Falhou ao inserir o consumo"
 
 msgid "Failed to insert consumable inventory"
-msgstr "Falhou ao inserir estoque de消耗已经超出允许的长度限制，请尝试再次。"
+msgstr "Falhou ao inserir inventário de consumo"
 
 msgid "Failed to insert cost center"
 msgstr "Falhou ao inserir o centro de custos"
@@ -3006,7 +3006,7 @@ msgid "Failed to post depreciation run"
 msgstr "Falhou na postagem da execução de amortização"
 
 msgid "Failed to post journal entry"
-msgstr "Falhou ao postar entrada no日记账"
+msgstr "Falhou ao postar entrada contábil"
 
 msgid "Failed to post receipt"
 msgstr "Falhou ao postar recepção"
@@ -3144,7 +3144,7 @@ msgid "Failed to save job variant quantities"
 msgstr "Falhou ao salvar as quantidades da variante do trabalho"
 
 msgid "Failed to save journal entry"
-msgstr "Falhou ao salvar entrada no日记本"
+msgstr "Falhou ao salvar o registro"
 
 msgid "Failed to save passkey"
 msgstr "Falhou ao salvar a passkey"
@@ -3257,9 +3257,6 @@ msgstr "Falhou na atualização das reivindicações"
 msgid "Failed to update company"
 msgstr "Falhou na atualização da empresa"
 
-msgid "Failed to update configuration"
-msgstr "Falhou ao atualizar a configuração"
-
 msgid "Failed to update consumable"
 msgstr "Falhou ao atualizar o consumo"
 
@@ -3276,7 +3273,7 @@ msgid "Failed to update consumable planning"
 msgstr "Falhou na atualização do planejamento de consumo"
 
 msgid "Failed to update consumable purchasing"
-msgstr "Falhou na atualização da compra de消耗品"
+msgstr "Falhou na atualização da compra de itens consumíveis"
 
 msgid "Failed to update content"
 msgstr "Falhou ao atualizar o conteúdo"
@@ -3770,6 +3767,9 @@ msgstr "Falhou na atualização da unidade de medida"
 msgid "Failed to update user permissions"
 msgstr "Falhou ao atualizar permissões do usuário"
 
+msgid "Failed to update variants quantity"
+msgstr "Falhou ao atualizar a quantidade das variantes"
+
 msgid "Failed to update warehouse transfer"
 msgstr "Falhou na atualização do transferência de estoque"
 
@@ -4127,10 +4127,10 @@ msgid "Journal entry deleted"
 msgstr "Registro excluído"
 
 msgid "Journal entry posted"
-msgstr "Lançamento do日记已记录"
+msgstr "Entrada no diário postada"
 
 msgid "Journal entry reversed"
-msgstr "Entrada do日记已撤销"
+msgstr "Registro de diário invertido"
 
 msgid "Journal entry saved"
 msgstr "Entrada no diário salva"
@@ -4600,10 +4600,10 @@ msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Apenas ativos Ativos Ativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativos"
 
 msgid "Only Draft assets can be purchased"
-msgstr "Apenas ativos草稿可以购买"
+msgstr "Apenas drafts podem ser comprados"
 
 msgid "Only Draft assets can be registered"
-msgstr "Apenas projetos草稿 可以被注册"
+msgstr "Apenas projetos em rascunho podem ser registrados"
 
 msgid "Only posted runs can be repeated"
 msgstr "Apenas corridas publicadas podem ser repetidas"
@@ -4922,9 +4922,6 @@ msgstr "Pedido de compra finalizado"
 msgid "Purchase order line created"
 msgstr "Linha de pedido de compra criada"
 
-msgid "Purchase order lines created"
-msgstr "Linhas da ordem de compra criadas"
-
 msgid "Purchase order not found"
 msgstr "Encomenda de compra não encontrada"
 
@@ -5142,7 +5139,7 @@ msgid "Rule unassigned"
 msgstr "Regra não atribuída"
 
 msgid "Run is not in Draft status"
-msgstr "Ocorrencia não está em estado草稿"
+msgstr "O processo não está em status de rascacielos"
 
 msgid "Sales invoice voided"
 msgstr "Fatura de vendas anulada"
@@ -5155,9 +5152,6 @@ msgstr "Encomenda de vendas criada"
 
 msgid "Sales order line created"
 msgstr "Linha de pedido de venda criada"
-
-msgid "Sales order lines created"
-msgstr "Linhas de pedido de venda criadas"
 
 msgid "Sample recorded"
 msgstr "amostra registrada"
@@ -5684,7 +5678,7 @@ msgid "Successfully deleted shipping method"
 msgstr "Método de envio deletado com sucesso"
 
 msgid "Successfully deleted step"
-msgstr "Deletado com sucesso步"
+msgstr "Deletado com sucesso o passo"
 
 msgid "Successfully deleted stock transfer"
 msgstr "Devolução de estoque deletada com sucesso"
@@ -5783,7 +5777,7 @@ msgid "Supplier quote finalized successfully"
 msgstr "Fornecimento do fornecedor finalizado com sucesso"
 
 msgid "Supplier quote sent successfully"
-msgstr "Fornecedor报价已成功发送"
+msgstr "Fornecedor: cotação enviada com sucesso"
 
 msgid "Supplier type created"
 msgstr "Tipo de fornecedor criado"
@@ -6026,7 +6020,7 @@ msgid "Updated consumable costing"
 msgstr "Atualizado o custo dos consumíveis"
 
 msgid "Updated consumable inventory"
-msgstr "Atualizado o inventário de消耗品库存（此词不适用于葡萄牙语，已省略错误示例，保持原句）"
+msgstr "Atualizado o inventário de consumíveis"
 
 msgid "Updated consumable planning"
 msgstr "Planejamento de consumo atualizado"
@@ -6143,7 +6137,7 @@ msgid "Updated material type"
 msgstr "Tipo de material atualizado"
 
 msgid "Updated no quote reason"
-msgstr "Atualizado sem motivo报价原因中"
+msgstr "Atualizado sem motivo"
 
 msgid "Updated order"
 msgstr "Orden atualizada"
@@ -6378,6 +6372,9 @@ msgstr "Utilizador não encontrado"
 msgid "User record not found"
 msgstr "Registo do utilizador não encontrado"
 
+msgid "Variant quantities added"
+msgstr "Quantidades da variante adicionadas"
+
 msgid "Verification Error"
 msgstr "Erro de verificação"
 
@@ -6439,7 +6436,7 @@ msgid "You belong to more than one company. Pick where to work."
 msgstr "Você pertence a mais de uma empresa. Escolha onde trabalhar."
 
 msgid "You cannot deactivate yourself"
-msgstr "Não pode desativar自己无法解析您的目标语言，请确认是 Portuguese。您提供的翻译结果是：Não pode desativar"
+msgstr "Você não pode desativar sua conta"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

@@ -10,16 +10,16 @@ import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service
 import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
 import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "~/modules/production/jobVariantQuantity.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
 import { insertJob } from "./production.service";
 
-type ConfigRow = Record<string, string | number | boolean>;
-type ConfigTable = {
-  configTable?: ConfigRow[];
+type VariantsQuantityRow = Record<string, string | number | boolean>;
+type VariantsQuantityTable = {
+  variantTable?: VariantsQuantityRow[];
 };
 
 /** Drop the `<prefix>_` from an internal id (e.g. `mwo_RWARP…` -> `RWARP…`). */
@@ -51,7 +51,7 @@ type CuttingCell = {
   valuesKey: string;
   attributeLabel: string;
   quantity: number;
-  configuration: ConfigTable;
+  configuration: VariantsQuantityTable;
 };
 
 export type BundleWorkOrder = NonNullable<
@@ -434,14 +434,14 @@ export async function insertBundleWorkOrder(
  * `{ valuesKey, Quantities }`.
  */
 function extractCuttingCells(configuration: unknown): CuttingCell[] {
-  const cfg = (configuration ?? null) as ConfigTable | null;
-  const table = cfg?.configTable;
+  const cfg = (configuration ?? null) as VariantsQuantityTable | null;
+  const table = cfg?.variantTable;
   if (!Array.isArray(table)) return [];
 
   const toCell = (
     valuesKey: string,
     quantity: number,
-    configuration: ConfigTable
+    configuration: VariantsQuantityTable
   ): CuttingCell => {
     const parts = valuesKey.split("|").filter(Boolean);
     return {
@@ -460,7 +460,7 @@ function extractCuttingCells(configuration: unknown): CuttingCell[] {
     if (quantity <= 0) continue;
     const label = String(row.label ?? "").trim();
     const cell = toCell(valuesKey, quantity, {
-      configTable: [
+      variantTable: [
         {
           valuesKey,
           Quantities: quantity,
@@ -563,7 +563,7 @@ export async function getCuttingSplitProposal(
 
   const plannedQty = await getJobVariantQuantities(client, jobId, companyId);
   const plannedCells = extractCuttingCells(
-    jobVariantQuantitiesToConfigTable(plannedQty.data ?? [])
+    jobVariantQuantitiesToTable(plannedQty.data ?? [])
   );
 
   const cuttingOperationId = await getMasterCuttingOperationId(
@@ -576,13 +576,13 @@ export async function getCuttingSplitProposal(
   if (cuttingOperationId) {
     const cuts = await client
       .from("productionQuantity")
-      .select("quantity, configuration")
+      .select("quantity, variantQuantities")
       .eq("jobOperationId", cuttingOperationId)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null);
     for (const row of cuts.data ?? []) {
-      const rowCells = extractCuttingCells(row.configuration);
+      const rowCells = extractCuttingCells(row.variantQuantities);
       if (rowCells.length === 0) {
         aggregateOnlyCut += Number(row.quantity) || 0;
         continue;

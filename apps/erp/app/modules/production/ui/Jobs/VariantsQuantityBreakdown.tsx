@@ -1,4 +1,4 @@
-import type { ConfigRowDisplayPart } from "~/modules/production/configParamsTableColumns";
+import type { VariantsQuantityRowDisplayPart } from "~/modules/production/variantsQuantityTableColumns";
 
 function formatQuantityValue(value: number) {
   return Number.isInteger(value)
@@ -7,7 +7,7 @@ function formatQuantityValue(value: number) {
 }
 
 /** Same pill style as breakdown rows — use for standalone totals so styling matches. */
-export function ConfigQuantityValue({ value }: { value: number }) {
+export function VariantsQuantityValue({ value }: { value: number }) {
   return (
     <span className="inline-flex min-w-[1.35rem] items-center justify-center rounded-md border border-border bg-background px-1.5 py-0.5 text-xs font-bold tabular-nums text-foreground shadow-sm">
       {formatQuantityValue(value)}
@@ -15,13 +15,13 @@ export function ConfigQuantityValue({ value }: { value: number }) {
   );
 }
 
-type ConfigQuantityBreakdownProps = {
-  parts: ConfigRowDisplayPart[];
+type VariantsQuantityBreakdownProps = {
+  parts: VariantsQuantityRowDisplayPart[];
 };
 
-export function ConfigQuantityBreakdown({
+export function VariantsQuantityBreakdown({
   parts
-}: ConfigQuantityBreakdownProps) {
+}: VariantsQuantityBreakdownProps) {
   if (parts.length === 0) return null;
 
   return (
@@ -48,7 +48,7 @@ export function ConfigQuantityBreakdown({
                   {q.label}
                 </span>
               ) : null}
-              <ConfigQuantityValue value={q.value} />
+              <VariantsQuantityValue value={q.value} />
             </span>
           ))}
         </div>

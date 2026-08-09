@@ -1,8 +1,14 @@
 import type { ConfigurationParameter } from "~/modules/items/types";
+import { readVariantTableRows, VARIANT_TABLE_KEY } from "./variantTableWire";
 
-export type ConfigTableRow = Record<string, string | number | boolean>;
+export {
+  LEGACY_VARIANT_TABLE_KEY,
+  VARIANT_TABLE_KEY
+} from "./variantTableWire";
 
-export type ConfigColumnType =
+export type VariantsQuantityRow = Record<string, string | number | boolean>;
+
+export type VariantsQuantityColumnType =
   | "quantity"
   | "text"
   | "numeric"
@@ -10,25 +16,25 @@ export type ConfigColumnType =
   | "list"
   | "material";
 
-export type ConfigColumn = {
+export type VariantsQuantityColumn = {
   key: string;
   label: string;
-  type: ConfigColumnType;
+  type: VariantsQuantityColumnType;
   options?: string[];
 };
 
-/** Minimal parameter shape required to build config table columns. */
-export type ConfigurationParameterColumnsInput = Pick<
+/** Minimal parameter shape required to build variant quantities table columns. */
+export type VariantQuantityParameterColumnsInput = Pick<
   ConfigurationParameter,
   "key" | "label" | "dataType" | "listOptions"
 >;
 
-export function buildConfigColumns(
-  parameters: ConfigurationParameterColumnsInput[],
+export function buildVariantsQuantityColumns(
+  parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string
 ): {
-  primaryParam: ConfigurationParameterColumnsInput | null;
-  columns: ConfigColumn[];
+  comboParam: VariantQuantityParameterColumnsInput | null;
+  columns: VariantsQuantityColumn[];
 } {
   // Style combo: single valuesKey list → row labels + Quantities (not matrix).
   const firstList = parameters.find((p) => p.dataType === "list");
@@ -38,7 +44,7 @@ export function buildConfigColumns(
 
   if (isStyleCombo && firstList) {
     return {
-      primaryParam: firstList,
+      comboParam: firstList,
       columns: [
         {
           key: "valuesKey",
@@ -59,14 +65,17 @@ export function buildConfigColumns(
   // the attribute combo (valuesKey + Quantities) handled above. Any non-combo
   // config collapses to a single plain Quantities column.
   return {
-    primaryParam: null,
+    comboParam: null,
     columns: [
       { key: "Quantities", label: defaultQuantityLabel, type: "quantity" }
     ]
   };
 }
 
-function getMergeKey(row: ConfigTableRow, columns: ConfigColumn[]): string {
+function getMergeKey(
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[]
+): string {
   const descriptorColumns = columns.filter((col) => col.type !== "quantity");
 
   if (descriptorColumns.length === 0) {
@@ -78,11 +87,11 @@ function getMergeKey(row: ConfigTableRow, columns: ConfigColumn[]): string {
   );
 }
 
-export function mergeConfigTableRows(
-  rows: ConfigTableRow[],
-  columns: ConfigColumn[]
-): ConfigTableRow[] {
-  const rowsByKey = new Map<string, ConfigTableRow>();
+export function mergeVariantsQuantityRows(
+  rows: VariantsQuantityRow[],
+  columns: VariantsQuantityColumn[]
+): VariantsQuantityRow[] {
+  const rowsByKey = new Map<string, VariantsQuantityRow>();
 
   for (const row of rows) {
     const key = getMergeKey(row, columns);
@@ -113,9 +122,9 @@ function isZeroOrEmpty(value: string | number | boolean | undefined): boolean {
   return Number(stringValue) === 0;
 }
 
-export function hasConfigRowValue(
-  row: ConfigTableRow,
-  columns: ConfigColumn[]
+export function hasVariantRowValue(
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[]
 ): boolean {
   const quantityColumns = columns.filter((col) => col.type === "quantity");
   if (quantityColumns.length > 0) {
@@ -125,23 +134,21 @@ export function hasConfigRowValue(
   return columns.some((col) => !isZeroOrEmpty(row[col.key]));
 }
 
-export function getConfigTableRows(configuration: unknown): ConfigTableRow[] {
-  if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
-  ) {
-    return [];
-  }
-
-  const configTable = (configuration as Record<string, unknown>).configTable;
-  if (!Array.isArray(configTable)) return [];
-
-  return configTable as ConfigTableRow[];
+/** Read combo qty rows from `variantTable` (dual-reads legacy `configTable`). */
+export function getVariantsQuantityRows(
+  variantQuantities: unknown
+): VariantsQuantityRow[] {
+  return readVariantTableRows(variantQuantities) as VariantsQuantityRow[];
 }
 
-export type ConfigQuantityCell = {
+/** Persist combo qty rows under the current wire key. */
+export function toVariantTablePayload(rows: VariantsQuantityRow[]): {
+  variantTable: VariantsQuantityRow[];
+} {
+  return { [VARIANT_TABLE_KEY]: rows };
+}
+
+export type VariantsQuantityCell = {
   key: string;
   label: string;
   quantity: number;
@@ -161,20 +168,20 @@ function optionLabelOf(
 }
 
 /**
- * Flatten a stored config table into one cell per non-zero quantity, for
+ * Flatten a stored variant quantities table into one cell per non-zero quantity, for
  * summary badges (`BK · S ×2`) and expand lists. Combo-only: each row is a
  * `valuesKey` + `Quantities`, labelled from `label` or the valuesKey
  * (`|` → ` · `). Legacy Color×Size matrix configs are retired (yield nothing).
  */
-export function getConfigQuantityCells(
-  configuration: unknown,
+export function getVariantsQuantityCells(
+  variantQuantities: unknown,
   optionLabels?: Record<string, string>
-): ConfigQuantityCell[] {
+): VariantsQuantityCell[] {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return [];
   }
@@ -182,9 +189,11 @@ export function getConfigQuantityCells(
   // Combo-only: quantity configs are { valuesKey, Quantities } rows. Legacy
   // Color×Size matrices are retired.
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
-  const cells: ConfigQuantityCell[] = [];
+  const cells: VariantsQuantityCell[] = [];
 
-  for (const [rowIndex, row] of getConfigTableRows(configuration).entries()) {
+  for (const [rowIndex, row] of getVariantsQuantityRows(
+    variantQuantities
+  ).entries()) {
     const valuesKey = String(row.valuesKey ?? "").trim();
     if (!valuesKey) continue;
     const rawQty = row.Quantities;
@@ -203,25 +212,25 @@ export function getConfigQuantityCells(
   return cells;
 }
 
-export type ComboConfigRow = {
+export type ComboVariantsQuantityRow = {
   valuesKey: string;
   Quantities: number;
   label?: string;
 };
 
 /**
- * Read stored config → combo editor rows (`valuesKey` + `Quantities`).
+ * Read stored variant quantities → combo editor rows (`valuesKey` + `Quantities`).
  * Configs are combo-only now; anything else yields no rows.
  */
-export function configTableToComboRows(
-  configuration: unknown,
+export function variantsQuantityToComboRows(
+  variantQuantities: unknown,
   optionLabels?: Record<string, string>
-): ComboConfigRow[] {
+): ComboVariantsQuantityRow[] {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return [];
   }
@@ -229,9 +238,9 @@ export function configTableToComboRows(
   // Combo-only: pass through { valuesKey, Quantities } rows. Legacy Color×Size
   // matrix configs are retired.
   const labelOf = (value: string) => optionLabelOf(value, optionLabels);
-  const out: ComboConfigRow[] = [];
+  const out: ComboVariantsQuantityRow[] = [];
 
-  for (const row of getConfigTableRows(configuration)) {
+  for (const row of getVariantsQuantityRows(variantQuantities)) {
     const valuesKey = String(row.valuesKey ?? "").trim();
     if (!valuesKey) continue;
     const quantity = Number(row.Quantities) || 0;
@@ -246,9 +255,9 @@ export function configTableToComboRows(
   return out;
 }
 
-export function formatConfigRowLabel(
-  row: ConfigTableRow,
-  columns: ConfigColumn[],
+export function formatVariantRowLabel(
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[],
   /** Display label per list-option value (e.g. color code -> color name). The
    * stored value stays the code; only the shown text changes. */
   optionLabels?: Record<string, string>
@@ -290,32 +299,35 @@ export function formatConfigRowLabel(
   return `${descriptorParts.join(", ")} ${quantityParts.join(", ")}`;
 }
 
-export function formatConfigRowLabels(
-  configuration: unknown,
-  parameters: ConfigurationParameterColumnsInput[],
+export function formatVariantRowLabels(
+  variantQuantities: unknown,
+  parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
 ): string[] {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
-  const rows = getConfigTableRows(configuration);
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
+  const rows = getVariantsQuantityRows(variantQuantities);
 
   return rows
-    .filter((row) => hasConfigRowValue(row, columns))
-    .map((row) => formatConfigRowLabel(row, columns, optionLabels));
+    .filter((row) => hasVariantRowValue(row, columns))
+    .map((row) => formatVariantRowLabel(row, columns, optionLabels));
 }
 
-export type ConfigRowDisplayPart = {
+export type VariantsQuantityRowDisplayPart = {
   descriptor: string | null;
   quantities: { label: string; value: number }[];
 };
 
-export function getConfigRowDisplayPart(
-  row: ConfigTableRow,
-  columns: ConfigColumn[],
+export function getVariantQuantityRowDisplayPart(
+  row: VariantsQuantityRow,
+  columns: VariantsQuantityColumn[],
   /** Display label per list-option value (e.g. color code -> color name). The
    * stored value stays the code; only the shown text changes. */
   optionLabels?: Record<string, string>
-): ConfigRowDisplayPart {
+): VariantsQuantityRowDisplayPart {
   const descriptorColumns = columns.filter((col) => col.type !== "quantity");
   const quantityColumns = columns.filter((col) => col.type === "quantity");
 
@@ -342,18 +354,21 @@ export function getConfigRowDisplayPart(
   return { descriptor, quantities };
 }
 
-export function getConfigRowDisplayParts(
-  configuration: unknown,
-  parameters: ConfigurationParameterColumnsInput[],
+export function getVariantQuantityRowDisplayParts(
+  variantQuantities: unknown,
+  parameters: VariantQuantityParameterColumnsInput[],
   defaultQuantityLabel: string,
   optionLabels?: Record<string, string>
-): ConfigRowDisplayPart[] {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
-  const rows = getConfigTableRows(configuration);
+): VariantsQuantityRowDisplayPart[] {
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
+  const rows = getVariantsQuantityRows(variantQuantities);
 
   return rows
-    .filter((row) => hasConfigRowValue(row, columns))
-    .map((row) => getConfigRowDisplayPart(row, columns, optionLabels));
+    .filter((row) => hasVariantRowValue(row, columns))
+    .map((row) => getVariantQuantityRowDisplayPart(row, columns, optionLabels));
 }
 
 export type ReportedTargetCell = {
@@ -368,30 +383,37 @@ export type ReportedTargetRow = {
 };
 
 export function buildReportedTargetRows({
-  targetConfiguration,
-  reportedConfigurations,
-  pickupConfigurations = [],
+  targetVariantQuantities,
+  reportedVariantQuantities,
+  pickupVariantQuantities = [],
   parameters,
   defaultQuantityLabel
 }: {
-  targetConfiguration: unknown;
-  reportedConfigurations: unknown[];
-  pickupConfigurations?: unknown[];
-  parameters: ConfigurationParameterColumnsInput[];
+  targetVariantQuantities: unknown;
+  reportedVariantQuantities: unknown[];
+  pickupVariantQuantities?: unknown[];
+  parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
 }): ReportedTargetRow[] {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
 
-  const targetRows = mergeConfigTableRows(
-    getConfigTableRows(targetConfiguration),
+  const targetRows = mergeVariantsQuantityRows(
+    getVariantsQuantityRows(targetVariantQuantities),
     columns
   );
-  const reportedRows = mergeConfigTableRows(
-    reportedConfigurations.flatMap((config) => getConfigTableRows(config)),
+  const reportedRows = mergeVariantsQuantityRows(
+    reportedVariantQuantities.flatMap((config) =>
+      getVariantsQuantityRows(config)
+    ),
     columns
   );
-  const pickupRows = mergeConfigTableRows(
-    pickupConfigurations.flatMap((config) => getConfigTableRows(config)),
+  const pickupRows = mergeVariantsQuantityRows(
+    pickupVariantQuantities.flatMap((config) =>
+      getVariantsQuantityRows(config)
+    ),
     columns
   );
 
@@ -415,7 +437,7 @@ export function buildReportedTargetRows({
     const targetRow = targetByKey.get(key);
     const reportedRow = reportedByKey.get(key);
     const pickupRow = pickupByKey.get(key);
-    const baseRow: ConfigTableRow = {
+    const baseRow: VariantsQuantityRow = {
       ...(targetRow ?? reportedRow ?? pickupRow ?? {})
     };
 
@@ -433,41 +455,41 @@ export function buildReportedTargetRows({
   });
 }
 
-export type ConfigTableReferenceMode = "original" | "remaining";
+export type VariantsQuantityTableReferenceMode = "original" | "remaining";
 
-/** Context for disposition config-table editing with click-to-fill reference values. */
-export type ConfigTableReferenceContext = {
-  mode: ConfigTableReferenceMode;
-  originalConfiguration: unknown;
-  /** Active sibling line configurations (excluding the line being edited). */
-  otherLineConfigurations: unknown[];
+/** Context for disposition variants-quantity editing with click-to-fill reference values. */
+export type VariantsQuantityReferenceContext = {
+  mode: VariantsQuantityTableReferenceMode;
+  originalVariantTable: unknown;
+  /** Active sibling line variant quantities (excluding the line being edited). */
+  otherLineVariantTables: unknown[];
   /** When set, use pickup-based hints for this employee instead of job target hints */
   employeeId?: string;
   /** Pickup quantities by employee (for pickup-based hint calculation) */
   pickupsByEmployee?: Record<
     string,
-    { quantity: number; configuration: unknown }[]
+    { quantity: number; variantQuantities: unknown }[]
   >;
   /** Production quantities already reported by the selected employee */
-  employeeReportedConfigurations?: unknown[];
-  /** When set, the config-table loader fetches fresh pickup/reported data for this job operation */
+  employeeReportedVariantQuantities?: unknown[];
+  /** When set, the variants-quantity loader fetches fresh pickup/reported data for this job operation */
   jobId?: string;
   jobOperationId?: string;
   /** Sibling line configs in the current form (excluding the line being edited). */
-  siblingLineConfigurations?: unknown[];
+  siblingLineVariantQuantities?: unknown[];
 };
 
-export function buildConfigTableEditorState({
+export function buildVariantsQuantityEditorState({
   parameters,
   defaultQuantityLabel,
-  currentConfiguration,
+  currentVariantQuantities,
   referenceContext,
   prefillFromReference = false
 }: {
-  parameters: ConfigurationParameterColumnsInput[];
+  parameters: VariantQuantityParameterColumnsInput[];
   defaultQuantityLabel: string;
-  currentConfiguration: unknown;
-  referenceContext?: ConfigTableReferenceContext | null;
+  currentVariantQuantities: unknown;
+  referenceContext?: VariantsQuantityReferenceContext | null;
   /**
    * Seed each editable quantity cell that has no current draft value with its
    * reference (remaining) quantity, so e.g. reporting cutting starts pre-filled
@@ -475,14 +497,17 @@ export function buildConfigTableEditorState({
    */
   prefillFromReference?: boolean;
 }): {
-  rows: ConfigTableRow[];
+  rows: VariantsQuantityRow[];
   referenceByRowIndex: Array<Record<string, number>>;
 } {
-  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
+  const { columns } = buildVariantsQuantityColumns(
+    parameters,
+    defaultQuantityLabel
+  );
 
   if (!referenceContext) {
-    const currentRows = mergeConfigTableRows(
-      getConfigTableRows(currentConfiguration),
+    const currentRows = mergeVariantsQuantityRows(
+      getVariantsQuantityRows(currentVariantQuantities),
       columns
     );
     return {
@@ -491,17 +516,17 @@ export function buildConfigTableEditorState({
     };
   }
 
-  const originalRows = mergeConfigTableRows(
-    getConfigTableRows(referenceContext.originalConfiguration),
+  const originalRows = mergeVariantsQuantityRows(
+    getVariantsQuantityRows(referenceContext.originalVariantTable),
     columns
   );
-  const currentRows = mergeConfigTableRows(
-    getConfigTableRows(currentConfiguration),
+  const currentRows = mergeVariantsQuantityRows(
+    getVariantsQuantityRows(currentVariantQuantities),
     columns
   );
-  const otherRows = mergeConfigTableRows(
-    referenceContext.otherLineConfigurations.flatMap((config) =>
-      getConfigTableRows(config)
+  const otherRows = mergeVariantsQuantityRows(
+    referenceContext.otherLineVariantTables.flatMap((config) =>
+      getVariantsQuantityRows(config)
     ),
     columns
   );
@@ -523,18 +548,18 @@ export function buildConfigTableEditorState({
   const usePickupHints = employeePickups.length > 0;
 
   const pickupRows = usePickupHints
-    ? mergeConfigTableRows(
+    ? mergeVariantsQuantityRows(
         employeePickups.flatMap((pickup) =>
-          getConfigTableRows(pickup.configuration)
+          getVariantsQuantityRows(pickup.variantQuantities)
         ),
         columns
       )
     : [];
 
   const employeeProducedRows = usePickupHints
-    ? mergeConfigTableRows(
-        (referenceContext.employeeReportedConfigurations ?? []).flatMap(
-          (config) => getConfigTableRows(config)
+    ? mergeVariantsQuantityRows(
+        (referenceContext.employeeReportedVariantQuantities ?? []).flatMap(
+          (config) => getVariantsQuantityRows(config)
         ),
         columns
       )
@@ -557,14 +582,16 @@ export function buildConfigTableEditorState({
       )
   ];
 
-  const rows: ConfigTableRow[] = [];
+  const rows: VariantsQuantityRow[] = [];
   const referenceByRowIndex: Array<Record<string, number>> = [];
 
   for (const key of orderedKeys) {
     const template =
-      originalByKey.get(key) ?? currentByKey.get(key) ?? ({} as ConfigTableRow);
+      originalByKey.get(key) ??
+      currentByKey.get(key) ??
+      ({} as VariantsQuantityRow);
     const current = currentByKey.get(key);
-    const row: ConfigTableRow = { ...template };
+    const row: VariantsQuantityRow = { ...template };
 
     for (const col of columns) {
       if (
@@ -583,7 +610,9 @@ export function buildConfigTableEditorState({
       if (usePickupHints) {
         let pickupQty = 0;
         for (const pickup of employeePickups) {
-          for (const pickupRow of getConfigTableRows(pickup.configuration)) {
+          for (const pickupRow of getVariantsQuantityRows(
+            pickup.variantQuantities
+          )) {
             if (getMergeKey(pickupRow, columns) === key) {
               pickupQty += Number(pickupRow[col.key]) || 0;
             }
@@ -626,73 +655,73 @@ export function fillValueFromReference(referenceValue: number) {
   return Math.max(0, referenceValue);
 }
 
-/** Job target config plus already-reported line configs for an operation. */
-export type ConfigReferenceSource = {
-  jobConfiguration: unknown;
-  reportedConfigurations: unknown[];
+/** Job target variant quantities plus already-reported line configs for an operation. */
+export type VariantsQuantityReferenceSource = {
+  jobVariantTable: unknown;
+  reportedVariantQuantities: unknown[];
   /** Pickup data grouped by employee for pickup-based hints */
   pickupsByEmployee?: Record<
     string,
-    { quantity: number; configuration: unknown }[]
+    { quantity: number; variantQuantities: unknown }[]
   >;
   /** Production quantities grouped by employee */
-  reportedConfigurationsByEmployee?: Record<string, unknown[]>;
+  reportedVariantQuantitiesByEmployee?: Record<string, unknown[]>;
 };
 
 /** Hint quantities = job required − already reported (per config row/column).
  * When employeeId is provided, uses pickup-based hints (pickup - produced) instead. */
 export function buildJobRemainingReferenceContext(
-  source: ConfigReferenceSource,
+  source: VariantsQuantityReferenceSource,
   options?: {
-    excludeConfigurations?: unknown[];
+    excludeVariantQuantities?: unknown[];
     employeeId?: string;
     /** Sibling line configs in the current form (excluding the line being edited). */
-    siblingLineConfigurations?: unknown[];
+    siblingLineVariantQuantities?: unknown[];
   }
-): ConfigTableReferenceContext {
+): VariantsQuantityReferenceContext {
   const exclude = new Set(
-    (options?.excludeConfigurations ?? []).filter((config) => config != null)
+    (options?.excludeVariantQuantities ?? []).filter((config) => config != null)
   );
-  const siblingLineConfigurations = (
-    options?.siblingLineConfigurations ?? []
+  const siblingLineVariantQuantities = (
+    options?.siblingLineVariantQuantities ?? []
   ).filter((config) => config != null && !exclude.has(config));
 
   const employeeId = options?.employeeId?.trim() || undefined;
-  const employeeReportedConfigurations = employeeId
+  const employeeReportedVariantQuantities = employeeId
     ? [
-        ...(source.reportedConfigurationsByEmployee?.[employeeId] ?? []),
-        ...siblingLineConfigurations
+        ...(source.reportedVariantQuantitiesByEmployee?.[employeeId] ?? []),
+        ...siblingLineVariantQuantities
       ].filter((config) => config != null && !exclude.has(config))
     : undefined;
 
   return {
     mode: "remaining",
-    originalConfiguration: source.jobConfiguration,
-    otherLineConfigurations: [
-      ...source.reportedConfigurations,
-      ...siblingLineConfigurations
+    originalVariantTable: source.jobVariantTable,
+    otherLineVariantTables: [
+      ...source.reportedVariantQuantities,
+      ...siblingLineVariantQuantities
     ].filter((config) => config != null && !exclude.has(config)),
     employeeId,
     pickupsByEmployee: source.pickupsByEmployee,
-    employeeReportedConfigurations
+    employeeReportedVariantQuantities
   };
 }
 
-/** Build reference context for the item config-table overlay.
+/** Build reference context for the item variants-quantity overlay.
  * When job + operation ids are available, the server reloads pickup/reported data. */
-export function buildProductionConfigTableReferenceContext({
+export function buildProductionVariantsQuantityReferenceContext({
   source,
   employeeId,
   jobId,
   jobOperationId,
-  siblingLineConfigurations = []
+  siblingLineVariantQuantities = []
 }: {
-  source?: ConfigReferenceSource | null;
+  source?: VariantsQuantityReferenceSource | null;
   employeeId?: string;
   jobId?: string;
   jobOperationId?: string;
-  siblingLineConfigurations?: unknown[];
-}): ConfigTableReferenceContext | undefined {
+  siblingLineVariantQuantities?: unknown[];
+}): VariantsQuantityReferenceContext | undefined {
   const trimmedJobId = jobId?.trim();
   const trimmedJobOperationId = jobOperationId?.trim();
   const trimmedEmployeeId = employeeId?.trim() || undefined;
@@ -700,12 +729,12 @@ export function buildProductionConfigTableReferenceContext({
   if (trimmedJobOperationId) {
     return {
       mode: "remaining",
-      originalConfiguration: null,
-      otherLineConfigurations: [],
+      originalVariantTable: null,
+      otherLineVariantTables: [],
       employeeId: trimmedEmployeeId,
       jobId: trimmedJobId,
       jobOperationId: trimmedJobOperationId,
-      siblingLineConfigurations
+      siblingLineVariantQuantities
     };
   }
 
@@ -713,6 +742,6 @@ export function buildProductionConfigTableReferenceContext({
 
   return buildJobRemainingReferenceContext(source, {
     employeeId: trimmedEmployeeId,
-    siblingLineConfigurations
+    siblingLineVariantQuantities
   });
 }

@@ -2155,9 +2155,6 @@ msgstr "Parametros de Configuração"
 msgid "Configuration Parameters"
 msgstr "Parâmetros de Configuração"
 
-msgid "Configuration quantities"
-msgstr "Quantidades de configuração"
-
 msgid "Configurator"
 msgstr "Configurador"
 
@@ -2187,9 +2184,6 @@ msgstr "Configure notificações para quando despachos de manutenção são cria
 
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Configure notificações para quando novas sugestões são enviadas."
-
-msgid "Configure quantities"
-msgstr "Configurar quantidades"
 
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Configure as contas padrão usadas para vários tipos de transação em todo o seu sistema"
@@ -3834,9 +3828,6 @@ msgstr "Editar Categoria"
 msgid "Edit column visibility"
 msgstr "Editar visibilidade da coluna"
 
-msgid "Edit configuration"
-msgstr "Edição de configuração"
-
 msgid "Edit Contact"
 msgstr "Editar Contacto"
 
@@ -4504,7 +4495,7 @@ msgid "Everything from Starter"
 msgstr "Tudo do Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
-msgstr "超cede o limite de {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB - remova algumas anexos para enviar."
+msgstr "Passa o limite de anexo {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remova alguns anexos para enviar."
 
 msgid "Exceeds available"
 msgstr "Excede o disponível"
@@ -5187,7 +5178,7 @@ msgid "Failed to delete job operation tool"
 msgstr "Falhou na exclusão da ferramenta da operação do trabalho"
 
 msgid "Failed to delete journal entry"
-msgstr "Falhou na exclusão do registro日记"
+msgstr "Não foi possível apagar entrada de diário"
 
 msgid "Failed to delete kanban"
 msgstr "Falhou na exclusão do kanban"
@@ -6090,7 +6081,7 @@ msgid "Failed to insert consumable"
 msgstr "Falhou ao inserir o consumo"
 
 msgid "Failed to insert consumable inventory"
-msgstr "Falhou ao inserir estoque de消耗已经超出允许的长度限制，请尝试再次。"
+msgstr "Falhou na inserção do inventário de itens consumíveis"
 
 msgid "Failed to insert cost center"
 msgstr "Falhou ao inserir o centro de custos"
@@ -6927,7 +6918,7 @@ msgid "Failed to post depreciation run"
 msgstr "Falhou na postagem da execução de amortização"
 
 msgid "Failed to post journal entry"
-msgstr "Falhou ao postar entrada no日记账"
+msgstr "Falhou ao postar entrada contábil"
 
 msgid "Failed to post receipt"
 msgstr "Falhou ao postar recepção"
@@ -7095,7 +7086,7 @@ msgid "Failed to save job variant quantities"
 msgstr "Falhou ao salvar as quantidades da variante do trabalho"
 
 msgid "Failed to save journal entry"
-msgstr "Falhou ao salvar entrada no日记本"
+msgstr "Não foi possível salvar entrada do diário"
 
 msgid "Failed to save passkey"
 msgstr "Falhou ao salvar a passkey"
@@ -7219,9 +7210,6 @@ msgstr "Falhou na atualização das reivindicações"
 
 msgid "Failed to update company"
 msgstr "Falhou na atualização da empresa"
-
-msgid "Failed to update configuration"
-msgstr "Falhou ao atualizar a configuração"
 
 msgid "Failed to update configuration parameter"
 msgstr "Falha ao atualizar parâmetro de configuração"
@@ -7754,6 +7742,9 @@ msgstr "Falhou ao atualizar unidade de medida"
 msgid "Failed to update user permissions"
 msgstr "Falhou ao atualizar permissões do usuário"
 
+msgid "Failed to update variants quantity"
+msgstr "Falhou ao atualizar a quantidade das variantes"
+
 msgid "Failed to update warehouse transfer"
 msgstr "Falhou na atualização do transferência de estoque"
 
@@ -8139,8 +8130,8 @@ msgstr "Conta de Garantia"
 msgid "Go to App"
 msgstr "Ir para App"
 
-msgid "Goal quantity for this configuration."
-msgstr "Quantidade objetivo para esta configuração."
+msgid "Goal quantity for this variant."
+msgstr "Quantidade objetivo para esta variante."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -8949,10 +8940,10 @@ msgid "Journal entry deleted"
 msgstr "Registro deletado"
 
 msgid "Journal entry posted"
-msgstr "Lançamento do日记已记录"
+msgstr "Lançamento do diário registrado"
 
 msgid "Journal entry reversed"
-msgstr "Entrada do日记已撤销"
+msgstr "Entrada do diário anulada"
 
 msgid "Journal entry saved"
 msgstr "Entrada no diário salva"
@@ -10267,7 +10258,7 @@ msgid "Next Sequence"
 msgstr "Próxima Sequência"
 
 msgid "Next slide"
-msgstr "Próxima滑块"
+msgstr "Próxima slide"
 
 msgid "Next Year"
 msgstr "Próximo Ano"
@@ -10334,9 +10325,6 @@ msgstr "Nenhum registro de calibração encontrado"
 msgid "No changes recorded"
 msgstr "Nenhuma alteração registrada"
 
-msgid "No changes yet."
-msgstr "Ainda não há alterações."
-
 msgid "No chat history"
 msgstr "Sem histórico de chat"
 
@@ -10354,9 +10342,6 @@ msgstr "Não há condição que possa se aplicar"
 
 msgid "No conditions — rule matches all jobs"
 msgstr "Sem condições — regra atende a todos os empilhas"
-
-msgid "No configuration quantities recorded yet."
-msgstr "Nenhuma quantidade de configuração registrada ainda."
 
 msgid "No conversion is required"
 msgstr "Nenhuma conversão é necessária"
@@ -10580,6 +10565,9 @@ msgstr "Nenhum valor disponível"
 msgid "No values yet."
 msgstr "Ainda não há valores."
 
+msgid "No variant quantities recorded yet."
+msgstr "Ainda não foram registradas quantidades para nenhuma variante."
+
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Não há registro de estoque no armazém para este item. Você ainda pode fazê-lo – o estoque disponível ficará negativo até que a contagem seja reconciliada."
 
@@ -10734,10 +10722,10 @@ msgid "Only assigned employees appear when reporting quantity. Leave empty to al
 msgstr "Apenas os funcionários atribuídos aparecem ao relatar a quantidade. Deixe em branco para permitir todos."
 
 msgid "Only Draft assets can be purchased"
-msgstr "Apenas ativos草稿可以购买"
+msgstr "Apenas projetos podem ser comprados"
 
 msgid "Only Draft assets can be registered"
-msgstr "Apenas projetos草稿 可以被注册"
+msgstr "Apenas rascunhos podem ser registrados"
 
 msgid "Only posted runs can be repeated"
 msgstr "Apenas corridas publicadas podem ser repetidas"
@@ -11807,9 +11795,6 @@ msgstr "Linha de Ordem de Compra"
 msgid "Purchase order line created"
 msgstr "Linha de pedido de compra criada"
 
-msgid "Purchase order lines created"
-msgstr "Linhas de pedido de compra criadas"
-
 msgid "Purchase Order Location"
 msgstr "Localização da Ordem de Compra"
 
@@ -12714,7 +12699,7 @@ msgid "Run ID"
 msgstr "ID de Execução"
 
 msgid "Run is not in Draft status"
-msgstr "Ocorrencia não está em estado草稿"
+msgstr "Não está em status de rascacielos"
 
 msgid "Run Matching"
 msgstr "Executar Ajuste"
@@ -12793,9 +12778,6 @@ msgstr "Linha de Pedido de Venda"
 
 msgid "Sales order line created"
 msgstr "Linha de pedido de venda criada"
-
-msgid "Sales order lines created"
-msgstr "Linhas de pedido de venda criadas"
 
 msgid "Sales Order Location"
 msgstr "Localização da Ordem de Venda"
@@ -14425,7 +14407,7 @@ msgid "Supplier Quote Notifications"
 msgstr "Notificações de Cotação de Fornecedor"
 
 msgid "Supplier quote sent successfully"
-msgstr "Fornecedor报价已成功发送"
+msgstr "Fornecedor: cotação enviada com sucesso"
 
 msgid "Supplier Quotes"
 msgstr "Cotações de Fornecedor"
@@ -15387,7 +15369,7 @@ msgid "Updated consumable costing"
 msgstr "Atualizado o custo dos consumíveis"
 
 msgid "Updated consumable inventory"
-msgstr "Atualizado o inventário de消耗品库存（此词不适用于葡萄牙语，已省去）"
+msgstr "Estoque de consumo atualizado"
 
 msgid "Updated consumable planning"
 msgstr "Planejamento de consumo atualizado"
@@ -15504,7 +15486,7 @@ msgid "Updated material type"
 msgstr "Tipo de material atualizado"
 
 msgid "Updated no quote reason"
-msgstr "Atualizado sem motivo报价原因中"
+msgstr "Atualizado motivo sem citação"
 
 msgid "Updated order"
 msgstr "Orden atualizada"
@@ -15865,6 +15847,15 @@ msgstr "Valores"
 msgid "Variances"
 msgstr "Variações"
 
+msgid "Variant quantities"
+msgstr "Quantidades da variante"
+
+msgid "Variant quantities added"
+msgstr "Quantidades da variante adicionadas"
+
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "Número de IVA"
 
@@ -15933,12 +15924,6 @@ msgstr "Visualizar fatura de processo"
 
 msgid "View bundles"
 msgstr "Ver pacotes"
-
-msgid "View configuration parameters"
-msgstr "Visualizar parâmetros de configuração"
-
-msgid "View configuration quantities"
-msgstr "Visualizar configurações quantitativas"
 
 msgid "View Contact"
 msgstr "Ver Contacto"
@@ -16050,6 +16035,12 @@ msgstr "Ver Gráfico de Rastreabilidade"
 
 msgid "View Transfer"
 msgstr "Ver Transferência"
+
+msgid "View variant quantities"
+msgstr "Visualizar quantidades da variante"
+
+msgid "View variants quantity"
+msgstr "Visualizar quantidade de variantes"
 
 msgid "Visibilities"
 msgstr "Visibilidades"
@@ -16217,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Quando ativo, essa regra é disparada para todo alvo do seu tipo. As linhas de atribuição são ignoradas mas preservadas."
 
 msgid "Which set of attributes this item's variants use"
-msgstr "Qual conjunto de atributos as variantes deste item usam"
+msgstr "Qual conjunto de atributos este item variante utiliza"
 
 msgid "Who Can Approve"
 msgstr "Quem Pode Aprovar"
@@ -16347,7 +16338,7 @@ msgid "You can only see this key once. Store it safely."
 msgstr "Você só pode ver esta chave uma vez. Guarde-a com segurança."
 
 msgid "You cannot deactivate yourself"
-msgstr "Não pode desativar自己无法解析您的目标语言，请确认是 Portuguese。您提供的翻译结果是：Não pode desativar"
+msgstr "Você não pode desativar sua conta"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
@@ -16429,7 +16420,7 @@ msgstr "Sua solicitação foi enviada."
 
 #. placeholder {0}: data.companyName
 msgid "Your request to join {0} has already been submitted and is pending review."
-msgstr "Sua solicitação para se juntar ao {0} já foi enviada e está aguardando审批中，请稍后。"
+msgstr "Sua solicitação para se juntar ao {0} já foi enviada e está sendo revisada."
 
 msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
 msgstr "Sua solicitação para se juntar à {companyName} foi enviada. Um administrador revisará sua aplicação em breve."

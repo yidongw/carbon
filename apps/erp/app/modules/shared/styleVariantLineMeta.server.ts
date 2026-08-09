@@ -1,6 +1,6 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { StyleVariantLineMeta } from "~/modules/shared/styleConfigDisplay";
+import type { StyleVariantLineMeta } from "~/modules/shared/variantDisplay";
 
 /**
  * For order line itemIds that are variant SKUs, return the parent + attribute

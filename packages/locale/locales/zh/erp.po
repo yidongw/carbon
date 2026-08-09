@@ -2156,9 +2156,6 @@ msgstr "配置参数"
 msgid "Configuration Parameters"
 msgstr "配置参数"
 
-msgid "Configuration quantities"
-msgstr "配置数量"
-
 msgid "Configurator"
 msgstr "配置器"
 
@@ -2188,9 +2185,6 @@ msgstr "在车间创建维护调度时配置通知。通知根据故障模式类
 
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "配置新建议提交时的通知设置。"
-
-msgid "Configure quantities"
-msgstr "配置数量"
 
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "配置系统中各种交易类型使用的默认账户"
@@ -3834,9 +3828,6 @@ msgstr "编辑类别"
 
 msgid "Edit column visibility"
 msgstr "编辑列显示"
-
-msgid "Edit configuration"
-msgstr "编辑配置"
 
 msgid "Edit Contact"
 msgstr "编辑联系人"
@@ -7221,9 +7212,6 @@ msgstr "更新索赔失败"
 msgid "Failed to update company"
 msgstr "更新公司信息失败"
 
-msgid "Failed to update configuration"
-msgstr "配置更新失败"
-
 msgid "Failed to update configuration parameter"
 msgstr "配置参数更新失败"
 
@@ -7755,6 +7743,9 @@ msgstr "更新计量单位失败"
 msgid "Failed to update user permissions"
 msgstr "更新用户权限失败"
 
+msgid "Failed to update variants quantity"
+msgstr "更新规格数量失败"
+
 msgid "Failed to update warehouse transfer"
 msgstr "库存转移更新失败"
 
@@ -8140,8 +8131,8 @@ msgstr "总账科目"
 msgid "Go to App"
 msgstr "进入应用"
 
-msgid "Goal quantity for this configuration."
-msgstr "此配置的目标数量。"
+msgid "Goal quantity for this variant."
+msgstr "此规格的目标数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -10335,9 +10326,6 @@ msgstr "未找到校准记录"
 msgid "No changes recorded"
 msgstr "未记录任何更改"
 
-msgid "No changes yet."
-msgstr "暂无更改。"
-
 msgid "No chat history"
 msgstr "没有聊天记录"
 
@@ -10355,9 +10343,6 @@ msgstr "没有条件匹配"
 
 msgid "No conditions — rule matches all jobs"
 msgstr "无条件——规则适用于所有工作"
-
-msgid "No configuration quantities recorded yet."
-msgstr "尚未记录任何配置数量。"
 
 msgid "No conversion is required"
 msgstr "无需转换"
@@ -10580,6 +10565,9 @@ msgstr "暂无数据可用"
 
 msgid "No values yet."
 msgstr "暂无值。"
+
+msgid "No variant quantities recorded yet."
+msgstr "尚未记录规格数量。"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
@@ -11808,9 +11796,6 @@ msgstr "采购订单行"
 msgid "Purchase order line created"
 msgstr "已创建采购订单行"
 
-msgid "Purchase order lines created"
-msgstr "已创建采购订单行"
-
 msgid "Purchase Order Location"
 msgstr "采购订单位置"
 
@@ -12793,9 +12778,6 @@ msgid "Sales Order Line"
 msgstr "销售订单行"
 
 msgid "Sales order line created"
-msgstr "已创建销售订单行"
-
-msgid "Sales order lines created"
 msgstr "已创建销售订单行"
 
 msgid "Sales Order Location"
@@ -15866,6 +15848,15 @@ msgstr "值"
 msgid "Variances"
 msgstr "差异"
 
+msgid "Variant quantities"
+msgstr "规格数量"
+
+msgid "Variant quantities added"
+msgstr "已添加规格数量"
+
+msgid "Variants Quantity"
+msgstr "规格数量"
+
 msgid "VAT Number"
 msgstr "增值税编号"
 
@@ -15934,12 +15925,6 @@ msgstr "查看工序清单"
 
 msgid "View bundles"
 msgstr "查看分包"
-
-msgid "View configuration parameters"
-msgstr "查看配置参数"
-
-msgid "View configuration quantities"
-msgstr "查看配置数量"
 
 msgid "View Contact"
 msgstr "查看联系人"
@@ -16051,6 +16036,12 @@ msgstr "查看追溯图示"
 
 msgid "View Transfer"
 msgstr "查看转移"
+
+msgid "View variant quantities"
+msgstr "查看规格数量"
+
+msgid "View variants quantity"
+msgstr "查看规格数量"
 
 msgid "Visibilities"
 msgstr "可见性"
@@ -16218,7 +16209,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "当启用时，此规则对其类型的所有目标生效。分配行会被忽略但保留。"
 
 msgid "Which set of attributes this item's variants use"
-msgstr "此物料规格使用的属性集"
+msgstr "此物品规格使用哪组属性"
 
 msgid "Who Can Approve"
 msgstr "谁可以审批"

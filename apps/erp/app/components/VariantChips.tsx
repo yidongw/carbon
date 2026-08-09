@@ -1,8 +1,8 @@
 import { Badge, Td, Tr } from "@carbon/react";
-import type { StyleConfigChip } from "~/modules/shared/styleConfigDisplay";
+import type { VariantChip } from "~/modules/shared/variantDisplay";
 
 /** Collapsed summary badges under a Style line description. */
-export function StyleConfigChips({ chips }: { chips: StyleConfigChip[] }) {
+export function VariantChips({ chips }: { chips: VariantChip[] }) {
   if (chips.length === 0) return null;
   return (
     <div className="mt-2 flex flex-wrap gap-1.5">
@@ -19,11 +19,11 @@ export function StyleConfigChips({ chips }: { chips: StyleConfigChip[] }) {
   );
 }
 
-/** Expand-panel attribute combo quantity rows (same table as line pricing). */
-export function StyleConfigExpandRows({ chips }: { chips: StyleConfigChip[] }) {
+/** Expand-panel variant quantity rows (same table as line pricing). */
+export function VariantExpandRows({ chips }: { chips: VariantChip[] }) {
   return chips.map((chip) => (
     <Tr key={chip.key}>
-      <Td className="whitespace-nowrap">{chip.descriptor}</Td>
+      <Td className="whitespace-nowrap">{chip.variantLabel}</Td>
       <Td className="text-right">
         <span className="tabular-nums">{chip.quantity}</span>
       </Td>

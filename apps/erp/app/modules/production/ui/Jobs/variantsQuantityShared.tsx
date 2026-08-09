@@ -2,8 +2,8 @@ import { Combobox, cn, IconButton } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ReactElement } from "react";
 import { LuTrash2 } from "react-icons/lu";
-import { fillValueFromReference } from "~/modules/production/configParamsTableColumns";
-import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
+import { fillValueFromReference } from "~/modules/production/variantsQuantityTableColumns";
+import { ResponsiveVariantsQuantityTable } from "./ResponsiveVariantsQuantityTable";
 
 export type Row = Record<string, string | number | boolean>;
 
@@ -29,7 +29,7 @@ export type AdjustmentMode = "delta" | "total";
 
 export type MaterialOption = { label: string | ReactElement; value: string };
 
-export type ConfigurationParameterInput = {
+export type VariantQuantityParameterInput = {
   key: string;
   label: string;
   dataType: string;
@@ -61,7 +61,7 @@ function localizeComboLabel(
 
 /** Style attribute-backed qty editor: one list param of cartesian valuesKeys. */
 export function isStyleComboParameters(
-  parameters: ConfigurationParameterInput[]
+  parameters: VariantQuantityParameterInput[]
 ): boolean {
   if (
     parameters.length === 1 &&
@@ -78,11 +78,11 @@ export function isStyleComboParameters(
  * List options are row values, not quantity columns.
  */
 export function buildComboColumns(
-  parameters: ConfigurationParameterInput[],
+  parameters: VariantQuantityParameterInput[],
   defaultQuantityLabel: string,
   attributesLabel = "Attributes"
 ): {
-  primaryParam: ConfigurationParameterInput | null;
+  comboParam: VariantQuantityParameterInput | null;
   columns: Column[];
 } | null {
   if (!isStyleComboParameters(parameters)) return null;
@@ -96,7 +96,7 @@ export function buildComboColumns(
   if (!comboParam) return null;
 
   return {
-    primaryParam: comboParam,
+    comboParam,
     columns: [
       {
         key: STYLE_COMBO_VALUES_KEY,
@@ -120,11 +120,11 @@ export function buildComboColumns(
 }
 
 export function buildColumns(
-  parameters: ConfigurationParameterInput[],
+  parameters: VariantQuantityParameterInput[],
   defaultQuantityLabel: string,
   attributesLabel = "Attributes"
 ): {
-  primaryParam: ConfigurationParameterInput | null;
+  comboParam: VariantQuantityParameterInput | null;
   columns: Column[];
 } {
   const combo = buildComboColumns(
@@ -138,7 +138,7 @@ export function buildColumns(
   // attribute combo (valuesKey + Quantities) built above. Any non-combo config
   // collapses to a single plain Quantities column.
   return {
-    primaryParam: null,
+    comboParam: null,
     columns: [
       { key: "Quantities", label: defaultQuantityLabel, type: "quantity" }
     ]
@@ -159,13 +159,13 @@ export function makeDefaultRow(columns: Column[]): Row {
 }
 
 export function getInitialRows(
-  parameters: ConfigurationParameterInput[],
-  primaryParam: ConfigurationParameterInput | null,
+  _parameters: VariantQuantityParameterInput[],
+  comboParam: VariantQuantityParameterInput | null,
   columns: Column[]
 ): Row[] {
-  // Style combo: one row per valuesKey option (not a Color×Size matrix).
-  if (primaryParam?.key === STYLE_COMBO_VALUES_KEY) {
-    return (primaryParam.listOptions ?? []).map((option) => ({
+  // Style combo: one row per valuesKey option.
+  if (comboParam?.key === STYLE_COMBO_VALUES_KEY) {
+    return (comboParam.listOptions ?? []).map((option) => ({
       ...makeDefaultRow(columns),
       [STYLE_COMBO_VALUES_KEY]: option,
       label: String(option).replace(/\|/g, " · "),
@@ -173,22 +173,7 @@ export function getInitialRows(
     }));
   }
 
-  const nonPrimaryListParams = parameters.filter(
-    (p) =>
-      p !== primaryParam &&
-      p.dataType === "list" &&
-      (p.listOptions?.length ?? 0) > 0
-  );
-
-  if (nonPrimaryListParams.length === 0) {
-    return [makeDefaultRow(columns)];
-  }
-
-  const firstListParam = nonPrimaryListParams[0];
-  return (firstListParam.listOptions ?? []).map((option) => ({
-    ...makeDefaultRow(columns),
-    [firstListParam.key]: option
-  }));
+  return [makeDefaultRow(columns)];
 }
 
 /** Copy a row but reset all quantity columns to 0 (keeps descriptor columns). */
@@ -313,24 +298,24 @@ export function getCellKey(rowIndex: number, columnKey: string): string {
   return `${rowIndex}:${columnKey}`;
 }
 
-/** Modal shell shared by config-table overlays and the local editor modal. */
-export const configParamsModalContentClassName = cn(
+/** Modal shell shared by variants-quantity overlays and the local editor modal. */
+export const variantsQuantityModalContentClassName = cn(
   "flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0",
   "sm:w-fit md:w-fit sm:max-w-[calc(100vw-1.5rem)]",
   "[&>button]:z-20"
 );
 
-export const configParamsModalShellClassName =
+export const variantsQuantityModalShellClassName =
   "flex min-h-0 w-max min-w-full max-w-[calc(100vw-1.5rem)] flex-1 flex-col";
 
-export const configParamsModalBodyClassName =
+export const variantsQuantityModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 /** Job config overlay: keep a stable width while switching Delta/Total tabs. */
-export const jobConfigQuantitiesModalShellClassName =
+export const jobVariantsQuantityModalShellClassName =
   "flex min-h-0 w-max min-w-full max-w-full flex-1 flex-col";
 
-export const jobConfigQuantitiesModalBodyClassName =
+export const jobVariantsQuantityModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 export function validateCell(
@@ -383,7 +368,7 @@ function quantityCellMatchesReference(
 /** Read-only rendering of a config table (used for the current snapshot, history
  * rows, and reported-by-process rows). When `onQuantityClick` is set, quantity
  * cells become buttons that pull the value into the adjustment editor. */
-export function ReadOnlyConfigTable({
+export function ReadOnlyVariantsQuantityTable({
   columns,
   rows,
   signed,
@@ -398,7 +383,7 @@ export function ReadOnlyConfigTable({
   optionLabels?: Record<string, string>;
 }) {
   return (
-    <ResponsiveConfigTable
+    <ResponsiveVariantsQuantityTable
       columns={columns}
       rows={rows}
       hasReferences={false}
@@ -443,7 +428,7 @@ export function ReadOnlyConfigTable({
 /** The editable quantity grid shared by the item draft editor and the job
  * adjustment editor. In `mode === "total"` quantity inputs show current + delta
  * and convert the entered total back to a delta via `baselineFor`. */
-export function EditableConfigGrid({
+export function EditableVariantsQuantityGrid({
   columns,
   rows,
   invalidCells,
@@ -680,7 +665,7 @@ export function EditableConfigGrid({
   };
 
   return (
-    <ResponsiveConfigTable
+    <ResponsiveVariantsQuantityTable
       columns={columns}
       rows={rows}
       hasReferences={hasReferences}

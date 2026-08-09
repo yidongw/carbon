@@ -309,10 +309,10 @@ const TrackingCell = memo(function TrackingCell({ job }: { job: Job }) {
 
 const JobQuantityCell = memo(function JobQuantityCell({
   job,
-  onOpenConfigTable
+  onOpenVariantsQuantity
 }: {
   job: Job;
-  onOpenConfigTable: (e: MouseEvent, job: Job) => void;
+  onOpenVariantsQuantity: (e: MouseEvent, job: Job) => void;
 }) {
   const { t } = useLingui();
   const { jobIdsWithVariantQuantities } = useJobsTableSupplemental();
@@ -320,11 +320,11 @@ const JobQuantityCell = memo(function JobQuantityCell({
   const isCardCell = useIsCardCell();
   const quantity = job.quantity ?? 0;
   const quantityComplete = job.quantityComplete ?? 0;
-  const showConfiguredQuantityUi =
+  const showVariantsQuantityUi =
     !!job.id && jobIdsWithVariantQuantities.has(job.id);
 
-  if (showConfiguredQuantityUi) {
-    const canConfigure =
+  if (showVariantsQuantityUi) {
+    const canEditVariantsQuantity =
       permissions.can("update", "production") && !isJobLocked(job.status);
     return (
       <HStack spacing={1} className="relative">
@@ -332,22 +332,22 @@ const JobQuantityCell = memo(function JobQuantityCell({
         <IconButton
           type="button"
           icon={<LuTable size="1em" strokeWidth={3} />}
-          aria-label={t`Configure quantities`}
+          aria-label={t`Edit variant quantities`}
           size="sm"
           variant="secondary"
           className={cn(
             quantity > 0 && "text-emerald-500 hover:text-emerald-500"
           )}
-          isDisabled={!canConfigure}
-          onClick={(e) => onOpenConfigTable(e, job)}
+          isDisabled={!canEditVariantsQuantity}
+          onClick={(e) => onOpenVariantsQuantity(e, job)}
         />
-        {isCardCell && canConfigure && (
+        {isCardCell && canEditVariantsQuantity && (
           <button
             type="button"
-            aria-label={t`Configure quantities`}
+            aria-label={t`Edit variant quantities`}
             data-card-action
             className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            onClick={(e) => onOpenConfigTable(e, job)}
+            onClick={(e) => onOpenVariantsQuantity(e, job)}
           />
         )}
       </HStack>
@@ -414,11 +414,11 @@ const JobsTable = memo(
       [openOverlay]
     );
 
-    const openConfigTable = useCallback(
+    const openVariantsQuantity = useCallback(
       (e: MouseEvent, job: Job) => {
         e.stopPropagation();
         if (!job.id) return;
-        openOverlay(overlay.to.jobConfigTable({ jobId: job.id }), {
+        openOverlay(overlay.to.jobVariantsQuantity({ jobId: job.id }), {
           onCreated: revalidate
         });
       },
@@ -538,7 +538,7 @@ const JobsTable = memo(
           cell: ({ row }) => (
             <JobQuantityCell
               job={row.original}
-              onOpenConfigTable={openConfigTable}
+              onOpenVariantsQuantity={openVariantsQuantity}
             />
           ),
           meta: {
@@ -905,7 +905,7 @@ const JobsTable = memo(
       items,
       locations,
       openBillOfProcessPreview,
-      openConfigTable,
+      openVariantsQuantity,
       people,
       tags,
       getDeadlineTypeLabel,

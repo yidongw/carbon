@@ -394,12 +394,14 @@ serve(async (req: Request) => {
         }, {});
 
         await db.transaction().execute(async (trx) => {
-          // Style qty grids use jobVariantQuantity — never write configTable
+          // Style qty grids use jobVariantQuantity — never write variantTable
           // into job.configuration (Part flat params only).
           const isStyleQtyConfig =
             configuration != null &&
             typeof configuration === "object" &&
-            Array.isArray((configuration as { configTable?: unknown }).configTable);
+            Array.isArray(
+              (configuration as { variantTable?: unknown }).variantTable
+            );
           if (isConfigured && !isStyleQtyConfig) {
             await trx.updateTable("job")
               .set({

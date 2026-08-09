@@ -2,8 +2,8 @@ import type { Json } from "@carbon/database";
 import { Badge, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { getConfigRowDisplayParts } from "~/modules/production/configParamsTableColumns";
-import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
+import { getVariantQuantityRowDisplayParts } from "~/modules/production/variantsQuantityTableColumns";
+import { VariantsQuantityBreakdown } from "./VariantsQuantityBreakdown";
 
 function getProductionQuantityBadgeVariant(type: string) {
   switch (type) {
@@ -18,25 +18,25 @@ function getProductionQuantityBadgeVariant(type: string) {
 
 export function ProductionQuantityLineBreakdown({
   line,
-  configurationParameters,
+  variantQuantityParameters,
   optionLabels
 }: {
   line: {
     type: string;
     quantity: number;
-    configuration: Json | null;
+    variantQuantities: Json | null;
     scrapReason?: { name: string | null } | null;
   };
-  configurationParameters?: ConfigurationParameter[] | null;
+  variantQuantityParameters?: ConfigurationParameter[] | null;
   /** Display label per list-option value (e.g. color code -> color name). */
   optionLabels?: Record<string, string>;
 }) {
   const { t } = useLingui();
   const parts =
-    configurationParameters?.length && line.configuration
-      ? getConfigRowDisplayParts(
-          line.configuration,
-          configurationParameters,
+    variantQuantityParameters?.length && line.variantQuantities
+      ? getVariantQuantityRowDisplayParts(
+          line.variantQuantities,
+          variantQuantityParameters,
           t`Quantities`,
           optionLabels
         )
@@ -69,7 +69,7 @@ export function ProductionQuantityLineBreakdown({
           </span>
         ) : null}
       </HStack>
-      {parts.length > 0 ? <ConfigQuantityBreakdown parts={parts} /> : null}
+      {parts.length > 0 ? <VariantsQuantityBreakdown parts={parts} /> : null}
     </div>
   );
 }

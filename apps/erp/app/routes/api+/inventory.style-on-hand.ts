@@ -1,10 +1,10 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { getStyleOnHandByVariant } from "~/modules/inventory";
-import { breakdownToInventoryConfigTable } from "~/modules/inventory/styleInventoryConfig";
+import { getStyleOnHandByColorSize } from "~/modules/inventory";
+import { breakdownToInventoryVariantsQuantity } from "~/modules/inventory/styleInventoryConfig";
 
 /**
- * Style on-hand by variant valuesKey for transfer/shipment config-table hints + caps.
+ * Style on-hand by variants quantity for transfer/shipment variants-quantity hints + caps.
  * Query: itemId, locationId, optional storageUnitId.
  */
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -28,7 +28,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId,
     storageUnitId || null
   );
-  const variantQuantities = breakdownToInventoryConfigTable(breakdown);
+  const variantQuantities = breakdownToInventoryVariantsQuantity(breakdown);
 
   return { breakdown, variantQuantities };
 }

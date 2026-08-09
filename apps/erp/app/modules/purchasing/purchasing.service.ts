@@ -10,9 +10,11 @@ import type {
 import { sql } from "kysely";
 import type { z } from "zod";
 import { getEmployeeJob } from "~/modules/people";
+import { sanitizeOrderLineWriteRow } from "~/modules/shared/orderLineWrite";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
+
 import { getCurrencyByCode } from "../accounting/accounting.service";
 import type { PurchaseInvoice } from "../invoicing/types";
 import {
@@ -1748,30 +1750,28 @@ export async function upsertPurchaseOrderDelivery(
 export async function upsertPurchaseOrderLine(
   client: SupabaseClient<Database>,
   purchaseOrderLine:
-    | (Omit<
-        z.infer<typeof purchaseOrderLineValidator>,
-        "id" | "configuration"
-      > & {
+    | (Omit<z.infer<typeof purchaseOrderLineValidator>, "id"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
-    | (Omit<
-        z.infer<typeof purchaseOrderLineValidator>,
-        "id" | "configuration"
-      > & {
+    | (Omit<z.infer<typeof purchaseOrderLineValidator>, "id"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
-        configuration?: Json;
       })
 ) {
-  if ("id" in purchaseOrderLine) {
+  // Validator may carry FormData-only fields (`variantQuantities`) and empty
+  // strings for optional FKs/dates — strip/null those before write.
+  const line = sanitizeOrderLineWriteRow(
+    purchaseOrderLine as unknown as Record<string, unknown>
+  ) as typeof purchaseOrderLine;
+
+  if ("id" in line) {
     return client
       .from("purchaseOrderLine")
-      .update(sanitize(purchaseOrderLine))
-      .eq("id", purchaseOrderLine.id)
+      .update(sanitize(line))
+      .eq("id", line.id)
       .select("id")
       .single();
   }
@@ -1779,7 +1779,7 @@ export async function upsertPurchaseOrderLine(
   const existing = await client
     .from("purchaseOrderLine")
     .select("sortOrder")
-    .eq("purchaseOrderId", purchaseOrderLine.purchaseOrderId);
+    .eq("purchaseOrderId", line.purchaseOrderId);
 
   const maxSortOrder = (existing.data ?? []).reduce(
     (max, row) => Math.max(max, row.sortOrder ?? 0),
@@ -1788,7 +1788,7 @@ export async function upsertPurchaseOrderLine(
 
   return client
     .from("purchaseOrderLine")
-    .insert([{ ...purchaseOrderLine, sortOrder: maxSortOrder + 1 }])
+    .insert([sanitize({ ...line, sortOrder: maxSortOrder + 1 })])
     .select("id")
     .single();
 }
@@ -1883,7 +1883,9 @@ export async function replacePurchaseOrderLinesWithStyleVariants(
         if (variants.length > 1) {
           await trx
             .updateTable("purchaseOrderLine")
-            .set({ sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}` })
+            .set({
+              sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}`
+            })
             .where("purchaseOrderId", "=", purchaseOrderId)
             .where("companyId", "=", companyId)
             .where("sortOrder", ">", original.sortOrder)

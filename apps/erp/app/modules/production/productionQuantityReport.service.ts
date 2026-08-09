@@ -7,37 +7,40 @@ import {
 } from "~/modules/shared";
 import { replaceMasterCuttingSplitRows } from "./bundleWorkOrder.service";
 import {
-  computeJobConfigTableTotal,
-  reportsExceedConfigPlan
-} from "./jobConfiguration";
-import {
   getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
+  jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
 import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
+import {
+  computeVariantTableTotal,
+  reportsExceedVariantQuantitiesPlan
+} from "./variantTable";
 
 /**
- * Split a line's `configuration` into the config to store (merged, unchanged
+ * Split a line's `variantQuantities` into the payload to store (merged, unchanged
  * downstream) and any raw cut rows the editor tucked under `splitRows` (kept
  * only for a master WO cutting report → masterWorkOrderSplitRow).
  */
-function splitConfigAndRows(configuration: unknown): {
-  config: unknown;
+function splitVariantQuantitiesAndRows(variantQuantities: unknown): {
+  variantQuantities: unknown;
   rows: {
     valuesKey: string | null;
     quantity: number;
   }[];
 } {
   if (
-    !configuration ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    !variantQuantities ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
-    return { config: configuration ?? null, rows: [] };
+    return { variantQuantities: variantQuantities ?? null, rows: [] };
   }
-  const { splitRows, ...config } = configuration as Record<string, unknown> & {
+  const { splitRows, ...storedVariantQuantities } = variantQuantities as Record<
+    string,
+    unknown
+  > & {
     splitRows?: unknown;
   };
   const rows = Array.isArray(splitRows)
@@ -53,7 +56,7 @@ function splitConfigAndRows(configuration: unknown): {
         };
       })
     : [];
-  return { config, rows };
+  return { variantQuantities: storedVariantQuantities, rows };
 }
 
 export type ProductionQuantityReportLine =
@@ -71,9 +74,9 @@ export type OperationQuantitySummary = {
   production: number;
   scrap: number;
   rework: number;
-  productionConfigurations: Json[];
-  scrapConfigurations: Json[];
-  reworkConfigurations: Json[];
+  productionVariantQuantities: Json[];
+  scrapVariantQuantities: Json[];
+  reworkVariantQuantities: Json[];
 };
 
 function sumLineQuantity(lines: ProductionQuantityLineInput[]) {
@@ -101,14 +104,17 @@ export function validateProductionQuantityLines(
     if (line.type !== "Scrap") {
       line.scrapReasonId = undefined;
     }
-    if (line.configuration) {
-      const configTotal = computeJobConfigTableTotal(
-        line.configuration as Json
+    if (line.variantQuantities) {
+      const variantsQuantityTotal = computeVariantTableTotal(
+        line.variantQuantities as Json
       );
-      if (configTotal > 0 && Math.abs(configTotal - line.quantity) > 0.0001) {
+      if (
+        variantsQuantityTotal > 0 &&
+        Math.abs(variantsQuantityTotal - line.quantity) > 0.0001
+      ) {
         return {
           error: new Error(
-            `Line quantity (${line.quantity}) must match configuration total (${configTotal})`
+            `Line quantity (${line.quantity}) must match variants quantity total (${variantsQuantityTotal})`
           )
         };
       }
@@ -119,15 +125,15 @@ export function validateProductionQuantityLines(
 
 /**
  * A variant-configured (attribute combo) item must report per cell: every line
- * for such a job has to carry a configuration whose total > 0. The report editor
- * gates all line types (Production/Scrap/Rework) through the config table, so the
+ * for such a job has to carry variant quantities whose total > 0. The report editor
+ * gates all line types (Production/Scrap/Rework) through the variant quantities table, so the
  * guard covers them all. Bundle jobs are excluded — they have a fixed variant
  * and report a plain quantity. This guards the write layer so a configured report
- * can never be saved as a bare aggregate (configuration = NULL), regardless of
+ * can never be saved as a bare aggregate (variantQuantities = NULL), regardless of
  * entry point (report form, edit, external API, import). Mirrors the report
- * form's config-table gate (item has config params AND the job is not a bundle).
+ * form's variants-quantity gate (item has variants quantity AND the job is not a bundle).
  */
-async function validateConfiguredLinesHaveConfiguration(
+async function validateVariantQuantityGridLines(
   client: SupabaseClient<Database>,
   args: {
     companyId: string;
@@ -169,10 +175,10 @@ async function validateConfiguredLinesHaveConfiguration(
   if (!isConfigured) return { error: null };
 
   for (const line of linesToCheck) {
-    const configTotal = line.configuration
-      ? computeJobConfigTableTotal(line.configuration as Json)
+    const variantsQuantityTotal = line.variantQuantities
+      ? computeVariantTableTotal(line.variantQuantities as Json)
       : 0;
-    if (configTotal <= 0) {
+    if (variantsQuantityTotal <= 0) {
       return {
         error: new Error(
           "This item is configured by attributes — enter the per-variant breakdown before reporting."
@@ -184,7 +190,7 @@ async function validateConfiguredLinesHaveConfiguration(
 }
 
 /**
- * Guard a production report against over-reporting: (1) a config-param job's
+ * Guard a production report against over-reporting: (1) a variants-quantity job's
  * reported (produced) quantities can't exceed the planned quantity for any
  * variant combo, and (2) an operation's total reported quantity — completed +
  * scrapped + reworked — can't exceed its target quantity. Both mean "remaining
@@ -216,7 +222,7 @@ export async function validateProductionQuantityRemaining(
       .single(),
     client
       .from("productionQuantity")
-      .select("quantity, type, configuration")
+      .select("quantity, type, variantQuantities")
       .eq("jobOperationId", args.jobOperationId)
       .eq("companyId", args.companyId)
       .is("invalidatedAt", null)
@@ -242,7 +248,7 @@ export async function validateProductionQuantityRemaining(
     }
   }
 
-  // (1) Config-param plan cap (per variant cell, produced units only).
+  // (1) Variants-quantity plan cap (per variant cell, produced units only).
   const plannedQty = await getJobVariantQuantities(
     client,
     args.jobId,
@@ -250,15 +256,15 @@ export async function validateProductionQuantityRemaining(
   );
   const planned =
     plannedQty.data.length > 0
-      ? jobVariantQuantitiesToConfigTable(plannedQty.data)
+      ? jobVariantQuantitiesToTable(plannedQty.data)
       : null;
-  const reportedConfigs = [
+  const reportedVariantQuantities = [
     ...existingRows
       .filter((r) => r.type === "Production")
-      .map((r) => r.configuration),
-    ...newProductionLines.map((l) => l.configuration ?? null)
+      .map((r) => r.variantQuantities),
+    ...newProductionLines.map((l) => l.variantQuantities ?? null)
   ];
-  if (reportsExceedConfigPlan(planned, reportedConfigs)) {
+  if (reportsExceedVariantQuantitiesPlan(planned, reportedVariantQuantities)) {
     return {
       error: new Error(
         "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
@@ -288,13 +294,16 @@ export async function createProductionQuantityReport(
     return { data: null, error: lineValidation.error };
   }
 
-  const configCheck = await validateConfiguredLinesHaveConfiguration(client, {
-    companyId: args.companyId,
-    jobId: args.jobId,
-    lines: args.lines
-  });
-  if (configCheck.error) {
-    return { data: null, error: configCheck.error };
+  const variantQuantitiesCheck = await validateVariantQuantityGridLines(
+    client,
+    {
+      companyId: args.companyId,
+      jobId: args.jobId,
+      lines: args.lines
+    }
+  );
+  if (variantQuantitiesCheck.error) {
+    return { data: null, error: variantQuantitiesCheck.error };
   }
 
   const remainingCheck = await validateProductionQuantityRemaining(client, {
@@ -308,12 +317,12 @@ export async function createProductionQuantityReport(
   }
 
   const originalQuantity = sumLineQuantity(args.lines);
-  // Peel raw cut rows out of each line's config (config stays merged/unchanged).
+  // Peel raw cut rows out of each line's variantQuantities (payload stays merged/unchanged).
   const prepared = args.lines.map((line) => ({
     line,
-    ...splitConfigAndRows(line.configuration)
+    ...splitVariantQuantitiesAndRows(line.variantQuantities)
   }));
-  const originalConfiguration = prepared[0]?.config ?? null;
+  const originalVariantTable = prepared[0]?.variantQuantities ?? null;
 
   const { data: report, error: reportError } = await client
     .from("productionQuantityReport")
@@ -323,7 +332,7 @@ export async function createProductionQuantityReport(
       jobOperationId: args.jobOperationId,
       employeeId: args.employeeId,
       originalQuantity,
-      originalConfiguration: originalConfiguration as Json,
+      originalVariantTable: originalVariantTable as Json,
       notes: args.notes ?? null,
       createdBy: args.userId
     })
@@ -334,13 +343,13 @@ export async function createProductionQuantityReport(
     return { data: null, error: reportError };
   }
 
-  const lineRows = prepared.map(({ line, config }) => ({
+  const lineRows = prepared.map(({ line, variantQuantities }) => ({
     companyId: args.companyId,
     jobOperationId: args.jobOperationId,
     reportId: report.id,
     type: line.type,
     quantity: line.quantity,
-    configuration: (config ?? null) as Json,
+    variantQuantities: (variantQuantities ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
@@ -438,7 +447,7 @@ export async function replaceProductionQuantityReportLines(
     return { data: null, error: lineValidation.error };
   }
 
-  // Fetch the report first so the config guard can run BEFORE we invalidate the
+  // Fetch the report first so the variant quantities guard can run BEFORE we invalidate the
   // existing lines — a rejected edit must not wipe the current report.
   const report = await client
     .from("productionQuantityReport")
@@ -451,13 +460,16 @@ export async function replaceProductionQuantityReportLines(
     return { data: null, error: report.error };
   }
 
-  const configCheck = await validateConfiguredLinesHaveConfiguration(client, {
-    companyId: args.companyId,
-    jobId: report.data.jobId,
-    lines: args.lines
-  });
-  if (configCheck.error) {
-    return { data: null, error: configCheck.error };
+  const variantQuantitiesCheck = await validateVariantQuantityGridLines(
+    client,
+    {
+      companyId: args.companyId,
+      jobId: report.data.jobId,
+      lines: args.lines
+    }
+  );
+  if (variantQuantitiesCheck.error) {
+    return { data: null, error: variantQuantitiesCheck.error };
   }
 
   const now = new Date().toISOString();
@@ -504,15 +516,15 @@ export async function replaceProductionQuantityReportLines(
 
   const prepared = args.lines.map((line) => ({
     line,
-    ...splitConfigAndRows(line.configuration)
+    ...splitVariantQuantitiesAndRows(line.variantQuantities)
   }));
-  const lineRows = prepared.map(({ line, config }) => ({
+  const lineRows = prepared.map(({ line, variantQuantities }) => ({
     companyId: args.companyId,
     jobOperationId: report.data.jobOperationId,
     reportId: args.reportId,
     type: line.type,
     quantity: line.quantity,
-    configuration: (config ?? null) as Json,
+    variantQuantities: (variantQuantities ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
@@ -732,25 +744,25 @@ export async function resolveProductionQuantityCanAutoApprove(
   );
 }
 
-function accumulateConfigBreakdown(
-  lines: { type: string; configuration: Json | null }[] | null,
+function accumulateVariantQuantitiesBreakdown(
+  lines: { type: string; variantQuantities: Json | null }[] | null,
   totals: {
-    productionConfigurations: Json[];
-    scrapConfigurations: Json[];
-    reworkConfigurations: Json[];
+    productionVariantQuantities: Json[];
+    scrapVariantQuantities: Json[];
+    reworkVariantQuantities: Json[];
   }
 ) {
   for (const line of lines ?? []) {
-    if (!line.configuration) continue;
+    if (!line.variantQuantities) continue;
     switch (line.type) {
       case "Production":
-        totals.productionConfigurations.push(line.configuration);
+        totals.productionVariantQuantities.push(line.variantQuantities);
         break;
       case "Scrap":
-        totals.scrapConfigurations.push(line.configuration);
+        totals.scrapVariantQuantities.push(line.variantQuantities);
         break;
       case "Rework":
-        totals.reworkConfigurations.push(line.configuration);
+        totals.reworkVariantQuantities.push(line.variantQuantities);
         break;
       default:
         break;
@@ -770,13 +782,13 @@ export async function getOperationQuantitySummary(
   ] = await Promise.all([
     client
       .from("productionQuantity")
-      .select("type, quantity, configuration")
+      .select("type, quantity, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
       .is("invalidatedAt", null),
     client
       .from("jobOperationSupplierQuantity")
-      .select("type, quantity, configuration")
+      .select("type, quantity, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
       .is("invalidatedAt", null),
@@ -799,23 +811,23 @@ export async function getOperationQuantitySummary(
     production: jobOperation?.quantityComplete ?? 0,
     scrap: jobOperation?.quantityScrapped ?? 0,
     rework: jobOperation?.quantityReworked ?? 0,
-    productionConfigurations: [] as Json[],
-    scrapConfigurations: [] as Json[],
-    reworkConfigurations: [] as Json[]
+    productionVariantQuantities: [] as Json[],
+    scrapVariantQuantities: [] as Json[],
+    reworkVariantQuantities: [] as Json[]
   };
 
-  // Headline totals come from jobOperation rollups; config breakdown unions active lines.
-  accumulateConfigBreakdown(employeeLines, totals);
-  accumulateConfigBreakdown(supplierLines, totals);
+  // Headline totals come from jobOperation rollups; variant quantities breakdown unions active lines.
+  accumulateVariantQuantitiesBreakdown(employeeLines, totals);
+  accumulateVariantQuantitiesBreakdown(supplierLines, totals);
 
   return {
     data: {
       production: totals.production,
       scrap: totals.scrap,
       rework: totals.rework,
-      productionConfigurations: totals.productionConfigurations,
-      scrapConfigurations: totals.scrapConfigurations,
-      reworkConfigurations: totals.reworkConfigurations
+      productionVariantQuantities: totals.productionVariantQuantities,
+      scrapVariantQuantities: totals.scrapVariantQuantities,
+      reworkVariantQuantities: totals.reworkVariantQuantities
     },
     error: null
   };

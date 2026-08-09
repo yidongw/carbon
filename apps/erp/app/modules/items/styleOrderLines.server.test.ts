@@ -1,22 +1,31 @@
 import { describe, expect, it } from "vitest";
 import {
-  expandStyleConfigToVariantLines,
-  hasStyleConfigTable
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity
 } from "./styleOrderLines.server";
 
-describe("hasStyleConfigTable", () => {
-  it("returns true when configTable has rows", () => {
+describe("hasStyleVariantsQuantity", () => {
+  it("returns true when variantTable has rows", () => {
     expect(
-      hasStyleConfigTable({
+      hasStyleVariantsQuantity({
+        variantTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
+      })
+    ).toBe(true);
+  });
+
+  it("dual-reads legacy configTable", () => {
+    expect(
+      hasStyleVariantsQuantity({
         configTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
       })
     ).toBe(true);
   });
 
   it("returns false for empty or missing tables", () => {
-    expect(hasStyleConfigTable(null)).toBe(false);
-    expect(hasStyleConfigTable({})).toBe(false);
-    expect(hasStyleConfigTable({ configTable: [] })).toBe(false);
+    expect(hasStyleVariantsQuantity(null)).toBe(false);
+    expect(hasStyleVariantsQuantity({})).toBe(false);
+    expect(hasStyleVariantsQuantity({ variantTable: [] })).toBe(false);
+    expect(hasStyleVariantsQuantity({ configTable: [] })).toBe(false);
   });
 });
 
@@ -103,11 +112,11 @@ function mockClient(handlers: {
   } as any;
 }
 
-describe("expandStyleConfigToVariantLines", () => {
+describe("expandVariantTableToLines", () => {
   const parentItemId = "item_parent";
   const companyId = "co_1";
   const configuration = {
-    configTable: [
+    variantTable: [
       { valuesKey: "BK|XS", Quantities: 2 },
       { valuesKey: "BK|S", Quantities: 4 }
     ]
@@ -143,7 +152,7 @@ describe("expandStyleConfigToVariantLines", () => {
       ]
     });
 
-    const result = await expandStyleConfigToVariantLines(client, {
+    const result = await expandVariantTableToLines(client, {
       parentItemId,
       companyId,
       variantQuantities: configuration
@@ -181,11 +190,11 @@ describe("expandStyleConfigToVariantLines", () => {
       ]
     });
 
-    const result = await expandStyleConfigToVariantLines(client, {
+    const result = await expandVariantTableToLines(client, {
       parentItemId,
       companyId,
       variantQuantities: {
-        configTable: [
+        variantTable: [
           { valuesKey: "RD", Quantities: 3 },
           { valuesKey: "BL", Quantities: 2 }
         ]
@@ -219,7 +228,7 @@ describe("expandStyleConfigToVariantLines", () => {
       ]
     });
 
-    const result = await expandStyleConfigToVariantLines(client, {
+    const result = await expandVariantTableToLines(client, {
       parentItemId,
       companyId,
       variantQuantities: configuration
@@ -232,11 +241,11 @@ describe("expandStyleConfigToVariantLines", () => {
 
   it("fails when configuration has no positive quantities", async () => {
     const client = mockClient({ variants: [], attrs: [] });
-    const result = await expandStyleConfigToVariantLines(client, {
+    const result = await expandVariantTableToLines(client, {
       parentItemId,
       companyId,
       variantQuantities: {
-        configTable: [
+        variantTable: [
           { valuesKey: "BK|XS", Quantities: 0 },
           { valuesKey: "BK|S", Quantities: 0 }
         ]

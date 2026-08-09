@@ -852,22 +852,6 @@ export async function getJob(client: SupabaseClient<Database>, id: string) {
   return client.from("jobs").select("*").eq("id", id).limit(1).single();
 }
 
-export async function getJobConfigurationHistory(
-  client: SupabaseClient<Database>,
-  jobId: string,
-  companyId: string
-) {
-  return client
-    .from("jobConfigurationHistory")
-    .select(
-      `id, quantity, configuration, createdAt, createdBy,
-       createdByUser:user!jobConfigurationHistory_createdBy_fkey(id, fullName, avatarUrl)`
-    )
-    .eq("jobId", jobId)
-    .eq("companyId", companyId)
-    .order("createdAt", { ascending: false });
-}
-
 export async function getJobProductionQuantitySummary(
   client: SupabaseClient<Database>,
   jobId: string,
@@ -889,7 +873,7 @@ export async function getJobProductionQuantitySummary(
 
   const quantities = await client
     .from("productionQuantity")
-    .select("jobOperationId, quantity, configuration")
+    .select("jobOperationId, quantity, variantQuantities")
     .in(
       "jobOperationId",
       operationList.map((operation) => operation.id)
@@ -903,7 +887,7 @@ export async function getJobProductionQuantitySummary(
 
   const rowsByOperation = new Map<
     string,
-    { quantity: number | null; configuration: Json | null }[]
+    { quantity: number | null; variantQuantities: Json | null }[]
   >();
   for (const row of quantities.data ?? []) {
     if (!row.jobOperationId) continue;
@@ -911,11 +895,11 @@ export async function getJobProductionQuantitySummary(
     if (existing) {
       existing.push({
         quantity: row.quantity,
-        configuration: row.configuration
+        variantQuantities: row.variantQuantities
       });
     } else {
       rowsByOperation.set(row.jobOperationId, [
-        { quantity: row.quantity, configuration: row.configuration }
+        { quantity: row.quantity, variantQuantities: row.variantQuantities }
       ]);
     }
   }
@@ -927,7 +911,7 @@ export async function getJobProductionQuantitySummary(
       operationId: operation.id,
       label: operation.description ?? "",
       configurations: (rowsByOperation.get(operation.id) ?? []).map(
-        (row) => row.configuration
+        (row) => row.variantQuantities
       )
     }));
 
@@ -1590,7 +1574,7 @@ export async function getProductionQuantitiesByOperation(
 ) {
   return client
     .from("productionQuantity")
-    .select("id, configuration, type, quantity")
+    .select("id, variantQuantities, type, quantity")
     .eq("jobOperationId", jobOperationId)
     .eq("companyId", companyId)
     .is("invalidatedAt", null)
@@ -2117,7 +2101,7 @@ export async function getJobIdsWithVariantQuantities(
   ];
 }
 
-export async function getItemIdsWithConfigurationParameters(
+export async function getItemIdsWithVariantQuantityGrid(
   client: SupabaseClient<Database>,
   companyId: string,
   itemIds: string[]
@@ -2137,6 +2121,10 @@ export async function getItemIdsWithConfigurationParameters(
     )
   ];
 }
+
+/** @deprecated Prefer getItemIdsWithVariantQuantityGrid. Kept for MCP tool name. */
+export const getItemIdsWithConfigurationParameters =
+  getItemIdsWithVariantQuantityGrid;
 
 /** Root routing only: first operation by `order` where status is not Done/Canceled. */
 export async function getCurrentProcessByJobIds(
@@ -2595,7 +2583,7 @@ export async function upsertProductionQuantity(
     const { data: existing, error: existingError } = await client
       .from("productionQuantity")
       .select(
-        "id, reportId, invalidatedAt, type, quantity, configuration, scrapReasonId, notes"
+        "id, reportId, invalidatedAt, type, quantity, variantQuantities, scrapReasonId, notes"
       )
       .eq("id", id)
       .eq("companyId", companyId)
@@ -2617,7 +2605,7 @@ export async function upsertProductionQuantity(
 
     const { data: activeLines, error: linesError } = await client
       .from("productionQuantity")
-      .select("id, type, quantity, configuration, scrapReasonId, notes")
+      .select("id, type, quantity, variantQuantities, scrapReasonId, notes")
       .eq("reportId", existing.reportId)
       .eq("companyId", companyId)
       .is("invalidatedAt", null);
@@ -2631,14 +2619,14 @@ export async function upsertProductionQuantity(
         ? {
             type: updateData.type,
             quantity: updateData.quantity,
-            configuration: updateData.configuration,
+            variantQuantities: updateData.variantQuantities,
             scrapReasonId: updateData.scrapReasonId,
             notes: updateData.notes
           }
         : {
             type: line.type,
             quantity: line.quantity,
-            configuration: line.configuration ?? undefined,
+            variantQuantities: line.variantQuantities ?? undefined,
             scrapReasonId: line.scrapReasonId ?? undefined,
             notes: line.notes ?? undefined
           }
@@ -2708,7 +2696,7 @@ export async function upsertProductionQuantity(
       {
         type: rest.type,
         quantity: rest.quantity,
-        configuration: rest.configuration,
+        variantQuantities: rest.variantQuantities,
         scrapReasonId: rest.scrapReasonId,
         notes: rest.notes
       }

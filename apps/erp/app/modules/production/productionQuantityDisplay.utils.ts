@@ -119,15 +119,16 @@ export function getItemInternalId(row: {
   return item?.id?.trim() || null;
 }
 
-export function hasConfigurationTable(configuration: unknown): boolean {
+export function hasVariantTable(variantQuantities: unknown): boolean {
   if (
-    configuration === null ||
-    configuration === undefined ||
-    typeof configuration !== "object" ||
-    Array.isArray(configuration)
+    variantQuantities === null ||
+    variantQuantities === undefined ||
+    typeof variantQuantities !== "object" ||
+    Array.isArray(variantQuantities)
   ) {
     return false;
   }
-  const configTable = (configuration as Record<string, unknown>).configTable;
-  return Array.isArray(configTable) && configTable.length > 0;
+  const cfg = variantQuantities as Record<string, unknown>;
+  const variantTable = cfg.variantTable;
+  return Array.isArray(variantTable) && variantTable.length > 0;
 }

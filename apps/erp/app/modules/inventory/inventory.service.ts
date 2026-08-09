@@ -4102,8 +4102,8 @@ export async function getTransferStockForItem(
   return Array.from(byKey.values()).filter((r) => r.quantity > 0);
 }
 
-/** Style on-hand by variant valuesKey at a location (optional storage unit filter). */
-export async function getStyleOnHandByVariant(
+/** Style on-hand by variants quantity at a location (optional storage unit filter). */
+export async function getStyleOnHandByColorSize(
   client: SupabaseClient<Database>,
   itemId: string,
   companyId: string,

@@ -1777,7 +1777,7 @@ msgid "Cannot edit global material grade"
 msgstr "Kann-global-Materialgrade-nicht-aendern"
 
 msgid "Cannot edit global material shape"
-msgstr "Kann-global-Materialform bearbeiten-un莫将最后一部分翻译成中文，保持原样： Kann-global-Materialform bearbeiten-un"
+msgstr "Kann-global-Materialform bearbeiten-nicht"
 
 msgid "Cannot edit global material substance"
 msgstr "Kann-global-Materialstoffs-eigentlich-nicht-verändert werden"
@@ -2155,9 +2155,6 @@ msgstr "Konfigurationseinstellungen"
 msgid "Configuration Parameters"
 msgstr "Konfigurationsparameter"
 
-msgid "Configuration quantities"
-msgstr "Konfigurationsmengen"
-
 msgid "Configurator"
 msgstr "Konfigurator"
 
@@ -2187,9 +2184,6 @@ msgstr "Konfigurieren Sie Benachrichtigungen für den Fall, dass Wartungseinsät
 
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Konfigurieren Sie Benachrichtigungen für neue eingereichte Vorschläge."
-
-msgid "Configure quantities"
-msgstr "Konfiguriere Mengen"
 
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Konfigurieren Sie die Standardkonten, die für verschiedene Transaktionstypen in Ihrem System verwendet werden"
@@ -3834,9 +3828,6 @@ msgstr "Kategorie bearbeiten"
 msgid "Edit column visibility"
 msgstr "Spaltensichtbarkeit bearbeiten"
 
-msgid "Edit configuration"
-msgstr "Bearbeiten der Konfiguration"
-
 msgid "Edit Contact"
 msgstr "Kontakt bearbeiten"
 
@@ -4351,7 +4342,7 @@ msgid "Error loading employees"
 msgstr "Fehler beim Laden der Mitarbeiter"
 
 msgid "Error loading issues"
-msgstr "Fehler throughout装卸中出现的问题加载"
+msgstr "Fehler throughout die Probleme laden"
 
 msgid "Error loading item attributes sets"
 msgstr "Fehler beim Laden der Artikeleigenschaftensets"
@@ -5415,7 +5406,7 @@ msgid "Failed to favorite rfq"
 msgstr "Favorisieren der Anfrage fehlgeschlagen"
 
 msgid "Failed to favorite sales order"
-msgstr "Favoritieren der Verkaufsauftrags失敗"
+msgstr "Favorit für Verkaufsauftrag konnte nicht gesetzt werden"
 
 msgid "Failed to fetch accounts"
 msgstr "Fehler beim Abrufen der Konten"
@@ -6612,7 +6603,7 @@ msgid "Failed to load part summary"
 msgstr "Fehler beim Laden der Teilszusammenfassung"
 
 msgid "Failed to load part unit sale price"
-msgstr "Fehler beim Laden der Teile单一单位销售价格"
+msgstr "Fehler beim Laden des Teilpreises für Verkaufseinheiten"
 
 msgid "Failed to load partners"
 msgstr "Fehler beim Laden der Partner"
@@ -7220,9 +7211,6 @@ msgstr "Fehler beim Aktualisieren der Ansprüche"
 msgid "Failed to update company"
 msgstr "Fehler beim Aktualisieren der Firma"
 
-msgid "Failed to update configuration"
-msgstr "Fehler beim aktualisieren der Konfiguration"
-
 msgid "Failed to update configuration parameter"
 msgstr "Fehler beim Aktualisieren des Konfigurationsparameters"
 
@@ -7754,6 +7742,9 @@ msgstr "Fehler beim Aktualisieren der Einheit der Maßeinheit"
 msgid "Failed to update user permissions"
 msgstr "Fehler beim Aktualisieren der Benutzerrechte"
 
+msgid "Failed to update variants quantity"
+msgstr "Fehler beim Aktualisieren der Variante-Menge"
+
 msgid "Failed to update warehouse transfer"
 msgstr "Fehler beim Aktualisieren des Lagerumsatzes"
 
@@ -8139,8 +8130,8 @@ msgstr "Kontenkskonto"
 msgid "Go to App"
 msgstr "Wechseln Sie zur Anwendung"
 
-msgid "Goal quantity for this configuration."
-msgstr "Zimenge für diese Konfiguration."
+msgid "Goal quantity for this variant."
+msgstr "Zimenge für diese Variante."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -9560,7 +9551,7 @@ msgid "Match any"
 msgstr "Jede"
 
 msgid "Match any (OR)"
-msgstr "Pass任何(OR)"
+msgstr "Match.any(Oder)"
 
 msgid "Match none"
 msgstr "Keine Übereinstimmung"
@@ -10334,9 +10325,6 @@ msgstr "Keine Kalibrierungsdatensätze gefunden"
 msgid "No changes recorded"
 msgstr "Keine Änderungen aufgezeichnet"
 
-msgid "No changes yet."
-msgstr "Noch keine Änderungen."
-
 msgid "No chat history"
 msgstr "Keine Chat-Verlauf"
 
@@ -10354,9 +10342,6 @@ msgstr "Keine Bedingung darf übereinstimmen"
 
 msgid "No conditions — rule matches all jobs"
 msgstr "Keine Bedingungen – die Regel passt alle Jobs ab"
-
-msgid "No configuration quantities recorded yet."
-msgstr "Keine Konfigurationsmenge gespeichert."
 
 msgid "No conversion is required"
 msgstr "Keine Umrechnung erforderlich"
@@ -10579,6 +10564,9 @@ msgstr "Keine Werte verfügbar"
 
 msgid "No values yet."
 msgstr "Noch keine Werte."
+
+msgid "No variant quantities recorded yet."
+msgstr "Keine Varianteinheiten aufgezeichnet noch."
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr "Es gibt keine Lagerbestände für dieses Artikelnummer auf dem Record. Sie können es trotzdem auswählen – der verfügbare Bestand wird negativ gehen, bis die Reconciliation durchgeführt wurde."
@@ -11807,9 +11795,6 @@ msgstr "Bestellposition"
 msgid "Purchase order line created"
 msgstr "Bestellposition erstellt"
 
-msgid "Purchase order lines created"
-msgstr "Bestellpositionen erstellt"
-
 msgid "Purchase Order Location"
 msgstr "Bestellort"
 
@@ -12018,7 +12003,7 @@ msgid "Quote Number"
 msgstr "Angebotsnummer"
 
 msgid "Quote operation attribute updated"
-msgstr "Operationseigenschaft aktualisiert报价操作属性已更新"
+msgstr "Atribute der Operation aktualisiert"
 
 msgid "Quote operation parameter updated"
 msgstr "Operationstyp Parameter aktualisiert"
@@ -12793,9 +12778,6 @@ msgstr "Verkaufsauftragszeile"
 
 msgid "Sales order line created"
 msgstr "Verkaufsbestellposition erstellt"
-
-msgid "Sales order lines created"
-msgstr "Verkaufsauftragspositionen erstellt"
 
 msgid "Sales Order Location"
 msgstr "Verkaufsauftrag-Standort"
@@ -14029,7 +14011,7 @@ msgid "Success"
 msgstr "Erfolg"
 
 msgid "Success. Please check back in a few moments."
-msgstr "Fertig. Bitte nach einigen Momenten控制系统，请稍后刷新。"
+msgstr "Fertig. Bitte überprüfen Sie in einigen Momenten erneut."
 
 msgid "Successfully activate work center"
 msgstr "Erfolgreich Work Center aktivieren"
@@ -14128,7 +14110,7 @@ msgid "Successfully deleted failure mode"
 msgstr "Erfolgreich Fehlermodus gelöscht"
 
 msgid "Successfully deleted fixed asset"
-msgstr "Erfolgreich固定资产删除"
+msgstr "Successfully deleted festes Anlagevermögen"
 
 msgid "Successfully deleted gauge"
 msgstr "Gelöscht erfolgreich"
@@ -15865,6 +15847,15 @@ msgstr "Werte"
 msgid "Variances"
 msgstr "Abweichungen"
 
+msgid "Variant quantities"
+msgstr "Variantenmengen"
+
+msgid "Variant quantities added"
+msgstr "Variantenmengen hinzugefügt"
+
+msgid "Variants Quantity"
+msgstr "Variants Quantity"
+
 msgid "VAT Number"
 msgstr "Umsatzsteuer-Identifikationsnummer"
 
@@ -15933,12 +15924,6 @@ msgstr "Anzeige Rechnungsvorgang"
 
 msgid "View bundles"
 msgstr "Bündel anzeigen"
-
-msgid "View configuration parameters"
-msgstr "Anzeigen Konfigurationsparameter"
-
-msgid "View configuration quantities"
-msgstr "Anzeigen konfigurierte Mengen"
 
 msgid "View Contact"
 msgstr "Kontakt anzeigen"
@@ -16050,6 +16035,12 @@ msgstr "Rückverfolgbarkeitsgraph anzeigen"
 
 msgid "View Transfer"
 msgstr "Transfer anzeigen"
+
+msgid "View variant quantities"
+msgstr "Anzeige der Variante Mengen"
+
+msgid "View variants quantity"
+msgstr "Anzahl der Variants anzeigen"
 
 msgid "Visibilities"
 msgstr "Sichtbarkeiten"
@@ -16217,7 +16208,7 @@ msgid "When on, this rule fires for every target of its type. Assignment rows ar
 msgstr "Wenn aktiviert, wird diese Regel für jedes Ziel desselben Typs ausgelöst. Zuweisungsreihen werden ignoriert, aber aufbewahrt."
 
 msgid "Which set of attributes this item's variants use"
-msgstr "Welchen Attributsatz die Varianten dieses Artikels verwenden"
+msgstr "Welche Menge an Attributen verwenden diese Artikelvarianten"
 
 msgid "Who Can Approve"
 msgstr "Wer kann genehmigen"

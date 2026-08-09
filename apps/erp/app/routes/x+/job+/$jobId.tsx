@@ -21,6 +21,7 @@ import {
   getJob,
   getJobDocuments,
   getJobMethodTree,
+  getJobPlannedVariantQuantities,
   getTrackedEntitiesByJobId,
   isMasterWorkOrderJob
 } from "~/modules/production";
@@ -65,6 +66,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const plannedVariantQuantities = await getJobPlannedVariantQuantities(
+    client,
+    jobId,
+    companyId
+  );
+
   return {
     job: job.data,
     isMasterWorkOrder,
@@ -72,11 +79,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     files: getJobDocuments(client, companyId, job.data),
     trackedEntities: getTrackedEntitiesByJobId(client, jobId),
     method: getJobMethodTree(client, jobId), // returns a promise
-    configurationParameters: getQuantityGridParameters(
+    variantQuantityParameters: getQuantityGridParameters(
       client,
       job.data.itemId!,
       companyId
-    )
+    ),
+    plannedVariantQuantities
   };
 }
 

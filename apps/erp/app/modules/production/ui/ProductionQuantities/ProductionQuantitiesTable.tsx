@@ -101,14 +101,14 @@ type RejectCorrectionTarget = {
 type RejectCorrectionContext = {
   target: RejectCorrectionTarget;
   report: ProductionQuantityReportWithLines;
-  configurationParameters?: ReportLoaderData["configurationParameters"];
+  variantQuantityParameters?: ReportLoaderData["variantQuantityParameters"];
   itemId?: string | null;
 };
 
 type ReportLoaderData = {
   report: ProductionQuantityReportWithLines;
   itemId?: string | null;
-  configurationParameters?: Array<{
+  variantQuantityParameters?: Array<{
     key: string;
     label: string;
     dataType: string;
@@ -367,7 +367,8 @@ const ProductionQuantitiesTable = memo(
       setRejectCorrection({
         target,
         report: loadedReport,
-        configurationParameters: reportFetcher.data?.configurationParameters,
+        variantQuantityParameters:
+          reportFetcher.data?.variantQuantityParameters,
         itemId: reportFetcher.data?.itemId ?? null
       });
     }, [reportFetcher.state, reportFetcher.data]);
@@ -724,7 +725,9 @@ const ProductionQuantitiesTable = memo(
         {rejectCorrection ? (
           <ProductionQuantityDispositionDrawer
             report={rejectCorrection.report}
-            configurationParameters={rejectCorrection.configurationParameters}
+            variantQuantityParameters={
+              rejectCorrection.variantQuantityParameters
+            }
             itemId={rejectCorrection.itemId}
             open
             onClose={closeRejectCorrection}

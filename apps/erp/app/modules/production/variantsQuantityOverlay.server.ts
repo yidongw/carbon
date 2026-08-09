@@ -1,31 +1,32 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { getJobPlannedVariantQuantities } from "./jobVariantQuantity.service";
+import { buildVariantsQuantityActionResponse } from "./variantsQuantityOverlay";
 import type {
-  ConfigReferenceSource,
-  ConfigTableReferenceContext
-} from "./configParamsTableColumns";
-import { buildJobRemainingReferenceContext } from "./configParamsTableColumns";
-import { buildConfigTableActionResponse } from "./configTableOverlay";
-import { computeJobConfigTableTotal } from "./jobConfiguration";
+  VariantsQuantityReferenceContext,
+  VariantsQuantityReferenceSource
+} from "./variantsQuantityTableColumns";
+import { buildJobRemainingReferenceContext } from "./variantsQuantityTableColumns";
+import { computeVariantTableTotal } from "./variantTable";
 import {
-  getJobVariantQuantities,
-  jobVariantQuantitiesToConfigTable
-} from "./jobVariantQuantity.service";
-import { getJob } from "./production.service";
+  normalizeVariantQuantitiesPayload,
+  readVariantQuantitiesFormRaw
+} from "./variantTableWire";
 
-export { buildConfigTableActionResponse };
+export { buildVariantsQuantityActionResponse, readVariantQuantitiesFormRaw };
 
-/** Persist configuration and keep `job.quantity` in sync with the config table total. */
-export function jobConfigurationUpdateFields(
-  configuration: Record<string, unknown>
-): { configuration: Json; quantity: number } {
+/** Normalize Style qty FormData payload and sync quantity with the table total. */
+export function variantTableUpdateFields(
+  variantQuantities: Record<string, unknown>
+): { variantQuantities: Json; quantity: number } {
+  const normalized = normalizeVariantQuantitiesPayload(variantQuantities);
   return {
-    configuration: configuration as Json,
-    quantity: computeJobConfigTableTotal(configuration)
+    variantQuantities: normalized as Json,
+    quantity: computeVariantTableTotal(normalized)
   };
 }
 
-export function parseConfigurationFormValue(
+export function parseVariantQuantitiesFormValue(
   raw: FormDataEntryValue | null
 ): Record<string, unknown> | null {
   if (typeof raw !== "string" || !raw) return null;
@@ -45,10 +46,10 @@ export function parseConfigurationFormValue(
   }
 }
 
-export function parseInitialConfigurationFromRequest(
+export function parseInitialVariantTableFromRequest(
   request: Request
 ): Record<string, string | number | boolean>[] | undefined {
-  const raw = new URL(request.url).searchParams.get("configuration");
+  const raw = new URL(request.url).searchParams.get("variantQuantities");
   if (!raw) return undefined;
 
   try {
@@ -60,16 +61,17 @@ export function parseInitialConfigurationFromRequest(
     ) {
       return undefined;
     }
-    const configTable = (parsed as Record<string, unknown>).configTable;
-    return Array.isArray(configTable)
-      ? (configTable as Record<string, string | number | boolean>[])
+    const cfg = parsed as Record<string, unknown>;
+    const variantTable = cfg.variantTable;
+    return Array.isArray(variantTable)
+      ? (variantTable as Record<string, string | number | boolean>[])
       : undefined;
   } catch {
     return undefined;
   }
 }
 
-export async function getConfigReferenceSourceForOperation(
+export async function getVariantsQuantityReferenceSourceForOperation(
   client: SupabaseClient<Database>,
   {
     jobId,
@@ -82,75 +84,77 @@ export async function getConfigReferenceSourceForOperation(
     companyId: string;
     reportKind: "pickup" | "productionQuantity";
   }
-): Promise<ConfigReferenceSource | null> {
-  const job = await getJob(client, jobId);
-  const planned = await getJobVariantQuantities(client, jobId, companyId);
-  const jobConfiguration =
-    planned.data.length > 0
-      ? jobVariantQuantitiesToConfigTable(planned.data)
-      : (job.data?.configuration ?? null);
-  if (!jobConfiguration) return null;
+): Promise<VariantsQuantityReferenceSource | null> {
+  const plannedVariantQuantities = await getJobPlannedVariantQuantities(
+    client,
+    jobId,
+    companyId
+  );
+  const jobVariantTable = plannedVariantQuantities;
+  if (!jobVariantTable) return null;
 
   if (!jobOperationId) {
-    return { jobConfiguration, reportedConfigurations: [] };
+    return { jobVariantTable, reportedVariantQuantities: [] };
   }
 
   if (reportKind === "pickup") {
     const [employeePickups, supplierPickups] = await Promise.all([
       client
         .from("jobOperationPickup")
-        .select("configuration")
+        .select("variantQuantities")
         .eq("jobOperationId", jobOperationId)
         .eq("companyId", companyId),
       client
         .from("jobOperationSupplierPickup")
-        .select("configuration")
+        .select("variantQuantities")
         .eq("jobOperationId", jobOperationId)
         .eq("companyId", companyId)
     ]);
 
-    const reportedConfigurations = [
+    const reportedVariantQuantities = [
       ...(employeePickups.data ?? []),
       ...(supplierPickups.data ?? [])
     ]
-      .map((row) => row.configuration)
+      .map((row) => row.variantQuantities)
       .filter((config) => config != null);
 
-    return { jobConfiguration, reportedConfigurations };
+    return { jobVariantTable, reportedVariantQuantities };
   }
 
   const [quantities, pickups] = await Promise.all([
     client
       .from("productionQuantity")
-      .select("employeeId, configuration")
+      .select("employeeId, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null),
     client
       .from("jobOperationPickup")
-      .select("employeeId, quantity, configuration")
+      .select("employeeId, quantity, variantQuantities")
       .eq("jobOperationId", jobOperationId)
       .eq("companyId", companyId)
   ]);
 
-  const reportedConfigurations = (quantities.data ?? [])
-    .map((row) => row.configuration)
+  const reportedVariantQuantities = (quantities.data ?? [])
+    .map((row) => row.variantQuantities)
     .filter((config) => config != null);
 
-  const reportedConfigurationsByEmployee: Record<string, unknown[]> = {};
+  const reportedVariantQuantitiesByEmployee: Record<string, unknown[]> = {};
   for (const row of quantities.data ?? []) {
-    if (!row.employeeId || row.configuration == null) continue;
-    if (!reportedConfigurationsByEmployee[row.employeeId]) {
-      reportedConfigurationsByEmployee[row.employeeId] = [];
+    if (!row.employeeId || row.variantQuantities == null) continue;
+    if (!reportedVariantQuantitiesByEmployee[row.employeeId]) {
+      reportedVariantQuantitiesByEmployee[row.employeeId] = [];
     }
-    reportedConfigurationsByEmployee[row.employeeId].push(row.configuration);
+    reportedVariantQuantitiesByEmployee[row.employeeId].push(
+      row.variantQuantities
+    );
   }
 
   // Group pickups by employee
   const pickupsByEmployee: Record<
     string,
-    { quantity: number; configuration: unknown }[]
+    { quantity: number; variantQuantities: unknown }[]
   > = {};
   for (const pickup of pickups.data ?? []) {
     if (!pickup.employeeId) continue;
@@ -159,24 +163,24 @@ export async function getConfigReferenceSourceForOperation(
     }
     pickupsByEmployee[pickup.employeeId].push({
       quantity: pickup.quantity,
-      configuration: pickup.configuration
+      variantQuantities: pickup.variantQuantities
     });
   }
 
   return {
-    jobConfiguration,
-    reportedConfigurations,
-    reportedConfigurationsByEmployee,
+    jobVariantTable,
+    reportedVariantQuantities,
+    reportedVariantQuantitiesByEmployee,
     pickupsByEmployee
   };
 }
 
 /**
  * Read a single reported row's saved configuration by record id. Used as the
- * deep-link fallback for the read-only `itemConfigTable` overlay: in-app it
+ * deep-link fallback for the read-only `itemVariantsQuantity` overlay: in-app it
  * gets the config via props, but a pasted URL has only the record id.
  */
-export async function getReportedConfigurationById(
+export async function getReportedVariantQuantitiesById(
   client: SupabaseClient<Database>,
   {
     recordId,
@@ -192,11 +196,11 @@ export async function getReportedConfigurationById(
     reportKind === "pickup" ? "jobOperationPickup" : "productionQuantity";
   const { data } = await client
     .from(table)
-    .select("configuration")
+    .select("variantQuantities")
     .eq("id", recordId)
     .eq("companyId", companyId)
     .maybeSingle();
-  return data?.configuration ?? null;
+  return data?.variantQuantities ?? null;
 }
 
 export async function resolveJobIdForOperation(
@@ -218,11 +222,11 @@ export async function resolveJobIdForOperation(
   return operation?.jobId?.trim() || undefined;
 }
 
-export async function resolveConfigTableReferenceContext(
+export async function resolveVariantsQuantityReferenceContext(
   client: SupabaseClient<Database>,
   companyId: string,
-  referenceContext: ConfigTableReferenceContext
-): Promise<ConfigTableReferenceContext> {
+  referenceContext: VariantsQuantityReferenceContext
+): Promise<VariantsQuantityReferenceContext> {
   const jobOperationId = referenceContext.jobOperationId?.trim();
   if (!jobOperationId) {
     return referenceContext;
@@ -238,7 +242,7 @@ export async function resolveConfigTableReferenceContext(
     return referenceContext;
   }
 
-  const source = await getConfigReferenceSourceForOperation(client, {
+  const source = await getVariantsQuantityReferenceSourceForOperation(client, {
     jobId,
     jobOperationId,
     companyId,
@@ -250,13 +254,14 @@ export async function resolveConfigTableReferenceContext(
 
   return buildJobRemainingReferenceContext(source, {
     employeeId: referenceContext.employeeId,
-    siblingLineConfigurations: referenceContext.siblingLineConfigurations ?? []
+    siblingLineVariantQuantities:
+      referenceContext.siblingLineVariantQuantities ?? []
   });
 }
 
 export function parseReferenceContextFromRequest(
   request: Request
-): ConfigTableReferenceContext | undefined {
+): VariantsQuantityReferenceContext | undefined {
   const raw = new URL(request.url).searchParams.get("referenceContext");
   if (!raw) return undefined;
 
@@ -273,29 +278,31 @@ export function parseReferenceContextFromRequest(
     if (ctx.mode !== "original" && ctx.mode !== "remaining") {
       return undefined;
     }
-    const otherLineConfigurations = Array.isArray(ctx.otherLineConfigurations)
-      ? ctx.otherLineConfigurations
+    const otherLineVariantTables = Array.isArray(ctx.otherLineVariantTables)
+      ? ctx.otherLineVariantTables
       : [];
     const jobId = typeof ctx.jobId === "string" ? ctx.jobId : undefined;
     const jobOperationId =
       typeof ctx.jobOperationId === "string" ? ctx.jobOperationId : undefined;
     if (
-      otherLineConfigurations.length === 0 &&
-      ctx.originalConfiguration == null &&
+      otherLineVariantTables.length === 0 &&
+      ctx.originalVariantTable == null &&
       !(jobId?.trim() && jobOperationId?.trim())
     ) {
       return undefined;
     }
     return {
       mode: ctx.mode,
-      originalConfiguration: ctx.originalConfiguration,
-      otherLineConfigurations,
+      originalVariantTable: ctx.originalVariantTable,
+      otherLineVariantTables,
       employeeId:
         typeof ctx.employeeId === "string" ? ctx.employeeId : undefined,
       jobId,
       jobOperationId,
-      siblingLineConfigurations: Array.isArray(ctx.siblingLineConfigurations)
-        ? ctx.siblingLineConfigurations
+      siblingLineVariantQuantities: Array.isArray(
+        ctx.siblingLineVariantQuantities
+      )
+        ? ctx.siblingLineVariantQuantities
         : undefined
     };
   } catch {

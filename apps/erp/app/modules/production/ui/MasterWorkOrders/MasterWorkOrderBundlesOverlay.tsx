@@ -5,9 +5,9 @@ import { LuPrinter } from "react-icons/lu";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { BundleWorkOrder } from "~/modules/production";
 import {
-  configParamsModalBodyClassName,
-  configParamsModalShellClassName
-} from "../Jobs/configTableShared";
+  variantsQuantityModalBodyClassName,
+  variantsQuantityModalShellClassName
+} from "../Jobs/variantsQuantityShared";
 import BundleWorkOrdersTable from "./BundleWorkOrdersTable";
 import PrintBundleTicketsModal from "./PrintBundleTicketsModal";
 
@@ -33,7 +33,7 @@ export default function MasterWorkOrderBundlesOverlay({
   const [printOpen, setPrintOpen] = useState(false);
 
   return (
-    <div className={configParamsModalShellClassName}>
+    <div className={variantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
           <Trans>Bundle Work Orders</Trans>
@@ -44,7 +44,7 @@ export default function MasterWorkOrderBundlesOverlay({
           </p>
         ) : null}
       </div>
-      <div className={configParamsModalBodyClassName}>
+      <div className={variantsQuantityModalBodyClassName}>
         <div className="h-[65vh] w-[85vw] max-w-full">
           <BundleWorkOrdersTable
             data={bundleWorkOrders}

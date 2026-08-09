@@ -5,38 +5,38 @@ import {
   getQuantityGridParameters
 } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
 import {
-  getConfigReferenceSourceForOperation,
-  getReportedConfigurationById,
+  getReportedVariantQuantitiesById,
+  getVariantsQuantityReferenceSourceForOperation,
   resolveJobIdForOperation
-} from "~/modules/production/configTableOverlay.server";
-import { buildAttributeValueNames } from "~/modules/shared/styleConfigDisplay";
+} from "~/modules/production/variantsQuantityOverlay.server";
+import type { VariantsQuantityReferenceSource } from "~/modules/production/variantsQuantityTableColumns";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 
-export type ItemConfigTableOverlayLoaderData = {
+export type ItemVariantsQuantityOverlayLoaderData = {
   parameters: ConfigurationParameter[];
   itemReadableId: string | null;
   /**
    * DB-resolved reference source for the selected operation (pickups / reported
    * configs) used to compute click-to-fill hints. The client builds the actual
    * reference context + editor rows from this + its in-memory inputs — only ids
-   * are sent here, never the draft configuration or sibling configs.
+   * are sent here, never the draft variantQuantities or sibling payloads.
    */
-  referenceSource: ConfigReferenceSource | null;
+  referenceSource: VariantsQuantityReferenceSource | null;
   /**
-   * Saved configuration for a single reported row, fetched by `recordId` only
-   * for the deep-link case. In-app the overlay receives this via props instead,
-   * so this stays `null` for the common path.
+   * Saved variant quantities for a single reported row, fetched by `recordId`
+   * only for the deep-link case. In-app the overlay receives this via props
+   * instead, so this stays `null` for the common path.
    */
-  configuration: unknown;
-  /** Attribute value code -> display name for the config table. */
+  savedVariantQuantities: unknown;
+  /** Attribute value code -> name for Variant Display chips / qty grid. */
   attributeValueNames: Record<string, string>;
 };
 
 export async function loader({
   request,
   params
-}: LoaderFunctionArgs): Promise<ItemConfigTableOverlayLoaderData | null> {
+}: LoaderFunctionArgs): Promise<ItemVariantsQuantityOverlayLoaderData | null> {
   const { client, companyId } = await requirePermissions(request, {
     view: "production",
     bypassRls: true
@@ -59,7 +59,7 @@ export async function loader({
     .eq("companyId", companyId)
     .maybeSingle();
 
-  // Map attribute-value code -> name so the config table displays names, not
+  // Map attribute-value code -> name so the qty grid displays names, not
   // codes (all attributes, not just Color).
   const attributeValueNameRows = await getAttributeValueNames(
     client,
@@ -88,7 +88,7 @@ export async function loader({
 
   const referenceSource =
     jobId && jobOperationId
-      ? await getConfigReferenceSourceForOperation(client, {
+      ? await getVariantsQuantityReferenceSourceForOperation(client, {
           jobId,
           jobOperationId,
           companyId,
@@ -96,10 +96,10 @@ export async function loader({
         })
       : null;
 
-  // Deep-link fallback: rebuild a read-only view's saved config from its id.
+  // Deep-link fallback: rebuild a read-only view's saved variants from its id.
   const recordId = url.searchParams.get("recordId") ?? undefined;
-  const configuration = recordId
-    ? await getReportedConfigurationById(client, {
+  const savedVariantQuantities = recordId
+    ? await getReportedVariantQuantitiesById(client, {
         recordId,
         reportKind,
         companyId
@@ -110,7 +110,7 @@ export async function loader({
     parameters,
     itemReadableId: item.data?.readableIdWithRevision ?? null,
     referenceSource,
-    configuration,
+    savedVariantQuantities,
     attributeValueNames
   };
 }

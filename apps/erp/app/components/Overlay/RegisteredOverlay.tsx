@@ -2,7 +2,7 @@ import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
 import { useFetcher, useFetchers, useRevalidator } from "react-router";
-import { configParamsModalContentClassName } from "~/modules/production/ui/Jobs/configTableShared";
+import { variantsQuantityModalContentClassName } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
 import { useOverlay } from "./OverlayProvider";
 import { buildOverlayTarget, type OverlayTarget } from "./overlay";
@@ -13,7 +13,7 @@ import type { OverlayConfirmMode, OverlayInstance } from "./types";
 // which tailwind-merge keeps (different responsive group) and which wins on
 // desktop — blowing the overlay to full width. `md:w-fit` overrides it so the
 // modal shrinks to its content (the form's own `w-[44rem]`) at every breakpoint.
-const overlayModalContentClassName = `${configParamsModalContentClassName} pt-6 md:w-fit`;
+const overlayModalContentClassName = `${variantsQuantityModalContentClassName} pt-6 md:w-fit`;
 
 /** A successful confirm response can request opening a follow-up overlay via a
  * generic `nextOverlay: { id, params }` signal (e.g. a master cutting report →

@@ -27,8 +27,8 @@ import {
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
-import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
+import { getVariantsQuantityReferenceSourceForOperation } from "~/modules/production/variantsQuantityOverlay.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -96,8 +96,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let jobOperations = null;
   let opContext = null;
   let itemId = null;
-  let configurationParameters = null;
-  let configReferenceSource = null;
+  let variantQuantityParameters = null;
+  let variantsQuantityReferenceSource = null;
 
   if (jobId) {
     const [job, operations] = await Promise.all([
@@ -126,7 +126,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     if (itemId && !bundle.data) {
       const params = await getQuantityGridParameters(client, itemId, companyId);
-      configurationParameters = params.parameters;
+      variantQuantityParameters = params.parameters;
     }
   }
 
@@ -138,15 +138,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
 
     if (jobId) {
-      configReferenceSource = await getConfigReferenceSourceForOperation(
-        client,
-        {
+      variantsQuantityReferenceSource =
+        await getVariantsQuantityReferenceSourceForOperation(client, {
           jobId,
           jobOperationId,
           companyId,
           reportKind: "productionQuantity"
-        }
-      );
+        });
     }
   }
 
@@ -220,11 +218,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // (e.g. a Master Work Order's cutting operation).
     lockJobSelection: lockOperation && Boolean(jobId),
     lockOperationSelection: lockOperation && Boolean(jobOperationId),
-    configurationParameters:
-      configurationParameters && configurationParameters.length > 0
-        ? configurationParameters
+    variantQuantityParameters:
+      variantQuantityParameters && variantQuantityParameters.length > 0
+        ? variantQuantityParameters
         : null,
-    configReferenceSource,
+    variantsQuantityReferenceSource,
     ...actorContext
   };
 }

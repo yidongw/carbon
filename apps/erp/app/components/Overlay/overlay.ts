@@ -13,7 +13,7 @@ export type OverlayTarget = {
   /**
    * In-memory data passed straight to the overlay component (surfaced as
    * `ctx.props` in the renderer). Unlike `url`/`params` it never touches the URL
-   * — it's for parent-owned data (e.g. a draft `configuration`) the loader can't
+   * — it's for parent-owned data (e.g. a draft `variantQuantities`) the loader can't
    * fetch. Absent when the overlay is restored from a URL alone.
    */
   props?: Record<string, unknown>;
@@ -247,10 +247,10 @@ export const overlay = {
       };
     },
 
-    jobConfigTable({ jobId }: { jobId: string }): OverlayTarget {
+    jobVariantsQuantity({ jobId }: { jobId: string }): OverlayTarget {
       return {
-        id: "jobConfigTable",
-        url: path.to.api.jobConfigTable(jobId),
+        id: "jobVariantsQuantity",
+        url: path.to.api.jobVariantsQuantity(jobId),
         params: { jobId }
       };
     },
@@ -303,10 +303,10 @@ export const overlay = {
       };
     },
 
-    // Read-only view of a reported row's saved config. In-app the
-    // `configuration` rides the props channel; `recordId`/`reportKind` are the
+    // Read-only view of a reported row's saved variant quantities. In-app the
+    // `variantQuantities` ride the props channel; `recordId`/`reportKind` are the
     // fetch keys so a deep link can restore it server-side (route loader).
-    itemConfigTable(
+    itemVariantsQuantity(
       {
         itemId,
         recordId,
@@ -316,20 +316,20 @@ export const overlay = {
         recordId?: string;
         reportKind?: "pickup" | "productionQuantity";
       },
-      props?: { configuration?: unknown }
+      props?: { variantQuantities?: unknown }
     ): OverlayTarget {
-      const base = path.to.api.itemConfigTable(itemId);
+      const base = path.to.api.itemVariantsQuantity(itemId);
       const query = new URLSearchParams();
       if (recordId) query.set("recordId", recordId);
       if (reportKind) query.set("reportKind", reportKind);
       const qs = query.toString();
       return {
-        id: "itemConfigTable",
+        id: "itemVariantsQuantity",
         url: qs ? `${base}?${qs}` : base,
         params: overlayParams({ itemId, recordId, reportKind }),
         props:
-          props?.configuration !== undefined
-            ? { configuration: props.configuration }
+          props?.variantQuantities !== undefined
+            ? { variantQuantities: props.variantQuantities }
             : undefined
       };
     }
@@ -395,7 +395,7 @@ export function serializeSearch(params: URLSearchParams): string {
  * overlay. Each overlay is fully restorable from its token: `overlay.to.*`
  * builders carry their fetch keys as `params`, and any in-memory data passed via
  * props has a server-fetched fallback keyed by those params (e.g.
- * `itemConfigTable`). Decode rebuilds a target by running the id's canonical
+ * `itemVariantsQuantity`). Decode rebuilds a target by running the id's canonical
  * builder, so the only real guard here is that the token's id is registered.
  */
 export function isUrlOverlay(id: OverlayId): boolean {

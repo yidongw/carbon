@@ -9,13 +9,13 @@ const baseStyle = {
   methodType: "Make to Order" as const,
   saleQuantity: 10,
   taxPercent: 0,
-  configuration: JSON.stringify({
-    configTable: [{ valuesKey: "Black|M", Quantities: 10 }]
+  variantQuantities: JSON.stringify({
+    variantTable: [{ valuesKey: "Black|M", Quantities: 10 }]
   })
 };
 
 describe("salesOrderLineValidator", () => {
-  it("accepts Style sales order lines with quantity and configuration", () => {
+  it("accepts Style sales order lines with quantity and variantQuantities", () => {
     const result = salesOrderLineValidator.safeParse(baseStyle);
     expect(result.success).toBe(true);
   });
@@ -44,10 +44,10 @@ describe("salesOrderLineValidator", () => {
     ).toBe(true);
   });
 
-  it("allows Style variant SKU lines without configuration JSON", () => {
+  it("allows Style variant SKU lines without variantQuantities JSON", () => {
     const result = salesOrderLineValidator.safeParse({
       ...baseStyle,
-      configuration: ""
+      variantQuantities: ""
     });
 
     expect(result.success).toBe(true);

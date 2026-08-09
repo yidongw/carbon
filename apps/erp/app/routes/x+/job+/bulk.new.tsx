@@ -19,8 +19,8 @@ import {
   upsertJobMethod
 } from "~/modules/production";
 import {
-  isConfigTableConfiguration,
-  replaceJobVariantQuantitiesFromConfigTable
+  isVariantsQuantityPayload,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
 import { getNextSequence } from "~/modules/settings/settings.service";
 import { getDatabaseClient } from "~/services/database.server";
@@ -57,19 +57,41 @@ export async function action({ request }: ActionFunctionArgs) {
   } = validation.data;
 
   let configuration = undefined;
+  let styleVariantQuantities = undefined;
+  if (jobData.variantQuantities) {
+    try {
+      styleVariantQuantities =
+        typeof jobData.variantQuantities === "string"
+          ? JSON.parse(jobData.variantQuantities)
+          : jobData.variantQuantities;
+    } catch (error) {
+      console.error(error);
+    }
+  }
   if (jobData.configuration) {
     try {
-      configuration = JSON.parse(jobData.configuration);
+      configuration =
+        typeof jobData.configuration === "string"
+          ? JSON.parse(jobData.configuration)
+          : jobData.configuration;
     } catch (error) {
       console.error(error);
     }
   }
 
-  const isStyleQty = isConfigTableConfiguration(configuration);
-  const configTableRows = isStyleQty
-    ? (configuration.configTable as Record<string, unknown>[])
+  // Prefer dedicated variantQuantities FormData; legacy Style grids may still
+  // arrive on configuration.
+  const stylePayload =
+    styleVariantQuantities && isVariantsQuantityPayload(styleVariantQuantities)
+      ? styleVariantQuantities
+      : isVariantsQuantityPayload(configuration)
+        ? configuration
+        : undefined;
+  const isStyleQty = !!stylePayload;
+  const variantsQuantityRows = isStyleQty
+    ? (stylePayload.variantTable as Record<string, unknown>[])
     : [];
-  const hasConfiguredJobs = configTableRows.length > 0;
+  const hasConfiguredJobs = variantsQuantityRows.length > 0;
   const flatPartConfiguration = isStyleQty ? undefined : configuration;
   const jobs = Math.max(1, Math.ceil(jobCount));
 
@@ -140,16 +162,16 @@ export async function action({ request }: ActionFunctionArgs) {
       "T"
     )[0];
 
-    const configTableRow = hasConfiguredJobs
-      ? configTableRows[i % configTableRows.length]
+    const variantsQuantityRow = hasConfiguredJobs
+      ? variantsQuantityRows[i % variantsQuantityRows.length]
       : undefined;
-    const styleConfigurationForJob = configTableRow
+    const styleConfigurationForJob = variantsQuantityRow
       ? {
-          configTable: [configTableRow]
+          variantTable: [variantsQuantityRow]
         }
       : undefined;
-    const jobQuantity = configTableRow
-      ? getConfiguredJobQuantity(configTableRow)
+    const jobQuantity = variantsQuantityRow
+      ? getConfiguredJobQuantity(variantsQuantityRow)
       : quantityPerJob;
     const scrapRatio =
       quantityPerJob > 0 ? scrapQuantityPerJob / quantityPerJob : 0;
@@ -188,7 +210,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     if (styleConfigurationForJob) {
-      const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+      const replaced = await replaceJobVariantQuantitiesFromTable(
         serviceRole,
         getDatabaseClient(),
         {

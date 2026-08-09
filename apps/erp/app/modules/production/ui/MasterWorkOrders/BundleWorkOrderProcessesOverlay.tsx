@@ -2,11 +2,11 @@ import { Button, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { JobOperation } from "~/modules/production";
-import {
-  configParamsModalBodyClassName,
-  configParamsModalShellClassName
-} from "../Jobs/configTableShared";
 import JobOperationsTable from "../Jobs/JobOperationsTable";
+import {
+  variantsQuantityModalBodyClassName,
+  variantsQuantityModalShellClassName
+} from "../Jobs/variantsQuantityShared";
 
 export type BundleWorkOrderProcessesOverlayProps = {
   operations: JobOperation[];
@@ -31,7 +31,7 @@ export default function BundleWorkOrderProcessesOverlay({
   const { t } = useLingui();
 
   return (
-    <div className={configParamsModalShellClassName}>
+    <div className={variantsQuantityModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
           <Trans>Processes</Trans>
@@ -42,7 +42,7 @@ export default function BundleWorkOrderProcessesOverlay({
           </p>
         ) : null}
       </div>
-      <div className={configParamsModalBodyClassName}>
+      <div className={variantsQuantityModalBodyClassName}>
         <div className="h-[65vh] w-[80vw] max-w-full">
           <JobOperationsTable
             data={operations}

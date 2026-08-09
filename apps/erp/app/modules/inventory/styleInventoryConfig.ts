@@ -1,9 +1,10 @@
 /**
- * Map Style ledger on-hand into a config-table shape that
- * `buildConfigTableEditorState` can use as inventory reference hints / caps.
+ * Map Style ledger on-hand into a variants-quantity shape that
+ * `buildVariantsQuantityEditorState` can use as inventory reference hints / caps.
  *
  * Style editors are combo-shaped (`valuesKey` + `Quantities`) after the
- * attributes refactor.
+ * attributes refactor; legacy variants quantity matrix shape is still accepted as input
+ * and converted to combo keys (`BK|M`).
  */
 
 export type StyleOnHandEntry = {
@@ -13,12 +14,12 @@ export type StyleOnHandEntry = {
 };
 
 export type VariantQuantitiesPayload = {
-  configTable: Record<string, unknown>[];
+  variantTable: Record<string, unknown>[];
 };
 
 /** Empty tagged breakdown — every combo hint reads as 0. */
 export const EMPTY_VARIANT_QUANTITIES: VariantQuantitiesPayload = {
-  configTable: []
+  variantTable: []
 };
 
 function valuesKeyOf(entry: StyleOnHandEntry): string {
@@ -29,7 +30,7 @@ function valuesKeyOf(entry: StyleOnHandEntry): string {
  * Aggregate on-hand into Style combo config rows (`valuesKey` + `Quantities`).
  * Returns null when nothing is tagged / no variant breakdown.
  */
-export function breakdownToInventoryConfigTable(
+export function breakdownToInventoryVariantsQuantity(
   entries: StyleOnHandEntry[]
 ): VariantQuantitiesPayload | null {
   const byKey = new Map<string, number>();
@@ -43,18 +44,18 @@ export function breakdownToInventoryConfigTable(
 
   if (byKey.size === 0) return null;
 
-  const configTable = Array.from(byKey.entries()).map(
+  const variantTable = Array.from(byKey.entries()).map(
     ([valuesKey, Quantities]) => ({
       valuesKey,
       Quantities
     })
   );
 
-  return { configTable };
+  return { variantTable };
 }
 
 /** Build remaining-mode reference context from inventory config + sibling lines. */
-export function buildInventoryConfigTableReferenceContext({
+export function buildInventoryVariantsQuantityReferenceContext({
   variantQuantities,
   otherLineVariantQuantities = []
 }: {
@@ -64,7 +65,7 @@ export function buildInventoryConfigTableReferenceContext({
   if (!variantQuantities) return undefined;
   return {
     mode: "remaining" as const,
-    originalConfiguration: variantQuantities,
-    otherLineConfigurations: otherLineVariantQuantities.filter((c) => c != null)
+    originalVariantTable: variantQuantities,
+    otherLineVariantTables: otherLineVariantQuantities.filter((c) => c != null)
   };
 }

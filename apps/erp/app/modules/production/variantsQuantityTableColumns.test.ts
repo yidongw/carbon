@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildConfigTableEditorState,
   buildJobRemainingReferenceContext,
-  buildProductionConfigTableReferenceContext,
+  buildProductionVariantsQuantityReferenceContext,
+  buildVariantsQuantityEditorState,
   fillValueFromReference
-} from "./configParamsTableColumns";
+} from "./variantsQuantityTableColumns";
 
 // Combo model: a single valuesKey list param; each row is { valuesKey, Quantities }.
 const parameters = [
@@ -16,23 +16,23 @@ const parameters = [
   }
 ];
 
-describe("buildConfigTableEditorState", () => {
-  const originalConfiguration = {
-    configTable: [
+describe("buildVariantsQuantityEditorState", () => {
+  const originalVariantTable = {
+    variantTable: [
       { valuesKey: "红色|M", Quantities: 14 },
       { valuesKey: "蓝色|XL", Quantities: 6 }
     ]
   };
 
   it("shows original reported quantities for Production mode", () => {
-    const { rows, referenceByRowIndex } = buildConfigTableEditorState({
+    const { rows, referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext: {
         mode: "original",
-        originalConfiguration,
-        otherLineConfigurations: []
+        originalVariantTable,
+        otherLineVariantTables: []
       }
     });
 
@@ -42,15 +42,15 @@ describe("buildConfigTableEditorState", () => {
   });
 
   it("shows remaining quantities for Rework mode", () => {
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
-        originalConfiguration,
-        otherLineConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+        originalVariantTable,
+        otherLineVariantTables: [
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
     });
@@ -59,15 +59,15 @@ describe("buildConfigTableEditorState", () => {
   });
 
   it("can show negative remaining when over-allocated", () => {
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext: {
         mode: "remaining",
-        originalConfiguration,
-        otherLineConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
+        originalVariantTable,
+        otherLineVariantTables: [
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
         ]
       }
     });
@@ -76,17 +76,17 @@ describe("buildConfigTableEditorState", () => {
   });
 
   it("seeds current line values into original rows", () => {
-    const { rows } = buildConfigTableEditorState({
+    const { rows } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: {
-        configTable: [{ valuesKey: "红色|M", Quantities: 3 }]
+      currentVariantQuantities: {
+        variantTable: [{ valuesKey: "红色|M", Quantities: 3 }]
       },
       referenceContext: {
         mode: "remaining",
-        originalConfiguration,
-        otherLineConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+        originalVariantTable,
+        otherLineVariantTables: [
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
         ]
       }
     });
@@ -96,22 +96,22 @@ describe("buildConfigTableEditorState", () => {
 });
 
 describe("buildJobRemainingReferenceContext", () => {
-  const jobConfiguration = {
-    configTable: [{ valuesKey: "红色|M", Quantities: 14 }]
+  const jobVariantTable = {
+    variantTable: [{ valuesKey: "红色|M", Quantities: 14 }]
   };
 
   it("computes remaining quantities from job target minus reported", () => {
     const referenceContext = buildJobRemainingReferenceContext({
-      jobConfiguration,
-      reportedConfigurations: [
-        { configTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+      jobVariantTable,
+      reportedVariantQuantities: [
+        { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
       ]
     });
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 
@@ -121,36 +121,36 @@ describe("buildJobRemainingReferenceContext", () => {
   it("uses pickup-based hints for an employee with pickups", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
-        jobConfiguration: {
-          configTable: [
+        jobVariantTable: {
+          variantTable: [
             { valuesKey: "红色|M", Quantities: 100 },
             { valuesKey: "红色|L", Quantities: 100 }
           ]
         },
-        reportedConfigurations: [
-          { configTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
+        reportedVariantQuantities: [
+          { variantTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
         ],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 1,
-              configuration: {
-                configTable: [{ valuesKey: "红色|L", Quantities: 1 }]
+              variantQuantities: {
+                variantTable: [{ valuesKey: "红色|L", Quantities: 1 }]
               }
             }
           ]
         },
-        reportedConfigurationsByEmployee: {
-          emp1: [{ configTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
+        reportedVariantQuantitiesByEmployee: {
+          emp1: [{ variantTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
         }
       },
       { employeeId: "emp1" }
     );
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 
@@ -162,31 +162,31 @@ describe("buildJobRemainingReferenceContext", () => {
   it("reduces pickup hints by the employee's already reported quantity", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
-        jobConfiguration: {
-          configTable: [{ valuesKey: "红色|L", Quantities: 100 }]
+        jobVariantTable: {
+          variantTable: [{ valuesKey: "红色|L", Quantities: 100 }]
         },
-        reportedConfigurations: [],
+        reportedVariantQuantities: [],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 2,
-              configuration: {
-                configTable: [{ valuesKey: "红色|L", Quantities: 2 }]
+              variantQuantities: {
+                variantTable: [{ valuesKey: "红色|L", Quantities: 2 }]
               }
             }
           ]
         },
-        reportedConfigurationsByEmployee: {
-          emp1: [{ configTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
+        reportedVariantQuantitiesByEmployee: {
+          emp1: [{ variantTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
         }
       },
       { employeeId: "emp1" }
     );
 
-    const { referenceByRowIndex } = buildConfigTableEditorState({
+    const { referenceByRowIndex } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
-      currentConfiguration: { configTable: [] },
+      currentVariantQuantities: { variantTable: [] },
       referenceContext
     });
 
@@ -194,12 +194,12 @@ describe("buildJobRemainingReferenceContext", () => {
   });
 });
 
-describe("buildProductionConfigTableReferenceContext", () => {
+describe("buildProductionVariantsQuantityReferenceContext", () => {
   it("defers pickup loading to the server when job and operation are known", () => {
-    const context = buildProductionConfigTableReferenceContext({
+    const context = buildProductionVariantsQuantityReferenceContext({
       source: {
-        jobConfiguration: { configTable: [] },
-        reportedConfigurations: []
+        jobVariantTable: { variantTable: [] },
+        reportedVariantQuantities: []
       },
       employeeId: "emp1",
       jobId: "job1",
@@ -208,24 +208,24 @@ describe("buildProductionConfigTableReferenceContext", () => {
 
     expect(context).toEqual({
       mode: "remaining",
-      originalConfiguration: null,
-      otherLineConfigurations: [],
+      originalVariantTable: null,
+      otherLineVariantTables: [],
       employeeId: "emp1",
       jobId: "job1",
       jobOperationId: "op1",
-      siblingLineConfigurations: []
+      siblingLineVariantQuantities: []
     });
   });
 
   it("defers pickup loading when only job operation is known", () => {
-    const context = buildProductionConfigTableReferenceContext({
+    const context = buildProductionVariantsQuantityReferenceContext({
       source: {
-        jobConfiguration: {
-          configTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
+        jobVariantTable: {
+          variantTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
         },
-        reportedConfigurations: [],
+        reportedVariantQuantities: [],
         pickupsByEmployee: {
-          emp1: [{ quantity: 1, configuration: { configTable: [] } }]
+          emp1: [{ quantity: 1, variantQuantities: { variantTable: [] } }]
         }
       },
       employeeId: "emp1",
@@ -234,12 +234,12 @@ describe("buildProductionConfigTableReferenceContext", () => {
 
     expect(context).toEqual({
       mode: "remaining",
-      originalConfiguration: null,
-      otherLineConfigurations: [],
+      originalVariantTable: null,
+      otherLineVariantTables: [],
       employeeId: "emp1",
       jobId: undefined,
       jobOperationId: "op1",
-      siblingLineConfigurations: []
+      siblingLineVariantQuantities: []
     });
   });
 });
@@ -251,14 +251,14 @@ describe("fillValueFromReference", () => {
   });
 });
 
-describe("getConfigQuantityCells", () => {
+describe("getVariantsQuantityCells", () => {
   it("labels combo valuesKey + Quantities rows", async () => {
-    const { getConfigQuantityCells } = await import(
-      "./configParamsTableColumns"
+    const { getVariantsQuantityCells } = await import(
+      "./variantsQuantityTableColumns"
     );
-    const cells = getConfigQuantityCells(
+    const cells = getVariantsQuantityCells(
       {
-        configTable: [
+        variantTable: [
           { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
           { valuesKey: "RD|M", Quantities: 2 }
         ]
@@ -271,29 +271,28 @@ describe("getConfigQuantityCells", () => {
     ]);
   });
 
-  it("reads combo rows when configTablePrimaryKeys is omitted", async () => {
-    const { getConfigQuantityCells, configTableToComboRows } = await import(
-      "./configParamsTableColumns"
-    );
+  it("reads combo rows without legacy primary-keys field", async () => {
+    const { getVariantsQuantityCells, variantsQuantityToComboRows } =
+      await import("./variantsQuantityTableColumns");
     const configuration = {
-      configTable: [{ valuesKey: "BK|S", Quantities: 4 }]
+      variantTable: [{ valuesKey: "BK|S", Quantities: 4 }]
     };
-    expect(getConfigQuantityCells(configuration, { BK: "黑色" })).toEqual([
+    expect(getVariantsQuantityCells(configuration, { BK: "黑色" })).toEqual([
       { key: "0:Quantities", label: "黑色 · S", quantity: 4 }
     ]);
-    expect(configTableToComboRows(configuration)).toEqual([
+    expect(variantsQuantityToComboRows(configuration)).toEqual([
       { valuesKey: "BK|S", Quantities: 4, label: "BK · S" }
     ]);
   });
 
-  it("configTableToComboRows passes through combo rows", async () => {
-    const { configTableToComboRows } = await import(
-      "./configParamsTableColumns"
+  it("variantsQuantityToComboRows passes through combo rows", async () => {
+    const { variantsQuantityToComboRows } = await import(
+      "./variantsQuantityTableColumns"
     );
     expect(
-      configTableToComboRows(
+      variantsQuantityToComboRows(
         {
-          configTable: [{ valuesKey: "BK|S", Quantities: 6 }]
+          variantTable: [{ valuesKey: "BK|S", Quantities: 6 }]
         },
         { BK: "黑色", S: "S" }
       )

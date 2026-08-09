@@ -10,7 +10,7 @@ import {
   getItemReadableIdWithRevision,
   getJobInternalId,
   getJobReadableId,
-  hasConfigurationTable,
+  hasVariantTable,
   type ProductionQuantityJobOperationRow
 } from "~/modules/production/productionQuantityDisplay.utils";
 import { path } from "~/utils/path";
@@ -19,7 +19,7 @@ export type ProductionQuantityTableRowLike =
   ProductionQuantityJobOperationRow & {
     jobId?: string | null;
     itemId?: string | null;
-    configuration?: unknown;
+    variantQuantities?: unknown;
   };
 
 function stopRowNavigation(event: MouseEvent) {
@@ -92,27 +92,28 @@ export function ProductionQuantityTableQuantityCell({
   const { openOverlay } = useOverlay();
   const itemId = getItemInternalId(row);
   const quantity = row.quantity ?? 0;
-  const showConfiguredQuantityUi =
-    hasConfigurationTable(row.configuration) ||
+  const showVariantsQuantityUi =
+    hasVariantTable(row.variantQuantities) ||
     Boolean(itemId && configurableItemIds?.has(itemId));
 
-  const openConfigTable = (event: MouseEvent) => {
+  const openVariantsQuantity = (event: MouseEvent) => {
     event.stopPropagation();
     if (!itemId) return;
     openOverlay(
-      overlay.to.itemConfigTable(
+      overlay.to.itemVariantsQuantity(
         { itemId, recordId: row.id, reportKind },
         {
-          configuration:
-            row.configuration !== undefined && row.configuration !== null
-              ? row.configuration
+          variantQuantities:
+            row.variantQuantities !== undefined &&
+            row.variantQuantities !== null
+              ? row.variantQuantities
               : undefined
         }
       )
     );
   };
 
-  if (!showConfiguredQuantityUi) {
+  if (!showVariantsQuantityUi) {
     return <span className="tabular-nums">{quantity}</span>;
   }
 
@@ -122,14 +123,14 @@ export function ProductionQuantityTableQuantityCell({
       <IconButton
         type="button"
         icon={<LuTable size="1em" strokeWidth={3} />}
-        aria-label={t`View configuration parameters`}
+        aria-label={t`View variant quantities`}
         size="sm"
         variant="secondary"
         className={cn(
-          hasConfigurationTable(row.configuration) &&
+          hasVariantTable(row.variantQuantities) &&
             "text-emerald-500 hover:text-emerald-500"
         )}
-        onClick={openConfigTable}
+        onClick={openVariantsQuantity}
       />
     </HStack>
   );

@@ -14,11 +14,11 @@ import {
   insertMasterWorkOrder,
   masterWorkOrderValidator
 } from "~/modules/production";
-import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import {
-  isConfigTableConfiguration,
-  replaceJobVariantQuantitiesFromConfigTable
+  isVariantsQuantityPayload,
+  replaceJobVariantQuantitiesFromTable
 } from "~/modules/production/jobVariantQuantity.service";
+import { variantTableUpdateFields } from "~/modules/production/variantsQuantityOverlay.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { path } from "~/utils/path";
 
@@ -69,23 +69,23 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const {
-    configuration: configStr,
+    variantQuantities: variantQuantitiesStr,
     quantity: rawQuantity,
     ...rest
   } = validation.data;
 
-  // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
-  let configuration: Record<string, unknown> | undefined;
-  let styleConfigTable: Record<string, unknown> | undefined;
+  // Style qty grid → jobVariantQuantity (MWO is Style-only).
+  let styleVariantsQuantity: Record<string, unknown> | undefined;
   let quantity = rawQuantity;
-  if (configStr) {
+  if (variantQuantitiesStr) {
     try {
-      const parsed = JSON.parse(configStr) as Record<string, unknown>;
-      if (isConfigTableConfiguration(parsed)) {
-        styleConfigTable = parsed;
-        quantity = jobConfigurationUpdateFields(parsed).quantity;
-      } else {
-        configuration = parsed;
+      const parsed = JSON.parse(variantQuantitiesStr) as Record<
+        string,
+        unknown
+      >;
+      if (isVariantsQuantityPayload(parsed)) {
+        styleVariantsQuantity = parsed;
+        quantity = variantTableUpdateFields(parsed).quantity;
       }
     } catch {
       // invalid JSON — keep the typed quantity
@@ -95,7 +95,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const insert = await insertMasterWorkOrder(client, {
     ...rest,
     quantity,
-    configuration,
     companyId,
     createdBy: userId
   });
@@ -110,8 +109,8 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  if (styleConfigTable && insert.data?.jobId) {
-    const replaced = await replaceJobVariantQuantitiesFromConfigTable(
+  if (styleVariantsQuantity && insert.data?.jobId) {
+    const replaced = await replaceJobVariantQuantitiesFromTable(
       client,
       getDatabaseClient(),
       {
@@ -119,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
         parentItemId: rest.itemId,
         companyId,
         userId,
-        configuration: styleConfigTable
+        configuration: styleVariantsQuantity
       }
     );
     if (replaced.error) {
