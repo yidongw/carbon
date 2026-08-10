@@ -514,7 +514,6 @@ CREATE VIEW "purchaseOrderLines" WITH (security_invoker=true) AS
     pl."jobOperationSupplierQuantityReportId",
     pl."supplierPartId",
     pl."sortOrder",
-    pl.configuration,
     sp."supplierPartId" AS "supplierPartIdFromSupplier",
         CASE
             WHEN i."thumbnailPath" IS NULL AND mu."thumbnailPath" IS NOT NULL THEN mu."thumbnailPath"
@@ -590,10 +589,7 @@ CREATE VIEW "salesOrderLines" WITH (security_invoker=true) AS
     sl."convertedNonTaxableAddOnCost",
     sl."pricingRuleId",
     sl."priceTrace",
-    sl."deletedAt",
-    sl."deletedBy",
     sl."sortOrder",
-    sl.configuration,
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
             WHEN i."thumbnailPath" IS NULL AND mu."thumbnailPath" IS NOT NULL THEN mu."thumbnailPath"

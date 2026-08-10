@@ -1,6 +1,5 @@
 -- Persist Style color×size quantity grids on purchase order lines (same shape
 -- as salesOrderLine.configuration / job production quantity config tables).
-ALTER TABLE "purchaseOrderLine" ADD COLUMN IF NOT EXISTS "configuration" JSONB;
 
 -- `pl.*` is expanded at CREATE time, so rebuild the view to expose the new column.
 DROP VIEW IF EXISTS "purchaseOrderLines";

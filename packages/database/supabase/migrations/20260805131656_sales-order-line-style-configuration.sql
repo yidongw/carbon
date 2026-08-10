@@ -38,7 +38,6 @@ CHECK (
   )
 );
 
-ALTER TABLE "salesOrderLine" ADD COLUMN IF NOT EXISTS "configuration" JSONB;
 
 DROP VIEW IF EXISTS "salesOrderLines";
 CREATE VIEW "salesOrderLines" WITH(SECURITY_INVOKER=true) AS (

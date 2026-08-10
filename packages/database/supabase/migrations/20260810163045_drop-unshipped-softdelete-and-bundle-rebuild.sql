@@ -1,24 +1,18 @@
--- Catch-up migration: reconcile committed migration history with the dev database.
+-- Drop unshipped dev-only drift so every environment matches the committed schema.
 --
--- The dev DB accumulated schema that was never captured in a committed migration
--- (a global soft-delete feature: deletedAt/deletedBy on ~121 tables + the
--- is_visible() helper; the garment/bundle subsystem: bundle, bundleAllocation,
--- splitBatch, productionQuantitySplitRow + bundleStatus/splitBatchStatus enums;
--- the notification table; and the view/function definitions that depend on them).
--- The 2026-08 items/attributes/config migrations were authored against that DB,
--- so a database built purely from committed migrations (staging, prod, fresh
--- local) diverged from dev and could not reproduce it.
+-- Two features were built on the dev database but never shipped or wired into the
+-- app, and were never captured as migrations:
+--   * a global soft-delete feature: deletedAt/deletedBy on ~110 tables, the
+--     is_visible() helper, and WHERE-filters baked into ~two dozen views;
+--   * an unfinished bundle rebuild: bundle / splitBatch / bundleAllocation /
+--     productionQuantitySplitRow tables + bundleStatus / splitBatchStatus enums.
+-- (The live bundle workflow uses bundleWorkOrder / masterWorkOrderSplitRow, which
+-- are variant-keyed and untouched here.)
 --
--- This migration is the schema delta (generated with `migra`, verified to bring a
--- clean baseline to an exact match with dev) that closes that gap. It is purely
--- additive: creating tables/columns/indexes/constraints/policies/enums and
--- recreating views/functions to match dev. It intentionally does NOT touch the
--- per-company runtime "searchIndex_*" tables. Because dev already contains all of
--- this, the migration is recorded as applied on dev without re-running.
-
-create type "public"."bundleStatus" as enum ('Planned', 'Released', 'In Progress', 'Completed', 'Cancelled');
-
-create type "public"."splitBatchStatus" as enum ('Draft', 'Confirmed', 'Cancelled');
+-- This migration removes both. It is idempotent (IF EXISTS / CASCADE) so it is a
+-- clean no-op on databases that never received the drift (prod, fresh local), and
+-- fully removes it from those that did (dev, staging). The affected views are
+-- recreated to their committed, soft-delete-free definitions.
 
 
 
@@ -30,6 +24,91 @@ create type "public"."splitBatchStatus" as enum ('Draft', 'Confirmed', 'Cancelle
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+drop function if exists "public"."is_visible"(deleted_at timestamp with time zone);
+
+drop view if exists "public"."accounts";
 
 drop view if exists "public"."activeMaintenanceDispatchesByLocation";
 
@@ -47,17 +126,35 @@ drop view if exists "public"."customFieldTables";
 
 drop view if exists "public"."customers";
 
+drop view if exists "public"."documentExtensions";
+
+drop view if exists "public"."documents";
+
+drop view if exists "public"."employeeProcesses";
+
 drop view if exists "public"."employeeSalaryRecords";
 
 drop view if exists "public"."employeeSummary";
 
 drop view if exists "public"."employees";
 
+drop view if exists "public"."gaugeCalibrationRecords";
+
 drop view if exists "public"."gauges";
+
+drop view if exists "public"."groups";
+
+drop view if exists "public"."groups_recursive";
+
+drop view if exists "public"."holidayYears";
 
 drop view if exists "public"."inspectionDocuments";
 
 drop view if exists "public"."integrations";
+
+drop view if exists "public"."issues";
+
+drop view if exists "public"."jobAssignmentRules";
 
 drop view if exists "public"."jobMaterialWithMakeMethodId";
 
@@ -67,6 +164,8 @@ drop view if exists "public"."jobOperationsWithMakeMethods";
 
 drop view if exists "public"."jobs";
 
+drop view if exists "public"."journalEntries";
+
 drop view if exists "public"."kanbans";
 
 drop view if exists "public"."locations";
@@ -74,6 +173,14 @@ drop view if exists "public"."locations";
 drop view if exists "public"."maintenanceSchedules";
 
 drop view if exists "public"."masterWorkOrders";
+
+drop view if exists "public"."materialDimensions";
+
+drop view if exists "public"."materialFinishes";
+
+drop view if exists "public"."materialGrades";
+
+drop view if exists "public"."materialTypes";
 
 drop view if exists "public"."materials";
 
@@ -90,6 +197,8 @@ drop view if exists "public"."partners";
 drop view if exists "public"."parts";
 
 drop view if exists "public"."pickingLists";
+
+drop view if exists "public"."procedures";
 
 drop view if exists "public"."processes";
 
@@ -109,17 +218,27 @@ drop view if exists "public"."purchasingRfqLines";
 
 drop view if exists "public"."purchasingRfqs";
 
+drop view if exists "public"."qualityActions";
+
+drop view if exists "public"."qualityDocuments";
+
 drop view if exists "public"."quoteCustomerDetails";
 
 drop view if exists "public"."quoteLinePrices";
 
 drop view if exists "public"."quoteLines";
 
+drop view if exists "public"."quoteMaterialWithMakeMethodId";
+
+drop view if exists "public"."quoteOperationsWithMakeMethods";
+
 drop view if exists "public"."quotes";
 
 drop view if exists "public"."receiptLines";
 
 drop view if exists "public"."receipts";
+
+drop view if exists "public"."riskRegisters";
 
 drop view if exists "public"."salesInvoiceLines";
 
@@ -153,6 +272,10 @@ drop view if exists "public"."styleSamples";
 
 drop view if exists "public"."styles";
 
+drop view if exists "public"."suggestions";
+
+drop view if exists "public"."supplierProcesses";
+
 drop view if exists "public"."supplierQuoteLines";
 
 drop view if exists "public"."supplierQuotes";
@@ -163,12 +286,15 @@ drop view if exists "public"."timeCardEntries";
 
 drop view if exists "public"."tools";
 
+drop view if exists "public"."trainings";
+
 drop view if exists "public"."userDefaults";
 
 drop view if exists "public"."workCenters";
 
 drop view if exists "public"."workCentersWithBlockingStatus";
 
+drop view if exists "public"."groupMembers";
 
 
 
@@ -221,9 +347,13 @@ drop view if exists "public"."workCentersWithBlockingStatus";
 
 
 
+drop index if exists "public"."ability_not_deleted_companyId_idx";
 
+drop index if exists "public"."address_not_deleted_companyId_idx";
 
+drop index if exists "public"."apiKey_not_deleted_companyId_idx";
 
+drop index if exists "public"."batchProperty_not_deleted_companyId_idx";
 
 
 
@@ -235,125 +365,117 @@ drop view if exists "public"."workCentersWithBlockingStatus";
 
 
 
+drop index if exists "public"."configurationParameterGroup_not_deleted_companyId_idx";
 
+drop index if exists "public"."configurationParameter_not_deleted_companyId_idx";
 
+drop index if exists "public"."contractor_not_deleted_companyId_idx";
 
+drop index if exists "public"."costCenter_not_deleted_companyId_idx";
 
+drop index if exists "public"."customField_not_deleted_companyId_idx";
 
+drop index if exists "public"."customerStatus_not_deleted_companyId_idx";
 
+drop index if exists "public"."customerType_not_deleted_companyId_idx";
 
+drop index if exists "public"."customer_not_deleted_companyId_idx";
 
+drop index if exists "public"."department_not_deleted_companyId_idx";
 
+drop index if exists "public"."document_not_deleted_companyId_idx";
 
+drop index if exists "public"."externalLink_not_deleted_companyId_idx";
 
-create table "public"."bundle" (
-    "id" text not null default id('bnd'::text),
-    "splitBatchId" text not null,
-    "jobId" text,
-    "itemId" text not null,
-    "bundleNumber" text not null,
-    "sequence" integer not null,
-    "shadeLot" text,
-    "quantity" numeric not null,
-    "status" "bundleStatus" not null default 'Planned'::"bundleStatus",
-    "companyId" text not null,
-    "createdBy" text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedBy" text,
-    "updatedAt" timestamp with time zone
-);
+drop index if exists "public"."gaugeType_not_deleted_companyId_idx";
 
+drop index if exists "public"."gauge_not_deleted_companyId_idx";
 
-alter table "public"."bundle" enable row level security;
+drop index if exists "public"."group_not_deleted_companyId_idx";
 
-create table "public"."bundleAllocation" (
-    "id" text not null default id('bal'::text),
-    "bundleId" text not null,
-    "productionQuantitySplitRowId" text not null,
-    "quantity" numeric not null,
-    "companyId" text not null,
-    "createdBy" text not null,
-    "createdAt" timestamp with time zone not null default now()
-);
+drop index if exists "public"."holiday_not_deleted_companyId_idx";
 
+drop index if exists "public"."itemPostingGroup_not_deleted_companyId_idx";
 
-alter table "public"."bundleAllocation" enable row level security;
+drop index if exists "public"."itemRule_not_deleted_companyId_idx";
 
-create table "public"."notification" (
-    "id" text not null default xid(),
-    "userId" text not null,
-    "companyId" text not null,
-    "topic" text not null,
-    "event" text not null,
-    "title" text not null,
-    "description" text,
-    "from" text,
-    "documentType" text,
-    "documentId" text,
-    "payload" jsonb not null default '{}'::jsonb,
-    "readAt" timestamp with time zone,
-    "seenAt" timestamp with time zone,
-    "digestedInto" text,
-    "createdAt" timestamp with time zone not null default now()
-);
+drop index if exists "public"."itemShelfLife_not_deleted_companyId_idx";
 
+drop index if exists "public"."item_not_deleted_companyId_idx";
 
-alter table "public"."notification" enable row level security;
+drop index if exists "public"."jobAssignmentRule_not_deleted_companyId_idx";
 
-create table "public"."productionQuantitySplitRow" (
-    "id" text not null default id('psr'::text),
-    "productionQuantityId" text not null,
-    "reportId" text not null,
-    "jobId" text not null,
-    "jobOperationId" text not null,
-    "itemId" text not null,
-    "rowKey" text not null,
-    "shadeLot" text,
-    "configurationKey" text not null,
-    "rowConfiguration" jsonb,
-    "quantity" numeric not null,
-    "companyId" text not null,
-    "createdBy" text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedBy" text,
-    "updatedAt" timestamp with time zone
-);
+drop index if exists "public"."jobMaterial_not_deleted_companyId_idx";
 
+drop index if exists "public"."jobOperationParameter_not_deleted_companyId_idx";
 
-alter table "public"."productionQuantitySplitRow" enable row level security;
+drop index if exists "public"."jobOperationPickup_not_deleted_companyId_idx";
 
+drop index if exists "public"."jobOperationStep_not_deleted_companyId_idx";
 
+drop index if exists "public"."jobOperationTool_not_deleted_companyId_idx";
 
+drop index if exists "public"."jobOperation_not_deleted_companyId_idx";
 
+drop index if exists "public"."job_not_deleted_companyId_idx";
 
+drop index if exists "public"."journalLine_not_deleted_companyId_idx";
 
+drop index if exists "public"."journal_not_deleted_companyId_idx";
 
+drop index if exists "public"."kanban_not_deleted_companyId_idx";
 
+drop index if exists "public"."location_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceDispatchComment_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceDispatchEvent_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceDispatchItem_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceDispatch_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceFailureMode_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceScheduleItem_not_deleted_companyId_idx";
 
+drop index if exists "public"."maintenanceSchedule_not_deleted_companyId_idx";
 
+drop index if exists "public"."materialDimension_not_deleted_companyId_idx";
 
+drop index if exists "public"."materialFinish_not_deleted_companyId_idx";
 
+drop index if exists "public"."materialForm_not_deleted_companyId_idx";
 
+drop index if exists "public"."materialGrade_not_deleted_companyId_idx";
 
+drop index if exists "public"."materialSubstance_not_deleted_companyId_idx";
 
+drop index if exists "public"."materialType_not_deleted_companyId_idx";
 
+drop index if exists "public"."methodMaterial_not_deleted_companyId_idx";
 
+drop index if exists "public"."methodOperationParameter_not_deleted_companyId_idx";
 
+drop index if exists "public"."methodOperationStep_not_deleted_companyId_idx";
 
+drop index if exists "public"."methodOperationTool_not_deleted_companyId_idx";
 
+drop index if exists "public"."methodOperation_not_deleted_companyId_idx";
 
+drop index if exists "public"."noQuoteReason_not_deleted_companyId_idx";
 
+drop index if exists "public"."nonConformance_not_deleted_companyId_idx";
 
+drop index if exists "public"."partner_not_deleted_companyId_idx";
 
+drop index if exists "public"."pricingRule_not_deleted_companyId_idx";
 
+drop index if exists "public"."procedure_not_deleted_companyId_idx";
 
+drop index if exists "public"."process_not_deleted_companyId_idx";
 
+drop index if exists "public"."productionEvent_not_deleted_companyId_idx";
 
 
 
@@ -363,27 +485,49 @@ alter table "public"."productionQuantitySplitRow" enable row level security;
 
 
 
+drop index if exists "public"."purchaseInvoice_not_deleted_companyId_idx";
 
+drop index if exists "public"."purchaseOrder_not_deleted_companyId_idx";
 
+drop index if exists "public"."purchasingRfq_not_deleted_companyId_idx";
 
+drop index if exists "public"."qualityDocument_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteLine_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteMakeMethod_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteMaterial_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteOperationParameter_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteOperationStep_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteOperationTool_not_deleted_companyId_idx";
 
+drop index if exists "public"."quoteOperation_not_deleted_companyId_idx";
 
+drop index if exists "public"."quote_not_deleted_companyId_idx";
 
+drop index if exists "public"."receiptLine_not_deleted_companyId_idx";
 
+drop index if exists "public"."receipt_not_deleted_companyId_idx";
 
+drop index if exists "public"."riskRegister_not_deleted_companyId_idx";
 
+drop index if exists "public"."salesInvoiceLine_not_deleted_companyId_idx";
 
+drop index if exists "public"."salesInvoice_not_deleted_companyId_idx";
 
+drop index if exists "public"."salesOrderLine_not_deleted_companyId_idx";
 
+drop index if exists "public"."salesOrder_not_deleted_companyId_idx";
 
+drop index if exists "public"."salesRfqLine_not_deleted_companyId_idx";
 
+drop index if exists "public"."salesRfq_not_deleted_companyId_idx";
 
+drop index if exists "public"."scrapReason_not_deleted_companyId_idx";
 
 
 
@@ -463,830 +607,747 @@ alter table "public"."productionQuantitySplitRow" enable row level security;
 
 
 
-create table "public"."splitBatch" (
-    "id" text not null default id('sbt'::text),
-    "jobId" text not null,
-    "jobOperationId" text,
-    "itemId" text not null,
-    "status" "splitBatchStatus" not null default 'Draft'::"splitBatchStatus",
-    "notes" text,
-    "companyId" text not null,
-    "createdBy" text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedBy" text,
-    "updatedAt" timestamp with time zone
-);
 
 
-alter table "public"."splitBatch" enable row level security;
 
-alter table "public"."ability" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."ability" add column "deletedBy" text;
 
-alter table "public"."account" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."account" add column "deletedBy" text;
 
-alter table "public"."address" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."address" add column "deletedBy" text;
 
-alter table "public"."apiKey" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."apiKey" add column "deletedBy" text;
 
-alter table "public"."batchProperty" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."batchProperty" add column "deletedBy" text;
 
-alter table "public"."company" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."company" add column "deletedBy" text;
 
-alter table "public"."configurationParameter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."configurationParameter" add column "deletedBy" text;
 
-alter table "public"."configurationParameterGroup" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."configurationParameterGroup" add column "deletedBy" text;
 
-alter table "public"."contractor" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."contractor" add column "deletedBy" text;
 
-alter table "public"."costCenter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."costCenter" add column "deletedBy" text;
 
-alter table "public"."customField" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."customField" add column "deletedBy" text;
 
-alter table "public"."customer" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."customer" add column "deletedBy" text;
 
-alter table "public"."customerStatus" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."customerStatus" add column "deletedBy" text;
 
-alter table "public"."customerType" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."customerType" add column "deletedBy" text;
 
-alter table "public"."department" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."department" add column "deletedBy" text;
 
-alter table "public"."document" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."document" add column "deletedBy" text;
 
-alter table "public"."externalLink" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."externalLink" add column "deletedBy" text;
 
-alter table "public"."gauge" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."gauge" add column "deletedBy" text;
 
-alter table "public"."gaugeType" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."gaugeType" add column "deletedBy" text;
 
-alter table "public"."group" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."group" add column "deletedBy" text;
 
-alter table "public"."holiday" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."holiday" add column "deletedBy" text;
 
-alter table "public"."inviteLink" add column "loginMethods" text[];
 
-alter table "public"."item" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."item" add column "deletedBy" text;
 
-alter table "public"."itemPostingGroup" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."itemPostingGroup" add column "deletedBy" text;
 
-alter table "public"."itemShelfLife" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."itemShelfLife" add column "deletedBy" text;
 
-alter table "public"."job" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."job" add column "deletedBy" text;
 
-alter table "public"."jobAssignmentRule" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobAssignmentRule" add column "deletedBy" text;
 
-alter table "public"."jobMaterial" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobMaterial" add column "deletedBy" text;
 
-alter table "public"."jobOperation" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobOperation" add column "deletedBy" text;
 
-alter table "public"."jobOperationParameter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobOperationParameter" add column "deletedBy" text;
 
-alter table "public"."jobOperationPickup" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobOperationPickup" add column "deletedBy" text;
 
-alter table "public"."jobOperationStep" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobOperationStep" add column "deletedBy" text;
 
-alter table "public"."jobOperationTool" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."jobOperationTool" add column "deletedBy" text;
 
-alter table "public"."journal" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."journal" add column "deletedBy" text;
 
-alter table "public"."journalLine" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."journalLine" add column "deletedBy" text;
 
-alter table "public"."kanban" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."kanban" add column "deletedBy" text;
 
-alter table "public"."location" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."location" add column "deletedBy" text;
 
-alter table "public"."maintenanceDispatch" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceDispatch" add column "deletedBy" text;
 
-alter table "public"."maintenanceDispatchComment" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceDispatchComment" add column "deletedBy" text;
 
-alter table "public"."maintenanceDispatchEvent" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceDispatchEvent" add column "deletedBy" text;
 
-alter table "public"."maintenanceDispatchItem" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceDispatchItem" add column "deletedBy" text;
 
-alter table "public"."maintenanceFailureMode" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceFailureMode" add column "deletedBy" text;
 
-alter table "public"."maintenanceSchedule" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceSchedule" add column "deletedBy" text;
 
-alter table "public"."maintenanceScheduleItem" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."maintenanceScheduleItem" add column "deletedBy" text;
 
-alter table "public"."materialDimension" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."materialDimension" add column "deletedBy" text;
 
-alter table "public"."materialFinish" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."materialFinish" add column "deletedBy" text;
 
-alter table "public"."materialForm" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."materialForm" add column "deletedBy" text;
 
-alter table "public"."materialGrade" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."materialGrade" add column "deletedBy" text;
 
-alter table "public"."materialSubstance" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."materialSubstance" add column "deletedBy" text;
 
-alter table "public"."materialType" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."materialType" add column "deletedBy" text;
 
-alter table "public"."methodMaterial" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."methodMaterial" add column "deletedBy" text;
 
-alter table "public"."methodOperation" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."methodOperation" add column "deletedBy" text;
 
-alter table "public"."methodOperationParameter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."methodOperationParameter" add column "deletedBy" text;
 
-alter table "public"."methodOperationStep" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."methodOperationStep" add column "deletedBy" text;
 
-alter table "public"."methodOperationTool" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."methodOperationTool" add column "deletedBy" text;
 
-alter table "public"."noQuoteReason" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."noQuoteReason" add column "deletedBy" text;
 
-alter table "public"."nonConformance" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."nonConformance" add column "deletedBy" text;
 
-alter table "public"."partner" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."partner" add column "deletedBy" text;
 
-alter table "public"."pricingRule" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."pricingRule" add column "deletedBy" text;
 
-alter table "public"."procedure" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."procedure" add column "deletedBy" text;
 
-alter table "public"."process" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."process" add column "deletedBy" text;
 
-alter table "public"."productionEvent" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."productionEvent" add column "deletedBy" text;
 
-alter table "public"."productionQuantity" alter column "reportId" drop not null;
 
-alter table "public"."purchaseInvoice" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."purchaseInvoice" add column "deletedBy" text;
 
-alter table "public"."purchaseOrder" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."purchaseOrder" add column "deletedBy" text;
 
-alter table "public"."purchasingRfq" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."purchasingRfq" add column "deletedBy" text;
 
-alter table "public"."qualityDocument" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."qualityDocument" add column "deletedBy" text;
 
-alter table "public"."quote" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quote" add column "deletedBy" text;
 
-alter table "public"."quoteLine" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteLine" add column "deletedBy" text;
 
-alter table "public"."quoteLinePrice" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteLinePrice" add column "deletedBy" text;
 
-alter table "public"."quoteMakeMethod" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteMakeMethod" add column "deletedBy" text;
 
-alter table "public"."quoteMaterial" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteMaterial" add column "deletedBy" text;
 
-alter table "public"."quoteOperation" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteOperation" add column "deletedBy" text;
 
-alter table "public"."quoteOperationParameter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteOperationParameter" add column "deletedBy" text;
 
-alter table "public"."quoteOperationStep" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteOperationStep" add column "deletedBy" text;
 
-alter table "public"."quoteOperationTool" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."quoteOperationTool" add column "deletedBy" text;
 
-alter table "public"."receipt" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."receipt" add column "deletedBy" text;
 
-alter table "public"."receiptLine" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."receiptLine" add column "deletedBy" text;
 
-alter table "public"."riskRegister" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."shipmentLine_not_deleted_companyId_idx";
 
-alter table "public"."riskRegister" add column "deletedBy" text;
+drop index if exists "public"."shipment_not_deleted_companyId_idx";
 
-alter table "public"."salesInvoice" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."salesInvoice" add column "deletedBy" text;
 
-alter table "public"."salesInvoiceLine" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."salesInvoiceLine" add column "deletedBy" text;
 
-alter table "public"."salesRfq" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."salesRfq" add column "deletedBy" text;
+drop index if exists "public"."stockTransfer_not_deleted_companyId_idx";
 
-alter table "public"."salesRfqLine" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."storageType_not_deleted_companyId_idx";
 
-alter table "public"."salesRfqLine" add column "deletedBy" text;
+drop index if exists "public"."storageUnit_not_deleted_companyId_idx";
 
-alter table "public"."scrapReason" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."suggestion_not_deleted_companyId_idx";
 
-alter table "public"."scrapReason" add column "deletedBy" text;
+drop index if exists "public"."supplierQuoteLine_not_deleted_companyId_idx";
 
-alter table "public"."shipment" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."supplierQuote_not_deleted_companyId_idx";
 
-alter table "public"."shipment" add column "deletedBy" text;
+drop index if exists "public"."supplierType_not_deleted_companyId_idx";
 
-alter table "public"."shipmentLine" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."supplier_not_deleted_companyId_idx";
 
-alter table "public"."shipmentLine" add column "deletedBy" text;
+drop index if exists "public"."tableView_not_deleted_companyId_idx";
 
-alter table "public"."stockTransfer" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."templateConfigurationParameter_not_deleted_companyId_idx";
 
-alter table "public"."stockTransfer" add column "deletedBy" text;
+drop index if exists "public"."templateMethodMaterial_not_deleted_companyId_idx";
 
-alter table "public"."storageRule" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."templateMethodOperationParameter_not_deleted_companyId_idx";
 
-alter table "public"."storageRule" add column "deletedBy" text;
+drop index if exists "public"."templateMethodOperationStep_not_deleted_companyId_idx";
 
-alter table "public"."storageType" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."templateMethodOperationTool_not_deleted_companyId_idx";
 
-alter table "public"."storageType" add column "deletedBy" text;
+drop index if exists "public"."templateMethodOperation_not_deleted_companyId_idx";
 
-alter table "public"."storageUnit" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."timeCardEntry_not_deleted_companyId_idx";
 
-alter table "public"."storageUnit" add column "deletedBy" text;
+drop index if exists "public"."trainingAssignment_not_deleted_companyId_idx";
 
-alter table "public"."suggestion" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."training_not_deleted_companyId_idx";
 
-alter table "public"."suggestion" add column "deletedBy" text;
+drop index if exists "public"."unitOfMeasure_not_deleted_companyId_idx";
 
-alter table "public"."supplier" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."warehouseTransferLine_not_deleted_companyId_idx";
 
-alter table "public"."supplier" add column "deletedBy" text;
+drop index if exists "public"."warehouseTransfer_not_deleted_companyId_idx";
 
-alter table "public"."supplierQuote" add column "deletedAt" timestamp with time zone;
+drop index if exists "public"."webhook_not_deleted_companyId_idx";
 
-alter table "public"."supplierQuote" add column "deletedBy" text;
+drop table if exists "public"."bundle" cascade;
 
-alter table "public"."supplierQuoteLine" add column "deletedAt" timestamp with time zone;
+drop table if exists "public"."bundleAllocation" cascade;
 
-alter table "public"."supplierQuoteLine" add column "deletedBy" text;
+drop table if exists "public"."productionQuantitySplitRow" cascade;
 
-alter table "public"."supplierType" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."supplierType" add column "deletedBy" text;
 
-alter table "public"."tableView" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."tableView" add column "deletedBy" text;
 
-alter table "public"."templateConfigurationParameter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."templateConfigurationParameter" add column "deletedBy" text;
 
-alter table "public"."templateMethodMaterial" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."templateMethodMaterial" add column "deletedBy" text;
 
-alter table "public"."templateMethodOperation" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."templateMethodOperation" add column "deletedBy" text;
 
-alter table "public"."templateMethodOperationParameter" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."templateMethodOperationParameter" add column "deletedBy" text;
 
-alter table "public"."templateMethodOperationStep" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."templateMethodOperationStep" add column "deletedBy" text;
 
-alter table "public"."templateMethodOperationTool" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."templateMethodOperationTool" add column "deletedBy" text;
 
-alter table "public"."timeCardEntry" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."timeCardEntry" add column "deletedBy" text;
 
-alter table "public"."training" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."training" add column "deletedBy" text;
 
-alter table "public"."trainingAssignment" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."trainingAssignment" add column "deletedBy" text;
 
-alter table "public"."unitOfMeasure" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."unitOfMeasure" add column "deletedBy" text;
 
-alter table "public"."warehouseTransfer" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."warehouseTransfer" add column "deletedBy" text;
 
-alter table "public"."warehouseTransferLine" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."warehouseTransferLine" add column "deletedBy" text;
 
-alter table "public"."webhook" add column "deletedAt" timestamp with time zone;
 
-alter table "public"."webhook" add column "deletedBy" text;
 
-CREATE INDEX "ability_not_deleted_companyId_idx" ON public.ability USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "address_not_deleted_companyId_idx" ON public.address USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "apiKey_not_deleted_companyId_idx" ON public."apiKey" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "batchProperty_not_deleted_companyId_idx" ON public."batchProperty" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "bundleAllocation_bundleId_idx" ON public."bundleAllocation" USING btree ("bundleId");
 
-CREATE INDEX "bundleAllocation_companyId_idx" ON public."bundleAllocation" USING btree ("companyId");
 
-CREATE UNIQUE INDEX "bundleAllocation_pkey" ON public."bundleAllocation" USING btree (id);
 
-CREATE INDEX "bundleAllocation_productionQuantitySplitRowId_idx" ON public."bundleAllocation" USING btree ("productionQuantitySplitRowId");
 
-CREATE UNIQUE INDEX "bundle_bundleNumber_key" ON public.bundle USING btree ("bundleNumber", "companyId");
 
-CREATE INDEX "bundle_companyId_idx" ON public.bundle USING btree ("companyId");
 
-CREATE INDEX "bundle_itemId_idx" ON public.bundle USING btree ("itemId");
 
-CREATE INDEX "bundle_jobId_idx" ON public.bundle USING btree ("jobId");
 
-CREATE UNIQUE INDEX bundle_pkey ON public.bundle USING btree (id);
 
-CREATE INDEX "bundle_splitBatchId_idx" ON public.bundle USING btree ("splitBatchId");
 
-CREATE INDEX "configurationParameterGroup_not_deleted_companyId_idx" ON public."configurationParameterGroup" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "configurationParameter_not_deleted_companyId_idx" ON public."configurationParameter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "contractor_not_deleted_companyId_idx" ON public.contractor USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "costCenter_not_deleted_companyId_idx" ON public."costCenter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+drop table if exists "public"."splitBatch" cascade;
 
-CREATE INDEX "customField_not_deleted_companyId_idx" ON public."customField" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "customerStatus_not_deleted_companyId_idx" ON public."customerStatus" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "customerType_not_deleted_companyId_idx" ON public."customerType" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "customer_not_deleted_companyId_idx" ON public.customer USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "department_not_deleted_companyId_idx" ON public.department USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "document_not_deleted_companyId_idx" ON public.document USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "externalLink_not_deleted_companyId_idx" ON public."externalLink" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "gaugeType_not_deleted_companyId_idx" ON public."gaugeType" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "gauge_not_deleted_companyId_idx" ON public.gauge USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "group_not_deleted_companyId_idx" ON public."group" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "holiday_not_deleted_companyId_idx" ON public.holiday USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "itemPostingGroup_not_deleted_companyId_idx" ON public."itemPostingGroup" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "itemRule_not_deleted_companyId_idx" ON public."storageRule" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "itemShelfLife_not_deleted_companyId_idx" ON public."itemShelfLife" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "item_not_deleted_companyId_idx" ON public.item USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobAssignmentRule_not_deleted_companyId_idx" ON public."jobAssignmentRule" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobMaterial_not_deleted_companyId_idx" ON public."jobMaterial" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobOperationParameter_not_deleted_companyId_idx" ON public."jobOperationParameter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobOperationPickup_not_deleted_companyId_idx" ON public."jobOperationPickup" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobOperationStep_not_deleted_companyId_idx" ON public."jobOperationStep" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobOperationTool_not_deleted_companyId_idx" ON public."jobOperationTool" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "jobOperation_not_deleted_companyId_idx" ON public."jobOperation" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "job_not_deleted_companyId_idx" ON public.job USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "journalLine_not_deleted_companyId_idx" ON public."journalLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "journal_not_deleted_companyId_idx" ON public.journal USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "kanban_not_deleted_companyId_idx" ON public.kanban USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "location_not_deleted_companyId_idx" ON public.location USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceDispatchComment_not_deleted_companyId_idx" ON public."maintenanceDispatchComment" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceDispatchEvent_not_deleted_companyId_idx" ON public."maintenanceDispatchEvent" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceDispatchItem_not_deleted_companyId_idx" ON public."maintenanceDispatchItem" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceDispatch_not_deleted_companyId_idx" ON public."maintenanceDispatch" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceFailureMode_not_deleted_companyId_idx" ON public."maintenanceFailureMode" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceScheduleItem_not_deleted_companyId_idx" ON public."maintenanceScheduleItem" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "maintenanceSchedule_not_deleted_companyId_idx" ON public."maintenanceSchedule" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."ability" drop column if exists "deletedAt";
 
-CREATE INDEX "materialDimension_not_deleted_companyId_idx" ON public."materialDimension" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."ability" drop column if exists "deletedBy";
 
-CREATE INDEX "materialFinish_not_deleted_companyId_idx" ON public."materialFinish" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."account" drop column if exists "deletedAt";
 
-CREATE INDEX "materialForm_not_deleted_companyId_idx" ON public."materialForm" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."account" drop column if exists "deletedBy";
 
-CREATE INDEX "materialGrade_not_deleted_companyId_idx" ON public."materialGrade" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."address" drop column if exists "deletedAt";
 
-CREATE INDEX "materialSubstance_not_deleted_companyId_idx" ON public."materialSubstance" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."address" drop column if exists "deletedBy";
 
-CREATE INDEX "materialType_not_deleted_companyId_idx" ON public."materialType" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."apiKey" drop column if exists "deletedAt";
 
-CREATE INDEX "methodMaterial_not_deleted_companyId_idx" ON public."methodMaterial" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."apiKey" drop column if exists "deletedBy";
 
-CREATE INDEX "methodOperationParameter_not_deleted_companyId_idx" ON public."methodOperationParameter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."batchProperty" drop column if exists "deletedAt";
 
-CREATE INDEX "methodOperationStep_not_deleted_companyId_idx" ON public."methodOperationStep" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."batchProperty" drop column if exists "deletedBy";
 
-CREATE INDEX "methodOperationTool_not_deleted_companyId_idx" ON public."methodOperationTool" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."company" drop column if exists "deletedAt";
 
-CREATE INDEX "methodOperation_not_deleted_companyId_idx" ON public."methodOperation" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."company" drop column if exists "deletedBy";
 
-CREATE INDEX "noQuoteReason_not_deleted_companyId_idx" ON public."noQuoteReason" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."configurationParameter" drop column if exists "deletedAt";
 
-CREATE INDEX "nonConformance_not_deleted_companyId_idx" ON public."nonConformance" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."configurationParameter" drop column if exists "deletedBy";
 
-CREATE UNIQUE INDEX notification_pkey ON public.notification USING btree (id);
+alter table "public"."configurationParameterGroup" drop column if exists "deletedAt";
 
-CREATE INDEX notification_user_company_created_idx ON public.notification USING btree ("userId", "companyId", "createdAt" DESC);
+alter table "public"."configurationParameterGroup" drop column if exists "deletedBy";
 
-CREATE INDEX notification_user_unread_idx ON public.notification USING btree ("userId", "companyId", topic) WHERE (("readAt" IS NULL) AND ("digestedInto" IS NULL));
+alter table "public"."contractor" drop column if exists "deletedAt";
 
-CREATE INDEX "partner_not_deleted_companyId_idx" ON public.partner USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."contractor" drop column if exists "deletedBy";
 
-CREATE INDEX "pricingRule_not_deleted_companyId_idx" ON public."pricingRule" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."costCenter" drop column if exists "deletedAt";
 
-CREATE INDEX "procedure_not_deleted_companyId_idx" ON public.procedure USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."costCenter" drop column if exists "deletedBy";
 
-CREATE INDEX "process_not_deleted_companyId_idx" ON public.process USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."customField" drop column if exists "deletedAt";
 
-CREATE INDEX "productionEvent_not_deleted_companyId_idx" ON public."productionEvent" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."customField" drop column if exists "deletedBy";
 
-CREATE INDEX "productionQuantitySplitRow_companyId_idx" ON public."productionQuantitySplitRow" USING btree ("companyId");
+alter table "public"."customer" drop column if exists "deletedAt";
 
-CREATE INDEX "productionQuantitySplitRow_itemId_idx" ON public."productionQuantitySplitRow" USING btree ("itemId");
+alter table "public"."customer" drop column if exists "deletedBy";
 
-CREATE INDEX "productionQuantitySplitRow_jobId_idx" ON public."productionQuantitySplitRow" USING btree ("jobId");
+alter table "public"."customerStatus" drop column if exists "deletedAt";
 
-CREATE INDEX "productionQuantitySplitRow_jobOperationId_idx" ON public."productionQuantitySplitRow" USING btree ("jobOperationId");
+alter table "public"."customerStatus" drop column if exists "deletedBy";
 
-CREATE UNIQUE INDEX "productionQuantitySplitRow_pkey" ON public."productionQuantitySplitRow" USING btree (id);
+alter table "public"."customerType" drop column if exists "deletedAt";
 
-CREATE INDEX "productionQuantitySplitRow_productionQuantityId_idx" ON public."productionQuantitySplitRow" USING btree ("productionQuantityId");
+alter table "public"."customerType" drop column if exists "deletedBy";
 
-CREATE UNIQUE INDEX "productionQuantitySplitRow_productionQuantityId_rowKey_key" ON public."productionQuantitySplitRow" USING btree ("productionQuantityId", "rowKey");
+alter table "public"."department" drop column if exists "deletedAt";
 
-CREATE INDEX "productionQuantitySplitRow_reportId_idx" ON public."productionQuantitySplitRow" USING btree ("reportId");
+alter table "public"."department" drop column if exists "deletedBy";
 
-CREATE INDEX "purchaseInvoice_not_deleted_companyId_idx" ON public."purchaseInvoice" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."document" drop column if exists "deletedAt";
 
-CREATE INDEX "purchaseOrder_not_deleted_companyId_idx" ON public."purchaseOrder" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."document" drop column if exists "deletedBy";
 
-CREATE INDEX "purchasingRfq_not_deleted_companyId_idx" ON public."purchasingRfq" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."externalLink" drop column if exists "deletedAt";
 
-CREATE INDEX "qualityDocument_not_deleted_companyId_idx" ON public."qualityDocument" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."externalLink" drop column if exists "deletedBy";
 
-CREATE INDEX "quoteLine_not_deleted_companyId_idx" ON public."quoteLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."gauge" drop column if exists "deletedAt";
 
-CREATE INDEX "quoteMakeMethod_not_deleted_companyId_idx" ON public."quoteMakeMethod" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."gauge" drop column if exists "deletedBy";
 
-CREATE INDEX "quoteMaterial_not_deleted_companyId_idx" ON public."quoteMaterial" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."gaugeType" drop column if exists "deletedAt";
 
-CREATE INDEX "quoteOperationParameter_not_deleted_companyId_idx" ON public."quoteOperationParameter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."gaugeType" drop column if exists "deletedBy";
 
-CREATE INDEX "quoteOperationStep_not_deleted_companyId_idx" ON public."quoteOperationStep" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."group" drop column if exists "deletedAt";
 
-CREATE INDEX "quoteOperationTool_not_deleted_companyId_idx" ON public."quoteOperationTool" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."group" drop column if exists "deletedBy";
 
-CREATE INDEX "quoteOperation_not_deleted_companyId_idx" ON public."quoteOperation" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."holiday" drop column if exists "deletedAt";
 
-CREATE INDEX "quote_not_deleted_companyId_idx" ON public.quote USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."holiday" drop column if exists "deletedBy";
 
-CREATE INDEX "receiptLine_not_deleted_companyId_idx" ON public."receiptLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."inviteLink" drop column if exists "loginMethods";
 
-CREATE INDEX "receipt_not_deleted_companyId_idx" ON public.receipt USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."item" drop column if exists "deletedAt";
 
-CREATE INDEX "riskRegister_not_deleted_companyId_idx" ON public."riskRegister" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."item" drop column if exists "deletedBy";
 
-CREATE INDEX "salesInvoiceLine_not_deleted_companyId_idx" ON public."salesInvoiceLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."itemPostingGroup" drop column if exists "deletedAt";
 
-CREATE INDEX "salesInvoice_not_deleted_companyId_idx" ON public."salesInvoice" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."itemPostingGroup" drop column if exists "deletedBy";
 
-CREATE INDEX "salesOrderLine_not_deleted_companyId_idx" ON public."salesOrderLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."itemShelfLife" drop column if exists "deletedAt";
 
-CREATE INDEX "salesOrder_not_deleted_companyId_idx" ON public."salesOrder" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."itemShelfLife" drop column if exists "deletedBy";
 
-CREATE INDEX "salesRfqLine_not_deleted_companyId_idx" ON public."salesRfqLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."job" drop column if exists "deletedAt";
 
-CREATE INDEX "salesRfq_not_deleted_companyId_idx" ON public."salesRfq" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."job" drop column if exists "deletedBy";
 
-CREATE INDEX "scrapReason_not_deleted_companyId_idx" ON public."scrapReason" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
+alter table "public"."jobAssignmentRule" drop column if exists "deletedAt";
 
+alter table "public"."jobAssignmentRule" drop column if exists "deletedBy";
 
+alter table "public"."jobMaterial" drop column if exists "deletedAt";
 
+alter table "public"."jobMaterial" drop column if exists "deletedBy";
 
+alter table "public"."jobOperation" drop column if exists "deletedAt";
 
+alter table "public"."jobOperation" drop column if exists "deletedBy";
 
+alter table "public"."jobOperationParameter" drop column if exists "deletedAt";
 
+alter table "public"."jobOperationParameter" drop column if exists "deletedBy";
 
+alter table "public"."jobOperationPickup" drop column if exists "deletedAt";
 
+alter table "public"."jobOperationPickup" drop column if exists "deletedBy";
 
+alter table "public"."jobOperationStep" drop column if exists "deletedAt";
 
+alter table "public"."jobOperationStep" drop column if exists "deletedBy";
 
+alter table "public"."jobOperationTool" drop column if exists "deletedAt";
 
+alter table "public"."jobOperationTool" drop column if exists "deletedBy";
 
+alter table "public"."journal" drop column if exists "deletedAt";
 
+alter table "public"."journal" drop column if exists "deletedBy";
 
+alter table "public"."journalLine" drop column if exists "deletedAt";
 
+alter table "public"."journalLine" drop column if exists "deletedBy";
 
+alter table "public"."kanban" drop column if exists "deletedAt";
 
+alter table "public"."kanban" drop column if exists "deletedBy";
 
+alter table "public"."location" drop column if exists "deletedAt";
 
+alter table "public"."location" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceDispatch" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceDispatch" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceDispatchComment" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceDispatchComment" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceDispatchEvent" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceDispatchEvent" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceDispatchItem" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceDispatchItem" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceFailureMode" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceFailureMode" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceSchedule" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceSchedule" drop column if exists "deletedBy";
 
+alter table "public"."maintenanceScheduleItem" drop column if exists "deletedAt";
 
+alter table "public"."maintenanceScheduleItem" drop column if exists "deletedBy";
 
+alter table "public"."materialDimension" drop column if exists "deletedAt";
 
+alter table "public"."materialDimension" drop column if exists "deletedBy";
 
+alter table "public"."materialFinish" drop column if exists "deletedAt";
 
+alter table "public"."materialFinish" drop column if exists "deletedBy";
 
+alter table "public"."materialForm" drop column if exists "deletedAt";
 
+alter table "public"."materialForm" drop column if exists "deletedBy";
 
+alter table "public"."materialGrade" drop column if exists "deletedAt";
 
+alter table "public"."materialGrade" drop column if exists "deletedBy";
 
+alter table "public"."materialSubstance" drop column if exists "deletedAt";
 
+alter table "public"."materialSubstance" drop column if exists "deletedBy";
 
+alter table "public"."materialType" drop column if exists "deletedAt";
 
+alter table "public"."materialType" drop column if exists "deletedBy";
 
+alter table "public"."methodMaterial" drop column if exists "deletedAt";
 
+alter table "public"."methodMaterial" drop column if exists "deletedBy";
 
+alter table "public"."methodOperation" drop column if exists "deletedAt";
 
+alter table "public"."methodOperation" drop column if exists "deletedBy";
 
+alter table "public"."methodOperationParameter" drop column if exists "deletedAt";
 
+alter table "public"."methodOperationParameter" drop column if exists "deletedBy";
 
+alter table "public"."methodOperationStep" drop column if exists "deletedAt";
 
+alter table "public"."methodOperationStep" drop column if exists "deletedBy";
 
+alter table "public"."methodOperationTool" drop column if exists "deletedAt";
 
+alter table "public"."methodOperationTool" drop column if exists "deletedBy";
 
+alter table "public"."noQuoteReason" drop column if exists "deletedAt";
 
+alter table "public"."noQuoteReason" drop column if exists "deletedBy";
 
+alter table "public"."nonConformance" drop column if exists "deletedAt";
 
+alter table "public"."nonConformance" drop column if exists "deletedBy";
 
+alter table "public"."partner" drop column if exists "deletedAt";
 
+alter table "public"."partner" drop column if exists "deletedBy";
 
+alter table "public"."pricingRule" drop column if exists "deletedAt";
 
+alter table "public"."pricingRule" drop column if exists "deletedBy";
 
+alter table "public"."procedure" drop column if exists "deletedAt";
 
+alter table "public"."procedure" drop column if exists "deletedBy";
 
+alter table "public"."process" drop column if exists "deletedAt";
 
+alter table "public"."process" drop column if exists "deletedBy";
 
+alter table "public"."productionEvent" drop column if exists "deletedAt";
 
+alter table "public"."productionEvent" drop column if exists "deletedBy";
 
+alter table "public"."productionQuantity" alter column "reportId" set not null;
 
+alter table "public"."purchaseInvoice" drop column if exists "deletedAt";
 
+alter table "public"."purchaseInvoice" drop column if exists "deletedBy";
 
+alter table "public"."purchaseOrder" drop column if exists "deletedAt";
 
+alter table "public"."purchaseOrder" drop column if exists "deletedBy";
 
+alter table "public"."purchasingRfq" drop column if exists "deletedAt";
 
+alter table "public"."purchasingRfq" drop column if exists "deletedBy";
 
+alter table "public"."qualityDocument" drop column if exists "deletedAt";
 
+alter table "public"."qualityDocument" drop column if exists "deletedBy";
 
+alter table "public"."quote" drop column if exists "deletedAt";
 
+alter table "public"."quote" drop column if exists "deletedBy";
 
+alter table "public"."quoteLine" drop column if exists "deletedAt";
 
+alter table "public"."quoteLine" drop column if exists "deletedBy";
 
+alter table "public"."quoteLinePrice" drop column if exists "deletedAt";
 
+alter table "public"."quoteLinePrice" drop column if exists "deletedBy";
 
+alter table "public"."quoteMakeMethod" drop column if exists "deletedAt";
 
+alter table "public"."quoteMakeMethod" drop column if exists "deletedBy";
 
+alter table "public"."quoteMaterial" drop column if exists "deletedAt";
 
+alter table "public"."quoteMaterial" drop column if exists "deletedBy";
 
+alter table "public"."quoteOperation" drop column if exists "deletedAt";
 
+alter table "public"."quoteOperation" drop column if exists "deletedBy";
 
+alter table "public"."quoteOperationParameter" drop column if exists "deletedAt";
 
+alter table "public"."quoteOperationParameter" drop column if exists "deletedBy";
 
+alter table "public"."quoteOperationStep" drop column if exists "deletedAt";
 
+alter table "public"."quoteOperationStep" drop column if exists "deletedBy";
 
+alter table "public"."quoteOperationTool" drop column if exists "deletedAt";
 
+alter table "public"."quoteOperationTool" drop column if exists "deletedBy";
 
+alter table "public"."receipt" drop column if exists "deletedAt";
 
+alter table "public"."receipt" drop column if exists "deletedBy";
 
+alter table "public"."receiptLine" drop column if exists "deletedAt";
 
+alter table "public"."receiptLine" drop column if exists "deletedBy";
 
+alter table "public"."riskRegister" drop column if exists "deletedAt";
 
+alter table "public"."riskRegister" drop column if exists "deletedBy";
 
+alter table "public"."salesInvoice" drop column if exists "deletedAt";
 
+alter table "public"."salesInvoice" drop column if exists "deletedBy";
 
+alter table "public"."salesInvoiceLine" drop column if exists "deletedAt";
 
+alter table "public"."salesInvoiceLine" drop column if exists "deletedBy";
 
+alter table "public"."salesOrder" drop column if exists "deletedAt";
 
+alter table "public"."salesOrder" drop column if exists "deletedBy";
 
+alter table "public"."salesOrderLine" drop column if exists "deletedAt";
 
+alter table "public"."salesOrderLine" drop column if exists "deletedBy";
 
+alter table "public"."salesRfq" drop column if exists "deletedAt";
 
+alter table "public"."salesRfq" drop column if exists "deletedBy";
 
+alter table "public"."salesRfqLine" drop column if exists "deletedAt";
 
+alter table "public"."salesRfqLine" drop column if exists "deletedBy";
 
+alter table "public"."scrapReason" drop column if exists "deletedAt";
 
+alter table "public"."scrapReason" drop column if exists "deletedBy";
 
+alter table "public"."shipment" drop column if exists "deletedAt";
 
+alter table "public"."shipment" drop column if exists "deletedBy";
 
+alter table "public"."shipmentLine" drop column if exists "deletedAt";
 
+alter table "public"."shipmentLine" drop column if exists "deletedBy";
 
+alter table "public"."stockTransfer" drop column if exists "deletedAt";
 
+alter table "public"."stockTransfer" drop column if exists "deletedBy";
 
+alter table "public"."storageRule" drop column if exists "deletedAt";
 
+alter table "public"."storageRule" drop column if exists "deletedBy";
 
+alter table "public"."storageType" drop column if exists "deletedAt";
 
+alter table "public"."storageType" drop column if exists "deletedBy";
 
+alter table "public"."storageUnit" drop column if exists "deletedAt";
 
+alter table "public"."storageUnit" drop column if exists "deletedBy";
 
+alter table "public"."suggestion" drop column if exists "deletedAt";
 
+alter table "public"."suggestion" drop column if exists "deletedBy";
 
+alter table "public"."supplier" drop column if exists "deletedAt";
 
+alter table "public"."supplier" drop column if exists "deletedBy";
 
+alter table "public"."supplierQuote" drop column if exists "deletedAt";
 
+alter table "public"."supplierQuote" drop column if exists "deletedBy";
 
+alter table "public"."supplierQuoteLine" drop column if exists "deletedAt";
 
+alter table "public"."supplierQuoteLine" drop column if exists "deletedBy";
 
+alter table "public"."supplierType" drop column if exists "deletedAt";
 
+alter table "public"."supplierType" drop column if exists "deletedBy";
 
+alter table "public"."tableView" drop column if exists "deletedAt";
 
+alter table "public"."tableView" drop column if exists "deletedBy";
 
+alter table "public"."templateConfigurationParameter" drop column if exists "deletedAt";
 
+alter table "public"."templateConfigurationParameter" drop column if exists "deletedBy";
 
+alter table "public"."templateMethodMaterial" drop column if exists "deletedAt";
 
+alter table "public"."templateMethodMaterial" drop column if exists "deletedBy";
 
+alter table "public"."templateMethodOperation" drop column if exists "deletedAt";
 
+alter table "public"."templateMethodOperation" drop column if exists "deletedBy";
 
+alter table "public"."templateMethodOperationParameter" drop column if exists "deletedAt";
 
+alter table "public"."templateMethodOperationParameter" drop column if exists "deletedBy";
 
+alter table "public"."templateMethodOperationStep" drop column if exists "deletedAt";
 
+alter table "public"."templateMethodOperationStep" drop column if exists "deletedBy";
 
+alter table "public"."templateMethodOperationTool" drop column if exists "deletedAt";
 
+alter table "public"."templateMethodOperationTool" drop column if exists "deletedBy";
 
+alter table "public"."timeCardEntry" drop column if exists "deletedAt";
 
+alter table "public"."timeCardEntry" drop column if exists "deletedBy";
 
+alter table "public"."training" drop column if exists "deletedAt";
 
+alter table "public"."training" drop column if exists "deletedBy";
 
+alter table "public"."trainingAssignment" drop column if exists "deletedAt";
 
+alter table "public"."trainingAssignment" drop column if exists "deletedBy";
 
+alter table "public"."unitOfMeasure" drop column if exists "deletedAt";
 
+alter table "public"."unitOfMeasure" drop column if exists "deletedBy";
 
+alter table "public"."warehouseTransfer" drop column if exists "deletedAt";
 
+alter table "public"."warehouseTransfer" drop column if exists "deletedBy";
 
+alter table "public"."warehouseTransferLine" drop column if exists "deletedAt";
 
+alter table "public"."warehouseTransferLine" drop column if exists "deletedBy";
 
+alter table "public"."webhook" drop column if exists "deletedAt";
 
+alter table "public"."webhook" drop column if exists "deletedBy";
 
+drop type if exists "public"."bundleStatus";
 
+drop type if exists "public"."splitBatchStatus";
 
 
 
@@ -1353,303 +1414,40 @@ CREATE INDEX "scrapReason_not_deleted_companyId_idx" ON public."scrapReason" USI
 
 
 
-CREATE INDEX "shipmentLine_not_deleted_companyId_idx" ON public."shipmentLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "shipment_not_deleted_companyId_idx" ON public.shipment USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "splitBatch_companyId_idx" ON public."splitBatch" USING btree ("companyId");
 
-CREATE INDEX "splitBatch_itemId_idx" ON public."splitBatch" USING btree ("itemId");
 
-CREATE INDEX "splitBatch_jobId_idx" ON public."splitBatch" USING btree ("jobId");
 
-CREATE INDEX "splitBatch_jobOperationId_idx" ON public."splitBatch" USING btree ("jobOperationId");
 
-CREATE UNIQUE INDEX "splitBatch_pkey" ON public."splitBatch" USING btree (id);
 
-CREATE INDEX "stockTransfer_not_deleted_companyId_idx" ON public."stockTransfer" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "storageType_not_deleted_companyId_idx" ON public."storageType" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "storageUnit_not_deleted_companyId_idx" ON public."storageUnit" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "suggestion_not_deleted_companyId_idx" ON public.suggestion USING btree ("companyId") WHERE ("deletedAt" IS NULL);
 
-CREATE INDEX "supplierQuoteLine_not_deleted_companyId_idx" ON public."supplierQuoteLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "supplierQuote_not_deleted_companyId_idx" ON public."supplierQuote" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "supplierType_not_deleted_companyId_idx" ON public."supplierType" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "supplier_not_deleted_companyId_idx" ON public.supplier USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "tableView_not_deleted_companyId_idx" ON public."tableView" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "templateConfigurationParameter_not_deleted_companyId_idx" ON public."templateConfigurationParameter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "templateMethodMaterial_not_deleted_companyId_idx" ON public."templateMethodMaterial" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "templateMethodOperationParameter_not_deleted_companyId_idx" ON public."templateMethodOperationParameter" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "templateMethodOperationStep_not_deleted_companyId_idx" ON public."templateMethodOperationStep" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "templateMethodOperationTool_not_deleted_companyId_idx" ON public."templateMethodOperationTool" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "templateMethodOperation_not_deleted_companyId_idx" ON public."templateMethodOperation" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "timeCardEntry_not_deleted_companyId_idx" ON public."timeCardEntry" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "trainingAssignment_not_deleted_companyId_idx" ON public."trainingAssignment" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "training_not_deleted_companyId_idx" ON public.training USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "unitOfMeasure_not_deleted_companyId_idx" ON public."unitOfMeasure" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "warehouseTransferLine_not_deleted_companyId_idx" ON public."warehouseTransferLine" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "warehouseTransfer_not_deleted_companyId_idx" ON public."warehouseTransfer" USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-CREATE INDEX "webhook_not_deleted_companyId_idx" ON public.webhook USING btree ("companyId") WHERE ("deletedAt" IS NULL);
-
-alter table "public"."bundle" add constraint "bundle_pkey" PRIMARY KEY using index "bundle_pkey";
-
-alter table "public"."bundleAllocation" add constraint "bundleAllocation_pkey" PRIMARY KEY using index "bundleAllocation_pkey";
-
-alter table "public"."notification" add constraint "notification_pkey" PRIMARY KEY using index "notification_pkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_pkey" PRIMARY KEY using index "productionQuantitySplitRow_pkey";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-alter table "public"."splitBatch" add constraint "splitBatch_pkey" PRIMARY KEY using index "splitBatch_pkey";
-
-alter table "public"."bundle" add constraint "bundle_bundleNumber_key" UNIQUE using index "bundle_bundleNumber_key";
-
-alter table "public"."bundle" add constraint "bundle_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES company(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."bundle" validate constraint "bundle_companyId_fkey";
-
-alter table "public"."bundle" add constraint "bundle_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."bundle" validate constraint "bundle_createdBy_fkey";
-
-alter table "public"."bundle" add constraint "bundle_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES item(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."bundle" validate constraint "bundle_itemId_fkey";
-
-alter table "public"."bundle" add constraint "bundle_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES job(id) ON UPDATE CASCADE ON DELETE SET NULL not valid;
-
-alter table "public"."bundle" validate constraint "bundle_jobId_fkey";
-
-alter table "public"."bundle" add constraint "bundle_quantity_positive" CHECK ((quantity > (0)::numeric)) not valid;
-
-alter table "public"."bundle" validate constraint "bundle_quantity_positive";
-
-alter table "public"."bundle" add constraint "bundle_splitBatchId_fkey" FOREIGN KEY ("splitBatchId") REFERENCES "splitBatch"(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."bundle" validate constraint "bundle_splitBatchId_fkey";
-
-alter table "public"."bundle" add constraint "bundle_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."bundle" validate constraint "bundle_updatedBy_fkey";
-
-alter table "public"."bundleAllocation" add constraint "bundleAllocation_bundleId_fkey" FOREIGN KEY ("bundleId") REFERENCES bundle(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."bundleAllocation" validate constraint "bundleAllocation_bundleId_fkey";
-
-alter table "public"."bundleAllocation" add constraint "bundleAllocation_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES company(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."bundleAllocation" validate constraint "bundleAllocation_companyId_fkey";
-
-alter table "public"."bundleAllocation" add constraint "bundleAllocation_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."bundleAllocation" validate constraint "bundleAllocation_createdBy_fkey";
-
-alter table "public"."bundleAllocation" add constraint "bundleAllocation_productionQuantitySplitRowId_fkey" FOREIGN KEY ("productionQuantitySplitRowId") REFERENCES "productionQuantitySplitRow"(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."bundleAllocation" validate constraint "bundleAllocation_productionQuantitySplitRowId_fkey";
-
-alter table "public"."bundleAllocation" add constraint "bundleAllocation_quantity_positive" CHECK ((quantity > (0)::numeric)) not valid;
-
-alter table "public"."bundleAllocation" validate constraint "bundleAllocation_quantity_positive";
-
-alter table "public"."notification" add constraint "notification_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES company(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."notification" validate constraint "notification_companyId_fkey";
-
-alter table "public"."notification" add constraint "notification_digestedInto_fkey" FOREIGN KEY ("digestedInto") REFERENCES notification(id) ON DELETE SET NULL not valid;
-
-alter table "public"."notification" validate constraint "notification_digestedInto_fkey";
-
-alter table "public"."notification" add constraint "notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."notification" validate constraint "notification_userId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES company(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_companyId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_createdBy_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES item(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_itemId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_jobId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_jobOperationId_fkey" FOREIGN KEY ("jobOperationId") REFERENCES "jobOperation"(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_jobOperationId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_productionQuantityId_fkey" FOREIGN KEY ("productionQuantityId") REFERENCES "productionQuantity"(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_productionQuantityId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_productionQuantityId_rowKey_key" UNIQUE using index "productionQuantitySplitRow_productionQuantityId_rowKey_key";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_quantity_positive" CHECK ((quantity > (0)::numeric)) not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_quantity_positive";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_reportId_fkey" FOREIGN KEY ("reportId") REFERENCES "productionQuantityReport"(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_reportId_fkey";
-
-alter table "public"."productionQuantitySplitRow" add constraint "productionQuantitySplitRow_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."productionQuantitySplitRow" validate constraint "productionQuantitySplitRow_updatedBy_fkey";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-alter table "public"."splitBatch" add constraint "splitBatch_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES company(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."splitBatch" validate constraint "splitBatch_companyId_fkey";
-
-alter table "public"."splitBatch" add constraint "splitBatch_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."splitBatch" validate constraint "splitBatch_createdBy_fkey";
-
-alter table "public"."splitBatch" add constraint "splitBatch_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES item(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."splitBatch" validate constraint "splitBatch_itemId_fkey";
-
-alter table "public"."splitBatch" add constraint "splitBatch_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
-
-alter table "public"."splitBatch" validate constraint "splitBatch_jobId_fkey";
-
-alter table "public"."splitBatch" add constraint "splitBatch_jobOperationId_fkey" FOREIGN KEY ("jobOperationId") REFERENCES "jobOperation"(id) ON UPDATE CASCADE ON DELETE SET NULL not valid;
-
-alter table "public"."splitBatch" validate constraint "splitBatch_jobOperationId_fkey";
-
-alter table "public"."splitBatch" add constraint "splitBatch_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"(id) not valid;
-
-alter table "public"."splitBatch" validate constraint "splitBatch_updatedBy_fkey";
 
 set check_function_bodies = off;
 
-CREATE OR REPLACE FUNCTION public.is_visible(deleted_at timestamp with time zone)
- RETURNS boolean
- LANGUAGE sql
- STABLE
-AS $function$
-  SELECT deleted_at IS NULL
-      OR current_setting('app.include_deleted', true) = 'true';
-$function$
-;
+create or replace view "public"."accounts" as  SELECT id,
+    number,
+    name,
+    class,
+    "incomeBalance",
+    "consolidatedRate",
+    active,
+    "createdBy",
+    "createdAt",
+    "updatedBy",
+    "updatedAt",
+    "customFields",
+    tags,
+    "companyGroupId",
+    "parentId",
+    "isGroup",
+    "accountType",
+    "isSystem"
+   FROM account;
+
 
 create or replace view "public"."activeMaintenanceDispatchesByLocation" as  SELECT md.id,
     md."maintenanceDispatchId",
@@ -1840,8 +1638,6 @@ create or replace view "public"."consumables" as  WITH latest_items AS (
             i.revision,
             i."readableIdWithRevision",
             i."requiresInspection",
-            i."deletedAt",
-            i."deletedBy",
             i."sourcingType",
             i."attributeSetId",
             mu."modelPath",
@@ -2021,6 +1817,54 @@ create or replace view "public"."customers" as  SELECT c.id,
           ORDER BY cc."customerId") pc ON ((pc."customerId" = c.id)));
 
 
+create or replace view "public"."documentExtensions" as  SELECT DISTINCT extension
+   FROM document;
+
+
+create or replace view "public"."documents" as  SELECT d.id,
+    d.path,
+    d.name,
+    d.description,
+    d.size,
+    d.extension,
+    d.type,
+    d."readGroups",
+    d."writeGroups",
+    d.active,
+    d."companyId",
+    d."createdBy",
+    d."createdAt",
+    d."updatedBy",
+    d."updatedAt",
+    d."sourceDocument",
+    d."sourceDocumentId",
+    ARRAY( SELECT dl.label
+           FROM "documentLabel" dl
+          WHERE ((dl."documentId" = d.id) AND (dl."userId" = (auth.uid())::text))) AS labels,
+    (EXISTS ( SELECT 1
+           FROM "documentFavorite" df
+          WHERE ((df."documentId" = d.id) AND (df."userId" = (auth.uid())::text)))) AS favorite,
+    ( SELECT max(dt."createdAt") AS max
+           FROM "documentTransaction" dt
+          WHERE (dt."documentId" = d.id)) AS "lastActivityAt"
+   FROM ((document d
+     LEFT JOIN "user" u ON ((u.id = d."createdBy")))
+     LEFT JOIN "user" u2 ON ((u2.id = d."updatedBy")));
+
+
+create or replace view "public"."employeeProcesses" as  SELECT ep.id,
+    ep."employeeId",
+    ep."processId",
+    ep."companyId",
+    ep."createdBy",
+    ep."createdAt",
+    ep."updatedBy",
+    ep."updatedAt",
+    p.name AS "processName"
+   FROM ("employeeProcess" ep
+     JOIN process p ON ((ep."processId" = p.id)));
+
+
 create or replace view "public"."employeeSalaryRecords" as  SELECT r.id,
     r."employeeId",
     r."companyId",
@@ -2098,6 +1942,33 @@ create or replace view "public"."employees" as  SELECT u.id,
   WHERE (u.active = true);
 
 
+create or replace view "public"."gaugeCalibrationRecords" as  SELECT gcr.id,
+    gcr."gaugeId",
+    gcr."dateCalibrated",
+    gcr."inspectionStatus",
+    gcr."requiresAction",
+    gcr."requiresAdjustment",
+    gcr."requiresRepair",
+    gcr.notes,
+    gcr."customFields",
+    gcr."companyId",
+    gcr."createdAt",
+    gcr."createdBy",
+    gcr."updatedAt",
+    gcr."updatedBy",
+    gcr."supplierId",
+    gcr.temperature,
+    gcr.humidity,
+    gcr."approvedBy",
+    gcr."measurementStandard",
+    gcr."calibrationAttempts",
+    g."gaugeId" AS "gaugeReadableId",
+    g."gaugeTypeId",
+    g.description
+   FROM ("gaugeCalibrationRecord" gcr
+     JOIN gauge g ON ((gcr."gaugeId" = g.id)));
+
+
 create or replace view "public"."gauges" as  SELECT id,
     "gaugeId",
     "supplierId",
@@ -2121,15 +1992,12 @@ create or replace view "public"."gauges" as  SELECT id,
     "updatedAt",
     "updatedBy",
     "lastCalibrationStatus",
-    "deletedAt",
-    "deletedBy",
         CASE
             WHEN ("gaugeStatus" = 'Inactive'::"gaugeStatus") THEN 'Out-of-Calibration'::"gaugeCalibrationStatus"
             WHEN (("nextCalibrationDate" IS NOT NULL) AND ("nextCalibrationDate" < CURRENT_DATE)) THEN 'Out-of-Calibration'::"gaugeCalibrationStatus"
             ELSE "gaugeCalibrationStatus"
         END AS "gaugeCalibrationStatusWithDueDate"
-   FROM gauge g
-  WHERE ("deletedAt" IS NULL);
+   FROM gauge g;
 
 
 CREATE OR REPLACE FUNCTION public.get_job_method(jid text)
@@ -2201,7 +2069,7 @@ SELECT
   material."version",
   material."storageUnitId"
 FROM material
-LEFT JOIN item ON material."itemId" = item.id
+INNER JOIN item ON material."itemId" = item.id
 WHERE material."jobId" = jid
 ORDER BY "order"
 $function$
@@ -2272,7 +2140,7 @@ SELECT
   material."isRoot",
   material."storageUnitId"
 FROM material
-LEFT JOIN item ON material."itemId" = item.id
+INNER JOIN item ON material."itemId" = item.id
 ORDER BY "order"
 $function$
 ;
@@ -2362,7 +2230,7 @@ SELECT
   material."version",
   material."storageUnitId"
 FROM material
-LEFT JOIN item ON material."itemId" = item.id
+INNER JOIN item ON material."itemId" = item.id
 WHERE material."quoteId" = qid
 ORDER BY "order"
 $function$
@@ -2455,10 +2323,86 @@ SELECT
   material."version",
   material."storageUnitId"
 FROM material
-LEFT JOIN item ON material."itemId" = item.id
+INNER JOIN item ON material."itemId" = item.id
 ORDER BY "order"
 $function$
 ;
+
+create or replace view "public"."groupMembers" as  SELECT gm.id,
+    g.name,
+    g."companyId",
+    g."isIdentityGroup",
+    g."isEmployeeTypeGroup",
+    g."isCustomerOrgGroup",
+    g."isCustomerTypeGroup",
+    g."isSupplierOrgGroup",
+    g."isSupplierTypeGroup",
+    gm."groupId",
+    gm."memberGroupId",
+    gm."memberUserId",
+    to_jsonb(u.*) AS "user"
+   FROM ((membership gm
+     JOIN "group" g ON ((g.id = gm."groupId")))
+     LEFT JOIN ( SELECT "user".id,
+            "user".email,
+            "user"."firstName",
+            "user"."lastName",
+            "user"."fullName",
+            "user".about,
+            "user"."avatarUrl",
+            "user".active,
+            "user"."createdAt",
+            "user"."updatedAt"
+           FROM "user"
+          WHERE ("user".active = true)) u ON ((u.id = gm."memberUserId")));
+
+
+create or replace view "public"."groups_recursive" as  WITH RECURSIVE groups_recursive("groupId", name, "companyId", "parentId", "isIdentityGroup", "isEmployeeTypeGroup", "isCustomerOrgGroup", "isCustomerTypeGroup", "isSupplierOrgGroup", "isSupplierTypeGroup", "user") AS (
+         SELECT "groupMembers"."groupId",
+            "groupMembers".name,
+            "groupMembers"."companyId",
+            NULL::text AS "parentId",
+            "groupMembers"."isIdentityGroup",
+            "groupMembers"."isEmployeeTypeGroup",
+            "groupMembers"."isCustomerOrgGroup",
+            "groupMembers"."isCustomerTypeGroup",
+            "groupMembers"."isSupplierOrgGroup",
+            "groupMembers"."isSupplierTypeGroup",
+            "groupMembers"."user"
+           FROM "groupMembers"
+        UNION ALL
+         SELECT g2."groupId",
+            g2.name,
+            g2."companyId",
+            g1."groupId" AS "parentId",
+            g1."isIdentityGroup",
+            g2."isEmployeeTypeGroup",
+            g2."isCustomerOrgGroup",
+            g2."isCustomerTypeGroup",
+            g2."isSupplierOrgGroup",
+            g2."isSupplierTypeGroup",
+            g2."user"
+           FROM ("groupMembers" g1
+             JOIN "groupMembers" g2 ON ((g1."memberGroupId" = g2."groupId")))
+        )
+ SELECT "groupId",
+    name,
+    "companyId",
+    "parentId",
+    "isIdentityGroup",
+    "isEmployeeTypeGroup",
+    "isCustomerOrgGroup",
+    "isCustomerTypeGroup",
+    "isSupplierOrgGroup",
+    "isSupplierTypeGroup",
+    "user"
+   FROM groups_recursive;
+
+
+create or replace view "public"."holidayYears" as  SELECT DISTINCT year,
+    "companyId"
+   FROM holiday;
+
 
 create or replace view "public"."inspectionDocuments" as  SELECT d.id,
     d."companyId",
@@ -2496,6 +2440,67 @@ create or replace view "public"."integrations" as  SELECT i.id,
            FROM "companyIntegration") ci ON (((i.id = ci.id) AND (c.id = ci."companyId"))));
 
 
+create or replace view "public"."issues" as  SELECT ncr.id,
+    ncr."nonConformanceId",
+    ncr.name,
+    ncr.description,
+    ncr.source,
+    ncr.status,
+    ncr.priority,
+    ncr."approvalRequirements",
+    ncr."nonConformanceWorkflowId",
+    ncr.content,
+    ncr."locationId",
+    ncr."nonConformanceTypeId",
+    ncr."openDate",
+    ncr."dueDate",
+    ncr."closeDate",
+    ncr.quantity,
+    ncr.assignee,
+    ncr."customFields",
+    ncr.tags,
+    ncr."companyId",
+    ncr."createdAt",
+    ncr."createdBy",
+    ncr."updatedAt",
+    ncr."updatedBy",
+    ncr."requiredActionIds",
+    nci.items,
+        CASE
+            WHEN (EXISTS ( SELECT 1
+               FROM ("nonConformanceActionTask" ncat
+                 JOIN "nonConformanceRequiredAction" ncra ON ((ncat."actionTypeId" = ncra.id)))
+              WHERE ((ncat."nonConformanceId" = ncr.id) AND (ncra."systemType" = 'Containment'::"nonConformanceSystemActionType") AND (ncat.status = ANY (ARRAY['In Progress'::"nonConformanceTaskStatus", 'Completed'::"nonConformanceTaskStatus"]))))) THEN 'Contained'::text
+            WHEN (EXISTS ( SELECT 1
+               FROM ("nonConformanceActionTask" ncat
+                 JOIN "nonConformanceRequiredAction" ncra ON ((ncat."actionTypeId" = ncra.id)))
+              WHERE ((ncat."nonConformanceId" = ncr.id) AND (ncra."systemType" = 'Containment'::"nonConformanceSystemActionType")))) THEN 'Uncontained'::text
+            ELSE 'N/A'::text
+        END AS "containmentStatus"
+   FROM ("nonConformance" ncr
+     LEFT JOIN ( SELECT "nonConformanceItem"."nonConformanceId",
+            array_agg("nonConformanceItem"."itemId") AS items
+           FROM "nonConformanceItem"
+          GROUP BY "nonConformanceItem"."nonConformanceId") nci ON ((nci."nonConformanceId" = ncr.id)));
+
+
+create or replace view "public"."jobAssignmentRules" as  SELECT r.id,
+    r."companyId",
+    r.name,
+    r.description,
+    r.conditions,
+    r."targetGroupId",
+    r.priority,
+    r.active,
+    r."createdAt",
+    r."createdBy",
+    r."updatedAt",
+    r."updatedBy",
+    g.name AS "targetGroupName"
+   FROM ("jobAssignmentRule" r
+     LEFT JOIN "group" g ON ((g.id = r."targetGroupId")));
+
+
 create or replace view "public"."jobMaterialWithMakeMethodId" as  SELECT jm.id,
     jm."jobId",
     jm."itemId",
@@ -2524,18 +2529,15 @@ create or replace view "public"."jobMaterialWithMakeMethodId" as  SELECT jm.id,
     jm."requiresBatchTracking",
     jm.kit,
     jm."itemScrapPercentage",
-    jm."deletedAt",
-    jm."deletedBy",
     s.name AS "storageUnitName",
     jmm.id AS "jobMaterialMakeMethodId",
     jmm.version,
     i."readableIdWithRevision" AS "itemReadableId",
-    i."readableId" AS "itemReadableIdWithoutRevision",
-    i."deletedAt" AS "itemDeletedAt"
+    i."readableId" AS "itemReadableIdWithoutRevision"
    FROM ((("jobMaterial" jm
      LEFT JOIN "jobMakeMethod" jmm ON ((jmm."parentMaterialId" = jm.id)))
      LEFT JOIN "storageUnit" s ON ((s.id = jm."storageUnitId")))
-     LEFT JOIN item i ON ((i.id = jm."itemId")));
+     JOIN item i ON ((i.id = jm."itemId")));
 
 
 create or replace view "public"."jobOperationsWithDependencies" as  SELECT id,
@@ -2582,8 +2584,6 @@ create or replace view "public"."jobOperationsWithDependencies" as  SELECT id,
     "conflictReason",
     "targetQuantity",
     "insideUnitCost",
-    "deletedAt",
-    "deletedBy",
     "manuallyScheduled",
     "reworkId",
     COALESCE(( SELECT array_agg(jod."dependsOnId") AS array_agg
@@ -2637,8 +2637,6 @@ create or replace view "public"."jobOperationsWithMakeMethods" as  SELECT mm.id 
     jo."conflictReason",
     jo."targetQuantity",
     jo."insideUnitCost",
-    jo."deletedAt",
-    jo."deletedBy",
     jo."manuallyScheduled",
     jo."reworkId"
    FROM (("jobOperation" jo
@@ -2706,8 +2704,6 @@ create or replace view "public"."jobs" as  WITH job_model AS (
     j."startDate",
     j."storageUnitId",
     j.priority,
-    j."deletedAt",
-    j."deletedBy",
     jmm.id AS "jobMakeMethodId",
     i.name,
     i."readableIdWithRevision" AS "itemReadableIdWithRevision",
@@ -2715,7 +2711,6 @@ create or replace view "public"."jobs" as  WITH job_model AS (
     i.name AS description,
     i."itemTrackingType",
     i.active,
-    i."deletedAt" AS "itemDeletedAt",
     i."replenishmentSystem",
     mu.id AS "modelId",
     mu."autodeskUrn",
@@ -2741,8 +2736,44 @@ create or replace view "public"."jobs" as  WITH job_model AS (
      LEFT JOIN quote qo ON (((j."quoteId" = qo.id) AND (j."companyId" = qo."companyId"))))
      LEFT JOIN root_operation_stats os ON ((os."jobId" = j.id)))
      LEFT JOIN root_routing_min_complete rrc ON ((rrc."jobId" = j.id)))
-     LEFT JOIN location loc ON ((loc.id = j."locationId")))
-  WHERE (j."deletedAt" IS NULL);
+     LEFT JOIN location loc ON ((loc.id = j."locationId")));
+
+
+create or replace view "public"."journalEntries" as  SELECT j.id,
+    j.description,
+    j."accountingPeriodId",
+    j."companyId",
+    j."postingDate",
+    j."createdAt",
+    j."customFields",
+    j.tags,
+    j."journalEntryId",
+    j.status,
+    j."sourceType",
+    j."reversalOfId",
+    j."reversedById",
+    j."postedAt",
+    j."postedBy",
+    j."createdBy",
+    j."updatedAt",
+    j."updatedBy",
+    COALESCE(sum(
+        CASE
+            WHEN ((a.class = ANY (ARRAY['Asset'::"glAccountClass", 'Expense'::"glAccountClass"])) AND (jl.amount > (0)::numeric)) THEN jl.amount
+            WHEN ((a.class = ANY (ARRAY['Liability'::"glAccountClass", 'Equity'::"glAccountClass", 'Revenue'::"glAccountClass"])) AND (jl.amount < (0)::numeric)) THEN abs(jl.amount)
+            ELSE (0)::numeric
+        END), (0)::numeric) AS "totalDebits",
+    COALESCE(sum(
+        CASE
+            WHEN ((a.class = ANY (ARRAY['Asset'::"glAccountClass", 'Expense'::"glAccountClass"])) AND (jl.amount < (0)::numeric)) THEN abs(jl.amount)
+            WHEN ((a.class = ANY (ARRAY['Liability'::"glAccountClass", 'Equity'::"glAccountClass", 'Revenue'::"glAccountClass"])) AND (jl.amount > (0)::numeric)) THEN jl.amount
+            ELSE (0)::numeric
+        END), (0)::numeric) AS "totalCredits",
+    (count(jl.id))::integer AS "lineCount"
+   FROM ((journal j
+     LEFT JOIN "journalLine" jl ON ((jl."journalId" = j.id)))
+     LEFT JOIN account a ON ((a.id = jl."accountId")))
+  GROUP BY j.id;
 
 
 create or replace view "public"."kanbans" as  SELECT k.id,
@@ -2883,6 +2914,46 @@ create or replace view "public"."masterWorkOrders" as  SELECT mwo.id,
      LEFT JOIN location loc ON ((loc.id = j."locationId")));
 
 
+create or replace view "public"."materialDimensions" as  SELECT "materialDimension".id,
+    "materialDimension"."materialFormId",
+    "materialDimension".name,
+    "materialDimension"."isMetric",
+    "materialDimension"."companyId",
+    "materialForm".name AS "formName"
+   FROM ("materialDimension"
+     LEFT JOIN "materialForm" ON (("materialDimension"."materialFormId" = "materialForm".id)));
+
+
+create or replace view "public"."materialFinishes" as  SELECT "materialFinish".id,
+    "materialFinish".name,
+    "materialFinish"."materialSubstanceId",
+    "materialFinish"."companyId",
+    "materialSubstance".name AS "substanceName"
+   FROM ("materialFinish"
+     LEFT JOIN "materialSubstance" ON (("materialFinish"."materialSubstanceId" = "materialSubstance".id)));
+
+
+create or replace view "public"."materialGrades" as  SELECT "materialGrade".id,
+    "materialGrade"."materialSubstanceId",
+    "materialGrade".name,
+    "materialGrade"."companyId",
+    "materialSubstance".name AS "substanceName"
+   FROM ("materialGrade"
+     LEFT JOIN "materialSubstance" ON (("materialGrade"."materialSubstanceId" = "materialSubstance".id)));
+
+
+create or replace view "public"."materialTypes" as  SELECT "materialType".id,
+    "materialType".name,
+    "materialType"."materialSubstanceId",
+    "materialType"."materialFormId",
+    "materialType"."companyId",
+    "materialSubstance".name AS "substanceName",
+    "materialForm".name AS "formName"
+   FROM (("materialType"
+     LEFT JOIN "materialSubstance" ON (("materialType"."materialSubstanceId" = "materialSubstance".id)))
+     LEFT JOIN "materialForm" ON (("materialType"."materialFormId" = "materialForm".id)));
+
+
 create or replace view "public"."materials" as  WITH latest_items AS (
          SELECT DISTINCT ON (i_1."readableId", i_1."companyId") i_1.id,
             i_1."readableId",
@@ -2908,8 +2979,6 @@ create or replace view "public"."materials" as  WITH latest_items AS (
             i_1.revision,
             i_1."readableIdWithRevision",
             i_1."requiresInspection",
-            i_1."deletedAt",
-            i_1."deletedBy",
             i_1."sourcingType",
             mu_1."modelPath",
             mu_1."thumbnailPath" AS "modelThumbnailPath",
@@ -3140,8 +3209,6 @@ create or replace view "public"."parts" as  WITH latest_items AS (
             i.revision,
             i."readableIdWithRevision",
             i."requiresInspection",
-            i."deletedAt",
-            i."deletedBy",
             i."sourcingType",
             mu.id AS "modelUploadId",
             mu."modelPath",
@@ -3210,7 +3277,7 @@ create or replace view "public"."parts" as  WITH latest_items AS (
     p."templateId",
     tmpl.name AS "templateName"
    FROM ((((((part p
-     JOIN latest_items li(id, "readableId", name, description, type, "replenishmentSystem", "defaultMethodType", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy", "createdAt", "updatedBy", "updatedAt", assignee, "modelUploadId", "thumbnailPath", notes, "trackingMethod", embedding, revision, "readableIdWithRevision", "requiresInspection", "deletedAt", "deletedBy", "sourcingType", "modelUploadId_1", "modelPath", "modelThumbnailPath", "modelName", "modelSize") ON (((li."readableId" = p.id) AND (li."companyId" = p."companyId"))))
+     JOIN latest_items li(id, "readableId", name, description, type, "replenishmentSystem", "defaultMethodType", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy", "createdAt", "updatedBy", "updatedAt", assignee, "modelUploadId", "thumbnailPath", notes, "trackingMethod", embedding, revision, "readableIdWithRevision", "requiresInspection", "sourcingType", "modelUploadId_1", "modelPath", "modelThumbnailPath", "modelName", "modelSize") ON (((li."readableId" = p.id) AND (li."companyId" = p."companyId"))))
      LEFT JOIN item_revisions ir ON (((ir."readableId" = p.id) AND (ir."companyId" = p."companyId"))))
      LEFT JOIN ( SELECT ps_1."itemId",
             ps_1."companyId",
@@ -3249,6 +3316,23 @@ create or replace view "public"."pickingLists" as  SELECT pl.id,
      LEFT JOIN "user" u ON ((u.id = pl.assignee)));
 
 
+create or replace view "public"."procedures" as  SELECT p1.id,
+    p1.name,
+    p1.version,
+    p1.status,
+    p1.assignee,
+    p1."companyId",
+    p1."processId",
+    p1.tags,
+    jsonb_agg(jsonb_build_object('id', p2.id, 'version', p2.version, 'status', p2.status)) AS versions
+   FROM (procedure p1
+     JOIN procedure p2 ON (((p1.name = p2.name) AND (p1."companyId" = p2."companyId"))))
+  WHERE (p1.version = ( SELECT max(p3.version) AS max
+           FROM procedure p3
+          WHERE ((p3.name = p1.name) AND (p3."companyId" = p1."companyId"))))
+  GROUP BY p1.id, p1.name, p1.version, p1.status, p1.assignee, p1."companyId", p1."processId", p1.tags;
+
+
 create or replace view "public"."processes" as  SELECT p.id,
     p.name,
     p."defaultStandardFactor",
@@ -3262,8 +3346,6 @@ create or replace view "public"."processes" as  SELECT p.id,
     p.tags,
     p."completeAllOnScan",
     p.active,
-    p."deletedAt",
-    p."deletedBy",
     wcp."workCenters",
     sp.suppliers,
     ep.employees
@@ -3587,8 +3669,6 @@ create or replace view "public"."purchaseOrders" as  SELECT p.id,
     p."purchaseOrderType",
     p."jobId",
     p."jobReadableId",
-    p."deletedAt",
-    p."deletedBy",
     pl."thumbnailPath",
     pl."itemType",
     (pl."orderTotal" + (pd."supplierShippingCost" * p."exchangeRate")) AS "orderTotal",
@@ -3699,6 +3779,56 @@ create or replace view "public"."purchasingRfqs" as  SELECT rfq.id,
      LEFT JOIN location l ON ((l.id = rfq."locationId")));
 
 
+create or replace view "public"."qualityActions" as  SELECT ncat.id,
+    ncat."nonConformanceId",
+    ncat.status,
+    ncat."dueDate",
+    ncat."completedDate",
+    ncat.assignee,
+    ncat.notes,
+    ncat."sortOrder",
+    ncat.tags,
+    ncat."companyId",
+    ncat."createdAt",
+    ncat."createdBy",
+    ncat."updatedAt",
+    ncat."updatedBy",
+    ncat."actionTypeId",
+    ncra.name AS "actionType",
+    ncr."nonConformanceId" AS "readableNonConformanceId",
+    ncr.name AS "nonConformanceName",
+    ncr.status AS "nonConformanceStatus",
+    ncr."openDate" AS "nonConformanceOpenDate",
+    ncr."dueDate" AS "nonConformanceDueDate",
+    ncr."closeDate" AS "nonConformanceCloseDate",
+    nct.name AS "nonConformanceTypeName",
+    nci.items
+   FROM (((("nonConformanceActionTask" ncat
+     JOIN "nonConformance" ncr ON ((ncat."nonConformanceId" = ncr.id)))
+     LEFT JOIN "nonConformanceRequiredAction" ncra ON ((ncra.id = ncat."actionTypeId")))
+     LEFT JOIN "nonConformanceType" nct ON ((ncr."nonConformanceTypeId" = nct.id)))
+     LEFT JOIN ( SELECT nci_1."nonConformanceId",
+            array_agg(nci_1."itemId") AS items
+           FROM "nonConformanceItem" nci_1
+          GROUP BY nci_1."nonConformanceId") nci ON ((nci."nonConformanceId" = ncr.id)));
+
+
+create or replace view "public"."qualityDocuments" as  SELECT p1.id,
+    p1.name,
+    p1.version,
+    p1.status,
+    p1.assignee,
+    p1."companyId",
+    jsonb_agg(jsonb_build_object('id', p2.id, 'version', p2.version, 'status', p2.status)) AS versions,
+    p1.tags
+   FROM ("qualityDocument" p1
+     JOIN "qualityDocument" p2 ON (((p1.name = p2.name) AND (p1."companyId" = p2."companyId"))))
+  WHERE (p1.version = ( SELECT max(p3.version) AS max
+           FROM "qualityDocument" p3
+          WHERE ((p3.name = p1.name) AND (p3."companyId" = p1."companyId"))))
+  GROUP BY p1.id, p1.name, p1.version, p1.status, p1.assignee, p1."companyId";
+
+
 create or replace view "public"."quoteCustomerDetails" as  SELECT q.id AS "quoteId",
     c.name AS "customerName",
     contact."fullName" AS "contactName",
@@ -3751,10 +3881,6 @@ create or replace view "public"."quoteLinePrices" as  SELECT ql.id,
     ql."unitPricePrecision",
     ql."externalNotes",
     ql.configuration,
-    ql."pricingRuleId",
-    ql."priceTrace",
-    ql."deletedAt",
-    ql."deletedBy",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
             WHEN ((i."thumbnailPath" IS NULL) AND (mu."thumbnailPath" IS NOT NULL)) THEN mu."thumbnailPath"
@@ -3774,12 +3900,11 @@ create or replace view "public"."quoteLinePrices" as  SELECT ql.id,
             ELSE q."quoteId"
         END AS "quoteReadableId",
     q."createdAt" AS "quoteCreatedAt",
-    q."customerId",
-    i."deletedAt" AS "itemDeletedAt"
+    q."customerId"
    FROM (((((("quoteLine" ql
      JOIN quote q ON ((q.id = ql."quoteId")))
      LEFT JOIN "modelUpload" mu ON ((ql."modelUploadId" = mu.id)))
-     LEFT JOIN item i ON ((i.id = ql."itemId")))
+     JOIN item i ON ((i.id = ql."itemId")))
      LEFT JOIN "itemCost" ic ON ((ic."itemId" = i.id)))
      LEFT JOIN "modelUpload" imu ON ((imu.id = i."modelUploadId")))
      LEFT JOIN "quoteLinePrice" qlp ON ((qlp."quoteLineId" = ql.id)));
@@ -3815,8 +3940,6 @@ create or replace view "public"."quoteLines" as  SELECT ql.id,
     ql.configuration,
     ql."pricingRuleId",
     ql."priceTrace",
-    ql."deletedAt",
-    ql."deletedBy",
     ql."sortOrder",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
@@ -3835,6 +3958,74 @@ create or replace view "public"."quoteLines" as  SELECT ql.id,
      JOIN item i ON ((i.id = ql."itemId")))
      LEFT JOIN "itemCost" ic ON ((ic."itemId" = i.id)))
      LEFT JOIN "modelUpload" imu ON ((imu.id = i."modelUploadId")));
+
+
+create or replace view "public"."quoteMaterialWithMakeMethodId" as  SELECT qm.id,
+    qm."quoteId",
+    qm."quoteLineId",
+    qm."itemId",
+    qm."itemType",
+    qm."methodType",
+    qm."order",
+    qm.description,
+    qm.quantity,
+    qm."unitOfMeasureCode",
+    qm."unitCost",
+    qm."companyId",
+    qm."createdAt",
+    qm."createdBy",
+    qm."updatedAt",
+    qm."updatedBy",
+    qm."customFields",
+    qm."quoteMakeMethodId",
+    qm."quoteOperationId",
+    qm."scrapQuantity",
+    qm.tags,
+    qm."productionQuantity",
+    qm.kit,
+    qm."storageUnitId",
+    qmm.id AS "quoteMaterialMakeMethodId",
+    qmm.version
+   FROM ("quoteMaterial" qm
+     LEFT JOIN "quoteMakeMethod" qmm ON ((qmm."parentMaterialId" = qm.id)));
+
+
+create or replace view "public"."quoteOperationsWithMakeMethods" as  SELECT mm.id AS "makeMethodId",
+    qo.id,
+    qo."quoteId",
+    qo."quoteLineId",
+    qo."quoteMakeMethodId",
+    qo."order",
+    qo.description,
+    qo."operationOrder",
+    qo."laborRate",
+    qo."overheadRate",
+    qo."companyId",
+    qo."createdAt",
+    qo."createdBy",
+    qo."updatedAt",
+    qo."updatedBy",
+    qo."customFields",
+    qo."processId",
+    qo."workCenterId",
+    qo."setupTime",
+    qo."setupUnit",
+    qo."laborTime",
+    qo."laborUnit",
+    qo."machineTime",
+    qo."machineUnit",
+    qo."machineRate",
+    qo."operationType",
+    qo."operationMinimumCost",
+    qo."operationLeadTime",
+    qo."operationUnitCost",
+    qo."operationSupplierProcessId",
+    qo."workInstruction",
+    qo.tags,
+    qo."procedureId"
+   FROM (("quoteOperation" qo
+     JOIN "quoteMakeMethod" qmm ON ((qo."quoteMakeMethodId" = qmm.id)))
+     LEFT JOIN "makeMethod" mm ON (((qmm."itemId" = mm."itemId") AND (qmm.version = mm.version))));
 
 
 create or replace view "public"."quotes" as  SELECT q.id,
@@ -3871,8 +4062,6 @@ create or replace view "public"."quotes" as  SELECT q.id,
     q."opportunityId",
     q."completedDate",
     q."customerEngineeringContactId",
-    q."deletedAt",
-    q."deletedBy",
     ql."thumbnailPath",
     ql."itemType",
     l.name AS "locationName",
@@ -3890,7 +4079,7 @@ create or replace view "public"."quotes" as  SELECT q.id,
                 END) AS "thumbnailPath",
             min(i.type) AS "itemType"
            FROM (("quoteLine"
-             LEFT JOIN item i ON ((i.id = "quoteLine"."itemId")))
+             JOIN item i ON ((i.id = "quoteLine"."itemId")))
              LEFT JOIN "modelUpload" mu ON ((mu.id = i."modelUploadId")))
           GROUP BY "quoteLine"."quoteId") ql ON ((ql."quoteId" = q.id)))
      LEFT JOIN "quoteShipment" qs ON ((qs.id = q.id)))
@@ -3916,17 +4105,14 @@ create or replace view "public"."receiptLines" as  SELECT rl.id,
     rl."conversionFactor",
     rl."requiresSerialTracking",
     rl."requiresBatchTracking",
-    rl."deletedAt",
-    rl."deletedBy",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
             WHEN ((i."thumbnailPath" IS NULL) AND (mu."thumbnailPath" IS NOT NULL)) THEN mu."thumbnailPath"
             ELSE i."thumbnailPath"
         END AS "thumbnailPath",
-    i.name AS description,
-    i."deletedAt" AS "itemDeletedAt"
+    i.name AS description
    FROM (("receiptLine" rl
-     LEFT JOIN item i ON ((i.id = rl."itemId")))
+     JOIN item i ON ((i.id = rl."itemId")))
      LEFT JOIN "modelUpload" mu ON ((mu.id = i."modelUploadId")));
 
 
@@ -3955,6 +4141,28 @@ create or replace view "public"."receipts" as  SELECT r.id,
     l.name AS "locationName"
    FROM (receipt r
      LEFT JOIN location l ON ((l.id = r."locationId")));
+
+
+create or replace view "public"."riskRegisters" as  SELECT r.id,
+    r."companyId",
+    r.title,
+    r.description,
+    r.source,
+    r."sourceId",
+    r.severity,
+    r.likelihood,
+    r."itemId",
+    r.status,
+    r.assignee,
+    r."createdBy",
+    r."createdAt",
+    r."updatedAt",
+    r.notes,
+    r.type,
+    wc.name AS "workCenterName",
+    wc.id AS "workCenterId"
+   FROM ("riskRegister" r
+     LEFT JOIN "workCenter" wc ON ((r."sourceId" = wc.id)));
 
 
 create or replace view "public"."salesInvoiceLines" as  SELECT sl.id,
@@ -3993,8 +4201,6 @@ create or replace view "public"."salesInvoiceLines" as  SELECT sl.id,
     sl."accountId",
     sl."nonTaxableAddOnCost",
     sl."convertedNonTaxableAddOnCost",
-    sl."deletedAt",
-    sl."deletedBy",
     sl."sortOrder",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
@@ -4176,8 +4382,6 @@ create or replace view "public"."salesOrderLines" as  SELECT sl.id,
     sl."convertedNonTaxableAddOnCost",
     sl."pricingRuleId",
     sl."priceTrace",
-    sl."deletedAt",
-    sl."deletedBy",
     sl."sortOrder",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
@@ -4270,8 +4474,6 @@ create or replace view "public"."salesOrders" as  SELECT s.id,
     s."opportunityId",
     s."completedDate",
     s."customerEngineeringContactId",
-    s."deletedAt",
-    s."deletedBy",
         CASE
             WHEN ((s.status <> ALL (ARRAY['Closed'::"salesOrderStatus", 'Cancelled'::"salesOrderStatus"])) AND (EXISTS ( SELECT 1
                FROM "salesOrderLine" sol
@@ -4424,11 +4626,9 @@ create or replace view "public"."services" as  WITH latest_items AS (
             i.embedding,
             i.revision,
             i."readableIdWithRevision",
-            i."requiresInspection",
-            i."deletedAt",
-            i."deletedBy"
+            i."requiresInspection"
            FROM item i
-          WHERE ((i.type = 'Service'::"itemType") AND (i."deletedAt" IS NULL))
+          WHERE (i.type = 'Service'::"itemType")
           ORDER BY i."readableId", i."companyId",
                 CASE
                     WHEN ((i.revision = '0'::text) OR (i.revision = ''::text) OR (i.revision IS NULL)) THEN 0
@@ -4443,7 +4643,7 @@ create or replace view "public"."services" as  WITH latest_items AS (
                     ELSE 1
                 END, i."createdAt") AS revisions
            FROM item i
-          WHERE ((i.type = 'Service'::"itemType") AND (i."deletedAt" IS NULL))
+          WHERE (i.type = 'Service'::"itemType")
           GROUP BY i."readableId", i."companyId"
         )
  SELECT li.active,
@@ -4533,17 +4733,14 @@ create or replace view "public"."shipmentLines" as  SELECT sl.id,
     sl."updatedAt",
     sl."updatedBy",
     sl."fulfillmentId",
-    sl."deletedAt",
-    sl."deletedBy",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE
             WHEN ((i."thumbnailPath" IS NULL) AND (mu."thumbnailPath" IS NOT NULL)) THEN mu."thumbnailPath"
             ELSE i."thumbnailPath"
         END AS "thumbnailPath",
-    i.name AS description,
-    i."deletedAt" AS "itemDeletedAt"
+    i.name AS description
    FROM (("shipmentLine" sl
-     LEFT JOIN item i ON ((i.id = sl."itemId")))
+     JOIN item i ON ((i.id = sl."itemId")))
      LEFT JOIN "modelUpload" mu ON ((mu.id = i."modelUploadId")));
 
 
@@ -4648,8 +4845,6 @@ create or replace view "public"."styles" as  WITH latest_items AS (
             i.revision,
             i."readableIdWithRevision",
             i."requiresInspection",
-            i."deletedAt",
-            i."deletedBy",
             i."sourcingType",
             i."attributeSetId"
            FROM item i
@@ -4722,6 +4917,39 @@ create or replace view "public"."styles" as  WITH latest_items AS (
      LEFT JOIN "itemCost" ic ON ((ic."itemId" = li.id)));
 
 
+create or replace view "public"."suggestions" as  SELECT s.id,
+    s.suggestion,
+    s.emoji,
+    s.path,
+    s."attachmentPath",
+    s.tags,
+    s."userId",
+    s."companyId",
+    s."createdAt",
+    u."fullName" AS "employeeName",
+    u."avatarUrl" AS "employeeAvatarUrl"
+   FROM (suggestion s
+     LEFT JOIN "user" u ON ((s."userId" = u.id)));
+
+
+create or replace view "public"."supplierProcesses" as  SELECT sp.id,
+    sp."supplierId",
+    sp."processId",
+    sp."minimumCost",
+    sp."leadTime",
+    sp."companyId",
+    sp."customFields",
+    sp."createdBy",
+    sp."createdAt",
+    sp."updatedBy",
+    sp."updatedAt",
+    sp.tags,
+    sp."unitCost",
+    p.name AS "processName"
+   FROM ("supplierProcess" sp
+     JOIN process p ON ((sp."processId" = p.id)));
+
+
 create or replace view "public"."supplierQuoteLines" as  SELECT ql.id,
     ql."supplierQuoteId",
     ql."supplierQuoteRevisionId",
@@ -4746,8 +4974,6 @@ create or replace view "public"."supplierQuoteLines" as  SELECT ql.id,
     ql."supplierQuoteLineType",
     ql."requiredDate",
     ql."ownerId",
-    ql."deletedAt",
-    ql."deletedBy",
     ql."sortOrder",
     i."readableIdWithRevision" AS "itemReadableId",
     i.type AS "itemType",
@@ -4787,8 +5013,6 @@ create or replace view "public"."supplierQuotes" as  SELECT q.id,
     q."supplierInteractionId",
     q."supplierQuoteType",
     q."externalLinkId",
-    q."deletedAt",
-    q."deletedBy",
     ql."thumbnailPath",
     ql."itemType"
    FROM ("supplierQuote" q
@@ -4800,7 +5024,7 @@ create or replace view "public"."supplierQuotes" as  SELECT q.id,
                 END) AS "thumbnailPath",
             min(i.type) AS "itemType"
            FROM (("supplierQuoteLine"
-             LEFT JOIN item i ON ((i.id = "supplierQuoteLine"."itemId")))
+             JOIN item i ON ((i.id = "supplierQuoteLine"."itemId")))
              LEFT JOIN "modelUpload" mu ON ((mu.id = i."modelUploadId")))
           GROUP BY "supplierQuoteLine"."supplierQuoteId") ql ON ((ql."supplierQuoteId" = q.id)));
 
@@ -4915,8 +5139,6 @@ create or replace view "public"."tools" as  WITH latest_items AS (
             i.revision,
             i."readableIdWithRevision",
             i."requiresInspection",
-            i."deletedAt",
-            i."deletedBy",
             i."sourcingType",
             mu.id AS "modelUploadId",
             mu."modelPath",
@@ -4983,7 +5205,7 @@ create or replace view "public"."tools" as  WITH latest_items AS (
     li."updatedBy",
     li."updatedAt"
    FROM (((((tool t
-     JOIN latest_items li(id, "readableId", name, description, type, "replenishmentSystem", "defaultMethodType", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy", "createdAt", "updatedBy", "updatedAt", assignee, "modelUploadId", "thumbnailPath", notes, "trackingMethod", embedding, revision, "readableIdWithRevision", "requiresInspection", "deletedAt", "deletedBy", "sourcingType", "modelUploadId_1", "modelPath", "modelThumbnailPath", "modelName", "modelSize") ON (((li."readableId" = t.id) AND (li."companyId" = t."companyId"))))
+     JOIN latest_items li(id, "readableId", name, description, type, "replenishmentSystem", "defaultMethodType", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy", "createdAt", "updatedBy", "updatedAt", assignee, "modelUploadId", "thumbnailPath", notes, "trackingMethod", embedding, revision, "readableIdWithRevision", "requiresInspection", "sourcingType", "modelUploadId_1", "modelPath", "modelThumbnailPath", "modelName", "modelSize") ON (((li."readableId" = t.id) AND (li."companyId" = t."companyId"))))
      LEFT JOIN item_revisions ir ON (((ir."readableId" = t.id) AND (ir."companyId" = li."companyId"))))
      LEFT JOIN ( SELECT ps_1."itemId",
             ps_1."companyId",
@@ -4992,6 +5214,26 @@ create or replace view "public"."tools" as  WITH latest_items AS (
           GROUP BY ps_1."itemId", ps_1."companyId") ps ON (((ps."itemId" = li.id) AND (ps."companyId" = li."companyId"))))
      LEFT JOIN "unitOfMeasure" uom ON (((uom.code = li."unitOfMeasureCode") AND (uom."companyId" = li."companyId"))))
      LEFT JOIN "itemCost" ic ON ((ic."itemId" = li.id)));
+
+
+create or replace view "public"."trainings" as  SELECT t1.id,
+    t1.name,
+    t1.description,
+    t1.version,
+    t1.status,
+    t1.type,
+    t1.frequency,
+    t1.assignee,
+    t1."estimatedDuration",
+    t1.tags,
+    t1."companyId",
+    jsonb_agg(jsonb_build_object('id', t2.id, 'version', t2.version, 'status', t2.status)) AS versions
+   FROM (training t1
+     JOIN training t2 ON (((t1.name = t2.name) AND (t1."companyId" = t2."companyId"))))
+  WHERE (t1.version = ( SELECT max(t3.version) AS max
+           FROM training t3
+          WHERE ((t3.name = t1.name) AND (t3."companyId" = t1."companyId"))))
+  GROUP BY t1.id, t1.name, t1.description, t1.version, t1.status, t1.type, t1.frequency, t1.assignee, t1."estimatedDuration", t1.tags, t1."companyId";
 
 
 create or replace view "public"."userDefaults" as  SELECT u.id AS "userId",
@@ -5069,6 +5311,22 @@ create or replace view "public"."workCentersWithBlockingStatus" as  SELECT wc.id
      LEFT JOIN location l ON ((wc."locationId" = l.id)));
 
 
+create or replace view "public"."groups" as  SELECT "groupId" AS id,
+    "isEmployeeTypeGroup",
+    "isCustomerOrgGroup",
+    "isCustomerTypeGroup",
+    "isSupplierOrgGroup",
+    "isSupplierTypeGroup",
+    name,
+    "companyId",
+    "parentId",
+    COALESCE(jsonb_agg("user") FILTER (WHERE ("user" IS NOT NULL)), '[]'::jsonb) AS users
+   FROM groups_recursive
+  WHERE ("isIdentityGroup" = false)
+  GROUP BY "groupId", name, "companyId", "parentId", "isEmployeeTypeGroup", "isCustomerOrgGroup", "isCustomerTypeGroup", "isSupplierOrgGroup", "isSupplierTypeGroup"
+  ORDER BY "isEmployeeTypeGroup" DESC, "isCustomerTypeGroup" DESC, "isSupplierTypeGroup" DESC, name;
+
+
 create or replace view "public"."styleSamples" as  SELECT s.active,
     s.assignee,
     s."defaultMethodType",
@@ -5119,148 +5377,6 @@ create or replace view "public"."styleSamples" as  SELECT s.active,
                   GROUP BY pa."productAttributes") g) te ON (true));
 
 
-create policy "DELETE"
-on "public"."bundle"
-as permissive
-for delete
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_delete'::text) AS get_companies_with_employee_permission)::text[])));
 
 
-create policy "INSERT"
-on "public"."bundle"
-as permissive
-for insert
-to public
-with check (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_create'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "SELECT"
-on "public"."bundle"
-as permissive
-for select
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_role() AS get_companies_with_employee_role)::text[])));
-
-
-create policy "UPDATE"
-on "public"."bundle"
-as permissive
-for update
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_update'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "DELETE"
-on "public"."bundleAllocation"
-as permissive
-for delete
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_delete'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "INSERT"
-on "public"."bundleAllocation"
-as permissive
-for insert
-to public
-with check (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_create'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "SELECT"
-on "public"."bundleAllocation"
-as permissive
-for select
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_role() AS get_companies_with_employee_role)::text[])));
-
-
-create policy "UPDATE"
-on "public"."bundleAllocation"
-as permissive
-for update
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_update'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "SELECT"
-on "public"."notification"
-as permissive
-for select
-to public
-using (("userId" = (auth.uid())::text));
-
-
-create policy "UPDATE"
-on "public"."notification"
-as permissive
-for update
-to public
-using (("userId" = (auth.uid())::text));
-
-
-create policy "DELETE"
-on "public"."productionQuantitySplitRow"
-as permissive
-for delete
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_delete'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "INSERT"
-on "public"."productionQuantitySplitRow"
-as permissive
-for insert
-to public
-with check (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_create'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "SELECT"
-on "public"."productionQuantitySplitRow"
-as permissive
-for select
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_role() AS get_companies_with_employee_role)::text[])));
-
-
-create policy "UPDATE"
-on "public"."productionQuantitySplitRow"
-as permissive
-for update
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_update'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "DELETE"
-on "public"."splitBatch"
-as permissive
-for delete
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_delete'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "INSERT"
-on "public"."splitBatch"
-as permissive
-for insert
-to public
-with check (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_create'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-create policy "SELECT"
-on "public"."splitBatch"
-as permissive
-for select
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_role() AS get_companies_with_employee_role)::text[])));
-
-
-create policy "UPDATE"
-on "public"."splitBatch"
-as permissive
-for update
-to public
-using (("companyId" = ANY (( SELECT get_companies_with_employee_permission('production_update'::text) AS get_companies_with_employee_permission)::text[])));
-
-
-
+NOTIFY pgrst, 'reload schema';
