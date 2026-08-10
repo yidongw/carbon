@@ -2,6 +2,7 @@ import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { expandVariantsQuantityTable } from "~/modules/items/itemAttribute.service";
+import { resolveStyleMethodItemId } from "~/modules/items/styleMethod.service";
 import { readVariantTableRows } from "~/modules/production/variantTableWire";
 
 export type JobVariantQuantityLine = {
@@ -149,8 +150,12 @@ export async function getJobVariantQuantities(
     return { data: [], error: null };
   }
 
+  const parentItemId = await resolveStyleMethodItemId(client, {
+    itemId: job.itemId,
+    companyId
+  });
   const expanded = await expandVariantsQuantityTable(client, {
-    parentItemId: job.itemId,
+    parentItemId,
     companyId,
     variantQuantities: job.configuration
   });

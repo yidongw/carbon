@@ -156,6 +156,76 @@ export async function resolveStyleMethodItemId(
   return data?.parentItemId ?? args.itemId;
 }
 
+/**
+ * After get-method on a Master/Bundle WO backing job, re-apply the garment split:
+ * master keeps cutting only; bundle drops cutting. No-op for ordinary jobs.
+ * Call this when the masterWorkOrder / bundleWorkOrder row already exists
+ * (e.g. Get Method), not during initial create before that row is inserted.
+ */
+export async function applyGarmentJobOperationFilter(
+  client: SupabaseClient<Database>,
+  args: {
+    jobId: string;
+    companyId: string;
+    cuttingProcessId?: string | null;
+  }
+): Promise<{ error: Error | null }> {
+  const ops = await client
+    .from("jobOperation")
+    .select("id, processId, order, tags, customFields")
+    .eq("jobId", args.jobId)
+    .eq("companyId", args.companyId);
+  if (ops.error) {
+    return { error: new Error(ops.error.message) };
+  }
+  if (!ops.data?.length) return { error: null };
+
+  const master = await client
+    .from("masterWorkOrder")
+    .select("id")
+    .eq("jobId", args.jobId)
+    .eq("companyId", args.companyId)
+    .maybeSingle();
+  if (master.data?.id) {
+    const nonCuttingIds = getParentJobNonCuttingOperationIdsToDelete({
+      operations: ops.data
+    });
+    if (nonCuttingIds.length === 0) return { error: null };
+    const deleted = await client
+      .from("jobOperation")
+      .delete()
+      .in("id", nonCuttingIds)
+      .eq("companyId", args.companyId);
+    return deleted.error
+      ? { error: new Error(deleted.error.message) }
+      : { error: null };
+  }
+
+  const bundle = await client
+    .from("bundleWorkOrder")
+    .select("id")
+    .eq("jobId", args.jobId)
+    .eq("companyId", args.companyId)
+    .maybeSingle();
+  if (bundle.data?.id) {
+    const cuttingIds = getBundleJobCuttingOperationIdsToDelete({
+      operations: ops.data,
+      cuttingProcessId: args.cuttingProcessId ?? null
+    });
+    if (cuttingIds.length === 0) return { error: null };
+    const deleted = await client
+      .from("jobOperation")
+      .delete()
+      .in("id", cuttingIds)
+      .eq("companyId", args.companyId);
+    return deleted.error
+      ? { error: new Error(deleted.error.message) }
+      : { error: null };
+  }
+
+  return { error: null };
+}
+
 export async function ensureStyleRootMakeMethod(
   client: SupabaseClient<Database>,
   args: {

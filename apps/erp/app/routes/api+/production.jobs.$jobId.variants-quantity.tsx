@@ -8,6 +8,7 @@ import {
   getAttributeValueNames,
   getQuantityGridParameters
 } from "~/modules/items";
+import { resolveStyleMethodItemId } from "~/modules/items/styleMethod.service";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { getJob, isJobLocked } from "~/modules/production";
 import {
@@ -165,7 +166,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     getDatabaseClient(),
     {
       jobId,
-      parentItemId: job.data.itemId,
+      parentItemId: await resolveStyleMethodItemId(client, {
+        itemId: job.data.itemId,
+        companyId
+      }),
       companyId,
       userId,
       variantQuantities: merged.variantQuantities
