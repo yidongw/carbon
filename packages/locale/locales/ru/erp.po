@@ -13202,9 +13202,6 @@ msgstr "Выберите значение"
 msgid "Select values"
 msgstr "Выберите значения"
 
-msgid "Select…"
-msgstr "Выберите…"
-
 msgid "Selected"
 msgstr "Выбрано"
 

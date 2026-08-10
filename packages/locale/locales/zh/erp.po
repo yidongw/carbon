@@ -13203,9 +13203,6 @@ msgstr "选择值"
 msgid "Select values"
 msgstr "选择值"
 
-msgid "Select…"
-msgstr "选择…"
-
 msgid "Selected"
 msgstr "选定的"
 

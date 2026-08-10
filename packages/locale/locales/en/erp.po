@@ -13202,9 +13202,6 @@ msgstr "Select value"
 msgid "Select values"
 msgstr "Select values"
 
-msgid "Select…"
-msgstr "Select…"
-
 msgid "Selected"
 msgstr "Selected"
 

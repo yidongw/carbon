@@ -404,7 +404,8 @@ export async function upsertStyle(
           companyId: style.companyId,
           userId: style.createdBy,
           attributeSetId: style.attributeSetId,
-          selections: style.selections
+          selections: style.selections,
+          isCreate: true
         });
         if (variantSync.error) throw variantSync.error;
       }

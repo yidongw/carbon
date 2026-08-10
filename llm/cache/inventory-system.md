@@ -93,6 +93,8 @@ Style parent items can have child **variant SKUs** via `itemVariant` / `itemAttr
 
 **`valuesKey` format:** `color|size` (e.g. `BK|S`). Size-only falls back to just the size code. Edge/ERP expand prefer attribute combo keys over positional `valuesKey` strings.
 
+**Attribute set/value immutability after create (PR #293):** `syncItemVariantsFromSelections` (single choke point for both create + edit item-level, in `itemAttribute.service.ts`) enforces guards when `isCreate` is falsy: (1) can't change an already-assigned `item.attributeSetId`; (2) an item created with a null set can't gain one; (3) assigned `itemAttributeSelection` values are additive-only (no removal — removal would archive the variant SKU and orphan production/purchase/sales). The create callers (`upsertStyle`, consumable `new` route) pass `isCreate: true` to set the baseline. `ItemAttributeEditor` mirrors this: set is read-only, no value-remove ✕, renders nothing for a set-less item. Catalog-level set-attribute membership editing (`upsertItemAttributeSet`) is NOT yet guarded. Tests: `itemAttributeImmutability.test.ts`.
+
 ## Inventory list vs variant SKUs (20260806162447 + 20260807092217)
 
 `get_inventory_quantities` (preview/shared DB also has `breakdown`/`jobBreakdown` from style inventory work):
