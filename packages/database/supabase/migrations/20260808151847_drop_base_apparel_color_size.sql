@@ -443,12 +443,23 @@ ALTER TABLE "salesOrderLine" DROP COLUMN IF EXISTS "colorCode", DROP COLUMN IF E
 ALTER TABLE "purchaseOrderLine" DROP COLUMN IF EXISTS "colorCode", DROP COLUMN IF EXISTS "sizeCode";
 ALTER TABLE "receiptLine" DROP COLUMN IF EXISTS "colorCode", DROP COLUMN IF EXISTS "sizeCode";
 ALTER TABLE "shipmentLine" DROP COLUMN IF EXISTS "colorCode", DROP COLUMN IF EXISTS "sizeCode";
-ALTER TABLE "productionQuantitySplitRow" DROP COLUMN IF EXISTS "colorCode", DROP COLUMN IF EXISTS "sizeCode";
-ALTER TABLE "bundle"
-  DROP COLUMN IF EXISTS "colorCode",
-  DROP COLUMN IF EXISTS "colorName",
-  DROP COLUMN IF EXISTS "sizeCode",
-  DROP COLUMN IF EXISTS "sizeName";
+-- productionQuantitySplitRow and bundle are dev-drift tables not created by any
+-- committed migration; on a clean DB they do not exist yet (the catch-up
+-- migration creates them, already without color/size). Guard the drops so the
+-- chain does not abort there.
+DO $$
+BEGIN
+  IF to_regclass('public."productionQuantitySplitRow"') IS NOT NULL THEN
+    ALTER TABLE "productionQuantitySplitRow" DROP COLUMN IF EXISTS "colorCode", DROP COLUMN IF EXISTS "sizeCode";
+  END IF;
+  IF to_regclass('public.bundle') IS NOT NULL THEN
+    ALTER TABLE "bundle"
+      DROP COLUMN IF EXISTS "colorCode",
+      DROP COLUMN IF EXISTS "colorName",
+      DROP COLUMN IF EXISTS "sizeCode",
+      DROP COLUMN IF EXISTS "sizeName";
+  END IF;
+END $$;
 
 CREATE VIEW "purchaseOrderLines" WITH (security_invoker=true) AS
  SELECT DISTINCT ON (pl.id) pl.id,
