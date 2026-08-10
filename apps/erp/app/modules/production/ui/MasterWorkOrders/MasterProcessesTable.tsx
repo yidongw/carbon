@@ -145,9 +145,6 @@ const MasterProcessesTable = memo(
                   <Trans>Remaining</Trans>
                 </th>
                 <th className="py-2 pr-4 font-medium">
-                  <Trans>Reported At</Trans>
-                </th>
-                <th className="py-2 pr-4 font-medium">
                   <Trans>Status</Trans>
                 </th>
               </tr>
@@ -180,9 +177,6 @@ const MasterProcessesTable = memo(
                   </td>
                   <td className="py-2 pr-4 text-right">
                     {bundle.remainingQuantity}
-                  </td>
-                  <td className="py-2 pr-4 text-muted-foreground">
-                    {formatDate(bundle.lastReportedAt)}
                   </td>
                   <td className="py-2 pr-4">
                     {renderOperationStatus(bundle.operationStatus)}
@@ -242,12 +236,6 @@ const MasterProcessesTable = memo(
                     <Trans>Remaining</Trans>
                   </dt>
                   <dd>{bundle.remainingQuantity}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">
-                    <Trans>Reported At</Trans>
-                  </dt>
-                  <dd>{formatDate(bundle.lastReportedAt)}</dd>
                 </div>
               </dl>
             </div>

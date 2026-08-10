@@ -163,7 +163,6 @@ export type MasterProcessBundle = {
   remainingQuantity: number;
   assignee: string | null;
   assignedAt: string | null;
-  lastReportedAt: string | null;
 };
 
 export type MasterProcess = {
@@ -269,7 +268,7 @@ export async function getMasterProcessBreakdown(
   const bundles = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, attributeLabel, attributeValues, valuesKey, status, quantity, reportedQuantity, assignee, assignedAt, lastReportedAt"
+      "id, jobId, jobReadableId, attributeLabel, attributeValues, valuesKey, status, quantity, assignee, assignedAt"
     )
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
@@ -295,9 +294,8 @@ export async function getMasterProcessBreakdown(
 
     const process = ensureProcess(description);
     const quantity = Number(bundle.quantity ?? 0);
-    // Reported comes from the bundle operation's completed count (the stored
-    // bundleWorkOrder.reportedQuantity isn't maintained), so it reflects the
-    // actual production reports filed against the bundle.
+    // Reported = the bundle operation's completed count: the real, per-process
+    // production reported against the bundle.
     const reported = Number(op.quantityComplete ?? 0);
     process.bundleCount += 1;
     process.reportedQuantity += reported;
@@ -313,8 +311,7 @@ export async function getMasterProcessBreakdown(
       reportedQuantity: reported,
       remainingQuantity: Math.max(0, quantity - reported),
       assignee: bundle.assignee,
-      assignedAt: bundle.assignedAt,
-      lastReportedAt: bundle.lastReportedAt
+      assignedAt: bundle.assignedAt
     });
   }
 
