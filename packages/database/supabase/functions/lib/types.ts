@@ -2538,9 +2538,7 @@ export type Database = {
           customFields: Json | null
           id: string
           jobId: string
-          lastReportedAt: string | null
           masterWorkOrderId: string
-          reportedQuantity: number
           sequence: number
           tags: string[] | null
           updatedAt: string | null
@@ -2553,9 +2551,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           jobId: string
-          lastReportedAt?: string | null
           masterWorkOrderId: string
-          reportedQuantity?: number
           sequence?: number
           tags?: string[] | null
           updatedAt?: string | null
@@ -2568,9 +2564,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           jobId?: string
-          lastReportedAt?: string | null
           masterWorkOrderId?: string
-          reportedQuantity?: number
           sequence?: number
           tags?: string[] | null
           updatedAt?: string | null
@@ -54896,14 +54890,12 @@ export type Database = {
           itemName: string | null
           jobId: string | null
           jobReadableId: string | null
-          lastReportedAt: string | null
           locationId: string | null
           masterWorkOrderId: string | null
           processCount: number | null
           quantity: number | null
           quantityComplete: number | null
           readableIdWithRevision: string | null
-          reportedQuantity: number | null
           salesOrderId: string | null
           salesOrderLineId: string | null
           scrapQuantity: number | null

@@ -54,7 +54,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       ? await serviceRole
           .from("bundleWorkOrders")
           .select(
-            "masterWorkOrderId, reportedQuantity, processCount, attributeLabel, attributeValues, valuesKey, quantity"
+            "masterWorkOrderId, quantityComplete, processCount, attributeLabel, attributeValues, valuesKey, quantity"
           )
           .in("masterWorkOrderId", masterIds)
           .eq("companyId", companyId)
@@ -62,7 +62,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : {
           data: [] as Array<{
             masterWorkOrderId: string | null;
-            reportedQuantity: number | null;
+            quantityComplete: number | null;
             processCount: number | null;
             attributeLabel: string | null;
             attributeValues: Record<string, string> | null;
@@ -98,19 +98,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     };
     s.bundleCount += 1;
     s.processCount = b.processCount ?? s.processCount;
-    s.reportedQuantity += b.reportedQuantity ?? 0;
+    // Reported/produced = units past the bundle job's final operation
+    // (job.quantityComplete), not a denormalized bundle counter.
+    s.reportedQuantity += b.quantityComplete ?? 0;
     const valuesKey = b.valuesKey ?? b.attributeLabel ?? "";
     if (valuesKey) {
       const existing = s.breakdown.find((r) => r.valuesKey === valuesKey);
       if (existing) {
         existing.quantity += b.quantity ?? 0;
-        existing.reportedQuantity += b.reportedQuantity ?? 0;
+        existing.reportedQuantity += b.quantityComplete ?? 0;
       } else {
         s.breakdown.push({
           valuesKey,
           attributeLabel: b.attributeLabel ?? valuesKey,
           quantity: b.quantity ?? 0,
-          reportedQuantity: b.reportedQuantity ?? 0
+          reportedQuantity: b.quantityComplete ?? 0
         });
       }
     }

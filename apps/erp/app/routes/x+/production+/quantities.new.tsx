@@ -22,7 +22,6 @@ import {
   getJobOperations,
   getJobs,
   productionQuantityCreateFormValidator,
-  recordBundleProductionReport,
   resolveProductionQuantityCanAutoApprove,
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
@@ -370,15 +369,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
   // Cutting reports on a Master Work Order no longer auto-spawn bundles — the
   // user reviews/edits the split via the "Split Batch" modal, which creates the
-  // bundles. Here we only cache a Bundle Work Order's own reported quantity.
-  if (actorKind !== "supplier") {
-    await recordBundleProductionReport(client, {
-      jobId: operation.jobId,
-      companyId,
-      createdBy: userId,
-      lines: mappedLines
-    });
-  }
+  // bundles. Bundle progress is derived from jobOperation.quantityComplete (kept
+  // current by the operation-sync trigger chain), so nothing is cached here.
 
   if (isOverlay) {
     // A master work order's cutting report leads into Split Batch. Return a

@@ -621,14 +621,40 @@ export async function getCuttingSplitProposal(
     companyId
   );
 
+  // Produced floor per bundle = the most-progressed operation's completed count
+  // (max jobOperation.quantityComplete across the bundle job's operations). A
+  // bundle can't be shrunk below what has already entered production. Sourced
+  // from jobOperation, not a denormalized bundle column.
+  const bundleJobIds = (existing.data ?? [])
+    .map((b) => (b as { jobId?: string | null }).jobId)
+    .filter((id): id is string => Boolean(id));
+  const producedByJob = new Map<string, number>();
+  if (bundleJobIds.length) {
+    const ops = await client
+      .from("jobOperation")
+      .select("jobId, quantityComplete")
+      .in("jobId", bundleJobIds)
+      .eq("companyId", companyId);
+    for (const op of ops.data ?? []) {
+      if (!op.jobId) continue;
+      producedByJob.set(
+        op.jobId,
+        Math.max(
+          producedByJob.get(op.jobId) ?? 0,
+          Number(op.quantityComplete) || 0
+        )
+      );
+    }
+  }
+
   const existingBundles: ExistingBundle[] = (existing.data ?? []).map((b) => {
     const row = b as {
       id?: string;
+      jobId?: string | null;
       jobReadableId?: string | null;
       valuesKey?: string | null;
       attributeLabel?: string | null;
       quantity?: number | null;
-      reportedQuantity?: number | null;
     };
     return {
       id: row.id ?? "",
@@ -636,7 +662,7 @@ export async function getCuttingSplitProposal(
       valuesKey: row.valuesKey ?? null,
       attributeLabel: row.attributeLabel ?? row.valuesKey ?? null,
       quantity: row.quantity ?? 0,
-      reportedQuantity: row.reportedQuantity ?? 0
+      reportedQuantity: producedByJob.get(row.jobId ?? "") ?? 0
     };
   });
 
@@ -949,71 +975,8 @@ export async function replaceMasterCuttingSplitRows(
   return { error: insert.error };
 }
 
-/**
- * After production is reported against a Bundle Work Order's job, cache the
- * bundle's reported quantity + last-reported timestamp on the bundle row, and
- * auto-complete the bundle's job once the reported quantity reaches the target.
- * No-op when the job isn't a bundle.
- */
-export async function recordBundleProductionReport(
-  client: SupabaseClient<Database>,
-  input: {
-    jobId: string;
-    companyId: string;
-    createdBy: string;
-    lines: { type: string; quantity: number }[];
-  }
-): Promise<{ error: Error | null }> {
-  const bundle = await client
-    .from("bundleWorkOrder")
-    .select("id, reportedQuantity")
-    .eq("jobId", input.jobId)
-    .eq("companyId", input.companyId)
-    .maybeSingle();
-  if (bundle.error) return { error: bundle.error };
-  if (!bundle.data) return { error: null };
-
-  const producedDelta = input.lines
-    .filter((line) => line.type === "Production")
-    .reduce((sum, line) => sum + (line.quantity || 0), 0);
-
-  const nowIso = new Date().toISOString();
-  const reportedQuantity = (bundle.data.reportedQuantity ?? 0) + producedDelta;
-
-  const update = await client
-    .from("bundleWorkOrder")
-    .update({
-      reportedQuantity,
-      lastReportedAt: nowIso,
-      updatedBy: input.createdBy,
-      updatedAt: nowIso
-    })
-    .eq("id", bundle.data.id);
-  if (update.error) return { error: update.error };
-
-  // Auto-complete the bundle's job once the reported quantity reaches the target.
-  const job = await client
-    .from("job")
-    .select("quantity, status")
-    .eq("id", input.jobId)
-    .single();
-  const target = job.data?.quantity ?? 0;
-  if (
-    producedDelta > 0 &&
-    target > 0 &&
-    reportedQuantity >= target &&
-    job.data?.status !== "Completed"
-  ) {
-    await client
-      .from("job")
-      .update({
-        status: "Completed",
-        completedDate: nowIso,
-        updatedBy: input.createdBy
-      })
-      .eq("id", input.jobId)
-      .eq("companyId", input.companyId);
-  }
-
-  return { error: null };
-}
+// recordBundleProductionReport was removed: bundle progress is now read from
+// jobOperation.quantityComplete, and the operation-sync trigger chain
+// (sync_update_job_operation_quantities -> sync_finish_job_operation ->
+// complete_job_to_inventory) already completes a bundle's job when its final
+// operation reaches target. No denormalized bundle counter is maintained.
