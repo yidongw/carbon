@@ -118,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
         parentItemId: rest.itemId,
         companyId,
         userId,
-        configuration: styleVariantsQuantity
+        variantQuantities: styleVariantsQuantity
       }
     );
     if (replaced.error) {
