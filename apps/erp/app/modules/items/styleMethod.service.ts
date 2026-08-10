@@ -139,6 +139,23 @@ export function getParentJobNonCuttingOperationIdsToDelete(args: {
     .filter((id) => id !== firstOperation.id);
 }
 
+/**
+ * Bundle jobs are keyed by variant SKU `itemId`, but the Style BOP lives on the
+ * parent Style. Resolve that parent for get-method; non-variant items pass through.
+ */
+export async function resolveStyleMethodItemId(
+  client: SupabaseClient<Database>,
+  args: { itemId: string; companyId: string }
+): Promise<string> {
+  const { data } = await client
+    .from("itemVariant")
+    .select("parentItemId")
+    .eq("variantItemId", args.itemId)
+    .eq("companyId", args.companyId)
+    .maybeSingle();
+  return data?.parentItemId ?? args.itemId;
+}
+
 export async function ensureStyleRootMakeMethod(
   client: SupabaseClient<Database>,
   args: {

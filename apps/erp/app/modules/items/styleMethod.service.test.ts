@@ -6,6 +6,7 @@ import {
   isStyleCuttingOperation,
   isStyleCuttingOperationFirst,
   isStyleSystemOwnedOperation,
+  resolveStyleMethodItemId,
   STYLE_CUTTING_OPERATION_TAG,
   STYLE_CUTTING_PROCESS_TAG,
   STYLE_SYSTEM_OPERATION_TAG
@@ -261,6 +262,51 @@ describe("getParentJobNonCuttingOperationIdsToDelete", () => {
         ]
       })
     ).toEqual(["op-second", "op-third"]);
+  });
+});
+
+describe("resolveStyleMethodItemId", () => {
+  it("returns the parent Style id when the item is a variant SKU", async () => {
+    const client = {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({
+                data: { parentItemId: "style-parent" },
+                error: null
+              })
+            })
+          })
+        })
+      })
+    };
+    expect(
+      await resolveStyleMethodItemId(client as never, {
+        itemId: "variant-sku",
+        companyId: "co"
+      })
+    ).toBe("style-parent");
+  });
+
+  it("returns the item id when it is not a variant SKU", async () => {
+    const client = {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data: null, error: null })
+            })
+          })
+        })
+      })
+    };
+    expect(
+      await resolveStyleMethodItemId(client as never, {
+        itemId: "style-parent",
+        companyId: "co"
+      })
+    ).toBe("style-parent");
   });
 });
 

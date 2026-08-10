@@ -2755,6 +2755,12 @@ export async function insertJob(
     skipMethod?: boolean;
     skipRecalculate?: boolean;
     methodSource?: "item" | "quoteLine";
+    /**
+     * Item whose make method to copy (get-method `sourceId`). Defaults to
+     * `input.itemId`. Bundle jobs set this to the parent Style so variant SKUs
+     * inherit Cutting/Assembly/etc. from the Style BOP.
+     */
+    methodItemId?: string;
   }
 ): Promise<{
   data: { id: string; jobId: string } | null;
@@ -2905,7 +2911,7 @@ export async function insertJob(
     } else {
       const body: Record<string, unknown> = {
         type: "itemToJob",
-        sourceId: input.itemId,
+        sourceId: options?.methodItemId ?? input.itemId,
         targetId: createdJobId,
         companyId: input.companyId,
         userId: input.createdBy

@@ -2,6 +2,11 @@
 
 Patterns learned from corrections. Review at the start of each session.
 
+## Bundle jobs must copy the parent Style BOP, not the variant SKU method
+- Symptom: Style has Assembly (and Cutting); Master WO processes show Cutting only (expected); Bundle WO processes are empty — Assembly missing everywhere that rolls up from bundles.
+- Root cause: `insertBundleWorkOrder` creates the job with `itemId` = variant SKU. Variant SKUs have no make method; get-method failed silently and left zero operations. Cutting delete then had nothing left to keep.
+- Rule: when get-method/`insertJob` targets a Style variant SKU, resolve `itemVariant.parentItemId` and copy that Style's method (`methodItemId` / `resolveStyleMethodItemId`). Master still strips non-cutting ops; bundle strips cutting — Assembly belongs on the bundle.
+
 ## Rename call-site property names when renaming function args
 - Symptom (bug 451530): Master WO create toast failed / qty modal wouldn't open, but the MWO existed.
 - Root cause: #278 renamed `replaceJobVariantQuantitiesFromTable`'s arg from `configuration` → `variantQuantities`, but job/MWO/bulk create still passed `configuration:`. Runtime ignored the payload (undefined), wrote no `jobVariantQuantity` rows; the qty overlay loader then returned null when planned rows were empty.
