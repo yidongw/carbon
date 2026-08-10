@@ -50,6 +50,42 @@ LEFT JOIN LATERAL (
 -- Bundle WO: identity = job.itemId (variant). Expose attributeValues JSON; drop color/size cols.
 DROP VIEW IF EXISTS "bundleWorkOrders";
 
+-- Relocate legacy bundle child jobs onto their variant SKU BEFORE dropping the
+-- color/size columns. Pre-variant bundles have their backing job.itemId still on
+-- the parent Style, with color/size only in bundleWorkOrder.colorCode/sizeCode;
+-- once those are gone, a bundle's identity is read from job.itemId = variant SKU
+-- (see the bundleWorkOrders view below). Map each legacy bundle's
+-- (parent, colorCode, sizeCode) to the matching variant and move its job there.
+-- Guarded on column presence so it runs where the legacy columns still exist and
+-- is a clean no-op elsewhere (plpgsql defers planning until the branch executes).
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='bundleWorkOrder' AND column_name='colorCode'
+  ) THEN
+    UPDATE "job" j
+    SET "itemId" = m."variantItemId"
+    FROM "bundleWorkOrder" bwo, (
+      SELECT iv."variantItemId", iv."parentItemId", iv."companyId",
+             cav."code" AS "colorCode", sav."code" AS "sizeCode"
+      FROM "itemVariant" iv
+      LEFT JOIN "itemVariantAttribute" cva
+        ON cva."itemVariantId"=iv."id" AND cva."companyId"=iv."companyId" AND cva."attributeId"='iat_color'
+      LEFT JOIN "itemAttributeValue" cav ON cav."id"=cva."attributeValueId"
+      LEFT JOIN "itemVariantAttribute" sva
+        ON sva."itemVariantId"=iv."id" AND sva."companyId"=iv."companyId" AND sva."attributeId"='iat_size'
+      LEFT JOIN "itemAttributeValue" sav ON sav."id"=sva."attributeValueId"
+    ) m
+    WHERE bwo."jobId" = j."id"
+      AND j."itemId" = m."parentItemId"
+      AND j."companyId" = m."companyId"
+      AND COALESCE(bwo."colorCode",'') = COALESCE(m."colorCode",'')
+      AND COALESCE(bwo."sizeCode",'') = COALESCE(m."sizeCode",'')
+      AND (bwo."colorCode" IS NOT NULL OR bwo."sizeCode" IS NOT NULL);
+  END IF;
+END $$;
+
 ALTER TABLE "bundleWorkOrder" DROP COLUMN IF EXISTS "colorCode";
 ALTER TABLE "bundleWorkOrder" DROP COLUMN IF EXISTS "sizeCode";
 

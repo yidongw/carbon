@@ -1,11 +1,11 @@
 -- Style variant qty grids on SO/PO are FormData-only → expand to child SKU
--- lines. The JSONB column is unused on the happy path; drop it.
+-- lines, so the salesOrderLine/purchaseOrderLine `configuration` JSONB is never
+-- used. It is no longer added upstream (the add + this drop were consolidated
+-- away), so this migration just settles the final SO/PO line view definitions.
 
 DROP VIEW IF EXISTS "salesOrderLines";
 DROP VIEW IF EXISTS "purchaseOrderLines";
 
-ALTER TABLE "salesOrderLine" DROP COLUMN IF EXISTS "configuration";
-ALTER TABLE "purchaseOrderLine" DROP COLUMN IF EXISTS "configuration";
 
 CREATE VIEW "purchaseOrderLines" WITH (security_invoker=true) AS
  SELECT DISTINCT ON (pl.id) pl.id,
@@ -135,8 +135,6 @@ CREATE VIEW "salesOrderLines" WITH (security_invoker=true) AS
     sl."convertedNonTaxableAddOnCost",
     sl."pricingRuleId",
     sl."priceTrace",
-    sl."deletedAt",
-    sl."deletedBy",
     sl."sortOrder",
     i."readableIdWithRevision" AS "itemReadableId",
         CASE

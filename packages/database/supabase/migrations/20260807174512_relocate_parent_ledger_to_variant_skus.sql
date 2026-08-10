@@ -18,33 +18,47 @@
 -- place (harmless: the variant breakdown reads the SKU's attributes, and the
 -- parent-legacy breakdown only matches rows still booked on the parent).
 
-UPDATE "itemLedger" il
-SET "itemId" = m."variantItemId"
-FROM (
-  SELECT
-    iv."variantItemId",
-    iv."parentItemId",
-    iv."companyId",
-    cav."code" AS "colorCode",
-    sav."code" AS "sizeCode"
-  FROM "itemVariant" iv
-  LEFT JOIN "itemVariantAttribute" cva
-    ON cva."itemVariantId" = iv."id"
-   AND cva."companyId" = iv."companyId"
-   AND cva."attributeId" = 'iat_color'
-  LEFT JOIN "itemAttributeValue" cav ON cav."id" = cva."attributeValueId"
-  LEFT JOIN "itemVariantAttribute" sva
-    ON sva."itemVariantId" = iv."id"
-   AND sva."companyId" = iv."companyId"
-   AND sva."attributeId" = 'iat_size'
-  LEFT JOIN "itemAttributeValue" sav ON sav."id" = sva."attributeValueId"
-) m
-WHERE il."itemId" = m."parentItemId"
-  AND il."companyId" = m."companyId"
-  AND COALESCE(il."colorCode", '') = COALESCE(m."colorCode", '')
-  AND COALESCE(il."sizeCode", '') = COALESCE(m."sizeCode", '')
-  -- Only relocate rows that actually carry a color or size (real Style stock);
-  -- never move a plain parent row onto a variant.
-  AND (il."colorCode" IS NOT NULL OR il."sizeCode" IS NOT NULL);
+-- itemLedger.colorCode/sizeCode only ever existed on dev (out-of-band apparel
+-- drift) and are being deleted for good. On any DB that never had them there is
+-- no parent-booked color/size stock to relocate, so guard the UPDATE on their
+-- presence: it runs on dev, and is a clean no-op everywhere else. (plpgsql defers
+-- planning the UPDATE until the branch executes, so the missing columns raise no
+-- error when the guard is false.)
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'itemLedger' AND column_name = 'colorCode'
+  ) THEN
+    UPDATE "itemLedger" il
+    SET "itemId" = m."variantItemId"
+    FROM (
+      SELECT
+        iv."variantItemId",
+        iv."parentItemId",
+        iv."companyId",
+        cav."code" AS "colorCode",
+        sav."code" AS "sizeCode"
+      FROM "itemVariant" iv
+      LEFT JOIN "itemVariantAttribute" cva
+        ON cva."itemVariantId" = iv."id"
+       AND cva."companyId" = iv."companyId"
+       AND cva."attributeId" = 'iat_color'
+      LEFT JOIN "itemAttributeValue" cav ON cav."id" = cva."attributeValueId"
+      LEFT JOIN "itemVariantAttribute" sva
+        ON sva."itemVariantId" = iv."id"
+       AND sva."companyId" = iv."companyId"
+       AND sva."attributeId" = 'iat_size'
+      LEFT JOIN "itemAttributeValue" sav ON sav."id" = sva."attributeValueId"
+    ) m
+    WHERE il."itemId" = m."parentItemId"
+      AND il."companyId" = m."companyId"
+      AND COALESCE(il."colorCode", '') = COALESCE(m."colorCode", '')
+      AND COALESCE(il."sizeCode", '') = COALESCE(m."sizeCode", '')
+      -- Only relocate rows that actually carry a color or size (real Style stock);
+      -- never move a plain parent row onto a variant.
+      AND (il."colorCode" IS NOT NULL OR il."sizeCode" IS NOT NULL);
+  END IF;
+END $$;
 
 NOTIFY pgrst, 'reload schema';
