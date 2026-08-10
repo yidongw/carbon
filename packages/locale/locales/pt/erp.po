@@ -12380,9 +12380,6 @@ msgstr "Relatórios <0>{0}</0> unidades"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Relatórios <0>{totalQuantity}</0> unidades"
 
-msgid "Reported At"
-msgstr "Reportado em"
-
 msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 msgstr "A quantidade reportada excede a quantidade planejada restante para uma ou mais combinações de variantes."
 

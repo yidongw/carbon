@@ -8,6 +8,7 @@ import {
   getAttributeValueNames,
   getQuantityGridParameters
 } from "~/modules/items";
+import { resolveStyleMethodItemId } from "~/modules/items/styleMethod.service";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { getJob, isJobLocked } from "~/modules/production";
 import {
@@ -49,14 +50,10 @@ export async function loader({
   const job = await getJob(client, jobId);
   if (job.error || !job.data?.itemId) return null;
 
-  // The combo quantity grid belongs to jobs that OWN a plan — master work orders
-  // and standalone configured Style jobs (which have jobVariantQuantity rows).
-  // Bundle/variant SKU jobs have none (their item resolves to the parent Style,
-  // so an item-centric check would wrongly show the full matrix), so they get
-  // plain quantity, not the grid.
-  const planned = await getJobVariantQuantities(client, jobId, companyId);
-  if ((planned.data?.length ?? 0) === 0) return null;
-
+  // Grid params come from the job's item attribute selections. Variant SKU /
+  // bundle jobs have no selections (attributeSetId null) → empty parameters →
+  // no overlay. Do not gate on existing jobVariantQuantity rows: a newly
+  // created Style/MWO job must be editable before any plan rows exist.
   const { parameters } = await getQuantityGridParameters(
     client,
     job.data.itemId,
@@ -64,6 +61,7 @@ export async function loader({
   );
   if (parameters.length === 0) return null;
 
+  const planned = await getJobVariantQuantities(client, jobId, companyId);
   const fromTable = jobVariantQuantitiesToTable(planned.data ?? []);
   const initialRows =
     fromTable.variantTable.length > 0
@@ -168,7 +166,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     getDatabaseClient(),
     {
       jobId,
-      parentItemId: job.data.itemId,
+      parentItemId: await resolveStyleMethodItemId(client, {
+        itemId: job.data.itemId,
+        companyId
+      }),
       companyId,
       userId,
       variantQuantities: merged.variantQuantities

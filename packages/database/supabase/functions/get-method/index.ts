@@ -308,13 +308,19 @@ serve(async (req: Request) => {
         }
         const itemId = sourceId;
         const isConfigured = !!configuration;
+        // Style variant SKUs have no make method — use the parent Style BOP.
+        const methodItemId = await resolveMakeMethodItemId(
+          client,
+          itemId,
+          companyId
+        );
 
         const [makeMethod, jobMakeMethod, workCenters, supplierProcesses, job] =
           await Promise.all([
             client
               .from("activeMakeMethods")
               .select("*")
-              .eq("itemId", itemId)
+              .eq("itemId", methodItemId)
               .eq("companyId", companyId)
               .single(),
             client
@@ -356,7 +362,7 @@ serve(async (req: Request) => {
         const hydratedConfiguration = await hydrateConfiguration(
           client,
           configuration,
-          itemId,
+          methodItemId,
           companyId
         );
 
@@ -366,7 +372,7 @@ serve(async (req: Request) => {
             ? client
                 .from("configurationRule")
                 .select("*")
-                .eq("itemId", itemId)
+                .eq("itemId", methodItemId)
                 .eq("companyId", companyId)
             : Promise.resolve({ data: [] }),
         ]);
@@ -1078,13 +1084,18 @@ serve(async (req: Request) => {
         }
         const itemId = sourceId;
         const isConfigured = !!configuration;
+        const methodItemId = await resolveMakeMethodItemId(
+          client,
+          itemId,
+          companyId
+        );
 
         const [makeMethod, jobMakeMethod, workCenters, supplierProcesses] =
           await Promise.all([
             client
               .from("activeMakeMethods")
               .select("*")
-              .eq("itemId", itemId)
+              .eq("itemId", methodItemId)
               .eq("companyId", companyId)
               .single(),
             client
@@ -1111,7 +1122,7 @@ serve(async (req: Request) => {
         const hydratedConfiguration = await hydrateConfiguration(
           client,
           configuration,
-          itemId,
+          methodItemId,
           companyId
         );
 
@@ -1148,7 +1159,7 @@ serve(async (req: Request) => {
             ? client
                 .from("configurationRule")
                 .select("*")
-                .eq("itemId", itemId)
+                .eq("itemId", methodItemId)
                 .eq("companyId", companyId)
             : Promise.resolve({ data: [] }),
         ]);
@@ -5512,6 +5523,21 @@ async function insertProcedureDataForJobOperation(
     })
     .where("id", "=", operationId)
     .execute();
+}
+
+/** Style variant SKUs have no make method — use the parent Style item's BOP. */
+async function resolveMakeMethodItemId(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+): Promise<string> {
+  const { data } = await client
+    .from("itemVariant")
+    .select("parentItemId")
+    .eq("variantItemId", itemId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+  return data?.parentItemId ?? itemId;
 }
 
 async function hydrateConfiguration(

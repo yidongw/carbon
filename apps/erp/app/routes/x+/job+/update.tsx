@@ -2,6 +2,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
+import { resolveStyleMethodItemId } from "~/modules/items/styleMethod.service";
 import {
   calculateJobPriority,
   isJobLocked,
@@ -271,7 +272,10 @@ export async function action({ request }: ActionFunctionArgs) {
             getDatabaseClient(),
             {
               jobId: jobRow.id,
-              parentItemId: jobRow.itemId,
+              parentItemId: await resolveStyleMethodItemId(client, {
+                itemId: jobRow.itemId,
+                companyId
+              }),
               companyId,
               userId,
               variantQuantities: configuration as Record<string, unknown>

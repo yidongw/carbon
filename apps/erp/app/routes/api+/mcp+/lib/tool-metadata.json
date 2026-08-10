@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-09T13:26:38.529Z",
+  "generated": "2026-08-10T10:30:59.740Z",
   "totalTools": 1270,
   "modules": 15,
   "tools": [
@@ -18526,6 +18526,9 @@
                   "item",
                   "quoteLine"
                 ]
+              },
+              "/**\n     * Item whose make method to copy (get-method `sourceId`). Defaults to\n     * `input.itemId`. Bundle jobs set this to the parent Style so variant SKUs\n     * inherit Cutting/Assembly/etc. from the Style BOP.\n     */\n    methodItemId": {
+                "type": "string"
               }
             }
           }

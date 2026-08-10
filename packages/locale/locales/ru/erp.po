@@ -12380,9 +12380,6 @@ msgstr "Отчётная <0>{0}</0> единица"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Отчет <0>{totalQuantity}</0> единиц"
 
-msgid "Reported At"
-msgstr "Сообщено"
-
 msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 msgstr "Заявленное количество превышает оставшееся плановое количество для одной или нескольких комбинаций вариантов."
 

@@ -10,6 +10,10 @@ import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import { getDefaultStorageUnitForJob } from "../inventory";
+import {
+  applyGarmentJobOperationFilter,
+  resolveStyleMethodItemId
+} from "../items/styleMethod.service";
 import { getEmployeeJob } from "../people";
 import type {
   operationParameterValidator,
@@ -2755,6 +2759,12 @@ export async function insertJob(
     skipMethod?: boolean;
     skipRecalculate?: boolean;
     methodSource?: "item" | "quoteLine";
+    /**
+     * Item whose make method to copy (get-method `sourceId`). Defaults to
+     * `input.itemId`. Bundle jobs set this to the parent Style so variant SKUs
+     * inherit Cutting/Assembly/etc. from the Style BOP.
+     */
+    methodItemId?: string;
   }
 ): Promise<{
   data: { id: string; jobId: string } | null;
@@ -2901,11 +2911,24 @@ export async function insertJob(
       const { error } = await client.functions.invoke("get-method", { body });
       if (error) {
         console.error("Failed to copy method from quote line:", error);
+        return {
+          data: null,
+          error: {
+            message: "Failed to copy method from quote line"
+          } as PostgrestError
+        };
       }
     } else {
+      // Variant SKUs have no BOP — always resolve parent Style when copying.
+      const methodItemId =
+        options?.methodItemId ??
+        (await resolveStyleMethodItemId(client, {
+          itemId: input.itemId,
+          companyId: input.companyId
+        }));
       const body: Record<string, unknown> = {
         type: "itemToJob",
-        sourceId: input.itemId,
+        sourceId: methodItemId,
         targetId: createdJobId,
         companyId: input.companyId,
         userId: input.createdBy
@@ -2914,6 +2937,12 @@ export async function insertJob(
       const { error } = await client.functions.invoke("get-method", { body });
       if (error) {
         console.error("Failed to copy method from item:", error);
+        return {
+          data: null,
+          error: {
+            message: "Failed to copy method from item"
+          } as PostgrestError
+        };
       }
     }
   }
@@ -3262,6 +3291,14 @@ export async function upsertJobMethod(
     userId: jobMethod.userId
   };
 
+  // Variant SKU jobs must pull the parent Style make method.
+  if (type === "itemToJob") {
+    body.sourceId = await resolveStyleMethodItemId(client, {
+      itemId: jobMethod.sourceId,
+      companyId: jobMethod.companyId
+    });
+  }
+
   // Only add configuration if it exists
   if (jobMethod.configuration !== undefined) {
     body.configuration = jobMethod.configuration;
@@ -3278,6 +3315,19 @@ export async function upsertJobMethod(
   if (getMethodResult.error) {
     return getMethodResult;
   }
+
+  // Master/Bundle WO jobs: re-apply cutting vs downstream split after a full
+  // Style get-method (e.g. user clicked Get Method on the backing job).
+  if (type === "itemToJob") {
+    const filtered = await applyGarmentJobOperationFilter(client, {
+      jobId: jobMethod.targetId,
+      companyId: jobMethod.companyId
+    });
+    if (filtered.error) {
+      return { data: null, error: filtered.error };
+    }
+  }
+
   return recalculateJobRequirements(client, {
     id: jobMethod.targetId,
     companyId: jobMethod.companyId,

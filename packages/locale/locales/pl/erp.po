@@ -12380,9 +12380,6 @@ msgstr "Pointrowany <0>{0}</0> jednostek"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Pointrowany <0>{totalQuantity}</0> jednostek"
 
-msgid "Reported At"
-msgstr "Zgłoszono"
-
 msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 msgstr "Zgłoszona ilość przekracza pozostałą zaplanowaną ilość dla jednej lub więcej kombinacji wariantów."
 

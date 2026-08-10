@@ -5,6 +5,7 @@ import { flash } from "@carbon/auth/session.server";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
+import { resolveStyleMethodItemId } from "~/modules/items/styleMethod.service";
 import { upsertJobMethod } from "~/modules/production";
 import {
   isVariantsQuantityPayload,
@@ -42,12 +43,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // Style qty grid → jobVariantQuantity. Part flat params → job.configuration.
   if (isVariantsQuantityPayload(configuration)) {
+    const parentItemId = await resolveStyleMethodItemId(client, {
+      itemId: job.data.itemId,
+      companyId
+    });
     const replaced = await persistStyleJobVariantQuantities(
       client,
       getDatabaseClient(),
       {
         jobId,
-        parentItemId: job.data.itemId,
+        parentItemId,
         companyId,
         userId,
         variantQuantities: configuration as Record<string, unknown>

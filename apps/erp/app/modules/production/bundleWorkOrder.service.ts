@@ -7,7 +7,10 @@ import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service";
-import { getBundleJobCuttingOperationIdsToDelete } from "~/modules/items/styleMethod.service";
+import {
+  getBundleJobCuttingOperationIdsToDelete,
+  resolveStyleMethodItemId
+} from "~/modules/items/styleMethod.service";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable
@@ -375,19 +378,28 @@ export async function insertBundleWorkOrder(
   // The child job is the bundle's execution backing; identity is the variant
   // SKU itemId. Do not persist colorCode/sizeCode — labels come from the child
   // item (readableId/name) via the bundleWorkOrders view.
-  const job = await insertJob(client, {
+  // Variant SKUs have no BOP — copy the parent Style method (Cutting + sew/…).
+  const methodItemId = await resolveStyleMethodItemId(client, {
     itemId: input.itemId,
-    quantity: input.quantity,
-    companyId: input.companyId,
-    createdBy: input.createdBy,
-    // Give the backing job the bundle's descriptive readable id (NE-BK-2XL-07)
-    // instead of an auto J-number, so the bundle's job id *is* that label.
-    jobId: input.jobReadableId,
-    // Bundles are cut from an already-released master and go straight to the
-    // floor — skip the Draft stage and create them released (Ready). This also
-    // lets the production-event trigger auto-advance them to In Progress.
-    status: "Ready"
+    companyId: input.companyId
   });
+  const job = await insertJob(
+    client,
+    {
+      itemId: input.itemId,
+      quantity: input.quantity,
+      companyId: input.companyId,
+      createdBy: input.createdBy,
+      // Give the backing job the bundle's descriptive readable id (NE-BK-2XL-07)
+      // instead of an auto J-number, so the bundle's job id *is* that label.
+      jobId: input.jobReadableId,
+      // Bundles are cut from an already-released master and go straight to the
+      // floor — skip the Draft stage and create them released (Ready). This also
+      // lets the production-event trigger auto-advance them to In Progress.
+      status: "Ready"
+    },
+    { methodItemId }
+  );
 
   if (job.error || !job.data) {
     return { data: null, error: job.error };
