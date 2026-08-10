@@ -1,5 +1,6 @@
 import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -101,7 +102,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (insert.error) {
     return data(
-      { ok: false as const },
+      {
+        ok: false as const,
+        error: "Failed to create master work order"
+      },
       await flash(
         request,
         error(insert.error, "Failed to create master work order")
@@ -109,25 +113,26 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  // Insert already committed — if qty persist fails, still close the overlay
+  // (ok: true) and flash the qty error so the user can open the editor on the
+  // new MWO (same spirit as job+/new redirecting to the created job).
+  let quantityFlash: Awaited<ReturnType<typeof flash>> | undefined;
   if (styleVariantsQuantity && insert.data?.jobId) {
     const replaced = await replaceJobVariantQuantitiesFromTable(
-      client,
+      getCarbonServiceRole(),
       getDatabaseClient(),
       {
         jobId: insert.data.jobId,
         parentItemId: rest.itemId,
         companyId,
         userId,
-        configuration: styleVariantsQuantity
+        variantQuantities: styleVariantsQuantity
       }
     );
     if (replaced.error) {
-      return data(
-        { ok: false as const },
-        await flash(
-          request,
-          error(replaced.error, "Failed to save variant quantities")
-        )
+      quantityFlash = await flash(
+        request,
+        error(replaced.error, "Failed to save variant quantities")
       );
     }
   }
@@ -135,13 +140,15 @@ export async function action({ request }: ActionFunctionArgs) {
   if (isOverlay) {
     return data(
       { ok: true as const },
-      await flash(request, success("Master work order created"))
+      quantityFlash ??
+        (await flash(request, success("Master work order created")))
     );
   }
 
   return redirect(
     path.to.masterWorkOrders,
-    await flash(request, success("Master work order created"))
+    quantityFlash ??
+      (await flash(request, success("Master work order created")))
   );
 }
 

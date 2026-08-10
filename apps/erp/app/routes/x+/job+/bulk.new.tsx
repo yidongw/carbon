@@ -218,7 +218,7 @@ export async function action({ request }: ActionFunctionArgs) {
           parentItemId: jobData.itemId,
           companyId,
           userId,
-          configuration: styleConfigurationForJob
+          variantQuantities: styleConfigurationForJob
         }
       );
       if (replaced.error) {

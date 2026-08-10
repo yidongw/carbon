@@ -12380,9 +12380,6 @@ msgstr "प्रतिपादित <0>{0}</0> इकाइयाँ"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "प्रतिपादित <0> {totalQuantity} </0> इकाइयाँ"
 
-msgid "Reported At"
-msgstr "रिपोर्ट किया गया"
-
 msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 msgstr "रिपोर्ट की गई मात्रा एक या अधिक वेरिएंट संयोजनों की शेष नियोजित मात्रा से अधिक है।"
 

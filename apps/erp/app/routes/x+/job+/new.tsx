@@ -113,7 +113,7 @@ export async function action({ request }: ActionFunctionArgs) {
         parentItemId: data.itemId,
         companyId,
         userId,
-        configuration: styleVariantsQuantity
+        variantQuantities: styleVariantsQuantity
       }
     );
     if (replaced.error) {

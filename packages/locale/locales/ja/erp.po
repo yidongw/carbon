@@ -12380,9 +12380,6 @@ msgstr "報告済み<0>{0}</0>単位"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "報告済み<0>{totalQuantity}</0>個"
 
-msgid "Reported At"
-msgstr "報告日時"
-
 msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 msgstr "報告数量が、1つ以上のバリアント組み合わせの残計画数量を超えています。"
 

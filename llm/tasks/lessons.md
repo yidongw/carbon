@@ -2,6 +2,11 @@
 
 Patterns learned from corrections. Review at the start of each session.
 
+## Rename call-site property names when renaming function args
+- Symptom (bug 451530): Master WO create toast failed / qty modal wouldn't open, but the MWO existed.
+- Root cause: #278 renamed `replaceJobVariantQuantitiesFromTable`'s arg from `configuration` → `variantQuantities`, but job/MWO/bulk create still passed `configuration:`. Runtime ignored the payload (undefined), wrote no `jobVariantQuantity` rows; the qty overlay loader then returned null when planned rows were empty.
+- Rule: when renaming a function parameter, grep every call site for the **old property key** in object literals (TS excess-property checks only help if typecheck runs). Also never gate "can open editor" solely on "rows already exist" if create can leave an empty plan.
+
 ## A "word"/wordmark logo SVG may be a full lockup (mark + text), not text-only
 - Don't infer an SVG's composition by diffing path `d=` strings. An embedded mark inside a lockup has **different coordinates** than the standalone mark file, so a substring match returns "no mark" even when the mark IS present. Hit this with `apps/docs/public/carbon-word-light.svg`: its first path is the hexagon mark (at different coords than `carbon-mark-light.svg`), followed by 6 letter paths for "carbon". I concluded "text-only", paired it with a separate mark `<img>`, and produced a **double mark** in the header.
 - Verify what an SVG actually renders by **viewing/rendering it**, not by reasoning over path data.

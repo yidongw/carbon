@@ -12381,9 +12381,6 @@ msgstr "报告了<0>{0}</0>个单位"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "报告了<0>{totalQuantity}</0>个单位"
 
-msgid "Reported At"
-msgstr "报告时间"
-
 msgid "Reported quantity exceeds the remaining planned quantity for one or more variant combos."
 msgstr "报工数量超过一个或多个规格组合的剩余计划数量。"
 
