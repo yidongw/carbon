@@ -1434,7 +1434,16 @@ export async function syncItemAttributeSelections(
   }
 }
 
-/** Write selections then create missing variant child SKUs. */
+/**
+ * Write selections then create missing variant child SKUs.
+ *
+ * After an item is created, its attribute set and the values already assigned to
+ * it are treated as immutable: the set can't be changed or added, and existing
+ * values can only be added to, never removed. This protects downstream
+ * production, purchase, and sales records that reference the variant SKUs those
+ * selections produce. Pass `isCreate: true` from the create flow to establish
+ * the initial baseline; every other caller (edits) is locked to additive-only.
+ */
 export async function syncItemVariantsFromSelections(
   client: Db,
   args: {
@@ -1443,6 +1452,8 @@ export async function syncItemVariantsFromSelections(
     userId: string;
     attributeSetId: string;
     selections: Record<string, string[]>;
+    /** Set by the create flow to establish the initial set + selections. */
+    isCreate?: boolean;
   }
 ): Promise<{ error: Error | null }> {
   // Validate the chosen set is actually assignable to this item's type. Routes
@@ -1450,12 +1461,62 @@ export async function syncItemVariantsFromSelections(
   // validate this via a form schema, so guard it here for every caller.
   const item = await client
     .from("item")
-    .select("type")
+    .select("type, attributeSetId")
     .eq("id", args.itemId)
     .eq("companyId", args.companyId)
     .maybeSingle();
   if (item.error) return { error: item.error };
   if (!item.data) return { error: new Error("Item not found") };
+
+  // Immutability guards for existing items. Skipped on create, where this call
+  // establishes the baseline the guards later protect.
+  if (!args.isCreate) {
+    const currentSetId = (item.data as { attributeSetId: string | null })
+      .attributeSetId;
+
+    // An item created without an attribute set can never gain one.
+    if (!currentSetId) {
+      return {
+        error: new Error(
+          "An attribute set can't be added to an item that was created without one."
+        )
+      };
+    }
+
+    // The assigned attribute set can't be swapped for a different one.
+    if (currentSetId !== args.attributeSetId) {
+      return {
+        error: new Error(
+          "The attribute set can't be changed once it's assigned to an item."
+        )
+      };
+    }
+
+    // Assigned attribute values are additive-only: every value currently
+    // selected must still be present. Removing one would archive its variant
+    // SKU and orphan any production/purchase/sales records referencing it.
+    const { data: currentSelections, error: currentErr } = await (client as any)
+      .from("itemAttributeSelection")
+      .select("attributeValueId")
+      .eq("itemId", args.itemId)
+      .eq("companyId", args.companyId);
+    if (currentErr) return { error: currentErr };
+
+    const provided = new Set<string>();
+    for (const ids of Object.values(args.selections)) {
+      for (const id of ids) if (id) provided.add(id);
+    }
+    const removed = (currentSelections ?? []).some(
+      (row: { attributeValueId: string }) => !provided.has(row.attributeValueId)
+    );
+    if (removed) {
+      return {
+        error: new Error(
+          "Attribute values can't be removed once assigned; you can only add new values."
+        )
+      };
+    }
+  }
 
   const validSets = await getAttributeSetsForItemType(
     client,

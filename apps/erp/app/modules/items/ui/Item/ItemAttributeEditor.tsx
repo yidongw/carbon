@@ -1,11 +1,8 @@
 import { localizeStyleColorName } from "@carbon/database/style-reference";
-import { Select, ValidatedForm } from "@carbon/form";
 import { Badge, Combobox, toast, useMount, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useState } from "react";
-import { LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
-import { z } from "zod";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import type { AttributeSetFormOption } from "../../itemAttribute.service";
@@ -24,6 +21,12 @@ export type ItemAttributeEditorProps = {
 /**
  * Generic attribute-set + value editor for item properties sidebars.
  * Style and Consumable share this; neither hardcodes Color/Size.
+ *
+ * The attribute set is fixed once an item is created: it can't be changed here,
+ * nor added to an item that was created without one (the editor renders nothing
+ * in that case). Assigned values are additive-only — there is no remove control
+ * — because dropping a value would archive its variant SKU and orphan any
+ * production/purchase/sales records. The server enforces the same rules.
  */
 const ItemAttributeEditor = ({
   itemId,
@@ -104,32 +107,12 @@ const ItemAttributeEditor = ({
     });
   };
 
-  const onSetChange = (nextSetId: string) => {
-    if (!nextSetId || nextSetId === setId) return;
-    setSetId(nextSetId);
-    const next: Record<string, string[]> = {};
-    setSelected(next);
-    save(next, nextSetId);
-  };
-
   const addValue = (attrId: string, valueId: string) => {
     if (!valueId || !setId) return;
     setSelected((prev) => {
       const current = prev[attrId] ?? [];
       if (current.includes(valueId)) return prev;
       const next = { ...prev, [attrId]: [...current, valueId] };
-      save(next, setId);
-      return next;
-    });
-  };
-
-  const removeValue = (attrId: string, valueId: string) => {
-    if (!setId) return;
-    setSelected((prev) => {
-      const next = {
-        ...prev,
-        [attrId]: (prev[attrId] ?? []).filter((id) => id !== valueId)
-      };
       save(next, setId);
       return next;
     });
@@ -171,38 +154,20 @@ const ItemAttributeEditor = ({
     );
   }
 
-  if (sets.length === 0 && !attributeSetId) return null;
+  // The attribute set is immutable after creation: an item created without one
+  // can never gain one, so there is nothing to edit here.
+  if (!attributeSetId) return null;
 
   return (
     <VStack spacing={2} className="w-full">
-      {sets.length > 0 ? (
-        <ValidatedForm
-          key={setId || "unset"}
-          defaultValues={{ attributeSetId: setId || undefined }}
-          validator={z.object({
-            attributeSetId: z.string().optional()
-          })}
-          className="w-full"
-        >
-          <Select
-            name="attributeSetId"
-            label={t`Attribute Set`}
-            inline={(value) => (
-              <Badge variant="secondary">
-                <span>{value ? setLabel(value) : t`Select…`}</span>
-              </Badge>
-            )}
-            options={sets.map((s) => ({
-              value: s.id,
-              label: translateItemAttributeCatalogName(s.name || s.code, i18n)
-            }))}
-            isReadOnly={saveFetcher.state !== "idle"}
-            onChange={(option) => {
-              onSetChange(option?.value ?? "");
-            }}
-          />
-        </ValidatedForm>
-      ) : null}
+      <VStack spacing={1} className="w-full">
+        <h3 className="text-xs text-muted-foreground">
+          <Trans>Attribute Set</Trans>
+        </h3>
+        <Badge variant="secondary">
+          {selectedSet ? setLabel(selectedSet.id) : attributeSetId}
+        </Badge>
+      </VStack>
 
       {selectedSet?.attributes.map((attr) => {
         const chosen = selected[attr.id] ?? [];
@@ -225,24 +190,10 @@ const ItemAttributeEditor = ({
                 const option = attr.options.find((o) => o.id === valueId);
                 if (!option) return null;
                 return (
-                  <Badge
-                    key={valueId}
-                    variant="secondary"
-                    title={option.code}
-                    className="pr-1"
-                  >
+                  <Badge key={valueId} variant="secondary" title={option.code}>
                     {localizeStyleColorName(option.code, i18n.locale) ??
                       option.name ??
                       option.code}
-                    <button
-                      type="button"
-                      aria-label={t`Remove`}
-                      className="ml-1 rounded-full p-0.5 hover:bg-accent"
-                      onClick={() => removeValue(attr.id, valueId)}
-                      disabled={saveFetcher.state !== "idle"}
-                    >
-                      <LuX className="h-3 w-3" />
-                    </button>
                   </Badge>
                 );
               })}

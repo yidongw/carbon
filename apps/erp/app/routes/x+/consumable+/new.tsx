@@ -95,7 +95,8 @@ export async function action({ request }: ActionFunctionArgs) {
         companyId,
         userId,
         attributeSetId,
-        selections
+        selections,
+        isCreate: true
       });
       if (sync.error) {
         return modal
