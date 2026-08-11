@@ -387,7 +387,9 @@ export default function QuoteLine() {
     quantity: line.quantity ?? [1],
     unitOfMeasureCode: line.unitOfMeasureCode ?? "",
     taxPercent: line.taxPercent ?? 0,
-    // Form field mirrors quoteLine.configuration.variantTable for the grid.
+    // Style grid uses FormData variantQuantities → persisted configuration.
+    // Do not re-bind raw configuration into the form on edit.
+    configuration: undefined,
     variantQuantities: styleVariantQuantities,
     ...getCustomFields(line.customFields)
   };

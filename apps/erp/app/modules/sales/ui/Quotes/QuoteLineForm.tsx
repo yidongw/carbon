@@ -484,16 +484,20 @@ const QuoteLineForm = ({
                   value={itemData?.modelUploadId ?? undefined}
                 />
                 {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
-                <Hidden
-                  name="variantQuantities"
-                  value={
-                    variantsQuantityRows
-                      ? JSON.stringify({
-                          variantTable: variantsQuantityRows
-                        })
-                      : ""
-                  }
-                />
+                {(hasVariantsQuantity ||
+                  itemType === "Style" ||
+                  itemData.hasVariantAttributes) && (
+                  <Hidden
+                    name="variantQuantities"
+                    value={
+                      variantsQuantityRows
+                        ? JSON.stringify({
+                            variantTable: variantsQuantityRows
+                          })
+                        : ""
+                    }
+                  />
+                )}
                 {!isEditing &&
                   requiresConfiguration &&
                   !hasVariantsQuantity && (
