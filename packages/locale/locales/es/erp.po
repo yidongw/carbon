@@ -6191,6 +6191,9 @@ msgstr "Fallo al insertar el tipo de material"
 msgid "Failed to insert method material"
 msgstr "Fallo al insertar método material"
 
+msgid "Failed to insert method materials"
+msgstr ""
+
 msgid "Failed to insert method operation"
 msgstr "Falló al insertar operación de método"
 
@@ -7376,6 +7379,9 @@ msgstr "Falló al actualizar la tarea"
 msgid "Failed to update job material"
 msgstr "Falló al actualizar el material de la tarea"
 
+msgid "Failed to update job materials"
+msgstr ""
+
 msgid "Failed to update job operation"
 msgstr "Falló al actualizar la operación de trabajo"
 
@@ -7432,6 +7438,9 @@ msgstr "Falló al actualizar el tipo de material"
 
 msgid "Failed to update method material"
 msgstr "Falló al actualizar el método de material"
+
+msgid "Failed to update method materials"
+msgstr ""
 
 msgid "Failed to update method operation"
 msgstr "Falló al actualizar la operación del método"
@@ -7555,6 +7564,9 @@ msgstr "Error al actualizar la línea de cotización"
 
 msgid "Failed to update quote material"
 msgstr "Falló al actualizar el material de la cotización"
+
+msgid "Failed to update quote materials"
+msgstr ""
 
 msgid "Failed to update quote operation"
 msgstr "Falló al actualizar la operación de cotización"

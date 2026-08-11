@@ -1,3 +1,4 @@
+import { useCarbon } from "@carbon/auth";
 import type { ComboboxProps } from "@carbon/form";
 import { useControlField, useField } from "@carbon/form";
 import {
@@ -30,6 +31,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LuFilter } from "react-icons/lu";
 import { useFetcher } from "react-router";
+import { useUser } from "~/hooks";
 import ConsumableForm from "~/modules/items/ui/Consumables/ConsumableForm";
 import MaterialForm from "~/modules/items/ui/Materials/MaterialForm";
 import PartForm from "~/modules/items/ui/Parts/PartForm";
@@ -105,6 +107,16 @@ const Item = ({
   const { t } = useLingui();
   const translateItemType = useTranslatedItemType();
   const [items] = useItems();
+  const { carbon } = useCarbon();
+  const { company } = useUser();
+  // Variant SKU children are excluded from the items store (parents only in
+  // pickers). After SO/PO/BOM expand the selected value is a child — keep a
+  // display option so the combobox isn't blank.
+  const [orphanOption, setOrphanOption] = useState<{
+    value: string;
+    label: string;
+    helper?: string;
+  } | null>(null);
 
   const options = useMemo(() => {
     let results = items
@@ -151,12 +163,22 @@ const Item = ({
     }
 
     if (props.blacklist) {
-      return results.filter((item) => !props.blacklist?.includes(item.value));
+      results = results.filter(
+        (item) => !props.blacklist?.includes(item.value)
+      );
+    }
+
+    if (
+      orphanOption &&
+      !results.some((item) => item.value === orphanOption.value)
+    ) {
+      results = [orphanOption, ...results];
     }
 
     return results;
   }, [
     items,
+    orphanOption,
     props?.includeInactive,
     props.blacklist,
     props.locationId,
@@ -179,6 +201,45 @@ const Item = ({
     if (props.value !== null && props.value !== undefined)
       setValue(props.value);
   }, [props.value, setValue]);
+
+  useEffect(() => {
+    if (!value) {
+      setOrphanOption(null);
+      return;
+    }
+    if (items.some((item) => item.id === value)) {
+      // Present in the store but maybe filtered out of options (type / active).
+      const storeItem = items.find((item) => item.id === value);
+      if (storeItem) {
+        setOrphanOption({
+          value: storeItem.id,
+          label: storeItem.readableIdWithRevision,
+          helper: storeItem.name
+        });
+      }
+      return;
+    }
+    if (!carbon || !company.id) return;
+
+    let cancelled = false;
+    void (async () => {
+      const result = await carbon
+        .from("item")
+        .select("id, name, readableIdWithRevision")
+        .eq("id", value)
+        .eq("companyId", company.id)
+        .maybeSingle();
+      if (cancelled || !result.data) return;
+      setOrphanOption({
+        value: result.data.id,
+        label: result.data.readableIdWithRevision,
+        helper: result.data.name
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [value, items, carbon, company.id]);
 
   const onChange = (value: string) => {
     if (value) {

@@ -78,6 +78,16 @@ import type {
 } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import { usePermissions, useUrlParams, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type {
   MethodItemType,
   MethodType,
@@ -101,6 +111,7 @@ type Material = z.infer<typeof methodMaterialValidator> & {
   description: string;
   item: {
     name: string;
+    readableIdWithRevision?: string | null;
     itemTrackingType: Database["public"]["Enums"]["itemTrackingType"];
     replenishmentSystem: string | null;
     defaultMethodType: Database["public"]["Enums"]["methodType"];
@@ -668,6 +679,7 @@ function MaterialForm({
     requiresBatchTracking: boolean;
     requiresSerialTracking: boolean;
     itemReplenishmentSystem: string;
+    hasVariantAttributes: boolean;
   }>({
     itemId: item.data.itemId ?? "",
     methodType: item.data.methodType ?? "Pull from Inventory",
@@ -681,12 +693,38 @@ function MaterialForm({
     requiresBatchTracking: item.data.item?.itemTrackingType === "Batch",
     requiresSerialTracking: item.data.item?.itemTrackingType === "Serial",
     itemReplenishmentSystem:
-      item.data.item?.replenishmentSystem ?? replenishmentSystem ?? "Buy"
+      item.data.item?.replenishmentSystem ?? replenishmentSystem ?? "Buy",
+    hasVariantAttributes: false
   });
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(null);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
+  const hasVariantsQuantity =
+    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+
+  const applyVariantsQuantity = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    setItemData((d) => ({ ...d, quantity: data.total }));
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyVariantsQuantity
+    });
+  };
 
   const onTypeChange = (value: MethodItemType | "Item") => {
     if (value === itemType) return;
     setItemType(value as MethodItemType);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
 
     setItemData({
       itemId: "",
@@ -700,7 +738,8 @@ function MaterialForm({
       methodOperationId: undefined,
       requiresBatchTracking: false,
       requiresSerialTracking: false,
-      itemReplenishmentSystem: replenishmentSystem ?? "Buy"
+      itemReplenishmentSystem: replenishmentSystem ?? "Buy",
+      hasVariantAttributes: false
     });
   };
 
@@ -714,36 +753,51 @@ function MaterialForm({
       return;
     }
 
-    const item = await carbon
-      .from("item")
-      .select(
-        "name, readableIdWithRevision, type, unitOfMeasureCode, defaultMethodType, sourcingType, replenishmentSystem, itemTrackingType"
-      )
-      .eq("id", itemId)
-      .eq("companyId", company.id)
-      .single();
+    const [itemResult, variantAttributes] = await Promise.all([
+      carbon
+        .from("item")
+        .select(
+          "name, readableIdWithRevision, type, unitOfMeasureCode, defaultMethodType, sourcingType, replenishmentSystem, itemTrackingType"
+        )
+        .eq("id", itemId)
+        .eq("companyId", company.id)
+        .single(),
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
+    ]);
 
-    if (item.error) {
+    if (itemResult.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
 
     // Method type and sourcing are item-level properties; mirror them here so
     // the read-only display matches the item the moment it's selected.
     setItemData((d) => ({
       ...d,
       itemId,
-      description: item.data?.name ?? "",
-      unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
-      methodType: item.data?.defaultMethodType ?? "Pull from Inventory",
-      sourcingType: item.data?.sourcingType ?? "Specified",
+      description: itemResult.data?.name ?? "",
+      unitOfMeasureCode: itemResult.data?.unitOfMeasureCode ?? "EA",
+      methodType: itemResult.data?.defaultMethodType ?? "Pull from Inventory",
+      sourcingType: itemResult.data?.sourcingType ?? "Specified",
       kit: false,
-      requiresBatchTracking: item.data?.itemTrackingType === "Batch",
-      requiresSerialTracking: item.data?.itemTrackingType === "Serial",
-      itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy"
+      requiresBatchTracking: itemResult.data?.itemTrackingType === "Batch",
+      requiresSerialTracking: itemResult.data?.itemTrackingType === "Serial",
+      itemReplenishmentSystem: itemResult.data?.replenishmentSystem ?? "Buy",
+      hasVariantAttributes,
+      // Attribute parents take qty from the grid — leave 0 until confirmed.
+      quantity: hasVariantAttributes ? 0 : d.quantity || 1
     }));
-    if (item.data?.type) {
-      setItemType(item.data.type as MethodItemType);
+    if (itemResult.data?.type) {
+      setItemType(itemResult.data.type as MethodItemType);
     }
   };
 
@@ -753,427 +807,473 @@ function MaterialForm({
     itemData.requiresBatchTracking || itemData.requiresSerialTracking;
 
   return (
-    <ValidatedForm
-      action={
-        temporaryItems[item.id]
-          ? methodBindings.urls.newMethodMaterial
-          : methodBindings.urls.methodMaterial(item.id!)
-      }
-      method="post"
-      defaultValues={{
-        ...item.data
-      }}
-      validator={methodMaterialValidator}
-      className="w-full flex flex-col gap-y-4"
-      fetcher={methodMaterialFetcher}
-    >
-      <div>
-        <Hidden name="id" />
-        <Hidden name="makeMethodId" />
-        <Hidden name="order" />
-        <Hidden name="kit" value={itemData.kit.toString()} />
-        <Hidden
-          name="storageUnitIds"
-          value={JSON.stringify(itemData.storageUnitIds)}
-        />
-        {/* methodType and sourcingType are item-level properties; the fields
+    <>
+      <ValidatedForm
+        action={
+          temporaryItems[item.id]
+            ? methodBindings.urls.newMethodMaterial
+            : methodBindings.urls.methodMaterial(item.id!)
+        }
+        method="post"
+        defaultValues={{
+          ...item.data
+        }}
+        validator={methodMaterialValidator}
+        className="w-full flex flex-col gap-y-4"
+        fetcher={methodMaterialFetcher}
+      >
+        <div>
+          <Hidden name="id" />
+          <Hidden name="makeMethodId" />
+          <Hidden name="order" />
+          <Hidden name="kit" value={itemData.kit.toString()} />
+          <Hidden
+            name="storageUnitIds"
+            value={JSON.stringify(itemData.storageUnitIds)}
+          />
+          <Hidden
+            name="variantQuantities"
+            value={
+              variantsQuantityRows
+                ? JSON.stringify({ variantTable: variantsQuantityRows })
+                : ""
+            }
+          />
+          {/* methodType and sourcingType are item-level properties; the fields
             above are read-only mirrors. They're still submitted to satisfy
             methodMaterialValidator, but upsertMethodMaterial re-derives both
             from the component item, so the submitted values are display-only —
             don't treat them as the source of truth. */}
-        {itemData.itemReplenishmentSystem !== "Buy and Make" && (
-          <Hidden name="sourcingType" value={itemData.sourcingType} />
-        )}
-      </div>
+          {itemData.itemReplenishmentSystem !== "Buy and Make" && (
+            <Hidden name="sourcingType" value={itemData.sourcingType} />
+          )}
+        </div>
 
-      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-        <Item
-          blacklist={
-            methodBindings.bomItemBlacklistId
-              ? [methodBindings.bomItemBlacklistId]
-              : []
-          }
-          name="itemId"
-          label={itemType}
-          includeInactive
-          type={itemType}
-          validItemTypes={["Consumable", "Material", "Part"]}
-          isConfigured={rulesByField.has(key("itemId"))}
-          onChange={(value) => {
-            onItemChange(value?.value as string);
-          }}
-          onConfigure={
-            configurable && !temporaryItems[item.id]
-              ? () =>
-                  onConfigure({
-                    label: t`Part`,
-                    field: key("itemId"),
-                    code: rulesByField.get(key("itemId"))?.code,
-                    defaultValue: itemData.itemId,
-                    returnType: {
-                      type: "text",
-                      helperText:
-                        "the unique item identifier of the item (not the part number). you can get the item id from the key icon in the properties panel."
-                    }
-                  })
-              : undefined
-          }
-          onTypeChange={onTypeChange}
-        />
-        <Number
-          name="quantity"
-          label={t`Quantity`}
-          isConfigured={rulesByField.has(key("quantity"))}
-          onConfigure={
-            configurable && !temporaryItems[item.id]
-              ? () =>
-                  onConfigure({
-                    label: t`Quantity`,
-                    field: key("quantity"),
-                    code: rulesByField.get(key("quantity"))?.code,
-                    defaultValue: itemData.quantity,
-                    returnType: { type: "numeric" }
-                  })
-              : undefined
-          }
-        />
-        <UnitOfMeasure
-          name="unitOfMeasureCode"
-          value={itemData.unitOfMeasureCode}
-          onChange={(newValue) =>
-            setItemData((d) => ({
-              ...d,
-              unitOfMeasureCode: newValue?.value ?? "EA"
-            }))
-          }
-          isReadOnly={true}
-          isConfigured={rulesByField.has(key("unitOfMeasureCode"))}
-          onConfigure={
-            configurable && !temporaryItems[item.id]
-              ? () =>
-                  onConfigure({
-                    label: t`Unit of Measure`,
-                    field: key("unitOfMeasureCode"),
-                    code: rulesByField.get(key("unitOfMeasureCode"))?.code,
-                    defaultValue: itemData.unitOfMeasureCode,
-                    returnType: {
-                      type: "enum",
-                      listOptions: unitOfMeasures.map((u) => u.value)
-                    }
-                  })
-              : undefined
-          }
-        />
-      </div>
-      {itemData.itemReplenishmentSystem === "Buy and Make" && (
+        <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+          <Item
+            blacklist={
+              methodBindings.bomItemBlacklistId
+                ? [methodBindings.bomItemBlacklistId]
+                : []
+            }
+            name="itemId"
+            label={itemType}
+            includeInactive
+            type={itemType}
+            validItemTypes={["Consumable", "Material", "Part", "Style"]}
+            isConfigured={rulesByField.has(key("itemId"))}
+            onChange={(value) => {
+              onItemChange(value?.value as string);
+            }}
+            onConfigure={
+              configurable && !temporaryItems[item.id]
+                ? () =>
+                    onConfigure({
+                      label: t`Part`,
+                      field: key("itemId"),
+                      code: rulesByField.get(key("itemId"))?.code,
+                      defaultValue: itemData.itemId,
+                      returnType: {
+                        type: "text",
+                        helperText:
+                          "the unique item identifier of the item (not the part number). you can get the item id from the key icon in the properties panel."
+                      }
+                    })
+                : undefined
+            }
+            onTypeChange={onTypeChange}
+          />
+          {hasVariantsQuantity ? (
+            <QuantityWithVariantsQuantity
+              name="quantity"
+              label={t`Quantity`}
+              value={itemData.quantity}
+              onChange={(value) =>
+                setItemData((d) => ({ ...d, quantity: value }))
+              }
+              hasVariantsQuantity={hasVariantsQuantity}
+              onOpenVariantsQuantity={openVariantsQuantity}
+              variantsQuantityTotal={variantsQuantityTotal}
+              isReadOnly={variantsQuantityTotal > 0}
+              isConfigured={rulesByField.has(key("quantity"))}
+              onConfigure={
+                configurable && !temporaryItems[item.id]
+                  ? () =>
+                      onConfigure({
+                        label: t`Quantity`,
+                        field: key("quantity"),
+                        code: rulesByField.get(key("quantity"))?.code,
+                        defaultValue: itemData.quantity,
+                        returnType: { type: "numeric" }
+                      })
+                  : undefined
+              }
+            />
+          ) : (
+            <Number
+              name="quantity"
+              label={t`Quantity`}
+              isConfigured={rulesByField.has(key("quantity"))}
+              onConfigure={
+                configurable && !temporaryItems[item.id]
+                  ? () =>
+                      onConfigure({
+                        label: t`Quantity`,
+                        field: key("quantity"),
+                        code: rulesByField.get(key("quantity"))?.code,
+                        defaultValue: itemData.quantity,
+                        returnType: { type: "numeric" }
+                      })
+                  : undefined
+              }
+            />
+          )}
+          <UnitOfMeasure
+            name="unitOfMeasureCode"
+            value={itemData.unitOfMeasureCode}
+            onChange={(newValue) =>
+              setItemData((d) => ({
+                ...d,
+                unitOfMeasureCode: newValue?.value ?? "EA"
+              }))
+            }
+            isReadOnly={true}
+            isConfigured={rulesByField.has(key("unitOfMeasureCode"))}
+            onConfigure={
+              configurable && !temporaryItems[item.id]
+                ? () =>
+                    onConfigure({
+                      label: t`Unit of Measure`,
+                      field: key("unitOfMeasureCode"),
+                      code: rulesByField.get(key("unitOfMeasureCode"))?.code,
+                      defaultValue: itemData.unitOfMeasureCode,
+                      returnType: {
+                        type: "enum",
+                        listOptions: unitOfMeasures.map((u) => u.value)
+                      }
+                    })
+                : undefined
+            }
+          />
+        </div>
+        {itemData.itemReplenishmentSystem === "Buy and Make" && (
+          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
+            <HStack
+              className="w-full justify-between cursor-pointer"
+              onClick={sourcingDisclosure.onToggle}
+            >
+              <HStack>
+                <LuTruck className="text-foreground" />
+                <Label>Sourcing</Label>
+              </HStack>
+              <HStack>
+                <Badge variant="secondary">
+                  <SourcingTypeIcon
+                    type={itemData.sourcingType}
+                    className="size-3 mr-1"
+                  />
+                  {itemData.sourcingType}
+                </Badge>
+                <IconButton
+                  icon={<LuChevronRight />}
+                  aria-label={
+                    sourcingDisclosure.isOpen
+                      ? "Collapse Sourcing"
+                      : "Expand Sourcing"
+                  }
+                  variant="ghost"
+                  size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    sourcingDisclosure.onToggle();
+                  }}
+                  className={`transition-transform ${
+                    sourcingDisclosure.isOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </HStack>
+            </HStack>
+            <div
+              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                sourcingDisclosure.isOpen ? "" : "hidden"
+              }`}
+            >
+              {/* Read-only: sourcing is set at the item level (Properties
+                sidebar) and mirrored here. */}
+              <Select
+                name="sourcingType"
+                label={t`Sourcing Type`}
+                value={itemData.sourcingType}
+                isReadOnly
+                options={sourcingType.map((s) => ({
+                  value: s,
+                  label: (
+                    <span className="flex items-center gap-2">
+                      <SourcingTypeIcon type={s} />
+                      {s}
+                    </span>
+                  )
+                }))}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
           <HStack
             className="w-full justify-between cursor-pointer"
-            onClick={sourcingDisclosure.onToggle}
+            onClick={sourceDisclosure.onToggle}
           >
             <HStack>
-              <LuTruck className="text-foreground" />
-              <Label>Sourcing</Label>
+              {itemData.methodType === "Make to Order" ? (
+                <>
+                  <LuGitPullRequestCreate />
+                  <Label>
+                    <Trans>Finish To</Trans>
+                  </Label>
+                </>
+              ) : (
+                <>
+                  <LuGitPullRequest />
+                  <Label>
+                    <Trans>Pull From</Trans>
+                  </Label>
+                </>
+              )}
             </HStack>
             <HStack>
               <Badge variant="secondary">
-                <SourcingTypeIcon
-                  type={itemData.sourcingType}
+                <MethodIcon
+                  type={itemData.methodType}
                   className="size-3 mr-1"
                 />
-                {itemData.sourcingType}
+                {itemData.methodType === "Purchase to Order"
+                  ? t`Purchase to Order`
+                  : itemData.methodType === "Pull from Inventory"
+                    ? t`Pull from Inventory`
+                    : t`Make to Order`}
+              </Badge>
+              <LuArrowLeft
+                className={cn(
+                  itemData.methodType !== "Pull from Inventory"
+                    ? "rotate-180"
+                    : ""
+                )}
+              />
+              <Badge variant="secondary">
+                <LuGitPullRequest className="size-3 mr-1" />
+                {storageUnits.options?.find(
+                  (s) => s.value === itemData.storageUnitIds[locationId ?? ""]
+                )?.label ??
+                  (itemData.methodType === "Make to Order"
+                    ? t`WIP`
+                    : t`Default Storage Unit`)}
               </Badge>
               <IconButton
                 icon={<LuChevronRight />}
                 aria-label={
-                  sourcingDisclosure.isOpen
-                    ? "Collapse Sourcing"
-                    : "Expand Sourcing"
+                  sourceDisclosure.isOpen ? "Collapse Source" : "Expand Source"
                 }
                 variant="ghost"
-                size="md"
                 onClick={(e) => {
                   e.stopPropagation();
-                  sourcingDisclosure.onToggle();
+                  sourceDisclosure.onToggle();
                 }}
                 className={`transition-transform ${
-                  sourcingDisclosure.isOpen ? "rotate-90" : ""
+                  sourceDisclosure.isOpen ? "rotate-90" : ""
                 }`}
               />
             </HStack>
           </HStack>
           <div
             className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-              sourcingDisclosure.isOpen ? "" : "hidden"
+              sourceDisclosure.isOpen ? "" : "hidden"
             }`}
           >
-            {/* Read-only: sourcing is set at the item level (Properties
-                sidebar) and mirrored here. */}
-            <Select
-              name="sourcingType"
-              label={t`Sourcing Type`}
-              value={itemData.sourcingType}
-              isReadOnly
-              options={sourcingType.map((s) => ({
-                value: s,
-                label: (
-                  <span className="flex items-center gap-2">
-                    <SourcingTypeIcon type={s} />
-                    {s}
-                  </span>
-                )
-              }))}
-            />
-          </div>
-        </div>
-      )}
-
-      <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
-        <HStack
-          className="w-full justify-between cursor-pointer"
-          onClick={sourceDisclosure.onToggle}
-        >
-          <HStack>
-            {itemData.methodType === "Make to Order" ? (
-              <>
-                <LuGitPullRequestCreate />
-                <Label>
-                  <Trans>Finish To</Trans>
-                </Label>
-              </>
-            ) : (
-              <>
-                <LuGitPullRequest />
-                <Label>
-                  <Trans>Pull From</Trans>
-                </Label>
-              </>
-            )}
-          </HStack>
-          <HStack>
-            <Badge variant="secondary">
-              <MethodIcon type={itemData.methodType} className="size-3 mr-1" />
-              {itemData.methodType === "Purchase to Order"
-                ? t`Purchase to Order`
-                : itemData.methodType === "Pull from Inventory"
-                  ? t`Pull from Inventory`
-                  : t`Make to Order`}
-            </Badge>
-            <LuArrowLeft
-              className={cn(
-                itemData.methodType !== "Pull from Inventory"
-                  ? "rotate-180"
-                  : ""
-              )}
-            />
-            <Badge variant="secondary">
-              <LuGitPullRequest className="size-3 mr-1" />
-              {storageUnits.options?.find(
-                (s) => s.value === itemData.storageUnitIds[locationId ?? ""]
-              )?.label ??
-                (itemData.methodType === "Make to Order"
-                  ? t`WIP`
-                  : t`Default Storage Unit`)}
-            </Badge>
-            <IconButton
-              icon={<LuChevronRight />}
-              aria-label={
-                sourceDisclosure.isOpen ? "Collapse Source" : "Expand Source"
-              }
-              variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation();
-                sourceDisclosure.onToggle();
-              }}
-              className={`transition-transform ${
-                sourceDisclosure.isOpen ? "rotate-90" : ""
-              }`}
-            />
-          </HStack>
-        </HStack>
-        <div
-          className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-            sourceDisclosure.isOpen ? "" : "hidden"
-          }`}
-        >
-          {/* Read-only: method type is the item's default method type
+            {/* Read-only: method type is the item's default method type
               (Properties sidebar) and mirrored here. */}
-          <DefaultMethodType
-            name="methodType"
-            label={t`Method Type`}
-            value={itemData.methodType}
-            isReadOnly
-            isConfigured={rulesByField.has(key("methodType"))}
-            onConfigure={
-              configurable && !temporaryItems[item.id]
-                ? () =>
-                    onConfigure({
-                      label: t`Method Type`,
-                      field: key("methodType"),
-                      code: rulesByField.get(key("methodType"))?.code,
-                      defaultValue: itemData.methodType,
-                      returnType: {
-                        type: "enum",
-                        listOptions: methodType
-                      }
-                    })
-                : undefined
-            }
-            replenishmentSystem={itemData.itemReplenishmentSystem}
-          />
-          <Location
-            name="locationId"
-            label={t`Location`}
-            value={locationId}
-            onChange={(value) => {
-              setLocationId(value?.value as string);
-            }}
-          />
-          <StorageUnit
-            name="storageUnitId"
-            label={t`Storage Unit`}
-            value={itemData.storageUnitIds[locationId ?? ""]}
-            locationId={locationId}
-            onChange={(value) => {
-              setItemData((d) => ({
-                ...d,
-                storageUnitIds: {
-                  ...d.storageUnitIds,
-                  [locationId ?? ""]: value?.id ?? ""
-                }
-              }));
-            }}
-            isOptional
-          />
-        </div>
-      </div>
-
-      <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
-        <HStack
-          className="w-full justify-between cursor-pointer"
-          onClick={backflushDisclosure.onToggle}
-        >
-          <HStack>
-            <LuGitPullRequestCreateArrow />
-            <Label>{isTracked ? t`Operation` : t`Backflush`}</Label>
-          </HStack>
-          <HStack>
-            <Badge
-              variant={
-                methodOperations.length > 0 ? "secondary" : "destructive"
+            <DefaultMethodType
+              name="methodType"
+              label={t`Method Type`}
+              value={itemData.methodType}
+              isReadOnly
+              isConfigured={rulesByField.has(key("methodType"))}
+              onConfigure={
+                configurable && !temporaryItems[item.id]
+                  ? () =>
+                      onConfigure({
+                        label: t`Method Type`,
+                        field: key("methodType"),
+                        code: rulesByField.get(key("methodType"))?.code,
+                        defaultValue: itemData.methodType,
+                        returnType: {
+                          type: "enum",
+                          listOptions: methodType
+                        }
+                      })
+                  : undefined
               }
-            >
-              <LuCog className="size-3 mr-1" />
-              {itemData.methodOperationId
-                ? methodOperations.find(
-                    (o) => o.id === itemData.methodOperationId
-                  )?.description || t`Selected Operation`
-                : t`First Operation`}
-            </Badge>
-            <IconButton
-              icon={<LuChevronRight />}
-              aria-label={
-                backflushDisclosure.isOpen
-                  ? "Collapse Operation"
-                  : "Expand Operation"
-              }
-              variant="ghost"
-              size="md"
-              onClick={(e) => {
-                e.stopPropagation();
-                backflushDisclosure.onToggle();
-              }}
-              className={`transition-transform ${
-                backflushDisclosure.isOpen ? "rotate-90" : ""
-              }`}
+              replenishmentSystem={itemData.itemReplenishmentSystem}
             />
-          </HStack>
-        </HStack>
-        <div
-          className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-            backflushDisclosure.isOpen ? "" : "hidden"
-          }`}
-        >
-          <Select
-            name="methodOperationId"
-            label={t`Operation`}
-            isOptional
-            options={methodOperations.map((o) => ({
-              value: o.id!,
-              label: o.description
-            }))}
-            onChange={(value) => {
-              setItemData((d) => ({
-                ...d,
-                methodOperationId: value?.value
-              }));
-            }}
-          />
-        </div>
-      </div>
-
-      <motion.div
-        className="flex flex-1 items-center justify-end w-full"
-        initial={{ opacity: 0, filter: "blur(4px)" }}
-        animate={{ opacity: 1, filter: "blur(0px)" }}
-        transition={{
-          type: "spring",
-          bounce: 0,
-          duration: 0.55
-        }}
-      >
-        <motion.div
-          layout
-          className="flex items-center justify-between gap-2 w-full"
-        >
-          {itemData.methodType === "Make to Order" ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  leftIcon={
-                    <MethodIcon type={"Make to Order"} isKit={itemData.kit} />
+            <Location
+              name="locationId"
+              label={t`Location`}
+              value={locationId}
+              onChange={(value) => {
+                setLocationId(value?.value as string);
+              }}
+            />
+            <StorageUnit
+              name="storageUnitId"
+              label={t`Storage Unit`}
+              value={itemData.storageUnitIds[locationId ?? ""]}
+              locationId={locationId}
+              onChange={(value) => {
+                setItemData((d) => ({
+                  ...d,
+                  storageUnitIds: {
+                    ...d.storageUnitIds,
+                    [locationId ?? ""]: value?.id ?? ""
                   }
-                  variant="secondary"
-                  size="sm"
-                  rightIcon={<LuChevronDown />}
-                >
-                  {itemData.kit ? t`Kit` : t`Subassembly`}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuRadioGroup
-                  value={itemData.kit ? "Kit" : "Subassembly"}
-                  onValueChange={(value) => {
-                    setItemData((d) => ({
-                      ...d,
-                      kit: value === "Kit"
-                    }));
-                  }}
-                >
-                  <DropdownMenuRadioItem value="Subassembly">
-                    <Trans>Subassembly</Trans>
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Kit">
-                    <Trans>Kit</Trans>
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div />
-          )}
-
-          <div className="flex items-center gap-2">
-            <Submit
-              isDisabled={isReadOnly || methodMaterialFetcher.state !== "idle"}
-              isLoading={methodMaterialFetcher.state === "submitting"}
-            >
-              <Trans>Save</Trans>
-            </Submit>
+                }));
+              }}
+              isOptional
+            />
           </div>
+        </div>
+
+        <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
+          <HStack
+            className="w-full justify-between cursor-pointer"
+            onClick={backflushDisclosure.onToggle}
+          >
+            <HStack>
+              <LuGitPullRequestCreateArrow />
+              <Label>{isTracked ? t`Operation` : t`Backflush`}</Label>
+            </HStack>
+            <HStack>
+              <Badge
+                variant={
+                  methodOperations.length > 0 ? "secondary" : "destructive"
+                }
+              >
+                <LuCog className="size-3 mr-1" />
+                {itemData.methodOperationId
+                  ? methodOperations.find(
+                      (o) => o.id === itemData.methodOperationId
+                    )?.description || t`Selected Operation`
+                  : t`First Operation`}
+              </Badge>
+              <IconButton
+                icon={<LuChevronRight />}
+                aria-label={
+                  backflushDisclosure.isOpen
+                    ? "Collapse Operation"
+                    : "Expand Operation"
+                }
+                variant="ghost"
+                size="md"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  backflushDisclosure.onToggle();
+                }}
+                className={`transition-transform ${
+                  backflushDisclosure.isOpen ? "rotate-90" : ""
+                }`}
+              />
+            </HStack>
+          </HStack>
+          <div
+            className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+              backflushDisclosure.isOpen ? "" : "hidden"
+            }`}
+          >
+            <Select
+              name="methodOperationId"
+              label={t`Operation`}
+              isOptional
+              options={methodOperations.map((o) => ({
+                value: o.id!,
+                label: o.description
+              }))}
+              onChange={(value) => {
+                setItemData((d) => ({
+                  ...d,
+                  methodOperationId: value?.value
+                }));
+              }}
+            />
+          </div>
+        </div>
+
+        <motion.div
+          className="flex flex-1 items-center justify-end w-full"
+          initial={{ opacity: 0, filter: "blur(4px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{
+            type: "spring",
+            bounce: 0,
+            duration: 0.55
+          }}
+        >
+          <motion.div
+            layout
+            className="flex items-center justify-between gap-2 w-full"
+          >
+            {itemData.methodType === "Make to Order" ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    leftIcon={
+                      <MethodIcon type={"Make to Order"} isKit={itemData.kit} />
+                    }
+                    variant="secondary"
+                    size="sm"
+                    rightIcon={<LuChevronDown />}
+                  >
+                    {itemData.kit ? t`Kit` : t`Subassembly`}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuRadioGroup
+                    value={itemData.kit ? "Kit" : "Subassembly"}
+                    onValueChange={(value) => {
+                      setItemData((d) => ({
+                        ...d,
+                        kit: value === "Kit"
+                      }));
+                    }}
+                  >
+                    <DropdownMenuRadioItem value="Subassembly">
+                      <Trans>Subassembly</Trans>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="Kit">
+                      <Trans>Kit</Trans>
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div />
+            )}
+
+            <div className="flex items-center gap-2">
+              <Submit
+                isDisabled={
+                  isReadOnly ||
+                  methodMaterialFetcher.state !== "idle" ||
+                  (hasVariantsQuantity && !(itemData.quantity > 0))
+                }
+                isLoading={methodMaterialFetcher.state === "submitting"}
+              >
+                <Trans>Save</Trans>
+              </Submit>
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </ValidatedForm>
+      </ValidatedForm>
+      {variantsQuantityModal.node}
+    </>
   );
 }
 
@@ -1230,7 +1330,10 @@ function makeItem(
       <VStack spacing={0} className="py-1 cursor-pointer">
         <div className="flex items-center gap-2 group">
           <h3 className="font-semibold truncate">
-            {getItemReadableId(items, material.itemId) ?? ""}
+            {getItemReadableId(items, material.itemId) ??
+              material.item?.readableIdWithRevision ??
+              material.description ??
+              ""}
           </h3>
           {hasRules && (
             <LuSquareFunction className="h-3.5 w-3.5 text-emerald-500 shrink-0" />

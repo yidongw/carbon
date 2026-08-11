@@ -653,7 +653,9 @@ const baseMaterialValidator = z.object({
   unitOfMeasureCode: z
     .string()
     .min(1, { message: "Unit of Measure is required" }),
-  storageUnitId: zfd.text(z.string().optional())
+  storageUnitId: zfd.text(z.string().optional()),
+  // FormData-only Style/attribute expand payload — never persisted on jobMaterial.
+  variantQuantities: zfd.text(z.string().optional())
 });
 
 export const jobMaterialValidator = baseMaterialValidator

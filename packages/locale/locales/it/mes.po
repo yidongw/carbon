@@ -2339,6 +2339,9 @@ msgstr "Impossibile inserire il tipo di materiale"
 msgid "Failed to insert method material"
 msgstr "Impossibile inserire il materiale metodologico"
 
+msgid "Failed to insert method materials"
+msgstr ""
+
 msgid "Failed to insert method operation"
 msgstr "Fallito l'inserimento della operazione Metodo"
 
@@ -3419,6 +3422,9 @@ msgstr "Fallito aggiornamento lavoro"
 msgid "Failed to update job material"
 msgstr "Fallito aggiornamento materiale lavoro"
 
+msgid "Failed to update job materials"
+msgstr ""
+
 msgid "Failed to update job operation"
 msgstr "Fallito aggiornamento operazione lavoro"
 
@@ -3475,6 +3481,9 @@ msgstr "Fallito aggiornamento tipo materiale"
 
 msgid "Failed to update method material"
 msgstr "Fallito aggiornamento metodo materiale"
+
+msgid "Failed to update method materials"
+msgstr ""
 
 msgid "Failed to update method operation"
 msgstr "Fallito aggiornamento operazione metodo"
@@ -3595,6 +3604,9 @@ msgstr "Fallito aggiornamento riga preventivo"
 
 msgid "Failed to update quote material"
 msgstr "Fallito aggiornamento materiale preventivo"
+
+msgid "Failed to update quote materials"
+msgstr ""
 
 msgid "Failed to update quote operation"
 msgstr "Fallito aggiornamento operazione preventivo"

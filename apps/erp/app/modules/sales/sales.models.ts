@@ -393,7 +393,9 @@ export const quoteMaterialValidator = z
     unitCost: zfd.numeric(z.number().min(0)),
     unitOfMeasureCode: z
       .string()
-      .min(1, { message: "Unit of Measure is required" })
+      .min(1, { message: "Unit of Measure is required" }),
+    // FormData-only Style/attribute expand payload — never persisted on quoteMaterial.
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine(
     (data) => {

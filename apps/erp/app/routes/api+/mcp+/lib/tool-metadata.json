@@ -12661,6 +12661,43 @@
       }
     },
     {
+      "name": "items_insertMethodMaterialsFromVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "insert method materials from variants",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "makeMethodId": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "itemType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "makeMethodId"
+        ]
+      }
+    },
+    {
       "name": "items_upsertMethodOperation",
       "module": "items",
       "classification": "WRITE",

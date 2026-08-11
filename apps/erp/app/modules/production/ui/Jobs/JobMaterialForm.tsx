@@ -27,7 +27,17 @@ import {
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
-import { usePermissions, useRouteData, useUrlParams } from "~/hooks";
+import { usePermissions, useRouteData, useUrlParams, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType, MethodType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -52,6 +62,7 @@ const JobMaterialForm = ({
   const permissions = usePermissions();
   const navigate = useNavigate();
   const location = useLocation();
+  const { company } = useUser();
 
   const { jobId, materialId } = useParams();
   if (!jobId) throw new Error("jobId not found");
@@ -70,6 +81,7 @@ const JobMaterialForm = ({
     unitOfMeasureCode: string;
     quantity: number;
     itemReplenishmentSystem: string;
+    hasVariantAttributes: boolean;
   }>({
     itemId: initialValues.itemId ?? "",
     methodType: initialValues.methodType ?? "Pull from Inventory",
@@ -77,12 +89,38 @@ const JobMaterialForm = ({
     unitCost: initialValues.unitCost ?? 0,
     unitOfMeasureCode: initialValues.unitOfMeasureCode ?? "EA",
     quantity: initialValues.quantity ?? 1,
-    itemReplenishmentSystem: "Buy"
+    itemReplenishmentSystem: "Buy",
+    hasVariantAttributes: false
   });
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(null);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
+  const hasVariantsQuantity =
+    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+
+  const applyVariantsQuantity = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    setItemData((d) => ({ ...d, quantity: data.total }));
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyVariantsQuantity
+    });
+  };
 
   const onTypeChange = (value: MethodItemType | "Item") => {
     if (value === itemType) return;
     setItemType(value as MethodItemType);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
     setItemData({
       itemId: "",
       methodType: "" as "Pull from Inventory",
@@ -90,14 +128,15 @@ const JobMaterialForm = ({
       description: "",
       unitCost: 0,
       unitOfMeasureCode: "EA",
-      itemReplenishmentSystem: "Buy"
+      itemReplenishmentSystem: "Buy",
+      hasVariantAttributes: false
     });
   };
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
 
-    const [item, itemCost] = await Promise.all([
+    const [item, itemCost, variantAttributes] = await Promise.all([
       carbon
         .from("item")
         .select(
@@ -105,13 +144,23 @@ const JobMaterialForm = ({
         )
         .eq("id", itemId)
         .single(),
-      carbon.from("itemCost").select("unitCost").eq("itemId", itemId).single()
+      carbon.from("itemCost").select("unitCost").eq("itemId", itemId).single(),
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
     ]);
 
     if (item.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
 
     setItemData((d) => ({
       ...d,
@@ -120,7 +169,9 @@ const JobMaterialForm = ({
       unitCost: itemCost.data?.unitCost ?? 0,
       unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
       methodType: item.data?.defaultMethodType ?? "Purchase to Order",
-      itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy"
+      itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy",
+      hasVariantAttributes,
+      quantity: hasVariantAttributes ? 0 : d.quantity || 1
     }));
 
     if (item.data?.type) {
@@ -156,95 +207,127 @@ const JobMaterialForm = ({
   const itemReadableId = getItemReadableId(items, itemData.itemId);
 
   return (
-    <Card>
-      <ValidatedForm
-        method="post"
-        action={path.to.jobMaterial(jobId, initialValues?.id!)}
-        defaultValues={initialValues}
-        fetcher={fetcher}
-        validator={jobMaterialValidator}
-      >
-        <CardHeader>
-          <CardTitle className="line-clamp-2">{itemData.description}</CardTitle>
-          <CardDescription className="flex items-center gap-2">
-            {itemReadableId} <Copy text={itemReadableId ?? ""} />
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Hidden name="jobMakeMethodId" />
-          {itemData.methodType === "Make to Order" && (
-            <Hidden name="unitCost" value={itemData.unitCost} />
-          )}
-          <Hidden name="order" />
-          <VStack className="pt-4">
-            <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-              <Item
-                name="itemId"
-                label={itemType}
-                type={itemType}
-                includeInactive
-                locationId={jobData?.job?.locationId ?? undefined}
-                onChange={(value) => {
-                  onItemChange(value?.value as string);
-                }}
-                onTypeChange={onTypeChange}
-              />
-              <InputControlled
-                name="description"
-                label={t`Description`}
-                value={itemData.description}
-                onChange={(newValue) => {
-                  setItemData((d) => ({ ...d, description: newValue }));
-                }}
-              />
-
-              <Select
-                name="jobOperationId"
-                label={t`Operation`}
-                isClearable
-                options={operations.map((o) => ({
-                  value: o.id!,
-                  label: o.description
-                }))}
-              />
-
-              <DefaultMethodType
-                name="methodType"
-                label={t`Method Type`}
-                value={itemData.methodType}
-                replenishmentSystem={itemData.itemReplenishmentSystem}
-              />
-              <Number name="quantity" label={t`Quantity per Parent`} />
-              <UnitOfMeasure
-                name="unitOfMeasureCode"
-                value={itemData.unitOfMeasureCode}
-                onChange={(newValue) =>
-                  setItemData((d) => ({
-                    ...d,
-                    unitOfMeasureCode: newValue?.value ?? "EA"
-                  }))
-                }
-              />
-              {itemData.methodType !== "Make to Order" && (
-                <NumberControlled
-                  name="unitCost"
-                  label={t`Unit Cost`}
-                  value={itemData.unitCost}
-                  minValue={0}
+    <>
+      <Card>
+        <ValidatedForm
+          method="post"
+          action={path.to.jobMaterial(jobId, initialValues?.id!)}
+          defaultValues={initialValues}
+          fetcher={fetcher}
+          validator={jobMaterialValidator}
+        >
+          <CardHeader>
+            <CardTitle className="line-clamp-2">
+              {itemData.description}
+            </CardTitle>
+            <CardDescription className="flex items-center gap-2">
+              {itemReadableId} <Copy text={itemReadableId ?? ""} />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Hidden name="jobMakeMethodId" />
+            {itemData.methodType === "Make to Order" && (
+              <Hidden name="unitCost" value={itemData.unitCost} />
+            )}
+            <Hidden name="order" />
+            <Hidden
+              name="variantQuantities"
+              value={
+                variantsQuantityRows
+                  ? JSON.stringify({ variantTable: variantsQuantityRows })
+                  : ""
+              }
+            />
+            <VStack className="pt-4">
+              <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                <Item
+                  name="itemId"
+                  label={itemType}
+                  type={itemType}
+                  includeInactive
+                  locationId={jobData?.job?.locationId ?? undefined}
+                  onChange={(value) => {
+                    onItemChange(value?.value as string);
+                  }}
+                  onTypeChange={onTypeChange}
                 />
-              )}
-            </div>
-          </VStack>
-        </CardContent>
-        <CardFooter>
-          <Submit
-            isDisabled={isDisabled || !permissions.can("update", "production")}
-          >
-            Save
-          </Submit>
-        </CardFooter>
-      </ValidatedForm>
-    </Card>
+                <InputControlled
+                  name="description"
+                  label={t`Description`}
+                  value={itemData.description}
+                  onChange={(newValue) => {
+                    setItemData((d) => ({ ...d, description: newValue }));
+                  }}
+                />
+
+                <Select
+                  name="jobOperationId"
+                  label={t`Operation`}
+                  isClearable
+                  options={operations.map((o) => ({
+                    value: o.id!,
+                    label: o.description
+                  }))}
+                />
+
+                <DefaultMethodType
+                  name="methodType"
+                  label={t`Method Type`}
+                  value={itemData.methodType}
+                  replenishmentSystem={itemData.itemReplenishmentSystem}
+                />
+                {hasVariantsQuantity ? (
+                  <QuantityWithVariantsQuantity
+                    name="quantity"
+                    label={t`Quantity per Parent`}
+                    value={itemData.quantity}
+                    onChange={(value) =>
+                      setItemData((d) => ({ ...d, quantity: value }))
+                    }
+                    hasVariantsQuantity={hasVariantsQuantity}
+                    onOpenVariantsQuantity={openVariantsQuantity}
+                    variantsQuantityTotal={variantsQuantityTotal}
+                    isReadOnly={variantsQuantityTotal > 0}
+                  />
+                ) : (
+                  <Number name="quantity" label={t`Quantity per Parent`} />
+                )}
+                <UnitOfMeasure
+                  name="unitOfMeasureCode"
+                  value={itemData.unitOfMeasureCode}
+                  onChange={(newValue) =>
+                    setItemData((d) => ({
+                      ...d,
+                      unitOfMeasureCode: newValue?.value ?? "EA"
+                    }))
+                  }
+                />
+                {itemData.methodType !== "Make to Order" && (
+                  <NumberControlled
+                    name="unitCost"
+                    label={t`Unit Cost`}
+                    value={itemData.unitCost}
+                    minValue={0}
+                  />
+                )}
+              </div>
+            </VStack>
+          </CardContent>
+          <CardFooter>
+            <Submit
+              isDisabled={
+                isDisabled ||
+                !permissions.can("update", "production") ||
+                (hasVariantsQuantity && !(itemData.quantity > 0))
+              }
+            >
+              Save
+            </Submit>
+          </CardFooter>
+        </ValidatedForm>
+      </Card>
+      {variantsQuantityModal.node}
+    </>
   );
 };
 

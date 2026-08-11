@@ -2339,6 +2339,9 @@ msgstr "Failed to insert material type"
 msgid "Failed to insert method material"
 msgstr "Failed to insert method material"
 
+msgid "Failed to insert method materials"
+msgstr "Failed to insert method materials"
+
 msgid "Failed to insert method operation"
 msgstr "Failed to insert method operation"
 
@@ -3419,6 +3422,9 @@ msgstr "Failed to update job"
 msgid "Failed to update job material"
 msgstr "Failed to update job material"
 
+msgid "Failed to update job materials"
+msgstr "Failed to update job materials"
+
 msgid "Failed to update job operation"
 msgstr "Failed to update job operation"
 
@@ -3475,6 +3481,9 @@ msgstr "Failed to update material type"
 
 msgid "Failed to update method material"
 msgstr "Failed to update method material"
+
+msgid "Failed to update method materials"
+msgstr "Failed to update method materials"
 
 msgid "Failed to update method operation"
 msgstr "Failed to update method operation"
@@ -3595,6 +3604,9 @@ msgstr "Failed to update quote line"
 
 msgid "Failed to update quote material"
 msgstr "Failed to update quote material"
+
+msgid "Failed to update quote materials"
+msgstr "Failed to update quote materials"
 
 msgid "Failed to update quote operation"
 msgstr "Failed to update quote operation"

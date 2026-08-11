@@ -6191,6 +6191,9 @@ msgstr "मटेरियल टाइप को इन्सर्ट कर�
 msgid "Failed to insert method material"
 msgstr "माध्यम सामग्री इनсर्ट करने में व़ला"
 
+msgid "Failed to insert method materials"
+msgstr ""
+
 msgid "Failed to insert method operation"
 msgstr "मेथोड ऑपरेशन में इंサर्ट करने में फालतू सफलता"
 
@@ -7376,6 +7379,9 @@ msgstr "काम अपडेट करने में वफ़ादरी �
 msgid "Failed to update job material"
 msgstr "कार्य सामग्री अपडेट करने में विफल रहा"
 
+msgid "Failed to update job materials"
+msgstr ""
+
 msgid "Failed to update job operation"
 msgstr "कार्य अपडेट करने में वफ़ादरी नहीं पाई"
 
@@ -7432,6 +7438,9 @@ msgstr "मटेरियल टाइप अपडेट करने मे�
 
 msgid "Failed to update method material"
 msgstr "मालिका अपडेट करने में व़फ़ादरी नहीं की जा सकी"
+
+msgid "Failed to update method materials"
+msgstr ""
 
 msgid "Failed to update method operation"
 msgstr "मेथोड ऑपरेशन अपडेट करने में व़िरह हुआ"
@@ -7555,6 +7564,9 @@ msgstr "उद्धरण पंक्ति को अपडेट करन�
 
 msgid "Failed to update quote material"
 msgstr "कॉपी मटेरियल अपडेट करने में व़िरह हुआ"
+
+msgid "Failed to update quote materials"
+msgstr ""
 
 msgid "Failed to update quote operation"
 msgstr "कॉपी अपडेट करने में व़िला"
