@@ -365,3 +365,7 @@ Patterns learned from corrections. Review at the start of each session.
 - Cause: Domain-scoped `locale` from `/api/locale` shadowed by an older host-only `locale`; Cookie header sends host-only first; `cookie.parse` keeps first.
 - Same class as session `carbon` cookie / `cookieDomainMigrationMiddleware`. Preference cookies need the same stale-scope expiry on write.
 - Quick check: DevTools → Application → Cookies → two `locale` rows (one with Domain, one without).
+
+## Inventory adjustment variant hints are display-only
+- Symptom/request: Style inventory adjustment needs on-hand hints per SKU, but clicking them must not fill cells (unlike transfers/production).
+- Rule: pass `referenceHintsClickable: false` through `openStyleVariantsQuantityWithInventory` / `useVariantsQuantityModal`. Default remains click-to-fill elsewhere.

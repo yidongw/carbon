@@ -261,9 +261,15 @@ export const path = {
       styleOnHand: (
         itemId: string,
         locationId: string,
-        storageUnitId?: string | null
+        storageUnitId?: string | null,
+        options?: { exact?: boolean }
       ) => {
         const base = `${api}/inventory/style-on-hand?itemId=${itemId}&locationId=${locationId}`;
+        // exact: always send storageUnitId (empty = unassigned-only). Otherwise
+        // omit when falsy so callers get all-bins hints (transfers without a shelf).
+        if (options?.exact) {
+          return `${base}&storageUnitId=${encodeURIComponent(storageUnitId ?? "")}`;
+        }
         return storageUnitId ? `${base}&storageUnitId=${storageUnitId}` : base;
       },
       storageUnitsTree: (id: string) =>

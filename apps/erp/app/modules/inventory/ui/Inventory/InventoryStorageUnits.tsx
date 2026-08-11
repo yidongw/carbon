@@ -55,6 +55,7 @@ import { Outlet, useFetcher } from "react-router";
 import type { z } from "zod";
 import { Enumerable } from "~/components/Enumerable";
 import { Input, Location, Select, TextArea } from "~/components/Form";
+import { useConfigurableItems } from "~/components/Form/Item";
 import StorageUnit from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { StyleQuantityCell } from "~/components/StyleQuantityCell";
@@ -64,10 +65,18 @@ import type {
   itemTrackingTypes,
   pickMethodValidator
 } from "~/modules/items";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import { useVariantsQuantityModal } from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import { path } from "~/utils/path";
 import { inventoryAdjustmentValidator } from "../../inventory.models";
 import { aggregateStorageUnitsBySku } from "../../styleBreakdown";
 import type { BreakdownEntry } from "../../types";
+import { openStyleVariantsQuantityWithInventory } from "../openStyleVariantsQuantityWithInventory";
 
 // Style storage rows carry the SKU (valuesKey/skuLabel) they belong to so the
 // card can aggregate one row per storage unit with a per-SKU breakdown.
@@ -183,8 +192,62 @@ const InventoryStorageUnits = ({
     null
   );
   const [isEditingRow, setIsEditingRow] = useState(false);
+  const [adjustmentType, setAdjustmentType] =
+    useState<z.infer<typeof inventoryAdjustmentValidator>["adjustmentType"]>(
+      "Set Quantity"
+    );
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(null);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
+  const [openingConfig, setOpeningConfig] = useState(false);
 
   const isEditing = selectedTrackedEntityId !== null;
+
+  const configurableItemIds = useConfigurableItems();
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const isConfigurableParent =
+    Boolean(pickMethod.itemId) &&
+    configurableItemIds.includes(pickMethod.itemId);
+  // Per-SKU tracked rows use scalar qty; Style parents use the variants grid.
+  const hasVariantsQuantity = isConfigurableParent && !isEditing;
+
+  const clearVariantsQuantity = () => {
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
+  };
+
+  const applyVariantsQuantity = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    if (data.total > 0) setQuantity(data.total);
+  };
+
+  const openVariantsQuantity = async () => {
+    if (!pickMethod.itemId || openingConfig) return;
+    setOpeningConfig(true);
+    try {
+      await openStyleVariantsQuantityWithInventory({
+        variantsQuantityModal,
+        itemId: pickMethod.itemId,
+        locationId: pickMethod.locationId,
+        storageUnitId: selectedStorageUnitId,
+        // Match the form's storage unit exactly — empty means unassigned-only,
+        // not "all bins" (so Update Quantity on a no-bin row is scoped correctly).
+        exactStorageUnit: true,
+        variantsQuantityRows,
+        // Set Quantity / Positive can exceed on-hand; Negative is capped.
+        enforceReferenceCaps: adjustmentType === "Negative Adjmt.",
+        prefillFromReference:
+          adjustmentType === "Set Quantity" && !variantsQuantityRows,
+        referenceHintsClickable: false,
+        onConfirm: applyVariantsQuantity
+      });
+    } finally {
+      setOpeningConfig(false);
+    }
+  };
 
   const showExpirationField = isBatch || isSerial;
 
@@ -211,17 +274,27 @@ const InventoryStorageUnits = ({
   ]);
 
   const openAdjustmentModal = (
-    storageUnitId?: string,
+    storageUnitId?: string | null,
     trackedEntityId?: string,
     readableId?: string,
-    currentQuantity?: number
+    currentQuantity?: number,
+    fromRow = false
   ) => {
-    setSelectedStorageUnitId(storageUnitId || null);
+    setSelectedStorageUnitId(storageUnitId ?? null);
     setSelectedTrackedEntityId(trackedEntityId || null);
     setSelectedReadableId(readableId || null);
-    setIsEditingRow(storageUnitId !== undefined);
+    setIsEditingRow(fromRow);
+    setAdjustmentType("Set Quantity");
+    clearVariantsQuantity();
+    const editingTracked = trackedEntityId != null;
+    const useVariantsGrid =
+      Boolean(pickMethod.itemId) &&
+      configurableItemIds.includes(pickMethod.itemId) &&
+      !editingTracked;
     if (currentQuantity !== undefined) {
       setQuantity(currentQuantity);
+    } else {
+      setQuantity(useVariantsGrid ? 0 : 1);
     }
     adjustmentModal.onOpen();
   };
@@ -364,45 +437,43 @@ const InventoryStorageUnits = ({
                       </Td>
                     )}
                     <Td className="flex flex-shrink-0 justify-end items-center">
-                      {/* Aggregated Style rows sum multiple SKUs in one bin, so
-                          a per-row adjustment can't target a SKU — use the
-                          card's Inventory Adjustment button instead. */}
-                      {!item.breakdown && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <IconButton
-                              aria-label={t`Actions`}
-                              variant="ghost"
-                              icon={<LuEllipsisVertical />}
-                            />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <IconButton
+                            aria-label={t`Actions`}
+                            variant="ghost"
+                            icon={<LuEllipsisVertical />}
+                          />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          <DropdownMenuItem
+                            onClick={() =>
+                              openAdjustmentModal(
+                                item.storageUnitId,
+                                item.trackedEntityId ?? undefined,
+                                item.readableId ?? undefined,
+                                // Style aggregated bins use the variants grid;
+                                // don't seed the scalar field with the rolled-up total.
+                                item.breakdown ? undefined : item.quantity,
+                                true
+                              )
+                            }
+                          >
+                            <DropdownMenuIcon icon={<LuPencil />} />
+                            <Trans>Update Quantity</Trans>
+                          </DropdownMenuItem>
+                          {item.trackedEntityId && (
                             <DropdownMenuItem
                               onClick={() =>
-                                openAdjustmentModal(
-                                  item.storageUnitId ?? undefined,
-                                  item.trackedEntityId ?? undefined,
-                                  item.readableId ?? undefined,
-                                  item.quantity
-                                )
+                                handlePrintLabel(item.trackedEntityId!)
                               }
                             >
-                              <DropdownMenuIcon icon={<LuPencil />} />
-                              <Trans>Update Quantity</Trans>
+                              <DropdownMenuIcon icon={<LuPrinter />} />
+                              <Trans>Print Label</Trans>
                             </DropdownMenuItem>
-                            {item.trackedEntityId && (
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handlePrintLabel(item.trackedEntityId!)
-                                }
-                              >
-                                <DropdownMenuIcon icon={<LuPrinter />} />
-                                <Trans>Print Label</Trans>
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </Td>
                   </Tr>
                 );
@@ -428,13 +499,17 @@ const InventoryStorageUnits = ({
               action={path.to.inventoryItemAdjustment(pickMethod.itemId)}
               defaultValues={{
                 itemId: pickMethod.itemId,
-                quantity: isSerial && !isEditing ? 1 : quantity,
+                quantity: hasVariantsQuantity
+                  ? variantsQuantityTotal
+                  : isSerial && !isEditing
+                    ? 1
+                    : quantity,
                 locationId: pickMethod.locationId,
                 storageUnitId: selectedStorageUnitId || undefined,
                 originalStorageUnitId: isEditing
                   ? selectedStorageUnitId || undefined
                   : undefined,
-                adjustmentType: "Set Quantity",
+                adjustmentType,
                 trackedEntityId: selectedTrackedEntityId || nanoid(),
                 readableId: selectedReadableId || undefined,
                 expirationDate: defaultExpirationDate
@@ -448,6 +523,18 @@ const InventoryStorageUnits = ({
               <ModalBody>
                 <Hidden name="itemId" />
                 {isEditing && <Hidden name="originalStorageUnitId" />}
+                {hasVariantsQuantity && (
+                  <Hidden
+                    name="variantQuantities"
+                    value={
+                      variantsQuantityRows
+                        ? JSON.stringify({
+                            variantTable: variantsQuantityRows
+                          })
+                        : ""
+                    }
+                  />
+                )}
 
                 <VStack spacing={2}>
                   <Location name="locationId" label={t`Location`} isReadOnly />
@@ -456,10 +543,24 @@ const InventoryStorageUnits = ({
                     locationId={pickMethod.locationId}
                     label={t`Storage Unit`}
                     isReadOnly={isEditingRow}
+                    value={selectedStorageUnitId}
+                    onChange={(unit) => {
+                      setSelectedStorageUnitId(unit?.id ?? null);
+                      clearVariantsQuantity();
+                      if (hasVariantsQuantity) setQuantity(0);
+                    }}
                   />
                   <Select
                     name="adjustmentType"
                     label={t`Adjustment Type`}
+                    onChange={(option) => {
+                      const next = (option?.value ?? "Set Quantity") as z.infer<
+                        typeof inventoryAdjustmentValidator
+                      >["adjustmentType"];
+                      setAdjustmentType(next);
+                      clearVariantsQuantity();
+                      if (hasVariantsQuantity) setQuantity(0);
+                    }}
                     options={
                       isEditing && (isSerial || isBatch)
                         ? [
@@ -504,15 +605,29 @@ const InventoryStorageUnits = ({
                       )}
                     </>
                   )}
-                  <NumberControlled
-                    name="quantity"
-                    label={t`Quantity`}
-                    minValue={0}
-                    maxValue={isSerial && isEditing ? 1 : undefined}
-                    value={isSerial && !isEditing ? 1 : quantity}
-                    onChange={setQuantity}
-                    isReadOnly={isSerial && !isEditing}
-                  />
+                  {hasVariantsQuantity ? (
+                    <QuantityWithVariantsQuantity
+                      name="quantity"
+                      label={t`Quantity`}
+                      minValue={0}
+                      value={quantity}
+                      onChange={setQuantity}
+                      hasVariantsQuantity
+                      onOpenVariantsQuantity={openVariantsQuantity}
+                      variantsQuantityTotal={variantsQuantityTotal}
+                      isReadOnly
+                    />
+                  ) : (
+                    <NumberControlled
+                      name="quantity"
+                      label={t`Quantity`}
+                      minValue={0}
+                      maxValue={isSerial && isEditing ? 1 : undefined}
+                      value={isSerial && !isEditing ? 1 : quantity}
+                      onChange={setQuantity}
+                      isReadOnly={isSerial && !isEditing}
+                    />
+                  )}
 
                   <Input
                     name="unitOfMeasure"
@@ -538,6 +653,7 @@ const InventoryStorageUnits = ({
           </ModalContent>
         </Modal>
       )}
+      {variantsQuantityModal.node}
       <ruleViolations.ViolationModal />
       {printerModal.isOpen && pendingPrintEntityId && (
         <Modal open onOpenChange={(open) => !open && printerModal.onClose()}>

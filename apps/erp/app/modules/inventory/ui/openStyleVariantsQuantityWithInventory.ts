@@ -10,11 +10,14 @@ import { path } from "~/utils/path";
 async function loadInventoryVariantQuantities(
   itemId: string,
   locationId: string,
-  storageUnitId?: string | null
+  storageUnitId?: string | null,
+  options?: { exactStorageUnit?: boolean }
 ): Promise<VariantQuantitiesPayload | null> {
   try {
     const res = await fetch(
-      path.to.api.styleOnHand(itemId, locationId, storageUnitId)
+      path.to.api.styleOnHand(itemId, locationId, storageUnitId, {
+        exact: options?.exactStorageUnit
+      })
     );
     if (!res.ok) return null;
     const data = (await res.json()) as {
@@ -41,21 +44,36 @@ export async function openStyleVariantsQuantityWithInventory({
   itemId,
   locationId,
   storageUnitId,
+  exactStorageUnit = false,
   orderVariantQuantities,
   variantsQuantityRows,
   otherLineVariantQuantities = [],
   maxTotal,
+  prefillFromReference,
+  enforceReferenceCaps: enforceReferenceCapsOverride,
+  referenceHintsClickable = true,
   onConfirm
 }: {
   variantsQuantityModal: ReturnType<typeof useVariantsQuantityModal>;
   itemId: string;
   locationId?: string | null;
   storageUnitId?: string | null;
+  /**
+   * When true, filter on-hand to the given storage unit even if it is null
+   * (unassigned-only). When false, a null/empty storage unit means all bins.
+   */
+  exactStorageUnit?: boolean;
   orderVariantQuantities?: unknown;
   variantsQuantityRows: Row[] | null;
   otherLineVariantQuantities?: unknown[];
   /** Hard cap on confirmed grid total (selected source remaining qty). */
   maxTotal?: number;
+  /** Seed empty quantity cells with their remaining reference on first open. */
+  prefillFromReference?: boolean;
+  /** Override auto-detected caps (e.g. inventory adjustment Set/Positive). */
+  enforceReferenceCaps?: boolean;
+  /** When false, show on-hand hints as plain text (not click-to-fill). */
+  referenceHintsClickable?: boolean;
   onConfirm: (data: unknown) => void;
 }) {
   let inventoryVariantQuantities: VariantQuantitiesPayload | null = null;
@@ -63,14 +81,16 @@ export async function openStyleVariantsQuantityWithInventory({
 
   if (!orderVariantQuantities && locationId) {
     inventoryVariantQuantities =
-      (await loadInventoryVariantQuantities(
-        itemId,
-        locationId,
-        storageUnitId
-      )) ?? EMPTY_VARIANT_QUANTITIES;
+      (await loadInventoryVariantQuantities(itemId, locationId, storageUnitId, {
+        exactStorageUnit
+      })) ?? EMPTY_VARIANT_QUANTITIES;
     // Empty tagged/variant breakdown → 0 hints; don't block typing into cells.
     enforceReferenceCaps =
       (inventoryVariantQuantities.variantTable?.length ?? 0) > 0;
+  }
+
+  if (enforceReferenceCapsOverride !== undefined) {
+    enforceReferenceCaps = enforceReferenceCapsOverride;
   }
 
   const referenceVariantQuantities =
@@ -84,7 +104,9 @@ export async function openStyleVariantsQuantityWithInventory({
       ? { variantTable: variantsQuantityRows }
       : undefined,
     maxTotal,
+    prefillFromReference,
     enforceReferenceCaps,
+    referenceHintsClickable,
     buildReferenceContext: referenceVariantQuantities
       ? () =>
           buildInventoryVariantsQuantityReferenceContext({

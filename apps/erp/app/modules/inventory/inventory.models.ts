@@ -127,7 +127,9 @@ export const inventoryAdjustmentValidator = z.object({
   trackedEntityId: zfd.text(z.string().optional()),
   readableId: zfd.text(z.string().optional()),
   expirationDate: zfd.text(z.string().optional()),
-  comment: zfd.text(z.string().optional())
+  comment: zfd.text(z.string().optional()),
+  // Style/Consumable parents: JSON `{ variantTable }` expanded to per-SKU adjustments.
+  variantQuantities: zfd.text(z.string().optional())
 });
 
 export const itemLedgerValidator = z.object({

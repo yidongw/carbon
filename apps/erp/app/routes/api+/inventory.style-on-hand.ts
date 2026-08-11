@@ -6,6 +6,10 @@ import { breakdownToInventoryVariantsQuantity } from "~/modules/inventory/styleI
 /**
  * Style on-hand by variants quantity for transfer/shipment variants-quantity hints + caps.
  * Query: itemId, locationId, optional storageUnitId.
+ *
+ * - omit `storageUnitId` → all bins (no filter)
+ * - `storageUnitId=` (empty) → unassigned only (no storage unit)
+ * - `storageUnitId=<id>` → that storage unit only
  */
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -16,17 +20,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const itemId = url.searchParams.get("itemId");
   const locationId = url.searchParams.get("locationId");
-  const storageUnitId = url.searchParams.get("storageUnitId");
+  const filterByStorageUnit = url.searchParams.has("storageUnitId");
+  const storageUnitId = filterByStorageUnit
+    ? url.searchParams.get("storageUnitId") || null
+    : undefined;
   if (!itemId || !locationId) {
     return { breakdown: [], variantQuantities: null };
   }
 
-  const breakdown = await getStyleOnHandByVariant(
+  const breakdown = await getStyleOnHandByColorSize(
     client,
     itemId,
     companyId,
     locationId,
-    storageUnitId || null
+    storageUnitId
   );
   const variantQuantities = breakdownToInventoryVariantsQuantity(breakdown);
 
