@@ -4108,6 +4108,11 @@ export async function getStyleOnHandByColorSize(
   itemId: string,
   companyId: string,
   locationId: string,
+  /**
+   * - `undefined`: no bin filter (all storage units + unassigned)
+   * - `null`: only unassigned (no storage unit)
+   * - `string`: only that storage unit
+   */
   storageUnitId?: string | null
 ): Promise<
   {
@@ -4154,7 +4159,11 @@ export async function getStyleOnHandByColorSize(
     if (!valuesKey) continue;
 
     for (const row of (res.data ?? []) as TransferStockRow[]) {
-      if (storageUnitId && (row.storageUnitId ?? null) !== storageUnitId) {
+      // `undefined` = all bins; `null` = unassigned only; string = that bin.
+      if (
+        storageUnitId !== undefined &&
+        (row.storageUnitId ?? null) !== storageUnitId
+      ) {
         continue;
       }
       const qty = Number(row.quantity) || 0;

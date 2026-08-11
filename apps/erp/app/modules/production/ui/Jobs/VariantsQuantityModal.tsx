@@ -162,6 +162,8 @@ export type VariantsQuantityModalProps = {
    * Defaults to true.
    */
   enforceReferenceCaps?: boolean;
+  /** When false, show reference hints as plain text (not click-to-fill). */
+  referenceHintsClickable?: boolean;
 } & Omit<OverlayFormInjectedProps, "fetcher" | "action" | "confirmMode"> & {
     // Optional so the same content can render as a plain local modal (client
     // confirm) without the overlay's submit fetcher.
@@ -182,6 +184,7 @@ function VariantsQuantityModal({
   isEditingReport,
   maxTotal,
   enforceReferenceCaps = true,
+  referenceHintsClickable = true,
   onDismiss,
   action: formAction,
   fetcher,
@@ -481,6 +484,7 @@ function VariantsQuantityModal({
         deleteRow={deleteRow}
         optionLabels={optionLabels}
         readOnly={readOnly}
+        referenceHintsClickable={referenceHintsClickable}
       />
       {validationError && (
         <div className="text-sm text-destructive">{validationError}</div>
@@ -739,7 +743,8 @@ export function VariantsQuantityLocalModal({
   jobDisplayId,
   isEditingReport,
   maxTotal,
-  enforceReferenceCaps = true
+  enforceReferenceCaps = true,
+  referenceHintsClickable = true
 }: {
   open: boolean;
   onClose: () => void;
@@ -758,6 +763,7 @@ export function VariantsQuantityLocalModal({
   isEditingReport?: boolean;
   maxTotal?: number;
   enforceReferenceCaps?: boolean;
+  referenceHintsClickable?: boolean;
 }) {
   const fetcher = useFetcher<ItemVariantsQuantityOverlayLoaderData | null>();
   const load = useRef(fetcher.load);
@@ -805,6 +811,7 @@ export function VariantsQuantityLocalModal({
             isEditingReport={isEditingReport}
             maxTotal={maxTotal}
             enforceReferenceCaps={enforceReferenceCaps}
+            referenceHintsClickable={referenceHintsClickable}
             confirmMode="client"
             onConfirmSuccess={onConfirm}
             onDismiss={onClose}
@@ -853,6 +860,8 @@ type VariantsQuantityModalRequest = {
    * Defaults to true.
    */
   enforceReferenceCaps?: boolean;
+  /** When false, show reference hints as plain text (not click-to-fill). */
+  referenceHintsClickable?: boolean;
   /** Receives the validated edited config when the user confirms. */
   onConfirm: (result: VariantsQuantityOverlaySuccess) => void;
 };
@@ -895,6 +904,7 @@ export function useVariantsQuantityModal(): {
       isEditingReport={request.isEditingReport}
       maxTotal={request.maxTotal}
       enforceReferenceCaps={request.enforceReferenceCaps}
+      referenceHintsClickable={request.referenceHintsClickable}
     />
   ) : null;
 

@@ -27,6 +27,12 @@ type ResponsiveVariantsQuantityTableProps<
    * Used for header labels when a list attribute's option codes are the columns
    * (a color-only grid). Codes not in the map (e.g. sizes) render unchanged. */
   optionLabels?: Record<string, string>;
+  /**
+   * When false, always use the standard table (column headers on top, one data
+   * row per combo) — including below `md`. Defaults to true (transpose on
+   * mobile: field labels sticky left, each combo becomes a column).
+   */
+  transposeOnMobile?: boolean;
 };
 
 function isZeroOrEmpty(value: string | number | boolean | undefined): boolean {
@@ -77,7 +83,8 @@ export function ResponsiveVariantsQuantityTable<
   getCellClassName,
   renderCell,
   renderRowActions,
-  optionLabels
+  optionLabels,
+  transposeOnMobile = true
 }: ResponsiveVariantsQuantityTableProps<TColumn, TRow>) {
   if (rows.length === 0) return null;
 
@@ -96,46 +103,59 @@ export function ResponsiveVariantsQuantityTable<
       ? getCellClassName(col, hasReferences)
       : cn("px-3 py-1.5", getColumnWidthClass(col, hasReferences));
 
-  return (
-    <>
-      <div className="hidden max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:block">
-        <Table className="w-auto min-w-max table-fixed">
-          <Thead>
-            <Tr>
+  const standardTable = (
+    <div
+      className={cn(
+        "max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent",
+        transposeOnMobile ? "hidden md:block" : "block"
+      )}
+    >
+      <Table className="w-auto min-w-max table-fixed">
+        <Thead>
+          <Tr>
+            {columns.map((col) => (
+              <Th
+                key={col.key}
+                className={cn(
+                  "px-3 text-xs whitespace-nowrap",
+                  getColumnWidthClass(col, hasReferences)
+                )}
+              >
+                {headerLabel(col)}
+              </Th>
+            ))}
+            {renderRowActions ? (
+              <Th className="px-3 w-10 min-w-10 max-w-10" />
+            ) : null}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {rows.map((row, rowIndex) => (
+            <Tr key={rowIndex}>
               {columns.map((col) => (
-                <Th
-                  key={col.key}
-                  className={cn(
-                    "px-3 text-xs whitespace-nowrap",
-                    getColumnWidthClass(col, hasReferences)
-                  )}
-                >
-                  {headerLabel(col)}
-                </Th>
+                <Td key={col.key} className={cellClassName(col)}>
+                  {renderCell(col, row, rowIndex)}
+                </Td>
               ))}
               {renderRowActions ? (
-                <Th className="px-3 w-10 min-w-10 max-w-10" />
+                <Td className="px-3 py-1.5 w-10 min-w-10 max-w-10">
+                  {renderRowActions(rowIndex)}
+                </Td>
               ) : null}
             </Tr>
-          </Thead>
-          <Tbody>
-            {rows.map((row, rowIndex) => (
-              <Tr key={rowIndex}>
-                {columns.map((col) => (
-                  <Td key={col.key} className={cellClassName(col)}>
-                    {renderCell(col, row, rowIndex)}
-                  </Td>
-                ))}
-                {renderRowActions ? (
-                  <Td className="px-3 py-1.5 w-10 min-w-10 max-w-10">
-                    {renderRowActions(rowIndex)}
-                  </Td>
-                ) : null}
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </div>
+          ))}
+        </Tbody>
+      </Table>
+    </div>
+  );
+
+  if (!transposeOnMobile) {
+    return standardTable;
+  }
+
+  return (
+    <>
+      {standardTable}
 
       <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:hidden">
         <Table className="w-auto min-w-max table-fixed">

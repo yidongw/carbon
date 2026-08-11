@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-10T12:01:01.655Z",
+  "generated": "2026-08-11T09:52:31.394Z",
   "totalTools": 1270,
   "modules": 15,
   "tools": [
@@ -7288,7 +7288,7 @@
         "itemId",
         "companyId",
         "locationId",
-        "storageUnitId"
+        "/**\n   * - `undefined`"
       ],
       "injectAuth": [
         "companyId"
@@ -7302,16 +7302,12 @@
           "locationId": {
             "type": "string"
           },
-          "storageUnitId": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
+          "/**\n   * - `undefined`": {}
         },
         "required": [
           "itemId",
-          "locationId"
+          "locationId",
+          "/**\n   * - `undefined`"
         ]
       }
     },

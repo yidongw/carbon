@@ -389,6 +389,7 @@ export function ReadOnlyVariantsQuantityTable({
       hasReferences={false}
       hideZeroValuesInVertical
       optionLabels={optionLabels}
+      transposeOnMobile={false}
       renderCell={(col, row) => {
         const raw = row[col.key];
         const numeric = Number(raw) || 0;
@@ -443,7 +444,8 @@ export function EditableVariantsQuantityGrid({
   readOnly = false,
   allowRowMutations = true,
   canDeleteRow,
-  optionLabels
+  optionLabels,
+  referenceHintsClickable = true
 }: {
   columns: Column[];
   rows: Row[];
@@ -468,6 +470,8 @@ export function EditableVariantsQuantityGrid({
   /** Display label per list-option value (e.g. color code -> color name). The
    * stored value stays the code; only the shown text changes. */
   optionLabels?: Record<string, string>;
+  /** When false, show reference hints as plain text (not click-to-fill). */
+  referenceHintsClickable?: boolean;
 }) {
   const { t } = useLingui();
 
@@ -547,7 +551,7 @@ export function EditableVariantsQuantityGrid({
               }}
               className={cn(inputClassName, "min-w-0 flex-1")}
             />
-            {readOnly ? null : (
+            {readOnly ? null : referenceHintsClickable ? (
               <button
                 type="button"
                 className={cn(
@@ -567,6 +571,17 @@ export function EditableVariantsQuantityGrid({
               >
                 {formatReferenceValue(referenceValue)}
               </button>
+            ) : (
+              <span
+                className={cn(
+                  "shrink-0 rounded px-1 py-0.5 text-xs tabular-nums",
+                  referenceValue < 0
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                )}
+              >
+                {formatReferenceValue(referenceValue)}
+              </span>
             )}
           </div>
         );
@@ -671,6 +686,10 @@ export function EditableVariantsQuantityGrid({
       hasReferences={hasReferences}
       hideZeroValuesInVertical={readOnly}
       optionLabels={optionLabels}
+      // Style combo grids are Attributes | Quantities (2 cols). Mobile transpose
+      // turns each combo into a column and scrolls sideways — keep the standard
+      // one-combo-per-row table on all viewports instead.
+      transposeOnMobile={false}
       renderCell={renderCell}
       renderRowActions={
         readOnly
