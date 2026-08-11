@@ -3989,22 +3989,28 @@ export async function upsertQuote(
 export async function upsertQuoteLine(
   client: SupabaseClient<Database>,
   quotationLine:
-    | (Omit<z.infer<typeof quoteLineValidator>, "id"> & {
+    | (Omit<z.infer<typeof quoteLineValidator>, "id" | "variantQuantities"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
+        configuration?: Json;
       })
-    | (Omit<z.infer<typeof quoteLineValidator>, "id"> & {
+    | (Omit<z.infer<typeof quoteLineValidator>, "id" | "variantQuantities"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
+        configuration?: Json;
       })
 ) {
-  if ("id" in quotationLine) {
+  // FormData-only field — never a quoteLine column.
+  const { variantQuantities: _variantQuantities, ...line } =
+    quotationLine as typeof quotationLine & { variantQuantities?: string };
+
+  if ("id" in line) {
     return client
       .from("quoteLine")
-      .update(sanitize(quotationLine))
-      .eq("id", quotationLine.id)
+      .update(sanitize(line))
+      .eq("id", line.id)
       .select("id")
       .single();
   }
@@ -4012,7 +4018,7 @@ export async function upsertQuoteLine(
   const existing = await client
     .from("quoteLine")
     .select("sortOrder")
-    .eq("quoteId", quotationLine.quoteId);
+    .eq("quoteId", line.quoteId);
 
   const maxSortOrder = (existing.data ?? []).reduce(
     (max, row) => Math.max(max, row.sortOrder ?? 0),
@@ -4021,7 +4027,7 @@ export async function upsertQuoteLine(
 
   return client
     .from("quoteLine")
-    .insert([{ ...quotationLine, sortOrder: maxSortOrder + 1 }])
+    .insert([{ ...line, sortOrder: maxSortOrder + 1 }])
     .select("*")
     .single();
 }

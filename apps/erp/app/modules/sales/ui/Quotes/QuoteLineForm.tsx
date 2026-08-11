@@ -55,7 +55,18 @@ import type {
   ConfigurationParameterGroup
 } from "~/modules/items/types";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import { methodType } from "~/modules/shared";
+import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/quote+/$quoteId.new";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -68,10 +79,44 @@ import type { Quotation, QuotationLine } from "../../types";
 import DeleteQuoteLine from "./DeleteQuoteLine";
 
 type QuoteLineFormProps = {
-  initialValues: z.infer<typeof quoteLineValidator>;
+  initialValues: z.infer<typeof quoteLineValidator> & {
+    itemType?: MethodItemType;
+  };
   type?: "card" | "modal";
   onClose?: () => void;
 };
+
+function parseInitialVariantTable(raw: unknown): {
+  rows: Row[] | null;
+  total: number;
+} {
+  if (!raw) return { rows: null, total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("variantTable" in parsed)
+    ) {
+      return { rows: null, total: 0 };
+    }
+    const config = parsed as {
+      variantTable?: Row[];
+    };
+    const rows = Array.isArray(config.variantTable)
+      ? config.variantTable
+      : null;
+    let total = 0;
+    if (rows) {
+      for (const row of rows) {
+        total += Number(row.Quantities) || 0;
+      }
+    }
+    return { rows, total };
+  } catch {
+    return { rows: null, total: 0 };
+  }
+}
 
 const QuoteLineForm = ({
   initialValues,
@@ -98,6 +143,9 @@ const QuoteLineForm = ({
 
   const isEditing = initialValues.id !== undefined;
 
+  const [itemType, setItemType] = useState<MethodItemType>(
+    initialValues.itemType ?? "Part"
+  );
   const [itemData, setItemData] = useState<{
     customerPartId: string;
     customerPartRevision: string;
@@ -106,6 +154,7 @@ const QuoteLineForm = ({
     methodType: string;
     modelUploadId: string | null;
     uom: string;
+    hasVariantAttributes: boolean;
   }>({
     customerPartId: initialValues.customerPartId ?? "",
     customerPartRevision: initialValues.customerPartRevision ?? "",
@@ -113,8 +162,54 @@ const QuoteLineForm = ({
     description: initialValues.description ?? "",
     methodType: initialValues.methodType ?? "",
     uom: initialValues.unitOfMeasureCode ?? "",
-    modelUploadId: initialValues.modelUploadId ?? null
+    modelUploadId: initialValues.modelUploadId ?? null,
+    // Editing a Style parent with a stored grid — treat as configurable until
+    // item change re-fetches attribute selections.
+    hasVariantAttributes:
+      Boolean(initialValues.variantQuantities) ||
+      initialValues.itemType === "Style"
   });
+
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
+  );
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
+  );
+
+  // Style / attribute Consumable parents use the qty grid. Parent lines with a
+  // stored configuration.variantTable keep the grid on edit; plain lines don't.
+  const hasVariantsQuantity =
+    (itemType === "Style" || itemData.hasVariantAttributes) &&
+    Boolean(itemData.itemId) &&
+    !(isEditing && !initialValues.variantQuantities);
+
+  const isMissingStyleQuantity =
+    hasVariantsQuantity && !(variantsQuantityTotal > 0);
+
+  const applyConfig = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyConfig
+    });
+  };
+
+  const clearConfig = () => {
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
+  };
 
   const configurationDisclosure = useDisclosure();
   const [requiresConfiguration, setRequiresConfiguration] = useState(false);
@@ -174,33 +269,45 @@ const QuoteLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
+    clearConfig();
 
-    const [item, customerPart, itemReplenishment] = await Promise.all([
-      carbon
-        .from("item")
-        .select(
-          "name, readableIdWithRevision, defaultMethodType, unitOfMeasureCode, modelUploadId"
-        )
-        .eq("id", itemId)
-        .eq("companyId", company.id)
-        .single(),
-      carbon
-        .from("customerPartToItem")
-        .select("customerPartId, customerPartRevision")
-        .eq("itemId", itemId)
-        .eq("customerId", routeData?.quote?.customerId!)
-        .maybeSingle(),
-      carbon
-        .from("itemReplenishment")
-        .select("requiresConfiguration")
-        .eq("itemId", itemId)
-        .maybeSingle()
-    ]);
+    const [item, customerPart, itemReplenishment, variantAttributes] =
+      await Promise.all([
+        carbon
+          .from("item")
+          .select(
+            "name, readableIdWithRevision, type, defaultMethodType, unitOfMeasureCode, modelUploadId"
+          )
+          .eq("id", itemId)
+          .eq("companyId", company.id)
+          .single(),
+        carbon
+          .from("customerPartToItem")
+          .select("customerPartId, customerPartRevision")
+          .eq("itemId", itemId)
+          .eq("customerId", routeData?.quote?.customerId!)
+          .maybeSingle(),
+        carbon
+          .from("itemReplenishment")
+          .select("requiresConfiguration")
+          .eq("itemId", itemId)
+          .maybeSingle(),
+        carbon
+          .from("itemAttributeSelection")
+          .select("attributeValueId")
+          .eq("itemId", itemId)
+          .eq("companyId", company.id)
+          .limit(1)
+      ]);
 
     if (item.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+
+    const isStyle = item.data?.type === "Style";
+    const hasVariantAttributes =
+      isStyle || (variantAttributes?.data?.length ?? 0) > 0;
 
     const newItemData = {
       ...itemData,
@@ -208,7 +315,8 @@ const QuoteLineForm = ({
       description: item.data?.name ?? "",
       methodType: item.data?.defaultMethodType ?? "",
       uom: item.data?.unitOfMeasureCode ?? "",
-      modelUploadId: item.data?.modelUploadId ?? null
+      modelUploadId: item.data?.modelUploadId ?? null,
+      hasVariantAttributes
     };
 
     if (customerPart.data && !itemData.customerPartId) {
@@ -218,8 +326,22 @@ const QuoteLineForm = ({
     }
 
     setItemData(newItemData);
+    if (item.data?.type) {
+      setItemType(item.data.type as MethodItemType);
+    }
+
+    // Part method configurator — skip for Style/attribute parents (qty grid).
+    if (hasVariantAttributes) {
+      setRequiresConfiguration(false);
+      setConfigurationParameters(null);
+      setIsConfigured(false);
+      setConfigurationValues("");
+      return;
+    }
+
     if (itemReplenishment.data?.requiresConfiguration) {
       setRequiresConfiguration(true);
+      setIsConfigured(false);
       const [parameters, groups] = await Promise.all([
         carbon
           .from("configurationParameter")
@@ -336,10 +458,13 @@ const QuoteLineForm = ({
                         )}
                         <DropdownMenuItem asChild>
                           <Link
-                            to={getLinkToItemDetails("Part", itemData.itemId!)}
+                            to={getLinkToItemDetails(
+                              itemType,
+                              itemData.itemId!
+                            )}
                           >
                             <DropdownMenuIcon
-                              icon={<MethodItemTypeIcon type="Part" />}
+                              icon={<MethodItemTypeIcon type={itemType} />}
                             />
                             <Trans>View Item Master</Trans>
                           </Link>
@@ -352,30 +477,63 @@ const QuoteLineForm = ({
               <ModalCardBody>
                 <Hidden name="id" />
                 <Hidden name="quoteId" />
+                <Hidden name="itemType" value={itemType} />
                 <Hidden name="unitOfMeasureCode" value={itemData?.uom} />
                 <Hidden
                   name="modelUploadId"
                   value={itemData?.modelUploadId ?? undefined}
                 />
-                {!isEditing && requiresConfiguration && (
-                  <Hidden
-                    name="configuration"
-                    value={JSON.stringify(configurationValues)}
-                  />
-                )}
+                {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
+                <Hidden
+                  name="variantQuantities"
+                  value={
+                    variantsQuantityRows
+                      ? JSON.stringify({
+                          variantTable: variantsQuantityRows
+                        })
+                      : ""
+                  }
+                />
+                {!isEditing &&
+                  requiresConfiguration &&
+                  !hasVariantsQuantity && (
+                    <Hidden
+                      name="configuration"
+                      value={JSON.stringify(configurationValues)}
+                    />
+                  )}
                 <VStack>
                   <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
                     <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
                       <Item
                         autoFocus
                         name="itemId"
-                        label={t`Part`}
-                        type="Part"
+                        label={itemType}
+                        type={itemType}
                         value={itemData.itemId}
                         includeInactive
                         locationId={routeData?.quote?.locationId ?? undefined}
                         onChange={(value) => {
                           onItemChange(value?.value as string);
+                        }}
+                        onTypeChange={(nextType) => {
+                          clearConfig();
+                          setItemType(nextType as MethodItemType);
+                          setRequiresConfiguration(false);
+                          setConfigurationParameters(null);
+                          setIsConfigured(false);
+                          setConfigurationValues("");
+                          setItemData({
+                            ...itemData,
+                            itemId: "",
+                            description: "",
+                            methodType: "",
+                            uom: "",
+                            modelUploadId: null,
+                            customerPartId: "",
+                            customerPartRevision: "",
+                            hasVariantAttributes: false
+                          });
                         }}
                       />
 
@@ -475,12 +633,29 @@ const QuoteLineForm = ({
                       )}
                     </div>
                     <div className="flex gap-y-4">
-                      <ArrayNumeric
-                        name="quantity"
-                        label={t`Quantity`}
-                        defaults={[1, 25, 50, 100]}
-                        isDisabled={!isEditable}
-                      />
+                      {hasVariantsQuantity ? (
+                        // Validator expects quantity as an array (price
+                        // breaks). For Style parents, submit a single tier
+                        // equal to the grid total; convert expands later.
+                        <QuantityWithVariantsQuantity
+                          name="quantity.0"
+                          label={t`Quantity`}
+                          value={variantsQuantityTotal}
+                          onChange={() => {}}
+                          hasVariantsQuantity={hasVariantsQuantity}
+                          onOpenVariantsQuantity={openVariantsQuantity}
+                          variantsQuantityTotal={variantsQuantityTotal}
+                          isReadOnly
+                          isDisabled={!isEditable}
+                        />
+                      ) : (
+                        <ArrayNumeric
+                          name="quantity"
+                          label={t`Quantity`}
+                          defaults={[1, 25, 50, 100]}
+                          isDisabled={!isEditable}
+                        />
+                      )}
                     </div>
                   </div>
                 </VStack>
@@ -491,29 +666,34 @@ const QuoteLineForm = ({
                     <Trans>Cancel</Trans>
                   </Button>
                 )}
-                {!isEditing && requiresConfiguration && (
-                  <Button
-                    variant={isConfigured ? "secondary" : "primary"}
-                    isLoading={fetcher.state !== "idle"}
-                    type="button"
-                    isDisabled={
-                      !isEditable ||
-                      (isEditing
-                        ? !permissions.can("update", "sales")
-                        : !permissions.can("create", "sales"))
-                    }
-                    onClick={() => {
-                      configurationDisclosure.onOpen();
-                    }}
-                  >
-                    <Trans>Configure</Trans>
-                  </Button>
-                )}
+                {!isEditing &&
+                  requiresConfiguration &&
+                  !hasVariantsQuantity && (
+                    <Button
+                      variant={isConfigured ? "secondary" : "primary"}
+                      isLoading={fetcher.state !== "idle"}
+                      type="button"
+                      isDisabled={
+                        !isEditable ||
+                        (isEditing
+                          ? !permissions.can("update", "sales")
+                          : !permissions.can("create", "sales"))
+                      }
+                      onClick={() => {
+                        configurationDisclosure.onOpen();
+                      }}
+                    >
+                      <Trans>Configure</Trans>
+                    </Button>
+                  )}
 
                 <Submit
                   isLoading={fetcher.state !== "idle"}
                   isDisabled={
-                    (requiresConfiguration && !isConfigured) ||
+                    isMissingStyleQuantity ||
+                    (requiresConfiguration &&
+                      !isConfigured &&
+                      !hasVariantsQuantity) ||
                     !isEditable ||
                     (isEditing
                       ? !permissions.can("update", "sales")
@@ -534,6 +714,7 @@ const QuoteLineForm = ({
         />
       )}
       {requiresConfiguration &&
+        !hasVariantsQuantity &&
         configurationDisclosure.isOpen &&
         configurationParameters && (
           <ConfiguratorModal

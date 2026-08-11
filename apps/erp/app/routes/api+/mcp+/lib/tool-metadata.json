@@ -33619,7 +33619,7 @@
       "module": "sales",
       "classification": "WRITE",
       "description": "upsert quote line",
-      "paramCount": 4,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "quotationLine"
@@ -33632,22 +33632,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "quoteId": {
-            "type": "string"
-          },
-          "itemId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
+          "quotationLine": {}
         },
         "required": [
-          "quoteId",
-          "itemId"
+          "quotationLine"
         ]
       }
     },

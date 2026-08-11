@@ -339,33 +339,52 @@ export const quoteLineCategoryMarkupsValidator = z
   .record(z.number().min(0))
   .default({});
 
-export const quoteLineValidator = z.object({
-  id: zfd.text(z.string().optional()),
-  quoteId: z.string(),
-  itemId: z.string().min(1, { message: "Part is required" }),
-  status: z.enum(quoteLineStatusType, {
-    errorMap: () => ({ message: "Status is required" })
-  }),
-  estimatorId: zfd.text(z.string().optional()),
-  description: z.string().min(1, { message: "Description is required" }),
-  methodType: z.enum(methodType, {
-    errorMap: () => ({ message: "Method is required" })
-  }),
-  customerPartId: zfd.text(z.string().optional()),
-  customerPartRevision: zfd.text(z.string().optional()),
-  unitOfMeasureCode: zfd.text(
-    z.string().min(1, { message: "Unit of measure is required" })
-  ),
-  quantity: z.array(
-    zfd.numeric(z.number().min(0.00001, { message: "Quantity is required" }))
-  ),
-  modelUploadId: zfd.text(z.string().optional()),
-  noQuoteReason: zfd.text(z.string().optional()),
-  taxPercent: zfd.numeric(
-    z.number().min(0).max(1, { message: "Tax percent must be between 0 and 1" })
-  ),
-  configuration: z.any().optional()
-});
+export const quoteLineValidator = z
+  .object({
+    id: zfd.text(z.string().optional()),
+    quoteId: z.string(),
+    itemId: z.string().min(1, { message: "Part is required" }),
+    itemType: zfd.text(z.enum(methodItemType).optional()),
+    status: z.enum(quoteLineStatusType, {
+      errorMap: () => ({ message: "Status is required" })
+    }),
+    estimatorId: zfd.text(z.string().optional()),
+    description: z.string().min(1, { message: "Description is required" }),
+    methodType: z.enum(methodType, {
+      errorMap: () => ({ message: "Method is required" })
+    }),
+    customerPartId: zfd.text(z.string().optional()),
+    customerPartRevision: zfd.text(z.string().optional()),
+    unitOfMeasureCode: zfd.text(
+      z.string().min(1, { message: "Unit of measure is required" })
+    ),
+    quantity: z.array(
+      zfd.numeric(z.number().min(0.00001, { message: "Quantity is required" }))
+    ),
+    modelUploadId: zfd.text(z.string().optional()),
+    noQuoteReason: zfd.text(z.string().optional()),
+    taxPercent: zfd.numeric(
+      z
+        .number()
+        .min(0)
+        .max(1, { message: "Tax percent must be between 0 and 1" })
+    ),
+    // Part method params (create) OR persisted Style variantTable on the line.
+    configuration: z.any().optional(),
+    // FormData Style/attribute qty grid — mapped to configuration.variantTable
+    // on create/update (convert expands it to SO lines). Not a DB column.
+    variantQuantities: zfd.text(z.string().optional())
+  })
+  .refine(
+    (data) => {
+      if (data.itemType !== "Style") return true;
+      return (data.quantity ?? []).some((q) => q > 0);
+    },
+    {
+      message: "Style quantity is required",
+      path: ["quantity"]
+    }
+  );
 
 export const quoteMaterialValidator = z
   .object({
