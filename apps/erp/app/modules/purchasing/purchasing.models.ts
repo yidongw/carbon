@@ -512,13 +512,21 @@ export const supplierQuoteLineValidator = z
     requiredDate: zfd.text(z.string().optional()),
     quantity: z.array(
       zfd.numeric(z.number().min(0.00001, { message: "Quantity is required" }))
-    )
+    ),
+    // FormData-only expand payload; never persisted on supplierQuoteLine.
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine(
     (data) =>
-      ["Part", "Service", "Material", "Tool", "Fixture", "Consumable"].includes(
-        data.supplierQuoteLineType
-      )
+      [
+        "Style",
+        "Part",
+        "Service",
+        "Material",
+        "Tool",
+        "Fixture",
+        "Consumable"
+      ].includes(data.supplierQuoteLineType)
         ? data.itemId
         : true,
     {
@@ -537,6 +545,7 @@ export const supplierQuoteLineValidator = z
   .refine(
     (data) =>
       [
+        "Style",
         "Part",
         "Service",
         "Material",

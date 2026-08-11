@@ -46,6 +46,16 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/supplier-quote+/$id.$lineId.details";
 import { path } from "~/utils/path";
@@ -63,6 +73,38 @@ type SupplierQuoteLineFormProps = {
   type?: "card" | "modal";
   onClose?: () => void;
 };
+
+function parseInitialVariantTable(raw: unknown): {
+  rows: Row[] | null;
+  total: number;
+} {
+  if (!raw) return { rows: null, total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("variantTable" in parsed)
+    ) {
+      return { rows: null, total: 0 };
+    }
+    const config = parsed as {
+      variantTable?: Row[];
+    };
+    const rows = Array.isArray(config.variantTable)
+      ? config.variantTable
+      : null;
+    let total = 0;
+    if (rows) {
+      for (const row of rows) {
+        total += Number(row.Quantities) || 0;
+      }
+    }
+    return { rows, total };
+  } catch {
+    return { rows: null, total: 0 };
+  }
+}
 
 const SupplierQuoteLineForm = ({
   initialValues,
@@ -111,14 +153,58 @@ const SupplierQuoteLineForm = ({
     inventoryUom: string;
     purchaseUom: string;
     conversionFactor: number;
+    hasVariantAttributes: boolean;
   }>({
     supplierPartId: initialValues.supplierPartId ?? "",
     itemId: initialValues.itemId ?? "",
     description: initialValues.description ?? "",
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     purchaseUom: initialValues.purchaseUnitOfMeasureCode ?? "",
-    conversionFactor: initialValues.conversionFactor ?? 1
+    conversionFactor: initialValues.conversionFactor ?? 1,
+    hasVariantAttributes: false
   });
+
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
+  );
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
+  );
+
+  // Items with variant attributes use the config-quantity grid when adding a
+  // parent line — Styles always, Consumables with a color set. Expanded variant
+  // SKU lines (no stored configuration) use plain ArrayNumeric price breaks.
+  const hasVariantsQuantity =
+    (itemType === "Style" || itemData.hasVariantAttributes) &&
+    Boolean(itemData.itemId) &&
+    !(isEditing && !initialValues.variantQuantities);
+
+  const isMissingStyleQuantity =
+    hasVariantsQuantity && !(variantsQuantityTotal > 0);
+
+  const applyConfig = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyConfig
+    });
+  };
+
+  const clearConfig = () => {
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
+  };
 
   const onSupplierPartChange = async (supplierPartId: string) => {
     if (!carbon || !routeData?.quote?.supplierId) return;
@@ -142,8 +228,9 @@ const SupplierQuoteLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
+    clearConfig();
 
-    const [item, supplierPart] = await Promise.all([
+    const [item, supplierPart, variantAttributes] = await Promise.all([
       carbon
         .from("item")
         .select("name, readableIdWithRevision, type, unitOfMeasureCode")
@@ -155,13 +242,25 @@ const SupplierQuoteLineForm = ({
         .select("supplierPartId, supplierUnitOfMeasureCode, conversionFactor")
         .eq("itemId", itemId)
         .eq("supplierId", routeData?.quote?.supplierId!)
-        .maybeSingle()
+        .maybeSingle(),
+      // Any item with Color/Size attribute selections (Style always; a
+      // Consumable with a Fabric/Trim color set) gets the config grid.
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
     ]);
 
     if (item.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+
+    const isStyle = item.data?.type === "Style";
+    const hasVariantAttributes =
+      isStyle || (variantAttributes?.data?.length ?? 0) > 0;
 
     const newItemData = {
       ...itemData,
@@ -173,7 +272,8 @@ const SupplierQuoteLineForm = ({
         supplierPart.data?.supplierUnitOfMeasureCode ??
         item.data?.unitOfMeasureCode ??
         "EA",
-      conversionFactor: supplierPart.data?.conversionFactor ?? 1
+      conversionFactor: supplierPart.data?.conversionFactor ?? 1,
+      hasVariantAttributes
     };
 
     if (supplierPart.data && !itemData.supplierPartId) {
@@ -286,6 +386,17 @@ const SupplierQuoteLineForm = ({
                 <ModalCardBody>
                   <Hidden name="id" />
                   <Hidden name="supplierQuoteId" />
+                  {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
+                  <Hidden
+                    name="variantQuantities"
+                    value={
+                      variantsQuantityRows
+                        ? JSON.stringify({
+                            variantTable: variantsQuantityRows
+                          })
+                        : ""
+                    }
+                  />
 
                   <TabsContent value="direct">
                     <Hidden name="supplierQuoteLineType" value={itemType} />
@@ -307,6 +418,7 @@ const SupplierQuoteLineForm = ({
                               onItemChange(value?.value as string);
                             }}
                             onTypeChange={(type) => {
+                              clearConfig();
                               setItemType(type as MethodItemType);
                               setItemData({
                                 ...itemData,
@@ -315,7 +427,8 @@ const SupplierQuoteLineForm = ({
                                 inventoryUom: "",
                                 purchaseUom: "",
                                 conversionFactor: 1,
-                                supplierPartId: ""
+                                supplierPartId: "",
+                                hasVariantAttributes: false
                               });
                             }}
                           />
@@ -367,12 +480,30 @@ const SupplierQuoteLineForm = ({
                           <CustomFormFields table="supplierQuoteLine" />
                         </div>
                         <div className="flex gap-y-4">
-                          <ArrayNumeric
-                            name="quantity"
-                            label={t`Quantity`}
-                            defaults={[1, 25, 50, 100]}
-                            isDisabled={isLocked}
-                          />
+                          {hasVariantsQuantity ? (
+                            // Validator expects quantity as an array (price
+                            // breaks). For Style expand, submit a single tier
+                            // equal to the grid total; the action replaces the
+                            // parent with per-SKU lines of [variantQty].
+                            <QuantityWithVariantsQuantity
+                              name="quantity.0"
+                              label={t`Quantity`}
+                              value={variantsQuantityTotal}
+                              onChange={() => {}}
+                              hasVariantsQuantity={hasVariantsQuantity}
+                              onOpenVariantsQuantity={openVariantsQuantity}
+                              variantsQuantityTotal={variantsQuantityTotal}
+                              isReadOnly
+                              isDisabled={isLocked}
+                            />
+                          ) : (
+                            <ArrayNumeric
+                              name="quantity"
+                              label={t`Quantity`}
+                              defaults={[1, 25, 50, 100]}
+                              isDisabled={isLocked}
+                            />
+                          )}
                         </div>
                       </div>
                     </VStack>
@@ -436,6 +567,7 @@ const SupplierQuoteLineForm = ({
                   <Submit
                     isDisabled={
                       isLocked ||
+                      isMissingStyleQuantity ||
                       (isEditing
                         ? !permissions.can("update", "purchasing")
                         : !permissions.can("create", "purchasing"))
@@ -449,6 +581,7 @@ const SupplierQuoteLineForm = ({
           </ModalCard>
         </ModalCardProvider>
       </Tabs>
+      {variantsQuantityModal.node}
       {isEditing && deleteDisclosure.isOpen && initialValues.id && (
         <DeleteSupplierQuoteLine
           line={{

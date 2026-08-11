@@ -21971,6 +21971,38 @@
       }
     },
     {
+      "name": "purchasing_replaceSupplierQuoteLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace supplier quote lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "supplierQuoteId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      supplierQuoteLineType: z.infer<\n        typeof supplierQuoteLineValidator\n      >[\"supplierQuoteLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "supplierQuoteId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "purchasing_updatePurchaseOrderLineOrder",
       "module": "purchasing",
       "classification": "WRITE",

@@ -4996,6 +4996,9 @@ msgstr "फ़ाइल कर समाधान यॉन्सिंग ल�
 msgid "Failed to create supplier process"
 msgstr "सupplier प्रक्रिया बनाने में विफल हो गया"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr ""
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
 msgstr "{0} निर्माता प्रदाता बनाने में विफल हो गया:"
@@ -7702,6 +7705,9 @@ msgstr "फ़ैल्यो अपडेट संशयकर्ता प्
 
 msgid "Failed to update supplier quote line"
 msgstr "आपूर्तिकर्ता उद्धरण लाइन को अपडेट करने में विफल"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr ""
 
 msgid "Failed to update supplier quote status"
 msgstr "फ़ाइल को अपडेट करने में विफल रहा संशोधित दाता प्रस्ताव स्थिति"

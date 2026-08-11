@@ -1175,6 +1175,9 @@ msgstr "Échec de la création de l'emplacement fournisseur"
 msgid "Failed to create supplier process"
 msgstr "Échec de la création du processus fournisseur"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr ""
+
 msgid "Failed to create tag"
 msgstr "Échec de la création de l'étiquette"
 
@@ -3739,6 +3742,9 @@ msgstr "Échec de la mise à jour des conditions de paiement du fournisseur"
 
 msgid "Failed to update supplier process"
 msgstr "Échec de la mise à jour du processus fournisseur"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr ""
 
 msgid "Failed to update supplier quote status"
 msgstr "Échec de la mise à jour du statut de l'offre fournisseur"

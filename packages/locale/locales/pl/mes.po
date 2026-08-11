@@ -1175,6 +1175,9 @@ msgstr "Nie udało się utworzyć lokalizacji dostawcy"
 msgid "Failed to create supplier process"
 msgstr "Niedostępna do stworzenia procesu dostawcy"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr ""
+
 msgid "Failed to create tag"
 msgstr "Nie udało się utworzyć etykiety"
 
@@ -3739,6 +3742,9 @@ msgstr "Nie udało się zaktualizować warunków płatności dostawcy"
 
 msgid "Failed to update supplier process"
 msgstr "Nie udało się zaktualizować procesu dostawcy"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr ""
 
 msgid "Failed to update supplier quote status"
 msgstr "Nie udało się zaktualizować-status dostawcy cenowego"

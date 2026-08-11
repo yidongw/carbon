@@ -1175,6 +1175,9 @@ msgstr "Fallito nella creazione della posizione fornitore"
 msgid "Failed to create supplier process"
 msgstr "Fallito nell'_creazione del processo fornitore"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr ""
+
 msgid "Failed to create tag"
 msgstr "Fallito nella creazione della tag"
 
@@ -3739,6 +3742,9 @@ msgstr "Fallito aggiornamento termini pagamenti fornitore"
 
 msgid "Failed to update supplier process"
 msgstr "Fallito aggiornamento processo fornitore"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr ""
 
 msgid "Failed to update supplier quote status"
 msgstr "Fallito aggiornamento stato preventivo fornitore"

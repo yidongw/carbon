@@ -4996,6 +4996,9 @@ msgstr "Niedostępna do utworzenia lokalizacji dostawcy"
 msgid "Failed to create supplier process"
 msgstr "Niestety nie udało się utworzyć procesu dostawcy"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr ""
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
 msgstr "Nie udało się utworzyć dostawcy: {0}"
@@ -7702,6 +7705,9 @@ msgstr "Nie udało się zaktualizować procesu dostawcy"
 
 msgid "Failed to update supplier quote line"
 msgstr "Nie udało się zaktualizować linii oferty dostawcy"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr ""
 
 msgid "Failed to update supplier quote status"
 msgstr "Nie udało się zaktualizować-status dostawcy cenowego"
