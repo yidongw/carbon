@@ -14,6 +14,9 @@ import {
   HoverCardTrigger,
   HStack,
   MenuItem,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   PulsingDot,
   Tooltip,
   TooltipContent,
@@ -24,6 +27,7 @@ import {
 import { formatDate } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
+import type { ReactNode } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
 import {
   LuCalendar,
@@ -54,6 +58,7 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
+import { useIsCardCell } from "~/components/Table/components/cardCell";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { kanbanOutputTypes } from "~/modules/settings/settings.models";
@@ -144,7 +149,15 @@ const KanbansTable = memo(
         },
         {
           id: "links",
-          header: "",
+          // A non-empty string header is required for this column to render in
+          // the mobile card view (TableCardRow drops columns whose header is
+          // falsy). Reflect the active output mode so the label stays accurate.
+          header:
+            kanbanOutput === "label"
+              ? t`Label`
+              : kanbanOutput === "url"
+                ? t`Link`
+                : t`QR Code`,
           cell: ({ row }) => (
             <>
               {kanbanOutput === "label" && (
@@ -232,112 +245,35 @@ const KanbansTable = memo(
               )}
               {kanbanOutput === "qrcode" && (
                 <HStack>
-                  <HoverCard>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <HoverCardTrigger>
-                          <Badge
-                            variant="outline"
-                            className="flex flex-row items-center gap-1 cursor-pointer"
-                          >
-                            <LuQrCode />
-                            <Trans>Create</Trans>
-                          </Badge>
-                        </HoverCardTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {t`QR Code to create a ${row.original.replenishmentSystem === "Make" ? "Job" : "Order"} for this kanban`}
-                      </TooltipContent>
-                    </Tooltip>
-                    <HoverCardContent
-                      align="center"
-                      className="size-[236px] overflow-hidden z-[100] bg-white p-4"
-                    >
-                      <iframe
-                        seamless
-                        title={"Kanban QR Code"}
-                        width="198"
-                        height="198"
-                        src={path.to.file.kanbanQrCode(
-                          row.original.id!,
-                          "order"
-                        )}
-                      />
-                    </HoverCardContent>
-                  </HoverCard>
+                  <QrCodeBadge
+                    kanbanId={row.original.id!}
+                    action="order"
+                    label={<Trans>Create</Trans>}
+                    tooltip={t`QR Code to create a ${row.original.replenishmentSystem === "Make" ? "Job" : "Order"} for this kanban`}
+                  />
                   {row.original.replenishmentSystem === "Make" && (
                     <>
-                      <HoverCard>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <HoverCardTrigger>
-                              <Badge
-                                variant="outline"
-                                className="flex flex-row items-center gap-1 cursor-pointer"
-                              >
-                                <LuQrCode />
-                                <Trans>Start</Trans>
-                              </Badge>
-                            </HoverCardTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <Trans>
-                              QR Code to start the next operation for this
-                              kanban
-                            </Trans>
-                          </TooltipContent>
-                        </Tooltip>
-                        <HoverCardContent
-                          align="center"
-                          className="size-[236px] overflow-hidden z-[100] bg-white p-4"
-                        >
-                          <iframe
-                            seamless
-                            title={"Kanban QR Code"}
-                            width="198"
-                            height="198"
-                            src={path.to.file.kanbanQrCode(
-                              row.original.id!,
-                              "start"
-                            )}
-                          />
-                        </HoverCardContent>
-                      </HoverCard>
-
-                      <HoverCard>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <HoverCardTrigger>
-                              <Badge
-                                variant="outline"
-                                className="flex flex-row items-center gap-1 cursor-pointer"
-                              >
-                                <LuQrCode />
-                                Complete
-                              </Badge>
-                            </HoverCardTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
+                      <QrCodeBadge
+                        kanbanId={row.original.id!}
+                        action="start"
+                        label={<Trans>Start</Trans>}
+                        tooltip={
+                          <Trans>
+                            QR Code to start the next operation for this kanban
+                          </Trans>
+                        }
+                      />
+                      <QrCodeBadge
+                        kanbanId={row.original.id!}
+                        action="complete"
+                        label={<Trans>Complete</Trans>}
+                        tooltip={
+                          <Trans>
                             QR Code to complete the current operation for this
                             kanban
-                          </TooltipContent>
-                        </Tooltip>
-                        <HoverCardContent
-                          align="center"
-                          className="size-[236px] overflow-hidden z-[100] bg-white p-4"
-                        >
-                          <iframe
-                            seamless
-                            title={"Kanban QR Code"}
-                            width="198"
-                            height="198"
-                            src={path.to.file.kanbanQrCode(
-                              row.original.id!,
-                              "complete"
-                            )}
-                          />
-                        </HoverCardContent>
-                      </HoverCard>
+                          </Trans>
+                        }
+                      />
                     </>
                   )}
                 </HStack>
@@ -371,7 +307,17 @@ const KanbansTable = memo(
                 </HStack>
               )}
             </>
-          )
+          ),
+          meta: {
+            icon:
+              kanbanOutput === "label" ? (
+                <LuTag />
+              ) : kanbanOutput === "url" ? (
+                <LuLink />
+              ) : (
+                <LuQrCode />
+              )
+          }
         },
         {
           accessorKey: "quantity",
@@ -654,6 +600,76 @@ export default KanbansTable;
 
 function getLocationPath(locationId: string) {
   return `${path.to.kanbans}?location=${locationId}`;
+}
+
+function QrCodeBadge({
+  kanbanId,
+  action,
+  label,
+  tooltip
+}: {
+  kanbanId: string;
+  action: "order" | "start" | "complete";
+  label: ReactNode;
+  tooltip: ReactNode;
+}) {
+  const isCardCell = useIsCardCell();
+  const src = path.to.file.kanbanQrCode(kanbanId, action);
+
+  const badge = (
+    <Badge
+      variant="outline"
+      className="flex flex-row items-center gap-1 cursor-pointer"
+    >
+      <LuQrCode />
+      {label}
+    </Badge>
+  );
+
+  // The mobile card view is touch-only, so the hover-triggered QR preview never
+  // opens. Use a click/tap-triggered popover to show the QR image in place.
+  if (isCardCell) {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>{badge}</PopoverTrigger>
+        <PopoverContent
+          align="center"
+          className="size-[236px] overflow-hidden bg-white p-4"
+        >
+          <iframe
+            seamless
+            title="Kanban QR Code"
+            width="198"
+            height="198"
+            src={src}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <HoverCard>
+      <Tooltip>
+        <TooltipTrigger>
+          <HoverCardTrigger>{badge}</HoverCardTrigger>
+        </TooltipTrigger>
+        <TooltipContent>{tooltip}</TooltipContent>
+      </Tooltip>
+      <HoverCardContent
+        align="center"
+        className="size-[236px] overflow-hidden z-[100] bg-white p-4"
+      >
+        <iframe
+          seamless
+          title="Kanban QR Code"
+          width="198"
+          height="198"
+          src={src}
+        />
+      </HoverCardContent>
+    </HoverCard>
+  );
 }
 
 function CopyBadge({
