@@ -42,6 +42,7 @@ import {
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
+import ItemAttributeSelects from "~/components/Form/ItemAttributeSelects";
 import { ReplenishmentSystemIcon, TrackingTypeIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -300,6 +301,8 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
                   label={t`Short Description`}
                   characterLimit={40}
                 />
+
+                {!isEditing && <ItemAttributeSelects itemType="Tool" />}
 
                 <Select
                   name="replenishmentSystem"

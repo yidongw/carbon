@@ -44,6 +44,7 @@ import {
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
+import ItemAttributeSelects from "~/components/Form/ItemAttributeSelects";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -309,6 +310,8 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                   label={t`Short Description`}
                   characterLimit={40}
                 />
+
+                {!isEditing && <ItemAttributeSelects itemType="Part" />}
 
                 <Select
                   name="replenishmentSystem"

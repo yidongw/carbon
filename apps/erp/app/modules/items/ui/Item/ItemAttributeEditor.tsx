@@ -75,6 +75,27 @@ const ItemAttributeEditor = ({
     [sets, setId]
   );
 
+  // The item's frozen attribute footprint: only the attributes it was created
+  // with (i.e. that it already has a value for). An attribute added to the set
+  // afterwards must not appear for — or gain a value on — this existing item.
+  const itemAttributeIds = useMemo(
+    () =>
+      new Set(
+        Object.entries(selections)
+          .filter(([, ids]) => (ids?.length ?? 0) > 0)
+          .map(([attrId]) => attrId)
+      ),
+    [selections]
+  );
+
+  const itemAttributes = useMemo(
+    () =>
+      (selectedSet?.attributes ?? []).filter((attr) =>
+        itemAttributeIds.has(attr.id)
+      ),
+    [selectedSet, itemAttributeIds]
+  );
+
   const setLabel = (id: string) => {
     const s = sets.find((x) => x.id === id);
     const raw = s?.name || s?.code || id;
@@ -130,7 +151,7 @@ const ItemAttributeEditor = ({
             {selectedSet ? setLabel(selectedSet.id) : attributeSetId}
           </Badge>
         </VStack>
-        {selectedSet?.attributes.map((attr) => (
+        {itemAttributes.map((attr) => (
           <VStack key={attr.id} spacing={1} className="w-full">
             <h4 className="text-xs text-muted-foreground">
               {attrLabel(attr.name)}
@@ -169,7 +190,7 @@ const ItemAttributeEditor = ({
         </Badge>
       </VStack>
 
-      {selectedSet?.attributes.map((attr) => {
+      {itemAttributes.map((attr) => {
         const chosen = selected[attr.id] ?? [];
         const chosenSet = new Set(chosen);
         const available = attr.options

@@ -30,6 +30,21 @@ msgid "(all must match)"
 msgstr "（必须全部匹配）"
 
 #. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
+msgid "Failed to sync material variants"
+msgstr "同步材料规格失败"
+
+msgid "Failed to sync part variants"
+msgstr "同步零件规格失败"
+
+msgid "Failed to sync tool variants"
+msgstr "同步刀具规格失败"
+
+msgid "The selected attribute set is not available for this item type."
+msgstr "所选属性集不适用于该物料类型。"
+
+msgid "Updated attributes"
+msgstr "已更新属性"
+
 msgid "{0} (supplier)"
 msgstr "{0} (供应商)"
 
@@ -13103,6 +13118,9 @@ msgstr "选择要配置的物品"
 
 msgid "Select an option"
 msgstr "选择一个选项"
+
+msgid "Select at least one value for this attribute."
+msgstr "请为此属性至少选择一个值。"
 
 msgid "Select color / size"
 msgstr "选择颜色/尺码"

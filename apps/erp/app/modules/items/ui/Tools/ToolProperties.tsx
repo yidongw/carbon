@@ -41,6 +41,7 @@ import type {
   Tool
 } from "../../types";
 import { FileBadge, ItemDescription, SourcingTypeProperty } from "../Item";
+import ItemAttributeEditor from "../Item/ItemAttributeEditor";
 
 type ToolPropertiesProps = {
   data?: {
@@ -73,6 +74,8 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
     pickMethods: PickMethod[];
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
     tags: { name: string }[];
+    attributeSetId?: string | null;
+    attributeSelections?: Record<string, string[]>;
   }>(path.to.tool(itemId));
   const routeData = data ?? routeDataFromRoute;
 
@@ -483,6 +486,14 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
       <ItemDescription
         value={routeData?.toolSummary?.description ?? ""}
         onChange={(value) => onUpdate("description", value)}
+      />
+
+      <ItemAttributeEditor
+        itemId={itemId}
+        itemType="Tool"
+        attributeSetId={routeDataFromRoute?.attributeSetId ?? null}
+        selections={routeDataFromRoute?.attributeSelections ?? {}}
+        saveAction={path.to.toolAttributes(itemId)}
       />
 
       <VStack spacing={2}>

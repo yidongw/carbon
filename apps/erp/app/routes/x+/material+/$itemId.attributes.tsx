@@ -3,9 +3,9 @@ import { itemAttributesAction } from "~/modules/items/itemAttributes.actions.ser
 import { path } from "~/utils/path";
 
 export async function action(args: ActionFunctionArgs) {
-  return itemAttributesAction(args, path.to.style);
+  return itemAttributesAction(args, path.to.material);
 }
 
-export default function StyleAttributesRoute() {
+export default function MaterialAttributesRoute() {
   return null;
 }

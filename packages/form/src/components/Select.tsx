@@ -33,6 +33,8 @@ export type SelectProps = Omit<SelectBaseProps, "onChange"> & {
   ) => void;
   onConfigure?: () => void;
   emptyMessage?: ReactNode;
+  /** Localize/transform the validation error before rendering it. */
+  formatError?: (error: string) => ReactNode;
   inline?: (
     value: string,
     options: { value: string; label: string | JSX.Element }[]
@@ -49,6 +51,7 @@ const Select = ({
   isLoading,
   options,
   onConfigure,
+  formatError = (error) => error,
   ...props
 }: SelectProps) => {
   const {
@@ -120,7 +123,7 @@ const Select = ({
       />
 
       {error ? (
-        <FormErrorMessage>{error}</FormErrorMessage>
+        <FormErrorMessage>{formatError(error)}</FormErrorMessage>
       ) : (
         helperText && <FormHelperText>{helperText}</FormHelperText>
       )}

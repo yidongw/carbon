@@ -31,6 +31,7 @@ import {
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
+import ItemAttributeSelects from "~/components/Form/ItemAttributeSelects";
 import MaterialDimension from "~/components/Form/MaterialDimension";
 import MaterialFinish from "~/components/Form/MaterialFinish";
 import MaterialGrade from "~/components/Form/MaterialGrade";
@@ -324,6 +325,8 @@ const MaterialForm = ({
                   isClearable
                 />
                 <Array name="sizes" label={t`Sizes`} />
+
+                <ItemAttributeSelects itemType="Material" />
 
                 <ItemStorageFields />
 

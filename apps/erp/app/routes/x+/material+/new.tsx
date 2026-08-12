@@ -6,6 +6,10 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { materialValidator, upsertMaterial } from "~/modules/items";
+import {
+  parseAndValidateItemAttributesForCreate,
+  syncItemAttributesOnCreate
+} from "~/modules/items/itemAttributes.actions.server";
 import { MaterialForm } from "~/modules/items/ui/Materials";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -30,6 +34,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (validation.error) {
     return validationError(validation.error);
+  }
+
+  // The attribute set is optional, but if one is chosen every attribute of it
+  // needs a value. Validate before inserting so nothing partial persists.
+  const { attributeSetId, selections, attributeError } =
+    await parseAndValidateItemAttributesForCreate(client, {
+      formData,
+      itemType: "Material",
+      companyId
+    });
+  if (attributeError) {
+    return validationError(
+      { fieldErrors: { [attributeError.field]: attributeError.message } },
+      validation.data
+    );
   }
 
   const createMaterial = await upsertMaterial(client, {
@@ -58,6 +77,34 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const itemId = createMaterial.data?.id;
   if (!itemId) throw new Error("Material ID not found");
+
+  const { error: attributeSyncError } = await syncItemAttributesOnCreate(
+    client,
+    {
+      itemId,
+      companyId,
+      userId,
+      attributeSetId,
+      selections
+    }
+  );
+  if (attributeSyncError) {
+    return modal
+      ? data(
+          { data: null, error: attributeSyncError },
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync material variants")
+          )
+        )
+      : redirect(
+          path.to.materials,
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync material variants")
+          )
+        );
+  }
 
   return modal
     ? data(createMaterial, { status: 201 })

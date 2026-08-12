@@ -56,6 +56,7 @@ import type {
   SupplierPart
 } from "../../types";
 import { FileBadge, ItemDescription } from "../Item";
+import ItemAttributeEditor from "../Item/ItemAttributeEditor";
 
 type MaterialPropertiesProps = {
   data?: {
@@ -103,6 +104,8 @@ const MaterialProperties = ({ data }: MaterialPropertiesProps) => {
     supplierParts: SupplierPart[];
     pickMethods: PickMethod[];
     tags: { name: string }[];
+    attributeSetId?: string | null;
+    attributeSelections?: Record<string, string[]>;
   }>(path.to.material(itemId));
   const routeData = data ?? routeDataFromRoute;
 
@@ -659,6 +662,14 @@ const MaterialProperties = ({ data }: MaterialPropertiesProps) => {
         <ItemDescription
           value={routeData?.materialSummary?.description ?? ""}
           onChange={(value) => onUpdate("description", value)}
+        />
+
+        <ItemAttributeEditor
+          itemId={itemId}
+          itemType="Material"
+          attributeSetId={routeDataFromRoute?.attributeSetId ?? null}
+          selections={routeDataFromRoute?.attributeSelections ?? {}}
+          saveAction={path.to.materialAttributes(itemId)}
         />
 
         <VStack spacing={2}>

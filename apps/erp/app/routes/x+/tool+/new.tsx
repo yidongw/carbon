@@ -6,6 +6,10 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { toolValidator, upsertTool } from "~/modules/items";
+import {
+  parseAndValidateItemAttributesForCreate,
+  syncItemAttributesOnCreate
+} from "~/modules/items/itemAttributes.actions.server";
 import { ToolForm } from "~/modules/items/ui/Tools";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -32,6 +36,21 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  // The attribute set is optional, but if one is chosen every attribute of it
+  // needs a value. Validate before inserting so nothing partial persists.
+  const { attributeSetId, selections, attributeError } =
+    await parseAndValidateItemAttributesForCreate(client, {
+      formData,
+      itemType: "Tool",
+      companyId
+    });
+  if (attributeError) {
+    return validationError(
+      { fieldErrors: { [attributeError.field]: attributeError.message } },
+      validation.data
+    );
+  }
+
   const createTool = await upsertTool(client, {
     ...validation.data,
     companyId,
@@ -52,6 +71,34 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const itemId = createTool.data?.id;
   if (!itemId) throw new Error("Tool ID not found");
+
+  const { error: attributeSyncError } = await syncItemAttributesOnCreate(
+    client,
+    {
+      itemId,
+      companyId,
+      userId,
+      attributeSetId,
+      selections
+    }
+  );
+  if (attributeSyncError) {
+    return modal
+      ? data(
+          { data: null, error: attributeSyncError },
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync tool variants")
+          )
+        )
+      : redirect(
+          path.to.tools,
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync tool variants")
+          )
+        );
+  }
 
   // The thumbnail is uploaded to a staging path before the item exists. Now
   // that we have the item's id, re-key the object under the item's own folder

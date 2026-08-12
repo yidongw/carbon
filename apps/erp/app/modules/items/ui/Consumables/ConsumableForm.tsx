@@ -34,10 +34,12 @@ import {
 } from "~/components/Form";
 import { TrackingTypeIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 import type { AttributeSetFormOption } from "../../itemAttribute.service";
 import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
 import { consumableValidator, itemTrackingTypes } from "../../items.models";
+import AttributeSelectionValidator from "../AttributeSelectionValidator";
 import ItemStorageFields from "../Item/ItemStorageFields";
 import ItemThumbnailField from "../Item/ItemThumbnailField";
 
@@ -68,6 +70,7 @@ const ConsumableForm = ({
     error: Error | null;
   }>();
   const { t, i18n } = useLingui();
+  const formatError = useFormatValidationError();
 
   useMount(() => {
     attributeSetsFetcher.load(path.to.api.attributeSetsForType("Consumable"));
@@ -235,6 +238,15 @@ const ConsumableForm = ({
                   name="unitOfMeasureCode"
                   label={t`Unit of Measure`}
                 />
+                {!isEditing && (
+                  <AttributeSelectionValidator
+                    id="consumable-attribute-selects"
+                    setChosen={!!selectedSet}
+                    requiredAttributeIds={
+                      selectedSet?.attributes.map((a) => a.id) ?? []
+                    }
+                  />
+                )}
                 {!isEditing && attributeSetOptions.length === 1 ? (
                   <Hidden
                     name="attributeSetId"
@@ -250,6 +262,7 @@ const ConsumableForm = ({
                       setAttributeSetId(option?.value ?? "")
                     }
                     helperText={t`Fabric, Trim, etc. — drives which variant options this item can have`}
+                    formatError={formatError}
                   />
                 ) : null}
                 {!isEditing &&
@@ -267,6 +280,7 @@ const ConsumableForm = ({
                         helper: o.code
                       }))}
                       helperText={t`Selected values become variant SKUs`}
+                      formatError={formatError}
                     />
                   ))}
                 {!isEditing && (

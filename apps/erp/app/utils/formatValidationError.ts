@@ -38,6 +38,8 @@ export const validationErrorMessages: Record<string, MessageDescriptor> = {
   "Method is required": msg`Method is required`,
   "Method type is required": msg`Method type is required`,
   "Item is required": msg`Item is required`,
+  "Select at least one value for this attribute.": msg`Select at least one value for this attribute.`,
+  "The selected attribute set is not available for this item type.": msg`The selected attribute set is not available for this item type.`,
   "Style quantity is required": msg`Style quantity is required`,
   "Style quantity configuration is required": msg`Style quantity configuration is required`,
   "Fixed Asset quantity must be 1": msg`Fixed Asset quantity must be 1`

@@ -6,11 +6,11 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import { consumableValidator, upsertConsumable } from "~/modules/items";
+import { getAttributeSetsForItemType } from "~/modules/items/itemAttribute.service";
 import {
-  getAttributeSetsForItemType,
-  parseAttributeValueSelectionsFromFormData,
-  syncItemVariantsFromSelections
-} from "~/modules/items/itemAttribute.service";
+  parseAndValidateItemAttributesForCreate,
+  syncItemAttributesOnCreate
+} from "~/modules/items/itemAttributes.actions.server";
 import { ConsumableForm } from "~/modules/items/ui/Consumables";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -56,6 +56,23 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  // Backstop for the client-side gate: never persist a consumable that uses an
+  // attribute set without a value for every one of its attributes (the set +
+  // values freeze on create, so it could never be completed later). Validate
+  // before inserting so nothing partial is written.
+  const { attributeSetId, selections, attributeError } =
+    await parseAndValidateItemAttributesForCreate(client, {
+      formData,
+      itemType: "Consumable",
+      companyId
+    });
+  if (attributeError) {
+    return validationError(
+      { fieldErrors: { [attributeError.field]: attributeError.message } },
+      validation.data
+    );
+  }
+
   const createConsumable = await upsertConsumable(client, {
     ...validation.data,
     companyId,
@@ -83,39 +100,35 @@ export async function action({ request }: ActionFunctionArgs) {
   const itemId = createConsumable.data?.id;
   if (!itemId) throw new Error("Consumable ID not found");
 
-  const attributeSetId = validation.data.attributeSetId;
-  if (attributeSetId) {
-    const selections = parseAttributeValueSelectionsFromFormData(formData);
-    const hasSelections = Object.values(selections).some(
-      (ids) => ids.length > 0
-    );
-    if (hasSelections) {
-      const sync = await syncItemVariantsFromSelections(client, {
-        itemId,
-        companyId,
-        userId,
-        attributeSetId,
-        selections,
-        isCreate: true
-      });
-      if (sync.error) {
-        return modal
-          ? data(
-              { data: null, error: sync.error },
-              await flash(
-                request,
-                error(sync.error, "Failed to sync consumable variants")
-              )
-            )
-          : redirect(
-              path.to.consumables,
-              await flash(
-                request,
-                error(sync.error, "Failed to sync consumable variants")
-              )
-            );
-      }
+  // Selections were already validated as complete above. If the sync still fails
+  // (e.g. a downstream variant write), the item is rolled back so it never
+  // persists with an incomplete set of attribute values.
+  const { error: attributeSyncError } = await syncItemAttributesOnCreate(
+    client,
+    {
+      itemId,
+      companyId,
+      userId,
+      attributeSetId,
+      selections
     }
+  );
+  if (attributeSyncError) {
+    return modal
+      ? data(
+          { data: null, error: attributeSyncError },
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync consumable variants")
+          )
+        )
+      : redirect(
+          path.to.consumables,
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync consumable variants")
+          )
+        );
   }
 
   // The thumbnail is uploaded to a staging path before the item exists. Now
