@@ -4174,6 +4174,12 @@ msgstr "Buchungszeile gespeichert"
 msgid "Kanban created"
 msgstr "Kanban erstellt"
 
+msgid "Kanbans created"
+msgstr "Kanbans erstellt"
+
+msgid "Kanbans updated"
+msgstr "Kanbans aktualisiert"
+
 msgid "Khaki"
 msgstr "Khaki"
 

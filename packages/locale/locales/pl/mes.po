@@ -4174,6 +4174,12 @@ msgstr "Zapisano wpis księgowy"
 msgid "Kanban created"
 msgstr "Kanban utworzony"
 
+msgid "Kanbans created"
+msgstr "Kanbany utworzone"
+
+msgid "Kanbans updated"
+msgstr "Zaktualizowane kanbany"
+
 msgid "Khaki"
 msgstr "Khaki"
 

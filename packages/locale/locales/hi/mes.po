@@ -4174,6 +4174,12 @@ msgstr "जनरल जर्नल प्रविष्टि संपाद
 msgid "Kanban created"
 msgstr "कैन्बैन तैयार किया गया"
 
+msgid "Kanbans created"
+msgstr "कैन्बैन तैयार किए गए"
+
+msgid "Kanbans updated"
+msgstr "कान्बैन अपडेट किए गए हैं"
+
 msgid "Khaki"
 msgstr "खाकी"
 

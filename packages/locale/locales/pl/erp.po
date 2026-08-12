@@ -8999,6 +8999,12 @@ msgstr "Wyjście Kanban"
 msgid "Kanbans"
 msgstr "Kanbany"
 
+msgid "Kanbans created"
+msgstr "Kanbany utworzone"
+
+msgid "Kanbans updated"
+msgstr "Zaktualizowane kanbany"
+
 msgid "Keep Current"
 msgstr "Zachowaj bieżące"
 

@@ -4174,6 +4174,12 @@ msgstr "Journal entry saved"
 msgid "Kanban created"
 msgstr "Kanban created"
 
+msgid "Kanbans created"
+msgstr "Kanbans created"
+
+msgid "Kanbans updated"
+msgstr "Kanbans updated"
+
 msgid "Khaki"
 msgstr "Khaki"
 

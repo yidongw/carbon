@@ -4174,6 +4174,12 @@ msgstr "Запись журнала сохранена"
 msgid "Kanban created"
 msgstr "Канбан создан"
 
+msgid "Kanbans created"
+msgstr "Канбаны созданы"
+
+msgid "Kanbans updated"
+msgstr "Канбаны обновлены"
+
 msgid "Khaki"
 msgstr "Хаки"
 

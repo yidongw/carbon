@@ -4174,6 +4174,12 @@ msgstr "Entrada en el diario guardada"
 msgid "Kanban created"
 msgstr "Kanban creado"
 
+msgid "Kanbans created"
+msgstr "Kanbans creados"
+
+msgid "Kanbans updated"
+msgstr "Kanbans actualizados"
+
 msgid "Khaki"
 msgstr "Caqui"
 

@@ -152,13 +152,15 @@ export const kanbanValidator = z
     autoStartJob: zfd.checkbox(),
     completedBarcodeOverride: zfd.text(z.string().optional()),
     quantity: zfd.numeric(
-      z.number().int().min(1, { message: "Quantity must be at least 1" })
+      z.number().int().min(0, { message: "Quantity must be at least 0" })
     ),
     locationId: z.string().min(1, { message: "Location is required" }),
     storageUnitId: zfd.text(z.string().optional()),
     supplierId: zfd.text(z.string().optional()),
     purchaseUnitOfMeasureCode: zfd.text(z.string().optional()),
-    conversionFactor: zfd.numeric(z.number().min(0).default(1))
+    conversionFactor: zfd.numeric(z.number().min(0).default(1)),
+    // FormData-only Style/attribute expand payload — never persisted on kanban.
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine(
     (data) => (data.replenishmentSystem === "Buy" ? !!data.supplierId : true),
@@ -166,7 +168,11 @@ export const kanbanValidator = z
       message: "Supplier is required",
       path: ["supplierId"]
     }
-  );
+  )
+  .refine((data) => data.quantity >= 1 || !!data.variantQuantities, {
+    message: "Quantity must be at least 1",
+    path: ["quantity"]
+  });
 
 export const receiptValidator = z.object({
   id: z.string().min(1),

@@ -8999,6 +8999,12 @@ msgstr "कानबन आउटपुट"
 msgid "Kanbans"
 msgstr "कनबन्स"
 
+msgid "Kanbans created"
+msgstr "कैन्बैन तैयार किए गए"
+
+msgid "Kanbans updated"
+msgstr "कान्बैन अपडेट किए गए हैं"
+
 msgid "Keep Current"
 msgstr "वर्तमान रखें"
 

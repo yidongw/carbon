@@ -4174,6 +4174,12 @@ msgstr "journals事項保存完了"
 msgid "Kanban created"
 msgstr "看板を作成しました"
 
+msgid "Kanbans created"
+msgstr "看板を作成しました"
+
+msgid "Kanbans updated"
+msgstr "看板が更新されました"
+
 msgid "Khaki"
 msgstr "カーキ"
 
