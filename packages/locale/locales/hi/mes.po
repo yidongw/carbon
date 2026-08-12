@@ -1176,7 +1176,7 @@ msgid "Failed to create supplier process"
 msgstr "फ़ैल्यूड संशोधक नहीं बनाएंगे"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "स्टाइल वैरिएंट्स के लिए सप्लायर कोटेशन पंक्तियाँ बनाने में विफल"
 
 msgid "Failed to create tag"
 msgstr "ताका बनाने में व़ला हुआ"
@@ -3744,7 +3744,7 @@ msgid "Failed to update supplier process"
 msgstr "फ़ैल्यो अपडेट संशयकर्ता प्रक्रिया को करने में विफल रहे"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "स्टाइल वैरिएंट्स के लिए सप्लायर कोटेशन पंक्तियाँ अपडेट करने में विफल"
 
 msgid "Failed to update supplier quote status"
 msgstr "संशोधन करणे मिळत नाही - विनिमयक कॉट अवस्था"

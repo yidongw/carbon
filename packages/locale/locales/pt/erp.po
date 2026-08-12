@@ -4997,7 +4997,7 @@ msgid "Failed to create supplier process"
 msgstr "Falhou criar processo de fornecedor"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "Falha ao criar linhas da cotação do fornecedor para variantes de estilo"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
@@ -7707,7 +7707,7 @@ msgid "Failed to update supplier quote line"
 msgstr "Falha ao atualizar linha de cotação do fornecedor"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "Falha ao atualizar linhas da cotação do fornecedor para variantes de estilo"
 
 msgid "Failed to update supplier quote status"
 msgstr "Falhou ao atualizar o status da cotação do fornecedor"

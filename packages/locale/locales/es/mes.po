@@ -1176,7 +1176,7 @@ msgid "Failed to create supplier process"
 msgstr "Falló al crear el proceso del proveedor"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "Falló al crear líneas de cotización de proveedor para variantes de estilo"
 
 msgid "Failed to create tag"
 msgstr "Falló al crear etiqueta"
@@ -3744,7 +3744,7 @@ msgid "Failed to update supplier process"
 msgstr "Falló al actualizar el proceso del proveedor"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "Falló al actualizar líneas de cotización de proveedor para variantes de estilo"
 
 msgid "Failed to update supplier quote status"
 msgstr "Falló al actualizar el estado de la oferta del proveedor"

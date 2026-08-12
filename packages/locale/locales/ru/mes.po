@@ -1176,7 +1176,7 @@ msgid "Failed to create supplier process"
 msgstr "Не удалось создать процесс поставщика"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "Не удалось создать строки предложения поставщика для вариантов стиля"
 
 msgid "Failed to create tag"
 msgstr "Не удалось создать тег"
@@ -3744,7 +3744,7 @@ msgid "Failed to update supplier process"
 msgstr "Не удалось обновить процесс поставщика"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "Не удалось обновить строки предложения поставщика для вариантов стиля"
 
 msgid "Failed to update supplier quote status"
 msgstr "Не удалось обновить статус предложения поставщика"

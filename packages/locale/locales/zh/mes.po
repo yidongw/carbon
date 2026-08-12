@@ -1177,7 +1177,7 @@ msgid "Failed to create supplier process"
 msgstr "创建供应商工序失败"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "创建款式规格供应商报价行失败"
 
 msgid "Failed to create tag"
 msgstr "创建标签失败"
@@ -3745,7 +3745,7 @@ msgid "Failed to update supplier process"
 msgstr "更新供应商工序失败"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "更新款式规格供应商报价行失败"
 
 msgid "Failed to update supplier quote status"
 msgstr "更新供应商报价状态失败"

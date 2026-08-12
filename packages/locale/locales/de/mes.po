@@ -1176,7 +1176,7 @@ msgid "Failed to create supplier process"
 msgstr "Fehler beim Erstellen des Lieferanten-Prozesses"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "Fehler beim Erstellen von Lieferantenangebotszeilen für Stilvarianten"
 
 msgid "Failed to create tag"
 msgstr "Fehler beim Erstellen des Tags"
@@ -3744,7 +3744,7 @@ msgid "Failed to update supplier process"
 msgstr "Fehler beim Aktualisieren des Lieferanten-Prozesses"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "Fehler beim Aktualisieren von Lieferantenangebotszeilen für Stilvarianten"
 
 msgid "Failed to update supplier quote status"
 msgstr "Fehler beim Aktualisieren des Lieferanten-Auflagenstatus"

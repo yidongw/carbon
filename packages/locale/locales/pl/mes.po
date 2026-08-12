@@ -1176,7 +1176,7 @@ msgid "Failed to create supplier process"
 msgstr "Niedostępna do stworzenia procesu dostawcy"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "Nie udało się utworzyć pozycji wyceny dostawcy dla wariantów stylu"
 
 msgid "Failed to create tag"
 msgstr "Nie udało się utworzyć etykiety"
@@ -3744,7 +3744,7 @@ msgid "Failed to update supplier process"
 msgstr "Nie udało się zaktualizować procesu dostawcy"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "Nie udało się zaktualizować pozycji wyceny dostawcy dla wariantów stylu"
 
 msgid "Failed to update supplier quote status"
 msgstr "Nie udało się zaktualizować-status dostawcy cenowego"

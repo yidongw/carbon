@@ -4997,7 +4997,7 @@ msgid "Failed to create supplier process"
 msgstr "failed to create supplier process"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "スタイルバリアントの仕入先見積明細を作成できませんでした"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
@@ -7707,7 +7707,7 @@ msgid "Failed to update supplier quote line"
 msgstr "仕入先見積行の更新に失敗しました"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "スタイルバリアントの仕入先見積明細を更新できませんでした"
 
 msgid "Failed to update supplier quote status"
 msgstr "サプライヤーの見積もりステータスを更新できませんでした"

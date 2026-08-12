@@ -1176,7 +1176,7 @@ msgid "Failed to create supplier process"
 msgstr "サプライヤープロセスの作成に失敗しました"
 
 msgid "Failed to create supplier quote lines for style variants"
-msgstr ""
+msgstr "スタイルバリアントの仕入先見積明細を作成できませんでした"
 
 msgid "Failed to create tag"
 msgstr "タグの作成に失敗しました"
@@ -3744,7 +3744,7 @@ msgid "Failed to update supplier process"
 msgstr "サプライヤープロセスの更新に失敗しました"
 
 msgid "Failed to update supplier quote lines for style variants"
-msgstr ""
+msgstr "スタイルバリアントの仕入先見積明細を更新できませんでした"
 
 msgid "Failed to update supplier quote status"
 msgstr "サプライヤーの見込み価格ステータスの更新に失敗しました"
