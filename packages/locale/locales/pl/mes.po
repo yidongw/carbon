@@ -3206,8 +3206,17 @@ msgstr "Niedostępne do zatrzymania zdarzenie"
 msgid "Failed to sync consumable variants"
 msgstr "Nie udało się zsynchronizować wariantów zużycia"
 
+msgid "Failed to sync material variants"
+msgstr "Nie udało się zsynchronizować wariantów materiałów"
+
+msgid "Failed to sync part variants"
+msgstr "Nie udało się zsynchronizować wariantów części"
+
 msgid "Failed to sync procedure"
 msgstr "Nie udało się zsynchronizować procedury"
+
+msgid "Failed to sync tool variants"
+msgstr "Nie udało się zsynchronizować wersji narzędzi"
 
 msgid "Failed to trigger rework"
 msgstr "Niedostępne do uruchomienia ponownego przetworzenia"
@@ -3248,6 +3257,9 @@ msgstr "Nie udało się zaktualizować zbioru atrybutów"
 msgid "Failed to update attribute value"
 msgstr "Nie udało się zaktualizować wartości atrybutu"
 
+msgid "Failed to update attributes"
+msgstr "Nie udało się zaktualizować atrybutów"
+
 msgid "Failed to update avatar"
 msgstr "Nie udało się zaktualizować obrazka profilowego"
 
@@ -3259,9 +3271,6 @@ msgstr "Nie udało się zaktualizować firmy"
 
 msgid "Failed to update consumable"
 msgstr "Nie udało się zaktualizować zużycia"
-
-msgid "Failed to update consumable attributes"
-msgstr "Nie udało się zaktualizować atrybutów zużycia"
 
 msgid "Failed to update consumable costing"
 msgstr "Nie udało sięaktualizować kosztuwania zużycia"
@@ -3676,9 +3685,6 @@ msgstr "Nie udało się zaktualizować typu magazynowego"
 
 msgid "Failed to update storageUnit"
 msgstr "Nie udało się zaktualizować jednostki magazynowej"
-
-msgid "Failed to update style attributes"
-msgstr "Nie udało się zaktualizować atrybutów stylu"
 
 msgid "Failed to update style costing"
 msgstr "Nie udało sięaktualizować kosztu stylu"
@@ -5464,6 +5470,9 @@ msgstr "Zaplecze utworzone"
 msgid "Style"
 msgstr "Styl"
 
+msgid "Style created"
+msgstr "Styl utworzony"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "Warianty stylu brakują dla jednego lub większej liczby kombinacji atrybutów. Otwórz styl i zapisz wybrane opcje atrybutów najpierw."
 
@@ -6007,14 +6016,14 @@ msgstr "Zaktualizowana zestaw atrybutów"
 msgid "Updated attribute value"
 msgstr "Zaktualizowana wartość atrybutu"
 
+msgid "Updated attributes"
+msgstr "Zaktualizowane atrybuty"
+
 msgid "Updated company"
 msgstr "Zaktualizowana firma"
 
 msgid "Updated consumable"
 msgstr "Zaktualizowany zużywalny"
-
-msgid "Updated consumable attributes"
-msgstr "Zaktualizowane parametry zużycia"
 
 msgid "Updated consumable costing"
 msgstr "Zaktualizowane koszty zużycia"
@@ -6261,9 +6270,6 @@ msgstr "Zaktualizowana forma magazynowania"
 
 msgid "Updated storageUnit"
 msgstr "Zaktualizowana jednostka przechowywania"
-
-msgid "Updated style attributes"
-msgstr "Zaktualizowane atrybuty stylu"
 
 msgid "Updated style costing"
 msgstr "Zaktualizowane stylowe koszty"

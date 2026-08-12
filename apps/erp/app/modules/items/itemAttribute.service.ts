@@ -1273,46 +1273,108 @@ export async function getAttributeSetFormOptionsForItemType(
       name: string;
     }>;
 
-    const out: AttributeSetFormOption[] = [];
-    for (const set of sets) {
-      const { data: setAttrs, error: setAttrErr } = await db
-        .from("itemAttributeSetAttribute")
-        .select(
-          "attributeId, sortOrder, itemAttribute:attributeId(id, code, name)"
-        )
-        .eq("attributeSetId", set.id)
-        .order("sortOrder", { ascending: true });
-      if (setAttrErr) throw setAttrErr;
+    if (sets.length === 0) {
+      return { data: [], error: null };
+    }
 
-      const attributes: AttributeSetFormAttribute[] = [];
-      for (const row of setAttrs ?? []) {
-        const attr = row.itemAttribute as {
+    // Two batched queries instead of N+1 (per set × per attribute).
+    const setIds = sets.map((s) => s.id);
+    const { data: setAttrs, error: setAttrErr } = await db
+      .from("itemAttributeSetAttribute")
+      .select(
+        "attributeSetId, attributeId, sortOrder, itemAttribute:attributeId(id, code, name)"
+      )
+      .in("attributeSetId", setIds)
+      .order("sortOrder", { ascending: true });
+    if (setAttrErr) throw setAttrErr;
+
+    type SetAttrRow = {
+      attributeSetId: string;
+      attributeId: string;
+      sortOrder: number | null;
+      itemAttribute: { id: string; code: string; name: string } | null;
+    };
+    const rows = (setAttrs ?? []) as SetAttrRow[];
+    const attributeIds = [
+      ...new Set(
+        rows
+          .map((r) => r.itemAttribute?.id)
+          .filter((id): id is string => Boolean(id))
+      )
+    ];
+
+    const optionsByAttributeId = new Map<string, AttributeValueOption[]>();
+    if (attributeIds.length > 0) {
+      const { data: valueRows, error: valueErr } = await db
+        .from("itemAttributeValue")
+        .select("id, attributeId, code, name, sortOrder, companyId")
+        .in("attributeId", attributeIds)
+        .or(`companyId.eq.${companyId},companyId.is.null`)
+        .order("sortOrder", { ascending: true })
+        .order("code", { ascending: true });
+      if (valueErr) throw valueErr;
+
+      // Prefer company-specific rows over global when codes collide (same as
+      // getAttributeValueOptions).
+      const byAttrAndCode = new Map<
+        string,
+        {
           id: string;
+          attributeId: string;
           code: string;
-          name: string;
-        } | null;
-        if (!attr) continue;
-        const values = await getAttributeValueOptions(client, {
-          attributeId: attr.id,
-          companyId
-        });
-        if (values.error) throw values.error;
-        attributes.push({
-          id: attr.id,
-          code: attr.code,
-          name: attr.name,
-          sortOrder: row.sortOrder ?? 100,
-          options: values.data
-        });
+          name: string | null;
+          sortOrder: number;
+          companyId: string | null;
+        }
+      >();
+      for (const v of valueRows ?? []) {
+        const key = `${v.attributeId}::${v.code}`;
+        const existing = byAttrAndCode.get(key);
+        if (!existing || (v.companyId && !existing.companyId)) {
+          byAttrAndCode.set(key, v);
+        }
       }
 
-      out.push({
-        id: set.id,
-        code: set.code,
-        name: set.name,
-        attributes
-      });
+      for (const v of byAttrAndCode.values()) {
+        const list = optionsByAttributeId.get(v.attributeId) ?? [];
+        list.push({
+          id: v.id,
+          code: v.code,
+          name: v.name ?? v.code,
+          sortOrder: v.sortOrder ?? 100
+        });
+        optionsByAttributeId.set(v.attributeId, list);
+      }
+
+      for (const [attrId, list] of optionsByAttributeId) {
+        list.sort(
+          (a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code)
+        );
+        optionsByAttributeId.set(attrId, list);
+      }
     }
+
+    const attrsBySetId = new Map<string, AttributeSetFormAttribute[]>();
+    for (const row of rows) {
+      const attr = row.itemAttribute;
+      if (!attr) continue;
+      const list = attrsBySetId.get(row.attributeSetId) ?? [];
+      list.push({
+        id: attr.id,
+        code: attr.code,
+        name: attr.name,
+        sortOrder: row.sortOrder ?? 100,
+        options: optionsByAttributeId.get(attr.id) ?? []
+      });
+      attrsBySetId.set(row.attributeSetId, list);
+    }
+
+    const out: AttributeSetFormOption[] = sets.map((set) => ({
+      id: set.id,
+      code: set.code,
+      name: set.name,
+      attributes: attrsBySetId.get(set.id) ?? []
+    }));
 
     return { data: out, error: null };
   } catch (error) {

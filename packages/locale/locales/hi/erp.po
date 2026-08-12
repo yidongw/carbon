@@ -229,9 +229,6 @@ msgstr "एक बिक्रय आदेश पंक्ति किसी �
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "एक बिक्रय उद्धरण अनुरोध (RFQ) भागों और मात्राओं के एक सेट पर मूल्य निर्धारण के लिए एक ग्राहक पूछताछ है। इसके परिणामस्वरूप एक उद्धरण हो सकता है।"
 
-msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
-msgstr "एक शैली में उस परिधान या जूता वस्तु की जानकारी होती है जिसे काटा, बंडल किया और आगे उत्पादित किया जाता है।"
-
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "एक उपकरण एक भौतिक वस्तु है जिसका उपयोग एक भाग बनाने के लिए किया जाता है जिसे कई कार्यों में उपयोग किया जा सकता है"
 
@@ -567,6 +564,9 @@ msgstr "स्पेयर पार्ट जोड़ें"
 
 msgid "Add Step"
 msgstr "स्टेप जोड़ें"
+
+msgid "Add Style"
+msgstr "अपना स्टाइल जोड़ें"
 
 msgid "Add Supplier"
 msgstr "आपूर्तिकर्ता जोड़ें"
@@ -4980,7 +4980,7 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाने �
 msgid "Failed to create storage type: {0}"
 msgstr "भंडारण प्रकार बनाने में विफल: {0}"
 
-#. placeholder {0}: fetcher.data.error.message
+#. placeholder {0}: localFetcher.data.error.message
 msgid "Failed to create style: {0}"
 msgstr "शैली बनाने में विफल: {0}"
 
@@ -7148,8 +7148,17 @@ msgstr "अवस्थायों को रटने में व नही�
 msgid "Failed to sync consumable variants"
 msgstr "संपादित वेरिएंट्स को सकन में लाना फलताही रहा है"
 
+msgid "Failed to sync material variants"
+msgstr "मटेरियल वैक्टर्स को ससंचयन में फ़लाव आया है"
+
+msgid "Failed to sync part variants"
+msgstr "पार्ट वैरिएंट्स को ससकयले फळा हुआ है"
+
 msgid "Failed to sync procedure"
 msgstr "प्रक्रिया सागन नहीं हो पया"
+
+msgid "Failed to sync tool variants"
+msgstr "फैलेड टूल वरिएंट्स को ससे साइन करने में"
 
 msgid "Failed to track serial number"
 msgstr "सीरियल नंबर का प्रॉक्सी नहीं लगाया मेहनत की"
@@ -7216,9 +7225,6 @@ msgstr "कॉन्फ़िगरेशन पैरामीटर को अ
 
 msgid "Failed to update consumable"
 msgstr "गतिविधि अपडेट करने में फाल्टी"
-
-msgid "Failed to update consumable attributes"
-msgstr "अनुप्रयोग्य गुणधर्मों का अपडेट विफल रहा"
 
 msgid "Failed to update consumable costing"
 msgstr "अनुपयोगी लागत अपडेट करने में वफ़्दा है"
@@ -7640,9 +7646,6 @@ msgstr "स्टोरेज प्रकार अपडेट करने �
 msgid "Failed to update storageUnit"
 msgstr "स्टोरेज यूनिट अपडेट करने में वासी हुआ"
 
-msgid "Failed to update style attributes"
-msgstr "stile अत्रिब्यूट्स अपडेट करने में वफ़ादार नहीं हो सके"
-
 msgid "Failed to update style costing"
 msgstr "stile की लागत अपडेट होने में फाल्टी रही"
 
@@ -8063,6 +8066,9 @@ msgstr "गैलन"
 
 msgid "Garment"
 msgstr "सरंगी"
+
+msgid "Garment or footwear for cutting and production."
+msgstr "काटने और उत्पादन के लिए कपड़ा या सूजन।"
 
 msgid "Gauge"
 msgstr "गेज"
@@ -13103,6 +13109,9 @@ msgstr "कॉन्फ़िगर करने के लिए एक आइ�
 msgid "Select an option"
 msgstr "एक विकल्प चुनें"
 
+msgid "Select at least one value for this attribute."
+msgstr "इस गुणांक के लिए एक उत्तर चयन करें, जो कम से कम एक मूल्य हो।"
+
 msgid "Select color / size"
 msgstr "चयन करें रंग / आकार"
 
@@ -13935,6 +13944,9 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Style"
 msgstr "शैली"
 
+msgid "Style created"
+msgstr "स्टाइल योजना की गई है"
+
 msgid "Style Details"
 msgstr "शैली विवरण"
 
@@ -14695,6 +14707,9 @@ msgstr "उद्धरण को एक संशोधन प्रत्य�
 msgid "The revision number of the part"
 msgstr "भाग की संशोधन संख्या"
 
+msgid "The selected attribute set is not available for this item type."
+msgstr "इस आइटम प्रकार के लिए चयनित संरचना उपलब्ध नहीं है।"
+
 msgid "The size of the part"
 msgstr "भाग का आकार"
 
@@ -15347,6 +15362,9 @@ msgstr "अपडेट विशिष्टता सेट"
 msgid "Updated attribute value"
 msgstr "अपडेट दिए गए प्रांत का मूल्य"
 
+msgid "Updated attributes"
+msgstr "अपडेट डिटाल्स"
+
 msgid "Updated By"
 msgstr "अपडेट किया गया"
 
@@ -15355,9 +15373,6 @@ msgstr "अपडेट विनियमन"
 
 msgid "Updated consumable"
 msgstr "अपडेट दिया गया संवर्धन"
-
-msgid "Updated consumable attributes"
-msgstr "अपडेट दिए गए परिस्परण के संप्रभावों"
 
 msgid "Updated consumable costing"
 msgstr "अपडेट खर्चित कस्टिंग"
@@ -15604,9 +15619,6 @@ msgstr "अपडेट डायनामिक प्रकार"
 
 msgid "Updated storageUnit"
 msgstr "अपडेट डायनामिक स्टोरेज इकाई"
-
-msgid "Updated style attributes"
-msgstr "अपडेट डिजाइन सूत्रांक"
 
 msgid "Updated style costing"
 msgstr "अपडेट डिजाइन की लागत"

@@ -5,6 +5,7 @@ import {
 import { MultiSelect, Select } from "@carbon/form";
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
+import type { AttributeSetFormOption } from "~/modules/items/itemAttribute.service";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import AttributeSelectionValidator from "~/modules/items/ui/AttributeSelectionValidator";
 import { useItemAttributeSetOptions } from "~/modules/items/ui/useItemAttributeSetOptions";
@@ -14,6 +15,8 @@ type ItemAttributeSelectsProps = {
   /** Item type whose attribute set drives the fields (e.g. "Style"). */
   itemType: string;
   maxPreview?: number;
+  /** Prefetched sets from a route/overlay loader — skips the client API load. */
+  attributeSets?: AttributeSetFormOption[];
 };
 
 /**
@@ -35,11 +38,12 @@ type ItemAttributeSelectsProps = {
  */
 const ItemAttributeSelects = ({
   itemType,
-  maxPreview = 3
+  maxPreview = 3,
+  attributeSets
 }: ItemAttributeSelectsProps) => {
   const { t, i18n } = useLingui();
   const formatError = useFormatValidationError();
-  const { sets } = useItemAttributeSetOptions(itemType);
+  const { sets } = useItemAttributeSetOptions(itemType, attributeSets);
 
   const options = sets.map((s) => ({
     value: s.id,

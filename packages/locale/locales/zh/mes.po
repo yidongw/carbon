@@ -2455,10 +2455,10 @@ msgid "Failed to insert template"
 msgstr "插入模板失败"
 
 msgid "Failed to insert tool"
-msgstr "插入刀具失败"
+msgstr "插入工具失败"
 
 msgid "Failed to insert tool inventory"
-msgstr "插入刀具库存失败"
+msgstr "插入工具库存失败"
 
 msgid "Failed to insert training question"
 msgstr "插入培训问题失败"
@@ -2914,22 +2914,22 @@ msgid "Failed to load timecard entries"
 msgstr "加载时间卡条目失败"
 
 msgid "Failed to load tool costing"
-msgstr "加载刀具成本失败"
+msgstr "加载工具成本失败"
 
 msgid "Failed to load tool inventory"
-msgstr "加载刀具库存失败"
+msgstr "加载工具库存失败"
 
 msgid "Failed to load tool planning"
-msgstr "加载刀具计划失败"
+msgstr "加载工具计划失败"
 
 msgid "Failed to load tool purchasing"
 msgstr "加载工具采购失败"
 
 msgid "Failed to load tool quantities"
-msgstr "加载刀具数量失败"
+msgstr "加载工具数量失败"
 
 msgid "Failed to load tool summary"
-msgstr "加载刀具概要失败"
+msgstr "加载工具概要失败"
 
 msgid "Failed to load tracked entity"
 msgstr "加载跟踪实体失败"
@@ -3207,8 +3207,17 @@ msgstr "停止事件失败"
 msgid "Failed to sync consumable variants"
 msgstr "同步消耗件规格失败"
 
+msgid "Failed to sync material variants"
+msgstr "同步物料规格失败"
+
+msgid "Failed to sync part variants"
+msgstr "同步零件规格失败"
+
 msgid "Failed to sync procedure"
 msgstr "同步工序失败"
+
+msgid "Failed to sync tool variants"
+msgstr "同步工具规格失败"
 
 msgid "Failed to trigger rework"
 msgstr "触发重工失败"
@@ -3249,6 +3258,9 @@ msgstr "更新属性集失败"
 msgid "Failed to update attribute value"
 msgstr "更新属性值失败"
 
+msgid "Failed to update attributes"
+msgstr "更新属性失败"
+
 msgid "Failed to update avatar"
 msgstr "更新头像失败"
 
@@ -3260,9 +3272,6 @@ msgstr "更新公司信息失败"
 
 msgid "Failed to update consumable"
 msgstr "更新消耗品失败"
-
-msgid "Failed to update consumable attributes"
-msgstr "更新消耗属性失败"
 
 msgid "Failed to update consumable costing"
 msgstr "更新消耗物料成本失败"
@@ -3478,7 +3487,7 @@ msgid "Failed to update method operation step"
 msgstr "更新方法操作步骤失败"
 
 msgid "Failed to update method operation tool"
-msgstr "更新工艺操作刀具失败"
+msgstr "更新工艺操作工具失败"
 
 msgid "Failed to update no quote reason"
 msgstr "未更新无报价原因失败"
@@ -3678,9 +3687,6 @@ msgstr "更新存储类型失败"
 msgid "Failed to update storageUnit"
 msgstr "更新存储单元失败"
 
-msgid "Failed to update style attributes"
-msgstr "更新样式属性失败"
-
 msgid "Failed to update style costing"
 msgstr "更新款式成本失败"
 
@@ -3739,22 +3745,22 @@ msgid "Failed to update timecard"
 msgstr "更新工时记录失败"
 
 msgid "Failed to update tool"
-msgstr "更新刀具失败"
+msgstr "更新工具失败"
 
 msgid "Failed to update tool costing"
-msgstr "更新刀具成本失败"
+msgstr "更新工具成本失败"
 
 msgid "Failed to update tool inventory"
-msgstr "更新刀具库存失败"
+msgstr "更新工具库存失败"
 
 msgid "Failed to update tool manufacturing"
-msgstr "更新刀具制造失败"
+msgstr "更新工具制造失败"
 
 msgid "Failed to update tool planning"
-msgstr "更新刀具计划失败"
+msgstr "更新工具计划失败"
 
 msgid "Failed to update tool purchasing"
-msgstr "更新刀具采购失败"
+msgstr "更新工具采购失败"
 
 msgid "Failed to update tracking"
 msgstr "更新跟踪失败"
@@ -5465,6 +5471,9 @@ msgstr "已创建存储单元"
 msgid "Style"
 msgstr "款式"
 
+msgid "Style created"
+msgstr "已创建样式"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "缺少一种或多种属性组合的款式规格。请先打开款式并保存属性选择再操作。"
 
@@ -6008,14 +6017,14 @@ msgstr "已更新属性集"
 msgid "Updated attribute value"
 msgstr "已更新属性值"
 
+msgid "Updated attributes"
+msgstr "已更新属性"
+
 msgid "Updated company"
 msgstr "已更新公司"
 
 msgid "Updated consumable"
 msgstr "已更新消耗品"
-
-msgid "Updated consumable attributes"
-msgstr "已更新消耗属性"
 
 msgid "Updated consumable costing"
 msgstr "已更新消耗品成本估算"
@@ -6263,9 +6272,6 @@ msgstr "已更新存储类型"
 msgid "Updated storageUnit"
 msgstr "已更新存储单元"
 
-msgid "Updated style attributes"
-msgstr "已更新样式属性"
-
 msgid "Updated style costing"
 msgstr "已更新款式成本估算"
 
@@ -6315,13 +6321,13 @@ msgid "Updated tool costing"
 msgstr "已更新工具成本"
 
 msgid "Updated tool inventory"
-msgstr "已更新刀具库存"
+msgstr "已更新工具库存"
 
 msgid "Updated tool manufacturing"
-msgstr "已更新刀具制造"
+msgstr "已更新工具制造"
 
 msgid "Updated tool planning"
-msgstr "已更新刀具计划"
+msgstr "已更新工具计划"
 
 msgid "Updated tool purchasing"
 msgstr "已更新工具采购"

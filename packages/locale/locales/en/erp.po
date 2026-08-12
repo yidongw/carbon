@@ -29,21 +29,6 @@ msgid "(all must match)"
 msgstr "(all must match)"
 
 #. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
-msgid "Failed to sync material variants"
-msgstr "Failed to sync material variants"
-
-msgid "Failed to sync part variants"
-msgstr "Failed to sync part variants"
-
-msgid "Failed to sync tool variants"
-msgstr "Failed to sync tool variants"
-
-msgid "The selected attribute set is not available for this item type."
-msgstr "The selected attribute set is not available for this item type."
-
-msgid "Updated attributes"
-msgstr "Updated attributes"
-
 msgid "{0} (supplier)"
 msgstr "{0} (supplier)"
 
@@ -243,9 +228,6 @@ msgstr "A sales order line contains order details for a particular item"
 
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
-
-msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
-msgstr "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
 
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "A tool is a physical item used to make a part that can be used across multiple jobs"
@@ -582,6 +564,9 @@ msgstr "Add Spare Part"
 
 msgid "Add Step"
 msgstr "Add Step"
+
+msgid "Add Style"
+msgstr "Add Style"
 
 msgid "Add Supplier"
 msgstr "Add Supplier"
@@ -4995,7 +4980,7 @@ msgstr "Failed to create stock transfer line: {0}"
 msgid "Failed to create storage type: {0}"
 msgstr "Failed to create storage type: {0}"
 
-#. placeholder {0}: fetcher.data.error.message
+#. placeholder {0}: localFetcher.data.error.message
 msgid "Failed to create style: {0}"
 msgstr "Failed to create style: {0}"
 
@@ -7163,8 +7148,17 @@ msgstr "Failed to stop event"
 msgid "Failed to sync consumable variants"
 msgstr "Failed to sync consumable variants"
 
+msgid "Failed to sync material variants"
+msgstr "Failed to sync material variants"
+
+msgid "Failed to sync part variants"
+msgstr "Failed to sync part variants"
+
 msgid "Failed to sync procedure"
 msgstr "Failed to sync procedure"
+
+msgid "Failed to sync tool variants"
+msgstr "Failed to sync tool variants"
 
 msgid "Failed to track serial number"
 msgstr "Failed to track serial number"
@@ -7231,9 +7225,6 @@ msgstr "Failed to update configuration parameter"
 
 msgid "Failed to update consumable"
 msgstr "Failed to update consumable"
-
-msgid "Failed to update consumable attributes"
-msgstr "Failed to update consumable attributes"
 
 msgid "Failed to update consumable costing"
 msgstr "Failed to update consumable costing"
@@ -7655,9 +7646,6 @@ msgstr "Failed to update storage type"
 msgid "Failed to update storageUnit"
 msgstr "Failed to update storageUnit"
 
-msgid "Failed to update style attributes"
-msgstr "Failed to update style attributes"
-
 msgid "Failed to update style costing"
 msgstr "Failed to update style costing"
 
@@ -8078,6 +8066,9 @@ msgstr "Gallon"
 
 msgid "Garment"
 msgstr "Garment"
+
+msgid "Garment or footwear for cutting and production."
+msgstr "Garment or footwear for cutting and production."
 
 msgid "Gauge"
 msgstr "Gauge"
@@ -13953,6 +13944,9 @@ msgstr "Store a fixed number of days on this item. Expiry start date is set on e
 msgid "Style"
 msgstr "Style"
 
+msgid "Style created"
+msgstr "Style created"
+
 msgid "Style Details"
 msgstr "Style Details"
 
@@ -14713,6 +14707,9 @@ msgstr "The quote will be copied with a revision suffix"
 msgid "The revision number of the part"
 msgstr "The revision number of the part"
 
+msgid "The selected attribute set is not available for this item type."
+msgstr "The selected attribute set is not available for this item type."
+
 msgid "The size of the part"
 msgstr "The size of the part"
 
@@ -15365,6 +15362,9 @@ msgstr "Updated attribute set"
 msgid "Updated attribute value"
 msgstr "Updated attribute value"
 
+msgid "Updated attributes"
+msgstr "Updated attributes"
+
 msgid "Updated By"
 msgstr "Updated By"
 
@@ -15373,9 +15373,6 @@ msgstr "Updated company"
 
 msgid "Updated consumable"
 msgstr "Updated consumable"
-
-msgid "Updated consumable attributes"
-msgstr "Updated consumable attributes"
 
 msgid "Updated consumable costing"
 msgstr "Updated consumable costing"
@@ -15622,9 +15619,6 @@ msgstr "Updated storage type"
 
 msgid "Updated storageUnit"
 msgstr "Updated storageUnit"
-
-msgid "Updated style attributes"
-msgstr "Updated style attributes"
 
 msgid "Updated style costing"
 msgstr "Updated style costing"

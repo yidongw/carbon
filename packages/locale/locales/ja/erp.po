@@ -229,9 +229,6 @@ msgstr "販売注文行には、特定の品目の注文詳細が含まれてい
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "営業見積依頼（RFQ）は、一連の部品と数量の価格設定に関する顧客からの問い合わせです。見積書につながる可能性があります。"
 
-msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
-msgstr "スタイルには、裁断・バンドル化され、下流で生産される衣料品または履物品目の情報が含まれます。"
-
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "ツールは、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
 
@@ -567,6 +564,9 @@ msgstr "スペアパーツを追加"
 
 msgid "Add Step"
 msgstr "ステップを追加"
+
+msgid "Add Style"
+msgstr "スタイルを追加"
 
 msgid "Add Supplier"
 msgstr "サプライヤーを追加"
@@ -4980,7 +4980,7 @@ msgstr "在庫移動行の作成に失敗しました: {0}"
 msgid "Failed to create storage type: {0}"
 msgstr "ストレージタイプの作成に失敗しました: {0}"
 
-#. placeholder {0}: fetcher.data.error.message
+#. placeholder {0}: localFetcher.data.error.message
 msgid "Failed to create style: {0}"
 msgstr "スタイルの作成に失敗しました: {0}"
 
@@ -7148,8 +7148,17 @@ msgstr "イベント停止に失敗しました"
 msgid "Failed to sync consumable variants"
 msgstr "消費材変種同期に失敗しました"
 
+msgid "Failed to sync material variants"
+msgstr "材料変種同期に失敗しました"
+
+msgid "Failed to sync part variants"
+msgstr "同期に失敗しました：部品変種"
+
 msgid "Failed to sync procedure"
 msgstr "同期に失敗しました"
+
+msgid "Failed to sync tool variants"
+msgstr "ツール変種同期に失敗しました"
 
 msgid "Failed to track serial number"
 msgstr "シリアル番号の追跡に失敗しました"
@@ -7216,9 +7225,6 @@ msgstr "設定パラメータの更新に失敗しました"
 
 msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
-
-msgid "Failed to update consumable attributes"
-msgstr "消費品属性の更新に失敗しました"
 
 msgid "Failed to update consumable costing"
 msgstr "消費材コスト更新に失敗しました"
@@ -7640,9 +7646,6 @@ msgstr "ストレージタイプの更新に失敗しました"
 msgid "Failed to update storageUnit"
 msgstr "ストレージ単位の更新に失敗しました"
 
-msgid "Failed to update style attributes"
-msgstr "スタイル属性の更新に失敗しました"
-
 msgid "Failed to update style costing"
 msgstr "スタイルコスト更新に失敗しました"
 
@@ -8063,6 +8066,9 @@ msgstr "ガロン"
 
 msgid "Garment"
 msgstr "衣料品"
+
+msgid "Garment or footwear for cutting and production."
+msgstr "カットおよび生産用の衣料品または靴"
 
 msgid "Gauge"
 msgstr "ゲージ"
@@ -13103,6 +13109,9 @@ msgstr "設定するアイテムを選択"
 msgid "Select an option"
 msgstr "オプションを選択"
 
+msgid "Select at least one value for this attribute."
+msgstr "この属性には少なくとも1つの値を選択してください。"
+
 msgid "Select color / size"
 msgstr "色を選択 / サイズを選択"
 
@@ -13935,6 +13944,9 @@ msgstr "このアイテムの固定日数を保存します。有効期限の開
 msgid "Style"
 msgstr "スタイル"
 
+msgid "Style created"
+msgstr "スタイル作成完了"
+
 msgid "Style Details"
 msgstr "スタイルの詳細"
 
@@ -14695,6 +14707,9 @@ msgstr "見積書は改訂サフィックス付きでコピーされます"
 msgid "The revision number of the part"
 msgstr "部品のリビジョン番号"
 
+msgid "The selected attribute set is not available for this item type."
+msgstr "このアイテムタイプ对于此已选属性集不可用。"
+
 msgid "The size of the part"
 msgstr "部品のサイズ"
 
@@ -15347,6 +15362,9 @@ msgstr "更新された属性セット"
 msgid "Updated attribute value"
 msgstr "更新された属性値"
 
+msgid "Updated attributes"
+msgstr "更新された属性"
+
 msgid "Updated By"
 msgstr "更新者"
 
@@ -15355,9 +15373,6 @@ msgstr "更新された会社"
 
 msgid "Updated consumable"
 msgstr "更新済みの消耗品"
-
-msgid "Updated consumable attributes"
-msgstr "更新された消耗品属性"
 
 msgid "Updated consumable costing"
 msgstr "更新された消耗品コスト"
@@ -15604,9 +15619,6 @@ msgstr "更新された保管タイプ"
 
 msgid "Updated storageUnit"
 msgstr "更新されたstorageUnit"
-
-msgid "Updated style attributes"
-msgstr "更新されたスタイル属性"
 
 msgid "Updated style costing"
 msgstr "更新されたスタイルコストинг"

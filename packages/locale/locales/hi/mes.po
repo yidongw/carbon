@@ -3206,8 +3206,17 @@ msgstr "फेल एवेंट को रोकने में विफल"
 msgid "Failed to sync consumable variants"
 msgstr "संपादित वैकल्पिक प्रतिबिम्ब सी संकेतन असफल रहा"
 
+msgid "Failed to sync material variants"
+msgstr "मटेरियल वैक्टर्स को ससंगत नहीं किया जा सका"
+
+msgid "Failed to sync part variants"
+msgstr "पार्ट वैरिएंट्स को ससे सङकलन में फ़लमाना हुआ है"
+
 msgid "Failed to sync procedure"
 msgstr "प्रक्रिया सागन नहीं हो पया"
+
+msgid "Failed to sync tool variants"
+msgstr "फैलेड टूल वरिएंट्स को ससाइक्ल करने में"
 
 msgid "Failed to trigger rework"
 msgstr "फैलाव चर्तुरित करने में फाल हुआ"
@@ -3248,6 +3257,9 @@ msgstr "फाइल अपडेट करने में व़ोट आय�
 msgid "Failed to update attribute value"
 msgstr "फाइल्ड मूल्य अपडेट होने में विफल रहा"
 
+msgid "Failed to update attributes"
+msgstr "गुणात्मक अपडेट करने में वा हुईं"
+
 msgid "Failed to update avatar"
 msgstr "फाइल अपडेट करने में व़िरह हुआ"
 
@@ -3259,9 +3271,6 @@ msgstr "कंपनी अपडेट करणे मित्र झाल�
 
 msgid "Failed to update consumable"
 msgstr "अनुप्रयोगिता अपडेट करने में वायल्सION"
-
-msgid "Failed to update consumable attributes"
-msgstr "अनुप्रयोग्य प्रतिबद्ध गुण संशोधन कमजोर है"
 
 msgid "Failed to update consumable costing"
 msgstr "अनुपयोगी लागत अपडेट करने में वफ़्दा है"
@@ -3676,9 +3685,6 @@ msgstr "स्टोरेज प्रकार अपडेट करने �
 
 msgid "Failed to update storageUnit"
 msgstr "स्टोरेज यूनिट अपडेट करने में व़िश्य हुआ"
-
-msgid "Failed to update style attributes"
-msgstr "stile अत्रिब्यूट्स अपडेट करने में वफ़ादरी नहीं की"
 
 msgid "Failed to update style costing"
 msgstr "stile की लागत अपडेट होने में फाल्टी रही"
@@ -5464,6 +5470,9 @@ msgstr "स्टोरेज इकाई बनाई गई"
 msgid "Style"
 msgstr "स्टाइल"
 
+msgid "Style created"
+msgstr "स्टाइल योजना की गई है"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "स्टाइल वैरिएंट्स कम हैं एक या और कई संप्रेषण कोम्बो के लिए। पहले स्टाइल को खोलें और स्वीकार्य चयनों को सेव करें।"
 
@@ -6007,14 +6016,14 @@ msgstr "अपडेट विश्लेषण सेट"
 msgid "Updated attribute value"
 msgstr "अपडेट दिए गए प्रांत का मूल्य"
 
+msgid "Updated attributes"
+msgstr "अपडेट डिटाल्स"
+
 msgid "Updated company"
 msgstr "अपडेट विनियमन"
 
 msgid "Updated consumable"
 msgstr "अपडेट दिया गया संवर्तन"
-
-msgid "Updated consumable attributes"
-msgstr "अपडेट दिए गए पर्यावरणीय सूत्रों के साइमन्स"
 
 msgid "Updated consumable costing"
 msgstr "अपडेट खर्चित कस्टिंग"
@@ -6261,9 +6270,6 @@ msgstr "अपडेट डायनामिक प्रकार"
 
 msgid "Updated storageUnit"
 msgstr "अपडेट डायनामिक्सUNIT"
-
-msgid "Updated style attributes"
-msgstr "अपडेट डिजाइन सूत्रांक"
 
 msgid "Updated style costing"
 msgstr "अपडेट डिजाइन की लागत"

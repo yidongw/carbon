@@ -229,9 +229,6 @@ msgstr "Uma linha de pedido de venda contém detalhes do pedido para um item esp
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Um pedido de cotação de vendas (RFQ) é uma consulta de cliente para precificação de um conjunto de peças e quantidades. Pode resultar em uma cotação."
 
-msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
-msgstr "Um estilo contém as informações sobre uma peça de vestuário ou calçado que é cortada, agrupada e produzida a jusante."
-
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Uma ferramenta é um item físico usado para fazer uma peça que pode ser usada em vários trabalhos"
 
@@ -567,6 +564,9 @@ msgstr "Adicionar Peça de Reposição"
 
 msgid "Add Step"
 msgstr "Adicionar Etapa"
+
+msgid "Add Style"
+msgstr "Adicionar Estilo"
 
 msgid "Add Supplier"
 msgstr "Adicionar Fornecedor"
@@ -4980,7 +4980,7 @@ msgstr "Falha ao criar linha de transferência de estoque: {0}"
 msgid "Failed to create storage type: {0}"
 msgstr "Falha ao criar tipo de armazenamento: {0}"
 
-#. placeholder {0}: fetcher.data.error.message
+#. placeholder {0}: localFetcher.data.error.message
 msgid "Failed to create style: {0}"
 msgstr "Falha ao criar o estilo: {0}"
 
@@ -7148,8 +7148,17 @@ msgstr "Falhou ao parar o evento"
 msgid "Failed to sync consumable variants"
 msgstr "Falhou na sincronização das variantes de consumo"
 
+msgid "Failed to sync material variants"
+msgstr "Falhou na sincronização das variantes de matéria-prima"
+
+msgid "Failed to sync part variants"
+msgstr "Falhou na sincronização das variantes de peça"
+
 msgid "Failed to sync procedure"
 msgstr "Falhou na sincronização do procedimento"
+
+msgid "Failed to sync tool variants"
+msgstr "Falhou na sincronização das variantes de ferramenta"
 
 msgid "Failed to track serial number"
 msgstr "Falhou ao rastrear o número de série"
@@ -7216,9 +7225,6 @@ msgstr "Falha ao atualizar parâmetro de configuração"
 
 msgid "Failed to update consumable"
 msgstr "Falhou ao atualizar o consumo"
-
-msgid "Failed to update consumable attributes"
-msgstr "Falhou ao atualizar atributos do consumo"
 
 msgid "Failed to update consumable costing"
 msgstr "Falhou na atualização do custo do consumo"
@@ -7640,9 +7646,6 @@ msgstr "Falhou ao atualizar o tipo de armazenamento"
 msgid "Failed to update storageUnit"
 msgstr "Falhou na atualização de storageUnit"
 
-msgid "Failed to update style attributes"
-msgstr "Falhou ao atualizar atributos de estilo"
-
 msgid "Failed to update style costing"
 msgstr "Falhou na atualização do custo de estilo"
 
@@ -8063,6 +8066,9 @@ msgstr "Galão"
 
 msgid "Garment"
 msgstr "Vestuário"
+
+msgid "Garment or footwear for cutting and production."
+msgstr "Vestuário ou calçado para corte e produção."
 
 msgid "Gauge"
 msgstr "Medidor"
@@ -13103,6 +13109,9 @@ msgstr "Selecione um item para configurar"
 msgid "Select an option"
 msgstr "Selecione uma opção"
 
+msgid "Select at least one value for this attribute."
+msgstr "Selecione pelo menos um valor para este atributo."
+
 msgid "Select color / size"
 msgstr "Selecione cor/tamanho"
 
@@ -13935,6 +13944,9 @@ msgstr "Armazene um número fixo de dias neste item. A data de início da valida
 msgid "Style"
 msgstr "Estilo"
 
+msgid "Style created"
+msgstr "Estilo criado"
+
 msgid "Style Details"
 msgstr "Detalhes do estilo"
 
@@ -14695,6 +14707,9 @@ msgstr "A cotação será copiada com um sufixo de revisão"
 msgid "The revision number of the part"
 msgstr "O número de revisão da peça"
 
+msgid "The selected attribute set is not available for this item type."
+msgstr "O conjunto de atributos selecionado não está disponível para este tipo de item."
+
 msgid "The size of the part"
 msgstr "O tamanho da peça"
 
@@ -15347,6 +15362,9 @@ msgstr "Conjunto de atributos atualizado"
 msgid "Updated attribute value"
 msgstr "Valor do atributo atualizado"
 
+msgid "Updated attributes"
+msgstr "Atributos atualizados"
+
 msgid "Updated By"
 msgstr "Atualizado por"
 
@@ -15355,9 +15373,6 @@ msgstr "Empresa atualizada"
 
 msgid "Updated consumable"
 msgstr "Consumível atualizado"
-
-msgid "Updated consumable attributes"
-msgstr "Atualizadas as atributos dos consumíveis"
 
 msgid "Updated consumable costing"
 msgstr "Atualizado o custo dos consumíveis"
@@ -15604,9 +15619,6 @@ msgstr "Tipo de armazenamento atualizado"
 
 msgid "Updated storageUnit"
 msgstr "Atualizado o storageUnit"
-
-msgid "Updated style attributes"
-msgstr "Atualizadas as atributos de estilo"
 
 msgid "Updated style costing"
 msgstr "Atualizado o custo de estilo"

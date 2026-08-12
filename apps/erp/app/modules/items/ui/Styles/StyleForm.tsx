@@ -1,6 +1,8 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Button,
   cn,
+  HStack,
   ModalCard,
   ModalCardBody,
   ModalCardContent,
@@ -33,7 +35,9 @@ import {
 } from "~/components/Form";
 import ItemAttributeSelects from "~/components/Form/ItemAttributeSelects";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
+import type { AttributeSetFormOption } from "~/modules/items/itemAttribute.service";
 import { path } from "~/utils/path";
 import {
   itemReplenishmentSystems,
@@ -45,9 +49,11 @@ import ItemThumbnailField from "../Item/ItemThumbnailField";
 
 type StyleFormProps = {
   initialValues: z.infer<typeof styleValidator> & { tags?: string[] };
-  type?: "card" | "modal";
+  type?: "card" | "modal" | "overlay";
   onClose?: () => void;
-};
+  /** Prefetched attribute sets from the overlay loader (skips client fetch). */
+  attributeSets?: AttributeSetFormOption[];
+} & Partial<Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">>;
 
 function startsWithLetter(value: string) {
   return /^[A-Za-z]/.test(value);
@@ -56,24 +62,34 @@ function startsWithLetter(value: string) {
 const StyleForm = ({
   initialValues,
   type = "card",
-  onClose
+  onClose,
+  onDismiss,
+  fetcher: overlayFetcher,
+  action: overlayAction,
+  attributeSets
 }: StyleFormProps) => {
   const { t } = useLingui();
   const { company } = useUser();
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
-  const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const localFetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const isOverlay = type === "overlay";
+  // Overlay host owns the submit fetcher (closes + revalidates on `{ ok: true }`).
+  const fetcher = overlayFetcher ?? localFetcher;
+  const dismiss = onDismiss ?? onClose;
 
   useEffect(() => {
     if (type !== "modal") return;
 
-    if (fetcher.state === "loading" && fetcher.data?.data) {
+    if (localFetcher.state === "loading" && localFetcher.data?.data) {
       onClose?.();
       toast.success(t`Created style`);
-    } else if (fetcher.state === "idle" && fetcher.data?.error) {
-      toast.error(t`Failed to create style: ${fetcher.data.error.message}`);
+    } else if (localFetcher.state === "idle" && localFetcher.data?.error) {
+      toast.error(
+        t`Failed to create style: ${localFetcher.data.error.message}`
+      );
     }
-  }, [fetcher.data, fetcher.state, onClose, type, t]);
+  }, [localFetcher.data, localFetcher.state, onClose, type, t]);
 
   const { id, onIdChange, loading } = useNextItemId("Style");
   const permissions = usePermissions();
@@ -131,16 +147,24 @@ const StyleForm = ({
 
   return (
     <ModalCardProvider type={type}>
-      <ModalCard onClose={onClose}>
-        <ModalCardContent>
+      <ModalCard onClose={dismiss}>
+        <ModalCardContent
+          className={cn(
+            isOverlay &&
+              "flex min-h-0 max-h-[85vh] w-[56rem] max-w-full flex-col"
+          )}
+        >
           <ValidatedForm
-            action={isEditing ? undefined : path.to.newStyle}
+            action={overlayAction ?? (isEditing ? undefined : path.to.newStyle)}
             method="post"
             validator={styleValidator}
             defaultValues={initialValues}
             fetcher={fetcher}
+            className={cn(
+              isOverlay && "flex min-h-0 max-h-[85vh] flex-1 flex-col"
+            )}
           >
-            <ModalCardHeader>
+            <ModalCardHeader className={cn(isOverlay && "shrink-0")}>
               <ModalCardTitle>
                 {isEditing ? (
                   <Trans>Style Details</Trans>
@@ -150,15 +174,16 @@ const StyleForm = ({
               </ModalCardTitle>
               {!isEditing && (
                 <ModalCardDescription>
-                  <Trans>
-                    A style contains the information about a garment or footwear
-                    item that is cut, bundled, and produced downstream.
-                  </Trans>
+                  <Trans>Garment or footwear for cutting and production.</Trans>
                 </ModalCardDescription>
               )}
             </ModalCardHeader>
-            <ModalCardBody>
-              <Hidden name="type" value={type} />
+            <ModalCardBody
+              className={cn(isOverlay && "mb-0 min-h-0 flex-1 overflow-y-auto")}
+            >
+              {/* Overlay success is `{ ok: true }` via `?overlay=true`; Item
+                  picker still posts `type=modal` for the 201 close path. */}
+              {!isOverlay && <Hidden name="type" value={type} />}
               {!isEditing && (
                 <ItemThumbnailField onUpload={applyIdFromThumbnail} />
               )}
@@ -203,7 +228,10 @@ const StyleForm = ({
                   label={t`Short Description`}
                   characterLimit={40}
                 />
-                <ItemAttributeSelects itemType="Style" />
+                <ItemAttributeSelects
+                  itemType="Style"
+                  attributeSets={attributeSets}
+                />
                 <Select
                   name="replenishmentSystem"
                   label={t`Replenishment System`}
@@ -268,17 +296,24 @@ const StyleForm = ({
                 <TextArea name="description" label={t`Long Description`} />
               </div>
             </ModalCardBody>
-            <ModalCardFooter>
-              <Submit
-                isLoading={fetcher.state !== "idle"}
-                isDisabled={
-                  isEditing
-                    ? !permissions.can("update", "parts")
-                    : !permissions.can("create", "parts")
-                }
-              >
-                <Trans>Save</Trans>
-              </Submit>
+            <ModalCardFooter className={cn(isOverlay && "shrink-0")}>
+              <HStack className="justify-end gap-2">
+                {dismiss && (
+                  <Button variant="ghost" onClick={dismiss}>
+                    <Trans>Cancel</Trans>
+                  </Button>
+                )}
+                <Submit
+                  isLoading={fetcher.state !== "idle"}
+                  isDisabled={
+                    isEditing
+                      ? !permissions.can("update", "parts")
+                      : !permissions.can("create", "parts")
+                  }
+                >
+                  <Trans>Save</Trans>
+                </Submit>
+              </HStack>
             </ModalCardFooter>
           </ValidatedForm>
         </ModalCardContent>
