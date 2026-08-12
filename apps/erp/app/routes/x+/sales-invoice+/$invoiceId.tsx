@@ -15,12 +15,15 @@ import {
 // import SalesInvoiceExplorer from "~/modules/invoicing/ui/SalesInvoice/SalesInvoiceExplorer";
 import SalesInvoiceHeader from "~/modules/invoicing/ui/SalesInvoice/SalesInvoiceHeader";
 import SalesInvoiceProperties from "~/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties";
+import { getAttributeValueNames } from "~/modules/items";
 import {
   getCustomer,
   getOpportunity,
   getOpportunityDocuments
 } from "~/modules/sales/sales.service";
 import { getCompanySettings } from "~/modules/settings";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -54,25 +57,47 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const lineItemIds = Array.from(
+    new Set(
+      (salesInvoiceLines.data ?? [])
+        .map((l) => l.itemId)
+        .filter((id): id is string => !!id)
+    )
+  );
+
   const serviceRole = getCarbonServiceRole();
-  const [customer, opportunity, companySettings] = await Promise.all([
+  const [
+    customer,
+    opportunity,
+    companySettings,
+    styleVariantByItemId,
+    attributeValueNameRows
+  ] = await Promise.all([
     salesInvoice.data?.customerId
       ? getCustomer(client, salesInvoice.data.customerId)
       : null,
     salesInvoice.data?.opportunityId
       ? getOpportunity(client, salesInvoice.data.opportunityId)
       : null,
-    getCompanySettings(serviceRole, companyId)
+    getCompanySettings(serviceRole, companyId),
+    getStyleVariantLineMetaByItemIds(client, lineItemIds, companyId),
+    getAttributeValueNames(client, companyId)
   ]);
 
   const defaultCc = customer?.data?.defaultCc?.length
     ? customer.data.defaultCc
     : (companySettings.data?.defaultCustomerCc ?? []);
 
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
+  );
+
   return {
     salesInvoice: salesInvoice.data,
     salesInvoiceLines: salesInvoiceLines.data ?? [],
     salesInvoiceShipment: salesInvoiceShipment.data,
+    attributeValueNames,
+    styleVariantByItemId,
     files: getOpportunityDocuments(
       client,
       companyId,

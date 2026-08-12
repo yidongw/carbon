@@ -39,6 +39,10 @@ import {
   isVariantsQuantityOverlaySuccess
 } from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType, MethodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import type { jobOperationValidator } from "../../production.models";
@@ -97,8 +101,12 @@ const JobMaterialForm = ({
     Row[] | null
   >(null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
-  const hasVariantsQuantity =
-    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing: false,
+    variantQuantities: null
+  });
 
   const applyVariantsQuantity = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -171,7 +179,7 @@ const JobMaterialForm = ({
       methodType: item.data?.defaultMethodType ?? "Purchase to Order",
       itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy",
       hasVariantAttributes,
-      quantity: hasVariantAttributes ? 0 : d.quantity || 1
+      quantity: defaultLineQuantity(hasVariantAttributes, d.quantity || 1)
     }));
 
     if (item.data?.type) {

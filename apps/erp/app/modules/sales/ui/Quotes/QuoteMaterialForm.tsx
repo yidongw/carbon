@@ -39,6 +39,10 @@ import {
   isVariantsQuantityOverlaySuccess
 } from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType, MethodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import type { quoteOperationValidator } from "../../sales.models";
@@ -96,8 +100,12 @@ const QuoteMaterialForm = ({
     Row[] | null
   >(null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
-  const hasVariantsQuantity =
-    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing: false,
+    variantQuantities: null
+  });
 
   const applyVariantsQuantity = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -170,7 +178,10 @@ const QuoteMaterialForm = ({
 
     let unitCost = itemCost.data?.unitCost ?? 0;
     const isBuyPart = item.data?.defaultMethodType === "Purchase to Order";
-    const nextQuantity = hasVariantAttributes ? 0 : (itemData.quantity ?? 1);
+    const nextQuantity = defaultLineQuantity(
+      hasVariantAttributes,
+      itemData.quantity ?? 1
+    );
 
     if (isBuyPart && nextQuantity > 0) {
       unitCost = await lookupBuyPrice(itemId, nextQuantity, unitCost);

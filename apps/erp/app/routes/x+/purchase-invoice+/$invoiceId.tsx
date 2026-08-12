@@ -14,11 +14,14 @@ import {
 } from "~/modules/invoicing";
 // import PurchaseInvoiceExplorer from "~/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceExplorer";
 import PurchaseInvoiceProperties from "~/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties";
+import { getAttributeValueNames } from "~/modules/items";
 import {
   getSupplier,
   getSupplierInteraction,
   getSupplierInteractionDocuments
 } from "~/modules/purchasing/purchasing.service";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -52,7 +55,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const [supplier, interaction, files] = await Promise.all([
+  const lineItemIds = Array.from(
+    new Set(
+      (purchaseInvoiceLines.data ?? [])
+        .map((l) => l.itemId)
+        .filter((id): id is string => !!id)
+    )
+  );
+
+  const [
+    supplier,
+    interaction,
+    files,
+    styleVariantByItemId,
+    attributeValueNameRows
+  ] = await Promise.all([
     purchaseInvoice.data?.supplierId
       ? getSupplier(client, purchaseInvoice.data.supplierId)
       : null,
@@ -61,13 +78,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       client,
       companyId,
       purchaseInvoice.data.supplierInteractionId!
-    )
+    ),
+    getStyleVariantLineMetaByItemIds(client, lineItemIds, companyId),
+    getAttributeValueNames(client, companyId)
   ]);
+
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
+  );
 
   return {
     purchaseInvoice: purchaseInvoice.data,
     purchaseInvoiceLines: purchaseInvoiceLines.data ?? [],
     purchaseInvoiceDelivery: purchaseInvoiceDelivery.data,
+    attributeValueNames,
+    styleVariantByItemId,
     files,
     interaction: interaction.data,
     supplier: supplier?.data ?? null

@@ -1091,6 +1091,9 @@ msgstr "क्रय बिल की तैयारी में विफल�
 msgid "Failed to create purchase invoice line."
 msgstr "पर्चेज बिल पंक्ति को नहीं बनाया जा सका।"
 
+msgid "Failed to create purchase invoice lines for style variants"
+msgstr "स्टाइल वैरिएंट्स के लिए खरीद चालान पंक्तियाँ बनाने में विफल"
+
 msgid "Failed to create purchase order"
 msgstr "पर्चे क्रियाविधि तैयार करना नहीं सफल रहा"
 
@@ -1138,6 +1141,9 @@ msgstr "सॉल्स इनवाइबुल को बनाना फ़�
 
 msgid "Failed to create sales invoice line."
 msgstr "सॉल्स इनवाइबुल लाइन बनाना फ़ाइल हो रहा है।"
+
+msgid "Failed to create sales invoice lines for style variants"
+msgstr "स्टाइल वैरिएंट्स के लिए बिक्री चालान पंक्तियाँ बनाने में विफल"
 
 msgid "Failed to create sales order"
 msgstr "विक्रय आदेश को बनाने में व़फ़ादरी रहीं है"
@@ -2340,7 +2346,7 @@ msgid "Failed to insert method material"
 msgstr "माध्यम सामग्री इनсर्ट करने में व़ला"
 
 msgid "Failed to insert method materials"
-msgstr ""
+msgstr "मेथड सामग्री सम्मिलित करने में विफल"
 
 msgid "Failed to insert method operation"
 msgstr "मेथोड ऑपरेशन में इंサर्ट करने में फालतू सफलता"
@@ -3423,7 +3429,7 @@ msgid "Failed to update job material"
 msgstr "बाकी पदार्थ अपडेट करने में विफल रहा"
 
 msgid "Failed to update job materials"
-msgstr ""
+msgstr "जॉब सामग्री अपडेट करने में विफल"
 
 msgid "Failed to update job operation"
 msgstr "कार्य परिसंपत्ति अपडेट होने में वस्र किया गया है"
@@ -3483,7 +3489,7 @@ msgid "Failed to update method material"
 msgstr "मालिका अपडेट करने में व़फ़ादरी नहीं की सकीं"
 
 msgid "Failed to update method materials"
-msgstr ""
+msgstr "मेथड सामग्री अपडेट करने में विफल"
 
 msgid "Failed to update method operation"
 msgstr "मेथोड ऑपरेशन अपडेट करने में व़िरह हुआ"
@@ -3572,6 +3578,9 @@ msgstr "क्रय बिल की डिलीवरी अपडेट ह�
 msgid "Failed to update purchase invoice line"
 msgstr "क्रय बिल पंजरे को अपडेट करने में व़िश्य हुआ"
 
+msgid "Failed to update purchase invoice lines for style variants"
+msgstr "स्टाइल वैरिएंट्स के लिए खरीद चालान पंक्तियाँ अपडेट करने में विफल"
+
 msgid "Failed to update purchase invoice status"
 msgstr "पर्चेज अवस्था को अपडेट करने में व़िश्रम हुआ है"
 
@@ -3606,7 +3615,7 @@ msgid "Failed to update quote material"
 msgstr "कॉपी मटेरियल अपडेट होने में फाल्टी रही"
 
 msgid "Failed to update quote materials"
-msgstr ""
+msgstr "कोट सामग्री अपडेट करने में विफल"
 
 msgid "Failed to update quote operation"
 msgstr "कॉपी अपडेट करने में व़िश्य हुआ"
@@ -3649,6 +3658,9 @@ msgstr "विक्रय इनवाइब्ज को अपडेट क�
 
 msgid "Failed to update sales invoice line"
 msgstr "विक्रय बिल पंक्ति अपडेट करने में वफ़ादारी नहीं की"
+
+msgid "Failed to update sales invoice lines for style variants"
+msgstr "स्टाइल वैरिएंट्स के लिए बिक्री चालान पंक्तियाँ अपडेट करने में विफल"
 
 msgid "Failed to update sales invoice shipping"
 msgstr "राजस्व फॉक्स डिलीवरी अपडेट करने में वफ़ादरी नहीं की"
@@ -6392,6 +6404,9 @@ msgstr "उपयोगकर्ता रिकॉर्ड नहीं मि
 
 msgid "Variant quantities added"
 msgstr "वेरिएंट मात्राएँ जोड़ी गईं"
+
+msgid "Variant quantities updated"
+msgstr "वैरिएंट मात्राएँ अपडेट की गईं"
 
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"

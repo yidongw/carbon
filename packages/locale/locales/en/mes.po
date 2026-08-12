@@ -1091,6 +1091,9 @@ msgstr "Failed to create purchase invoice"
 msgid "Failed to create purchase invoice line."
 msgstr "Failed to create purchase invoice line."
 
+msgid "Failed to create purchase invoice lines for style variants"
+msgstr "Failed to create purchase invoice lines for style variants"
+
 msgid "Failed to create purchase order"
 msgstr "Failed to create purchase order"
 
@@ -1138,6 +1141,9 @@ msgstr "Failed to create sales invoice"
 
 msgid "Failed to create sales invoice line."
 msgstr "Failed to create sales invoice line."
+
+msgid "Failed to create sales invoice lines for style variants"
+msgstr "Failed to create sales invoice lines for style variants"
 
 msgid "Failed to create sales order"
 msgstr "Failed to create sales order"
@@ -3572,6 +3578,9 @@ msgstr "Failed to update purchase invoice delivery"
 msgid "Failed to update purchase invoice line"
 msgstr "Failed to update purchase invoice line"
 
+msgid "Failed to update purchase invoice lines for style variants"
+msgstr "Failed to update purchase invoice lines for style variants"
+
 msgid "Failed to update purchase invoice status"
 msgstr "Failed to update purchase invoice status"
 
@@ -3649,6 +3658,9 @@ msgstr "Failed to update sales invoice"
 
 msgid "Failed to update sales invoice line"
 msgstr "Failed to update sales invoice line"
+
+msgid "Failed to update sales invoice lines for style variants"
+msgstr "Failed to update sales invoice lines for style variants"
 
 msgid "Failed to update sales invoice shipping"
 msgstr "Failed to update sales invoice shipping"
@@ -6392,6 +6404,9 @@ msgstr "User record not found"
 
 msgid "Variant quantities added"
 msgstr "Variant quantities added"
+
+msgid "Variant quantities updated"
+msgstr "Variant quantities updated"
 
 msgid "Verification Error"
 msgstr "Verification Error"

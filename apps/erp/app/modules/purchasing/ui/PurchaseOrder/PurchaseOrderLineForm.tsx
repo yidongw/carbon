@@ -76,7 +76,13 @@ import {
   isPurchaseOrderLocked,
   purchaseOrderLineValidator
 } from "~/modules/purchasing";
-import { type MethodItemType, resolveSupplierPrice } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  isMissingVariantQuantity,
+  type MethodItemType,
+  resolveSupplierPrice,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import type { action } from "~/routes/x+/purchase-order+/$orderId.$lineId.details";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -109,11 +115,11 @@ function parseInitialVariantTable(raw: unknown): {
     ) {
       return { rows: null, total: 0 };
     }
-    const config = parsed as {
+    const parsedVariantTable = parsed as {
       variantTable?: Row[];
     };
-    const rows = Array.isArray(config.variantTable)
-      ? config.variantTable
+    const rows = Array.isArray(parsedVariantTable.variantTable)
+      ? parsedVariantTable.variantTable
       : null;
     // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
@@ -186,7 +192,7 @@ const PurchaseOrderLineForm = ({
     conversionFactor: initialValues.conversionFactor ?? 1,
     description: initialValues.description ?? "",
     fallbackUnitPrice: initialValues.supplierUnitPrice ?? 0,
-    hasVariantAttributes: false,
+    hasVariantAttributes: Boolean(initialValues.variantQuantities),
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     minimumOrderQuantity: undefined,
     purchaseQuantity: initialValues.purchaseQuantity ?? 1,
@@ -371,16 +377,18 @@ const PurchaseOrderLineForm = ({
   );
 
   // Items with variant attributes use the config-quantity grid when adding a
-  // parent line — Styles (variants quantity) always, Consumables with a color set. The
-  // expanded variant SKU lines (no stored configuration) use plain quantity.
-  const hasVariantsQuantity =
-    (itemType === "Style" || itemData.hasVariantAttributes) &&
-    Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.variantQuantities);
+  // parent line. Expanded variant SKU lines (no stored configuration) use plain qty.
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
 
-  // A configurable parent line's quantity comes from the per-variant grid.
-  const isMissingStyleQuantity =
-    hasVariantsQuantity && !(itemData.purchaseQuantity > 0);
+  const isMissingVariantQty = isMissingVariantQuantity(
+    hasVariantsQuantity,
+    itemData.purchaseQuantity
+  );
 
   const onQuantityChange = (value: number) => {
     const exchangeRate = routeData?.purchaseOrder?.exchangeRate ?? 1;
@@ -430,7 +438,7 @@ const PurchaseOrderLineForm = ({
       inventoryUom: "",
       minimumOrderQuantity: undefined,
       priceBreaks: [],
-      purchaseQuantity: t === "Style" ? 0 : 1,
+      purchaseQuantity: defaultLineQuantity(false),
       purchaseUom: "",
       requiredDate: null,
       storageUnitId: "",
@@ -449,8 +457,7 @@ const PurchaseOrderLineForm = ({
       ...d,
       itemId,
       description: "",
-      hasVariantAttributes: false,
-      purchaseQuantity: itemType === "Style" ? 0 : d.purchaseQuantity
+      hasVariantAttributes: false
     }));
     switch (itemType) {
       // @ts-expect-error
@@ -507,10 +514,11 @@ const PurchaseOrderLineForm = ({
         const minOrderQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
         // A configurable item's quantity is the sum of its per-variant grid, so
         // leave it at 0 until the grid is filled in.
-        const isStyle = item?.data?.type === "Style";
-        const hasVariantAttributes =
-          isStyle || (variantAttributes?.data?.length ?? 0) > 0;
-        const initialQty = hasVariantAttributes ? 0 : minOrderQty;
+        const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+        const initialQty = defaultLineQuantity(
+          hasVariantAttributes,
+          minOrderQty
+        );
         const leadTime = item?.data?.itemReplenishment?.leadTime ?? 0;
         const baseFallback =
           (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
@@ -797,8 +805,7 @@ const PurchaseOrderLineForm = ({
                           }}
                         />
 
-                        {itemType === "Style" ||
-                        itemData.hasVariantAttributes ? (
+                        {itemData.hasVariantAttributes ? (
                           <QuantityWithVariantsQuantity
                             name="purchaseQuantity"
                             label={t`Quantity`}
@@ -1295,7 +1302,7 @@ const PurchaseOrderLineForm = ({
                       </Button>
                     )}
                     <Submit
-                      isDisabled={isDisabled || isMissingStyleQuantity}
+                      isDisabled={isDisabled || isMissingVariantQty}
                       withBlocker={false}
                     >
                       <Trans>Save</Trans>

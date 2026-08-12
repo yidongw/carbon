@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-12T07:11:49.817Z",
-  "totalTools": 1270,
+  "generated": "2026-08-12T08:40:09.965Z",
+  "totalTools": 1273,
   "modules": 15,
   "tools": [
     {
@@ -8260,6 +8260,38 @@
       }
     },
     {
+      "name": "invoicing_replacePurchaseInvoiceLinesWithStyleVariants",
+      "module": "invoicing",
+      "classification": "WRITE",
+      "description": "replace purchase invoice lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      invoiceLineType: z.infer<\n        typeof purchaseInvoiceLineValidator\n      >[\"invoiceLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "invoiceId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "invoicing_insertSalesInvoice",
       "module": "invoicing",
       "classification": "WRITE",
@@ -8578,6 +8610,42 @@
         "required": [
           "id",
           "sortOrder"
+        ]
+      }
+    },
+    {
+      "name": "invoicing_replaceSalesInvoiceLinesWithStyleVariants",
+      "module": "invoicing",
+      "classification": "WRITE",
+      "description": "replace sales invoice lines with style variants",
+      "paramCount": 6,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "variants": {},
+          "base: {\n      invoiceLineType: z.infer<\n        typeof salesInvoiceLineValidator\n      >[\"invoiceLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "invoiceId",
+          "exchangeRate",
+          "variants"
         ]
       }
     },

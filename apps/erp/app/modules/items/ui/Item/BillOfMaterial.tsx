@@ -93,7 +93,12 @@ import type {
   MethodType,
   SourcingType
 } from "~/modules/shared";
-import { methodType, sourcingType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  methodType,
+  shouldShowVariantQuantityGrid,
+  sourcingType
+} from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
 import type { ConfigurationRuleBindings } from "../../configurationRuleBindings";
@@ -701,8 +706,12 @@ function MaterialForm({
     Row[] | null
   >(null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
-  const hasVariantsQuantity =
-    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing: false,
+    variantQuantities: null
+  });
 
   const applyVariantsQuantity = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -794,7 +803,7 @@ function MaterialForm({
       itemReplenishmentSystem: itemResult.data?.replenishmentSystem ?? "Buy",
       hasVariantAttributes,
       // Attribute parents take qty from the grid — leave 0 until confirmed.
-      quantity: hasVariantAttributes ? 0 : d.quantity || 1
+      quantity: defaultLineQuantity(hasVariantAttributes, d.quantity || 1)
     }));
     if (itemResult.data?.type) {
       setItemType(itemResult.data.type as MethodItemType);

@@ -2,6 +2,7 @@ import type { Database, Json } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sql } from "kysely";
 import type { z } from "zod";
 import {
   getSupplierPayment,
@@ -748,6 +749,158 @@ export async function updatePurchaseInvoiceLineOrder(
   });
 }
 
+/**
+ * Expand a Style/attribute parent purchase invoice line into one line per
+ * variant SKU. FormData-only — does not persist variantQuantities on the line.
+ */
+export async function replacePurchaseInvoiceLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    invoiceId: string;
+    replaceLineId?: string;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      invoiceLineType: z.infer<
+        typeof purchaseInvoiceLineValidator
+      >["invoiceLineType"];
+      description?: string | null;
+      locationId?: string | null;
+      storageUnitId?: string | null;
+      purchaseUnitOfMeasureCode?: string | null;
+      inventoryUnitOfMeasureCode?: string | null;
+      conversionFactor?: number | null;
+      supplierUnitPrice?: number | null;
+      supplierShippingCost?: number | null;
+      supplierTaxAmount?: number | null;
+      exchangeRate?: number | null;
+      requiredDate?: string | null;
+      purchaseOrderId?: string | null;
+      purchaseOrderLineId?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    invoiceId,
+    replaceLineId,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
+  const unitPrice = base.supplierUnitPrice ?? 0;
+
+  const allocate = (total: number | null | undefined): number[] => {
+    const cents = Math.round((total ?? 0) * 100);
+    const result: number[] = [];
+    let allocated = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (i === variants.length - 1) {
+        result.push((cents - allocated) / 100);
+      } else {
+        const c = Math.round((cents * variants[i].quantity) / totalQty);
+        allocated += c;
+        result.push(c / 100);
+      }
+    }
+    return result;
+  };
+  const shippingSplit = allocate(base.supplierShippingCost);
+  const taxSplit = allocate(base.supplierTaxAmount);
+
+  return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
+    if (replaceLineId) {
+      const original = await trx
+        .selectFrom("purchaseInvoiceLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("invoiceId", "=", invoiceId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      await trx
+        .deleteFrom("purchaseInvoiceLine")
+        .where("id", "=", replaceLineId)
+        .where("invoiceId", "=", invoiceId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        if (variants.length > 1) {
+          await trx
+            .updateTable("purchaseInvoiceLine")
+            .set({
+              sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}`
+            })
+            .where("invoiceId", "=", invoiceId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("purchaseInvoiceLine")
+          .select("sortOrder")
+          .where("invoiceId", "=", invoiceId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("purchaseInvoiceLine")
+        .select("sortOrder")
+        .where("invoiceId", "=", invoiceId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
+    }
+
+    const ids: string[] = [];
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      const inserted = await trx
+        .insertInto("purchaseInvoiceLine")
+        .values({
+          invoiceId,
+          invoiceLineType: base.invoiceLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? null,
+          locationId: base.locationId ?? null,
+          storageUnitId: base.storageUnitId ?? null,
+          purchaseUnitOfMeasureCode: base.purchaseUnitOfMeasureCode ?? "EA",
+          inventoryUnitOfMeasureCode: base.inventoryUnitOfMeasureCode ?? "EA",
+          conversionFactor: base.conversionFactor ?? 1,
+          quantity: variant.quantity,
+          supplierUnitPrice: unitPrice,
+          supplierShippingCost: shippingSplit[i],
+          supplierTaxAmount: taxSplit[i],
+          exchangeRate: base.exchangeRate ?? 1,
+          requiredDate: base.requiredDate || null,
+          purchaseOrderId: base.purchaseOrderId ?? null,
+          purchaseOrderLineId: base.purchaseOrderLineId ?? null,
+          companyId,
+          createdBy: userId,
+          sortOrder: startSortOrder + i,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
+}
+
 export async function insertSalesInvoice(
   client: SupabaseClient<Database>,
   input: {
@@ -1119,5 +1272,158 @@ export async function updateSalesInvoiceLineOrder(
         .where("id", "=", id)
         .execute();
     }
+  });
+}
+
+/**
+ * Expand a Style/attribute parent sales invoice line into one line per
+ * variant SKU. FormData-only — does not persist variantQuantities on the line.
+ */
+export async function replaceSalesInvoiceLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    invoiceId: string;
+    replaceLineId?: string;
+    exchangeRate: number;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      invoiceLineType: z.infer<
+        typeof salesInvoiceLineValidator
+      >["invoiceLineType"];
+      description?: string | null;
+      locationId?: string | null;
+      storageUnitId?: string | null;
+      methodType?: z.infer<typeof salesInvoiceLineValidator>["methodType"];
+      unitOfMeasureCode?: string | null;
+      unitPrice?: number | null;
+      shippingCost?: number | null;
+      addOnCost?: number | null;
+      nonTaxableAddOnCost?: number | null;
+      taxPercent?: number | null;
+      salesOrderId?: string | null;
+      salesOrderLineId?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    invoiceId,
+    replaceLineId,
+    exchangeRate,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  const totalQty = variants.reduce((sum, v) => sum + v.quantity, 0) || 1;
+
+  const allocate = (total: number | null | undefined): number[] => {
+    const cents = Math.round((total ?? 0) * 100);
+    const result: number[] = [];
+    let allocated = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (i === variants.length - 1) {
+        result.push((cents - allocated) / 100);
+      } else {
+        const c = Math.round((cents * variants[i].quantity) / totalQty);
+        allocated += c;
+        result.push(c / 100);
+      }
+    }
+    return result;
+  };
+  const shippingSplit = allocate(base.shippingCost);
+  const addOnSplit = allocate(base.addOnCost);
+  const nonTaxableSplit = allocate(base.nonTaxableAddOnCost);
+
+  return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
+    if (replaceLineId) {
+      const original = await trx
+        .selectFrom("salesInvoiceLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("invoiceId", "=", invoiceId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      await trx
+        .deleteFrom("salesInvoiceLine")
+        .where("id", "=", replaceLineId)
+        .where("invoiceId", "=", invoiceId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        if (variants.length > 1) {
+          await trx
+            .updateTable("salesInvoiceLine")
+            .set({
+              sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}`
+            })
+            .where("invoiceId", "=", invoiceId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("salesInvoiceLine")
+          .select("sortOrder")
+          .where("invoiceId", "=", invoiceId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("salesInvoiceLine")
+        .select("sortOrder")
+        .where("invoiceId", "=", invoiceId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
+    }
+
+    const ids: string[] = [];
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      const inserted = await trx
+        .insertInto("salesInvoiceLine")
+        .values({
+          invoiceId,
+          invoiceLineType: base.invoiceLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? null,
+          locationId: base.locationId ?? null,
+          storageUnitId: base.storageUnitId ?? null,
+          methodType: base.methodType ?? "Pull from Inventory",
+          unitOfMeasureCode: base.unitOfMeasureCode ?? "EA",
+          quantity: variant.quantity,
+          unitPrice: base.unitPrice ?? 0,
+          shippingCost: shippingSplit[i],
+          addOnCost: addOnSplit[i],
+          nonTaxableAddOnCost: nonTaxableSplit[i],
+          taxPercent: base.taxPercent ?? 0,
+          exchangeRate,
+          salesOrderId: base.salesOrderId ?? null,
+          salesOrderLineId: base.salesOrderLineId ?? null,
+          companyId,
+          createdBy: userId,
+          sortOrder: startSortOrder + i,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
   });
 }

@@ -60,7 +60,23 @@ import {
 import type { PurchaseInvoice } from "~/modules/invoicing";
 import { purchaseInvoiceLineValidator } from "~/modules/invoicing";
 import { getSupplierPartPriceBreaks } from "~/modules/items";
-import { type MethodItemType, resolveSupplierPrice } from "~/modules/shared";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
+import {
+  defaultLineQuantity,
+  isMissingVariantQuantity,
+  type MethodItemType,
+  resolveSupplierPrice,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 
@@ -73,6 +89,39 @@ type PurchaseInvoiceLineFormProps = {
   type?: "card" | "modal";
   onClose?: () => void;
 };
+
+function parseInitialVariantTable(raw: unknown): {
+  rows: Row[] | null;
+  total: number;
+} {
+  if (!raw) return { rows: null, total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("variantTable" in parsed)
+    ) {
+      return { rows: null, total: 0 };
+    }
+    const parsedVariantTable = parsed as {
+      variantTable?: Row[];
+    };
+    const rows = Array.isArray(parsedVariantTable.variantTable)
+      ? parsedVariantTable.variantTable
+      : null;
+    // Combo-only: each row carries a single `Quantities` value.
+    let total = 0;
+    if (rows) {
+      for (const row of rows) {
+        total += Number(row.Quantities) || 0;
+      }
+    }
+    return { rows, total };
+  } catch {
+    return { rows: null, total: 0 };
+  }
+}
 
 const PurchaseInvoiceLineForm = ({
   initialValues,
@@ -116,6 +165,7 @@ const PurchaseInvoiceLineForm = ({
     taxPercent: number;
     priceBreaks: Array<{ quantity: number; unitPrice: number }>;
     fallbackUnitPrice: number;
+    hasVariantAttributes: boolean;
   }>({
     itemId: initialValues.itemId ?? "",
     description: initialValues.description ?? "",
@@ -130,7 +180,8 @@ const PurchaseInvoiceLineForm = ({
     taxAmount: initialValues.supplierTaxAmount ?? 0,
     taxPercent: initialValues.taxPercent ?? 0,
     priceBreaks: [],
-    fallbackUnitPrice: initialValues.supplierUnitPrice ?? 0
+    fallbackUnitPrice: initialValues.supplierUnitPrice ?? 0,
+    hasVariantAttributes: Boolean(initialValues.variantQuantities)
   });
 
   // update tax amount when quantity or unit price changes
@@ -157,6 +208,67 @@ const PurchaseInvoiceLineForm = ({
   const [activeTab, setActiveTab] = useState<"item" | "gl-account" | "asset">(
     isFixedAsset ? "asset" : isGLAccount ? "gl-account" : "item"
   );
+
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
+  );
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
+  );
+
+  // Items with variant attributes use the config-quantity grid when adding a
+  // parent line — Styles always, Consumables with a color set. The expanded
+  // variant SKU lines (no stored configuration) use plain quantity.
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
+
+  const isMissingVariantQty = isMissingVariantQuantity(
+    hasVariantsQuantity,
+    itemData.quantity
+  );
+
+  const onQuantityChange = (value: number) => {
+    const exchangeRate = routeData?.purchaseInvoice?.exchangeRate ?? 1;
+    setItemData((d) => ({
+      ...d,
+      quantity: value,
+      supplierUnitPrice: resolveSupplierPrice(
+        d.priceBreaks,
+        value,
+        d.fallbackUnitPrice,
+        exchangeRate
+      )
+    }));
+  };
+
+  const applyConfig = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    onQuantityChange(data.total);
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyConfig
+    });
+  };
+
+  const clearConfig = () => {
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
+  };
 
   const [assetOptions, setAssetOptions] = useState<
     { value: string; label: string; locationId: string | null }[]
@@ -275,10 +387,11 @@ const PurchaseInvoiceLineForm = ({
   const onTypeChange = (t: MethodItemType | "Item") => {
     if (t === itemType) return;
     setItemType(t as MethodItemType);
+    clearConfig();
     setItemData({
       itemId: "",
       description: "",
-      quantity: 1,
+      quantity: defaultLineQuantity(false),
       supplierUnitPrice: 0,
       supplierShippingCost: 0,
       inventoryUom: "",
@@ -289,52 +402,69 @@ const PurchaseInvoiceLineForm = ({
       taxAmount: 0,
       taxPercent: 0,
       priceBreaks: [],
-      fallbackUnitPrice: 0
+      fallbackUnitPrice: 0,
+      hasVariantAttributes: false
     });
   };
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) throw new Error("Carbon client not found");
+    clearConfig();
     switch (itemType) {
       // @ts-expect-error
       case "Item":
       case "Consumable":
       case "Material":
       case "Part":
+      case "Style":
       case "Tool":
       // @ts-expect-error
       case "Service":
       // @ts-expect-error
       case "Fixture":
-        const [item, supplierPart, inventory] = await Promise.all([
-          carbon
-            .from("item")
-            .select(
-              "name, readableIdWithRevision, type, unitOfMeasureCode, itemCost(unitCost), itemReplenishment(purchasingUnitOfMeasureCode, conversionFactor, leadTime)"
-            )
-            .eq("id", itemId)
-            .eq("companyId", company.id)
-            .single(),
-          carbon
-            .from("supplierPart")
-            .select("*")
-            .eq("itemId", itemId)
-            .eq("companyId", company.id)
-            .eq("supplierId", routeData?.purchaseInvoice.supplierId!)
-            .maybeSingle(),
-          carbon
-            .from("pickMethod")
-            .select("defaultStorageUnitId")
-            .eq("itemId", itemId)
-            .eq("companyId", company.id)
-            .eq("locationId", locationId!)
-            .maybeSingle()
-        ]);
+        const [item, supplierPart, inventory, variantAttributes] =
+          await Promise.all([
+            carbon
+              .from("item")
+              .select(
+                "name, readableIdWithRevision, type, unitOfMeasureCode, itemCost(unitCost), itemReplenishment(purchasingUnitOfMeasureCode, conversionFactor, leadTime)"
+              )
+              .eq("id", itemId)
+              .eq("companyId", company.id)
+              .single(),
+            carbon
+              .from("supplierPart")
+              .select("*")
+              .eq("itemId", itemId)
+              .eq("companyId", company.id)
+              .eq("supplierId", routeData?.purchaseInvoice.supplierId!)
+              .maybeSingle(),
+            carbon
+              .from("pickMethod")
+              .select("defaultStorageUnitId")
+              .eq("itemId", itemId)
+              .eq("companyId", company.id)
+              .eq("locationId", locationId!)
+              .maybeSingle(),
+            // Any item with Color/Size attribute selections (Style always; a
+            // Consumable with a Fabric/Trim color set) gets the config grid.
+            carbon
+              .from("itemAttributeSelection")
+              .select("attributeValueId")
+              .eq("itemId", itemId)
+              .eq("companyId", company.id)
+              .limit(1)
+          ]);
 
         const itemCost = item?.data?.itemCost?.[0];
         const itemReplenishment = item?.data?.itemReplenishment;
         const exchangeRate = routeData?.purchaseInvoice?.exchangeRate ?? 1;
-        const initialQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
+        const minOrderQty = supplierPart?.data?.minimumOrderQuantity ?? 1;
+        const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+        const initialQty = defaultLineQuantity(
+          hasVariantAttributes,
+          minOrderQty
+        );
         const baseFallback =
           (supplierPart?.data?.unitPrice ?? itemCost?.unitCost ?? 0) /
           exchangeRate;
@@ -344,7 +474,7 @@ const PurchaseInvoiceLineForm = ({
           : [];
         const resolvedPrice = resolveSupplierPrice(
           breaks,
-          initialQty,
+          initialQty || 1,
           baseFallback,
           exchangeRate
         );
@@ -366,10 +496,12 @@ const PurchaseInvoiceLineForm = ({
             itemReplenishment?.conversionFactor ??
             1,
           storageUnitId: inventory.data?.defaultStorageUnitId ?? null,
+          minimumOrderQuantity: minOrderQty,
           taxAmount: 0,
           taxPercent: 0,
           priceBreaks: breaks,
-          fallbackUnitPrice: baseFallback
+          fallbackUnitPrice: baseFallback,
+          hasVariantAttributes
         });
 
         if (item.data?.type) {
@@ -406,520 +538,311 @@ const PurchaseInvoiceLineForm = ({
   };
 
   return (
-    <Tabs
-      value={activeTab}
-      onValueChange={(v) => setActiveTab(v as "item" | "gl-account" | "asset")}
-      className="w-full"
-    >
-      <ModalCardProvider type={type}>
-        <ModalCard
-          onClose={onClose}
-          defaultCollapsed={false}
-          isCollapsible={isEditing}
-        >
-          <ModalCardContent size="xxlarge">
-            <ValidatedForm
-              defaultValues={initialValues}
-              validator={purchaseInvoiceLineValidator}
-              method="post"
-              action={
-                isEditing
-                  ? path.to.purchaseInvoiceLine(invoiceId, initialValues.id!)
-                  : path.to.newPurchaseInvoiceLine(invoiceId)
-              }
-              className="w-full"
-              isDisabled={!isEditable}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
-            >
-              <HStack
-                className={cn(
-                  "w-full justify-between items-start",
-                  type === "modal" && "pr-16"
-                )}
+    <>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) =>
+          setActiveTab(v as "item" | "gl-account" | "asset")
+        }
+        className="w-full"
+      >
+        <ModalCardProvider type={type}>
+          <ModalCard
+            onClose={onClose}
+            defaultCollapsed={false}
+            isCollapsible={isEditing}
+          >
+            <ModalCardContent size="xxlarge">
+              <ValidatedForm
+                defaultValues={initialValues}
+                validator={purchaseInvoiceLineValidator}
+                method="post"
+                action={
+                  isEditing
+                    ? path.to.purchaseInvoiceLine(invoiceId, initialValues.id!)
+                    : path.to.newPurchaseInvoiceLine(invoiceId)
+                }
+                className="w-full"
+                isDisabled={!isEditable}
+                onSubmit={() => {
+                  if (type === "modal") onClose?.();
+                }}
               >
-                <ModalCardHeader className="flex flex-1">
-                  <ModalCardTitle
-                    className={cn(
-                      isEditing &&
-                        !isGLAccount &&
-                        !isFixedAsset &&
-                        !itemData?.itemId &&
-                        "text-muted-foreground"
-                    )}
-                  >
-                    {isEditing
-                      ? isFixedAsset
-                        ? initialValues.assetReadableId || "Fixed Asset"
-                        : isGLAccount
-                          ? indirectData.description || "G/L Account"
-                          : (getItemReadableId(items, itemData?.itemId) ??
-                            "...")
-                      : "New Purchase Invoice Line"}
-                  </ModalCardTitle>
-                  <ModalCardDescription>
-                    {isEditing ? (
-                      <div className="flex flex-col items-start gap-1">
-                        <span>
-                          {isFixedAsset
-                            ? initialValues.assetName ||
-                              indirectData.description
-                            : isGLAccount
-                              ? "G/L Account"
-                              : itemData?.description}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">
-                            {initialValues?.quantity}
-                          </Badge>
-                          <Badge variant="green">
-                            {currencyFormatter.format(
-                              (initialValues?.supplierUnitPrice ?? 0) +
-                                (initialValues?.supplierShippingCost ?? 0)
-                            )}{" "}
-                            {initialValues?.purchaseUnitOfMeasureCode}
-                          </Badge>
-                          {(initialValues?.taxPercent ?? 0) > 0 ? (
-                            <Badge variant="red">
-                              {percentFormatter.format(
-                                initialValues?.taxPercent ?? 0
-                              )}{" "}
-                              Tax
+                <HStack
+                  className={cn(
+                    "w-full justify-between items-start",
+                    type === "modal" && "pr-16"
+                  )}
+                >
+                  <ModalCardHeader className="flex flex-1">
+                    <ModalCardTitle
+                      className={cn(
+                        isEditing &&
+                          !isGLAccount &&
+                          !isFixedAsset &&
+                          !itemData?.itemId &&
+                          "text-muted-foreground"
+                      )}
+                    >
+                      {isEditing
+                        ? isFixedAsset
+                          ? initialValues.assetReadableId || "Fixed Asset"
+                          : isGLAccount
+                            ? indirectData.description || "G/L Account"
+                            : (getItemReadableId(items, itemData?.itemId) ??
+                              "...")
+                        : "New Purchase Invoice Line"}
+                    </ModalCardTitle>
+                    <ModalCardDescription>
+                      {isEditing ? (
+                        <div className="flex flex-col items-start gap-1">
+                          <span>
+                            {isFixedAsset
+                              ? initialValues.assetName ||
+                                indirectData.description
+                              : isGLAccount
+                                ? "G/L Account"
+                                : itemData?.description}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">
+                              {initialValues?.quantity}
                             </Badge>
-                          ) : null}
+                            <Badge variant="green">
+                              {currencyFormatter.format(
+                                (initialValues?.supplierUnitPrice ?? 0) +
+                                  (initialValues?.supplierShippingCost ?? 0)
+                              )}{" "}
+                              {initialValues?.purchaseUnitOfMeasureCode}
+                            </Badge>
+                            {(initialValues?.taxPercent ?? 0) > 0 ? (
+                              <Badge variant="red">
+                                {percentFormatter.format(
+                                  initialValues?.taxPercent ?? 0
+                                )}{" "}
+                                Tax
+                              </Badge>
+                            ) : null}
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      "A purchase invoice line contains invoice details for a particular item"
+                      ) : (
+                        "A purchase invoice line contains invoice details for a particular item"
+                      )}
+                    </ModalCardDescription>
+                  </ModalCardHeader>
+                  <div className="flex-shrink-0">
+                    {!isEditing && (
+                      <TabsList>
+                        <TabsTrigger value="item">
+                          <LuBox className="mr-1" />
+                          <Trans>Item</Trans>
+                        </TabsTrigger>
+                        <TabsTrigger value="gl-account">
+                          <LuReceipt className="mr-1" />
+                          <Trans>GL Account</Trans>
+                        </TabsTrigger>
+                        <TabsTrigger value="asset">
+                          <LuLandmark className="mr-1" />
+                          <Trans>Asset</Trans>
+                        </TabsTrigger>
+                      </TabsList>
                     )}
-                  </ModalCardDescription>
-                </ModalCardHeader>
-                <div className="flex-shrink-0">
-                  {!isEditing && (
-                    <TabsList>
-                      <TabsTrigger value="item">
-                        <LuBox className="mr-1" />
-                        <Trans>Item</Trans>
-                      </TabsTrigger>
-                      <TabsTrigger value="gl-account">
-                        <LuReceipt className="mr-1" />
-                        <Trans>GL Account</Trans>
-                      </TabsTrigger>
-                      <TabsTrigger value="asset">
-                        <LuLandmark className="mr-1" />
-                        <Trans>Asset</Trans>
-                      </TabsTrigger>
-                    </TabsList>
-                  )}
-                </div>
-              </HStack>
-              <ModalCardBody>
-                <Hidden name="id" />
-                <Hidden name="invoiceId" />
-                <Hidden
-                  name="exchangeRate"
-                  value={routeData?.purchaseInvoice?.exchangeRate ?? 1}
-                />
-
-                <TabsContent value="item">
-                  <Hidden name="invoiceLineType" value={itemType} />
-                  {activeTab === "item" && (
-                    <Hidden name="description" value={itemData.description} />
-                  )}
+                  </div>
+                </HStack>
+                <ModalCardBody>
+                  <Hidden name="id" />
+                  <Hidden name="invoiceId" />
                   <Hidden
-                    name="inventoryUnitOfMeasureCode"
-                    value={itemData?.inventoryUom}
+                    name="exchangeRate"
+                    value={routeData?.purchaseInvoice?.exchangeRate ?? 1}
                   />
-                  <VStack>
-                    <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                      <Item
-                        name="itemId"
-                        label={itemType}
-                        // @ts-ignore
-                        type={itemType}
-                        locationId={locationId}
-                        replenishmentSystem="Buy"
-                        onChange={(value) => {
-                          onItemChange(value?.value as string);
-                        }}
-                        onTypeChange={onTypeChange}
-                      />
 
-                      <FormControl className="col-span-2">
-                        <FormLabel isOptional>
-                          <Trans>Description</Trans>
-                        </FormLabel>
-                        <Input
-                          value={itemData.description}
-                          onChange={(e) =>
-                            setItemData((d) => ({
-                              ...d,
-                              description: e.target.value
-                            }))
+                  <TabsContent value="item">
+                    <Hidden name="invoiceLineType" value={itemType} />
+                    {activeTab === "item" && (
+                      <Hidden name="description" value={itemData.description} />
+                    )}
+                    <Hidden
+                      name="inventoryUnitOfMeasureCode"
+                      value={itemData?.inventoryUom}
+                    />
+                    {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
+                    <Hidden
+                      name="variantQuantities"
+                      value={
+                        variantsQuantityRows
+                          ? JSON.stringify({
+                              variantTable: variantsQuantityRows
+                            })
+                          : ""
+                      }
+                    />
+                    <VStack>
+                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                        <Item
+                          name="itemId"
+                          label={itemType}
+                          // @ts-ignore
+                          type={itemType}
+                          locationId={locationId}
+                          // Styles are replenished by Make but still bought as
+                          // finished garments — don't filter them out.
+                          replenishmentSystem={
+                            itemType === "Style" ? undefined : "Buy"
                           }
+                          onChange={(value) => {
+                            onItemChange(value?.value as string);
+                          }}
+                          onTypeChange={onTypeChange}
                         />
-                      </FormControl>
 
-                      {[
-                        "Item",
-                        "Part",
-                        "Material",
-                        "Tool",
-                        "Consumable",
-                        "Service",
-                        "Fixture"
-                      ].includes(itemType) && (
-                        <>
-                          <NumberControlled
-                            minValue={itemData.minimumOrderQuantity}
-                            name="quantity"
-                            label={t`Quantity`}
-                            value={itemData.quantity}
-                            onChange={(value) => {
-                              const exchangeRate =
-                                routeData?.purchaseInvoice?.exchangeRate ?? 1;
+                        <FormControl className="col-span-2">
+                          <FormLabel isOptional>
+                            <Trans>Description</Trans>
+                          </FormLabel>
+                          <Input
+                            value={itemData.description}
+                            onChange={(e) =>
                               setItemData((d) => ({
                                 ...d,
-                                quantity: value,
-                                supplierUnitPrice: resolveSupplierPrice(
-                                  d.priceBreaks,
-                                  value,
-                                  d.fallbackUnitPrice,
-                                  exchangeRate
-                                )
-                              }));
-                            }}
-                          />
-
-                          <UnitOfMeasure
-                            name="purchaseUnitOfMeasureCode"
-                            label={t`Unit of Measure`}
-                            value={itemData.purchaseUom}
-                            onChange={(newValue) => {
-                              if (newValue) {
-                                setItemData((d) => ({
-                                  ...d,
-                                  purchaseUom: newValue?.value as string
-                                }));
-                              }
-                            }}
-                          />
-                          <ConversionFactor
-                            name="conversionFactor"
-                            purchasingCode={itemData.purchaseUom}
-                            inventoryCode={itemData.inventoryUom}
-                            value={itemData.conversionFactor}
-                            onChange={(value) => {
-                              setItemData((d) => ({
-                                ...d,
-                                conversionFactor: value
-                              }));
-                            }}
-                          />
-
-                          <NumberControlled
-                            name="supplierUnitPrice"
-                            label={t`Supplier Unit Price`}
-                            value={itemData.supplierUnitPrice}
-                            formatOptions={{
-                              style: "currency",
-                              currency:
-                                routeData?.purchaseInvoice?.currencyCode ??
-                                company.baseCurrencyCode
-                            }}
-                            onChange={(value) =>
-                              setItemData((d) => ({
-                                ...d,
-                                supplierUnitPrice: value
+                                description: e.target.value
                               }))
                             }
                           />
+                        </FormControl>
 
-                          <Location
-                            name="locationId"
-                            label={t`Delivery Location`}
-                            value={locationId}
-                            onChange={onLocationChange}
-                          />
-                          <StorageUnit
-                            name="storageUnitId"
-                            label={t`Storage Unit`}
-                            locationId={locationId}
-                            value={itemData.storageUnitId ?? undefined}
-                            onChange={(newValue) => {
-                              if (newValue) {
-                                setItemData((d) => ({
-                                  ...d,
-                                  storageUnitId: newValue?.id
-                                }));
-                              }
-                            }}
-                          />
-                        </>
-                      )}
-                      <CustomFormFields table="purchaseInvoiceLine" />
-                    </div>
-
-                    <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
-                      <HStack
-                        className="w-full justify-between cursor-pointer"
-                        onClick={costsDisclosure.onToggle}
-                      >
-                        <Label>
-                          <Trans>Tax &amp; Shipping</Trans>
-                        </Label>
-                        <HStack>
-                          {itemData.taxPercent > 0 && (
-                            <Badge variant="red">
-                              {percentFormatter.format(itemData.taxPercent)}{" "}
-                              <Trans>Tax</Trans>
-                            </Badge>
-                          )}
-                          {itemData.supplierShippingCost > 0 && (
-                            <Badge variant="secondary">
-                              {currencyFormatter.format(
-                                itemData.supplierShippingCost
-                              )}
-                            </Badge>
-                          )}
-                          <IconButton
-                            icon={<LuChevronRight />}
-                            aria-label={
-                              costsDisclosure.isOpen
-                                ? t`Collapse Costs`
-                                : t`Expand Costs`
-                            }
-                            variant="ghost"
-                            size="md"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              costsDisclosure.onToggle();
-                            }}
-                            className={`transition-transform ${costsDisclosure.isOpen ? "rotate-90" : ""}`}
-                          />
-                        </HStack>
-                      </HStack>
-                      <div
-                        className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                          costsDisclosure.isOpen ? "" : "hidden"
-                        }`}
-                      >
-                        <NumberControlled
-                          name="supplierShippingCost"
-                          label={t`Shipping`}
-                          value={itemData.supplierShippingCost}
-                          minValue={0}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.purchaseInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                          onChange={(value) =>
-                            setItemData((d) => ({
-                              ...d,
-                              supplierShippingCost: value
-                            }))
-                          }
-                        />
-                        <NumberControlled
-                          name="supplierTaxAmount"
-                          label={t`Tax Amount`}
-                          value={itemData.taxAmount}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.purchaseInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                          onChange={(value) => {
-                            const subtotal =
-                              itemData.supplierUnitPrice * itemData.quantity +
-                              itemData.supplierShippingCost;
-                            setItemData((d) => ({
-                              ...d,
-                              taxAmount: value,
-                              taxPercent: subtotal > 0 ? value / subtotal : 0
-                            }));
-                          }}
-                        />
-                        <NumberControlled
-                          name="taxPercent"
-                          label={t`Tax Percent`}
-                          value={itemData.taxPercent}
-                          minValue={0}
-                          maxValue={1}
-                          step={0.0001}
-                          formatOptions={{
-                            style: "percent",
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2
-                          }}
-                          onChange={(value) => {
-                            const subtotal =
-                              itemData.supplierUnitPrice * itemData.quantity +
-                              itemData.supplierShippingCost;
-                            setItemData((d) => ({
-                              ...d,
-                              taxPercent: value,
-                              taxAmount: subtotal * value
-                            }));
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </VStack>
-                </TabsContent>
-
-                {(activeTab === "gl-account" || activeTab === "asset") && (
-                  <>
-                    <Hidden
-                      name="invoiceLineType"
-                      value={
-                        activeTab === "asset" ? "Fixed Asset" : "G/L Account"
-                      }
-                    />
-
-                    <VStack>
-                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        {activeTab === "gl-account" ? (
+                        {[
+                          "Item",
+                          "Part",
+                          "Style",
+                          "Material",
+                          "Tool",
+                          "Consumable",
+                          "Service",
+                          "Fixture"
+                        ].includes(itemType) && (
                           <>
-                            <Account
-                              name="accountId"
-                              label={t`GL Account`}
-                              classes={["Expense"]}
-                              isOptional={false}
-                            />
-                            <CostCenter
-                              name="costCenterId"
-                              label={t`Cost Center`}
-                              isOptional
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <Combobox
-                              name="assetId"
-                              label={t`Fixed Asset`}
-                              isOptional={false}
-                              options={assetOptions}
-                              value={indirectData.assetId}
-                              onChange={(selected) => {
-                                setIndirectData((d) => ({
-                                  ...d,
-                                  assetId: (selected?.value as string) ?? ""
-                                }));
-                                const asset = assetOptions.find(
-                                  (o) => o.value === selected?.value
-                                );
-                                if (asset?.locationId && !locationId) {
-                                  setLocationId(asset.locationId);
+                            {itemData.hasVariantAttributes ? (
+                              <QuantityWithVariantsQuantity
+                                minValue={itemData.minimumOrderQuantity}
+                                name="quantity"
+                                label={t`Quantity`}
+                                value={itemData.quantity}
+                                onChange={onQuantityChange}
+                                hasVariantsQuantity={hasVariantsQuantity}
+                                onOpenVariantsQuantity={
+                                  hasVariantsQuantity
+                                    ? openVariantsQuantity
+                                    : undefined
+                                }
+                                variantsQuantityTotal={variantsQuantityTotal}
+                                isReadOnly={hasVariantsQuantity}
+                              />
+                            ) : (
+                              <NumberControlled
+                                minValue={itemData.minimumOrderQuantity}
+                                name="quantity"
+                                label={t`Quantity`}
+                                value={itemData.quantity}
+                                onChange={onQuantityChange}
+                              />
+                            )}
+
+                            <UnitOfMeasure
+                              name="purchaseUnitOfMeasureCode"
+                              label={t`Unit of Measure`}
+                              value={itemData.purchaseUom}
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  setItemData((d) => ({
+                                    ...d,
+                                    purchaseUom: newValue?.value as string
+                                  }));
                                 }
                               }}
                             />
+                            <ConversionFactor
+                              name="conversionFactor"
+                              purchasingCode={itemData.purchaseUom}
+                              inventoryCode={itemData.inventoryUom}
+                              value={itemData.conversionFactor}
+                              onChange={(value) => {
+                                setItemData((d) => ({
+                                  ...d,
+                                  conversionFactor: value
+                                }));
+                              }}
+                            />
+
+                            <NumberControlled
+                              name="supplierUnitPrice"
+                              label={t`Supplier Unit Price`}
+                              value={itemData.supplierUnitPrice}
+                              formatOptions={{
+                                style: "currency",
+                                currency:
+                                  routeData?.purchaseInvoice?.currencyCode ??
+                                  company.baseCurrencyCode
+                              }}
+                              onChange={(value) =>
+                                setItemData((d) => ({
+                                  ...d,
+                                  supplierUnitPrice: value
+                                }))
+                              }
+                            />
+
                             <Location
                               name="locationId"
-                              label={t`Location`}
+                              label={t`Delivery Location`}
                               value={locationId}
-                              onChange={(newLocation) => {
-                                setLocationId(newLocation?.value ?? "");
+                              onChange={onLocationChange}
+                            />
+                            <StorageUnit
+                              name="storageUnitId"
+                              label={t`Storage Unit`}
+                              locationId={locationId}
+                              value={itemData.storageUnitId ?? undefined}
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  setItemData((d) => ({
+                                    ...d,
+                                    storageUnitId: newValue?.id
+                                  }));
+                                }
                               }}
                             />
                           </>
                         )}
-                        <InputControlled
-                          className={
-                            activeTab === "asset" ? "col-span-1" : "col-span-3"
-                          }
-                          label={t`Description`}
-                          name="description"
-                          value={indirectData.description}
-                          isOptional={false}
-                          onChange={(newValue) =>
-                            setIndirectData((d) => ({
-                              ...d,
-                              description: newValue
-                            }))
-                          }
-                        />
-                        <DatePicker
-                          name="requiredDate"
-                          label={t`Required Date`}
-                          value={indirectData.requiredDate ?? undefined}
-                          onChange={(date) => {
-                            setIndirectData((d) => ({
-                              ...d,
-                              requiredDate: date
-                            }));
-                          }}
-                        />
-                        <NumberControlled
-                          name="quantity"
-                          label={t`Quantity`}
-                          isOptional={false}
-                          isDisabled={activeTab === "asset"}
-                          value={
-                            activeTab === "asset" ? 1 : indirectData.quantity
-                          }
-                          onChange={(value) =>
-                            setIndirectData((d) => ({
-                              ...d,
-                              quantity: value
-                            }))
-                          }
-                        />
-                        <NumberControlled
-                          name="supplierUnitPrice"
-                          label={t`Unit Price`}
-                          isOptional={false}
-                          value={indirectData.supplierUnitPrice}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.purchaseInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                          onChange={(value) =>
-                            setIndirectData((d) => ({
-                              ...d,
-                              supplierUnitPrice: value
-                            }))
-                          }
-                        />
                         <CustomFormFields table="purchaseInvoiceLine" />
                       </div>
 
-                      <div className="h-4" />
-
-                      <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+                      <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
                         <HStack
                           className="w-full justify-between cursor-pointer"
-                          onClick={indirectCostsDisclosure.onToggle}
+                          onClick={costsDisclosure.onToggle}
                         >
                           <Label>
                             <Trans>Tax &amp; Shipping</Trans>
                           </Label>
                           <HStack>
-                            {indirectData.taxPercent > 0 && (
+                            {itemData.taxPercent > 0 && (
                               <Badge variant="red">
-                                {percentFormatter.format(
-                                  indirectData.taxPercent
-                                )}{" "}
+                                {percentFormatter.format(itemData.taxPercent)}{" "}
                                 <Trans>Tax</Trans>
                               </Badge>
                             )}
-                            {indirectData.supplierShippingCost > 0 && (
+                            {itemData.supplierShippingCost > 0 && (
                               <Badge variant="secondary">
                                 {currencyFormatter.format(
-                                  indirectData.supplierShippingCost
+                                  itemData.supplierShippingCost
                                 )}
                               </Badge>
                             )}
                             <IconButton
                               icon={<LuChevronRight />}
                               aria-label={
-                                indirectCostsDisclosure.isOpen
+                                costsDisclosure.isOpen
                                   ? t`Collapse Costs`
                                   : t`Expand Costs`
                               }
@@ -927,22 +850,22 @@ const PurchaseInvoiceLineForm = ({
                               size="md"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                indirectCostsDisclosure.onToggle();
+                                costsDisclosure.onToggle();
                               }}
-                              className={`transition-transform ${indirectCostsDisclosure.isOpen ? "rotate-90" : ""}`}
+                              className={`transition-transform ${costsDisclosure.isOpen ? "rotate-90" : ""}`}
                             />
                           </HStack>
                         </HStack>
                         <div
                           className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                            indirectCostsDisclosure.isOpen ? "" : "hidden"
+                            costsDisclosure.isOpen ? "" : "hidden"
                           }`}
                         >
                           <NumberControlled
                             name="supplierShippingCost"
                             label={t`Shipping`}
+                            value={itemData.supplierShippingCost}
                             minValue={0}
-                            value={indirectData.supplierShippingCost}
                             formatOptions={{
                               style: "currency",
                               currency:
@@ -950,7 +873,7 @@ const PurchaseInvoiceLineForm = ({
                                 company.baseCurrencyCode
                             }}
                             onChange={(value) =>
-                              setIndirectData((d) => ({
+                              setItemData((d) => ({
                                 ...d,
                                 supplierShippingCost: value
                               }))
@@ -959,7 +882,7 @@ const PurchaseInvoiceLineForm = ({
                           <NumberControlled
                             name="supplierTaxAmount"
                             label={t`Tax Amount`}
-                            value={indirectData.taxAmount}
+                            value={itemData.taxAmount}
                             formatOptions={{
                               style: "currency",
                               currency:
@@ -968,10 +891,9 @@ const PurchaseInvoiceLineForm = ({
                             }}
                             onChange={(value) => {
                               const subtotal =
-                                indirectData.supplierUnitPrice *
-                                  indirectData.quantity +
-                                indirectData.supplierShippingCost;
-                              setIndirectData((d) => ({
+                                itemData.supplierUnitPrice * itemData.quantity +
+                                itemData.supplierShippingCost;
+                              setItemData((d) => ({
                                 ...d,
                                 taxAmount: value,
                                 taxPercent: subtotal > 0 ? value / subtotal : 0
@@ -981,7 +903,7 @@ const PurchaseInvoiceLineForm = ({
                           <NumberControlled
                             name="taxPercent"
                             label={t`Tax Percent`}
-                            value={indirectData.taxPercent}
+                            value={itemData.taxPercent}
                             minValue={0}
                             maxValue={1}
                             step={0.0001}
@@ -992,10 +914,9 @@ const PurchaseInvoiceLineForm = ({
                             }}
                             onChange={(value) => {
                               const subtotal =
-                                indirectData.supplierUnitPrice *
-                                  indirectData.quantity +
-                                indirectData.supplierShippingCost;
-                              setIndirectData((d) => ({
+                                itemData.supplierUnitPrice * itemData.quantity +
+                                itemData.supplierShippingCost;
+                              setItemData((d) => ({
                                 ...d,
                                 taxPercent: value,
                                 taxAmount: subtotal * value
@@ -1005,26 +926,271 @@ const PurchaseInvoiceLineForm = ({
                         </div>
                       </div>
                     </VStack>
-                  </>
-                )}
-              </ModalCardBody>
-              <ModalCardFooter>
-                <HStack className="justify-end gap-2">
-                  {onClose && (
-                    <Button variant="ghost" onClick={onClose}>
-                      <Trans>Cancel</Trans>
-                    </Button>
+                  </TabsContent>
+
+                  {(activeTab === "gl-account" || activeTab === "asset") && (
+                    <>
+                      <Hidden
+                        name="invoiceLineType"
+                        value={
+                          activeTab === "asset" ? "Fixed Asset" : "G/L Account"
+                        }
+                      />
+
+                      <VStack>
+                        <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                          {activeTab === "gl-account" ? (
+                            <>
+                              <Account
+                                name="accountId"
+                                label={t`GL Account`}
+                                classes={["Expense"]}
+                                isOptional={false}
+                              />
+                              <CostCenter
+                                name="costCenterId"
+                                label={t`Cost Center`}
+                                isOptional
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <Combobox
+                                name="assetId"
+                                label={t`Fixed Asset`}
+                                isOptional={false}
+                                options={assetOptions}
+                                value={indirectData.assetId}
+                                onChange={(selected) => {
+                                  setIndirectData((d) => ({
+                                    ...d,
+                                    assetId: (selected?.value as string) ?? ""
+                                  }));
+                                  const asset = assetOptions.find(
+                                    (o) => o.value === selected?.value
+                                  );
+                                  if (asset?.locationId && !locationId) {
+                                    setLocationId(asset.locationId);
+                                  }
+                                }}
+                              />
+                              <Location
+                                name="locationId"
+                                label={t`Location`}
+                                value={locationId}
+                                onChange={(newLocation) => {
+                                  setLocationId(newLocation?.value ?? "");
+                                }}
+                              />
+                            </>
+                          )}
+                          <InputControlled
+                            className={
+                              activeTab === "asset"
+                                ? "col-span-1"
+                                : "col-span-3"
+                            }
+                            label={t`Description`}
+                            name="description"
+                            value={indirectData.description}
+                            isOptional={false}
+                            onChange={(newValue) =>
+                              setIndirectData((d) => ({
+                                ...d,
+                                description: newValue
+                              }))
+                            }
+                          />
+                          <DatePicker
+                            name="requiredDate"
+                            label={t`Required Date`}
+                            value={indirectData.requiredDate ?? undefined}
+                            onChange={(date) => {
+                              setIndirectData((d) => ({
+                                ...d,
+                                requiredDate: date
+                              }));
+                            }}
+                          />
+                          <NumberControlled
+                            name="quantity"
+                            label={t`Quantity`}
+                            isOptional={false}
+                            isDisabled={activeTab === "asset"}
+                            value={
+                              activeTab === "asset" ? 1 : indirectData.quantity
+                            }
+                            onChange={(value) =>
+                              setIndirectData((d) => ({
+                                ...d,
+                                quantity: value
+                              }))
+                            }
+                          />
+                          <NumberControlled
+                            name="supplierUnitPrice"
+                            label={t`Unit Price`}
+                            isOptional={false}
+                            value={indirectData.supplierUnitPrice}
+                            formatOptions={{
+                              style: "currency",
+                              currency:
+                                routeData?.purchaseInvoice?.currencyCode ??
+                                company.baseCurrencyCode
+                            }}
+                            onChange={(value) =>
+                              setIndirectData((d) => ({
+                                ...d,
+                                supplierUnitPrice: value
+                              }))
+                            }
+                          />
+                          <CustomFormFields table="purchaseInvoiceLine" />
+                        </div>
+
+                        <div className="h-4" />
+
+                        <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+                          <HStack
+                            className="w-full justify-between cursor-pointer"
+                            onClick={indirectCostsDisclosure.onToggle}
+                          >
+                            <Label>
+                              <Trans>Tax &amp; Shipping</Trans>
+                            </Label>
+                            <HStack>
+                              {indirectData.taxPercent > 0 && (
+                                <Badge variant="red">
+                                  {percentFormatter.format(
+                                    indirectData.taxPercent
+                                  )}{" "}
+                                  <Trans>Tax</Trans>
+                                </Badge>
+                              )}
+                              {indirectData.supplierShippingCost > 0 && (
+                                <Badge variant="secondary">
+                                  {currencyFormatter.format(
+                                    indirectData.supplierShippingCost
+                                  )}
+                                </Badge>
+                              )}
+                              <IconButton
+                                icon={<LuChevronRight />}
+                                aria-label={
+                                  indirectCostsDisclosure.isOpen
+                                    ? t`Collapse Costs`
+                                    : t`Expand Costs`
+                                }
+                                variant="ghost"
+                                size="md"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  indirectCostsDisclosure.onToggle();
+                                }}
+                                className={`transition-transform ${indirectCostsDisclosure.isOpen ? "rotate-90" : ""}`}
+                              />
+                            </HStack>
+                          </HStack>
+                          <div
+                            className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                              indirectCostsDisclosure.isOpen ? "" : "hidden"
+                            }`}
+                          >
+                            <NumberControlled
+                              name="supplierShippingCost"
+                              label={t`Shipping`}
+                              minValue={0}
+                              value={indirectData.supplierShippingCost}
+                              formatOptions={{
+                                style: "currency",
+                                currency:
+                                  routeData?.purchaseInvoice?.currencyCode ??
+                                  company.baseCurrencyCode
+                              }}
+                              onChange={(value) =>
+                                setIndirectData((d) => ({
+                                  ...d,
+                                  supplierShippingCost: value
+                                }))
+                              }
+                            />
+                            <NumberControlled
+                              name="supplierTaxAmount"
+                              label={t`Tax Amount`}
+                              value={indirectData.taxAmount}
+                              formatOptions={{
+                                style: "currency",
+                                currency:
+                                  routeData?.purchaseInvoice?.currencyCode ??
+                                  company.baseCurrencyCode
+                              }}
+                              onChange={(value) => {
+                                const subtotal =
+                                  indirectData.supplierUnitPrice *
+                                    indirectData.quantity +
+                                  indirectData.supplierShippingCost;
+                                setIndirectData((d) => ({
+                                  ...d,
+                                  taxAmount: value,
+                                  taxPercent:
+                                    subtotal > 0 ? value / subtotal : 0
+                                }));
+                              }}
+                            />
+                            <NumberControlled
+                              name="taxPercent"
+                              label={t`Tax Percent`}
+                              value={indirectData.taxPercent}
+                              minValue={0}
+                              maxValue={1}
+                              step={0.0001}
+                              formatOptions={{
+                                style: "percent",
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 2
+                              }}
+                              onChange={(value) => {
+                                const subtotal =
+                                  indirectData.supplierUnitPrice *
+                                    indirectData.quantity +
+                                  indirectData.supplierShippingCost;
+                                setIndirectData((d) => ({
+                                  ...d,
+                                  taxPercent: value,
+                                  taxAmount: subtotal * value
+                                }));
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </VStack>
+                    </>
                   )}
-                  <Submit isDisabled={isDisabled} withBlocker={false}>
-                    <Trans>Save</Trans>
-                  </Submit>
-                </HStack>
-              </ModalCardFooter>
-            </ValidatedForm>
-          </ModalCardContent>
-        </ModalCard>
-      </ModalCardProvider>
-    </Tabs>
+                </ModalCardBody>
+                <ModalCardFooter>
+                  <HStack className="justify-end gap-2">
+                    {onClose && (
+                      <Button variant="ghost" onClick={onClose}>
+                        <Trans>Cancel</Trans>
+                      </Button>
+                    )}
+                    <Submit
+                      isDisabled={
+                        isDisabled || !isEditable || isMissingVariantQty
+                      }
+                      withBlocker={false}
+                    >
+                      <Trans>Save</Trans>
+                    </Submit>
+                  </HStack>
+                </ModalCardFooter>
+              </ValidatedForm>
+            </ModalCardContent>
+          </ModalCard>
+        </ModalCardProvider>
+      </Tabs>
+      {variantsQuantityModal.node}
+    </>
   );
 };
 

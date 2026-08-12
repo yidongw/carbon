@@ -2,10 +2,20 @@
 
 Patterns learned from corrections. Review at the start of each session.
 
+## Variant quantity UX is has-attributes vs not — Style is not special
+- Two item kinds for line qty: parents with `itemAttributeSelection` rows use the variant grid (default qty 0); plain SKUs use a scalar default (usually 1 / min order).
+- Do not special-case `type === "Style"` for quantity defaults, grid visibility, or submit blockers. Share helpers in `modules/shared/variantQuantityLine.ts` (`defaultLineQuantity`, `shouldShowVariantQuantityGrid`, `isMissingVariantQuantity`).
+- On type change (no item yet), reset to the non-grid fallback and clear `hasVariantAttributes`; decide the grid only after item select / attribute fetch. Seed `hasVariantAttributes` from persisted `variantQuantities` when editing a parent line.
+
 ## Bundle jobs must copy the parent Style BOP, not the variant SKU method
 - Symptom: Style has Assembly (and Cutting); Master WO processes show Cutting only (expected); Bundle WO processes are empty — Assembly missing everywhere that rolls up from bundles.
 - Root cause: `insertBundleWorkOrder` creates the job with `itemId` = variant SKU. Variant SKUs have no make method; get-method failed silently and left zero operations. Cutting delete then had nothing left to keep.
 - Rule: when get-method/`insertJob` targets a Style variant SKU, resolve `itemVariant.parentItemId` and copy that Style's method (`methodItemId` / `resolveStyleMethodItemId`). Master still strips non-cutting ops; bundle strips cutting — Assembly belongs on the bundle.
+
+## Don't keep obsolete mental-model names after a data-shape change
+- Symptom: variant-table parsers still used a local variable named `config` even though the flow no longer uses the old configuration model. That made the code read as if the old concept still existed.
+- Root cause: I carried forward old vocabulary from earlier iterations instead of renaming locals to match the current data shape.
+- Rule: when a feature is simplified or renamed, sweep local variable names and comments too. Name things after the data actually present (`parsedVariantTable`, `variantTable`, `variantQuantities`) rather than legacy umbrella terms like `config`/`configuration`.
 
 ## Rename call-site property names when renaming function args
 - Symptom (bug 451530): Master WO create toast failed / qty modal wouldn't open, but the MWO existed.

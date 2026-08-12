@@ -19,18 +19,24 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuImage } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
+import { Link, useNavigate, useParams } from "react-router";
 import { MethodIcon, SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
+import { VariantChips, VariantExpandRows } from "~/components/VariantChips";
 import {
   useCurrencyFormatter,
   useDateFormatter,
   usePercentFormatter,
+  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
+import {
+  groupLinesForStyleDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/variantDisplay";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isPurchaseInvoiceLocked } from "../../invoicing.models";
@@ -46,7 +52,9 @@ const LineItems = ({
   formatter,
   locale,
   purchaseInvoiceLines,
-  shouldConvertCurrency
+  shouldConvertCurrency,
+  attributeValueNames,
+  styleVariantByItemId
 }: {
   currencyCode: string;
   presentationCurrencyFormatter: Intl.NumberFormat;
@@ -54,6 +62,8 @@ const LineItems = ({
   locale: string;
   purchaseInvoiceLines: PurchaseInvoiceLine[];
   shouldConvertCurrency: boolean;
+  attributeValueNames?: Record<string, string>;
+  styleVariantByItemId: Record<string, StyleVariantLineMeta>;
 }) => {
   const { t } = useLingui();
   const [items] = useItems();
@@ -71,43 +81,107 @@ const LineItems = ({
     );
   };
 
+  const displayGroups = groupLinesForStyleDisplay(
+    purchaseInvoiceLines,
+    styleVariantByItemId,
+    attributeValueNames,
+    (line) => Number(line.quantity ?? 0),
+    locale
+  );
+
   return (
     <VStack spacing={8} className="w-full overflow-hidden">
-      {purchaseInvoiceLines.map((line) => {
+      {displayGroups.map((group) => {
+        const line = group.kind === "line" ? group.line : group.primaryLine;
         if (!line.id) return null;
+
+        const totalLines =
+          group.kind === "style-group" ? group.totalLines : [line];
+        const variantDisplay = group.variantDisplay;
 
         const isGlAccount = line.invoiceLineType === "G/L Account";
         const isFixedAsset = line.invoiceLineType === "Fixed Asset";
         const isIndirect = isGlAccount || isFixedAsset;
-        const itemReadableId = isGlAccount
-          ? line.description || t`Indirect Expense`
-          : isFixedAsset
-            ? line.assetReadableId || t`Fixed Asset`
-            : getItemReadableId(items, line.itemId);
-        const lineTotal = (line.unitPrice ?? 0) * (line.quantity ?? 0);
-        const supplierLineTotal =
-          (line.supplierUnitPrice ?? 0) * (line.quantity ?? 0);
-        const total =
-          lineTotal + (line.taxAmount ?? 0) + (line.shippingCost ?? 0);
+
+        const itemReadableId =
+          group.kind === "style-group"
+            ? group.parentReadableId
+            : isGlAccount
+              ? line.description || t`Indirect Expense`
+              : isFixedAsset
+                ? line.assetReadableId || t`Fixed Asset`
+                : (line.itemReadableId ??
+                  getItemReadableId(items, line.itemId) ??
+                  line.description ??
+                  "");
+
+        const itemDescription =
+          group.kind === "style-group"
+            ? (group.parentName ?? line.description)
+            : isGlAccount
+              ? (accounts.find((a) => a.id === line.accountId)?.name ??
+                t`Indirect Expense`)
+              : isFixedAsset
+                ? line.description || t`Fixed Asset`
+                : line.description;
+
+        const thumbnailPath =
+          group.kind === "style-group"
+            ? (group.parentThumbnailPath ?? line.thumbnailPath)
+            : line.thumbnailPath;
+
+        const quantity = totalLines.reduce(
+          (acc, l) => acc + (l.quantity ?? 0),
+          0
+        );
+        const lineTotal = totalLines.reduce(
+          (acc, l) => acc + (l.unitPrice ?? 0) * (l.quantity ?? 0),
+          0
+        );
+        const supplierLineTotal = totalLines.reduce(
+          (acc, l) => acc + (l.supplierUnitPrice ?? 0) * (l.quantity ?? 0),
+          0
+        );
+        const taxAmount = totalLines.reduce(
+          (acc, l) => acc + (l.taxAmount ?? 0),
+          0
+        );
+        const supplierTaxAmount = totalLines.reduce(
+          (acc, l) => acc + (l.supplierTaxAmount ?? 0),
+          0
+        );
+        const shippingCost = totalLines.reduce(
+          (acc, l) => acc + (l.shippingCost ?? 0),
+          0
+        );
+        const supplierShippingCost = totalLines.reduce(
+          (acc, l) => acc + (l.supplierShippingCost ?? 0),
+          0
+        );
+        const total = lineTotal + taxAmount + shippingCost;
         const supplierTotal =
-          supplierLineTotal +
-          (line.supplierTaxAmount ?? 0) +
-          (line.supplierShippingCost ?? 0);
+          supplierLineTotal + supplierTaxAmount + supplierShippingCost;
+        const unitPrice =
+          quantity > 0 ? lineTotal / quantity : (line.unitPrice ?? 0);
+        const supplierUnitPrice =
+          quantity > 0
+            ? supplierLineTotal / quantity
+            : (line.supplierUnitPrice ?? 0);
 
         return (
           <motion.div
-            key={line.id}
+            key={group.key}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="border-b border-input py-6 w-full"
           >
             <HStack spacing={4} className="items-start">
-              {line.thumbnailPath ? (
+              {thumbnailPath ? (
                 <img
                   alt={itemReadableId ?? ""}
                   className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg"
-                  src={getPrivateUrl(line.thumbnailPath)}
+                  src={getPrivateUrl(thumbnailPath)}
                 />
               ) : (
                 <div className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg p-4">
@@ -118,7 +192,7 @@ const LineItems = ({
               <VStack spacing={0} className="w-full">
                 <div
                   className="flex flex-col cursor-pointer w-full"
-                  onClick={() => toggleOpen(line.id!)}
+                  onClick={() => toggleOpen(group.key)}
                 >
                   <div className="flex items-center justify-between w-full">
                     <VStack
@@ -141,19 +215,18 @@ const LineItems = ({
                               invoiceId,
                               line.id!
                             )}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <Trans>Edit</Trans>
                           </Link>
                         </Button>
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
-                        {isGlAccount
-                          ? (accounts.find((a) => a.id === line.accountId)
-                              ?.name ?? t`Indirect Expense`)
-                          : isFixedAsset
-                            ? line.description || t`Fixed Asset`
-                            : line.description}
+                        {itemDescription}
                       </span>
+                      {variantDisplay ? (
+                        <VariantChips chips={variantDisplay.chips} />
+                      ) : null}
                     </VStack>
                     <VStack
                       spacing={2}
@@ -174,7 +247,7 @@ const LineItems = ({
                         </VStack>
                         <motion.div
                           animate={{
-                            rotate: openItems.includes(line.id) ? 90 : 0
+                            rotate: openItems.includes(group.key) ? 90 : 0
                           }}
                           transition={{ duration: 0.3 }}
                         >
@@ -187,7 +260,7 @@ const LineItems = ({
                             variant="outline"
                             className="flex items-center gap-2"
                           >
-                            {line.quantity}
+                            {quantity}
                             <MethodIcon
                               // @ts-ignore
                               type={line.methodType ?? "Pull from Inventory"}
@@ -195,7 +268,7 @@ const LineItems = ({
                           </Badge>
                         )}
                         <Badge variant="green">
-                          {formatter.format(line.unitPrice ?? 0)}{" "}
+                          {formatter.format(unitPrice)}{" "}
                           {
                             unitOfMeasures.find(
                               (uom) =>
@@ -220,7 +293,7 @@ const LineItems = ({
 
             <motion.div
               initial="collapsed"
-              animate={openItems.includes(line.id) ? "open" : "collapsed"}
+              animate={openItems.includes(group.key) ? "open" : "collapsed"}
               variants={{
                 open: { opacity: 1, height: "auto", marginTop: 16 },
                 collapsed: { opacity: 0, height: 0, marginTop: 0 }
@@ -231,6 +304,7 @@ const LineItems = ({
               <div className="w-full">
                 <Table>
                   <Tbody>
+                    <VariantExpandRows chips={variantDisplay?.chips ?? []} />
                     <Tr>
                       <Td>
                         <Trans>Quantity</Trans>
@@ -238,7 +312,7 @@ const LineItems = ({
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>
-                            {line.quantity}{" "}
+                            {quantity}{" "}
                             {
                               unitOfMeasures.find(
                                 (uom) =>
@@ -248,8 +322,7 @@ const LineItems = ({
                           </span>
                           {line.conversionFactor !== 1 && (
                             <span className="text-muted-foreground text-xs">
-                              {(line.quantity ?? 0) *
-                                (line.conversionFactor ?? 1)}{" "}
+                              {quantity * (line.conversionFactor ?? 1)}{" "}
                               {
                                 unitOfMeasures.find(
                                   (uom) =>
@@ -268,11 +341,11 @@ const LineItems = ({
                       </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
-                          <span>{formatter.format(line.unitPrice ?? 0)}</span>
+                          <span>{formatter.format(unitPrice)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
                               {presentationCurrencyFormatter.format(
-                                line.supplierUnitPrice ?? 0
+                                supplierUnitPrice
                               )}
                             </span>
                           )}
@@ -285,13 +358,11 @@ const LineItems = ({
                       </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
-                          <span>
-                            {formatter.format(line.shippingCost ?? 0)}
-                          </span>
+                          <span>{formatter.format(shippingCost)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
                               {presentationCurrencyFormatter.format(
-                                line.supplierShippingCost ?? 0
+                                supplierShippingCost
                               )}
                             </span>
                           )}
@@ -324,11 +395,11 @@ const LineItems = ({
                       </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
-                          <span>{formatter.format(line.taxAmount ?? 0)}</span>
+                          <span>{formatter.format(taxAmount)}</span>
                           {shouldConvertCurrency && (
                             <span className="text-muted-foreground text-xs">
                               {presentationCurrencyFormatter.format(
-                                line.supplierTaxAmount ?? 0
+                                supplierTaxAmount
                               )}
                             </span>
                           )}
@@ -373,11 +444,15 @@ const PurchaseInvoiceSummary = ({
   const { invoiceId } = useParams();
   if (!invoiceId) throw new Error("Could not find invoiceId");
   const { formatDate } = useDateFormatter();
+  const navigate = useNavigate();
+  const permissions = usePermissions();
 
   const routeData = useRouteData<{
     purchaseInvoice: PurchaseInvoice;
     purchaseInvoiceLines: PurchaseInvoiceLine[];
     purchaseInvoiceDelivery: PurchaseInvoiceDelivery;
+    attributeValueNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(path.to.purchaseInvoice(invoiceId));
 
   const { locale } = useLocale();
@@ -396,6 +471,10 @@ const PurchaseInvoiceSummary = ({
   const isEditable = !isPurchaseInvoiceLocked(
     routeData?.purchaseInvoice?.status
   );
+  const canAddLine =
+    isEditable &&
+    routeData?.purchaseInvoice?.status === "Draft" &&
+    permissions.can("create", "invoicing");
 
   // Calculate totals
   const subtotal =
@@ -465,7 +544,20 @@ const PurchaseInvoiceSummary = ({
           locale={locale}
           purchaseInvoiceLines={routeData?.purchaseInvoiceLines ?? []}
           shouldConvertCurrency={shouldConvertCurrency}
+          attributeValueNames={routeData?.attributeValueNames}
+          styleVariantByItemId={routeData?.styleVariantByItemId ?? {}}
         />
+
+        {canAddLine && (
+          <button
+            type="button"
+            onClick={() => navigate(path.to.newPurchaseInvoiceLine(invoiceId))}
+            className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+          >
+            <LuCirclePlus className="h-4 w-4" />
+            <Trans>Add Line Item</Trans>
+          </button>
+        )}
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">

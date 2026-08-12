@@ -79,6 +79,10 @@ import {
   isVariantsQuantityOverlaySuccess
 } from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType, MethodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -730,8 +734,12 @@ function MaterialForm({
     Row[] | null
   >(null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
-  const hasVariantsQuantity =
-    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing: false,
+    variantQuantities: null
+  });
 
   const applyVariantsQuantity = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -811,7 +819,10 @@ function MaterialForm({
     setVariantsQuantityRows(null);
     setVariantsQuantityTotal(0);
 
-    const nextQuantity = hasVariantAttributes ? 0 : (itemData.quantity ?? 1);
+    const nextQuantity = defaultLineQuantity(
+      hasVariantAttributes,
+      itemData.quantity ?? 1
+    );
     let unitCost = itemCost.data?.unitCost ?? 0;
     const isBuyPart =
       itemResult.data?.defaultMethodType === "Purchase to Order";

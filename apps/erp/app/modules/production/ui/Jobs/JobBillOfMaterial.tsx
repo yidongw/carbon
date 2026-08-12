@@ -73,6 +73,10 @@ import {
   isVariantsQuantityOverlaySuccess
 } from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType, MethodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -736,8 +740,12 @@ function MaterialForm({
     Row[] | null
   >(null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
-  const hasVariantsQuantity =
-    itemData.hasVariantAttributes && Boolean(itemData.itemId);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing: false,
+    variantQuantities: null
+  });
 
   const applyVariantsQuantity = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -833,7 +841,7 @@ function MaterialForm({
       storageUnitId: pickMethod.data?.defaultStorageUnitId ?? "",
       itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy",
       hasVariantAttributes,
-      quantity: hasVariantAttributes ? 0 : d.quantity || 1
+      quantity: defaultLineQuantity(hasVariantAttributes, d.quantity || 1)
     }));
 
     if (item.data?.type) {
