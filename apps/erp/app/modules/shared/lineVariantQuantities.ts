@@ -1,11 +1,13 @@
 import { useState } from "react";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import {
   getOverlaySuccessVariantTable,
   isVariantsQuantityOverlaySuccess,
-  parseInitialVariantsQuantity,
-  toVariantsQuantityValue,
-  useVariantsQuantityModal
+  parseInitialVariantsQuantity
 } from "~/modules/production/variantsQuantityOverlay";
 import {
   isMissingVariantQuantity,
