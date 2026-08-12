@@ -56,21 +56,7 @@ import type {
 } from "~/modules/items/types";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
-import {
-  toVariantsQuantityValue,
-  useVariantsQuantityModal
-} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
-import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
-import {
-  getOverlaySuccessVariantTable,
-  isVariantsQuantityOverlaySuccess,
-  parseInitialVariantsQuantity
-} from "~/modules/production/variantsQuantityOverlay";
-import {
-  isMissingVariantQuantity,
-  methodType,
-  shouldShowVariantQuantityGrid
-} from "~/modules/shared";
+import { methodType, useLineVariantQuantities } from "~/modules/shared";
 import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/quote+/$quoteId.new";
 import { useItems } from "~/stores";
@@ -141,49 +127,19 @@ const QuoteLineForm = ({
     hasVariantAttributes: Boolean(initialValues.variantQuantities)
   });
 
-  const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialVariantsQuantity(
-    initialValues.variantQuantities
-  );
-  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
-    Row[] | null
-  >(initialConfig.rows as Row[] | null);
-  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
-    initialConfig.total
-  );
-
-  // Parent lines with a stored variant table keep the grid on edit; plain lines don't.
-  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+  const {
+    variantsQuantityTotal,
+    hasVariantsQuantity,
+    isMissingVariantQty,
+    hiddenVariantQuantitiesValue,
+    openVariantsQuantity,
+    clearVariantsQuantity
+  } = useLineVariantQuantities({
+    initialVariantQuantities: initialValues.variantQuantities,
     hasVariantAttributes: itemData.hasVariantAttributes,
     itemId: itemData.itemId,
-    isEditing,
-    variantQuantities: initialValues.variantQuantities
+    isEditing
   });
-
-  const isMissingVariantQty = isMissingVariantQuantity(
-    hasVariantsQuantity,
-    variantsQuantityTotal
-  );
-
-  const applyConfig = (data: unknown) => {
-    if (!isVariantsQuantityOverlaySuccess(data)) return;
-    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
-    setVariantsQuantityTotal(data.total);
-  };
-
-  const openVariantsQuantity = () => {
-    if (!itemData.itemId) return;
-    variantsQuantityModal.open({
-      itemId: itemData.itemId,
-      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
-      onConfirm: applyConfig
-    });
-  };
-
-  const clearConfig = () => {
-    setVariantsQuantityRows(null);
-    setVariantsQuantityTotal(0);
-  };
 
   const configurationDisclosure = useDisclosure();
   const [requiresConfiguration, setRequiresConfiguration] = useState(false);
@@ -243,7 +199,7 @@ const QuoteLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
-    clearConfig();
+    clearVariantsQuantity();
 
     const [item, customerPart, itemReplenishment, variantAttributes] =
       await Promise.all([
@@ -459,13 +415,7 @@ const QuoteLineForm = ({
                 {itemData.hasVariantAttributes && (
                   <Hidden
                     name="variantQuantities"
-                    value={
-                      variantsQuantityRows
-                        ? JSON.stringify({
-                            variantTable: variantsQuantityRows
-                          })
-                        : ""
-                    }
+                    value={hiddenVariantQuantitiesValue}
                   />
                 )}
                 {!isEditing &&
@@ -491,7 +441,7 @@ const QuoteLineForm = ({
                           onItemChange(value?.value as string);
                         }}
                         onTypeChange={(nextType) => {
-                          clearConfig();
+                          clearVariantsQuantity();
                           setItemType(nextType as MethodItemType);
                           setRequiresConfiguration(false);
                           setConfigurationParameters(null);
@@ -615,7 +565,9 @@ const QuoteLineForm = ({
                           name="quantity.0"
                           label={t`Quantity`}
                           value={variantsQuantityTotal}
-                          onChange={() => {}}
+                          onChange={() => {
+                            // Read-only while totals are driven by variant rows.
+                          }}
                           hasVariantsQuantity={hasVariantsQuantity}
                           onOpenVariantsQuantity={openVariantsQuantity}
                           variantsQuantityTotal={variantsQuantityTotal}
