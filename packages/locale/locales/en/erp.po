@@ -29,6 +29,21 @@ msgid "(all must match)"
 msgstr "(all must match)"
 
 #. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
+msgid "Failed to sync material variants"
+msgstr "Failed to sync material variants"
+
+msgid "Failed to sync part variants"
+msgstr "Failed to sync part variants"
+
+msgid "Failed to sync tool variants"
+msgstr "Failed to sync tool variants"
+
+msgid "The selected attribute set is not available for this item type."
+msgstr "The selected attribute set is not available for this item type."
+
+msgid "Updated attributes"
+msgstr "Updated attributes"
+
 msgid "{0} (supplier)"
 msgstr "{0} (supplier)"
 
@@ -13102,6 +13117,9 @@ msgstr "Select an item to configure"
 
 msgid "Select an option"
 msgstr "Select an option"
+
+msgid "Select at least one value for this attribute."
+msgstr "Select at least one value for this attribute."
 
 msgid "Select color / size"
 msgstr "Select color / size"
