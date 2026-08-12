@@ -3206,8 +3206,17 @@ msgstr "イベント停止に失敗しました"
 msgid "Failed to sync consumable variants"
 msgstr "消費材変種同期に失敗しました"
 
+msgid "Failed to sync material variants"
+msgstr "材料変種の同期に失敗しました"
+
+msgid "Failed to sync part variants"
+msgstr "同期に失敗しました：部品変種"
+
 msgid "Failed to sync procedure"
 msgstr "同期に失敗しました"
+
+msgid "Failed to sync tool variants"
+msgstr "ツール変種同期に失敗しました"
 
 msgid "Failed to trigger rework"
 msgstr "再加工をトリガーできませんでした"
@@ -3248,6 +3257,9 @@ msgstr "属性セットの更新に失敗しました"
 msgid "Failed to update attribute value"
 msgstr "属性値の更新に失敗しました"
 
+msgid "Failed to update attributes"
+msgstr "属性の更新に失敗しました"
+
 msgid "Failed to update avatar"
 msgstr "アバターの更新に失敗しました"
 
@@ -3259,9 +3271,6 @@ msgstr "会社の更新に失敗しました"
 
 msgid "Failed to update consumable"
 msgstr "消費品の更新に失敗しました"
-
-msgid "Failed to update consumable attributes"
-msgstr "消費品属性の更新に失敗しました"
 
 msgid "Failed to update consumable costing"
 msgstr "消費材コスト更新に失敗しました"
@@ -3676,9 +3685,6 @@ msgstr "ストレージタイプの更新に失敗しました"
 
 msgid "Failed to update storageUnit"
 msgstr "ストレージ単位の更新に失敗しました"
-
-msgid "Failed to update style attributes"
-msgstr "スタイル属性の更新に失敗しました"
 
 msgid "Failed to update style costing"
 msgstr "スタイルコスト更新に失敗しました"
@@ -5464,6 +5470,9 @@ msgstr "ストレージ単位を作成しました"
 msgid "Style"
 msgstr "スタイル"
 
+msgid "Style created"
+msgstr "スタイル作成完了"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "スタイル変種が一つ以上の属性組合せに欠けています。まずスタイルを開き、属性選択を保存してください。"
 
@@ -6007,14 +6016,14 @@ msgstr "更新された属性セット"
 msgid "Updated attribute value"
 msgstr "更新された属性値"
 
+msgid "Updated attributes"
+msgstr "更新された属性"
+
 msgid "Updated company"
 msgstr "更新された会社"
 
 msgid "Updated consumable"
 msgstr "更新済みの消耗品"
-
-msgid "Updated consumable attributes"
-msgstr "更新された消耗品属性"
 
 msgid "Updated consumable costing"
 msgstr "更新された消耗品コスト"
@@ -6261,9 +6270,6 @@ msgstr "更新された保管タイプ"
 
 msgid "Updated storageUnit"
 msgstr "更新されたstorageUnit"
-
-msgid "Updated style attributes"
-msgstr "更新されたスタイル属性"
 
 msgid "Updated style costing"
 msgstr "更新されたスタイルコストинг"

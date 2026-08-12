@@ -3206,8 +3206,17 @@ msgstr "Не удалось остановить событие"
 msgid "Failed to sync consumable variants"
 msgstr "Не удалось синхронизировать варианты расходных материалов"
 
+msgid "Failed to sync material variants"
+msgstr "Не удалось синхронизировать варианты материала"
+
+msgid "Failed to sync part variants"
+msgstr "Не удалось синхронизировать варианты деталей"
+
 msgid "Failed to sync procedure"
 msgstr "Не удалось синхронизировать процедуру"
+
+msgid "Failed to sync tool variants"
+msgstr "Не удалось синхронизировать варианты инструментов"
 
 msgid "Failed to trigger rework"
 msgstr "Не удалось активировать повторную обработку"
@@ -3248,6 +3257,9 @@ msgstr "Не удалось обновить набор атрибутов"
 msgid "Failed to update attribute value"
 msgstr "Не удалось обновить значение атрибута"
 
+msgid "Failed to update attributes"
+msgstr "Не удалось обновить атрибуты"
+
 msgid "Failed to update avatar"
 msgstr "Не удалось обновить аватарку"
 
@@ -3259,9 +3271,6 @@ msgstr "Не удалось обновить компанию"
 
 msgid "Failed to update consumable"
 msgstr "Не удалось обновить расходный материал"
-
-msgid "Failed to update consumable attributes"
-msgstr "Не удалось обновить параметры расходных материалов"
 
 msgid "Failed to update consumable costing"
 msgstr "Не удалось обновить затраты наsumeable"
@@ -3676,9 +3685,6 @@ msgstr "Не удалось обновить тип хранения"
 
 msgid "Failed to update storageUnit"
 msgstr "Не удалось обновить(storageUnit)"
-
-msgid "Failed to update style attributes"
-msgstr "Не удалось обновить атрибуты стиля"
 
 msgid "Failed to update style costing"
 msgstr "Не удалось обновить стиль затрат"
@@ -5464,6 +5470,9 @@ msgstr "Складская единица создана"
 msgid "Style"
 msgstr "Стиль"
 
+msgid "Style created"
+msgstr "Стиль создан"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "Отсутствуют стили для одного или нескольких комбинаций атрибутов. Сначала откройте стиль и сохраните выбранные атрибуты."
 
@@ -6007,14 +6016,14 @@ msgstr "Обновленный набор атрибутов"
 msgid "Updated attribute value"
 msgstr "Обновленное значение атрибута"
 
+msgid "Updated attributes"
+msgstr "Обновленные атрибуты"
+
 msgid "Updated company"
 msgstr "Обновленная компания"
 
 msgid "Updated consumable"
 msgstr "Обновленный расходник"
-
-msgid "Updated consumable attributes"
-msgstr "Обновленные характеристики расходных материалов"
 
 msgid "Updated consumable costing"
 msgstr "Обновленные затраты наsumeables"
@@ -6261,9 +6270,6 @@ msgstr "Обновленный тип хранения"
 
 msgid "Updated storageUnit"
 msgstr "Обновленный(storageUnit)"
-
-msgid "Updated style attributes"
-msgstr "Обновленные стили атрибуты"
 
 msgid "Updated style costing"
 msgstr "Обновленный стиль ценообразования"

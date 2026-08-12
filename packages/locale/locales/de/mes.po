@@ -3206,8 +3206,17 @@ msgstr "Fehler beim Stoppen des Events"
 msgid "Failed to sync consumable variants"
 msgstr "Fehler beim Synchronisieren der Verbrauchsmaterialvarianten"
 
+msgid "Failed to sync material variants"
+msgstr "Fehler beim Synchronisieren der Materialvarianten"
+
+msgid "Failed to sync part variants"
+msgstr "Fehler beim Synchronisieren der Teilsvarianten"
+
 msgid "Failed to sync procedure"
 msgstr "Fehler beim Synchronisieren des Verfahrens"
+
+msgid "Failed to sync tool variants"
+msgstr "Fehler beim Synchronisieren der Werkzeugvarianten"
 
 msgid "Failed to trigger rework"
 msgstr "Fehler beim Triggern der Wiederherstellung"
@@ -3248,6 +3257,9 @@ msgstr "Fehler beim Aktualisieren der Attributgruppe"
 msgid "Failed to update attribute value"
 msgstr "Fehler beim Aktualisieren des Attributwerts"
 
+msgid "Failed to update attributes"
+msgstr "Fehler beim Aktualisieren der Attribute"
+
 msgid "Failed to update avatar"
 msgstr "Fehler beim Aktualisieren des Avatars"
 
@@ -3259,9 +3271,6 @@ msgstr "Fehler beim Aktualisieren der Firma"
 
 msgid "Failed to update consumable"
 msgstr "Fehler beim Aktualisieren des Verbrauchsguts"
-
-msgid "Failed to update consumable attributes"
-msgstr "Fehler beim Aktualisieren der Verbrauchswerte"
 
 msgid "Failed to update consumable costing"
 msgstr "Fehler beim Aktualisieren der Verbrauchsmaterialkosten"
@@ -3676,9 +3685,6 @@ msgstr "Fehler beim Aktualisieren des Speicherungsformats"
 
 msgid "Failed to update storageUnit"
 msgstr "Fehler beim Aktualisieren des Speicherorts"
-
-msgid "Failed to update style attributes"
-msgstr "Fehler beim Aktualisieren der Stilattribute"
 
 msgid "Failed to update style costing"
 msgstr "Fehler beim Aktualisieren des Stilpreises"
@@ -5464,6 +5470,9 @@ msgstr "Speicherseinheit erstellt"
 msgid "Style"
 msgstr "Stil"
 
+msgid "Style created"
+msgstr "Stil erstellt"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "Stilvarianten fehlen für eine oder mehrere Attributkombinationen. Öffnen Sie den Stil und speichern Sie die Attributsélection zuerst."
 
@@ -6007,14 +6016,14 @@ msgstr "Aktualisierte Attribute-ID"
 msgid "Updated attribute value"
 msgstr "Aktualisierte Attribute-Wert"
 
+msgid "Updated attributes"
+msgstr "Aktualisierte Attribute"
+
 msgid "Updated company"
 msgstr "Aktualisierte Firma"
 
 msgid "Updated consumable"
 msgstr "Aktualisierte Verbrauchsmaterialien"
-
-msgid "Updated consumable attributes"
-msgstr "Aktualisierte Verbrauchsmaterialattribute"
 
 msgid "Updated consumable costing"
 msgstr "Aktualisierte Verbrauchsmaterialkosten"
@@ -6261,9 +6270,6 @@ msgstr "Aktualisierte Speicherart"
 
 msgid "Updated storageUnit"
 msgstr "aktualisiertes Speicherobjekt"
-
-msgid "Updated style attributes"
-msgstr "Aktualisierte Stilattribute"
 
 msgid "Updated style costing"
 msgstr "Aktualisierte Stilkosten"

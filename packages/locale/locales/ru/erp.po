@@ -229,9 +229,6 @@ msgstr "Строка заказа на продажу содержит дета�
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Запрос коммерческого предложения (RFQ) — это запрос клиента на получение цены за набор деталей и количества. Это может привести к получению коммерческого предложения."
 
-msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
-msgstr "Модель содержит информацию об изделии одежды или обуви, которое раскраивается, комплектуется и производится далее."
-
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Инструмент — это физический предмет, используемый для изготовления детали, которая может использоваться в нескольких заданиях"
 
@@ -567,6 +564,9 @@ msgstr "Добавить запасную часть"
 
 msgid "Add Step"
 msgstr "Добавить шаг"
+
+msgid "Add Style"
+msgstr "Добавить стиль"
 
 msgid "Add Supplier"
 msgstr "Добавить поставщика"
@@ -4980,7 +4980,7 @@ msgstr "Не удалось создать строку передачи зап�
 msgid "Failed to create storage type: {0}"
 msgstr "Ошибка при создании типа хранилища: {0}"
 
-#. placeholder {0}: fetcher.data.error.message
+#. placeholder {0}: localFetcher.data.error.message
 msgid "Failed to create style: {0}"
 msgstr "Не удалось создать модель: {0}"
 
@@ -7148,8 +7148,17 @@ msgstr "Не удалось остановить событие"
 msgid "Failed to sync consumable variants"
 msgstr "Не удалось синхронизировать варианты расходных материалов"
 
+msgid "Failed to sync material variants"
+msgstr "Не удалось синхронизировать варианты материала"
+
+msgid "Failed to sync part variants"
+msgstr "Не удалось синхронизировать варианты деталей"
+
 msgid "Failed to sync procedure"
 msgstr "Не удалось синхронизировать процедуру"
+
+msgid "Failed to sync tool variants"
+msgstr "Не удалось синхронизировать варианты инструментов"
 
 msgid "Failed to track serial number"
 msgstr "Не удалось отследить серийный номер"
@@ -7216,9 +7225,6 @@ msgstr "Ошибка при обновлении параметра конфиг
 
 msgid "Failed to update consumable"
 msgstr "Не удалось обновить расходный материал"
-
-msgid "Failed to update consumable attributes"
-msgstr "Не удалось обновить параметры расходных материалов"
 
 msgid "Failed to update consumable costing"
 msgstr "Не удалось обновить затраты наsumeable"
@@ -7640,9 +7646,6 @@ msgstr "Не удалось обновить тип хранения"
 msgid "Failed to update storageUnit"
 msgstr "Не удалось обновить(storageUnit)"
 
-msgid "Failed to update style attributes"
-msgstr "Не удалось обновить атрибуты стиля"
-
 msgid "Failed to update style costing"
 msgstr "Не удалось обновить стиль затрат"
 
@@ -8063,6 +8066,9 @@ msgstr "Галлон"
 
 msgid "Garment"
 msgstr "Белье"
+
+msgid "Garment or footwear for cutting and production."
+msgstr "Ткань или обувь для выкройки и производства."
 
 msgid "Gauge"
 msgstr "Манометр"
@@ -13103,6 +13109,9 @@ msgstr "Выберите элемент для настройки"
 msgid "Select an option"
 msgstr "Выберите опцию"
 
+msgid "Select at least one value for this attribute."
+msgstr "Выберите хотя бы одно значение для этого атрибута."
+
 msgid "Select color / size"
 msgstr "Выберите цвет / размер"
 
@@ -13935,6 +13944,9 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Style"
 msgstr "Модель"
 
+msgid "Style created"
+msgstr "Стиль создан"
+
 msgid "Style Details"
 msgstr "Сведения о модели"
 
@@ -14695,6 +14707,9 @@ msgstr "Предложение будет скопировано с суффик
 msgid "The revision number of the part"
 msgstr "Номер редакции детали"
 
+msgid "The selected attribute set is not available for this item type."
+msgstr "Выбранное набор атрибутов недоступен для этого типа элемента."
+
 msgid "The size of the part"
 msgstr "Размер детали"
 
@@ -15347,6 +15362,9 @@ msgstr "Обновленный набор атрибутов"
 msgid "Updated attribute value"
 msgstr "Обновленное значение атрибута"
 
+msgid "Updated attributes"
+msgstr "Обновленные атрибуты"
+
 msgid "Updated By"
 msgstr "Обновлено"
 
@@ -15355,9 +15373,6 @@ msgstr "Обновленная компания"
 
 msgid "Updated consumable"
 msgstr "Обновленный расходник"
-
-msgid "Updated consumable attributes"
-msgstr "Обновленные характеристики расходных материалов"
 
 msgid "Updated consumable costing"
 msgstr "Обновленные затраты наsumeables"
@@ -15604,9 +15619,6 @@ msgstr "Обновленный тип хранения"
 
 msgid "Updated storageUnit"
 msgstr "Обновленный складской пункт"
-
-msgid "Updated style attributes"
-msgstr "Обновленные стили атрибуты"
 
 msgid "Updated style costing"
 msgstr "Обновленный стиль ценообразования"

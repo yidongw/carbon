@@ -3206,8 +3206,17 @@ msgstr "Failed to stop event"
 msgid "Failed to sync consumable variants"
 msgstr "Failed to sync consumable variants"
 
+msgid "Failed to sync material variants"
+msgstr "Failed to sync material variants"
+
+msgid "Failed to sync part variants"
+msgstr "Failed to sync part variants"
+
 msgid "Failed to sync procedure"
 msgstr "Failed to sync procedure"
+
+msgid "Failed to sync tool variants"
+msgstr "Failed to sync tool variants"
 
 msgid "Failed to trigger rework"
 msgstr "Failed to trigger rework"
@@ -3248,6 +3257,9 @@ msgstr "Failed to update attribute set"
 msgid "Failed to update attribute value"
 msgstr "Failed to update attribute value"
 
+msgid "Failed to update attributes"
+msgstr "Failed to update attributes"
+
 msgid "Failed to update avatar"
 msgstr "Failed to update avatar"
 
@@ -3259,9 +3271,6 @@ msgstr "Failed to update company"
 
 msgid "Failed to update consumable"
 msgstr "Failed to update consumable"
-
-msgid "Failed to update consumable attributes"
-msgstr "Failed to update consumable attributes"
 
 msgid "Failed to update consumable costing"
 msgstr "Failed to update consumable costing"
@@ -3676,9 +3685,6 @@ msgstr "Failed to update storage type"
 
 msgid "Failed to update storageUnit"
 msgstr "Failed to update storageUnit"
-
-msgid "Failed to update style attributes"
-msgstr "Failed to update style attributes"
 
 msgid "Failed to update style costing"
 msgstr "Failed to update style costing"
@@ -5464,6 +5470,9 @@ msgstr "Storage unit created"
 msgid "Style"
 msgstr "Style"
 
+msgid "Style created"
+msgstr "Style created"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 
@@ -6007,14 +6016,14 @@ msgstr "Updated attribute set"
 msgid "Updated attribute value"
 msgstr "Updated attribute value"
 
+msgid "Updated attributes"
+msgstr "Updated attributes"
+
 msgid "Updated company"
 msgstr "Updated company"
 
 msgid "Updated consumable"
 msgstr "Updated consumable"
-
-msgid "Updated consumable attributes"
-msgstr "Updated consumable attributes"
 
 msgid "Updated consumable costing"
 msgstr "Updated consumable costing"
@@ -6261,9 +6270,6 @@ msgstr "Updated storage type"
 
 msgid "Updated storageUnit"
 msgstr "Updated storageUnit"
-
-msgid "Updated style attributes"
-msgstr "Updated style attributes"
 
 msgid "Updated style costing"
 msgstr "Updated style costing"

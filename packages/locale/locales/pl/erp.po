@@ -229,9 +229,6 @@ msgstr "Linia zamówienia sprzedaży zawiera szczegóły zamówienia dla konkret
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Zapytanie ofertowe (RFQ) to zapytanie klienta dotyczące wyceny zestawu części i ilości. Może to skutkować złożeniem oferty."
 
-msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
-msgstr "Model zawiera informacje o odzieży lub obuwiu, które jest krojone, pakowane i produkowane na dalszych etapach."
-
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Narzędzie to element fizyczny używany do wykonania części, którą można wykorzystać w wielu zadaniach"
 
@@ -567,6 +564,9 @@ msgstr "Dodaj część zamienną"
 
 msgid "Add Step"
 msgstr "Dodaj krok"
+
+msgid "Add Style"
+msgstr "Dodaj styl"
 
 msgid "Add Supplier"
 msgstr "Dodaj dostawcę"
@@ -4980,7 +4980,7 @@ msgstr "Nie udało się utworzyć linii transferu zapasów: {0}"
 msgid "Failed to create storage type: {0}"
 msgstr "Nie udało się utworzyć typu magazynu: {0}"
 
-#. placeholder {0}: fetcher.data.error.message
+#. placeholder {0}: localFetcher.data.error.message
 msgid "Failed to create style: {0}"
 msgstr "Nie udało się utworzyć modelu: {0}"
 
@@ -7148,8 +7148,17 @@ msgstr "Niedostępne do zatrzymania zdarzenie"
 msgid "Failed to sync consumable variants"
 msgstr "Nie udało się zsynchronizować wariantów zużycia"
 
+msgid "Failed to sync material variants"
+msgstr "Nie udało się zsynchronizować wariantów materiałów"
+
+msgid "Failed to sync part variants"
+msgstr "Nie udało się zsynchronizować wariantów części"
+
 msgid "Failed to sync procedure"
 msgstr "Nie udało się zsynchronizować procedury"
+
+msgid "Failed to sync tool variants"
+msgstr "Nie udało się zsynchronizować wariantów narzędzi"
 
 msgid "Failed to track serial number"
 msgstr "Nie można śledzić numeru seryjnego"
@@ -7216,9 +7225,6 @@ msgstr "Nie udało się zaktualizować parametru konfiguracji"
 
 msgid "Failed to update consumable"
 msgstr "Nie udało się zaktualizować zużycia"
-
-msgid "Failed to update consumable attributes"
-msgstr "Nie udało się zaktualizować atrybutów zużycia"
 
 msgid "Failed to update consumable costing"
 msgstr "Nie udało sięaktualizować kosztu zużycia"
@@ -7640,9 +7646,6 @@ msgstr "Nie udało się zaktualizować typu magazynowego"
 msgid "Failed to update storageUnit"
 msgstr "Nie udało się zaktualizować jednostki magazynowej"
 
-msgid "Failed to update style attributes"
-msgstr "Nie udało się zaktualizować atrybutów stylu"
-
 msgid "Failed to update style costing"
 msgstr "Nie udało się zaktualizować kosztów stylu"
 
@@ -8063,6 +8066,9 @@ msgstr "Galon"
 
 msgid "Garment"
 msgstr "Zbroda"
+
+msgid "Garment or footwear for cutting and production."
+msgstr "Zbrodnie lub buty do wykrojania i produkcji."
 
 msgid "Gauge"
 msgstr "Miernik"
@@ -13103,6 +13109,9 @@ msgstr "Wybierz element do konfiguracji"
 msgid "Select an option"
 msgstr "Wybierz opcję"
 
+msgid "Select at least one value for this attribute."
+msgstr "Wybierz przynajmniej jedną wartość dla tego atrybutu."
+
 msgid "Select color / size"
 msgstr "Wybierz kolor / rozmiar"
 
@@ -13935,6 +13944,9 @@ msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wyg
 msgid "Style"
 msgstr "Model"
 
+msgid "Style created"
+msgstr "Styl utworzony"
+
 msgid "Style Details"
 msgstr "Szczegóły modelu"
 
@@ -14695,6 +14707,9 @@ msgstr "Oferta zostanie skopiowana z sufiksem wersji"
 msgid "The revision number of the part"
 msgstr "Numer wersji części"
 
+msgid "The selected attribute set is not available for this item type."
+msgstr "Zdefiniowana grupa atrybutów nie jest dostępna dla tego typu elementu."
+
 msgid "The size of the part"
 msgstr "Rozmiar części"
 
@@ -15347,6 +15362,9 @@ msgstr "Zaktualizowana zestaw atrybutów"
 msgid "Updated attribute value"
 msgstr "Zaktualizowana wartość atrybutu"
 
+msgid "Updated attributes"
+msgstr "Zaktualizowane atrybuty"
+
 msgid "Updated By"
 msgstr "Zaktualizowano przez"
 
@@ -15355,9 +15373,6 @@ msgstr "Zaktualizowana firma"
 
 msgid "Updated consumable"
 msgstr "Zaktualizowany zużycie"
-
-msgid "Updated consumable attributes"
-msgstr "Zaktualizowane parametry zużycia"
 
 msgid "Updated consumable costing"
 msgstr "Zaktualizowane koszty zużycia"
@@ -15604,9 +15619,6 @@ msgstr "Zaktualizowana forma magazynowania"
 
 msgid "Updated storageUnit"
 msgstr "Zaktualizowana jednostka przechowywania"
-
-msgid "Updated style attributes"
-msgstr "Zaktualizowane atrybuty stylu"
 
 msgid "Updated style costing"
 msgstr "Zaktualizowane stylowe koszty"

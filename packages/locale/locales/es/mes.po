@@ -3206,8 +3206,17 @@ msgstr "Falló al detener el evento"
 msgid "Failed to sync consumable variants"
 msgstr "Falló al sincronizar variantes de consumibles"
 
+msgid "Failed to sync material variants"
+msgstr "Falló al sincronizar variantes de materiales"
+
+msgid "Failed to sync part variants"
+msgstr "Falló al sincronizar variantes de parte"
+
 msgid "Failed to sync procedure"
 msgstr "Falló la sincronización del procedimiento"
+
+msgid "Failed to sync tool variants"
+msgstr "Falló al sincronizar variantes de herramientas"
 
 msgid "Failed to trigger rework"
 msgstr "Falló al activar la rehacer"
@@ -3248,6 +3257,9 @@ msgstr "Falló al actualizar el conjunto de atributos"
 msgid "Failed to update attribute value"
 msgstr "Falló al actualizar el valor del atributo"
 
+msgid "Failed to update attributes"
+msgstr "Falló al actualizar atributos"
+
 msgid "Failed to update avatar"
 msgstr "Falló al actualizar el avatar"
 
@@ -3259,9 +3271,6 @@ msgstr "Falló al actualizar la empresa"
 
 msgid "Failed to update consumable"
 msgstr "Falló al actualizar el consumo"
-
-msgid "Failed to update consumable attributes"
-msgstr "Falló al actualizar los atributos del consumo"
 
 msgid "Failed to update consumable costing"
 msgstr "Falló al actualizar el costo del consumo"
@@ -3676,9 +3685,6 @@ msgstr "Falló al actualizar el tipo de almacenamiento"
 
 msgid "Failed to update storageUnit"
 msgstr "Falló al actualizar el storageUnit"
-
-msgid "Failed to update style attributes"
-msgstr "Falló al actualizar los atributos de estilo"
 
 msgid "Failed to update style costing"
 msgstr "Falló al actualizar el costo del estilo"
@@ -5464,6 +5470,9 @@ msgstr "Unidad de almacenamiento creada"
 msgid "Style"
 msgstr "Estilo"
 
+msgid "Style created"
+msgstr "Estilo creado"
+
 msgid "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first."
 msgstr "Faltan variantes de estilo para uno o más combinaciones de atributos. Abra el estilo y guarde las selecciones de atributo primero."
 
@@ -6007,14 +6016,14 @@ msgstr "Conjunto de atributos actualizado"
 msgid "Updated attribute value"
 msgstr "Valor actualizado de atributo"
 
+msgid "Updated attributes"
+msgstr "Atributos actualizados"
+
 msgid "Updated company"
 msgstr "Compañía actualizada"
 
 msgid "Updated consumable"
 msgstr "Consumible actualizado"
-
-msgid "Updated consumable attributes"
-msgstr "Actualizadas las atributos del consumo"
 
 msgid "Updated consumable costing"
 msgstr "Actualizado costo de consumibles"
@@ -6261,9 +6270,6 @@ msgstr "Tipo de almacenamiento actualizado"
 
 msgid "Updated storageUnit"
 msgstr "Unidad de almacenamiento actualizada"
-
-msgid "Updated style attributes"
-msgstr "Actualizadas las atributos de estilo"
 
 msgid "Updated style costing"
 msgstr "Costo actualizado de estilo"

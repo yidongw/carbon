@@ -172,6 +172,14 @@ export const overlay = {
       };
     },
 
+    newStyle(): OverlayTarget {
+      return {
+        id: "newStyle",
+        url: `${path.to.newStyle}?overlay=true`,
+        params: {}
+      };
+    },
+
     newStyleSample({ styleId }: { styleId: string }): OverlayTarget {
       return {
         id: "newStyleSample",

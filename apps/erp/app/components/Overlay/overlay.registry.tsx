@@ -9,7 +9,7 @@ import type { JobVariantsQuantityOverlayLoaderData } from "~/routes/api+/product
 import type { MasterWorkOrderBundlesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.bundles";
 import type { MasterWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.processes";
 import type { MasterWorkOrderSplitBatchLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.split-batch";
-import { renderLazyOverlay } from "./renderLazyOverlay";
+import { renderImmediateOverlay, renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
 export const overlayRegistry = {
@@ -101,6 +101,64 @@ export const overlayRegistry = {
       },
       () =>
         import("~/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm")
+    )
+  },
+  newStyle: {
+    type: "modal",
+    confirmMode: "server",
+    // StylesTable warms StyleForm on globalThis. Render it directly (React.lazy
+    // + Promise.resolve(warmed) stays suspended forever in prod). Cold/deep-link
+    // falls back to a dynamic import.
+    render: renderImmediateOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              initialValues?: {
+                id: string;
+                revision: string;
+                name: string;
+                description: string;
+                itemTrackingType: "Inventory";
+                replenishmentSystem: "Make";
+                defaultMethodType: "Make to Order";
+                unitOfMeasureCode: string;
+                unitCost: number;
+                lotSize: number;
+                shelfLifeCalculateFromBom: boolean;
+              };
+              attributeSets?: Array<{
+                id: string;
+                code: string;
+                name: string;
+                attributes: Array<{
+                  id: string;
+                  code: string;
+                  name: string;
+                  sortOrder: number;
+                  options: Array<{
+                    id: string;
+                    code: string;
+                    name: string;
+                    sortOrder: number;
+                  }>;
+                }>;
+              }>;
+            }
+          | undefined;
+        return {
+          initialValues: data?.initialValues,
+          attributeSets: data?.attributeSets
+        };
+      },
+      () => import("~/modules/items/ui/Styles/NewStyleOverlayContent"),
+      () =>
+        (
+          globalThis as {
+            __carbonWarmNewStyleOverlay?: {
+              default: typeof import("~/modules/items/ui/Styles/NewStyleOverlayContent")["default"];
+            };
+          }
+        ).__carbonWarmNewStyleOverlay?.default
     )
   },
   newStyleSample: {

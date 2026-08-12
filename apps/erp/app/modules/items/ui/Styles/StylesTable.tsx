@@ -26,11 +26,18 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { LuGroup, LuPalette, LuPencil, LuTrash } from "react-icons/lu";
-import { Link, useFetcher, useNavigate } from "react-router";
-import { MethodIcon, New, Table, TrackingTypeIcon } from "~/components";
+import {
+  LuCirclePlus,
+  LuGroup,
+  LuPalette,
+  LuPencil,
+  LuTrash
+} from "react-icons/lu";
+import { Link, useFetcher, useNavigate, useRevalidator } from "react-router";
+import { MethodIcon, Table, TrackingTypeIcon } from "~/components";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ConfirmDelete } from "~/components/Modals";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { ItemPostingGroupListItem } from "~/modules/items";
@@ -45,7 +52,13 @@ import {
   itemTrackingTypes
 } from "../../items.models";
 import type { Style } from "../../types";
+import NewStyleOverlayContent from "./NewStyleOverlayContent";
+import { warmNewStyleOverlay } from "./newStyleOverlayBridge";
 import { buildDefaultStylesTableColumns } from "./stylesTableColumns";
+
+// Keep StyleForm in the styles-page graph and register it for the overlay
+// lazy() factory so Add Style does not wait on a cold chunk download.
+warmNewStyleOverlay({ default: NewStyleOverlayContent });
 
 type StyleAttributeColumn = {
   attributeId: string;
@@ -72,6 +85,14 @@ const StylesTable = memo(
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { formatDate } = useDateFormatter();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+
+    const openNewStyle = useCallback(() => {
+      openOverlay(overlay.to.newStyle(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
 
     const deleteItemModal = useDisclosure();
     const [selectedItem, setSelectedItem] = useState<Style | null>(null);
@@ -396,7 +417,14 @@ const StylesTable = memo(
                     <Trans>Item Groups</Trans>
                   </Link>
                 </Button>
-                <New label={t`Style`} to={path.to.newStyle} />
+                <Button
+                  type="button"
+                  variant="primary"
+                  leftIcon={<LuCirclePlus />}
+                  onClick={openNewStyle}
+                >
+                  <Trans>Add Style</Trans>
+                </Button>
               </div>
             )
           }

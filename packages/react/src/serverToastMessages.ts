@@ -1322,6 +1322,7 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Storage type created": msg`Storage type created`,
   "Storage type is in use; confirm cascade to delete": msg`Storage type is in use; confirm cascade to delete`,
   "Storage unit created": msg`Storage unit created`,
+  "Style created": msg`Style created`,
   "Style variants are missing for one or more attribute combos. Open the style and save attribute selections first.": msg`Style variants are missing for one or more attribute combos. Open the style and save attribute selections first.`,
   "Success. Please check back in a few moments.": msg`Success. Please check back in a few moments.`,
   "Successfully activate work center": msg`Successfully activate work center`,
