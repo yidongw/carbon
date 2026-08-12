@@ -2,6 +2,7 @@ import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { VStack } from "@carbon/react";
@@ -18,6 +19,11 @@ import {
 import { CadModel, DeferredFiles } from "~/components";
 import type { Tree } from "~/components/TreeView";
 import { usePermissions, useRealtime, useRouteData, useUser } from "~/hooks";
+import { hasStyleVariantsQuantity } from "~/modules/items/styleOrderLines.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import type {
   Quotation,
   QuotationOperation,
@@ -59,6 +65,7 @@ import {
 import QuoteLinePricingHistory from "~/modules/sales/ui/Quotes/QuoteLinePricingHistory";
 import QuoteLineRiskRegister from "~/modules/sales/ui/Quotes/QuoteLineRiskRegister";
 import { getTagsList, type SupplierPriceMap } from "~/modules/shared";
+import type { MethodItemType } from "~/modules/shared/types";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -177,12 +184,52 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: variantQuantitiesFromValidator,
+    configuration: _configurationFromValidator,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let quantity = rawQuantity;
+  let configuration: Json | undefined | null;
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
+    try {
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      if (hasStyleVariantsQuantity(fields.variantQuantities)) {
+        configuration = fields.variantQuantities;
+        quantity = [fields.quantity];
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  } else if (formData.has("variantQuantities")) {
+    // Explicit empty Style grid clear — only wipe when the prior line stored
+    // a variantTable (don't clobber Part method configuration).
+    const existing = await client
+      .from("quoteLine")
+      .select("configuration")
+      .eq("id", lineId)
+      .single();
+    if (hasStyleVariantsQuantity(existing.data?.configuration)) {
+      configuration = null;
+    }
+  }
 
   const updateQuotationLine = await upsertQuoteLine(client, {
     id: lineId,
     ...d,
+    quantity,
+    ...(configuration !== undefined ? { configuration } : {}),
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -206,7 +253,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     (methodType === "Make to Order" ||
       methodType === "Pull from Inventory" ||
       methodType === "Purchase to Order") &&
-    !!d.quantity?.length;
+    !!quantity?.length;
 
   if (needsSeed) {
     const serviceRole = getCarbonServiceRole();
@@ -219,7 +266,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       (existingPrices.data ?? []).map((p) => p.quantity)
     );
 
-    const addedQuantities = (d.quantity ?? []).filter(
+    const addedQuantities = (quantity ?? []).filter(
       (q) => !existingQuantities.has(q)
     );
 
@@ -309,6 +356,20 @@ export default function QuoteLine() {
     supplierPriceMap: quoteData?.supplierPriceMap ?? {}
   });
 
+  // Dual-read variantTable (and legacy configTable) without importing .server
+  // helpers into the client bundle.
+  const styleVariantQuantities = (() => {
+    const cfg = line.configuration;
+    if (!cfg || typeof cfg !== "object" || Array.isArray(cfg)) return undefined;
+    const record = cfg as Record<string, unknown>;
+    const table = record.variantTable ?? record.configTable;
+    return Array.isArray(table) && table.length > 0
+      ? JSON.stringify(
+          Array.isArray(record.variantTable) ? cfg : { variantTable: table }
+        )
+      : undefined;
+  })();
+
   const initialValues = {
     ...line,
     id: line.id ?? undefined,
@@ -318,6 +379,7 @@ export default function QuoteLine() {
     description: line.description ?? "",
     estimatorId: line.estimatorId ?? "",
     itemId: line.itemId ?? "",
+    itemType: (line.itemType as MethodItemType) ?? "Part",
     methodType: line.methodType ?? "Make to Order",
     modelUploadId: line.modelUploadId ?? undefined,
     noQuoteReason: line.noQuoteReason ?? undefined,
@@ -325,6 +387,10 @@ export default function QuoteLine() {
     quantity: line.quantity ?? [1],
     unitOfMeasureCode: line.unitOfMeasureCode ?? "",
     taxPercent: line.taxPercent ?? 0,
+    // Style grid uses FormData variantQuantities → persisted configuration.
+    // Do not re-bind raw configuration into the form on edit.
+    configuration: undefined,
+    variantQuantities: styleVariantQuantities,
     ...getCustomFields(line.customFields)
   };
 

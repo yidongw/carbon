@@ -95,6 +95,7 @@ export default function QuoteExplorer({ methods }: QuoteExplorerProps) {
     description: "",
     estimatorId: userId,
     itemId: "",
+    itemType: "Part" as const,
     locationId: quoteData?.quote?.locationId ?? defaults.locationId ?? "",
     methodType: "Make to Order" as const,
     status: "Not Started" as const,

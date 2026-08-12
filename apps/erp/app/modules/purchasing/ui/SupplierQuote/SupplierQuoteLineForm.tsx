@@ -46,6 +46,8 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import { useLineVariantQuantities } from "~/modules/shared";
 import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/supplier-quote+/$id.$lineId.details";
 import { path } from "~/utils/path";
@@ -111,13 +113,30 @@ const SupplierQuoteLineForm = ({
     inventoryUom: string;
     purchaseUom: string;
     conversionFactor: number;
+    hasVariantAttributes: boolean;
   }>({
     supplierPartId: initialValues.supplierPartId ?? "",
     itemId: initialValues.itemId ?? "",
     description: initialValues.description ?? "",
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     purchaseUom: initialValues.purchaseUnitOfMeasureCode ?? "",
-    conversionFactor: initialValues.conversionFactor ?? 1
+    conversionFactor: initialValues.conversionFactor ?? 1,
+    hasVariantAttributes: Boolean(initialValues.variantQuantities)
+  });
+
+  const {
+    variantsQuantityTotal,
+    hasVariantsQuantity,
+    isMissingVariantQty,
+    hiddenVariantQuantitiesValue,
+    openVariantsQuantity,
+    clearVariantsQuantity,
+    variantsQuantityModalNode
+  } = useLineVariantQuantities({
+    initialVariantQuantities: initialValues.variantQuantities,
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing
   });
 
   const onSupplierPartChange = async (supplierPartId: string) => {
@@ -142,8 +161,9 @@ const SupplierQuoteLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
+    clearVariantsQuantity();
 
-    const [item, supplierPart] = await Promise.all([
+    const [item, supplierPart, variantAttributes] = await Promise.all([
       carbon
         .from("item")
         .select("name, readableIdWithRevision, type, unitOfMeasureCode")
@@ -155,13 +175,23 @@ const SupplierQuoteLineForm = ({
         .select("supplierPartId, supplierUnitOfMeasureCode, conversionFactor")
         .eq("itemId", itemId)
         .eq("supplierId", routeData?.quote?.supplierId!)
-        .maybeSingle()
+        .maybeSingle(),
+      // Any item with Color/Size attribute selections (Style always; a
+      // Consumable with a Fabric/Trim color set) gets the config grid.
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
     ]);
 
     if (item.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
 
     const newItemData = {
       ...itemData,
@@ -173,7 +203,8 @@ const SupplierQuoteLineForm = ({
         supplierPart.data?.supplierUnitOfMeasureCode ??
         item.data?.unitOfMeasureCode ??
         "EA",
-      conversionFactor: supplierPart.data?.conversionFactor ?? 1
+      conversionFactor: supplierPart.data?.conversionFactor ?? 1,
+      hasVariantAttributes
     };
 
     if (supplierPart.data && !itemData.supplierPartId) {
@@ -286,6 +317,11 @@ const SupplierQuoteLineForm = ({
                 <ModalCardBody>
                   <Hidden name="id" />
                   <Hidden name="supplierQuoteId" />
+                  {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
+                  <Hidden
+                    name="variantQuantities"
+                    value={hiddenVariantQuantitiesValue}
+                  />
 
                   <TabsContent value="direct">
                     <Hidden name="supplierQuoteLineType" value={itemType} />
@@ -307,6 +343,7 @@ const SupplierQuoteLineForm = ({
                               onItemChange(value?.value as string);
                             }}
                             onTypeChange={(type) => {
+                              clearVariantsQuantity();
                               setItemType(type as MethodItemType);
                               setItemData({
                                 ...itemData,
@@ -315,7 +352,8 @@ const SupplierQuoteLineForm = ({
                                 inventoryUom: "",
                                 purchaseUom: "",
                                 conversionFactor: 1,
-                                supplierPartId: ""
+                                supplierPartId: "",
+                                hasVariantAttributes: false
                               });
                             }}
                           />
@@ -367,12 +405,32 @@ const SupplierQuoteLineForm = ({
                           <CustomFormFields table="supplierQuoteLine" />
                         </div>
                         <div className="flex gap-y-4">
-                          <ArrayNumeric
-                            name="quantity"
-                            label={t`Quantity`}
-                            defaults={[1, 25, 50, 100]}
-                            isDisabled={isLocked}
-                          />
+                          {hasVariantsQuantity ? (
+                            // Validator expects quantity as an array (price
+                            // breaks). For Style expand, submit a single tier
+                            // equal to the grid total; the action replaces the
+                            // parent with per-SKU lines of [variantQty].
+                            <QuantityWithVariantsQuantity
+                              name="quantity.0"
+                              label={t`Quantity`}
+                              value={variantsQuantityTotal}
+                              onChange={() => {
+                                // Read-only while totals are driven by variant rows.
+                              }}
+                              hasVariantsQuantity={hasVariantsQuantity}
+                              onOpenVariantsQuantity={openVariantsQuantity}
+                              variantsQuantityTotal={variantsQuantityTotal}
+                              isReadOnly
+                              isDisabled={isLocked}
+                            />
+                          ) : (
+                            <ArrayNumeric
+                              name="quantity"
+                              label={t`Quantity`}
+                              defaults={[1, 25, 50, 100]}
+                              isDisabled={isLocked}
+                            />
+                          )}
                         </div>
                       </div>
                     </VStack>
@@ -436,6 +494,7 @@ const SupplierQuoteLineForm = ({
                   <Submit
                     isDisabled={
                       isLocked ||
+                      isMissingVariantQty ||
                       (isEditing
                         ? !permissions.can("update", "purchasing")
                         : !permissions.can("create", "purchasing"))
@@ -449,6 +508,7 @@ const SupplierQuoteLineForm = ({
           </ModalCard>
         </ModalCardProvider>
       </Tabs>
+      {variantsQuantityModalNode}
       {isEditing && deleteDisclosure.isOpen && initialValues.id && (
         <DeleteSupplierQuoteLine
           line={{

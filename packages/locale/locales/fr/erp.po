@@ -4996,6 +4996,9 @@ msgstr "Échec de la création du lieu fournisseur"
 msgid "Failed to create supplier process"
 msgstr "Erreur de création du processus fournisseur"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr "Échec de la création des lignes de devis fournisseur pour les variantes de style"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
 msgstr "Échec de création du fournisseur : {0}"
@@ -7702,6 +7705,9 @@ msgstr "Échec de la mise à jour du processus fournisseur"
 
 msgid "Failed to update supplier quote line"
 msgstr "Échec de la mise à jour de la ligne de devis fournisseur"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr "Échec de la mise à jour des lignes de devis fournisseur pour les variantes de style"
 
 msgid "Failed to update supplier quote status"
 msgstr "Échec de mise à jour du statut de la proposition fournisseur"

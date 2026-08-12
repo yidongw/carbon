@@ -21971,6 +21971,38 @@
       }
     },
     {
+      "name": "purchasing_replaceSupplierQuoteLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace supplier quote lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "supplierQuoteId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      supplierQuoteLineType: z.infer<\n        typeof supplierQuoteLineValidator\n      >[\"supplierQuoteLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "supplierQuoteId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "purchasing_updatePurchaseOrderLineOrder",
       "module": "purchasing",
       "classification": "WRITE",
@@ -33587,7 +33619,7 @@
       "module": "sales",
       "classification": "WRITE",
       "description": "upsert quote line",
-      "paramCount": 4,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "quotationLine"
@@ -33600,22 +33632,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "quoteId": {
-            "type": "string"
-          },
-          "itemId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
+          "quotationLine": {}
         },
         "required": [
-          "quoteId",
-          "itemId"
+          "quotationLine"
         ]
       }
     },

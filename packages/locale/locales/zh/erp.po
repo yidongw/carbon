@@ -4997,6 +4997,9 @@ msgstr "创建供应商位置失败"
 msgid "Failed to create supplier process"
 msgstr "创建供应商工序失败"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr "创建款式规格供应商报价行失败"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
 msgstr "创建供应商失败：{0}"
@@ -7703,6 +7706,9 @@ msgstr "更新供应商工序失败"
 
 msgid "Failed to update supplier quote line"
 msgstr "更新供应商报价行失败"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr "更新款式规格供应商报价行失败"
 
 msgid "Failed to update supplier quote status"
 msgstr "更新供应商报价状态失败"

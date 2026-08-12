@@ -202,9 +202,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
 
     quantity = expanded.variants[0].quantity;
-  }
-
-  if (d.itemId) {
+  } else if (d.itemId) {
     const required = await requireVariantQuantitiesIfAttributeParent(client, {
       parentItemId: d.itemId,
       companyId,

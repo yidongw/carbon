@@ -1948,6 +1948,130 @@ export async function replacePurchaseOrderLinesWithStyleVariants(
   });
 }
 
+/**
+ * Replace a supplier quote line (or append) with one line per Style/attribute
+ * variant SKU. FormData-only — does not persist variantQuantities on the line.
+ * Each expanded line stores `quantity` as a single-element array `[variantQty]`
+ * (supplier quotes use numeric[] for price-break tiers).
+ */
+export async function replaceSupplierQuoteLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    supplierQuoteId: string;
+    replaceLineId?: string;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      supplierQuoteLineType: z.infer<
+        typeof supplierQuoteLineValidator
+      >["supplierQuoteLineType"];
+      description?: string | null;
+      supplierPartId?: string | null;
+      purchaseUnitOfMeasureCode?: string | null;
+      inventoryUnitOfMeasureCode?: string | null;
+      conversionFactor?: number | null;
+      requiredDate?: string | null;
+      accountId?: string | null;
+      costCenterId?: string | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    supplierQuoteId,
+    replaceLineId,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  return db.transaction().execute(async (trx) => {
+    let startSortOrder: number;
+    if (replaceLineId) {
+      const original = await trx
+        .selectFrom("supplierQuoteLine")
+        .select("sortOrder")
+        .where("id", "=", replaceLineId)
+        .where("supplierQuoteId", "=", supplierQuoteId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      await trx
+        .deleteFrom("supplierQuoteLine")
+        .where("id", "=", replaceLineId)
+        .where("supplierQuoteId", "=", supplierQuoteId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (original?.sortOrder != null) {
+        startSortOrder = original.sortOrder;
+        if (variants.length > 1) {
+          await trx
+            .updateTable("supplierQuoteLine")
+            .set({
+              sortOrder: sql<number>`"sortOrder" + ${variants.length - 1}`
+            })
+            .where("supplierQuoteId", "=", supplierQuoteId)
+            .where("companyId", "=", companyId)
+            .where("sortOrder", ">", original.sortOrder)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("supplierQuoteLine")
+          .select("sortOrder")
+          .where("supplierQuoteId", "=", supplierQuoteId)
+          .execute();
+        startSortOrder =
+          existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) +
+          1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("supplierQuoteLine")
+        .select("sortOrder")
+        .where("supplierQuoteId", "=", supplierQuoteId)
+        .execute();
+      startSortOrder =
+        existing.reduce((max, row) => Math.max(max, row.sortOrder ?? 0), 0) + 1;
+    }
+
+    const ids: string[] = [];
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      const inserted = await trx
+        .insertInto("supplierQuoteLine")
+        .values({
+          supplierQuoteId,
+          supplierQuoteLineType: base.supplierQuoteLineType,
+          itemId: variant.variantItemId,
+          description: base.description ?? "",
+          supplierPartId: base.supplierPartId ?? null,
+          purchaseUnitOfMeasureCode: base.purchaseUnitOfMeasureCode ?? null,
+          inventoryUnitOfMeasureCode: base.inventoryUnitOfMeasureCode ?? null,
+          conversionFactor: base.conversionFactor ?? 1,
+          requiredDate: base.requiredDate || null,
+          accountId: base.accountId ?? null,
+          costCenterId: base.costCenterId ?? null,
+          // Price-break array: single tier = this variant's ordered qty.
+          quantity: [variant.quantity],
+          companyId,
+          createdBy: userId,
+          sortOrder: startSortOrder + i,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
+}
+
 export async function updatePurchaseOrderLineOrder(
   db: Kysely<KyselyDatabase>,
   updates: { id: string; sortOrder: number; updatedBy: string }[]
@@ -2381,11 +2505,17 @@ export async function upsertSupplierQuoteLine(
         customFields?: Json;
       })
 ) {
-  if ("id" in supplierQuoteLine) {
+  // Validator may carry FormData-only fields (`variantQuantities`) — strip
+  // those before write.
+  const line = sanitizeOrderLineWriteRow(
+    supplierQuoteLine as unknown as Record<string, unknown>
+  ) as typeof supplierQuoteLine;
+
+  if ("id" in line) {
     return client
       .from("supplierQuoteLine")
-      .update(sanitize(supplierQuoteLine))
-      .eq("id", supplierQuoteLine.id)
+      .update(sanitize(line))
+      .eq("id", line.id)
       .select("id")
       .single();
   }
@@ -2393,7 +2523,7 @@ export async function upsertSupplierQuoteLine(
   const existing = await client
     .from("supplierQuoteLine")
     .select("sortOrder")
-    .eq("supplierQuoteId", supplierQuoteLine.supplierQuoteId);
+    .eq("supplierQuoteId", line.supplierQuoteId);
 
   const maxSortOrder = (existing.data ?? []).reduce(
     (max, row) => Math.max(max, row.sortOrder ?? 0),
@@ -2403,11 +2533,11 @@ export async function upsertSupplierQuoteLine(
   return client
     .from("supplierQuoteLine")
     .insert([
-      {
-        ...supplierQuoteLine,
-        description: supplierQuoteLine.description ?? "",
+      sanitize({
+        ...line,
+        description: line.description ?? "",
         sortOrder: maxSortOrder + 1
-      }
+      })
     ])
     .select("id")
     .single();

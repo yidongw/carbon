@@ -4996,6 +4996,9 @@ msgstr "Fehler beim Erstellen des Lieferantenstandorts"
 msgid "Failed to create supplier process"
 msgstr "Fehler beim Erstellen des Lieferprozesses"
 
+msgid "Failed to create supplier quote lines for style variants"
+msgstr "Fehler beim Erstellen von Lieferantenangebotszeilen für Stilvarianten"
+
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
 msgstr "Kein Lieferanten erstellen können: {0}"
@@ -7702,6 +7705,9 @@ msgstr "Fehler beim Aktualisieren des Lieferanten-Prozesses"
 
 msgid "Failed to update supplier quote line"
 msgstr "Fehler beim Aktualisieren der Lieferantenangebotszeile"
+
+msgid "Failed to update supplier quote lines for style variants"
+msgstr "Fehler beim Aktualisieren von Lieferantenangebotszeilen für Stilvarianten"
 
 msgid "Failed to update supplier quote status"
 msgstr "Fehler beim Aktualisieren des Lieferanten-Auflagezustands"

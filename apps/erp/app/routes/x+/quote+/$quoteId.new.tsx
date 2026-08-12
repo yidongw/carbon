@@ -2,9 +2,15 @@ import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
+import { hasStyleVariantsQuantity } from "~/modules/items/styleOrderLines.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import {
   getQuote,
   isQuoteLocked,
@@ -46,30 +52,70 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
-  let configuration = undefined;
-  if (d.configuration) {
+  const {
+    id: _id,
+    variantQuantities: variantQuantitiesFromValidator,
+    configuration: configurationFromValidator,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let quantity = rawQuantity;
+  // Part method params vs Style variantTable — both live on quoteLine.configuration.
+  // Convert expands Style lines via hasVariantsQuantityTable(line.configuration).
+  let configuration: Json | undefined;
+  let methodConfiguration: Record<string, unknown> | undefined;
+
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
     try {
-      configuration = JSON.parse(d.configuration);
-    } catch (error) {
-      console.error(error);
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      if (hasStyleVariantsQuantity(fields.variantQuantities)) {
+        configuration = fields.variantQuantities;
+        quantity = [fields.quantity];
+      }
+    } catch (err) {
+      console.error(err);
     }
+  }
+
+  if (
+    !configuration &&
+    configurationFromValidator &&
+    typeof configurationFromValidator === "string"
+  ) {
+    try {
+      configuration = JSON.parse(configurationFromValidator);
+      methodConfiguration = configuration as Record<string, unknown>;
+    } catch (err) {
+      console.error(err);
+    }
+  } else if (
+    configuration &&
+    !hasStyleVariantsQuantity(configuration) &&
+    typeof configuration === "object"
+  ) {
+    methodConfiguration = configuration as Record<string, unknown>;
   }
 
   const serviceRole = getCarbonServiceRole();
   const createQuotationLine = await upsertQuoteLine(serviceRole, {
     ...d,
+    quantity,
     companyId,
     configuration,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  console.log(createQuotationLine);
-
   if (createQuotationLine.error) {
-    console.log(createQuotationLine);
     throw redirect(
       path.to.quote(quoteId),
       await flash(
@@ -82,7 +128,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const quoteLineId = createQuotationLine.data.id;
 
   if (d.methodType === "Purchase to Order") {
-    const quantities = d.quantity ?? [1];
+    const quantities = quantity ?? [1];
     const priceResult = await resolvePurchaseToOrderPrices(
       serviceRole,
       companyId,
@@ -103,7 +149,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   if (d.methodType === "Pull from Inventory") {
-    const quantities = d.quantity ?? [1];
+    const quantities = quantity ?? [1];
     const priceResult = await resolveQuoteLinePrices(
       serviceRole,
       companyId,
@@ -131,7 +177,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
       quoteId,
       quoteLineId,
       itemId: d.itemId,
-      configuration,
+      // Style variantTable is line-level only — never Part method params.
+      configuration: methodConfiguration,
       companyId,
       userId
     });
