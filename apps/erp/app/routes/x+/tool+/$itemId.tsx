@@ -38,6 +38,7 @@ import {
   getSupplierParts,
   getTool
 } from "~/modules/items";
+import { getItemAttributeSelectionsForItem } from "~/modules/items/itemAttribute.service";
 import { BoMActions, BoMExplorer } from "~/modules/items/ui/Item";
 import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
 import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";
@@ -61,12 +62,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [toolSummary, supplierParts, pickMethods, tags] = await Promise.all([
-    getTool(client, itemId, companyId),
-    getSupplierParts(client, itemId, companyId),
-    getPickMethods(client, itemId, companyId),
-    getTagsList(client, companyId, "tool")
-  ]);
+  const [toolSummary, supplierParts, pickMethods, tags, attributeState] =
+    await Promise.all([
+      getTool(client, itemId, companyId),
+      getSupplierParts(client, itemId, companyId),
+      getPickMethods(client, itemId, companyId),
+      getTagsList(client, companyId, "tool"),
+      getItemAttributeSelectionsForItem(client, { itemId, companyId })
+    ]);
 
   if (toolSummary.error) {
     throw redirect(
@@ -118,7 +121,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     makeMethods: getMakeMethods(client, itemId, companyId),
     tags: tags.data ?? [],
     usedIn: getPartUsedIn(client, itemId, companyId),
-    methodTree
+    methodTree,
+    attributeSetId: attributeState.data.attributeSetId,
+    attributeSelections: attributeState.data.selections
   };
 }
 

@@ -53,6 +53,7 @@ import type {
   SupplierPart
 } from "../../types";
 import { FileBadge, ItemDescription, SourcingTypeProperty } from "../Item";
+import ItemAttributeEditor from "../Item/ItemAttributeEditor";
 
 type PartPropertiesProps = {
   data?: {
@@ -85,6 +86,8 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
     pickMethods: PickMethod[];
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
     tags: { name: string }[];
+    attributeSetId?: string | null;
+    attributeSelections?: Record<string, string[]>;
   }>(path.to.part(itemId));
   const routeData = data ?? routeDataFromRoute;
 
@@ -538,6 +541,14 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
       <ItemDescription
         value={routeData?.partSummary?.description ?? ""}
         onChange={(value) => onUpdate("description", value)}
+      />
+
+      <ItemAttributeEditor
+        itemId={itemId}
+        itemType="Part"
+        attributeSetId={routeDataFromRoute?.attributeSetId ?? null}
+        selections={routeDataFromRoute?.attributeSelections ?? {}}
+        saveAction={path.to.partAttributes(itemId)}
       />
 
       <VStack spacing={2}>
