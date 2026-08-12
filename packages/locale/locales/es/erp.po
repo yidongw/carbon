@@ -4896,6 +4896,9 @@ msgstr "Falló al crear la factura de compra"
 msgid "Failed to create purchase invoice line."
 msgstr "Falló al crear línea de factura de compra."
 
+msgid "Failed to create purchase invoice lines for style variants"
+msgstr "Falló al crear líneas de factura de compra para variantes de estilo"
+
 msgid "Failed to create purchase order"
 msgstr "Falló al crear la orden de compra"
 
@@ -4943,6 +4946,9 @@ msgstr "Falló al crear la factura de ventas"
 
 msgid "Failed to create sales invoice line."
 msgstr "Falló al crear línea de factura de ventas."
+
+msgid "Failed to create sales invoice lines for style variants"
+msgstr "Falló al crear líneas de factura de venta para variantes de estilo"
 
 msgid "Failed to create sales order"
 msgstr "Falló al crear la orden de venta"
@@ -6191,6 +6197,9 @@ msgstr "Fallo al insertar el tipo de material"
 msgid "Failed to insert method material"
 msgstr "Fallo al insertar método material"
 
+msgid "Failed to insert method materials"
+msgstr "Falló al insertar materiales del método"
+
 msgid "Failed to insert method operation"
 msgstr "Falló al insertar operación de método"
 
@@ -7376,6 +7385,9 @@ msgstr "Falló al actualizar la tarea"
 msgid "Failed to update job material"
 msgstr "Falló al actualizar el material de la tarea"
 
+msgid "Failed to update job materials"
+msgstr "Falló al actualizar materiales del trabajo"
+
 msgid "Failed to update job operation"
 msgstr "Falló al actualizar la operación de trabajo"
 
@@ -7432,6 +7444,9 @@ msgstr "Falló al actualizar el tipo de material"
 
 msgid "Failed to update method material"
 msgstr "Falló al actualizar el método de material"
+
+msgid "Failed to update method materials"
+msgstr "Falló al actualizar materiales del método"
 
 msgid "Failed to update method operation"
 msgstr "Falló al actualizar la operación del método"
@@ -7523,6 +7538,9 @@ msgstr "Falló al actualizar la entrega de la factura de compra"
 msgid "Failed to update purchase invoice line"
 msgstr "Falló al actualizar la línea de la factura de compra"
 
+msgid "Failed to update purchase invoice lines for style variants"
+msgstr "Falló al actualizar líneas de factura de compra para variantes de estilo"
+
 msgid "Failed to update purchase invoice status"
 msgstr "Falló al actualizar el estado de la factura de compra"
 
@@ -7555,6 +7573,9 @@ msgstr "Error al actualizar la línea de cotización"
 
 msgid "Failed to update quote material"
 msgstr "Falló al actualizar el material de la cotización"
+
+msgid "Failed to update quote materials"
+msgstr "Falló al actualizar materiales de la cotización"
 
 msgid "Failed to update quote operation"
 msgstr "Falló al actualizar la operación de cotización"
@@ -7597,6 +7618,9 @@ msgstr "Falló al actualizar la factura de ventas"
 
 msgid "Failed to update sales invoice line"
 msgstr "Falló al actualizar la línea de la factura de ventas"
+
+msgid "Failed to update sales invoice lines for style variants"
+msgstr "Falló al actualizar líneas de factura de venta para variantes de estilo"
 
 msgid "Failed to update sales invoice shipping"
 msgstr "Falló al actualizar el envío de la factura de ventas"
@@ -15858,6 +15882,9 @@ msgstr "Cantidades de variante"
 
 msgid "Variant quantities added"
 msgstr "Cantidades de variante añadidas"
+
+msgid "Variant quantities updated"
+msgstr "Cantidades de variantes actualizadas"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

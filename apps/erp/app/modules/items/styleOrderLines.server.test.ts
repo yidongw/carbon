@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildMaterialRowsFromVariants,
   expandVariantTableToLines,
   hasStyleVariantsQuantity
 } from "./styleOrderLines.server";
@@ -311,5 +312,151 @@ describe("requireVariantQuantitiesIfAttributeParent", () => {
       quantity: 5
     });
     expect(result.ok).toBe(true);
+  });
+});
+
+describe("buildMaterialRowsFromVariants", () => {
+  it("expands parent material fields into one row per variant SKU", () => {
+    const rows = buildMaterialRowsFromVariants(
+      {
+        id: "tmp_1",
+        makeMethodId: "mm_1",
+        itemId: "item_parent",
+        quantity: 0,
+        methodType: "Pull from Inventory" as const,
+        unitOfMeasureCode: "EA"
+      },
+      [
+        { variantItemId: "item_rd", quantity: 3, valuesKey: "RD" },
+        { variantItemId: "item_bl", quantity: 2, valuesKey: "BL" }
+      ]
+    );
+
+    expect(rows).toEqual([
+      {
+        id: "tmp_1",
+        makeMethodId: "mm_1",
+        itemId: "item_rd",
+        quantity: 3,
+        methodType: "Pull from Inventory",
+        unitOfMeasureCode: "EA"
+      },
+      {
+        id: "tmp_1",
+        makeMethodId: "mm_1",
+        itemId: "item_bl",
+        quantity: 2,
+        methodType: "Pull from Inventory",
+        unitOfMeasureCode: "EA"
+      }
+    ]);
+  });
+
+  it("returns an empty array when there are no variants", () => {
+    expect(
+      buildMaterialRowsFromVariants({ itemId: "item_parent", quantity: 1 }, [])
+    ).toEqual([]);
+  });
+});
+
+describe("resolveMaterialVariantQuantities", () => {
+  const parentItemId = "item_parent";
+  const companyId = "co_1";
+
+  it("expands a filled grid into variant SKUs", async () => {
+    const { resolveMaterialVariantQuantities } = await import(
+      "./styleOrderLines.server"
+    );
+    const client = mockClient({
+      attributeSetId: "ias_fabric",
+      setAttributeCodes: ["Color"],
+      variants: [
+        { id: "iv1", variantItemId: "item_rd", valuesKey: "RD" },
+        { id: "iv2", variantItemId: "item_bl", valuesKey: "BL" }
+      ],
+      attrs: [
+        {
+          itemVariantId: "iv1",
+          attributeId: "iat_color",
+          itemAttributeValue: { code: "RD" }
+        },
+        {
+          itemVariantId: "iv2",
+          attributeId: "iat_color",
+          itemAttributeValue: { code: "BL" }
+        }
+      ]
+    });
+
+    const result = await resolveMaterialVariantQuantities(client, {
+      companyId,
+      itemId: parentItemId,
+      quantity: 0,
+      variantQuantities: {
+        variantTable: [
+          { valuesKey: "RD", Quantities: 3 },
+          { valuesKey: "BL", Quantities: 2 }
+        ]
+      }
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.mode).toBe("expand");
+    if (result.mode !== "expand") return;
+    expect(result.variants.map((v) => v.variantItemId)).toEqual([
+      "item_rd",
+      "item_bl"
+    ]);
+  });
+
+  it("rejects attribute parents submitted without a grid", async () => {
+    const { resolveMaterialVariantQuantities } = await import(
+      "./styleOrderLines.server"
+    );
+    const client = {
+      from: (table: string) => {
+        const chain: Record<string, unknown> = {};
+        chain.select = () => chain;
+        chain.eq = () => chain;
+        chain.limit = () =>
+          Promise.resolve({
+            data: table === "itemAttributeSelection" ? [{ id: "s1" }] : [],
+            error: null
+          });
+        return chain;
+      }
+    } as never;
+
+    const result = await resolveMaterialVariantQuantities(client, {
+      companyId,
+      itemId: parentItemId,
+      quantity: 5,
+      variantQuantities: null
+    });
+    expect(result.ok).toBe(false);
+  });
+
+  it("passes through plain items as a single row", async () => {
+    const { resolveMaterialVariantQuantities } = await import(
+      "./styleOrderLines.server"
+    );
+    const client = {
+      from: () => {
+        const chain: Record<string, unknown> = {};
+        chain.select = () => chain;
+        chain.eq = () => chain;
+        chain.limit = () => Promise.resolve({ data: [], error: null });
+        return chain;
+      }
+    } as never;
+
+    const result = await resolveMaterialVariantQuantities(client, {
+      companyId,
+      itemId: "item_plain",
+      quantity: 2,
+      variantQuantities: null
+    });
+    expect(result).toEqual({ ok: true, mode: "single", quantity: 2 });
   });
 });

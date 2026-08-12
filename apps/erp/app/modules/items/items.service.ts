@@ -1546,7 +1546,7 @@ export async function getMethodMaterialsByMakeMethod(
   return client
     .from("methodMaterial")
     .select(
-      "*, item(name, itemTrackingType, replenishmentSystem, defaultMethodType, sourcingType)"
+      "*, item(name, readableIdWithRevision, itemTrackingType, replenishmentSystem, defaultMethodType, sourcingType)"
     )
     .eq("makeMethodId", makeMethodId)
     .order("order", { ascending: true });
@@ -4344,6 +4344,44 @@ export async function upsertMethodMaterial(
     .eq("id", methodMaterial.id)
     .select("id")
     .single();
+}
+
+/**
+ * Insert one methodMaterial per Style/attribute variant SKU (BOM expand).
+ * First row keeps the submitted id so temporary BOM rows still clear on success.
+ */
+export async function insertMethodMaterialsFromVariants(
+  client: SupabaseClient<Database>,
+  args: {
+    base: z.infer<typeof methodMaterialValidator> & {
+      companyId: string;
+      createdBy: string;
+      customFields?: Json;
+    };
+    variants: Array<{ variantItemId: string; quantity: number }>;
+  }
+) {
+  const { variantQuantities: _vq, ...baseWithoutGrid } =
+    args.base as typeof args.base & {
+      variantQuantities?: string;
+    };
+  const ids: string[] = [];
+  for (let i = 0; i < args.variants.length; i++) {
+    const variant = args.variants[i];
+    const result = await upsertMethodMaterial(client, {
+      ...baseWithoutGrid,
+      id: i === 0 ? args.base.id : nanoid(),
+      itemId: variant.variantItemId,
+      quantity: variant.quantity,
+      order: args.base.order + i,
+      companyId: args.base.companyId,
+      createdBy: args.base.createdBy,
+      customFields: args.base.customFields
+    });
+    if (result.error) return result;
+    if (result.data?.id) ids.push(result.data.id);
+  }
+  return { data: { ids }, error: null };
 }
 
 export async function upsertMethodOperation(

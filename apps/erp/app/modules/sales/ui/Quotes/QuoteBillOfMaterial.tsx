@@ -68,7 +68,21 @@ import { SortableList, SortableListItem } from "~/components/SortableList";
 import { usePermissions, useRouteData, useUrlParams, useUser } from "~/hooks";
 import { lookupBuyPrice as lookupBuyPriceAsync } from "~/modules/items";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType, MethodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
@@ -129,7 +143,8 @@ function makeItem(
   order: number,
   checked: boolean
 ): ItemWithData {
-  const itemReadableId = getItemReadableId(items, material.itemId);
+  const itemReadableId =
+    getItemReadableId(items, material.itemId) ?? material.description ?? "";
   return {
     id: material.id!,
     title: (
@@ -698,6 +713,7 @@ function MaterialForm({
     requiresBatchTracking: boolean;
     requiresSerialTracking: boolean;
     itemReplenishmentSystem: string;
+    hasVariantAttributes: boolean;
   }>({
     itemId: item.data.itemId ?? "",
     methodType: item.data.methodType ?? "Pull from Inventory",
@@ -710,12 +726,42 @@ function MaterialForm({
     quoteOperationId: item.data.quoteOperationId,
     requiresBatchTracking: item.data.item?.itemTrackingType === "Batch",
     requiresSerialTracking: item.data.item?.itemTrackingType === "Serial",
-    itemReplenishmentSystem: item.data.item?.replenishmentSystem ?? "Buy"
+    itemReplenishmentSystem: item.data.item?.replenishmentSystem ?? "Buy",
+    hasVariantAttributes: false
   });
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(null);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing: false,
+    variantQuantities: null
+  });
+
+  const applyVariantsQuantity = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    void onQuantityChange(data.total);
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyVariantsQuantity
+    });
+  };
 
   const onTypeChange = (value: MethodItemType | "Item") => {
     if (value === itemType) return;
     setItemType(value as MethodItemType);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
     setItemData({
       itemId: "",
       methodType: "Pull from Inventory",
@@ -726,7 +772,8 @@ function MaterialForm({
       kit: false,
       requiresBatchTracking: false,
       requiresSerialTracking: false,
-      itemReplenishmentSystem: "Buy"
+      itemReplenishmentSystem: "Buy",
+      hasVariantAttributes: false
     });
   };
 
@@ -745,7 +792,7 @@ function MaterialForm({
       return;
     }
 
-    const [item, itemCost] = await Promise.all([
+    const [itemResult, itemCost, variantAttributes] = await Promise.all([
       carbon
         .from("item")
         .select(
@@ -754,39 +801,52 @@ function MaterialForm({
         .eq("id", itemId)
         .eq("companyId", company.id)
         .single(),
-      carbon.from("itemCost").select("unitCost").eq("itemId", itemId).single()
+      carbon.from("itemCost").select("unitCost").eq("itemId", itemId).single(),
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
     ]);
 
-    if (item.error) {
+    if (itemResult.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
 
-    let unitCost = itemCost.data?.unitCost ?? 0;
-    const isBuyPart = item.data?.defaultMethodType === "Purchase to Order";
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
 
-    if (isBuyPart) {
-      unitCost = await lookupBuyPriceFn(
-        itemId,
-        itemData.quantity ?? 1,
-        unitCost
-      );
+    const nextQuantity = defaultLineQuantity(
+      hasVariantAttributes,
+      itemData.quantity ?? 1
+    );
+    let unitCost = itemCost.data?.unitCost ?? 0;
+    const isBuyPart =
+      itemResult.data?.defaultMethodType === "Purchase to Order";
+
+    if (isBuyPart && !hasVariantAttributes) {
+      unitCost = await lookupBuyPriceFn(itemId, nextQuantity, unitCost);
     }
 
     setItemData((d) => ({
       ...d,
       itemId,
-      description: item.data?.name ?? "",
+      description: itemResult.data?.name ?? "",
       unitCost,
-      unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
-      methodType: item.data?.defaultMethodType ?? "Pull from Inventory",
-      requiresBatchTracking: item.data?.itemTrackingType === "Batch",
-      requiresSerialTracking: item.data?.itemTrackingType === "Serial",
-      itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy"
+      unitOfMeasureCode: itemResult.data?.unitOfMeasureCode ?? "EA",
+      methodType: itemResult.data?.defaultMethodType ?? "Pull from Inventory",
+      requiresBatchTracking: itemResult.data?.itemTrackingType === "Batch",
+      requiresSerialTracking: itemResult.data?.itemTrackingType === "Serial",
+      itemReplenishmentSystem: itemResult.data?.replenishmentSystem ?? "Buy",
+      hasVariantAttributes,
+      quantity: nextQuantity
     }));
 
-    if (item.data?.type) {
-      setItemType(item.data.type as MethodItemType);
+    if (itemResult.data?.type) {
+      setItemType(itemResult.data.type as MethodItemType);
     }
   };
 
@@ -825,293 +885,330 @@ function MaterialForm({
     itemData.requiresBatchTracking || itemData.requiresSerialTracking;
 
   return (
-    <ValidatedForm
-      action={
-        temporaryItems[item.id]
-          ? path.to.newQuoteMaterial(quoteId, lineId)
-          : path.to.quoteMaterial(quoteId, lineId, item.id!)
-      }
-      method="post"
-      defaultValues={item.data}
-      validator={quoteMaterialValidator}
-      className="w-full flex flex-col gap-y-4"
-      fetcher={methodMaterialFetcher}
-    >
-      <div>
-        <Hidden name="id" />
-        <Hidden name="quoteMakeMethodId" />
-        <Hidden name="kit" value={itemData.kit.toString()} />
-        <Hidden name="order" />
-
-        {itemData.methodType === "Make to Order" && (
-          <Hidden name="unitCost" value={itemData.unitCost} />
-        )}
-      </div>
-      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-        <Item
-          blacklist={[params.itemId!]}
-          isReadOnly={isDisabled}
-          name="itemId"
-          label={itemType}
-          includeInactive
-          locationId={locationId}
-          validItemTypes={["Consumable", "Material", "Part"]}
-          type={itemType}
-          onChange={(value) => {
-            onItemChange(value?.value as string);
-          }}
-          onTypeChange={onTypeChange}
-        />
-
-        <NumberControlled
-          name="quantity"
-          label={t`Quantity`}
-          value={itemData.quantity}
-          onChange={onQuantityChange}
-        />
-        <UnitOfMeasure
-          name="unitOfMeasureCode"
-          value={itemData.unitOfMeasureCode}
-          onChange={(newValue) =>
-            setItemData((d) => ({
-              ...d,
-              unitOfMeasureCode: newValue?.value ?? "EA"
-            }))
-          }
-        />
-        <InputControlled
-          name="description"
-          label={t`Description`}
-          value={itemData.description}
-          onChange={(newValue) => {
-            setItemData((d) => ({ ...d, description: newValue }));
-          }}
-          className="col-span-2"
-        />
-        {itemData.methodType !== "Make to Order" && (
-          <NumberControlled
-            name="unitCost"
-            label={t`Unit Cost`}
-            value={itemData.unitCost}
-            minValue={0}
-            formatOptions={{
-              style: "currency",
-              currency: baseCurrency
-            }}
-          />
-        )}
-      </div>
-      <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
-        <HStack
-          className="w-full justify-between cursor-pointer"
-          onClick={sourceDisclosure.onToggle}
-        >
-          <HStack>
-            {itemData.methodType === "Make to Order" ? (
-              <>
-                <LuGitPullRequestCreate />
-                <Label>
-                  <Trans>Finish To</Trans>
-                </Label>
-              </>
-            ) : (
-              <>
-                <LuGitPullRequest />
-                <Label>
-                  <Trans>Pull From</Trans>
-                </Label>
-              </>
-            )}
-          </HStack>
-          <HStack>
-            <Badge variant="secondary">
-              <MethodIcon type={itemData.methodType} className="size-3 mr-1" />
-              {itemData.methodType === "Purchase to Order"
-                ? t`Purchase to Order`
-                : itemData.methodType === "Pull from Inventory"
-                  ? t`Pull from Inventory`
-                  : t`Make to Order`}
-            </Badge>
-            <LuArrowLeft
-              className={cn(
-                itemData.methodType !== "Pull from Inventory"
-                  ? "rotate-180"
-                  : ""
-              )}
-            />
-            <Badge variant="secondary">
-              <LuGitPullRequest className="size-3 mr-1" />
-              {storageUnits.options?.find(
-                (s) => s.value === itemData.storageUnitId
-              )?.label ??
-                (itemData.methodType === "Make to Order"
-                  ? t`WIP`
-                  : t`Default Storage Unit`)}
-            </Badge>
-            <IconButton
-              icon={<LuChevronRight />}
-              aria-label={
-                sourceDisclosure.isOpen ? "Collapse Source" : "Expand Source"
-              }
-              variant="ghost"
-              size="md"
-              onClick={(e) => {
-                e.stopPropagation();
-                sourceDisclosure.onToggle();
-              }}
-              className={`transition-transform ${
-                sourceDisclosure.isOpen ? "rotate-90" : ""
-              }`}
-            />
-          </HStack>
-        </HStack>
-        <div
-          className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-            sourceDisclosure.isOpen ? "" : "hidden"
-          }`}
-        >
-          <DefaultMethodType
-            name="methodType"
-            label={t`Method Type`}
-            value={itemData.methodType}
-            onChange={(value) => {
-              setItemData((d) => ({
-                ...d,
-                methodType: value?.value as MethodType
-              }));
-            }}
-            replenishmentSystem={itemData.itemReplenishmentSystem}
-          />
-          <StorageUnit
-            name="storageUnitId"
-            label={t`Storage Unit`}
-            locationId={locationId}
-            itemId={itemData.itemId}
-          />
-        </div>
-      </div>
-      <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
-        <HStack
-          className="w-full justify-between cursor-pointer"
-          onClick={backflushDisclosure.onToggle}
-        >
-          <HStack>
-            <LuGitPullRequestCreateArrow />
-            <Label>
-              {isTracked ? <Trans>Operation</Trans> : <Trans>Backflush</Trans>}
-            </Label>
-          </HStack>
-          <HStack>
-            <Badge
-              variant={quoteOperations.length > 0 ? "secondary" : "destructive"}
-            >
-              <LuCog className="size-3 mr-1" />
-              {itemData.quoteOperationId
-                ? quoteOperations.find(
-                    (o) => o.id === itemData.quoteOperationId
-                  )?.description || t`Selected Operation`
-                : t`First Operation`}
-            </Badge>
-            <IconButton
-              icon={<LuChevronRight />}
-              aria-label={
-                backflushDisclosure.isOpen
-                  ? "Collapse Operation"
-                  : "Expand Operation"
-              }
-              variant="ghost"
-              size="md"
-              onClick={(e) => {
-                e.stopPropagation();
-                backflushDisclosure.onToggle();
-              }}
-              className={`transition-transform ${
-                backflushDisclosure.isOpen ? "rotate-90" : ""
-              }`}
-            />
-          </HStack>
-        </HStack>
-        <div
-          className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-            backflushDisclosure.isOpen ? "" : "hidden"
-          }`}
-        >
-          <Select
-            name="quoteOperationId"
-            label={t`Operation`}
-            isClearable
-            options={quoteOperations.map((o) => ({
-              value: o.id!,
-              label: o.description
-            }))}
-            onChange={(newValue) => {
-              setItemData((d) => ({
-                ...d,
-                quoteOperationId: newValue?.value as string
-              }));
-            }}
-          />
-        </div>
-      </div>
-      <motion.div
-        className="flex flex-1 items-center justify-end w-full pt-2"
-        initial={{ opacity: 0, filter: "blur(4px)" }}
-        animate={{ opacity: 1, filter: "blur(0px)" }}
-        transition={{
-          type: "spring",
-          bounce: 0,
-          duration: 0.55
-        }}
+    <>
+      <ValidatedForm
+        action={
+          temporaryItems[item.id]
+            ? path.to.newQuoteMaterial(quoteId, lineId)
+            : path.to.quoteMaterial(quoteId, lineId, item.id!)
+        }
+        method="post"
+        defaultValues={item.data}
+        validator={quoteMaterialValidator}
+        className="w-full flex flex-col gap-y-4"
+        fetcher={methodMaterialFetcher}
       >
-        <motion.div
-          layout
-          className="flex items-center justify-between gap-2 w-full"
-        >
-          {itemData.methodType === "Make to Order" ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  leftIcon={
-                    <MethodIcon type={"Make to Order"} isKit={itemData.kit} />
-                  }
-                  variant="secondary"
-                  size="sm"
-                  rightIcon={<LuChevronDown />}
-                >
-                  {itemData.kit ? t`Kit` : t`Subassembly`}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuRadioGroup
-                  value={itemData.kit ? "Kit" : "Subassembly"}
-                  onValueChange={(value) => {
-                    setItemData((d) => ({
-                      ...d,
-                      kit: value === "Kit"
-                    }));
-                  }}
-                >
-                  <DropdownMenuRadioItem value="Subassembly">
-                    <Trans>Subassembly</Trans>
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="Kit">
-                    <Trans>Kit</Trans>
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div />
-          )}
+        <div>
+          <Hidden name="id" />
+          <Hidden name="quoteMakeMethodId" />
+          <Hidden name="kit" value={itemData.kit.toString()} />
+          <Hidden name="order" />
+          <Hidden
+            name="variantQuantities"
+            value={
+              variantsQuantityRows
+                ? JSON.stringify({ variantTable: variantsQuantityRows })
+                : ""
+            }
+          />
 
-          <Submit
-            isDisabled={isDisabled || methodMaterialFetcher.state !== "idle"}
-            isLoading={methodMaterialFetcher.state === "submitting"}
+          {itemData.methodType === "Make to Order" && (
+            <Hidden name="unitCost" value={itemData.unitCost} />
+          )}
+        </div>
+        <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+          <Item
+            blacklist={[params.itemId!]}
+            isReadOnly={isDisabled}
+            name="itemId"
+            label={itemType}
+            includeInactive
+            locationId={locationId}
+            validItemTypes={["Consumable", "Material", "Part", "Style"]}
+            type={itemType}
+            onChange={(value) => {
+              onItemChange(value?.value as string);
+            }}
+            onTypeChange={onTypeChange}
+          />
+
+          {hasVariantsQuantity ? (
+            <QuantityWithVariantsQuantity
+              name="quantity"
+              label={t`Quantity`}
+              value={itemData.quantity}
+              onChange={onQuantityChange}
+              hasVariantsQuantity={hasVariantsQuantity}
+              onOpenVariantsQuantity={openVariantsQuantity}
+              variantsQuantityTotal={variantsQuantityTotal}
+              isReadOnly={variantsQuantityTotal > 0}
+            />
+          ) : (
+            <NumberControlled
+              name="quantity"
+              label={t`Quantity`}
+              value={itemData.quantity}
+              onChange={onQuantityChange}
+            />
+          )}
+          <UnitOfMeasure
+            name="unitOfMeasureCode"
+            value={itemData.unitOfMeasureCode}
+            onChange={(newValue) =>
+              setItemData((d) => ({
+                ...d,
+                unitOfMeasureCode: newValue?.value ?? "EA"
+              }))
+            }
+          />
+          <InputControlled
+            name="description"
+            label={t`Description`}
+            value={itemData.description}
+            onChange={(newValue) => {
+              setItemData((d) => ({ ...d, description: newValue }));
+            }}
+            className="col-span-2"
+          />
+          {itemData.methodType !== "Make to Order" && (
+            <NumberControlled
+              name="unitCost"
+              label={t`Unit Cost`}
+              value={itemData.unitCost}
+              minValue={0}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+            />
+          )}
+        </div>
+        <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
+          <HStack
+            className="w-full justify-between cursor-pointer"
+            onClick={sourceDisclosure.onToggle}
           >
-            <Trans>Save</Trans>
-          </Submit>
+            <HStack>
+              {itemData.methodType === "Make to Order" ? (
+                <>
+                  <LuGitPullRequestCreate />
+                  <Label>
+                    <Trans>Finish To</Trans>
+                  </Label>
+                </>
+              ) : (
+                <>
+                  <LuGitPullRequest />
+                  <Label>
+                    <Trans>Pull From</Trans>
+                  </Label>
+                </>
+              )}
+            </HStack>
+            <HStack>
+              <Badge variant="secondary">
+                <MethodIcon
+                  type={itemData.methodType}
+                  className="size-3 mr-1"
+                />
+                {itemData.methodType === "Purchase to Order"
+                  ? t`Purchase to Order`
+                  : itemData.methodType === "Pull from Inventory"
+                    ? t`Pull from Inventory`
+                    : t`Make to Order`}
+              </Badge>
+              <LuArrowLeft
+                className={cn(
+                  itemData.methodType !== "Pull from Inventory"
+                    ? "rotate-180"
+                    : ""
+                )}
+              />
+              <Badge variant="secondary">
+                <LuGitPullRequest className="size-3 mr-1" />
+                {storageUnits.options?.find(
+                  (s) => s.value === itemData.storageUnitId
+                )?.label ??
+                  (itemData.methodType === "Make to Order"
+                    ? t`WIP`
+                    : t`Default Storage Unit`)}
+              </Badge>
+              <IconButton
+                icon={<LuChevronRight />}
+                aria-label={
+                  sourceDisclosure.isOpen ? "Collapse Source" : "Expand Source"
+                }
+                variant="ghost"
+                size="md"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sourceDisclosure.onToggle();
+                }}
+                className={`transition-transform ${
+                  sourceDisclosure.isOpen ? "rotate-90" : ""
+                }`}
+              />
+            </HStack>
+          </HStack>
+          <div
+            className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+              sourceDisclosure.isOpen ? "" : "hidden"
+            }`}
+          >
+            <DefaultMethodType
+              name="methodType"
+              label={t`Method Type`}
+              value={itemData.methodType}
+              onChange={(value) => {
+                setItemData((d) => ({
+                  ...d,
+                  methodType: value?.value as MethodType
+                }));
+              }}
+              replenishmentSystem={itemData.itemReplenishmentSystem}
+            />
+            <StorageUnit
+              name="storageUnitId"
+              label={t`Storage Unit`}
+              locationId={locationId}
+              itemId={itemData.itemId}
+            />
+          </div>
+        </div>
+        <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 w-full">
+          <HStack
+            className="w-full justify-between cursor-pointer"
+            onClick={backflushDisclosure.onToggle}
+          >
+            <HStack>
+              <LuGitPullRequestCreateArrow />
+              <Label>
+                {isTracked ? (
+                  <Trans>Operation</Trans>
+                ) : (
+                  <Trans>Backflush</Trans>
+                )}
+              </Label>
+            </HStack>
+            <HStack>
+              <Badge
+                variant={
+                  quoteOperations.length > 0 ? "secondary" : "destructive"
+                }
+              >
+                <LuCog className="size-3 mr-1" />
+                {itemData.quoteOperationId
+                  ? quoteOperations.find(
+                      (o) => o.id === itemData.quoteOperationId
+                    )?.description || t`Selected Operation`
+                  : t`First Operation`}
+              </Badge>
+              <IconButton
+                icon={<LuChevronRight />}
+                aria-label={
+                  backflushDisclosure.isOpen
+                    ? "Collapse Operation"
+                    : "Expand Operation"
+                }
+                variant="ghost"
+                size="md"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  backflushDisclosure.onToggle();
+                }}
+                className={`transition-transform ${
+                  backflushDisclosure.isOpen ? "rotate-90" : ""
+                }`}
+              />
+            </HStack>
+          </HStack>
+          <div
+            className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+              backflushDisclosure.isOpen ? "" : "hidden"
+            }`}
+          >
+            <Select
+              name="quoteOperationId"
+              label={t`Operation`}
+              isClearable
+              options={quoteOperations.map((o) => ({
+                value: o.id!,
+                label: o.description
+              }))}
+              onChange={(newValue) => {
+                setItemData((d) => ({
+                  ...d,
+                  quoteOperationId: newValue?.value as string
+                }));
+              }}
+            />
+          </div>
+        </div>
+        <motion.div
+          className="flex flex-1 items-center justify-end w-full pt-2"
+          initial={{ opacity: 0, filter: "blur(4px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{
+            type: "spring",
+            bounce: 0,
+            duration: 0.55
+          }}
+        >
+          <motion.div
+            layout
+            className="flex items-center justify-between gap-2 w-full"
+          >
+            {itemData.methodType === "Make to Order" ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    leftIcon={
+                      <MethodIcon type={"Make to Order"} isKit={itemData.kit} />
+                    }
+                    variant="secondary"
+                    size="sm"
+                    rightIcon={<LuChevronDown />}
+                  >
+                    {itemData.kit ? t`Kit` : t`Subassembly`}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuRadioGroup
+                    value={itemData.kit ? "Kit" : "Subassembly"}
+                    onValueChange={(value) => {
+                      setItemData((d) => ({
+                        ...d,
+                        kit: value === "Kit"
+                      }));
+                    }}
+                  >
+                    <DropdownMenuRadioItem value="Subassembly">
+                      <Trans>Subassembly</Trans>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="Kit">
+                      <Trans>Kit</Trans>
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div />
+            )}
+
+            <Submit
+              isDisabled={
+                isDisabled ||
+                methodMaterialFetcher.state !== "idle" ||
+                (hasVariantsQuantity && !(itemData.quantity > 0))
+              }
+              isLoading={methodMaterialFetcher.state === "submitting"}
+            >
+              <Trans>Save</Trans>
+            </Submit>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </ValidatedForm>
+      </ValidatedForm>
+      {variantsQuantityModal.node}
+    </>
   );
 }

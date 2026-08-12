@@ -85,7 +85,12 @@ import {
   getOverlaySuccessVariantTable,
   isVariantsQuantityOverlaySuccess
 } from "~/modules/production/variantsQuantityOverlay";
-import { methodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  isMissingVariantQuantity,
+  methodType,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import {
@@ -128,11 +133,11 @@ function parseInitialVariantTable(raw: unknown): {
     ) {
       return { rows: null, total: 0 };
     }
-    const config = parsed as {
+    const parsedVariantTable = parsed as {
       variantTable?: Row[];
     };
-    const rows = Array.isArray(config.variantTable)
-      ? config.variantTable
+    const rows = Array.isArray(parsedVariantTable.variantTable)
+      ? parsedVariantTable.variantTable
       : null;
     // Combo-only: each row carries a single `Quantities` value.
     let total = 0;
@@ -226,30 +231,27 @@ const SalesOrderLineForm = ({
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
     initialConfig.total
   );
-  // True when the selected item carries Color/Size attribute selections (a
-  // Consumable with a Fabric/Trim color set) — set on item select. Styles are
-  // covered by isStyleLine without waiting on the fetch.
-  const [hasVariantAttributes, setHasVariantAttributes] = useState(false);
+  // True when the selected item has attribute selections (variant grid).
+  // Seed from persisted variantQuantities so parent edits still show the grid.
+  const [hasVariantAttributes, setHasVariantAttributes] = useState(
+    Boolean(initialValues.variantQuantities)
+  );
 
   // Prefer the selected item's real type over the picker filter. Choosing a
-  // Style under "All Items" leaves lineType as Part/Item, but the grid still
-  // applies — match PO line behavior (set type from the item on select).
-  const selectedItemType =
-    items.find((i) => i.id === itemData.itemId)?.type ?? lineType;
-  const isStyleLine = selectedItemType === "Style" || lineType === "Style";
-  // Any item with variant attributes uses the per-variant quantity grid.
-  const isConfigurableLine = isStyleLine || hasVariantAttributes;
+  // Style under "All Items" leaves lineType as Part/Item — sync type on select.
+  // Parents with variant attributes use the config-quantity grid when
+  // adding/editing. Variant SKU lines (no stored configuration) use plain qty.
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
 
-  // Configurable items use the config-quantity grid when adding/editing a
-  // parent. Variant SKU lines (no stored configuration) use plain quantity.
-  const hasVariantsQuantity =
-    isConfigurableLine &&
-    Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.variantQuantities);
-
-  // A Style parent line's quantity comes from the variants quantity grid.
-  // Variant SKU lines use plain quantity and are not blocked here.
-  const isMissingStyleQuantity = hasVariantsQuantity && !(saleQuantity > 0);
+  const isMissingVariantQty = isMissingVariantQuantity(
+    hasVariantsQuantity,
+    saleQuantity
+  );
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -350,7 +352,7 @@ const SalesOrderLineForm = ({
     // @ts-ignore
     setLineType(t);
     clearConfig();
-    const nextQty = t === "Style" ? 0 : 1;
+    const nextQty = defaultLineQuantity(false);
     setSaleQuantity(nextQty);
     setItemData((d) => ({
       itemId: "",
@@ -454,16 +456,9 @@ const SalesOrderLineForm = ({
       methodType: storeItem?.defaultMethodType ?? "",
       uom: storeItem?.unitOfMeasureCode ?? "EA"
     }));
-    // Sync line type from the item so "All Items" → Style still gets the grid
-    // and submits salesOrderLineType=Style (not the filter's "Item"/Part).
+    // Sync line type from the item so "All Items" still submits the real type.
     if (storeType) {
       setLineType(storeType as SalesOrderLineType);
-    }
-    // Styles always get quantity from the variants quantity grid — start at 0.
-    const isStyle = storeType === "Style" || lineType === "Style";
-    const quantityForItem = isStyle ? 0 : saleQuantity || 1;
-    if (isStyle || quantityForItem !== saleQuantity) {
-      onQuantityChange(quantityForItem);
     }
     const [item, price, variantAttributes] = await Promise.all([
       carbon
@@ -480,12 +475,9 @@ const SalesOrderLineForm = ({
         .eq("itemId", itemId)
         .eq("companyId", company.id)
         .maybeSingle(),
-      // Any item with attribute selections (Style, Consumable fabric/trim, …)
-      // gets the config grid — not limited to Color/Size system attrs.
+      // Any item with attribute selections gets the variant quantity grid.
       carbon
         .from("itemAttributeSelection")
-        // Any attribute selection makes the item
-        // variant/grid-driven — including non-garment sets (e.g. Shoes).
         // Composite PK — no `id` column; select a real column.
         .select("attributeValueId")
         .eq("itemId", itemId)
@@ -497,13 +489,14 @@ const SalesOrderLineForm = ({
       setLineType(item.data.type as SalesOrderLineType);
     }
 
-    // Any item carrying variant attributes is grid-driven: flag it and zero the
-    // quantity (the grid total fills it in). Styles are already handled above.
-    const itemHasVariantAttributes =
-      item.data?.type === "Style" || (variantAttributes?.data?.length ?? 0) > 0;
+    const itemHasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
     setHasVariantAttributes(itemHasVariantAttributes);
-    if (itemHasVariantAttributes && !isStyle) {
-      onQuantityChange(0);
+    const quantityForItem = defaultLineQuantity(
+      itemHasVariantAttributes,
+      saleQuantity || 1
+    );
+    if (quantityForItem !== saleQuantity) {
+      onQuantityChange(quantityForItem);
     }
 
     // Get default storage unit or storage unit with highest quantity
@@ -784,7 +777,7 @@ const SalesOrderLineForm = ({
                         }));
                     }}
                   />
-                  {isConfigurableLine ? (
+                  {hasVariantAttributes ? (
                     <QuantityWithVariantsQuantity
                       name="saleQuantity"
                       label={t`Quantity`}
@@ -1185,7 +1178,7 @@ const SalesOrderLineForm = ({
         <Submit
           isDisabled={
             !isEditable ||
-            isMissingStyleQuantity ||
+            isMissingVariantQty ||
             (isEditing
               ? !permissions.can("update", "sales")
               : !permissions.can("create", "sales"))

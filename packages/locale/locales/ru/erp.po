@@ -4896,6 +4896,9 @@ msgstr "Не удалось создать покупную накладную"
 msgid "Failed to create purchase invoice line."
 msgstr "Не удалось создать строку покупательской накладной."
 
+msgid "Failed to create purchase invoice lines for style variants"
+msgstr "Не удалось создать строки счета на закупку для вариантов стиля"
+
 msgid "Failed to create purchase order"
 msgstr "Не удалось создать закупочную заявку"
 
@@ -4943,6 +4946,9 @@ msgstr "Не удалось создать продажную накладную
 
 msgid "Failed to create sales invoice line."
 msgstr "Не удалось создать строку продажного счета."
+
+msgid "Failed to create sales invoice lines for style variants"
+msgstr "Не удалось создать строки счета на продажу для вариантов стиля"
 
 msgid "Failed to create sales order"
 msgstr "Не удалось создать заказ на продажу"
@@ -6191,6 +6197,9 @@ msgstr "Не удалось вставить тип материала"
 msgid "Failed to insert method material"
 msgstr "Не удалось вставить метод материала"
 
+msgid "Failed to insert method materials"
+msgstr "Не удалось вставить материалы метода"
+
 msgid "Failed to insert method operation"
 msgstr "Не удалось вставить метод операции"
 
@@ -7376,6 +7385,9 @@ msgstr "Не удалось обновить задачу"
 msgid "Failed to update job material"
 msgstr "Не удалось обновить материал работы"
 
+msgid "Failed to update job materials"
+msgstr "Не удалось обновить материалы задания"
+
 msgid "Failed to update job operation"
 msgstr "Не удалось обновить операцию работы"
 
@@ -7432,6 +7444,9 @@ msgstr "Не удалось обновить тип материала"
 
 msgid "Failed to update method material"
 msgstr "Не удалось обновить метод материала"
+
+msgid "Failed to update method materials"
+msgstr "Не удалось обновить материалы метода"
 
 msgid "Failed to update method operation"
 msgstr "Не удалось обновить метод операции"
@@ -7523,6 +7538,9 @@ msgstr "Не удалось обновить поставку покупной �
 msgid "Failed to update purchase invoice line"
 msgstr "Не удалось обновить строку покупательской накладной"
 
+msgid "Failed to update purchase invoice lines for style variants"
+msgstr "Не удалось обновить строки счета на закупку для вариантов стиля"
+
 msgid "Failed to update purchase invoice status"
 msgstr "Не удалось обновить статус покупочной накладной"
 
@@ -7555,6 +7573,9 @@ msgstr "Не удалось обновить строку предложения
 
 msgid "Failed to update quote material"
 msgstr "Не удалось обновить материал цитаты"
+
+msgid "Failed to update quote materials"
+msgstr "Не удалось обновить материалы предложения"
 
 msgid "Failed to update quote operation"
 msgstr "Не удалось обновить операцию цитаты"
@@ -7597,6 +7618,9 @@ msgstr "Не удалось обновить счет на продажу"
 
 msgid "Failed to update sales invoice line"
 msgstr "Не удалось обновить строку счета на продажи"
+
+msgid "Failed to update sales invoice lines for style variants"
+msgstr "Не удалось обновить строки счета на продажу для вариантов стиля"
 
 msgid "Failed to update sales invoice shipping"
 msgstr "Не удалось обновить транспортную накладную счета-фактуры"
@@ -15858,6 +15882,9 @@ msgstr "Количества вариантов"
 
 msgid "Variant quantities added"
 msgstr "Количества вариантов добавлены"
+
+msgid "Variant quantities updated"
+msgstr "Количества вариантов обновлены"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

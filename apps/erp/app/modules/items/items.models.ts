@@ -418,7 +418,9 @@ export const methodMaterialValidator = z.object({
     } catch {
       return {};
     }
-  })
+  }),
+  // FormData-only Style/attribute expand payload — never persisted on methodMaterial.
+  variantQuantities: zfd.text(z.string().optional())
 });
 
 export const methodOperationValidator = z

@@ -4896,6 +4896,9 @@ msgstr "Fehler beim Erstellen der Lieferantennachricht"
 msgid "Failed to create purchase invoice line."
 msgstr "Fehler beim Erstellen der Lieferantennachrichtenzeile."
 
+msgid "Failed to create purchase invoice lines for style variants"
+msgstr "Fehler beim Erstellen von Einkaufsrechnungszeilen für Stilvarianten"
+
 msgid "Failed to create purchase order"
 msgstr "Fehler beim Erstellen der Lieferanforderung"
 
@@ -4943,6 +4946,9 @@ msgstr "Fehler beim Erstellen der Verkaufsrechnung"
 
 msgid "Failed to create sales invoice line."
 msgstr "Fehler beim Erstellen der Verkaufsrechnungsposition."
+
+msgid "Failed to create sales invoice lines for style variants"
+msgstr "Fehler beim Erstellen von Verkaufsrechnungszeilen für Stilvarianten"
 
 msgid "Failed to create sales order"
 msgstr "Fehler beim Erstellen der Verkaufsaufträge"
@@ -6191,6 +6197,9 @@ msgstr "Fehler beim Einfügen des Materialtypes"
 msgid "Failed to insert method material"
 msgstr "Fehler beim Einfügen des Verfahrensmaterials"
 
+msgid "Failed to insert method materials"
+msgstr "Fehler beim Einfügen von Methodenmaterialien"
+
 msgid "Failed to insert method operation"
 msgstr "Fehler beim Einfügen der Methodeoperation"
 
@@ -7376,6 +7385,9 @@ msgstr "Fehler beim Aktualisieren der Auftragsinformationen"
 msgid "Failed to update job material"
 msgstr "Fehler beim Aktualisieren des Arbeitsmaterials"
 
+msgid "Failed to update job materials"
+msgstr "Fehler beim Aktualisieren von Jobmaterialien"
+
 msgid "Failed to update job operation"
 msgstr "Fehler beim Aktualisieren der Arbeitsposition"
 
@@ -7432,6 +7444,9 @@ msgstr "Fehler beim Aktualisieren des Materialtypes"
 
 msgid "Failed to update method material"
 msgstr "Fehler beim Aktualisieren des Verfahrensmaterials"
+
+msgid "Failed to update method materials"
+msgstr "Fehler beim Aktualisieren von Methodenmaterialien"
 
 msgid "Failed to update method operation"
 msgstr "Fehler beim Aktualisieren der Methodeoperation"
@@ -7523,6 +7538,9 @@ msgstr "Fehler beim Aktualisieren der Lieferung der Kaufrechnung"
 msgid "Failed to update purchase invoice line"
 msgstr "Fehler beim Aktualisieren der Lieferhinweisspalte"
 
+msgid "Failed to update purchase invoice lines for style variants"
+msgstr "Fehler beim Aktualisieren von Einkaufsrechnungszeilen für Stilvarianten"
+
 msgid "Failed to update purchase invoice status"
 msgstr "Fehler beim Aktualisieren des Einkaufsrechnungsstatus"
 
@@ -7555,6 +7573,9 @@ msgstr "Angebot konnte nicht aktualisiert werden"
 
 msgid "Failed to update quote material"
 msgstr "Fehler beim Aktualisieren des Angebotsteils"
+
+msgid "Failed to update quote materials"
+msgstr "Fehler beim Aktualisieren von Angebotsmaterialien"
 
 msgid "Failed to update quote operation"
 msgstr "Fehler beim Aktualisieren der Anfrageoperation"
@@ -7597,6 +7618,9 @@ msgstr "Fehler beim Aktualisieren der Verkaufsrechnung"
 
 msgid "Failed to update sales invoice line"
 msgstr "Fehler beim Aktualisieren der Verkaufsrechnungslinie"
+
+msgid "Failed to update sales invoice lines for style variants"
+msgstr "Fehler beim Aktualisieren von Verkaufsrechnungszeilen für Stilvarianten"
 
 msgid "Failed to update sales invoice shipping"
 msgstr "Fehler beim Aktualisieren des Verkaufsrechnungssendens"
@@ -15858,6 +15882,9 @@ msgstr "Variantenmengen"
 
 msgid "Variant quantities added"
 msgstr "Variantenmengen hinzugefügt"
+
+msgid "Variant quantities updated"
+msgstr "Variantenmengen aktualisiert"
 
 msgid "Variants Quantity"
 msgstr "Variants Quantity"

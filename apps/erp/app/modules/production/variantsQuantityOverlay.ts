@@ -19,11 +19,11 @@ export function parseInitialVariantsQuantity(
     ) {
       return { rows: null, total: 0 };
     }
-    const config = parsed as {
+    const parsedVariantTable = parsed as {
       variantTable?: Record<string, string | number | boolean>[];
     };
-    const rows = Array.isArray(config.variantTable)
-      ? config.variantTable
+    const rows = Array.isArray(parsedVariantTable.variantTable)
+      ? parsedVariantTable.variantTable
       : null;
     let total = 0;
     if (rows) {

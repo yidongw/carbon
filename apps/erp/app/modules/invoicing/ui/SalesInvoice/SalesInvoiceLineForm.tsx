@@ -62,8 +62,23 @@ import {
 } from "~/hooks";
 import type { SalesInvoice } from "~/modules/invoicing";
 import { salesInvoiceLineValidator } from "~/modules/invoicing";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType } from "~/modules/shared";
-import { methodType } from "~/modules/shared";
+import {
+  defaultLineQuantity,
+  isMissingVariantQuantity,
+  methodType,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { isSalesInvoiceLocked } from "../../invoicing.models";
@@ -78,6 +93,39 @@ type SalesInvoiceLineFormProps = {
   type?: "card" | "modal";
   onClose?: () => void;
 };
+
+function parseInitialVariantTable(raw: unknown): {
+  rows: Row[] | null;
+  total: number;
+} {
+  if (!raw) return { rows: null, total: 0 };
+  try {
+    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      !("variantTable" in parsed)
+    ) {
+      return { rows: null, total: 0 };
+    }
+    const parsedVariantTable = parsed as {
+      variantTable?: Row[];
+    };
+    const rows = Array.isArray(parsedVariantTable.variantTable)
+      ? parsedVariantTable.variantTable
+      : null;
+    // Combo-only: each row carries a single `Quantities` value.
+    let total = 0;
+    if (rows) {
+      for (const row of rows) {
+        total += Number(row.Quantities) || 0;
+      }
+    }
+    return { rows, total };
+  } catch {
+    return { rows: null, total: 0 };
+  }
+}
 
 const SalesInvoiceLineForm = ({
   initialValues,
@@ -151,9 +199,61 @@ const SalesInvoiceLineForm = ({
   ]);
 
   const isFixedAsset = initialValues.invoiceLineType === "Fixed Asset";
+  const isEditing = initialValues.id !== undefined;
   const [activeTab, setActiveTab] = useState<"item" | "asset">(
     isFixedAsset ? "asset" : "item"
   );
+
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const initialConfig = parseInitialVariantTable(
+    initialValues.variantQuantities
+  );
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(initialConfig.rows);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
+    initialConfig.total
+  );
+  // True when the selected item has attribute selections (variant grid).
+  const [hasVariantAttributes, setHasVariantAttributes] = useState(
+    Boolean(initialValues.variantQuantities)
+  );
+
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
+
+  const isMissingVariantQty = isMissingVariantQuantity(
+    hasVariantsQuantity,
+    itemData.quantity
+  );
+
+  const applyConfig = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    setItemData((d) => ({
+      ...d,
+      quantity: data.total
+    }));
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemData.itemId) return;
+    variantsQuantityModal.open({
+      itemId: itemData.itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyConfig
+    });
+  };
+
+  const clearConfig = () => {
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
+  };
 
   const [assetOptions, setAssetOptions] = useState<
     { value: string; label: string }[]
@@ -215,7 +315,6 @@ const SalesInvoiceLineForm = ({
 
   const costsDisclosure = useDisclosure();
   const assetCostsDisclosure = useDisclosure();
-  const isEditing = initialValues.id !== undefined;
   const hasInvalidMethodType =
     itemData.methodType === "Make to Order" && !isSalesOrderLine;
   const isDisabled = !isEditable
@@ -229,11 +328,13 @@ const SalesInvoiceLineForm = ({
   const onTypeChange = (t: MethodItemType | "Item") => {
     if (t === itemType) return;
     setItemType(t as MethodItemType);
+    clearConfig();
+    setHasVariantAttributes(false);
     setItemData({
       itemId: "",
       methodType: "",
       description: "",
-      quantity: 1,
+      quantity: defaultLineQuantity(false),
       unitPrice: 0,
       shippingCost: 0,
       unitOfMeasureCode: "",
@@ -245,18 +346,21 @@ const SalesInvoiceLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) throw new Error("Carbon client not found");
+    clearConfig();
+    setHasVariantAttributes(false);
     switch (itemType) {
       // @ts-expect-error
       case "Item":
       case "Consumable":
       case "Material":
       case "Part":
+      case "Style":
       case "Tool":
       // @ts-expect-error
       case "Service":
       // @ts-expect-error
       case "Fixture":
-        const [item, inventory] = await Promise.all([
+        const [item, inventory, variantAttributes] = await Promise.all([
           carbon
             .from("item")
             .select(
@@ -271,7 +375,15 @@ const SalesInvoiceLineForm = ({
             .eq("itemId", itemId)
             .eq("companyId", company.id)
             .eq("locationId", locationId!)
-            .maybeSingle()
+            .maybeSingle(),
+          // Any item with attribute selections (Style, Consumable fabric/trim, …)
+          // gets the config grid — not limited to Color/Size system attrs.
+          carbon
+            .from("itemAttributeSelection")
+            .select("attributeValueId")
+            .eq("itemId", itemId)
+            .eq("companyId", company.id)
+            .limit(1)
         ]);
 
         const itemCost = item?.data?.itemCost?.[0];
@@ -299,11 +411,19 @@ const SalesInvoiceLineForm = ({
           return;
         }
 
+        const itemHasVariantAttributes =
+          (variantAttributes?.data?.length ?? 0) > 0;
+        setHasVariantAttributes(itemHasVariantAttributes);
+
         setItemData((prev) => ({
           ...prev,
           itemId: itemId,
           description: item.data?.name ?? "",
           methodType: item.data?.defaultMethodType ?? "",
+          quantity: defaultLineQuantity(
+            itemHasVariantAttributes,
+            prev.quantity || 1
+          ),
           unitPrice:
             (itemCost?.unitCost ?? 0) /
             (routeData?.salesInvoice?.exchangeRate ?? 1),
@@ -354,230 +474,479 @@ const SalesInvoiceLineForm = ({
     routeData?.salesInvoice?.currencyCode ?? company.baseCurrencyCode;
 
   return (
-    <Tabs
-      value={activeTab}
-      onValueChange={(v) => setActiveTab(v as "item" | "asset")}
-      className="w-full"
-    >
-      <ModalCardProvider type={type}>
-        <ModalCard
-          onClose={onClose}
-          isCollapsible={isEditing}
-          defaultCollapsed={false}
-        >
-          <ModalCardContent size="xxlarge">
-            <ValidatedForm
-              defaultValues={initialValues}
-              validator={salesInvoiceLineValidator}
-              method="post"
-              action={
-                isEditing
-                  ? path.to.salesInvoiceLine(invoiceId, initialValues.id!)
-                  : path.to.newSalesInvoiceLine(invoiceId)
-              }
-              className="w-full"
-              isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
-            >
-              <HStack
-                className={cn(
-                  "w-full justify-between items-start",
-                  type === "modal" && "pr-16"
-                )}
+    <>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => setActiveTab(v as "item" | "asset")}
+        className="w-full"
+      >
+        <ModalCardProvider type={type}>
+          <ModalCard
+            onClose={onClose}
+            isCollapsible={isEditing}
+            defaultCollapsed={false}
+          >
+            <ModalCardContent size="xxlarge">
+              <ValidatedForm
+                defaultValues={initialValues}
+                validator={salesInvoiceLineValidator}
+                method="post"
+                action={
+                  isEditing
+                    ? path.to.salesInvoiceLine(invoiceId, initialValues.id!)
+                    : path.to.newSalesInvoiceLine(invoiceId)
+                }
+                className="w-full"
+                isDisabled={isEditing && isLocked}
+                onSubmit={() => {
+                  if (type === "modal") onClose?.();
+                }}
               >
-                <ModalCardHeader className="flex flex-1">
-                  <ModalCardTitle
-                    className={cn(
-                      isEditing &&
-                        !isFixedAsset &&
-                        !itemData?.itemId &&
-                        "text-muted-foreground"
-                    )}
-                  >
-                    {isEditing ? (
-                      isFixedAsset ? (
-                        initialValues.assetReadableId || "Fixed Asset"
-                      ) : (
-                        (getItemReadableId(items, itemData?.itemId) ?? "...")
-                      )
-                    ) : (
-                      <Trans>New Sales Invoice Line</Trans>
-                    )}
-                  </ModalCardTitle>
-                  <ModalCardDescription>
-                    {isEditing ? (
-                      <div className="flex flex-col items-start gap-1">
-                        <span>
-                          {isFixedAsset
-                            ? initialValues.assetName || assetData.description
-                            : itemData?.description}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className="flex items-center gap-2"
-                          >
-                            {initialValues?.quantity}{" "}
-                            {!isFixedAsset && (
-                              <MethodIcon type={itemData.methodType} />
-                            )}
-                          </Badge>
-                          <Badge variant="green">
-                            {currencyFormatter.format(
-                              initialValues?.unitPrice ?? 0
-                            )}{" "}
-                            {initialValues?.unitOfMeasureCode}
-                          </Badge>
-                          {(initialValues?.taxPercent ?? 0) > 0 ? (
-                            <Badge variant="red">
-                              {percentFormatter.format(
-                                initialValues?.taxPercent ?? 0
-                              )}{" "}
-                              {t`Tax`}
-                            </Badge>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : (
-                      t`A sales invoice line contains invoice details for a particular item`
-                    )}
-                  </ModalCardDescription>
-                </ModalCardHeader>
-                <div className="flex-shrink-0">
-                  {!isEditing && (
-                    <TabsList>
-                      <TabsTrigger value="item">
-                        <LuBox className="mr-1" />
-                        <Trans>Item</Trans>
-                      </TabsTrigger>
-                      <TabsTrigger value="asset">
-                        <LuLandmark className="mr-1" />
-                        <Trans>Asset</Trans>
-                      </TabsTrigger>
-                    </TabsList>
+                <HStack
+                  className={cn(
+                    "w-full justify-between items-start",
+                    type === "modal" && "pr-16"
                   )}
-                </div>
-              </HStack>
-              <ModalCardBody>
-                <Hidden name="id" />
-                <Hidden name="invoiceId" />
-                <Hidden
-                  name="exchangeRate"
-                  value={routeData?.salesInvoice?.exchangeRate ?? 1}
-                />
-
-                <TabsContent value="item">
-                  <Hidden name="invoiceLineType" value={itemType} />
-                  <Hidden name="description" value={itemData.description} />
+                >
+                  <ModalCardHeader className="flex flex-1">
+                    <ModalCardTitle
+                      className={cn(
+                        isEditing &&
+                          !isFixedAsset &&
+                          !itemData?.itemId &&
+                          "text-muted-foreground"
+                      )}
+                    >
+                      {isEditing ? (
+                        isFixedAsset ? (
+                          initialValues.assetReadableId || "Fixed Asset"
+                        ) : (
+                          (getItemReadableId(items, itemData?.itemId) ?? "...")
+                        )
+                      ) : (
+                        <Trans>New Sales Invoice Line</Trans>
+                      )}
+                    </ModalCardTitle>
+                    <ModalCardDescription>
+                      {isEditing ? (
+                        <div className="flex flex-col items-start gap-1">
+                          <span>
+                            {isFixedAsset
+                              ? initialValues.assetName || assetData.description
+                              : itemData?.description}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-2"
+                            >
+                              {initialValues?.quantity}{" "}
+                              {!isFixedAsset && (
+                                <MethodIcon type={itemData.methodType} />
+                              )}
+                            </Badge>
+                            <Badge variant="green">
+                              {currencyFormatter.format(
+                                initialValues?.unitPrice ?? 0
+                              )}{" "}
+                              {initialValues?.unitOfMeasureCode}
+                            </Badge>
+                            {(initialValues?.taxPercent ?? 0) > 0 ? (
+                              <Badge variant="red">
+                                {percentFormatter.format(
+                                  initialValues?.taxPercent ?? 0
+                                )}{" "}
+                                {t`Tax`}
+                              </Badge>
+                            ) : null}
+                          </div>
+                        </div>
+                      ) : (
+                        t`A sales invoice line contains invoice details for a particular item`
+                      )}
+                    </ModalCardDescription>
+                  </ModalCardHeader>
+                  <div className="flex-shrink-0">
+                    {!isEditing && (
+                      <TabsList>
+                        <TabsTrigger value="item">
+                          <LuBox className="mr-1" />
+                          <Trans>Item</Trans>
+                        </TabsTrigger>
+                        <TabsTrigger value="asset">
+                          <LuLandmark className="mr-1" />
+                          <Trans>Asset</Trans>
+                        </TabsTrigger>
+                      </TabsList>
+                    )}
+                  </div>
+                </HStack>
+                <ModalCardBody>
+                  <Hidden name="id" />
+                  <Hidden name="invoiceId" />
                   <Hidden
-                    name="unitOfMeasureCode"
-                    value={itemData?.unitOfMeasureCode}
+                    name="exchangeRate"
+                    value={routeData?.salesInvoice?.exchangeRate ?? 1}
                   />
 
-                  <VStack>
-                    {hasInvalidMethodType && (
-                      <Alert variant="destructive" className="mb-4">
-                        <LuCircleAlert className="w-4 h-4" />
-                        <AlertTitle>
-                          <Trans>
-                            Make items cannot be invoiced directly. Change
-                            method to Pick to continue.
-                          </Trans>
-                        </AlertTitle>
-                      </Alert>
-                    )}
-                    <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                      <Item
-                        name="itemId"
-                        label={itemType}
-                        // @ts-ignore
-                        type={itemType}
-                        locationId={locationId}
-                        onChange={(value) => {
-                          onItemChange(value?.value as string);
-                        }}
-                        onTypeChange={onTypeChange}
-                      />
+                  <TabsContent value="item">
+                    <Hidden name="invoiceLineType" value={itemType} />
+                    <Hidden name="description" value={itemData.description} />
+                    <Hidden
+                      name="unitOfMeasureCode"
+                      value={itemData?.unitOfMeasureCode}
+                    />
+                    {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
+                    <Hidden
+                      name="variantQuantities"
+                      value={
+                        variantsQuantityRows
+                          ? JSON.stringify({
+                              variantTable: variantsQuantityRows
+                            })
+                          : ""
+                      }
+                    />
 
-                      <FormControl className="col-span-2">
-                        <FormLabel isOptional>
-                          <Trans>Description</Trans>
-                        </FormLabel>
-                        <Input
-                          value={itemData.description}
-                          onChange={(e) =>
-                            setItemData((d) => ({
-                              ...d,
-                              description: e.target.value
-                            }))
-                          }
+                    <VStack>
+                      {hasInvalidMethodType && (
+                        <Alert variant="destructive" className="mb-4">
+                          <LuCircleAlert className="w-4 h-4" />
+                          <AlertTitle>
+                            <Trans>
+                              Make items cannot be invoiced directly. Change
+                              method to Pick to continue.
+                            </Trans>
+                          </AlertTitle>
+                        </Alert>
+                      )}
+                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                        <Item
+                          name="itemId"
+                          label={itemType}
+                          // @ts-ignore
+                          type={itemType}
+                          locationId={locationId}
+                          onChange={(value) => {
+                            onItemChange(value?.value as string);
+                          }}
+                          onTypeChange={onTypeChange}
                         />
-                      </FormControl>
+
+                        <FormControl className="col-span-2">
+                          <FormLabel isOptional>
+                            <Trans>Description</Trans>
+                          </FormLabel>
+                          <Input
+                            value={itemData.description}
+                            onChange={(e) =>
+                              setItemData((d) => ({
+                                ...d,
+                                description: e.target.value
+                              }))
+                            }
+                          />
+                        </FormControl>
+
+                        {[
+                          "Item",
+                          "Part",
+                          "Style",
+                          "Material",
+                          "Tool",
+                          "Consumable",
+                          "Service",
+                          "Fixture"
+                        ].includes(itemType) && (
+                          <>
+                            <div className="space-y-2">
+                              <SelectControlled
+                                name="methodType"
+                                label={t`Method`}
+                                options={
+                                  methodType.map((m) => ({
+                                    label: (
+                                      <span className="flex items-center gap-2">
+                                        <MethodIcon type={m} />
+                                        {m}
+                                      </span>
+                                    ),
+                                    value: m
+                                  })) ?? []
+                                }
+                                value={itemData.methodType}
+                                onChange={(newValue) => {
+                                  if (newValue)
+                                    setItemData((d) => ({
+                                      ...d,
+                                      methodType: newValue?.value
+                                    }));
+                                }}
+                              />
+                            </div>
+
+                            {hasVariantAttributes ? (
+                              <QuantityWithVariantsQuantity
+                                name="quantity"
+                                label={t`Quantity`}
+                                value={itemData.quantity}
+                                onChange={(value) => {
+                                  setItemData((d) => ({
+                                    ...d,
+                                    quantity: value
+                                  }));
+                                }}
+                                hasVariantsQuantity={hasVariantsQuantity}
+                                onOpenVariantsQuantity={
+                                  hasVariantsQuantity
+                                    ? openVariantsQuantity
+                                    : undefined
+                                }
+                                variantsQuantityTotal={variantsQuantityTotal}
+                                isReadOnly={hasVariantsQuantity}
+                                minValue={0}
+                              />
+                            ) : (
+                              <NumberControlled
+                                name="quantity"
+                                label={t`Quantity`}
+                                value={itemData.quantity}
+                                onChange={(value) => {
+                                  setItemData((d) => ({
+                                    ...d,
+                                    quantity: value
+                                  }));
+                                }}
+                              />
+                            )}
+
+                            <NumberControlled
+                              name="unitPrice"
+                              label={t`Unit Price`}
+                              value={itemData.unitPrice}
+                              formatOptions={{
+                                style: "currency",
+                                currency: invoiceCurrency
+                              }}
+                              onChange={(value) =>
+                                setItemData((d) => ({
+                                  ...d,
+                                  unitPrice: value
+                                }))
+                              }
+                            />
+                            <Location
+                              name="locationId"
+                              label={t`Shipping Location`}
+                              value={locationId}
+                              onChange={onLocationChange}
+                            />
+                            <StorageUnit
+                              name="storageUnitId"
+                              label={t`Storage Unit`}
+                              locationId={locationId}
+                              value={itemData.storageUnitId ?? undefined}
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  setItemData((d) => ({
+                                    ...d,
+                                    storageUnitId: newValue?.id
+                                  }));
+                                }
+                              }}
+                            />
+                          </>
+                        )}
+                        <CustomFormFields table="salesInvoiceLine" />
+                      </div>
 
                       {[
                         "Item",
                         "Part",
+                        "Style",
                         "Material",
                         "Tool",
                         "Consumable",
                         "Service",
                         "Fixture"
                       ].includes(itemType) && (
-                        <>
-                          <div className="space-y-2">
-                            <SelectControlled
-                              name="methodType"
-                              label={t`Method`}
-                              options={
-                                methodType.map((m) => ({
-                                  label: (
-                                    <span className="flex items-center gap-2">
-                                      <MethodIcon type={m} />
-                                      {m}
+                        <div className="w-full">
+                          <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
+                            <HStack
+                              className="w-full justify-between cursor-pointer"
+                              onClick={costsDisclosure.onToggle}
+                            >
+                              <Label>
+                                <Trans>Tax & Additional Costs</Trans>
+                              </Label>
+                              <HStack>
+                                {(itemData.taxPercent ?? 0) > 0 && (
+                                  <Badge variant="red">
+                                    {percentFormatter.format(
+                                      itemData.taxPercent ?? 0
+                                    )}{" "}
+                                    <Trans>Tax</Trans>
+                                  </Badge>
+                                )}
+                                {(itemData.shippingCost ?? 0) > 0 && (
+                                  <Badge
+                                    variant="secondary"
+                                    className="flex items-center gap-1"
+                                  >
+                                    <LuTruck />
+                                    <span>
+                                      {currencyFormatter.format(
+                                        itemData.shippingCost ?? 0
+                                      )}
                                     </span>
-                                  ),
-                                  value: m
-                                })) ?? []
-                              }
-                              value={itemData.methodType}
-                              onChange={(newValue) => {
-                                if (newValue)
+                                  </Badge>
+                                )}
+                                {(initialValues?.addOnCost ?? 0) > 0 ||
+                                  ((initialValues?.nonTaxableAddOnCost ?? 0) >
+                                    0 && (
+                                    <Badge
+                                      variant="secondary"
+                                      className="flex items-center gap-1"
+                                    >
+                                      <LuPlus />
+                                      <span>
+                                        {currencyFormatter.format(
+                                          (initialValues?.addOnCost ?? 0) +
+                                            (initialValues?.nonTaxableAddOnCost ??
+                                              0)
+                                        )}{" "}
+                                        <Trans>Add-On</Trans>
+                                      </span>
+                                    </Badge>
+                                  ))}
+
+                                <IconButton
+                                  icon={<LuChevronRight />}
+                                  aria-label={
+                                    costsDisclosure.isOpen
+                                      ? t`Collapse Costs`
+                                      : t`Expand Costs`
+                                  }
+                                  variant="ghost"
+                                  size="md"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    costsDisclosure.onToggle();
+                                  }}
+                                  className={`transition-transform ${
+                                    costsDisclosure.isOpen ? "rotate-90" : ""
+                                  }`}
+                                />
+                              </HStack>
+                            </HStack>
+                            <div
+                              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                                costsDisclosure.isOpen ? "" : "hidden"
+                              }`}
+                            >
+                              <NumberControlled
+                                name="taxPercent"
+                                label={t`Tax Percent`}
+                                value={itemData.taxPercent}
+                                minValue={0}
+                                maxValue={1}
+                                step={0.0001}
+                                formatOptions={{
+                                  style: "percent",
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 2
+                                }}
+                                onChange={(value) => {
+                                  const subtotal =
+                                    itemData.unitPrice * itemData.quantity +
+                                    itemData.shippingCost;
                                   setItemData((d) => ({
                                     ...d,
-                                    methodType: newValue?.value
+                                    taxPercent: value,
+                                    taxAmount: subtotal * value
                                   }));
-                              }}
-                            />
+                                }}
+                              />
+                              <NumberControlled
+                                name="taxAmount"
+                                label={t`Tax Amount`}
+                                value={itemData.taxAmount}
+                                formatOptions={{
+                                  style: "currency",
+                                  currency: invoiceCurrency
+                                }}
+                                onChange={(value) => {
+                                  const subtotal =
+                                    itemData.unitPrice * itemData.quantity +
+                                    itemData.shippingCost;
+                                  setItemData((d) => ({
+                                    ...d,
+                                    taxAmount: value,
+                                    taxPercent:
+                                      subtotal > 0 ? value / subtotal : 0
+                                  }));
+                                }}
+                              />
+                              <NumberControlled
+                                name="shippingCost"
+                                label={t`Shipping Cost`}
+                                value={itemData.shippingCost}
+                                minValue={0}
+                                formatOptions={{
+                                  style: "currency",
+                                  currency: invoiceCurrency
+                                }}
+                                onChange={(value) =>
+                                  setItemData((d) => ({
+                                    ...d,
+                                    shippingCost: value
+                                  }))
+                                }
+                              />
+                              <Number
+                                name="addOnCost"
+                                label={t`Add-On Cost`}
+                                formatOptions={{
+                                  style: "currency",
+                                  currency: invoiceCurrency
+                                }}
+                              />
+                              <Number
+                                name="nonTaxableAddOnCost"
+                                label={t`Non-Taxable Add-On Cost`}
+                                formatOptions={{
+                                  style: "currency",
+                                  currency: invoiceCurrency
+                                }}
+                              />
+                            </div>
                           </div>
+                        </div>
+                      )}
+                    </VStack>
+                  </TabsContent>
 
-                          <NumberControlled
-                            name="quantity"
-                            label={t`Quantity`}
-                            value={itemData.quantity}
-                            onChange={(value) => {
-                              setItemData((d) => ({
+                  {activeTab === "asset" && (
+                    <>
+                      <Hidden name="invoiceLineType" value="Fixed Asset" />
+                      <Hidden
+                        name="description"
+                        value={assetData.description}
+                      />
+                      <VStack>
+                        <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                          <Combobox
+                            name="assetId"
+                            label={t`Fixed Asset`}
+                            isOptional={false}
+                            options={assetOptions}
+                            value={assetData.assetId}
+                            onChange={(selected) => {
+                              setAssetData((d) => ({
                                 ...d,
-                                quantity: value
+                                assetId: (selected?.value as string) ?? ""
                               }));
                             }}
-                          />
-
-                          <NumberControlled
-                            name="unitPrice"
-                            label={t`Unit Price`}
-                            value={itemData.unitPrice}
-                            formatOptions={{
-                              style: "currency",
-                              currency: invoiceCurrency
-                            }}
-                            onChange={(value) =>
-                              setItemData((d) => ({
-                                ...d,
-                                unitPrice: value
-                              }))
-                            }
                           />
                           <Location
                             name="locationId"
@@ -585,88 +954,67 @@ const SalesInvoiceLineForm = ({
                             value={locationId}
                             onChange={onLocationChange}
                           />
-                          <StorageUnit
-                            name="storageUnitId"
-                            label={t`Storage Unit`}
-                            locationId={locationId}
-                            value={itemData.storageUnitId ?? undefined}
-                            onChange={(newValue) => {
-                              if (newValue) {
-                                setItemData((d) => ({
+                          <FormControl>
+                            <FormLabel>
+                              <Trans>Description</Trans>
+                            </FormLabel>
+                            <Input
+                              value={assetData.description}
+                              onChange={(e) =>
+                                setAssetData((d) => ({
                                   ...d,
-                                  storageUnitId: newValue?.id
-                                }));
+                                  description: e.target.value
+                                }))
                               }
-                            }}
+                            />
+                          </FormControl>
+                          <NumberControlled
+                            name="quantity"
+                            label={t`Quantity`}
+                            isOptional={false}
+                            isDisabled
+                            value={1}
+                            onChange={() => undefined}
                           />
-                        </>
-                      )}
-                      <CustomFormFields table="salesInvoiceLine" />
-                    </div>
+                          <NumberControlled
+                            name="unitPrice"
+                            label={t`Unit Price`}
+                            isOptional={false}
+                            value={assetData.unitPrice}
+                            formatOptions={{
+                              style: "currency",
+                              currency: invoiceCurrency
+                            }}
+                            onChange={(value) =>
+                              setAssetData((d) => ({ ...d, unitPrice: value }))
+                            }
+                          />
+                          <CustomFormFields table="salesInvoiceLine" />
+                        </div>
 
-                    {[
-                      "Item",
-                      "Part",
-                      "Material",
-                      "Tool",
-                      "Consumable",
-                      "Service",
-                      "Fixture"
-                    ].includes(itemType) && (
-                      <div className="w-full">
-                        <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
+                        <div className="h-4" />
+
+                        <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
                           <HStack
                             className="w-full justify-between cursor-pointer"
-                            onClick={costsDisclosure.onToggle}
+                            onClick={assetCostsDisclosure.onToggle}
                           >
                             <Label>
-                              <Trans>Tax & Additional Costs</Trans>
+                              <Trans>Tax &amp; Additional Costs</Trans>
                             </Label>
                             <HStack>
-                              {(itemData.taxPercent ?? 0) > 0 && (
+                              {assetData.taxPercent > 0 && (
                                 <Badge variant="red">
                                   {percentFormatter.format(
-                                    itemData.taxPercent ?? 0
+                                    assetData.taxPercent
                                   )}{" "}
                                   <Trans>Tax</Trans>
                                 </Badge>
                               )}
-                              {(itemData.shippingCost ?? 0) > 0 && (
-                                <Badge
-                                  variant="secondary"
-                                  className="flex items-center gap-1"
-                                >
-                                  <LuTruck />
-                                  <span>
-                                    {currencyFormatter.format(
-                                      itemData.shippingCost ?? 0
-                                    )}
-                                  </span>
-                                </Badge>
-                              )}
-                              {(initialValues?.addOnCost ?? 0) > 0 ||
-                                ((initialValues?.nonTaxableAddOnCost ?? 0) >
-                                  0 && (
-                                  <Badge
-                                    variant="secondary"
-                                    className="flex items-center gap-1"
-                                  >
-                                    <LuPlus />
-                                    <span>
-                                      {currencyFormatter.format(
-                                        (initialValues?.addOnCost ?? 0) +
-                                          (initialValues?.nonTaxableAddOnCost ??
-                                            0)
-                                      )}{" "}
-                                      <Trans>Add-On</Trans>
-                                    </span>
-                                  </Badge>
-                                ))}
-
                               <IconButton
                                 icon={<LuChevronRight />}
                                 aria-label={
-                                  costsDisclosure.isOpen
+                                  assetCostsDisclosure.isOpen
                                     ? t`Collapse Costs`
                                     : t`Expand Costs`
                                 }
@@ -674,23 +1022,21 @@ const SalesInvoiceLineForm = ({
                                 size="md"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  costsDisclosure.onToggle();
+                                  assetCostsDisclosure.onToggle();
                                 }}
-                                className={`transition-transform ${
-                                  costsDisclosure.isOpen ? "rotate-90" : ""
-                                }`}
+                                className={`transition-transform ${assetCostsDisclosure.isOpen ? "rotate-90" : ""}`}
                               />
                             </HStack>
                           </HStack>
                           <div
                             className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                              costsDisclosure.isOpen ? "" : "hidden"
+                              assetCostsDisclosure.isOpen ? "" : "hidden"
                             }`}
                           >
                             <NumberControlled
                               name="taxPercent"
                               label={t`Tax Percent`}
-                              value={itemData.taxPercent}
+                              value={assetData.taxPercent}
                               minValue={0}
                               maxValue={1}
                               step={0.0001}
@@ -699,259 +1045,80 @@ const SalesInvoiceLineForm = ({
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 2
                               }}
-                              onChange={(value) => {
-                                const subtotal =
-                                  itemData.unitPrice * itemData.quantity +
-                                  itemData.shippingCost;
-                                setItemData((d) => ({
+                              onChange={(value) =>
+                                setAssetData((d) => ({
                                   ...d,
-                                  taxPercent: value,
-                                  taxAmount: subtotal * value
-                                }));
-                              }}
-                            />
-                            <NumberControlled
-                              name="taxAmount"
-                              label={t`Tax Amount`}
-                              value={itemData.taxAmount}
-                              formatOptions={{
-                                style: "currency",
-                                currency: invoiceCurrency
-                              }}
-                              onChange={(value) => {
-                                const subtotal =
-                                  itemData.unitPrice * itemData.quantity +
-                                  itemData.shippingCost;
-                                setItemData((d) => ({
-                                  ...d,
-                                  taxAmount: value,
-                                  taxPercent:
-                                    subtotal > 0 ? value / subtotal : 0
-                                }));
-                              }}
+                                  taxPercent: value
+                                }))
+                              }
                             />
                             <NumberControlled
                               name="shippingCost"
                               label={t`Shipping Cost`}
-                              value={itemData.shippingCost}
+                              value={assetData.shippingCost}
                               minValue={0}
                               formatOptions={{
                                 style: "currency",
                                 currency: invoiceCurrency
                               }}
                               onChange={(value) =>
-                                setItemData((d) => ({
+                                setAssetData((d) => ({
                                   ...d,
                                   shippingCost: value
                                 }))
                               }
                             />
-                            <Number
+                            <NumberControlled
                               name="addOnCost"
                               label={t`Add-On Cost`}
+                              value={assetData.addOnCost}
                               formatOptions={{
                                 style: "currency",
                                 currency: invoiceCurrency
                               }}
+                              onChange={(value) =>
+                                setAssetData((d) => ({
+                                  ...d,
+                                  addOnCost: value
+                                }))
+                              }
                             />
-                            <Number
+                            <NumberControlled
                               name="nonTaxableAddOnCost"
                               label={t`Non-Taxable Add-On Cost`}
+                              value={assetData.nonTaxableAddOnCost}
                               formatOptions={{
                                 style: "currency",
                                 currency: invoiceCurrency
                               }}
+                              onChange={(value) =>
+                                setAssetData((d) => ({
+                                  ...d,
+                                  nonTaxableAddOnCost: value
+                                }))
+                              }
                             />
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </VStack>
-                </TabsContent>
-
-                {activeTab === "asset" && (
-                  <>
-                    <Hidden name="invoiceLineType" value="Fixed Asset" />
-                    <Hidden name="description" value={assetData.description} />
-                    <VStack>
-                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        <Combobox
-                          name="assetId"
-                          label={t`Fixed Asset`}
-                          isOptional={false}
-                          options={assetOptions}
-                          value={assetData.assetId}
-                          onChange={(selected) => {
-                            setAssetData((d) => ({
-                              ...d,
-                              assetId: (selected?.value as string) ?? ""
-                            }));
-                          }}
-                        />
-                        <Location
-                          name="locationId"
-                          label={t`Shipping Location`}
-                          value={locationId}
-                          onChange={onLocationChange}
-                        />
-                        <FormControl>
-                          <FormLabel>
-                            <Trans>Description</Trans>
-                          </FormLabel>
-                          <Input
-                            value={assetData.description}
-                            onChange={(e) =>
-                              setAssetData((d) => ({
-                                ...d,
-                                description: e.target.value
-                              }))
-                            }
-                          />
-                        </FormControl>
-                        <NumberControlled
-                          name="quantity"
-                          label={t`Quantity`}
-                          isOptional={false}
-                          isDisabled
-                          value={1}
-                          onChange={() => undefined}
-                        />
-                        <NumberControlled
-                          name="unitPrice"
-                          label={t`Unit Price`}
-                          isOptional={false}
-                          value={assetData.unitPrice}
-                          formatOptions={{
-                            style: "currency",
-                            currency: invoiceCurrency
-                          }}
-                          onChange={(value) =>
-                            setAssetData((d) => ({ ...d, unitPrice: value }))
-                          }
-                        />
-                        <CustomFormFields table="salesInvoiceLine" />
-                      </div>
-
-                      <div className="h-4" />
-
-                      <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-                        <HStack
-                          className="w-full justify-between cursor-pointer"
-                          onClick={assetCostsDisclosure.onToggle}
-                        >
-                          <Label>
-                            <Trans>Tax &amp; Additional Costs</Trans>
-                          </Label>
-                          <HStack>
-                            {assetData.taxPercent > 0 && (
-                              <Badge variant="red">
-                                {percentFormatter.format(assetData.taxPercent)}{" "}
-                                <Trans>Tax</Trans>
-                              </Badge>
-                            )}
-                            <IconButton
-                              icon={<LuChevronRight />}
-                              aria-label={
-                                assetCostsDisclosure.isOpen
-                                  ? t`Collapse Costs`
-                                  : t`Expand Costs`
-                              }
-                              variant="ghost"
-                              size="md"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                assetCostsDisclosure.onToggle();
-                              }}
-                              className={`transition-transform ${assetCostsDisclosure.isOpen ? "rotate-90" : ""}`}
-                            />
-                          </HStack>
-                        </HStack>
-                        <div
-                          className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                            assetCostsDisclosure.isOpen ? "" : "hidden"
-                          }`}
-                        >
-                          <NumberControlled
-                            name="taxPercent"
-                            label={t`Tax Percent`}
-                            value={assetData.taxPercent}
-                            minValue={0}
-                            maxValue={1}
-                            step={0.0001}
-                            formatOptions={{
-                              style: "percent",
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 2
-                            }}
-                            onChange={(value) =>
-                              setAssetData((d) => ({
-                                ...d,
-                                taxPercent: value
-                              }))
-                            }
-                          />
-                          <NumberControlled
-                            name="shippingCost"
-                            label={t`Shipping Cost`}
-                            value={assetData.shippingCost}
-                            minValue={0}
-                            formatOptions={{
-                              style: "currency",
-                              currency: invoiceCurrency
-                            }}
-                            onChange={(value) =>
-                              setAssetData((d) => ({
-                                ...d,
-                                shippingCost: value
-                              }))
-                            }
-                          />
-                          <NumberControlled
-                            name="addOnCost"
-                            label={t`Add-On Cost`}
-                            value={assetData.addOnCost}
-                            formatOptions={{
-                              style: "currency",
-                              currency: invoiceCurrency
-                            }}
-                            onChange={(value) =>
-                              setAssetData((d) => ({
-                                ...d,
-                                addOnCost: value
-                              }))
-                            }
-                          />
-                          <NumberControlled
-                            name="nonTaxableAddOnCost"
-                            label={t`Non-Taxable Add-On Cost`}
-                            value={assetData.nonTaxableAddOnCost}
-                            formatOptions={{
-                              style: "currency",
-                              currency: invoiceCurrency
-                            }}
-                            onChange={(value) =>
-                              setAssetData((d) => ({
-                                ...d,
-                                nonTaxableAddOnCost: value
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                    </VStack>
-                  </>
-                )}
-              </ModalCardBody>
-              <ModalCardFooter>
-                <Submit isDisabled={isDisabled} withBlocker={false}>
-                  <Trans>Save</Trans>
-                </Submit>
-              </ModalCardFooter>
-            </ValidatedForm>
-          </ModalCardContent>
-        </ModalCard>
-      </ModalCardProvider>
-    </Tabs>
+                      </VStack>
+                    </>
+                  )}
+                </ModalCardBody>
+                <ModalCardFooter>
+                  <Submit
+                    isDisabled={isDisabled || isMissingVariantQty}
+                    withBlocker={false}
+                  >
+                    <Trans>Save</Trans>
+                  </Submit>
+                </ModalCardFooter>
+              </ValidatedForm>
+            </ModalCardContent>
+          </ModalCard>
+        </ModalCardProvider>
+      </Tabs>
+      {variantsQuantityModal.node}
+    </>
   );
 };
 

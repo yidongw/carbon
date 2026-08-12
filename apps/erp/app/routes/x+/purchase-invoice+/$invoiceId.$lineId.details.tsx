@@ -1,6 +1,7 @@
-import { assertIsPost, error, notFound } from "@carbon/auth";
+import { assertIsPost, error, notFound, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -15,13 +16,24 @@ import {
   isPurchaseInvoiceLocked,
   PurchaseInvoiceLineForm,
   purchaseInvoiceLineValidator,
+  replacePurchaseInvoiceLinesWithStyleVariants,
   upsertPurchaseInvoiceLine
 } from "~/modules/invoicing";
+import {
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity,
+  requireVariantQuantitiesIfAttributeParent
+} from "~/modules/items/styleOrderLines.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import { getSupplierInteractionLineDocuments } from "~/modules/purchasing";
 import {
   SupplierInteractionLineDocuments,
   SupplierInteractionLineNotes
 } from "~/modules/purchasing/ui/SupplierInteraction";
+import { getDatabaseClient } from "~/services/database.server";
 import { useItems } from "~/stores";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
@@ -77,7 +89,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a confirmed purchase invoice."
   });
 
-  const { client, userId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     create: "invoicing"
   });
 
@@ -90,28 +102,128 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: variantQuantitiesFromValidator,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
 
-  // if (d.invoiceLineType === "G/L Account") {
-  //   d.assetId = undefined;
-  //   d.itemId = undefined;
-  // } else if (d.invoiceLineType === "Fixed Asset") {
-  //   d.accountId = undefined;
-  //   d.itemId = undefined;
-  // } else
-  // if (d.invoiceLineType === "Comment") {
-  //   d.accountId = undefined;
-  //   d.assetId = undefined;
-  //   d.itemId = undefined;
-  // } else {
-  //   d.accountId = undefined;
-  //   d.assetId = undefined;
-  // }
+  let quantity = rawQuantity;
+  let variantQuantities: Json | undefined;
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
+    try {
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
+      quantity = fields.quantity;
+    } catch {
+      // Invalid JSON — keep typed quantity; FormData config is expand-only.
+    }
+  }
 
+  // FormData variantTable means the per-variant quantity grid was used (Style
+  // variants quantity, or a Consumable color set) — expand into variant SKU lines
+  // regardless of the picker's line type.
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
+    const expanded = await expandVariantTableToLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      variantQuantities
+    });
+    if (!expanded.ok) {
+      throw redirect(
+        path.to.purchaseInvoiceLine(invoiceId, lineId),
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === d.itemId;
+
+    if (!onlyParent) {
+      try {
+        await replacePurchaseInvoiceLinesWithStyleVariants(
+          getDatabaseClient(),
+          {
+            companyId,
+            userId,
+            invoiceId,
+            replaceLineId: lineId,
+            variants: expanded.variants,
+            base: {
+              invoiceLineType: d.invoiceLineType,
+              description: d.description,
+              locationId: d.locationId,
+              storageUnitId: d.storageUnitId,
+              purchaseUnitOfMeasureCode: d.purchaseUnitOfMeasureCode,
+              inventoryUnitOfMeasureCode: d.inventoryUnitOfMeasureCode,
+              conversionFactor: d.conversionFactor,
+              supplierUnitPrice: d.supplierUnitPrice,
+              supplierShippingCost: d.supplierShippingCost,
+              supplierTaxAmount: d.supplierTaxAmount,
+              exchangeRate: d.exchangeRate,
+              requiredDate: d.requiredDate,
+              purchaseOrderId: d.purchaseOrderId,
+              purchaseOrderLineId: d.purchaseOrderLineId
+            },
+            customFields: setCustomFields(formData)
+          }
+        );
+      } catch (err) {
+        throw redirect(
+          path.to.purchaseInvoiceLine(invoiceId, lineId),
+          await flash(
+            request,
+            error(
+              err,
+              "Failed to update purchase invoice lines for style variants"
+            )
+          )
+        );
+      }
+
+      throw redirect(
+        path.to.purchaseInvoiceDetails(invoiceId),
+        await flash(request, success("Variant quantities updated"))
+      );
+    }
+
+    quantity = expanded.variants[0].quantity;
+  }
+
+  if (d.itemId) {
+    const required = await requireVariantQuantitiesIfAttributeParent(client, {
+      parentItemId: d.itemId,
+      companyId,
+      variantQuantities,
+      quantity: quantity ?? 0
+    });
+    if (!required.ok) {
+      throw redirect(
+        path.to.purchaseInvoiceLine(invoiceId, lineId),
+        await flash(request, error(required.error, required.error))
+      );
+    }
+  }
+
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const updatePurchaseInvoiceLine = await upsertPurchaseInvoiceLine(client, {
     id: lineId,
     ...d,
+    quantity,
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -166,6 +278,8 @@ export default function EditPurchaseInvoiceLineRoute() {
     storageUnitId: purchaseInvoiceLine?.storageUnitId ?? "",
     costCenterId: purchaseInvoiceLine?.costCenterId ?? "",
     taxPercent: purchaseInvoiceLine?.taxPercent ?? 0,
+    // Style qty grid is FormData-only on create/edit; not stored on the line.
+    variantQuantities: undefined,
     assetReadableId: (purchaseInvoiceLine as any)?.assetReadableId ?? "",
     assetName: (purchaseInvoiceLine as any)?.assetName ?? "",
     ...getCustomFields(purchaseInvoiceLine?.customFields)

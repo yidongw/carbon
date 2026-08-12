@@ -1091,6 +1091,9 @@ msgstr "購入発行に失敗しました"
 msgid "Failed to create purchase invoice line."
 msgstr "購入発注行の作成に失敗しました。"
 
+msgid "Failed to create purchase invoice lines for style variants"
+msgstr "スタイルバリアントの仕入請求書明細を作成できませんでした"
+
 msgid "Failed to create purchase order"
 msgstr "購入注文の作成に失敗しました"
 
@@ -1138,6 +1141,9 @@ msgstr "売上発行に失敗しました"
 
 msgid "Failed to create sales invoice line."
 msgstr "売上発行レコードを作成できませんでした。"
+
+msgid "Failed to create sales invoice lines for style variants"
+msgstr "スタイルバリアントの売上請求書明細を作成できませんでした"
 
 msgid "Failed to create sales order"
 msgstr "売上注文の作成に失敗しました"
@@ -2339,6 +2345,9 @@ msgstr "材料タイプの追加に失敗しました"
 msgid "Failed to insert method material"
 msgstr "挿入に失敗しました。方法材質"
 
+msgid "Failed to insert method materials"
+msgstr "工程材料を挿入できませんでした"
+
 msgid "Failed to insert method operation"
 msgstr "メソッド操作の挿入に失敗しました"
 
@@ -3419,6 +3428,9 @@ msgstr "ジョブの更新に失敗しました"
 msgid "Failed to update job material"
 msgstr "ジョブ材料の更新に失敗しました"
 
+msgid "Failed to update job materials"
+msgstr "ジョブ材料を更新できませんでした"
+
 msgid "Failed to update job operation"
 msgstr "作業工程の更新に失敗しました"
 
@@ -3475,6 +3487,9 @@ msgstr "材料タイプの更新に失敗しました"
 
 msgid "Failed to update method material"
 msgstr "更新方法原材料に失敗しました"
+
+msgid "Failed to update method materials"
+msgstr "工程材料を更新できませんでした"
 
 msgid "Failed to update method operation"
 msgstr "更新方法が失敗しました"
@@ -3563,6 +3578,9 @@ msgstr "購入発注の更新に失敗しました"
 msgid "Failed to update purchase invoice line"
 msgstr "購入発注行の更新に失敗しました"
 
+msgid "Failed to update purchase invoice lines for style variants"
+msgstr "スタイルバリアントの仕入請求書明細を更新できませんでした"
+
 msgid "Failed to update purchase invoice status"
 msgstr "購入発行状態の更新に失敗しました"
 
@@ -3595,6 +3613,9 @@ msgstr "注文行の更新に失敗しました"
 
 msgid "Failed to update quote material"
 msgstr "注文材料の更新に失敗しました"
+
+msgid "Failed to update quote materials"
+msgstr "見積材料を更新できませんでした"
 
 msgid "Failed to update quote operation"
 msgstr "注文情報の更新に失敗しました"
@@ -3637,6 +3658,9 @@ msgstr "売上発行の更新に失敗しました"
 
 msgid "Failed to update sales invoice line"
 msgstr "販売発行明細の更新に失敗しました"
+
+msgid "Failed to update sales invoice lines for style variants"
+msgstr "スタイルバリアントの売上請求書明細を更新できませんでした"
 
 msgid "Failed to update sales invoice shipping"
 msgstr "発送情報の更新に失敗しました"
@@ -6380,6 +6404,9 @@ msgstr "ユーザー記録が見つかりません"
 
 msgid "Variant quantities added"
 msgstr "バリアント数量を追加しました"
+
+msgid "Variant quantities updated"
+msgstr "バリアント数量を更新しました"
 
 msgid "Verification Error"
 msgstr "確認エラー"

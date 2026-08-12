@@ -129,7 +129,9 @@ export const purchaseInvoiceLineValidator = z
     requiredDate: zfd.text(z.string().optional()),
     locationId: zfd.text(z.string().optional()),
     storageUnitId: zfd.text(z.string().optional()),
-    exchangeRate: zfd.numeric(z.number().optional())
+    exchangeRate: zfd.numeric(z.number().optional()),
+    // FormData-only Style/attribute expand; not a DB column on purchaseInvoiceLine.
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine(
     (data) =>
@@ -258,7 +260,9 @@ export const salesInvoiceLineValidator = z
     taxPercent: zfd.numeric(z.number().optional().default(0)),
     locationId: zfd.text(z.string().optional()),
     storageUnitId: zfd.text(z.string().optional()),
-    exchangeRate: zfd.numeric(z.number().optional())
+    exchangeRate: zfd.numeric(z.number().optional()),
+    // FormData-only Style/attribute expand; not a DB column on salesInvoiceLine.
+    variantQuantities: zfd.text(z.string().optional())
   })
   .refine(
     (data) =>

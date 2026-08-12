@@ -107,3 +107,74 @@ export async function requireVariantQuantitiesIfAttributeParent(
 
   return { ok: true };
 }
+
+/**
+ * Map expanded variant SKUs onto material-row payloads (BOM / job / quote).
+ * Keeps shared fields from `base` and overrides `itemId` + `quantity` per SKU.
+ */
+export function buildMaterialRowsFromVariants<
+  T extends { itemId?: string | null; quantity: number }
+>(
+  base: T,
+  variants: StyleVariantQuantity[]
+): Array<T & { itemId: string; quantity: number }> {
+  return variants.map((variant) => ({
+    ...base,
+    itemId: variant.variantItemId,
+    quantity: variant.quantity
+  }));
+}
+
+/**
+ * Resolve FormData variant quantities for a material line: expand to SKU rows,
+ * fall back to a single row, or reject bare attribute-parent quantities.
+ */
+export async function resolveMaterialVariantQuantities(
+  client: Db,
+  args: {
+    companyId: string;
+    itemId: string | undefined | null;
+    quantity: number;
+    variantQuantities: unknown;
+  }
+): Promise<
+  | { ok: true; mode: "single"; quantity: number }
+  | { ok: true; mode: "expand"; variants: StyleVariantQuantity[] }
+  | { ok: false; error: string }
+> {
+  const { itemId, companyId, quantity, variantQuantities } = args;
+
+  if (itemId && hasStyleVariantsQuantity(variantQuantities)) {
+    const expanded = await expandVariantTableToLines(client, {
+      parentItemId: itemId,
+      companyId,
+      variantQuantities
+    });
+    if (!expanded.ok) return expanded;
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === itemId;
+    if (onlyParent) {
+      return {
+        ok: true,
+        mode: "single",
+        quantity: expanded.variants[0].quantity
+      };
+    }
+
+    return { ok: true, mode: "expand", variants: expanded.variants };
+  }
+
+  if (itemId) {
+    const guard = await requireVariantQuantitiesIfAttributeParent(client, {
+      parentItemId: itemId,
+      companyId,
+      variantQuantities,
+      quantity
+    });
+    if (!guard.ok) return guard;
+  }
+
+  return { ok: true, mode: "single", quantity };
+}
