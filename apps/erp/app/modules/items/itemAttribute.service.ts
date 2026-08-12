@@ -207,6 +207,14 @@ export async function getAttributeValueNames(
   }
 }
 
+/** A selected attribute value, as loaded for variant SKU generation. */
+type AttrValue = {
+  id: string;
+  attributeId: string;
+  code: string;
+  name: string;
+};
+
 /**
  * Create missing child SKU items for a parent from its attribute selections.
  * Soft-deactivates (`item.active = false`) variants whose valuesKey is no longer
@@ -322,17 +330,24 @@ export async function syncItemVariants(
       if (list) list.push(v);
     }
 
-    // Every attribute in the set must have ≥1 selected value
-    for (const attr of setAttrs) {
-      if ((valuesByAttr.get(attr.attributeId) ?? []).length === 0) {
-        const archived = await archiveVariants(existingList);
-        return { data: { ...empty, archived }, error: null };
-      }
+    // Freeze the item's attribute footprint to the attributes it actually has
+    // values for. An attribute added to the set *after* this item was created
+    // has no selections here, so it is excluded — rather than archiving every
+    // existing variant or forcing a value the item was never meant to carry.
+    // (Create-time completeness — a value for every set attribute — is enforced
+    // upstream in syncItemVariantsFromSelections.)
+    const activeAttrs = setAttrs.filter(
+      (attr: { attributeId: string }) =>
+        (valuesByAttr.get(attr.attributeId) ?? []).length > 0
+    );
+    if (activeAttrs.length === 0) {
+      const archived = await archiveVariants(existingList);
+      return { data: { ...empty, archived }, error: null };
     }
 
     // Cartesian product in set attribute order
     let combos: AttrValue[][] = [[]];
-    for (const attr of setAttrs) {
+    for (const attr of activeAttrs) {
       const options = valuesByAttr.get(attr.attributeId) ?? [];
       const next: AttrValue[][] = [];
       for (const prefix of combos) {
@@ -1323,6 +1338,68 @@ export function parseAttributeValueSelectionsFromFormData(
   return out;
 }
 
+/**
+ * Gate item creation on a complete attribute selection. Meant to run *before*
+ * the item is inserted, so an incomplete item never persists.
+ *
+ * The attribute set is optional — an item can be created without one. But once a
+ * set is chosen, the item must carry at least one value for every attribute of
+ * that set, because the set + its values are frozen immediately after creation
+ * (they can't be changed or completed later).
+ *
+ * Returns `{ field, message }` describing the first problem — `field` is the
+ * form field name to attach the error to (`attributeSetId`, or `av__<attributeId>`
+ * for a missing value) — or `null` when there is nothing to require (no set
+ * chosen) or the chosen set is complete.
+ */
+export async function validateAttributeSelectionForCreate(
+  client: Db,
+  args: {
+    itemType: string;
+    companyId: string;
+    attributeSetId: string;
+    selections: Record<string, string[]>;
+  }
+): Promise<{ field: string; message: string } | null> {
+  const db = client as any;
+
+  // No set chosen — the set is optional, so nothing to require.
+  if (!args.attributeSetId) return null;
+
+  const sets = await getAttributeSetsForItemType(
+    client,
+    args.itemType,
+    args.companyId
+  );
+  if (sets.error) throw sets.error;
+  const available = (sets.data ?? []) as Array<{ id: string } | null>;
+
+  if (!available.some((s) => s?.id === args.attributeSetId)) {
+    return {
+      field: "attributeSetId",
+      message: "The selected attribute set is not available for this item type."
+    };
+  }
+
+  const { data: setAttrs, error: setAttrErr } = await db
+    .from("itemAttributeSetAttribute")
+    .select("attributeId")
+    .eq("attributeSetId", args.attributeSetId);
+  if (setAttrErr) throw setAttrErr;
+
+  const missing = ((setAttrs ?? []) as Array<{ attributeId: string }>).find(
+    (a) => !(args.selections[a.attributeId]?.some(Boolean) ?? false)
+  );
+  if (missing) {
+    return {
+      field: `av__${missing.attributeId}`,
+      message: "Select at least one value for this attribute."
+    };
+  }
+
+  return null;
+}
+
 /** Current attribute set + selected value ids for a parent item. */
 export async function getItemAttributeSelectionsForItem(
   client: Db,
@@ -1533,6 +1610,28 @@ export async function syncItemVariantsFromSelections(
         "The selected attribute set is not available for this item type."
       )
     };
+  }
+
+  // An item must carry a value for every attribute of its set. Enforced only on
+  // create: existing items are frozen to the attributes they were created with,
+  // so an attribute added to the set later must not retroactively demand a value
+  // on items that predate it.
+  if (args.isCreate) {
+    const { data: setAttrs, error: setAttrErr } = await (client as any)
+      .from("itemAttributeSetAttribute")
+      .select("attributeId")
+      .eq("attributeSetId", args.attributeSetId);
+    if (setAttrErr) return { error: setAttrErr };
+    const missing = ((setAttrs ?? []) as Array<{ attributeId: string }>).some(
+      (a) => !(args.selections[a.attributeId]?.some(Boolean) ?? false)
+    );
+    if (missing) {
+      return {
+        error: new Error(
+          "Select at least one value for every attribute in the set."
+        )
+      };
+    }
   }
 
   const sel = await syncItemAttributeSelections(client, args);

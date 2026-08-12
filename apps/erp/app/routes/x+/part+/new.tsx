@@ -7,6 +7,10 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { partValidator, upsertPart } from "~/modules/items";
+import {
+  parseAndValidateItemAttributesForCreate,
+  syncItemAttributesOnCreate
+} from "~/modules/items/itemAttributes.actions.server";
 import { applyTemplateToItem } from "~/modules/items/template.service";
 import { PartForm } from "~/modules/items/ui/Parts";
 import { setCustomFields } from "~/utils/form";
@@ -36,6 +40,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { templateId, ...partData } = validation.data;
 
+  // The attribute set is optional, but if one is chosen every attribute of it
+  // needs a value. Validate before inserting so nothing partial persists.
+  const { attributeSetId, selections, attributeError } =
+    await parseAndValidateItemAttributesForCreate(client, {
+      formData,
+      itemType: "Part",
+      companyId
+    });
+  if (attributeError) {
+    return validationError(
+      { fieldErrors: { [attributeError.field]: attributeError.message } },
+      validation.data
+    );
+  }
+
   const createPart = await upsertPart(client, {
     ...partData,
     companyId,
@@ -63,6 +82,34 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const itemId = createPart.data?.id;
   if (!itemId) throw new Error("Part ID not found");
+
+  const { error: attributeSyncError } = await syncItemAttributesOnCreate(
+    client,
+    {
+      itemId,
+      companyId,
+      userId,
+      attributeSetId,
+      selections
+    }
+  );
+  if (attributeSyncError) {
+    return modal
+      ? data(
+          { data: null, error: attributeSyncError },
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync part variants")
+          )
+        )
+      : redirect(
+          path.to.parts,
+          await flash(
+            request,
+            error(attributeSyncError, "Failed to sync part variants")
+          )
+        );
+  }
 
   // The thumbnail is uploaded before the item exists, so it lands in a
   // staging path. Now that we have the item's id, re-key the object under the

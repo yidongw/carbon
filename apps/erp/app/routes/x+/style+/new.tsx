@@ -7,7 +7,7 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { styleValidator } from "~/modules/items";
-import { parseAttributeValueSelectionsFromFormData } from "~/modules/items/itemAttribute.service";
+import { parseAndValidateItemAttributesForCreate } from "~/modules/items/itemAttributes.actions.server";
 import { applyTemplateToItem } from "~/modules/items/template.service";
 import { StyleForm } from "~/modules/items/ui/Styles";
 import { setCustomFields } from "~/utils/form";
@@ -38,9 +38,22 @@ export async function action({ request }: ActionFunctionArgs) {
   const { templateId, ...styleData } = validation.data;
   // Attribute-set-driven selection: the create form submits a Hidden
   // attributeSetId + av__<attributeId>[] arrays (parsed generically), replacing
-  // the old hardcoded size/color fields.
-  const attributeSetId = String(formData.get("attributeSetId") ?? "");
-  const selections = parseAttributeValueSelectionsFromFormData(formData);
+  // the old hardcoded size/color fields. A Style that uses a set must arrive
+  // complete (set chosen + a value per attribute); it's frozen right after
+  // creation, so validate before inserting. upsertStyle runs the variant sync.
+  const { attributeSetId, selections, attributeError } =
+    await parseAndValidateItemAttributesForCreate(client, {
+      formData,
+      itemType: "Style",
+      companyId
+    });
+  if (attributeError) {
+    return validationError(
+      { fieldErrors: { [attributeError.field]: attributeError.message } },
+      validation.data
+    );
+  }
+
   const { upsertStyle } = await import("~/modules/items/style.server");
 
   const createStyle = await upsertStyle(client, {

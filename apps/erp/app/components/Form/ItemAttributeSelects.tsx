@@ -6,7 +6,9 @@ import { MultiSelect, Select } from "@carbon/form";
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
+import AttributeSelectionValidator from "~/modules/items/ui/AttributeSelectionValidator";
 import { useItemAttributeSetOptions } from "~/modules/items/ui/useItemAttributeSetOptions";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 
 type ItemAttributeSelectsProps = {
   /** Item type whose attribute set drives the fields (e.g. "Style"). */
@@ -22,12 +24,21 @@ type ItemAttributeSelectsProps = {
  * Submits `attributeSetId` plus `av__<attributeId>` arrays, which the action
  * parses via parseAttributeValueSelectionsFromFormData. Mirrors the Consumable
  * create form's attribute-set picker so Style and Consumable behave the same.
+ *
+ * The set + each attribute value are required, exactly like the other required
+ * fields on the form: an item that uses an attribute set must carry a value for
+ * every attribute of that set (the selection is frozen right after creation, so
+ * it could never be completed later). The requirement is enforced client-side as
+ * an inline field error via a registered additional validator, so submitting an
+ * incomplete form shows a "required" message on the offending field instead of
+ * failing on the server.
  */
 const ItemAttributeSelects = ({
   itemType,
   maxPreview = 3
 }: ItemAttributeSelectsProps) => {
   const { t, i18n } = useLingui();
+  const formatError = useFormatValidationError();
   const { sets } = useItemAttributeSetOptions(itemType);
 
   const options = sets.map((s) => ({
@@ -46,10 +57,16 @@ const ItemAttributeSelects = ({
   const selectedSet = sets.find(
     (s) => s.id === (attributeSetId || (sets.length === 1 ? sets[0]?.id : ""))
   );
+
   if (sets.length === 0) return null;
 
   return (
     <>
+      <AttributeSelectionValidator
+        id="item-attribute-selects"
+        setChosen={!!selectedSet}
+        requiredAttributeIds={selectedSet?.attributes.map((a) => a.id) ?? []}
+      />
       {sets.length === 1 ? (
         // Native hidden input (display:none) so it doesn't consume a grid cell —
         // a FormControl-wrapped field would push the attribute selects onto their
@@ -62,6 +79,7 @@ const ItemAttributeSelects = ({
           options={options}
           onChange={(option) => setAttributeSetId(option?.value ?? "")}
           helperText={t`Which set of attributes this item's variants use`}
+          formatError={formatError}
         />
       )}
       {selectedSet?.attributes.map((attr) => (
@@ -80,6 +98,7 @@ const ItemAttributeSelects = ({
             helper: o.code
           }))}
           helperText={t`Selected values become variant SKUs`}
+          formatError={formatError}
         />
       ))}
     </>

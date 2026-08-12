@@ -24,6 +24,8 @@ export type MultiSelectProps = Omit<
   inline?: boolean;
   inlineIcon?: React.ReactElement;
   maxPreview?: number;
+  /** Localize/transform the validation error before rendering it. */
+  formatError?: (error: string) => React.ReactNode;
 };
 
 const MultiSelectPreview = (
@@ -64,6 +66,7 @@ const MultiSelect = ({
   label,
   helperText,
   maxPreview,
+  formatError = (error) => error,
   ...props
 }: MultiSelectProps) => {
   const { error, isOptional: fieldIsOptional } = useField(name);
@@ -110,7 +113,7 @@ const MultiSelect = ({
       />
 
       {error ? (
-        <FormErrorMessage>{error}</FormErrorMessage>
+        <FormErrorMessage>{formatError(error)}</FormErrorMessage>
       ) : (
         helperText && <FormHelperText>{helperText}</FormHelperText>
       )}
