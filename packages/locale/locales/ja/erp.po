@@ -8999,6 +8999,12 @@ msgstr "カンバン出力"
 msgid "Kanbans"
 msgstr "カンバン"
 
+msgid "Kanbans created"
+msgstr "看板を作成しました"
+
+msgid "Kanbans updated"
+msgstr "看板が更新されました"
+
 msgid "Keep Current"
 msgstr "現在の設定を保持"
 

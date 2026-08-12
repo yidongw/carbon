@@ -4174,6 +4174,12 @@ msgstr "Impostazione del journal salvata"
 msgid "Kanban created"
 msgstr "Kanban creato"
 
+msgid "Kanbans created"
+msgstr "Kanbani createtti"
+
+msgid "Kanbans updated"
+msgstr "Kanbani aggiornati"
+
 msgid "Khaki"
 msgstr "Cachi"
 

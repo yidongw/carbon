@@ -1351,7 +1351,7 @@ msgid "Failed to delete journal entry"
 msgstr "删除日记条目失败"
 
 msgid "Failed to delete kanban"
-msgstr "删除看板失败"
+msgstr "删除补货卡失败"
 
 msgid "Failed to delete line"
 msgstr "删除行失败"
@@ -1648,7 +1648,7 @@ msgid "Failed to fetch jobs"
 msgstr "获取任务失败"
 
 msgid "Failed to fetch kanbans"
-msgstr "获取看板失败"
+msgstr "获取补货卡失败"
 
 msgid "Failed to fetch materials"
 msgstr "取料失败"
@@ -1780,7 +1780,7 @@ msgid "Failed to get a failure mode id"
 msgstr "获取故障模式ID失败"
 
 msgid "Failed to get a kanban id"
-msgstr "获取看板ID失败"
+msgstr "获取补货卡ID失败"
 
 msgid "Failed to get a material type id"
 msgstr "获取材料类型ID失败"
@@ -2029,7 +2029,7 @@ msgid "Failed to get job information"
 msgstr "获取作业信息失败"
 
 msgid "Failed to get kanban"
-msgstr "获取看板失败"
+msgstr "获取补货卡失败"
 
 msgid "Failed to get location"
 msgstr "获取位置失败"
@@ -2317,7 +2317,7 @@ msgid "Failed to insert job operation tool"
 msgstr "插入工序工具失败"
 
 msgid "Failed to insert kanban"
-msgstr "插入看板失败"
+msgstr "插入补货卡失败"
 
 msgid "Failed to insert line"
 msgstr "插入失败"
@@ -3454,7 +3454,7 @@ msgid "Failed to update job variant quantities"
 msgstr "更新工作规格数量失败"
 
 msgid "Failed to update kanban"
-msgstr "更新看板失败"
+msgstr "更新补货卡失败"
 
 msgid "Failed to update line"
 msgstr "更新行失败"
@@ -4173,7 +4173,13 @@ msgid "Journal entry saved"
 msgstr "日记条目已保存"
 
 msgid "Kanban created"
-msgstr "已创建看板"
+msgstr "已创建补货卡"
+
+msgid "Kanbans created"
+msgstr "已创建补货卡"
+
+msgid "Kanbans updated"
+msgstr "已更新补货卡"
 
 msgid "Khaki"
 msgstr "卡其色"
@@ -5631,7 +5637,7 @@ msgid "Successfully deleted item group"
 msgstr "成功删除物品组"
 
 msgid "Successfully deleted kanban"
-msgstr "成功删除看板"
+msgstr "成功删除补货卡"
 
 msgid "Successfully deleted line"
 msgstr "成功删除行"
@@ -6144,7 +6150,7 @@ msgid "Updated job status"
 msgstr "已更新工作状态"
 
 msgid "Updated kanban"
-msgstr "已更新看板"
+msgstr "已更新补货卡"
 
 msgid "Updated maintenance schedule"
 msgstr "已更新维护计划"

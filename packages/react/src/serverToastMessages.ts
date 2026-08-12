@@ -1181,6 +1181,8 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Journal entry reversed": msg`Journal entry reversed`,
   "Journal entry saved": msg`Journal entry saved`,
   "Kanban created": msg`Kanban created`,
+  "Kanbans created": msg`Kanbans created`,
+  "Kanbans updated": msg`Kanbans updated`,
   "Line already picked": msg`Line already picked`,
   "Line created": msg`Line created`,
   "Line split": msg`Line split`,

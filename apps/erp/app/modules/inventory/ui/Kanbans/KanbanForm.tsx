@@ -21,7 +21,7 @@ import {
   ConversionFactor,
   Item,
   Location,
-  Number,
+  NumberControlled,
   SequenceOrCustomId,
   StorageUnit,
   Submit,
@@ -29,7 +29,21 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess
+} from "~/modules/production/variantsQuantityOverlay";
 import type { MethodItemType } from "~/modules/shared/types";
+import {
+  defaultLineQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared/variantQuantityLine";
 import {
   kanbanValidator,
   replenishmentSystemTypes
@@ -55,6 +69,40 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
   );
   const [itemType, setItemType] = useState<MethodItemType | "Item">("Item");
   const [itemId, setItemId] = useState<string>(initialValues.itemId || "");
+  const [quantity, setQuantity] = useState<number>(initialValues.quantity || 1);
+  // Seed from persisted variantQuantities so parent edits still show the grid.
+  // Do not call `Boolean(...)` here — `Boolean` is the form component import.
+  const [hasVariantAttributes, setHasVariantAttributes] = useState(
+    !!initialValues.variantQuantities
+  );
+
+  const variantsQuantityModal = useVariantsQuantityModal();
+  const [variantsQuantityRows, setVariantsQuantityRows] = useState<
+    Row[] | null
+  >(null);
+  const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(0);
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes,
+    itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
+
+  const applyVariantsQuantity = (data: unknown) => {
+    if (!isVariantsQuantityOverlaySuccess(data)) return;
+    setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
+    setVariantsQuantityTotal(data.total);
+    setQuantity(data.total);
+  };
+
+  const openVariantsQuantity = () => {
+    if (!itemId) return;
+    variantsQuantityModal.open({
+      itemId,
+      variantQuantities: toVariantsQuantityValue(variantsQuantityRows),
+      onConfirm: applyVariantsQuantity
+    });
+  };
 
   const [supplierId, setSupplierId] = useState<string>(
     initialValues.supplierId || ""
@@ -74,11 +122,13 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
     if (!carbon || !value) return;
 
     setItemId(value.value);
+    setVariantsQuantityRows(null);
+    setVariantsQuantityTotal(0);
 
-    const [item, storageUnit] = await Promise.all([
+    const [item, storageUnit, variantAttributes] = await Promise.all([
       carbon
         .from("item")
-        .select("replenishmentSystem, unitOfMeasureCode")
+        .select("replenishmentSystem, unitOfMeasureCode, type")
         .eq("id", value.value)
         .single(),
       carbon
@@ -87,12 +137,24 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
         .eq("itemId", value.value)
         .eq("companyId", company.id)
         .eq("locationId", locationId)
-        .maybeSingle()
+        .maybeSingle(),
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", value.value)
+        .eq("companyId", company.id)
+        .limit(1)
     ]);
     if (item.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+    const nextHasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+    setHasVariantAttributes(nextHasVariantAttributes);
+    if (item.data?.type) {
+      setItemType(item.data.type as MethodItemType);
+    }
+    setQuantity(defaultLineQuantity(nextHasVariantAttributes));
     setSelectedReplenishmentSystem(item.data?.replenishmentSystem || "Buy");
     if (storageUnit.data?.defaultStorageUnitId) {
       setStorageUnitId(storageUnit.data.defaultStorageUnitId);
@@ -172,177 +234,215 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
   };
 
   return (
-    <Drawer open onOpenChange={onClose}>
-      <DrawerContent>
-        <ValidatedForm
-          method="post"
-          validator={kanbanValidator}
-          defaultValues={initialValues}
-          className="flex flex-col h-full"
-        >
-          <DrawerHeader>
-            <DrawerTitle>
-              {isEditing ? t`Edit Kanban` : t`New Kanban`}
-            </DrawerTitle>
-            <DrawerDescription>
-              {isEditing
-                ? t`Update the kanban information for scan-based replenishment.`
-                : t`Create a new kanban card for scan-based replenishment.`}
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerBody>
-            {isEditing && <Hidden name="id" value={initialValues.id} />}
-            {selectedReplenishmentSystem === "Make" && (
+    <>
+      <Drawer open onOpenChange={onClose}>
+        <DrawerContent>
+          <ValidatedForm
+            method="post"
+            validator={kanbanValidator}
+            defaultValues={initialValues}
+            className="flex flex-col h-full"
+          >
+            <DrawerHeader>
+              <DrawerTitle>
+                {isEditing ? t`Edit Kanban` : t`New Kanban`}
+              </DrawerTitle>
+              <DrawerDescription>
+                {isEditing
+                  ? t`Update the kanban information for scan-based replenishment.`
+                  : t`Create a new kanban card for scan-based replenishment.`}
+              </DrawerDescription>
+            </DrawerHeader>
+            <DrawerBody>
+              {isEditing && <Hidden name="id" value={initialValues.id} />}
               <Hidden
-                name="purchaseUnitOfMeasureCode"
-                value={purchaseUnitOfMeasureCode}
+                name="variantQuantities"
+                value={
+                  variantsQuantityRows
+                    ? JSON.stringify({ variantTable: variantsQuantityRows })
+                    : ""
+                }
               />
-            )}
-            <VStack spacing={4}>
-              <div className="grid grid-cols-1 gap-4 w-full">
-                <Item
-                  name="itemId"
-                  label={t`Item`}
-                  type={itemType}
-                  locationId={locationId || undefined}
-                  onTypeChange={(t) => setItemType(t as MethodItemType)}
-                  onChange={onItemChange}
-                  isReadOnly={isEditing}
+              {selectedReplenishmentSystem === "Make" && (
+                <Hidden
+                  name="purchaseUnitOfMeasureCode"
+                  value={purchaseUnitOfMeasureCode}
                 />
+              )}
+              <VStack spacing={4}>
+                <div className="grid grid-cols-1 gap-4 w-full">
+                  <Item
+                    name="itemId"
+                    label={t`Item`}
+                    type={itemType}
+                    locationId={locationId || undefined}
+                    onTypeChange={(t) => {
+                      setItemType(t as MethodItemType);
+                      setItemId("");
+                      setHasVariantAttributes(false);
+                      setVariantsQuantityRows(null);
+                      setVariantsQuantityTotal(0);
+                      setQuantity(1);
+                    }}
+                    onChange={onItemChange}
+                    isReadOnly={isEditing}
+                  />
 
-                <Number
-                  name="quantity"
-                  label={t`Quantity`}
-                  minValue={1}
-                  helperText={t`The quantity of the item to be reordered on scan-based replenishment.`}
-                />
-
-                <SelectControlled
-                  value={selectedReplenishmentSystem}
-                  name="replenishmentSystem"
-                  label={t`Replenishment System`}
-                  onChange={(value) => {
-                    if (value) {
-                      setSelectedReplenishmentSystem(value.value);
-                    }
-                  }}
-                  options={replenishmentSystemTypes
-                    .filter((type) => type !== "Buy and Make")
-                    .map((type) => ({
-                      value: type,
-                      label: <Enumerable value={type} />
-                    }))}
-                />
-
-                {selectedReplenishmentSystem === "Buy" && (
-                  <>
-                    <Supplier
-                      name="supplierId"
-                      label={t`Supplier`}
-                      value={supplierId}
-                      onChange={onSupplierChange}
+                  {hasVariantsQuantity ? (
+                    <QuantityWithVariantsQuantity
+                      name="quantity"
+                      label={t`Quantity`}
+                      minValue={0}
+                      value={quantity}
+                      onChange={setQuantity}
+                      hasVariantsQuantity={hasVariantsQuantity}
+                      onOpenVariantsQuantity={openVariantsQuantity}
+                      variantsQuantityTotal={variantsQuantityTotal}
+                      isReadOnly={variantsQuantityTotal > 0}
+                      helperText={t`The quantity of the item to be reordered on scan-based replenishment.`}
                     />
-
-                    <UnitOfMeasure
-                      name="purchaseUnitOfMeasureCode"
-                      label={t`Purchase Unit of Measure`}
-                      value={purchaseUnitOfMeasureCode}
-                      onChange={(value) => {
-                        if (
-                          value &&
-                          typeof value === "object" &&
-                          "value" in value
-                        ) {
-                          setPurchaseUnitOfMeasureCode(value.value);
-                        } else {
-                          setPurchaseUnitOfMeasureCode("");
-                        }
-                      }}
+                  ) : (
+                    <NumberControlled
+                      name="quantity"
+                      label={t`Quantity`}
+                      minValue={1}
+                      value={quantity}
+                      onChange={setQuantity}
+                      helperText={t`The quantity of the item to be reordered on scan-based replenishment.`}
                     />
+                  )}
 
-                    <ConversionFactor
-                      name="conversionFactor"
-                      label={t`Conversion Factor`}
-                      inventoryCode={inventoryUnitOfMeasureCode}
-                      purchasingCode={purchaseUnitOfMeasureCode}
-                      value={conversionFactor}
-                      onChange={setConversionFactor}
-                      helperText={t`Number of inventory units per purchase unit`}
-                    />
-                  </>
-                )}
-
-                <Location
-                  name="locationId"
-                  label={t`Location`}
-                  onChange={onLocationChange}
-                  isReadOnly={isEditing}
-                />
-
-                <StorageUnit
-                  name="storageUnitId"
-                  label={t`Storage Unit`}
-                  locationId={locationId}
-                  value={storageUnitId ?? undefined}
-                  onChange={(value) => {
-                    if (value) setStorageUnitId(value?.id ?? null);
-                  }}
-                />
-
-                {selectedReplenishmentSystem === "Make" && (
-                  <>
-                    <Boolean
-                      name="autoRelease"
-                      label={t`Auto Release`}
-                      value={autoRelease}
-                      onChange={(value) => {
-                        setAutoRelease(value);
-                        if (!value) {
-                          setAutoStartJob(false);
-                        }
-                      }}
-                      description={t`Automatically release the job when the kanban is scanned`}
-                    />
-                    <Boolean
-                      name="autoStartJob"
-                      label={t`Auto Start Job`}
-                      value={autoStartJob}
-                      onChange={setAutoStartJob}
-                      isDisabled={!autoRelease}
-                      description={
-                        autoRelease
-                          ? t`Automatically start the job when the kanban is scanned`
-                          : t`Auto release must be enabled to start a job automatically`
+                  <SelectControlled
+                    value={selectedReplenishmentSystem}
+                    name="replenishmentSystem"
+                    label={t`Replenishment System`}
+                    onChange={(value) => {
+                      if (value) {
+                        setSelectedReplenishmentSystem(value.value);
                       }
-                    />
-                    <SequenceOrCustomId
-                      name="completedBarcodeOverride"
-                      label={t`Completion Barcode`}
-                      table="kanban"
-                      placeholder={t`Auto-generated QR Code`}
-                    />
-                  </>
-                )}
-              </div>
-            </VStack>
-          </DrawerBody>
-          <DrawerFooter>
-            <HStack>
-              <Button type="button" variant="ghost" onClick={onClose}>
-                <Trans>Cancel</Trans>
-              </Button>
-              <Submit withBlocker={false}>
-                {isEditing ? (
-                  <Trans>Update Kanban</Trans>
-                ) : (
-                  <Trans>Create Kanban</Trans>
-                )}
-              </Submit>
-            </HStack>
-          </DrawerFooter>
-        </ValidatedForm>
-      </DrawerContent>
-    </Drawer>
+                    }}
+                    options={replenishmentSystemTypes
+                      .filter((type) => type !== "Buy and Make")
+                      .map((type) => ({
+                        value: type,
+                        label: <Enumerable value={type} />
+                      }))}
+                  />
+
+                  {selectedReplenishmentSystem === "Buy" && (
+                    <>
+                      <Supplier
+                        name="supplierId"
+                        label={t`Supplier`}
+                        value={supplierId}
+                        onChange={onSupplierChange}
+                      />
+
+                      <UnitOfMeasure
+                        name="purchaseUnitOfMeasureCode"
+                        label={t`Purchase Unit of Measure`}
+                        value={purchaseUnitOfMeasureCode}
+                        onChange={(value) => {
+                          if (
+                            value &&
+                            typeof value === "object" &&
+                            "value" in value
+                          ) {
+                            setPurchaseUnitOfMeasureCode(value.value);
+                          } else {
+                            setPurchaseUnitOfMeasureCode("");
+                          }
+                        }}
+                      />
+
+                      <ConversionFactor
+                        name="conversionFactor"
+                        label={t`Conversion Factor`}
+                        inventoryCode={inventoryUnitOfMeasureCode}
+                        purchasingCode={purchaseUnitOfMeasureCode}
+                        value={conversionFactor}
+                        onChange={setConversionFactor}
+                        helperText={t`Number of inventory units per purchase unit`}
+                      />
+                    </>
+                  )}
+
+                  <Location
+                    name="locationId"
+                    label={t`Location`}
+                    onChange={onLocationChange}
+                    isReadOnly={isEditing}
+                  />
+
+                  <StorageUnit
+                    name="storageUnitId"
+                    label={t`Storage Unit`}
+                    locationId={locationId}
+                    value={storageUnitId ?? undefined}
+                    onChange={(value) => {
+                      if (value) setStorageUnitId(value?.id ?? null);
+                    }}
+                  />
+
+                  {selectedReplenishmentSystem === "Make" && (
+                    <>
+                      <Boolean
+                        name="autoRelease"
+                        label={t`Auto Release`}
+                        value={autoRelease}
+                        onChange={(value) => {
+                          setAutoRelease(value);
+                          if (!value) {
+                            setAutoStartJob(false);
+                          }
+                        }}
+                        description={t`Automatically release the job when the kanban is scanned`}
+                      />
+                      <Boolean
+                        name="autoStartJob"
+                        label={t`Auto Start Job`}
+                        value={autoStartJob}
+                        onChange={setAutoStartJob}
+                        isDisabled={!autoRelease}
+                        description={
+                          autoRelease
+                            ? t`Automatically start the job when the kanban is scanned`
+                            : t`Auto release must be enabled to start a job automatically`
+                        }
+                      />
+                      <SequenceOrCustomId
+                        name="completedBarcodeOverride"
+                        label={t`Completion Barcode`}
+                        table="kanban"
+                        placeholder={t`Auto-generated QR Code`}
+                      />
+                    </>
+                  )}
+                </div>
+              </VStack>
+            </DrawerBody>
+            <DrawerFooter>
+              <HStack>
+                <Button type="button" variant="ghost" onClick={onClose}>
+                  <Trans>Cancel</Trans>
+                </Button>
+                <Submit
+                  withBlocker={false}
+                  isDisabled={hasVariantsQuantity && !(quantity > 0)}
+                >
+                  {isEditing ? (
+                    <Trans>Update Kanban</Trans>
+                  ) : (
+                    <Trans>Create Kanban</Trans>
+                  )}
+                </Submit>
+              </HStack>
+            </DrawerFooter>
+          </ValidatedForm>
+        </DrawerContent>
+      </Drawer>
+      {variantsQuantityModal.node}
+    </>
   );
 };
 

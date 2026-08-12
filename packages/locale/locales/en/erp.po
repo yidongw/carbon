@@ -8999,6 +8999,12 @@ msgstr "Kanban Output"
 msgid "Kanbans"
 msgstr "Kanbans"
 
+msgid "Kanbans created"
+msgstr "Kanbans created"
+
+msgid "Kanbans updated"
+msgstr "Kanbans updated"
+
 msgid "Keep Current"
 msgstr "Keep Current"
 

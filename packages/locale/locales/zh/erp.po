@@ -1133,7 +1133,7 @@ msgid "Are you sure you want to delete this issue?"
 msgstr "您确定要删除此问题吗？"
 
 msgid "Are you sure you want to delete this kanban card? This cannot be undone."
-msgstr "您确定要删除此看板卡片吗？此操作无法撤销。"
+msgstr "您确定要删除此补货卡吗？此操作无法撤销。"
 
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "您确定要删除此维护调度吗？此操作无法撤销。"
@@ -1442,10 +1442,10 @@ msgid "Automatic Updates"
 msgstr "自动更新"
 
 msgid "Automatically release the job when the kanban is scanned"
-msgstr "当看板被扫描时，自动释放工作"
+msgstr "当补货卡被扫描时，自动释放工作"
 
 msgid "Automatically start the job when the kanban is scanned"
-msgstr "当看板被扫描时自动开始工作"
+msgstr "当补货卡被扫描时自动开始工作"
 
 msgid "available"
 msgstr "可用的"
@@ -2577,7 +2577,7 @@ msgid "Create a company"
 msgstr "创建公司"
 
 msgid "Create a new kanban card for scan-based replenishment."
-msgstr "创建基于扫描的补货看板卡片"
+msgstr "创建用于扫描补货的补货卡。"
 
 msgid "Create a new maintenance dispatch to track equipment repairs and maintenance activities"
 msgstr "创建新的维修调度以追踪设备维修和维护活动"
@@ -2613,7 +2613,7 @@ msgid "Create Jobs"
 msgstr "创建工作"
 
 msgid "Create Kanban"
-msgstr "创建看板"
+msgstr "创建补货卡"
 
 msgid "Create Link"
 msgstr "创建链接"
@@ -3902,7 +3902,7 @@ msgid "Edit Job"
 msgstr "编辑工作"
 
 msgid "Edit Kanban"
-msgstr "编辑看板"
+msgstr "编辑补货卡"
 
 msgid "Edit Line"
 msgstr "编辑行"
@@ -5191,7 +5191,7 @@ msgid "Failed to delete journal entry"
 msgstr "删除日记条目失败"
 
 msgid "Failed to delete kanban"
-msgstr "删除看板失败"
+msgstr "删除补货卡失败"
 
 msgid "Failed to delete line"
 msgstr "删除行失败"
@@ -5488,7 +5488,7 @@ msgid "Failed to fetch jobs"
 msgstr "获取任务失败"
 
 msgid "Failed to fetch kanbans"
-msgstr "获取看板失败"
+msgstr "获取补货卡失败"
 
 msgid "Failed to fetch materials"
 msgstr "取料失败"
@@ -5626,7 +5626,7 @@ msgid "Failed to get a failure mode id"
 msgstr "获取故障模式ID失败"
 
 msgid "Failed to get a kanban id"
-msgstr "获取看板ID失败"
+msgstr "获取补货卡ID失败"
 
 msgid "Failed to get a material type id"
 msgstr "获取材料类型ID失败"
@@ -5875,7 +5875,7 @@ msgid "Failed to get job information"
 msgstr "获取作业信息失败"
 
 msgid "Failed to get kanban"
-msgstr "获取看板失败"
+msgstr "获取补货卡失败"
 
 msgid "Failed to get location"
 msgstr "获取位置失败"
@@ -6169,7 +6169,7 @@ msgid "Failed to insert job operation tool"
 msgstr "插入工序工具失败"
 
 msgid "Failed to insert kanban"
-msgstr "插入看板失败"
+msgstr "插入补货卡失败"
 
 msgid "Failed to insert line"
 msgstr "插入失败"
@@ -7411,7 +7411,7 @@ msgid "Failed to update job variant quantities"
 msgstr "更新工作规格数量失败"
 
 msgid "Failed to update kanban"
-msgstr "更新看板失败"
+msgstr "更新补货卡失败"
 
 msgid "Failed to update line"
 msgstr "更新行失败"
@@ -8986,19 +8986,25 @@ msgid "Journal entry saved"
 msgstr "日记条目已保存"
 
 msgid "Kanban"
-msgstr "看板"
+msgstr "补货卡"
 
 msgid "Kanban created"
-msgstr "已创建看板"
+msgstr "已创建补货卡"
 
 msgid "Kanban for {kanbanName}"
-msgstr "{kanbanName}看板"
+msgstr "{kanbanName}补货卡"
 
 msgid "Kanban Output"
-msgstr "看板输出"
+msgstr "补货卡输出"
 
 msgid "Kanbans"
-msgstr "看板"
+msgstr "补货卡"
+
+msgid "Kanbans created"
+msgstr "已创建补货卡"
+
+msgid "Kanbans updated"
+msgstr "已更新补货卡"
 
 msgid "Keep Current"
 msgstr "保持当前"
@@ -9025,14 +9031,14 @@ msgid "Label size"
 msgstr "标签大小"
 
 msgid "Label to complete the current operation for this kanban"
-msgstr "完成当前看板的操作"
+msgstr "完成当前补货卡的操作"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "Label to create a {0} for this kanban"
-msgstr "为这个看板创建一个{0}"
+msgstr "为这个补货卡创建一个{0}"
 
 msgid "Label to start the next operation for this kanban"
-msgstr "启动此看板的下一个操作标签"
+msgstr "启动此补货卡的下一个操作标签"
 
 msgid "Labels"
 msgstr "标签"
@@ -10073,7 +10079,7 @@ msgid "New Job"
 msgstr "新工作"
 
 msgid "New Kanban"
-msgstr "新的看板"
+msgstr "新的补货卡"
 
 msgid "New Line"
 msgstr "新行"
@@ -11888,10 +11894,10 @@ msgstr "在记录发生变化的那一刻将其推送到外部系统。"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
-msgstr "用于为此看板创建{0}的二维码"
+msgstr "用于为此补货卡创建{0}的二维码"
 
 msgid "QR Code to start the next operation for this kanban"
-msgstr "用于启动此看板下一流程的二维码"
+msgstr "用于启动此补货卡下一流程的二维码"
 
 msgid "Qty"
 msgstr "数量"
@@ -13985,7 +13991,7 @@ msgid "Style ID"
 msgstr "款式编号"
 
 msgid "Style of kanban output to show in the Kanban table"
-msgstr "看板输出款式在看板表格中显示"
+msgstr "补货卡输出款式在补货卡表格中显示"
 
 msgid "Style quantity configuration is required"
 msgstr "款式数量配置是必填项"
@@ -14174,7 +14180,7 @@ msgid "Successfully deleted item group"
 msgstr "成功删除物品组"
 
 msgid "Successfully deleted kanban"
-msgstr "成功删除看板"
+msgstr "成功删除补货卡"
 
 msgid "Successfully deleted line"
 msgstr "成功删除行"
@@ -15334,7 +15340,7 @@ msgid "Update Jira issue"
 msgstr "更新Jira问题"
 
 msgid "Update Kanban"
-msgstr "更新看板"
+msgstr "更新补货卡"
 
 msgid "Update Linear issue"
 msgstr "更新 Linear 问题"
@@ -15361,7 +15367,7 @@ msgid "Update source document quantities"
 msgstr "更新源文件数量"
 
 msgid "Update the kanban information for scan-based replenishment."
-msgstr "根据扫描更新看板信息。"
+msgstr "根据扫描更新补货卡信息。"
 
 msgid "Update the purchase order quantities"
 msgstr "更新采购订单数量"
@@ -15493,7 +15499,7 @@ msgid "Updated job status"
 msgstr "已更新工作状态"
 
 msgid "Updated kanban"
-msgstr "已更新看板"
+msgstr "已更新补货卡"
 
 msgid "Updated maintenance schedule"
 msgstr "已更新维护计划"
