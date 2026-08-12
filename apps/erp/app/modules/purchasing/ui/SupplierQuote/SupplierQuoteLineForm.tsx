@@ -54,8 +54,13 @@ import {
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import {
   getOverlaySuccessVariantTable,
-  isVariantsQuantityOverlaySuccess
+  isVariantsQuantityOverlaySuccess,
+  parseInitialVariantsQuantity
 } from "~/modules/production/variantsQuantityOverlay";
+import {
+  isMissingVariantQuantity,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/supplier-quote+/$id.$lineId.details";
 import { path } from "~/utils/path";
@@ -73,38 +78,6 @@ type SupplierQuoteLineFormProps = {
   type?: "card" | "modal";
   onClose?: () => void;
 };
-
-function parseInitialVariantTable(raw: unknown): {
-  rows: Row[] | null;
-  total: number;
-} {
-  if (!raw) return { rows: null, total: 0 };
-  try {
-    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
-    if (
-      typeof parsed !== "object" ||
-      parsed === null ||
-      !("variantTable" in parsed)
-    ) {
-      return { rows: null, total: 0 };
-    }
-    const config = parsed as {
-      variantTable?: Row[];
-    };
-    const rows = Array.isArray(config.variantTable)
-      ? config.variantTable
-      : null;
-    let total = 0;
-    if (rows) {
-      for (const row of rows) {
-        total += Number(row.Quantities) || 0;
-      }
-    }
-    return { rows, total };
-  } catch {
-    return { rows: null, total: 0 };
-  }
-}
 
 const SupplierQuoteLineForm = ({
   initialValues,
@@ -161,30 +134,33 @@ const SupplierQuoteLineForm = ({
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     purchaseUom: initialValues.purchaseUnitOfMeasureCode ?? "",
     conversionFactor: initialValues.conversionFactor ?? 1,
-    hasVariantAttributes: false
+    hasVariantAttributes: Boolean(initialValues.variantQuantities)
   });
 
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialVariantTable(
+  const initialConfig = parseInitialVariantsQuantity(
     initialValues.variantQuantities
   );
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
-  >(initialConfig.rows);
+  >(initialConfig.rows as Row[] | null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
     initialConfig.total
   );
 
-  // Items with variant attributes use the config-quantity grid when adding a
-  // parent line — Styles always, Consumables with a color set. Expanded variant
-  // SKU lines (no stored configuration) use plain ArrayNumeric price breaks.
-  const hasVariantsQuantity =
-    (itemType === "Style" || itemData.hasVariantAttributes) &&
-    Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.variantQuantities);
+  // Parent lines with variant attributes use the grid; expanded child SKU lines
+  // (no stored variantQuantities) fall back to plain ArrayNumeric price breaks.
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
 
-  const isMissingStyleQuantity =
-    hasVariantsQuantity && !(variantsQuantityTotal > 0);
+  const isMissingVariantQty = isMissingVariantQuantity(
+    hasVariantsQuantity,
+    variantsQuantityTotal
+  );
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -258,9 +234,7 @@ const SupplierQuoteLineForm = ({
       return;
     }
 
-    const isStyle = item.data?.type === "Style";
-    const hasVariantAttributes =
-      isStyle || (variantAttributes?.data?.length ?? 0) > 0;
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
 
     const newItemData = {
       ...itemData,
@@ -567,7 +541,7 @@ const SupplierQuoteLineForm = ({
                   <Submit
                     isDisabled={
                       isLocked ||
-                      isMissingStyleQuantity ||
+                      isMissingVariantQty ||
                       (isEditing
                         ? !permissions.can("update", "purchasing")
                         : !permissions.can("create", "purchasing"))

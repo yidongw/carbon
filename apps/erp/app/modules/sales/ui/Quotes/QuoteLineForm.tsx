@@ -63,9 +63,14 @@ import {
 import type { Row } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import {
   getOverlaySuccessVariantTable,
-  isVariantsQuantityOverlaySuccess
+  isVariantsQuantityOverlaySuccess,
+  parseInitialVariantsQuantity
 } from "~/modules/production/variantsQuantityOverlay";
-import { methodType } from "~/modules/shared";
+import {
+  isMissingVariantQuantity,
+  methodType,
+  shouldShowVariantQuantityGrid
+} from "~/modules/shared";
 import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/quote+/$quoteId.new";
 import { useItems } from "~/stores";
@@ -85,38 +90,6 @@ type QuoteLineFormProps = {
   type?: "card" | "modal";
   onClose?: () => void;
 };
-
-function parseInitialVariantTable(raw: unknown): {
-  rows: Row[] | null;
-  total: number;
-} {
-  if (!raw) return { rows: null, total: 0 };
-  try {
-    const parsed = typeof raw === "string" ? (JSON.parse(raw) as unknown) : raw;
-    if (
-      typeof parsed !== "object" ||
-      parsed === null ||
-      !("variantTable" in parsed)
-    ) {
-      return { rows: null, total: 0 };
-    }
-    const config = parsed as {
-      variantTable?: Row[];
-    };
-    const rows = Array.isArray(config.variantTable)
-      ? config.variantTable
-      : null;
-    let total = 0;
-    if (rows) {
-      for (const row of rows) {
-        total += Number(row.Quantities) || 0;
-      }
-    }
-    return { rows, total };
-  } catch {
-    return { rows: null, total: 0 };
-  }
-}
 
 const QuoteLineForm = ({
   initialValues,
@@ -163,33 +136,34 @@ const QuoteLineForm = ({
     methodType: initialValues.methodType ?? "",
     uom: initialValues.unitOfMeasureCode ?? "",
     modelUploadId: initialValues.modelUploadId ?? null,
-    // Editing a Style parent with a stored grid — treat as configurable until
-    // item change re-fetches attribute selections.
-    hasVariantAttributes:
-      Boolean(initialValues.variantQuantities) ||
-      initialValues.itemType === "Style"
+    // Editing a parent with a stored grid stays configurable until item change
+    // re-fetches the underlying attribute selections.
+    hasVariantAttributes: Boolean(initialValues.variantQuantities)
   });
 
   const variantsQuantityModal = useVariantsQuantityModal();
-  const initialConfig = parseInitialVariantTable(
+  const initialConfig = parseInitialVariantsQuantity(
     initialValues.variantQuantities
   );
   const [variantsQuantityRows, setVariantsQuantityRows] = useState<
     Row[] | null
-  >(initialConfig.rows);
+  >(initialConfig.rows as Row[] | null);
   const [variantsQuantityTotal, setVariantsQuantityTotal] = useState(
     initialConfig.total
   );
 
-  // Style / attribute Consumable parents use the qty grid. Parent lines with a
-  // stored configuration.variantTable keep the grid on edit; plain lines don't.
-  const hasVariantsQuantity =
-    (itemType === "Style" || itemData.hasVariantAttributes) &&
-    Boolean(itemData.itemId) &&
-    !(isEditing && !initialValues.variantQuantities);
+  // Parent lines with a stored variant table keep the grid on edit; plain lines don't.
+  const hasVariantsQuantity = shouldShowVariantQuantityGrid({
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing,
+    variantQuantities: initialValues.variantQuantities
+  });
 
-  const isMissingStyleQuantity =
-    hasVariantsQuantity && !(variantsQuantityTotal > 0);
+  const isMissingVariantQty = isMissingVariantQuantity(
+    hasVariantsQuantity,
+    variantsQuantityTotal
+  );
 
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
@@ -305,9 +279,7 @@ const QuoteLineForm = ({
       return;
     }
 
-    const isStyle = item.data?.type === "Style";
-    const hasVariantAttributes =
-      isStyle || (variantAttributes?.data?.length ?? 0) > 0;
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
 
     const newItemData = {
       ...itemData,
@@ -484,9 +456,7 @@ const QuoteLineForm = ({
                   value={itemData?.modelUploadId ?? undefined}
                 />
                 {/* Outside the grid: Hidden wraps FormControl and would occupy a cell. */}
-                {(hasVariantsQuantity ||
-                  itemType === "Style" ||
-                  itemData.hasVariantAttributes) && (
+                {itemData.hasVariantAttributes && (
                   <Hidden
                     name="variantQuantities"
                     value={
@@ -694,7 +664,7 @@ const QuoteLineForm = ({
                 <Submit
                   isLoading={fetcher.state !== "idle"}
                   isDisabled={
-                    isMissingStyleQuantity ||
+                    isMissingVariantQty ||
                     (requiresConfiguration &&
                       !isConfigured &&
                       !hasVariantsQuantity) ||
