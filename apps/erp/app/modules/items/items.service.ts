@@ -502,14 +502,13 @@ export async function getConsumable(
     .single();
 }
 
-// Explicit consumables-view projection: every column EXCEPT the heavy per-row
-// aggregates the list never displays — `supplierIds` (string_agg; only fed the
-// old search filter, and the supplier `.contains` filter works without
-// selecting it), `revisions` (json_agg; the Consumables table has no revision
-// switcher, unlike Parts/Tools/Materials), and `externalId` (correlated
-// jsonb_object_agg). `attributes` stays — it drives the attribute columns.
+// Explicit consumables-view projection. The heavy per-row aggregates the list
+// never selects are pruned: `supplierIds` (string_agg; the supplier `.contains`
+// filter still works without selecting it), `externalId` (jsonb_object_agg),
+// and `revisions` (json_agg; no revision switcher on Consumables). `attributes`
+// is fetched per-page via itemAttributes and merged in (see attachItemAttributes).
 const CONSUMABLE_LIST_COLUMNS =
-  "active, assignee, defaultMethodType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, modelUploadId, modelPath, modelName, modelSize, attributeSetId, attributes, unitOfMeasure, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt";
+  "active, assignee, defaultMethodType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, modelUploadId, modelPath, modelName, modelSize, attributeSetId, unitOfMeasure, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt";
 
 export async function getConsumables(
   client: SupabaseClient<Database>,
@@ -532,10 +531,19 @@ export async function getConsumables(
     query = query.contains("supplierIds", [args.supplierId]);
   }
 
-  query = setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
-  return query;
+
+  if (result.error || !result.data) return result;
+  return {
+    ...result,
+    data: await attachItemAttributes(
+      client as SupabaseClient<any>,
+      companyId,
+      result.data
+    )
+  };
 }
 
 export async function getConsumablesList(
@@ -1235,6 +1243,12 @@ export async function getMaterial(
     .single();
 }
 
+// materials-view projection: heavy per-row aggregates pruned (`supplierIds` kept
+// in the view for the supplier filter, `externalId`), and `revisions` fetched
+// per-page via itemRevisions (Materials shows a revision switcher).
+const MATERIAL_LIST_COLUMNS =
+  "active, assignee, defaultMethodType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, modelUploadId, modelPath, modelName, modelSize, unitOfMeasure, materialForm, materialSubstance, dimensions, finish, grade, materialType, materialSubstanceId, materialFormId, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt, gradeId, dimensionId, finishId, materialTypeId";
+
 export async function getMaterials(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -1245,7 +1259,7 @@ export async function getMaterials(
 ) {
   let query = client
     .from("materials")
-    .select("*", {
+    .select(MATERIAL_LIST_COLUMNS, {
       count: "estimated"
     })
     .or(`companyId.eq.${companyId},companyId.is.null`);
@@ -1256,10 +1270,20 @@ export async function getMaterials(
     query = query.contains("supplierIds", [args.supplierId]);
   }
 
-  query = setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
-  return query;
+
+  if (result.error || !result.data) return result;
+  return {
+    ...result,
+    data: await attachItemRevisions(
+      client as SupabaseClient<any>,
+      companyId,
+      "Material",
+      result.data
+    )
+  };
 }
 
 export async function getMaterialsList(
@@ -1767,6 +1791,12 @@ export async function getStyle(
     .single();
 }
 
+// parts-view projection: heavy per-row aggregates pruned (`supplierIds` kept in
+// the view for the supplier filter, `externalId`), and `revisions` fetched
+// per-page via itemRevisions (Parts shows a revision switcher).
+const PART_LIST_COLUMNS =
+  "active, assignee, defaultMethodType, sourcingType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, modelPath, modelName, modelSize, unitOfMeasure, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt, templateId, templateName";
+
 export async function getParts(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -1777,7 +1807,7 @@ export async function getParts(
 ) {
   let query = client
     .from("parts")
-    .select("*", {
+    .select(PART_LIST_COLUMNS, {
       count: "estimated"
     })
     .eq("companyId", companyId);
@@ -1788,10 +1818,20 @@ export async function getParts(
     query = query.contains("supplierIds", [args.supplierId]);
   }
 
-  query = setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
-  return query;
+
+  if (result.error || !result.data) return result;
+  return {
+    ...result,
+    data: await attachItemRevisions(
+      client as SupabaseClient<any>,
+      companyId,
+      "Part",
+      result.data
+    )
+  };
 }
 
 // Styles-view projection for the list. The `styles`/`styleSamples` views no
@@ -1833,6 +1873,37 @@ async function attachItemAttributes<T extends { id: string }>(
   return rows.map((row) => ({
     ...row,
     attributes: byItemId.get(row.id) ?? []
+  }));
+}
+
+// Fetch the `revisions` list for just this page's rows (via the itemRevisions
+// view — keyed by readableId+type, no per-tenant CTE) and merge onto each row.
+// Used by Parts/Tools/Materials, which render a revision switcher. No-op for an
+// empty page.
+async function attachItemRevisions<T extends { readableId: string | null }>(
+  client: SupabaseClient<any>,
+  companyId: string,
+  type: string,
+  rows: T[]
+): Promise<(T & { revisions: unknown })[]> {
+  if (rows.length === 0) return rows as (T & { revisions: unknown })[];
+  const { data } = await client
+    .from("itemRevisions")
+    .select("readableId, revisions")
+    .eq("companyId", companyId)
+    .eq("type", type)
+    .in(
+      "readableId",
+      rows.map((row) => row.readableId)
+    );
+  const byReadableId = new Map<string, unknown>(
+    ((data ?? []) as { readableId: string; revisions: unknown }[]).map(
+      (row) => [row.readableId, row.revisions]
+    )
+  );
+  return rows.map((row) => ({
+    ...row,
+    revisions: (row.readableId && byReadableId.get(row.readableId)) || []
   }));
 }
 
@@ -2427,6 +2498,12 @@ export async function getTool(
     .single();
 }
 
+// tools-view projection: heavy per-row aggregates pruned (`supplierIds` kept in
+// the view for the supplier filter, `externalId`), and `revisions` fetched
+// per-page via itemRevisions (Tools shows a revision switcher).
+const TOOL_LIST_COLUMNS =
+  "active, assignee, defaultMethodType, sourcingType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, modelPath, modelName, modelSize, unitOfMeasure, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt";
+
 export async function getTools(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -2437,7 +2514,7 @@ export async function getTools(
 ) {
   let query = client
     .from("tools")
-    .select("*", {
+    .select(TOOL_LIST_COLUMNS, {
       count: "estimated"
     })
     .eq("companyId", companyId);
@@ -2448,10 +2525,20 @@ export async function getTools(
     query = query.contains("supplierIds", [args.supplierId]);
   }
 
-  query = setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
-  return query;
+
+  if (result.error || !result.data) return result;
+  return {
+    ...result,
+    data: await attachItemRevisions(
+      client as SupabaseClient<any>,
+      companyId,
+      "Tool",
+      result.data
+    )
+  };
 }
 
 export async function getToolsList(
