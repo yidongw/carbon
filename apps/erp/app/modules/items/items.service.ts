@@ -502,6 +502,15 @@ export async function getConsumable(
     .single();
 }
 
+// Explicit consumables-view projection: every column EXCEPT the heavy per-row
+// aggregates the list never displays — `supplierIds` (string_agg; only fed the
+// old search filter, and the supplier `.contains` filter works without
+// selecting it), `revisions` (json_agg; the Consumables table has no revision
+// switcher, unlike Parts/Tools/Materials), and `externalId` (correlated
+// jsonb_object_agg). `attributes` stays — it drives the attribute columns.
+const CONSUMABLE_LIST_COLUMNS =
+  "active, assignee, defaultMethodType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, modelUploadId, modelPath, modelName, modelSize, attributeSetId, attributes, unitOfMeasure, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt";
+
 export async function getConsumables(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -512,7 +521,7 @@ export async function getConsumables(
 ) {
   let query = client
     .from("consumables")
-    .select("*", {
+    .select(CONSUMABLE_LIST_COLUMNS, {
       count: "estimated"
     })
     .eq("companyId", companyId);
