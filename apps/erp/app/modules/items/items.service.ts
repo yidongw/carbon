@@ -16,7 +16,7 @@ import {
   SYSTEM_ATTRIBUTE
 } from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
-import { setGenericQueryFilters } from "~/utils/query";
+import { setGenericQueryFilters, setSearchFilter } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import type {
   operationParameterValidator,
@@ -513,15 +513,11 @@ export async function getConsumables(
   let query = client
     .from("consumables")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .eq("companyId", companyId);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,supplierIds.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
@@ -1241,15 +1237,11 @@ export async function getMaterials(
   let query = client
     .from("materials")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .or(`companyId.eq.${companyId},companyId.is.null`);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,supplierIds.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
@@ -1777,15 +1769,11 @@ export async function getParts(
   let query = client
     .from("parts")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .eq("companyId", companyId);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,supplierIds.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
@@ -1808,15 +1796,11 @@ export async function getStyles(
   let query = styleClient
     .from("styles")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .eq("companyId", companyId);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,attributeCodes.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   return setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
@@ -1835,15 +1819,11 @@ export async function getStyleSamples(
   let query = sampleClient
     .from("styleSamples")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .eq("companyId", companyId);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,attributeCodes.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
@@ -2305,15 +2285,11 @@ export async function getServices(
   let query = client
     .from("service")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .eq("companyId", companyId);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   if (args.type) {
     query = query.eq(
@@ -2401,15 +2377,11 @@ export async function getTools(
   let query = client
     .from("tools")
     .select("*", {
-      count: "exact"
+      count: "estimated"
     })
     .eq("companyId", companyId);
 
-  if (args.search) {
-    query = query.or(
-      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,supplierIds.ilike.%${args.search}%`
-    );
-  }
+  query = setSearchFilter(query, args.search);
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
