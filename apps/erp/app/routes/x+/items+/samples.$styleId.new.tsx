@@ -53,7 +53,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const [style, defaults] = await Promise.all([
     styleClient
       .from("styles")
-      .select("id, attributes, readableIdWithRevision")
+      // `attributes` is no longer on the styles view; the fallback below
+      // reconstructs it from the item's attribute selections.
+      .select("id, readableIdWithRevision")
       // route param is the style readableId (= style.id), not the item id
       .eq("readableId", styleId)
       .eq("companyId", companyId)
@@ -61,12 +63,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getUserDefaults(client, userId, companyId)
   ]);
 
-  let attributes: StyleAttrRow[] = Array.isArray(style.data?.attributes)
-    ? (style.data.attributes as StyleAttrRow[])
-    : [];
-
-  // Fallback before migration: load selections for the style item.
-  if (attributes.length === 0 && style.data?.id) {
+  // The styles view no longer carries `attributes`; reconstruct it from the
+  // item's attribute selections.
+  let attributes: StyleAttrRow[] = [];
+  if (style.data?.id) {
     const state = await getItemAttributeSelectionsForItem(client, {
       itemId: style.data.id,
       companyId

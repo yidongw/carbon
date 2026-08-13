@@ -58825,7 +58825,6 @@ export type Database = {
         Row: {
           active: boolean | null
           assignee: string | null
-          attributes: Json | null
           attributeSetId: string | null
           companyId: string | null
           createdAt: string | null
@@ -58851,7 +58850,6 @@ export type Database = {
             | Database["public"]["Enums"]["itemReplenishmentSystem"]
             | null
           revision: string | null
-          revisions: Json | null
           supplierIds: string | null
           tags: string[] | null
           thumbnailPath: string | null
@@ -63891,7 +63889,6 @@ export type Database = {
             | Database["public"]["Enums"]["itemReplenishmentSystem"]
             | null
           revision: string | null
-          revisions: Json | null
           supplierIds: string | null
           tags: string[] | null
           thumbnailPath: string | null
@@ -64939,7 +64936,6 @@ export type Database = {
             | Database["public"]["Enums"]["itemReplenishmentSystem"]
             | null
           revision: string | null
-          revisions: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null
           supplierIds: string | null
           tags: string[] | null
@@ -72400,8 +72396,6 @@ export type Database = {
         Row: {
           active: boolean | null
           assignee: string | null
-          attributeCodes: string | null
-          attributes: Json | null
           attributeSetId: string | null
           companyId: string | null
           createdAt: string | null
@@ -72422,7 +72416,6 @@ export type Database = {
             | Database["public"]["Enums"]["itemReplenishmentSystem"]
             | null
           revision: string | null
-          revisions: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null
           tags: string[] | null
           thumbnailPath: string | null
@@ -72591,8 +72584,6 @@ export type Database = {
         Row: {
           active: boolean | null
           assignee: string | null
-          attributeCodes: string | null
-          attributes: Json | null
           attributeSetId: string | null
           companyId: string | null
           createdAt: string | null
@@ -72613,7 +72604,6 @@ export type Database = {
             | Database["public"]["Enums"]["itemReplenishmentSystem"]
             | null
           revision: string | null
-          revisions: Json | null
           sampleCount: number | null
           sampledVariantCount: number | null
           sampleItemId: string | null
@@ -74051,7 +74041,6 @@ export type Database = {
             | Database["public"]["Enums"]["itemReplenishmentSystem"]
             | null
           revision: string | null
-          revisions: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null
           supplierIds: string | null
           tags: string[] | null
