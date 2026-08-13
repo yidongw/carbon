@@ -16,7 +16,11 @@ import {
   SYSTEM_ATTRIBUTE
 } from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
-import { setGenericQueryFilters, setSearchFilter } from "~/utils/query";
+import {
+  ITEM_SEARCH_COLUMNS_WITH_SUPPLIER,
+  setGenericQueryFilters,
+  setSearchFilter
+} from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import type {
   operationParameterValidator,
@@ -525,7 +529,11 @@ export async function getConsumables(
     })
     .eq("companyId", companyId);
 
-  query = setSearchFilter(query, args.search);
+  query = setSearchFilter(
+    query,
+    args.search,
+    ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
+  );
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
@@ -1264,7 +1272,11 @@ export async function getMaterials(
     })
     .or(`companyId.eq.${companyId},companyId.is.null`);
 
-  query = setSearchFilter(query, args.search);
+  query = setSearchFilter(
+    query,
+    args.search,
+    ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
+  );
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
@@ -1812,7 +1824,11 @@ export async function getParts(
     })
     .eq("companyId", companyId);
 
-  query = setSearchFilter(query, args.search);
+  query = setSearchFilter(
+    query,
+    args.search,
+    ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
+  );
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
@@ -1922,7 +1938,11 @@ export async function getStyles(
     })
     .eq("companyId", companyId);
 
-  query = setSearchFilter(query, args.search);
+  query = setSearchFilter(
+    query,
+    args.search,
+    ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
+  );
 
   const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
@@ -1951,7 +1971,11 @@ export async function getStyleSamples(
     })
     .eq("companyId", companyId);
 
-  query = setSearchFilter(query, args.search);
+  query = setSearchFilter(
+    query,
+    args.search,
+    ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
+  );
 
   const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
@@ -2519,7 +2543,11 @@ export async function getTools(
     })
     .eq("companyId", companyId);
 
-  query = setSearchFilter(query, args.search);
+  query = setSearchFilter(
+    query,
+    args.search,
+    ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
+  );
 
   if (args.supplierId) {
     query = query.contains("supplierIds", [args.supplierId]);
