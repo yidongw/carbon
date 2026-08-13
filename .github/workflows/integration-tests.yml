@@ -12,12 +12,20 @@ on:
     paths:
       - "packages/database/**"
       - "apps/erp/app/**"
+      # Skip pure UI changes — .tsx can't affect the service functions under test.
+      # (Route loaders/actions are also .tsx; today's tests target *.service.ts,
+      # so excluding them is fine. Revisit if we add loader/action-level tests.)
+      - "!apps/erp/app/**/*.tsx"
       - ".github/workflows/integration-tests.yml"
   push:
     branches: [dev]
     paths:
       - "packages/database/**"
       - "apps/erp/app/**"
+      # Skip pure UI changes — .tsx can't affect the service functions under test.
+      # (Route loaders/actions are also .tsx; today's tests target *.service.ts,
+      # so excluding them is fine. Revisit if we add loader/action-level tests.)
+      - "!apps/erp/app/**/*.tsx"
       - ".github/workflows/integration-tests.yml"
 
 concurrency:
