@@ -92,10 +92,15 @@ SELECT
   li."itemTrackingType", li.name, li."replenishmentSystem", li."unitOfMeasureCode", li.notes,
   li.revision, li."readableId", li."readableIdWithRevision", li.id, li."companyId",
   li."thumbnailPath", li."attributeSetId",
+  ps."supplierIds",
   s."customFields", s.tags, ic."itemPostingGroupId",
   li."createdBy", li."createdAt", li."updatedBy", li."updatedAt"
 FROM style s
   JOIN latest_items li ON li."readableId" = s.id AND li."companyId" = s."companyId"
+  LEFT JOIN ( SELECT ps_1."itemId", ps_1."companyId",
+       string_agg(ps_1."supplierPartId", ','::text) AS "supplierIds"
+     FROM "supplierPart" ps_1
+     GROUP BY ps_1."itemId", ps_1."companyId") ps ON ps."itemId" = li.id AND ps."companyId" = li."companyId"
   LEFT JOIN "itemCost" ic ON ic."itemId" = li.id;
 
 CREATE VIEW "styleSamples" WITH (SECURITY_INVOKER=true) AS
@@ -103,6 +108,7 @@ SELECT
   s.active, s.assignee, s."defaultMethodType", s."sourcingType", s.description, s."itemTrackingType",
   s.name, s."replenishmentSystem", s."unitOfMeasureCode", s.notes, s.revision, s."readableId",
   s."readableIdWithRevision", s.id, s."companyId", s."thumbnailPath", s."attributeSetId",
+  s."supplierIds",
   s."customFields", s.tags, s."itemPostingGroupId", s."createdBy", s."createdAt", s."updatedBy", s."updatedAt",
   ss."itemId" AS "sampleItemId",
   COALESCE(te."sampleCount", 0::bigint) AS "sampleCount",

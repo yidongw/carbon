@@ -123,6 +123,18 @@ export const DEFAULT_ITEM_SEARCH_COLUMNS = [
 ] as const;
 
 /**
+ * Search columns for item lists whose view exposes `supplierIds` (a string_agg
+ * of the item's supplier part numbers) — parts, materials, tools, consumables,
+ * styles, styleSamples. Lets users find an item by typing a supplier's part
+ * number. `supplierIds` is filtered only when a search term is present, so its
+ * (un-indexable) aggregate cost stays bounded to the matched rows.
+ */
+export const ITEM_SEARCH_COLUMNS_WITH_SUPPLIER = [
+  ...DEFAULT_ITEM_SEARCH_COLUMNS,
+  "supplierIds"
+] as const;
+
+/**
  * Applies a case-insensitive substring (`ilike %term%`) OR-search across the
  * given columns. No-op when `search` is empty. Centralizes what used to be an
  * inline `.or(...)` string copy-pasted into every item list query.
