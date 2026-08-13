@@ -25,10 +25,13 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Keep in sync with the defaults in packages/database/src/test/dockerHarness.ts.
-  # The harness reads these overrides; the workflow also uses them as cache keys.
-  ITEST_POSTGRES_IMAGE: public.ecr.aws/supabase/postgres:15.8.1.085
-  ITEST_POSTGREST_IMAGE: public.ecr.aws/supabase/postgrest:v14.10
+  # Same images as the harness defaults (packages/database/src/test/dockerHarness.ts),
+  # but pulled from Docker Hub instead of ECR Public: ECR Public rate-limits
+  # anonymous pulls hard (shared runner IPs → "toomanyrequests"), and a failed
+  # first pull never populates the cache. The harness reads these overrides; the
+  # workflow also uses them as cache keys.
+  ITEST_POSTGRES_IMAGE: supabase/postgres:15.8.1.085
+  ITEST_POSTGREST_IMAGE: postgrest/postgrest:v14.10
 
 jobs:
   integration:
@@ -68,6 +71,17 @@ jobs:
           set -euo pipefail
           DIR="$HOME/.cache/itest-images"
           mkdir -p "$DIR"
+          pull_with_retry() {
+            local image="$1" attempts=6 delay=10 i
+            for i in $(seq 1 "$attempts"); do
+              if docker pull "$image"; then return 0; fi
+              echo "pull of $image failed (attempt $i/$attempts); retrying in ${delay}s…"
+              sleep "$delay"
+              delay=$((delay + 15))
+            done
+            echo "giving up on $image after $attempts attempts"
+            return 1
+          }
           load_or_pull() {
             local image="$1" tar="$2"
             if [ -f "$tar" ]; then
@@ -75,7 +89,7 @@ jobs:
               gunzip -c "$tar" | docker load
             else
               echo "Pulling $image"
-              docker pull "$image"
+              pull_with_retry "$image"
               docker save "$image" | gzip > "$tar"
             fi
           }
