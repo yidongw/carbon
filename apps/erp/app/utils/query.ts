@@ -106,6 +106,44 @@ export function getGenericFilter<
   }
 }
 
+/**
+ * Columns used for free-text item search. These are all base `item` columns
+ * (`readableIdWithRevision` is a STORED generated column; `name`/`description`
+ * are plain columns), so they are cheap to filter and can be trigram-indexed.
+ *
+ * Aggregate view columns like `supplierIds`/`attributeCodes` are deliberately
+ * excluded: they are per-row `string_agg` subqueries that cannot use an index
+ * and dominate search cost. Add them back per-call only if a table truly needs
+ * to search by supplier part number / attribute code.
+ */
+export const DEFAULT_ITEM_SEARCH_COLUMNS = [
+  "readableIdWithRevision",
+  "name",
+  "description"
+] as const;
+
+/**
+ * Applies a case-insensitive substring (`ilike %term%`) OR-search across the
+ * given columns. No-op when `search` is empty. Centralizes what used to be an
+ * inline `.or(...)` string copy-pasted into every item list query.
+ */
+export function setSearchFilter<
+  T extends GenericSchema,
+  U extends Record<string, unknown>,
+  V
+>(
+  // @ts-expect-error TS2707 - TODO: fix type
+  query: PostgrestFilterBuilder<T, U, V>,
+  search: string | null | undefined,
+  columns: readonly string[] = DEFAULT_ITEM_SEARCH_COLUMNS
+  // @ts-expect-error TS2707 - TODO: fix type
+): PostgrestFilterBuilder<T, U, V> {
+  if (!search) return query;
+  return query.or(
+    columns.map((column) => `${column}.ilike.%${search}%`).join(",")
+  );
+}
+
 export function setGenericQueryFilters<
   T extends GenericSchema,
   U extends Record<string, unknown>,
