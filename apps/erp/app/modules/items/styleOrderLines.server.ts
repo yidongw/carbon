@@ -58,7 +58,6 @@ export async function expandVariantTableToLines(
 }
 
 export function hasStyleVariantsQuantity(variantQuantities: unknown): boolean {
-  // Dual-read legacy `configTable` so stale FormData still expands.
   return readVariantTableRows(variantQuantities).length > 0;
 }
 

@@ -27,6 +27,7 @@ import {
   type VariantsQuantityReferenceSource,
   variantsQuantityToComboRows
 } from "~/modules/production/variantsQuantityTableColumns";
+import { stampVariantItemIds } from "~/modules/production/variantTableWire";
 import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
 import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
 import { path } from "~/utils/path";
@@ -209,6 +210,14 @@ function VariantsQuantityModal({
     t`Quantities`,
     t`Attributes`
   );
+  // Stable variantItemId per valuesKey option (from the synthesized Style combo
+  // param), used to stamp a drift-proof id onto each saved cell.
+  const variantItemIdByValuesKey = (
+    (parameters.find((p) => p.key === "valuesKey") ??
+      parameters.find((p) => p.dataType === "list")) as
+      | { optionVariantItemIds?: Record<string, string> }
+      | undefined
+  )?.optionVariantItemIds;
   // In flat mode the grid uses one row per combo/color-size (multiple allowed)
   // with a single Quantities column; the stored config is still merged on submit.
   const flatColumns = buildFlatColumns(parameters, t`Quantities`);
@@ -444,6 +453,10 @@ function VariantsQuantityModal({
       const merged = flatRowsToMergedConfig(rowsToSave);
       variantQuantities = {
         ...merged,
+        variantTable: stampVariantItemIds(
+          merged.variantTable,
+          variantItemIdByValuesKey
+        ),
         splitRows: rowsToSave.map((r) => ({
           valuesKey: String(r.valuesKey ?? "").trim(),
           attributeLabel: comboDisplayLabel(r, optionLabels),
@@ -452,7 +465,10 @@ function VariantsQuantityModal({
       };
     } else {
       variantQuantities = {
-        variantTable: mergeRows(rowsToSave, columns)
+        variantTable: stampVariantItemIds(
+          mergeRows(rowsToSave, columns),
+          variantItemIdByValuesKey
+        )
       };
     }
 

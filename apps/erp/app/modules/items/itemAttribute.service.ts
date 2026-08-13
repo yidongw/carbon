@@ -1,5 +1,9 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import {
+  ATTRIBUTE_VALUE_CODE_LOCKED_MESSAGE,
+  isAttributeValueCodeChangeBlocked
+} from "./itemAttributeValue.guard";
 
 /** Stable system ids seeded in item_attributes_and_variants migration */
 export const SYSTEM_ATTRIBUTE = {
@@ -35,6 +39,13 @@ export type SynthesizedVariantQuantityParameter = {
   label: string;
   dataType: "list";
   listOptions: string[];
+  /**
+   * Stable `variantItemId` for each `valuesKey` option (from `itemVariant`), so
+   * the editor can stamp a drift-proof id onto each saved cell instead of relying
+   * on the mutable, code-derived `valuesKey`. Options with no synced variant yet
+   * are simply absent (the cell falls back to `valuesKey`).
+   */
+  optionVariantItemIds: Record<string, string>;
   sortOrder: number;
   configurationParameterGroupId: null;
   createdAt: string;
@@ -139,6 +150,25 @@ export async function getStyleVariantQuantityParameters(
   }
   const listOptions = combos.map((parts) => parts.join("|"));
 
+  // Map each valuesKey option to its stable variant SKU so the editor can stamp
+  // variantItemId onto saved cells (drift-proof match key). Options without a
+  // synced variant are simply absent.
+  const { data: variantRows, error: variantRowsErr } = await db
+    .from("itemVariant")
+    .select("valuesKey, variantItemId")
+    .eq("parentItemId", itemId)
+    .eq("companyId", companyId);
+  if (variantRowsErr) throw variantRowsErr;
+  const optionVariantItemIds: Record<string, string> = {};
+  for (const r of (variantRows ?? []) as Array<{
+    valuesKey: string | null;
+    variantItemId: string | null;
+  }>) {
+    if (r.valuesKey && r.variantItemId) {
+      optionVariantItemIds[r.valuesKey] = r.variantItemId;
+    }
+  }
+
   const nowIso = new Date().toISOString();
   return [
     {
@@ -149,6 +179,7 @@ export async function getStyleVariantQuantityParameters(
       label: "Attributes",
       dataType: "list" as const,
       listOptions,
+      optionVariantItemIds,
       sortOrder: 0,
       configurationParameterGroupId: null,
       createdAt: nowIso,
@@ -517,38 +548,53 @@ export async function syncItemVariants(
 }
 
 /**
- * Resolve a child SKU itemId for a parent + valuesKey (attribute codes joined by `|`
- * in set attribute order). Prefers an active variant; falls back to inactive,
- * then to the parent itemId when no match exists.
+ * Resolve a child SKU itemId for a parent variant. Prefers the stable
+ * `variantItemId` when supplied (verified against the parent), then falls back
+ * to the legacy `valuesKey` (attribute codes joined by `|` in set attribute
+ * order), then to the parent itemId when no match exists.
  */
 export async function resolveVariantByValuesKey(
   client: Db,
   args: {
     parentItemId: string;
     companyId: string;
-    valuesKey: string;
+    valuesKey?: string;
+    variantItemId?: string;
   }
 ): Promise<{ data: string; error: Error | null }> {
   const db = client as any;
-  const { parentItemId, companyId, valuesKey } = args;
+  const { parentItemId, companyId, valuesKey, variantItemId } = args;
 
-  if (!valuesKey) {
+  if (!valuesKey && !variantItemId) {
     return { data: parentItemId, error: null };
   }
 
   try {
-    const { data, error } = await db
+    let query = db
       .from("itemVariant")
       .select(
         "variantItemId, variant:item!itemVariant_variantItemId_fkey(id, active)"
       )
       .eq("parentItemId", parentItemId)
-      .eq("companyId", companyId)
-      .eq("valuesKey", valuesKey)
-      .maybeSingle();
+      .eq("companyId", companyId);
+
+    // Prefer the stable id; fall back to the legacy code-derived valuesKey.
+    query = variantItemId
+      ? query.eq("variantItemId", variantItemId)
+      : query.eq("valuesKey", valuesKey);
+
+    const { data, error } = await query.maybeSingle();
 
     if (error) throw error;
     if (!data?.variantItemId) {
+      // If the stable id missed but a valuesKey is also present, retry by key.
+      if (variantItemId && valuesKey) {
+        return resolveVariantByValuesKey(client, {
+          parentItemId,
+          companyId,
+          valuesKey
+        });
+      }
       return { data: parentItemId, error: null };
     }
     return { data: data.variantItemId, error: null };
@@ -1039,6 +1085,41 @@ export async function upsertItemAttributeValue(
 ) {
   const db = client as any;
   if ("id" in payload) {
+    // Freeze the identity `code` once the value is referenced by any variant SKU
+    // or item selection — renaming it would strand stored valuesKey combos.
+    // `name`/`sortOrder` stay editable.
+    const existing = await db
+      .from("itemAttributeValue")
+      .select("code")
+      .eq("id", payload.id)
+      .maybeSingle();
+    const currentCode = String(existing.data?.code ?? "");
+    if (currentCode && payload.code.trim() !== currentCode.trim()) {
+      const [variantRefs, selectionRefs] = await Promise.all([
+        db
+          .from("itemVariantAttribute")
+          .select("itemVariantId", { count: "exact", head: true })
+          .eq("attributeValueId", payload.id),
+        db
+          .from("itemAttributeSelection")
+          .select("itemId", { count: "exact", head: true })
+          .eq("attributeValueId", payload.id)
+      ]);
+      const referenceCount =
+        (variantRefs.count ?? 0) + (selectionRefs.count ?? 0);
+      if (
+        isAttributeValueCodeChangeBlocked({
+          currentCode,
+          nextCode: payload.code,
+          referenceCount
+        })
+      ) {
+        return {
+          data: null,
+          error: new Error(ATTRIBUTE_VALUE_CODE_LOCKED_MESSAGE)
+        };
+      }
+    }
     return db
       .from("itemAttributeValue")
       .update({
@@ -1707,14 +1788,20 @@ export async function syncItemVariantsFromSelections(
 }
 
 /**
- * Load every variant SKU of a parent, keyed by valuesKey (codes joined by `|`
- * in attribute-set order).
+ * Load every variant SKU of a parent, indexed both by the stable `variantItemId`
+ * (the preferred match key) and by the legacy `valuesKey` (codes joined by `|`
+ * in attribute-set order) for backwards compatibility.
  */
-async function loadVariantsByValuesKey(
+type ParentVariantMatch = { variantItemId: string; valuesKey: string };
+
+async function loadParentVariants(
   client: Db,
   parentItemId: string,
   companyId: string
-): Promise<Map<string, { variantItemId: string; valuesKey: string }>> {
+): Promise<{
+  byId: Map<string, ParentVariantMatch>;
+  byKey: Map<string, ParentVariantMatch>;
+}> {
   const db = client as any;
   const { data: variants, error: variantsError } = await db
     .from("itemVariant")
@@ -1723,24 +1810,28 @@ async function loadVariantsByValuesKey(
     .eq("companyId", companyId);
   if (variantsError) throw variantsError;
 
-  const map = new Map<string, { variantItemId: string; valuesKey: string }>();
+  const byId = new Map<string, ParentVariantMatch>();
+  const byKey = new Map<string, ParentVariantMatch>();
   for (const r of (variants ?? []) as Array<{
     variantItemId: string;
     valuesKey: string;
   }>) {
-    if (!r.valuesKey) continue;
-    map.set(r.valuesKey, {
+    if (!r.variantItemId) continue;
+    const match: ParentVariantMatch = {
       variantItemId: r.variantItemId,
       valuesKey: r.valuesKey
-    });
+    };
+    byId.set(r.variantItemId, match);
+    if (r.valuesKey) byKey.set(r.valuesKey, match);
   }
-  return map;
+  return { byId, byKey };
 }
 
 /**
  * Expand a Style/Consumable variantTable into { variantItemId, quantity } rows.
- * Combo-only: each row is `{ valuesKey, Quantities }`; variants are matched by
- * valuesKey (attribute codes in set order).
+ * Combo-only: each row is `{ variantItemId?, valuesKey?, Quantities }`. Variants
+ * are matched by the stable `variantItemId` when present, falling back to the
+ * legacy `valuesKey` (attribute codes in set order) for older stored blobs.
  */
 export async function expandVariantsQuantityTable(
   client: Db,
@@ -1755,30 +1846,32 @@ export async function expandVariantsQuantityTable(
 }> {
   try {
     const raw = (args.variantQuantities ?? {}) as Record<string, unknown>;
-    // Dual-read legacy `configTable` during the wire-key rename window.
     const table = Array.isArray(raw.variantTable)
       ? (raw.variantTable as Record<string, unknown>[])
-      : Array.isArray(raw.configTable)
-        ? (raw.configTable as Record<string, unknown>[])
-        : [];
+      : [];
 
-    const cells: Array<{ valuesKey: string; quantity: number }> = [];
+    const cells: Array<{
+      variantItemId: string;
+      valuesKey: string;
+      quantity: number;
+    }> = [];
 
-    // Combo-only: expand { valuesKey, Quantities } rows. Legacy Color×Size
-    // matrix configs are retired.
+    // Combo-only: expand { variantItemId?, valuesKey?, Quantities } rows. Legacy
+    // Color×Size matrix configs are retired.
     for (const row of table) {
+      const variantItemId = String(row.variantItemId ?? "").trim();
       const valuesKey = String(row.valuesKey ?? "").trim();
-      if (!valuesKey) continue;
+      if (!variantItemId && !valuesKey) continue;
       const qty = Number(row.Quantities ?? 0);
       if (!Number.isFinite(qty) || qty <= 0) continue;
-      cells.push({ valuesKey, quantity: qty });
+      cells.push({ variantItemId, valuesKey, quantity: qty });
     }
 
     if (cells.length === 0) {
       return { data: [], error: null };
     }
 
-    const variantsByKey = await loadVariantsByValuesKey(
+    const { byId, byKey } = await loadParentVariants(
       client,
       args.parentItemId,
       args.companyId
@@ -1791,10 +1884,14 @@ export async function expandVariantsQuantityTable(
     }> = [];
     const seen = new Set<string>();
     for (const cell of cells) {
-      const match = variantsByKey.get(cell.valuesKey);
+      // Prefer the stable variantItemId; fall back to the legacy valuesKey.
+      const match =
+        (cell.variantItemId ? byId.get(cell.variantItemId) : undefined) ??
+        (cell.valuesKey ? byKey.get(cell.valuesKey) : undefined);
       if (!match) {
+        const descriptor = cell.variantItemId || cell.valuesKey;
         throw new Error(
-          `No variant SKU exists for ${cell.valuesKey}. Open the item and save its attribute selections to generate variants before shipping or receiving.`
+          `No variant SKU exists for ${descriptor}. Open the item and save its attribute selections to generate variants before shipping or receiving.`
         );
       }
       if (seen.has(match.variantItemId)) {

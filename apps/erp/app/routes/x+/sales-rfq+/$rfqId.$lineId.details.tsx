@@ -171,17 +171,15 @@ export default function SalesRFQLine() {
 
   const isReadOnly = isSalesRfqLocked(rfqData?.rfqSummary?.status);
 
-  // Dual-read variantTable (and legacy configTable) without importing .server
-  // helpers into the client bundle.
+  // Read the variantTable grid without importing .server helpers into the
+  // client bundle.
   const styleVariantQuantities = (() => {
     const cfg = (line as { configuration?: unknown }).configuration;
     if (!cfg || typeof cfg !== "object" || Array.isArray(cfg)) return undefined;
     const record = cfg as Record<string, unknown>;
-    const table = record.variantTable ?? record.configTable;
+    const table = record.variantTable;
     return Array.isArray(table) && table.length > 0
-      ? JSON.stringify(
-          Array.isArray(record.variantTable) ? cfg : { variantTable: table }
-        )
+      ? JSON.stringify(cfg)
       : undefined;
   })();
 

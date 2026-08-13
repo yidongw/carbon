@@ -7,7 +7,7 @@ import {
 } from "./jobVariantQuantity.service";
 
 describe("jobVariantQuantity helpers", () => {
-  it("detects variantTable vs flat Part params", () => {
+  it("detects variantTable vs flat Part params (retired configTable ignored)", () => {
     expect(
       isVariantsQuantityPayload({
         variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
@@ -17,16 +17,16 @@ describe("jobVariantQuantity helpers", () => {
       isVariantsQuantityPayload({
         configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
-    ).toBe(true);
+    ).toBe(false);
     expect(isVariantsQuantityPayload({ color: "BK", finish: "matte" })).toBe(
       false
     );
     expect(isVariantsQuantityPayload(null)).toBe(false);
     expect(isVariantsQuantityPayload({ variantTable: [] })).toBe(true);
-    expect(isVariantsQuantityPayload({ configTable: [] })).toBe(true);
+    expect(isVariantsQuantityPayload({ configTable: [] })).toBe(false);
   });
 
-  it("requires non-empty variantTable for dual-read / qty gates", () => {
+  it("requires non-empty variantTable for qty gates", () => {
     expect(
       isNonEmptyVariantsQuantity({
         variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
@@ -36,7 +36,7 @@ describe("jobVariantQuantity helpers", () => {
       isNonEmptyVariantsQuantity({
         configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
       })
-    ).toBe(true);
+    ).toBe(false);
     expect(isNonEmptyVariantsQuantity({ variantTable: [] })).toBe(false);
     expect(isNonEmptyVariantsQuantity({ color: "BK" })).toBe(false);
     expect(isNonEmptyVariantsQuantity(null)).toBe(false);

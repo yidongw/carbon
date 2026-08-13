@@ -17,8 +17,7 @@ type Db = SupabaseClient<Database>;
 export function isVariantsQuantityPayload(payload: unknown): boolean {
   if (!payload || typeof payload !== "object") return false;
   const cfg = payload as Record<string, unknown>;
-  // Dual-read legacy `configTable` during the wire-key rename window.
-  return Array.isArray(cfg.variantTable) || Array.isArray(cfg.configTable);
+  return Array.isArray(cfg.variantTable);
 }
 
 export function isNonEmptyVariantsQuantity(payload: unknown): boolean {

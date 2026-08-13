@@ -14,12 +14,12 @@ describe("hasStyleVariantsQuantity", () => {
     ).toBe(true);
   });
 
-  it("dual-reads legacy configTable", () => {
+  it("ignores the retired legacy configTable key", () => {
     expect(
       hasStyleVariantsQuantity({
         configTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
       })
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("returns false for empty or missing tables", () => {
