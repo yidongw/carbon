@@ -1794,18 +1794,47 @@ export async function getParts(
   return query;
 }
 
-// Explicit styles-view projection: every column EXCEPT the two heavy per-row
-// aggregates the list never displays — `attributeCodes` (a `string_agg` that
-// only ever fed the old search filter) and `revisions` (a `json_agg`; unlike
-// Parts/Tools, the Styles table has no revision switcher). Selecting `*` forces
-// Postgres to run those correlated subqueries for every row; omitting them
-// prunes the subplans (~30% faster on the styles list). `attributes` stays —
-// it drives the attribute columns.
+// Styles-view projection for the list. The `styles`/`styleSamples` views no
+// longer carry the heavy per-row aggregates the list never displays
+// (`attributeCodes` string_agg, `revisions` json_agg) — they were dropped from
+// the view bodies. `attributes` is NOT selected here either; it's fetched only
+// for the current page's rows via `itemAttributes` and merged in (see
+// attachItemAttributes). This keeps the list query at the DISTINCT-ON floor
+// instead of computing per-row JSON for the whole tenant before LIMIT.
 const STYLE_LIST_COLUMNS =
-  "active, assignee, defaultMethodType, sourcingType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, attributeSetId, attributes, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt";
+  "active, assignee, defaultMethodType, sourcingType, description, itemTrackingType, name, replenishmentSystem, unitOfMeasureCode, notes, revision, readableId, readableIdWithRevision, id, companyId, thumbnailPath, attributeSetId, customFields, tags, itemPostingGroupId, createdBy, createdAt, updatedBy, updatedAt";
 
 // styleSamples = styles view + per-style sample columns.
 const STYLE_SAMPLE_LIST_COLUMNS = `${STYLE_LIST_COLUMNS}, sampleItemId, sampleCount, sampledVariantCount, samples`;
+
+// Fetch the `attributes` JSON for just this page's item ids (via the
+// itemAttributes view — keyed by itemId, no DISTINCT ON) and merge onto each
+// row, reproducing the shape the tables expect. No-op for an empty page.
+async function attachItemAttributes<T extends { id: string }>(
+  client: SupabaseClient<any>,
+  companyId: string,
+  rows: T[]
+): Promise<(T & { attributes: unknown })[]> {
+  if (rows.length === 0) return rows as (T & { attributes: unknown })[];
+  const { data } = await client
+    .from("itemAttributes")
+    .select("itemId, attributes")
+    .eq("companyId", companyId)
+    .in(
+      "itemId",
+      rows.map((row) => row.id)
+    );
+  const byItemId = new Map<string, unknown>(
+    ((data ?? []) as { itemId: string; attributes: unknown }[]).map((row) => [
+      row.itemId,
+      row.attributes
+    ])
+  );
+  return rows.map((row) => ({
+    ...row,
+    attributes: byItemId.get(row.id) ?? []
+  }));
+}
 
 export async function getStyles(
   client: SupabaseClient<Database>,
@@ -1824,9 +1853,15 @@ export async function getStyles(
 
   query = setSearchFilter(query, args.search);
 
-  return setGenericQueryFilters(query, args, [
+  const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
   ]);
+
+  if (result.error || !result.data) return result;
+  return {
+    ...result,
+    data: await attachItemAttributes(styleClient, companyId, result.data)
+  };
 }
 
 export async function getStyleSamples(
@@ -1851,7 +1886,11 @@ export async function getStyleSamples(
     { column: "readableIdWithRevision", ascending: true }
   ]);
 
-  return result;
+  if (result.error || !result.data) return result;
+  return {
+    ...result,
+    data: await attachItemAttributes(sampleClient, companyId, result.data)
+  };
 }
 
 export async function ensureStyleSampleItem(
