@@ -1,5 +1,9 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import {
+  ATTRIBUTE_VALUE_CODE_LOCKED_MESSAGE,
+  isAttributeValueCodeChangeBlocked
+} from "./itemAttributeValue.guard";
 
 /** Stable system ids seeded in item_attributes_and_variants migration */
 export const SYSTEM_ATTRIBUTE = {
@@ -1081,6 +1085,41 @@ export async function upsertItemAttributeValue(
 ) {
   const db = client as any;
   if ("id" in payload) {
+    // Freeze the identity `code` once the value is referenced by any variant SKU
+    // or item selection — renaming it would strand stored valuesKey combos.
+    // `name`/`sortOrder` stay editable.
+    const existing = await db
+      .from("itemAttributeValue")
+      .select("code")
+      .eq("id", payload.id)
+      .maybeSingle();
+    const currentCode = String(existing.data?.code ?? "");
+    if (currentCode && payload.code.trim() !== currentCode.trim()) {
+      const [variantRefs, selectionRefs] = await Promise.all([
+        db
+          .from("itemVariantAttribute")
+          .select("itemVariantId", { count: "exact", head: true })
+          .eq("attributeValueId", payload.id),
+        db
+          .from("itemAttributeSelection")
+          .select("itemId", { count: "exact", head: true })
+          .eq("attributeValueId", payload.id)
+      ]);
+      const referenceCount =
+        (variantRefs.count ?? 0) + (selectionRefs.count ?? 0);
+      if (
+        isAttributeValueCodeChangeBlocked({
+          currentCode,
+          nextCode: payload.code,
+          referenceCount
+        })
+      ) {
+        return {
+          data: null,
+          error: new Error(ATTRIBUTE_VALUE_CODE_LOCKED_MESSAGE)
+        };
+      }
+    }
     return db
       .from("itemAttributeValue")
       .update({
