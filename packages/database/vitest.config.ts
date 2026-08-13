@@ -6,6 +6,7 @@ export default defineConfig({
     environment: "node",
     passWithNoTests: true,
     include: ["src/**/*.test.ts"],
-    exclude: ["node_modules", "dist", ".turbo"],
+    // Integration tests run via vitest.integration.config.ts (they need Docker).
+    exclude: ["node_modules", "dist", ".turbo", "src/**/*.integration.test.ts"],
   },
 });
