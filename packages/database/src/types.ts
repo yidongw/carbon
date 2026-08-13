@@ -44109,6 +44109,7 @@ export type Database = {
       salesRfqLine: {
         Row: {
           companyId: string
+          configuration: Json | null
           createdAt: string | null
           createdBy: string
           customerPartId: string
@@ -44130,6 +44131,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
+          configuration?: Json | null
           createdAt?: string | null
           createdBy: string
           customerPartId: string
@@ -44151,6 +44153,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
+          configuration?: Json | null
           createdAt?: string | null
           createdBy?: string
           customerPartId?: string
@@ -71114,6 +71117,7 @@ export type Database = {
         Row: {
           autodeskUrn: string | null
           companyId: string | null
+          configuration: Json | null
           createdAt: string | null
           createdBy: string | null
           customerPartId: string | null

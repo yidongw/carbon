@@ -1130,6 +1130,9 @@ msgstr "Falló al crear la reproducción"
 msgid "Failed to create required action"
 msgstr "Falló al crear la acción requerida"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Falló al crear el riesgo"
 
@@ -3646,6 +3649,9 @@ msgstr "Falló al actualizar la línea de OFERTA"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Falló al actualizar la línea de OFP con el modelo"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Falló al actualizar el estado de la OFERTA Rápida"

@@ -1130,6 +1130,9 @@ msgstr "Nie udało się utworzyć powtórki"
 msgid "Failed to create required action"
 msgstr "Nie udało się utworzyć wymaganej akcji"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Nie udało się utworzyć ryzyka"
 
@@ -3646,6 +3649,9 @@ msgstr "Nie udało się zaktualizować linii propozycji cenowej"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Nie udało się zaktualizować linii propozycji ceny z modelu"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Nie udało się zaktualizować statusu OFERTY"

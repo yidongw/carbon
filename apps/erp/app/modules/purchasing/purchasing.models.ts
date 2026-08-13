@@ -584,7 +584,7 @@ export const purchasingRfqValidator = z.object({
 export const purchasingRfqLineValidator = z.object({
   id: zfd.text(z.string().optional()),
   purchasingRfqId: z.string().min(1, { message: "RFQ is required" }),
-  itemId: z.string().min(1, { message: "Part is required" }),
+  itemId: z.string().min(1, { message: "Item is required" }),
   description: zfd.text(z.string().optional()),
   quantity: z.array(
     zfd.numeric(z.number().min(0.00001, { message: "Quantity is required" }))
@@ -596,7 +596,9 @@ export const purchasingRfqLineValidator = z.object({
     z.string().min(1, { message: "Unit of measure is required" })
   ),
   conversionFactor: zfd.numeric(z.number().optional()),
-  order: zfd.numeric(z.number().min(0))
+  order: zfd.numeric(z.number().min(0)),
+  // FormData-only expand payload; never persisted on purchasingRfqLine.
+  variantQuantities: zfd.text(z.string().optional())
 });
 
 export const purchasingRfqSuppliersValidator = z.object({

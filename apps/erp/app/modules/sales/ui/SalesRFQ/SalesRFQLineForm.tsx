@@ -38,6 +38,9 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import { useLineVariantQuantities } from "~/modules/shared";
+import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/sales-rfq+/$rfqId.$lineId.details";
 import { path } from "~/utils/path";
 import { isSalesRfqLocked, salesRfqLineValidator } from "../../sales.models";
@@ -45,7 +48,9 @@ import type { SalesRFQ, SalesRFQLine } from "../../types";
 import DeleteSalesRFQLine from "./DeleteSalesRFQLine";
 
 type SalesRFQLineFormProps = {
-  initialValues: z.infer<typeof salesRfqLineValidator>;
+  initialValues: z.infer<typeof salesRfqLineValidator> & {
+    itemType?: MethodItemType;
+  };
   type?: "card" | "modal";
   onClose?: () => void;
 };
@@ -73,6 +78,9 @@ const SalesRFQLineForm = ({
 
   const isEditing = initialValues.id !== undefined;
 
+  const [itemType, setItemType] = useState<MethodItemType>(
+    initialValues.itemType ?? "Part"
+  );
   const [itemData, setItemData] = useState<{
     customerPartId: string;
     customerPartRevision: string;
@@ -80,13 +88,30 @@ const SalesRFQLineForm = ({
     description: string;
     unitOfMeasureCode: string;
     modelUploadId: string | null;
+    hasVariantAttributes: boolean;
   }>({
     customerPartId: initialValues.customerPartId ?? "",
     customerPartRevision: initialValues.customerPartRevision ?? "",
     itemId: initialValues.itemId ?? "",
     description: initialValues.description ?? "",
     unitOfMeasureCode: initialValues.unitOfMeasureCode ?? "EA",
-    modelUploadId: initialValues.modelUploadId ?? null
+    modelUploadId: initialValues.modelUploadId ?? null,
+    hasVariantAttributes: !!initialValues.variantQuantities
+  });
+
+  const {
+    variantsQuantityTotal,
+    hasVariantsQuantity,
+    isMissingVariantQty,
+    hiddenVariantQuantitiesValue,
+    openVariantsQuantity,
+    clearVariantsQuantity,
+    variantsQuantityModalNode
+  } = useLineVariantQuantities({
+    initialVariantQuantities: initialValues.variantQuantities,
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing
   });
 
   const onCustomerPartChange = async (customerPartId: string) => {
@@ -138,11 +163,12 @@ const SalesRFQLineForm = ({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
+    clearVariantsQuantity();
 
-    const [item, customerPart] = await Promise.all([
+    const [item, customerPart, variantAttributes] = await Promise.all([
       carbon
         .from("item")
-        .select("name, unitOfMeasureCode, modelUploadId")
+        .select("name, unitOfMeasureCode, modelUploadId, type")
         .eq("id", itemId)
         .eq("companyId", company.id)
         .single(),
@@ -151,7 +177,13 @@ const SalesRFQLineForm = ({
         .select("customerPartId, customerPartRevision")
         .eq("itemId", itemId)
         .eq("customerId", routeData?.rfqSummary?.customerId!)
-        .maybeSingle()
+        .maybeSingle(),
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
     ]);
 
     if (item.error) {
@@ -159,12 +191,15 @@ const SalesRFQLineForm = ({
       return;
     }
 
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
+
     const newItemData = {
       ...itemData,
       itemId,
       description: item.data?.name ?? "",
       unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
-      modelUploadId: item.data?.modelUploadId ?? null
+      modelUploadId: item.data?.modelUploadId ?? null,
+      hasVariantAttributes
     };
 
     if (customerPart.data && !itemData.customerPartId) {
@@ -174,6 +209,9 @@ const SalesRFQLineForm = ({
     }
 
     setItemData(newItemData);
+    if (item.data?.type) {
+      setItemType(item.data.type as MethodItemType);
+    }
   };
 
   const deleteDisclosure = useDisclosure();
@@ -257,9 +295,16 @@ const SalesRFQLineForm = ({
                   name="modelUploadId"
                   value={itemData.modelUploadId ?? undefined}
                 />
+                {itemData.hasVariantAttributes && (
+                  <Hidden
+                    name="variantQuantities"
+                    value={hiddenVariantQuantitiesValue}
+                  />
+                )}
                 <VStack>
                   <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                    {/* Avoid col-span-2 on mobile — it opens an implicit 2nd track. */}
+                    <div className="col-span-1 lg:col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
                       <InputControlled
                         name="customerPartId"
                         label={t`Customer Part Number`}
@@ -289,8 +334,8 @@ const SalesRFQLineForm = ({
                       />
                       <Item
                         name="itemId"
-                        label={t`Part`}
-                        type="Part"
+                        label={itemType}
+                        type={itemType}
                         value={itemData.itemId}
                         includeInactive
                         locationId={
@@ -298,6 +343,18 @@ const SalesRFQLineForm = ({
                         }
                         onChange={(value) => {
                           onItemChange(value?.value as string);
+                        }}
+                        onTypeChange={(nextType) => {
+                          clearVariantsQuantity();
+                          setItemType(nextType as MethodItemType);
+                          setItemData({
+                            ...itemData,
+                            itemId: "",
+                            description: "",
+                            unitOfMeasureCode: "EA",
+                            modelUploadId: null,
+                            hasVariantAttributes: false
+                          });
                         }}
                       />
                       <InputControlled
@@ -319,12 +376,29 @@ const SalesRFQLineForm = ({
 
                       <CustomFormFields table="salesRfqLine" />
                     </div>
-                    <div className="flex gap-y-4">
-                      <ArrayNumeric
-                        name="quantity"
-                        label={t`Quantity`}
-                        defaults={[1, 25, 50, 100]}
-                      />
+                    <div className="flex w-full min-w-0 flex-col gap-y-4">
+                      {hasVariantsQuantity ? (
+                        <QuantityWithVariantsQuantity
+                          name="quantity.0"
+                          label={t`Quantity`}
+                          value={variantsQuantityTotal}
+                          onChange={() => {
+                            // Read-only while totals are driven by variant rows.
+                          }}
+                          hasVariantsQuantity={hasVariantsQuantity}
+                          onOpenVariantsQuantity={openVariantsQuantity}
+                          variantsQuantityTotal={variantsQuantityTotal}
+                          isReadOnly
+                          isDisabled={isLocked}
+                        />
+                      ) : (
+                        <ArrayNumeric
+                          name="quantity"
+                          label={t`Quantity`}
+                          defaults={[1, 25, 50, 100]}
+                          isDisabled={isLocked}
+                        />
+                      )}
                     </div>
                   </div>
                 </VStack>
@@ -332,6 +406,7 @@ const SalesRFQLineForm = ({
               <ModalCardFooter>
                 <Submit
                   isDisabled={
+                    isMissingVariantQty ||
                     isLocked ||
                     (isEditing
                       ? !permissions.can("update", "sales")
@@ -345,6 +420,7 @@ const SalesRFQLineForm = ({
           </ModalCardContent>
         </ModalCard>
       </ModalCardProvider>
+      {variantsQuantityModalNode}
       {isEditing && deleteDisclosure.isOpen && (
         <DeleteSalesRFQLine
           line={initialValues as SalesRFQLine}

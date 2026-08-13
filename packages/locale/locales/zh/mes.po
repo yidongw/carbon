@@ -1131,6 +1131,9 @@ msgstr "创建复制品失败"
 msgid "Failed to create required action"
 msgstr "创建所需操作失败"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "创建风险失败"
 
@@ -3647,6 +3650,9 @@ msgstr "更新询价单行失败"
 
 msgid "Failed to update RFQ line with model"
 msgstr "未能更新询价单行项与模型"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "更新询价单状态失败"

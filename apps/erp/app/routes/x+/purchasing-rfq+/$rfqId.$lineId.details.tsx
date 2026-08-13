@@ -2,6 +2,7 @@ import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
@@ -10,6 +11,14 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
+import {
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity
+} from "~/modules/items/styleOrderLines.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import type { PurchasingRFQ } from "~/modules/purchasing";
 import {
   getPurchasingRFQ,
@@ -17,6 +26,7 @@ import {
   getSupplierInteractionLineDocuments,
   isRfqLocked,
   purchasingRfqLineValidator,
+  replacePurchasingRfqLinesWithStyleVariants,
   upsertPurchasingRFQLine
 } from "~/modules/purchasing";
 import { PurchasingRFQLineForm } from "~/modules/purchasing/ui/PurchasingRfq";
@@ -24,6 +34,7 @@ import {
   SupplierInteractionLineDocuments,
   SupplierInteractionLineNotes
 } from "~/modules/purchasing/ui/SupplierInteraction";
+import { getDatabaseClient } from "~/services/database.server";
 import { setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -85,12 +96,91 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: variantQuantitiesFromValidator,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
 
+  let quantity = rawQuantity;
+  let variantQuantities: Json | undefined;
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
+    try {
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      variantQuantities = fields.variantQuantities;
+      quantity = [fields.quantity];
+    } catch {
+      // Invalid JSON — keep typed quantity; FormData config is expand-only.
+    }
+  }
+
+  if (
+    d.itemId &&
+    variantQuantities &&
+    hasStyleVariantsQuantity(variantQuantities)
+  ) {
+    const expanded = await expandVariantTableToLines(client, {
+      parentItemId: d.itemId,
+      companyId,
+      variantQuantities
+    });
+    if (!expanded.ok) {
+      throw redirect(
+        path.to.purchasingRfqLine(rfqId, lineId),
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    const onlyParent =
+      expanded.variants.length === 1 &&
+      expanded.variants[0].variantItemId === d.itemId;
+
+    if (!onlyParent) {
+      try {
+        await replacePurchasingRfqLinesWithStyleVariants(getDatabaseClient(), {
+          companyId,
+          userId,
+          purchasingRfqId: rfqId,
+          replaceLineId: lineId,
+          variants: expanded.variants,
+          base: {
+            description: d.description,
+            purchaseUnitOfMeasureCode: d.purchaseUnitOfMeasureCode,
+            inventoryUnitOfMeasureCode: d.inventoryUnitOfMeasureCode,
+            conversionFactor: d.conversionFactor
+          },
+          customFields: setCustomFields(formData)
+        });
+      } catch (err) {
+        throw redirect(
+          path.to.purchasingRfqLine(rfqId, lineId),
+          await flash(
+            request,
+            error(err, "Failed to update RFQ lines for style variants")
+          )
+        );
+      }
+
+      throw redirect(path.to.purchasingRfq(rfqId));
+    }
+
+    quantity = [expanded.variants[0].quantity];
+  }
+
+  // FormData `variantQuantities` is expand-only; never persist on the line.
   const updateLine = await upsertPurchasingRFQLine(client, {
     id: lineId,
     ...d,
+    quantity,
     companyId,
     updatedBy: userId,
     customFields: setCustomFields(formData)

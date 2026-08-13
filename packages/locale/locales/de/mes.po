@@ -1130,6 +1130,9 @@ msgstr "Fehler beim Erstellen der Wiederherstellung"
 msgid "Failed to create required action"
 msgstr "Fehler beim Erstellen der erforderlichen Aktion"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Fehler beim Erstellen des Risikos"
 
@@ -3646,6 +3649,9 @@ msgstr "Fehler beim Aktualisieren der RFQ-Zeile"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Fehler beim Aktualisieren der RFQ-Zeile mit dem Modell"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Fehler beim Aktualisieren des RFQ-Zustands"

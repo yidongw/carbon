@@ -104,13 +104,13 @@ export function ItemVariantsQuantityInput({
       isDisabled={isDisabled}
       isReadOnly={isReadOnly}
     >
-      <NumberInputGroup className="relative">
+      <NumberInputGroup className="relative w-full min-w-0">
         <NumberInput
           isReadOnly={isReadOnly}
           isDisabled={isDisabled}
           size={size}
           className={cn(
-            "tabular-nums",
+            "w-full tabular-nums",
             showAdornment && "pr-10",
             isReadOnly &&
               variantsQuantityTotal > 0 &&

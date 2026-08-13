@@ -4936,6 +4936,9 @@ msgstr "创建复制品失败"
 msgid "Failed to create required action"
 msgstr "创建所需操作失败"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "创建风险失败"
 
@@ -7607,6 +7610,9 @@ msgstr "更新询价单行失败"
 
 msgid "Failed to update RFQ line with model"
 msgstr "未能更新询价单行项与模型"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "更新询价单状态失败"
@@ -11891,6 +11897,12 @@ msgstr "采购单位"
 
 msgid "Push record changes to external systems the moment they happen."
 msgstr "在记录发生变化的那一刻将其推送到外部系统。"
+
+msgid "QR Code"
+msgstr ""
+
+msgid "QR Code to complete the current operation for this kanban"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"

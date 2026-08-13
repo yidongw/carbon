@@ -193,14 +193,34 @@ const Item = ({
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const { getInputProps, error, isOptional: fieldIsOptional } = useField(name);
+  const {
+    getInputProps,
+    error,
+    validate,
+    clearError,
+    isOptional: fieldIsOptional
+  } = useField(name);
   const [value, setValue] = useControlField<string | undefined>(name);
   const resolvedIsOptional = isOptional ?? fieldIsOptional ?? false;
+  const hasMounted = useRef(false);
 
   useEffect(() => {
     if (props.value !== null && props.value !== undefined)
       setValue(props.value);
   }, [props.value, setValue]);
+
+  // Parent-driven picks (controlled `value`) update the store without going
+  // through the combobox onChange — clear a stale required error when a real
+  // value lands (same pattern as SelectControlled).
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    if (props.value) {
+      clearError();
+    }
+  }, [props.value, clearError]);
 
   useEffect(() => {
     if (!value) {
@@ -296,6 +316,9 @@ const Item = ({
             onChange={(newValue) => {
               setValue(newValue?.replace(/"/g, '\\"') ?? "");
               onChange(newValue?.replace(/"/g, '\\"') ?? "");
+              // Value lands via useControlField, not the hidden input's onChange
+              // — revalidate or a submitted "Part is required" stays after pick.
+              validate();
             }}
             label={
               label === "Item"

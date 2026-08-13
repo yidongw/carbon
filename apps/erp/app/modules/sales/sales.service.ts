@@ -6071,15 +6071,23 @@ export async function upsertSalesRFQLine(
   client: SupabaseClient<Database>,
 
   salesRfqLine:
-    | (Omit<z.infer<typeof salesRfqLineValidator>, "id"> & {
+    | (Omit<
+        z.infer<typeof salesRfqLineValidator>,
+        "id" | "variantQuantities" | "configuration"
+      > & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
+        configuration?: Json | null;
       })
-    | (Omit<z.infer<typeof salesRfqLineValidator>, "id"> & {
+    | (Omit<
+        z.infer<typeof salesRfqLineValidator>,
+        "id" | "variantQuantities" | "configuration"
+      > & {
         id: string;
         updatedBy: string;
         customFields?: Json;
+        configuration?: Json | null;
       })
 ) {
   if ("createdBy" in salesRfqLine) {

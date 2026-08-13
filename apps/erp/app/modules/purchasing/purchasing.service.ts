@@ -2072,6 +2072,110 @@ export async function replaceSupplierQuoteLinesWithStyleVariants(
   });
 }
 
+export async function replacePurchasingRfqLinesWithStyleVariants(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    companyId: string;
+    userId: string;
+    purchasingRfqId: string;
+    replaceLineId?: string;
+    variants: Array<{ variantItemId: string; quantity: number }>;
+    base: {
+      description?: string | null;
+      purchaseUnitOfMeasureCode?: string | null;
+      inventoryUnitOfMeasureCode?: string | null;
+      conversionFactor?: number | null;
+    };
+    customFields?: Json;
+  }
+) {
+  const {
+    companyId,
+    userId,
+    purchasingRfqId,
+    replaceLineId,
+    variants,
+    base,
+    customFields
+  } = args;
+
+  return db.transaction().execute(async (trx) => {
+    let startOrder: number;
+    if (replaceLineId) {
+      const original = await trx
+        .selectFrom("purchasingRfqLine")
+        .select("order")
+        .where("id", "=", replaceLineId)
+        .where("purchasingRfqId", "=", purchasingRfqId)
+        .where("companyId", "=", companyId)
+        .executeTakeFirst();
+
+      await trx
+        .deleteFrom("purchasingRfqLine")
+        .where("id", "=", replaceLineId)
+        .where("purchasingRfqId", "=", purchasingRfqId)
+        .where("companyId", "=", companyId)
+        .execute();
+
+      if (original?.order != null) {
+        startOrder = original.order;
+        if (variants.length > 1) {
+          await trx
+            .updateTable("purchasingRfqLine")
+            .set({
+              order: sql<number>`"order" + ${variants.length - 1}`
+            })
+            .where("purchasingRfqId", "=", purchasingRfqId)
+            .where("companyId", "=", companyId)
+            .where("order", ">", original.order)
+            .execute();
+        }
+      } else {
+        const existing = await trx
+          .selectFrom("purchasingRfqLine")
+          .select("order")
+          .where("purchasingRfqId", "=", purchasingRfqId)
+          .execute();
+        startOrder =
+          existing.reduce((max, row) => Math.max(max, row.order ?? 0), 0) + 1;
+      }
+    } else {
+      const existing = await trx
+        .selectFrom("purchasingRfqLine")
+        .select("order")
+        .where("purchasingRfqId", "=", purchasingRfqId)
+        .execute();
+      startOrder =
+        existing.reduce((max, row) => Math.max(max, row.order ?? 0), 0) + 1;
+    }
+
+    const ids: string[] = [];
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      const inserted = await trx
+        .insertInto("purchasingRfqLine")
+        .values({
+          purchasingRfqId,
+          itemId: variant.variantItemId,
+          description: base.description ?? "",
+          purchaseUnitOfMeasureCode: base.purchaseUnitOfMeasureCode ?? "EA",
+          inventoryUnitOfMeasureCode: base.inventoryUnitOfMeasureCode ?? "EA",
+          conversionFactor: base.conversionFactor ?? 1,
+          quantity: [variant.quantity],
+          companyId,
+          createdBy: userId,
+          order: startOrder + i,
+          ...(customFields !== undefined ? { customFields } : {})
+        })
+        .returning(["id"])
+        .executeTakeFirstOrThrow();
+      ids.push(inserted.id);
+    }
+
+    return ids;
+  });
+}
+
 export async function updatePurchaseOrderLineOrder(
   db: Kysely<KyselyDatabase>,
   updates: { id: string; sortOrder: number; updatedBy: string }[]

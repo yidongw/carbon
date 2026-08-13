@@ -12,8 +12,10 @@ const NumberField = ({ className, ...props }: ReactAria.NumberFieldProps) => {
   );
 };
 
-const NumberInputGroup = (props: ReactAria.GroupProps) => {
-  return <ReactAria.Group {...props} />;
+const NumberInputGroup = ({ className, ...props }: ReactAria.GroupProps) => {
+  return (
+    <ReactAria.Group className={cn("relative w-full", className)} {...props} />
+  );
 };
 
 const NumberInputStepper = ({
