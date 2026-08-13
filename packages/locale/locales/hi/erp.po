@@ -4935,6 +4935,9 @@ msgstr "फैला निर्माण करने में फ़ल न�
 msgid "Failed to create required action"
 msgstr "अभियान बनाना फ़लेंदी हो रहा है"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "निष्पादन फ़ालतू नहीं बनाया जा सका"
 
@@ -7606,6 +7609,9 @@ msgstr "रफ़क्यू लाइन अपडेट करने मे�
 
 msgid "Failed to update RFQ line with model"
 msgstr "RFQ रेकांसियल अपडेट करने में व्ह सफल नहीं हुई"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "रफ्क्यू स्टेशन को अपडेट करने में फालतू प्रयास किया गया था"
@@ -11890,6 +11896,12 @@ msgstr "क्रय माप की इकाई"
 
 msgid "Push record changes to external systems the moment they happen."
 msgstr "प्राप्त करने वाली संशोधनों को बाहरी प्रणालियों में तुरंत संचारित करें।"
+
+msgid "QR Code"
+msgstr ""
+
+msgid "QR Code to complete the current operation for this kanban"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"

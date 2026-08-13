@@ -1,9 +1,15 @@
 import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
+import { hasStyleVariantsQuantity } from "~/modules/items/styleOrderLines.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import {
   getSalesRFQ,
   isSalesRfqLocked,
@@ -45,11 +51,41 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: variantQuantitiesFromValidator,
+    configuration: _configurationFromValidator,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let quantity = rawQuantity;
+  let configuration: Json | undefined;
+
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
+    try {
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      if (hasStyleVariantsQuantity(fields.variantQuantities)) {
+        configuration = fields.variantQuantities;
+        quantity = [fields.quantity];
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const insertLine = await upsertSalesRFQLine(client, {
     ...d,
+    quantity,
+    ...(configuration !== undefined ? { configuration } : {}),
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)

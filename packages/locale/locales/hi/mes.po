@@ -1130,6 +1130,9 @@ msgstr "फैला निर्माण करने में व़या"
 msgid "Failed to create required action"
 msgstr "अभियान बनाने में व़ला हुआ है"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "निष्पादन फ़ालतू नहीं बनाया जा सका"
 
@@ -3646,6 +3649,9 @@ msgstr "रिफ़ीव्ह लाइन को अपडेट करन�
 
 msgid "Failed to update RFQ line with model"
 msgstr "RFQ रेकांसियल अपडेट करने में व्ह सफल नहीं हुई"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "रफ्क्यू स्टेशन को अपडेट करने में फालतू प्रयास किया गया है"

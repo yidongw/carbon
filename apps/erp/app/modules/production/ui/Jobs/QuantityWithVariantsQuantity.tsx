@@ -84,6 +84,7 @@ export function QuantityWithVariantsQuantity({
 
   return (
     <FormControl
+      className="w-full min-w-0"
       isInvalid={!!error}
       isRequired={isRequired}
       isDisabled={isDisabled}

@@ -331,7 +331,7 @@ const SupplierQuoteLineForm = ({
                     />
                     <VStack>
                       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                        <div className="col-span-1 lg:col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
                           <Item
                             autoFocus
                             name="itemId"
@@ -404,7 +404,7 @@ const SupplierQuoteLineForm = ({
 
                           <CustomFormFields table="supplierQuoteLine" />
                         </div>
-                        <div className="flex gap-y-4">
+                        <div className="flex w-full min-w-0 flex-col gap-y-4">
                           {hasVariantsQuantity ? (
                             // Validator expects quantity as an array (price
                             // breaks). For Style expand, submit a single tier
@@ -440,7 +440,7 @@ const SupplierQuoteLineForm = ({
                     <Hidden name="supplierQuoteLineType" value="G/L Account" />
                     <VStack>
                       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                        <div className="col-span-1 lg:col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
                           <Account
                             name="accountId"
                             label={t`GL Account`}
@@ -478,7 +478,7 @@ const SupplierQuoteLineForm = ({
                           />
                           <CustomFormFields table="supplierQuoteLine" />
                         </div>
-                        <div className="flex gap-y-4">
+                        <div className="flex w-full min-w-0 flex-col gap-y-4">
                           <ArrayNumeric
                             name="quantity"
                             label={t`Quantity`}

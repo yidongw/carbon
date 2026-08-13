@@ -4935,6 +4935,9 @@ msgstr "Nie udało się utworzyć powtórki"
 msgid "Failed to create required action"
 msgstr "Nie udało się utworzyć wymaganej akcji"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Nie udało się utworzyć ryzyka"
 
@@ -7606,6 +7609,9 @@ msgstr "Nie udało się zaktualizować linii OFZ"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Nie udało się zaktualizować linii propozycji ceny z modelu"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Nie udało się zaktualizować statusu OFERTY"
@@ -11890,6 +11896,12 @@ msgstr "Jednostka miary zakupu"
 
 msgid "Push record changes to external systems the moment they happen."
 msgstr "Wciśnij rekordy zmian w zewnętrzne systemy w chwili, gdy się one dzieją."
+
+msgid "QR Code"
+msgstr ""
+
+msgid "QR Code to complete the current operation for this kanban"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"

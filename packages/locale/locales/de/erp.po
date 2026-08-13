@@ -4935,6 +4935,9 @@ msgstr "Fehler beim Erstellen der Wiederherstellung"
 msgid "Failed to create required action"
 msgstr "Fehler beim Erstellen der erforderlichen Aktion"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Fehler beim Erstellen des Risikos"
 
@@ -7606,6 +7609,9 @@ msgstr "Fehler beim Aktualisieren der RFQ-Zeile"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Fehler beim Aktualisieren der RFQ-Zeile mit dem Modell"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Fehler beim Aktualisieren des RFQ-Zustands"
@@ -11890,6 +11896,12 @@ msgstr "Einkaufsmaßeinheit"
 
 msgid "Push record changes to external systems the moment they happen."
 msgstr "Drücken Sie die Änderungen sofort an externe Systeme ab, sobald sie eintreten."
+
+msgid "QR Code"
+msgstr ""
+
+msgid "QR Code to complete the current operation for this kanban"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"

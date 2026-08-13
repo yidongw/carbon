@@ -948,7 +948,11 @@ export const salesRfqLineValidator = z.object({
     .string()
     .min(1, { message: "Unit of measure is required" }),
   order: zfd.numeric(z.number().min(0)),
-  modelUploadId: zfd.text(z.string().optional())
+  modelUploadId: zfd.text(z.string().optional()),
+  // Style variantTable stored on the line (convert copies to quoteLine).
+  configuration: z.any().optional(),
+  // FormData Style/attribute qty grid — mapped to configuration.variantTable.
+  variantQuantities: zfd.text(z.string().optional())
 });
 
 export const selectedLineSchema = z.object({

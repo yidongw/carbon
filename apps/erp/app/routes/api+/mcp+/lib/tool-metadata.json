@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-12T08:40:09.965Z",
-  "totalTools": 1273,
+  "generated": "2026-08-13T07:47:05.682Z",
+  "totalTools": 1275,
   "modules": 15,
   "tools": [
     {
@@ -21998,6 +21998,38 @@
         },
         "required": [
           "supplierQuoteId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "purchasing_replacePurchasingRfqLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace purchasing rfq lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchasingRfqId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "purchasingRfqId",
           "variants"
         ]
       }

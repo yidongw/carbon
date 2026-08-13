@@ -2,6 +2,7 @@ import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
+import type { Json } from "@carbon/database";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
@@ -10,6 +11,11 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
+import { hasStyleVariantsQuantity } from "~/modules/items/styleOrderLines.server";
+import {
+  readVariantQuantitiesFormRaw,
+  variantTableUpdateFields
+} from "~/modules/production/variantsQuantityOverlay.server";
 import type { SalesRFQ } from "~/modules/sales";
 import {
   getOpportunityLineDocuments,
@@ -24,6 +30,7 @@ import {
   OpportunityLineNotes
 } from "~/modules/sales/ui/Opportunity";
 import { SalesRFQLineForm } from "~/modules/sales/ui/SalesRFQ";
+import type { MethodItemType } from "~/modules/shared/types";
 import { setCustomFields } from "~/utils/form";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
@@ -87,12 +94,50 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const {
+    id: _id,
+    variantQuantities: variantQuantitiesFromValidator,
+    configuration: _configurationFromValidator,
+    quantity: rawQuantity,
+    ...d
+  } = validation.data;
+
+  let quantity = rawQuantity;
+  let configuration: Json | undefined | null;
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  if (variantQuantitiesRaw) {
+    try {
+      const parsed = JSON.parse(variantQuantitiesRaw) as Record<
+        string,
+        unknown
+      >;
+      const fields = variantTableUpdateFields(parsed);
+      if (hasStyleVariantsQuantity(fields.variantQuantities)) {
+        configuration = fields.variantQuantities;
+        quantity = [fields.quantity];
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  } else if (formData.has("variantQuantities")) {
+    const existing = await client
+      .from("salesRfqLine")
+      .select("configuration")
+      .eq("id", lineId)
+      .single();
+    if (hasStyleVariantsQuantity(existing.data?.configuration)) {
+      configuration = null;
+    }
+  }
 
   const updateLine = await upsertSalesRFQLine(client, {
     id: lineId,
     ...d,
+    quantity,
+    ...(configuration !== undefined ? { configuration } : {}),
     updatedBy: userId,
     customFields: setCustomFields(formData)
   });
@@ -126,6 +171,20 @@ export default function SalesRFQLine() {
 
   const isReadOnly = isSalesRfqLocked(rfqData?.rfqSummary?.status);
 
+  // Dual-read variantTable (and legacy configTable) without importing .server
+  // helpers into the client bundle.
+  const styleVariantQuantities = (() => {
+    const cfg = (line as { configuration?: unknown }).configuration;
+    if (!cfg || typeof cfg !== "object" || Array.isArray(cfg)) return undefined;
+    const record = cfg as Record<string, unknown>;
+    const table = record.variantTable ?? record.configTable;
+    return Array.isArray(table) && table.length > 0
+      ? JSON.stringify(
+          Array.isArray(record.variantTable) ? cfg : { variantTable: table }
+        )
+      : undefined;
+  })();
+
   const initialValues = {
     ...line,
     id: line.id ?? undefined,
@@ -134,10 +193,14 @@ export default function SalesRFQLine() {
     customerPartRevision: line.customerPartRevision ?? "",
     description: line.description ?? "",
     itemId: line.itemId ?? "",
+    itemType: ((line as { itemType?: string }).itemType ??
+      "Part") as MethodItemType,
     quantity: line.quantity ?? [1],
     order: line.order ?? 1,
     unitOfMeasureCode: line.unitOfMeasureCode ?? "",
-    modelUploadId: line.modelUploadId ?? undefined
+    modelUploadId: line.modelUploadId ?? undefined,
+    configuration: undefined,
+    variantQuantities: styleVariantQuantities
   };
 
   return (

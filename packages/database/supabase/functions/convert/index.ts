@@ -1192,6 +1192,7 @@ serve(async (req: Request) => {
               unitOfMeasureCode: line.unitOfMeasureCode,
               // Sales RFQ uses "order" column; map it to quoteLine.sortOrder
               sortOrder: line.order ?? 1,
+              configuration: (line as any).configuration ?? undefined,
               companyId,
               createdBy: userId,
             }));

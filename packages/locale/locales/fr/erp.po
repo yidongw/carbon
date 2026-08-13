@@ -4935,6 +4935,9 @@ msgstr "Échec de la création d'une réimpression"
 msgid "Failed to create required action"
 msgstr "Échec de la création de l'action requise"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Échec de la création du risque"
 
@@ -7606,6 +7609,9 @@ msgstr "Échec de la mise à jour de la ligne d'offre de prix"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Échec de la mise à jour de la ligne de devis avec le modèle"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Échec de mise à jour du statut de la demande de prix"
@@ -11890,6 +11896,12 @@ msgstr "Unité de mesure d'achat"
 
 msgid "Push record changes to external systems the moment they happen."
 msgstr "Pousser les modifications de registre vers les systèmes externes dès que cela se produit."
+
+msgid "QR Code"
+msgstr ""
+
+msgid "QR Code to complete the current operation for this kanban"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"

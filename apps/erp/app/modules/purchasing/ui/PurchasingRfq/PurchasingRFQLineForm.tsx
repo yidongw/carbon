@@ -39,6 +39,8 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import { useLineVariantQuantities } from "~/modules/shared";
 import type { MethodItemType } from "~/modules/shared/types";
 import type { action } from "~/routes/x+/purchasing-rfq+/$rfqId.$lineId.details";
 import { path } from "~/utils/path";
@@ -90,29 +92,57 @@ const PurchasingRFQLineForm = ({
     inventoryUom: string;
     purchaseUom: string;
     conversionFactor: number;
+    hasVariantAttributes: boolean;
   }>({
     itemId: initialValues.itemId ?? "",
     itemReadableId: "",
     description: initialValues.description ?? "",
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     purchaseUom: initialValues.purchaseUnitOfMeasureCode ?? "",
-    conversionFactor: initialValues.conversionFactor ?? 1
+    conversionFactor: initialValues.conversionFactor ?? 1,
+    hasVariantAttributes: !!initialValues.variantQuantities
+  });
+
+  const {
+    variantsQuantityTotal,
+    hasVariantsQuantity,
+    isMissingVariantQty,
+    hiddenVariantQuantitiesValue,
+    openVariantsQuantity,
+    clearVariantsQuantity,
+    variantsQuantityModalNode
+  } = useLineVariantQuantities({
+    initialVariantQuantities: initialValues.variantQuantities,
+    hasVariantAttributes: itemData.hasVariantAttributes,
+    itemId: itemData.itemId,
+    isEditing
   });
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
+    clearVariantsQuantity();
 
-    const item = await carbon
-      .from("item")
-      .select("name, readableIdWithRevision, type, unitOfMeasureCode")
-      .eq("id", itemId)
-      .eq("companyId", company.id)
-      .single();
+    const [item, variantAttributes] = await Promise.all([
+      carbon
+        .from("item")
+        .select("name, readableIdWithRevision, type, unitOfMeasureCode")
+        .eq("id", itemId)
+        .eq("companyId", company.id)
+        .single(),
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+        .limit(1)
+    ]);
 
     if (item.error) {
       toast.error(t`Failed to load item details`);
       return;
     }
+
+    const hasVariantAttributes = (variantAttributes?.data?.length ?? 0) > 0;
 
     const newItemData = {
       ...itemData,
@@ -121,7 +151,8 @@ const PurchasingRFQLineForm = ({
       description: item.data?.name ?? "",
       inventoryUom: item.data?.unitOfMeasureCode ?? "EA",
       purchaseUom: item.data?.unitOfMeasureCode ?? "EA",
-      conversionFactor: 1
+      conversionFactor: 1,
+      hasVariantAttributes
     };
 
     setItemData(newItemData);
@@ -207,13 +238,20 @@ const PurchasingRFQLineForm = ({
                   name="inventoryUnitOfMeasureCode"
                   value={itemData?.inventoryUom}
                 />
+                {itemData.hasVariantAttributes && (
+                  <Hidden
+                    name="variantQuantities"
+                    value={hiddenVariantQuantitiesValue}
+                  />
+                )}
                 <VStack>
                   <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                    {/* Avoid col-span-2 on mobile — it opens an implicit 2nd track. */}
+                    <div className="col-span-1 lg:col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
                       <Item
                         autoFocus
                         name="itemId"
-                        label={t`Part`}
+                        label={itemType}
                         type={itemType}
                         value={itemData.itemId}
                         includeInactive
@@ -224,6 +262,7 @@ const PurchasingRFQLineForm = ({
                           onItemChange(value?.value as string);
                         }}
                         onTypeChange={(type) => {
+                          clearVariantsQuantity();
                           setItemType(type as MethodItemType);
                           setItemData({
                             ...itemData,
@@ -231,7 +270,8 @@ const PurchasingRFQLineForm = ({
                             description: "",
                             inventoryUom: "",
                             purchaseUom: "",
-                            conversionFactor: 1
+                            conversionFactor: 1,
+                            hasVariantAttributes: false
                           });
                         }}
                       />
@@ -267,13 +307,29 @@ const PurchasingRFQLineForm = ({
 
                       <CustomFormFields table="purchasingRfqLine" />
                     </div>
-                    <div className="flex gap-y-4">
-                      <ArrayNumeric
-                        name="quantity"
-                        label={t`Quantity`}
-                        defaults={[1, 25, 50, 100]}
-                        isDisabled={isLocked}
-                      />
+                    <div className="flex w-full min-w-0 flex-col gap-y-4">
+                      {hasVariantsQuantity ? (
+                        <QuantityWithVariantsQuantity
+                          name="quantity.0"
+                          label={t`Quantity`}
+                          value={variantsQuantityTotal}
+                          onChange={() => {
+                            // Read-only while totals are driven by variant rows.
+                          }}
+                          hasVariantsQuantity={hasVariantsQuantity}
+                          onOpenVariantsQuantity={openVariantsQuantity}
+                          variantsQuantityTotal={variantsQuantityTotal}
+                          isReadOnly
+                          isDisabled={isLocked}
+                        />
+                      ) : (
+                        <ArrayNumeric
+                          name="quantity"
+                          label={t`Quantity`}
+                          defaults={[1, 25, 50, 100]}
+                          isDisabled={isLocked}
+                        />
+                      )}
                     </div>
                   </div>
                 </VStack>
@@ -282,6 +338,7 @@ const PurchasingRFQLineForm = ({
                 <Submit
                   isDisabled={
                     isLocked ||
+                    isMissingVariantQty ||
                     (isEditing
                       ? !permissions.can("update", "purchasing")
                       : !permissions.can("create", "purchasing"))
@@ -294,6 +351,7 @@ const PurchasingRFQLineForm = ({
           </ModalCardContent>
         </ModalCard>
       </ModalCardProvider>
+      {variantsQuantityModalNode}
       {isEditing && deleteDisclosure.isOpen && (
         <DeletePurchasingRFQLine
           line={initialValues as PurchasingRFQLine}

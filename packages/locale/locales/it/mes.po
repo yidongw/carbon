@@ -1130,6 +1130,9 @@ msgstr "Fallito durante la creazione della riproduzione"
 msgid "Failed to create required action"
 msgstr "Fallito nell'_creazione dell'azione richiesta_"
 
+msgid "Failed to create RFQ lines for style variants"
+msgstr ""
+
 msgid "Failed to create risk"
 msgstr "Fallito nella creazione del rischio"
 
@@ -3646,6 +3649,9 @@ msgstr "Fallito aggiornamento riga RFQ"
 
 msgid "Failed to update RFQ line with model"
 msgstr "Fallito aggiornamento riga RFQ con il modello"
+
+msgid "Failed to update RFQ lines for style variants"
+msgstr ""
 
 msgid "Failed to update RFQ status"
 msgstr "Fallito aggiornamento stato RFQ"
