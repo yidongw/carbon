@@ -1,20 +1,23 @@
 name: Integration Tests (real DB)
 
-# Runs the packages/database integration suite against a real Postgres
-# (full Carbon schema: migrations + seed + seed_company + seedDemoData).
-# Gated to `dev` so broken migrations/seed are caught before they reach staging,
-# and to database changes so unrelated PRs don't pay the cost.
+# Runs the real-database integration suites on `dev`:
+#   - packages/database: migrations + seed + seed_company + seedDemoData
+#   - apps/erp: service functions over real PostgREST (supabase-js)
+# Gated to `dev` so broken migrations/APIs are caught before staging, and to the
+# relevant paths so unrelated PRs don't pay the cost.
 
 on:
   pull_request:
     branches: [dev]
     paths:
       - "packages/database/**"
+      - "apps/erp/app/**"
       - ".github/workflows/integration-tests.yml"
   push:
     branches: [dev]
     paths:
       - "packages/database/**"
+      - "apps/erp/app/**"
       - ".github/workflows/integration-tests.yml"
 
 concurrency:
@@ -22,9 +25,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Keep in sync with the default in packages/database/src/test/testDatabase.ts.
-  # The harness reads this override; the workflow also uses it as the cache key.
+  # Keep in sync with the defaults in packages/database/src/test/dockerHarness.ts.
+  # The harness reads these overrides; the workflow also uses them as cache keys.
   ITEST_POSTGRES_IMAGE: public.ecr.aws/supabase/postgres:15.8.1.085
+  ITEST_POSTGREST_IMAGE: public.ecr.aws/supabase/postgrest:v14.10
 
 jobs:
   integration:
@@ -49,29 +53,37 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Cache the ~2.9GB Postgres image as a gzipped `docker save` tarball so we
-      # don't re-pull it from the registry on every run. Keyed to the image tag,
-      # so bumping ITEST_POSTGRES_IMAGE naturally busts the cache.
-      - name: Cache Postgres image
-        id: pg-image-cache
+      # Cache the (large) Docker images as gzipped `docker save` tarballs so we
+      # don't re-pull them every run. Keyed to the image tags, so bumping a tag
+      # naturally busts the cache.
+      - name: Cache Docker images
+        id: docker-image-cache
         uses: actions/cache@v4
         with:
-          path: ~/.cache/itest-pg-image
-          key: itest-pg-image-${{ env.ITEST_POSTGRES_IMAGE }}
+          path: ~/.cache/itest-images
+          key: itest-images-${{ env.ITEST_POSTGRES_IMAGE }}-${{ env.ITEST_POSTGREST_IMAGE }}
 
-      - name: Load or pull Postgres image
+      - name: Load or pull Docker images
         run: |
           set -euo pipefail
-          TARBALL="$HOME/.cache/itest-pg-image/image.tar.gz"
-          if [ -f "$TARBALL" ]; then
-            echo "Loading cached image from $TARBALL"
-            gunzip -c "$TARBALL" | docker load
-          else
-            echo "Pulling $ITEST_POSTGRES_IMAGE"
-            docker pull "$ITEST_POSTGRES_IMAGE"
-            mkdir -p "$(dirname "$TARBALL")"
-            docker save "$ITEST_POSTGRES_IMAGE" | gzip > "$TARBALL"
-          fi
+          DIR="$HOME/.cache/itest-images"
+          mkdir -p "$DIR"
+          load_or_pull() {
+            local image="$1" tar="$2"
+            if [ -f "$tar" ]; then
+              echo "Loading cached image from $tar"
+              gunzip -c "$tar" | docker load
+            else
+              echo "Pulling $image"
+              docker pull "$image"
+              docker save "$image" | gzip > "$tar"
+            fi
+          }
+          load_or_pull "$ITEST_POSTGRES_IMAGE" "$DIR/postgres.tar.gz"
+          load_or_pull "$ITEST_POSTGREST_IMAGE" "$DIR/postgrest.tar.gz"
 
-      - name: Run integration tests
+      - name: Database integration tests
         run: pnpm --filter @carbon/database test:integration
+
+      - name: ERP API integration tests
+        run: pnpm --filter erp test:integration

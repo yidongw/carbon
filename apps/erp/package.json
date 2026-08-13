@@ -172,6 +172,7 @@
     "dev:app": "react-router dev",
     "lint": "biome lint --write ",
     "start": "NODE_ENV=production react-router-serve ./build/server/index.js",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "typecheck": "tsgo --noEmit",
     "typegen": "react-router typegen"
   },
