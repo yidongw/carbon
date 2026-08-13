@@ -22,9 +22,12 @@ import {
 } from "@carbon/database/test";
 import { afterAll, beforeAll, describe, expect, inject, it } from "vitest";
 import {
+  deleteItemAttributeSet,
   getItemAttributeSets,
+  getItemAttributeValues,
   upsertItemAttribute,
   upsertItemAttributeSet,
+  upsertItemAttributeValue,
 } from "./itemAttribute.service";
 
 const pgUrl = inject("itestPgUrl");
@@ -128,6 +131,59 @@ describe.skipIf(!enabled)("integration: item attributes API (real PostgREST)", (
     expect(inB.error).toBeNull();
     expect(
       (inB.data ?? []).some((s: { code: string }) => s.code === "ONLY-IN-A")
+    ).toBe(false);
+  });
+
+  it("round-trips an attribute value under its attribute", async () => {
+    const { companyId, userId } = await provision();
+
+    const attribute = await upsertItemAttribute(client, {
+      code: "SIZE",
+      name: "Size",
+      values: [],
+      companyId,
+      createdBy: userId,
+    });
+    expect(attribute.error).toBeNull();
+    const attributeId = attribute.data?.id as string;
+
+    const value = await upsertItemAttributeValue(client, {
+      attributeId,
+      code: "XL",
+      name: "Extra Large",
+      companyId,
+      createdBy: userId,
+    });
+    expect(value.error).toBeNull();
+    expect(value.data?.id).toBeTruthy();
+
+    const res = await getItemAttributeValues(client, attributeId, companyId);
+    expect(res.error).toBeNull();
+    expect((res.data ?? []).map((v: { code: string }) => v.code)).toContain(
+      "XL"
+    );
+  });
+
+  it("deleteItemAttributeSet removes the set from the read API", async () => {
+    const { companyId, userId } = await provision();
+
+    const created = await upsertItemAttributeSet(client, {
+      code: "TO-DELETE",
+      name: "To delete",
+      attributeIds: [],
+      companyId,
+      createdBy: userId,
+    });
+    expect(created.error).toBeNull();
+    const setId = created.data?.id as string;
+
+    const del = await deleteItemAttributeSet(client, setId);
+    expect(del.error).toBeNull();
+
+    const res = await getItemAttributeSets(client, companyId);
+    expect(res.error).toBeNull();
+    expect(
+      (res.data ?? []).some((s: { code: string }) => s.code === "TO-DELETE")
     ).toBe(false);
   });
 });
