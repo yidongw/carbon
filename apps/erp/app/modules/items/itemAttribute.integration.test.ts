@@ -15,6 +15,7 @@
  *
  * Skips automatically when Docker is unavailable.
  */
+import { seedDemoStyleAttributeValues } from "@carbon/database/seed-demo";
 import {
   createPool,
   createTestClient,
@@ -185,5 +186,24 @@ describe.skipIf(!enabled)("integration: item attributes API (real PostgREST)", (
     expect(
       (res.data ?? []).some((s: { code: string }) => s.code === "TO-DELETE")
     ).toBe(false);
+  });
+
+  // Demonstrates the composable-seed pattern: rather than hand-crafting values
+  // or running the whole ~100-step seedDemoData, the test seeds just the one
+  // building block it needs (the style palette) and reads it through the API.
+  it("reads the style palette seeded via seedDemoStyleAttributeValues", async () => {
+    const connection = await pool.connect();
+    let companyId: string;
+    try {
+      const ids = await provisionTestCompany(connection);
+      companyId = ids.companyId;
+      await seedDemoStyleAttributeValues(connection, ids);
+    } finally {
+      connection.release();
+    }
+
+    const colors = await getItemAttributeValues(client, "iat_color", companyId);
+    expect(colors.error).toBeNull();
+    expect((colors.data ?? []).length).toBeGreaterThan(0);
   });
 });
