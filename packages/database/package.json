@@ -27,7 +27,8 @@
     "./audit": "./src/audit.ts",
     "./audit.config": "./src/audit.config.ts",
     "./audit.types": "./src/audit.types.ts",
-    "./swagger-docs-schema": "./src/swagger-docs-schema.ts"
+    "./swagger-docs-schema": "./src/swagger-docs-schema.ts",
+    "./test": "./src/test/index.ts"
   },
   "private": true,
   "scripts": {
