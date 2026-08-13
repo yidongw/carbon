@@ -35,6 +35,13 @@ export type SynthesizedVariantQuantityParameter = {
   label: string;
   dataType: "list";
   listOptions: string[];
+  /**
+   * Stable `variantItemId` for each `valuesKey` option (from `itemVariant`), so
+   * the editor can stamp a drift-proof id onto each saved cell instead of relying
+   * on the mutable, code-derived `valuesKey`. Options with no synced variant yet
+   * are simply absent (the cell falls back to `valuesKey`).
+   */
+  optionVariantItemIds: Record<string, string>;
   sortOrder: number;
   configurationParameterGroupId: null;
   createdAt: string;
@@ -139,6 +146,25 @@ export async function getStyleVariantQuantityParameters(
   }
   const listOptions = combos.map((parts) => parts.join("|"));
 
+  // Map each valuesKey option to its stable variant SKU so the editor can stamp
+  // variantItemId onto saved cells (drift-proof match key). Options without a
+  // synced variant are simply absent.
+  const { data: variantRows, error: variantRowsErr } = await db
+    .from("itemVariant")
+    .select("valuesKey, variantItemId")
+    .eq("parentItemId", itemId)
+    .eq("companyId", companyId);
+  if (variantRowsErr) throw variantRowsErr;
+  const optionVariantItemIds: Record<string, string> = {};
+  for (const r of (variantRows ?? []) as Array<{
+    valuesKey: string | null;
+    variantItemId: string | null;
+  }>) {
+    if (r.valuesKey && r.variantItemId) {
+      optionVariantItemIds[r.valuesKey] = r.variantItemId;
+    }
+  }
+
   const nowIso = new Date().toISOString();
   return [
     {
@@ -149,6 +175,7 @@ export async function getStyleVariantQuantityParameters(
       label: "Attributes",
       dataType: "list" as const,
       listOptions,
+      optionVariantItemIds,
       sortOrder: 0,
       configurationParameterGroupId: null,
       createdAt: nowIso,
