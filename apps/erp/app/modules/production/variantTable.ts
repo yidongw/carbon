@@ -192,8 +192,7 @@ export function reportsExceedVariantQuantitiesPlan(
 }
 
 /**
- * Sums the `Quantities` column across `variantQuantities.variantTable`
- * (dual-reads legacy `configTable`).
+ * Sums the `Quantities` column across `variantQuantities.variantTable`.
  */
 export function computeVariantTableTotal(
   variantQuantities: Json | Record<string, unknown> | null | undefined

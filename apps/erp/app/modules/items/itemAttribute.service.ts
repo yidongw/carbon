@@ -1846,12 +1846,9 @@ export async function expandVariantsQuantityTable(
 }> {
   try {
     const raw = (args.variantQuantities ?? {}) as Record<string, unknown>;
-    // Dual-read legacy `configTable` during the wire-key rename window.
     const table = Array.isArray(raw.variantTable)
       ? (raw.variantTable as Record<string, unknown>[])
-      : Array.isArray(raw.configTable)
-        ? (raw.configTable as Record<string, unknown>[])
-        : [];
+      : [];
 
     const cells: Array<{
       variantItemId: string;

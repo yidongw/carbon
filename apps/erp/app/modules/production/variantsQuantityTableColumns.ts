@@ -1,10 +1,7 @@
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { readVariantTableRows, VARIANT_TABLE_KEY } from "./variantTableWire";
 
-export {
-  LEGACY_VARIANT_TABLE_KEY,
-  VARIANT_TABLE_KEY
-} from "./variantTableWire";
+export { VARIANT_TABLE_KEY } from "./variantTableWire";
 
 export type VariantsQuantityRow = Record<string, string | number | boolean>;
 
@@ -134,7 +131,7 @@ export function hasVariantRowValue(
   return columns.some((col) => !isZeroOrEmpty(row[col.key]));
 }
 
-/** Read combo qty rows from `variantTable` (dual-reads legacy `configTable`). */
+/** Read combo qty rows from `variantTable`. */
 export function getVariantsQuantityRows(
   variantQuantities: unknown
 ): VariantsQuantityRow[] {

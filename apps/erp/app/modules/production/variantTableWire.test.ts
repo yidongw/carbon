@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  normalizeVariantQuantitiesPayload,
   readVariantQuantitiesFormRaw,
   readVariantTableRows,
   stampVariantItemIds
@@ -15,42 +14,12 @@ describe("readVariantTableRows", () => {
     ).toHaveLength(1);
   });
 
-  it("dual-reads legacy configTable", () => {
+  it("ignores the retired legacy configTable key", () => {
     expect(
       readVariantTableRows({
         configTable: [{ valuesKey: "BK|S", Quantities: 3 }]
       })
-    ).toEqual([{ valuesKey: "BK|S", Quantities: 3 }]);
-  });
-
-  it("prefers variantTable when both are present", () => {
-    expect(
-      readVariantTableRows({
-        variantTable: [{ valuesKey: "new", Quantities: 1 }],
-        configTable: [{ valuesKey: "old", Quantities: 9 }]
-      })
-    ).toEqual([{ valuesKey: "new", Quantities: 1 }]);
-  });
-});
-
-describe("normalizeVariantQuantitiesPayload", () => {
-  it("promotes configTable to variantTable", () => {
-    expect(
-      normalizeVariantQuantitiesPayload({
-        configTable: [{ valuesKey: "BK|S", Quantities: 1 }],
-        splitRows: []
-      })
-    ).toEqual({
-      variantTable: [{ valuesKey: "BK|S", Quantities: 1 }],
-      splitRows: []
-    });
-  });
-
-  it("leaves current key alone", () => {
-    const payload = {
-      variantTable: [{ valuesKey: "BK|S", Quantities: 1 }]
-    };
-    expect(normalizeVariantQuantitiesPayload(payload)).toEqual(payload);
+    ).toEqual([]);
   });
 });
 
@@ -94,22 +63,19 @@ describe("stampVariantItemIds", () => {
 });
 
 describe("readVariantQuantitiesFormRaw", () => {
-  it("prefers validator value", () => {
+  it("returns the validator value", () => {
     const fd = new FormData();
-    fd.set("configuration", '{"configTable":[]}');
     expect(readVariantQuantitiesFormRaw(fd, '{"variantTable":[]}')).toBe(
       '{"variantTable":[]}'
     );
   });
 
-  it("falls back to legacy configuration FormData field", () => {
+  it("returns undefined when the validator value is absent (no legacy fallback)", () => {
     const fd = new FormData();
     fd.set(
       "configuration",
       '{"configTable":[{"valuesKey":"A","Quantities":1}]}'
     );
-    expect(readVariantQuantitiesFormRaw(fd, undefined)).toContain(
-      "configTable"
-    );
+    expect(readVariantQuantitiesFormRaw(fd, undefined)).toBeUndefined();
   });
 });
