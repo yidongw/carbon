@@ -1,12 +1,14 @@
 /**
- * Integration tests against a real Postgres with the full Carbon schema applied.
+ * Integration test for `seedDemoData` against a real Postgres with the full
+ * Carbon schema applied (started once by globalSetup — see ./globalSetup.ts).
  *
- * These exercise real SQL — triggers, event interceptors, `seed_company()`,
- * `seedDemoData()` — not mocks. The database is started once by globalSetup
- * (see ./globalSetup.ts). Each test runs inside a rolled-back transaction, so
- * they are fully isolated and require no cleanup.
+ * This is the DB-suite's sole test: `seedDemoData` (the ~100-step "Try the demo"
+ * seeder) is heavy, takes a direct `pg` client, and is exercised by nothing
+ * else. Migration/`seed.sql`/`seed_company` correctness is already covered by
+ * the ERP API suite, which applies the same schema and provisions a company via
+ * `seed_company` before every test — so those checks aren't duplicated here.
  *
- * Skips automatically when Docker is unavailable.
+ * Runs inside a rolled-back transaction; skips when Docker is unavailable.
  */
 import pg from "pg";
 import { afterAll, beforeAll, describe, expect, inject, it } from "vitest";
@@ -16,7 +18,7 @@ import { provisionTestCompany } from "./provision";
 
 const url = inject("itestDbUrl");
 
-describe.skipIf(!url)("integration: real database", () => {
+describe.skipIf(!url)("integration: seedDemoData (real database)", () => {
   let pool: pg.Pool;
 
   beforeAll(() => {
@@ -25,30 +27,6 @@ describe.skipIf(!url)("integration: real database", () => {
 
   afterAll(async () => {
     await pool?.end();
-  });
-
-  it("provisions a company via seed_company (accounts, employee types, groups, user link)", async () => {
-    await withRollback(pool, async (client) => {
-      const { companyId, userId } = await provisionTestCompany(client);
-
-      const links = await client.query<{ n: number }>(
-        `SELECT count(*)::int AS n FROM "userToCompany" WHERE "userId" = $1 AND "companyId" = $2`,
-        [userId, companyId]
-      );
-      expect(links.rows[0]!.n).toBe(1);
-
-      const empTypes = await client.query<{ n: number }>(
-        `SELECT count(*)::int AS n FROM "employeeType" WHERE "companyId" = $1`,
-        [companyId]
-      );
-      expect(empTypes.rows[0]!.n).toBeGreaterThan(0);
-
-      const groups = await client.query<{ n: number }>(
-        `SELECT count(*)::int AS n FROM "group" WHERE "companyId" = $1`,
-        [companyId]
-      );
-      expect(groups.rows[0]!.n).toBeGreaterThan(0);
-    });
   });
 
   it("seeds demo data (items, customers, suppliers) into a provisioned company", async () => {
@@ -82,33 +60,4 @@ describe.skipIf(!url)("integration: real database", () => {
       expect(suppliers.rows[0]!.n).toBeGreaterThan(0);
     });
   }, 120_000);
-
-  it("withRollback isolates writes between tests", async () => {
-    const marker = `itest-marker-${Date.now()}`;
-
-    await withRollback(pool, async (client) => {
-      const { companyId, userId } = await provisionTestCompany(client);
-      await client.query(
-        `INSERT INTO "customerType" (name, "companyId", "createdBy") VALUES ($1, $2, $3)`,
-        [marker, companyId, userId]
-      );
-      const inside = await client.query<{ n: number }>(
-        `SELECT count(*)::int AS n FROM "customerType" WHERE name = $1`,
-        [marker]
-      );
-      expect(inside.rows[0]!.n).toBe(1);
-    });
-
-    // After rollback the row must be gone.
-    const client = await pool.connect();
-    try {
-      const after = await client.query<{ n: number }>(
-        `SELECT count(*)::int AS n FROM "customerType" WHERE name = $1`,
-        [marker]
-      );
-      expect(after.rows[0]!.n).toBe(0);
-    } finally {
-      client.release();
-    }
-  });
 });
