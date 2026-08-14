@@ -55,22 +55,14 @@ import type { Style } from "../../types";
 import NewStyleOverlayContent from "./NewStyleOverlayContent";
 import { warmNewStyleOverlay } from "./newStyleOverlayBridge";
 import { buildDefaultStylesTableColumns } from "./stylesTableColumns";
+import {
+  styleAttributes,
+  useStyleAttributeColumnMeta
+} from "./useStyleAttributeColumnMeta";
 
 // Keep StyleForm in the styles-page graph and register it for the overlay
 // lazy() factory so Add Style does not wait on a cold chunk download.
 warmNewStyleOverlay({ default: NewStyleOverlayContent });
-
-type StyleAttributeColumn = {
-  attributeId: string;
-  code: string;
-  name: string;
-  values: Array<{ id: string; code: string; name: string }>;
-};
-
-function styleAttributes(row: Style): StyleAttributeColumn[] {
-  const attrs = (row as { attributes?: unknown }).attributes;
-  return Array.isArray(attrs) ? (attrs as StyleAttributeColumn[]) : [];
-}
 
 type StylesTableProps = {
   data: Style[];
@@ -226,6 +218,8 @@ const StylesTable = memo(
       [templateFetcher.data?.data]
     );
 
+    const attrColumnMeta = useStyleAttributeColumnMeta(data);
+
     const columns = useMemo<ColumnDef<Style>[]>(() => {
       const defaultColumns = buildDefaultStylesTableColumns({
         people,
@@ -239,23 +233,8 @@ const StylesTable = memo(
         i18n
       });
 
-      const attrMeta = new Map<string, { code: string; name: string }>();
-      for (const row of data) {
-        for (const a of styleAttributes(row)) {
-          if (!a.code) continue;
-          if (!attrMeta.has(a.code)) {
-            attrMeta.set(a.code, { code: a.code, name: a.name || a.code });
-          }
-        }
-      }
-      const attrCodes = Array.from(attrMeta.keys()).sort((a, b) => {
-        const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
-        const d = rank(a) - rank(b);
-        return d !== 0 ? d : a.localeCompare(b);
-      });
-
-      const attrColumns: ColumnDef<Style>[] = attrCodes.map((code) => {
-        const meta = attrMeta.get(code)!;
+      const attrColumns: ColumnDef<Style>[] = attrColumnMeta.map((meta) => {
+        const code = meta.code;
         return {
           id: `attr-${code}`,
           header: translateItemAttributeCatalogName(meta.name || code, i18n),
@@ -311,7 +290,7 @@ const StylesTable = memo(
       translateTrackingType,
       i18n,
       customColumns,
-      data
+      attrColumnMeta
     ]);
 
     const fetcher = useFetcher<typeof action>();

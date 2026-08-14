@@ -36,6 +36,13 @@ const READABLE_ID_TABLES = new Set([
   "fixture"
 ]);
 
+// Stable fallback for rows whose view returns NULL tags. Inlining `?? []`
+// would mint a new array every render, so useSynced's resync effect fires
+// each time and setState-loops forever — the loop starves React's transition
+// lane, so client-side navigations (search/sort/filter) never commit and the
+// table freezes on the previous result.
+const NO_TAGS: string[] = [];
+
 /**
  * Inline tags editor for a table row. Mirrors the detail-page <Tags> field: a
  * badge preview plus a picker that adds/removes tags and can create a new tag via
@@ -61,7 +68,7 @@ export function TagsCell<
   const fetcher = useFetcher();
   const { openOverlay } = useOverlay();
   const revalidator = useRevalidator();
-  const [value, setValue] = useSynced<string[]>(row.tags ?? []);
+  const [value, setValue] = useSynced<string[]>(row.tags ?? NO_TAGS);
 
   const options = useMemo(
     () => availableTags.map((t) => ({ value: t.name, label: t.name })),
