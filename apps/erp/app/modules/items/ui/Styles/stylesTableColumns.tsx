@@ -84,7 +84,10 @@ export function buildDefaultStylesTableColumns({
             thumbnailPath={row.original.thumbnailPath}
             type="Style"
           />
-          <Hyperlink to={path.to.style(row.original.id!)} className="min-w-0">
+          <Hyperlink
+            to={path.to.styleDetails(row.original.id!)}
+            className="min-w-0"
+          >
             <VStack spacing={0} className="min-w-0">
               <span className="w-full truncate">
                 {row.original.readableIdWithRevision}

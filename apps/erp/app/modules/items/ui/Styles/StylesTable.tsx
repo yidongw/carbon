@@ -438,7 +438,7 @@ const StylesTable = memo(
     const renderContextMenu = useMemo(() => {
       return (row: Style) => (
         <>
-          <MenuItem onClick={() => navigate(path.to.style(row.id!))}>
+          <MenuItem onClick={() => navigate(path.to.styleDetails(row.id!))}>
             <MenuIcon icon={<LuPencil />} />
             <Trans>Edit Style</Trans>
           </MenuItem>
@@ -495,7 +495,9 @@ const StylesTable = memo(
           }
           renderActions={renderActions}
           renderContextMenu={renderContextMenu}
-          getRowHref={(row) => (row.id ? path.to.style(row.id) : undefined)}
+          getRowHref={(row) =>
+            row.id ? path.to.styleDetails(row.id) : undefined
+          }
           onSearchChange={setSearch}
           searchLoading={showBackfillSpinner}
           title={t`Styles`}
