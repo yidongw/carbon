@@ -3,6 +3,8 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
+  Spinner,
   useDebounce
 } from "@carbon/react";
 import { useState } from "react";
@@ -20,12 +22,22 @@ type SearchFilterProps = InputProps & {
    * filtered result correctly.
    */
   reloadDocument?: boolean;
+  /**
+   * Client-side mode: called on every keystroke with the current value instead
+   * of navigating. Used by lists that filter already-loaded rows locally
+   * (e.g. Styles), so search never triggers a URL navigation.
+   */
+  onValueChange?: (value: string) => void;
+  /** Show a loading spinner inside the input (e.g. while a server backfill runs). */
+  isLoading?: boolean;
 };
 
 const SearchFilter = ({
   param,
   size,
   reloadDocument,
+  onValueChange,
+  isLoading,
   ...props
 }: SearchFilterProps) => {
   const [params, setParams] = useUrlParams();
@@ -55,11 +67,20 @@ const SearchFilter = ({
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
-          debounceQuery(e.target.value);
+          if (onValueChange) {
+            onValueChange(e.target.value);
+          } else {
+            debounceQuery(e.target.value);
+          }
         }}
         className="w-[100px] sm:w-[200px] text-sm"
         {...props}
       />
+      {isLoading && (
+        <InputRightElement>
+          <Spinner className="w-3.5 h-3.5" />
+        </InputRightElement>
+      )}
     </InputGroup>
   );
 };
