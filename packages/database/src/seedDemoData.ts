@@ -946,13 +946,12 @@ export async function seedDemoData(
 
   // Parts: id must equal item.readableId for each part
   // Note: itemId was dropped from part in the revisions migration
+  // TSHIRT-001 / JACKET-001 are Styles (variant SKUs), not Parts — no part row.
   for (const readableId of [
     "BEARING-6205",
     "BRACKET-001",
     "SHAFT-ASM-001",
     "CTRL-PCB-001",
-    "TSHIRT-001",
-    "JACKET-001",
     "FABRIC-CTN-01"
   ]) {
     await client.query(
@@ -962,7 +961,7 @@ export async function seedDemoData(
       [readableId, companyId, userId]
     );
   }
-  console.log(`   Upserted 4 part records`);
+  console.log(`   Upserted 5 part records`);
 
   // Consumable: id must equal item.readableId ("FASTENER-KIT-01")
   // Note: itemId was dropped from consumable in the revisions migration
@@ -3870,110 +3869,171 @@ export async function seedDemoData(
     console.log(`   Created procedure parameter`);
   }
 
-  // ─── Step 87: configurationParameterGroup + configurationParameter ───────
-  // TSHIRT-001 (Size + Color) and JACKET-001 (Size) are configurable; others are not.
-  console.log("87. Seeding configuration parameters...");
+  // ─── Step 87: Style attribute selections + variant SKUs ──────────────────
+  // TSHIRT-001 (Color × Size) and JACKET-001 (Size) are Styles. Give each its
+  // attribute selections and generate the variant SKUs the app would create via
+  // syncItemVariants: one child item + itemVariant + itemVariantAttribute per
+  // combo (the DB trigger fills itemVariant.valuesKey). Their quantity grids are
+  // driven by these selections/variants — Styles never read configurationParameter.
+  console.log("87. Seeding style variant SKUs...");
+  // `${colorCode}|${sizeCode}` (or `${sizeCode}` when color-less) -> variant SKU
+  // item id, consumed by the garment quantity cells in Step 87b.
+  const styleVariantIdByCombo: Record<string, Map<string, string>> = {};
   {
-    type CPDataType = "text" | "numeric" | "boolean" | "list";
-    type CPDef = {
-      paramLabel: string;
-      paramKey: string;
-      dataType: CPDataType;
-      listOptions: string[] | null;
-      sortOrder: number;
-    };
-    const itemConfigs: Array<{
-      itemKey: string;
-      groupName: string;
-      params: CPDef[];
-    }> = [
-      {
-        itemKey: "TSHIRT-001",
-        groupName: `${L.configParams.sizeLabel} & ${L.configParams.colorLabel}`,
-        params: [
-          {
-            paramLabel: L.configParams.sizeLabel,
-            paramKey: "size",
-            dataType: "list",
-            listOptions: L.configParams.sizeOptions,
-            sortOrder: 1
-          },
-          {
-            paramLabel: L.configParams.colorLabel,
-            paramKey: "color",
-            dataType: "list",
-            listOptions: L.configParams.colorOptions,
-            sortOrder: 2
-          }
-        ]
-      },
-      {
-        itemKey: "JACKET-001",
-        groupName: L.configParams.sizeLabel,
-        params: [
-          {
-            paramLabel: L.configParams.sizeLabel,
-            paramKey: "size",
-            dataType: "list",
-            listOptions: L.configParams.sizeOptions,
-            sortOrder: 1
-          }
-        ]
-      }
-    ];
-
-    for (const cfg of itemConfigs) {
-      const targetItemId = itemIds[cfg.itemKey];
-      if (!targetItemId) continue;
-
-      const existsCPG = await client.query<{ id: string }>(
-        `SELECT id FROM "configurationParameterGroup" WHERE "itemId"=$1 AND "companyId"=$2 LIMIT 1`,
-        [targetItemId, companyId]
+    // Company-scoped attribute value id + display name, by code.
+    const resolveValue = async (attributeId: string, code: string) => {
+      const r = await client.query<{ id: string; name: string }>(
+        `SELECT id, name FROM "itemAttributeValue"
+           WHERE "attributeId"=$1 AND code=$2 AND "companyId"=$3 LIMIT 1`,
+        [attributeId, code, companyId]
       );
-      let cpgId: string;
-      if ((existsCPG.rowCount ?? 0) === 0) {
-        const r = await client.query<{ id: string }>(
-          `INSERT INTO "configurationParameterGroup" ("itemId", name, "sortOrder", "companyId") VALUES ($1, $2, $3, $4) RETURNING id`,
-          [targetItemId, cfg.groupName, 1, companyId]
+      return r.rows[0] ?? null;
+    };
+
+    const ensureStyleVariants = async (
+      parentReadableId: string,
+      colorCodes: string[],
+      sizeCodes: string[]
+    ): Promise<Map<string, string>> => {
+      const combos = new Map<string, string>();
+      const parentId = itemIds[parentReadableId];
+      if (!parentId) return combos;
+
+      // Parent uses the garment attribute set (color + size).
+      await client.query(
+        `UPDATE item SET "attributeSetId"='ias_garment' WHERE id=$1 AND "companyId"=$2`,
+        [parentId, companyId]
+      );
+      const parentNameRow = await client.query<{ name: string }>(
+        `SELECT name FROM item WHERE id=$1`,
+        [parentId]
+      );
+      const parentName = parentNameRow.rows[0]?.name ?? parentReadableId;
+
+      const colors = (
+        await Promise.all(
+          colorCodes.map(async (code) => ({
+            code,
+            value: await resolveValue("iat_color", code)
+          }))
+        )
+      ).filter((c) => c.value);
+      const sizes = (
+        await Promise.all(
+          sizeCodes.map(async (code) => ({
+            code,
+            value: await resolveValue("iat_size", code)
+          }))
+        )
+      ).filter((s) => s.value);
+
+      // Selections drive the grid's option list: every chosen color + size value.
+      for (const { value } of [...colors, ...sizes]) {
+        await client.query(
+          `INSERT INTO "itemAttributeSelection" ("itemId","attributeId","attributeValueId","companyId","createdBy")
+             SELECT $1, "attributeId", id, $2, $3 FROM "itemAttributeValue" WHERE id=$4
+             ON CONFLICT DO NOTHING`,
+          [parentId, companyId, userId, value!.id]
         );
-        cpgId = r.rows[0]!.id;
-      } else {
-        cpgId = existsCPG.rows[0]!.id;
       }
 
-      for (const p of cfg.params) {
-        const existsCP = await client.query(
-          `SELECT id FROM "configurationParameter" WHERE "itemId"=$1 AND key=$2 AND "companyId"=$3 LIMIT 1`,
-          [targetItemId, p.paramKey, companyId]
-        );
-        if ((existsCP.rowCount ?? 0) === 0) {
-          await client.query(
-            `INSERT INTO "configurationParameter" ("itemId", label, key, "dataType", "listOptions", "configurationParameterGroupId", "sortOrder", "companyId", "createdBy")
-               VALUES ($1, $2, $3, $4::"configurationParameterDataType", $5, $6, $7, $8, $9) ON CONFLICT DO NOTHING`,
-            [
-              targetItemId,
-              p.paramLabel,
-              p.paramKey,
-              p.dataType,
-              p.listOptions,
-              cpgId,
-              p.sortOrder,
-              companyId,
-              userId
-            ]
+      // One variant SKU per combo (cartesian of the selected axes); a color-less
+      // Style (JACKET) varies on size only.
+      const colorAxis = colors.length ? colors : [null];
+      for (const color of colorAxis) {
+        for (const size of sizes) {
+          const parts = [color?.code, size.code].filter(Boolean) as string[];
+          const comboKey = parts.join("|");
+          const childReadableId = `${parentReadableId}-${parts.join("-")}`;
+          const childName = [parentName, color?.value?.name, size.value!.name]
+            .filter(Boolean)
+            .join(" / ");
+          const valueIds = [color?.value?.id, size.value!.id].filter(
+            Boolean
+          ) as string[];
+
+          // Child SKU item (idempotent), copying the parent's core fields.
+          let childId: string;
+          const existingChild = await client.query<{ id: string }>(
+            `SELECT id FROM item WHERE "readableId"=$1 AND "companyId"=$2 LIMIT 1`,
+            [childReadableId, companyId]
           );
+          if (existingChild.rows.length > 0) {
+            childId = existingChild.rows[0]!.id;
+          } else {
+            const inserted = await client.query<{ id: string }>(
+              `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "attributeSetId", "companyId", "createdBy")
+                 SELECT $1, $2, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", true, NULL, "companyId", $3
+                 FROM item WHERE id=$4
+                 RETURNING id`,
+              [childReadableId, childName, userId, parentId]
+            );
+            childId = inserted.rows[0]!.id;
+            // Variant SKUs don't require configuration, and shouldn't surface as
+            // top-level Styles — drop the auto-created phantom `style` row.
+            await client.query(
+              `UPDATE "itemReplenishment" SET "requiresConfiguration"=false WHERE "itemId"=$1`,
+              [childId]
+            );
+            await client.query(
+              `DELETE FROM style WHERE id=$1 AND "companyId"=$2`,
+              [childReadableId, companyId]
+            );
+          }
+
+          // itemVariant (idempotent) — valuesKey is filled by the DB trigger from
+          // the itemVariantAttribute rows below; never write it here.
+          let itemVariantId: string;
+          const existingVariant = await client.query<{ id: string }>(
+            `SELECT id FROM "itemVariant" WHERE "parentItemId"=$1 AND "variantItemId"=$2 AND "companyId"=$3 LIMIT 1`,
+            [parentId, childId, companyId]
+          );
+          if (existingVariant.rows.length > 0) {
+            itemVariantId = existingVariant.rows[0]!.id;
+          } else {
+            const iv = await client.query<{ id: string }>(
+              `INSERT INTO "itemVariant" ("parentItemId","variantItemId","companyId","createdBy")
+                 VALUES ($1,$2,$3,$4) RETURNING id`,
+              [parentId, childId, companyId, userId]
+            );
+            itemVariantId = iv.rows[0]!.id;
+          }
+
+          for (const attributeValueId of valueIds) {
+            await client.query(
+              `INSERT INTO "itemVariantAttribute" ("itemVariantId","attributeId","attributeValueId","companyId","createdBy")
+                 SELECT $1, "attributeId", id, $2, $3 FROM "itemAttributeValue" WHERE id=$4
+                 ON CONFLICT DO NOTHING`,
+              [itemVariantId, companyId, userId, attributeValueId]
+            );
+          }
+
+          combos.set(comboKey, childId);
         }
       }
-    }
+      return combos;
+    };
+
+    styleVariantIdByCombo["TSHIRT-001"] = await ensureStyleVariants(
+      "TSHIRT-001",
+      ["BK", "NV"],
+      ["S", "M", "L", "XL", "2XL"]
+    );
+    styleVariantIdByCombo["JACKET-001"] = await ensureStyleVariants(
+      "JACKET-001",
+      [],
+      ["S", "M", "L", "XL", "2XL"]
+    );
     console.log(
-      `   Created configuration parameters for TSHIRT-001 (Size, Color) and JACKET-001 (Size)`
+      `   Created variant SKUs for TSHIRT-001 (Color × Size) and JACKET-001 (Size)`
     );
   }
 
-  // ─── Step 87b: Clothing manufacturing jobs with configuration instances ───
-  // variantTable format mirrors real prod data: one attribute-combo row per cell,
-  // keyed by `valuesKey` (color|size codes) with a single `Quantities` value.
-  // e.g. {"variantTable":[{"valuesKey":"Black|S","Quantities":5}]}
+  // ─── Step 87b: Clothing manufacturing jobs with variant quantity cells ────
+  // variantTable format: one row per cell, { variantItemId, Quantities }. The
+  // variantItemId is a real variant SKU id generated in Step 87 (via the
+  // styleVariantIdByCombo map); the reporting UI resolves each cell's localized
+  // combo label from the itemVariantAttribute join.
   console.log("87b. Seeding clothing manufacturing jobs...");
   {
     const tshirtId = itemIds["TSHIRT-001"];
@@ -4181,15 +4241,25 @@ export async function seedDemoData(
       );
 
       // Cutting op complete — all 40 pieces cut, full production + pickup with Black/dark config
-      const blackColor = L.configParams.colorOptions[0]!;
-      const navyColor = L.configParams.colorOptions[2]!;
+      const blackColor = "BK";
+      const navyColor = "NV";
+      // Each cell references a real variant SKU id (from Step 87's generated map);
+      // the reporting UI resolves its localized combo label from the attribute
+      // join. expandVariantsQuantityTable validates these ids against the parent's
+      // itemVariant set, so they must be real SKUs.
+      const tshirtVariantIds =
+        styleVariantIdByCombo["TSHIRT-001"] ?? new Map<string, string>();
+      const garmentCell = (color: string, size: string, quantity: number) => ({
+        variantItemId: tshirtVariantIds.get(`${color}|${size}`) ?? "",
+        Quantities: quantity
+      });
       const tshirtBlackConfig = JSON.stringify({
         variantTable: [
-          { valuesKey: `${blackColor}|S`, Quantities: 5 },
-          { valuesKey: `${blackColor}|M`, Quantities: 10 },
-          { valuesKey: `${blackColor}|L`, Quantities: 12 },
-          { valuesKey: `${blackColor}|XL`, Quantities: 8 },
-          { valuesKey: `${blackColor}|2XL`, Quantities: 5 }
+          garmentCell(blackColor, "S", 5),
+          garmentCell(blackColor, "M", 10),
+          garmentCell(blackColor, "L", 12),
+          garmentCell(blackColor, "XL", 8),
+          garmentCell(blackColor, "2XL", 5)
         ]
       });
       await seedGarmentProdRecord(
@@ -4210,20 +4280,20 @@ export async function seedDemoData(
       // Remaining 10 still in worker's hands — pickup always ≥ production per size.
       const tshirtNavyConfig = JSON.stringify({
         variantTable: [
-          { valuesKey: `${navyColor}|S`, Quantities: 5 },
-          { valuesKey: `${navyColor}|M`, Quantities: 7 },
-          { valuesKey: `${navyColor}|L`, Quantities: 10 },
-          { valuesKey: `${navyColor}|XL`, Quantities: 5 },
-          { valuesKey: `${navyColor}|2XL`, Quantities: 3 }
+          garmentCell(navyColor, "S", 5),
+          garmentCell(navyColor, "M", 7),
+          garmentCell(navyColor, "L", 10),
+          garmentCell(navyColor, "XL", 5),
+          garmentCell(navyColor, "2XL", 3)
         ]
       });
       const tshirtNavyProdConfig = JSON.stringify({
         variantTable: [
-          { valuesKey: `${navyColor}|S`, Quantities: 2 },
-          { valuesKey: `${navyColor}|M`, Quantities: 4 },
-          { valuesKey: `${navyColor}|L`, Quantities: 8 },
-          { valuesKey: `${navyColor}|XL`, Quantities: 4 },
-          { valuesKey: `${navyColor}|2XL`, Quantities: 2 }
+          garmentCell(navyColor, "S", 2),
+          garmentCell(navyColor, "M", 4),
+          garmentCell(navyColor, "L", 8),
+          garmentCell(navyColor, "XL", 4),
+          garmentCell(navyColor, "2XL", 2)
         ]
       });
 

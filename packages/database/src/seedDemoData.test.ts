@@ -164,10 +164,16 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
             : r.variantQuantities;
         for (const tableRow of config?.variantTable ?? []) {
           const row = tableRow as Record<string, unknown>;
-          const valuesKey = String(row.valuesKey ?? "");
-          if (!valuesKey) continue;
-          totals[valuesKey] =
-            (totals[valuesKey] ?? 0) + Number(row.Quantities ?? 0);
+          // Group by the cell's descriptor (every field except the Quantities
+          // column) so this stays correct regardless of the descriptor key.
+          const descriptorKey = Object.keys(row)
+            .filter((k) => k !== "Quantities")
+            .sort()
+            .map((k) => `${k}=${String(row[k] ?? "")}`)
+            .join("|");
+          if (!descriptorKey) continue;
+          totals[descriptorKey] =
+            (totals[descriptorKey] ?? 0) + Number(row.Quantities ?? 0);
         }
       }
       return totals;
