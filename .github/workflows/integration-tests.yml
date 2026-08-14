@@ -72,7 +72,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/itest-images
-          key: itest-images-${{ env.ITEST_POSTGRES_IMAGE }}-${{ env.ITEST_POSTGREST_IMAGE }}
+          key: itest-images-zstd-${{ env.ITEST_POSTGRES_IMAGE }}-${{ env.ITEST_POSTGREST_IMAGE }}
 
       - name: Load or pull Docker images
         run: |
@@ -90,19 +90,21 @@ jobs:
             echo "giving up on $image after $attempts attempts"
             return 1
           }
+          # zstd -T0 (multithreaded) decompresses far faster than single-threaded
+          # gunzip — image load was the slowest CI step.
           load_or_pull() {
             local image="$1" tar="$2"
             if [ -f "$tar" ]; then
               echo "Loading cached image from $tar"
-              gunzip -c "$tar" | docker load
+              zstd -dc "$tar" | docker load
             else
               echo "Pulling $image"
               pull_with_retry "$image"
-              docker save "$image" | gzip > "$tar"
+              docker save "$image" | zstd -T0 -q -o "$tar"
             fi
           }
-          load_or_pull "$ITEST_POSTGRES_IMAGE" "$DIR/postgres.tar.gz"
-          load_or_pull "$ITEST_POSTGREST_IMAGE" "$DIR/postgrest.tar.gz"
+          load_or_pull "$ITEST_POSTGRES_IMAGE" "$DIR/postgres.tar.zst"
+          load_or_pull "$ITEST_POSTGREST_IMAGE" "$DIR/postgrest.tar.zst"
 
       - name: Database integration tests
         run: pnpm --filter @carbon/database test:integration
