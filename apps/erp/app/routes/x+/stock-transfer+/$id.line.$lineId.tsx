@@ -218,9 +218,8 @@ export default function NewStockTransferLinesRoute() {
     quantity: line?.quantity ?? 1,
     fromStorageUnitId: line?.fromStorageUnitId ?? "",
     toStorageUnitId: line?.toStorageUnitId ?? "",
-    variantQuantities: line?.variantQuantities
-      ? JSON.stringify(line.variantQuantities)
-      : undefined
+    // The stockTransferLines view doesn't expose the line's own variantQuantities.
+    variantQuantities: undefined
   };
 
   return (

@@ -875,7 +875,19 @@ export async function getItemVariantQuantities(
       "id, variantItemId, variant:item!itemVariant_variantItemId_fkey(id, readableId, name, active)"
     )
     .eq("parentItemId", parentItemId)
-    .eq("companyId", companyId);
+    .eq("companyId", companyId)
+    // `variant` is a to-one FK embed, but with an untyped client PostgREST's
+    // select parser assumes to-many (array); override to the real shape.
+    .returns<
+      Array<{
+        variantItemId: string;
+        variant: {
+          readableId: string;
+          name: string;
+          active: boolean | null;
+        } | null;
+      }>
+    >();
 
   if (variants.error) return variants;
   const list = variants.data ?? [];

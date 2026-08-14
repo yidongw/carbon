@@ -516,7 +516,6 @@ function LineItems({
         let jobVariant: "green" | "red" | "orange" = "orange";
         for (const totalLine of totalLines) {
           const status = getSalesOrderJobStatus(
-            // @ts-expect-error TS2345 - TODO: fix type
             salesOrder?.jobs as SalesOrderJob[] | undefined,
             totalLine as any
           );
@@ -870,7 +869,6 @@ function LineItems({
                                 index === jobs.length - 1 && "border-b-0"
                               )}
                             >
-                              {/* @ts-expect-error TS2739 */}
                               <SalesOrderJobItem job={job} />
                             </div>
                           ))}

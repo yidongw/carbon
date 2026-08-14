@@ -37,7 +37,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     : items;
 
   // Default sort: most on-hand first; otherwise honor the table's sort param.
-  const sort = sorts[0];
+  const sort = sorts?.[0];
   const numeric = sort ? NUMERIC_SORT[sort.sortBy] : undefined;
   rows = [...rows].sort((a, b) => {
     if (!sort) return b.onHand - a.onHand;

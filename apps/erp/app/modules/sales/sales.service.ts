@@ -5781,7 +5781,7 @@ export async function upsertSalesOrderLine(
     taxPercent: salesOrderLine.taxPercent ?? 0,
     exchangeRate: salesOrder.data?.exchangeRate ?? 1,
     sortOrder: maxSortOrder + 1
-  });
+  }) as typeof salesOrderLine & { exchangeRate: number; sortOrder: number };
 
   return client
     .from("salesOrderLine")

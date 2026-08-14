@@ -50,7 +50,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     count: customers.count ?? 0,
     customers: customers.data ?? [],
     customerTypes: customerTypes.data ?? [],
-    unrevokedInviteEmails: invites.data?.map((i) => i.email) ?? []
+    unrevokedInviteEmails:
+      invites.data
+        ?.map((i) => i.email)
+        .filter((email): email is string => email !== null) ?? []
   };
 }
 

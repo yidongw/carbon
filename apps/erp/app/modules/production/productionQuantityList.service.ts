@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { requestProductionPayApproval } from "~/modules/shared/shared.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
+import type { JobOperationNested } from "./productionQuantityDisplay.utils";
 import type {
   ProductionQuantityApprovalRequestStatus,
   ProductionQuantityListRow,
@@ -61,6 +62,58 @@ const productionQuantityReportListSelect = `
     job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
   )
 `;
+
+// Concrete row shapes for the deep-nested pay selects above. These queries push
+// PostgREST's select-string type parser past TypeScript's instantiation depth
+// limit (TS2589), so they run through an untyped client and declare their shape
+// via `.returns<...>()` here.
+type PayEmployee = {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  fullName: string | null;
+  avatarUrl: string | null;
+} | null;
+
+/** Row shape for `productionPayApprovalSelect` on `productionQuantity`. */
+type PayApprovalLineRow = {
+  id: string;
+  quantity: number | null;
+  createdAt: string | null;
+  employeeId: string | null;
+  createdBy: string | null;
+  paymentYear: number | null;
+  paymentMonth: number | null;
+  invalidatedAt: string | null;
+  reportId: string | null;
+  variantQuantities: unknown;
+  employee: PayEmployee;
+  jobOperation: JobOperationNested | JobOperationNested[] | null;
+};
+
+/** Row shape for `productionPayApprovalReportSelect` on `productionQuantityReport`. */
+type PayApprovalReportRow = {
+  id: string;
+  employeeId: string | null;
+  createdBy: string | null;
+  originalQuantity: number | null;
+  jobOperationId: string | null;
+  employee: PayEmployee;
+  jobOperation: JobOperationNested | JobOperationNested[] | null;
+};
+
+/** Row shape for `productionQuantityReportListSelect` on `productionQuantityReport`. */
+type ReportListRow = {
+  id: string;
+  employeeId: string | null;
+  createdBy: string | null;
+  originalQuantity: number | null;
+  jobOperationId: string | null;
+  createdAt: string | null;
+  notes: string | null;
+  employee: PayEmployee;
+  jobOperation: JobOperationNested | JobOperationNested[] | null;
+};
 
 type ProductionQuantityLinePayState = {
   paymentYear: number | null;
@@ -386,13 +439,33 @@ export async function getProductionQuantityReportFilterOptions(
     };
   }
 
-  const { data, error } = await client
+  // The nested embed above pushes PostgREST's select-string type parser past
+  // TypeScript's instantiation depth limit; run it through an untyped client
+  // and declare the real row shape via `.returns<...>()`.
+  type ReportRow = {
+    jobId: string | null;
+    job: {
+      id: string;
+      jobId: string;
+      item: {
+        id: string;
+        readableIdWithRevision: string | null;
+        name: string | null;
+      } | null;
+    } | null;
+    jobOperation: {
+      id: string;
+      process: { id: string; name: string } | null;
+    } | null;
+  };
+  const { data, error } = await (client as SupabaseClient<any>)
     .from("productionQuantityReport")
     .select(
       `jobId, job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name)), jobOperation!inner(id, process:processId(id, name))`
     )
     .eq("companyId", companyId)
-    .in("id", [...activeReportIds]);
+    .in("id", [...activeReportIds])
+    .returns<ReportRow[]>();
 
   if (error) {
     return {
@@ -480,7 +553,9 @@ export async function getProductionQuantityPayLines(
   scope: ProductionQuantityPayScope,
   args?: GenericQueryFilters & { search: string | null }
 ) {
-  let query = client
+  // Cast to `SupabaseClient<any>` to avoid TS2589 (excessively deep) from the
+  // nested-embed select-string parser, matching getProductionQuantityPayReport.
+  let query = (client as SupabaseClient<any>)
     .from("productionQuantity")
     .select(productionPayApprovalSelect, { count: "exact" })
     .eq("companyId", companyId)
@@ -705,13 +780,16 @@ export async function getProductionQuantityListRows(
   // Enrich with service role when provided: productionQuantity RLS (employee_role) can
   // block managers from loading line details even when approval requests are visible.
   const linesClient = enrichmentClient ?? client;
-  const { data: lines, error: linesError } = await linesClient
+  const { data: lines, error: linesError } = await (
+    linesClient as SupabaseClient<any>
+  )
     .from("productionQuantity")
     .select(productionPayApprovalSelect)
     .in("reportId", reportIds)
     .eq("companyId", companyId)
     .eq("type", "Production")
-    .is("invalidatedAt", null);
+    .is("invalidatedAt", null)
+    .returns<PayApprovalLineRow[]>();
 
   if (linesError) {
     return {
@@ -739,16 +817,19 @@ export async function getProductionQuantityListRows(
       createdBy: string | null;
       quantity: number;
       employee: ProductionQuantityListRow["employee"];
-      jobOperation: unknown;
+      jobOperation: JobOperationNested | JobOperationNested[] | null;
     }
   >();
 
   if (missingReportIds.length > 0) {
-    const { data: reports, error: reportsError } = await linesClient
+    const { data: reports, error: reportsError } = await (
+      linesClient as SupabaseClient<any>
+    )
       .from("productionQuantityReport")
       .select(productionPayApprovalReportSelect)
       .in("id", missingReportIds)
-      .eq("companyId", companyId);
+      .eq("companyId", companyId)
+      .returns<PayApprovalReportRow[]>();
 
     if (reportsError) {
       return {
@@ -867,7 +948,7 @@ export async function getProductionQuantityReportPayRows(
     };
   }
 
-  let query = client
+  let query = (client as SupabaseClient<any>)
     .from("productionQuantityReport")
     .select(productionQuantityReportListSelect, { count: "exact" })
     .eq("companyId", companyId)
@@ -999,7 +1080,7 @@ export async function getProductionQuantityReportPayRows(
     query = query.order("createdAt", { ascending: false });
   }
 
-  const reports = await query;
+  const reports = await query.returns<ReportListRow[]>();
   if (reports.error) {
     return reports;
   }
@@ -1029,13 +1110,14 @@ export async function getProductionQuantityReportPayRows(
       .eq("documentType", "productionQuantityReport")
       .in("documentId", reportIds)
       .order("requestedAt", { ascending: false }),
-    linesClient
+    (linesClient as SupabaseClient<any>)
       .from("productionQuantity")
       .select(productionPayApprovalSelect)
       .in("reportId", reportIds)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null)
+      .returns<PayApprovalLineRow[]>()
   ]);
 
   if (approvalsError) {

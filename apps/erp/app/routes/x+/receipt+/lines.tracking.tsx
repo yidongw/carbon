@@ -1,4 +1,5 @@
 import { error } from "@carbon/auth";
+import type { Json } from "@carbon/database";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { TrackedEntityAttributes } from "@carbon/utils";
@@ -223,7 +224,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           delete cleaned["Receipt Line Index"];
           return serviceRole
             .from("trackedEntity")
-            .update({ attributes: cleaned })
+            .update({ attributes: cleaned as unknown as Json })
             .eq("id", entity.id);
         })
       );

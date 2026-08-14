@@ -1,4 +1,5 @@
 import { error, success } from "@carbon/auth";
+import type { Json } from "@carbon/database";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
@@ -71,7 +72,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const result = await client
       .from("job")
       .update({
-        configuration: configuration as Record<string, unknown>,
+        configuration: configuration as Json,
         updatedAt: new Date().toISOString(),
         updatedBy: userId
       })

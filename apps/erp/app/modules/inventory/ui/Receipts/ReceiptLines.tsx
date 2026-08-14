@@ -480,14 +480,13 @@ function ReceiptLineItem({
   const unitsOfMeasure = useUnitOfMeasure();
   const splitDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
-  // Parent lines with a stored config table, or configurable parents with an
-  // order-plan grid, use the attribute qty editor. Expanded variant SKUs → plain qty.
+  // Configurable parents with an order-plan grid use the attribute qty editor.
+  // Expanded variant SKUs → plain qty.
   const configurableItemIds = useConfigurableItems();
   const useVariantsQuantity =
-    Boolean(line.itemId) &&
-    (line.variantQuantities != null ||
-      (line.orderVariantQuantities != null &&
-        configurableItemIds.includes(line.itemId)));
+    line.itemId != null &&
+    line.orderVariantQuantities != null &&
+    configurableItemIds.includes(line.itemId);
 
   const applyQuantity = (
     safeValue: number,
@@ -573,9 +572,8 @@ function ReceiptLineItem({
               {useVariantsQuantity ? (
                 <StyleLineQuantityInput
                   lineId={line.id!}
-                  itemId={line.itemId}
+                  itemId={line.itemId ?? ""}
                   value={line.receivedQuantity ?? 0}
-                  variantQuantities={line.variantQuantities}
                   orderVariantQuantities={line.orderVariantQuantities}
                   isDisabled={isReadOnly}
                   isReadOnly={isReadOnly}

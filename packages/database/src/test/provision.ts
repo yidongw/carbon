@@ -47,6 +47,7 @@ export async function provisionTestCompany(
      RETURNING id`,
     [email, name]
   );
+  if (!user) throw new Error("Failed to create auth user");
   const userId = user.id;
 
   // 2. Company.
@@ -56,6 +57,7 @@ export async function provisionTestCompany(
     `INSERT INTO company (name, "baseCurrencyCode") VALUES ($1, 'USD') RETURNING id`,
     [companyName]
   );
+  if (!company) throw new Error("Failed to create company");
   const companyId = company.id;
 
   // 3. Seed via the same RPC the app calls on onboarding (chart of accounts,
@@ -86,6 +88,7 @@ export async function provisionTestCompany(
       companyId
     ]
   );
+  if (!location) throw new Error("Failed to create location");
   const locationId = location.id;
 
   // 5. Link the employee to the location.

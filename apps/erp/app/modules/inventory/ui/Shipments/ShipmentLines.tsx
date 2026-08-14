@@ -460,14 +460,13 @@ function ShipmentLineItem({
   const unitsOfMeasure = useUnitOfMeasure();
   const splitDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
-  // Parent lines with a stored config table, or configurable parents with an
-  // order-plan grid, use the attribute qty editor. Expanded variant SKUs → plain qty.
+  // Configurable parents with an order-plan grid use the attribute qty editor.
+  // Expanded variant SKUs → plain qty.
   const configurableItemIds = useConfigurableItems();
   const useVariantsQuantity =
-    Boolean(line.itemId) &&
-    (line.variantQuantities != null ||
-      (line.orderVariantQuantities != null &&
-        configurableItemIds.includes(line.itemId)));
+    line.itemId != null &&
+    line.orderVariantQuantities != null &&
+    configurableItemIds.includes(line.itemId);
 
   // Check if shipped quantity exceeds job quantity for job fulfillments
   const isJobOverShipped =
@@ -590,9 +589,8 @@ function ShipmentLineItem({
               {useVariantsQuantity ? (
                 <StyleLineQuantityInput
                   lineId={line.id!}
-                  itemId={line.itemId}
+                  itemId={line.itemId ?? ""}
                   value={line.shippedQuantity || 0}
-                  variantQuantities={line.variantQuantities}
                   locationId={line.locationId ?? shipment?.locationId}
                   orderVariantQuantities={line.orderVariantQuantities}
                   isDisabled={quantityDisabled}

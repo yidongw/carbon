@@ -173,7 +173,7 @@ export const overlayRegistry = {
                 attributeId: string;
                 code: string;
                 name: string;
-                options: { value: string; label: string }[];
+                options: { value: string; label: string; code: string }[];
               }>;
               defaultLocationId: string;
             }

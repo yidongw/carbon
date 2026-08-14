@@ -19,7 +19,6 @@ type SalesOrderJob = Pick<
   | "status"
   | "id"
   | "jobId"
-  | "dueDate"
 >;
 
 export const getSalesOrderStatus = (
@@ -87,8 +86,8 @@ export const getPurchaseOrderStatus = (
   return { status, allInvoices, allLinesReceived };
 };
 
-export const getSalesOrderJobStatus = (
-  jobs: SalesOrderJob[] | undefined,
+export const getSalesOrderJobStatus = <TJob extends SalesOrderJob>(
+  jobs: TJob[] | undefined,
   line: SalesOrderLine
 ) => {
   const filteredJobs =
