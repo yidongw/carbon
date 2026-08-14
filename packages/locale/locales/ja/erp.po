@@ -9844,6 +9844,9 @@ msgstr "配送コストが不足しています"
 msgid "Missing Suppliers"
 msgstr "サプライヤーが見つかりません"
 
+msgid "Mix ratios are applied proportionally to each week's total on save."
+msgstr "保存時、配分比率を各週の合計に比例配分します。"
+
 msgid "Mobile Phone"
 msgstr "携帯電話"
 
@@ -15900,6 +15903,9 @@ msgstr "値"
 
 msgid "Variances"
 msgstr "変動"
+
+msgid "Variant mix"
+msgstr "規格構成比"
 
 msgid "Variant quantities"
 msgstr "バリアント数量"

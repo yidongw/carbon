@@ -9844,6 +9844,9 @@ msgstr "शिपिंग लागत अनुपलब्ध"
 msgid "Missing Suppliers"
 msgstr "आपूर्तिकर्ता गायब हैं"
 
+msgid "Mix ratios are applied proportionally to each week's total on save."
+msgstr "सहेजने पर मिश्रण अनुपात प्रत्येक सप्ताह के कुल पर समानुपाती रूप से लागू होते हैं।"
+
 msgid "Mobile Phone"
 msgstr "मोबाइल फोन"
 
@@ -15900,6 +15903,9 @@ msgstr "मूल्यांकन"
 
 msgid "Variances"
 msgstr "अनियमितताएं"
+
+msgid "Variant mix"
+msgstr "वैरिएंट अनुपात"
 
 msgid "Variant quantities"
 msgstr "वेरिएंट मात्राएँ"

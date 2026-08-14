@@ -9844,6 +9844,9 @@ msgstr "Отсутствуют расходы на доставку"
 msgid "Missing Suppliers"
 msgstr "Отсутствуют поставщики"
 
+msgid "Mix ratios are applied proportionally to each week's total on save."
+msgstr "При сохранении доли пропорционально распределяются на итог каждой недели."
+
 msgid "Mobile Phone"
 msgstr "Мобильный телефон"
 
@@ -15900,6 +15903,9 @@ msgstr "Значения"
 
 msgid "Variances"
 msgstr "Отклонения"
+
+msgid "Variant mix"
+msgstr "Соотношение вариантов"
 
 msgid "Variant quantities"
 msgstr "Количества вариантов"

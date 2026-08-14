@@ -6,9 +6,15 @@ import { useRouteData } from "@carbon/react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import {
+  expandVariantTableToLines,
+  requireVariantQuantitiesIfAttributeParent,
+  scaleVariantQuantitiesToTotal
+} from "~/modules/items/styleOrderLines.server";
 import { demandProjectionValidator } from "~/modules/production/production.models";
 import { upsertDemandProjections } from "~/modules/production/production.service";
 import DemandProjectionForm from "~/modules/production/ui/Projection/DemandProjectionForm";
+import { readVariantQuantitiesFormRaw } from "~/modules/production/variantsQuantityOverlay.server";
 import { getOrCreatePeriods } from "~/modules/shared/shared.server";
 import { path } from "~/utils/path";
 
@@ -56,11 +62,29 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { itemId, locationId, periods, ...weekData } = validation.data;
+  const {
+    itemId,
+    locationId,
+    periods,
+    variantQuantities: variantQuantitiesFromValidator,
+    ...weekData
+  } = validation.data;
+
+  const variantQuantitiesRaw = readVariantQuantitiesFormRaw(
+    formData,
+    variantQuantitiesFromValidator
+  );
+  let variantQuantities: unknown;
+  if (variantQuantitiesRaw) {
+    try {
+      variantQuantities = JSON.parse(variantQuantitiesRaw);
+    } catch {
+      variantQuantities = undefined;
+    }
+  }
 
   // Extract week values and create demand forecast records
-  const demandProjections = [];
-
+  const weeks: Array<{ periodId: string; quantity: number }> = [];
   for (let i = 0; i < 52; i++) {
     const weekKey = `week${i}` as keyof typeof weekData;
     const quantity = weekData[weekKey];
@@ -71,11 +95,80 @@ export async function action({ request }: ActionFunctionArgs) {
       quantity > 0 &&
       periods?.[i]
     ) {
+      weeks.push({
+        periodId: periods[i],
+        quantity: Number(quantity)
+      });
+    }
+  }
+
+  if (weeks.length === 0) {
+    return data(
+      {},
+      await flash(request, error(null, "No forecast quantities provided"))
+    );
+  }
+
+  const totalWeekQuantity = weeks.reduce((sum, week) => sum + week.quantity, 0);
+
+  const required = await requireVariantQuantitiesIfAttributeParent(client, {
+    parentItemId: itemId,
+    companyId,
+    variantQuantities,
+    quantity: totalWeekQuantity
+  });
+  if (!required.ok) {
+    return data(
+      {},
+      await flash(request, error(required.error, required.error))
+    );
+  }
+
+  const demandProjections: Array<{
+    itemId: string;
+    locationId: string;
+    periodId: string;
+    forecastQuantity: number;
+    companyId: string;
+    createdBy: string;
+  }> = [];
+
+  if (variantQuantities) {
+    const expanded = await expandVariantTableToLines(client, {
+      parentItemId: itemId,
+      companyId,
+      variantQuantities
+    });
+    if (!expanded.ok) {
+      return data(
+        {},
+        await flash(request, error(expanded.error, expanded.error))
+      );
+    }
+
+    for (const week of weeks) {
+      const scaled = scaleVariantQuantitiesToTotal(
+        expanded.variants,
+        week.quantity
+      );
+      for (const variant of scaled) {
+        demandProjections.push({
+          itemId: variant.variantItemId,
+          locationId,
+          periodId: week.periodId,
+          forecastQuantity: variant.quantity,
+          companyId,
+          createdBy: userId
+        });
+      }
+    }
+  } else {
+    for (const week of weeks) {
       demandProjections.push({
         itemId,
         locationId,
-        periodId: periods[i],
-        forecastQuantity: quantity,
+        periodId: week.periodId,
+        forecastQuantity: week.quantity,
         companyId,
         createdBy: userId
       });

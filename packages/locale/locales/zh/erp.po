@@ -9845,6 +9845,9 @@ msgstr "缺少运费"
 msgid "Missing Suppliers"
 msgstr "缺少供应商"
 
+msgid "Mix ratios are applied proportionally to each week's total on save."
+msgstr "保存时，会按配比将每周总量分摊到各规格。"
+
 msgid "Mobile Phone"
 msgstr "手机"
 
@@ -15901,6 +15904,9 @@ msgstr "值"
 
 msgid "Variances"
 msgstr "差异"
+
+msgid "Variant mix"
+msgstr "规格配比"
 
 msgid "Variant quantities"
 msgstr "规格数量"
