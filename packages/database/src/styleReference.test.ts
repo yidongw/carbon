@@ -51,7 +51,7 @@ describe("localizeVariantAttributeLabel", () => {
     expect(localizeVariantAttributeLabel("BK · WH", "zh")).toBe("黑色 · 白色");
   });
 
-  it("localizes a raw valuesKey joined by '|'", () => {
+  it("localizes a raw code-combo joined by '|'", () => {
     expect(localizeVariantAttributeLabel("BK|WH", "zh")).toBe("黑色 · 白色");
   });
 

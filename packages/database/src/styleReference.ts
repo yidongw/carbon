@@ -439,7 +439,7 @@ export function localizeStyleColorName(
 
 /**
  * Localize a variant's attribute label — a separator-joined string of attribute
- * value CODES (e.g. a bundle's `valuesKey` "BK|S" rendered as "BK · S"). Each
+ * value CODES (e.g. a code-combo "BK|S" rendered as "BK · S"). Each
  * segment is translated to the user's locale when it's a standard color code
  * (BK → 黑色); size codes and any non-color segments (e.g. an item name
  * fallback) pass through unchanged. Usable from both ERP and MES.
@@ -451,8 +451,8 @@ export function localizeVariantAttributeLabel(
 ): string {
   if (!label) return "";
   // Split on whatever separator the source used — " · ", a bare "·", or the raw
-  // valuesKey "|" — so a label never silently passes through untranslated when a
-  // caller's separator differs from the output one.
+  // code-combo "|" — so a label never silently passes through untranslated when
+  // a caller's separator differs from the output one.
   return label
     .split(/\s*[·|]\s*/)
     .map((part) => part.trim())
