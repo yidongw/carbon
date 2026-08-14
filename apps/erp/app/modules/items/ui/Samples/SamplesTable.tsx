@@ -15,23 +15,15 @@ import { usePermissions } from "~/hooks";
 import type { StyleSample } from "~/modules/items";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { path } from "~/utils/path";
+import {
+  styleAttributes,
+  useStyleAttributeColumnMeta
+} from "../Styles/useStyleAttributeColumnMeta";
 
 type SamplesTableProps = {
   data: StyleSample[];
   count: number;
 };
-
-type StyleAttributeColumn = {
-  attributeId: string;
-  code: string;
-  name: string;
-  values: Array<{ id: string; code: string; name: string }>;
-};
-
-function styleAttributes(row: StyleSample): StyleAttributeColumn[] {
-  const attrs = (row as { attributes?: unknown }).attributes;
-  return Array.isArray(attrs) ? (attrs as StyleAttributeColumn[]) : [];
-}
 
 const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
   const { t, i18n } = useLingui();
@@ -40,26 +32,7 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
   const permissions = usePermissions();
   const canCreate = permissions.can("create", "parts");
 
-  const attrMeta = useMemo(() => {
-    const meta = new Map<string, { code: string; name: string }>();
-    for (const row of data) {
-      for (const a of styleAttributes(row)) {
-        if (!a.code) continue;
-        if (!meta.has(a.code)) {
-          meta.set(a.code, { code: a.code, name: a.name || a.code });
-        }
-      }
-    }
-    return meta;
-  }, [data]);
-
-  const attrCodes = useMemo(() => {
-    return Array.from(attrMeta.keys()).sort((a, b) => {
-      const rank = (c: string) => (c === "Color" ? 0 : c === "Size" ? 1 : 2);
-      const d = rank(a) - rank(b);
-      return d !== 0 ? d : a.localeCompare(b);
-    });
-  }, [attrMeta]);
+  const attrColumnMeta = useStyleAttributeColumnMeta(data);
 
   const columns = useMemo<ColumnDef<StyleSample>[]>(() => {
     const cols: ColumnDef<StyleSample>[] = [
@@ -89,8 +62,8 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
       }
     ];
 
-    for (const code of attrCodes) {
-      const meta = attrMeta.get(code)!;
+    for (const meta of attrColumnMeta) {
+      const code = meta.code;
       cols.push({
         id: `attr-${code}`,
         header: translateItemAttributeCatalogName(meta.name || code, i18n),
@@ -192,7 +165,7 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
     });
 
     return cols;
-  }, [t, i18n, attrCodes, attrMeta, canCreate, openOverlay, revalidator]);
+  }, [t, i18n, attrColumnMeta, canCreate, openOverlay, revalidator]);
 
   return (
     <Table<StyleSample>
