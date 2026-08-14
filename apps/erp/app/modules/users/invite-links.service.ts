@@ -47,7 +47,6 @@ export async function getMembershipApplications(
   companyId: string,
   args: GenericQueryFilters & { search: string | null }
 ) {
-  // @ts-expect-error TS2589 - deep type instantiation with our larger schema
   let query = client
     .from("membershipApplication")
     .select(

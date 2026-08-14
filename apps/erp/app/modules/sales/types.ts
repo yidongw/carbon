@@ -1,6 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { jobStatus } from "../production/production.models";
 import type { QuantityEffect } from "../shared";
+import type { salesOrderLineType } from "./sales.models";
 import type {
   getCustomer,
   getCustomerContacts,
@@ -247,10 +248,7 @@ export type SalesOrderLineShipment = NonNullable<
   Awaited<ReturnType<typeof getSalesOrderLineShipments>>["data"]
 >[number];
 
-export type SalesOrderLineType = Omit<
-  Database["public"]["Enums"]["salesOrderLineType"],
-  "Service"
->;
+export type SalesOrderLineType = (typeof salesOrderLineType)[number];
 
 export type SalesOrderStatus = Database["public"]["Enums"]["salesOrderStatus"];
 

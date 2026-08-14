@@ -64,7 +64,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     count: suppliers.count ?? 0,
     suppliers: suppliers.data,
     supplierTypes: supplierTypes.data,
-    unrevokedInviteEmails: invites.data?.map((i) => i.email) ?? []
+    unrevokedInviteEmails:
+      invites.data
+        ?.map((i) => i.email)
+        .filter((email): email is string => email !== null) ?? []
   };
 }
 

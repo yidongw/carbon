@@ -13,7 +13,7 @@ type LocalizedRef = {
   /** Stable, language-independent code stored on child records. */
   code: string;
   /** Display name per language ("en" is the required fallback). */
-  names: Record<string, string>;
+  names: { en: string } & Record<string, string>;
 };
 
 const STYLE_COLORS: LocalizedRef[] = [
@@ -412,7 +412,7 @@ export function localizeStyleColorNameByName(
   const ref = STYLE_COLOR_BY_EN_NAME[name.trim().toLowerCase()];
   if (!ref) return undefined;
   if (!language) return ref.names.en;
-  const base = language.split("-")[0];
+  const base = language.split("-")[0] ?? language;
   return ref.names[language] ?? ref.names[base] ?? ref.names.en;
 }
 
@@ -433,7 +433,7 @@ export function localizeStyleColorName(
   if (!language) return ref.names.en;
   // Accept both the short lingui locale ("zh") and a full BCP-47 tag ("zh-CN")
   // — different callers pass different formats. Fall back short, then English.
-  const base = language.split("-")[0];
+  const base = language.split("-")[0] ?? language;
   return ref.names[language] ?? ref.names[base] ?? ref.names.en;
 }
 

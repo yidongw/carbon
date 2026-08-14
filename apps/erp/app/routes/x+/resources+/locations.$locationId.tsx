@@ -94,8 +94,8 @@ export default function LocationRoute() {
   const onClose = () => navigate(-1);
 
   const initialValues = {
-    id: location.id,
-    name: location.name,
+    id: location.id ?? undefined,
+    name: location.name ?? "",
     addressLine1: location.addressLine1 ?? undefined,
     addressLine2: location.addressLine2 ?? undefined,
     city: location.city ?? undefined,

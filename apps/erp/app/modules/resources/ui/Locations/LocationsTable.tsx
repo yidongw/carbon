@@ -46,7 +46,7 @@ const LocationsTable = memo(({ data, count }: LocationsTableProps) => {
         accessorKey: "name",
         header: t`Location`,
         cell: ({ row }) => (
-          <Hyperlink to={row.original.id}>
+          <Hyperlink to={row.original.id ?? ""}>
             <Enumerable value={row.original.name} className="cursor-pointer" />
           </Hyperlink>
         ),
@@ -155,7 +155,7 @@ const LocationsTable = memo(({ data, count }: LocationsTableProps) => {
         <>
           <MenuItem
             onClick={() => {
-              navigate(`${path.to.location(row.id)}?${params.toString()}`);
+              navigate(`${path.to.location(row.id ?? "")}?${params.toString()}`);
             }}
           >
             <MenuIcon icon={<LuPencil />} />
@@ -166,7 +166,7 @@ const LocationsTable = memo(({ data, count }: LocationsTableProps) => {
             disabled={!permissions.can("delete", "resources")}
             onClick={() => {
               navigate(
-                `${path.to.deleteLocation(row.id)}?${params.toString()}`
+                `${path.to.deleteLocation(row.id ?? "")}?${params.toString()}`
               );
             }}
           >

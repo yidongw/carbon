@@ -98,7 +98,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   } else {
     const magicLink = await serviceRole.auth.admin.generateLink({
       type: "magiclink",
-      email: accept.data.email,
+      email: accept.data.email ?? "",
       options: {
         redirectTo: `${getAppUrl()}/callback`
       }

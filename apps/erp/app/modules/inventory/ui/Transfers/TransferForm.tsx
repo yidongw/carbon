@@ -776,7 +776,12 @@ const TransferForm = ({
                                     maxQty || Infinity,
                                     Math.max(0, quantity || 0)
                                   ),
-                                  variantQuantities
+                                  variantQuantities: variantQuantities as {
+                                    variantTable: Record<
+                                      string,
+                                      string | number | boolean
+                                    >[];
+                                  } | null
                                 })
                               }
                             />

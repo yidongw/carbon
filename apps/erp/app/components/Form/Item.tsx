@@ -115,7 +115,8 @@ const Item = ({
   const [orphanOption, setOrphanOption] = useState<{
     value: string;
     label: string;
-    helper?: string;
+    helper: string;
+    helperRight: string | undefined;
   } | null>(null);
 
   const options = useMemo(() => {
@@ -234,7 +235,8 @@ const Item = ({
         setOrphanOption({
           value: storeItem.id,
           label: storeItem.readableIdWithRevision,
-          helper: storeItem.name
+          helper: storeItem.name,
+          helperRight: undefined
         });
       }
       return;
@@ -252,8 +254,9 @@ const Item = ({
       if (cancelled || !result.data) return;
       setOrphanOption({
         value: result.data.id,
-        label: result.data.readableIdWithRevision,
-        helper: result.data.name
+        label: result.data.readableIdWithRevision ?? result.data.id,
+        helper: result.data.name,
+        helperRight: undefined
       });
     })();
     return () => {

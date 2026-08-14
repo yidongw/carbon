@@ -86,7 +86,7 @@ export default function DeleteLocationRoute() {
   if (!locationId) throw new Error("locationId is not found");
 
   const onCancel = () => navigate(path.to.locations);
-  const name = location.name;
+  const name = location.name ?? "";
   return (
     <ConfirmDelete
       action={path.to.deleteLocation(locationId)}

@@ -1,4 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import type { Json } from "@carbon/database";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
@@ -306,7 +307,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .update({
           configuration:
             configuration && typeof configuration === "object"
-              ? (configuration as Record<string, unknown>)
+              ? (configuration as Json)
               : null,
           updatedBy: userId,
           updatedAt: new Date().toISOString()

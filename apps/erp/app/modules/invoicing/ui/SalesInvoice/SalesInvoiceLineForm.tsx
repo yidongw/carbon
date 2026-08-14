@@ -118,7 +118,7 @@ function parseInitialVariantTable(raw: unknown): {
     let total = 0;
     if (rows) {
       for (const row of rows) {
-        total += Number(row.Quantities) || 0;
+        total += +row.Quantities || 0;
       }
     }
     return { rows, total };

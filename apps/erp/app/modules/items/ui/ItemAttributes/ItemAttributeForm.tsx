@@ -28,7 +28,7 @@ type AttributeValueRow = {
 };
 
 type ItemAttributeFormProps = {
-  initialValues: z.infer<typeof itemAttributeValidator> & {
+  initialValues: Omit<z.infer<typeof itemAttributeValidator>, "values"> & {
     values?: AttributeValueRow[];
   };
   /** System (shared) attributes: code/name locked; system values read-only. */

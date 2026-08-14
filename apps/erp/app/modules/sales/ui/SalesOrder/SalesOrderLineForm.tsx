@@ -348,8 +348,10 @@ const SalesOrderLineForm = ({
       });
   }, [pricingRuleId, carbon]);
 
-  const onTypeChange = (t: SalesOrderLineType) => {
-    // @ts-ignore
+  const onTypeChange = (t: SalesOrderLineType | "Item") => {
+    // The Item picker can emit the generic "Item" type, which isn't a valid
+    // sales order line type; ignore it.
+    if (t === "Item") return;
     setLineType(t);
     clearConfig();
     const nextQty = defaultLineQuantity(false);

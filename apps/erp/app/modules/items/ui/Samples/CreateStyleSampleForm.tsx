@@ -25,7 +25,7 @@ import { createStyleSampleValidator } from "~/modules/items";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import { path } from "~/utils/path";
 
-type Option = { value: string; label: string };
+type Option = { value: string; label: string; code: string };
 export type SampleAttributeField = {
   attributeId: string;
   code: string;
