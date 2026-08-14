@@ -97,6 +97,7 @@ import {
   isSalesOrderLocked,
   salesOrderLineValidator
 } from "../../sales.models";
+import { familyQuantityFromSiblingLines } from "../../sales.priceOverride";
 import type {
   PriceTraceStep,
   SalesOrder,
@@ -378,11 +379,54 @@ const SalesOrderLineForm = ({
       const customerId = routeData?.salesOrder?.customerId;
       if (!customerId) return null;
 
+      let familyQuantity = quantity;
+      if (carbon && company.id && resolvedOrderId) {
+        const { data: asChild } = await carbon
+          .from("itemVariant")
+          .select("parentItemId")
+          .eq("variantItemId", itemId)
+          .eq("companyId", company.id)
+          .maybeSingle();
+        if (asChild?.parentItemId) {
+          const { data: siblings } = await carbon
+            .from("itemVariant")
+            .select("variantItemId")
+            .eq("parentItemId", asChild.parentItemId)
+            .eq("companyId", company.id);
+          const siblingIds = (siblings ?? [])
+            .map((row) => row.variantItemId)
+            .filter(
+              (id): id is string => typeof id === "string" && id.length > 0
+            );
+          if (siblingIds.length > 0) {
+            const { data: lines } = await carbon
+              .from("salesOrderLine")
+              .select("id, saleQuantity")
+              .eq("salesOrderId", resolvedOrderId)
+              .eq("companyId", company.id)
+              .in("itemId", siblingIds);
+            familyQuantity = familyQuantityFromSiblingLines({
+              lineQuantity: quantity,
+              currentLineId: initialValues.id,
+              siblingLines: (lines ?? []).map((line) => ({
+                id: line.id,
+                saleQuantity: line.saleQuantity
+              }))
+            });
+          }
+        }
+      }
+
       try {
         const response = await fetch(path.to.api.salesResolvePrice, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ customerId, itemId, quantity })
+          body: JSON.stringify({
+            customerId,
+            itemId,
+            quantity,
+            familyQuantity
+          })
         });
         if (response.ok) {
           const result = await response.json();
@@ -398,7 +442,13 @@ const SalesOrderLineForm = ({
       }
       return null;
     },
-    [routeData?.salesOrder?.customerId]
+    [
+      carbon,
+      company.id,
+      initialValues.id,
+      resolvedOrderId,
+      routeData?.salesOrder?.customerId
+    ]
   );
 
   const debouncedQuantityResolve = useDebounce(async (qty: number) => {

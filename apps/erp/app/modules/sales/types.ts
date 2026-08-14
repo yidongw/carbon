@@ -88,6 +88,8 @@ export type PriceResolutionInput = {
   itemId: string;
   itemPostingGroupId?: string;
   quantity: number;
+  /** Sum of sibling variant SKU quantities; used to pick parent quantity breaks. */
+  familyQuantity?: number;
   date?: string;
   existingBasePrice?: number;
 };

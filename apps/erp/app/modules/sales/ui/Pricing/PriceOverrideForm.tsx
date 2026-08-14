@@ -59,6 +59,7 @@ import {
 } from "~/components/Form";
 import Grid from "~/components/Grid";
 import { useCurrencyFormatter, usePermissions, useUser } from "~/hooks";
+import type { MethodItemType } from "~/modules/shared/types";
 import { priceOverrideValidator } from "../../sales.models";
 import type { PriceOverrideBreak } from "../../types";
 
@@ -88,6 +89,7 @@ const PriceOverrideForm = ({
     if (initialValues.customerTypeId) return "customerType";
     return initialScope ?? "customer";
   });
+  const [itemType, setItemType] = useState<MethodItemType | "Item">("Part");
 
   const [breaks, setBreaks] = useState<PriceOverrideBreak[]>(() => {
     const seed =
@@ -147,7 +149,18 @@ const PriceOverrideForm = ({
               <Hidden name="id" />
               <Hidden name="breaks" value={JSON.stringify(breaks)} />
               <VStack spacing={4}>
-                <Item name="itemId" label={t`Item`} type="Part" />
+                <Item
+                  name="itemId"
+                  label={t`Item`}
+                  type={itemType}
+                  isReadOnly={isEditing}
+                  onTypeChange={setItemType}
+                  helperText={
+                    isEditing
+                      ? undefined
+                      : t`Style quantity breaks use the sum of variant SKU quantities, not each SKU alone.`
+                  }
+                />
 
                 <ChoiceCardGroup<ScopeType>
                   label={t`Apply To`}
