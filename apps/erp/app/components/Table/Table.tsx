@@ -106,6 +106,11 @@ interface TableProps<T extends object> {
   // Apply the search via a full-document navigation instead of client-side
   // routing. See SearchFilter's `reloadDocument`. Used by /x/items/styles.
   searchReloadDocument?: boolean;
+  // Client-side search: called with the value on each keystroke instead of
+  // navigating; the list filters its already-loaded rows locally (e.g. Styles).
+  onSearchChange?: (value: string) => void;
+  // Show a spinner inside the search box (e.g. while a background backfill runs).
+  searchLoading?: boolean;
   withSelectableRows?: boolean;
   withSimpleSorting?: boolean;
   sort?: ReactNode;
@@ -256,6 +261,8 @@ const Table = <T extends object>({
   withSavedView = false,
   withSearch = true,
   searchReloadDocument = false,
+  onSearchChange,
+  searchLoading,
   withSelectableRows = false,
   withSimpleSorting = true,
   sort,
@@ -982,6 +989,8 @@ const Table = <T extends object>({
           withSavedView={withSavedView}
           withSearch={withSearch}
           searchReloadDocument={searchReloadDocument}
+          searchOnValueChange={onSearchChange}
+          searchLoading={searchLoading}
           withSelectableRows={withSelectableRows}
           sort={sort}
           filterActions={filterActions}

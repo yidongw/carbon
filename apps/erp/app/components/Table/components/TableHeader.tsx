@@ -87,6 +87,8 @@ type HeaderProps<T> = {
   withPagination: boolean;
   withSearch: boolean;
   searchReloadDocument?: boolean;
+  searchOnValueChange?: (value: string) => void;
+  searchLoading?: boolean;
   withSelectableRows: boolean;
   sort?: ReactNode;
   filterActions?: ReactNode;
@@ -119,6 +121,8 @@ const TableHeader = <T extends object>({
   withSavedView,
   withSearch,
   searchReloadDocument,
+  searchOnValueChange,
+  searchLoading,
   withSelectableRows,
   sort,
   filterActions
@@ -312,6 +316,8 @@ const TableHeader = <T extends object>({
               size="sm"
               placeholder={t`Search`}
               reloadDocument={searchReloadDocument}
+              onValueChange={searchOnValueChange}
+              isLoading={searchLoading}
             />
           )}
           {!!filters?.length && <Filter filters={filters} />}
