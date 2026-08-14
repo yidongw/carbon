@@ -413,7 +413,6 @@ const StylesTable = memo(
           title={t`Styles`}
           table="style"
           withSavedView
-          searchReloadDocument
           withSelectableRows
         />
         {selectedItem && selectedItem.id && (

@@ -176,7 +176,6 @@ const SamplesTable = memo(({ data, count }: SamplesTableProps) => {
       getRowHref={(row) => (row.id ? path.to.style(row.id) : undefined)}
       title={t`Samples`}
       table="style"
-      searchReloadDocument
     />
   );
 });
