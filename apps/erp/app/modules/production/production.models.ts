@@ -1076,6 +1076,8 @@ export const demandProjectionValidator = z.object({
   itemId: z.string().min(1, { message: "Item is required" }),
   locationId: z.string().min(1, { message: "Location is required" }),
   periods: z.array(z.string()).optional(),
+  // FormData-only Style/attribute mix (weights); expanded to SKU rows on create.
+  variantQuantities: zfd.text(z.string().optional()),
   ...Object.fromEntries(
     Array.from({ length: 52 }, (_, i) => [
       `week${i}`,

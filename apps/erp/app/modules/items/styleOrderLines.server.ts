@@ -124,6 +124,48 @@ export function buildMaterialRowsFromVariants<
 }
 
 /**
+ * Treat expanded mix quantities as WEIGHTS and allocate an integer week total
+ * so sum(result) === weekTotal (largest-remainder / Hamilton method).
+ *
+ * Example: weights 1 + 2 with weekTotal 30 → 10 + 20.
+ */
+export function scaleVariantQuantitiesToTotal(
+  variants: StyleVariantQuantity[],
+  weekTotal: number
+): StyleVariantQuantity[] {
+  if (variants.length === 0 || !(weekTotal > 0)) {
+    return [];
+  }
+
+  const weightSum = variants.reduce((sum, v) => sum + (v.quantity || 0), 0);
+  if (!(weightSum > 0)) {
+    return [];
+  }
+
+  const exact = variants.map(
+    (v) => ((v.quantity || 0) * weekTotal) / weightSum
+  );
+  const floored = exact.map((n) => Math.floor(n));
+  let remaining = weekTotal - floored.reduce((sum, n) => sum + n, 0);
+
+  const order = exact
+    .map((value, index) => ({ index, frac: value - floored[index] }))
+    .sort((a, b) => b.frac - a.frac || a.index - b.index);
+
+  const quantities = [...floored];
+  for (let i = 0; i < remaining; i++) {
+    quantities[order[i % order.length].index] += 1;
+  }
+
+  return variants
+    .map((variant, index) => ({
+      ...variant,
+      quantity: quantities[index]
+    }))
+    .filter((variant) => variant.quantity > 0);
+}
+
+/**
  * Resolve FormData variant quantities for a material line: expand to SKU rows,
  * fall back to a single row, or reject bare attribute-parent quantities.
  */

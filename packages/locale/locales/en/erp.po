@@ -9844,6 +9844,9 @@ msgstr "Missing Shipping Costs"
 msgid "Missing Suppliers"
 msgstr "Missing Suppliers"
 
+msgid "Mix ratios are applied proportionally to each week's total on save."
+msgstr "Mix ratios are applied proportionally to each week's total on save."
+
 msgid "Mobile Phone"
 msgstr "Mobile Phone"
 
@@ -15900,6 +15903,9 @@ msgstr "Values"
 
 msgid "Variances"
 msgstr "Variances"
+
+msgid "Variant mix"
+msgstr "Variant mix"
 
 msgid "Variant quantities"
 msgstr "Variant quantities"

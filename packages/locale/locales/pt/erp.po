@@ -9844,6 +9844,9 @@ msgstr "Custos de Envio Ausentes"
 msgid "Missing Suppliers"
 msgstr "Fornecedores Ausentes"
 
+msgid "Mix ratios are applied proportionally to each week's total on save."
+msgstr "Ao salvar, as proporções são aplicadas ao total de cada semana."
+
 msgid "Mobile Phone"
 msgstr "Telefone Móvel"
 
@@ -15900,6 +15903,9 @@ msgstr "Valores"
 
 msgid "Variances"
 msgstr "Variações"
+
+msgid "Variant mix"
+msgstr "Mix de variantes"
 
 msgid "Variant quantities"
 msgstr "Quantidades da variante"

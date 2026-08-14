@@ -2,8 +2,41 @@ import { describe, expect, it } from "vitest";
 import {
   buildMaterialRowsFromVariants,
   expandVariantTableToLines,
-  hasStyleVariantsQuantity
+  hasStyleVariantsQuantity,
+  scaleVariantQuantitiesToTotal
 } from "./styleOrderLines.server";
+
+describe("scaleVariantQuantitiesToTotal", () => {
+  it("scales mix weights so quantities sum to the week total", () => {
+    const scaled = scaleVariantQuantitiesToTotal(
+      [
+        { variantItemId: "sku_s", quantity: 1 },
+        { variantItemId: "sku_m", quantity: 2 }
+      ],
+      30
+    );
+    expect(scaled).toEqual([
+      { variantItemId: "sku_s", quantity: 10 },
+      { variantItemId: "sku_m", quantity: 20 }
+    ]);
+  });
+
+  it("drops zero allocations and returns empty for invalid inputs", () => {
+    expect(scaleVariantQuantitiesToTotal([], 10)).toEqual([]);
+    expect(
+      scaleVariantQuantitiesToTotal(
+        [{ variantItemId: "sku_s", quantity: 0 }],
+        10
+      )
+    ).toEqual([]);
+    expect(
+      scaleVariantQuantitiesToTotal(
+        [{ variantItemId: "sku_s", quantity: 1 }],
+        0
+      )
+    ).toEqual([]);
+  });
+});
 
 describe("hasStyleVariantsQuantity", () => {
   it("returns true when variantTable has rows", () => {
