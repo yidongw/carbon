@@ -83,7 +83,7 @@ export function StyleLineQuantityInput({
     onQuantityChange({
       lineId,
       quantity: nextQty,
-      // Persist combo rows only (valuesKey + Quantities).
+      // Persist combo rows only (variantItemId + Quantities).
       variantQuantities: {
         variantTable: getOverlaySuccessVariantTable(data)
       }

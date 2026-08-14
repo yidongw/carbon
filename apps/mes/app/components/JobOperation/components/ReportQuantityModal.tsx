@@ -25,7 +25,6 @@ import { path } from "~/utils/path";
 
 type Bundle = {
   attributeLabel: string | null;
-  valuesKey: string | null;
 } | null;
 
 /**
@@ -91,9 +90,7 @@ export function ReportQuantityModal({
   const invalid = reported <= 0;
 
   const attributeLabel = localizeVariantAttributeLabel(
-    bundle?.attributeLabel?.trim() ||
-      bundle?.valuesKey?.replace(/\|/g, " · ").trim() ||
-      "",
+    bundle?.attributeLabel?.trim() || "",
     i18n.locale
   );
 

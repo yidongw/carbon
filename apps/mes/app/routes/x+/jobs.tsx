@@ -71,7 +71,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     ? await serviceRole
         .from("bundleWorkOrders")
         .select(
-          "id, jobId, jobReadableId, attributeLabel, attributeValues, valuesKey, quantity, locationId"
+          "id, jobId, jobReadableId, attributeLabel, attributeValues, quantity, locationId"
         )
         .eq("companyId", companyId)
         .in("jobId", jobIds)

@@ -1,11 +1,12 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { loadVariantCombos } from "~/modules/items/itemAttribute.service";
 import type { StyleVariantLineMeta } from "~/modules/shared/variantDisplay";
 
 /**
  * For order line itemIds that are variant SKUs, return the parent + attribute
- * codes (from valuesKey) so PO/SO summaries can group variant lines under
- * their master with chips. No Color/Size hardcoding.
+ * value labels (from the itemVariantAttribute join) so PO/SO summaries can group
+ * variant lines under their master with chips. No Color/Size hardcoding.
  */
 export async function getStyleVariantLineMetaByItemIds(
   client: SupabaseClient<Database>,
@@ -18,13 +19,15 @@ export async function getStyleVariantLineMetaByItemIds(
   const variants = await client
     .from("itemVariant")
     .select(
-      `id, variantItemId, parentItemId, valuesKey,
+      `id, variantItemId, parentItemId,
        parent:item!itemVariant_parentItemId_fkey(id, readableId, name, thumbnailPath)`
     )
     .eq("companyId", companyId)
     .in("variantItemId", unique);
 
   if (variants.error || !variants.data?.length) return {};
+
+  const comboByVariant = await loadVariantCombos(client, unique, companyId);
 
   const result: Record<string, StyleVariantLineMeta> = {};
   for (const row of variants.data) {
@@ -36,7 +39,7 @@ export async function getStyleVariantLineMetaByItemIds(
     } | null;
     if (!parent?.readableId) continue;
 
-    const attributeCodes = String(row.valuesKey ?? "")
+    const attributeLabels = (comboByVariant.get(row.variantItemId) ?? "")
       .split("|")
       .map((c) => c.trim())
       .filter(Boolean);
@@ -47,7 +50,7 @@ export async function getStyleVariantLineMetaByItemIds(
       parentReadableId: parent.readableId,
       parentName: parent.name,
       parentThumbnailPath: parent.thumbnailPath,
-      attributeCodes
+      attributeLabels
     };
   }
 

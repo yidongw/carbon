@@ -1,9 +1,9 @@
 /**
  * Once an attribute value's `code` is referenced — by a variant SKU
  * (`itemVariantAttribute`) or an item's attribute selection
- * (`itemAttributeSelection`) — that code is the value's stable identity inside
- * stored combos (`itemVariant.valuesKey`, order/inventory grid cells). Renaming
- * the code would leave those stored keys stale, so we block a CODE change while
+ * (`itemAttributeSelection`) — that code is the value's stable identity in the
+ * code-combo labels rendered on saved order/inventory quantities. Renaming the
+ * code would rewrite those historical labels, so we block a CODE change while
  * the value is referenced. The display `name` and `sortOrder` stay freely
  * editable — only the identity code is frozen. Repurposing a code should mean
  * creating a new value, not renaming an in-use one.

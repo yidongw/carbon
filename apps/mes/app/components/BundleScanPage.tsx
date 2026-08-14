@@ -11,19 +11,16 @@ export type ReleasedBundle = {
   id: string;
   jobReadableId: string | null;
   attributeLabel: string | null;
-  valuesKey: string | null;
   quantity: number | null;
 };
 
 function bundleAttrLabel(
   b: {
     attributeLabel?: string | null;
-    valuesKey?: string | null;
   },
   locale?: string
 ): string {
-  const raw =
-    b.attributeLabel?.trim() || b.valuesKey?.replace(/\|/g, " · ").trim() || "";
+  const raw = b.attributeLabel?.trim() || "";
   return localizeVariantAttributeLabel(raw, locale) || raw;
 }
 

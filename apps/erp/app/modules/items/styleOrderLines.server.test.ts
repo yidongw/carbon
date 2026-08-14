@@ -9,7 +9,7 @@ describe("hasStyleVariantsQuantity", () => {
   it("returns true when variantTable has rows", () => {
     expect(
       hasStyleVariantsQuantity({
-        variantTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
+        variantTable: [{ variantItemId: "item_bk_xs", Quantities: 1 }]
       })
     ).toBe(true);
   });
@@ -17,7 +17,7 @@ describe("hasStyleVariantsQuantity", () => {
   it("ignores the retired legacy configTable key", () => {
     expect(
       hasStyleVariantsQuantity({
-        configTable: [{ valuesKey: "BK|XS", Quantities: 1 }]
+        configTable: [{ variantItemId: "item_bk_xs", Quantities: 1 }]
       })
     ).toBe(false);
   });
@@ -34,7 +34,6 @@ function mockClient(handlers: {
   variants?: Array<{
     id: string;
     variantItemId: string;
-    valuesKey: string;
   }>;
   attrs?: Array<{
     itemVariantId: string;
@@ -51,13 +50,17 @@ function mockClient(handlers: {
   return {
     from(table: string) {
       if (table === "itemVariant") {
+        const result = {
+          data: handlers.variants ?? [],
+          error: handlers.variantsError ?? null
+        };
+        // Supports both loadParentVariantIds (.eq().eq()) and the code-combo
+        // fallback loader (.eq().in()).
         return {
           select: () => ({
             eq: () => ({
-              eq: async () => ({
-                data: handlers.variants ?? [],
-                error: handlers.variantsError ?? null
-              })
+              eq: async () => result,
+              in: async () => result
             })
           })
         };
@@ -118,16 +121,16 @@ describe("expandVariantTableToLines", () => {
   const companyId = "co_1";
   const configuration = {
     variantTable: [
-      { valuesKey: "BK|XS", Quantities: 2 },
-      { valuesKey: "BK|S", Quantities: 4 }
+      { variantItemId: "item_bk_xs", Quantities: 2 },
+      { variantItemId: "item_bk_s", Quantities: 4 }
     ]
   };
 
   it("expands attribute combo cells to distinct variant SKUs", async () => {
     const client = mockClient({
       variants: [
-        { id: "iv1", variantItemId: "item_bk_xs", valuesKey: "BK|XS" },
-        { id: "iv2", variantItemId: "item_bk_s", valuesKey: "BK|S" }
+        { id: "iv1", variantItemId: "item_bk_xs" },
+        { id: "iv2", variantItemId: "item_bk_s" }
       ],
       attrs: [
         {
@@ -162,20 +165,20 @@ describe("expandVariantTableToLines", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.variants).toEqual([
-      { variantItemId: "item_bk_xs", quantity: 2, valuesKey: "BK|XS" },
-      { variantItemId: "item_bk_s", quantity: 4, valuesKey: "BK|S" }
+      { variantItemId: "item_bk_xs", quantity: 2 },
+      { variantItemId: "item_bk_s", quantity: 4 }
     ]);
   });
 
   it("expands a color-only consumable grid (no size dimension)", async () => {
-    // A Fabric/Trim Consumable has only a color attribute, so each combo row's
-    // valuesKey is a single color code.
+    // A Fabric/Trim Consumable has only a color attribute, so each combo row is
+    // a single color-code variant SKU.
     const client = mockClient({
       attributeSetId: "ias_fabric",
       setAttributeCodes: ["Color"],
       variants: [
-        { id: "iv1", variantItemId: "item_rd", valuesKey: "RD" },
-        { id: "iv2", variantItemId: "item_bl", valuesKey: "BL" }
+        { id: "iv1", variantItemId: "item_rd" },
+        { id: "iv2", variantItemId: "item_bl" }
       ],
       attrs: [
         {
@@ -196,8 +199,8 @@ describe("expandVariantTableToLines", () => {
       companyId,
       variantQuantities: {
         variantTable: [
-          { valuesKey: "RD", Quantities: 3 },
-          { valuesKey: "BL", Quantities: 2 }
+          { variantItemId: "item_rd", Quantities: 3 },
+          { variantItemId: "item_bl", Quantities: 2 }
         ]
       }
     });
@@ -205,16 +208,14 @@ describe("expandVariantTableToLines", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.variants).toEqual([
-      { variantItemId: "item_rd", quantity: 3, valuesKey: "RD" },
-      { variantItemId: "item_bl", quantity: 2, valuesKey: "BL" }
+      { variantItemId: "item_rd", quantity: 3 },
+      { variantItemId: "item_bl", quantity: 2 }
     ]);
   });
 
   it("fails loud when a configured cell has no variant SKU", async () => {
     const client = mockClient({
-      variants: [
-        { id: "iv1", variantItemId: "item_bk_xs", valuesKey: "BK|XS" }
-      ],
+      variants: [{ id: "iv1", variantItemId: "item_bk_xs" }],
       attrs: [
         {
           itemVariantId: "iv1",
@@ -237,7 +238,7 @@ describe("expandVariantTableToLines", () => {
 
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.error).toMatch(/No variant SKU exists for BK\|S/i);
+    expect(result.error).toMatch(/No variant SKU exists for item_bk_s/i);
   });
 
   it("fails when configuration has no positive quantities", async () => {
@@ -247,8 +248,8 @@ describe("expandVariantTableToLines", () => {
       companyId,
       variantQuantities: {
         variantTable: [
-          { valuesKey: "BK|XS", Quantities: 0 },
-          { valuesKey: "BK|S", Quantities: 0 }
+          { variantItemId: "item_bk_xs", Quantities: 0 },
+          { variantItemId: "item_bk_s", Quantities: 0 }
         ]
       }
     });
@@ -327,8 +328,8 @@ describe("buildMaterialRowsFromVariants", () => {
         unitOfMeasureCode: "EA"
       },
       [
-        { variantItemId: "item_rd", quantity: 3, valuesKey: "RD" },
-        { variantItemId: "item_bl", quantity: 2, valuesKey: "BL" }
+        { variantItemId: "item_rd", quantity: 3 },
+        { variantItemId: "item_bl", quantity: 2 }
       ]
     );
 
@@ -371,8 +372,8 @@ describe("resolveMaterialVariantQuantities", () => {
       attributeSetId: "ias_fabric",
       setAttributeCodes: ["Color"],
       variants: [
-        { id: "iv1", variantItemId: "item_rd", valuesKey: "RD" },
-        { id: "iv2", variantItemId: "item_bl", valuesKey: "BL" }
+        { id: "iv1", variantItemId: "item_rd" },
+        { id: "iv2", variantItemId: "item_bl" }
       ],
       attrs: [
         {
@@ -394,8 +395,8 @@ describe("resolveMaterialVariantQuantities", () => {
       quantity: 0,
       variantQuantities: {
         variantTable: [
-          { valuesKey: "RD", Quantities: 3 },
-          { valuesKey: "BL", Quantities: 2 }
+          { variantItemId: "item_rd", Quantities: 3 },
+          { variantItemId: "item_bl", Quantities: 2 }
         ]
       }
     });

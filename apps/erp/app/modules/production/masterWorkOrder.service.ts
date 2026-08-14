@@ -151,7 +151,6 @@ export type MasterProcessBundle = {
   jobReadableId: string;
   attributeLabel: string | null;
   attributeValues: Record<string, string> | null;
-  valuesKey: string | null;
   /**
    * The bundle's *operation* status for this process (Todo / In Progress /
    * Done …), not the bundle work order's own lifecycle status — this row
@@ -268,7 +267,7 @@ export async function getMasterProcessBreakdown(
   const bundles = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, attributeLabel, attributeValues, valuesKey, status, quantity, assignee, assignedAt"
+      "id, jobId, jobReadableId, attributeLabel, attributeValues, status, quantity, assignee, assignedAt"
     )
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
@@ -305,7 +304,6 @@ export async function getMasterProcessBreakdown(
       attributeLabel: bundle.attributeLabel ?? null,
       attributeValues:
         (bundle.attributeValues as Record<string, string> | null) ?? null,
-      valuesKey: bundle.valuesKey ?? null,
       operationStatus: op.status ?? null,
       quantity,
       reportedQuantity: reported,

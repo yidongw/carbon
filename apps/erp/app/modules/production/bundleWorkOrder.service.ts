@@ -6,15 +6,17 @@ import {
 import type { BundleTicketLabel } from "@carbon/documents/pdf";
 import { MES_URL } from "@carbon/env";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { resolveVariantByValuesKey } from "~/modules/items/itemAttribute.service";
+import {
+  loadVariantCombos,
+  // External helper: resolves+validates a variant SKU by its stable
+  // `variantItemId` (the name is legacy; it no longer matches by any code key).
+  resolveVariantByValuesKey as resolveVariant
+} from "~/modules/items/itemAttribute.service";
 import {
   getBundleJobCuttingOperationIdsToDelete,
   resolveStyleMethodItemId
 } from "~/modules/items/styleMethod.service";
-import {
-  getJobVariantQuantities,
-  jobVariantQuantitiesToTable
-} from "~/modules/production/jobVariantQuantity.service";
+import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
@@ -49,12 +51,36 @@ function shortestDistinctIdPrefix(id: string, others: string[]): string {
   return sid.slice(0, length);
 }
 
-/** One cutting cell → one bundle. Identity is valuesKey (attribute combo). */
+/**
+ * Attribute-derived code combos ("BK|S") keyed by the stable `variantItemId`,
+ * built from `itemVariantAttribute` (via `loadVariantCombos`). This is the
+ * app's source for a bundle/cell human label — the attribute join, never the
+ * DB-internal uniqueness fingerprint on `itemVariant`. Failures degrade to an
+ * empty map so callers fall back to showing the raw `variantItemId`.
+ */
+async function loadCodeCombosSafe(
+  client: SupabaseClient<Database>,
+  variantItemIds: string[],
+  companyId: string
+): Promise<Map<string, string>> {
+  const ids = variantItemIds.filter(Boolean);
+  if (ids.length === 0) return new Map<string, string>();
+  try {
+    return await loadVariantCombos(client, ids, companyId);
+  } catch {
+    return new Map<string, string>();
+  }
+}
+
+/** Format an attribute code combo ("BK|S") for display ("BK · S"). */
+function comboLabel(combo: string | undefined | null): string {
+  return (combo ?? "").replace(/\|/g, " · ");
+}
+
+/** One cutting cell → one bundle. Identity is the stable `variantItemId`. */
 type CuttingCell = {
-  valuesKey: string;
-  attributeLabel: string;
+  variantItemId: string;
   quantity: number;
-  configuration: VariantsQuantityTable;
 };
 
 export type BundleWorkOrder = NonNullable<
@@ -98,7 +124,7 @@ export async function getBundleWorkOrdersList(
 
   if (args?.search) {
     query = query.or(
-      `itemName.ilike.%${args.search}%,attributeLabel.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%,valuesKey.ilike.%${args.search}%`
+      `itemName.ilike.%${args.search}%,attributeLabel.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%`
     );
   }
 
@@ -147,7 +173,7 @@ export async function getBundleTicketLabels(
   const { data: bundles } = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, itemId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
+      "id, jobId, itemId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel"
     )
     .eq("companyId", companyId)
     .in("id", ids);
@@ -441,47 +467,22 @@ export async function insertBundleWorkOrder(
 }
 
 /**
- * Turn one reported cutting config table into individual attribute-combo cells —
- * one cell (→ one bundle) per non-zero quantity. Combo-only: each row is
- * `{ valuesKey, Quantities }`.
+ * Turn one reported cutting config table into individual variant cells — one
+ * cell (→ one bundle) per non-zero quantity. Each wire row is
+ * `{ variantItemId, Quantities }`, so a cell's identity is its `variantItemId`.
  */
 function extractCuttingCells(configuration: unknown): CuttingCell[] {
   const cfg = (configuration ?? null) as VariantsQuantityTable | null;
   const table = cfg?.variantTable;
   if (!Array.isArray(table)) return [];
 
-  const toCell = (
-    valuesKey: string,
-    quantity: number,
-    configuration: VariantsQuantityTable
-  ): CuttingCell => {
-    const parts = valuesKey.split("|").filter(Boolean);
-    return {
-      valuesKey,
-      attributeLabel: parts.join(" · ") || valuesKey,
-      quantity,
-      configuration
-    };
-  };
-
   const cells: CuttingCell[] = [];
   for (const row of table) {
-    const valuesKey = String(row.valuesKey ?? "").trim();
-    if (!valuesKey) continue;
+    const variantItemId = String(row.variantItemId ?? "").trim();
+    if (!variantItemId) continue;
     const quantity = Number(row.Quantities) || 0;
     if (quantity <= 0) continue;
-    const label = String(row.label ?? "").trim();
-    const cell = toCell(valuesKey, quantity, {
-      variantTable: [
-        {
-          valuesKey,
-          Quantities: quantity,
-          ...(label ? { label } : {})
-        }
-      ]
-    });
-    if (label) cell.attributeLabel = label;
-    cells.push(cell);
+    cells.push({ variantItemId, quantity });
   }
   return cells;
 }
@@ -491,14 +492,16 @@ export type CuttingSplitBundle = {
   id?: string | null;
   // Source cut split row this bundle is materialized from (new bundles only).
   splitRowId?: string | null;
-  valuesKey: string | null;
+  // Stable variant SKU id — the cell/bundle identity used for all matching.
+  variantItemId?: string | null;
   quantity: number;
 };
 
 // A pending cut split row (un-bundled) — Split Batch prefills one bundle per row.
 export type MasterSplitRow = {
   id: string;
-  valuesKey: string;
+  // Stable variant SKU id stamped on the split row (drift-proof identity).
+  variantItemId: string | null;
   attributeLabel: string;
   quantity: number;
 };
@@ -506,14 +509,16 @@ export type MasterSplitRow = {
 export type ExistingBundle = {
   id: string;
   jobReadableId: string;
-  valuesKey: string | null;
+  // Stable variant SKU id (the bundle job's item) — the identity for matching.
+  variantItemId: string | null;
   attributeLabel: string | null;
   quantity: number;
   reportedQuantity: number;
 };
 
 export type CuttingSplitCell = {
-  valuesKey: string;
+  // Stable variant SKU id — the cell identity.
+  variantItemId: string;
   attributeLabel: string;
   // Total reported cut for this combo — the cap: bundles for this cell
   // (existing + new) can't sum beyond what was actually cut.
@@ -532,13 +537,13 @@ export type CuttingSplitProposal = {
   splitRows: MasterSplitRow[];
 };
 
-function cellKey(valuesKey: string | null | undefined): string {
-  return (valuesKey ?? "").trim();
+function cellKey(variantItemId: string | null | undefined): string {
+  return (variantItemId ?? "").trim();
 }
 
 /**
- * The proposed bundle split for a Master Work Order: one cell per attribute
- * combo (valuesKey) in the master's plan. Each configured cell carries a
+ * The proposed bundle split for a Master Work Order: one cell per variant SKU
+ * (variantItemId) in the master's plan. Each configured cell carries a
  * suggested quantity and a cap of (reported cut − already bundled), so the split
  * can't create more than was actually cut for any combo.
  */
@@ -573,10 +578,17 @@ export async function getCuttingSplitProposal(
   const itemId = job.data?.itemId;
   if (!itemId) return { ...empty, masterDisplayId };
 
+  // Planned quantities per variant SKU (keyed by the stable variantItemId).
   const plannedQty = await getJobVariantQuantities(client, jobId, companyId);
-  const plannedCells = extractCuttingCells(
-    jobVariantQuantitiesToTable(plannedQty.data ?? [])
-  );
+  const plannedByCell = new Map<string, number>();
+  for (const line of plannedQty.data ?? []) {
+    const k = cellKey(line.variantItemId);
+    if (!k) continue;
+    plannedByCell.set(
+      k,
+      (plannedByCell.get(k) ?? 0) + (Number(line.quantity) || 0)
+    );
+  }
 
   const cuttingOperationId = await getMasterCuttingOperationId(
     client,
@@ -600,19 +612,18 @@ export async function getCuttingSplitProposal(
         continue;
       }
       for (const cell of rowCells) {
-        const k = cellKey(cell.valuesKey);
+        const k = cellKey(cell.variantItemId);
         cutByCell.set(k, (cutByCell.get(k) ?? 0) + cell.quantity);
       }
     }
   }
 
   if (aggregateOnlyCut > 0) {
-    for (const cell of plannedCells) {
+    for (const [k, plannedQuantity] of plannedByCell) {
       if (aggregateOnlyCut <= 0) break;
-      const k = cellKey(cell.valuesKey);
       const already = cutByCell.get(k) ?? 0;
       const add = Math.min(
-        Math.max(0, cell.quantity - already),
+        Math.max(0, plannedQuantity - already),
         aggregateOnlyCut
       );
       if (add > 0) {
@@ -659,56 +670,79 @@ export async function getCuttingSplitProposal(
     }
   }
 
+  // Pending (un-bundled) cut split rows — Split Batch prefills one bundle each.
+  const pending = await (client as SupabaseClient<any>)
+    .from("masterWorkOrderSplitRow")
+    .select("id, variantItemId, quantity")
+    .eq("masterWorkOrderId", masterWorkOrderId)
+    .eq("companyId", companyId)
+    .is("bundleWorkOrderId", null)
+    .order("createdAt", { ascending: true });
+  const pendingRows = (pending.data ?? []) as Array<{
+    id: string;
+    variantItemId: string | null;
+    quantity: number | null;
+  }>;
+
+  // Attribute-derived code combos ("BK|S") for every variant SKU referenced here
+  // (plan cells, existing bundles, split rows) — the source for display labels.
+  const combos = await loadCodeCombosSafe(
+    client,
+    [
+      ...plannedByCell.keys(),
+      ...(existing.data ?? []).map(
+        (b) => (b as { itemId?: string | null }).itemId ?? ""
+      ),
+      ...pendingRows.map((r) => r.variantItemId ?? "")
+    ],
+    companyId
+  );
+
   const existingBundles: ExistingBundle[] = (existing.data ?? []).map((b) => {
     const row = b as {
       id?: string;
       jobId?: string | null;
       jobReadableId?: string | null;
-      valuesKey?: string | null;
+      itemId?: string | null;
       attributeLabel?: string | null;
       quantity?: number | null;
     };
+    const variantItemId = row.itemId ?? null;
     return {
       id: row.id ?? "",
       jobReadableId: row.jobReadableId ?? "",
-      valuesKey: row.valuesKey ?? null,
-      attributeLabel: row.attributeLabel ?? row.valuesKey ?? null,
+      variantItemId,
+      attributeLabel:
+        row.attributeLabel ??
+        (variantItemId ? comboLabel(combos.get(variantItemId)) || null : null),
       quantity: row.quantity ?? 0,
       reportedQuantity: producedByJob.get(row.jobId ?? "") ?? 0
     };
   });
 
   const cells: CuttingSplitCell[] = [];
-  for (const cell of plannedCells) {
-    const k = cellKey(cell.valuesKey);
-    const cut = cutByCell.get(k) ?? 0;
+  for (const variantItemId of plannedByCell.keys()) {
+    const cut = cutByCell.get(variantItemId) ?? 0;
     if (cut <= 0) continue;
+    // Label from the attribute-derived combo; fall back to the raw id if unknown.
     cells.push({
-      valuesKey: cell.valuesKey,
-      attributeLabel: cell.attributeLabel,
+      variantItemId,
+      attributeLabel: comboLabel(combos.get(variantItemId)) || variantItemId,
       cut
     });
   }
 
-  const pending = await (client as SupabaseClient<any>)
-    .from("masterWorkOrderSplitRow")
-    .select("id, valuesKey, quantity")
-    .eq("masterWorkOrderId", masterWorkOrderId)
-    .eq("companyId", companyId)
-    .is("bundleWorkOrderId", null)
-    .order("createdAt", { ascending: true });
-  const splitRows: MasterSplitRow[] = (pending.data ?? []).map(
-    (r: { id: string; valuesKey: string | null; quantity: number | null }) => {
-      // valuesKey is the source of truth (backfilled + always written).
-      const valuesKey = String(r.valuesKey ?? "").trim();
-      return {
-        id: r.id,
-        valuesKey,
-        attributeLabel: valuesKey.replace(/\|/g, " · ") || valuesKey,
-        quantity: Number(r.quantity ?? 0)
-      };
-    }
-  );
+  const splitRows: MasterSplitRow[] = pendingRows.map((r) => {
+    const variantItemId = r.variantItemId ?? null;
+    return {
+      id: r.id,
+      variantItemId,
+      attributeLabel: variantItemId
+        ? comboLabel(combos.get(variantItemId)) || variantItemId
+        : "",
+      quantity: Number(r.quantity ?? 0)
+    };
+  });
 
   return {
     masterDisplayId,
@@ -785,6 +819,16 @@ export async function saveBundleSplit(
     job.data.jobId ??
     "BWO";
 
+  // Attribute-derived code combos ("BK|S") for every variant SKU being bundled —
+  // used only to build each bundle's readable id from its variant's codes.
+  const combos = await loadCodeCombosSafe(
+    client,
+    input.bundles
+      .map((b) => (b.variantItemId && String(b.variantItemId).trim()) || "")
+      .filter(Boolean),
+    input.companyId
+  );
+
   // A short token from the master's internal id disambiguates bundle ids across
   // masters (the descriptive label repeats per-master, but a bundle's id is its
   // backing job's readable id, which is unique per company). Take the shortest
@@ -822,17 +866,23 @@ export async function saveBundleSplit(
       return { kind: "skip" as const };
     }
     sequence += 1;
-    // The bundle's descriptive id (also used as its backing job's readable id).
-    const valuesKey = bundle.valuesKey?.trim() ?? "";
+    // The bundle's stable identity — the variant SKU id supplied by the caller.
+    const variantItemId =
+      (bundle.variantItemId && String(bundle.variantItemId).trim()) || null;
+    // Codes joined by "-" derived from the variant's attributes (via the combo
+    // map), used only to build the bundle's descriptive readable id.
+    const codeCombo =
+      (variantItemId ? combos.get(variantItemId) : undefined) ?? "";
     const jobReadableId = [
       styleReadableId,
-      valuesKey.replace(/\|/g, "-") || "NA",
+      codeCombo.replace(/\|/g, "-") || "NA",
       masterToken,
       String(sequence).padStart(2, "0")
     ].join("-");
     return {
       kind: "create" as const,
-      bundle: { ...bundle, valuesKey },
+      bundle,
+      variantItemId,
       quantity,
       sequence,
       jobReadableId
@@ -867,28 +917,31 @@ export async function saveBundleSplit(
       return { created: 0, updated: 1, error: null };
     }
 
-    const valuesKey = op.bundle.valuesKey?.trim() ?? "";
-    if (!valuesKey) {
+    const variantItemId = op.variantItemId ?? "";
+    if (!variantItemId) {
       return {
         created: 0,
         updated: 0,
-        error: new Error("Bundle is missing attribute combo (valuesKey)")
+        error: new Error("Bundle is missing its variant SKU (variantItemId)")
       };
     }
-    const resolved = await resolveVariantByValuesKey(client, {
+    const resolved = await resolveVariant(client, {
       parentItemId: itemId,
       companyId: input.companyId,
-      valuesKey
+      // Matching is by the stable variant SKU id only.
+      variantItemId
     });
     if (resolved.error) {
       return { created: 0, updated: 0, error: resolved.error };
     }
     if (!resolved.data || resolved.data === itemId) {
+      // No variant matched — show its attribute-derived combo, or the raw id.
+      const label = combos.get(variantItemId) ?? variantItemId;
       return {
         created: 0,
         updated: 0,
         error: new Error(
-          `No variant SKU exists for ${valuesKey.replace(/\|/g, " / ")}`
+          `No variant SKU exists for ${label.replace(/\|/g, " / ")}`
         )
       };
     }
@@ -954,7 +1007,8 @@ export async function replaceMasterCuttingSplitRows(
     companyId: string;
     createdBy: string;
     rows: {
-      valuesKey?: string | null;
+      // Stable variant SKU id, stamped by the qty grid — the split row's identity.
+      variantItemId?: string | null;
       quantity: number;
     }[];
   }
@@ -971,18 +1025,18 @@ export async function replaceMasterCuttingSplitRows(
   const rows = input.rows.filter((r) => (Number(r.quantity) || 0) > 0);
   if (rows.length === 0) return { error: null };
 
+  // Persist the stable variantItemId supplied by the qty grid so Split Batch
+  // matches each cut row to its variant SKU by the drift-proof id.
   const insert = await c.from("masterWorkOrderSplitRow").insert(
-    rows.map((r) => {
-      const valuesKey = (r.valuesKey && String(r.valuesKey).trim()) || "";
-      return {
-        masterWorkOrderId: input.masterWorkOrderId,
-        companyId: input.companyId,
-        productionQuantityReportId: input.productionQuantityReportId,
-        valuesKey: valuesKey || null,
-        quantity: Number(r.quantity) || 0,
-        createdBy: input.createdBy
-      };
-    })
+    rows.map((r) => ({
+      masterWorkOrderId: input.masterWorkOrderId,
+      companyId: input.companyId,
+      productionQuantityReportId: input.productionQuantityReportId,
+      variantItemId:
+        (r.variantItemId && String(r.variantItemId).trim()) || null,
+      quantity: Number(r.quantity) || 0,
+      createdBy: input.createdBy
+    }))
   );
   return { error: insert.error };
 }

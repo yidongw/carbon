@@ -22,7 +22,6 @@ export type PrintableBundle = {
   id: string;
   jobReadableId: string | null;
   attributeLabel?: string | null;
-  valuesKey?: string | null;
   quantity: number | null;
   locationId: string | null;
 };
@@ -181,8 +180,7 @@ export function PrintTicketsModal({
                       </span>
                       <span className="text-xs text-muted-foreground ml-2">
                         {localizeVariantAttributeLabel(
-                          b.attributeLabel?.trim() ||
-                            b.valuesKey?.replace(/\|/g, " · ").trim(),
+                          b.attributeLabel?.trim(),
                           i18n.locale
                         ) || ""}
                       </span>

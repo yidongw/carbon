@@ -6,45 +6,45 @@ import {
 } from "./styleBreakdown";
 
 describe("sortBreakdown", () => {
-  it("orders by valuesKey and keeps untagged rows last", () => {
+  it("orders by label and keeps untagged rows last", () => {
     const result = sortBreakdown([
-      { valuesKey: null, label: null, quantityOnHand: 10 },
-      { valuesKey: "BK|S", label: "BK · S", quantityOnHand: 3 },
-      { valuesKey: "BG|M", label: "BG · M", quantityOnHand: 1 }
+      { variantItemId: null, label: null, quantityOnHand: 10 },
+      { variantItemId: "iav_bks", label: "BK · S", quantityOnHand: 3 },
+      { variantItemId: "iav_bgm", label: "BG · M", quantityOnHand: 1 }
     ]);
-    expect(result.map((e) => e.valuesKey)).toEqual(["BG|M", "BK|S", null]);
+    expect(result.map((e) => e.label)).toEqual(["BG · M", "BK · S", null]);
   });
 
   it("does not mutate the input", () => {
     const input = [
-      { valuesKey: "B", quantityOnHand: 1 },
-      { valuesKey: "A", quantityOnHand: 1 }
+      { variantItemId: "x", label: "B", quantityOnHand: 1 },
+      { variantItemId: "y", label: "A", quantityOnHand: 1 }
     ];
     sortBreakdown(input);
-    expect(input.map((e) => e.valuesKey)).toEqual(["B", "A"]);
+    expect(input.map((e) => e.label)).toEqual(["B", "A"]);
   });
 });
 
 describe("padBreakdownToTotal", () => {
   it("adds an untagged remainder when tagged SKUs undercount the total", () => {
     const result = padBreakdownToTotal(
-      [{ valuesKey: "BK|M", quantityOnHand: 6 }],
+      [{ variantItemId: "iav_bkm", quantityOnHand: 6 }],
       10
     );
     expect(result).toEqual([
-      { valuesKey: "BK|M", quantityOnHand: 6 },
-      { valuesKey: null, label: null, quantityOnHand: 4 }
+      { variantItemId: "iav_bkm", quantityOnHand: 6 },
+      { variantItemId: null, label: null, quantityOnHand: 4 }
     ]);
   });
 
   it("pads the whole value when the breakdown is empty", () => {
     expect(padBreakdownToTotal([], 15)).toEqual([
-      { valuesKey: null, label: null, quantityOnHand: 15 }
+      { variantItemId: null, label: null, quantityOnHand: 15 }
     ]);
   });
 
   it("leaves the breakdown untouched when it already sums to the value", () => {
-    const breakdown = [{ valuesKey: "BK|M", quantityOnHand: 10 }];
+    const breakdown = [{ variantItemId: "iav_bkm", quantityOnHand: 10 }];
     expect(padBreakdownToTotal(breakdown, 10)).toBe(breakdown);
   });
 
@@ -59,19 +59,19 @@ describe("aggregateStorageUnitsBySku", () => {
       {
         storageUnitId: "bin-b",
         quantity: 40,
-        valuesKey: "BK|M",
+        variantItemId: "iav_bkm",
         skuLabel: "BK · M"
       },
       {
         storageUnitId: "bin-b",
         quantity: 3,
-        valuesKey: "BK|S",
+        variantItemId: "iav_bks",
         skuLabel: "BK · S"
       },
       {
         storageUnitId: "rack-a",
         quantity: 25,
-        valuesKey: "GY|XL",
+        variantItemId: "iav_gyxl",
         skuLabel: "GY · XL"
       }
     ]);
@@ -80,8 +80,8 @@ describe("aggregateStorageUnitsBySku", () => {
     const binB = result.find((r) => r.storageUnitId === "bin-b");
     expect(binB?.quantity).toBe(43);
     expect(binB?.breakdown).toEqual([
-      { valuesKey: "BK|M", label: "BK · M", quantityOnHand: 40 },
-      { valuesKey: "BK|S", label: "BK · S", quantityOnHand: 3 }
+      { variantItemId: "iav_bkm", label: "BK · M", quantityOnHand: 40 },
+      { variantItemId: "iav_bks", label: "BK · S", quantityOnHand: 3 }
     ]);
   });
 
@@ -90,27 +90,27 @@ describe("aggregateStorageUnitsBySku", () => {
       {
         storageUnitId: "bin-b",
         quantity: 5,
-        valuesKey: "BK|M",
+        variantItemId: "iav_bkm",
         skuLabel: "BK · M"
       },
       {
         storageUnitId: "bin-b",
         quantity: 4,
-        valuesKey: "BK|M",
+        variantItemId: "iav_bkm",
         skuLabel: "BK · M"
       }
     ]);
     expect(result[0].quantity).toBe(9);
     expect(result[0].breakdown).toEqual([
-      { valuesKey: "BK|M", label: "BK · M", quantityOnHand: 9 }
+      { variantItemId: "iav_bkm", label: "BK · M", quantityOnHand: 9 }
     ]);
   });
 
   it("preserves first-appearance order of storage units", () => {
     const result = aggregateStorageUnitsBySku([
-      { storageUnitId: "rack-a", quantity: 1, valuesKey: "A|1" },
-      { storageUnitId: "bin-b", quantity: 1, valuesKey: "B|1" },
-      { storageUnitId: "rack-a", quantity: 1, valuesKey: "A|2" }
+      { storageUnitId: "rack-a", quantity: 1, variantItemId: "iav_a1" },
+      { storageUnitId: "bin-b", quantity: 1, variantItemId: "iav_b1" },
+      { storageUnitId: "rack-a", quantity: 1, variantItemId: "iav_a2" }
     ]);
     expect(result.map((r) => r.storageUnitId)).toEqual(["rack-a", "bin-b"]);
   });

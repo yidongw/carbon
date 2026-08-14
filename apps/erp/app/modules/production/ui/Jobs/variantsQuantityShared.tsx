@@ -34,15 +34,23 @@ export type VariantQuantityParameterInput = {
   label: string;
   dataType: string;
   listOptions?: string[] | null;
+  /**
+   * `variantItemId -> display label` (attribute value names in set order, e.g.
+   * "Black · S"), present only on the synthesized Style combo param. Its presence
+   * marks the combo param; each cell's descriptor is the stable `variantItemId`
+   * and this map supplies its (localizable) label directly — no code combo.
+   */
+  optionVariantItemLabels?: Record<string, string> | null;
 };
 
-const STYLE_COMBO_VALUES_KEY = "valuesKey";
+/** The descriptor column/cell key: each row's stable variant SKU id. */
+const VARIANT_DESCRIPTOR_KEY = "variantItemId";
 
 /**
- * Localize a combo `valuesKey` label ("BK · S" or "Black · S") segment by
- * segment via `optionLabels` — which (from localizeColorNameMap) maps both the
- * color CODE and its English NAME to the locale name. Sizes and unknown
- * segments pass through unchanged.
+ * Localize a combo label ("BK · S" or "Black · S") segment by segment via
+ * `optionLabels` — which (from localizeColorNameMap) maps both the color CODE
+ * and its English NAME to the locale name. Sizes and unknown segments pass
+ * through unchanged.
  */
 function localizeComboLabel(
   label: string,
@@ -50,7 +58,7 @@ function localizeComboLabel(
 ): string {
   if (!optionLabels || !label) return label;
   // A combo label may arrive as a stored display label ("Black · S") or the raw
-  // valuesKey ("BK|S") — split on either separator, localize each segment, and
+  // code-combo ("BK|S") — split on either separator, localize each segment, and
   // re-join with " · ".
   return label
     .split(/\s*·\s*|\|/)
@@ -59,23 +67,19 @@ function localizeComboLabel(
     .join(" · ");
 }
 
-/** Style attribute-backed qty editor: one list param of cartesian valuesKeys. */
+/** Style attribute-backed qty editor: the synthesized combo param carries the
+ * `optionVariantItemLabels` map (variantItemId -> display label). */
 export function isStyleComboParameters(
   parameters: VariantQuantityParameterInput[]
 ): boolean {
-  if (
-    parameters.length === 1 &&
-    parameters[0]?.key === STYLE_COMBO_VALUES_KEY
-  ) {
-    return true;
-  }
-  const firstList = parameters.find((p) => p.dataType === "list");
-  return firstList?.key === STYLE_COMBO_VALUES_KEY;
+  return parameters.some(
+    (p) => p.dataType === "list" && p.optionVariantItemLabels != null
+  );
 }
 
 /**
- * Combo columns: read-only valuesKey (combo label) + Quantities.
- * List options are row values, not quantity columns.
+ * Combo columns: read-only variantItemId descriptor (rendered as its localized
+ * combo label) + Quantities. List options are row values, not quantity columns.
  */
 export function buildComboColumns(
   parameters: VariantQuantityParameterInput[],
@@ -85,21 +89,17 @@ export function buildComboColumns(
   comboParam: VariantQuantityParameterInput | null;
   columns: Column[];
 } | null {
-  if (!isStyleComboParameters(parameters)) return null;
-
   const comboParam =
     parameters.find(
-      (p) => p.key === STYLE_COMBO_VALUES_KEY && p.dataType === "list"
-    ) ??
-    parameters.find((p) => p.dataType === "list") ??
-    null;
+      (p) => p.dataType === "list" && p.optionVariantItemLabels != null
+    ) ?? null;
   if (!comboParam) return null;
 
   return {
     comboParam,
     columns: [
       {
-        key: STYLE_COMBO_VALUES_KEY,
+        key: VARIANT_DESCRIPTOR_KEY,
         // The synthesized combo param carries the generic English "Attributes";
         // prefer the caller's translated label, keep any custom param label.
         label:
@@ -107,7 +107,9 @@ export function buildComboColumns(
             ? comboParam.label
             : attributesLabel,
         type: "list",
-        options: comboParam.listOptions ?? [],
+        // The descriptor value is the variant SKU id; its options are the set of
+        // synced variant ids so cell validation accepts them.
+        options: Object.keys(comboParam.optionVariantItemLabels ?? {}),
         readOnly: true
       },
       {
@@ -135,8 +137,8 @@ export function buildColumns(
   if (combo) return combo;
 
   // The legacy Color×Size matrix model is retired: quantity configs are the
-  // attribute combo (valuesKey + Quantities) built above. Any non-combo config
-  // collapses to a single plain Quantities column.
+  // attribute combo (variantItemId + Quantities) built above. Any non-combo
+  // config collapses to a single plain Quantities column.
   return {
     comboParam: null,
     columns: [
@@ -163,14 +165,18 @@ export function getInitialRows(
   comboParam: VariantQuantityParameterInput | null,
   columns: Column[]
 ): Row[] {
-  // Style combo: one row per valuesKey option.
-  if (comboParam?.key === STYLE_COMBO_VALUES_KEY) {
-    return (comboParam.listOptions ?? []).map((option) => ({
-      ...makeDefaultRow(columns),
-      [STYLE_COMBO_VALUES_KEY]: option,
-      label: String(option).replace(/\|/g, " · "),
-      Quantities: 0
-    }));
+  // Style combo: one row per synced variant SKU. The descriptor cell is the
+  // stable `variantItemId`; its display label comes straight from the param's
+  // label map (attribute value names) — no code combo.
+  if (comboParam?.optionVariantItemLabels != null) {
+    return Object.entries(comboParam.optionVariantItemLabels).map(
+      ([variantItemId, label]): Row => ({
+        ...makeDefaultRow(columns),
+        [VARIANT_DESCRIPTOR_KEY]: variantItemId,
+        label,
+        Quantities: 0
+      })
+    );
   }
 
   return [makeDefaultRow(columns)];
@@ -395,7 +401,7 @@ export function ReadOnlyVariantsQuantityTable({
         const numeric = Number(raw) || 0;
         const label = String(raw ?? "");
         const comboLabel =
-          col.key === "valuesKey"
+          col.key === VARIANT_DESCRIPTOR_KEY
             ? localizeComboLabel(
                 row.label != null && String(row.label).trim().length > 0
                   ? String(row.label)
@@ -482,7 +488,7 @@ export function EditableVariantsQuantityGrid({
     if (col.readOnly && col.type !== "quantity") {
       const raw = String(cellValue ?? "");
       const fromLabel =
-        col.key === "valuesKey"
+        col.key === VARIANT_DESCRIPTOR_KEY
           ? localizeComboLabel(
               row.label != null && String(row.label).trim().length > 0
                 ? String(row.label)
@@ -491,7 +497,7 @@ export function EditableVariantsQuantityGrid({
             )
           : null;
       const fromParts =
-        col.key === "valuesKey" && raw.includes("|")
+        col.key === VARIANT_DESCRIPTOR_KEY && raw.includes("|")
           ? raw
               .split("|")
               .map((part) => optionLabels?.[part] ?? part)

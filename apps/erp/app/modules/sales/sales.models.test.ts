@@ -10,7 +10,7 @@ const baseStyle = {
   saleQuantity: 10,
   taxPercent: 0,
   variantQuantities: JSON.stringify({
-    variantTable: [{ valuesKey: "Black|M", Quantities: 10 }]
+    variantTable: [{ variantItemId: "item_black_m", Quantities: 10 }]
   })
 };
 
@@ -25,7 +25,7 @@ const baseQuoteStyle = {
   quantity: [10],
   taxPercent: 0,
   variantQuantities: JSON.stringify({
-    variantTable: [{ valuesKey: "Black|M", Quantities: 10 }]
+    variantTable: [{ variantItemId: "item_black_m", Quantities: 10 }]
   })
 };
 

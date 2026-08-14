@@ -7,36 +7,41 @@ import {
 
 const comboParameters = [
   {
-    key: "valuesKey",
+    key: "variantItemId",
     label: "Attributes",
     dataType: "list" as const,
-    listOptions: ["BG|M", "BG|L", "BK|S"]
+    listOptions: [],
+    optionVariantItemLabels: {
+      iav_bgm: "米色 · M",
+      iav_bgl: "米色 · L",
+      iav_bks: "黑色 · S"
+    }
   }
 ];
 
 describe("breakdownToInventoryVariantsQuantity", () => {
-  it("aggregates on-hand into combo valuesKey rows", () => {
+  it("aggregates on-hand into variantItemId rows", () => {
     const result = breakdownToInventoryVariantsQuantity([
-      { valuesKey: "BG|M", quantityOnHand: 6 },
-      { valuesKey: "BG|M", quantityOnHand: 4 },
-      { valuesKey: "BG|L", quantityOnHand: 2 },
-      { valuesKey: null, quantityOnHand: 50 },
-      { valuesKey: "BK|S", quantityOnHand: 1 }
+      { variantItemId: "iav_bgm", quantityOnHand: 6 },
+      { variantItemId: "iav_bgm", quantityOnHand: 4 },
+      { variantItemId: "iav_bgl", quantityOnHand: 2 },
+      { variantItemId: null, quantityOnHand: 50 },
+      { variantItemId: "iav_bks", quantityOnHand: 1 }
     ]);
 
     expect(result).toEqual({
       variantTable: [
-        { valuesKey: "BG|M", Quantities: 10 },
-        { valuesKey: "BG|L", Quantities: 2 },
-        { valuesKey: "BK|S", Quantities: 1 }
+        { variantItemId: "iav_bgm", Quantities: 10 },
+        { variantItemId: "iav_bgl", Quantities: 2 },
+        { variantItemId: "iav_bks", Quantities: 1 }
       ]
     });
   });
 
-  it("returns null when nothing is tagged by valuesKey", () => {
+  it("returns null when nothing is tagged by variantItemId", () => {
     expect(
       breakdownToInventoryVariantsQuantity([
-        { colorCode: null, sizeCode: null, quantityOnHand: 9 }
+        { variantItemId: null, quantityOnHand: 9 }
       ])
     ).toBeNull();
   });
@@ -45,13 +50,13 @@ describe("breakdownToInventoryVariantsQuantity", () => {
 describe("buildInventoryVariantsQuantityReferenceContext", () => {
   it("feeds inventory caps into the combo editor state", () => {
     const inventory = breakdownToInventoryVariantsQuantity([
-      { valuesKey: "BG|M", quantityOnHand: 10 }
+      { variantItemId: "iav_bgm", quantityOnHand: 10 }
     ]);
     const referenceContext = buildInventoryVariantsQuantityReferenceContext({
       variantQuantities: inventory,
       otherLineVariantQuantities: [
         {
-          variantTable: [{ valuesKey: "BG|M", Quantities: 3 }]
+          variantTable: [{ variantItemId: "iav_bgm", Quantities: 3 }]
         }
       ]
     });

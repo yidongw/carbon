@@ -40,12 +40,13 @@ export type SynthesizedVariantQuantityParameter = {
   dataType: "list";
   listOptions: string[];
   /**
-   * Stable `variantItemId` for each `valuesKey` option (from `itemVariant`), so
-   * the editor can stamp a drift-proof id onto each saved cell instead of relying
-   * on the mutable, code-derived `valuesKey`. Options with no synced variant yet
-   * are simply absent (the cell falls back to `valuesKey`).
+   * `variantItemId -> display label` for each of the parent's synced variant
+   * SKUs. The label is the attribute value NAMES joined in set order (e.g.
+   * "Black · S"), localized at the display edge — the editor keys each saved
+   * cell by the drift-proof `variantItemId` and shows this label directly, with
+   * no code intermediary. Options with no synced variant yet are simply absent.
    */
-  optionVariantItemIds: Record<string, string>;
+  optionVariantItemLabels: Record<string, string>;
   sortOrder: number;
   configurationParameterGroupId: null;
   createdAt: string;
@@ -58,12 +59,80 @@ export type SynthesizedVariantQuantityParameter = {
 };
 
 /**
+ * Build a pipe-joined attribute label ("Black|S") for each of a parent's variant
+ * SKUs from its `itemVariantAttribute` rows (value names ordered by attribute
+ * sortOrder), keyed by the stable `variantItemId`. This is the display combo,
+ * localized at the render edge. The uniqueness fingerprint column is opaque and
+ * DB-owned; callers that need a readable combo use this instead.
+ */
+export async function loadVariantCombos(
+  client: Db,
+  variantItemIds: string[],
+  companyId: string
+): Promise<Map<string, string>> {
+  const db = client as any;
+  const byVariantItemId = new Map<string, string>();
+  const uniqueIds = [...new Set(variantItemIds.filter(Boolean))];
+  if (uniqueIds.length === 0) return byVariantItemId;
+
+  const { data: variants, error: variantsErr } = await db
+    .from("itemVariant")
+    .select("id, variantItemId")
+    .eq("companyId", companyId)
+    .in("variantItemId", uniqueIds);
+  if (variantsErr) throw variantsErr;
+  const rows = (variants ?? []) as Array<{
+    id: string;
+    variantItemId: string | null;
+  }>;
+  if (rows.length === 0) return byVariantItemId;
+
+  const { data: attrs, error: attrsErr } = await db
+    .from("itemVariantAttribute")
+    .select(
+      "itemVariantId, itemAttribute:attributeId(sortOrder), itemAttributeValue:attributeValueId(code, name)"
+    )
+    .eq("companyId", companyId)
+    .in(
+      "itemVariantId",
+      rows.map((r) => r.id)
+    );
+  if (attrsErr) throw attrsErr;
+
+  const partsByIvId = new Map<
+    string,
+    Array<{ sortOrder: number; part: string }>
+  >();
+  for (const a of (attrs ?? []) as Array<{
+    itemVariantId: string;
+    itemAttribute: { sortOrder: number | null } | null;
+    itemAttributeValue: { code: string | null; name: string | null } | null;
+  }>) {
+    // Display name; fall back to the code so a value without a name still labels.
+    const part = a.itemAttributeValue?.name ?? a.itemAttributeValue?.code;
+    if (!part) continue;
+    const list = partsByIvId.get(a.itemVariantId) ?? [];
+    list.push({ sortOrder: a.itemAttribute?.sortOrder ?? 100, part });
+    partsByIvId.set(a.itemVariantId, list);
+  }
+  for (const r of rows) {
+    if (!r.variantItemId) continue;
+    const combo = (partsByIvId.get(r.id) ?? [])
+      .slice()
+      .sort((x, y) => x.sortOrder - y.sortOrder)
+      .map((p) => p.part)
+      .join("|");
+    if (combo) byVariantItemId.set(r.variantItemId, combo);
+  }
+  return byVariantItemId;
+}
+
+/**
  * Build a single list parameter from the item's attribute set + selections so
  * Style qty editors work without configurationParameter dual-write.
  *
- * Returns one list param with key `valuesKey` whose options are the cartesian
- * product of selected attribute codes in **set order** (pipe-joined), matching
- * `itemVariant.valuesKey`.
+ * Returns one list param whose options are the cartesian product of selected
+ * attribute codes in **set order** (pipe-joined), each mapped to its variantItemId.
  */
 export async function getStyleVariantQuantityParameters(
   client: Db,
@@ -137,49 +206,82 @@ export async function getStyleVariantQuantityParameters(
     .filter((a) => a.codes.length > 0);
   if (attrs.length === 0) return [];
 
-  // Cartesian product in set attribute order (do not reverse for matrix).
-  let combos: string[][] = [[]];
-  for (const attr of attrs) {
-    const next: string[][] = [];
-    for (const prefix of combos) {
-      for (const code of attr.codes) {
-        next.push([...prefix, code]);
-      }
-    }
-    combos = next;
-  }
-  const listOptions = combos.map((parts) => parts.join("|"));
-
-  // Map each valuesKey option to its stable variant SKU so the editor can stamp
-  // variantItemId onto saved cells (drift-proof match key). Options without a
-  // synced variant are simply absent.
+  // Each variant SKU's display label = its attribute value NAMES joined in set
+  // order (e.g. "Black · S"), derived directly from the variant's
+  // itemVariantAttribute rows and keyed by the stable variantItemId. Localized at
+  // the display edge; no code combo is ever threaded to the UI.
+  const sortByAttr = new Map(
+    (setAttrs as SetAttrRow[]).map((a) => [a.attributeId, a.sortOrder ?? 100])
+  );
   const { data: variantRows, error: variantRowsErr } = await db
     .from("itemVariant")
-    .select("valuesKey, variantItemId")
+    .select("id, variantItemId")
     .eq("parentItemId", itemId)
     .eq("companyId", companyId);
   if (variantRowsErr) throw variantRowsErr;
-  const optionVariantItemIds: Record<string, string> = {};
-  for (const r of (variantRows ?? []) as Array<{
-    valuesKey: string | null;
+  const variantRowList = (variantRows ?? []) as Array<{
+    id: string;
     variantItemId: string | null;
-  }>) {
-    if (r.valuesKey && r.variantItemId) {
-      optionVariantItemIds[r.valuesKey] = r.variantItemId;
+  }>;
+  const variantItemIdByIvId = new Map(
+    variantRowList.map((v) => [v.id, v.variantItemId])
+  );
+  const optionVariantItemLabels: Record<string, string> = {};
+  if (variantRowList.length > 0) {
+    const { data: vattrs, error: vattrsErr } = await db
+      .from("itemVariantAttribute")
+      .select(
+        "itemVariantId, attributeId, itemAttributeValue:attributeValueId(name, code)"
+      )
+      .eq("companyId", companyId)
+      .in(
+        "itemVariantId",
+        variantRowList.map((v) => v.id)
+      );
+    if (vattrsErr) throw vattrsErr;
+    const partsByIvId = new Map<
+      string,
+      Array<{ attributeId: string; name: string }>
+    >();
+    for (const va of (vattrs ?? []) as Array<{
+      itemVariantId: string;
+      attributeId: string;
+      itemAttributeValue: { name: string | null; code: string | null } | null;
+    }>) {
+      // Prefer the value's display name; fall back to its code only if unnamed.
+      const name = va.itemAttributeValue?.name ?? va.itemAttributeValue?.code;
+      if (!name) continue;
+      const list = partsByIvId.get(va.itemVariantId) ?? [];
+      list.push({ attributeId: va.attributeId, name });
+      partsByIvId.set(va.itemVariantId, list);
+    }
+    for (const [ivId, parts] of partsByIvId) {
+      const variantItemId = variantItemIdByIvId.get(ivId);
+      if (!variantItemId) continue;
+      const label = parts
+        .slice()
+        .sort(
+          (a, b) =>
+            (sortByAttr.get(a.attributeId) ?? 100) -
+            (sortByAttr.get(b.attributeId) ?? 100)
+        )
+        .map((p) => p.name)
+        .join(" · ");
+      if (label) optionVariantItemLabels[variantItemId] = label;
     }
   }
 
   const nowIso = new Date().toISOString();
   return [
     {
-      id: `synthetic-valuesKey-${itemId}`,
+      id: `synthetic-variant-combo-${itemId}`,
       itemId,
       companyId,
-      key: "valuesKey",
+      key: "variantItemId",
       label: "Attributes",
       dataType: "list" as const,
-      listOptions,
-      optionVariantItemIds,
+      listOptions: [],
+      optionVariantItemLabels,
       sortOrder: 0,
       configurationParameterGroupId: null,
       createdAt: nowIso,
@@ -248,8 +350,8 @@ type AttrValue = {
 
 /**
  * Create missing child SKU items for a parent from its attribute selections.
- * Soft-deactivates (`item.active = false`) variants whose valuesKey is no longer
- * in the selected cartesian product; reactivates them if selections grow again.
+ * Soft-deactivates (`item.active = false`) variants whose attribute combo is no
+ * longer in the selected cartesian product; reactivates them if selections grow.
  */
 export async function syncItemVariants(
   client: Db,
@@ -304,7 +406,7 @@ export async function syncItemVariants(
     const { data: existingVariants, error: existErr } = await db
       .from("itemVariant")
       .select(
-        "id, valuesKey, variantItemId, variant:item!itemVariant_variantItemId_fkey(id, active)"
+        "id, variantItemId, variant:item!itemVariant_variantItemId_fkey(id, active)"
       )
       .eq("parentItemId", parentItemId)
       .eq("companyId", companyId);
@@ -312,14 +414,59 @@ export async function syncItemVariants(
 
     type ExistingVariant = {
       id: string;
-      valuesKey: string;
       variantItemId: string;
       variant: { id: string; active: boolean } | null;
     };
     const existingList = (existingVariants ?? []) as ExistingVariant[];
-    const existingByKey = new Map(
-      existingList.map((v) => [v.valuesKey, v] as const)
-    );
+
+    // A variant's combo signature = its attributeValueIds sorted by attributeId
+    // (byte order). This mirrors the fingerprint the DB trigger owns; the sync
+    // computes it here from the attribute rows so it never reads that column.
+    const sigOf = (parts: Array<{ attributeId: string; valueId: string }>) =>
+      parts
+        .slice()
+        .sort((a, b) =>
+          a.attributeId < b.attributeId
+            ? -1
+            : a.attributeId > b.attributeId
+              ? 1
+              : 0
+        )
+        .map((p) => p.valueId)
+        .join("|");
+
+    const existingSigById = new Map<string, string>();
+    if (existingList.length > 0) {
+      const { data: existingAttrs, error: existingAttrsErr } = await db
+        .from("itemVariantAttribute")
+        .select("itemVariantId, attributeId, attributeValueId")
+        .eq("companyId", companyId)
+        .in(
+          "itemVariantId",
+          existingList.map((v) => v.id)
+        );
+      if (existingAttrsErr) throw existingAttrsErr;
+      const partsById = new Map<
+        string,
+        Array<{ attributeId: string; valueId: string }>
+      >();
+      for (const a of (existingAttrs ?? []) as Array<{
+        itemVariantId: string;
+        attributeId: string;
+        attributeValueId: string;
+      }>) {
+        const list = partsById.get(a.itemVariantId) ?? [];
+        list.push({ attributeId: a.attributeId, valueId: a.attributeValueId });
+        partsById.set(a.itemVariantId, list);
+      }
+      for (const v of existingList) {
+        existingSigById.set(v.id, sigOf(partsById.get(v.id) ?? []));
+      }
+    }
+    const existingBySig = new Map<string, ExistingVariant>();
+    for (const v of existingList) {
+      existingBySig.set(existingSigById.get(v.id) ?? "", v);
+    }
 
     const archiveVariants = async (rows: ExistingVariant[]) => {
       let archived = 0;
@@ -389,14 +536,17 @@ export async function syncItemVariants(
       combos = next;
     }
 
-    const desiredKeys = new Set(
-      combos.map((combo) => combo.map((v) => v.code).join("|"))
-    );
+    // A desired combo's signature (same formula as sigOf / the DB trigger), used
+    // only in-memory to reconcile which variants to create/archive/reactivate.
+    const comboSignatureOf = (combo: AttrValue[]) =>
+      sigOf(combo.map((v) => ({ attributeId: v.attributeId, valueId: v.id })));
+
+    const desiredKeys = new Set(combos.map(comboSignatureOf));
 
     let archived = 0;
     let reactivated = 0;
     for (const row of existingList) {
-      if (desiredKeys.has(row.valuesKey)) {
+      if (desiredKeys.has(existingSigById.get(row.id) ?? "")) {
         if (row.variant?.active === false) {
           const { error: updErr } = await db
             .from("item")
@@ -427,8 +577,8 @@ export async function syncItemVariants(
 
     let created = 0;
     for (const combo of combos) {
-      const valuesKey = combo.map((v) => v.code).join("|");
-      if (existingByKey.has(valuesKey)) continue;
+      const sig = comboSignatureOf(combo);
+      if (existingBySig.has(sig)) continue;
 
       const variantReadableId = [
         parent.readableId,
@@ -510,7 +660,8 @@ export async function syncItemVariants(
         .insert({
           parentItemId,
           variantItemId,
-          valuesKey,
+          // The uniqueness fingerprint is set by the DB trigger from the
+          // itemVariantAttribute rows inserted just below; the app never writes it.
           companyId,
           createdBy: userId
         })
@@ -530,9 +681,8 @@ export async function syncItemVariants(
         .insert(attrRows);
       if (attrErr) throw attrErr;
 
-      existingByKey.set(valuesKey, {
+      existingBySig.set(sig, {
         id: variantRow.id,
-        valuesKey,
         variantItemId,
         variant: { id: variantItemId, active: true }
       });
@@ -548,56 +698,37 @@ export async function syncItemVariants(
 }
 
 /**
- * Resolve a child SKU itemId for a parent variant. Prefers the stable
- * `variantItemId` when supplied (verified against the parent), then falls back
- * to the legacy `valuesKey` (attribute codes joined by `|` in set attribute
- * order), then to the parent itemId when no match exists.
+ * Resolve a child SKU itemId for a parent variant by the stable `variantItemId`
+ * (verified against the parent), falling back to the parent itemId when it
+ * doesn't match.
  */
 export async function resolveVariantByValuesKey(
   client: Db,
   args: {
     parentItemId: string;
     companyId: string;
-    valuesKey?: string;
     variantItemId?: string;
   }
 ): Promise<{ data: string; error: Error | null }> {
   const db = client as any;
-  const { parentItemId, companyId, valuesKey, variantItemId } = args;
+  const { parentItemId, companyId, variantItemId } = args;
 
-  if (!valuesKey && !variantItemId) {
+  // Validates the variant belongs to the parent; falls back to the parent.
+  if (!variantItemId) {
     return { data: parentItemId, error: null };
   }
 
   try {
-    let query = db
+    const { data, error } = await db
       .from("itemVariant")
-      .select(
-        "variantItemId, variant:item!itemVariant_variantItemId_fkey(id, active)"
-      )
+      .select("variantItemId")
       .eq("parentItemId", parentItemId)
-      .eq("companyId", companyId);
-
-    // Prefer the stable id; fall back to the legacy code-derived valuesKey.
-    query = variantItemId
-      ? query.eq("variantItemId", variantItemId)
-      : query.eq("valuesKey", valuesKey);
-
-    const { data, error } = await query.maybeSingle();
+      .eq("companyId", companyId)
+      .eq("variantItemId", variantItemId)
+      .maybeSingle();
 
     if (error) throw error;
-    if (!data?.variantItemId) {
-      // If the stable id missed but a valuesKey is also present, retry by key.
-      if (variantItemId && valuesKey) {
-        return resolveVariantByValuesKey(client, {
-          parentItemId,
-          companyId,
-          valuesKey
-        });
-      }
-      return { data: parentItemId, error: null };
-    }
-    return { data: data.variantItemId, error: null };
+    return { data: data?.variantItemId ?? parentItemId, error: null };
   } catch (error) {
     return {
       data: parentItemId,
@@ -1086,8 +1217,9 @@ export async function upsertItemAttributeValue(
   const db = client as any;
   if ("id" in payload) {
     // Freeze the identity `code` once the value is referenced by any variant SKU
-    // or item selection — renaming it would strand stored valuesKey combos.
-    // `name`/`sortOrder` stay editable.
+    // or item selection — the code-combo labels shown on saved quantities are
+    // derived from it, so renaming would rewrite history. `name`/`sortOrder` stay
+    // editable.
     const existing = await db
       .from("itemAttributeValue")
       .select("code")
@@ -1788,50 +1920,33 @@ export async function syncItemVariantsFromSelections(
 }
 
 /**
- * Load every variant SKU of a parent, indexed both by the stable `variantItemId`
- * (the preferred match key) and by the legacy `valuesKey` (codes joined by `|`
- * in attribute-set order) for backwards compatibility.
+ * Load the set of every active variant SKU `variantItemId` for a parent item,
+ * used to validate that saved quantity cells point at real variants.
  */
-type ParentVariantMatch = { variantItemId: string; valuesKey: string };
-
-async function loadParentVariants(
+async function loadParentVariantIds(
   client: Db,
   parentItemId: string,
   companyId: string
-): Promise<{
-  byId: Map<string, ParentVariantMatch>;
-  byKey: Map<string, ParentVariantMatch>;
-}> {
+): Promise<Set<string>> {
   const db = client as any;
   const { data: variants, error: variantsError } = await db
     .from("itemVariant")
-    .select("id, variantItemId, valuesKey")
+    .select("variantItemId")
     .eq("parentItemId", parentItemId)
     .eq("companyId", companyId);
   if (variantsError) throw variantsError;
 
-  const byId = new Map<string, ParentVariantMatch>();
-  const byKey = new Map<string, ParentVariantMatch>();
-  for (const r of (variants ?? []) as Array<{
-    variantItemId: string;
-    valuesKey: string;
-  }>) {
-    if (!r.variantItemId) continue;
-    const match: ParentVariantMatch = {
-      variantItemId: r.variantItemId,
-      valuesKey: r.valuesKey
-    };
-    byId.set(r.variantItemId, match);
-    if (r.valuesKey) byKey.set(r.valuesKey, match);
+  const ids = new Set<string>();
+  for (const r of (variants ?? []) as Array<{ variantItemId: string }>) {
+    if (r.variantItemId) ids.add(r.variantItemId);
   }
-  return { byId, byKey };
+  return ids;
 }
 
 /**
  * Expand a Style/Consumable variantTable into { variantItemId, quantity } rows.
- * Combo-only: each row is `{ variantItemId?, valuesKey?, Quantities }`. Variants
- * are matched by the stable `variantItemId` when present, falling back to the
- * legacy `valuesKey` (attribute codes in set order) for older stored blobs.
+ * Each cell is `{ variantItemId, Quantities }`; variants are matched by the
+ * stable variantItemId, validated against the parent's variants.
  */
 export async function expandVariantsQuantityTable(
   client: Db,
@@ -1841,7 +1956,7 @@ export async function expandVariantsQuantityTable(
     variantQuantities: unknown;
   }
 ): Promise<{
-  data: Array<{ variantItemId: string; quantity: number; valuesKey: string }>;
+  data: Array<{ variantItemId: string; quantity: number }>;
   error: Error | null;
 }> {
   try {
@@ -1850,61 +1965,40 @@ export async function expandVariantsQuantityTable(
       ? (raw.variantTable as Record<string, unknown>[])
       : [];
 
-    const cells: Array<{
-      variantItemId: string;
-      valuesKey: string;
-      quantity: number;
-    }> = [];
-
-    // Combo-only: expand { variantItemId?, valuesKey?, Quantities } rows. Legacy
-    // Color×Size matrix configs are retired.
+    const cells: Array<{ variantItemId: string; quantity: number }> = [];
     for (const row of table) {
       const variantItemId = String(row.variantItemId ?? "").trim();
-      const valuesKey = String(row.valuesKey ?? "").trim();
-      if (!variantItemId && !valuesKey) continue;
+      if (!variantItemId) continue;
       const qty = Number(row.Quantities ?? 0);
       if (!Number.isFinite(qty) || qty <= 0) continue;
-      cells.push({ variantItemId, valuesKey, quantity: qty });
+      cells.push({ variantItemId, quantity: qty });
     }
 
     if (cells.length === 0) {
       return { data: [], error: null };
     }
 
-    const { byId, byKey } = await loadParentVariants(
+    const validIds = await loadParentVariantIds(
       client,
       args.parentItemId,
       args.companyId
     );
 
-    const out: Array<{
-      variantItemId: string;
-      quantity: number;
-      valuesKey: string;
-    }> = [];
+    const out: Array<{ variantItemId: string; quantity: number }> = [];
     const seen = new Set<string>();
     for (const cell of cells) {
-      // Prefer the stable variantItemId; fall back to the legacy valuesKey.
-      const match =
-        (cell.variantItemId ? byId.get(cell.variantItemId) : undefined) ??
-        (cell.valuesKey ? byKey.get(cell.valuesKey) : undefined);
-      if (!match) {
-        const descriptor = cell.variantItemId || cell.valuesKey;
+      if (!validIds.has(cell.variantItemId)) {
         throw new Error(
-          `No variant SKU exists for ${descriptor}. Open the item and save its attribute selections to generate variants before shipping or receiving.`
+          `No variant SKU exists for ${cell.variantItemId}. Open the item and save its attribute selections to generate variants before shipping or receiving.`
         );
       }
-      if (seen.has(match.variantItemId)) {
+      if (seen.has(cell.variantItemId)) {
         throw new Error(
           "Configuration maps more than one cell to the same variant SKU."
         );
       }
-      seen.add(match.variantItemId);
-      out.push({
-        variantItemId: match.variantItemId,
-        quantity: cell.quantity,
-        valuesKey: match.valuesKey
-      });
+      seen.add(cell.variantItemId);
+      out.push({ variantItemId: cell.variantItemId, quantity: cell.quantity });
     }
 
     return { data: out, error: null };

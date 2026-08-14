@@ -25,14 +25,14 @@ type Row = {
   id: string | null;
   splitRowId: string | null;
   jobReadableId: string | null;
-  valuesKey: string;
+  variantItemId: string;
   attributeLabel: string;
   quantity: number;
   reportedQuantity: number;
 };
 
-const cellKey = (valuesKey: string | null | undefined) =>
-  (valuesKey ?? "").trim();
+const cellKey = (variantItemId: string | null | undefined) =>
+  (variantItemId ?? "").trim();
 const num = (v: unknown) => Number(v) || 0;
 
 /**
@@ -54,7 +54,7 @@ export default function SplitBatchOverlay({
 
   const cutByCell = useMemo(() => {
     const m = new Map<string, number>();
-    for (const c of cells) m.set(cellKey(c.valuesKey), c.cut);
+    for (const c of cells) m.set(cellKey(c.variantItemId), c.cut);
     return m;
   }, [cells]);
   const totalCut = useMemo(() => cells.reduce((s, c) => s + c.cut, 0), [cells]);
@@ -64,8 +64,8 @@ export default function SplitBatchOverlay({
       id: b.id,
       splitRowId: null,
       jobReadableId: b.jobReadableId,
-      valuesKey: b.valuesKey ?? "",
-      attributeLabel: b.attributeLabel ?? b.valuesKey ?? "—",
+      variantItemId: b.variantItemId ?? "",
+      attributeLabel: b.attributeLabel ?? "—",
       quantity: b.quantity,
       reportedQuantity: b.reportedQuantity
     }));
@@ -75,7 +75,7 @@ export default function SplitBatchOverlay({
         id: null,
         splitRowId: sr.id,
         jobReadableId: null,
-        valuesKey: sr.valuesKey,
+        variantItemId: sr.variantItemId ?? "",
         attributeLabel: sr.attributeLabel,
         quantity: sr.quantity,
         reportedQuantity: 0
@@ -85,7 +85,7 @@ export default function SplitBatchOverlay({
 
     const bundled = new Map<string, number>();
     for (const b of existingBundles) {
-      const k = cellKey(b.valuesKey);
+      const k = cellKey(b.variantItemId);
       bundled.set(k, (bundled.get(k) ?? 0) + b.quantity);
     }
     const prefillRows: Row[] = cells
@@ -93,9 +93,12 @@ export default function SplitBatchOverlay({
         id: null,
         splitRowId: null,
         jobReadableId: null,
-        valuesKey: c.valuesKey,
+        variantItemId: c.variantItemId,
         attributeLabel: c.attributeLabel,
-        quantity: Math.max(0, c.cut - (bundled.get(cellKey(c.valuesKey)) ?? 0)),
+        quantity: Math.max(
+          0,
+          c.cut - (bundled.get(cellKey(c.variantItemId)) ?? 0)
+        ),
         reportedQuantity: 0
       }))
       .filter((r) => r.quantity > 0);
@@ -105,22 +108,22 @@ export default function SplitBatchOverlay({
   const enteredByCell = useMemo(() => {
     const m = new Map<string, number>();
     for (const r of rows) {
-      const k = cellKey(r.valuesKey);
+      const k = cellKey(r.variantItemId);
       m.set(k, (m.get(k) ?? 0) + num(r.quantity));
     }
     return m;
   }, [rows]);
 
   const remainingFor = (c: CuttingSplitCell) =>
-    c.cut - (enteredByCell.get(cellKey(c.valuesKey)) ?? 0);
+    c.cut - (enteredByCell.get(cellKey(c.variantItemId)) ?? 0);
   const addableCells = cells.filter((c) => remainingFor(c) > 0);
 
   const total = rows.reduce((s, r) => s + num(r.quantity), 0);
   const remaining = totalCut - total;
 
-  const cellOver = (valuesKey: string) =>
-    (enteredByCell.get(cellKey(valuesKey)) ?? 0) >
-    (cutByCell.get(cellKey(valuesKey)) ?? 0);
+  const cellOver = (variantItemId: string) =>
+    (enteredByCell.get(cellKey(variantItemId)) ?? 0) >
+    (cutByCell.get(cellKey(variantItemId)) ?? 0);
   const rowBelowReported = (r: Row) =>
     !!r.id && num(r.quantity) < r.reportedQuantity;
 
@@ -148,7 +151,7 @@ export default function SplitBatchOverlay({
         id: null,
         splitRowId: null,
         jobReadableId: null,
-        valuesKey: c.valuesKey,
+        variantItemId: c.variantItemId,
         attributeLabel: c.attributeLabel,
         quantity: remainingFor(c),
         reportedQuantity: 0
@@ -160,7 +163,7 @@ export default function SplitBatchOverlay({
     const bundles = rows.map((r) => ({
       id: r.id ?? undefined,
       splitRowId: r.splitRowId ?? undefined,
-      valuesKey: r.valuesKey,
+      variantItemId: r.variantItemId,
       quantity: num(r.quantity)
     }));
     const formData = new FormData();
@@ -209,7 +212,7 @@ export default function SplitBatchOverlay({
                 </thead>
                 <tbody>
                   {rows.map((r, i) => {
-                    const over = cellOver(r.valuesKey);
+                    const over = cellOver(r.variantItemId);
                     const below = rowBelowReported(r);
                     return (
                       <tr key={r.id ?? `new-${i}`}>
@@ -266,7 +269,7 @@ export default function SplitBatchOverlay({
               <div className="mt-4 flex flex-wrap gap-2">
                 {addableCells.map((c) => (
                   <Button
-                    key={cellKey(c.valuesKey)}
+                    key={cellKey(c.variantItemId)}
                     type="button"
                     size="sm"
                     variant="secondary"

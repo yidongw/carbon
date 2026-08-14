@@ -1,11 +1,10 @@
+import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
-import { useNumberFormatter } from "@react-aria/i18n";
+import { useLocale, useNumberFormatter } from "@react-aria/i18n";
 import { type ReactNode, useMemo } from "react";
 import { sortBreakdown } from "../../styleBreakdown";
 import type { BreakdownEntry } from "../../types";
-
-const entryLabel = (e: BreakdownEntry) => e.label ?? e.valuesKey ?? "—";
 
 export function StyleBreakdownGrid({
   breakdown,
@@ -24,6 +23,11 @@ export function StyleBreakdownGrid({
 }) {
   const numberFormatter = useNumberFormatter();
   const format = numberFormatter.format.bind(numberFormatter);
+  const { locale } = useLocale();
+  // The stored label is the value-name combo ("Black · S"); localize color names
+  // to the user's locale ("黑色 · S"). Sizes / unknown segments pass through.
+  const entryLabel = (e: BreakdownEntry) =>
+    localizeVariantAttributeLabel(e.label ?? "", locale) || "—";
 
   const { sorted, totalOnHand } = useMemo(() => {
     const sorted = sortBreakdown(breakdown);

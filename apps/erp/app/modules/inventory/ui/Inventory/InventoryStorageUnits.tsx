@@ -78,10 +78,10 @@ import { aggregateStorageUnitsBySku } from "../../styleBreakdown";
 import type { BreakdownEntry } from "../../types";
 import { openStyleVariantsQuantityWithInventory } from "../openStyleVariantsQuantityWithInventory";
 
-// Style storage rows carry the SKU (valuesKey/skuLabel) they belong to so the
-// card can aggregate one row per storage unit with a per-SKU breakdown.
+// Style storage rows carry the SKU (variantItemId/skuLabel) they belong to so
+// the card can aggregate one row per storage unit with a per-SKU breakdown.
 type StorageUnitRow = ItemStorageUnitQuantities & {
-  valuesKey?: string | null;
+  variantItemId?: string | null;
   skuLabel?: string | null;
 };
 

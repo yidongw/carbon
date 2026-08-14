@@ -64,25 +64,32 @@ function JobVariantsQuantity({
     [parameters, defaultQuantityLabel, attributesLabel]
   );
 
+  // `variantItemId -> display label`, straight from the synthesized combo param.
+  const optionVariantItemLabels = comboParam?.optionVariantItemLabels ?? {};
+
   const currentRows = useMemo(() => {
     if (!initialRows || initialRows.length === 0) return [];
     const isCombo = isStyleComboParameters(parameters);
     const needsConvert =
       isCombo &&
-      !initialRows.some((r) => String(r.valuesKey ?? "").trim().length > 0);
+      !initialRows.some((r) => String(r.variantItemId ?? "").trim().length > 0);
     const seed = needsConvert
       ? (variantsQuantityToComboRows(
           { variantTable: initialRows },
-          optionLabels
+          optionVariantItemLabels
         ) as Row[])
       : initialRows;
     return seed.map((row) => {
       const normalized = normalizeRow(row, columns);
-      const label = String(row.label ?? "").trim();
+      const variantItemId = String(row.variantItemId ?? "").trim();
+      const label =
+        String(row.label ?? "").trim() ||
+        optionVariantItemLabels[variantItemId] ||
+        "";
       if (label) normalized.label = label;
       return normalized;
     });
-  }, [initialRows, columns, parameters, optionLabels]);
+  }, [initialRows, columns, parameters, optionVariantItemLabels]);
 
   const [rows, setRows] = useState<Row[]>(() =>
     currentRows.length > 0

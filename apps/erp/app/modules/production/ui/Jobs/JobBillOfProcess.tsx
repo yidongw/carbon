@@ -232,7 +232,7 @@ type JobBillOfProcessProps = {
   routeJob?: Job;
   /** Style planned qty from jobVariantQuantity (not job.configuration). */
   plannedVariantQuantities?: {
-    variantTable: Array<{ valuesKey: string; Quantities: number }>;
+    variantTable: Array<{ variantItemId: string; Quantities: number }>;
   } | null;
 };
 

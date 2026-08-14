@@ -8,7 +8,6 @@ import { readVariantTableRows } from "~/modules/production/variantTableWire";
 export type JobVariantQuantityLine = {
   variantItemId: string;
   quantity: number;
-  valuesKey: string;
 };
 
 type Db = SupabaseClient<Database>;
@@ -126,7 +125,13 @@ export async function getJobVariantQuantities(
     quantity: number;
   }>;
   if (rows.length > 0) {
-    return attachValuesKeys(client, companyId, rows);
+    return {
+      data: rows.map((r) => ({
+        variantItemId: r.variantItemId,
+        quantity: Number(r.quantity) || 0
+      })),
+      error: null
+    };
   }
 
   // Dual-read: legacy Style plans still stored as job.configuration.variantTable
@@ -165,45 +170,7 @@ export async function getJobVariantQuantities(
   return {
     data: expanded.data.map((r) => ({
       variantItemId: r.variantItemId,
-      quantity: r.quantity,
-      valuesKey: r.valuesKey
-    })),
-    error: null
-  };
-}
-
-async function attachValuesKeys(
-  client: Db,
-  companyId: string,
-  rows: Array<{ variantItemId: string; quantity: number }>
-): Promise<{ data: JobVariantQuantityLine[]; error: Error | null }> {
-  const variantIds = rows.map((r) => r.variantItemId);
-  const { data: variants, error: variantError } = await client
-    .from("itemVariant")
-    .select("variantItemId, valuesKey")
-    .eq("companyId", companyId)
-    .in("variantItemId", variantIds);
-
-  if (variantError) {
-    return {
-      data: [],
-      error: new Error(
-        variantError.message ?? "Failed to load variant valuesKeys"
-      )
-    };
-  }
-
-  const keyByVariant = new Map<string, string>(
-    (
-      (variants ?? []) as Array<{ variantItemId: string; valuesKey: string }>
-    ).map((v) => [v.variantItemId, v.valuesKey])
-  );
-
-  return {
-    data: rows.map((r) => ({
-      variantItemId: r.variantItemId,
-      quantity: Number(r.quantity) || 0,
-      valuesKey: keyByVariant.get(r.variantItemId) ?? r.variantItemId
+      quantity: r.quantity
     })),
     error: null
   };
@@ -270,13 +237,13 @@ export async function persistStyleJobVariantQuantities(
 
 /** Build combo editor rows from stored jobVariantQuantity lines. */
 export function jobVariantQuantitiesToTable(lines: JobVariantQuantityLine[]): {
-  variantTable: Array<{ valuesKey: string; Quantities: number }>;
+  variantTable: Array<{ variantItemId: string; Quantities: number }>;
 } {
   return {
     variantTable: lines
       .filter((l) => l.quantity > 0)
       .map((l) => ({
-        valuesKey: l.valuesKey,
+        variantItemId: l.variantItemId,
         Quantities: l.quantity
       }))
   };
@@ -291,7 +258,7 @@ export async function getJobPlannedVariantQuantities(
   jobId: string,
   companyId: string
 ): Promise<{
-  variantTable: Array<{ valuesKey: string; Quantities: number }>;
+  variantTable: Array<{ variantItemId: string; Quantities: number }>;
 } | null> {
   const planned = await getJobVariantQuantities(client, jobId, companyId);
   if (planned.error || planned.data.length === 0) return null;

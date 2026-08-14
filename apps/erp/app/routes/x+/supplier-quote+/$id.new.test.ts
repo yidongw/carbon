@@ -85,23 +85,21 @@ describe("supplier quote new line action", () => {
           conversionFactor: 1,
           quantity: [1],
           variantQuantities: JSON.stringify({
-            variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+            variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
           })
         }
       })
     } as any);
     expandVariantTableToLines.mockResolvedValue({
       ok: true,
-      variants: [
-        { variantItemId: "item_child", quantity: 2, valuesKey: "BK|S" }
-      ]
+      variants: [{ variantItemId: "item_child", quantity: 2 }]
     });
 
     const formData = new FormData();
     formData.set(
       "variantQuantities",
       JSON.stringify({
-        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     );
 
@@ -121,9 +119,7 @@ describe("supplier quote new line action", () => {
         companyId: "company_1",
         supplierQuoteId: "sq_1",
         userId: "user_1",
-        variants: [
-          { variantItemId: "item_child", quantity: 2, valuesKey: "BK|S" }
-        ]
+        variants: [{ variantItemId: "item_child", quantity: 2 }]
       })
     );
     expect(upsertSupplierQuoteLine).not.toHaveBeenCalled();
