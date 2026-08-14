@@ -2,13 +2,12 @@ import { describe, expect, it } from "vitest";
 import { buildAttributeValueNames, getVariantDisplay } from "./variantDisplay";
 
 describe("getVariantDisplay", () => {
-  it("returns attribute-combo chips from valuesKey rows", () => {
-    const display = getVariantDisplay(
-      {
-        variantTable: [{ valuesKey: "BK|S", Quantities: 6 }]
-      },
-      { BK: "黑色" }
-    );
+  it("returns attribute-combo chips from stored-label variant rows", () => {
+    const display = getVariantDisplay({
+      variantTable: [
+        { variantItemId: "item_bk_s", label: "黑色 · S", Quantities: 6 }
+      ]
+    });
     expect(display?.chips).toEqual([
       {
         key: "0:Quantities",
@@ -19,21 +18,15 @@ describe("getVariantDisplay", () => {
     ]);
   });
 
-  it("localizes each combo value via the name map", () => {
-    const display = getVariantDisplay(
-      {
-        variantTable: [
-          { valuesKey: "RD|S", Quantities: 2 },
-          { valuesKey: "BL|S", Quantities: 1 },
-          { valuesKey: "RD|M", Quantities: 1 },
-          { valuesKey: "BL|M", Quantities: 2 }
-        ]
-      },
-      buildAttributeValueNames([
-        { code: "RD", name: "红色" },
-        { code: "BL", name: "蓝色" }
-      ])
-    );
+  it("renders one chip per stored variant row", () => {
+    const display = getVariantDisplay({
+      variantTable: [
+        { variantItemId: "item_rd_s", label: "红色 · S", Quantities: 2 },
+        { variantItemId: "item_bl_s", label: "蓝色 · S", Quantities: 1 },
+        { variantItemId: "item_rd_m", label: "红色 · M", Quantities: 1 },
+        { variantItemId: "item_bl_m", label: "蓝色 · M", Quantities: 2 }
+      ]
+    });
     expect(display?.chips.map((c) => c.label)).toEqual([
       "红色 · S ×2",
       "蓝色 · S ×1",
@@ -42,22 +35,20 @@ describe("getVariantDisplay", () => {
     ]);
   });
 
-  it("aliases Light Gray from styleReference", () => {
-    const display = getVariantDisplay(
-      {
-        variantTable: [{ valuesKey: "LGY|M", Quantities: 3 }]
-      },
-      buildAttributeValueNames([{ code: "LGY", name: "浅灰色" }])
-    );
-    expect(display?.chips.map((c) => c.label)).toEqual(["浅灰色 · M ×3"]);
+  it("falls back to variantItemId when a row has no stored label", () => {
+    const display = getVariantDisplay({
+      variantTable: [{ variantItemId: "item_lgy_m", Quantities: 3 }]
+    });
+    expect(display?.chips.map((c) => c.label)).toEqual(["item_lgy_m ×3"]);
   });
 
   it("parses JSON string configurations", () => {
     const display = getVariantDisplay(
       JSON.stringify({
-        variantTable: [{ valuesKey: "BG|L", Quantities: 2 }]
-      }),
-      { BG: "米色" }
+        variantTable: [
+          { variantItemId: "item_bg_l", label: "米色 · L", Quantities: 2 }
+        ]
+      })
     );
     expect(display?.chips[0]?.label).toBe("米色 · L ×2");
   });
@@ -68,9 +59,9 @@ describe("getVariantDisplayFromVariants", () => {
     const { getVariantDisplayFromVariants } = await import("./variantDisplay");
     const display = getVariantDisplayFromVariants(
       [
-        { attributeCodes: ["BG", "S"], quantity: 3 },
-        { attributeCodes: ["BK", "S"], quantity: 4 },
-        { attributeCodes: ["BG", "S"], quantity: 2 }
+        { attributeLabels: ["BG", "S"], quantity: 3 },
+        { attributeLabels: ["BK", "S"], quantity: 4 },
+        { attributeLabels: ["BG", "S"], quantity: 2 }
       ],
       { BG: "米色", BK: "黑色" }
     );
@@ -84,9 +75,9 @@ describe("getVariantDisplayFromVariants", () => {
     const { getVariantDisplayFromVariants } = await import("./variantDisplay");
     const display = getVariantDisplayFromVariants(
       [
-        { attributeCodes: ["BG"], quantity: 3 },
-        { attributeCodes: ["BK"], quantity: 4 },
-        { attributeCodes: ["BG"], quantity: 2 }
+        { attributeLabels: ["BG"], quantity: 3 },
+        { attributeLabels: ["BK"], quantity: 4 },
+        { attributeLabels: ["BG"], quantity: 2 }
       ],
       { BG: "米色", BK: "黑色" }
     );
@@ -109,7 +100,7 @@ describe("groupLinesForStyleDisplay", () => {
           parentReadableId: "111333",
           parentName: "1113333",
           parentThumbnailPath: null,
-          attributeCodes: ["BK", "S"]
+          attributeLabels: ["BK", "S"]
         },
         c2: {
           variantItemId: "c2",
@@ -117,7 +108,7 @@ describe("groupLinesForStyleDisplay", () => {
           parentReadableId: "111333",
           parentName: "1113333",
           parentThumbnailPath: null,
-          attributeCodes: ["BG", "S"]
+          attributeLabels: ["BG", "S"]
         }
       },
       { BK: "黑色", BG: "米色" },

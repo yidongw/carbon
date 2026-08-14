@@ -20,11 +20,13 @@ export type VariantsQuantityColumn = {
   options?: string[];
 };
 
-/** Minimal parameter shape required to build variant quantities table columns. */
+/** Minimal parameter shape required to build variant quantities table columns.
+ * The synthesized Style combo param additionally carries `optionVariantItemLabels`
+ * (variantItemId -> display label), whose presence marks the combo param. */
 export type VariantQuantityParameterColumnsInput = Pick<
   ConfigurationParameter,
   "key" | "label" | "dataType" | "listOptions"
->;
+> & { optionVariantItemLabels?: Record<string, string> | null };
 
 export function buildVariantsQuantityColumns(
   parameters: VariantQuantityParameterColumnsInput[],
@@ -33,21 +35,24 @@ export function buildVariantsQuantityColumns(
   comboParam: VariantQuantityParameterColumnsInput | null;
   columns: VariantsQuantityColumn[];
 } {
-  // Style combo: single valuesKey list → row labels + Quantities (not matrix).
-  const firstList = parameters.find((p) => p.dataType === "list");
-  const isStyleCombo =
-    (parameters.length === 1 && parameters[0]?.key === "valuesKey") ||
-    firstList?.key === "valuesKey";
+  // Style combo: the synthesized list param carries optionVariantItemLabels. Each
+  // row is one variant (descriptor = variantItemId) + Quantities (not a matrix).
+  const comboParam =
+    parameters.find(
+      (p) => p.dataType === "list" && p.optionVariantItemLabels != null
+    ) ?? null;
 
-  if (isStyleCombo && firstList) {
+  if (comboParam) {
     return {
-      comboParam: firstList,
+      comboParam,
       columns: [
         {
-          key: "valuesKey",
-          label: firstList.label || "Attributes",
+          key: "variantItemId",
+          label: comboParam.label || "Attributes",
           type: "list",
-          options: firstList.listOptions ?? []
+          // The descriptor value is the variant SKU id; options are the synced
+          // variant ids so cell validation accepts them.
+          options: Object.keys(comboParam.optionVariantItemLabels ?? {})
         },
         {
           key: "Quantities",
@@ -59,8 +64,8 @@ export function buildVariantsQuantityColumns(
   }
 
   // The legacy Color×Size matrix model is retired: every quantity config is now
-  // the attribute combo (valuesKey + Quantities) handled above. Any non-combo
-  // config collapses to a single plain Quantities column.
+  // the attribute combo (variantItemId + Quantities) handled above. Any
+  // non-combo config collapses to a single plain Quantities column.
   return {
     comboParam: null,
     columns: [
@@ -151,28 +156,17 @@ export type VariantsQuantityCell = {
   quantity: number;
 };
 
-function optionLabelOf(
-  value: string,
-  optionLabels?: Record<string, string>
-): string {
-  if (!optionLabels) return value;
-  if (optionLabels[value]) return optionLabels[value];
-  const lower = value.toLowerCase();
-  for (const [key, label] of Object.entries(optionLabels)) {
-    if (key.toLowerCase() === lower) return label;
-  }
-  return value;
-}
-
 /**
  * Flatten a stored variant quantities table into one cell per non-zero quantity, for
- * summary badges (`BK · S ×2`) and expand lists. Combo-only: each row is a
- * `valuesKey` + `Quantities`, labelled from `label` or the valuesKey
- * (`|` → ` · `). Legacy Color×Size matrix configs are retired (yield nothing).
+ * summary badges (`Black · S ×2`) and expand lists. Combo-only: each cell is a
+ * `variantItemId` + `Quantities`. The display label is the cell's own stored
+ * label, or the param's `variantItemId -> label` map, else the raw id. Legacy
+ * Color×Size matrix configs are retired.
  */
 export function getVariantsQuantityCells(
   variantQuantities: unknown,
-  optionLabels?: Record<string, string>
+  /** `variantItemId -> display label` (the synthesized param's label map). */
+  optionVariantItemLabels?: Record<string, string>
 ): VariantsQuantityCell[] {
   if (
     variantQuantities === null ||
@@ -183,25 +177,24 @@ export function getVariantsQuantityCells(
     return [];
   }
 
-  // Combo-only: quantity configs are { valuesKey, Quantities } rows. Legacy
+  // Combo-only: quantity configs are { variantItemId, Quantities } rows. Legacy
   // Color×Size matrices are retired.
-  const labelOf = (value: string) => optionLabelOf(value, optionLabels);
   const cells: VariantsQuantityCell[] = [];
 
   for (const [rowIndex, row] of getVariantsQuantityRows(
     variantQuantities
   ).entries()) {
-    const valuesKey = String(row.valuesKey ?? "").trim();
-    if (!valuesKey) continue;
+    const variantItemId = String(row.variantItemId ?? "").trim();
+    if (!variantItemId) continue;
     const rawQty = row.Quantities;
     if (isZeroOrEmpty(rawQty)) continue;
     const quantity = Number(rawQty) || 0;
     if (quantity === 0) continue;
 
-    const storedLabel = String(row.label ?? "").trim();
-    const label = storedLabel
-      ? storedLabel
-      : valuesKey.split("|").map(labelOf).join(" · ");
+    const label =
+      String(row.label ?? "").trim() ||
+      optionVariantItemLabels?.[variantItemId] ||
+      variantItemId;
 
     cells.push({ key: `${rowIndex}:Quantities`, label, quantity });
   }
@@ -210,18 +203,21 @@ export function getVariantsQuantityCells(
 }
 
 export type ComboVariantsQuantityRow = {
-  valuesKey: string;
+  variantItemId: string;
   Quantities: number;
   label?: string;
 };
 
 /**
- * Read stored variant quantities → combo editor rows (`valuesKey` + `Quantities`).
- * Configs are combo-only now; anything else yields no rows.
+ * Read stored variant quantities → combo editor rows (`variantItemId` +
+ * `Quantities`). The display label is the cell's own stored label, or the
+ * param's `variantItemId -> label` map. Configs are combo-only now; anything
+ * else yields no rows.
  */
 export function variantsQuantityToComboRows(
   variantQuantities: unknown,
-  optionLabels?: Record<string, string>
+  /** `variantItemId -> display label` (the synthesized param's label map). */
+  optionVariantItemLabels?: Record<string, string>
 ): ComboVariantsQuantityRow[] {
   if (
     variantQuantities === null ||
@@ -232,21 +228,24 @@ export function variantsQuantityToComboRows(
     return [];
   }
 
-  // Combo-only: pass through { valuesKey, Quantities } rows. Legacy Color×Size
-  // matrix configs are retired.
-  const labelOf = (value: string) => optionLabelOf(value, optionLabels);
+  // Combo-only: pass through { variantItemId, Quantities } rows. Legacy
+  // Color×Size matrix configs are retired.
   const out: ComboVariantsQuantityRow[] = [];
 
   for (const row of getVariantsQuantityRows(variantQuantities)) {
-    const valuesKey = String(row.valuesKey ?? "").trim();
-    if (!valuesKey) continue;
+    const variantItemId = String(row.variantItemId ?? "").trim();
+    if (!variantItemId) continue;
     const quantity = Number(row.Quantities) || 0;
     if (quantity <= 0) continue;
-    const storedLabel = String(row.label ?? "").trim();
-    const label = storedLabel
-      ? storedLabel
-      : valuesKey.split("|").map(labelOf).join(" · ");
-    out.push({ valuesKey, Quantities: quantity, ...(label ? { label } : {}) });
+    const label =
+      String(row.label ?? "").trim() ||
+      optionVariantItemLabels?.[variantItemId] ||
+      "";
+    out.push({
+      variantItemId,
+      Quantities: quantity,
+      ...(label ? { label } : {})
+    });
   }
 
   return out;

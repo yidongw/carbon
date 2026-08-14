@@ -102,10 +102,8 @@ export function getVariantDisplay(
     }
   }
 
-  const cells = getVariantsQuantityCells(
-    parsed,
-    localizeColorNameMap(attributeValueNames, locale)
-  );
+  // Cells carry their own stored label; the raw variantItemId is the fallback.
+  const cells = getVariantsQuantityCells(parsed);
   if (cells.length === 0) return null;
 
   return {
@@ -124,7 +122,7 @@ export function getVariantDisplay(
  */
 export function getVariantDisplayFromVariants(
   variants: Array<{
-    attributeCodes?: string[];
+    attributeLabels?: string[];
     quantity: number;
   }>,
   attributeValueNames?: Record<string, string>,
@@ -133,7 +131,7 @@ export function getVariantDisplayFromVariants(
   const localized = localizeColorNameMap(attributeValueNames, locale);
   const byKey = new Map<string, VariantChip>();
   for (const variant of variants) {
-    const codes = variant.attributeCodes?.filter(Boolean) ?? [];
+    const codes = variant.attributeLabels?.filter(Boolean) ?? [];
     if (codes.length === 0) continue;
     const qty = Number(variant.quantity) || 0;
     if (qty <= 0) continue;
@@ -165,8 +163,9 @@ export type StyleVariantLineMeta = {
   parentReadableId: string;
   parentName: string | null;
   parentThumbnailPath: string | null;
-  /** Attribute value codes in set order (from valuesKey / variant attrs). */
-  attributeCodes: string[];
+  /** Attribute value display names in set order (from the variant's attribute
+   * rows), e.g. ["Black", "S"] — localized to the user's locale when rendered. */
+  attributeLabels: string[];
 };
 
 type GroupableOrderLine = {
@@ -233,7 +232,7 @@ export function groupLinesForStyleDisplay<T extends GroupableOrderLine>(
       variantLines.map((line) => {
         const m = variantByItemId[line.itemId!];
         return {
-          attributeCodes: m?.attributeCodes ?? [],
+          attributeLabels: m?.attributeLabels ?? [],
           quantity: quantityOf(line)
         };
       }),

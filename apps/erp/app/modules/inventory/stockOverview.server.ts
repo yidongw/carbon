@@ -66,9 +66,11 @@ export async function getStockOverview(
 
   // itemId -> locationId -> on-hand
   const onHandByItem = new Map<string, Map<string, number>>();
-  // itemId -> valuesKey -> aggregated breakdown entry, keeping a per-location
+  // itemId -> variantItemId -> aggregated breakdown entry, keeping a per-location
   // split so the modal can show one quantity column per warehouse.
-  type AggEntry = BreakdownEntry & { byLocation: Map<string, number> };
+  type AggEntry = Omit<BreakdownEntry, "byLocation"> & {
+    byLocation: Map<string, number>;
+  };
   const breakdownByItem = new Map<string, Map<string, AggEntry>>();
   // itemId -> docKey -> { locationId, quantity, href }
   const toSendByItem = new Map<string, Map<string, DocEntry>>();
@@ -139,7 +141,7 @@ export async function getStockOverview(
           breakdownByItem.set(itemId, byKey);
         }
         for (const entry of entries) {
-          const key = entry.valuesKey ?? "";
+          const key = entry.variantItemId ?? "";
           const qty = entry.quantityOnHand ?? 0;
           let existing = byKey.get(key);
           if (!existing) {
@@ -275,9 +277,8 @@ export async function getStockOverview(
     const breakdown: BreakdownEntry[] =
       isStyle && byKey
         ? Array.from(byKey.values()).map((e) => ({
-            valuesKey: e.valuesKey,
-            label: e.label,
             variantItemId: e.variantItemId,
+            label: e.label,
             quantityOnHand: e.quantityOnHand,
             byLocation: Object.fromEntries(e.byLocation)
           }))
@@ -300,7 +301,7 @@ export async function getStockOverview(
       }
       if (untaggedTotal > 0) {
         breakdown.push({
-          valuesKey: null,
+          variantItemId: null,
           label: null,
           quantityOnHand: untaggedTotal,
           byLocation: untaggedByLocation
@@ -323,6 +324,8 @@ export async function getStockOverview(
     });
   }
 
+  // Breakdown labels are derived from the attribute join in the
+  // get_inventory_quantities RPC itself; nothing to re-derive here.
   items.sort((a, b) =>
     a.readableIdWithRevision.localeCompare(b.readableIdWithRevision)
   );

@@ -43,7 +43,7 @@ export type VariantsQuantityOverlaySuccess = {
   // Flat cut breakdown (report split editor) — stripped server-side before the
   // table is stored; persisted to masterWorkOrderSplitRow for cutting reports.
   splitRows?: {
-    valuesKey?: string | null;
+    variantItemId?: string | null;
     attributeLabel?: string | null;
     quantity: number;
   }[];

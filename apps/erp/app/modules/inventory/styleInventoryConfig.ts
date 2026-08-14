@@ -2,14 +2,13 @@
  * Map Style ledger on-hand into a variants-quantity shape that
  * `buildVariantsQuantityEditorState` can use as inventory reference hints / caps.
  *
- * Style editors are combo-shaped (`valuesKey` + `Quantities`) after the
- * attributes refactor; legacy variants quantity matrix shape is still accepted as input
- * and converted to combo keys (`BK|M`).
+ * Style editors are identified by the stable `variantItemId` (+ `Quantities`)
+ * after the attributes refactor.
  */
 
 export type StyleOnHandEntry = {
-  /** Canonical combo key (e.g. `BK|M`). */
-  valuesKey?: string | null;
+  /** Stable variant item id (identity of the SKU). */
+  variantItemId?: string | null;
   quantityOnHand: number;
 };
 
@@ -22,12 +21,12 @@ export const EMPTY_VARIANT_QUANTITIES: VariantQuantitiesPayload = {
   variantTable: []
 };
 
-function valuesKeyOf(entry: StyleOnHandEntry): string {
-  return entry.valuesKey?.trim() ?? "";
+function variantItemIdOf(entry: StyleOnHandEntry): string {
+  return entry.variantItemId?.trim() ?? "";
 }
 
 /**
- * Aggregate on-hand into Style combo config rows (`valuesKey` + `Quantities`).
+ * Aggregate on-hand into Style config rows (`variantItemId` + `Quantities`).
  * Returns null when nothing is tagged / no variant breakdown.
  */
 export function breakdownToInventoryVariantsQuantity(
@@ -36,17 +35,17 @@ export function breakdownToInventoryVariantsQuantity(
   const byKey = new Map<string, number>();
 
   for (const entry of entries) {
-    const valuesKey = valuesKeyOf(entry);
+    const variantItemId = variantItemIdOf(entry);
     const qty = Number(entry.quantityOnHand) || 0;
-    if (!valuesKey || qty <= 0) continue;
-    byKey.set(valuesKey, (byKey.get(valuesKey) ?? 0) + qty);
+    if (!variantItemId || qty <= 0) continue;
+    byKey.set(variantItemId, (byKey.get(variantItemId) ?? 0) + qty);
   }
 
   if (byKey.size === 0) return null;
 
   const variantTable = Array.from(byKey.entries()).map(
-    ([valuesKey, Quantities]) => ({
-      valuesKey,
+    ([variantItemId, Quantities]) => ({
+      variantItemId,
       Quantities
     })
   );

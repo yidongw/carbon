@@ -24,12 +24,11 @@ export type BatchProperty = NonNullable<
 
 // One SKU row of a Style item's inventory breakdown, as returned by the
 // `breakdown` / `jobBreakdown` jsonb from get_inventory_quantities (rolled up
-// from the item's variant-SKU ledgers). Each element is one variant: `label`
-// is the display (e.g. "BK · M"), `valuesKey` its identity (e.g. "BK|M").
+// from the item's variant-SKU ledgers). Each element is one variant:
+// `variantItemId` is its identity and `label` is the display (e.g. "BK · M").
 export type BreakdownEntry = {
-  valuesKey?: string | null;
-  label?: string | null;
   variantItemId?: string | null;
+  label?: string | null;
   quantityOnHand: number;
   // Optional per-location split of `quantityOnHand`, keyed by locationId — used
   // by the cross-location Stock Overview grid to show one column per warehouse.

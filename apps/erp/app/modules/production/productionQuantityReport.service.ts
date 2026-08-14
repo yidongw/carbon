@@ -26,7 +26,7 @@ import {
 function splitVariantQuantitiesAndRows(variantQuantities: unknown): {
   variantQuantities: unknown;
   rows: {
-    valuesKey: string | null;
+    variantItemId: string | null;
     quantity: number;
   }[];
 } {
@@ -46,12 +46,12 @@ function splitVariantQuantitiesAndRows(variantQuantities: unknown): {
   const rows = Array.isArray(splitRows)
     ? splitRows.map((r) => {
         const row = (r ?? {}) as Record<string, unknown>;
-        const valuesKey =
-          typeof row.valuesKey === "string" && row.valuesKey.trim()
-            ? row.valuesKey.trim()
+        const variantItemId =
+          typeof row.variantItemId === "string" && row.variantItemId.trim()
+            ? row.variantItemId.trim()
             : null;
         return {
-          valuesKey,
+          variantItemId,
           quantity: Number(row.quantity) || 0
         };
       })

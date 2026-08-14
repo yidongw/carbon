@@ -8,8 +8,8 @@ export type VariantsQuantityData = {
 };
 
 /**
- * The combo attribute model has exactly two columns: the attribute combo
- * (`valuesKey`, a row descriptor) and its quantity (`Quantities`). There is no
+ * The combo attribute model has exactly two columns: the variant descriptor
+ * (`variantItemId`) and its quantity (`Quantities`). There is no
  * list of quantity columns to track — the total is always the `Quantities`
  * column. (The legacy Color×Size matrix — many quantity columns — is retired.)
  */

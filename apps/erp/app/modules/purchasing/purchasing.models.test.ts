@@ -32,8 +32,8 @@ describe("purchaseOrderLineValidator", () => {
       purchaseQuantity: 10,
       variantQuantities: JSON.stringify({
         variantTable: [
-          { valuesKey: "Black|S", Quantities: 2 },
-          { valuesKey: "Black|M", Quantities: 3 }
+          { variantItemId: "item_black_s", Quantities: 2 },
+          { variantItemId: "item_black_m", Quantities: 3 }
         ]
       })
     });

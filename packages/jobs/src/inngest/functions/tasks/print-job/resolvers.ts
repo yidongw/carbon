@@ -49,7 +49,7 @@ export async function buildBundleTicketItem(
   const { data: bundle } = await (client as any)
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel, valuesKey"
+      "id, jobId, masterWorkOrderId, sequence, quantity, jobReadableId, readableIdWithRevision, itemName, attributeValues, attributeLabel"
     )
     .eq("id", bundleWorkOrderId)
     .single();

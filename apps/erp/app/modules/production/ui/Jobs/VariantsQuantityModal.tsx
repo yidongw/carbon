@@ -27,7 +27,6 @@ import {
   type VariantsQuantityReferenceSource,
   variantsQuantityToComboRows
 } from "~/modules/production/variantsQuantityTableColumns";
-import { stampVariantItemIds } from "~/modules/production/variantTableWire";
 import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
 import type { ItemVariantsQuantityOverlayLoaderData } from "~/routes/api+/items.$itemId.variants-quantity";
 import { path } from "~/utils/path";
@@ -51,24 +50,10 @@ import {
 } from "./variantsQuantityShared";
 
 type PlanCell = {
-  valuesKey: string;
+  variantItemId: string;
   attributeLabel: string;
   cap: number;
 };
-
-function comboDisplayLabel(
-  row: Row,
-  optionLabels?: Record<string, string>
-): string {
-  const stored = String(row.label ?? "").trim();
-  if (stored) return stored;
-  const valuesKey = String(row.valuesKey ?? "").trim();
-  if (!valuesKey) return "—";
-  return valuesKey
-    .split("|")
-    .map((part) => optionLabels?.[part] ?? part)
-    .join(" · ");
-}
 
 /** Flat editor columns: every list param as a descriptor + one Quantities cell. */
 function buildFlatColumns(
@@ -92,22 +77,25 @@ function buildFlatColumns(
   return cols;
 }
 
-/** Combo rows: pass-through valuesKey rows. */
+/** Combo rows: pass-through variantItemId rows (labelled from the param's map). */
 function comboRowsFromInitial(
   rows: Row[],
-  optionLabels?: Record<string, string>
+  optionVariantItemLabels: Record<string, string>
 ): Row[] {
   const alreadyCombo = rows.some(
-    (r) => String(r.valuesKey ?? "").trim().length > 0
+    (r) => String(r.variantItemId ?? "").trim().length > 0
   );
   if (alreadyCombo) {
     const flat: Row[] = [];
     for (const mr of rows) {
-      const valuesKey = String(mr.valuesKey ?? "").trim();
+      const variantItemId = String(mr.variantItemId ?? "").trim();
       const qty = Number(mr.Quantities) || 0;
-      if (!valuesKey || qty <= 0) continue;
-      const row: Row = { valuesKey, Quantities: qty };
-      const label = String(mr.label ?? "").trim();
+      if (!variantItemId || qty <= 0) continue;
+      const row: Row = { variantItemId, Quantities: qty };
+      const label =
+        String(mr.label ?? "").trim() ||
+        optionVariantItemLabels[variantItemId] ||
+        "";
       if (label) row.label = label;
       flat.push(row);
     }
@@ -116,22 +104,24 @@ function comboRowsFromInitial(
 
   return variantsQuantityToComboRows(
     { variantTable: rows },
-    optionLabels
+    optionVariantItemLabels
   ) as Row[];
 }
 
-/** Merge flat combo rows into the stored config table shape (valuesKey rows). */
+/** Merge flat combo rows into the stored variant table shape
+ * (`{ variantItemId, Quantities }` cells — no descriptor label is persisted). */
 function flatRowsToMergedConfig(flatRows: Row[]): {
   variantTable: Row[];
 } {
   return {
     variantTable: flatRows
       .map((fr) => {
-        const valuesKey = String(fr.valuesKey ?? "").trim();
-        if (!valuesKey) return null;
-        const row: Row = { valuesKey, Quantities: Number(fr.Quantities) || 0 };
-        const label = String(fr.label ?? "").trim();
-        if (label) row.label = label;
+        const variantItemId = String(fr.variantItemId ?? "").trim();
+        if (!variantItemId) return null;
+        const row: Row = {
+          variantItemId,
+          Quantities: Number(fr.Quantities) || 0
+        };
         return row;
       })
       .filter((r): r is Row => r != null)
@@ -210,14 +200,23 @@ function VariantsQuantityModal({
     t`Quantities`,
     t`Attributes`
   );
-  // Stable variantItemId per valuesKey option (from the synthesized Style combo
-  // param), used to stamp a drift-proof id onto each saved cell.
-  const variantItemIdByValuesKey = (
-    (parameters.find((p) => p.key === "valuesKey") ??
-      parameters.find((p) => p.dataType === "list")) as
-      | { optionVariantItemIds?: Record<string, string> }
-      | undefined
-  )?.optionVariantItemIds;
+  // The synthesized Style combo param carries `optionVariantItemLabels`
+  // (variantItemId -> display label). Each editor cell's descriptor is the stable
+  // variantItemId; its label comes straight from this map — no code combo.
+  const comboParamFromParams = parameters.find(
+    (p) =>
+      p.dataType === "list" &&
+      (p as { optionVariantItemLabels?: Record<string, string> })
+        .optionVariantItemLabels != null
+  ) as { optionVariantItemLabels?: Record<string, string> } | undefined;
+  const optionVariantItemLabels =
+    comboParamFromParams?.optionVariantItemLabels ?? {};
+  const comboDisplayLabel = (row: Row): string => {
+    const stored = String(row.label ?? "").trim();
+    if (stored) return stored;
+    const variantItemId = String(row.variantItemId ?? "").trim();
+    return optionVariantItemLabels[variantItemId] || variantItemId || "—";
+  };
   // In flat mode the grid uses one row per combo/color-size (multiple allowed)
   // with a single Quantities column; the stored config is still merged on submit.
   const flatColumns = buildFlatColumns(parameters, t`Quantities`);
@@ -227,7 +226,7 @@ function VariantsQuantityModal({
     if (flat) {
       const seed =
         initialRows && initialRows.length > 0
-          ? comboRowsFromInitial(initialRows, optionLabels)
+          ? comboRowsFromInitial(initialRows, optionVariantItemLabels)
           : [];
       if (seed.length > 0) {
         return seed.map((row) => {
@@ -242,16 +241,20 @@ function VariantsQuantityModal({
     }
     if (initialRows && initialRows.length > 0) {
       const seedRows = !initialRows.some(
-        (r) => String(r.valuesKey ?? "").trim().length > 0
+        (r) => String(r.variantItemId ?? "").trim().length > 0
       )
         ? (variantsQuantityToComboRows(
             { variantTable: initialRows },
-            optionLabels
+            optionVariantItemLabels
           ) as Row[])
         : initialRows;
       return seedRows.map((row) => {
         const normalized = normalizeRow(row, columns);
-        const label = String(row.label ?? "").trim();
+        const variantItemId = String(row.variantItemId ?? "").trim();
+        const label =
+          String(row.label ?? "").trim() ||
+          optionVariantItemLabels[variantItemId] ||
+          "";
         if (label) normalized.label = label;
         return normalized;
       });
@@ -282,23 +285,27 @@ function VariantsQuantityModal({
   // Non-flat combo editor: instead of a generic "Add Row", offer one button per
   // attribute combo not yet in the table (translated). Deleting a row frees its
   // combo so its button reappears.
-  const usedCombos = useMemo(
+  const usedVariantItemIds = useMemo(
     () =>
       new Set(
-        rows.map((r) => String(r.valuesKey ?? "").trim()).filter(Boolean)
+        rows.map((r) => String(r.variantItemId ?? "").trim()).filter(Boolean)
       ),
     [rows]
   );
+  // One add button per synced variant SKU not yet in the table, labelled by its
+  // display name combo (never a code).
   const missingCombos = !flat
-    ? (comboParam?.listOptions ?? []).filter((c) => !usedCombos.has(c))
+    ? Object.entries(optionVariantItemLabels)
+        .map(([variantItemId, label]) => ({ variantItemId, label }))
+        .filter(({ variantItemId }) => !usedVariantItemIds.has(variantItemId))
     : [];
-  const addComboRow = (combo: string) =>
+  const addComboRow = (variantItemId: string, label: string) =>
     setRows((prev) => [
       ...prev,
       {
         ...makeDefaultRow(gridColumns),
-        valuesKey: combo,
-        label: combo.replace(/\|/g, " · "),
+        variantItemId,
+        label,
         Quantities: 0
       }
     ]);
@@ -323,9 +330,9 @@ function VariantsQuantityModal({
   // reference, so we can offer a button per plannable cell and warn if a
   // cell's entered quantity exceeds its plan.
   //
-  // Cell identity is the attribute combo's valuesKey.
-  const cellKeyOf = (cell: { valuesKey?: string }) =>
-    String(cell.valuesKey ?? "").trim();
+  // Cell identity is the attribute combo's stable variantItemId.
+  const cellKeyOf = (cell: { variantItemId?: string }) =>
+    String(cell.variantItemId ?? "").trim();
 
   const planCells: PlanCell[] = [];
   if (flat) {
@@ -333,18 +340,18 @@ function VariantsQuantityModal({
       const refs = referenceByRowIndex?.[i] ?? {};
       const cap = Number(refs.Quantities) || 0;
       if (cap <= 0) return;
-      const valuesKey = String(row.valuesKey ?? "").trim();
-      if (!valuesKey) return;
+      const variantItemId = String(row.variantItemId ?? "").trim();
+      if (!variantItemId) return;
       planCells.push({
-        valuesKey,
-        attributeLabel: comboDisplayLabel(row, optionLabels),
+        variantItemId,
+        attributeLabel: comboDisplayLabel(row),
         cap
       });
     });
   }
   const enteredByCell = new Map<string, number>();
   for (const r of rows) {
-    const k = String(r.valuesKey ?? "").trim();
+    const k = String(r.variantItemId ?? "").trim();
     enteredByCell.set(
       k,
       (enteredByCell.get(k) ?? 0) + (Number(r.Quantities) || 0)
@@ -376,7 +383,7 @@ function VariantsQuantityModal({
     // Mark the quantity cell red for every row whose combo aggregate exceeds
     // its plan (same as Split Batch).
     rows.forEach((r, i) => {
-      const k = String(r.valuesKey ?? "").trim();
+      const k = String(r.variantItemId ?? "").trim();
       const cap = capByCell.get(k);
       if (cap !== undefined && (enteredByCell.get(k) ?? 0) > cap) {
         overCellKeys.add(getCellKey(i, "Quantities"));
@@ -404,17 +411,18 @@ function VariantsQuantityModal({
       ? new Set([...invalidCells, ...overCellKeys])
       : invalidCells;
   const addCellRow = (c: PlanCell) =>
-    setRows((prev) => [
-      ...prev,
-      normalizeRow(
+    setRows((prev) => {
+      const row = normalizeRow(
         {
-          valuesKey: c.valuesKey,
-          label: c.attributeLabel,
+          variantItemId: c.variantItemId,
           Quantities: Math.max(0, remainingForCell(c))
         },
         gridColumns
-      )
-    ]);
+      );
+      // normalizeRow keeps only column keys; re-attach the display label.
+      row.label = c.attributeLabel;
+      return [...prev, row];
+    });
 
   const handleSubmit = () => {
     // Can't confirm while any variants quantity cell exceeds its reference cap
@@ -449,26 +457,20 @@ function VariantsQuantityModal({
     let variantQuantities: Record<string, unknown>;
     if (flat) {
       // Store the merged table (unchanged downstream) + the raw rows so a master
-      // WO cutting report can prefill one bundle per row in Split Batch.
+      // WO cutting report can prefill one bundle per row in Split Batch. Cells
+      // are already keyed by their stable variantItemId.
       const merged = flatRowsToMergedConfig(rowsToSave);
       variantQuantities = {
         ...merged,
-        variantTable: stampVariantItemIds(
-          merged.variantTable,
-          variantItemIdByValuesKey
-        ),
         splitRows: rowsToSave.map((r) => ({
-          valuesKey: String(r.valuesKey ?? "").trim(),
-          attributeLabel: comboDisplayLabel(r, optionLabels),
+          variantItemId: String(r.variantItemId ?? "").trim(),
+          attributeLabel: comboDisplayLabel(r),
           quantity: Number(r.Quantities) || 0
         }))
       };
     } else {
       variantQuantities = {
-        variantTable: stampVariantItemIds(
-          mergeRows(rowsToSave, columns),
-          variantItemIdByValuesKey
-        )
+        variantTable: mergeRows(rowsToSave, columns)
       };
     }
 
@@ -530,19 +532,16 @@ function VariantsQuantityModal({
         ) : (
           // Non-flat combo editor: one add button per missing combo (translated).
           <div className="flex flex-wrap gap-2">
-            {missingCombos.map((combo) => (
+            {missingCombos.map(({ variantItemId, label }) => (
               <Button
-                key={combo}
+                key={variantItemId}
                 type="button"
                 variant="secondary"
                 size="sm"
                 leftIcon={<LuPlus />}
-                onClick={() => addComboRow(combo)}
+                onClick={() => addComboRow(variantItemId, label)}
               >
-                {localizeVariantAttributeLabel(
-                  combo.replace(/\|/g, " · "),
-                  i18n.locale
-                )}
+                {localizeVariantAttributeLabel(label, i18n.locale)}
               </Button>
             ))}
           </div>

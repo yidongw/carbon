@@ -1,14 +1,14 @@
 import type { BreakdownEntry } from "./types";
 
-// Sort a Style breakdown by SKU identity (valuesKey = "code|code|…"), keeping
-// untagged rows (no valuesKey) last.
+// Sort a Style breakdown by its human label, keeping untagged rows (no label)
+// last.
 export function sortBreakdown(breakdown: BreakdownEntry[]): BreakdownEntry[] {
   return [...breakdown].sort((a, b) => {
-    const ak = a.valuesKey ?? "";
-    const bk = b.valuesKey ?? "";
-    if (!ak && bk) return 1;
-    if (ak && !bk) return -1;
-    return ak.localeCompare(bk);
+    const al = (a.label ?? "").trim();
+    const bl = (b.label ?? "").trim();
+    if (!al && bl) return 1;
+    if (al && !bl) return -1;
+    return al.localeCompare(bl);
   });
 }
 
@@ -24,7 +24,7 @@ export function padBreakdownToTotal(
   if (sum < value) {
     return [
       ...breakdown,
-      { valuesKey: null, label: null, quantityOnHand: value - sum }
+      { variantItemId: null, label: null, quantityOnHand: value - sum }
     ];
   }
   return breakdown;
@@ -33,7 +33,7 @@ export function padBreakdownToTotal(
 export type StorageSkuRow = {
   storageUnitId: string | null;
   quantity: number;
-  valuesKey?: string | null;
+  variantItemId?: string | null;
   skuLabel?: string | null;
 };
 
@@ -64,12 +64,12 @@ export function aggregateStorageUnitsBySku(
       byUnit.set(key, agg);
     }
     agg.quantity += r.quantity;
-    const vk = r.valuesKey ?? null;
-    const entry = agg.breakdown.find((b) => (b.valuesKey ?? null) === vk);
+    const vid = r.variantItemId ?? null;
+    const entry = agg.breakdown.find((b) => (b.variantItemId ?? null) === vid);
     if (entry) entry.quantityOnHand += r.quantity;
     else
       agg.breakdown.push({
-        valuesKey: vk,
+        variantItemId: vid,
         label: r.skuLabel ?? null,
         quantityOnHand: r.quantity
       });

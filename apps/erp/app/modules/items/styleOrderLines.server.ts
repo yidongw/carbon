@@ -8,7 +8,6 @@ type Db = SupabaseClient<Database>;
 export type StyleVariantQuantity = {
   variantItemId: string;
   quantity: number;
-  valuesKey: string;
 };
 
 /**

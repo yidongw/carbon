@@ -377,7 +377,7 @@ const en: SeedLocale = {
       name: "Classic Cotton T-Shirt",
       description:
         "100% cotton crew-neck t-shirt, available in S–2XL and multiple colors",
-      type: "Part",
+      type: "Style",
       replenishmentSystem: "Make",
       itemTrackingType: "Inventory",
       uom: "EA"
@@ -386,7 +386,7 @@ const en: SeedLocale = {
       readableId: "JACKET-001",
       name: "Denim Work Jacket",
       description: "Heavy-duty denim jacket with snap buttons, sized S–2XL",
-      type: "Part",
+      type: "Style",
       replenishmentSystem: "Make",
       itemTrackingType: "Inventory",
       uom: "EA"
@@ -744,7 +744,7 @@ const zh: SeedLocale = {
       readableId: "TSHIRT-001",
       name: "经典棉质T恤",
       description: "100%纯棉圆领T恤，S–2XL多色可选",
-      type: "Part",
+      type: "Style",
       replenishmentSystem: "Make",
       itemTrackingType: "Inventory",
       uom: "EA"
@@ -753,7 +753,7 @@ const zh: SeedLocale = {
       readableId: "JACKET-001",
       name: "牛仔工作夹克",
       description: "重磅牛仔夹克，按扣设计，S–2XL",
-      type: "Part",
+      type: "Style",
       replenishmentSystem: "Make",
       itemTrackingType: "Inventory",
       uom: "EA"

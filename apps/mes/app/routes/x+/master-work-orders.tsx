@@ -54,7 +54,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       ? await serviceRole
           .from("bundleWorkOrders")
           .select(
-            "masterWorkOrderId, quantityComplete, processCount, attributeLabel, attributeValues, valuesKey, quantity"
+            "masterWorkOrderId, quantityComplete, processCount, attributeLabel, attributeValues, itemId, quantity"
           )
           .in("masterWorkOrderId", masterIds)
           .eq("companyId", companyId)
@@ -66,13 +66,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
             processCount: number | null;
             attributeLabel: string | null;
             attributeValues: Record<string, string> | null;
-            valuesKey: string | null;
+            itemId: string | null;
             quantity: number | null;
           }>
         };
 
   type AttrBreakdownRow = {
-    valuesKey: string;
+    variantItemId: string;
     attributeLabel: string;
     quantity: number;
     reportedQuantity: number;
@@ -101,16 +101,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // Reported/produced = units past the bundle job's final operation
     // (job.quantityComplete), not a denormalized bundle counter.
     s.reportedQuantity += b.quantityComplete ?? 0;
-    const valuesKey = b.valuesKey ?? b.attributeLabel ?? "";
-    if (valuesKey) {
-      const existing = s.breakdown.find((r) => r.valuesKey === valuesKey);
+    // Identity is the variant item id (job.itemId in the view); attributeLabel
+    // is the join-derived display string (COALESCE'd in the view).
+    const variantItemId = b.itemId;
+    if (variantItemId) {
+      const existing = s.breakdown.find(
+        (r) => r.variantItemId === variantItemId
+      );
       if (existing) {
         existing.quantity += b.quantity ?? 0;
         existing.reportedQuantity += b.quantityComplete ?? 0;
       } else {
         s.breakdown.push({
-          valuesKey,
-          attributeLabel: b.attributeLabel ?? valuesKey,
+          variantItemId,
+          attributeLabel: b.attributeLabel ?? "",
           quantity: b.quantity ?? 0,
           reportedQuantity: b.quantityComplete ?? 0
         });
@@ -338,7 +342,7 @@ export default function MasterWorkOrdersRoute() {
                       </thead>
                       <tbody>
                         {statsMap[row.id].breakdown.map((b) => (
-                          <tr key={b.valuesKey}>
+                          <tr key={b.variantItemId}>
                             <td className="text-muted-foreground py-0.5 pr-2 truncate max-w-[120px]">
                               {localizeVariantAttributeLabel(
                                 b.attributeLabel,
@@ -458,7 +462,7 @@ export default function MasterWorkOrdersRoute() {
                                   <table className="text-xs tabular-nums">
                                     <tbody>
                                       {statsMap[row.id].breakdown.map((b) => (
-                                        <tr key={b.valuesKey}>
+                                        <tr key={b.variantItemId}>
                                           <td className="text-muted-foreground pr-2 py-0.5 max-w-[72px] truncate">
                                             {localizeVariantAttributeLabel(
                                               b.attributeLabel,
@@ -503,7 +507,7 @@ export default function MasterWorkOrdersRoute() {
                                   <table className="text-xs tabular-nums">
                                     <tbody>
                                       {statsMap[row.id].breakdown.map((b) => (
-                                        <tr key={b.valuesKey}>
+                                        <tr key={b.variantItemId}>
                                           <td className="text-muted-foreground pr-2 py-0.5 max-w-[72px] truncate">
                                             {localizeVariantAttributeLabel(
                                               b.attributeLabel,
@@ -553,7 +557,7 @@ export default function MasterWorkOrdersRoute() {
                                   <table className="text-xs tabular-nums">
                                     <tbody>
                                       {statsMap[row.id].breakdown.map((b) => (
-                                        <tr key={b.valuesKey}>
+                                        <tr key={b.variantItemId}>
                                           <td className="text-muted-foreground pr-2 py-0.5 max-w-[72px] truncate">
                                             {localizeVariantAttributeLabel(
                                               b.attributeLabel,

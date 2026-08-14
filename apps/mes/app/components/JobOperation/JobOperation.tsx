@@ -159,7 +159,6 @@ type JobOperationProps = {
   assignee?: string | null;
   bundle?: {
     attributeLabel: string | null;
-    valuesKey: string | null;
   } | null;
   isMasterJob?: boolean;
   canManageProduction?: boolean;

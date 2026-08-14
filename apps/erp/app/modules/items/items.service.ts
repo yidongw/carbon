@@ -13,6 +13,7 @@ import { nanoid } from "nanoid";
 import type { z } from "zod";
 import {
   getStyleVariantQuantityParameters,
+  loadVariantCombos,
   SYSTEM_ATTRIBUTE
 } from "~/modules/items/itemAttribute.service";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -455,9 +456,9 @@ export async function getConfigurationParameters(
  * serves config *definitions* (the Part parameter editor, BOM/BOP formulas, and
  * the make-method configurator modal) — this drives ONLY the per-variant
  * quantity grid, which is attribute/combo-driven. Attribute items (Styles, and
- * Consumables with a variant set) get the synthetic single `valuesKey` combo
- * param; everything else (Parts/Templates) gets no params, so they never
- * produce the legacy Color×Size matrix grid.
+ * Consumables with a variant set) get the synthetic single variant-combo param;
+ * everything else (Parts/Templates) gets no params, so they never produce the
+ * legacy Color×Size matrix grid.
  */
 export async function getQuantityGridParameters(
   client: SupabaseClient<Database>,
@@ -871,7 +872,7 @@ export async function getItemVariantQuantities(
   const variants = await db
     .from("itemVariant")
     .select(
-      "id, variantItemId, valuesKey, variant:item!itemVariant_variantItemId_fkey(id, readableId, name, active)"
+      "id, variantItemId, variant:item!itemVariant_variantItemId_fkey(id, readableId, name, active)"
     )
     .eq("parentItemId", parentItemId)
     .eq("companyId", companyId);
@@ -901,7 +902,6 @@ export async function getItemVariantQuantities(
     data: list.map(
       (v: {
         variantItemId: string;
-        valuesKey: string;
         variant: {
           readableId: string;
           name: string;
@@ -920,9 +920,8 @@ export async function getItemVariantQuantities(
         const onSales = Number(q?.quantityOnSalesOrder ?? 0);
         return {
           variantItemId: v.variantItemId,
-          valuesKey: v.valuesKey,
           readableId: v.variant?.readableId ?? v.variantItemId,
-          name: v.variant?.name ?? v.valuesKey,
+          name: v.variant?.name ?? v.variant?.readableId ?? v.variantItemId,
           active: v.variant?.active !== false,
           quantities: {
             ...(q ?? {}),
@@ -978,17 +977,17 @@ export async function getStyleStorageUnitQuantities(
   const db = client as SupabaseClient<Database & { public: any }>;
   const variants = await db
     .from("itemVariant")
-    .select("variantItemId, valuesKey")
+    .select("variantItemId")
     .eq("parentItemId", parentItemId)
     .eq("companyId", companyId);
   const variantList = (variants.data ?? []) as {
     variantItemId: string;
-    valuesKey: string | null;
   }[];
-  // Tag each storage-unit row with the SKU it belongs to so the UI can
-  // aggregate rows by storage unit and still break them down per variant.
-  const valuesKeyById = new Map<string, string | null>(
-    variantList.map((v) => [v.variantItemId, v.valuesKey])
+  // The per-SKU descriptor/label comes from the attribute join.
+  const comboByVariant = await loadVariantCombos(
+    client,
+    variantList.map((v) => v.variantItemId),
+    companyId
   );
   const ids = [parentItemId, ...variantList.map((v) => v.variantItemId)];
   const results = await Promise.all(
@@ -1000,12 +999,18 @@ export async function getStyleStorageUnitQuantities(
       })
     )
   );
+  // Keep the concrete RPC row shape so this stays assignable everywhere
+  // getItemStorageUnitQuantities is (same base fields + the SKU descriptor).
+  type StorageUnitQtyRow = NonNullable<
+    (typeof results)[number]["data"]
+  >[number];
   const data = results.flatMap((r, i) => {
-    const valuesKey = valuesKeyById.get(ids[i]) ?? null;
-    const skuLabel = valuesKey ? valuesKey.replace("|", " · ") : null;
-    return ((r.data ?? []) as Record<string, unknown>[]).map((row) => ({
+    const variantItemId = ids[i];
+    const combo = comboByVariant.get(variantItemId) ?? null;
+    const skuLabel = combo ? combo.replaceAll("|", " · ") : null;
+    return ((r.data ?? []) as StorageUnitQtyRow[]).map((row) => ({
       ...row,
-      valuesKey,
+      variantItemId,
       skuLabel
     }));
   });

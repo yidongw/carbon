@@ -29,28 +29,6 @@ export function readVariantTableRows(
 }
 
 /**
- * Stamp the stable `variantItemId` onto each combo row from a
- * `valuesKey -> variantItemId` map, so saved cells match by the drift-proof id
- * (see itemAttribute.service `resolveVariantByValuesKey` / `expandVariantsQuantityTable`).
- * Idempotent (keeps an id already present) and lossless (rows whose `valuesKey`
- * has no mapped variant are returned unchanged, still matchable by `valuesKey`).
- */
-export function stampVariantItemIds(
-  rows: VariantTableRow[],
-  variantItemIdByValuesKey?: Record<string, string> | null
-): VariantTableRow[] {
-  if (!variantItemIdByValuesKey) return rows;
-  return rows.map((row) => {
-    if (String(row.variantItemId ?? "").trim()) return row;
-    const valuesKey = String(row.valuesKey ?? "").trim();
-    const variantItemId = valuesKey
-      ? variantItemIdByValuesKey[valuesKey]
-      : undefined;
-    return variantItemId ? { ...row, variantItemId } : row;
-  });
-}
-
-/**
  * FormData: the validated `variantQuantities` value (or undefined). The first
  * param is kept for call-site compatibility; the legacy `configuration` fallback
  * was removed.

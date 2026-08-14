@@ -6,21 +6,28 @@ import {
   fillValueFromReference
 } from "./variantsQuantityTableColumns";
 
-// Combo model: a single valuesKey list param; each row is { valuesKey, Quantities }.
+// Combo model: the synthesized list param carries optionVariantItemLabels
+// (variantItemId -> display label). Each cell is { variantItemId, Quantities }
+// and merges by variantItemId.
 const parameters = [
   {
-    key: "valuesKey",
+    key: "variantCombo",
     label: "Attributes",
     dataType: "list" as const,
-    listOptions: ["红色|M", "红色|L", "蓝色|XL"]
+    listOptions: [],
+    optionVariantItemLabels: {
+      iav_hm: "红色 · M",
+      iav_hl: "红色 · L",
+      iav_bx: "蓝色 · XL"
+    }
   }
 ];
 
 describe("buildVariantsQuantityEditorState", () => {
   const originalVariantTable = {
     variantTable: [
-      { valuesKey: "红色|M", Quantities: 14 },
-      { valuesKey: "蓝色|XL", Quantities: 6 }
+      { variantItemId: "iav_hm", Quantities: 14 },
+      { variantItemId: "iav_bx", Quantities: 6 }
     ]
   };
 
@@ -50,7 +57,7 @@ describe("buildVariantsQuantityEditorState", () => {
         mode: "remaining",
         originalVariantTable,
         otherLineVariantTables: [
-          { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+          { variantTable: [{ variantItemId: "iav_hm", Quantities: 10 }] }
         ]
       }
     });
@@ -67,7 +74,7 @@ describe("buildVariantsQuantityEditorState", () => {
         mode: "remaining",
         originalVariantTable,
         otherLineVariantTables: [
-          { variantTable: [{ valuesKey: "红色|M", Quantities: 16 }] }
+          { variantTable: [{ variantItemId: "iav_hm", Quantities: 16 }] }
         ]
       }
     });
@@ -75,36 +82,37 @@ describe("buildVariantsQuantityEditorState", () => {
     expect(referenceByRowIndex[0]?.Quantities).toBe(-2);
   });
 
-  it("seeds current line values into original rows", () => {
+  it("seeds current line values into original rows (keyed by variantItemId)", () => {
     const { rows } = buildVariantsQuantityEditorState({
       parameters,
       defaultQuantityLabel: "Quantities",
       currentVariantQuantities: {
-        variantTable: [{ valuesKey: "红色|M", Quantities: 3 }]
+        variantTable: [{ variantItemId: "iav_hm", Quantities: 3 }]
       },
       referenceContext: {
         mode: "remaining",
         originalVariantTable,
         otherLineVariantTables: [
-          { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+          { variantTable: [{ variantItemId: "iav_hm", Quantities: 10 }] }
         ]
       }
     });
 
+    expect(rows[0]?.variantItemId).toBe("iav_hm");
     expect(rows[0]?.Quantities).toBe(3);
   });
 });
 
 describe("buildJobRemainingReferenceContext", () => {
   const jobVariantTable = {
-    variantTable: [{ valuesKey: "红色|M", Quantities: 14 }]
+    variantTable: [{ variantItemId: "iav_hm", Quantities: 14 }]
   };
 
   it("computes remaining quantities from job target minus reported", () => {
     const referenceContext = buildJobRemainingReferenceContext({
       jobVariantTable,
       reportedVariantQuantities: [
-        { variantTable: [{ valuesKey: "红色|M", Quantities: 10 }] }
+        { variantTable: [{ variantItemId: "iav_hm", Quantities: 10 }] }
       ]
     });
 
@@ -123,25 +131,25 @@ describe("buildJobRemainingReferenceContext", () => {
       {
         jobVariantTable: {
           variantTable: [
-            { valuesKey: "红色|M", Quantities: 100 },
-            { valuesKey: "红色|L", Quantities: 100 }
+            { variantItemId: "iav_hm", Quantities: 100 },
+            { variantItemId: "iav_hl", Quantities: 100 }
           ]
         },
         reportedVariantQuantities: [
-          { variantTable: [{ valuesKey: "红色|M", Quantities: 50 }] }
+          { variantTable: [{ variantItemId: "iav_hm", Quantities: 50 }] }
         ],
         pickupsByEmployee: {
           emp1: [
             {
               quantity: 1,
               variantQuantities: {
-                variantTable: [{ valuesKey: "红色|L", Quantities: 1 }]
+                variantTable: [{ variantItemId: "iav_hl", Quantities: 1 }]
               }
             }
           ]
         },
         reportedVariantQuantitiesByEmployee: {
-          emp1: [{ variantTable: [{ valuesKey: "红色|M", Quantities: 0 }] }]
+          emp1: [{ variantTable: [{ variantItemId: "iav_hm", Quantities: 0 }] }]
         }
       },
       { employeeId: "emp1" }
@@ -154,7 +162,7 @@ describe("buildJobRemainingReferenceContext", () => {
       referenceContext
     });
 
-    // Row 0 = 红色|M (picked up 0), row 1 = 红色|L (picked up 1).
+    // Row 0 = iav_hm (picked up 0), row 1 = iav_hl (picked up 1).
     expect(referenceByRowIndex[0]?.Quantities).toBe(0);
     expect(referenceByRowIndex[1]?.Quantities).toBe(1);
   });
@@ -163,7 +171,7 @@ describe("buildJobRemainingReferenceContext", () => {
     const referenceContext = buildJobRemainingReferenceContext(
       {
         jobVariantTable: {
-          variantTable: [{ valuesKey: "红色|L", Quantities: 100 }]
+          variantTable: [{ variantItemId: "iav_hl", Quantities: 100 }]
         },
         reportedVariantQuantities: [],
         pickupsByEmployee: {
@@ -171,13 +179,13 @@ describe("buildJobRemainingReferenceContext", () => {
             {
               quantity: 2,
               variantQuantities: {
-                variantTable: [{ valuesKey: "红色|L", Quantities: 2 }]
+                variantTable: [{ variantItemId: "iav_hl", Quantities: 2 }]
               }
             }
           ]
         },
         reportedVariantQuantitiesByEmployee: {
-          emp1: [{ variantTable: [{ valuesKey: "红色|L", Quantities: 1 }] }]
+          emp1: [{ variantTable: [{ variantItemId: "iav_hl", Quantities: 1 }] }]
         }
       },
       { employeeId: "emp1" }
@@ -221,7 +229,7 @@ describe("buildProductionVariantsQuantityReferenceContext", () => {
     const context = buildProductionVariantsQuantityReferenceContext({
       source: {
         jobVariantTable: {
-          variantTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
+          variantTable: [{ variantItemId: "iav_hm", Quantities: 100 }]
         },
         reportedVariantQuantities: [],
         pickupsByEmployee: {
@@ -252,50 +260,58 @@ describe("fillValueFromReference", () => {
 });
 
 describe("getVariantsQuantityCells", () => {
-  it("labels combo valuesKey + Quantities rows", async () => {
+  // variantItemId -> display label (the synthesized param's label map).
+  const optionVariantItemLabels = {
+    iav_bk_s: "黑色 · S",
+    iav_rd_m: "红色 · M"
+  };
+
+  it("labels variantItemId + Quantities cells from the param's label map", async () => {
     const { getVariantsQuantityCells } = await import(
       "./variantsQuantityTableColumns"
     );
     const cells = getVariantsQuantityCells(
       {
         variantTable: [
-          { valuesKey: "BK|S", label: "BK · S", Quantities: 6 },
-          { valuesKey: "RD|M", Quantities: 2 }
+          { variantItemId: "iav_bk_s", Quantities: 6 },
+          { variantItemId: "iav_rd_m", Quantities: 2 }
         ]
       },
-      { BK: "黑色", RD: "红色" }
+      optionVariantItemLabels
     );
     expect(cells).toEqual([
-      { key: "0:Quantities", label: "BK · S", quantity: 6 },
+      { key: "0:Quantities", label: "黑色 · S", quantity: 6 },
       { key: "1:Quantities", label: "红色 · M", quantity: 2 }
     ]);
   });
 
-  it("reads combo rows without legacy primary-keys field", async () => {
+  it("falls back to the raw variantItemId when no label map is given", async () => {
     const { getVariantsQuantityCells, variantsQuantityToComboRows } =
       await import("./variantsQuantityTableColumns");
     const configuration = {
-      variantTable: [{ valuesKey: "BK|S", Quantities: 4 }]
+      variantTable: [{ variantItemId: "iav_bk_s", Quantities: 4 }]
     };
-    expect(getVariantsQuantityCells(configuration, { BK: "黑色" })).toEqual([
-      { key: "0:Quantities", label: "黑色 · S", quantity: 4 }
+    expect(getVariantsQuantityCells(configuration)).toEqual([
+      { key: "0:Quantities", label: "iav_bk_s", quantity: 4 }
     ]);
     expect(variantsQuantityToComboRows(configuration)).toEqual([
-      { valuesKey: "BK|S", Quantities: 4, label: "BK · S" }
+      { variantItemId: "iav_bk_s", Quantities: 4 }
     ]);
   });
 
-  it("variantsQuantityToComboRows passes through combo rows", async () => {
+  it("variantsQuantityToComboRows labels rows from the param's label map", async () => {
     const { variantsQuantityToComboRows } = await import(
       "./variantsQuantityTableColumns"
     );
     expect(
       variantsQuantityToComboRows(
         {
-          variantTable: [{ valuesKey: "BK|S", Quantities: 6 }]
+          variantTable: [{ variantItemId: "iav_bk_s", Quantities: 6 }]
         },
-        { BK: "黑色", S: "S" }
+        { iav_bk_s: "黑色 · S" }
       )
-    ).toEqual([{ valuesKey: "BK|S", Quantities: 6, label: "黑色 · S" }]);
+    ).toEqual([
+      { variantItemId: "iav_bk_s", Quantities: 6, label: "黑色 · S" }
+    ]);
   });
 });

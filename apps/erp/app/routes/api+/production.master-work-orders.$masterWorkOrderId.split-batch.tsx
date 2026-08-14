@@ -60,19 +60,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
     masterWorkOrderId,
     companyId
   );
-  const cellKey = (valuesKey: string | null | undefined) =>
-    (valuesKey ?? "").trim();
+  const cellKey = (variantItemId: string | null | undefined) =>
+    (variantItemId ?? "").trim();
   const cutByCell = new Map(
-    proposal.cells.map((c) => [cellKey(c.valuesKey), c.cut])
+    proposal.cells.map((c) => [cellKey(c.variantItemId), c.cut])
   );
   const reportedById = new Map(
     proposal.existingBundles.map((b) => [b.id, b.reportedQuantity])
   );
 
-  // Each attribute combo's bundles (existing + new) can't sum beyond its cut.
+  // Each variant SKU's bundles (existing + new) can't sum beyond its cut.
   const requestedByCell = new Map<string, number>();
   for (const b of toSave) {
-    const k = cellKey(b.valuesKey);
+    const k = cellKey(b.variantItemId);
     requestedByCell.set(
       k,
       (requestedByCell.get(k) ?? 0) + (Number(b.quantity) || 0)

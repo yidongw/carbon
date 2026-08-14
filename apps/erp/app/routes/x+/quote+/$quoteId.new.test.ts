@@ -80,7 +80,7 @@ describe("quote new line action", () => {
           quantity: [1],
           taxPercent: 0,
           variantQuantities: JSON.stringify({
-            variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+            variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
           })
         }
       })
@@ -93,7 +93,7 @@ describe("quote new line action", () => {
     formData.set(
       "variantQuantities",
       JSON.stringify({
-        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     );
 
@@ -112,7 +112,7 @@ describe("quote new line action", () => {
       expect.objectContaining({
         companyId: "company_1",
         configuration: {
-          variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+          variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
         },
         createdBy: "user_1",
         itemId: "item_parent",

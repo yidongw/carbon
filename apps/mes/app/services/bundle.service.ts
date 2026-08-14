@@ -13,7 +13,7 @@ export async function getReleasedBundleWorkOrders(
   return client
     .from("bundleWorkOrders")
     .select(
-      "id, jobReadableId, attributeLabel, attributeValues, valuesKey, quantity, status"
+      "id, jobReadableId, attributeLabel, attributeValues, quantity, status"
     )
     .eq("companyId", companyId)
     .in("status", ["Ready", "In Progress", "Paused"])
@@ -50,7 +50,7 @@ export async function getBundleWorkOrdersList(
   let query = client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, readableIdWithRevision, itemName, attributeLabel, attributeValues, valuesKey, sequence, quantity, status, assignee, assignedAt, masterWorkOrderId, processCount"
+      "id, jobId, jobReadableId, readableIdWithRevision, itemName, attributeLabel, attributeValues, sequence, quantity, status, assignee, assignedAt, masterWorkOrderId, processCount"
     )
     .eq("companyId", companyId);
 
@@ -72,7 +72,7 @@ export async function getBundleForScan(
   return client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, status, quantity, attributeLabel, attributeValues, valuesKey, itemName, readableIdWithRevision, assignee"
+      "id, jobId, jobReadableId, status, quantity, attributeLabel, attributeValues, itemName, readableIdWithRevision, assignee"
     )
     .eq("id", id)
     .eq("companyId", companyId)

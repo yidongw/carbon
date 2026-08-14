@@ -10,12 +10,12 @@ describe("jobVariantQuantity helpers", () => {
   it("detects variantTable vs flat Part params (retired configTable ignored)", () => {
     expect(
       isVariantsQuantityPayload({
-        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     ).toBe(true);
     expect(
       isVariantsQuantityPayload({
-        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        configTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     ).toBe(false);
     expect(isVariantsQuantityPayload({ color: "BK", finish: "matte" })).toBe(
@@ -29,12 +29,12 @@ describe("jobVariantQuantity helpers", () => {
   it("requires non-empty variantTable for qty gates", () => {
     expect(
       isNonEmptyVariantsQuantity({
-        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     ).toBe(true);
     expect(
       isNonEmptyVariantsQuantity({
-        configTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        configTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     ).toBe(false);
     expect(isNonEmptyVariantsQuantity({ variantTable: [] })).toBe(false);
@@ -50,21 +50,21 @@ describe("jobVariantQuantity helpers", () => {
   it("builds combo variantTable for the editor", () => {
     expect(
       jobVariantQuantitiesToTable([
-        { variantItemId: "a", valuesKey: "BK|S", quantity: 2 },
-        { variantItemId: "b", valuesKey: "BK|M", quantity: 0 }
+        { variantItemId: "a", quantity: 2 },
+        { variantItemId: "b", quantity: 0 }
       ])
     ).toEqual({
-      variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+      variantTable: [{ variantItemId: "a", Quantities: 2 }]
     });
   });
 
   it("filters zero and negative lines out of editor variantTable", () => {
     expect(
       jobVariantQuantitiesToTable([
-        { variantItemId: "a", valuesKey: "BK|S", quantity: -1 },
-        { variantItemId: "b", valuesKey: "BK|M", quantity: 0 },
-        { variantItemId: "c", valuesKey: "RD|L", quantity: 4 }
+        { variantItemId: "a", quantity: -1 },
+        { variantItemId: "b", quantity: 0 },
+        { variantItemId: "c", quantity: 4 }
       ]).variantTable
-    ).toEqual([{ valuesKey: "RD|L", Quantities: 4 }]);
+    ).toEqual([{ variantItemId: "c", Quantities: 4 }]);
   });
 });

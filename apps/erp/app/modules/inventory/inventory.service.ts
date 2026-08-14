@@ -4021,25 +4021,22 @@ export async function updateWarehouseTransfer(
     .single();
 }
 
-/** Variant children of a Style parent (empty if item is not a parent). */
+/** Variant child ids of a Style parent (empty if item is not a parent). */
 async function getStyleVariantChildren(
   client: SupabaseClient<Database>,
   parentItemId: string,
   companyId: string
-): Promise<Array<{ variantItemId: string; valuesKey: string }>> {
+): Promise<string[]> {
   const { data, error } = await client
     .from("itemVariant")
-    .select("variantItemId, valuesKey")
+    .select("variantItemId")
     .eq("parentItemId", parentItemId)
     .eq("companyId", companyId);
   if (error) {
     console.error(error);
     return [];
   }
-  return (data ?? []).map((row) => ({
-    variantItemId: row.variantItemId,
-    valuesKey: String(row.valuesKey ?? "")
-  }));
+  return (data ?? []).map((row) => row.variantItemId);
 }
 
 export type TransferStockRow = {
@@ -4061,9 +4058,7 @@ export async function getTransferStockForItem(
   locationId: string
 ): Promise<TransferStockRow[]> {
   const children = await getStyleVariantChildren(client, itemId, companyId);
-  const itemIds = children.length
-    ? [itemId, ...children.map((c) => c.variantItemId)]
-    : [itemId];
+  const itemIds = children.length ? [itemId, ...children] : [itemId];
 
   const results = await Promise.all(
     itemIds.map((id) =>
@@ -4116,22 +4111,18 @@ export async function getStyleOnHandByColorSize(
   storageUnitId?: string | null
 ): Promise<
   {
-    valuesKey: string;
+    variantItemId: string;
     quantityOnHand: number;
   }[]
 > {
   const children = await getStyleVariantChildren(client, itemId, companyId);
   if (children.length === 0) return [];
 
-  const valuesKeyByVariant = new Map(
-    children.map((c) => [c.variantItemId, c.valuesKey] as const)
-  );
-
   // Same availability RPC as transfer stock pickers (not raw ledger sums).
   const results = await Promise.all(
-    children.map((c) =>
+    children.map((variantItemId) =>
       client.rpc("get_item_quantities_by_tracking_id", {
-        item_id: c.variantItemId,
+        item_id: variantItemId,
         company_id: companyId,
         location_id: locationId
       })
@@ -4141,22 +4132,18 @@ export async function getStyleOnHandByColorSize(
   const byKey = new Map<
     string,
     {
-      valuesKey: string;
+      variantItemId: string;
       quantityOnHand: number;
     }
   >();
 
   for (let i = 0; i < children.length; i++) {
-    const child = children[i];
+    const variantItemId = children[i];
     const res = results[i];
     if (res.error) {
       console.error(res.error);
       continue;
     }
-    const valuesKey = (
-      valuesKeyByVariant.get(child.variantItemId) ?? ""
-    ).trim();
-    if (!valuesKey) continue;
 
     for (const row of (res.data ?? []) as TransferStockRow[]) {
       // `undefined` = all bins; `null` = unassigned only; string = that bin.
@@ -4168,12 +4155,12 @@ export async function getStyleOnHandByColorSize(
       }
       const qty = Number(row.quantity) || 0;
       if (qty === 0) continue;
-      const existing = byKey.get(valuesKey);
+      const existing = byKey.get(variantItemId);
       if (existing) {
         existing.quantityOnHand += qty;
       } else {
-        byKey.set(valuesKey, {
-          valuesKey,
+        byKey.set(variantItemId, {
+          variantItemId,
           quantityOnHand: qty
         });
       }

@@ -79,7 +79,7 @@ describe("sales rfq new line action", () => {
           order: 1,
           quantity: [1],
           variantQuantities: JSON.stringify({
-            variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+            variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
           })
         }
       })
@@ -90,7 +90,7 @@ describe("sales rfq new line action", () => {
     formData.set(
       "variantQuantities",
       JSON.stringify({
-        variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+        variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
       })
     );
 
@@ -109,7 +109,7 @@ describe("sales rfq new line action", () => {
       expect.objectContaining({
         companyId: "company_1",
         configuration: {
-          variantTable: [{ valuesKey: "BK|S", Quantities: 2 }]
+          variantTable: [{ variantItemId: "item_bk_s", Quantities: 2 }]
         },
         createdBy: "user_1",
         itemId: "item_parent",

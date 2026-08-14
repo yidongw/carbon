@@ -82,7 +82,6 @@ type BundleWorkOrder = {
   itemName: string | null;
   attributeLabel: string | null;
   attributeValues: Record<string, string> | null;
-  valuesKey: string | null;
   sequence: number | null;
   quantity: number | null;
   status: string | null;
