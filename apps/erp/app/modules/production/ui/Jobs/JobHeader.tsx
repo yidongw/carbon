@@ -59,7 +59,8 @@ import { Location, StorageUnit } from "~/components/Form";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
@@ -74,6 +75,21 @@ import { isJobLocked, jobCompleteValidator } from "../../production.models";
 import { getJobMethodTree } from "../../production.service";
 import type { Job } from "../../types";
 import JobStatus from "./JobStatus";
+
+type JobListRow = {
+  id: string;
+  jobId: string;
+};
+
+/** Maps the `/api/production/jobs` payload into sibling selector options. */
+function getJobOptions(data: unknown): SiblingOption[] {
+  const rows = (data as { data?: JobListRow[] } | null)?.data ?? [];
+  return rows.map((row) => ({
+    value: row.id,
+    label: row.jobId,
+    to: path.to.jobDetails(row.id)
+  }));
+}
 
 function JobTopbarLeft({ jobId }: { jobId: string }) {
   const { t } = useLingui();
@@ -109,9 +125,13 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.jobDetails(jobId)}>
-          {routeData?.job?.jobId ?? jobId}
-        </DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={routeData?.job?.jobId ?? jobId}
+          activeId={jobId}
+          listPath={path.to.api.jobs}
+          getOptions={getJobOptions}
+          entityLabel={isMasterWorkOrder ? t`work order` : t`job`}
+        />
         <Copy text={routeData?.job?.jobId ?? ""} />
         <JobStatus iconOnly status={status} />
         {["Draft", "Planned", "In Progress", "Ready", "Paused"].includes(

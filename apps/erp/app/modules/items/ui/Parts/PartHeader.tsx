@@ -22,7 +22,8 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
@@ -31,6 +32,23 @@ import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import type { PartSummary } from "../../types";
 import { usePartNavigation } from "./usePartNavigation";
+
+type PartListRow = {
+  id: string;
+  name: string;
+  readableIdWithRevision: string;
+};
+
+/** Maps the `/api/items/parts` payload into sibling selector options. */
+function getPartOptions(data: unknown): SiblingOption[] {
+  const rows = (data as { data?: PartListRow[] } | null)?.data ?? [];
+  return rows.map((row) => ({
+    value: row.id,
+    label: row.readableIdWithRevision,
+    helper: row.name,
+    to: path.to.partDetails(row.id)
+  }));
+}
 
 function PartTopbarLeft({ itemId }: { itemId: string }) {
   const { t } = useLingui();
@@ -51,9 +69,13 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.partDetails(itemId)}>
-          {readableId}
-        </DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          listPath={path.to.api.itemsParts}
+          getOptions={getPartOptions}
+          entityLabel={t`part`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

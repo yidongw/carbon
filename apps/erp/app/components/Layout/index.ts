@@ -17,11 +17,15 @@ import {
   DetailTopbarId,
   DetailTopbarPlainId
 } from "./Topbar/DetailTopbar";
+import type { SiblingOption } from "./Topbar/DetailTopbarIdSelector";
+import { DetailTopbarIdSelector } from "./Topbar/DetailTopbarIdSelector";
 
+export type { SiblingOption };
 export {
   DetailTopbarBadge,
   DetailTopbarContent,
   DetailTopbarId,
+  DetailTopbarIdSelector,
   DetailTopbarPlainId,
   Background,
   CollapsibleSidebar,

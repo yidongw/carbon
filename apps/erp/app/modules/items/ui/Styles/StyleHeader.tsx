@@ -22,7 +22,8 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
@@ -36,6 +37,23 @@ type StyleRouteData = {
     readableIdWithRevision: string | null;
   };
 };
+
+type StyleListRow = {
+  id: string;
+  name: string;
+  readableIdWithRevision: string;
+};
+
+/** Maps the `/api/items/styles` payload into sibling selector options. */
+function getStyleOptions(data: unknown): SiblingOption[] {
+  const rows = (data as { data?: StyleListRow[] } | null)?.data ?? [];
+  return rows.map((row) => ({
+    value: row.id,
+    label: row.readableIdWithRevision,
+    helper: row.name,
+    to: path.to.style(row.id)
+  }));
+}
 
 function StyleTopbarLeft({ itemId }: { itemId: string }) {
   const { t } = useLingui();
@@ -54,7 +72,13 @@ function StyleTopbarLeft({ itemId }: { itemId: string }) {
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.style(itemId)}>{readableId}</DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          listPath={path.to.api.itemsStyles}
+          getOptions={getStyleOptions}
+          entityLabel={t`style`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
