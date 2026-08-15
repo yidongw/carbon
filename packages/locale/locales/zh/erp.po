@@ -11911,7 +11911,7 @@ msgid "QR Code"
 msgstr "二维码"
 
 msgid "QR Code to complete the current operation for this kanban"
-msgstr "完成当前看板操作的二维码"
+msgstr "用于完成此补货卡当前操作的二维码"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
