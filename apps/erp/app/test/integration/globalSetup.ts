@@ -21,6 +21,18 @@ interface GlobalSetupContext {
 let stack: SupabaseStack | undefined;
 
 export default async function setup({ provide }: GlobalSetupContext) {
+  // Reuse a shared stack started by CI (start-shared-stack.ts) if present — no
+  // teardown here, CI owns its lifecycle.
+  const { ITEST_PG_URL, ITEST_POSTGREST_URL, ITEST_SERVICE_ROLE_TOKEN } =
+    process.env;
+  if (ITEST_PG_URL && ITEST_POSTGREST_URL && ITEST_SERVICE_ROLE_TOKEN) {
+    console.log("[integration] reusing shared Supabase stack");
+    provide("itestPgUrl", ITEST_PG_URL);
+    provide("itestPostgrestUrl", ITEST_POSTGREST_URL);
+    provide("itestServiceRoleToken", ITEST_SERVICE_ROLE_TOKEN);
+    return;
+  }
+
   if (!(await isDockerAvailable())) {
     console.warn(
       "[integration] Docker not available — API integration tests will be skipped."

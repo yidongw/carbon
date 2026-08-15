@@ -34,6 +34,8 @@ export interface SupabaseStack {
   jwtSecret: string;
   /** Full-access token (RLS bypass) for a supabase-js client. */
   serviceRoleToken: string;
+  /** Docker resource names — so a separate process (CI) can tear the stack down. */
+  resources: { network: string; pgContainer: string; restContainer: string };
   stop: () => Promise<void>;
 }
 
@@ -127,6 +129,7 @@ export async function startSupabaseStack(): Promise<SupabaseStack> {
       postgrestUrl,
       jwtSecret: JWT_SECRET,
       serviceRoleToken: mintServiceRoleToken(JWT_SECRET),
+      resources: { network, pgContainer: pg, restContainer: rest },
       stop,
     };
   } catch (err) {

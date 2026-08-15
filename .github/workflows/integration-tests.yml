@@ -106,8 +106,18 @@ jobs:
           load_or_pull "$ITEST_POSTGRES_IMAGE" "$DIR/postgres.tar.zst"
           load_or_pull "$ITEST_POSTGREST_IMAGE" "$DIR/postgrest.tar.zst"
 
+      # Start ONE stack (Postgres + PostgREST) and share it across both suites,
+      # so migrations are applied once instead of once per suite. The scripts
+      # export ITEST_* to $GITHUB_ENV; each suite's globalSetup reuses them.
+      - name: Start shared Supabase stack
+        run: pnpm --filter @carbon/database exec tsx src/test/bin/start-shared-stack.ts
+
       - name: Database integration tests
         run: pnpm --filter @carbon/database test:integration
 
       - name: ERP API integration tests
         run: pnpm --filter erp test:integration
+
+      - name: Stop shared Supabase stack
+        if: always()
+        run: pnpm --filter @carbon/database exec tsx src/test/bin/stop-shared-stack.ts
