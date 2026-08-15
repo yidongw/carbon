@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -29,6 +30,7 @@ import {
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useStyles } from "~/stores";
 import { path } from "~/utils/path";
 import { useStyleNavigation } from "./useStyleNavigation";
 
@@ -37,23 +39,6 @@ type StyleRouteData = {
     readableIdWithRevision: string | null;
   };
 };
-
-type StyleListRow = {
-  id: string;
-  name: string;
-  readableIdWithRevision: string;
-};
-
-/** Maps the `/api/items/styles` payload into sibling selector options. */
-function getStyleOptions(data: unknown): SiblingOption[] {
-  const rows = (data as { data?: StyleListRow[] } | null)?.data ?? [];
-  return rows.map((row) => ({
-    value: row.id,
-    label: row.readableIdWithRevision,
-    helper: row.name,
-    to: path.to.style(row.id)
-  }));
-}
 
 function StyleTopbarLeft({ itemId }: { itemId: string }) {
   const { t } = useLingui();
@@ -69,14 +54,27 @@ function StyleTopbarLeft({ itemId }: { itemId: string }) {
   const routeData = useRouteData<StyleRouteData>(path.to.style(itemId));
   const readableId = routeData?.styleSummary?.readableIdWithRevision ?? "";
 
+  // Sibling styles come from the shared items store (hydrated globally), so the
+  // selector opens instantly without a per-open fetch.
+  const styles = useStyles();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      styles.map((style) => ({
+        value: style.id,
+        label: style.readableIdWithRevision,
+        helper: style.name,
+        to: path.to.style(style.id)
+      })),
+    [styles]
+  );
+
   return (
     <>
       <DetailTopbarContent>
         <DetailTopbarIdSelector
           readableId={readableId}
           activeId={itemId}
-          listPath={path.to.api.itemsStyles}
-          getOptions={getStyleOptions}
+          options={siblingOptions}
           entityLabel={t`style`}
         />
         <Copy text={readableId} />

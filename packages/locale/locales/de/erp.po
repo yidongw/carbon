@@ -8901,6 +8901,9 @@ msgstr "Artikel"
 msgid "Items inside this window get a yellow badge."
 msgstr "Artikel in diesem Fenster erhalten ein gelbes Abzeichen."
 
+msgid "job"
+msgstr ""
+
 msgid "Job"
 msgstr "Job"
 
@@ -11131,6 +11134,9 @@ msgstr "Übergeordnete Lagereinheit"
 msgid "Pareto by Type"
 msgstr "Pareto nach Typ"
 
+msgid "part"
+msgstr ""
+
 msgid "Part"
 msgstr "Teil"
 
@@ -13023,6 +13029,9 @@ msgstr "Abfallverkäufe"
 msgid "Search"
 msgstr "Suchen"
 
+msgid "Search {entityLabel}..."
+msgstr ""
+
 msgid "Search accounts..."
 msgstr "Suche Konten..."
 
@@ -14007,6 +14016,9 @@ msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablau
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablaufdatum wird für jede Charge oder Seriennummer bei Erhalt festgelegt."
 
+msgid "style"
+msgstr ""
+
 msgid "Style"
 msgstr "Stil"
 
@@ -14544,6 +14556,9 @@ msgstr "Vermuteter Fehlermodus"
 
 msgid "Switch"
 msgstr "Wechseln"
+
+msgid "Switch {entityLabel}"
+msgstr ""
 
 msgid "Switch to your company"
 msgstr "Wechseln Sie zu Ihrer Firma"
@@ -16368,6 +16383,9 @@ msgstr "In Arbeit (WIP)"
 
 msgid "Work Instructions"
 msgstr "Arbeitsanweisungen"
+
+msgid "work order"
+msgstr ""
 
 msgid "Work Phone"
 msgstr "Geschäftstelefon"

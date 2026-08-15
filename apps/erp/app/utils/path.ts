@@ -141,8 +141,6 @@ export const path = {
       itemVariantsQuantity: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/variants-quantity`),
       jobs: `${api}/production/jobs`,
-      itemsParts: `${api}/items/parts`,
-      itemsStyles: `${api}/items/styles`,
       kanban: (id: string) => generatePath(`${api}/kanban/${id}`),
       kanbanCollision: (id: string) =>
         generatePath(`${api}/kanban/collision/${id}`),

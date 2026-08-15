@@ -8902,6 +8902,9 @@ msgstr "物品"
 msgid "Items inside this window get a yellow badge."
 msgstr "本窗口内的物品会有一个黄色标签。"
 
+msgid "job"
+msgstr ""
+
 msgid "Job"
 msgstr "工作"
 
@@ -11132,6 +11135,9 @@ msgstr "父存储单元"
 msgid "Pareto by Type"
 msgstr "按类型柏拉图"
 
+msgid "part"
+msgstr ""
+
 msgid "Part"
 msgstr "产品"
 
@@ -13024,6 +13030,9 @@ msgstr "报废销售"
 msgid "Search"
 msgstr "搜索"
 
+msgid "Search {entityLabel}..."
+msgstr ""
+
 msgid "Search accounts..."
 msgstr "搜索账户..."
 
@@ -14008,6 +14017,9 @@ msgstr "存储固定天数。有效期起始日期在接收或创建批次或序
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "在该物品上存储固定的天数。有效期起始日期在收到批次或序列号时设置。"
 
+msgid "style"
+msgstr ""
+
 msgid "Style"
 msgstr "款式"
 
@@ -14545,6 +14557,9 @@ msgstr "疑似故障模式"
 
 msgid "Switch"
 msgstr "切换"
+
+msgid "Switch {entityLabel}"
+msgstr ""
 
 msgid "Switch to your company"
 msgstr "切换到您的公司"
@@ -16369,6 +16384,9 @@ msgstr "在制品（WIP）"
 
 msgid "Work Instructions"
 msgstr "工作指导书"
+
+msgid "work order"
+msgstr ""
 
 msgid "Work Phone"
 msgstr "工作电话"

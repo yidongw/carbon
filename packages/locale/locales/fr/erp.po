@@ -8901,6 +8901,9 @@ msgstr "Articles"
 msgid "Items inside this window get a yellow badge."
 msgstr "Les articles dans cette fenêtre reçoivent un badge jaune."
 
+msgid "job"
+msgstr ""
+
 msgid "Job"
 msgstr "Tâche"
 
@@ -11131,6 +11134,9 @@ msgstr "Unité de stockage parent"
 msgid "Pareto by Type"
 msgstr "Pareto par Type"
 
+msgid "part"
+msgstr ""
+
 msgid "Part"
 msgstr "Pièce"
 
@@ -13023,6 +13029,9 @@ msgstr "Ventes de déchets"
 msgid "Search"
 msgstr "Rechercher"
 
+msgid "Search {entityLabel}..."
+msgstr ""
+
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
@@ -14007,6 +14016,9 @@ msgstr "Stockez un nombre fixe de jours sur cet article. La date de début d'exp
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Stockez un nombre fixe de jours sur cet article. La date de début d'expiration est définie sur chaque lot ou numéro de série lors de sa réception."
 
+msgid "style"
+msgstr ""
+
 msgid "Style"
 msgstr "Modèle"
 
@@ -14544,6 +14556,9 @@ msgstr "Mode de défaillance suspecté"
 
 msgid "Switch"
 msgstr "Basculer"
+
+msgid "Switch {entityLabel}"
+msgstr ""
 
 msgid "Switch to your company"
 msgstr "Passer à votre entreprise"
@@ -16368,6 +16383,9 @@ msgstr "Travail en Cours (TEC)"
 
 msgid "Work Instructions"
 msgstr "Instructions de travail"
+
+msgid "work order"
+msgstr ""
 
 msgid "Work Phone"
 msgstr "Téléphone professionnel"

@@ -32,13 +32,27 @@ type DetailTopbarIdSelectorProps = {
   readableId: string;
   /** The current entity's id, to highlight the active row. */
   activeId: string;
-  /** Resource route that returns the sibling list (fetched lazily on open). */
-  listPath: string;
-  /** Maps the raw loader payload into sibling options. */
-  getOptions: (data: unknown) => SiblingOption[];
   /** Singular noun used in the aria label / placeholders (e.g. "style"). */
   entityLabel: string;
-};
+} & (
+  | {
+      /**
+       * Resolved sibling options, e.g. mapped from a shared client store
+       * (`useStyles()`, `useParts()`). Preferred when a store already holds
+       * the list — no fetch needed.
+       */
+      options: SiblingOption[];
+      listPath?: never;
+      getOptions?: never;
+    }
+  | {
+      options?: never;
+      /** Resource route that returns the sibling list (fetched lazily on open). */
+      listPath: string;
+      /** Maps the raw loader payload into sibling options. */
+      getOptions: (data: unknown) => SiblingOption[];
+    }
+);
 
 /** Cap rendered rows so a large list can't flood the DOM; search narrows first. */
 const MAX_VISIBLE = 50;
@@ -54,6 +68,7 @@ const DETAIL_ID_MAX_WIDTH = "max-w-[calc(100%-7rem)]";
 export function DetailTopbarIdSelector({
   readableId,
   activeId,
+  options: providedOptions,
   listPath,
   getOptions,
   entityLabel
@@ -64,22 +79,30 @@ export function DetailTopbarIdSelector({
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
+  // Store-backed callers pass resolved `options`; others lazily fetch the
+  // sibling list from a resource route the first time the selector opens.
+  const usesFetcher = providedOptions === undefined;
+
   const onOpenChange = (next: boolean) => {
     setOpen(next);
     if (next) {
-      // Lazy-load the sibling list the first time the selector opens.
-      if (fetcher.state === "idle" && fetcher.data === undefined) {
-        fetcher.load(listPath);
+      if (
+        usesFetcher &&
+        fetcher.state === "idle" &&
+        fetcher.data === undefined
+      ) {
+        fetcher.load(listPath!);
       }
     } else {
       setSearch("");
     }
   };
 
-  const options = useMemo(
-    () => (fetcher.data === undefined ? [] : getOptions(fetcher.data)),
-    [fetcher.data, getOptions]
-  );
+  const options = useMemo(() => {
+    if (providedOptions) return providedOptions;
+    if (fetcher.data === undefined) return [];
+    return getOptions!(fetcher.data);
+  }, [providedOptions, fetcher.data, getOptions]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -91,7 +114,7 @@ export function DetailTopbarIdSelector({
     return matches.slice(0, MAX_VISIBLE);
   }, [options, search]);
 
-  const isLoading = fetcher.state === "loading";
+  const isLoading = usesFetcher && fetcher.state === "loading";
 
   return (
     <div

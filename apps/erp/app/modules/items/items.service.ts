@@ -2320,21 +2320,6 @@ export async function getPartsList(
   };
 }
 
-export async function getStylesList(
-  client: SupabaseClient<Database>,
-  companyId: string
-) {
-  // The `styles` view yields one row per parent style (latest revision, variant
-  // SKUs already excluded) — the same source as the Styles list page.
-  return fetchAllFromTable<{
-    id: string;
-    name: string;
-    readableIdWithRevision: string;
-  }>(client, "styles", "id, name, readableIdWithRevision", (query) =>
-    query.eq("companyId", companyId).order("readableId")
-  );
-}
-
 export async function getPartUsedIn(
   client: SupabaseClient<Database>,
   itemId: string,

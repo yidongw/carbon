@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -29,26 +30,10 @@ import {
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useParts } from "~/stores";
 import { path } from "~/utils/path";
 import type { PartSummary } from "../../types";
 import { usePartNavigation } from "./usePartNavigation";
-
-type PartListRow = {
-  id: string;
-  name: string;
-  readableIdWithRevision: string;
-};
-
-/** Maps the `/api/items/parts` payload into sibling selector options. */
-function getPartOptions(data: unknown): SiblingOption[] {
-  const rows = (data as { data?: PartListRow[] } | null)?.data ?? [];
-  return rows.map((row) => ({
-    value: row.id,
-    label: row.readableIdWithRevision,
-    helper: row.name,
-    to: path.to.partDetails(row.id)
-  }));
-}
 
 function PartTopbarLeft({ itemId }: { itemId: string }) {
   const { t } = useLingui();
@@ -66,14 +51,27 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
   );
   const readableId = routeData?.partSummary?.readableIdWithRevision ?? "";
 
+  // Sibling parts come from the shared items store (hydrated globally), so the
+  // selector opens instantly without a per-open fetch.
+  const parts = useParts();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      parts.map((part) => ({
+        value: part.id,
+        label: part.readableIdWithRevision,
+        helper: part.name,
+        to: path.to.partDetails(part.id)
+      })),
+    [parts]
+  );
+
   return (
     <>
       <DetailTopbarContent>
         <DetailTopbarIdSelector
           readableId={readableId}
           activeId={itemId}
-          listPath={path.to.api.itemsParts}
-          getOptions={getPartOptions}
+          options={siblingOptions}
           entityLabel={t`part`}
         />
         <Copy text={readableId} />

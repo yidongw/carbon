@@ -8901,6 +8901,9 @@ msgstr "Artykuły"
 msgid "Items inside this window get a yellow badge."
 msgstr "Elementy w tym oknie otrzymują żółty znaczek."
 
+msgid "job"
+msgstr ""
+
 msgid "Job"
 msgstr "Zadanie"
 
@@ -11131,6 +11134,9 @@ msgstr "Nadrzędna jednostka magazynowa"
 msgid "Pareto by Type"
 msgstr "Pareto wg typu"
 
+msgid "part"
+msgstr ""
+
 msgid "Part"
 msgstr "Część"
 
@@ -13023,6 +13029,9 @@ msgstr "Sprzedaż zniszczeń"
 msgid "Search"
 msgstr "Szukaj"
 
+msgid "Search {entityLabel}..."
+msgstr ""
+
 msgid "Search accounts..."
 msgstr "Szukaj kont..."
 
@@ -14007,6 +14016,9 @@ msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wyg
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wygaśnięcia jest ustawiana dla każdej partii lub numeru seryjnego po otrzymaniu."
 
+msgid "style"
+msgstr ""
+
 msgid "Style"
 msgstr "Model"
 
@@ -14544,6 +14556,9 @@ msgstr "Podejrzewany tryb awarii"
 
 msgid "Switch"
 msgstr "Przełącz"
+
+msgid "Switch {entityLabel}"
+msgstr ""
 
 msgid "Switch to your company"
 msgstr "Przełącz się na firmę"
@@ -16368,6 +16383,9 @@ msgstr "Produkcja w toku (Work in Progress, WIP)"
 
 msgid "Work Instructions"
 msgstr "Instrukcje pracy"
+
+msgid "work order"
+msgstr ""
 
 msgid "Work Phone"
 msgstr "Telefon służbowy"
