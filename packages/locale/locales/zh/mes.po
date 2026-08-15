@@ -1132,7 +1132,7 @@ msgid "Failed to create required action"
 msgstr "创建所需操作失败"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "创建询价单失败"
 
 msgid "Failed to create risk"
 msgstr "创建风险失败"
@@ -2889,6 +2889,9 @@ msgstr "加载款式库存失败"
 msgid "Failed to load style planning"
 msgstr "加载款式计划失败"
 
+msgid "Failed to load style purchasing"
+msgstr "加载款式采购信息失败"
+
 msgid "Failed to load style quantities"
 msgstr "加载款式数量失败"
 
@@ -3652,7 +3655,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "未能更新询价单行项与模型"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "更新询价单失败"
 
 msgid "Failed to update RFQ status"
 msgstr "更新询价单状态失败"
@@ -3728,6 +3731,9 @@ msgstr "更新款式库存失败"
 
 msgid "Failed to update style planning"
 msgstr "更新款式计划失败"
+
+msgid "Failed to update style purchasing"
+msgstr "更新款式采购信息失败"
 
 msgid "Failed to update style sale price"
 msgstr "更新销售价格失败"
@@ -5819,6 +5825,9 @@ msgstr "供应商已停用"
 msgid "Supplier invited"
 msgstr "供应商已受邀"
 
+msgid "Supplier item updated"
+msgstr "供应商货品已更新"
+
 msgid "Supplier location created"
 msgstr "已创建供应商位置"
 
@@ -6322,6 +6331,9 @@ msgstr "已更新款式库存"
 
 msgid "Updated style planning"
 msgstr "已更新款式规划"
+
+msgid "Updated style purchasing"
+msgstr "已更新款式采购信息"
 
 msgid "Updated style sale price"
 msgstr "已更新款式销售价格"

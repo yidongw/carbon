@@ -4051,8 +4051,8 @@ msgstr "编辑物质"
 msgid "Edit Supplier"
 msgstr "编辑供应商"
 
-msgid "Edit Supplier Part"
-msgstr "编辑供应商产品"
+msgid "Edit Supplier Item"
+msgstr "编辑供应商货品"
 
 msgid "Edit supplier process"
 msgstr "编辑供应商工序"
@@ -4937,7 +4937,7 @@ msgid "Failed to create required action"
 msgstr "创建所需操作失败"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "创建询价单失败"
 
 msgid "Failed to create risk"
 msgstr "创建风险失败"
@@ -6795,6 +6795,9 @@ msgstr "加载款式库存失败"
 msgid "Failed to load style planning"
 msgstr "加载款式计划失败"
 
+msgid "Failed to load style purchasing"
+msgstr "加载款式采购信息失败"
+
 msgid "Failed to load style quantities"
 msgstr "加载款式数量失败"
 
@@ -7612,7 +7615,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "未能更新询价单行项与模型"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "更新询价单失败"
 
 msgid "Failed to update RFQ status"
 msgstr "更新询价单状态失败"
@@ -7688,6 +7691,9 @@ msgstr "更新款式库存失败"
 
 msgid "Failed to update style planning"
 msgstr "更新款式计划失败"
+
+msgid "Failed to update style purchasing"
+msgstr "更新款式采购信息失败"
 
 msgid "Failed to update style sale price"
 msgstr "更新销售价格失败"
@@ -10231,8 +10237,8 @@ msgstr "新建款式"
 msgid "New Supplier"
 msgstr "新供应商"
 
-msgid "New Supplier Part"
-msgstr "新供应商产品"
+msgid "New Supplier Item"
+msgstr "新建供应商货品"
 
 msgid "New Tag"
 msgstr "新标签"
@@ -11902,10 +11908,10 @@ msgid "Push record changes to external systems the moment they happen."
 msgstr "在记录发生变化的那一刻将其推送到外部系统。"
 
 msgid "QR Code"
-msgstr ""
+msgstr "二维码"
 
 msgid "QR Code to complete the current operation for this kanban"
-msgstr ""
+msgstr "完成当前看板操作的二维码"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
@@ -14416,6 +14422,15 @@ msgstr "供应商发票号"
 msgid "Supplier Issue"
 msgstr "供应商问题"
 
+msgid "Supplier Item No."
+msgstr "供应商货号"
+
+msgid "Supplier item updated"
+msgstr "供应商货品已更新"
+
+msgid "Supplier Items"
+msgstr "供应商货品"
+
 msgid "Supplier location"
 msgstr "供应商位置"
 
@@ -14431,17 +14446,11 @@ msgstr "供应商订单号"
 msgid "Supplier Overview"
 msgstr "供应商概述"
 
-msgid "Supplier Part ID"
-msgstr "供应商产品ID"
-
 msgid "Supplier Part Number"
 msgstr "供应商产品号"
 
 msgid "Supplier part updated"
 msgstr "供应商零件已更新"
-
-msgid "Supplier Parts"
-msgstr "供应商产品"
 
 msgid "Supplier Payment Discounts"
 msgstr "供应商付款折扣"
@@ -15680,6 +15689,9 @@ msgstr "已更新款式库存"
 
 msgid "Updated style planning"
 msgstr "已更新款式规划"
+
+msgid "Updated style purchasing"
+msgstr "已更新款式采购信息"
 
 msgid "Updated style sale price"
 msgstr "已更新款式销售价格"

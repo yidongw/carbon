@@ -2888,6 +2888,9 @@ msgstr "Failed to load style inventory"
 msgid "Failed to load style planning"
 msgstr "Failed to load style planning"
 
+msgid "Failed to load style purchasing"
+msgstr "Failed to load style purchasing"
+
 msgid "Failed to load style quantities"
 msgstr "Failed to load style quantities"
 
@@ -3727,6 +3730,9 @@ msgstr "Failed to update style inventory"
 
 msgid "Failed to update style planning"
 msgstr "Failed to update style planning"
+
+msgid "Failed to update style purchasing"
+msgstr "Failed to update style purchasing"
 
 msgid "Failed to update style sale price"
 msgstr "Failed to update style sale price"
@@ -5818,6 +5824,9 @@ msgstr "Supplier deactivated"
 msgid "Supplier invited"
 msgstr "Supplier invited"
 
+msgid "Supplier item updated"
+msgstr "Supplier item updated"
+
 msgid "Supplier location created"
 msgstr "Supplier location created"
 
@@ -6321,6 +6330,9 @@ msgstr "Updated style inventory"
 
 msgid "Updated style planning"
 msgstr "Updated style planning"
+
+msgid "Updated style purchasing"
+msgstr "Updated style purchasing"
 
 msgid "Updated style sale price"
 msgstr "Updated style sale price"
