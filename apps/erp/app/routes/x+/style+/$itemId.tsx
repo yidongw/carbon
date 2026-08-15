@@ -34,7 +34,8 @@ import {
   getMethodMaterialsByMakeMethod,
   getMethodOperationsByMakeMethodId,
   getMethodTree,
-  getPartUsedIn
+  getPartUsedIn,
+  getSupplierParts
 } from "~/modules/items";
 import { getItemAttributeSelectionsForItem } from "~/modules/items/itemAttribute.service";
 import { getStyle } from "~/modules/items/style.server";
@@ -62,12 +63,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [styleSummary, makeMethods, tags, attributeState] = await Promise.all([
-    getStyle(itemId, companyId),
-    getMakeMethods(client, itemId, companyId),
-    getTagsList(client, companyId, "style"),
-    getItemAttributeSelectionsForItem(client, { itemId, companyId })
-  ]);
+  const [styleSummary, makeMethods, tags, attributeState, supplierParts] =
+    await Promise.all([
+      getStyle(itemId, companyId),
+      getMakeMethods(client, itemId, companyId),
+      getTagsList(client, companyId, "style"),
+      getItemAttributeSelectionsForItem(client, { itemId, companyId }),
+      getSupplierParts(client, itemId, companyId)
+    ]);
 
   if (styleSummary.error || !styleSummary.data) {
     throw redirect(
@@ -166,6 +169,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     styleSummary: {
       ...styleSummary.data
     },
+    supplierParts: supplierParts.data ?? [],
     attributeSetId: attributeState.data.attributeSetId,
     attributeSelections: attributeState.data.selections,
     files: getItemFiles(client, itemId, companyId),

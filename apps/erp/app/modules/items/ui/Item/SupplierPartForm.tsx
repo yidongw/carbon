@@ -90,7 +90,7 @@ type PurchaseHistoryItem = {
 
 type SupplierPartFormProps = {
   initialValues: z.infer<typeof supplierPartValidator>;
-  type: "Part" | "Service" | "Tool" | "Consumable" | "Material";
+  type: "Part" | "Service" | "Tool" | "Consumable" | "Material" | "Style";
   unitOfMeasureCode: string;
   priceBreaks?: PriceBreak[];
   purchasingHistory?: PurchaseHistoryItem[];
@@ -168,7 +168,7 @@ const SupplierPartForm = ({
         >
           <DrawerHeader>
             <DrawerTitle>
-              {isEditing ? t`Edit Supplier Part` : t`New Supplier Part`}
+              {isEditing ? t`Edit Supplier Item` : t`New Supplier Item`}
             </DrawerTitle>
           </DrawerHeader>
           <DrawerBody>
@@ -179,7 +179,7 @@ const SupplierPartForm = ({
             <VStack spacing={4}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
                 <Supplier name="supplierId" label={t`Supplier`} />
-                <Input name="supplierPartId" label={t`Supplier Part ID`} />
+                <Input name="supplierPartId" label={t`Supplier Item No.`} />
                 <Number
                   name="unitPrice"
                   label={t`Unit Price`}
@@ -450,7 +450,7 @@ export default SupplierPartForm;
 
 function getAction(
   isEditing: boolean,
-  type: "Part" | "Service" | "Tool" | "Consumable" | "Material",
+  type: "Part" | "Service" | "Tool" | "Consumable" | "Material" | "Style",
   itemId: string,
   id?: string
 ) {
@@ -490,6 +490,14 @@ function getAction(
       return path.to.materialSupplier(itemId, id!);
     } else {
       return path.to.newMaterialSupplier(itemId);
+    }
+  }
+
+  if (type === "Style") {
+    if (isEditing) {
+      return path.to.styleSupplier(itemId, id!);
+    } else {
+      return path.to.newStyleSupplier(itemId);
     }
   }
 

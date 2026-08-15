@@ -51,7 +51,7 @@ const SupplierParts = ({
       },
       {
         accessorKey: "supplierPartId",
-        header: t`Supplier ID`,
+        header: t`Supplier Item No.`,
         cell: (item) => item.getValue()
       },
       {
@@ -87,7 +87,7 @@ const SupplierParts = ({
       <Card className={cn(compact && "border-none p-0 dark:shadow-none")}>
         <CardHeader className={cn(compact && "px-0")}>
           <CardTitle>
-            <Trans>Supplier Parts</Trans>
+            <Trans>Supplier Items</Trans>
           </CardTitle>
         </CardHeader>
         <CardContent className={cn(compact && "px-0")}>
