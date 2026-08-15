@@ -3,10 +3,18 @@ import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { z } from "zod";
 import {
+  expandVariantTableToLines,
+  hasStyleVariantsQuantity,
+  requireVariantQuantitiesIfAttributeParent,
+  scaleVariantQuantitiesToTotal
+} from "~/modules/items/styleOrderLines.server";
+import {
   insertPurchaseOrder,
   plannedOrderValidator,
+  replacePurchaseOrderLinesWithStyleVariants,
   upsertPurchaseOrderLine
 } from "~/modules/purchasing";
+import { getDatabaseClient } from "~/services/database.server";
 
 const itemsValidator = z
   .object({
@@ -224,7 +232,79 @@ export async function action({ request }: ActionFunctionArgs) {
         let processedItems = 0;
 
         // ── UPDATE existing draft/planned lines ──
-        for (const { order } of existingLineUpdates) {
+        for (const { itemId, order } of existingLineUpdates) {
+          const isChildSkuLine =
+            !!order.existingItemId && order.existingItemId !== itemId;
+          if (
+            !isChildSkuLine &&
+            hasStyleVariantsQuantity(order.variantQuantities)
+          ) {
+            const expanded = await expandBuyMixToPoLines(client, {
+              parentItemId: itemId,
+              companyId,
+              variantQuantities: order.variantQuantities,
+              minimumOrderQuantity: 0,
+              orderQuantity: order.quantity
+            });
+            if (!expanded.ok) {
+              errors.push(
+                `Failed to expand mix for PO line ${order.existingLineId}: ${expanded.error}`
+              );
+              continue;
+            }
+            if (expanded.mode === "expand") {
+              const { data: existingLine } = await client
+                .from("purchaseOrderLine")
+                .select("*")
+                .eq("id", order.existingLineId!)
+                .single();
+              if (!existingLine?.purchaseOrderId) {
+                errors.push(
+                  `Failed to load existing PO line ${order.existingLineId}`
+                );
+                continue;
+              }
+              try {
+                await replacePurchaseOrderLinesWithStyleVariants(
+                  getDatabaseClient(),
+                  {
+                    companyId,
+                    userId,
+                    purchaseOrderId: existingLine.purchaseOrderId,
+                    replaceLineId: existingLine.id,
+                    variants: expanded.variants,
+                    base: {
+                      purchaseOrderLineType:
+                        existingLine.purchaseOrderLineType ?? "Part",
+                      description: existingLine.description,
+                      locationId: existingLine.locationId,
+                      storageUnitId: existingLine.storageUnitId,
+                      purchaseUnitOfMeasureCode:
+                        existingLine.purchaseUnitOfMeasureCode,
+                      inventoryUnitOfMeasureCode:
+                        existingLine.inventoryUnitOfMeasureCode,
+                      conversionFactor: existingLine.conversionFactor,
+                      supplierUnitPrice: existingLine.supplierUnitPrice,
+                      setupPrice: existingLine.setupPrice,
+                      supplierShippingCost: existingLine.supplierShippingCost,
+                      supplierTaxAmount: existingLine.supplierTaxAmount,
+                      exchangeRate: existingLine.exchangeRate,
+                      requiredDate: order.dueDate ?? existingLine.requiredDate,
+                      promisedDate: existingLine.promisedDate
+                    }
+                  }
+                );
+              } catch (err) {
+                errors.push(
+                  `Failed to expand PO line ${order.existingLineId}: ${
+                    err instanceof Error ? err.message : "unknown error"
+                  }`
+                );
+              }
+              continue;
+            }
+          }
+
           const updateLine = await client
             .from("purchaseOrderLine")
             .update({
@@ -334,9 +414,92 @@ export async function action({ request }: ActionFunctionArgs) {
               continue;
             }
 
+            const mixRequired = await requireVariantQuantitiesIfAttributeParent(
+              client,
+              {
+                parentItemId: itemId,
+                companyId,
+                variantQuantities: order.variantQuantities,
+                quantity: order.quantity
+              }
+            );
+            if (!mixRequired.ok) {
+              errors.push(`Item ${itemId}: ${mixRequired.error}`);
+              continue;
+            }
+
             const minimumOrderQuantity =
               supplierPart?.minimumOrderQuantity ?? 0;
-            let adjustedQuantity = order.quantity;
+            const expanded = await expandBuyMixToPoLines(client, {
+              parentItemId: itemId,
+              companyId,
+              variantQuantities: order.variantQuantities,
+              minimumOrderQuantity,
+              orderQuantity: order.quantity
+            });
+            if (!expanded.ok) {
+              errors.push(
+                `Failed to expand mix for item ${itemId}: ${expanded.error}`
+              );
+              continue;
+            }
+
+            const conversionFactor = supplierPart?.conversionFactor ?? 1;
+            const lineBase = {
+              purchaseOrderLineType: "Part" as const,
+              description: order.description,
+              locationId,
+              purchaseUnitOfMeasureCode:
+                supplierPart?.supplierUnitOfMeasureCode ??
+                order.unitOfMeasureCode,
+              inventoryUnitOfMeasureCode: order.unitOfMeasureCode,
+              conversionFactor,
+              supplierUnitPrice: supplierPart?.unitPrice ?? 0,
+              supplierTaxAmount:
+                ((supplierPart?.unitPrice ?? 0) * (supplier.taxPercent ?? 0)) /
+                100,
+              supplierShippingCost: 0,
+              requiredDate: order.dueDate ?? undefined
+            };
+
+            if (expanded.mode === "expand") {
+              try {
+                await replacePurchaseOrderLinesWithStyleVariants(
+                  getDatabaseClient(),
+                  {
+                    companyId,
+                    userId,
+                    purchaseOrderId,
+                    variants: expanded.variants,
+                    base: lineBase
+                  }
+                );
+              } catch (err) {
+                errors.push(
+                  `Failed to create PO lines for style variants ${itemId}: ${
+                    err instanceof Error ? err.message : "unknown error"
+                  }`
+                );
+                continue;
+              }
+
+              processedItems++;
+              allSupplyForecasts.push({
+                itemId,
+                locationId,
+                sourceType: "Purchase Order" as const,
+                forecastQuantity:
+                  expanded.variants.reduce((sum, v) => sum + v.quantity, 0) *
+                  conversionFactor,
+                periodId,
+                companyId,
+                createdBy: userId,
+                updatedBy: userId
+              });
+              continue;
+            }
+
+            let adjustedQuantity = expanded.quantity;
             if (
               minimumOrderQuantity > 0 &&
               adjustedQuantity < minimumOrderQuantity
@@ -403,7 +566,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
             processedItems++;
 
-            const conversionFactor = supplierPart?.conversionFactor ?? 1;
             allSupplyForecasts.push({
               itemId,
               locationId,
@@ -497,6 +659,58 @@ export async function action({ request }: ActionFunctionArgs) {
         { status: 500 }
       );
   }
+}
+
+async function expandBuyMixToPoLines(
+  client: Parameters<typeof expandVariantTableToLines>[0],
+  args: {
+    parentItemId: string;
+    companyId: string;
+    variantQuantities: unknown;
+    minimumOrderQuantity: number;
+    orderQuantity: number;
+  }
+): Promise<
+  | { ok: true; mode: "single"; quantity: number }
+  | {
+      ok: true;
+      mode: "expand";
+      variants: Array<{ variantItemId: string; quantity: number }>;
+    }
+  | { ok: false; error: string }
+> {
+  if (!hasStyleVariantsQuantity(args.variantQuantities)) {
+    return { ok: true, mode: "single", quantity: args.orderQuantity };
+  }
+
+  const expanded = await expandVariantTableToLines(client, {
+    parentItemId: args.parentItemId,
+    companyId: args.companyId,
+    variantQuantities: args.variantQuantities
+  });
+  if (!expanded.ok) return expanded;
+
+  const onlyParent =
+    expanded.variants.length === 1 &&
+    expanded.variants[0].variantItemId === args.parentItemId;
+  if (onlyParent) {
+    return {
+      ok: true,
+      mode: "single",
+      quantity: expanded.variants[0].quantity
+    };
+  }
+
+  let variants = expanded.variants;
+  const total = variants.reduce((sum, variant) => sum + variant.quantity, 0);
+  if (args.minimumOrderQuantity > 0 && total < args.minimumOrderQuantity) {
+    variants = scaleVariantQuantitiesToTotal(
+      variants,
+      args.minimumOrderQuantity
+    );
+  }
+
+  return { ok: true, mode: "expand", variants };
 }
 
 function deduplicateForecasts<

@@ -52,12 +52,26 @@ import {
 import { Link, useFetcher } from "react-router";
 import { SupplierAvatar } from "~/components";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
-import { useCurrencyFormatter } from "~/hooks";
+import { useCurrencyFormatter, useUser } from "~/hooks";
+import {
+  readPlanningVariantMixCustomFields,
+  resolveOrderVariantQuantities
+} from "~/modules/items/styleOrderLines";
 import type { SupplierPart } from "~/modules/items/types";
 import { SupplierPartForm } from "~/modules/items/ui/Item";
 import { getLinkToItemPlanning } from "~/modules/items/ui/Item/ItemForm";
 import { ItemPlanningChart } from "~/modules/items/ui/Item/ItemPlanningChart";
 import { ItemReorderPolicy } from "~/modules/items/ui/Item/ItemReorderPolicy";
+import { ItemVariantsQuantityInput } from "~/modules/production/ui/Jobs/ItemVariantsQuantityInput";
+import {
+  toVariantsQuantityValue,
+  useVariantsQuantityModal
+} from "~/modules/production/ui/Jobs/VariantsQuantityModal";
+import {
+  getOverlaySuccessVariantTable,
+  isVariantsQuantityOverlaySuccess,
+  parseInitialVariantsQuantity
+} from "~/modules/production/variantsQuantityOverlay";
 import type { action as bulkUpdateAction } from "~/routes/x+/purchasing+/planning.update";
 import { path } from "~/utils/path";
 import type { PlannedOrder } from "../../purchasing.models";
@@ -93,19 +107,76 @@ export const PurchasingPlanningOrderDrawer = memo(
     const { t } = useLingui();
     const fetcher = useFetcher<typeof bulkUpdateAction>();
     const { carbon } = useCarbon();
+    const { company } = useUser();
+    const variantsQuantityModal = useVariantsQuantityModal();
+    const [hasVariantAttributes, setHasVariantAttributes] = useState(
+      selectedItem.type === "Style"
+    );
+    const [parentMix, setParentMix] = useState<unknown>(undefined);
 
     const formatter = useCurrencyFormatter();
     const unitOfMeasureOptions = useUnitOfMeasure();
 
     const [activeTab, setActiveTab] = useState("ordering");
 
+    useEffect(() => {
+      if (!carbon || !selectedItem.id) return;
+      let cancelled = false;
+
+      void Promise.all([
+        carbon
+          .from("itemAttributeSelection")
+          .select("attributeValueId")
+          .eq("itemId", selectedItem.id)
+          .eq("companyId", company.id)
+          .limit(1),
+        carbon
+          .from("itemVariant")
+          .select("variantItemId")
+          .eq("parentItemId", selectedItem.id)
+          .eq("companyId", company.id)
+          .limit(1),
+        carbon
+          .from("itemPlanning")
+          .select("customFields")
+          .eq("itemId", selectedItem.id)
+          .eq("locationId", locationId)
+          .eq("companyId", company.id)
+          .maybeSingle()
+      ]).then(([selections, variants, planning]) => {
+        if (cancelled) return;
+        setHasVariantAttributes(
+          (selections.data?.length ?? 0) > 0 || (variants.data?.length ?? 0) > 0
+        );
+        setParentMix(
+          readPlanningVariantMixCustomFields(planning.data?.customFields)
+        );
+      });
+
+      return () => {
+        cancelled = true;
+      };
+    }, [carbon, company.id, locationId, selectedItem.id]);
+
     const getExistingOrders = useCallback(async () => {
       if (!carbon || !selectedItem.id) return;
 
+      const { data: variantRows } = await carbon
+        .from("itemVariant")
+        .select("variantItemId")
+        .eq("parentItemId", selectedItem.id)
+        .eq("companyId", company.id);
+      const itemIds = [
+        selectedItem.id,
+        ...(variantRows ?? [])
+          .map((variant) => variant.variantItemId)
+          .filter((id): id is string => !!id)
+      ];
+
       const { data: existingOrderData } = await carbon
-        ?.from("openPurchaseOrderLines")
+        .from("openPurchaseOrderLines")
         .select("*")
-        .eq("itemId", selectedItem.id)
+        .in("itemId", itemIds)
         .in("status", [
           "To Review",
           "Needs Approval",
@@ -131,6 +202,7 @@ export const PurchasingPlanningOrderDrawer = memo(
               return {
                 existingId: order.purchaseOrderId ?? undefined,
                 existingLineId: order.id ?? undefined,
+                existingItemId: order.itemId ?? undefined,
                 existingReadableId: order.purchaseOrderReadableId ?? undefined,
                 existingQuantity:
                   order.status === "Draft"
@@ -155,6 +227,7 @@ export const PurchasingPlanningOrderDrawer = memo(
             return {
               existingId: order.purchaseOrderId ?? undefined,
               existingLineId: order.id ?? undefined,
+              existingItemId: order.itemId ?? undefined,
               existingReadableId: order.purchaseOrderReadableId ?? undefined,
               existingQuantity:
                 order.status === "Draft" ? 0 : (order?.quantityToReceive ?? 0),
@@ -177,7 +250,7 @@ export const PurchasingPlanningOrderDrawer = memo(
           })
         );
       }
-    }, [carbon, selectedItem, orders, periods, setOrders]);
+    }, [carbon, company.id, selectedItem, orders, periods, setOrders]);
 
     useMount(async () => {
       if (selectedItem.id) {
@@ -246,13 +319,22 @@ export const PurchasingPlanningOrderDrawer = memo(
             order.existingStatus === "Planned"
         );
         const ordersWithPeriods = editableOrders.map((order) => {
+          const variantQuantities = resolveOrderVariantQuantities(
+            {
+              existingId: order.existingLineId,
+              variantQuantities: order.variantQuantities,
+              quantity: order.quantity
+            },
+            parentMix
+          );
           if (
             !order.dueDate ||
             parseDate(order.dueDate) < parseDate(periods[0].startDate)
           ) {
             return {
               ...order,
-              periodId: periods[0].id
+              periodId: periods[0].id,
+              variantQuantities
             };
           }
 
@@ -265,9 +347,20 @@ export const PurchasingPlanningOrderDrawer = memo(
 
           return {
             ...order,
-            periodId: period?.id ?? periods[periods.length - 1].id
+            periodId: period?.id ?? periods[periods.length - 1].id,
+            variantQuantities
           };
         });
+
+        if (
+          hasVariantAttributes &&
+          ordersWithPeriods.some(
+            (order) => !order.existingLineId && !order.variantQuantities
+          )
+        ) {
+          toast.error(t`Set variant quantities`);
+          return;
+        }
 
         const payload = {
           locationId,
@@ -285,7 +378,7 @@ export const PurchasingPlanningOrderDrawer = memo(
           encType: "application/json"
         });
       },
-      [fetcher, locationId, periods]
+      [fetcher, hasVariantAttributes, locationId, parentMix, periods, t]
     );
 
     const onOrderUpdate = useCallback(
@@ -300,6 +393,39 @@ export const PurchasingPlanningOrderDrawer = memo(
         }
       },
       [selectedItem, orders, setOrders]
+    );
+
+    const openMixForOrder = useCallback(
+      (index: number) => {
+        if (!selectedItem.id) return;
+        const order = orders[index];
+        if (!order) return;
+        const variantQuantities = resolveOrderVariantQuantities(
+          {
+            existingId: order.existingLineId,
+            variantQuantities: order.variantQuantities,
+            quantity: order.quantity
+          },
+          parentMix
+        );
+        variantsQuantityModal.open({
+          itemId: selectedItem.id,
+          variantQuantities: toVariantsQuantityValue(
+            parseInitialVariantsQuantity(variantQuantities).rows,
+            variantQuantities
+          ),
+          onConfirm: (data) => {
+            if (!isVariantsQuantityOverlaySuccess(data)) return;
+            onOrderUpdate(index, {
+              quantity: data.total > 0 ? data.total : order.quantity,
+              variantQuantities: {
+                variantTable: getOverlaySuccessVariantTable(data)
+              }
+            });
+          }
+        });
+      },
+      [onOrderUpdate, orders, parentMix, selectedItem.id, variantsQuantityModal]
     );
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -350,498 +476,553 @@ export const PurchasingPlanningOrderDrawer = memo(
     const supplierDisclosure = useDisclosure();
 
     return (
-      <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <DrawerContent size="lg">
-            <DrawerHeader className="relative">
-              <DrawerTitle className="flex items-center gap-2">
-                <span>{selectedItem.readableIdWithRevision}</span>
-                <Link
-                  to={getLinkToItemPlanning(
-                    selectedItem.type as "Part",
-                    selectedItem.id
-                  )}
-                >
-                  <LuExternalLink />
-                </Link>
-              </DrawerTitle>
-              <DrawerDescription>{selectedItem.name}</DrawerDescription>
-              <div className="absolute top-4 right-12">
-                <TabsList>
-                  <TabsTrigger value="ordering">
-                    <Trans>Ordering</Trans>
-                  </TabsTrigger>
-                  <TabsTrigger value="suppliers">
-                    <Trans>Suppliers</Trans>
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-            </DrawerHeader>
-            <DrawerBody>
-              <div className="flex flex-col gap-4  w-full">
-                <TabsContent value="suppliers" className="flex flex-col gap-4">
-                  <TableBase>
-                    <Thead>
-                      <Tr>
-                        <Th>
-                          <Trans>Supplier</Trans>
-                        </Th>
-                        <Th>
-                          <Trans>Unit</Trans>
-                        </Th>
-                        <Th>
-                          <Trans>Conversion</Trans>
-                        </Th>
-                        <Th>
-                          <Trans>Unit Price</Trans>
-                        </Th>
-                        <Th />
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {(selectedItem.suppliers as SupplierPart[])?.map(
-                        (part) => (
-                          <Tr key={part.id}>
-                            <Td>
-                              <SupplierAvatar supplierId={part.supplierId} />
-                            </Td>
-                            <Td>
-                              {
-                                unitOfMeasureOptions.find(
-                                  (uom) =>
-                                    uom.value === part.supplierUnitOfMeasureCode
-                                )?.label
-                              }
-                            </Td>
-                            <Td>{part.conversionFactor}</Td>
-                            <Td>{formatter.format(part.unitPrice ?? 0)}</Td>
-                            <Td className="text-end">
-                              <Button
-                                variant="secondary"
-                                isDisabled={
-                                  selectedSupplier === part.supplierId
+      <>
+        <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <DrawerContent size="lg">
+              <DrawerHeader className="relative">
+                <DrawerTitle className="flex items-center gap-2">
+                  <span>{selectedItem.readableIdWithRevision}</span>
+                  <Link
+                    to={getLinkToItemPlanning(
+                      selectedItem.type as "Part",
+                      selectedItem.id
+                    )}
+                  >
+                    <LuExternalLink />
+                  </Link>
+                </DrawerTitle>
+                <DrawerDescription>{selectedItem.name}</DrawerDescription>
+                <div className="absolute top-4 right-12">
+                  <TabsList>
+                    <TabsTrigger value="ordering">
+                      <Trans>Ordering</Trans>
+                    </TabsTrigger>
+                    <TabsTrigger value="suppliers">
+                      <Trans>Suppliers</Trans>
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+              </DrawerHeader>
+              <DrawerBody>
+                <div className="flex flex-col gap-4  w-full">
+                  <TabsContent
+                    value="suppliers"
+                    className="flex flex-col gap-4"
+                  >
+                    <TableBase>
+                      <Thead>
+                        <Tr>
+                          <Th>
+                            <Trans>Supplier</Trans>
+                          </Th>
+                          <Th>
+                            <Trans>Unit</Trans>
+                          </Th>
+                          <Th>
+                            <Trans>Conversion</Trans>
+                          </Th>
+                          <Th>
+                            <Trans>Unit Price</Trans>
+                          </Th>
+                          <Th />
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {(selectedItem.suppliers as SupplierPart[])?.map(
+                          (part) => (
+                            <Tr key={part.id}>
+                              <Td>
+                                <SupplierAvatar supplierId={part.supplierId} />
+                              </Td>
+                              <Td>
+                                {
+                                  unitOfMeasureOptions.find(
+                                    (uom) =>
+                                      uom.value ===
+                                      part.supplierUnitOfMeasureCode
+                                  )?.label
                                 }
-                                leftIcon={<LuCircleCheck />}
-                                onClick={() => {
-                                  if (selectedItem.id) {
-                                    onSupplierChange(
-                                      selectedItem.id,
-                                      part.supplierId
-                                    );
-
-                                    const updatedOrders = orders.map(
-                                      (order) => ({
-                                        ...order,
-                                        supplierId: part.supplierId
-                                      })
-                                    );
-                                    setOrders(selectedItem, updatedOrders);
-
-                                    toast.success(t`Supplier updated`);
-                                    setActiveTab("ordering");
+                              </Td>
+                              <Td>{part.conversionFactor}</Td>
+                              <Td>{formatter.format(part.unitPrice ?? 0)}</Td>
+                              <Td className="text-end">
+                                <Button
+                                  variant="secondary"
+                                  isDisabled={
+                                    selectedSupplier === part.supplierId
                                   }
-                                }}
-                              >
-                                <Trans>Select</Trans>
-                              </Button>
-                            </Td>
-                          </Tr>
-                        )
-                      )}
-                    </Tbody>
-                  </TableBase>
-                  <div>
-                    <Button
-                      variant="secondary"
-                      leftIcon={<LuCirclePlus />}
-                      onClick={supplierDisclosure.onOpen}
-                    >
-                      <Trans>Add Supplier</Trans>
-                    </Button>
-                    {supplierDisclosure.isOpen && (
-                      <SupplierPartForm
-                        type="Part"
-                        initialValues={{
-                          itemId: selectedItem.id,
-                          supplierId: "",
-                          supplierPartId: "",
-                          unitPrice: 0,
-                          supplierUnitOfMeasureCode: "EA",
-                          minimumOrderQuantity: 1,
-                          orderMultiple: 1,
-                          conversionFactor: 1
-                        }}
-                        unitOfMeasureCode={selectedItem.unitOfMeasureCode ?? ""}
-                        onClose={() => {
-                          if (carbon && selectedItem.id) {
-                            carbon
-                              ?.from("supplierPart")
-                              .select("*")
-                              .eq("itemId", selectedItem.id)
-                              .then(({ data }) => {
-                                if (data) {
-                                  setSelectedItem(
-                                    // @ts-expect-error
-                                    (prev: PurchasingPlanningItem) => {
-                                      return {
-                                        ...prev,
-                                        suppliers: data as SupplierPart[]
-                                      };
+                                  leftIcon={<LuCircleCheck />}
+                                  onClick={() => {
+                                    if (selectedItem.id) {
+                                      onSupplierChange(
+                                        selectedItem.id,
+                                        part.supplierId
+                                      );
+
+                                      const updatedOrders = orders.map(
+                                        (order) => ({
+                                          ...order,
+                                          supplierId: part.supplierId
+                                        })
+                                      );
+                                      setOrders(selectedItem, updatedOrders);
+
+                                      toast.success(t`Supplier updated`);
+                                      setActiveTab("ordering");
                                     }
-                                  );
-
-                                  // Auto-select the newly added supplier if it's the only one
-                                  if (data.length === 1 && selectedItem.id) {
-                                    onSupplierChange(
-                                      selectedItem.id,
-                                      data[0].supplierId
-                                    );
-
-                                    const updatedOrders = orders.map(
-                                      (order) => ({
-                                        ...order,
-                                        supplierId: data[0].supplierId
-                                      })
-                                    );
-                                    setOrders(selectedItem, updatedOrders);
-
-                                    toast.success(
-                                      t`Supplier added and selected`
-                                    );
-                                    setActiveTab("ordering");
-                                  }
-                                }
-                              });
-                          }
-                          supplierDisclosure.onClose();
-                        }}
-                      />
-                    )}
-                  </div>
-                </TabsContent>
-                <TabsContent value="ordering" className="flex flex-col gap-4">
-                  <VStack spacing={2} className="text-sm border rounded-lg p-4">
-                    <HStack className="justify-between w-full">
-                      <span className="text-muted-foreground">
-                        <Trans>Reorder Policy:</Trans>
-                      </span>
-                      <ItemReorderPolicy
-                        reorderingPolicy={selectedItem.reorderingPolicy}
-                      />
-                    </HStack>
-                    <Separator />
-                    <HStack className="justify-between w-full">
-                      <span className="text-muted-foreground">
-                        <Trans>Supplier:</Trans>
-                      </span>
-                      <SupplierAvatar supplierId={selectedSupplier} />
-                    </HStack>
-                    <Separator />
-                    <HStack className="justify-between w-full">
-                      <span className="text-muted-foreground">
-                        <Trans>Purchase Unit:</Trans>
-                      </span>
-                      <span>
-                        {unitOfMeasureOptions.find(
-                          (uom) =>
-                            uom.value ===
-                            (selectedItem.suppliers as SupplierPart[])?.find(
-                              (s) => s.supplierId === selectedSupplier
-                            )?.supplierUnitOfMeasureCode
-                        )?.label ??
-                          selectedItem.unitOfMeasureCode ??
-                          "EA"}
-                      </span>
-                    </HStack>
-                    {(() => {
-                      const supplier = (
-                        selectedItem.suppliers as SupplierPart[]
-                      )?.find((s) => s.supplierId === selectedSupplier);
-                      const conversionFactor = supplier?.conversionFactor ?? 1;
-                      return conversionFactor !== 1 ? (
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Conversion:</Trans>
-                          </span>
-                          <span>1 Purchase = {conversionFactor} Inventory</span>
-                        </HStack>
-                      ) : null;
-                    })()}
-                    <Separator />
-                    {selectedItem.reorderingPolicy === "Maximum Quantity" && (
-                      <>
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Reorder Point:</Trans>
-                          </span>
-                          <span>{selectedItem.reorderPoint}</span>
-                        </HStack>
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Maximum Inventory:</Trans>
-                          </span>
-                          <span>{selectedItem.maximumInventoryQuantity}</span>
-                        </HStack>
-                      </>
-                    )}
-
-                    {selectedItem.reorderingPolicy ===
-                      "Demand-Based Reorder" && (
-                      <>
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Accumulation Period:</Trans>
-                          </span>
-                          <span>
-                            {selectedItem.demandAccumulationPeriod} weeks
-                          </span>
-                        </HStack>
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Safety Stock:</Trans>
-                          </span>
-                          <span>
-                            {selectedItem.demandAccumulationSafetyStock}
-                          </span>
-                        </HStack>
-                      </>
-                    )}
-
-                    {selectedItem.reorderingPolicy ===
-                      "Fixed Reorder Quantity" && (
-                      <>
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Reorder Point:</Trans>
-                          </span>
-                          <span>{selectedItem.reorderPoint}</span>
-                        </HStack>
-                        <HStack className="justify-between w-full">
-                          <span className="text-muted-foreground">
-                            <Trans>Reorder Quantity:</Trans>
-                          </span>
-                          <span>{selectedItem.reorderQuantity}</span>
-                        </HStack>
-                      </>
-                    )}
-                    {(selectedItem.lotSize > 0 ||
-                      selectedItem.minimumOrderQuantity > 0 ||
-                      selectedItem.maximumOrderQuantity > 0) && <Separator />}
-                    {selectedItem.lotSize > 0 && (
-                      <HStack className="justify-between w-full">
-                        <span className="text-muted-foreground">
-                          <Trans>Lot Size:</Trans>
-                        </span>
-                        <span>{selectedItem.lotSize}</span>
-                      </HStack>
-                    )}
-                    {selectedItem.minimumOrderQuantity > 0 && (
-                      <HStack className="justify-between w-full">
-                        <span className="text-muted-foreground">
-                          <Trans>Minimum Order:</Trans>
-                        </span>
-                        <span>{selectedItem.minimumOrderQuantity}</span>
-                      </HStack>
-                    )}
-                    {selectedItem.maximumOrderQuantity > 0 && (
-                      <HStack className="justify-between w-full">
-                        <span className="text-muted-foreground">
-                          <Trans>Maximum Order:</Trans>
-                        </span>
-                        <span>{selectedItem.maximumOrderQuantity}</span>
-                      </HStack>
-                    )}
-                  </VStack>
-
-                  <TableBase full>
-                    <Thead>
-                      <Tr>
-                        <Th>
-                          <div className="flex items-center gap-2">
-                            <LuCirclePlay />
-                            <span>
-                              <Trans>PO</Trans>
-                            </span>
-                          </div>
-                        </Th>
-                        <Th>
-                          <div className="flex items-center gap-2 text-left">
-                            <LuStar />
-                            <span>
-                              <Trans>Status</Trans>
-                            </span>
-                          </div>
-                        </Th>
-                        <Th>
-                          <div className="flex items-center gap-2 text-right">
-                            <LuPackage />
-                            <span>
-                              <Trans>Purchase Qty</Trans>
-                            </span>
-                          </div>
-                        </Th>
-                        <Th>
-                          <div className="flex items-center gap-2">
-                            <LuCalendar />
-                            <span>
-                              <Trans>Due Date</Trans>
-                            </span>
-                          </div>
-                        </Th>
-                        <Th className="w-[50px]"></Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {orders.map((order, index) => {
-                        // Lock the row when (a) the selected supplier differs
-                        // from the order's supplier, or (b) the existing PO
-                        // line is past the Planned stage (already shipped /
-                        // being received / being invoiced). Once committed
-                        // to the supplier, mutating quantity or due date
-                        // would desync the receiving workflow.
-                        const isPostPlannedExisting =
-                          !!order.existingLineId &&
-                          order.existingStatus !== "Draft" &&
-                          order.existingStatus !== "Planned";
-                        const isDisabled =
-                          (selectedSupplier !== order.supplierId &&
-                            !!order.existingId) ||
-                          isPostPlannedExisting;
-
-                        return (
-                          <Tr key={index}>
-                            <Td className="group-hover:bg-inherit justify-between">
-                              {order.existingReadableId && order.existingId ? (
-                                <Link
-                                  to={path.to.purchaseOrder(order.existingId)}
-                                >
-                                  {order.existingReadableId}
-                                </Link>
-                              ) : (
-                                t`New PO`
-                              )}
-                            </Td>
-                            <Td className="flex flex-row items-center gap-1 group-hover:bg-inherit">
-                              {/* @ts-expect-error - status is a string because we have a general type for purchase orders and purchaseOrderLines */}
-                              <PurchasingStatus status={order.existingStatus} />
-                            </Td>
-                            <Td className="text-right group-hover:bg-inherit">
-                              <NumberField
-                                value={
-                                  isDisabled
-                                    ? order.existingQuantity
-                                    : order.quantity
-                                }
-                                isDisabled={isDisabled}
-                                onChange={(value) => {
-                                  if (value) {
-                                    onOrderUpdate(index, {
-                                      quantity: value
-                                    });
-                                  }
-                                }}
-                              >
-                                <NumberInputGroup className="relative group-hover:bg-inherit">
-                                  <NumberInput />
-                                  <NumberInputStepper>
-                                    <NumberIncrementStepper>
-                                      <LuChevronUp size="1em" strokeWidth="3" />
-                                    </NumberIncrementStepper>
-                                    <NumberDecrementStepper>
-                                      <LuChevronDown
-                                        size="1em"
-                                        strokeWidth="3"
-                                      />
-                                    </NumberDecrementStepper>
-                                  </NumberInputStepper>
-                                </NumberInputGroup>
-                              </NumberField>
-                            </Td>
-                            <Td className="text-right group-hover:bg-inherit">
-                              <HStack className="justify-end">
-                                <DatePicker
-                                  value={
-                                    order.dueDate
-                                      ? parseDate(order.dueDate)
-                                      : null
-                                  }
-                                  isDisabled={isDisabled}
-                                  onChange={(date) => {
-                                    onOrderUpdate(index, {
-                                      dueDate: date ? date.toString() : null
-                                    });
                                   }}
-                                />
-                              </HStack>
-                            </Td>
-                            <Td className="group-hover:bg-inherit">
-                              <IconButton
-                                aria-label={t`Remove order`}
-                                variant="ghost"
-                                size="sm"
-                                isDisabled={!!order.existingId}
-                                onClick={() => onRemoveOrder(index)}
-                                icon={<LuTrash2 className="text-destructive" />}
-                              />
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                    </Tbody>
-                  </TableBase>
+                                >
+                                  <Trans>Select</Trans>
+                                </Button>
+                              </Td>
+                            </Tr>
+                          )
+                        )}
+                      </Tbody>
+                    </TableBase>
+                    <div>
+                      <Button
+                        variant="secondary"
+                        leftIcon={<LuCirclePlus />}
+                        onClick={supplierDisclosure.onOpen}
+                      >
+                        <Trans>Add Supplier</Trans>
+                      </Button>
+                      {supplierDisclosure.isOpen && (
+                        <SupplierPartForm
+                          type="Part"
+                          initialValues={{
+                            itemId: selectedItem.id,
+                            supplierId: "",
+                            supplierPartId: "",
+                            unitPrice: 0,
+                            supplierUnitOfMeasureCode: "EA",
+                            minimumOrderQuantity: 1,
+                            orderMultiple: 1,
+                            conversionFactor: 1
+                          }}
+                          unitOfMeasureCode={
+                            selectedItem.unitOfMeasureCode ?? ""
+                          }
+                          onClose={() => {
+                            if (carbon && selectedItem.id) {
+                              carbon
+                                ?.from("supplierPart")
+                                .select("*")
+                                .eq("itemId", selectedItem.id)
+                                .then(({ data }) => {
+                                  if (data) {
+                                    setSelectedItem(
+                                      // @ts-expect-error
+                                      (prev: PurchasingPlanningItem) => {
+                                        return {
+                                          ...prev,
+                                          suppliers: data as SupplierPart[]
+                                        };
+                                      }
+                                    );
 
-                  <div>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="mt-4"
-                      leftIcon={<LuPlus />}
-                      onClick={onAddOrder}
+                                    // Auto-select the newly added supplier if it's the only one
+                                    if (data.length === 1 && selectedItem.id) {
+                                      onSupplierChange(
+                                        selectedItem.id,
+                                        data[0].supplierId
+                                      );
+
+                                      const updatedOrders = orders.map(
+                                        (order) => ({
+                                          ...order,
+                                          supplierId: data[0].supplierId
+                                        })
+                                      );
+                                      setOrders(selectedItem, updatedOrders);
+
+                                      toast.success(
+                                        t`Supplier added and selected`
+                                      );
+                                      setActiveTab("ordering");
+                                    }
+                                  }
+                                });
+                            }
+                            supplierDisclosure.onClose();
+                          }}
+                        />
+                      )}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="ordering" className="flex flex-col gap-4">
+                    <VStack
+                      spacing={2}
+                      className="text-sm border rounded-lg p-4"
                     >
-                      Add Order
-                    </Button>
-                  </div>
+                      <HStack className="justify-between w-full">
+                        <span className="text-muted-foreground">
+                          <Trans>Reorder Policy:</Trans>
+                        </span>
+                        <ItemReorderPolicy
+                          reorderingPolicy={selectedItem.reorderingPolicy}
+                        />
+                      </HStack>
+                      <Separator />
+                      <HStack className="justify-between w-full">
+                        <span className="text-muted-foreground">
+                          <Trans>Supplier:</Trans>
+                        </span>
+                        <SupplierAvatar supplierId={selectedSupplier} />
+                      </HStack>
+                      <Separator />
+                      <HStack className="justify-between w-full">
+                        <span className="text-muted-foreground">
+                          <Trans>Purchase Unit:</Trans>
+                        </span>
+                        <span>
+                          {unitOfMeasureOptions.find(
+                            (uom) =>
+                              uom.value ===
+                              (selectedItem.suppliers as SupplierPart[])?.find(
+                                (s) => s.supplierId === selectedSupplier
+                              )?.supplierUnitOfMeasureCode
+                          )?.label ??
+                            selectedItem.unitOfMeasureCode ??
+                            "EA"}
+                        </span>
+                      </HStack>
+                      {(() => {
+                        const supplier = (
+                          selectedItem.suppliers as SupplierPart[]
+                        )?.find((s) => s.supplierId === selectedSupplier);
+                        const conversionFactor =
+                          supplier?.conversionFactor ?? 1;
+                        return conversionFactor !== 1 ? (
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Conversion:</Trans>
+                            </span>
+                            <span>
+                              1 Purchase = {conversionFactor} Inventory
+                            </span>
+                          </HStack>
+                        ) : null;
+                      })()}
+                      <Separator />
+                      {selectedItem.reorderingPolicy === "Maximum Quantity" && (
+                        <>
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Reorder Point:</Trans>
+                            </span>
+                            <span>{selectedItem.reorderPoint}</span>
+                          </HStack>
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Maximum Inventory:</Trans>
+                            </span>
+                            <span>{selectedItem.maximumInventoryQuantity}</span>
+                          </HStack>
+                        </>
+                      )}
 
-                  <ItemPlanningChart
-                    compact
-                    itemId={selectedItem.id}
-                    locationId={locationId}
-                    safetyStock={selectedItem.demandAccumulationSafetyStock}
-                    plannedOrders={orders}
-                    conversionFactor={
-                      (selectedItem.suppliers as SupplierPart[])?.find(
-                        (s) => s.supplierId === selectedSupplier
-                      )?.conversionFactor ?? 1
+                      {selectedItem.reorderingPolicy ===
+                        "Demand-Based Reorder" && (
+                        <>
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Accumulation Period:</Trans>
+                            </span>
+                            <span>
+                              {selectedItem.demandAccumulationPeriod} weeks
+                            </span>
+                          </HStack>
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Safety Stock:</Trans>
+                            </span>
+                            <span>
+                              {selectedItem.demandAccumulationSafetyStock}
+                            </span>
+                          </HStack>
+                        </>
+                      )}
+
+                      {selectedItem.reorderingPolicy ===
+                        "Fixed Reorder Quantity" && (
+                        <>
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Reorder Point:</Trans>
+                            </span>
+                            <span>{selectedItem.reorderPoint}</span>
+                          </HStack>
+                          <HStack className="justify-between w-full">
+                            <span className="text-muted-foreground">
+                              <Trans>Reorder Quantity:</Trans>
+                            </span>
+                            <span>{selectedItem.reorderQuantity}</span>
+                          </HStack>
+                        </>
+                      )}
+                      {(selectedItem.lotSize > 0 ||
+                        selectedItem.minimumOrderQuantity > 0 ||
+                        selectedItem.maximumOrderQuantity > 0) && <Separator />}
+                      {selectedItem.lotSize > 0 && (
+                        <HStack className="justify-between w-full">
+                          <span className="text-muted-foreground">
+                            <Trans>Lot Size:</Trans>
+                          </span>
+                          <span>{selectedItem.lotSize}</span>
+                        </HStack>
+                      )}
+                      {selectedItem.minimumOrderQuantity > 0 && (
+                        <HStack className="justify-between w-full">
+                          <span className="text-muted-foreground">
+                            <Trans>Minimum Order:</Trans>
+                          </span>
+                          <span>{selectedItem.minimumOrderQuantity}</span>
+                        </HStack>
+                      )}
+                      {selectedItem.maximumOrderQuantity > 0 && (
+                        <HStack className="justify-between w-full">
+                          <span className="text-muted-foreground">
+                            <Trans>Maximum Order:</Trans>
+                          </span>
+                          <span>{selectedItem.maximumOrderQuantity}</span>
+                        </HStack>
+                      )}
+                    </VStack>
+
+                    <TableBase full>
+                      <Thead>
+                        <Tr>
+                          <Th>
+                            <div className="flex items-center gap-2">
+                              <LuCirclePlay />
+                              <span>
+                                <Trans>PO</Trans>
+                              </span>
+                            </div>
+                          </Th>
+                          <Th>
+                            <div className="flex items-center gap-2 text-left">
+                              <LuStar />
+                              <span>
+                                <Trans>Status</Trans>
+                              </span>
+                            </div>
+                          </Th>
+                          <Th>
+                            <div className="flex items-center gap-2 text-right">
+                              <LuPackage />
+                              <span>
+                                <Trans>Purchase Qty</Trans>
+                              </span>
+                            </div>
+                          </Th>
+                          <Th>
+                            <div className="flex items-center gap-2">
+                              <LuCalendar />
+                              <span>
+                                <Trans>Due Date</Trans>
+                              </span>
+                            </div>
+                          </Th>
+                          <Th className="w-[50px]"></Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {orders.map((order, index) => {
+                          // Lock the row when (a) the selected supplier differs
+                          // from the order's supplier, or (b) the existing PO
+                          // line is past the Planned stage (already shipped /
+                          // being received / being invoiced). Once committed
+                          // to the supplier, mutating quantity or due date
+                          // would desync the receiving workflow.
+                          const isPostPlannedExisting =
+                            !!order.existingLineId &&
+                            order.existingStatus !== "Draft" &&
+                            order.existingStatus !== "Planned";
+                          const isDisabled =
+                            (selectedSupplier !== order.supplierId &&
+                              !!order.existingId) ||
+                            isPostPlannedExisting;
+
+                          const isChildSkuLine =
+                            !!order.existingItemId &&
+                            order.existingItemId !== selectedItem.id;
+                          const mixTotal = parseInitialVariantsQuantity(
+                            order.variantQuantities
+                          ).total;
+                          const showMix =
+                            hasVariantAttributes &&
+                            !isChildSkuLine &&
+                            !isDisabled;
+
+                          return (
+                            <Tr key={index}>
+                              <Td className="group-hover:bg-inherit justify-between">
+                                {order.existingReadableId &&
+                                order.existingId ? (
+                                  <Link
+                                    to={path.to.purchaseOrder(order.existingId)}
+                                  >
+                                    {order.existingReadableId}
+                                  </Link>
+                                ) : (
+                                  t`New PO`
+                                )}
+                              </Td>
+                              <Td className="flex flex-row items-center gap-1 group-hover:bg-inherit">
+                                {/* @ts-expect-error - status is a string because we have a general type for purchase orders and purchaseOrderLines */}
+                                <PurchasingStatus
+                                  status={order.existingStatus}
+                                />
+                              </Td>
+                              <Td className="text-right group-hover:bg-inherit">
+                                {showMix ? (
+                                  <ItemVariantsQuantityInput
+                                    id={`purchasing-planning-qty-${index}`}
+                                    hideLabel
+                                    size="sm"
+                                    value={order.quantity}
+                                    onChange={(value) => {
+                                      onOrderUpdate(index, {
+                                        quantity: value
+                                      });
+                                    }}
+                                    hasVariantsQuantity
+                                    onOpenVariantsQuantity={() =>
+                                      openMixForOrder(index)
+                                    }
+                                    variantsQuantityTotal={mixTotal}
+                                    isReadOnly={mixTotal > 0}
+                                    openVariantsQuantityAccessibilityLabel={t`Edit variant quantities`}
+                                  />
+                                ) : (
+                                  <NumberField
+                                    value={
+                                      isDisabled
+                                        ? order.existingQuantity
+                                        : order.quantity
+                                    }
+                                    isDisabled={isDisabled}
+                                    onChange={(value) => {
+                                      if (value) {
+                                        onOrderUpdate(index, {
+                                          quantity: value
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <NumberInputGroup className="relative group-hover:bg-inherit">
+                                      <NumberInput />
+                                      <NumberInputStepper>
+                                        <NumberIncrementStepper>
+                                          <LuChevronUp
+                                            size="1em"
+                                            strokeWidth="3"
+                                          />
+                                        </NumberIncrementStepper>
+                                        <NumberDecrementStepper>
+                                          <LuChevronDown
+                                            size="1em"
+                                            strokeWidth="3"
+                                          />
+                                        </NumberDecrementStepper>
+                                      </NumberInputStepper>
+                                    </NumberInputGroup>
+                                  </NumberField>
+                                )}
+                              </Td>
+                              <Td className="text-right group-hover:bg-inherit">
+                                <HStack className="justify-end">
+                                  <DatePicker
+                                    value={
+                                      order.dueDate
+                                        ? parseDate(order.dueDate)
+                                        : null
+                                    }
+                                    isDisabled={isDisabled}
+                                    onChange={(date) => {
+                                      onOrderUpdate(index, {
+                                        dueDate: date ? date.toString() : null
+                                      });
+                                    }}
+                                  />
+                                </HStack>
+                              </Td>
+                              <Td className="group-hover:bg-inherit">
+                                <IconButton
+                                  aria-label={t`Remove order`}
+                                  variant="ghost"
+                                  size="sm"
+                                  isDisabled={!!order.existingId}
+                                  onClick={() => onRemoveOrder(index)}
+                                  icon={
+                                    <LuTrash2 className="text-destructive" />
+                                  }
+                                />
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                      </Tbody>
+                    </TableBase>
+
+                    <div>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="mt-4"
+                        leftIcon={<LuPlus />}
+                        onClick={onAddOrder}
+                      >
+                        Add Order
+                      </Button>
+                    </div>
+
+                    <ItemPlanningChart
+                      compact
+                      itemId={selectedItem.id}
+                      locationId={locationId}
+                      safetyStock={selectedItem.demandAccumulationSafetyStock}
+                      plannedOrders={orders}
+                      conversionFactor={
+                        (selectedItem.suppliers as SupplierPart[])?.find(
+                          (s) => s.supplierId === selectedSupplier
+                        )?.conversionFactor ?? 1
+                      }
+                    />
+                  </TabsContent>
+                </div>
+              </DrawerBody>
+              <DrawerFooter>
+                <Button variant="secondary" onClick={onClose}>
+                  <Trans>Close</Trans>
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    if (!selectedSupplier) {
+                      toast.error(
+                        t`Cannot place order - no supplier associated with this item`
+                      );
+                      return;
                     }
-                  />
-                </TabsContent>
-              </div>
-            </DrawerBody>
-            <DrawerFooter>
-              <Button variant="secondary" onClick={onClose}>
-                <Trans>Close</Trans>
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => {
-                  if (!selectedSupplier) {
-                    toast.error(
-                      t`Cannot place order - no supplier associated with this item`
-                    );
-                    return;
-                  }
-                  onSubmit(selectedItem.id, orders);
-                }}
-                disabled={fetcher.state !== "idle"}
-                isDisabled={fetcher.state !== "idle"}
-                isLoading={fetcher.state !== "idle"}
-              >
-                <Trans>Order</Trans>
-              </Button>
-            </DrawerFooter>
-          </DrawerContent>
-        </Tabs>
-      </Drawer>
+                    onSubmit(selectedItem.id, orders);
+                  }}
+                  disabled={fetcher.state !== "idle"}
+                  isDisabled={fetcher.state !== "idle"}
+                  isLoading={fetcher.state !== "idle"}
+                >
+                  <Trans>Order</Trans>
+                </Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Tabs>
+        </Drawer>
+        {variantsQuantityModal.node}
+      </>
     );
   }
 );

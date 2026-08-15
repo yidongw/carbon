@@ -113,6 +113,7 @@ export const plannedOrderValidator = z.object({
   quantity: zfd.numeric(z.number().min(0)),
   existingId: zfd.text(z.string().optional()),
   existingLineId: zfd.text(z.string().optional()),
+  existingItemId: zfd.text(z.string().optional()),
   existingQuantity: zfd.numeric(z.number().optional()),
   existingReadableId: zfd.text(z.string().optional()),
   existingStatus: zfd.text(z.string().optional()),
@@ -133,7 +134,13 @@ export const plannedOrderValidator = z.object({
       lotSize: z.number().optional(),
       leadTime: z.number().optional()
     })
-    .optional()
+    .optional(),
+  variantQuantities: z
+    .object({
+      variantTable: z.array(z.record(z.unknown())).optional()
+    })
+    .passthrough()
+    .nullish()
 });
 
 export type PlannedOrder = z.infer<typeof plannedOrderValidator>;
