@@ -353,7 +353,10 @@ export const ProductionPlanningOrderDrawer = memo(
           ],
           action: "order" as const
         };
-        fetcher.submit(payload, {
+        // `variantQuantities` is a zod `.passthrough()` type whose index
+        // signature isn't provably `JsonValue`; the payload is genuinely JSON
+        // (submit stringifies it), so assert the submit target type.
+        fetcher.submit(payload as Parameters<typeof fetcher.submit>[0], {
           method: "post",
           action: path.to.bulkUpdateProductionPlanning,
           encType: "application/json"
