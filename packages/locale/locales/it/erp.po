@@ -9853,6 +9853,12 @@ msgstr "Fornitori Mancanti"
 msgid "Mix ratios are applied proportionally to each week's total on save."
 msgstr "Al salvataggio le proporzioni vengono applicate al totale di ciascuna settimana."
 
+msgid "Mix ratios split safety stock, reorder point, reorder quantity, and max inventory across variant SKUs. Policy and lot size stay the same."
+msgstr "Scomponi le proporzioni di miscelazione in sicurezza del magazzino, punto di rianimazione, quantità da riordinare e massimo inventario tra gli SKU varianti. Le politiche e i размеры оставляются без изменения."
+
+msgid "Mix ratios split stock targets across SKUs on save. Policy and lot size copy as-is."
+msgstr "Le proporzioni di miscela dividono i target del magazzino tra gli SKU alla salvataggio. Politica e dimensioni del lote copiate come sono."
+
 msgid "Mobile Phone"
 msgstr "Telefono Mobile"
 
@@ -11597,7 +11603,7 @@ msgid "Price Lists"
 msgstr "Listini Prezzi"
 
 msgid "Price override created"
-msgstr "Sovrascrizione prezzo creata"
+msgstr "Prezzo modificato creato"
 
 msgid "Price override deleted"
 msgstr "Prezzo modificato eliminato"
@@ -13404,6 +13410,9 @@ msgstr "Imposta Prezzi"
 
 msgid "Set Quantity"
 msgstr "Imposta Quantità"
+
+msgid "Set variant quantities"
+msgstr "Imposta le quantità della variante"
 
 #. placeholder {0}: selectedVersion.version
 msgid "Set Version {0} as Active Version?"

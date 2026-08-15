@@ -40,6 +40,7 @@ The main production planning interface is located at `/production/planning` and 
 2. **Planning Update Route** (`planning.update.tsx`):
    - Handles creation of production orders based on planning requirements
    - Creates jobs for manufacturing items
+   - For Style/attribute parents, persists `jobVariantQuantity` from the Make-drawer mix grid (`persistStyleJobVariantQuantities`) — one job on the parent, not one job per SKU. Mix persist failure still records the job for recalculate (does not leave an invisible Planned order). Existing Draft/Planned jobs are not auto-scaled from planning mix; new jobs are (`resolveOrderVariantQuantities`).
    - Updates supply forecasts
    - Triggers job requirement recalculations
 
@@ -97,10 +98,11 @@ During BOM explosion, the MRP engine traverses each item's BOM tree and collects
 
 The split between purchasing and production planning is done by two SQL functions:
 
-- **`get_purchasing_planning()`**: Filters items where `replenishmentSystem != 'Make'` (includes "Buy" and "Buy and Make")
-- **`get_production_planning()`**: Filters items where `replenishmentSystem = 'Make'` (only "Make" items)
+- **`get_purchasing_planning()`**: Filters items where `replenishmentSystem != 'Make'` (includes "Buy" and "Buy and Make"). Style/attribute **variant child SKUs are excluded**; demand/supply/on-hand roll up to the parent (`20260815284731_planning_hide_variant_children.sql`).
+- **`get_production_planning()`**: Filters items where `replenishmentSystem = 'Make'` (only "Make" items). Style/attribute **variant child SKUs are excluded**; demand/supply/on-hand roll up to the parent family row. Live function body is `20260815123417_production_planning_hide_variant_children.sql` (do not collapse earlier rollup migrations).
+- **`get_production_projections()`**: Same hide + demand-projection rollup as purchasing/production planning (`20260815284731`).
 
-Both functions are defined in migration `20251205000037_include-reorder-quantity-in-planning.sql`.
+Both planning functions originally shipped in `20251205000037_include-reorder-quantity-in-planning.sql`.
 
 ### Demand Views
 

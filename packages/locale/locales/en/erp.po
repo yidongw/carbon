@@ -9853,6 +9853,12 @@ msgstr "Missing Suppliers"
 msgid "Mix ratios are applied proportionally to each week's total on save."
 msgstr "Mix ratios are applied proportionally to each week's total on save."
 
+msgid "Mix ratios split safety stock, reorder point, reorder quantity, and max inventory across variant SKUs. Policy and lot size stay the same."
+msgstr "Mix ratios split safety stock, reorder point, reorder quantity, and max inventory across variant SKUs. Policy and lot size stay the same."
+
+msgid "Mix ratios split stock targets across SKUs on save. Policy and lot size copy as-is."
+msgstr "Mix ratios split stock targets across SKUs on save. Policy and lot size copy as-is."
+
 msgid "Mobile Phone"
 msgstr "Mobile Phone"
 
@@ -13404,6 +13410,9 @@ msgstr "Set Pricing"
 
 msgid "Set Quantity"
 msgstr "Set Quantity"
+
+msgid "Set variant quantities"
+msgstr "Set variant quantities"
 
 #. placeholder {0}: selectedVersion.version
 msgid "Set Version {0} as Active Version?"

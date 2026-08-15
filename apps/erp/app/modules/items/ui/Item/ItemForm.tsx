@@ -246,6 +246,8 @@ export function getLinkToItemPlanning(type: MethodItemType, id: string) {
       return path.to.toolPlanning(id);
     case "Consumable":
       return path.to.consumablePlanning(id);
+    case "Style":
+      return path.to.stylePlanning(id);
     // case "Service":
     //   return path.to.serviceDetails(id);
     default:

@@ -2,13 +2,16 @@ import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readVariantTableRows } from "../production/variantTableWire";
 import { expandVariantsQuantityTable } from "./itemAttribute.service";
+import {
+  type StyleVariantQuantity,
+  scalePlanningQuantityFieldsForVariant,
+  scaleVariantQuantitiesToTotal
+} from "./styleOrderLines";
 
 type Db = SupabaseClient<Database>;
 
-export type StyleVariantQuantity = {
-  variantItemId: string;
-  quantity: number;
-};
+export type { StyleVariantQuantity };
+export { scalePlanningQuantityFieldsForVariant, scaleVariantQuantitiesToTotal };
 
 /**
  * Expand Style variantTable into variant SKU quantities, failing if multi-cell
@@ -90,7 +93,7 @@ export async function requireVariantQuantitiesIfAttributeParent(
       .limit(1),
     client
       .from("itemAttributeSelection")
-      .select("id")
+      .select("attributeValueId")
       .eq("itemId", args.parentItemId)
       .eq("companyId", args.companyId)
       .limit(1)
@@ -104,6 +107,25 @@ export async function requireVariantQuantitiesIfAttributeParent(
   }
 
   return { ok: true };
+}
+
+/** Child SKU item ids for a Style/attribute parent (empty if none). */
+export async function getVariantChildItemIds(
+  client: Db,
+  args: { parentItemId: string; companyId: string }
+): Promise<string[]> {
+  if (!args.parentItemId || !args.companyId) return [];
+  const { data, error } = await client
+    .from("itemVariant")
+    .select("variantItemId")
+    .eq("parentItemId", args.parentItemId)
+    .eq("companyId", args.companyId);
+  if (error) {
+    throw error;
+  }
+  return (data ?? [])
+    .map((row) => row.variantItemId)
+    .filter((id): id is string => typeof id === "string" && id.length > 0);
 }
 
 /**
@@ -124,45 +146,43 @@ export function buildMaterialRowsFromVariants<
 }
 
 /**
- * Treat expanded mix quantities as WEIGHTS and allocate an integer week total
- * so sum(result) === weekTotal (largest-remainder / Hamilton method).
- *
- * Example: weights 1 + 2 with weekTotal 30 → 10 + 20.
+ * Attribute parents with child SKUs must submit mix weights so stock targets
+ * can be split. Returns `mix: undefined` when there are no children.
  */
-export function scaleVariantQuantitiesToTotal(
-  variants: StyleVariantQuantity[],
-  weekTotal: number
-): StyleVariantQuantity[] {
-  if (variants.length === 0 || !(weekTotal > 0)) {
-    return [];
+export async function resolvePlanningVariantMix(
+  client: Db,
+  args: {
+    parentItemId: string;
+    companyId: string;
+    variantQuantities: unknown;
+  }
+): Promise<
+  | { ok: true; mix: StyleVariantQuantity[] | undefined }
+  | { ok: false; error: string }
+> {
+  const children = await getVariantChildItemIds(client, {
+    parentItemId: args.parentItemId,
+    companyId: args.companyId
+  });
+  if (children.length === 0) {
+    return { ok: true, mix: undefined };
   }
 
-  const weightSum = variants.reduce((sum, v) => sum + (v.quantity || 0), 0);
-  if (!(weightSum > 0)) {
-    return [];
+  if (!hasStyleVariantsQuantity(args.variantQuantities)) {
+    return {
+      ok: false,
+      error: "Open the variant mix to assign ratios"
+    };
   }
 
-  const exact = variants.map(
-    (v) => ((v.quantity || 0) * weekTotal) / weightSum
-  );
-  const floored = exact.map((n) => Math.floor(n));
-  let remaining = weekTotal - floored.reduce((sum, n) => sum + n, 0);
+  const expanded = await expandVariantTableToLines(client, {
+    parentItemId: args.parentItemId,
+    companyId: args.companyId,
+    variantQuantities: args.variantQuantities
+  });
+  if (!expanded.ok) return expanded;
 
-  const order = exact
-    .map((value, index) => ({ index, frac: value - floored[index] }))
-    .sort((a, b) => b.frac - a.frac || a.index - b.index);
-
-  const quantities = [...floored];
-  for (let i = 0; i < remaining; i++) {
-    quantities[order[i % order.length].index] += 1;
-  }
-
-  return variants
-    .map((variant, index) => ({
-      ...variant,
-      quantity: quantities[index]
-    }))
-    .filter((variant) => variant.quantity > 0);
+  return { ok: true, mix: expanded.variants };
 }
 
 /**

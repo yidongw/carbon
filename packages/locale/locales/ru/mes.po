@@ -4874,7 +4874,7 @@ msgid "Previous Year"
 msgstr "Предыдущий год"
 
 msgid "Price override created"
-msgstr "Цена перезаписана"
+msgstr "Цена перекрыта"
 
 msgid "Price override deleted"
 msgstr "Цена отменена"

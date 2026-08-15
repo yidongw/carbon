@@ -4878,7 +4878,7 @@ msgid "Failed to create payment term: {0}"
 msgstr "Nie udało się utworzyć warunku płatności: {0}"
 
 msgid "Failed to create price override"
-msgstr "Nie udało się utworzyć przekrywania ceny"
+msgstr "Nie udało się utworzyć nadpisania ceny"
 
 msgid "Failed to create pricing rule"
 msgstr "Nie udało się utworzyć zasady cenowej"
@@ -9853,6 +9853,12 @@ msgstr "Brakujący dostawcy"
 msgid "Mix ratios are applied proportionally to each week's total on save."
 msgstr "Przy zapisie proporcje są rozdzielane na sumę każdego tygodnia."
 
+msgid "Mix ratios split safety stock, reorder point, reorder quantity, and max inventory across variant SKUs. Policy and lot size stay the same."
+msgstr "Proporcje wymiarów mieszanki podzielone na zabezpieczoną zapasową ilość, punkt ponownego zamówienia, ilość ponownego zamówienia i maksymalną ilość magazynową poziomu wariantów SKU. Zasada i rozmiar lote są takie same."
+
+msgid "Mix ratios split stock targets across SKUs on save. Policy and lot size copy as-is."
+msgstr "Proporcje łączenia podzielną cele zapasów między SKU po zapisaniu. Polityki i rozmiary lotek kopiowane tak jak są."
+
 msgid "Mobile Phone"
 msgstr "Telefon komórkowy"
 
@@ -11597,7 +11603,7 @@ msgid "Price Lists"
 msgstr "Cenniki"
 
 msgid "Price override created"
-msgstr "Zapisano nadpisane cenę"
+msgstr "Zastąpienie ceny utworzone"
 
 msgid "Price override deleted"
 msgstr "Usunięto przekazanie ceny"
@@ -13404,6 +13410,9 @@ msgstr "Ustaw ceny"
 
 msgid "Set Quantity"
 msgstr "Ustaw ilość"
+
+msgid "Set variant quantities"
+msgstr "Ustaw ilości wariantów"
 
 #. placeholder {0}: selectedVersion.version
 msgid "Set Version {0} as Active Version?"

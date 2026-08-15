@@ -4874,7 +4874,7 @@ msgid "Previous Year"
 msgstr "पिछला वर्ष"
 
 msgid "Price override created"
-msgstr "परिष्कार की बनाई गई मूल्य संशोधन"
+msgstr "परिष्करण योजना बनाई गई है"
 
 msgid "Price override deleted"
 msgstr "परिष्कार से हटा दिया"

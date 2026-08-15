@@ -8,6 +8,11 @@ import {
   recalculateJobRequirements,
   upsertJobMethod
 } from "~/modules/production";
+import {
+  isNonEmptyVariantsQuantity,
+  persistStyleJobVariantQuantities
+} from "~/modules/production/jobVariantQuantity.service";
+import { getDatabaseClient } from "~/services/database.server";
 
 const itemsValidator = z
   .object({
@@ -152,6 +157,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
           // Process each order for this item
           for (const order of orders) {
+            let jobId: string | undefined;
             if (!order.existingId) {
               // Create new job
               const createJob = await insertJob(
@@ -200,12 +206,8 @@ export async function action({ request }: ActionFunctionArgs) {
                 continue;
               }
 
-              jobIds.push(id);
-              itemProcessed = true;
+              jobId = id;
             } else {
-              // Update existing job
-              jobIds.push(order.existingId);
-
               // Calculate scrap quantity based on scrap percentage
               const updateScrapPercentage =
                 manufacturing.data?.scrapPercentage ?? 0;
@@ -235,6 +237,44 @@ export async function action({ request }: ActionFunctionArgs) {
                 continue;
               }
 
+              jobId = order.existingId;
+            }
+
+            const jobIsOnParent =
+              !order.existingId ||
+              !order.existingItemId ||
+              order.existingItemId === item.id;
+            if (
+              jobId &&
+              jobIsOnParent &&
+              order.variantQuantities &&
+              isNonEmptyVariantsQuantity(order.variantQuantities)
+            ) {
+              const persist = await persistStyleJobVariantQuantities(
+                client,
+                getDatabaseClient(),
+                {
+                  jobId,
+                  parentItemId: item.id,
+                  companyId,
+                  userId,
+                  variantQuantities: order.variantQuantities as Record<
+                    string,
+                    unknown
+                  >
+                }
+              );
+              if (persist.error) {
+                const errorMsg = `Failed to save variant quantities for item ${item.id}: ${persist.error.message}`;
+                console.error(errorMsg);
+                errors.push(errorMsg);
+                // Still record the job so it is recalculated and not left as an
+                // invisible Planned order with no mix.
+              }
+            }
+
+            if (jobId) {
+              jobIds.push(jobId);
               itemProcessed = true;
             }
 
@@ -328,7 +368,7 @@ export async function action({ request }: ActionFunctionArgs) {
         }
 
         const message =
-          processedItems === itemsToOrder.length
+          errors.length === 0 && processedItems === itemsToOrder.length
             ? `Successfully processed all ${processedItems} items with ${allJobIds.length} jobs`
             : `Processed ${processedItems} of ${itemsToOrder.length} items. ${
                 errors.length

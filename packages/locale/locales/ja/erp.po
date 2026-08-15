@@ -9853,6 +9853,12 @@ msgstr "サプライヤーが見つかりません"
 msgid "Mix ratios are applied proportionally to each week's total on save."
 msgstr "保存時、配分比率を各週の合計に比例配分します。"
 
+msgid "Mix ratios split safety stock, reorder point, reorder quantity, and max inventory across variant SKUs. Policy and lot size stay the same."
+msgstr "変数SKU間で比率を分割し、安全在庫、再注文点、再注文数量、最大在庫を分ける。ポリシーとロットサイズは同じです。"
+
+msgid "Mix ratios split stock targets across SKUs on save. Policy and lot size copy as-is."
+msgstr "SKUに分割保存时混合比を跨げば在庫目標を設定。ポリシーとロットサイズはそのままコピーします。"
+
 msgid "Mobile Phone"
 msgstr "携帯電話"
 
@@ -13404,6 +13410,9 @@ msgstr "価格設定"
 
 msgid "Set Quantity"
 msgstr "数量を設定"
+
+msgid "Set variant quantities"
+msgstr "変種数量を設定"
 
 #. placeholder {0}: selectedVersion.version
 msgid "Set Version {0} as Active Version?"

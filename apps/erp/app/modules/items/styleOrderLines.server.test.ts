@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  resolveOrderVariantQuantities,
+  scalePlanningMixToTotal
+} from "./styleOrderLines";
+import {
   buildMaterialRowsFromVariants,
   expandVariantTableToLines,
+  getVariantChildItemIds,
   hasStyleVariantsQuantity,
+  scalePlanningQuantityFieldsForVariant,
   scaleVariantQuantitiesToTotal
 } from "./styleOrderLines.server";
 
@@ -38,6 +44,118 @@ describe("scaleVariantQuantitiesToTotal", () => {
   });
 });
 
+describe("scalePlanningMixToTotal", () => {
+  it("scales mix table weights so Quantities sum to the order total", () => {
+    expect(
+      scalePlanningMixToTotal(
+        {
+          variantTable: [
+            { variantItemId: "sku_s", Quantities: 1 },
+            { variantItemId: "sku_m", Quantities: 2 }
+          ]
+        },
+        30
+      )
+    ).toEqual({
+      variantTable: [
+        { variantItemId: "sku_s", Quantities: 10 },
+        { variantItemId: "sku_m", Quantities: 20 }
+      ]
+    });
+  });
+
+  it("returns undefined when mix or total cannot be scaled", () => {
+    expect(scalePlanningMixToTotal(undefined, 30)).toBeUndefined();
+    expect(
+      scalePlanningMixToTotal(
+        { variantTable: [{ variantItemId: "sku_s", Quantities: 1 }] },
+        0
+      )
+    ).toBeUndefined();
+  });
+});
+
+describe("resolveOrderVariantQuantities", () => {
+  const mix = {
+    variantTable: [
+      { variantItemId: "sku_s", Quantities: 1 },
+      { variantItemId: "sku_m", Quantities: 2 }
+    ]
+  };
+
+  it("keeps a saved mix on the order", () => {
+    const saved = {
+      variantTable: [{ variantItemId: "sku_s", Quantities: 4 }]
+    };
+    expect(
+      resolveOrderVariantQuantities(
+        { quantity: 30, variantQuantities: saved },
+        mix
+      )
+    ).toEqual(saved);
+  });
+
+  it("does not auto-apply planning mix to existing jobs", () => {
+    expect(
+      resolveOrderVariantQuantities({ existingId: "job_1", quantity: 30 }, mix)
+    ).toBeUndefined();
+  });
+
+  it("scales planning mix onto new jobs", () => {
+    expect(resolveOrderVariantQuantities({ quantity: 30 }, mix)).toEqual({
+      variantTable: [
+        { variantItemId: "sku_s", Quantities: 10 },
+        { variantItemId: "sku_m", Quantities: 20 }
+      ]
+    });
+  });
+});
+
+describe("scalePlanningQuantityFieldsForVariant", () => {
+  const mix = [
+    { variantItemId: "sku_s", quantity: 1 },
+    { variantItemId: "sku_m", quantity: 2 }
+  ];
+
+  it("splits stock targets by mix ratio and leaves lot size alone", () => {
+    const parent = {
+      demandAccumulationSafetyStock: 30,
+      reorderPoint: 15,
+      reorderQuantity: 9,
+      maximumInventoryQuantity: 60,
+      orderMultiple: 5,
+      minimumOrderQuantity: 2
+    };
+
+    expect(scalePlanningQuantityFieldsForVariant(parent, mix, "sku_s")).toEqual(
+      {
+        demandAccumulationSafetyStock: 10,
+        reorderPoint: 5,
+        reorderQuantity: 3,
+        maximumInventoryQuantity: 20
+      }
+    );
+    expect(scalePlanningQuantityFieldsForVariant(parent, mix, "sku_m")).toEqual(
+      {
+        demandAccumulationSafetyStock: 20,
+        reorderPoint: 10,
+        reorderQuantity: 6,
+        maximumInventoryQuantity: 40
+      }
+    );
+  });
+
+  it("assigns zero to a SKU omitted from the mix remainder", () => {
+    expect(
+      scalePlanningQuantityFieldsForVariant(
+        { demandAccumulationSafetyStock: 30 },
+        mix,
+        "sku_l"
+      )
+    ).toEqual({ demandAccumulationSafetyStock: 0 });
+  });
+});
+
 describe("hasStyleVariantsQuantity", () => {
   it("returns true when variantTable has rows", () => {
     expect(
@@ -60,6 +178,33 @@ describe("hasStyleVariantsQuantity", () => {
     expect(hasStyleVariantsQuantity({})).toBe(false);
     expect(hasStyleVariantsQuantity({ variantTable: [] })).toBe(false);
     expect(hasStyleVariantsQuantity({ configTable: [] })).toBe(false);
+  });
+});
+
+describe("getVariantChildItemIds", () => {
+  it("returns child SKU ids for a parent with variants", async () => {
+    const client = mockClient({
+      variants: [
+        { id: "iv1", variantItemId: "sku_s" },
+        { id: "iv2", variantItemId: "sku_m" }
+      ]
+    });
+    await expect(
+      getVariantChildItemIds(client as never, {
+        parentItemId: "style_1",
+        companyId: "co"
+      })
+    ).resolves.toEqual(["sku_s", "sku_m"]);
+  });
+
+  it("returns empty when the parent has no variants", async () => {
+    const client = mockClient({ variants: [] });
+    await expect(
+      getVariantChildItemIds(client as never, {
+        parentItemId: "part_1",
+        companyId: "co"
+      })
+    ).resolves.toEqual([]);
   });
 });
 
@@ -492,5 +637,70 @@ describe("resolveMaterialVariantQuantities", () => {
       variantQuantities: null
     });
     expect(result).toEqual({ ok: true, mode: "single", quantity: 2 });
+  });
+});
+
+describe("planning mix persistence helpers", () => {
+  it("stores mix JSON on customFields without dropping other fields", async () => {
+    const {
+      PLANNING_VARIANT_MIX_CUSTOM_FIELD,
+      omitPlanningVariantMixCustomFields,
+      readPlanningVariantMixCustomFields,
+      withPlanningVariantMixCustomFields
+    } = await import("./styleOrderLines");
+    const mix = {
+      variantTable: [
+        { variantItemId: "sku_s", Quantities: 1 },
+        { variantItemId: "sku_m", Quantities: 2 }
+      ]
+    };
+
+    const stored = withPlanningVariantMixCustomFields(
+      { color: "navy" },
+      JSON.stringify(mix)
+    );
+    expect(stored.color).toBe("navy");
+    expect(stored[PLANNING_VARIANT_MIX_CUSTOM_FIELD]).toEqual(mix);
+    expect(readPlanningVariantMixCustomFields(stored)).toEqual(mix);
+    expect(omitPlanningVariantMixCustomFields(stored)).toEqual({
+      color: "navy"
+    });
+  });
+
+  it("rebuilds mix weights from the child field with the largest family total", async () => {
+    const { planningMixFromChildStockTargets } = await import(
+      "./styleOrderLines"
+    );
+    expect(
+      planningMixFromChildStockTargets([
+        {
+          variantItemId: "sku_s",
+          demandAccumulationSafetyStock: 10,
+          reorderQuantity: 1
+        },
+        {
+          variantItemId: "sku_m",
+          demandAccumulationSafetyStock: 20,
+          reorderQuantity: 2
+        }
+      ])
+    ).toEqual({
+      variantTable: [
+        { variantItemId: "sku_s", Quantities: 10 },
+        { variantItemId: "sku_m", Quantities: 20 }
+      ]
+    });
+  });
+
+  it("returns undefined when child stock targets are all zero", async () => {
+    const { planningMixFromChildStockTargets } = await import(
+      "./styleOrderLines"
+    );
+    expect(
+      planningMixFromChildStockTargets([
+        { variantItemId: "sku_s", demandAccumulationSafetyStock: 0 },
+        { variantItemId: "sku_m", demandAccumulationSafetyStock: 0 }
+      ])
+    ).toBeUndefined();
   });
 });
