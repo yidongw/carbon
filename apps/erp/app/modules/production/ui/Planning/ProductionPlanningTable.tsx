@@ -170,11 +170,17 @@ const ProductionPlanningTable = ({
           }),
         action: action
       };
-      bulkUpdateFetcher.submit(payload, {
-        method: "post",
-        action: path.to.bulkUpdateProductionPlanning,
-        encType: "application/json"
-      });
+      // `variantQuantities` is a zod `.passthrough()` type whose index
+      // signature isn't provably `JsonValue`; the payload is genuinely JSON
+      // (submit stringifies it), so assert the submit target type.
+      bulkUpdateFetcher.submit(
+        payload as Parameters<typeof bulkUpdateFetcher.submit>[0],
+        {
+          method: "post",
+          action: path.to.bulkUpdateProductionPlanning,
+          encType: "application/json"
+        }
+      );
     },
 
     [bulkUpdateFetcher, locationId, ordersMap]
