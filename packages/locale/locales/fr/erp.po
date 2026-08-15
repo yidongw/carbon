@@ -14022,6 +14022,9 @@ msgstr "ID du modèle"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Style de sortie kanban à afficher dans le tableau Kanban"
 
+msgid "Style quantity breaks use the sum of variant SKU quantities, not each SKU alone."
+msgstr "Les paliers de quantité du modèle utilisent la somme des quantités des SKU de variante, et non chaque SKU isolément."
+
 msgid "Style quantity configuration is required"
 msgstr "La configuration de la quantité de style est requise"
 

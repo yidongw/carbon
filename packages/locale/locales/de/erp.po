@@ -14022,6 +14022,9 @@ msgstr "Stil-ID"
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Stil der Kanban-Ausgabe, die in der Kanban-Tabelle angezeigt werden soll"
 
+msgid "Style quantity breaks use the sum of variant SKU quantities, not each SKU alone."
+msgstr "Die Mengenabstufungen eines Stils verwenden die Summe der Varianten-SKU-Mengen, nicht jede SKU einzeln."
+
 msgid "Style quantity configuration is required"
 msgstr "Stilmenge-Konfiguration ist erforderlich"
 

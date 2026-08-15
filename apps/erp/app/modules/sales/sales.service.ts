@@ -57,6 +57,11 @@ import type {
   selectedLinesValidator
 } from "./sales.models";
 import { costCategoryKeys } from "./sales.models";
+import {
+  pickBestBreak,
+  priceOverrideLookupItemIds,
+  variantFamilyBreakQuantity
+} from "./sales.priceOverride";
 import type {
   MatchedRule,
   OverrideEntry,
@@ -729,18 +734,18 @@ function applyBreakToParent(
   };
 }
 
-// Picks MAX(quantity) <= input. A break at quantity N only applies once the
-// requested quantity reaches N; below the smallest rung, no override applies.
-function pickBestBreak(
-  breaks: PriceOverrideBreak[],
-  quantity: number
-): PriceOverrideBreak | null {
-  let best: PriceOverrideBreak | null = null;
-  for (const b of breaks) {
-    if (b.quantity > quantity) continue;
-    if (!best || b.quantity > best.quantity) best = b;
-  }
-  return best;
+async function getPriceOverrideLookupItemIds(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+): Promise<string[]> {
+  const { data } = await client
+    .from("itemVariant")
+    .select("parentItemId")
+    .eq("variantItemId", itemId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+  return priceOverrideLookupItemIds(itemId, data?.parentItemId);
 }
 
 export async function getCustomers(
@@ -2282,18 +2287,43 @@ export async function resolvePrice(
 
   // Precedence: customer > type > all-customers > base. We commit to the
   // first scope that yields any rung and do not cross-shop.
+  // Variant SKUs also look up the parent Style override. Break quantity is
+  // the family total (sum of sibling SKUs) when the caller provides it.
   let startingPrice = basePrice;
   let overrideApplied = false;
   let skipRules = false;
+  const overrideLookupIds = await getPriceOverrideLookupItemIds(
+    client,
+    input.itemId,
+    companyId
+  );
+  const breakQuantity = variantFamilyBreakQuantity(
+    input.quantity,
+    input.familyQuantity
+  );
+
+  const firstOverride = async (
+    load: (
+      itemId: string
+    ) => Promise<{ data: AppliedOverride | null; error: unknown }>
+  ) => {
+    for (const lookupId of overrideLookupIds) {
+      const { data } = await load(lookupId);
+      if (data) return data;
+    }
+    return null;
+  };
 
   if (input.customerId) {
-    const { data: override } = await getCustomerItemPriceOverride(
-      client,
-      input.customerId,
-      input.itemId,
-      companyId,
-      input.quantity,
-      date
+    const override = await firstOverride((lookupId) =>
+      getCustomerItemPriceOverride(
+        client,
+        input.customerId!,
+        lookupId,
+        companyId,
+        breakQuantity,
+        date
+      )
     );
 
     if (override) {
@@ -2312,13 +2342,15 @@ export async function resolvePrice(
   }
 
   if (!overrideApplied && resolvedCustomerTypeId) {
-    const { data: typeOverride } = await getCustomerTypeItemPriceOverride(
-      client,
-      resolvedCustomerTypeId,
-      input.itemId,
-      companyId,
-      input.quantity,
-      date
+    const typeOverride = await firstOverride((lookupId) =>
+      getCustomerTypeItemPriceOverride(
+        client,
+        resolvedCustomerTypeId!,
+        lookupId,
+        companyId,
+        breakQuantity,
+        date
+      )
     );
 
     if (typeOverride) {
@@ -2337,12 +2369,14 @@ export async function resolvePrice(
   }
 
   if (!overrideApplied) {
-    const { data: allOverride } = await getAllCustomersItemPriceOverride(
-      client,
-      input.itemId,
-      companyId,
-      input.quantity,
-      date
+    const allOverride = await firstOverride((lookupId) =>
+      getAllCustomersItemPriceOverride(
+        client,
+        lookupId,
+        companyId,
+        breakQuantity,
+        date
+      )
     );
 
     if (allOverride) {

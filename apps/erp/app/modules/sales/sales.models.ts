@@ -236,6 +236,7 @@ export const duplicatePriceListValidator = z
 export const priceResolutionInputValidator = z.object({
   itemId: z.string().min(1),
   quantity: z.number().nonnegative(),
+  familyQuantity: z.number().nonnegative().optional(),
   customerId: z.string().optional(),
   customerTypeId: z.string().optional(),
   itemPostingGroupId: z.string().optional(),
