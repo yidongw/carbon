@@ -162,7 +162,12 @@ function asStringLiteral(arg: string): string | null {
   return value;
 }
 
-function collect(src: string, fnName: "success" | "error", into: Set<string>) {
+function collect(
+  src: string,
+  fnName: string,
+  messageArgIndex: number,
+  into: Set<string>
+) {
   // Bare identifier call only — exclude `.error(` / `console.error` / `myError`.
   const re = new RegExp(`(?<![.\\w])${fnName}\\s*\\(`, "g");
   let m: RegExpExecArray | null;
@@ -170,8 +175,7 @@ function collect(src: string, fnName: "success" | "error", into: Set<string>) {
     const openParen = m.index + m[0].length - 1;
     const args = parseCallArgs(src, openParen);
     if (!args) continue;
-    // success(message, …) → arg 0; error(cause, message) → arg 1
-    const arg = args[fnName === "success" ? 0 : 1];
+    const arg = args[messageArgIndex];
     if (arg == null) continue;
     const lit = asStringLiteral(arg);
     if (lit) into.add(lit);
@@ -184,9 +188,17 @@ for (const dir of scanDirs) walk(dir, files);
 const messages = new Set<string>();
 for (const file of files) {
   const src = fs.readFileSync(file, "utf8");
-  if (!src.includes("success(") && !src.includes("error(")) continue;
-  collect(src, "success", messages);
-  collect(src, "error", messages);
+  if (
+    !src.includes("success(") &&
+    !src.includes("error(") &&
+    !src.includes("itemPlanningSaveErrorMessage(")
+  ) {
+    continue;
+  }
+  collect(src, "success", 0, messages);
+  collect(src, "error", 1, messages);
+  // Fallback toast copy nested in error(cause, itemPlanningSaveErrorMessage(..., "…"))
+  collect(src, "itemPlanningSaveErrorMessage", 1, messages);
 }
 
 // Defaults from the Result builders (their fallback param values aren't inline

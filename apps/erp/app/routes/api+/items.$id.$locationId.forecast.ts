@@ -4,6 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type { LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
+import { sumQuantityByGroup } from "~/modules/items/itemForecast";
 import {
   getDemandForecastSources,
   getItemDemand,
@@ -12,7 +13,8 @@ import {
   getOpenJobMaterials,
   getOpenProductionOrders,
   getOpenPurchaseOrderLines,
-  getOpenSalesOrderLines
+  getOpenSalesOrderLines,
+  getVariantFamilyItemIds
 } from "~/modules/items/items.service";
 import { getOrCreatePeriods } from "~/modules/shared/shared.server";
 
@@ -44,6 +46,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     today(getLocalTimeZone()),
     WEEKS_TO_FORECAST
   );
+  const periodIds = periods.map((p) => p.id ?? "");
+  const familyItemIds = await getVariantFamilyItemIds(
+    client,
+    itemId,
+    companyId
+  );
 
   const [
     demand,
@@ -56,44 +64,79 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     demandForecastSources
   ] = await Promise.all([
     getItemDemand(client, {
-      itemId,
+      itemId: familyItemIds,
       locationId,
-      periods: periods.map((p) => p.id ?? ""),
+      periods: periodIds,
       companyId
     }),
     getItemSupply(client, {
-      itemId,
+      itemId: familyItemIds,
       locationId,
-      periods: periods.map((p) => p.id ?? ""),
+      periods: periodIds,
       companyId
     }),
     getItemQuantities(client, itemId, companyId, locationId),
-    getOpenSalesOrderLines(client, { itemId, companyId, locationId }),
-    getOpenJobMaterials(client, { itemId, companyId, locationId }),
-    getOpenProductionOrders(client, { itemId, companyId, locationId }),
-    getOpenPurchaseOrderLines(client, { itemId, companyId, locationId }),
+    getOpenSalesOrderLines(client, {
+      itemId: familyItemIds,
+      companyId,
+      locationId
+    }),
+    getOpenJobMaterials(client, {
+      itemId: familyItemIds,
+      companyId,
+      locationId
+    }),
+    getOpenProductionOrders(client, {
+      itemId: familyItemIds,
+      companyId,
+      locationId
+    }),
+    getOpenPurchaseOrderLines(client, {
+      itemId: familyItemIds,
+      companyId,
+      locationId
+    }),
     getDemandForecastSources(client, {
-      itemId,
+      itemId: familyItemIds,
       locationId,
-      periods: periods.map((p) => p.id ?? ""),
+      periods: periodIds,
       companyId
     })
   ]);
 
-  if (demand.actuals.length === 0 && demand.forecasts.length === 0) {
+  if (demand.error || supply.error) {
     return data(
-      defaultResponse,
+      { ...defaultResponse, periods },
       await flash(request, error(null, "Failed to load demand"))
     );
   }
 
+  const demandActuals = sumQuantityByGroup(demand.actuals, "actualQuantity", [
+    "periodId",
+    "sourceType"
+  ]);
+  const demandForecasts = sumQuantityByGroup(
+    demand.forecasts,
+    "forecastQuantity",
+    ["periodId"]
+  );
+  const supplyActuals = sumQuantityByGroup(supply.actuals, "actualQuantity", [
+    "periodId",
+    "sourceType"
+  ]);
+  const supplyForecasts = sumQuantityByGroup(
+    supply.forecasts,
+    "forecastQuantity",
+    ["periodId", "sourceType"]
+  );
+
   return {
-    demand: demand.actuals,
-    demandForecast: demand.forecasts,
+    demand: demandActuals,
+    demandForecast: demandForecasts,
     demandForecastSources: demandForecastSources.data ?? [],
     supply: [
-      ...supply.actuals,
-      ...supply.forecasts.map((f) => ({
+      ...supplyActuals,
+      ...supplyForecasts.map((f) => ({
         ...f,
         actualQuantity: f.forecastQuantity
       }))

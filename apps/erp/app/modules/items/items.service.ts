@@ -78,6 +78,11 @@ import {
   isStyleCuttingOperationFirst,
   isStyleSystemOwnedOperation
 } from "./styleMethod.service";
+import {
+  omitPlanningVariantMixCustomFields,
+  type StyleVariantQuantity,
+  scalePlanningQuantityFieldsForVariant
+} from "./styleOrderLines";
 import type { InventoryItemType } from "./types";
 
 export async function activateMethodVersion(
@@ -639,24 +644,25 @@ export async function getItemDemand(
     periods,
     companyId
   }: {
-    itemId: string;
+    itemId: string | string[];
     locationId: string;
     periods: string[];
     companyId: string;
   }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   const [actuals, forecasts] = await Promise.all([
     client
       .from("demandActual")
       .select("*")
-      .eq("itemId", itemId)
+      .in("itemId", itemIds)
       .eq("locationId", locationId)
       .eq("companyId", companyId)
       .in("periodId", periods),
     client
       .from("demandForecast")
       .select("*")
-      .eq("itemId", itemId)
+      .in("itemId", itemIds)
       .eq("locationId", locationId)
       .eq("companyId", companyId)
       .in("periodId", periods)
@@ -665,7 +671,8 @@ export async function getItemDemand(
 
   return {
     actuals: actuals.data ?? [],
-    forecasts: forecasts.data ?? []
+    forecasts: forecasts.data ?? [],
+    error: actuals.error ?? forecasts.error ?? null
   };
 }
 
@@ -712,12 +719,13 @@ export async function getDemandForecastSources(
     periods,
     companyId
   }: {
-    itemId: string;
+    itemId: string | string[];
     locationId: string;
     periods: string[];
     companyId: string;
   }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   const result = await client
     .from("demandForecastSource")
     .select(
@@ -751,7 +759,7 @@ export async function getDemandForecastSources(
         )
       `
     )
-    .eq("itemId", itemId)
+    .in("itemId", itemIds)
     .eq("locationId", locationId)
     .eq("companyId", companyId)
     .in("periodId", periods);
@@ -760,6 +768,26 @@ export async function getDemandForecastSources(
     data: result.data ?? [],
     error: result.error
   };
+}
+
+/** Parent item plus variant SKUs (parent-only when there are no children). */
+export async function getVariantFamilyItemIds(
+  client: SupabaseClient<Database>,
+  parentItemId: string,
+  companyId: string
+): Promise<string[]> {
+  const variants = await client
+    .from("itemVariant")
+    .select("variantItemId")
+    .eq("parentItemId", parentItemId)
+    .eq("companyId", companyId);
+  if (variants.error || !variants.data?.length) {
+    return [parentItemId];
+  }
+  const childIds = variants.data
+    .map((row) => row.variantItemId)
+    .filter((id): id is string => typeof id === "string" && id.length > 0);
+  return childIds.length > 0 ? [parentItemId, ...childIds] : [parentItemId];
 }
 
 export async function getItemFiles(
@@ -1037,17 +1065,18 @@ export async function getItemSupply(
     periods,
     companyId
   }: {
-    itemId: string;
+    itemId: string | string[];
     locationId: string;
     periods: string[];
     companyId: string;
   }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   const [actuals, forecasts] = await Promise.all([
     client
       .from("supplyActual")
       .select("*")
-      .eq("itemId", itemId)
+      .in("itemId", itemIds)
       .eq("locationId", locationId)
       .eq("companyId", companyId)
       .in("periodId", periods)
@@ -1055,7 +1084,7 @@ export async function getItemSupply(
     client
       .from("supplyForecast")
       .select("*")
-      .eq("itemId", itemId)
+      .in("itemId", itemIds)
       .eq("locationId", locationId)
       .eq("companyId", companyId)
       .in("periodId", periods)
@@ -1064,7 +1093,8 @@ export async function getItemSupply(
 
   return {
     actuals: actuals.data ?? [],
-    forecasts: forecasts.data ?? []
+    forecasts: forecasts.data ?? [],
+    error: actuals.error ?? forecasts.error ?? null
   };
 }
 
@@ -1727,14 +1757,15 @@ export async function getOpenJobMaterials(
     itemId,
     companyId,
     locationId
-  }: { itemId: string; companyId: string; locationId: string }
+  }: { itemId: string | string[]; companyId: string; locationId: string }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   return client
     .from("openJobMaterialLines")
     .select(
       "id, parentMaterialId, jobMakeMethodId, jobId, quantity:quantityToIssue, documentReadableId:jobReadableId, documentId:jobId, dueDate"
     )
-    .eq("itemId", itemId)
+    .in("itemId", itemIds)
     .eq("locationId", locationId)
     .eq("companyId", companyId);
 }
@@ -1745,14 +1776,15 @@ export async function getOpenProductionOrders(
     itemId,
     companyId,
     locationId
-  }: { itemId: string; companyId: string; locationId: string }
+  }: { itemId: string | string[]; companyId: string; locationId: string }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   return client
     .from("openProductionOrders")
     .select(
       "id, quantity:quantityToReceive, documentReadableId:jobId, documentId:id, dueDate"
     )
-    .eq("itemId", itemId)
+    .in("itemId", itemIds)
     .eq("locationId", locationId)
     .eq("companyId", companyId);
 }
@@ -1763,14 +1795,15 @@ export async function getOpenPurchaseOrderLines(
     itemId,
     companyId,
     locationId
-  }: { itemId: string; companyId: string; locationId: string }
+  }: { itemId: string | string[]; companyId: string; locationId: string }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   return client
     .from("openPurchaseOrderLines")
     .select(
       "id, quantity:quantityToReceive, dueDate:promisedDate, ...purchaseOrder(documentReadableId:purchaseOrderId, documentId:id)"
     )
-    .eq("itemId", itemId)
+    .in("itemId", itemIds)
     .eq("locationId", locationId)
     .eq("companyId", companyId);
 }
@@ -1781,14 +1814,15 @@ export async function getOpenSalesOrderLines(
     itemId,
     companyId,
     locationId
-  }: { itemId: string; companyId: string; locationId: string }
+  }: { itemId: string | string[]; companyId: string; locationId: string }
 ) {
+  const itemIds = Array.isArray(itemId) ? itemId : [itemId];
   return client
     .from("openSalesOrderLines")
     .select(
       "id, quantity:quantityToSend, dueDate:promisedDate, ...salesOrder(documentReadableId:salesOrderId, documentId:id)"
     )
-    .eq("itemId", itemId)
+    .in("itemId", itemIds)
     .eq("companyId", companyId)
     .eq("locationId", locationId);
 }
@@ -4227,6 +4261,23 @@ export async function upsertItemManufacturing(
     .eq("itemId", partManufacturing.itemId);
 }
 
+export function itemPlanningSaveErrorMessage(
+  err: unknown,
+  fallback: string
+): string {
+  if (err instanceof Error && err.message) return err.message;
+  if (
+    err &&
+    typeof err === "object" &&
+    "message" in err &&
+    typeof (err as { message: unknown }).message === "string" &&
+    (err as { message: string }).message
+  ) {
+    return (err as { message: string }).message;
+  }
+  return fallback;
+}
+
 export async function upsertItemPlanning(
   client: SupabaseClient<Database>,
   partPlanning:
@@ -4239,16 +4290,147 @@ export async function upsertItemPlanning(
     | (z.infer<typeof itemPlanningValidator> & {
         updatedBy: string;
         customFields?: Json;
-      })
+      }),
+  fanOut?: {
+    db: Kysely<KyselyDatabase>;
+    companyId: string;
+    mix?: StyleVariantQuantity[];
+  }
 ) {
   if ("createdBy" in partPlanning) {
     return client.from("itemPlanning").insert(partPlanning);
   }
-  return client
-    .from("itemPlanning")
-    .update(sanitize(partPlanning))
-    .eq("itemId", partPlanning.itemId)
-    .eq("locationId", partPlanning.locationId);
+
+  const { variantQuantities: _variantQuantities, ...planning } = partPlanning;
+  const planningRow = sanitize(planning);
+
+  if (!fanOut) {
+    return client
+      .from("itemPlanning")
+      .update(planningRow)
+      .eq("itemId", planning.itemId)
+      .eq("locationId", planning.locationId);
+  }
+
+  try {
+    await copyItemPlanningToVariantChildren(fanOut.db, {
+      parentItemId: planning.itemId,
+      locationId: planning.locationId,
+      companyId: fanOut.companyId,
+      updatedBy: planning.updatedBy,
+      values: planningRow,
+      mix: fanOut.mix
+    });
+  } catch (copyError) {
+    return { data: null, error: copyError };
+  }
+
+  return { data: null, error: null };
+}
+
+/**
+ * Write a parent itemPlanning row onto every variant child SKU at the same
+ * location. Mix ratios split stock-target quantities; policy and lot size copy
+ * as-is. Inventory/MRP live on children — parent-only saves would no-op.
+ */
+export async function copyItemPlanningToVariantChildren(
+  db: Kysely<KyselyDatabase>,
+  args: {
+    parentItemId: string;
+    locationId: string;
+    companyId: string;
+    updatedBy: string;
+    values: Record<string, unknown>;
+    mix?: StyleVariantQuantity[];
+  }
+) {
+  const planningFields = {
+    reorderingPolicy: args.values.reorderingPolicy as
+      | Database["public"]["Enums"]["itemReorderingPolicy"]
+      | undefined,
+    demandAccumulationPeriod: args.values.demandAccumulationPeriod as
+      | number
+      | undefined,
+    demandAccumulationSafetyStock: args.values.demandAccumulationSafetyStock as
+      | number
+      | undefined,
+    demandAccumulationIncludesInventory: args.values
+      .demandAccumulationIncludesInventory as boolean | undefined,
+    reorderPoint: args.values.reorderPoint as number | undefined,
+    reorderQuantity: args.values.reorderQuantity as number | undefined,
+    maximumInventoryQuantity: args.values.maximumInventoryQuantity as
+      | number
+      | undefined,
+    minimumOrderQuantity: args.values.minimumOrderQuantity as
+      | number
+      | undefined,
+    maximumOrderQuantity: args.values.maximumOrderQuantity as
+      | number
+      | undefined,
+    orderMultiple: args.values.orderMultiple as number | undefined
+  };
+  const parentCustomFields = (args.values.customFields ?? null) as Json | null;
+  const childCustomFields = omitPlanningVariantMixCustomFields(
+    args.values.customFields
+  ) as Json | null;
+  const updatedAt = new Date().toISOString();
+
+  return db.transaction().execute(async (trx) => {
+    await trx
+      .updateTable("itemPlanning")
+      .set({
+        ...planningFields,
+        customFields: parentCustomFields,
+        updatedBy: args.updatedBy,
+        updatedAt
+      })
+      .where("itemId", "=", args.parentItemId)
+      .where("locationId", "=", args.locationId)
+      .where("companyId", "=", args.companyId)
+      .execute();
+
+    const children = await trx
+      .selectFrom("itemVariant")
+      .select("variantItemId")
+      .where("parentItemId", "=", args.parentItemId)
+      .where("companyId", "=", args.companyId)
+      .execute();
+
+    for (const child of children) {
+      if (!child.variantItemId) continue;
+      const scaledFields = args.mix?.length
+        ? scalePlanningQuantityFieldsForVariant(
+            args.values,
+            args.mix,
+            child.variantItemId
+          )
+        : {};
+      const childFields = {
+        ...planningFields,
+        ...scaledFields,
+        customFields: childCustomFields
+      };
+      await trx
+        .insertInto("itemPlanning")
+        .values({
+          itemId: child.variantItemId,
+          locationId: args.locationId,
+          companyId: args.companyId,
+          createdBy: args.updatedBy,
+          updatedBy: args.updatedBy,
+          updatedAt,
+          ...childFields
+        })
+        .onConflict((oc) =>
+          oc.columns(["itemId", "locationId"]).doUpdateSet({
+            ...childFields,
+            updatedBy: args.updatedBy,
+            updatedAt
+          })
+        )
+        .execute();
+    }
+  });
 }
 
 export async function upsertItemPurchasing(

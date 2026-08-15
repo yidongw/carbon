@@ -64,13 +64,15 @@ GLOSSARY — always use these exact terms for the app's domain nouns:
 - Failure Mode = 故障模式 (NOT 失效模式/失败模式)
 - RFQ = 询价单 (NOT 报价单; 报价单 = Quote)
 - Kanban = 补货卡 (NOT 看板; 看板 is reserved for Dashboard = 数据看板)
-- Style = 款式;  Item = 物品;  Part = 产品;  Scrap Reason = 废料原因;  Deactivate = 停用
+- Style = 款式;  Item = 物品;  Part = 产品;  Consumable = 易耗品;  Material = 物料;  Scrap Reason = 废料原因;  Deactivate = 停用
+- Variant = 规格 (NOT 变体); variant quantities = 规格数量; variant SKU = 规格 SKU; Variant mix = 规格配比
 - "Short" as a picking/quantity status = 短缺 (NOT 短)
 WORD ORDER — the outcome word goes LAST, and never drop the object:
 - "Failed to <verb> <X>" → "<verb><X>失败" (失败 at the end). e.g. "Failed to create job" → "创建工作失败".
 - "Error <verb>ing <X>" → "<verb><X>出错" (出错 at the end). e.g. "Error loading issues" → "加载问题出错".
-- "Successfully deleted <X>" → "成功删除<X>". "Deleted <X>" → "已删除<X>".
-- "Updated <X>" (success toast) → "已更新<X>". "Created <X>" → "已创建<X>". "Saved" → "已保存".
+- "Created <X>" → "<X>已创建" (已创建 at the END, never "已创建<X>"). e.g. "Created style" → "款式已创建".
+- "Updated <X>" (success toast) → "<X>已更新". "Deleted <X>" → "<X>已删除". "Successfully deleted <X>" → "成功删除<X>".
+- "Saved" → "已保存".
 - Always translate the object <X>; never output a bare "删除成功/更新成功" that omits what was affected.
 - Exception: column headers/timestamps like "Updated At"/"Updated By" are NOT past-tense toasts — keep them as 更新于/更新人.`,
 };

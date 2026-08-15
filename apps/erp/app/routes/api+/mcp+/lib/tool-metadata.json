@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-13T09:21:23.077Z",
-  "totalTools": 1275,
+  "generated": "2026-08-15T06:04:41.737Z",
+  "totalTools": 1278,
   "modules": 15,
   "tools": [
     {
@@ -9582,7 +9582,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9618,7 +9619,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9634,6 +9636,32 @@
           "itemId",
           "locationId",
           "periods"
+        ]
+      }
+    },
+    {
+      "name": "items_getVariantFamilyItemIds",
+      "module": "items",
+      "classification": "READ",
+      "description": "get variant family item ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId"
         ]
       }
     },
@@ -9969,7 +9997,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -10868,7 +10897,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -10897,7 +10927,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -10926,7 +10957,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -10955,7 +10987,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -11069,7 +11102,7 @@
       "module": "items",
       "classification": "READ",
       "description": "get styles",
-      "paramCount": 3,
+      "paramCount": 4,
       "serviceParams": [
         "client",
         "companyId",
@@ -11097,6 +11130,12 @@
                   "string",
                   "null"
                 ]
+              },
+              "supplierId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
               }
             }
           }
@@ -11108,7 +11147,7 @@
       "module": "items",
       "classification": "READ",
       "description": "get style samples",
-      "paramCount": 3,
+      "paramCount": 4,
       "serviceParams": [
         "client",
         "companyId",
@@ -11132,6 +11171,12 @@
                 "default": 0
               },
               "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supplierId": {
                 "type": [
                   "string",
                   "null"
@@ -12439,14 +12484,42 @@
       }
     },
     {
+      "name": "items_itemPlanningSaveErrorMessage",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "item planning save error message",
+      "paramCount": 2,
+      "serviceParams": [
+        "err",
+        "fallback"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "err": {},
+          "fallback": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "err",
+          "fallback"
+        ]
+      }
+    },
+    {
       "name": "items_upsertItemPlanning",
       "module": "items",
       "classification": "WRITE",
       "description": "upsert item planning",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
-        "partPlanning"
+        "partPlanning",
+        "fanOut"
       ],
       "injectAuth": [
         "companyId",
@@ -12456,10 +12529,56 @@
       "schema": {
         "type": "object",
         "properties": {
-          "partPlanning": {}
+          "partPlanning": {},
+          "fanOut": {
+            "type": "object",
+            "properties": {
+              "mix": {
+                "type": "array",
+                "items": {}
+              }
+            }
+          }
         },
         "required": [
           "partPlanning"
+        ]
+      }
+    },
+    {
+      "name": "items_copyItemPlanningToVariantChildren",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "copy item planning to variant children",
+      "paramCount": 4,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "values": {},
+          "mix": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "parentItemId",
+          "locationId",
+          "values"
         ]
       }
     },

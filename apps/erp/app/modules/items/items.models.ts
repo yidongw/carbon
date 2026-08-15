@@ -585,7 +585,9 @@ export const itemPlanningValidator = z
     maximumInventoryQuantity: zfd.numeric(z.number().min(0)).optional(),
     minimumOrderQuantity: zfd.numeric(z.number().min(0)).optional(),
     maximumOrderQuantity: zfd.numeric(z.number().min(0)).optional(),
-    orderMultiple: zfd.numeric(z.number().min(1)).optional()
+    orderMultiple: zfd.numeric(z.number().min(1)).optional(),
+    // Mix weights. Saved on parent customFields.variantMix and scaled onto child SKUs.
+    variantQuantities: zfd.text(z.string().optional())
     // critical: zfd.checkbox(),
   })
   .refine(

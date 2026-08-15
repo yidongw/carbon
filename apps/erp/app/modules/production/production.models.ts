@@ -890,10 +890,17 @@ export const productionOrderValidator = z.object({
   periodId: z.string().min(1, { message: "Period is required" }),
   quantity: zfd.numeric(z.number().min(0)),
   existingId: zfd.text(z.string().optional()),
+  existingItemId: zfd.text(z.string().optional()),
   existingQuantity: zfd.numeric(z.number().optional()),
   existingReadableId: zfd.text(z.string().optional()),
   existingStatus: zfd.text(z.string().optional()),
-  isASAP: z.boolean().optional()
+  isASAP: z.boolean().optional(),
+  variantQuantities: z
+    .object({
+      variantTable: z.array(z.record(z.unknown())).optional()
+    })
+    .passthrough()
+    .nullish()
 });
 
 export type ProductionOrder = z.infer<typeof productionOrderValidator>;

@@ -1,8 +1,10 @@
+import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -10,7 +12,7 @@ import {
   HStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { z } from "zod";
 import {
   CustomFormFields,
@@ -19,7 +21,9 @@ import {
   Select as SelectForm,
   Submit
 } from "~/components/Form";
-import { usePermissions } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
+import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
+import { useLineVariantQuantities } from "~/modules/shared";
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
 import {
@@ -41,6 +45,8 @@ const ItemPlanningForm = ({
 }: ItemPlanningFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
+  const { carbon } = useCarbon();
+  const { company } = useUser();
 
   const locationOptions = locations.map((location) => ({
     label: location.name,
@@ -48,6 +54,53 @@ const ItemPlanningForm = ({
   }));
 
   const [policy, setPolicy] = useState(initialValues.reorderingPolicy);
+  const [hasVariantAttributes, setHasVariantAttributes] = useState(
+    !!initialValues.variantQuantities
+  );
+
+  const {
+    variantsQuantityTotal,
+    hasVariantsQuantity,
+    isMissingVariantQty,
+    hiddenVariantQuantitiesValue,
+    openVariantsQuantity,
+    variantsQuantityModalNode
+  } = useLineVariantQuantities({
+    initialVariantQuantities: initialValues.variantQuantities,
+    hasVariantAttributes,
+    itemId: initialValues.itemId,
+    // Parent planning is the mix surface even when updating an existing row.
+    isEditing: false
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!carbon || !initialValues.itemId) return;
+
+    void Promise.all([
+      carbon
+        .from("itemAttributeSelection")
+        .select("attributeValueId")
+        .eq("itemId", initialValues.itemId)
+        .eq("companyId", company.id)
+        .limit(1),
+      carbon
+        .from("itemVariant")
+        .select("variantItemId")
+        .eq("parentItemId", initialValues.itemId)
+        .eq("companyId", company.id)
+        .limit(1)
+    ]).then(([selections, variants]) => {
+      if (cancelled) return;
+      setHasVariantAttributes(
+        (selections.data?.length ?? 0) > 0 || (variants.data?.length ?? 0) > 0
+      );
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [carbon, company.id, initialValues.itemId]);
 
   return (
     <Card>
@@ -61,6 +114,15 @@ const ItemPlanningForm = ({
             <CardTitle>
               <Trans>Planning</Trans>
             </CardTitle>
+            {hasVariantsQuantity && (
+              <CardDescription>
+                <Trans>
+                  Mix ratios split safety stock, reorder point, reorder
+                  quantity, and max inventory across variant SKUs. Policy and
+                  lot size stay the same.
+                </Trans>
+              </CardDescription>
+            )}
           </CardHeader>
           <CardAction>
             <Combobox
@@ -81,6 +143,10 @@ const ItemPlanningForm = ({
         <CardContent>
           <Hidden name="itemId" />
           <Hidden name="locationId" />
+          <Hidden
+            name="variantQuantities"
+            value={hiddenVariantQuantitiesValue}
+          />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
             <SelectForm
               name="reorderingPolicy"
@@ -94,6 +160,21 @@ const ItemPlanningForm = ({
                 setPolicy(selected?.value || "Manual Reorder");
               }}
             />
+            {hasVariantsQuantity ? (
+              <QuantityWithVariantsQuantity
+                name="variantMixTotal"
+                label={t`Variant mix`}
+                value={variantsQuantityTotal}
+                onChange={() => {
+                  // Mix totals come from the variant grid only.
+                }}
+                hasVariantsQuantity={hasVariantsQuantity}
+                onOpenVariantsQuantity={openVariantsQuantity}
+                variantsQuantityTotal={variantsQuantityTotal}
+                isReadOnly
+                helperText={t`Mix ratios split stock targets across SKUs on save. Policy and lot size copy as-is.`}
+              />
+            ) : null}
             {policy === "Maximum Quantity" && (
               <>
                 <Number
@@ -162,11 +243,16 @@ const ItemPlanningForm = ({
           </div>
         </CardContent>
         <CardFooter>
-          <Submit isDisabled={!permissions.can("update", "parts")}>
+          <Submit
+            isDisabled={
+              !permissions.can("update", "parts") || isMissingVariantQty
+            }
+          >
             <Trans>Save</Trans>
           </Submit>
         </CardFooter>
       </ValidatedForm>
+      {variantsQuantityModalNode}
     </Card>
   );
 };

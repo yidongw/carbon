@@ -28,7 +28,7 @@ formatter, the churny bits are stripped post-extract by
 
 ## npm scripts (root `package.json`)
 
-- `lingui:extract:raw` = `gen-seed-display-names.ts` + `lingui extract --clean`
+- `lingui:extract:raw` = `gen-seed-display-names.ts` + `gen-server-toasts.ts` + `lingui extract --clean`
   — **keeps origins** (translation tooling needs them; see below).
 - `lingui:clean` = `node ./scripts/strip-po-headers.mjs` — strips origins + date.
 - `lingui:extract` = `lingui:extract:raw` + `lingui:clean`.
@@ -36,6 +36,27 @@ formatter, the churny bits are stripped post-extract by
 - `lingui:check` = `lingui:extract` + `lingui:compile`.
 - `translate` = `lingui:extract:raw` + `node scripts/translate-po.mjs` + `lingui:clean`.
   Origins are kept through extraction/translation and stripped only at the end.
+
+## Why strings disappear from `.po` files
+
+`lingui extract --clean` **deletes** any `msgid` that is not found in scanned source
+(`msg` / `t\`...\`` / `<Trans>` under the catalog include globs). Pre-commit runs
+this via `lingui:check`. `pnpm lingui:clean` only strips headers/origins — it does
+not drop messages.
+
+Common reasons a still-used English string vanishes:
+
+1. The copy is a plain string, not a Lingui macro, and is outside a keep-alive
+   generator (`gen-server-toasts.ts`, `gen-seed-display-names.ts`, `pdfStrings.ts`).
+2. Server toasts: `error(cause, "literal")` / `success("literal")` are harvested
+   into `packages/react/src/serverToastMessages.ts`. Wrapping the literal
+   (`error(cause, helper(..., "Failed to …"))`) hid it from the scanner until
+   `itemPlanningSaveErrorMessage` fallbacks were also collected.
+3. Code lives under `*.server.*` or a package not in `lingui.config.js` include
+   globs (`packages/documents` PDF labels need the `pdfStrings.ts` keep-alive).
+
+Fill empty `msgstr` with `pnpm run translate` (local Ollama). `nl/` catalogs are
+leftover and skipped.
 
 ## Translator: `scripts/translate-po.mjs` (local, replaces linguito)
 
@@ -60,6 +81,8 @@ source files for LLM context; without them it resolves the project dir and
 - Skips `en` (source locale). Env: `OLLAMA_URL`, `OLLAMA_MODEL`, `TRANSLATE_CONCURRENCY`.
 - Prompt deliberately avoids literal placeholder examples — small models parrot
   them into the output.
+- zh glossary in `LOCALE_GUIDANCE`: Variant = 规格 (never 变体); Kanban = 补货卡;
+  Created/Updated/Deleted toasts put the outcome last (`款式已创建`, not `已创建款式`).
 
 Prereq (see README): local ollama with `llama3.2`, linguito config pointed at it.
 Quality from the 3B model is decent for common UI strings but weak on niche terms

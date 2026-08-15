@@ -4874,7 +4874,7 @@ msgid "Previous Year"
 msgstr "Anno precedente"
 
 msgid "Price override created"
-msgstr "Sovrascrizione prezzo creata"
+msgstr "Prezzo modificato creato"
 
 msgid "Price override deleted"
 msgstr "Prezzo modificato eliminato"

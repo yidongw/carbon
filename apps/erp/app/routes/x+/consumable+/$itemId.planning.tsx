@@ -7,14 +7,18 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { useRouteData } from "~/hooks";
 import {
-  getItemPlanning,
-  itemPlanningValidator,
-  upsertItemPlanning
+  itemPlanningSaveErrorMessage,
+  itemPlanningValidator
 } from "~/modules/items";
+import {
+  getItemPlanningWithMix,
+  upsertItemPlanningWithMix
+} from "~/modules/items/itemPlanning.server";
 import { ItemPlanningForm } from "~/modules/items/ui/Item";
 import { ItemPlanningChart } from "~/modules/items/ui/Item/ItemPlanningChart";
 import { getLocationsList } from "~/modules/resources";
 import { getUserDefaults } from "~/modules/users/users.server";
+import { getDatabaseClient } from "~/services/database.server";
 import type { ListItem } from "~/types";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
@@ -60,7 +64,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  let consumablePlanning = await getItemPlanning(
+  let consumablePlanning = await getItemPlanningWithMix(
     client,
     itemId,
     companyId,
@@ -85,7 +89,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, userId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     update: "parts"
   });
 
@@ -99,12 +103,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const updateConsumablePlanning = await upsertItemPlanning(client, {
-    ...validation.data,
-    itemId,
-    updatedBy: userId,
-    customFields: setCustomFields(formData)
-  });
+  const updateConsumablePlanning = await upsertItemPlanningWithMix(
+    client,
+    {
+      ...validation.data,
+      itemId,
+      updatedBy: userId,
+      customFields: setCustomFields(formData)
+    },
+    { db: getDatabaseClient(), companyId }
+  );
   if (updateConsumablePlanning.error) {
     throw redirect(
       path.to.consumable(itemId),
@@ -112,7 +120,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
         request,
         error(
           updateConsumablePlanning.error,
-          "Failed to update consumable planning"
+          itemPlanningSaveErrorMessage(
+            updateConsumablePlanning.error,
+            "Failed to update consumable planning"
+          )
         )
       )
     );
