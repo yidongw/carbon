@@ -2293,33 +2293,45 @@ export async function getPartsList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
-  return fetchAllFromTable<{
+  // Source from the `parts` view (one row per part, latest revision) — the same
+  // source as the Parts list page — so this lists parent parts, not every
+  // revision. Unlike the `styles` view, `parts` does not drop variant SKUs, so
+  // exclude any item that is a variant child (present in `itemVariant`).
+  const parts = await fetchAllFromTable<{
     id: string;
     name: string;
     readableIdWithRevision: string;
-  }>(client, "item", "id, name, readableIdWithRevision", (query) =>
-    query
-      .eq("type", "Part")
-      .eq("companyId", companyId)
-      .eq("active", true)
-      .order("name")
+  }>(client, "parts", "id, name, readableIdWithRevision", (query) =>
+    query.eq("companyId", companyId).order("readableId")
   );
+  if (parts.error || !parts.data) return parts;
+
+  const variants = await client
+    .from("itemVariant")
+    .select("variantItemId")
+    .eq("companyId", companyId);
+  const variantItemIds = new Set(
+    (variants.data ?? []).map((variant) => variant.variantItemId)
+  );
+
+  return {
+    ...parts,
+    data: parts.data.filter((part) => !variantItemIds.has(part.id))
+  };
 }
 
 export async function getStylesList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
+  // The `styles` view yields one row per parent style (latest revision, variant
+  // SKUs already excluded) — the same source as the Styles list page.
   return fetchAllFromTable<{
     id: string;
     name: string;
     readableIdWithRevision: string;
-  }>(client, "item", "id, name, readableIdWithRevision", (query) =>
-    query
-      .eq("type", "Style")
-      .eq("companyId", companyId)
-      .eq("active", true)
-      .order("name")
+  }>(client, "styles", "id, name, readableIdWithRevision", (query) =>
+    query.eq("companyId", companyId).order("readableId")
   );
 }
 
