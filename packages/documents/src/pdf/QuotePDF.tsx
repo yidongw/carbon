@@ -31,6 +31,7 @@ interface QuotePDFProps extends PDF {
   shippingMethods: { id: string; name: string }[];
   terms: JSONContent;
   thumbnails: Record<string, string | null>;
+  variantItemLabels?: Record<string, string>;
   template?: DocumentTemplate | null;
   sections?: Record<string, ResolvedSection>;
 }
@@ -49,6 +50,7 @@ const QuotePDF = ({
   shipment,
   terms,
   thumbnails,
+  variantItemLabels,
   locale,
   template,
   sections = {},
@@ -196,7 +198,8 @@ const QuotePDF = ({
     currencyCode,
     numberFormatter,
     vars,
-    headerOptions
+    headerOptions,
+    variantItemLabels
   };
 
   const headerSection = headerSectionId

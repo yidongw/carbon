@@ -53,6 +53,7 @@ export interface QuoteData {
   numberFormatter: Intl.NumberFormat;
   vars: Record<string, string>;
   headerOptions: HeaderOptions;
+  variantItemLabels?: Record<string, string>;
 }
 
 export type BlockRenderer = (args: {

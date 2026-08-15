@@ -34,7 +34,12 @@ import {
   useMode,
   VStack
 } from "@carbon/react";
-import { formatCityStatePostalCode, formatDate } from "@carbon/utils";
+import {
+  collectVariantMixItemIds,
+  formatCityStatePostalCode,
+  formatDate,
+  formatVariantTableMix
+} from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import type { PostgrestResponse } from "@supabase/supabase-js";
@@ -189,6 +194,22 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       return acc;
     }, {}) ?? {};
 
+  const variantItemIds = collectVariantMixItemIds(
+    (quoteLines.data ?? []).map((line) => line.configuration)
+  );
+  const variantItemLabels: Record<string, string> = {};
+  if (variantItemIds.length > 0) {
+    const { data: variantItems } = await serviceRole
+      .from("item")
+      .select("id, readableIdWithRevision")
+      .in("id", variantItemIds);
+    for (const item of variantItems ?? []) {
+      if (item.id && item.readableIdWithRevision) {
+        variantItemLabels[item.id] = item.readableIdWithRevision;
+      }
+    }
+  }
+
   return {
     state: QuoteState.Valid,
     data: {
@@ -200,6 +221,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
           ...line
         })) ?? [],
       thumbnails: thumbnails,
+      variantItemLabels,
       quoteLinePrices: quoteLinePrices.data,
       customerDetails: customerDetails.data,
       quotePayment: quotePayment.data,
@@ -323,8 +345,14 @@ const LineItems = ({
   selectedLines: Record<string, SelectedLine>;
   setSelectedLines: Dispatch<SetStateAction<Record<string, SelectedLine>>>;
 }) => {
-  const { company, quote, quoteLines, quoteLinePrices, thumbnails } =
-    useLoaderData<typeof loader>().data!;
+  const {
+    company,
+    quote,
+    quoteLines,
+    quoteLinePrices,
+    thumbnails,
+    variantItemLabels
+  } = useLoaderData<typeof loader>().data!;
 
   const [openItems, setOpenItems] = useState<string[]>(() => {
     if (!Array.isArray(quoteLines) || quoteLines.length === 0) {
@@ -436,6 +464,14 @@ const LineItems = ({
                   <span className="text-muted-foreground text-base truncate">
                     {line.description}
                   </span>
+                  {formatVariantTableMix(
+                    line.configuration,
+                    variantItemLabels
+                  ).map((mix) => (
+                    <span key={mix} className="text-muted-foreground text-sm">
+                      {mix}
+                    </span>
+                  ))}
                   {Object.keys(line.externalNotes ?? {}).length > 0 && (
                     <div
                       className="prose dark:prose-invert mt-2 text-muted-foreground"
