@@ -8,8 +8,15 @@
  * membership, location, and base reference data (seed_company()).
  */
 import type { PoolClient } from "pg";
+import { seedDemoStyleAttributeValues } from "./seedDemo/styleAttributeValues";
 import { getSeedLocale } from "./seedDemoData.strings";
-import { styleReferenceRows } from "./styleReference";
+
+// Composable per-domain seed building blocks. `seedDemoData` calls them to build
+// the full demo; module tests import the one they need to seed just that slice.
+export {
+  seedDemoStyleAttributeValues,
+  type SeedContext
+} from "./seedDemo/styleAttributeValues";
 
 export async function seedDemoData(
   client: PoolClient,
@@ -49,26 +56,10 @@ export async function seedDemoData(
 
   // ─── Style colors + sizes → itemAttributeValue ────────────────────────────
   // Per-company apparel reference (color names localized; sizes by code).
+  // Extracted as a composable building block so item-attribute tests can seed
+  // just this slice — see seedDemo/styleAttributeValues.ts.
   console.log("Seeding style colors + sizes (itemAttributeValue)...");
-  {
-    const { colors, sizes } = styleReferenceRows(language);
-    for (const c of colors) {
-      await client.query(
-        `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "companyId", "createdBy", "sortOrder")
-         VALUES ('iat_color', $1, $2, $3, $4, 100)
-         ON CONFLICT ("attributeId", "code", "companyId") DO NOTHING`,
-        [c.colorCode, c.colorName, companyId, userId]
-      );
-    }
-    for (const s of sizes) {
-      await client.query(
-        `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "sortOrder", "companyId", "createdBy")
-         VALUES ('iat_size', $1, $2, $3, $4, $5)
-         ON CONFLICT ("attributeId", "code", "companyId") DO NOTHING`,
-        [s.sizeCode, s.sizeName, s.sortOrder, companyId, userId]
-      );
-    }
-  }
+  await seedDemoStyleAttributeValues(client, { companyId, userId, language });
 
   // ─── Step 3: Supplier types ───────────────────────────────────────────────
   console.log("3. Seeding supplier types...");

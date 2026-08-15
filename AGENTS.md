@@ -152,6 +152,36 @@ The older "relative route + `<Outlet/>` + `<ModalDrawer>` self-wrapper" pattern 
 
 Follow the instructions in `llm/workflows/database-migration.md` for adding migrations
 
+## Integration Tests
+
+Real-DB integration tests live behind the `@carbon/database/test` harness
+(`startSupabaseStack`/`startTestDatabase`, `provisionTestCompany`,
+`provisionSeededCompany`, `createTestClient`, `withRollback`). Run with
+`pnpm --filter <pkg> test:integration`; they skip when Docker is absent.
+
+**`seedDemoData` is the single source of shared test data, built from composable
+per-domain seed functions.** There is intentionally **no** separate test-only
+seed.
+
+- `seedDemoData` (`packages/database/src/seedDemoData.ts`) is assembled from small
+  building blocks in `packages/database/src/seedDemo/` (e.g.
+  `seedDemoStyleAttributeValues`). `seedDemoData` calls them all to build the full
+  demo company; a module's test calls **just the one it needs** to seed realistic
+  read/update/delete data for that module. Same code, no duplication.
+- **A module test needs data that doesn't exist yet?** Add a `seedDemo/<domain>.ts`
+  building block (or extend an existing one), wire it into `seedDemoData`, and call
+  it from the test. Don't hand-craft one-off fixtures in the test, and don't fork a
+  separate test seed.
+- Keep seed data **realistic** — it doubles as the product's "Try the demo" data,
+  so no test-only junk or markers like `ZZZ_TEST`. Both the demo and the tests
+  benefit from richer data; grow them together.
+- Per-test *scenario* setup (arranging the specific rows one test needs, scoped to
+  its own provisioned company) is fine and expected — that's not a "separate seed".
+  The rule is only: no rival general-purpose seed, and shared building blocks live
+  in `seedDemo/`.
+- Running the full `seedDemoData` is heavy (~100 steps). Seeding a single building
+  block is cheap — prefer that in module tests.
+
 ## Git Workflow
 
 - **Always commit and push your work.** After completing a task, create a PR unless the user explicitly asks not to or the work is not meant to be merged.
