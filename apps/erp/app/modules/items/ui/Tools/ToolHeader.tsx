@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -22,12 +23,14 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useTools } from "~/stores";
 import { path } from "~/utils/path";
 import type { Tool } from "../../types";
 import { useToolNavigation } from "./useToolNavigation";
@@ -46,12 +49,29 @@ function ToolTopbarLeft({ itemId }: { itemId: string }) {
   const routeData = useRouteData<{ toolSummary: Tool }>(path.to.tool(itemId));
   const readableId = routeData?.toolSummary?.readableIdWithRevision ?? "";
 
+  // Sibling tools come from the shared items store (hydrated globally), so the
+  // selector opens instantly without a per-open fetch.
+  const tools = useTools();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      tools.map((tool) => ({
+        value: tool.id,
+        label: tool.readableIdWithRevision,
+        helper: tool.name,
+        to: path.to.toolDetails(tool.id)
+      })),
+    [tools]
+  );
+
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.toolDetails(itemId)}>
-          {readableId}
-        </DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          options={siblingOptions}
+          entityLabel={t`tool`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

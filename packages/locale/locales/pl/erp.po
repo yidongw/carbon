@@ -2255,6 +2255,9 @@ msgstr "Operator konsoli utworzony pomyślnie"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Typ pracownika konsolego nie został znaleziony. Uruchom migrację."
 
+msgid "consumable"
+msgstr "materiał zużywalny"
+
 msgid "Consumable"
 msgstr "Materiał zużywalny"
 
@@ -9622,6 +9625,9 @@ msgstr "pasuje do"
 msgid "Matching Pairs"
 msgstr "Pary dopasowań"
 
+msgid "material"
+msgstr "materiał"
+
 msgid "Material"
 msgstr "Materiał"
 
@@ -11130,6 +11136,9 @@ msgstr "Nadrzędna jednostka magazynowa"
 
 msgid "Pareto by Type"
 msgstr "Pareto wg typu"
+
+msgid "part"
+msgstr "część"
 
 msgid "Part"
 msgstr "Część"
@@ -13023,6 +13032,9 @@ msgstr "Sprzedaż zniszczeń"
 msgid "Search"
 msgstr "Szukaj"
 
+msgid "Search {entityLabel}..."
+msgstr "Szukaj {entityLabel}..."
+
 msgid "Search accounts..."
 msgstr "Szukaj kont..."
 
@@ -14007,6 +14019,9 @@ msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wyg
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wygaśnięcia jest ustawiana dla każdej partii lub numeru seryjnego po otrzymaniu."
 
+msgid "style"
+msgstr "model"
+
 msgid "Style"
 msgstr "Model"
 
@@ -14548,6 +14563,9 @@ msgstr "Podejrzewany tryb awarii"
 msgid "Switch"
 msgstr "Przełącz"
 
+msgid "Switch {entityLabel}"
+msgstr "Zmień {entityLabel}"
+
 msgid "Switch to your company"
 msgstr "Przełącz się na firmę"
 
@@ -15030,6 +15048,9 @@ msgstr "Tolerancja (+/-)"
 
 msgid "Ton"
 msgstr "Tona"
+
+msgid "tool"
+msgstr "narzędzie"
 
 msgid "Tool"
 msgstr "Narzędzie"

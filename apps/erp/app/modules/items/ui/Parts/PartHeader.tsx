@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -22,12 +23,14 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useParts } from "~/stores";
 import { path } from "~/utils/path";
 import type { PartSummary } from "../../types";
 import { usePartNavigation } from "./usePartNavigation";
@@ -48,12 +51,29 @@ function PartTopbarLeft({ itemId }: { itemId: string }) {
   );
   const readableId = routeData?.partSummary?.readableIdWithRevision ?? "";
 
+  // Sibling parts come from the shared items store (hydrated globally), so the
+  // selector opens instantly without a per-open fetch.
+  const parts = useParts();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      parts.map((part) => ({
+        value: part.id,
+        label: part.readableIdWithRevision,
+        helper: part.name,
+        to: path.to.partDetails(part.id)
+      })),
+    [parts]
+  );
+
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.partDetails(itemId)}>
-          {readableId}
-        </DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          options={siblingOptions}
+          entityLabel={t`part`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

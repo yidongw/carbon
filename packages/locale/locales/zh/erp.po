@@ -2256,6 +2256,9 @@ msgstr "控制台操作员创建成功"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "控制台操作员员工类型未找到。运行迁移。"
 
+msgid "consumable"
+msgstr "消耗品"
+
 msgid "Consumable"
 msgstr "消耗品"
 
@@ -9623,6 +9626,9 @@ msgstr "匹配"
 msgid "Matching Pairs"
 msgstr "匹配对数"
 
+msgid "material"
+msgstr "材料"
+
 msgid "Material"
 msgstr "材料"
 
@@ -11131,6 +11137,9 @@ msgstr "父存储单元"
 
 msgid "Pareto by Type"
 msgstr "按类型柏拉图"
+
+msgid "part"
+msgstr "产品"
 
 msgid "Part"
 msgstr "产品"
@@ -13024,6 +13033,9 @@ msgstr "报废销售"
 msgid "Search"
 msgstr "搜索"
 
+msgid "Search {entityLabel}..."
+msgstr "搜索{entityLabel}..."
+
 msgid "Search accounts..."
 msgstr "搜索账户..."
 
@@ -14008,6 +14020,9 @@ msgstr "存储固定天数。有效期起始日期在接收或创建批次或序
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "在该物品上存储固定的天数。有效期起始日期在收到批次或序列号时设置。"
 
+msgid "style"
+msgstr "款式"
+
 msgid "Style"
 msgstr "款式"
 
@@ -14549,6 +14564,9 @@ msgstr "疑似故障模式"
 msgid "Switch"
 msgstr "切换"
 
+msgid "Switch {entityLabel}"
+msgstr "切换{entityLabel}"
+
 msgid "Switch to your company"
 msgstr "切换到您的公司"
 
@@ -15031,6 +15049,9 @@ msgstr "公差（±）"
 
 msgid "Ton"
 msgstr "吨"
+
+msgid "tool"
+msgstr "工具"
 
 msgid "Tool"
 msgstr "工具"

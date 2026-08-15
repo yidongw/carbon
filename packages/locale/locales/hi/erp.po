@@ -2255,6 +2255,9 @@ msgstr "कंसोल ऑपरेटर सफलतापूर्वक ब
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "कंसोल ऑपरेटर कर्मचारी प्रकार नहीं मिला। मिग्रेशन चलाएं।"
 
+msgid "consumable"
+msgstr "उपभोग्य"
+
 msgid "Consumable"
 msgstr "उपभोग्य"
 
@@ -9622,6 +9625,9 @@ msgstr "मेल खाता है"
 msgid "Matching Pairs"
 msgstr "मिलान जोड़े"
 
+msgid "material"
+msgstr "सामग्री"
+
 msgid "Material"
 msgstr "सामग्री"
 
@@ -11130,6 +11136,9 @@ msgstr "पैरेंट स्टोरेज यूनिट"
 
 msgid "Pareto by Type"
 msgstr "प्रकार के अनुसार पेरेटो"
+
+msgid "part"
+msgstr "पार्ट"
 
 msgid "Part"
 msgstr "पार्ट"
@@ -13023,6 +13032,9 @@ msgstr "विक्री व्यर्थ"
 msgid "Search"
 msgstr "खोज"
 
+msgid "Search {entityLabel}..."
+msgstr "{entityLabel} खोजें..."
+
 msgid "Search accounts..."
 msgstr "खातों की खोज..."
 
@@ -14007,6 +14019,9 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "इस आइटम पर दिनों की एक निश्चित संख्या स्टोर करें। प्रत्येक बैच या सीरीज़ के लिए समाप्ति प्रारंभ तारीख प्राप्त होने पर सेट की जाती है।"
 
+msgid "style"
+msgstr "शैली"
+
 msgid "Style"
 msgstr "शैली"
 
@@ -14548,6 +14563,9 @@ msgstr "संदिग्ध विफलता मोड"
 msgid "Switch"
 msgstr "स्विच करें"
 
+msgid "Switch {entityLabel}"
+msgstr "{entityLabel} बदलें"
+
 msgid "Switch to your company"
 msgstr "आपकी कंपनी बदलें"
 
@@ -15030,6 +15048,9 @@ msgstr "सहनशीलता (+/-)"
 
 msgid "Ton"
 msgstr "टन"
+
+msgid "tool"
+msgstr "उपकरण"
 
 msgid "Tool"
 msgstr "उपकरण"

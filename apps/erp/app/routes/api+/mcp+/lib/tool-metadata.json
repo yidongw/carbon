@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-15T06:04:41.737Z",
-  "totalTools": 1278,
+  "generated": "2026-08-15T16:34:55.658Z",
+  "totalTools": 1277,
   "modules": 15,
   "tools": [
     {
@@ -11295,24 +11295,6 @@
       "module": "items",
       "classification": "READ",
       "description": "get parts list",
-      "paramCount": 0,
-      "serviceParams": [
-        "client",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "items_getStylesList",
-      "module": "items",
-      "classification": "READ",
-      "description": "get styles list",
       "paramCount": 0,
       "serviceParams": [
         "client",

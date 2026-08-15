@@ -2255,6 +2255,9 @@ msgstr "コンソールオペレータが成功して作成されました"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "コンソールオペレータ従業員タイプが見つかりません。migrationを実行してください。"
 
+msgid "consumable"
+msgstr "消耗品"
+
 msgid "Consumable"
 msgstr "消耗品"
 
@@ -9622,6 +9625,9 @@ msgstr "一致する"
 msgid "Matching Pairs"
 msgstr "マッチングペア"
 
+msgid "material"
+msgstr "材料"
+
 msgid "Material"
 msgstr "材料"
 
@@ -11130,6 +11136,9 @@ msgstr "親保管ユニット"
 
 msgid "Pareto by Type"
 msgstr "タイプ別パレート"
+
+msgid "part"
+msgstr "部品"
 
 msgid "Part"
 msgstr "部品"
@@ -13023,6 +13032,9 @@ msgstr "Scrap Sales"
 msgid "Search"
 msgstr "検索"
 
+msgid "Search {entityLabel}..."
+msgstr "{entityLabel}を検索..."
+
 msgid "Search accounts..."
 msgstr "検索 アカウント..."
 
@@ -14007,6 +14019,9 @@ msgstr "このアイテムに固定日数を保存します。有効期限の開
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "このアイテムの固定日数を保存します。有効期限の開始日は、各バッチまたはシリアルが受け取られたときに設定されます。"
 
+msgid "style"
+msgstr "スタイル"
+
 msgid "Style"
 msgstr "スタイル"
 
@@ -14548,6 +14563,9 @@ msgstr "疑わしい故障モード"
 msgid "Switch"
 msgstr "切り替え"
 
+msgid "Switch {entityLabel}"
+msgstr "{entityLabel}を切り替え"
+
 msgid "Switch to your company"
 msgstr "あなたの会社に切り替える"
 
@@ -15030,6 +15048,9 @@ msgstr "許容範囲 (+/-)"
 
 msgid "Ton"
 msgstr "トン"
+
+msgid "tool"
+msgstr "工具"
 
 msgid "Tool"
 msgstr "工具"

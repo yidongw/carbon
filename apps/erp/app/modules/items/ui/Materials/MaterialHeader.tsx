@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -22,12 +23,14 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useMaterials } from "~/stores";
 import { path } from "~/utils/path";
 import type { Material } from "../../types";
 import { useMaterialNavigation } from "./useMaterialNavigation";
@@ -48,12 +51,29 @@ function MaterialTopbarLeft({ itemId }: { itemId: string }) {
   );
   const readableId = routeData?.materialSummary?.readableIdWithRevision ?? "";
 
+  // Sibling materials come from the shared items store (hydrated globally), so
+  // the selector opens instantly without a per-open fetch.
+  const materials = useMaterials();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      materials.map((material) => ({
+        value: material.id,
+        label: material.readableIdWithRevision,
+        helper: material.name,
+        to: path.to.materialDetails(material.id)
+      })),
+    [materials]
+  );
+
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.materialDetails(itemId)}>
-          {readableId}
-        </DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          options={siblingOptions}
+          entityLabel={t`material`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -2255,6 +2255,9 @@ msgstr "Console operator created successfully"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Console Operator employee type not found. Run the migration."
 
+msgid "consumable"
+msgstr "consumable"
+
 msgid "Consumable"
 msgstr "Consumable"
 
@@ -9622,6 +9625,9 @@ msgstr "matches"
 msgid "Matching Pairs"
 msgstr "Matching Pairs"
 
+msgid "material"
+msgstr "material"
+
 msgid "Material"
 msgstr "Material"
 
@@ -11130,6 +11136,9 @@ msgstr "Parent Storage Unit"
 
 msgid "Pareto by Type"
 msgstr "Pareto by Type"
+
+msgid "part"
+msgstr "part"
 
 msgid "Part"
 msgstr "Part"
@@ -13023,6 +13032,9 @@ msgstr "Scrap Sales"
 msgid "Search"
 msgstr "Search"
 
+msgid "Search {entityLabel}..."
+msgstr "Search {entityLabel}..."
+
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
@@ -14007,6 +14019,9 @@ msgstr "Store a fixed number of days on this item. Expiry start date is set on e
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 
+msgid "style"
+msgstr "style"
+
 msgid "Style"
 msgstr "Style"
 
@@ -14548,6 +14563,9 @@ msgstr "Suspected Failure Mode"
 msgid "Switch"
 msgstr "Switch"
 
+msgid "Switch {entityLabel}"
+msgstr "Switch {entityLabel}"
+
 msgid "Switch to your company"
 msgstr "Switch to your company"
 
@@ -15030,6 +15048,9 @@ msgstr "Tolerance (+/-)"
 
 msgid "Ton"
 msgstr "Ton"
+
+msgid "tool"
+msgstr "tool"
 
 msgid "Tool"
 msgstr "Tool"

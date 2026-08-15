@@ -2255,6 +2255,9 @@ msgstr "Оператор консоли создан успешно"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Тип сотрудника Консольного оператора не найден. Запустите миграцию."
 
+msgid "consumable"
+msgstr "расходный материал"
+
 msgid "Consumable"
 msgstr "Расходный материал"
 
@@ -9622,6 +9625,9 @@ msgstr "совпадает"
 msgid "Matching Pairs"
 msgstr "Парные соответствия"
 
+msgid "material"
+msgstr "материал"
+
 msgid "Material"
 msgstr "Материал"
 
@@ -11130,6 +11136,9 @@ msgstr "Родительское хранилище"
 
 msgid "Pareto by Type"
 msgstr "Парето по типам"
+
+msgid "part"
+msgstr "деталь"
 
 msgid "Part"
 msgstr "Деталь"
@@ -13023,6 +13032,9 @@ msgstr "Скачка продаж"
 msgid "Search"
 msgstr "Поиск"
 
+msgid "Search {entityLabel}..."
+msgstr "Поиск: {entityLabel}..."
+
 msgid "Search accounts..."
 msgstr "Поиск аккаунтов..."
 
@@ -14007,6 +14019,9 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Сохраняйте фиксированное количество дней для этого товара. Дата начала срока действия устанавливается для каждой партии или серийного номера при получении."
 
+msgid "style"
+msgstr "модель"
+
 msgid "Style"
 msgstr "Модель"
 
@@ -14548,6 +14563,9 @@ msgstr "Предполагаемый режим отказа"
 msgid "Switch"
 msgstr "Переключить"
 
+msgid "Switch {entityLabel}"
+msgstr "Сменить {entityLabel}"
+
 msgid "Switch to your company"
 msgstr "Перейти к вашей компании"
 
@@ -15030,6 +15048,9 @@ msgstr "Допуск (+/-)"
 
 msgid "Ton"
 msgstr "Тонна"
+
+msgid "tool"
+msgstr "инструмент"
 
 msgid "Tool"
 msgstr "Инструмент"

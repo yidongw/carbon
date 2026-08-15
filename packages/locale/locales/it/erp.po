@@ -2255,6 +2255,9 @@ msgstr "Operatore console creato con successo"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Tipo dipendente operatore console non trovato. Esegui la migrazione."
 
+msgid "consumable"
+msgstr "consumabile"
+
 msgid "Consumable"
 msgstr "Consumabile"
 
@@ -9622,6 +9625,9 @@ msgstr "corrisponde"
 msgid "Matching Pairs"
 msgstr "Coppie di corrispondenza"
 
+msgid "material"
+msgstr "materiale"
+
 msgid "Material"
 msgstr "Materiale"
 
@@ -11130,6 +11136,9 @@ msgstr "Unità di Archiviazione Principale"
 
 msgid "Pareto by Type"
 msgstr "Pareto per Tipo"
+
+msgid "part"
+msgstr "parte"
 
 msgid "Part"
 msgstr "Parte"
@@ -13023,6 +13032,9 @@ msgstr "Vendite di scarti"
 msgid "Search"
 msgstr "Cerca"
 
+msgid "Search {entityLabel}..."
+msgstr "Cerca {entityLabel}..."
+
 msgid "Search accounts..."
 msgstr "Cerca conti..."
 
@@ -14007,6 +14019,9 @@ msgstr "Memorizza un numero fisso di giorni su questo articolo. La data di inizi
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Memorizza un numero fisso di giorni su questo articolo. La data di inizio della scadenza viene impostata su ogni lotto o seriale quando viene ricevuto."
 
+msgid "style"
+msgstr "modello"
+
 msgid "Style"
 msgstr "Modello"
 
@@ -14548,6 +14563,9 @@ msgstr "Modalità di guasto sospetta"
 msgid "Switch"
 msgstr "Cambia"
 
+msgid "Switch {entityLabel}"
+msgstr "Cambia {entityLabel}"
+
 msgid "Switch to your company"
 msgstr "Passa alla tua azienda"
 
@@ -15030,6 +15048,9 @@ msgstr "Tolleranza (+/-)"
 
 msgid "Ton"
 msgstr "Tonnellata"
+
+msgid "tool"
+msgstr "attrezzo"
 
 msgid "Tool"
 msgstr "Attrezzo"

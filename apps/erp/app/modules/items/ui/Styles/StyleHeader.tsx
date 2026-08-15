@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -22,12 +23,14 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useStyles } from "~/stores";
 import { path } from "~/utils/path";
 import { useStyleNavigation } from "./useStyleNavigation";
 
@@ -51,10 +54,29 @@ function StyleTopbarLeft({ itemId }: { itemId: string }) {
   const routeData = useRouteData<StyleRouteData>(path.to.style(itemId));
   const readableId = routeData?.styleSummary?.readableIdWithRevision ?? "";
 
+  // Sibling styles come from the shared items store (hydrated globally), so the
+  // selector opens instantly without a per-open fetch.
+  const styles = useStyles();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      styles.map((style) => ({
+        value: style.id,
+        label: style.readableIdWithRevision,
+        helper: style.name,
+        to: path.to.style(style.id)
+      })),
+    [styles]
+  );
+
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.style(itemId)}>{readableId}</DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          options={siblingOptions}
+          entityLabel={t`style`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
