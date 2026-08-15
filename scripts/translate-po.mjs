@@ -63,6 +63,7 @@ GLOSSARY — always use these exact terms for the app's domain nouns:
 - Gauge = 量具 (NOT 量规)
 - Failure Mode = 故障模式 (NOT 失效模式/失败模式)
 - RFQ = 询价单 (NOT 报价单; 报价单 = Quote)
+- Kanban = 补货卡 (NOT 看板; 看板 is reserved for Dashboard = 数据看板)
 - Style = 款式;  Item = 物品;  Part = 产品;  Scrap Reason = 废料原因;  Deactivate = 停用
 - "Short" as a picking/quantity status = 短缺 (NOT 短)
 WORD ORDER — the outcome word goes LAST, and never drop the object:
