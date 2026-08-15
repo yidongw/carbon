@@ -1945,6 +1945,7 @@ export async function getStyles(
   companyId: string,
   args: GenericQueryFilters & {
     search: string | null;
+    supplierId: string | null;
   }
 ) {
   const styleClient = client as SupabaseClient<any>;
@@ -1960,6 +1961,10 @@ export async function getStyles(
     args.search,
     ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
   );
+
+  if (args.supplierId) {
+    query = query.contains("supplierIds", [args.supplierId]);
+  }
 
   const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }
@@ -1977,6 +1982,7 @@ export async function getStyleSamples(
   companyId: string,
   args: GenericQueryFilters & {
     search: string | null;
+    supplierId: string | null;
   }
 ) {
   // "styleSamples" is the styles view + per-style sample count.
@@ -1993,6 +1999,10 @@ export async function getStyleSamples(
     args.search,
     ITEM_SEARCH_COLUMNS_WITH_SUPPLIER
   );
+
+  if (args.supplierId) {
+    query = query.contains("supplierIds", [args.supplierId]);
+  }
 
   const result = await setGenericQueryFilters(query, args, [
     { column: "readableIdWithRevision", ascending: true }

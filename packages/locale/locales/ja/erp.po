@@ -4050,8 +4050,8 @@ msgstr "物質を編集"
 msgid "Edit Supplier"
 msgstr "サプライヤーを編集"
 
-msgid "Edit Supplier Part"
-msgstr "サプライヤー部品を編集"
+msgid "Edit Supplier Item"
+msgstr "サプライヤー項目編集"
 
 msgid "Edit supplier process"
 msgstr "サプライヤープロセスを編集"
@@ -4936,7 +4936,7 @@ msgid "Failed to create required action"
 msgstr "必要なアクションの作成に失敗しました"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "RFQのラインを作成できませんでした。スタイル変種ごとに行う場合"
 
 msgid "Failed to create risk"
 msgstr "リスクの作成に失敗しました"
@@ -6794,6 +6794,9 @@ msgstr "スタイルインベントリの読み込みに失敗しました"
 msgid "Failed to load style planning"
 msgstr "スタイル計画の読み込みに失敗しました"
 
+msgid "Failed to load style purchasing"
+msgstr "スタイル購入の読み込みに失敗しました"
+
 msgid "Failed to load style quantities"
 msgstr "スタイル数量の読み込みに失敗しました"
 
@@ -7611,7 +7614,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "RFQラインのモデルを更新できませんでした"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "RFQのラインをスタイル変種に更新できませんでした"
 
 msgid "Failed to update RFQ status"
 msgstr "RFQのステータス更新に失敗しました"
@@ -7687,6 +7690,9 @@ msgstr "スタイル在庫の更新に失敗しました"
 
 msgid "Failed to update style planning"
 msgstr "スタイル計画の更新に失敗しました"
+
+msgid "Failed to update style purchasing"
+msgstr "スタイル購入の更新に失敗しました"
 
 msgid "Failed to update style sale price"
 msgstr "スタイル販売価格の更新に失敗しました"
@@ -10230,8 +10236,8 @@ msgstr "新規スタイル"
 msgid "New Supplier"
 msgstr "新サプライヤー"
 
-msgid "New Supplier Part"
-msgstr "新しいサプライヤー部品"
+msgid "New Supplier Item"
+msgstr "新規サプライヤー品目"
 
 msgid "New Tag"
 msgstr "新規タグ"
@@ -11901,10 +11907,10 @@ msgid "Push record changes to external systems the moment they happen."
 msgstr "push record changes to external systems the moment they happen."
 
 msgid "QR Code"
-msgstr ""
+msgstr "QRコード"
 
 msgid "QR Code to complete the current operation for this kanban"
-msgstr ""
+msgstr "現在の作業を完了するためのQRコード"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
@@ -14415,6 +14421,15 @@ msgstr "仕入先請求書番号"
 msgid "Supplier Issue"
 msgstr "サプライヤーの問題"
 
+msgid "Supplier Item No."
+msgstr "サプライヤ品番"
+
+msgid "Supplier item updated"
+msgstr "サプライヤー項目が更新されました"
+
+msgid "Supplier Items"
+msgstr "サプライヤー品目"
+
 msgid "Supplier location"
 msgstr "サプライヤーの場所"
 
@@ -14430,17 +14445,11 @@ msgstr "仕入先注文番号"
 msgid "Supplier Overview"
 msgstr "Supplier Overview"
 
-msgid "Supplier Part ID"
-msgstr "仕入先部品ID"
-
 msgid "Supplier Part Number"
 msgstr "仕入先部品番号"
 
 msgid "Supplier part updated"
 msgstr "サプライヤー部品が更新されました"
-
-msgid "Supplier Parts"
-msgstr "サプライヤー部品"
 
 msgid "Supplier Payment Discounts"
 msgstr "サプライヤー支払割引"
@@ -15679,6 +15688,9 @@ msgstr "更新されたスタイル在庫"
 
 msgid "Updated style planning"
 msgstr "更新されたスタイル計画"
+
+msgid "Updated style purchasing"
+msgstr "更新されたスタイルの購入"
 
 msgid "Updated style sale price"
 msgstr "更新されたスタイル販売価格"

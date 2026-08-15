@@ -1,15 +1,26 @@
 type StyleNavigationOptions = {
   itemTrackingType: string | null | undefined;
+  replenishmentSystem: string | null | undefined;
 };
 
 export function getStyleNavigationKeys({
-  itemTrackingType
+  itemTrackingType,
+  replenishmentSystem
 }: StyleNavigationOptions) {
-  const sharedKeys = ["details", "accounting"] as const;
+  // Purchasing is only relevant when the style is bought from a supplier. A
+  // "Make" style is produced in-house, so — like Parts — it hides Purchasing.
+  const purchasingKeys =
+    replenishmentSystem === "Make" ? ([] as const) : (["purchasing"] as const);
   const inventoryKeys =
     itemTrackingType === "Non-Inventory"
       ? ([] as const)
       : (["planning", "inventory"] as const);
 
-  return [...sharedKeys, ...inventoryKeys, "sales"] as const;
+  return [
+    "details",
+    ...purchasingKeys,
+    "accounting",
+    ...inventoryKeys,
+    "sales"
+  ] as const;
 }

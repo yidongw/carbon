@@ -26,11 +26,17 @@ import type { PartSummary } from "../../types";
 type ItemPurchasingFormProps = {
   initialValues: z.infer<typeof itemPurchasingValidator>;
   allowedSuppliers?: string[];
+  // The item's inventory unit of measure, used to enable the ConversionFactor
+  // field. Passed explicitly because this shared form is mounted under item
+  // types whose layout route isn't `part` (e.g. Style), where the legacy
+  // `path.to.part` route-data lookup would resolve to undefined.
+  inventoryUnitOfMeasureCode?: string | null;
 };
 
 const ItemPurchasingForm = ({
   initialValues,
-  allowedSuppliers
+  allowedSuppliers,
+  inventoryUnitOfMeasureCode
 }: ItemPurchasingFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
@@ -55,7 +61,10 @@ const ItemPurchasingForm = ({
     path.to.part(itemId)
   );
 
-  const inventoryCode = routeData?.partSummary?.unitOfMeasureCode;
+  // Prefer the explicitly-passed inventory UoM; fall back to the part route
+  // data for callers that don't pass it (part/material/tool/consumable).
+  const inventoryCode =
+    inventoryUnitOfMeasureCode ?? routeData?.partSummary?.unitOfMeasureCode;
   const [purchasingCode, setPurchasingCode] = useState<string | null>(
     initialValues.purchasingUnitOfMeasureCode ?? null
   );

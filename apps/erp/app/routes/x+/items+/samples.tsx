@@ -26,12 +26,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const search = searchParams.get("search");
+  const supplierId = searchParams.get("supplierId");
 
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
   const samples = await getStyleSamples(client, companyId, {
     search,
+    supplierId,
     limit,
     offset,
     sorts,

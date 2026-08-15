@@ -4050,8 +4050,8 @@ msgstr "पदार्थ संपादित करें"
 msgid "Edit Supplier"
 msgstr "आपूर्तिकर्ता संपादित करें"
 
-msgid "Edit Supplier Part"
-msgstr "आपूर्तिकर्ता भाग संपादित करें"
+msgid "Edit Supplier Item"
+msgstr "संशोधन विनियमी पहचान"
 
 msgid "Edit supplier process"
 msgstr "आपूर्तिकर्ता प्रक्रिया संपादित करें"
@@ -4936,7 +4936,7 @@ msgid "Failed to create required action"
 msgstr "अभियान बनाना फ़लेंदी हो रहा है"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "RFQ लाइन्स डिजाइन वेरिएंटों की प्रतिबद्धता हुई"
 
 msgid "Failed to create risk"
 msgstr "निष्पादन फ़ालतू नहीं बनाया जा सका"
@@ -6794,6 +6794,9 @@ msgstr "stile इन्वेंटरी को लोड करने मे�
 msgid "Failed to load style planning"
 msgstr "stile को लोड करने में व़िरासत आयी"
 
+msgid "Failed to load style purchasing"
+msgstr "फाइल डाउनलोड करणे विफल झाले आहे"
+
 msgid "Failed to load style quantities"
 msgstr "stile की मात्रा लोड होने में विफल रहे"
 
@@ -7611,7 +7614,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "RFQ रेकांसियल अपडेट करने में व्ह सफल नहीं हुई"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "RFQ लाइन्स डिवेज क्षेत्रों को अपडेट करने में फाइल गया है"
 
 msgid "Failed to update RFQ status"
 msgstr "रफ्क्यू स्टेशन को अपडेट करने में फालतू प्रयास किया गया था"
@@ -7687,6 +7690,9 @@ msgstr "stile तपशील सूचना अपडेट करण्या
 
 msgid "Failed to update style planning"
 msgstr "stile को अपडेट करने में वफ़ादरी नहीं पाई.getclid"
+
+msgid "Failed to update style purchasing"
+msgstr "फैलाव की पर्याप्त खरीद को संशोधित नहीं किया जा सका"
 
 msgid "Failed to update style sale price"
 msgstr "स्टाइल बिक्री मूल्य अपडेट करने में वफ़ादरी नहीं समाप्त की जा सकी"
@@ -10230,8 +10236,8 @@ msgstr "नई शैली"
 msgid "New Supplier"
 msgstr "नया स्वीपर"
 
-msgid "New Supplier Part"
-msgstr "नया आपूर्तिकर्ता भाग"
+msgid "New Supplier Item"
+msgstr "नया उपकरण संबादी"
 
 msgid "New Tag"
 msgstr "नया टैग"
@@ -11901,10 +11907,10 @@ msgid "Push record changes to external systems the moment they happen."
 msgstr "प्राप्त करने वाली संशोधनों को बाहरी प्रणालियों में तुरंत संचारित करें।"
 
 msgid "QR Code"
-msgstr ""
+msgstr "QR कोड"
 
 msgid "QR Code to complete the current operation for this kanban"
-msgstr ""
+msgstr "कैन्बॉन कर्रेंट ऑपरेशन को पूरा करने के लिए QR कोड"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
@@ -14415,6 +14421,15 @@ msgstr "आपूर्तिकर्ता चालान संख्या"
 msgid "Supplier Issue"
 msgstr "सप्लायर से जुड़ी समस्या"
 
+msgid "Supplier Item No."
+msgstr "संशोधक वस्तु क्र. संख्या"
+
+msgid "Supplier item updated"
+msgstr "संशोधित विनियमन वाहन"
+
+msgid "Supplier Items"
+msgstr "संशोधक वस्तुएँ"
+
 msgid "Supplier location"
 msgstr "संपादक विषयवासी स्थान"
 
@@ -14430,17 +14445,11 @@ msgstr "आपूर्तिकर्ता ऑर्डर संख्या"
 msgid "Supplier Overview"
 msgstr "सpliers का विवरण"
 
-msgid "Supplier Part ID"
-msgstr "आपूर्तिकर्ता भाग ID"
-
 msgid "Supplier Part Number"
 msgstr "आपूर्तिकर्ता भाग संख्या"
 
 msgid "Supplier part updated"
 msgstr "संशोधित विनायक भाग"
-
-msgid "Supplier Parts"
-msgstr "आपूर्तिकर्ता पार्ट्स"
 
 msgid "Supplier Payment Discounts"
 msgstr "सप्लायर भुगतान पर छूट"
@@ -15679,6 +15688,9 @@ msgstr "अपडेट डिवाइन स्टॉक"
 
 msgid "Updated style planning"
 msgstr "अपडेट डिजाइन प्लैनिंग"
+
+msgid "Updated style purchasing"
+msgstr "अपडेट डिज़ाइन क्रय"
 
 msgid "Updated style sale price"
 msgstr "अपडेट डिस्प्ले सुन्दर कीमत"

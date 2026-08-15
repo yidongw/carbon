@@ -1586,6 +1586,12 @@ export const path = {
     stylePlanning: (id: string) => generatePath(`${x}/style/${id}/planning`),
     stylePlanningLocation: (id: string, locationId: string) =>
       generatePath(`${x}/style/${id}/planning?location=${locationId}`),
+    stylePurchasing: (id: string) =>
+      generatePath(`${x}/style/${id}/purchasing`),
+    newStyleSupplier: (id: string) =>
+      generatePath(`${x}/style/${id}/purchasing/new`),
+    styleSupplier: (itemId: string, id: string) =>
+      generatePath(`${x}/style/${itemId}/purchasing/${id}`),
     styleRoot: `${x}/style`,
     styleSales: (id: string) => generatePath(`${x}/style/${id}/sales`),
     partSupplier: (itemId: string, id: string) =>

@@ -1131,7 +1131,7 @@ msgid "Failed to create required action"
 msgstr "Falló al crear la acción requerida"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "Falló al crear líneas de OF para variantes de estilo"
 
 msgid "Failed to create risk"
 msgstr "Falló al crear el riesgo"
@@ -2888,6 +2888,9 @@ msgstr "Falló al cargar el inventario de estilos"
 msgid "Failed to load style planning"
 msgstr "Falló al cargar la planificación de estilo"
 
+msgid "Failed to load style purchasing"
+msgstr "Falló al cargar la compra de estilos"
+
 msgid "Failed to load style quantities"
 msgstr "Falló al cargar cantidades de estilo"
 
@@ -3651,7 +3654,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "Falló al actualizar la línea de OFP con el modelo"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "Falló al actualizar las líneas de OFP para variantes de estilo"
 
 msgid "Failed to update RFQ status"
 msgstr "Falló al actualizar el estado de la OFERTA Rápida"
@@ -3727,6 +3730,9 @@ msgstr "Falló al actualizar el inventario de estilos"
 
 msgid "Failed to update style planning"
 msgstr "Falló al actualizar el plan de estilo"
+
+msgid "Failed to update style purchasing"
+msgstr "Falló al actualizar el estilo de compras"
 
 msgid "Failed to update style sale price"
 msgstr "Falló al actualizar el precio de venta del estilo"
@@ -5818,6 +5824,9 @@ msgstr "Proveedor desactivado"
 msgid "Supplier invited"
 msgstr "Proveedor invitado"
 
+msgid "Supplier item updated"
+msgstr "Proveedor actualizado"
+
 msgid "Supplier location created"
 msgstr "Localización del proveedor creada"
 
@@ -6321,6 +6330,9 @@ msgstr "Actualizado inventario de estilo"
 
 msgid "Updated style planning"
 msgstr "Planificación de estilo actualizada"
+
+msgid "Updated style purchasing"
+msgstr "Estilo de compra actualizado"
 
 msgid "Updated style sale price"
 msgstr "Precio de venta actualizado"

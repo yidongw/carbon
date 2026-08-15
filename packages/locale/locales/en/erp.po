@@ -4050,8 +4050,8 @@ msgstr "Edit Substance"
 msgid "Edit Supplier"
 msgstr "Edit Supplier"
 
-msgid "Edit Supplier Part"
-msgstr "Edit Supplier Part"
+msgid "Edit Supplier Item"
+msgstr "Edit Supplier Item"
 
 msgid "Edit supplier process"
 msgstr "Edit supplier process"
@@ -6794,6 +6794,9 @@ msgstr "Failed to load style inventory"
 msgid "Failed to load style planning"
 msgstr "Failed to load style planning"
 
+msgid "Failed to load style purchasing"
+msgstr "Failed to load style purchasing"
+
 msgid "Failed to load style quantities"
 msgstr "Failed to load style quantities"
 
@@ -7687,6 +7690,9 @@ msgstr "Failed to update style inventory"
 
 msgid "Failed to update style planning"
 msgstr "Failed to update style planning"
+
+msgid "Failed to update style purchasing"
+msgstr "Failed to update style purchasing"
 
 msgid "Failed to update style sale price"
 msgstr "Failed to update style sale price"
@@ -10230,8 +10236,8 @@ msgstr "New Style"
 msgid "New Supplier"
 msgstr "New Supplier"
 
-msgid "New Supplier Part"
-msgstr "New Supplier Part"
+msgid "New Supplier Item"
+msgstr "New Supplier Item"
 
 msgid "New Tag"
 msgstr "New Tag"
@@ -14415,6 +14421,15 @@ msgstr "Supplier Invoice Number"
 msgid "Supplier Issue"
 msgstr "Supplier Issue"
 
+msgid "Supplier Item No."
+msgstr "Supplier Item No."
+
+msgid "Supplier item updated"
+msgstr "Supplier item updated"
+
+msgid "Supplier Items"
+msgstr "Supplier Items"
+
 msgid "Supplier location"
 msgstr "Supplier location"
 
@@ -14430,17 +14445,11 @@ msgstr "Supplier Order Number"
 msgid "Supplier Overview"
 msgstr "Supplier Overview"
 
-msgid "Supplier Part ID"
-msgstr "Supplier Part ID"
-
 msgid "Supplier Part Number"
 msgstr "Supplier Part Number"
 
 msgid "Supplier part updated"
 msgstr "Supplier part updated"
-
-msgid "Supplier Parts"
-msgstr "Supplier Parts"
 
 msgid "Supplier Payment Discounts"
 msgstr "Supplier Payment Discounts"
@@ -15679,6 +15688,9 @@ msgstr "Updated style inventory"
 
 msgid "Updated style planning"
 msgstr "Updated style planning"
+
+msgid "Updated style purchasing"
+msgstr "Updated style purchasing"
 
 msgid "Updated style sale price"
 msgstr "Updated style sale price"

@@ -4050,8 +4050,8 @@ msgstr "Modifica Sostanza"
 msgid "Edit Supplier"
 msgstr "Modifica Fornitore"
 
-msgid "Edit Supplier Part"
-msgstr "Modifica Fornitore Parte"
+msgid "Edit Supplier Item"
+msgstr "Modifica Articolo Fornitore"
 
 msgid "Edit supplier process"
 msgstr "Modifica processo fornitore"
@@ -4936,7 +4936,7 @@ msgid "Failed to create required action"
 msgstr "Fallito nell'_creazione dell'azione richiesta_"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "Fallito nel creare righe di RFQ per le varianti stile"
 
 msgid "Failed to create risk"
 msgstr "Fallito nella creazione del rischio"
@@ -6794,6 +6794,9 @@ msgstr "Fallito caricamento inventario stili"
 msgid "Failed to load style planning"
 msgstr "Caricamento pianificazione stile fallito"
 
+msgid "Failed to load style purchasing"
+msgstr "Caricamento stile acquisto fallito"
+
 msgid "Failed to load style quantities"
 msgstr "Caricamento quantità stile fallito"
 
@@ -7611,7 +7614,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "Fallito aggiornamento riga RFQ con il modello"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "Fallito aggiornamento delle righe RFQ per le varianti stile"
 
 msgid "Failed to update RFQ status"
 msgstr "Fallito aggiornamento stato RFQ"
@@ -7687,6 +7690,9 @@ msgstr "Fallito aggiornamento inventario stile"
 
 msgid "Failed to update style planning"
 msgstr "Fallito aggiornamento pianificazione stile"
+
+msgid "Failed to update style purchasing"
+msgstr "Fallito aggiornamento dello stile acquisto"
 
 msgid "Failed to update style sale price"
 msgstr "Fallito aggiornamento prezzo vendita stile"
@@ -10230,8 +10236,8 @@ msgstr "Nuovo modello"
 msgid "New Supplier"
 msgstr "Nuovo Fornitore"
 
-msgid "New Supplier Part"
-msgstr "Nuovo Fornitore Parte"
+msgid "New Supplier Item"
+msgstr "Nuovo Articolo Fornitore"
 
 msgid "New Tag"
 msgstr "Nuovo Tag"
@@ -11901,10 +11907,10 @@ msgid "Push record changes to external systems the moment they happen."
 msgstr "Pulsare i registri delle modifiche esterni il momento in cui accadono."
 
 msgid "QR Code"
-msgstr ""
+msgstr "Codice QR"
 
 msgid "QR Code to complete the current operation for this kanban"
-msgstr ""
+msgstr "QR Code per completare l'operazione corrente per questo kanban"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
@@ -14415,6 +14421,15 @@ msgstr "Numero Fattura Fornitore"
 msgid "Supplier Issue"
 msgstr "Problema del fornitore"
 
+msgid "Supplier Item No."
+msgstr "Numero di articolo fornitore"
+
+msgid "Supplier item updated"
+msgstr "Articolo fornitore aggiornato"
+
+msgid "Supplier Items"
+msgstr "Articoli fornitore"
+
 msgid "Supplier location"
 msgstr "Località fornitore"
 
@@ -14430,17 +14445,11 @@ msgstr "Numero Ordine Fornitore"
 msgid "Supplier Overview"
 msgstr "Panoramica del Fornitore"
 
-msgid "Supplier Part ID"
-msgstr "ID Parte Fornitore"
-
 msgid "Supplier Part Number"
 msgstr "Numero Parte Fornitore"
 
 msgid "Supplier part updated"
 msgstr "Prodotto fornitore aggiornato"
-
-msgid "Supplier Parts"
-msgstr "Parti Fornitore"
 
 msgid "Supplier Payment Discounts"
 msgstr "Sconti pagamento fornitore"
@@ -15679,6 +15688,9 @@ msgstr "Aggiornato lo stock di stili"
 
 msgid "Updated style planning"
 msgstr "Aggiornato piano stile"
+
+msgid "Updated style purchasing"
+msgstr "Aggiornato stile acquisto"
 
 msgid "Updated style sale price"
 msgstr "Prezzo di vendita aggiornatostile"

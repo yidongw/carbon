@@ -4050,8 +4050,8 @@ msgstr "Редактировать вещество"
 msgid "Edit Supplier"
 msgstr "Редактировать поставщика"
 
-msgid "Edit Supplier Part"
-msgstr "Редактировать поставщика детали"
+msgid "Edit Supplier Item"
+msgstr "Редактировать поставляемый товар"
 
 msgid "Edit supplier process"
 msgstr "Редактировать процесс поставщика"
@@ -4936,7 +4936,7 @@ msgid "Failed to create required action"
 msgstr "Не удалось создать необходимое действие"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "Не удалось создать строки запроса на поставку для вариантов стиля"
 
 msgid "Failed to create risk"
 msgstr "Не удалось создать риск"
@@ -6794,6 +6794,9 @@ msgstr "Не удалось загрузить инвентарь стилей"
 msgid "Failed to load style planning"
 msgstr "Не удалось загрузить стиль планирования"
 
+msgid "Failed to load style purchasing"
+msgstr "Не удалось загрузить стиль закупки"
+
 msgid "Failed to load style quantities"
 msgstr "Не удалось загрузить стилиzed"
 
@@ -7611,7 +7614,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "Не удалось обновить строку заявки на поставку с учетом модели"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "Не удалось обновить строки запроса на поставку для вариантов стиля"
 
 msgid "Failed to update RFQ status"
 msgstr "Не удалось обновить статус запроса на поставку"
@@ -7687,6 +7690,9 @@ msgstr "Не удалось обновить стиль инвентаря"
 
 msgid "Failed to update style planning"
 msgstr "Не удалось обновить стиль планирования"
+
+msgid "Failed to update style purchasing"
+msgstr "Не удалось обновить стиль закупки"
 
 msgid "Failed to update style sale price"
 msgstr "Не удалось обновить стиль продажной цены"
@@ -10230,8 +10236,8 @@ msgstr "Новая модель"
 msgid "New Supplier"
 msgstr "Новый поставщик"
 
-msgid "New Supplier Part"
-msgstr "Новая деталь поставщика"
+msgid "New Supplier Item"
+msgstr "Новый поставщикowy품"
 
 msgid "New Tag"
 msgstr "Новый тег"
@@ -11901,10 +11907,10 @@ msgid "Push record changes to external systems the moment they happen."
 msgstr "Сохраняйте записи с изменениями в внешние системы как только они произойдут."
 
 msgid "QR Code"
-msgstr ""
+msgstr "QR-код"
 
 msgid "QR Code to complete the current operation for this kanban"
-msgstr ""
+msgstr "QR-код для завершения текущей операции для этого канбана"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
@@ -14415,6 +14421,15 @@ msgstr "Номер счета поставщика"
 msgid "Supplier Issue"
 msgstr "Проблема с поставщиком"
 
+msgid "Supplier Item No."
+msgstr "Номер поставщика"
+
+msgid "Supplier item updated"
+msgstr "Поставщик обновлен"
+
+msgid "Supplier Items"
+msgstr "Поставщики товаров"
+
 msgid "Supplier location"
 msgstr "Локация поставщика"
 
@@ -14430,17 +14445,11 @@ msgstr "Номер заказа поставщика"
 msgid "Supplier Overview"
 msgstr "Поводитель обзор"
 
-msgid "Supplier Part ID"
-msgstr "ID поставщика детали"
-
 msgid "Supplier Part Number"
 msgstr "Номер детали поставщика"
 
 msgid "Supplier part updated"
 msgstr "Поставщик обновлен"
-
-msgid "Supplier Parts"
-msgstr "Детали поставщика"
 
 msgid "Supplier Payment Discounts"
 msgstr "Скидки при оплате поставщиком"
@@ -15679,6 +15688,9 @@ msgstr "Обновленный стиль инвентаря"
 
 msgid "Updated style planning"
 msgstr "Обновленный стиль планирования"
+
+msgid "Updated style purchasing"
+msgstr "Обновленный стиль закупки"
 
 msgid "Updated style sale price"
 msgstr "Обновленная стилистическая цена продажи"

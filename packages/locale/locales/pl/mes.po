@@ -1131,7 +1131,7 @@ msgid "Failed to create required action"
 msgstr "Nie udało się utworzyć wymaganej akcji"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "Nie udało się utworzyć linii OFZ dla wariantów stylu"
 
 msgid "Failed to create risk"
 msgstr "Nie udało się utworzyć ryzyka"
@@ -2888,6 +2888,9 @@ msgstr "Niedostępny styl magazynowy"
 msgid "Failed to load style planning"
 msgstr "Nie удалось załadować planowania stylu"
 
+msgid "Failed to load style purchasing"
+msgstr "Nieruchona załadowanie zakupów stylu"
+
 msgid "Failed to load style quantities"
 msgstr "Niedostępne są ilości stilek"
 
@@ -3651,7 +3654,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "Nie udało się zaktualizować linii propozycji ceny z modelu"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "Nie udało się zaktualizować linii OFZ dla wariantów stylu"
 
 msgid "Failed to update RFQ status"
 msgstr "Nie udało się zaktualizować statusu OFERTY"
@@ -3727,6 +3730,9 @@ msgstr "Nie udało sięaktualizować zapasów stylów"
 
 msgid "Failed to update style planning"
 msgstr "Nie udało się zaktualizować planowania stylu"
+
+msgid "Failed to update style purchasing"
+msgstr "Nie udało się zaktualizować stylu zakupów"
 
 msgid "Failed to update style sale price"
 msgstr "Nie udało sięaktualiziersprzedajaczej ceny stylu"
@@ -5818,6 +5824,9 @@ msgstr "Dostawca deaktywowany"
 msgid "Supplier invited"
 msgstr "Dostawca zaproszony"
 
+msgid "Supplier item updated"
+msgstr "Zaktualizowano przedmiot dostawcy"
+
 msgid "Supplier location created"
 msgstr "Lokalizacja dostawcy utworzona"
 
@@ -6321,6 +6330,9 @@ msgstr "Zaktualizowany stan magazynu stylów"
 
 msgid "Updated style planning"
 msgstr "Zaktualizowana planowanie stylu"
+
+msgid "Updated style purchasing"
+msgstr "Zaktualizowana stylizacja zakupów"
 
 msgid "Updated style sale price"
 msgstr "Zaktualizowana cena sprzedaży stylu"

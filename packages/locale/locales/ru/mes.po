@@ -1131,7 +1131,7 @@ msgid "Failed to create required action"
 msgstr "Не удалось создать необходимое действие"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "Не удалось создать строки запроса на поставку для вариантов стиля"
 
 msgid "Failed to create risk"
 msgstr "Не удалось создать риск"
@@ -2888,6 +2888,9 @@ msgstr "Не удалось загрузить инвентарь стилей"
 msgid "Failed to load style planning"
 msgstr "Не удалось загрузить стили планирования"
 
+msgid "Failed to load style purchasing"
+msgstr "Не удалось загрузить стиль закупки"
+
 msgid "Failed to load style quantities"
 msgstr "Не удалось загрузить стили количеств"
 
@@ -3651,7 +3654,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "Не удалось обновить строку заявки на поставку с учетом модели"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "Не удалось обновить строки запроса на поставку для вариантов стиля"
 
 msgid "Failed to update RFQ status"
 msgstr "Не удалось обновить статус заявки на поставку"
@@ -3727,6 +3730,9 @@ msgstr "Не удалось обновить стиль инвентаря"
 
 msgid "Failed to update style planning"
 msgstr "Не удалось обновить стиль планирования"
+
+msgid "Failed to update style purchasing"
+msgstr "Не удалось обновить стиль закупки"
 
 msgid "Failed to update style sale price"
 msgstr "Не удалось обновить стиль продажной цены"
@@ -5818,6 +5824,9 @@ msgstr "Поставщик деактивирован"
 msgid "Supplier invited"
 msgstr "Поставщик приглашен"
 
+msgid "Supplier item updated"
+msgstr "Поставщик обновлен"
+
 msgid "Supplier location created"
 msgstr "Локация поставщика создана"
 
@@ -6321,6 +6330,9 @@ msgstr "Обновленный стиль инвентаря"
 
 msgid "Updated style planning"
 msgstr "Обновленный стиль планирования"
+
+msgid "Updated style purchasing"
+msgstr "Обновленный стиль закупки"
 
 msgid "Updated style sale price"
 msgstr "Обновленная стилистическая цена продажи"

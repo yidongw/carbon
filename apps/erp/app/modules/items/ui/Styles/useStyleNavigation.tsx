@@ -4,6 +4,7 @@ import {
   LuChartLine,
   LuFileText,
   LuReceipt,
+  LuShoppingCart,
   LuTags
 } from "react-icons/lu";
 import { useParams } from "react-router";
@@ -19,11 +20,13 @@ export function useStyleNavigation() {
   const routeData = useRouteData<{
     styleSummary: {
       itemTrackingType: string | null;
+      replenishmentSystem: string | null;
     };
   }>(path.to.style(itemId));
 
   const navigationKeys = getStyleNavigationKeys({
-    itemTrackingType: routeData?.styleSummary?.itemTrackingType
+    itemTrackingType: routeData?.styleSummary?.itemTrackingType,
+    replenishmentSystem: routeData?.styleSummary?.replenishmentSystem
   });
 
   const items = {
@@ -32,6 +35,12 @@ export function useStyleNavigation() {
       to: path.to.styleDetails(itemId),
       icon: LuFileText,
       shortcut: "Command+Shift+d"
+    },
+    purchasing: {
+      name: t`Purchasing`,
+      to: path.to.stylePurchasing(itemId),
+      icon: LuShoppingCart,
+      shortcut: "Command+Shift+u"
     },
     accounting: {
       name: t`Accounting`,

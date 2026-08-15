@@ -1131,7 +1131,7 @@ msgid "Failed to create required action"
 msgstr "अभियान बनाने में व़ला हुआ है"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "RFQ के पंक्तियों की बनाई गई हैं नहीं शैली विरोधियों के लिए"
 
 msgid "Failed to create risk"
 msgstr "निष्पादन फ़ालतू नहीं बनाया जा सका"
@@ -2888,6 +2888,9 @@ msgstr "stile इन्वेंटरी को लोड करने मे�
 msgid "Failed to load style planning"
 msgstr "stile की लोड होने में फाल्टी हुई"
 
+msgid "Failed to load style purchasing"
+msgstr "फाइल डाउनलोड करणे विफल झाले आहे"
+
 msgid "Failed to load style quantities"
 msgstr "stile की मात्रा लोड होने में विफल रहे"
 
@@ -3651,7 +3654,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "RFQ रेकांसियल अपडेट करने में व्ह सफल नहीं हुई"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "RFQ लाइन्स डिवेज क्या वैरिएंट्स को अपडेट करणे मनमाने नहीं कर सकये"
 
 msgid "Failed to update RFQ status"
 msgstr "रफ्क्यू स्टेशन को अपडेट करने में फालतू प्रयास किया गया है"
@@ -3727,6 +3730,9 @@ msgstr "stile तपशील सूचना अपडेट करण्या
 
 msgid "Failed to update style planning"
 msgstr "stile को अपडेट करने में फाल्टी हुई"
+
+msgid "Failed to update style purchasing"
+msgstr "फैलाव खरीदने का स्टाइल अपडेट होने में फाल्स हुआ"
 
 msgid "Failed to update style sale price"
 msgstr "stile बिक्री की दर अपडेट करने में फाल्टी हुई"
@@ -5818,6 +5824,9 @@ msgstr "संशोधित विनियमनकर्ता"
 msgid "Supplier invited"
 msgstr "संपादक इंवाइट किया गया"
 
+msgid "Supplier item updated"
+msgstr "संशोधित विनियमन प्रतिबिम्बीय"
+
 msgid "Supplier location created"
 msgstr "संशोधक स्थान बनाया गया है"
 
@@ -6321,6 +6330,9 @@ msgstr "अपडेट डिवाइन स्टॉक"
 
 msgid "Updated style planning"
 msgstr "अपडेट डिजाइन प्लैनिंग"
+
+msgid "Updated style purchasing"
+msgstr "अपडेट डिज़ाइन क्रय"
 
 msgid "Updated style sale price"
 msgstr "अद्यतन दिए गए सैल प्रिस की शॉपिंग मूल्य"

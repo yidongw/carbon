@@ -1131,7 +1131,7 @@ msgid "Failed to create required action"
 msgstr "必要なアクションの作成に失敗しました"
 
 msgid "Failed to create RFQ lines for style variants"
-msgstr ""
+msgstr "RFQのラインを作成できませんでした。スタイル変種について"
 
 msgid "Failed to create risk"
 msgstr "リスクの作成に失敗しました"
@@ -2888,6 +2888,9 @@ msgstr "スタイルインベントリの読み込みに失敗しました"
 msgid "Failed to load style planning"
 msgstr "スタイル計画の読み込みに失敗しました"
 
+msgid "Failed to load style purchasing"
+msgstr "スタイル購入の読み込みに失敗しました"
+
 msgid "Failed to load style quantities"
 msgstr "スタイル数量の読み込みに失敗しました"
 
@@ -3651,7 +3654,7 @@ msgid "Failed to update RFQ line with model"
 msgstr "RFQラインのモデルを更新できませんでした"
 
 msgid "Failed to update RFQ lines for style variants"
-msgstr ""
+msgstr "RFQのラインをスタイル変種に更新できませんでした"
 
 msgid "Failed to update RFQ status"
 msgstr "RFQのステータス更新に失敗しました"
@@ -3727,6 +3730,9 @@ msgstr "スタイル在庫の更新に失敗しました"
 
 msgid "Failed to update style planning"
 msgstr "スタイル計画の更新に失敗しました"
+
+msgid "Failed to update style purchasing"
+msgstr "スタイル購入の更新に失敗しました"
 
 msgid "Failed to update style sale price"
 msgstr "スタイル販売価格の更新に失敗しました"
@@ -5818,6 +5824,9 @@ msgstr "サプライヤが無効化されました"
 msgid "Supplier invited"
 msgstr "サプライヤーが招待されました"
 
+msgid "Supplier item updated"
+msgstr "サプライヤー項目が更新されました"
+
 msgid "Supplier location created"
 msgstr "サプライヤーの場所が作成されました"
 
@@ -6321,6 +6330,9 @@ msgstr "更新されたスタイル在庫"
 
 msgid "Updated style planning"
 msgstr "更新されたスタイル計画"
+
+msgid "Updated style purchasing"
+msgstr "更新されたスタイルの購入"
 
 msgid "Updated style sale price"
 msgstr "更新されたスタイル販売価格"
