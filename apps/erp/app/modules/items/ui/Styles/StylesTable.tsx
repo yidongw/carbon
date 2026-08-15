@@ -89,92 +89,6 @@ const StylesTable = memo(
     const deleteItemModal = useDisclosure();
     const [selectedItem, setSelectedItem] = useState<Style | null>(null);
 
-    // The styles list filters client-side as the user types instead of using the
-    // Table's server-navigating search — client `setState` re-renders normally,
-    // sidestepping the styles-list "frozen after client navigation" bug.
-    // `knownRows` is the append-only union of every row we've loaded (seeded from
-    // the SSR page); a debounced server backfill appends any matches we don't yet
-    // have (added in a follow-up step).
-    const [search, setSearch] = useState("");
-    const [knownRows, setKnownRows] = useState<Style[]>(() => data);
-    const visibleRows = useMemo(() => {
-      const q = search.trim().toLowerCase();
-      if (!q) return knownRows;
-      return knownRows.filter((row) => {
-        const s = row as {
-          readableIdWithRevision?: string | null;
-          name?: string | null;
-          description?: string | null;
-          supplierIds?: string | null;
-        };
-        return [
-          s.readableIdWithRevision,
-          s.name,
-          s.description,
-          s.supplierIds
-        ].some((field) => (field ?? "").toLowerCase().includes(q));
-      });
-    }, [knownRows, search]);
-
-    // Merge any newly-arrived rows from the `data` prop (realtime / revalidation)
-    // into the known set — append-only, existing rows keep their positions.
-    useEffect(() => {
-      setKnownRows((prev) => {
-        const seen = new Set(prev.map((row) => row.id));
-        const additions = data.filter((row) => row.id && !seen.has(row.id));
-        return additions.length ? [...prev, ...additions] : prev;
-      });
-    }, [data]);
-
-    // Debounced server backfill: after the user stops typing, query the full set
-    // and append any matches we haven't loaded yet. Uses a fetcher (not a
-    // navigation), so it re-renders normally and doesn't hit the frozen path.
-    const searchFetcher = useFetcher<{ styles?: Style[]; count?: number }>();
-
-    // Loading indicator, driven explicitly. We turn it ON when we fire the
-    // request and OFF a short moment after the fetcher settles. Deriving it
-    // purely from `searchFetcher.state` was unreliable: a very fast load can
-    // skip the "loading" commit (so it never showed), and state races could
-    // leave it stuck on. A hard cap guarantees it always clears.
-    const [showBackfillSpinner, setShowBackfillSpinner] = useState(false);
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: debounce on `search` only; searchFetcher is stable
-    useEffect(() => {
-      const q = search.trim();
-      if (!q) {
-        setShowBackfillSpinner(false);
-        return;
-      }
-      const debounce = setTimeout(() => {
-        setShowBackfillSpinner(true);
-        searchFetcher.load(`${path.to.styles}?search=${encodeURIComponent(q)}`);
-      }, 400);
-      return () => clearTimeout(debounce);
-    }, [search]);
-
-    // Append server matches we don't already have (dedup by id, order preserved).
-    useEffect(() => {
-      const rows = searchFetcher.data?.styles;
-      if (!rows?.length) return;
-      setKnownRows((prev) => {
-        const seen = new Set(prev.map((row) => row.id));
-        const additions = rows.filter((row) => row.id && !seen.has(row.id));
-        return additions.length ? [...prev, ...additions] : prev;
-      });
-    }, [searchFetcher.data]);
-
-    // Clear the spinner a short moment after the request settles (a perceptible
-    // tail); if it never settles, the longer cap clears it regardless.
-    useEffect(() => {
-      if (!showBackfillSpinner) return;
-      const settled = searchFetcher.state === "idle";
-      const timeout = setTimeout(
-        () => setShowBackfillSpinner(false),
-        settled ? 400 : 8000
-      );
-      return () => clearTimeout(timeout);
-    }, [showBackfillSpinner, searchFetcher.state]);
-
     const [people] = usePeople();
     const customColumns = useCustomColumns<Style>("style");
     const translateReplenishment = useCallback(
@@ -460,9 +374,9 @@ const StylesTable = memo(
     return (
       <>
         <Table<Style>
-          count={visibleRows.length}
+          count={count}
           columns={columns}
-          data={visibleRows}
+          data={data}
           defaultColumnPinning={{
             left: ["id"]
           }}
@@ -498,8 +412,6 @@ const StylesTable = memo(
           getRowHref={(row) =>
             row.id ? path.to.styleDetails(row.id) : undefined
           }
-          onSearchChange={setSearch}
-          searchLoading={showBackfillSpinner}
           title={t`Styles`}
           table="style"
           withSavedView
