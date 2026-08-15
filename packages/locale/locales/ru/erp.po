@@ -14023,7 +14023,7 @@ msgid "Style of kanban output to show in the Kanban table"
 msgstr "Стиль вывода канбана для отображения в таблице Канбана"
 
 msgid "Style quantity breaks use the sum of variant SKU quantities, not each SKU alone."
-msgstr ""
+msgstr "Количественные пороги модели используют сумму количеств вариантных SKU, а не каждое SKU по отдельности."
 
 msgid "Style quantity configuration is required"
 msgstr "Конфигурация количества стилей требуется"

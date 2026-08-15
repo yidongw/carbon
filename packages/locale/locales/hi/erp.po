@@ -14023,7 +14023,7 @@ msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
 
 msgid "Style quantity breaks use the sum of variant SKU quantities, not each SKU alone."
-msgstr ""
+msgstr "शैली मात्रा ब्रेक प्रत्येक SKU अकेले नहीं, बल्कि वैरिएंट SKU मात्राओं के योग का उपयोग करते हैं।"
 
 msgid "Style quantity configuration is required"
 msgstr "स्टाइल गुणता कonfiguration आवश्यक है"

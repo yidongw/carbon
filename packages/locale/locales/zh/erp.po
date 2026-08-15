@@ -14024,7 +14024,7 @@ msgid "Style of kanban output to show in the Kanban table"
 msgstr "补货卡输出款式在补货卡表格中显示"
 
 msgid "Style quantity breaks use the sum of variant SKU quantities, not each SKU alone."
-msgstr ""
+msgstr "款式数量阶梯按规格 SKU 数量之和计算，而非每个 SKU 单独计算。"
 
 msgid "Style quantity configuration is required"
 msgstr "款式数量配置是必填项"
