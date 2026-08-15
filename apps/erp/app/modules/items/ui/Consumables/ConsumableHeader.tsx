@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   LuEllipsisVertical,
@@ -22,12 +23,14 @@ import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailsTopbar,
   DetailTopbarContent,
-  DetailTopbarId,
+  DetailTopbarIdSelector,
+  type SiblingOption,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useConsumables } from "~/stores";
 import { path } from "~/utils/path";
 import type { Consumable } from "../../types";
 import { useConsumableNavigation } from "./useConsumableNavigation";
@@ -48,12 +51,29 @@ function ConsumableTopbarLeft({ itemId }: { itemId: string }) {
   );
   const readableId = routeData?.consumableSummary?.readableIdWithRevision ?? "";
 
+  // Sibling consumables come from the shared items store (hydrated globally),
+  // so the selector opens instantly without a per-open fetch.
+  const consumables = useConsumables();
+  const siblingOptions = useMemo<SiblingOption[]>(
+    () =>
+      consumables.map((consumable) => ({
+        value: consumable.id,
+        label: consumable.readableIdWithRevision,
+        helper: consumable.name,
+        to: path.to.consumableDetails(consumable.id)
+      })),
+    [consumables]
+  );
+
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.consumableDetails(itemId)}>
-          {readableId}
-        </DetailTopbarId>
+        <DetailTopbarIdSelector
+          readableId={readableId}
+          activeId={itemId}
+          options={siblingOptions}
+          entityLabel={t`consumable`}
+        />
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
