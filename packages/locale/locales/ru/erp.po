@@ -2255,6 +2255,9 @@ msgstr "Оператор консоли создан успешно"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Тип сотрудника Консольного оператора не найден. Запустите миграцию."
 
+msgid "consumable"
+msgstr "расходный материал"
+
 msgid "Consumable"
 msgstr "Расходный материал"
 
@@ -8901,9 +8904,6 @@ msgstr "Товары"
 msgid "Items inside this window get a yellow badge."
 msgstr "Товары в этом диапазоне получают жёлтый значок."
 
-msgid "job"
-msgstr ""
-
 msgid "Job"
 msgstr "Задание"
 
@@ -9624,6 +9624,9 @@ msgstr "совпадает"
 
 msgid "Matching Pairs"
 msgstr "Парные соответствия"
+
+msgid "material"
+msgstr "материал"
 
 msgid "Material"
 msgstr "Материал"
@@ -11135,7 +11138,7 @@ msgid "Pareto by Type"
 msgstr "Парето по типам"
 
 msgid "part"
-msgstr ""
+msgstr "деталь"
 
 msgid "Part"
 msgstr "Деталь"
@@ -13030,7 +13033,7 @@ msgid "Search"
 msgstr "Поиск"
 
 msgid "Search {entityLabel}..."
-msgstr ""
+msgstr "Поиск: {entityLabel}..."
 
 msgid "Search accounts..."
 msgstr "Поиск аккаунтов..."
@@ -14017,7 +14020,7 @@ msgid "Store a fixed number of days on this item. Expiry start date is set on ea
 msgstr "Сохраняйте фиксированное количество дней для этого товара. Дата начала срока действия устанавливается для каждой партии или серийного номера при получении."
 
 msgid "style"
-msgstr ""
+msgstr "модель"
 
 msgid "Style"
 msgstr "Модель"
@@ -14558,7 +14561,7 @@ msgid "Switch"
 msgstr "Переключить"
 
 msgid "Switch {entityLabel}"
-msgstr ""
+msgstr "Сменить {entityLabel}"
 
 msgid "Switch to your company"
 msgstr "Перейти к вашей компании"
@@ -15042,6 +15045,9 @@ msgstr "Допуск (+/-)"
 
 msgid "Ton"
 msgstr "Тонна"
+
+msgid "tool"
+msgstr "инструмент"
 
 msgid "Tool"
 msgstr "Инструмент"
@@ -16383,9 +16389,6 @@ msgstr "Work In Progress (WIP) - незаконченная работа."
 
 msgid "Work Instructions"
 msgstr "Рабочие инструкции"
-
-msgid "work order"
-msgstr ""
 
 msgid "Work Phone"
 msgstr "Рабочий телефон"

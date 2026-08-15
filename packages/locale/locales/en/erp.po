@@ -2255,6 +2255,9 @@ msgstr "Console operator created successfully"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Console Operator employee type not found. Run the migration."
 
+msgid "consumable"
+msgstr "consumable"
+
 msgid "Consumable"
 msgstr "Consumable"
 
@@ -8901,9 +8904,6 @@ msgstr "Items"
 msgid "Items inside this window get a yellow badge."
 msgstr "Items inside this window get a yellow badge."
 
-msgid "job"
-msgstr "job"
-
 msgid "Job"
 msgstr "Job"
 
@@ -9624,6 +9624,9 @@ msgstr "matches"
 
 msgid "Matching Pairs"
 msgstr "Matching Pairs"
+
+msgid "material"
+msgstr "material"
 
 msgid "Material"
 msgstr "Material"
@@ -15043,6 +15046,9 @@ msgstr "Tolerance (+/-)"
 msgid "Ton"
 msgstr "Ton"
 
+msgid "tool"
+msgstr "tool"
+
 msgid "Tool"
 msgstr "Tool"
 
@@ -16383,9 +16389,6 @@ msgstr "Work In Progress (WIP)"
 
 msgid "Work Instructions"
 msgstr "Work Instructions"
-
-msgid "work order"
-msgstr "work order"
 
 msgid "Work Phone"
 msgstr "Work Phone"

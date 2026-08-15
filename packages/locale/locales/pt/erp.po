@@ -2255,6 +2255,9 @@ msgstr "Operador do console criado com sucesso"
 msgid "Console Operator employee type not found. Run the migration."
 msgstr "Tipo de funcionário do operador do console não encontrado. Execute a migração."
 
+msgid "consumable"
+msgstr "consumível"
+
 msgid "Consumable"
 msgstr "Consumível"
 
@@ -8901,9 +8904,6 @@ msgstr "Itens"
 msgid "Items inside this window get a yellow badge."
 msgstr "Itens dentro desta janela recebem um crachá amarelo."
 
-msgid "job"
-msgstr ""
-
 msgid "Job"
 msgstr "Trabalho"
 
@@ -9624,6 +9624,9 @@ msgstr "corresponde"
 
 msgid "Matching Pairs"
 msgstr "Pares Correspondentes"
+
+msgid "material"
+msgstr "material"
 
 msgid "Material"
 msgstr "Material"
@@ -11135,7 +11138,7 @@ msgid "Pareto by Type"
 msgstr "Pareto por Tipo"
 
 msgid "part"
-msgstr ""
+msgstr "peça"
 
 msgid "Part"
 msgstr "Peça"
@@ -13030,7 +13033,7 @@ msgid "Search"
 msgstr "Pesquisar"
 
 msgid "Search {entityLabel}..."
-msgstr ""
+msgstr "Pesquisar {entityLabel}..."
 
 msgid "Search accounts..."
 msgstr "Pesquisar contas..."
@@ -14017,7 +14020,7 @@ msgid "Store a fixed number of days on this item. Expiry start date is set on ea
 msgstr "Armazene um número fixo de dias neste item. A data de início da validade é definida em cada lote ou série quando é recebido."
 
 msgid "style"
-msgstr ""
+msgstr "estilo"
 
 msgid "Style"
 msgstr "Estilo"
@@ -14558,7 +14561,7 @@ msgid "Switch"
 msgstr "Alternar"
 
 msgid "Switch {entityLabel}"
-msgstr ""
+msgstr "Alterar {entityLabel}"
 
 msgid "Switch to your company"
 msgstr "Alternar para sua empresa"
@@ -15042,6 +15045,9 @@ msgstr "Tolerância (+/-)"
 
 msgid "Ton"
 msgstr "Tonelada"
+
+msgid "tool"
+msgstr "ferramenta"
 
 msgid "Tool"
 msgstr "Ferramenta"
@@ -16383,9 +16389,6 @@ msgstr "(Trabalhos em curso)"
 
 msgid "Work Instructions"
 msgstr "Instruções de Trabalho"
-
-msgid "work order"
-msgstr ""
 
 msgid "Work Phone"
 msgstr "Telefone Comercial"
