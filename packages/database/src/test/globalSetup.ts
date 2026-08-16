@@ -24,6 +24,14 @@ interface GlobalSetupContext {
 let db: TestDatabase | undefined;
 
 export default async function setup({ provide }: GlobalSetupContext) {
+  // Reuse a shared stack started by CI (start-shared-stack.ts) if present — no
+  // teardown here, CI owns its lifecycle.
+  if (process.env.ITEST_PG_URL) {
+    console.log("[integration] reusing shared database");
+    provide("itestDbUrl", process.env.ITEST_PG_URL);
+    return;
+  }
+
   if (!(await isDockerAvailable())) {
     console.warn(
       "[integration] Docker not available — integration tests will be skipped."
