@@ -33,7 +33,10 @@ import {
   useRouteData,
   useUser
 } from "~/hooks";
-import { getVariantDisplay } from "~/modules/shared/variantDisplay";
+import {
+  getVariantDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/variantDisplay";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isQuoteLocked } from "../../sales.models";
 import type {
@@ -99,6 +102,7 @@ const LineItems = ({
     lines: QuotationLine[];
     prices: QuotationPrice[];
     attributeValueNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(path.to.quote(quoteId));
 
   const [openItems, setOpenItems] = useState<string[]>([]);
@@ -152,7 +156,8 @@ const LineItems = ({
         const variantDisplay = getVariantDisplay(
           line.configuration,
           routeData?.attributeValueNames,
-          locale
+          locale,
+          routeData?.styleVariantByItemId
         );
 
         return (

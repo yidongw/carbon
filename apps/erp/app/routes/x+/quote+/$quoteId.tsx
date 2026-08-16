@@ -2,6 +2,7 @@ import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
+import { collectVariantMixItemIds } from "@carbon/utils";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
 import { msg } from "@lingui/core/macro";
@@ -41,6 +42,7 @@ import {
 } from "~/modules/sales/ui/Quotes";
 import { useOptimisticDocumentDrag } from "~/modules/sales/ui/Quotes/QuoteExplorer";
 import { getCompanySettings } from "~/modules/settings";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -182,10 +184,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   }
 
-  const supplierPriceMap = await getSupplierPriceBreaksForItems(
-    client,
-    Array.from(buyItemIds)
+  const variantItemIds = collectVariantMixItemIds(
+    (lines.data ?? []).map((line) => line.configuration)
   );
+  const [supplierPriceMap, styleVariantByItemId] = await Promise.all([
+    getSupplierPriceBreaksForItems(client, Array.from(buyItemIds)),
+    getStyleVariantLineMetaByItemIds(client, variantItemIds, companyId)
+  ]);
   const attributeValueNames = buildAttributeValueNames(
     attributeValueNameRows.data ?? []
   );
@@ -204,7 +209,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     salesOrderLines: salesOrderLines?.data ?? null,
     defaultCc,
     supplierPriceMap,
-    attributeValueNames
+    attributeValueNames,
+    styleVariantByItemId
   };
 }
 

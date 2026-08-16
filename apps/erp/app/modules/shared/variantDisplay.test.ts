@@ -52,6 +52,41 @@ describe("getVariantDisplay", () => {
     );
     expect(display?.chips[0]?.label).toBe("米色 · L ×2");
   });
+
+  it("resolves unlabeled variantItemId rows from Style variant meta", () => {
+    const display = getVariantDisplay(
+      {
+        variantTable: [
+          { variantItemId: "item_bk_s", Quantities: 4 },
+          { variantItemId: "item_bg_m", Quantities: 3 }
+        ]
+      },
+      { BK: "黑色", BG: "米色" },
+      undefined,
+      {
+        item_bk_s: {
+          variantItemId: "item_bk_s",
+          parentItemId: "parent",
+          parentReadableId: "444",
+          parentName: "f4",
+          parentThumbnailPath: null,
+          attributeLabels: ["BK", "S"]
+        },
+        item_bg_m: {
+          variantItemId: "item_bg_m",
+          parentItemId: "parent",
+          parentReadableId: "444",
+          parentName: "f4",
+          parentThumbnailPath: null,
+          attributeLabels: ["BG", "M"]
+        }
+      }
+    );
+    expect(display?.chips.map((c) => c.label)).toEqual([
+      "黑色 · S ×4",
+      "米色 · M ×3"
+    ]);
+  });
 });
 
 describe("getVariantDisplayFromVariants", () => {

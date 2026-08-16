@@ -62,7 +62,10 @@ import {
 } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
-import { getVariantDisplay } from "~/modules/shared/variantDisplay";
+import {
+  getVariantDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/variantDisplay";
 import { path } from "~/utils/path";
 import { isQuoteLocked } from "../../sales.models";
 import type {
@@ -299,11 +302,13 @@ function QuoteLineMixChips({
   const { locale } = useLocale();
   const routeData = useRouteData<{
     attributeValueNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(quoteId ? path.to.quote(quoteId) : "");
   const display = getVariantDisplay(
     configuration,
     routeData?.attributeValueNames,
-    locale
+    locale,
+    routeData?.styleVariantByItemId
   );
   if (!display) return null;
   return <VariantChips chips={display.chips} className="mt-1" />;
