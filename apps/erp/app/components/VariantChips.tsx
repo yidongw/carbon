@@ -1,11 +1,17 @@
-import { Badge, Td, Tr } from "@carbon/react";
+import { Badge, cn, Td, Tr } from "@carbon/react";
 import type { VariantChip } from "~/modules/shared/variantDisplay";
 
 /** Collapsed summary badges under a Style line description. */
-export function VariantChips({ chips }: { chips: VariantChip[] }) {
+export function VariantChips({
+  chips,
+  className
+}: {
+  chips: VariantChip[];
+  className?: string;
+}) {
   if (chips.length === 0) return null;
   return (
-    <div className="mt-2 flex flex-wrap gap-1.5">
+    <div className={cn("mt-2 flex flex-wrap gap-1.5", className)}>
       {chips.map((chip) => (
         <Badge
           key={chip.key}

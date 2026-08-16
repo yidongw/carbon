@@ -26,12 +26,14 @@ import { useEffect, useMemo, useState } from "react";
 import { LuChevronRight, LuImage } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import { CustomerAvatar } from "~/components";
+import { VariantChips, VariantExpandRows } from "~/components/VariantChips";
 import {
   useDateFormatter,
   usePercentFormatter,
   useRouteData,
   useUser
 } from "~/hooks";
+import { getVariantDisplay } from "~/modules/shared/variantDisplay";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isQuoteLocked } from "../../sales.models";
 import type {
@@ -96,6 +98,7 @@ const LineItems = ({
     quote: Quotation;
     lines: QuotationLine[];
     prices: QuotationPrice[];
+    attributeValueNames?: Record<string, string>;
   }>(path.to.quote(quoteId));
 
   const [openItems, setOpenItems] = useState<string[]>([]);
@@ -146,6 +149,11 @@ const LineItems = ({
         }
 
         const selectedLine = selectedLines[line.id] || deselectedLine;
+        const variantDisplay = getVariantDisplay(
+          line.configuration,
+          routeData?.attributeValueNames,
+          locale
+        );
 
         return (
           <motion.div
@@ -222,6 +230,9 @@ const LineItems = ({
                   <span className="text-muted-foreground text-base truncate">
                     {line.description}
                   </span>
+                  {variantDisplay ? (
+                    <VariantChips chips={variantDisplay.chips} />
+                  ) : null}
                 </div>
               </VStack>
             </HStack>
@@ -236,6 +247,13 @@ const LineItems = ({
               transition={{ duration: 0.3 }}
               className="w-full overflow-hidden"
             >
+              {variantDisplay ? (
+                <Table>
+                  <Tbody>
+                    <VariantExpandRows chips={variantDisplay.chips} />
+                  </Tbody>
+                </Table>
+              ) : null}
               <LinePricingOptions
                 formatter={formatter}
                 line={line}

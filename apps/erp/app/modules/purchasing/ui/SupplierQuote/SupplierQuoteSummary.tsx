@@ -25,12 +25,17 @@ import { Link, useParams } from "react-router";
 import { SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
+import { VariantChips, VariantExpandRows } from "~/components/VariantChips";
 import {
   useCurrencyFormatter,
   useDateFormatter,
   useRouteData,
   useUser
 } from "~/hooks";
+import {
+  groupLinesForStyleDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/variantDisplay";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import type {
@@ -60,10 +65,33 @@ const LineItems = ({
     quote: SupplierQuote;
     lines: SupplierQuoteLine[];
     prices: SupplierQuoteLinePrice[];
+    attributeValueNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(path.to.supplierQuote(id));
 
+  const displayGroups = useMemo(
+    () =>
+      groupLinesForStyleDisplay(
+        routeData?.lines ?? [],
+        routeData?.styleVariantByItemId ?? {},
+        routeData?.attributeValueNames,
+        (line) => {
+          const quantity = line.quantity;
+          if (Array.isArray(quantity)) return Number(quantity[0] ?? 0) || 0;
+          return Number(quantity ?? 0) || 0;
+        },
+        locale
+      ),
+    [
+      routeData?.lines,
+      routeData?.styleVariantByItemId,
+      routeData?.attributeValueNames,
+      locale
+    ]
+  );
+
   const [openItems, setOpenItems] = useState<string[]>(
-    routeData?.lines.map((line) => line.id!) ?? []
+    displayGroups.map((group) => group.key)
   );
 
   const pricingByLine = useMemo(
@@ -95,31 +123,47 @@ const LineItems = ({
 
   return (
     <VStack spacing={8} className="w-full overflow-hidden">
-      {routeData?.lines?.map((line) => {
-        const prices = pricingByLine[line.id!];
+      {displayGroups.map((group) => {
+        const line = group.kind === "line" ? group.line : group.primaryLine;
+        if (!line?.id) return null;
 
+        const variantDisplay = group.variantDisplay;
         const isGlAccount = line.supplierQuoteLineType === "G/L Account";
-        const itemReadableId = isGlAccount
-          ? line.description || t`Indirect Expense`
-          : getItemReadableId(items, line.itemId);
-        if (!line || !prices || !line.id) {
-          return null;
-        }
+        const itemReadableId =
+          group.kind === "style-group"
+            ? group.parentReadableId
+            : isGlAccount
+              ? line.description || t`Indirect Expense`
+              : (line.itemReadableId ??
+                getItemReadableId(items, line.itemId) ??
+                line.description ??
+                "");
+        const itemDescription =
+          group.kind === "style-group"
+            ? (group.parentName ?? line.description)
+            : isGlAccount
+              ? (accounts.find((a) => a.id === line.accountId)?.name ??
+                "G/L Account")
+              : line.description;
+        const thumbnailPath =
+          group.kind === "style-group"
+            ? (group.parentThumbnailPath ?? line.thumbnailPath)
+            : line.thumbnailPath;
 
         return (
           <motion.div
-            key={line.id}
+            key={group.key}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="py-6 w-full"
           >
             <HStack spacing={4} className="items-start">
-              {line.thumbnailPath ? (
+              {thumbnailPath ? (
                 <img
-                  alt={itemReadableId!}
+                  alt={itemReadableId}
                   className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg"
-                  src={getPrivateUrl(line.thumbnailPath)}
+                  src={getPrivateUrl(thumbnailPath)}
                 />
               ) : (
                 <div className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg p-4">
@@ -130,7 +174,7 @@ const LineItems = ({
               <VStack spacing={0} className="w-full">
                 <div
                   className="flex flex-col cursor-pointer w-full"
-                  onClick={() => toggleOpen(line.id!)}
+                  onClick={() => toggleOpen(group.key)}
                 >
                   <div className="flex items-center gap-x-4 justify-between flex-grow">
                     <HStack spacing={2} className="min-w-0 flex-shrink">
@@ -149,7 +193,7 @@ const LineItems = ({
                     <HStack spacing={4}>
                       <motion.div
                         animate={{
-                          rotate: openItems.includes(line.id) ? 90 : 0
+                          rotate: openItems.includes(group.key) ? 90 : 0
                         }}
                         transition={{ duration: 0.3 }}
                       >
@@ -158,18 +202,18 @@ const LineItems = ({
                     </HStack>
                   </div>
                   <span className="text-muted-foreground text-base truncate">
-                    {isGlAccount
-                      ? (accounts.find((a) => a.id === line.accountId)?.name ??
-                        "G/L Account")
-                      : line.description}
+                    {itemDescription}
                   </span>
+                  {variantDisplay ? (
+                    <VariantChips chips={variantDisplay.chips} />
+                  ) : null}
                 </div>
               </VStack>
             </HStack>
 
             <motion.div
               initial="collapsed"
-              animate={openItems.includes(line.id) ? "open" : "collapsed"}
+              animate={openItems.includes(group.key) ? "open" : "collapsed"}
               variants={{
                 open: { opacity: 1, height: "auto", marginTop: 16 },
                 collapsed: { opacity: 0, height: 0, marginTop: 0 }
@@ -177,10 +221,17 @@ const LineItems = ({
               transition={{ duration: 0.3 }}
               className="w-full overflow-hidden"
             >
+              {variantDisplay ? (
+                <Table>
+                  <Tbody>
+                    <VariantExpandRows chips={variantDisplay.chips} />
+                  </Tbody>
+                </Table>
+              ) : null}
               <LinePricingOptions
                 formatter={formatter}
                 line={line}
-                options={pricingByLine[line.id!]}
+                options={pricingByLine[line.id!] ?? []}
                 quoteCurrency={routeData?.quote.currencyCode ?? "USD"}
                 quoteExchangeRate={routeData?.quote.exchangeRate ?? 1}
                 shouldConvertCurrency={shouldConvertCurrency}

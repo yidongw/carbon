@@ -8,6 +8,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getCurrencyByCode } from "~/modules/accounting";
+import { getAttributeValueNames } from "~/modules/items";
 import {
   getSiblingQuotesForQuote,
   getSupplier,
@@ -23,6 +24,8 @@ import {
 } from "~/modules/purchasing/ui/SupplierQuote";
 import SupplierQuoteExplorer from "~/modules/purchasing/ui/SupplierQuote/SupplierQuoteExplorer";
 import { getCompanySettings } from "~/modules/settings";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -55,13 +58,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const [supplierInteraction, presentationCurrency, supplier, companySettings] =
-    await Promise.all([
-      getSupplierInteraction(serviceRole, quote.data.supplierInteractionId!),
-      getCurrencyByCode(serviceRole, companyGroupId, quote.data.currencyCode!),
-      getSupplier(serviceRole, quote.data.supplierId!),
-      getCompanySettings(serviceRole, companyId)
-    ]);
+  const lineItemIds = (lines.data ?? [])
+    .map((line) => line.itemId)
+    .filter((itemId): itemId is string => !!itemId);
+
+  const [
+    supplierInteraction,
+    presentationCurrency,
+    supplier,
+    companySettings,
+    attributeValueNameRows,
+    styleVariantByItemId
+  ] = await Promise.all([
+    getSupplierInteraction(serviceRole, quote.data.supplierInteractionId!),
+    getCurrencyByCode(serviceRole, companyGroupId, quote.data.currencyCode!),
+    getSupplier(serviceRole, quote.data.supplierId!),
+    getCompanySettings(serviceRole, companyId),
+    getAttributeValueNames(serviceRole, companyId),
+    getStyleVariantLineMetaByItemIds(serviceRole, lineItemIds, companyId)
+  ]);
 
   if (supplierInteraction.error) {
     throw redirect(
@@ -99,6 +114,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         supplier.data.defaultCc
       : (companySettings.data?.defaultSupplierCc ?? []);
 
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
+  );
+
   return {
     quote: quote.data,
     lines: lines.data ?? [],
@@ -112,7 +131,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     exchangeRate,
     siblingQuotes: siblingQuotesData,
     defaultCc,
-    supplier: supplier?.data ?? null
+    supplier: supplier?.data ?? null,
+    attributeValueNames,
+    styleVariantByItemId
   };
 }
 

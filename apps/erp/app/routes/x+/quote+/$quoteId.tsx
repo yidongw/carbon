@@ -17,7 +17,10 @@ import {
 } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getCurrencyByCode } from "~/modules/accounting";
-import { getSupplierPriceBreaksForItems } from "~/modules/items";
+import {
+  getAttributeValueNames,
+  getSupplierPriceBreaksForItems
+} from "~/modules/items";
 import type { SalesOrderLine } from "~/modules/sales";
 import {
   getCustomer,
@@ -38,6 +41,7 @@ import {
 } from "~/modules/sales/ui/Quotes";
 import { useOptimisticDocumentDrag } from "~/modules/sales/ui/Quotes/QuoteExplorer";
 import { getCompanySettings } from "~/modules/settings";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -100,7 +104,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     prices,
     methods,
     opportunityDocuments,
-    companySettings
+    companySettings,
+    attributeValueNameRows
   ] = await Promise.all([
     getCustomer(client, quote.data?.customerId ?? ""),
     getQuoteShipment(client, quoteId),
@@ -109,7 +114,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getQuoteLinePricesByQuoteId(client, quoteId),
     getQuoteMethodTrees(client, quoteId),
     getOpportunityDocuments(client, companyId, opportunity.data.id),
-    getCompanySettings(client, companyId)
+    getCompanySettings(client, companyId),
+    getAttributeValueNames(client, companyId)
   ]);
 
   if (shipment.error) {
@@ -180,6 +186,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     client,
     Array.from(buyItemIds)
   );
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
+  );
 
   return {
     quote: quote.data,
@@ -194,7 +203,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     exchangeRate,
     salesOrderLines: salesOrderLines?.data ?? null,
     defaultCc,
-    supplierPriceMap
+    supplierPriceMap,
+    attributeValueNames
   };
 }
 

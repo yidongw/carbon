@@ -20,7 +20,8 @@ import {
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useRef, useState } from "react";
+import { useLocale } from "@react-aria/i18n";
+import { useMemo, useRef, useState } from "react";
 import {
   LuCirclePlus,
   LuEllipsisVertical,
@@ -36,10 +37,16 @@ import {
   ReorderEditBar,
   useLineOrderEditMode
 } from "~/components/LineReorder";
-import { useOptimisticLocation, usePermissions, useRouteData } from "~/hooks";
+import { VariantChips } from "~/components/VariantChips";
+import { usePermissions, useRouteData } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
 import { methodItemType } from "~/modules/shared";
+import {
+  groupLinesForStyleDisplay,
+  type StyleDisplayLineGroup,
+  type StyleVariantLineMeta
+} from "~/modules/shared/variantDisplay";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { isSupplierQuoteLocked } from "../../purchasing.models";
@@ -56,6 +63,8 @@ export default function SupplierQuoteExplorer() {
     quote: SupplierQuote;
     lines: SupplierQuoteLine[];
     supplier: Supplier;
+    attributeValueNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
   }>(path.to.supplierQuote(id));
   const permissions = usePermissions();
 
@@ -96,6 +105,27 @@ export default function SupplierQuoteExplorer() {
   });
 
   const lines = routeData?.lines ?? [];
+  const { locale } = useLocale();
+  const displayGroups = useMemo(
+    () =>
+      groupLinesForStyleDisplay(
+        lines,
+        routeData?.styleVariantByItemId ?? {},
+        routeData?.attributeValueNames,
+        (line) => {
+          const quantity = line.quantity;
+          if (Array.isArray(quantity)) return Number(quantity[0] ?? 0) || 0;
+          return Number(quantity ?? 0) || 0;
+        },
+        locale
+      ),
+    [
+      lines,
+      routeData?.styleVariantByItemId,
+      routeData?.attributeValueNames,
+      locale
+    ]
+  );
   const canReorder =
     !isDisabled && permissions.can("update", "purchasing") && lines.length > 1;
 
@@ -126,11 +156,11 @@ export default function SupplierQuoteExplorer() {
                 )}
               />
             ) : (
-              lines.map((line) => (
+              displayGroups.map((group) => (
                 <SupplierQuoteLineItem
-                  key={line.id}
+                  key={group.key}
                   isDisabled={isDisabled}
-                  line={line}
+                  group={group}
                   onDelete={onDeleteLine}
                 />
               ))
@@ -235,7 +265,7 @@ function SupplierQuoteLineBody({
           <span className="font-semibold line-clamp-1">
             {line.supplierQuoteLineType === "G/L Account"
               ? line.description || "Indirect Expense"
-              : getItemReadableId(items, line.itemId)}
+              : (line.itemReadableId ?? getItemReadableId(items, line.itemId))}
           </span>
           <span className="text-muted-foreground text-xs truncate line-clamp-1">
             {line.supplierQuoteLineType === "G/L Account"
@@ -249,13 +279,13 @@ function SupplierQuoteLineBody({
 }
 
 type SupplierQuoteLineItemProps = {
-  line: SupplierQuoteLine;
+  group: StyleDisplayLineGroup<SupplierQuoteLine>;
   isDisabled: boolean;
   onDelete: (line: SupplierQuoteLine) => void;
 };
 
 function SupplierQuoteLineItem({
-  line,
+  group,
   isDisabled,
   onDelete
 }: SupplierQuoteLineItemProps) {
@@ -265,7 +295,37 @@ function SupplierQuoteLineItem({
   const [items] = useItems();
   const permissions = usePermissions();
   const disclosure = useDisclosure();
-  const location = useOptimisticLocation();
+  const line = group.kind === "line" ? group.line : group.primaryLine;
+  const isGlAccount = line.supplierQuoteLineType === "G/L Account";
+  const itemReadableId =
+    group.kind === "style-group"
+      ? group.parentReadableId
+      : isGlAccount
+        ? line.description || t`Indirect Expense`
+        : (line.itemReadableId ??
+          getItemReadableId(items, line.itemId) ??
+          line.description ??
+          "");
+  const description =
+    group.kind === "style-group"
+      ? (group.parentName ?? line.description)
+      : isGlAccount
+        ? "G/L Account"
+        : line.description;
+  const thumbnailPath =
+    group.kind === "style-group"
+      ? (group.parentThumbnailPath ?? line.thumbnailPath)
+      : line.thumbnailPath;
+  const itemIdForMaster =
+    group.kind === "style-group" ? group.parentItemId : line.itemId;
+  const selectedLineIds =
+    group.kind === "style-group"
+      ? group.totalLines
+          .map((totalLine) => totalLine.id)
+          .filter((id): id is string => !!id)
+      : line.id
+        ? [line.id]
+        : [];
 
   useMount(() => {
     if (lineId === line.id) {
@@ -273,8 +333,7 @@ function SupplierQuoteLineItem({
     }
   });
 
-  const isSelected =
-    location.pathname === path.to.supplierQuoteLine(id, line.id!);
+  const isSelected = !!lineId && selectedLineIds.includes(lineId);
 
   return (
     <VStack spacing={0} className="border-b">
@@ -291,21 +350,23 @@ function SupplierQuoteLineItem({
         >
           <HStack spacing={2} className="flex-grow min-w-0 pr-10">
             <ItemThumbnail
-              thumbnailPath={line.thumbnailPath}
+              thumbnailPath={thumbnailPath}
               type="Part" // TODO
             />
 
             <VStack spacing={0} className="min-w-0">
               <span className="font-semibold line-clamp-1">
-                {line.supplierQuoteLineType === "G/L Account"
-                  ? line.description || "Indirect Expense"
-                  : getItemReadableId(items, line.itemId)}
+                {itemReadableId}
               </span>
               <span className="text-muted-foreground text-xs truncate line-clamp-1">
-                {line.supplierQuoteLineType === "G/L Account"
-                  ? "G/L Account"
-                  : line.description}
+                {description}
               </span>
+              {group.variantDisplay ? (
+                <VariantChips
+                  chips={group.variantDisplay.chips}
+                  className="mt-1"
+                />
+              ) : null}
             </VStack>
           </HStack>
           <div className="absolute right-2">
@@ -322,7 +383,11 @@ function SupplierQuoteLineItem({
               <DropdownMenuContent>
                 <DropdownMenuItem
                   destructive
-                  disabled={isDisabled || !permissions.can("update", "sales")}
+                  disabled={
+                    isDisabled ||
+                    group.kind === "style-group" ||
+                    !permissions.can("update", "sales")
+                  }
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(line);
@@ -341,7 +406,7 @@ function SupplierQuoteLineItem({
                     <Link
                       to={getLinkToItemDetails(
                         line.supplierQuoteLineType as MethodItemType,
-                        line.itemId!
+                        itemIdForMaster!
                       )}
                     >
                       <DropdownMenuIcon
