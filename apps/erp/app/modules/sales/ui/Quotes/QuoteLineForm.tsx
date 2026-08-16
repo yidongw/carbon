@@ -133,7 +133,8 @@ const QuoteLineForm = ({
     isMissingVariantQty,
     hiddenVariantQuantitiesValue,
     openVariantsQuantity,
-    clearVariantsQuantity
+    clearVariantsQuantity,
+    variantsQuantityModalNode
   } = useLineVariantQuantities({
     initialVariantQuantities: initialValues.variantQuantities,
     hasVariantAttributes: itemData.hasVariantAttributes,
@@ -434,6 +435,7 @@ const QuoteLineForm = ({
                         name="itemId"
                         label={itemType}
                         type={itemType}
+                        typeFieldName="itemTypeFilter"
                         value={itemData.itemId}
                         includeInactive
                         locationId={routeData?.quote?.locationId ?? undefined}
@@ -442,7 +444,9 @@ const QuoteLineForm = ({
                         }}
                         onTypeChange={(nextType) => {
                           clearVariantsQuantity();
-                          setItemType(nextType as MethodItemType);
+                          if (nextType !== "Item") {
+                            setItemType(nextType as MethodItemType);
+                          }
                           setRequiresConfiguration(false);
                           setConfigurationParameters(null);
                           setIsConfigured(false);
@@ -656,6 +660,7 @@ const QuoteLineForm = ({
             }}
           />
         )}
+      {variantsQuantityModalNode}
     </>
   );
 };
