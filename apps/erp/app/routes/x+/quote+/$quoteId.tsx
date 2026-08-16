@@ -2,6 +2,7 @@ import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
+import { collectVariantMixItemIds } from "@carbon/utils";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
 import { msg } from "@lingui/core/macro";
@@ -17,7 +18,10 @@ import {
 } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getCurrencyByCode } from "~/modules/accounting";
-import { getSupplierPriceBreaksForItems } from "~/modules/items";
+import {
+  getAttributeValueNames,
+  getSupplierPriceBreaksForItems
+} from "~/modules/items";
 import type { SalesOrderLine } from "~/modules/sales";
 import {
   getCustomer,
@@ -38,6 +42,8 @@ import {
 } from "~/modules/sales/ui/Quotes";
 import { useOptimisticDocumentDrag } from "~/modules/sales/ui/Quotes/QuoteExplorer";
 import { getCompanySettings } from "~/modules/settings";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
+import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -100,7 +106,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     prices,
     methods,
     opportunityDocuments,
-    companySettings
+    companySettings,
+    attributeValueNameRows
   ] = await Promise.all([
     getCustomer(client, quote.data?.customerId ?? ""),
     getQuoteShipment(client, quoteId),
@@ -109,7 +116,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getQuoteLinePricesByQuoteId(client, quoteId),
     getQuoteMethodTrees(client, quoteId),
     getOpportunityDocuments(client, companyId, opportunity.data.id),
-    getCompanySettings(client, companyId)
+    getCompanySettings(client, companyId),
+    getAttributeValueNames(client, companyId)
   ]);
 
   if (shipment.error) {
@@ -176,9 +184,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   }
 
-  const supplierPriceMap = await getSupplierPriceBreaksForItems(
-    client,
-    Array.from(buyItemIds)
+  const variantItemIds = collectVariantMixItemIds(
+    (lines.data ?? []).map((line) => line.configuration)
+  );
+  const [supplierPriceMap, styleVariantByItemId] = await Promise.all([
+    getSupplierPriceBreaksForItems(client, Array.from(buyItemIds)),
+    getStyleVariantLineMetaByItemIds(client, variantItemIds, companyId)
+  ]);
+  const attributeValueNames = buildAttributeValueNames(
+    attributeValueNameRows.data ?? []
   );
 
   return {
@@ -194,7 +208,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     exchangeRate,
     salesOrderLines: salesOrderLines?.data ?? null,
     defaultCc,
-    supplierPriceMap
+    supplierPriceMap,
+    attributeValueNames,
+    styleVariantByItemId
   };
 }
 

@@ -86,10 +86,30 @@ export function localizeColorNameMap(
   return out;
 }
 
+/** `variantItemId → 黑色 · S` from Style variant meta, for quote mix chips. */
+export function labelsFromStyleVariantMeta(
+  variantByItemId: Record<string, StyleVariantLineMeta> | undefined,
+  attributeValueNames?: Record<string, string>,
+  locale?: string
+): Record<string, string> | undefined {
+  if (!variantByItemId) return undefined;
+  const localized = localizeColorNameMap(attributeValueNames, locale);
+  const out: Record<string, string> = {};
+  for (const [id, meta] of Object.entries(variantByItemId)) {
+    const label = (meta.attributeLabels ?? [])
+      .map((part) => localized?.[part] ?? part)
+      .filter(Boolean)
+      .join(" · ");
+    if (label) out[id] = label;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 export function getVariantDisplay(
   variantQuantities: unknown,
   attributeValueNames?: Record<string, string>,
-  locale?: string
+  locale?: string,
+  variantByItemId?: Record<string, StyleVariantLineMeta>
 ): VariantDisplay | null {
   if (!variantQuantities) return null;
 
@@ -102,8 +122,11 @@ export function getVariantDisplay(
     }
   }
 
-  // Cells carry their own stored label; the raw variantItemId is the fallback.
-  const cells = getVariantsQuantityCells(parsed);
+  // Prefer Style attribute labels (PO/SO chips). Stored row.label, then raw id.
+  const cells = getVariantsQuantityCells(
+    parsed,
+    labelsFromStyleVariantMeta(variantByItemId, attributeValueNames, locale)
+  );
   if (cells.length === 0) return null;
 
   return {

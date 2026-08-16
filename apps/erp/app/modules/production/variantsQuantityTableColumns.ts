@@ -191,9 +191,12 @@ export function getVariantsQuantityCells(
     const quantity = Number(rawQty) || 0;
     if (quantity === 0) continue;
 
+    const storedLabel = String(row.label ?? "").trim();
+    const mappedLabel = optionVariantItemLabels?.[variantItemId];
     const label =
-      String(row.label ?? "").trim() ||
-      optionVariantItemLabels?.[variantItemId] ||
+      (storedLabel && storedLabel !== variantItemId ? storedLabel : "") ||
+      mappedLabel ||
+      storedLabel ||
       variantItemId;
 
     cells.push({ key: `${rowIndex}:Quantities`, label, quantity });

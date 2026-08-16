@@ -26,6 +26,7 @@ import {
 } from "@carbon/react";
 import { useDroppable } from "@dnd-kit/core";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import { useMemo, useRef, useState } from "react";
 import {
   LuBraces,
@@ -51,6 +52,7 @@ import {
 } from "~/components/LineReorder";
 import type { Tree } from "~/components/TreeView";
 import { flattenTree } from "~/components/TreeView";
+import { VariantChips } from "~/components/VariantChips";
 import {
   useOptimisticLocation,
   usePermissions,
@@ -60,6 +62,10 @@ import {
 } from "~/hooks";
 import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
+import {
+  getVariantDisplay,
+  type StyleVariantLineMeta
+} from "~/modules/shared/variantDisplay";
 import { path } from "~/utils/path";
 import { isQuoteLocked } from "../../sales.models";
 import type {
@@ -287,6 +293,27 @@ export default function QuoteExplorer({ methods }: QuoteExplorerProps) {
   );
 }
 
+function QuoteLineMixChips({
+  configuration
+}: {
+  configuration: QuotationLine["configuration"];
+}) {
+  const { quoteId } = useParams();
+  const { locale } = useLocale();
+  const routeData = useRouteData<{
+    attributeValueNames?: Record<string, string>;
+    styleVariantByItemId?: Record<string, StyleVariantLineMeta>;
+  }>(quoteId ? path.to.quote(quoteId) : "");
+  const display = getVariantDisplay(
+    configuration,
+    routeData?.attributeValueNames,
+    locale,
+    routeData?.styleVariantByItemId
+  );
+  if (!display) return null;
+  return <VariantChips chips={display.chips} className="mt-1" />;
+}
+
 function QuoteLineBody({
   line,
   dragHandle,
@@ -307,6 +334,7 @@ function QuoteLineBody({
           <span className="text-muted-foreground text-xs truncate line-clamp-1">
             {line.description}
           </span>
+          <QuoteLineMixChips configuration={line.configuration} />
         </VStack>
       </HStack>
     </ReorderableRow>
@@ -498,6 +526,7 @@ function QuoteLineItem({
               {line.customerPartId}
               {line.customerPartRevision && `-${line.customerPartRevision}`}
             </span>
+            <QuoteLineMixChips configuration={line.configuration} />
           </VStack>
         </HStack>
         <div className="absolute right-2">
