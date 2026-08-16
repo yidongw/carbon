@@ -1,6 +1,6 @@
 import type { Database } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
-import { pluralize } from "@carbon/utils";
+import { formatVariantTableMix, pluralize } from "@carbon/utils";
 import { Image, Text, View } from "@react-pdf/renderer";
 import {
   DEFAULT_LINE_ITEMS_OPTIONS,
@@ -151,6 +151,17 @@ export function LineItemsBlock({
                             >
                               {getLineDescriptionDetails(line)}
                             </Text>
+                            {formatVariantTableMix(
+                              line.configuration,
+                              data.variantItemLabels
+                            ).map((mix) => (
+                              <Text
+                                key={mix}
+                                style={tw("text-[8px] text-gray-500 mt-0.5")}
+                              >
+                                {mix}
+                              </Text>
+                            ))}
                             {opts.showThumbnails &&
                               thumbnails &&
                               line.id != null &&
@@ -290,6 +301,17 @@ export function LineItemsBlock({
                   <Text style={tw("text-[8px] text-gray-400 mt-0.5")}>
                     {getLineDescriptionDetails(line)}
                   </Text>
+                  {formatVariantTableMix(
+                    line.configuration,
+                    data.variantItemLabels
+                  ).map((mix) => (
+                    <Text
+                      key={mix}
+                      style={tw("text-[8px] text-gray-500 mt-0.5")}
+                    >
+                      {mix}
+                    </Text>
+                  ))}
                 </View>
                 <View style={tw("w-2/3 flex flex-row")}>
                   <Text

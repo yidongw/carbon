@@ -7,7 +7,11 @@ import {
   toDocumentTemplate
 } from "@carbon/documents/template";
 import type { JSONContent } from "@carbon/react";
-import { contentDisposition, getPreferenceHeaders } from "@carbon/utils";
+import {
+  collectVariantMixItemIds,
+  contentDisposition,
+  getPreferenceHeaders
+} from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { LoaderFunctionArgs } from "react-router";
 import { getCurrencyByCode, getPaymentTermsList } from "~/modules/accounting";
@@ -97,6 +101,22 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw new Error("Failed to load quote");
   }
 
+  const variantItemIds = collectVariantMixItemIds(
+    (quoteLines.data ?? []).map((line) => line.configuration)
+  );
+  const variantItemLabels: Record<string, string> = {};
+  if (variantItemIds.length > 0) {
+    const { data: variantItems } = await client
+      .from("item")
+      .select("id, readableIdWithRevision")
+      .in("id", variantItemIds);
+    for (const item of variantItems ?? []) {
+      if (item.id && item.readableIdWithRevision) {
+        variantItemLabels[item.id] = item.readableIdWithRevision;
+      }
+    }
+  }
+
   const templateConfig = toDocumentTemplate(documentTemplate.data, "quote");
   const showThumbnails = templateShowsThumbnails(templateConfig, "quote");
 
@@ -175,6 +195,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       shippingMethods={shippingMethods.data ?? []}
       terms={(terms?.data?.salesTerms ?? {}) as JSONContent}
       thumbnails={thumbnails}
+      variantItemLabels={variantItemLabels}
       template={templateConfig}
       sections={sections}
     />
