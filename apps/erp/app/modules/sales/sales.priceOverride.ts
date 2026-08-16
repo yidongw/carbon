@@ -23,6 +23,13 @@ export function variantFamilyBreakQuantity(
   return familyQuantity ?? lineQuantity;
 }
 
+/** Sum of sibling SKU quantities for Style family price breaks. */
+export function familyQuantityFromVariantRows(
+  variants: Array<{ quantity: number }>
+): number {
+  return variants.reduce((sum, v) => sum + Number(v.quantity || 0), 0);
+}
+
 /** Sum sibling lines on a document, replacing the current line with the typed qty. */
 export function familyQuantityFromSiblingLines(args: {
   lineQuantity: number;

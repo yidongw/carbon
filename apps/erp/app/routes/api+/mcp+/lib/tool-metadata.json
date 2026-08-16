@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-15T16:34:55.658Z",
-  "totalTools": 1277,
+  "generated": "2026-08-16T06:46:04.992Z",
+  "totalTools": 1278,
   "modules": 15,
   "tools": [
     {
@@ -8610,6 +8610,42 @@
         "required": [
           "id",
           "sortOrder"
+        ]
+      }
+    },
+    {
+      "name": "invoicing_unitPriceForExpandedStyleVariants",
+      "module": "invoicing",
+      "classification": "WRITE",
+      "description": "unit price for expanded style variants",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "customerId": {},
+          "parentItemId": {
+            "type": "string"
+          },
+          "variants": {},
+          "fallbackUnitPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "customerId",
+          "parentItemId",
+          "variants"
         ]
       }
     },

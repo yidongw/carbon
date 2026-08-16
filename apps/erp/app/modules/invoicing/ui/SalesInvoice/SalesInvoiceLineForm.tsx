@@ -24,13 +24,14 @@ import {
   TabsList,
   TabsTrigger,
   toast,
+  useDebounce,
   useDisclosure,
   useMount,
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   LuBox,
   LuChevronRight,
@@ -72,6 +73,7 @@ import {
   getOverlaySuccessVariantTable,
   isVariantsQuantityOverlaySuccess
 } from "~/modules/production/variantsQuantityOverlay";
+import { familyQuantityFromSiblingLines } from "~/modules/sales/sales.priceOverride";
 import type { MethodItemType } from "~/modules/shared";
 import {
   defaultLineQuantity,
@@ -231,14 +233,96 @@ const SalesInvoiceLineForm = ({
     itemData.quantity
   );
 
+  const resolvePrice = useCallback(
+    async (itemId: string, quantity: number) => {
+      const customerId = routeData?.salesInvoice?.customerId;
+      if (!customerId) return null;
+
+      let familyQuantity = quantity;
+      if (carbon && company.id && invoiceId) {
+        const { data: asChild } = await carbon
+          .from("itemVariant")
+          .select("parentItemId")
+          .eq("variantItemId", itemId)
+          .eq("companyId", company.id)
+          .maybeSingle();
+        if (asChild?.parentItemId) {
+          const { data: siblings } = await carbon
+            .from("itemVariant")
+            .select("variantItemId")
+            .eq("parentItemId", asChild.parentItemId)
+            .eq("companyId", company.id);
+          const siblingIds = (siblings ?? [])
+            .map((row) => row.variantItemId)
+            .filter(
+              (id): id is string => typeof id === "string" && id.length > 0
+            );
+          if (siblingIds.length > 0) {
+            const { data: lines } = await carbon
+              .from("salesInvoiceLine")
+              .select("id, quantity")
+              .eq("invoiceId", invoiceId)
+              .eq("companyId", company.id)
+              .in("itemId", siblingIds);
+            familyQuantity = familyQuantityFromSiblingLines({
+              lineQuantity: quantity,
+              currentLineId: initialValues.id,
+              siblingLines: (lines ?? []).map((line) => ({
+                id: line.id,
+                saleQuantity: line.quantity
+              }))
+            });
+          }
+        }
+      }
+
+      try {
+        const response = await fetch(path.to.api.salesResolvePrice, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customerId,
+            itemId,
+            quantity,
+            familyQuantity
+          })
+        });
+        if (response.ok) {
+          const result = await response.json();
+          return { finalPrice: result.finalPrice as number };
+        }
+      } catch {
+        // Fall back to item cost on the caller.
+      }
+      return null;
+    },
+    [
+      carbon,
+      company.id,
+      initialValues.id,
+      invoiceId,
+      routeData?.salesInvoice?.customerId
+    ]
+  );
+
+  const debouncedQuantityResolve = useDebounce(async (qty: number) => {
+    if (!itemData.itemId) return;
+    const result = await resolvePrice(itemData.itemId, qty);
+    if (result) {
+      setItemData((d) => ({ ...d, unitPrice: result.finalPrice }));
+    }
+  }, 400);
+
+  const onQuantityChange = (qty: number) => {
+    setItemData((d) => ({ ...d, quantity: qty }));
+    debouncedQuantityResolve(qty);
+  };
+
   const applyConfig = (data: unknown) => {
     if (!isVariantsQuantityOverlaySuccess(data)) return;
     setVariantsQuantityRows(getOverlaySuccessVariantTable(data));
     setVariantsQuantityTotal(data.total);
-    setItemData((d) => ({
-      ...d,
-      quantity: data.total
-    }));
+    onQuantityChange(data.total);
   };
 
   const openVariantsQuantity = () => {
@@ -414,19 +498,22 @@ const SalesInvoiceLineForm = ({
         const itemHasVariantAttributes =
           (variantAttributes?.data?.length ?? 0) > 0;
         setHasVariantAttributes(itemHasVariantAttributes);
+        const quantityForItem = defaultLineQuantity(
+          itemHasVariantAttributes,
+          itemData.quantity || 1
+        );
+        const costPrice =
+          (itemCost?.unitCost ?? 0) /
+          (routeData?.salesInvoice?.exchangeRate ?? 1);
+        const result = await resolvePrice(itemId, quantityForItem);
 
         setItemData((prev) => ({
           ...prev,
           itemId: itemId,
           description: item.data?.name ?? "",
           methodType: item.data?.defaultMethodType ?? "",
-          quantity: defaultLineQuantity(
-            itemHasVariantAttributes,
-            prev.quantity || 1
-          ),
-          unitPrice:
-            (itemCost?.unitCost ?? 0) /
-            (routeData?.salesInvoice?.exchangeRate ?? 1),
+          quantity: quantityForItem,
+          unitPrice: result?.finalPrice ?? costPrice,
           shippingCost: 0,
           unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
           storageUnitId: inventory.data?.defaultStorageUnitId ?? null,
@@ -690,12 +777,7 @@ const SalesInvoiceLineForm = ({
                                 name="quantity"
                                 label={t`Quantity`}
                                 value={itemData.quantity}
-                                onChange={(value) => {
-                                  setItemData((d) => ({
-                                    ...d,
-                                    quantity: value
-                                  }));
-                                }}
+                                onChange={onQuantityChange}
                                 hasVariantsQuantity={hasVariantsQuantity}
                                 onOpenVariantsQuantity={
                                   hasVariantsQuantity
@@ -711,12 +793,7 @@ const SalesInvoiceLineForm = ({
                                 name="quantity"
                                 label={t`Quantity`}
                                 value={itemData.quantity}
-                                onChange={(value) => {
-                                  setItemData((d) => ({
-                                    ...d,
-                                    quantity: value
-                                  }));
-                                }}
+                                onChange={onQuantityChange}
                               />
                             )}
 
