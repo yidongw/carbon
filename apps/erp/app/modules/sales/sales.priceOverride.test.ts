@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   familyQuantityFromSiblingLines,
+  familyQuantityFromVariantRows,
   pickBestBreak,
   priceOverrideLookupItemIds,
   variantFamilyBreakQuantity
@@ -57,5 +58,21 @@ describe("variantFamilyBreakQuantity", () => {
   it("prefers the family total when provided", () => {
     expect(variantFamilyBreakQuantity(60, 110)).toBe(110);
     expect(variantFamilyBreakQuantity(60)).toBe(60);
+  });
+});
+
+describe("familyQuantityFromVariantRows", () => {
+  it("sums expanded SKU quantities for the family price break", () => {
+    const family = familyQuantityFromVariantRows([
+      { quantity: 60 },
+      { quantity: 50 }
+    ]);
+    expect(family).toBe(110);
+    const breaks = [
+      { quantity: 1, overridePrice: 10, active: true },
+      { quantity: 100, overridePrice: 8, active: true }
+    ];
+    expect(pickBestBreak(breaks, 60)?.overridePrice).toBe(10);
+    expect(pickBestBreak(breaks, family)?.overridePrice).toBe(8);
   });
 });

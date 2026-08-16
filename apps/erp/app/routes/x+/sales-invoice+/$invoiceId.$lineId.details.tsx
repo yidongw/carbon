@@ -16,6 +16,7 @@ import {
   isSalesInvoiceLocked,
   replaceSalesInvoiceLinesWithStyleVariants,
   salesInvoiceLineValidator,
+  unitPriceForExpandedStyleVariants,
   upsertSalesInvoiceLine
 } from "~/modules/invoicing";
 import SalesInvoiceLineForm from "~/modules/invoicing/ui/SalesInvoice/SalesInvoiceLineForm";
@@ -159,6 +160,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
     if (!onlyParent) {
       try {
+        const unitPrice = await unitPriceForExpandedStyleVariants(
+          client,
+          companyId,
+          {
+            customerId: invoice.data?.customerId,
+            parentItemId: d.itemId,
+            variants: expanded.variants,
+            fallbackUnitPrice: d.unitPrice
+          }
+        );
         await replaceSalesInvoiceLinesWithStyleVariants(getDatabaseClient(), {
           companyId,
           userId,
@@ -173,7 +184,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
             storageUnitId: d.storageUnitId,
             methodType: d.methodType,
             unitOfMeasureCode: d.unitOfMeasureCode,
-            unitPrice: d.unitPrice,
+            unitPrice,
             shippingCost: d.shippingCost,
             addOnCost: d.addOnCost,
             nonTaxableAddOnCost: d.nonTaxableAddOnCost,

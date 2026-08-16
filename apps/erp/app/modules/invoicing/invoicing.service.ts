@@ -14,9 +14,11 @@ import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import { getCurrencyByCode } from "../accounting/accounting.service";
 import { getEmployeeJob } from "../people/people.service";
+import { familyQuantityFromVariantRows } from "../sales/sales.priceOverride";
 import {
   getCustomerPayment,
-  getCustomerShipping
+  getCustomerShipping,
+  resolvePrice
 } from "../sales/sales.service";
 import type {
   purchaseInvoiceDeliveryValidator,
@@ -1273,6 +1275,33 @@ export async function updateSalesInvoiceLineOrder(
         .execute();
     }
   });
+}
+
+/**
+ * Unit price for expanded Style SKU invoice lines: match price-list breaks
+ * against the sum of variant quantities (same as sales orders).
+ */
+export async function unitPriceForExpandedStyleVariants(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args: {
+    customerId: string | null | undefined;
+    parentItemId: string;
+    variants: Array<{ quantity: number }>;
+    fallbackUnitPrice?: number | null;
+  }
+): Promise<number> {
+  const fallback = args.fallbackUnitPrice ?? 0;
+  const familyQuantity = familyQuantityFromVariantRows(args.variants);
+  if (!args.customerId || familyQuantity <= 0) return fallback;
+
+  const result = await resolvePrice(client, companyId, {
+    customerId: args.customerId,
+    itemId: args.parentItemId,
+    quantity: familyQuantity,
+    familyQuantity
+  });
+  return typeof result.finalPrice === "number" ? result.finalPrice : fallback;
 }
 
 /**
