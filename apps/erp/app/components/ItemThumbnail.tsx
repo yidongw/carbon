@@ -60,23 +60,46 @@ const iconVariants = cva("text-[#AAAAAA] dark:text-[#444]", {
   }
 });
 
-const getCoverScale = (img: HTMLImageElement) => {
-  const canvas = document.createElement("canvas");
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
+// Computing the cover scale is only a visual nicety (zoom letterboxed product
+// photos to fill the frame), so it must be cheap. Two costs to avoid:
+//  1) Scanning pixels at the image's *natural* resolution is O(w*h) in JS — a
+//     1000x1000 image is ~1M iterations per call. We downscale into a tiny
+//     canvas first; the fill bounding-box ratio is preserved well enough.
+//  2) The same image can fire `onLoad` many times (the list table re-renders and
+//     remounts thumbnail <img>s during hydration). We memoize the result per
+//     src so repeated loads are a Map lookup, never another pixel scan.
+const MAX_COVER_SCAN = 64;
+const coverScaleCache = new Map<string, number>();
 
-  const ctx = canvas.getContext("2d");
-  if (!ctx || canvas.width === 0 || canvas.height === 0) {
+const getCoverScale = (img: HTMLImageElement) => {
+  const nw = img.naturalWidth;
+  const nh = img.naturalHeight;
+  if (!nw || !nh) {
     return 1;
   }
 
-  ctx.drawImage(img, 0, 0);
-  const { data, width, height } = ctx.getImageData(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+  // Downscale so the pixel loop below runs over at most MAX_COVER_SCAN^2 pixels.
+  const shrink = Math.min(1, MAX_COVER_SCAN / Math.max(nw, nh));
+  const width = Math.max(1, Math.round(nw * shrink));
+  const height = Math.max(1, Math.round(nh * shrink));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) {
+    return 1;
+  }
+
+  ctx.drawImage(img, 0, 0, width, height);
+  let data: Uint8ClampedArray;
+  try {
+    data = ctx.getImageData(0, 0, width, height).data;
+  } catch {
+    // Cross-origin taint — can't read pixels; fall back to no scaling.
+    return 1;
+  }
 
   let minX = width;
   let minY = height;
@@ -123,10 +146,14 @@ const ItemThumbnail = ({
   size = "md",
   enlarge = true
 }: ItemThumbnailProps) => {
-  const [coverScale, setCoverScale] = useState(1);
-  const [previewOpen, setPreviewOpen] = useState(false);
-
   const url = thumbnailPath ? getPrivateUrl(thumbnailPath) : null;
+
+  // Seed from the cache so remounts render at the right scale immediately and
+  // don't need another scan/state update.
+  const [coverScale, setCoverScale] = useState(
+    () => (url && coverScaleCache.get(url)) || 1
+  );
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   if (url) {
     const image = (
@@ -139,7 +166,14 @@ const ItemThumbnail = ({
           transformOrigin: "center"
         }}
         onLoad={(event) => {
-          setCoverScale(getCoverScale(event.currentTarget));
+          const cached = url ? coverScaleCache.get(url) : undefined;
+          const scale = cached ?? getCoverScale(event.currentTarget);
+          if (url && cached === undefined) {
+            coverScaleCache.set(url, scale);
+          }
+          // Avoid a needless re-render (which would remount and reload the
+          // image) when the value hasn't changed.
+          setCoverScale((prev) => (prev === scale ? prev : scale));
         }}
       />
     );
@@ -170,7 +204,10 @@ const ItemThumbnail = ({
             withCloseButton={false}
             className="w-auto max-w-[95vw] p-0 pt-0 sm:w-auto sm:max-w-[95vw] md:w-auto border-none bg-transparent shadow-none dark:shadow-none"
           >
-            <div className="relative" onClick={(event) => event.stopPropagation()}>
+            <div
+              className="relative"
+              onClick={(event) => event.stopPropagation()}
+            >
               <img
                 alt="thumbnail"
                 className="max-h-[90vh] max-w-[95vw] w-auto h-auto rounded-lg object-contain shadow-lg"
