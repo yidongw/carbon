@@ -159,6 +159,10 @@ const ItemThumbnail = ({
     const image = (
       <img
         alt="thumbnail"
+        // Only fetch/decode thumbnails as they scroll into view, and decode off
+        // the main thread — a long list only pays for the rows actually visible.
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 size-full object-cover object-center"
         src={url}
         style={{
