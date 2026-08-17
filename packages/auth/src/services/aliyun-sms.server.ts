@@ -3,7 +3,8 @@ import {
   ALIBABA_CLOUD_ACCESS_KEY_ID,
   ALIBABA_CLOUD_ACCESS_KEY_SECRET,
   ALIBABA_CLOUD_SMS_SIGN_NAME,
-  ALIBABA_CLOUD_SMS_TEMPLATE_CODE
+  ALIBABA_CLOUD_SMS_TEMPLATE_CODE,
+  DYPNSAPI_ENDPOINT
 } from "@carbon/env";
 
 // Aliyun 号码认证服务 (Dypnsapi) — SMS verification-code service. Aliyun GENERATES,
@@ -12,7 +13,6 @@ import {
 // RPC-style API signed with Aliyun's v1 HMAC-SHA1 scheme — implemented with fetch
 // to match the rest of this package (cf. wechat.server.ts) rather than pulling in
 // the Aliyun SDK.
-const DYPNSAPI_ENDPOINT = "https://dypnsapi.aliyuncs.com/";
 const DYPNSAPI_VERSION = "2017-05-25";
 
 /** RFC 3986 percent-encoding, as required by Aliyun's signing algorithm. */

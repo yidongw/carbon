@@ -82,6 +82,7 @@ declare global {
       ALIBABA_CLOUD_ACCESS_KEY_SECRET: string;
       ALIBABA_CLOUD_SMS_SIGN_NAME: string;
       ALIBABA_CLOUD_SMS_TEMPLATE_CODE: string;
+      DYPNSAPI_ENDPOINT: string;
       XERO_CLIENT_SECRET: string;
       XERO_WEBHOOK_SECRET: string;
       DEFAULT_LANGUAGE: string;
@@ -397,6 +398,17 @@ export const ALIBABA_CLOUD_SMS_TEMPLATE_CODE = getEnv(
     isSecret: false
   }
 );
+// Optional override for the Aliyun Dypnsapi base URL. Vercel functions egress from
+// regions that can't open a TCP connection to Aliyun's mainland-China endpoint
+// (dypnsapi.aliyuncs.com → 106.11.x, connect-timeout), so prod points this at a
+// China-reachable reverse proxy (the HK box) that forwards to Aliyun. The Aliyun
+// signature is computed over the query params only (not Host), so relaying is safe.
+// Defaults to calling Aliyun directly.
+export const DYPNSAPI_ENDPOINT =
+  getEnv("DYPNSAPI_ENDPOINT", {
+    isRequired: false,
+    isSecret: false
+  }) || "https://dypnsapi.aliyuncs.com/";
 
 export const JIRA_CLIENT_ID = getEnv("JIRA_CLIENT_ID", {
   isRequired: false
