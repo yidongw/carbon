@@ -1,7 +1,7 @@
 import { cn, Tr } from "@carbon/react";
 import type { Column, Row as RowType } from "@tanstack/react-table";
-import type { ComponentProps, CSSProperties } from "react";
-import { memo } from "react";
+import type { ComponentProps, CSSProperties, ForwardedRef, Ref } from "react";
+import { forwardRef, memo } from "react";
 import type {
   EditableTableCellComponent,
   Position
@@ -9,6 +9,11 @@ import type {
 import Cell from "./Cell";
 
 type RowProps<T> = ComponentProps<typeof Tr> & {
+  // Row virtualization: the desktop virtualizer measures each row's real height
+  // via `data-index` + a ref forwarded to the underlying <tr>. Rows are not a
+  // fixed height (e.g. thumbnail rows are taller), so measuring is what keeps the
+  // windowed scroll from jittering.
+  "data-index"?: number;
   // The table's columns reference, captured at render time. When the columns
   // useMemo rebuilds (e.g. async option lists loaded), this ref changes so the
   // memoized row re-renders and its cells pick up the new renderers.
@@ -32,31 +37,34 @@ type RowProps<T> = ComponentProps<typeof Tr> & {
   onFinishEditing?: () => void;
 };
 
-const Row = <T extends object>({
-  columns: _columns,
-  editableComponents,
-  editedCells,
-  isEditing,
-  isEditMode,
-  isFrozenColumn = false,
-  isRowExpanded: _isRowExpanded,
-  isRowSelected = false,
-  pinnedColumns,
-  row,
-  rowIsSelected,
-  selectedCell,
-  getPinnedStyles,
-  onCellClick,
-  onCellUpdate,
-  onFinishEditing,
-  className,
-  ...props
-}: RowProps<T>) => {
+const RowInner = <T extends object>(
+  {
+    columns: _columns,
+    editableComponents,
+    editedCells,
+    isEditing,
+    isEditMode,
+    isFrozenColumn = false,
+    isRowExpanded: _isRowExpanded,
+    isRowSelected = false,
+    pinnedColumns,
+    row,
+    rowIsSelected,
+    selectedCell,
+    getPinnedStyles,
+    onCellClick,
+    onCellUpdate,
+    onFinishEditing,
+    className,
+    ...props
+  }: RowProps<T>,
+  ref: ForwardedRef<HTMLTableRowElement>
+) => {
   const onUpdate = isEditMode ? onCellUpdate(row.index) : undefined;
 
   return (
     <Tr
-      key={row.id}
+      ref={ref}
       className={cn(
         "border-b border-border transition-colors",
         isFrozenColumn && "bg-card",
@@ -98,11 +106,17 @@ const Row = <T extends object>({
   );
 };
 
+const Row = forwardRef(RowInner);
+
 const MemoizedRow = memo(
   Row,
   (prev, next) =>
     prev.row.id === next.row.id &&
     prev.row.original === next.row.original &&
+    // Keep `data-index` in sync so the virtualizer measures each row under the
+    // right index even when a stable row shifts position (e.g. a row inserted
+    // above it) without its data changing.
+    prev["data-index"] === next["data-index"] &&
     prev.isRowSelected === next.isRowSelected &&
     prev.rowIsSelected === next.rowIsSelected &&
     prev.isEditing === next.isEditing &&
@@ -119,6 +133,8 @@ const MemoizedRow = memo(
     // Re-render when the columns rebuild (e.g. async option lists loaded) so
     // cells pick up their new renderers.
     prev.columns === next.columns
-) as typeof Row;
+) as unknown as <T extends object>(
+  props: RowProps<T> & { ref?: Ref<HTMLTableRowElement> }
+) => JSX.Element;
 
 export default MemoizedRow;
