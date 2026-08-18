@@ -675,6 +675,8 @@ function getRootLink(
       return `${path.to.partDetails(itemId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolDetails(itemId)}?methodId=${methodId}`;
+    case "Consumable":
+      return `${path.to.consumableDetails(itemId)}?methodId=${methodId}`;
     default:
       throw new Error(`Unimplemented BoMExplorer itemType: ${itemType}`);
   }
@@ -692,6 +694,10 @@ function getMaterialLink(
       return `${path.to.partMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolMake(itemId, makeMethodId)}?methodId=${methodId}`;
+    case "Consumable":
+      // Consumables render their make method inline on the details page
+      // (no dedicated make route), so drill into the subassembly there.
+      return `${path.to.consumableDetails(itemId)}?methodId=${methodId}`;
     default:
       throw new Error(`Unimplemented BoMExplorer itemType: ${itemType}`);
   }

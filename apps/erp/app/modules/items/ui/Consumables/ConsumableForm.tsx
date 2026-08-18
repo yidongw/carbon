@@ -32,13 +32,17 @@ import {
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
-import { TrackingTypeIcon } from "~/components/Icons";
+import { ReplenishmentSystemIcon, TrackingTypeIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 import type { AttributeSetFormOption } from "../../itemAttribute.service";
 import { translateItemAttributeCatalogName } from "../../itemAttributeDisplayName";
-import { consumableValidator, itemTrackingTypes } from "../../items.models";
+import {
+  consumableValidator,
+  itemReplenishmentSystems,
+  itemTrackingTypes
+} from "../../items.models";
 import AttributeSelectionValidator from "../AttributeSelectionValidator";
 import ItemStorageFields from "../Item/ItemStorageFields";
 import ItemThumbnailField from "../Item/ItemThumbnailField";
@@ -140,6 +144,24 @@ const ConsumableForm = ({
   const [defaultMethodType, setDefaultMethodType] = useState<string>(
     initialValues.defaultMethodType ?? "Purchase to Order"
   );
+  const [replenishmentSystem, setReplenishmentSystem] = useState<string>(
+    initialValues.replenishmentSystem ?? "Buy"
+  );
+  const itemReplenishmentSystemOptions = itemReplenishmentSystems.map(
+    (itemReplenishmentSystem) => ({
+      label: (
+        <span className="flex items-center gap-2">
+          <ReplenishmentSystemIcon type={itemReplenishmentSystem} />
+          {itemReplenishmentSystem === "Buy"
+            ? t`Buy`
+            : itemReplenishmentSystem === "Make"
+              ? t`Make`
+              : t`Buy and Make`}
+        </span>
+      ),
+      value: itemReplenishmentSystem
+    })
+  );
 
   const translateItemTrackingType = (v: string) =>
     v === "Inventory"
@@ -183,7 +205,9 @@ const ConsumableForm = ({
             </ModalCardHeader>
             <ModalCardBody>
               <Hidden name="type" value={type} />
-              <Hidden name="replenishmentSystem" value="Buy" />
+              {!isEditing && replenishmentSystem === "Make" && (
+                <Hidden name="unitCost" value={initialValues.unitCost} />
+              )}
               {!isEditing && (
                 <ItemThumbnailField onUpload={applyIdFromThumbnail} />
               )}
@@ -220,6 +244,18 @@ const ConsumableForm = ({
                   characterLimit={40}
                 />
                 <Select
+                  name="replenishmentSystem"
+                  label={t`Replenishment System`}
+                  options={itemReplenishmentSystemOptions}
+                  onChange={(newValue) => {
+                    const next = newValue?.value ?? "Buy";
+                    setReplenishmentSystem(next);
+                    setDefaultMethodType(
+                      next === "Buy" ? "Purchase to Order" : "Make to Order"
+                    );
+                  }}
+                />
+                <Select
                   name="itemTrackingType"
                   label={t`Tracking Type`}
                   options={itemTrackingTypeOptions}
@@ -228,7 +264,7 @@ const ConsumableForm = ({
                 <DefaultMethodType
                   name="defaultMethodType"
                   label={t`Default Method Type`}
-                  replenishmentSystem="Buy"
+                  replenishmentSystem={replenishmentSystem}
                   value={defaultMethodType}
                   onChange={(newValue) =>
                     setDefaultMethodType(newValue?.value ?? "Purchase to Order")
@@ -290,7 +326,7 @@ const ConsumableForm = ({
                     isClearable
                   />
                 )}
-                {!isEditing && (
+                {!isEditing && replenishmentSystem !== "Make" && (
                   <Number
                     name="unitCost"
                     label={t`Unit Cost`}
