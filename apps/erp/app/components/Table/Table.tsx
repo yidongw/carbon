@@ -76,7 +76,15 @@ import {
 import type { ColumnFilter } from "./components/Filter/types";
 import { useFilters } from "./components/Filter/useFilters";
 import type { ColumnSizeMap } from "./types";
+import { useVirtualRows, VIRTUALIZATION_THRESHOLD } from "./useVirtualRows";
 import { getAccessorKey, updateNestedProperty } from "./utils";
+
+// Seed row height used until each row is measured. Real heights vary by table
+// (a plain text row is ~44px; a thumbnail row is taller), so both the desktop
+// body and the mobile cards measure each rendered row via
+// `virtualizer.measureElement` — the seed only sizes the very first paint.
+const DESKTOP_ROW_HEIGHT = 44;
+const MOBILE_CARD_ESTIMATE = 148;
 
 interface TableProps<T extends object> {
   columns: ColumnDef<T>[];
@@ -797,6 +805,32 @@ const Table = <T extends object>({
   const rows = table.getRowModel().rows;
   const visibleColumns = table.getVisibleLeafColumns();
 
+  /* Row virtualization
+     Only large lists are windowed (below the threshold the exact, well-tested
+     full render is kept). The desktop body is skipped while an expanded row is
+     open or inline editing is active: expansion rows have variable height and
+     edit-mode keyboard navigation needs every cell mounted. Mobile cards
+     virtualize regardless — their expansion is measured inside the card. */
+  const desktopVirtualized =
+    rows.length > VIRTUALIZATION_THRESHOLD && !renderExpandedRow && !editMode;
+  const mobileVirtualized = rows.length > VIRTUALIZATION_THRESHOLD;
+
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+
+  const desktopVirtual = useVirtualRows({
+    count: rows.length,
+    scrollRef: tableContainerRef,
+    estimateSize: DESKTOP_ROW_HEIGHT,
+    enabled: desktopVirtualized
+  });
+  const mobileVirtual = useVirtualRows({
+    count: rows.length,
+    scrollRef: mobileScrollRef,
+    estimateSize: MOBILE_CARD_ESTIMATE,
+    enabled: mobileVirtualized,
+    overscan: 8
+  });
+
   const tableRef = useRef<HTMLTableElement>(null);
 
   // Getter for the nested table wrapper element
@@ -952,6 +986,111 @@ const Table = <T extends object>({
     { delay: 300 }
   );
 
+  // A single mobile card (with its optional expansion). Rendered directly for
+  // short lists and inside the measured virtual wrapper for long ones.
+  const renderMobileCard = (row: (typeof rows)[number]) => {
+    const card = (
+      <TableCardRow
+        row={row}
+        pinnedColumns={table.getLeftVisibleLeafColumns()}
+        centerColumns={table.getCenterVisibleLeafColumns()}
+        featuredColumns={featuredColumns}
+        getRowHref={renderExpandedRow ? undefined : getRowHref}
+        renderContextMenu={renderContextMenu}
+      />
+    );
+    const canExpandRow = !getRowCanExpand || getRowCanExpand(row.original);
+    if (!renderExpandedRow || !canExpandRow) {
+      return card;
+    }
+    const isRowExpanded = expandedRows[row.index] ?? false;
+    return (
+      <div className="rounded-lg overflow-hidden border border-border">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => toggleRowExpanded(row.index)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleRowExpanded(row.index);
+            }
+          }}
+          aria-expanded={isRowExpanded}
+          className="w-full flex items-stretch text-left cursor-pointer"
+        >
+          <span className="flex items-center px-2 text-muted-foreground">
+            {isRowExpanded ? (
+              <LuChevronDown className="size-4" />
+            ) : (
+              <LuChevronRight className="size-4" />
+            )}
+          </span>
+          <span className="flex-1 min-w-0">{card}</span>
+        </div>
+        {isRowExpanded && (
+          <div className="border-t border-border bg-muted/20">
+            {renderExpandedRow(row.original)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // A single desktop table row (with its optional expansion row). Shared by the
+  // full render and the virtualized window. In the windowed path `measure` wires
+  // the virtualizer to the row's real height (rows aren't a fixed height — e.g.
+  // thumbnail rows are taller — so measuring is what prevents scroll jitter).
+  const renderDesktopRow = (
+    row: (typeof rows)[number],
+    measure?: { ref: (el: HTMLTableRowElement | null) => void; index: number }
+  ) => {
+    const canExpandRow =
+      !!renderExpandedRow &&
+      (!getRowCanExpand || getRowCanExpand(row.original));
+    const isRowExpanded = canExpandRow && expandedRows[row.index];
+    const handleRowClick = canExpandRow
+      ? () => toggleRowExpanded(row.index)
+      : undefined;
+    // Desktop rows use the Actions column ActionMenu (dropdown) only.
+    // Do not wrap the row in ContextMenu — nesting dropdown inside
+    // ContextMenuTrigger causes the menu to flash closed on open.
+    return (
+      <Fragment key={row.id}>
+        <Row
+          ref={measure?.ref}
+          data-index={measure?.index}
+          columns={columns}
+          editableComponents={editableComponents}
+          isEditing={isEditing}
+          isEditMode={editMode}
+          isRowExpanded={!!isRowExpanded}
+          isRowSelected={row.getIsSelected()}
+          pinnedColumns={pinnedColumnsKey}
+          selectedCell={selectedCell}
+          row={row}
+          rowIsSelected={selectedCell?.row === row.index}
+          getPinnedStyles={getPinnedStyles}
+          onCellClick={onCellClick}
+          onCellUpdate={onCellUpdate}
+          onFinishEditing={finishEditing}
+          onClick={handleRowClick}
+          className={canExpandRow ? "cursor-pointer" : undefined}
+        />
+        {isRowExpanded && (
+          <Tr>
+            <Td
+              colSpan={visibleColumns.length}
+              className="p-0 bg-muted/20 border-b border-border"
+            >
+              {renderExpandedRow(row.original)}
+            </Td>
+          </Tr>
+        )}
+      </Fragment>
+    );
+  };
+
   return (
     <VStack
       key={view ?? tableName ?? ""}
@@ -998,7 +1137,13 @@ const Table = <T extends object>({
       )}
 
       {/* Mobile card view */}
-      <div className="md:hidden w-full flex-1 min-h-0 overflow-y-auto">
+      <div
+        ref={mobileScrollRef}
+        // overflow-anchor:none — let the virtualizer own scroll corrections when
+        // a measured card changes height; the browser's scroll anchoring would
+        // otherwise fight it and cause jitter.
+        className="md:hidden w-full flex-1 min-h-0 overflow-y-auto [overflow-anchor:none]"
+      >
         {rows.length === 0 ? (
           <div className="flex flex-col w-full h-full items-center justify-center gap-4 py-16">
             <div className="flex justify-center items-center h-12 w-12 rounded-full bg-foreground text-background">
@@ -1019,60 +1164,38 @@ const Table = <T extends object>({
               primaryAction
             )}
           </div>
+        ) : mobileVirtualized ? (
+          // Windowed cards: a spacer of the full list height holds the scroll
+          // range, and only the visible slice is rendered — shifted down by the
+          // first card's offset and measured so variable heights stay accurate.
+          <div
+            className="relative w-full"
+            style={{ height: mobileVirtual.totalSize }}
+          >
+            <div
+              className="absolute top-0 left-0 w-full px-3 flex flex-col"
+              style={{ transform: `translateY(${mobileVirtual.paddingTop}px)` }}
+            >
+              {mobileVirtual.items.map((virtualRow) => {
+                const row = rows[virtualRow.index];
+                return (
+                  <div
+                    key={row.id}
+                    data-index={virtualRow.index}
+                    ref={mobileVirtual.virtualizer.measureElement}
+                    className="pb-3"
+                  >
+                    {renderMobileCard(row)}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         ) : (
           <div className="flex flex-col gap-3 px-3 py-2">
-            {rows.map((row) => {
-              const card = (
-                <TableCardRow
-                  row={row}
-                  pinnedColumns={table.getLeftVisibleLeafColumns()}
-                  centerColumns={table.getCenterVisibleLeafColumns()}
-                  featuredColumns={featuredColumns}
-                  getRowHref={renderExpandedRow ? undefined : getRowHref}
-                  renderContextMenu={renderContextMenu}
-                />
-              );
-              const canExpandRow =
-                !getRowCanExpand || getRowCanExpand(row.original);
-              if (!renderExpandedRow || !canExpandRow) {
-                return <Fragment key={row.id}>{card}</Fragment>;
-              }
-              const isRowExpanded = expandedRows[row.index] ?? false;
-              return (
-                <div
-                  key={row.id}
-                  className="rounded-lg overflow-hidden border border-border"
-                >
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => toggleRowExpanded(row.index)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        toggleRowExpanded(row.index);
-                      }
-                    }}
-                    aria-expanded={isRowExpanded}
-                    className="w-full flex items-stretch text-left cursor-pointer"
-                  >
-                    <span className="flex items-center px-2 text-muted-foreground">
-                      {isRowExpanded ? (
-                        <LuChevronDown className="size-4" />
-                      ) : (
-                        <LuChevronRight className="size-4" />
-                      )}
-                    </span>
-                    <span className="flex-1 min-w-0">{card}</span>
-                  </div>
-                  {isRowExpanded && (
-                    <div className="border-t border-border bg-muted/20">
-                      {renderExpandedRow(row.original)}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {rows.map((row) => (
+              <Fragment key={row.id}>{renderMobileCard(row)}</Fragment>
+            ))}
           </div>
         )}
       </div>
@@ -1084,7 +1207,9 @@ const Table = <T extends object>({
           // contain:inline-size caps this scroll container's width to the grid
           // track instead of letting the wide table expand the min-width:auto
           // flex/grid ancestor chain (which kills horizontal scrolling).
-          "hidden md:block w-full h-full overflow-x-auto [contain:inline-size] [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          // overflow-anchor:none — the virtualizer owns scroll corrections when a
+          // measured row changes height; browser scroll anchoring would fight it.
+          "hidden md:block w-full h-full overflow-x-auto [contain:inline-size] [overflow-anchor:none] [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
         )}
         ref={tableContainerRef}
         onKeyDown={editMode ? onKeyDown : undefined}
@@ -1269,55 +1394,46 @@ const Table = <T extends object>({
                 ))}
               </Thead>
               <Tbody>
-                {rows.map((row) => {
-                  const canExpandRow =
-                    !!renderExpandedRow &&
-                    (!getRowCanExpand || getRowCanExpand(row.original));
-                  const isRowExpanded = canExpandRow && expandedRows[row.index];
-                  const handleRowClick = canExpandRow
-                    ? () => toggleRowExpanded(row.index)
-                    : undefined;
-                  // Desktop rows use the Actions column ActionMenu (dropdown) only.
-                  // Do not wrap the row in ContextMenu — nesting dropdown inside
-                  // ContextMenuTrigger causes the menu to flash closed on open.
-                  const rowContent = (
-                    <Row
-                      key={row.id}
-                      columns={columns}
-                      editableComponents={editableComponents}
-                      isEditing={isEditing}
-                      isEditMode={editMode}
-                      isRowExpanded={!!isRowExpanded}
-                      isRowSelected={row.getIsSelected()}
-                      pinnedColumns={pinnedColumnsKey}
-                      selectedCell={selectedCell}
-                      row={row}
-                      rowIsSelected={selectedCell?.row === row.index}
-                      getPinnedStyles={getPinnedStyles}
-                      onCellClick={onCellClick}
-                      onCellUpdate={onCellUpdate}
-                      onFinishEditing={finishEditing}
-                      onClick={handleRowClick}
-                      className={canExpandRow ? "cursor-pointer" : undefined}
-                    />
-                  );
-
-                  return (
-                    <Fragment key={row.id}>
-                      {rowContent}
-                      {isRowExpanded && (
-                        <Tr>
-                          <Td
-                            colSpan={visibleColumns.length}
-                            className="p-0 bg-muted/20 border-b border-border"
-                          >
-                            {renderExpandedRow(row.original)}
-                          </Td>
-                        </Tr>
-                      )}
-                    </Fragment>
-                  );
-                })}
+                {desktopVirtualized ? (
+                  // Windowed body: leading/trailing spacer rows reserve the
+                  // height of the off-screen rows (keeping the scrollbar and
+                  // pinned-column widths intact) and only the visible slice of
+                  // real rows is rendered between them.
+                  <>
+                    {desktopVirtual.paddingTop > 0 && (
+                      <tr aria-hidden="true">
+                        <td
+                          colSpan={visibleColumns.length}
+                          style={{
+                            height: desktopVirtual.paddingTop,
+                            padding: 0,
+                            border: 0
+                          }}
+                        />
+                      </tr>
+                    )}
+                    {desktopVirtual.items.map((virtualRow) =>
+                      renderDesktopRow(rows[virtualRow.index], {
+                        ref: desktopVirtual.virtualizer.measureElement,
+                        index: virtualRow.index
+                      })
+                    )}
+                    {desktopVirtual.paddingBottom > 0 && (
+                      <tr aria-hidden="true">
+                        <td
+                          colSpan={visibleColumns.length}
+                          style={{
+                            height: desktopVirtual.paddingBottom,
+                            padding: 0,
+                            border: 0
+                          }}
+                        />
+                      </tr>
+                    )}
+                  </>
+                ) : (
+                  rows.map((row) => renderDesktopRow(row))
+                )}
                 {table.getFooterGroups().map((footerGroup) => (
                   <Tr key={footerGroup.id} className="h-10">
                     {footerGroup.headers.map((footer) => {
