@@ -128,7 +128,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         POSTHOG_PROJECT_PUBLIC_KEY,
         QUICKBOOKS_CLIENT_ID,
         SUPABASE_ANON_KEY,
-        SUPABASE_URL,
+        SUPABASE_URL: process.env.SUPABASE_PUBLIC_URL ?? SUPABASE_URL,
         VERCEL_ENV,
         VERCEL_URL,
         XERO_CLIENT_ID

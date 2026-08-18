@@ -153,7 +153,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const devBypassEmail = process.env.DEV_BYPASS_EMAIL;
   if (
     devBypassEmail &&
-    email.toLowerCase() === devBypassEmail.toLowerCase() &&
+    devBypassEmail.toLowerCase().split(",").map((s) => s.trim()).includes(email.toLowerCase()) &&
     user.data?.active
   ) {
     const authSession = await signInWithBypassEmail(email);
