@@ -1337,8 +1337,11 @@ function makeItem(
     id: material.id!,
     title: (
       <VStack spacing={0} className="py-1 cursor-pointer">
+        {material?.description && (
+          <span className="font-semibold truncate">{material.description}</span>
+        )}
         <div className="flex items-center gap-2 group">
-          <h3 className="font-semibold truncate">
+          <h3 className="text-xs text-muted-foreground truncate">
             {getItemReadableId(items, material.itemId) ??
               material.item?.readableIdWithRevision ??
               material.description ??
@@ -1356,11 +1359,6 @@ function makeItem(
             </Link>
           )}
         </div>
-        {material?.description && (
-          <span className="text-xs text-muted-foreground">
-            {material.description}{" "}
-          </span>
-        )}
       </VStack>
     ),
     checked,
