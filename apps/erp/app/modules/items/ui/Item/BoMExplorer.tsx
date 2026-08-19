@@ -40,6 +40,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { MethodIcon, MethodItemTypeIcon } from "~/components";
 import { OnshapeStatus } from "~/components/Icons";
 import { ImportCSVModal } from "~/components/ImportCSVModal";
+import { usePanels } from "~/components/Layout";
 import { OnshapeSync } from "~/components/OnshapeSync";
 import type { FlatTreeItem } from "~/components/TreeView";
 import { LevelLine, TreeView, useTree } from "~/components/TreeView";
@@ -49,6 +50,67 @@ import { generateBomIds } from "~/utils/bom";
 import { path } from "~/utils/path";
 import type { MakeMethod, Method, MethodOperation } from "../../types";
 import { getLinkToItemDetails } from "./ItemForm";
+
+// Shared offscreen canvas for measuring text without touching the DOM.
+let measureCanvas: HTMLCanvasElement | null = null;
+function measureText(text: string, font: string): number {
+  if (typeof document === "undefined") return 0;
+  if (!measureCanvas) measureCanvas = document.createElement("canvas");
+  const ctx = measureCanvas.getContext("2d");
+  if (!ctx) return 0;
+  ctx.font = font;
+  return ctx.measureText(text).width;
+}
+
+// Estimate the pixel width needed to render every explorer line in full (no
+// truncation), so the panel can auto-size to fit. Widths mirror the row markup:
+// indentation (LevelLine w-3 per level) + chevron (w-4) + BOM-id badge +
+// description text + the right-hand quantity/version badge, plus gaps/padding.
+function estimateMaxLineWidth(
+  methods: FlatTreeItem<Method>[],
+  bomIdMap: Map<string, string>,
+  makeMethodVersion: number | string | undefined
+): number {
+  if (typeof document === "undefined" || methods.length === 0) return 0;
+  const fontFamily =
+    getComputedStyle(document.body).fontFamily || "system-ui, sans-serif";
+  const textFont = `500 14px ${fontFamily}`; // text-sm font-medium
+  const badgeFont = `500 12px ${fontFamily}`; // text-xs badges
+
+  const INDENT_PER_LEVEL = 12;
+  const CHEVRON = 16;
+  const GAP_1 = 4;
+  const GAP_2 = 8;
+  const RIGHT_GAP = 8;
+  const PADDING_RIGHT = 8;
+  const BADGE_PAD = 20; // badge horizontal padding + border
+  const QTY_BADGE_EXTRA = 44; // method icon + margin + padding
+  const BUFFER = 8;
+
+  let max = 0;
+  for (const node of methods) {
+    const description = node.data.description || node.data.itemReadableId || "";
+    const bomId = bomIdMap.get(node.id);
+    const rightLabel = node.data.isRoot
+      ? `V${makeMethodVersion ?? ""}`
+      : String(node.data.quantity ?? "");
+
+    const line =
+      node.level * INDENT_PER_LEVEL +
+      CHEVRON +
+      GAP_1 +
+      (bomId ? measureText(bomId, badgeFont) + BADGE_PAD + GAP_2 : 0) +
+      measureText(description, textFont) +
+      RIGHT_GAP +
+      measureText(rightLabel, badgeFont) +
+      (node.data.isRoot ? BADGE_PAD : QTY_BADGE_EXTRA) +
+      PADDING_RIGHT +
+      BUFFER;
+
+    if (line > max) max = line;
+  }
+  return Math.ceil(max);
+}
 
 type BoMExplorerProps = {
   itemType: MethodItemType;
@@ -143,6 +205,17 @@ const BoMExplorer = ({
     () => new Map(methods.map((node, index) => [node.id, bomIds[index]])),
     [methods, bomIds]
   );
+
+  // Report the width needed to show every line's text in full so the host panel
+  // can auto-size to fit it (capped). Reset on unmount so unrelated explorers
+  // fall back to the default width.
+  const { setRequestedExplorerWidth } = usePanels();
+  useEffect(() => {
+    setRequestedExplorerWidth(
+      estimateMaxLineWidth(methods, bomIdMap, makeMethodVersion)
+    );
+    return () => setRequestedExplorerWidth(null);
+  }, [methods, bomIdMap, makeMethodVersion, setRequestedExplorerWidth]);
 
   const navigate = useNavigate();
   const { t } = useLingui();
