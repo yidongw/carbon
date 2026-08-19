@@ -1703,8 +1703,55 @@ export async function getItemAttributeSelectionsForItem(
       .eq("companyId", args.companyId);
     if (selErr) throw selErr;
 
+    // Selection rows carry no order of their own, so a bare read returns them in
+    // physical row order (arbitrary). Order each attribute's selected values by
+    // the catalog sortOrder (then code) so the UI lists them meaningfully — e.g.
+    // sizes as L → XL → 2XL → 3XL → 4XL instead of a scrambled sequence.
+    const valueIds = [
+      ...new Set(
+        (rows ?? []).map(
+          (r: { attributeValueId: string }) => r.attributeValueId
+        )
+      )
+    ];
+    const orderByValueId = new Map<
+      string,
+      { sortOrder: number; code: string }
+    >();
+    if (valueIds.length) {
+      const { data: values, error: valErr } = await db
+        .from("itemAttributeValue")
+        .select("id, sortOrder, code")
+        .in("id", valueIds);
+      if (valErr) throw valErr;
+      for (const v of (values ?? []) as Array<{
+        id: string;
+        sortOrder: number | null;
+        code: string | null;
+      }>) {
+        orderByValueId.set(v.id, {
+          sortOrder: v.sortOrder ?? 100,
+          code: v.code ?? ""
+        });
+      }
+    }
+
+    const sortedRows = [
+      ...((rows ?? []) as Array<{
+        attributeId: string;
+        attributeValueId: string;
+      }>)
+    ].sort((a, b) => {
+      const oa = orderByValueId.get(a.attributeValueId);
+      const ob = orderByValueId.get(b.attributeValueId);
+      const sa = oa?.sortOrder ?? 100;
+      const sb = ob?.sortOrder ?? 100;
+      if (sa !== sb) return sa - sb;
+      return (oa?.code ?? "").localeCompare(ob?.code ?? "");
+    });
+
     const selections: Record<string, string[]> = {};
-    for (const row of rows ?? []) {
+    for (const row of sortedRows) {
       (selections[row.attributeId] ??= []).push(row.attributeValueId);
     }
 
