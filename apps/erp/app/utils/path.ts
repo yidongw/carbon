@@ -356,6 +356,13 @@ export const path = {
           `${file}/bundle-work-order/labels.html?${params.toString()}`
         );
       },
+      bundleWorkOrderLabelsJson: (ids: string | string[]) => {
+        const idString = Array.isArray(ids) ? ids.join(",") : ids;
+        const params = new URLSearchParams({ ids: idString });
+        return generatePath(
+          `${file}/bundle-work-order/labels.json?${params.toString()}`
+        );
+      },
       jobTraveler: (id: string) => generatePath(`${file}/traveler/${id}.pdf`),
       jobTravelerByJobId: (jobId: string) =>
         generatePath(`${file}/job/${jobId}/traveler.pdf`),
