@@ -351,19 +351,17 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
               </span>
             </Badge>
           )}
-          options={itemReplenishmentSystems.map((system) => ({
-            value: system,
-            label: (
-              <span className="flex items-center gap-2">
-                <ReplenishmentSystemIcon type={system} />
-                {system === "Buy"
-                  ? t`Buy`
-                  : system === "Make"
-                    ? t`Make`
-                    : t`Buy and Make`}
-              </span>
-            )
-          }))}
+          options={itemReplenishmentSystems
+            .filter((system) => system !== "Buy and Make")
+            .map((system) => ({
+              value: system,
+              label: (
+                <span className="flex items-center gap-2">
+                  <ReplenishmentSystemIcon type={system} />
+                  {system === "Buy" ? t`Buy` : t`Make`}
+                </span>
+              )
+            }))}
           onChange={(value) => {
             onUpdate("replenishmentSystem", value?.value ?? null);
           }}

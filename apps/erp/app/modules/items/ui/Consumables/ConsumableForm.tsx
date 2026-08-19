@@ -147,21 +147,23 @@ const ConsumableForm = ({
   const [replenishmentSystem, setReplenishmentSystem] = useState<string>(
     initialValues.replenishmentSystem ?? "Buy"
   );
-  const itemReplenishmentSystemOptions = itemReplenishmentSystems.map(
-    (itemReplenishmentSystem) => ({
+  // Fabric/trim (面辅料) is always either bought finished or made in-house
+  // (dyed from greige) — never the hybrid. "Buy and Make" is intentionally
+  // hidden for consumables (Part/Tool keep it). It also can't default to
+  // Make to Order (see validMethodTypesByReplenishment), so it's a dead end here.
+  const itemReplenishmentSystemOptions = itemReplenishmentSystems
+    .filter(
+      (itemReplenishmentSystem) => itemReplenishmentSystem !== "Buy and Make"
+    )
+    .map((itemReplenishmentSystem) => ({
       label: (
         <span className="flex items-center gap-2">
           <ReplenishmentSystemIcon type={itemReplenishmentSystem} />
-          {itemReplenishmentSystem === "Buy"
-            ? t`Buy`
-            : itemReplenishmentSystem === "Make"
-              ? t`Make`
-              : t`Buy and Make`}
+          {itemReplenishmentSystem === "Buy" ? t`Buy` : t`Make`}
         </span>
       ),
       value: itemReplenishmentSystem
-    })
-  );
+    }));
 
   const translateItemTrackingType = (v: string) =>
     v === "Inventory"
