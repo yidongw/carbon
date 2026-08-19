@@ -80,6 +80,16 @@ const BoMExplorer = ({
 }: BoMExplorerProps) => {
   const [filterTextInternal, setFilterTextInternal] = useState("");
   const filterText = filterTextProp ?? filterTextInternal;
+  // Only one preview may be open at a time. Each row owns an independent
+  // HoverCard; a card normally closes when its own trigger fires pointer-leave,
+  // but a virtualized/re-rendered trigger node can be swapped while the cursor
+  // is over it, so that leave never fires and the card is orphaned open —
+  // sweeping the tree left the previews stacked. Sharing the open state means
+  // opening any row force-closes every other via its controlled `open` prop,
+  // independent of pointer-leave, so at most one preview can exist. The card
+  // itself stays interactive (hoverable/clickable) via Radix's native
+  // trigger+content hover, matching "stays while on the row or the popup".
+  const [openNodeId, setOpenNodeId] = useState<string | null>(null);
   const parentRef = useRef<HTMLDivElement>(null);
   const integrations = useIntegrations();
   const params = useParams();
@@ -314,7 +324,16 @@ const BoMExplorer = ({
             renderNode={({ node, state }) => {
               const shouldHidePreview = hideRootPreview && node.data.isRoot;
               return (
-                <HoverCard openDelay={500} closeDelay={150}>
+                <HoverCard
+                  openDelay={500}
+                  closeDelay={150}
+                  open={openNodeId === node.id}
+                  onOpenChange={(isOpen) =>
+                    setOpenNodeId((current) =>
+                      isOpen ? node.id : current === node.id ? null : current
+                    )
+                  }
+                >
                   <HoverCardTrigger asChild>
                     <div
                       key={node.id}
