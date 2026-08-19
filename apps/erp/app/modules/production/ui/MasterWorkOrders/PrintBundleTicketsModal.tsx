@@ -12,10 +12,13 @@ import {
 } from "@carbon/react";
 import { getLabelSizeLabel, labelSizes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useCallback, useMemo, useState } from "react";
-import { LuCheck, LuMonitor, LuPrinter } from "react-icons/lu";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { LuBluetooth, LuCheck, LuMonitor, LuPrinter } from "react-icons/lu";
 import { usePrinting } from "~/hooks";
+import { useBluetoothLabelPrinter } from "~/hooks/useBluetoothLabelPrinter";
 import type { BundleWorkOrder } from "~/modules/production";
+import type { BundleLabelData } from "~/utils/labelBitmap";
+import { canvasToTsplLabel, drawBundleLabelCanvas } from "~/utils/labelBitmap";
 import { path } from "~/utils/path";
 
 type PrintBundleTicketsModalProps = {
@@ -23,8 +26,9 @@ type PrintBundleTicketsModalProps = {
   onClose: () => void;
 };
 
-// Destination for the single Print button: the browser's own print dialog, or
-// a configured print-server route id.
+// Destination for the single Print button: a directly-connected Bluetooth label
+// printer, the browser's own PDF/print dialog, or a configured print-server id.
+const BLUETOOTH = "bluetooth";
 const BROWSER = "browser";
 
 const tagSizeOptions = labelSizes
@@ -37,6 +41,7 @@ const PrintBundleTicketsModal = ({
 }: PrintBundleTicketsModalProps) => {
   const { t } = useLingui();
   const { printerRoutes } = usePrinting();
+  const bt = useBluetoothLabelPrinter();
 
   const printable = useMemo(
     () => bundles.filter((b) => Boolean(b.id)),
@@ -49,9 +54,29 @@ const PrintBundleTicketsModal = ({
   );
   const [tagSize, setTagSize] = useState<string>("bundleTag40x80mm");
 
-  // Browser printing is the default; print servers are opt-in alternatives.
-  const [destination, setDestination] = useState<string>(BROWSER);
+  // Bluetooth is the default when the browser supports it (fastest — prints
+  // straight to the label printer); otherwise fall back to the browser PDF.
+  const [destination, setDestination] = useState<string>(
+    bt.supported ? BLUETOOTH : BROWSER
+  );
   const [isPrinting, setIsPrinting] = useState(false);
+  const [progress, setProgress] = useState<string | null>(null);
+
+  // Silently re-attach to the last printer when the modal opens, so the status
+  // shows green (and Print just works) without a chooser prompt.
+  useEffect(() => {
+    if (bt.supported && bt.status === "disconnected") {
+      void bt.reconnect();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const size = useMemo(
+    () => labelSizes.find((s) => s.id === tagSize),
+    [tagSize]
+  );
+  const widthMm = Math.round((size?.width ?? 1.5748) * 25.4);
+  const heightMm = Math.round((size?.height ?? 3.1496) * 25.4);
 
   const checkedIds = useMemo(
     () => printable.filter((b) => checked.has(b.id!)).map((b) => b.id!),
@@ -83,12 +108,66 @@ const PrintBundleTicketsModal = ({
     [printable]
   );
 
+  // Direct Bluetooth print: fetch the full label data (+ QR), render each label
+  // to a bitmap, and stream it as TSPL to the connected printer. No PDF, no
+  // print dialog. Requires an already-connected printer (connect via the row
+  // button — requestDevice needs its own user gesture and can't run after the
+  // async work here).
+  const handlePrintBluetooth = useCallback(async () => {
+    if (checkedIds.length === 0) return;
+    if (!bt.isConnected) {
+      const ok = await bt.reconnect();
+      if (!ok) {
+        toast.error(t`Connect the Bluetooth printer first`);
+        return;
+      }
+    }
+    setIsPrinting(true);
+    try {
+      const res = await fetch(
+        path.to.file.bundleWorkOrderLabelsJson(checkedIds)
+      );
+      if (!res.ok) throw new Error(t`Failed to load label data`);
+      const { labels } = (await res.json()) as { labels: BundleLabelData[] };
+      const byId = new Map(labels.map((l) => [l.id, l]));
+      const ordered = checkedIds
+        .map((id) => byId.get(id))
+        .filter((l): l is BundleLabelData => Boolean(l));
+
+      let failed = 0;
+      for (let i = 0; i < ordered.length; i++) {
+        setProgress(t`Printing ${i + 1}/${ordered.length}`);
+        try {
+          const canvas = await drawBundleLabelCanvas(
+            ordered[i],
+            widthMm,
+            heightMm
+          );
+          const bytes = canvasToTsplLabel(canvas, { widthMm, heightMm });
+          await bt.sendBytes(bytes);
+          // Let the printer finish this label before streaming the next.
+          await new Promise((r) => setTimeout(r, 250));
+        } catch {
+          failed++;
+        }
+      }
+      if (failed > 0) {
+        toast.error(t`${failed} of ${ordered.length} labels failed`);
+      } else {
+        toast.success(t`Printed ${ordered.length} labels`);
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t`Print failed`);
+    } finally {
+      setIsPrinting(false);
+      setProgress(null);
+      onClose();
+    }
+  }, [checkedIds, bt, widthMm, heightMm, onClose, t]);
+
   // Print straight from the browser: open the server-generated PDF, sized
-  // exactly to the tag (one ticket per page), in a new tab. A real PDF at the
-  // tag dimensions prints and saves at true size on any OS printer or "Save as
-  // PDF" — unlike an HTML page, whose size the print dialog silently overrides.
-  // Opening it in its own tab keeps the PDF (and its URL) visible so it can be
-  // reviewed/shared before printing; print from the viewer (Cmd/Ctrl+P).
+  // exactly to the tag (one ticket per page), in a new tab; print from the
+  // viewer (Cmd/Ctrl+P).
   const handlePrintBrowser = useCallback(() => {
     if (checkedIds.length === 0) return;
     const url = path.to.file.bundleWorkOrderLabelsPdf(checkedIds, {
@@ -138,9 +217,29 @@ const PrintBundleTicketsModal = ({
   // Single Print button routes to whichever destination is selected.
   const handlePrint = useCallback(() => {
     if (checkedIds.length === 0) return;
-    if (destination === BROWSER) handlePrintBrowser();
-    else handleSendToPrinter(destination);
-  }, [checkedIds, destination, handlePrintBrowser, handleSendToPrinter]);
+    if (destination === BLUETOOTH) void handlePrintBluetooth();
+    else if (destination === BROWSER) handlePrintBrowser();
+    else void handleSendToPrinter(destination);
+  }, [
+    checkedIds,
+    destination,
+    handlePrintBluetooth,
+    handlePrintBrowser,
+    handleSendToPrinter
+  ]);
+
+  const statusDot =
+    bt.status === "connected"
+      ? "bg-emerald-500"
+      : bt.status === "connecting"
+        ? "bg-amber-500"
+        : "bg-red-500";
+  const statusText =
+    bt.status === "connected"
+      ? t`Connected` + (bt.deviceName ? ` · ${bt.deviceName}` : "")
+      : bt.status === "connecting"
+        ? t`Connecting…`
+        : t`Not connected`;
 
   return (
     <Modal
@@ -208,6 +307,64 @@ const PrintBundleTicketsModal = ({
               <span className="text-xs text-muted-foreground">
                 <Trans>Print to</Trans>
               </span>
+
+              {bt.supported && (
+                <div
+                  role="button"
+                  tabIndex={0}
+                  className={`flex items-center gap-3 rounded-lg border p-2 text-left transition-colors cursor-pointer ${
+                    destination === BLUETOOTH
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:bg-muted"
+                  }`}
+                  onClick={() => setDestination(BLUETOOTH)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ")
+                      setDestination(BLUETOOTH);
+                  }}
+                >
+                  <LuBluetooth className="size-4 text-muted-foreground shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium">
+                      <Trans>Bluetooth printer</Trans>
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span
+                        className={`inline-block size-2 rounded-full ${statusDot}`}
+                      />
+                      {statusText}
+                    </span>
+                  </div>
+                  {bt.isConnected ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void bt.disconnect();
+                      }}
+                    >
+                      <Trans>Disconnect</Trans>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      isLoading={bt.status === "connecting"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void bt.connect();
+                      }}
+                    >
+                      <Trans>Connect</Trans>
+                    </Button>
+                  )}
+                  {destination === BLUETOOTH && (
+                    <LuCheck className="size-4 text-primary shrink-0" />
+                  )}
+                </div>
+              )}
+
               <button
                 type="button"
                 className={`flex items-center gap-3 rounded-lg border p-2 text-left transition-colors ${
@@ -257,14 +414,15 @@ const PrintBundleTicketsModal = ({
           </div>
         </ModalBody>
         <ModalFooter>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="primary"
               leftIcon={<LuPrinter />}
+              isLoading={isPrinting}
               disabled={checkedIds.length === 0 || isPrinting}
               onClick={handlePrint}
             >
-              <Trans>Print ({checkedIds.length})</Trans>
+              {progress ?? t`Print (${checkedIds.length})`}
             </Button>
             <Button variant="solid" onClick={onClose}>
               <Trans>Cancel</Trans>
