@@ -114,21 +114,16 @@ export async function drawBundleLabelCanvas(
 
   const colGap = Math.round(1.5 * DOTS_PER_MM);
   const colW = (W - 2 * padX - colGap) / 2;
-  // Bold font, plus a hair of stroke on the VALUE (the data) only — enough to
-  // read heavier than the key without the dense CJK blobbing that a full
-  // stroke pass caused.
-  ctx.strokeStyle = "#000";
-  ctx.lineJoin = "round";
+  // Plain bold fill — no stroke pass. Thermal dot-gain already fattens strokes,
+  // so an extra stroke merges dense CJK (黑/颜) into blobs. Darkness is tuned by
+  // the TSPL DENSITY knob instead of by fattening the glyphs.
   const drawColumn = (rows: Array<[string, string]>, x: number) => {
     let y = topPad;
     for (const [k, v] of rows) {
       ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
       ctx.fillText(k, x, y);
       const kw = ctx.measureText(k).width;
-      const vw = Math.max(8, colW - kw);
-      ctx.fillText(v, x + kw, y, vw);
-      ctx.lineWidth = Math.max(0.5, fontPx * 0.03);
-      ctx.strokeText(v, x + kw, y, vw);
+      ctx.fillText(v, x + kw, y, Math.max(8, colW - kw));
       y += rowH;
     }
   };
@@ -193,9 +188,9 @@ export function canvasToTsplLabel(
   const { data } = ctx.getImageData(0, 0, W, H);
 
   const bytesPerRow = Math.ceil(W / 8);
-  // A moderate threshold keeps glyphs solid without fattening the dense CJK
-  // strokes into blobs.
-  const threshold = opts.threshold ?? 170;
+  // Lower threshold keeps only the solid core of each stroke black, so dense
+  // CJK stays legible after thermal dot-gain fattens it.
+  const threshold = opts.threshold ?? 150;
   const mono = new Uint8Array(bytesPerRow * H).fill(0xff); // 1 = white
   let lastBlackRow = 0;
 

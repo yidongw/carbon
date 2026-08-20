@@ -36,6 +36,14 @@ const tagSizeOptions = labelSizes
   .filter((s) => s.id.startsWith("bundleTag"))
   .map((s) => ({ value: s.id, label: getLabelSizeLabel(s) }));
 
+// TSPL print darkness for the Bluetooth path. Higher = darker but thicker; lower
+// = thinner/lighter. Persisted per device.
+const densityOptions = [8, 9, 10, 11, 12, 13, 14, 15].map((d) => ({
+  value: String(d),
+  label: String(d)
+}));
+const DENSITY_KEY = "btLabelDensity";
+
 const PrintBundleTicketsModal = ({
   bundles,
   onClose
@@ -54,6 +62,19 @@ const PrintBundleTicketsModal = ({
     () => new Set(printable.map((b) => b.id!))
   );
   const [tagSize, setTagSize] = useState<string>("bundleTag40x80mm");
+  const [density, setDensity] = useState<number>(() => {
+    if (typeof window === "undefined") return 12;
+    const v = Number(localStorage.getItem(DENSITY_KEY));
+    return Number.isFinite(v) && v >= 1 && v <= 15 ? v : 12;
+  });
+  const changeDensity = useCallback((v: number) => {
+    setDensity(v);
+    try {
+      localStorage.setItem(DENSITY_KEY, String(v));
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   // Bluetooth is the default when the browser supports it (fastest — prints
   // straight to the label printer); otherwise fall back to the browser PDF.
@@ -123,7 +144,7 @@ const PrintBundleTicketsModal = ({
       for (const b of printable) {
         if (cancelled) return;
         const id = b.id!;
-        const key = `${id}|${tagSize}`;
+        const key = `${id}|${tagSize}|${density}`;
         if (bytesCache.current.has(key)) continue;
         const label = labels.get(id);
         if (!label) continue;
@@ -136,7 +157,7 @@ const PrintBundleTicketsModal = ({
           );
           bytesCache.current.set(
             key,
-            canvasToTsplLabel(canvas, { widthMm, heightMm })
+            canvasToTsplLabel(canvas, { widthMm, heightMm, density })
           );
           if (!cancelled) setReadyTick((n) => n + 1);
         } catch {
@@ -148,7 +169,7 @@ const PrintBundleTicketsModal = ({
     return () => {
       cancelled = true;
     };
-  }, [labels, tagSize, widthMm, heightMm, printable]);
+  }, [labels, tagSize, density, widthMm, heightMm, printable]);
 
   const checkedIds = useMemo(
     () => printable.filter((b) => checked.has(b.id!)).map((b) => b.id!),
@@ -186,11 +207,11 @@ const PrintBundleTicketsModal = ({
   const preparedCount = useMemo(() => {
     let c = 0;
     for (const id of checkedIds) {
-      if (bytesCache.current.has(`${id}|${tagSize}`)) c++;
+      if (bytesCache.current.has(`${id}|${tagSize}|${density}`)) c++;
     }
     return c;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedIds, tagSize, readyTick]);
+  }, [checkedIds, tagSize, density, readyTick]);
 
   // Direct Bluetooth print: fetch the full label data (+ QR), render each label
   // to a bitmap, and stream it as TSPL to the connected printer. No PDF, no
@@ -229,7 +250,7 @@ const PrintBundleTicketsModal = ({
         const id = checkedIds[i];
         setProgress(t`Printing ${i + 1}/${total}`);
         try {
-          const key = `${id}|${tagSize}`;
+          const key = `${id}|${tagSize}|${density}`;
           let bytes = bytesCache.current.get(key);
           if (!bytes) {
             const label = labelMap.get(id);
@@ -243,7 +264,7 @@ const PrintBundleTicketsModal = ({
               heightMm,
               true // tags hang hole-end-first — rotate so it reads upright
             );
-            bytes = canvasToTsplLabel(canvas, { widthMm, heightMm });
+            bytes = canvasToTsplLabel(canvas, { widthMm, heightMm, density });
             bytesCache.current.set(key, bytes);
           }
           await bt.sendBytes(bytes, (s, tot) => {
@@ -268,7 +289,7 @@ const PrintBundleTicketsModal = ({
       setProgress(null);
       onClose();
     }
-  }, [checkedIds, bt, labels, tagSize, widthMm, heightMm, onClose, t]);
+  }, [checkedIds, bt, labels, tagSize, density, widthMm, heightMm, onClose, t]);
 
   // Print straight from the browser: open the server-generated PDF, sized
   // exactly to the tag (one ticket per page), in a new tab; print from the
@@ -420,6 +441,22 @@ const PrintBundleTicketsModal = ({
                 onChange={(v) => v && setTagSize(v)}
               />
             </div>
+
+            {bt.supported && (
+              <div className="flex flex-col gap-1 border-t border-border pt-3">
+                <span className="text-xs text-muted-foreground">
+                  <Trans>Print darkness (Bluetooth)</Trans>
+                </span>
+                <Combobox
+                  options={densityOptions}
+                  value={String(density)}
+                  onChange={(v) => v && changeDensity(Number(v))}
+                />
+                <span className="text-[11px] text-muted-foreground">
+                  <Trans>Higher = darker/thicker, lower = thinner. Default 12.</Trans>
+                </span>
+              </div>
+            )}
 
             <div className="flex flex-col gap-1 border-t border-border pt-3">
               <span className="text-xs text-muted-foreground">
