@@ -18,6 +18,7 @@ import { Await, useFetcher, useParams } from "react-router";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { MethodBadge, MethodIcon, TrackingTypeIcon } from "~/components";
+import Assignee, { useOptimisticAssignment } from "~/components/Assignee";
 import {
   Boolean,
   ItemPostingGroup,
@@ -27,7 +28,7 @@ import {
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ItemThumbnailUpload } from "~/components/ItemThumnailUpload";
-import { useRouteData } from "~/hooks";
+import { usePermissions, useRouteData } from "~/hooks";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
@@ -43,6 +44,7 @@ import ItemAttributeEditor from "../Item/ItemAttributeEditor";
 type StyleRouteData = {
   styleSummary: {
     active: boolean | null;
+    assignee: string | null;
     customFields: Json | null;
     defaultMethodType: string | null;
     description: string | null;
@@ -66,11 +68,21 @@ type StyleRouteData = {
 
 const StyleProperties = () => {
   const { t } = useLingui();
+  const permissions = usePermissions();
   const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
   const routeData = useRouteData<StyleRouteData>(path.to.style(itemId));
   if (!routeData) throw new Error("Could not find style data");
+
+  const optimisticAssignment = useOptimisticAssignment({
+    id: itemId,
+    table: "item"
+  });
+  const assignee =
+    optimisticAssignment !== undefined
+      ? optimisticAssignment
+      : routeData.styleSummary.assignee;
 
   const fetcher = useFetcher<typeof action>();
   useEffect(() => {
@@ -266,6 +278,18 @@ const StyleProperties = () => {
         <ItemThumbnailUpload
           path={routeData.styleSummary.thumbnailPath}
           itemId={itemId}
+        />
+      </VStack>
+
+      <VStack spacing={2}>
+        <h3 className="text-xs text-muted-foreground">
+          <Trans>Assignee</Trans>
+        </h3>
+        <Assignee
+          id={itemId}
+          table="item"
+          value={assignee ?? ""}
+          isReadOnly={!permissions.can("update", "parts")}
         />
       </VStack>
 

@@ -13117,9 +13117,6 @@ msgstr "सेक्शन्स"
 msgid "Select"
 msgstr "चुनें"
 
-msgid "Select a assignee"
-msgstr "एक असाइनी चुनें"
-
 msgid "Select a category"
 msgstr "क्लास सिलेक्ट करें"
 

@@ -13117,9 +13117,6 @@ msgstr "Seções"
 msgid "Select"
 msgstr "Selecionar"
 
-msgid "Select a assignee"
-msgstr "Selecione um responsável"
-
 msgid "Select a category"
 msgstr "Selecione uma categoria"
 

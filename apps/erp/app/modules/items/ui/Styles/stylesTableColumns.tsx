@@ -23,6 +23,7 @@ import {
   MethodIcon,
   TrackingTypeIcon
 } from "~/components";
+import Assignee from "~/components/Assignee";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { editableCell, TagsCell } from "~/components/InlineEditor";
 import type { ItemPostingGroupListItem, Style } from "~/modules/items";
@@ -355,6 +356,30 @@ export function buildDefaultStylesTableColumns({
         },
         pluralHeader: i18n._(msg`Active Statuses`),
         icon: <LuCheck />
+      }
+    },
+    {
+      id: "assignee",
+      header: i18n._(msg`Assignee`),
+      cell: ({ row }) => (
+        <Assignee
+          id={row.original.id ?? ""}
+          table="item"
+          value={row.original.assignee ?? ""}
+          variant="button"
+          size="sm"
+        />
+      ),
+      meta: {
+        filter: {
+          type: "static",
+          options: people.map((employee) => ({
+            value: employee.id,
+            label: employee.name
+          }))
+        },
+        icon: <LuUser />,
+        isEmpty: (row: Style) => !row.assignee
       }
     },
     {

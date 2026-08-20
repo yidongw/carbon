@@ -13117,9 +13117,6 @@ msgstr "セクション"
 msgid "Select"
 msgstr "選択"
 
-msgid "Select a assignee"
-msgstr "担当者を選択"
-
 msgid "Select a category"
 msgstr "カテゴリを選択"
 

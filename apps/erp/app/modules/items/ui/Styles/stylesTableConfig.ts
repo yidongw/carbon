@@ -9,6 +9,7 @@ export const defaultStylesTableSharedColumnKeys = [
   "attributes",
   "tags",
   "active",
+  "assignee",
   "createdBy",
   "createdAt",
   "updatedBy",
