@@ -72,6 +72,7 @@ export const path = {
       item: (type: string) => generatePath(`${api}/item/${type}`),
       itemCostRecalculate: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/recalculate-cost`),
+      itemBomVariants: `${api}/items/bom-variants`,
       itemConfigurable: `${api}/items/configurable`,
       itemForecast: (itemId: string, locationId: string) =>
         generatePath(`${api}/items/${itemId}/${locationId}/forecast`),

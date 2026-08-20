@@ -128,6 +128,61 @@ export async function loadVariantCombos(
 }
 
 /**
+ * Leaf variant SKUs usable as BOM components, company-wide.
+ *
+ * Default item pickers list variant PARENTS (users browse templates; inventory
+ * and jobs resolve to children under the hood). The BOM component picker is the
+ * exception: you consume a concrete SKU, not the abstract parent, so it needs
+ * every variant child keyed by the stable `variantItemId`, with its
+ * `parentItemId` (so the picker can drop the parent) and a readable `attributes`
+ * combo (e.g. "Blue|M"). Parent name/readableId are read from the items store on
+ * the client, so they aren't duplicated here.
+ *
+ * Lives here (next to loadVariantCombos) rather than in items.service so the
+ * BOM-variants route and its integration test don't pull in that module's heavy
+ * import graph.
+ */
+export type BomComponentVariant = {
+  variantItemId: string;
+  parentItemId: string;
+  attributes: string;
+};
+
+export async function getBomComponentVariants(
+  client: Db,
+  companyId: string
+): Promise<{ data: BomComponentVariant[] | null; error: unknown }> {
+  const db = client as any;
+  const variants = await db
+    .from("itemVariant")
+    .select("parentItemId, variantItemId")
+    .eq("companyId", companyId);
+  if (variants.error) return { data: null, error: variants.error };
+
+  const rows = ((variants.data ?? []) as Array<{
+    parentItemId: string | null;
+    variantItemId: string | null;
+  }>).filter(
+    (r): r is { parentItemId: string; variantItemId: string } =>
+      Boolean(r.parentItemId) && Boolean(r.variantItemId)
+  );
+
+  const combos = await loadVariantCombos(
+    client,
+    rows.map((r) => r.variantItemId),
+    companyId
+  );
+
+  const data: BomComponentVariant[] = rows.map((r) => ({
+    variantItemId: r.variantItemId,
+    parentItemId: r.parentItemId,
+    attributes: combos.get(r.variantItemId) ?? ""
+  }));
+
+  return { data, error: null };
+}
+
+/**
  * Build a single list parameter from the item's attribute set + selections so
  * Style qty editors work without configurationParameter dual-write.
  *
