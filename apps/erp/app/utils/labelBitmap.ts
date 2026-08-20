@@ -116,9 +116,10 @@ export async function drawBundleLabelCanvas(
   const contentBottom = H - holeReserve;
   const contentH = contentBottom - topPad;
 
-  // Two columns, mirroring the PDF ticket: left = 款号 + attributes + 数量,
-  // right = 客户/车间/扎号/总扎/总裁. Color/size come as localized name/value
-  // pairs in attributeLines (with attributeLabel as a single-line fallback).
+  // 款号 gets its own full-width row up top (style names can be long), then two
+  // columns below: left = attributes + 数量, right = 客户/车间/扎号/总扎/总裁.
+  // Color/size come as localized name/value pairs in attributeLines
+  // (attributeLabel is a single-line fallback).
   const attrFields: Array<[string, unknown]> =
     label.attributeLines && label.attributeLines.length > 0
       ? label.attributeLines.map((l) => [`${l.name}: `, l.value])
@@ -129,11 +130,10 @@ export async function drawBundleLabelCanvas(
     fields
       .filter(([, v]) => present(v))
       .map(([k, v]) => [k, String(v)] as [string, string]);
-  const leftRows = toRows([
-    ["款号: ", label.styleReadableId],
-    ...attrFields,
-    ["数量: ", label.quantity]
-  ]);
+  const styleValue = present(label.styleReadableId)
+    ? String(label.styleReadableId)
+    : "";
+  const leftRows = toRows([...attrFields, ["数量: ", label.quantity]]);
   const rightRows = toRows([
     ["客户: ", label.customerName],
     ["车间: ", label.workCenterName],
@@ -142,18 +142,31 @@ export async function drawBundleLabelCanvas(
     ["总裁: ", label.totalCut]
   ]);
 
-  const maxRows = Math.max(1, leftRows.length, rightRows.length);
+  const colRows = Math.max(1, leftRows.length, rightRows.length);
+  const totalRows = colRows + (styleValue ? 1 : 0);
   const fieldsBudget = contentH * 0.52;
-  const rowH = fieldsBudget / maxRows;
+  const rowH = fieldsBudget / totalRows;
   const fontPx = Math.max(14, Math.min(26, Math.floor(rowH * 0.66)));
 
   const colGap = Math.round(1.5 * DOTS_PER_MM);
   const colW = (W - 2 * padX - colGap) / 2;
+
   // Plain bold fill — no stroke pass. Thermal dot-gain already fattens strokes,
-  // so an extra stroke merges dense CJK (黑/颜) into blobs. Darkness is tuned by
+  // so an extra stroke merges dense CJK (黑/颜) into blobs; darkness is tuned by
   // the TSPL DENSITY knob instead of by fattening the glyphs.
+  let colTop = topPad;
+  if (styleValue) {
+    const key = "款号: ";
+    ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
+    ctx.fillText(key, padX, topPad);
+    const kw = ctx.measureText(key).width;
+    // The value spans the whole width; a very long name shrinks to fit.
+    ctx.fillText(styleValue, padX + kw, topPad, W - padX - kw - padX);
+    colTop = topPad + rowH;
+  }
+
   const drawColumn = (rows: Array<[string, string]>, x: number) => {
-    let y = topPad;
+    let y = colTop;
     for (const [k, v] of rows) {
       ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
       ctx.fillText(k, x, y);
