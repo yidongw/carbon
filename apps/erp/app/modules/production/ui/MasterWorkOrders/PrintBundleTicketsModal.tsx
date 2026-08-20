@@ -41,6 +41,48 @@ const tagSizeOptions = labelSizes
   .filter((s) => s.id.startsWith("bundleTag"))
   .map((s) => ({ value: s.id, label: getLabelSizeLabel(s) }));
 
+// A determinate ring that both spins and grows its arc from a dot to a full
+// circle as `value` goes 0 -> 1 (Spinner is indeterminate; Progress is a bar).
+function ProgressRing({
+  value,
+  size = 16
+}: {
+  value: number;
+  size?: number;
+}) {
+  const stroke = 2;
+  const half = size / 2;
+  const r = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * r;
+  const frac = Math.max(0.08, Math.min(1, value)); // keep a visible dot at 0
+  return (
+    <span className="inline-flex animate-spin">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none">
+        <circle
+          cx={half}
+          cy={half}
+          r={r}
+          stroke="currentColor"
+          strokeOpacity={0.25}
+          strokeWidth={stroke}
+        />
+        <circle
+          cx={half}
+          cy={half}
+          r={r}
+          stroke="currentColor"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - frac)}
+          transform={`rotate(-90 ${half} ${half})`}
+          style={{ transition: "stroke-dashoffset 150ms linear" }}
+        />
+      </svg>
+    </span>
+  );
+}
+
 const PrintBundleTicketsModal = ({
   bundles,
   onClose
@@ -551,21 +593,17 @@ const PrintBundleTicketsModal = ({
           <div className="flex items-center gap-2">
             <Button
               variant="primary"
-              leftIcon={isPrinting ? undefined : <LuPrinter />}
-              className="relative overflow-hidden"
+              leftIcon={
+                isPrinting ? (
+                  <ProgressRing value={printFrac} />
+                ) : (
+                  <LuPrinter />
+                )
+              }
               disabled={checkedIds.length === 0 || isPrinting}
               onClick={handlePrint}
             >
-              {/* Transfer progress fills the button from the left while printing. */}
-              {isPrinting && (
-                <span
-                  className="absolute inset-y-0 left-0 bg-primary-foreground/25 transition-[width] duration-150"
-                  style={{ width: `${Math.round(printFrac * 100)}%` }}
-                />
-              )}
-              <span className="relative z-[1]">
-                {progress ?? t`Print (${checkedIds.length})`}
-              </span>
+              {progress ?? t`Print (${checkedIds.length})`}
             </Button>
             <Button variant="solid" onClick={onClose}>
               <Trans>Cancel</Trans>
