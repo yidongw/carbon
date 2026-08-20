@@ -19,7 +19,12 @@ import { usePrinting } from "~/hooks";
 import { useBluetoothLabelPrinter } from "~/hooks/useBluetoothLabelPrinter";
 import type { BundleWorkOrder } from "~/modules/production";
 import type { BundleLabelData } from "~/utils/labelBitmap";
-import { canvasToTsplLabel, drawBundleLabelCanvas } from "~/utils/labelBitmap";
+import {
+  canvasToTsplLabel,
+  drawBundleLabelCanvas,
+  readLabelDensity,
+  readLabelThreshold
+} from "~/utils/labelBitmap";
 import { path } from "~/utils/path";
 
 type PrintBundleTicketsModalProps = {
@@ -35,14 +40,6 @@ const BROWSER = "browser";
 const tagSizeOptions = labelSizes
   .filter((s) => s.id.startsWith("bundleTag"))
   .map((s) => ({ value: s.id, label: getLabelSizeLabel(s) }));
-
-// TSPL print darkness for the Bluetooth path. Higher = darker but thicker; lower
-// = thinner/lighter. Persisted per device.
-const densityOptions = [8, 9, 10, 11, 12, 13, 14, 15].map((d) => ({
-  value: String(d),
-  label: String(d)
-}));
-const DENSITY_KEY = "btLabelDensity";
 
 const PrintBundleTicketsModal = ({
   bundles,
@@ -62,19 +59,10 @@ const PrintBundleTicketsModal = ({
     () => new Set(printable.map((b) => b.id!))
   );
   const [tagSize, setTagSize] = useState<string>("bundleTag40x80mm");
-  const [density, setDensity] = useState<number>(() => {
-    if (typeof window === "undefined") return 12;
-    const v = Number(localStorage.getItem(DENSITY_KEY));
-    return Number.isFinite(v) && v >= 1 && v <= 15 ? v : 12;
-  });
-  const changeDensity = useCallback((v: number) => {
-    setDensity(v);
-    try {
-      localStorage.setItem(DENSITY_KEY, String(v));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  // Printer darkness/weight are per-device settings edited on the This Device
+  // page; read them once when the dialog opens.
+  const [density] = useState<number>(() => readLabelDensity());
+  const [threshold] = useState<number>(() => readLabelThreshold());
 
   // Bluetooth is the default when the browser supports it (fastest — prints
   // straight to the label printer); otherwise fall back to the browser PDF.
@@ -144,7 +132,7 @@ const PrintBundleTicketsModal = ({
       for (const b of printable) {
         if (cancelled) return;
         const id = b.id!;
-        const key = `${id}|${tagSize}|${density}`;
+        const key = `${id}|${tagSize}|${density}|${threshold}`;
         if (bytesCache.current.has(key)) continue;
         const label = labels.get(id);
         if (!label) continue;
@@ -157,7 +145,7 @@ const PrintBundleTicketsModal = ({
           );
           bytesCache.current.set(
             key,
-            canvasToTsplLabel(canvas, { widthMm, heightMm, density })
+            canvasToTsplLabel(canvas, { widthMm, heightMm, density, threshold })
           );
           if (!cancelled) setReadyTick((n) => n + 1);
         } catch {
@@ -169,7 +157,7 @@ const PrintBundleTicketsModal = ({
     return () => {
       cancelled = true;
     };
-  }, [labels, tagSize, density, widthMm, heightMm, printable]);
+  }, [labels, tagSize, density, threshold, widthMm, heightMm, printable]);
 
   const checkedIds = useMemo(
     () => printable.filter((b) => checked.has(b.id!)).map((b) => b.id!),
@@ -207,11 +195,12 @@ const PrintBundleTicketsModal = ({
   const preparedCount = useMemo(() => {
     let c = 0;
     for (const id of checkedIds) {
-      if (bytesCache.current.has(`${id}|${tagSize}|${density}`)) c++;
+      if (bytesCache.current.has(`${id}|${tagSize}|${density}|${threshold}`))
+        c++;
     }
     return c;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedIds, tagSize, density, readyTick]);
+  }, [checkedIds, tagSize, density, threshold, readyTick]);
 
   // Direct Bluetooth print: fetch the full label data (+ QR), render each label
   // to a bitmap, and stream it as TSPL to the connected printer. No PDF, no
@@ -250,7 +239,7 @@ const PrintBundleTicketsModal = ({
         const id = checkedIds[i];
         setProgress(t`Printing ${i + 1}/${total}`);
         try {
-          const key = `${id}|${tagSize}|${density}`;
+          const key = `${id}|${tagSize}|${density}|${threshold}`;
           let bytes = bytesCache.current.get(key);
           if (!bytes) {
             const label = labelMap.get(id);
@@ -264,7 +253,12 @@ const PrintBundleTicketsModal = ({
               heightMm,
               true // tags hang hole-end-first — rotate so it reads upright
             );
-            bytes = canvasToTsplLabel(canvas, { widthMm, heightMm, density });
+            bytes = canvasToTsplLabel(canvas, {
+              widthMm,
+              heightMm,
+              density,
+              threshold
+            });
             bytesCache.current.set(key, bytes);
           }
           await bt.sendBytes(bytes, (s, tot) => {
@@ -289,7 +283,18 @@ const PrintBundleTicketsModal = ({
       setProgress(null);
       onClose();
     }
-  }, [checkedIds, bt, labels, tagSize, density, widthMm, heightMm, onClose, t]);
+  }, [
+    checkedIds,
+    bt,
+    labels,
+    tagSize,
+    density,
+    threshold,
+    widthMm,
+    heightMm,
+    onClose,
+    t
+  ]);
 
   // Print straight from the browser: open the server-generated PDF, sized
   // exactly to the tag (one ticket per page), in a new tab; print from the
@@ -382,17 +387,6 @@ const PrintBundleTicketsModal = ({
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-3">
-            {isPrinting && (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium">{progress}</span>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-primary transition-[width] duration-150"
-                    style={{ width: `${Math.round(printFrac * 100)}%` }}
-                  />
-                </div>
-              </div>
-            )}
             <div className="flex flex-col gap-2">
               <button
                 type="button"
@@ -441,22 +435,6 @@ const PrintBundleTicketsModal = ({
                 onChange={(v) => v && setTagSize(v)}
               />
             </div>
-
-            {bt.supported && (
-              <div className="flex flex-col gap-1 border-t border-border pt-3">
-                <span className="text-xs text-muted-foreground">
-                  <Trans>Print darkness (Bluetooth)</Trans>
-                </span>
-                <Combobox
-                  options={densityOptions}
-                  value={String(density)}
-                  onChange={(v) => v && changeDensity(Number(v))}
-                />
-                <span className="text-[11px] text-muted-foreground">
-                  <Trans>Higher = darker/thicker, lower = thinner. Default 12.</Trans>
-                </span>
-              </div>
-            )}
 
             <div className="flex flex-col gap-1 border-t border-border pt-3">
               <span className="text-xs text-muted-foreground">
@@ -569,27 +547,40 @@ const PrintBundleTicketsModal = ({
           </div>
         </ModalBody>
         <ModalFooter>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="primary"
-              leftIcon={<LuPrinter />}
-              isLoading={isPrinting}
-              disabled={checkedIds.length === 0 || isPrinting}
-              onClick={handlePrint}
-            >
-              {progress ?? t`Print (${checkedIds.length})`}
-            </Button>
-            <Button variant="solid" onClick={onClose}>
-              <Trans>Cancel</Trans>
-            </Button>
-            {destination === BLUETOOTH &&
-              !isPrinting &&
-              checkedIds.length > 0 &&
-              preparedCount < checkedIds.length && (
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {t`Preparing ${preparedCount}/${checkedIds.length}`}
-                </span>
-              )}
+          <div className="flex w-full flex-col gap-2">
+            {isPrinting && (
+              <div
+                className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
+                aria-label={progress ?? undefined}
+              >
+                <div
+                  className="h-full rounded-full bg-primary transition-[width] duration-150"
+                  style={{ width: `${Math.round(printFrac * 100)}%` }}
+                />
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="primary"
+                leftIcon={<LuPrinter />}
+                isLoading={isPrinting}
+                disabled={checkedIds.length === 0 || isPrinting}
+                onClick={handlePrint}
+              >
+                {progress ?? t`Print (${checkedIds.length})`}
+              </Button>
+              <Button variant="solid" onClick={onClose}>
+                <Trans>Cancel</Trans>
+              </Button>
+              {destination === BLUETOOTH &&
+                !isPrinting &&
+                checkedIds.length > 0 &&
+                preparedCount < checkedIds.length && (
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {t`Preparing ${preparedCount}/${checkedIds.length}`}
+                  </span>
+                )}
+            </div>
           </div>
         </ModalFooter>
       </ModalContent>

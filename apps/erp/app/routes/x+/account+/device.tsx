@@ -21,6 +21,14 @@ import {
   writeScreensaverMinutes
 } from "~/components/Screensaver";
 import type { Handle } from "~/utils/handle";
+import {
+  DEFAULT_DENSITY,
+  DEFAULT_THRESHOLD,
+  readLabelDensity,
+  readLabelThreshold,
+  writeLabelDensity,
+  writeLabelThreshold
+} from "~/utils/labelBitmap";
 import { path } from "~/utils/path";
 
 export const handle: Handle = {
@@ -33,6 +41,8 @@ export const handle: Handle = {
 export default function DeviceSettingsRoute() {
   const [enabled, setEnabled] = useState(false);
   const [minutes, setMinutes] = useState(3);
+  const [density, setDensity] = useState(DEFAULT_DENSITY);
+  const [threshold, setThreshold] = useState(DEFAULT_THRESHOLD);
 
   // Load current per-device values on mount (localStorage is client-only).
   useEffect(() => {
@@ -44,7 +54,23 @@ export default function DeviceSettingsRoute() {
       setEnabled(stored > 0);
       setMinutes(stored > 0 ? stored : 3);
     }
+    setDensity(readLabelDensity());
+    setThreshold(readLabelThreshold());
   }, []);
+
+  const savePrinter = () => {
+    writeLabelDensity(density);
+    writeLabelThreshold(threshold);
+    toast.success("已保存到本设备");
+  };
+
+  const resetPrinter = () => {
+    setDensity(DEFAULT_DENSITY);
+    setThreshold(DEFAULT_THRESHOLD);
+    writeLabelDensity(DEFAULT_DENSITY);
+    writeLabelThreshold(DEFAULT_THRESHOLD);
+    toast.success("已恢复默认");
+  };
 
   const save = () => {
     writeScreensaverMinutes(enabled ? Math.max(1, minutes) : 0);
@@ -108,6 +134,74 @@ export default function DeviceSettingsRoute() {
                 <Trans>Save</Trans>
               </Button>
               <Button variant="secondary" onClick={reset}>
+                <Trans>Reset to default</Trans>
+              </Button>
+            </HStack>
+          </VStack>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <Trans>Bluetooth label printer</Trans>
+          </CardTitle>
+          <CardDescription>
+            <Trans>
+              Only applies to this device — the darkness and stroke weight used
+              when printing labels to the Bluetooth label printer connected to
+              this terminal.
+            </Trans>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <VStack spacing={4}>
+            <VStack spacing={1} className="w-full max-w-[220px]">
+              <Label htmlFor="bt-density">
+                <Trans>Print darkness (density)</Trans>
+              </Label>
+              <NumberField
+                value={density}
+                minValue={1}
+                maxValue={15}
+                onChange={(v) =>
+                  setDensity(Number.isFinite(v) ? v : DEFAULT_DENSITY)
+                }
+              >
+                <NumberInput id="bt-density" className="w-full" />
+              </NumberField>
+              <span className="text-[11px] text-muted-foreground">
+                <Trans>Higher = darker. Default 11.</Trans>
+              </span>
+            </VStack>
+
+            <VStack spacing={1} className="w-full max-w-[220px]">
+              <Label htmlFor="bt-threshold">
+                <Trans>Stroke thinness (threshold)</Trans>
+              </Label>
+              <NumberField
+                value={threshold}
+                minValue={60}
+                maxValue={240}
+                onChange={(v) =>
+                  setThreshold(Number.isFinite(v) ? v : DEFAULT_THRESHOLD)
+                }
+              >
+                <NumberInput id="bt-threshold" className="w-full" />
+              </NumberField>
+              <span className="text-[11px] text-muted-foreground">
+                <Trans>
+                  Lower = thinner strokes (dense Chinese stays legible). Default
+                  150.
+                </Trans>
+              </span>
+            </VStack>
+
+            <HStack spacing={2}>
+              <Button onClick={savePrinter}>
+                <Trans>Save</Trans>
+              </Button>
+              <Button variant="secondary" onClick={resetPrinter}>
                 <Trans>Reset to default</Trans>
               </Button>
             </HStack>

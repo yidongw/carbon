@@ -32,6 +32,41 @@ export type BundleLabelData = {
 const CJK_FONT =
   '"Microsoft YaHei","PingFang SC","Noto Sans SC","Hiragino Sans GB",sans-serif';
 
+// --- Per-device Bluetooth printer tuning (localStorage) ---------------------
+// These belong to the physical printer connected to this terminal, so they live
+// in localStorage and are edited on the "This Device" settings page — not in the
+// print dialog. DENSITY = burn darkness; THRESHOLD = how much of each glyph edge
+// prints (lower = thinner).
+const DENSITY_KEY = "btLabelDensity";
+const THRESHOLD_KEY = "btLabelThreshold";
+export const DEFAULT_DENSITY = 11;
+export const DEFAULT_THRESHOLD = 150;
+
+export function readLabelDensity(): number {
+  if (typeof window === "undefined") return DEFAULT_DENSITY;
+  const v = Number(localStorage.getItem(DENSITY_KEY));
+  return Number.isFinite(v) && v >= 1 && v <= 15 ? v : DEFAULT_DENSITY;
+}
+export function writeLabelDensity(v: number): void {
+  try {
+    localStorage.setItem(DENSITY_KEY, String(v));
+  } catch {
+    /* ignore */
+  }
+}
+export function readLabelThreshold(): number {
+  if (typeof window === "undefined") return DEFAULT_THRESHOLD;
+  const v = Number(localStorage.getItem(THRESHOLD_KEY));
+  return Number.isFinite(v) && v >= 60 && v <= 240 ? v : DEFAULT_THRESHOLD;
+}
+export function writeLabelThreshold(v: number): void {
+  try {
+    localStorage.setItem(THRESHOLD_KEY, String(v));
+  } catch {
+    /* ignore */
+  }
+}
+
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -190,7 +225,7 @@ export function canvasToTsplLabel(
   const bytesPerRow = Math.ceil(W / 8);
   // Lower threshold keeps only the solid core of each stroke black, so dense
   // CJK stays legible after thermal dot-gain fattens it.
-  const threshold = opts.threshold ?? 150;
+  const threshold = opts.threshold ?? DEFAULT_THRESHOLD;
   const mono = new Uint8Array(bytesPerRow * H).fill(0xff); // 1 = white
   let lastBlackRow = 0;
 
@@ -215,7 +250,7 @@ export function canvasToTsplLabel(
   const header = ascii(
     `SIZE ${opts.widthMm} mm,${opts.heightMm} mm\r\n` +
       `GAP ${opts.gapMm ?? 2} mm,0 mm\r\n` +
-      `DENSITY ${opts.density ?? 12}\r\n` +
+      `DENSITY ${opts.density ?? DEFAULT_DENSITY}\r\n` +
       `SPEED ${opts.speed ?? 4}\r\n` +
       `DIRECTION 1\r\n` +
       `REFERENCE 0,0\r\n` +
