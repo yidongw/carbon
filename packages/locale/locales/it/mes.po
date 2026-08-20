@@ -3776,6 +3776,9 @@ msgstr "Fallito aggiornamento riga offerta fornitore"
 msgid "Failed to update suppliers"
 msgstr "Fallito aggiornamento fornitori"
 
+msgid "Failed to update tags"
+msgstr "Fallito aggiornamento etichette"
+
 msgid "Failed to update task status"
 msgstr "Fallito aggiornamento stato compito"
 

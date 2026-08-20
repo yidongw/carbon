@@ -746,7 +746,12 @@ const JobsTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <TagsCell row={row.original} table="job" availableTags={tags} />
+            <TagsCell
+              tagKey={row.original.id}
+              tags={row.original.tags}
+              table="job"
+              availableTags={tags}
+            />
           ),
           meta: {
             filter: {

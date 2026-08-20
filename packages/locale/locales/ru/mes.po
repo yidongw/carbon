@@ -3776,6 +3776,9 @@ msgstr "Не удалось обновить строку предложения
 msgid "Failed to update suppliers"
 msgstr "Не удалось обновить поставщиков"
 
+msgid "Failed to update tags"
+msgstr "Не удалось обновить теги"
+
 msgid "Failed to update task status"
 msgstr "Не удалось обновить статус задачи"
 

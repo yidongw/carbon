@@ -310,7 +310,12 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <TagsCell row={row.original} table="tool" availableTags={tags} />
+          <TagsCell
+            tagKey={row.original.readableId}
+            tags={row.original.tags}
+            table="tool"
+            availableTags={tags}
+          />
         ),
         meta: {
           filter: {

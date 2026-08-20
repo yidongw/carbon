@@ -3776,6 +3776,9 @@ msgstr "Échec de la mise à jour de la ligne de devis fournisseur"
 msgid "Failed to update suppliers"
 msgstr "Échec de la mise à jour des fournisseurs"
 
+msgid "Failed to update tags"
+msgstr "Échec de mise à jour des étiquettes"
+
 msgid "Failed to update task status"
 msgstr "Échec de mise à jour du statut de la tâche"
 

@@ -269,7 +269,8 @@ const ConsumablesTable = memo(
           header: t`Tags`,
           cell: ({ row }) => (
             <TagsCell
-              row={row.original}
+              tagKey={row.original.readableId}
+              tags={row.original.tags}
               table="consumable"
               availableTags={tags}
             />

@@ -400,7 +400,12 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <TagsCell row={row.original} table="material" availableTags={tags} />
+          <TagsCell
+            tagKey={row.original.readableId}
+            tags={row.original.tags}
+            table="material"
+            availableTags={tags}
+          />
         ),
         meta: {
           filter: {

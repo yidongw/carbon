@@ -7742,6 +7742,9 @@ msgstr "サプライヤー見本ラインの更新に失敗しました"
 msgid "Failed to update suppliers"
 msgstr "サプライヤー情報の更新に失敗しました"
 
+msgid "Failed to update tags"
+msgstr "タグの更新に失敗しました"
+
 msgid "Failed to update task status"
 msgstr "タスクのステータスを更新できませんでした"
 

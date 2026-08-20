@@ -7742,6 +7742,9 @@ msgstr "फ़ाइल को अपडेट करने में विफ�
 msgid "Failed to update suppliers"
 msgstr "संपादन विक्रेताओं में फ़ाग हुआ"
 
+msgid "Failed to update tags"
+msgstr "टैग अपडेट करने में विफल"
+
 msgid "Failed to update task status"
 msgstr "टास्क स्टेटस अपडेट करने में व़िशिष्ट रूप से फाल्टी"
 

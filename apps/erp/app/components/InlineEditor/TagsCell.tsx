@@ -22,20 +22,6 @@ function TagsPreview(value: string[]) {
   );
 }
 
-// Item sub-tables (part/tool/material/…) have no separate readableId column —
-// their PK `id` IS the readable id, so the tags action's `.in("id", ...)` must be
-// fed the row's readableId. Every other entity (customer, supplier, job, …) has a
-// UUID `id` PK (readableId, if present, is a distinct display column), so those
-// must be fed the row's `id`. Matches how the detail-page tag editors submit.
-const READABLE_ID_TABLES = new Set([
-  "part",
-  "tool",
-  "material",
-  "consumable",
-  "service",
-  "fixture"
-]);
-
 // Stable fallback for rows whose view returns NULL tags. Inlining `?? []`
 // would mint a new array every render, so useSynced's resync effect fires
 // each time and setState-loops forever — the loop starves React's transition
@@ -49,26 +35,30 @@ const NO_TAGS: string[] = [];
  * the shared overlay. Persists to the shared tags action (keyed by the row id +
  * table), which is separate from the module bulk-update action.
  */
-export function TagsCell<
-  TRow extends {
-    id?: string | null;
-    readableId?: string | null;
-    tags?: string[] | null;
-  }
->({
-  row,
+export function TagsCell({
+  tagKey,
+  tags,
   table,
   availableTags
 }: {
-  row: TRow;
-  /** Underlying table name the tags action writes to, e.g. "part", "material". */
+  /**
+   * The row's primary key in `table` — the value the tags action matches on
+   * (`.in("id", ...)`). Item extension tables (part/tool/material/consumable/
+   * style, …) are keyed by `readableId`; every other entity is keyed by `id`.
+   * The caller passes it explicitly because the list VIEW's `id` is the item
+   * UUID for item tables, so it would silently match no rows if used there.
+   */
+  tagKey: string | null | undefined;
+  /** The row's current tags, from the list view. */
+  tags: string[] | null | undefined;
+  /** Underlying table name the tags action writes to, e.g. "part", "style". */
   table: string;
   availableTags: { name: string }[];
 }) {
   const fetcher = useFetcher();
   const { openOverlay } = useOverlay();
   const revalidator = useRevalidator();
-  const [value, setValue] = useSynced<string[]>(row.tags ?? NO_TAGS);
+  const [value, setValue] = useSynced<string[]>(tags ?? NO_TAGS);
 
   const options = useMemo(
     () => availableTags.map((t) => ({ value: t.name, label: t.name })),
@@ -78,10 +68,7 @@ export function TagsCell<
   const submit = (next: string[]) => {
     setValue(next);
     const formData = new FormData();
-    const rowId = READABLE_ID_TABLES.has(table)
-      ? (row.readableId ?? row.id)
-      : (row.id ?? row.readableId);
-    formData.append("ids", rowId ?? "");
+    formData.append("ids", tagKey ?? "");
     formData.append("table", table);
     next.forEach((v) => {
       formData.append("value", v);

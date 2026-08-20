@@ -1097,6 +1097,7 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Failed to update supplier type": msg`Failed to update supplier type`,
   "Failed to update supplierQuote line": msg`Failed to update supplierQuote line`,
   "Failed to update suppliers": msg`Failed to update suppliers`,
+  "Failed to update tags": msg`Failed to update tags`,
   "Failed to update task status": msg`Failed to update task status`,
   "Failed to update task supplier": msg`Failed to update task supplier`,
   "Failed to update timecard": msg`Failed to update timecard`,
