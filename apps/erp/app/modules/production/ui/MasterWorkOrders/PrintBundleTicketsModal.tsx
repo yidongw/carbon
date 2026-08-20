@@ -13,7 +13,7 @@ import {
 } from "@carbon/react";
 import { getLabelSizeLabel, labelSizes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LuBluetooth, LuCheck, LuMonitor, LuPrinter } from "react-icons/lu";
 import { usePrinting } from "~/hooks";
 import { useBluetoothLabelPrinter } from "~/hooks/useBluetoothLabelPrinter";
@@ -63,6 +63,15 @@ const PrintBundleTicketsModal = ({
   const [isPrinting, setIsPrinting] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
 
+  // Pre-fetch label data and pre-build the TSPL bytes while the worker reviews
+  // the list, so clicking Print streams to the printer immediately instead of
+  // fetching + rendering on demand. Bytes are cached per (bundle, tag size).
+  const [labels, setLabels] = useState<Map<string, BundleLabelData> | null>(
+    null
+  );
+  const bytesCache = useRef<Map<string, Uint8Array>>(new Map());
+  const [readyTick, setReadyTick] = useState(0);
+
   // Silently re-attach to the last printer when the modal opens, so the status
   // shows green (and Print just works) without a chooser prompt.
   useEffect(() => {
@@ -78,6 +87,67 @@ const PrintBundleTicketsModal = ({
   );
   const widthMm = Math.round((size?.width ?? 1.5748) * 25.4);
   const heightMm = Math.round((size?.height ?? 3.1496) * 25.4);
+
+  // Fetch label data (+ QR) for everything in the list once when the modal
+  // opens, so the bytes can be pre-built and Print never waits on the network.
+  useEffect(() => {
+    let cancelled = false;
+    const ids = printable.map((b) => b.id!);
+    if (ids.length === 0) return;
+    (async () => {
+      try {
+        const res = await fetch(
+          path.to.file.bundleWorkOrderLabelsJson(ids)
+        );
+        if (!res.ok) return;
+        const { labels: arr } = (await res.json()) as {
+          labels: BundleLabelData[];
+        };
+        if (!cancelled) setLabels(new Map(arr.map((l) => [l.id, l])));
+      } catch {
+        /* Print falls back to an on-demand fetch */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [printable]);
+
+  // Pre-render each label to TSPL bytes for the current tag size (yielding
+  // between labels so the UI stays responsive). Cached by (bundle, size).
+  useEffect(() => {
+    if (!labels) return;
+    let cancelled = false;
+    (async () => {
+      for (const b of printable) {
+        if (cancelled) return;
+        const id = b.id!;
+        const key = `${id}|${tagSize}`;
+        if (bytesCache.current.has(key)) continue;
+        const label = labels.get(id);
+        if (!label) continue;
+        try {
+          const canvas = await drawBundleLabelCanvas(
+            label,
+            widthMm,
+            heightMm,
+            true
+          );
+          bytesCache.current.set(
+            key,
+            canvasToTsplLabel(canvas, { widthMm, heightMm })
+          );
+          if (!cancelled) setReadyTick((n) => n + 1);
+        } catch {
+          /* skip; Print rebuilds on demand */
+        }
+        await new Promise((r) => setTimeout(r, 0));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [labels, tagSize, widthMm, heightMm, printable]);
 
   const checkedIds = useMemo(
     () => printable.filter((b) => checked.has(b.id!)).map((b) => b.id!),
@@ -109,6 +179,18 @@ const PrintBundleTicketsModal = ({
     [printable]
   );
 
+  // How many of the checked labels are already rendered (bytes cached) for the
+  // current size — drives the "preparing" hint. readyTick forces recompute as
+  // the pre-build effect fills the cache.
+  const preparedCount = useMemo(() => {
+    let c = 0;
+    for (const id of checkedIds) {
+      if (bytesCache.current.has(`${id}|${tagSize}`)) c++;
+    }
+    return c;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedIds, tagSize, readyTick]);
+
   // Direct Bluetooth print: fetch the full label data (+ QR), render each label
   // to a bitmap, and stream it as TSPL to the connected printer. No PDF, no
   // print dialog. Requires an already-connected printer (connect via the row
@@ -125,27 +207,42 @@ const PrintBundleTicketsModal = ({
     }
     setIsPrinting(true);
     try {
-      const res = await fetch(
-        path.to.file.bundleWorkOrderLabelsJson(checkedIds)
-      );
-      if (!res.ok) throw new Error(t`Failed to load label data`);
-      const { labels } = (await res.json()) as { labels: BundleLabelData[] };
-      const byId = new Map(labels.map((l) => [l.id, l]));
-      const ordered = checkedIds
-        .map((id) => byId.get(id))
-        .filter((l): l is BundleLabelData => Boolean(l));
+      // Use prefetched data; only hit the network if the prefetch hasn't landed.
+      let labelMap = labels;
+      if (!labelMap) {
+        const res = await fetch(
+          path.to.file.bundleWorkOrderLabelsJson(checkedIds)
+        );
+        if (!res.ok) throw new Error(t`Failed to load label data`);
+        const { labels: arr } = (await res.json()) as {
+          labels: BundleLabelData[];
+        };
+        labelMap = new Map(arr.map((l) => [l.id, l]));
+        setLabels(labelMap);
+      }
 
       let failed = 0;
-      for (let i = 0; i < ordered.length; i++) {
-        setProgress(t`Printing ${i + 1}/${ordered.length}`);
+      for (let i = 0; i < checkedIds.length; i++) {
+        const id = checkedIds[i];
+        setProgress(t`Printing ${i + 1}/${checkedIds.length}`);
         try {
-          const canvas = await drawBundleLabelCanvas(
-            ordered[i],
-            widthMm,
-            heightMm,
-            true // tags hang hole-end-first — rotate so it reads upright
-          );
-          const bytes = canvasToTsplLabel(canvas, { widthMm, heightMm });
+          const key = `${id}|${tagSize}`;
+          let bytes = bytesCache.current.get(key);
+          if (!bytes) {
+            const label = labelMap.get(id);
+            if (!label) {
+              failed++;
+              continue;
+            }
+            const canvas = await drawBundleLabelCanvas(
+              label,
+              widthMm,
+              heightMm,
+              true // tags hang hole-end-first — rotate so it reads upright
+            );
+            bytes = canvasToTsplLabel(canvas, { widthMm, heightMm });
+            bytesCache.current.set(key, bytes);
+          }
           await bt.sendBytes(bytes);
           // Let the printer finish this label before streaming the next.
           await new Promise((r) => setTimeout(r, 250));
@@ -154,9 +251,9 @@ const PrintBundleTicketsModal = ({
         }
       }
       if (failed > 0) {
-        toast.error(t`${failed} of ${ordered.length} labels failed`);
+        toast.error(t`${failed} of ${checkedIds.length} labels failed`);
       } else {
-        toast.success(t`Printed ${ordered.length} labels`);
+        toast.success(t`Printed ${checkedIds.length} labels`);
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t`Print failed`);
@@ -165,7 +262,7 @@ const PrintBundleTicketsModal = ({
       setProgress(null);
       onClose();
     }
-  }, [checkedIds, bt, widthMm, heightMm, onClose, t]);
+  }, [checkedIds, bt, labels, tagSize, widthMm, heightMm, onClose, t]);
 
   // Print straight from the browser: open the server-generated PDF, sized
   // exactly to the tag (one ticket per page), in a new tab; print from the
@@ -431,6 +528,14 @@ const PrintBundleTicketsModal = ({
             <Button variant="solid" onClick={onClose}>
               <Trans>Cancel</Trans>
             </Button>
+            {destination === BLUETOOTH &&
+              !isPrinting &&
+              checkedIds.length > 0 &&
+              preparedCount < checkedIds.length && (
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t`Preparing ${preparedCount}/${checkedIds.length}`}
+                </span>
+              )}
           </div>
         </ModalFooter>
       </ModalContent>
