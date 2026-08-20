@@ -347,11 +347,12 @@ const PrintBundleTicketsModal = ({
 
   // Single Print button routes to whichever destination is selected.
   const handlePrint = useCallback(() => {
-    if (checkedIds.length === 0) return;
+    if (isPrinting || checkedIds.length === 0) return;
     if (destination === BLUETOOTH) void handlePrintBluetooth();
     else if (destination === BROWSER) handlePrintBrowser();
     else void handleSendToPrinter(destination);
   }, [
+    isPrinting,
     checkedIds,
     destination,
     handlePrintBluetooth,
@@ -547,40 +548,36 @@ const PrintBundleTicketsModal = ({
           </div>
         </ModalBody>
         <ModalFooter>
-          <div className="flex w-full flex-col gap-2">
-            {isPrinting && (
-              <div
-                className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
-                aria-label={progress ?? undefined}
-              >
-                <div
-                  className="h-full rounded-full bg-primary transition-[width] duration-150"
+          <div className="flex items-center gap-2">
+            <Button
+              variant="primary"
+              leftIcon={isPrinting ? undefined : <LuPrinter />}
+              className="relative overflow-hidden"
+              disabled={checkedIds.length === 0 || isPrinting}
+              onClick={handlePrint}
+            >
+              {/* Transfer progress fills the button from the left while printing. */}
+              {isPrinting && (
+                <span
+                  className="absolute inset-y-0 left-0 bg-primary-foreground/25 transition-[width] duration-150"
                   style={{ width: `${Math.round(printFrac * 100)}%` }}
                 />
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="primary"
-                leftIcon={<LuPrinter />}
-                isLoading={isPrinting}
-                disabled={checkedIds.length === 0 || isPrinting}
-                onClick={handlePrint}
-              >
+              )}
+              <span className="relative z-[1]">
                 {progress ?? t`Print (${checkedIds.length})`}
-              </Button>
-              <Button variant="solid" onClick={onClose}>
-                <Trans>Cancel</Trans>
-              </Button>
-              {destination === BLUETOOTH &&
-                !isPrinting &&
-                checkedIds.length > 0 &&
-                preparedCount < checkedIds.length && (
-                  <span className="text-xs text-muted-foreground tabular-nums">
-                    {t`Preparing ${preparedCount}/${checkedIds.length}`}
-                  </span>
-                )}
-            </div>
+              </span>
+            </Button>
+            <Button variant="solid" onClick={onClose}>
+              <Trans>Cancel</Trans>
+            </Button>
+            {destination === BLUETOOTH &&
+              !isPrinting &&
+              checkedIds.length > 0 &&
+              preparedCount < checkedIds.length && (
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t`Preparing ${preparedCount}/${checkedIds.length}`}
+                </span>
+              )}
           </div>
         </ModalFooter>
       </ModalContent>
