@@ -77,7 +77,7 @@ import type {
   SortableItemRenderProps
 } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
-import { usePermissions, useUrlParams, useUser } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
 import { QuantityWithVariantsQuantity } from "~/modules/production/ui/Jobs/QuantityWithVariantsQuantity";
 import {
   toVariantsQuantityValue,
@@ -192,9 +192,13 @@ const BillOfMaterial = ({
   const [searchParams] = useSearchParams();
 
   const makeMethodId = makeMethod.id;
-  const materialId = searchParams.get("materialId");
 
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  // The selected/open material is the single source of truth for both the
+  // highlight and the expansion state. Seed it from the URL (SSR-safe, restores
+  // on reload/deep-link) and mirror changes back via `syncMaterialIdToUrl`.
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(() =>
+    searchParams.get("materialId")
+  );
   const [temporaryItems, setTemporaryItems] = useState<TemporaryItems>({});
   const [checkedState, setCheckedState] = useState<CheckedState>({});
   const [orderState, setOrderState] = useState<OrderState>(() => {
@@ -263,11 +267,30 @@ const BillOfMaterial = ({
     }));
   };
 
+  // Mirror the selected material into the URL with the History API instead of a
+  // router navigation. Like the overlay system, this avoids revalidating the
+  // page's loaders (and the top progress bar), so open/close is instant while
+  // still keeping the state deep-linkable and restorable on reload.
+  const syncMaterialIdToUrl = useCallback((id: string | null) => {
+    const search = new URLSearchParams(window.location.search);
+    if (id) {
+      search.set("materialId", id);
+    } else {
+      search.delete("materialId");
+    }
+    const query = search.toString();
+    const url =
+      window.location.pathname +
+      (query ? `?${query}` : "") +
+      window.location.hash;
+    window.history.replaceState(window.history.state, "", url);
+  }, []);
+
   const onAddItem = () => {
     if (isReadOnly) return;
     const materialId = nanoid();
     setSelectedItemId(materialId);
-    setSearchParams({ materialId: materialId });
+    syncMaterialIdToUrl(materialId);
 
     let newOrder = 1;
     if (materials.length) {
@@ -367,8 +390,6 @@ const BillOfMaterial = ({
     });
   }, [materials]);
 
-  const [, setSearchParams] = useUrlParams();
-
   const renderListItem = ({
     item,
     items,
@@ -378,8 +399,8 @@ const BillOfMaterial = ({
   }: SortableItemRenderProps<ItemWithData>) => {
     const isOpen = item.id === selectedItemId;
     const onSelectItem = (id: string | null) => {
-      setSearchParams({ materialId: id });
       setSelectedItemId(id);
+      syncMaterialIdToUrl(id);
     };
 
     return (
@@ -390,7 +411,7 @@ const BillOfMaterial = ({
         order={order}
         key={item.id}
         isExpanded={isOpen}
-        isHighlighted={item.id === materialId}
+        isHighlighted={item.id === selectedItemId}
         onSelectItem={onSelectItem}
         onToggleItem={onToggleItem}
         onRemoveItem={onRemoveItem}
@@ -546,15 +567,15 @@ const BillOfMaterial = ({
                 variant="ghost"
                 className={cn(
                   rulesByField.has(
-                    `billOfMaterial:${makeMethodId}:${materialId}`
+                    `billOfMaterial:${makeMethodId}:${selectedItemId}`
                   ) && "text-emerald-500 hover:text-emerald-500"
                 )}
                 onClick={() =>
                   onConfigure({
                     label: t`Bill of Material`,
-                    field: `billOfMaterial:${makeMethodId}:${materialId}`,
+                    field: `billOfMaterial:${makeMethodId}:${selectedItemId}`,
                     code: rulesByField.get(
-                      `billOfMaterial:${makeMethodId}:${materialId}`
+                      `billOfMaterial:${makeMethodId}:${selectedItemId}`
                     )?.code,
                     returnType: {
                       type: "list",
