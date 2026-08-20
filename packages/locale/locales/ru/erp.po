@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: ru\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Поставщик - это бизнес или лицо, которое продает вам части или услуги."
@@ -93,6 +94,10 @@ msgstr "{credentialName} зарегистрирован"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} дней ({formatted})"
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "Не удалось напечатать {failed} из {0} этикеток"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
@@ -1587,6 +1592,9 @@ msgstr "Заблокировано {0}"
 msgid "Blocks save until resolved"
 msgstr "Блоки сохранены до решения"
 
+msgid "Bluetooth printer"
+msgstr "Bluetooth-принтер"
+
 msgid "BoM"
 msgstr "BoM"
 
@@ -2228,11 +2236,20 @@ msgstr "Подключить проблему Jira"
 msgid "Connect Linear issue"
 msgstr "Подключить Linear issue"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "Сначала подключите Bluetooth-принтер"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "Подключитесь к вашим системам бухгалтерского учета, управления проектами и CAD-инструментам и многому другому."
 
+msgid "Connected"
+msgstr "Подключено"
+
 msgid "Connected to"
 msgstr "Подключено к"
+
+msgid "Connecting…"
+msgstr "Подключение…"
 
 msgid "Console Mode"
 msgstr "Режим консоли"
@@ -3579,6 +3596,9 @@ msgstr "Отключено"
 
 msgid "Discard"
 msgstr "Отклонить"
+
+msgid "Disconnect"
+msgstr "Отключить"
 
 msgid "Discount"
 msgstr "Скидка"
@@ -6548,6 +6568,9 @@ msgstr "Не удалось загрузить задания"
 msgid "Failed to load journal entry"
 msgstr "Не удалось загрузить запись журнала"
 
+msgid "Failed to load label data"
+msgstr "Не удалось загрузить данные этикетки"
+
 msgid "Failed to load line"
 msgstr "Не удалось загрузить линию"
 
@@ -8256,6 +8279,9 @@ msgstr "Высокий"
 msgid "High Priority"
 msgstr "Высший приоритет"
 
+msgid "Higher = darker. Default 11."
+msgstr "Больше = темнее. По умолчанию 11."
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Более высокий приоритет выигрывает при равенстве и применяется первым для наценок"
 
@@ -9385,6 +9411,9 @@ msgstr "Низкий"
 
 msgid "Low Priority"
 msgstr "Низкий приоритет"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "Меньше = тоньше (плотный китайский остаётся читаемым). По умолчанию 150."
 
 msgid "Lower runs first"
 msgstr "Низкие первоначально"
@@ -10688,6 +10717,9 @@ msgstr "Нормальный поток"
 msgid "Not available"
 msgstr "Недоступно"
 
+msgid "Not connected"
+msgstr "Не подключено"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Недостаточно заданий для покрытия количества"
 
@@ -11545,6 +11577,10 @@ msgstr "Префикс"
 msgid "Prepaid/ Pro forma"
 msgstr "Предоплаченная/ Проформа"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "Подготовка {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "Текущая неделя"
 
@@ -11668,6 +11704,12 @@ msgstr "Печать {0} ярлыков"
 msgid "Print Bundle Tickets"
 msgstr "Печать ярлыков пачек"
 
+msgid "Print darkness"
+msgstr "Плотность печати"
+
+msgid "Print failed"
+msgstr "Ошибка печати"
+
 msgid "Print from this device"
 msgstr "Печать с этого устройства"
 
@@ -11693,8 +11735,15 @@ msgstr "Печать ярлыков"
 msgid "Print to"
 msgstr "Печатать на"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "Напечатано этикеток: {0}"
+
 msgid "Printer route deleted"
 msgstr "Принтерная дорога удалена"
+
+msgid "Printer settings"
+msgstr "Настройки принтера"
 
 msgid "Printer Settings"
 msgstr "Настройки принтера"
@@ -11707,6 +11756,10 @@ msgstr "Печатные устройства"
 
 msgid "Printing"
 msgstr "Печать"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "Печать {0}/{total}"
 
 msgid "Priorities"
 msgstr "Приоритеты"
@@ -14018,6 +14071,9 @@ msgstr "Сохраняйте фиксированное количество д�
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Сохраняйте фиксированное количество дней для этого товара. Дата начала срока действия устанавливается для каждой партии или серийного номера при получении."
+
+msgid "Stroke thinness"
+msgstr "Толщина штриха"
 
 msgid "style"
 msgstr "модель"

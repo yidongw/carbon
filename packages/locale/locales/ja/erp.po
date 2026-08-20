@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: ja\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -93,6 +94,10 @@ msgstr "{credentialName} が登録されました"
 
 msgid "{days} days ({formatted})"
 msgstr "{days}日（{formatted}）"
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "{0} 枚中 {failed} 枚のラベル印刷に失敗"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
@@ -1587,6 +1592,9 @@ msgstr "{0}によってブロックされています"
 msgid "Blocks save until resolved"
 msgstr "ブロックの保存は解決まで待ちます"
 
+msgid "Bluetooth printer"
+msgstr "Bluetooth プリンター"
+
 msgid "BoM"
 msgstr "BoM"
 
@@ -2228,11 +2236,20 @@ msgstr "Jira課題に接続"
 msgid "Connect Linear issue"
 msgstr "Linear イシューを接続"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "先に Bluetooth プリンターを接続してください"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "あなたの会計、プロジェクト管理、CADツールと更多を接続してください。"
 
+msgid "Connected"
+msgstr "接続済み"
+
 msgid "Connected to"
 msgstr "接続先"
+
+msgid "Connecting…"
+msgstr "接続中…"
 
 msgid "Console Mode"
 msgstr "コンソールモード"
@@ -3579,6 +3596,9 @@ msgstr "無効"
 
 msgid "Discard"
 msgstr "破棄"
+
+msgid "Disconnect"
+msgstr "切断"
 
 msgid "Discount"
 msgstr "割引"
@@ -6548,6 +6568,9 @@ msgstr "ジョブの読み込みに失敗しました"
 msgid "Failed to load journal entry"
 msgstr "journals入力に失敗しました"
 
+msgid "Failed to load label data"
+msgstr "ラベルデータの読み込みに失敗しました"
+
 msgid "Failed to load line"
 msgstr "ラインの読み込みに失敗しました"
 
@@ -8256,6 +8279,9 @@ msgstr "高"
 msgid "High Priority"
 msgstr "高優先度"
 
+msgid "Higher = darker. Default 11."
+msgstr "大きいほど濃くなります。既定は 11。"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "優先度が高いほど同点を制し、マークアップに最初に適用されます"
 
@@ -9385,6 +9411,9 @@ msgstr "低"
 
 msgid "Low Priority"
 msgstr "低優先度"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "小さいほど細くなります(密な漢字も読みやすい)。既定は 150。"
 
 msgid "Lower runs first"
 msgstr "下位ランスの先"
@@ -10688,6 +10717,9 @@ msgstr "正常な流れ"
 msgid "Not available"
 msgstr "利用不可"
 
+msgid "Not connected"
+msgstr "未接続"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
@@ -11545,6 +11577,10 @@ msgstr "プレフィックス"
 msgid "Prepaid/ Pro forma"
 msgstr "プリペイド/プロフォーマ"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "準備中 {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "現在の週"
 
@@ -11668,6 +11704,12 @@ msgstr "{0} 枚のチケットを印刷"
 msgid "Print Bundle Tickets"
 msgstr "バンドルチケットを印刷"
 
+msgid "Print darkness"
+msgstr "印刷濃度"
+
+msgid "Print failed"
+msgstr "印刷に失敗しました"
+
 msgid "Print from this device"
 msgstr "このデバイスから印刷"
 
@@ -11693,8 +11735,15 @@ msgstr "チケットを印刷"
 msgid "Print to"
 msgstr "印刷先"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "{0} 枚のラベルを印刷しました"
+
 msgid "Printer route deleted"
 msgstr "プリンタルートが削除されました"
+
+msgid "Printer settings"
+msgstr "プリンター設定"
 
 msgid "Printer Settings"
 msgstr "プリンタ設定"
@@ -11707,6 +11756,10 @@ msgstr "プリンター"
 
 msgid "Printing"
 msgstr "印刷"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "印刷中 {0}/{total}"
 
 msgid "Priorities"
 msgstr "優先度"
@@ -14018,6 +14071,9 @@ msgstr "このアイテムに固定日数を保存します。有効期限の開
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "このアイテムの固定日数を保存します。有効期限の開始日は、各バッチまたはシリアルが受け取られたときに設定されます。"
+
+msgid "Stroke thinness"
+msgstr "線の太さ"
 
 msgid "style"
 msgstr "スタイル"

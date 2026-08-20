@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: hi\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " स्वीकारकर्ता एक व्यवसाय या व्यक्ति है जो आपको भागों या सेवाओं की बिक्री करता है।"
@@ -93,6 +94,10 @@ msgstr "{credentialName} पंजीकृत"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} दिन ({formatted})"
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "{0} में से {failed} लेबल विफल"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
@@ -1587,6 +1592,9 @@ msgstr "{0} द्वारा अवरुद्ध"
 msgid "Blocks save until resolved"
 msgstr "ब्लॉक बचत के लिए सुलझने तक"
 
+msgid "Bluetooth printer"
+msgstr "ब्लूटूथ प्रिंटर"
+
 msgid "BoM"
 msgstr "BoM"
 
@@ -2228,11 +2236,20 @@ msgstr "Jira समस्या से कनेक्ट करें"
 msgid "Connect Linear issue"
 msgstr "Linear समस्या से कनेक्ट करें"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "पहले ब्लूटूथ प्रिंटर कनेक्ट करें"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "आपकी खातेमेंट, पروजेक्ट मैनेजमेंट और CAD उपकरणों को संबधित करें और अधिक।"
 
+msgid "Connected"
+msgstr "कनेक्टेड"
+
 msgid "Connected to"
 msgstr "को जोड़ा गया"
+
+msgid "Connecting…"
+msgstr "कनेक्ट हो रहा है…"
 
 msgid "Console Mode"
 msgstr "कंसोल मोड"
@@ -3579,6 +3596,9 @@ msgstr "अक्षम"
 
 msgid "Discard"
 msgstr "त्यागें"
+
+msgid "Disconnect"
+msgstr "डिस्कनेक्ट करें"
 
 msgid "Discount"
 msgstr "छूट"
@@ -6548,6 +6568,9 @@ msgstr "नौकरियां लोड करने में विफल"
 msgid "Failed to load journal entry"
 msgstr "कार्यदفتر छुटू नहीं सका"
 
+msgid "Failed to load label data"
+msgstr "लेबल डेटा लोड करने में विफल"
+
 msgid "Failed to load line"
 msgstr "लाइन लोड करने में व़िरा हुई"
 
@@ -8256,6 +8279,9 @@ msgstr "उच्च"
 msgid "High Priority"
 msgstr "उच्च प्राथमिकता"
 
+msgid "Higher = darker. Default 11."
+msgstr "अधिक = गहरा। डिफ़ॉल्ट 11।"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "उच्च प्राथमिकता टाई जीतती है और मार्कअप के लिए पहले लागू होती है"
 
@@ -9385,6 +9411,9 @@ msgstr "निम्न"
 
 msgid "Low Priority"
 msgstr "निम्न प्रापूरणीता"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "कम = पतला (घने चीनी अक्षर पठनीय रहते हैं)। डिफ़ॉल्ट 150।"
 
 msgid "Lower runs first"
 msgstr "निचले रन पहले"
@@ -10688,6 +10717,9 @@ msgstr "नॉर्मल फ्लो"
 msgid "Not available"
 msgstr "उपलब्ध नहीं"
 
+msgid "Not connected"
+msgstr "कनेक्ट नहीं है"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "पर्याप्त नौकरियां नहीं हैं मात्रा को कवर करने के लिए"
 
@@ -11545,6 +11577,10 @@ msgstr "उपसर्ग"
 msgid "Prepaid/ Pro forma"
 msgstr "प्रीपेड/ प्रो फ़ॉर्म"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "तैयार हो रहा है {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "परिचालित ब्याहत"
 
@@ -11668,6 +11704,12 @@ msgstr "{0} टिकट प्रिंट करें"
 msgid "Print Bundle Tickets"
 msgstr "बंडल टिकट प्रिंट करें"
 
+msgid "Print darkness"
+msgstr "प्रिंट गहराई"
+
+msgid "Print failed"
+msgstr "प्रिंट विफल"
+
 msgid "Print from this device"
 msgstr "इस डिवाइस से प्रिंट करें"
 
@@ -11693,8 +11735,15 @@ msgstr "टिकट प्रिंट करें"
 msgid "Print to"
 msgstr "इस पर प्रिंट करें"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "{0} लेबल प्रिंट किए गए"
+
 msgid "Printer route deleted"
 msgstr "प्रिंटर पथ डेलीट किया गया है"
+
+msgid "Printer settings"
+msgstr "प्रिंटर सेटिंग्स"
 
 msgid "Printer Settings"
 msgstr "प्रिंटर सेट्टिङ्स"
@@ -11707,6 +11756,10 @@ msgstr "प्रिंटर्स"
 
 msgid "Printing"
 msgstr "प्रिंटинг"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "प्रिंट हो रहा है {0}/{total}"
 
 msgid "Priorities"
 msgstr "प्राथमिकताएं"
@@ -14018,6 +14071,9 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "इस आइटम पर दिनों की एक निश्चित संख्या स्टोर करें। प्रत्येक बैच या सीरीज़ के लिए समाप्ति प्रारंभ तारीख प्राप्त होने पर सेट की जाती है।"
+
+msgid "Stroke thinness"
+msgstr "स्ट्रोक मोटाई"
 
 msgid "style"
 msgstr "शैली"

@@ -96,6 +96,10 @@ msgid "{days} days ({formatted})"
 msgstr "{days} 天（{formatted}）"
 
 #. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "{0} 张标签中 {failed} 张失败"
+
+#. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed}/{0} 张标签打印失败"
 
@@ -1588,6 +1592,9 @@ msgstr "被{0}阻止"
 msgid "Blocks save until resolved"
 msgstr "未解决前阻止保存"
 
+msgid "Bluetooth printer"
+msgstr "蓝牙打印机"
+
 msgid "BoM"
 msgstr "BOM"
 
@@ -2229,11 +2236,20 @@ msgstr "连接Jira问题"
 msgid "Connect Linear issue"
 msgstr "连接 Linear 问题"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "请先连接蓝牙打印机"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "连接到您的会计、项目管理以及CAD工具等更多功能。"
 
+msgid "Connected"
+msgstr "已连接"
+
 msgid "Connected to"
 msgstr "已连接到"
+
+msgid "Connecting…"
+msgstr "连接中…"
 
 msgid "Console Mode"
 msgstr "控制台模式"
@@ -3580,6 +3596,9 @@ msgstr "禁用"
 
 msgid "Discard"
 msgstr "废弃"
+
+msgid "Disconnect"
+msgstr "断开"
 
 msgid "Discount"
 msgstr "折扣"
@@ -6549,6 +6568,9 @@ msgstr "加载工作失败"
 msgid "Failed to load journal entry"
 msgstr "加载日记条目失败"
 
+msgid "Failed to load label data"
+msgstr "加载标签数据失败"
+
 msgid "Failed to load line"
 msgstr "加载生产线失败"
 
@@ -8257,6 +8279,9 @@ msgstr "高"
 msgid "High Priority"
 msgstr "高优先级"
 
+msgid "Higher = darker. Default 11."
+msgstr "数值越大越黑。默认 11。"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "优先级较高者获胜并优先应用"
 
@@ -9386,6 +9411,9 @@ msgstr "低"
 
 msgid "Low Priority"
 msgstr "低优先级"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "数值越小越细(密集中文更清晰)。默认 150。"
 
 msgid "Lower runs first"
 msgstr "先运行较低的"
@@ -10689,6 +10717,9 @@ msgstr "正常流程"
 msgid "Not available"
 msgstr "暂不可用"
 
+msgid "Not connected"
+msgstr "未连接"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"
 
@@ -11546,6 +11577,10 @@ msgstr "前缀"
 msgid "Prepaid/ Pro forma"
 msgstr "预付/定金"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "准备中 {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "现周"
 
@@ -11669,6 +11704,12 @@ msgstr "打印 {0} 张标签"
 msgid "Print Bundle Tickets"
 msgstr "打印分包标签"
 
+msgid "Print darkness"
+msgstr "打印浓度"
+
+msgid "Print failed"
+msgstr "打印失败"
+
 msgid "Print from this device"
 msgstr "从本设备打印"
 
@@ -11694,8 +11735,15 @@ msgstr "打印标签"
 msgid "Print to"
 msgstr "打印到"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "已打印 {0} 张标签"
+
 msgid "Printer route deleted"
 msgstr "打印机路径已删除"
+
+msgid "Printer settings"
+msgstr "打印机设置"
 
 msgid "Printer Settings"
 msgstr "打印机设置"
@@ -11708,6 +11756,10 @@ msgstr "打印机"
 
 msgid "Printing"
 msgstr "打印"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "正在打印 {0}/{total}"
 
 msgid "Priorities"
 msgstr "优先级"
@@ -14019,6 +14071,9 @@ msgstr "存储固定天数。有效期起始日期在接收或创建批次或序
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "在该物品上存储固定的天数。有效期起始日期在收到批次或序列号时设置。"
+
+msgid "Stroke thinness"
+msgstr "字重"
 
 msgid "style"
 msgstr "款式"

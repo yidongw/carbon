@@ -95,6 +95,10 @@ msgid "{days} days ({formatted})"
 msgstr "{days} days ({formatted})"
 
 #. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "{failed} of {0} labels failed"
+
+#. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} of {0} tickets failed"
 
@@ -1587,6 +1591,9 @@ msgstr "Blocked by {0}"
 msgid "Blocks save until resolved"
 msgstr "Blocks save until resolved"
 
+msgid "Bluetooth printer"
+msgstr "Bluetooth printer"
+
 msgid "BoM"
 msgstr "BoM"
 
@@ -2228,11 +2235,20 @@ msgstr "Connect Jira issue"
 msgid "Connect Linear issue"
 msgstr "Connect Linear issue"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "Connect the Bluetooth printer first"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "Connect to your accounting, project management, and CAD tools and much more."
 
+msgid "Connected"
+msgstr "Connected"
+
 msgid "Connected to"
 msgstr "Connected to"
+
+msgid "Connecting…"
+msgstr "Connecting…"
 
 msgid "Console Mode"
 msgstr "Console Mode"
@@ -3579,6 +3595,9 @@ msgstr "Disabled"
 
 msgid "Discard"
 msgstr "Discard"
+
+msgid "Disconnect"
+msgstr "Disconnect"
 
 msgid "Discount"
 msgstr "Discount"
@@ -6548,6 +6567,9 @@ msgstr "Failed to load jobs"
 msgid "Failed to load journal entry"
 msgstr "Failed to load journal entry"
 
+msgid "Failed to load label data"
+msgstr "Failed to load label data"
+
 msgid "Failed to load line"
 msgstr "Failed to load line"
 
@@ -8256,6 +8278,9 @@ msgstr "High"
 msgid "High Priority"
 msgstr "High Priority"
 
+msgid "Higher = darker. Default 11."
+msgstr "Higher = darker. Default 11."
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Higher priority wins ties and applies first for markups"
 
@@ -9385,6 +9410,9 @@ msgstr "Low"
 
 msgid "Low Priority"
 msgstr "Low Priority"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "Lower = thinner (dense Chinese stays legible). Default 150."
 
 msgid "Lower runs first"
 msgstr "Lower runs first"
@@ -10688,6 +10716,9 @@ msgstr "Normal flow"
 msgid "Not available"
 msgstr "Not available"
 
+msgid "Not connected"
+msgstr "Not connected"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Not enough jobs to cover quantity"
 
@@ -11545,6 +11576,10 @@ msgstr "Prefix"
 msgid "Prepaid/ Pro forma"
 msgstr "Prepaid/ Pro forma"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "Preparing {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "Present Week"
 
@@ -11668,6 +11703,12 @@ msgstr "Print {0} Tickets"
 msgid "Print Bundle Tickets"
 msgstr "Print Bundle Tickets"
 
+msgid "Print darkness"
+msgstr "Print darkness"
+
+msgid "Print failed"
+msgstr "Print failed"
+
 msgid "Print from this device"
 msgstr "Print from this device"
 
@@ -11693,8 +11734,15 @@ msgstr "Print Tickets"
 msgid "Print to"
 msgstr "Print to"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "Printed {0} labels"
+
 msgid "Printer route deleted"
 msgstr "Printer route deleted"
+
+msgid "Printer settings"
+msgstr "Printer settings"
 
 msgid "Printer Settings"
 msgstr "Printer Settings"
@@ -11707,6 +11755,10 @@ msgstr "Printers"
 
 msgid "Printing"
 msgstr "Printing"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "Printing {0}/{total}"
 
 msgid "Priorities"
 msgstr "Priorities"
@@ -14018,6 +14070,9 @@ msgstr "Store a fixed number of days on this item. Expiry start date is set on e
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
+
+msgid "Stroke thinness"
+msgstr "Stroke thinness"
 
 msgid "style"
 msgstr "style"
