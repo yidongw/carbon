@@ -142,7 +142,8 @@ const PrintBundleTicketsModal = ({
           const canvas = await drawBundleLabelCanvas(
             ordered[i],
             widthMm,
-            heightMm
+            heightMm,
+            true // tags hang hole-end-first — rotate so it reads upright
           );
           const bytes = canvasToTsplLabel(canvas, { widthMm, heightMm });
           await bt.sendBytes(bytes);

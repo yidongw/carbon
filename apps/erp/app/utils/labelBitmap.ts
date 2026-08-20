@@ -48,7 +48,8 @@ const present = (v: unknown) => v !== null && v !== undefined && v !== "";
 export async function drawBundleLabelCanvas(
   label: BundleLabelData,
   widthMm: number,
-  heightMm: number
+  heightMm: number,
+  rotate180 = false
 ): Promise<HTMLCanvasElement> {
   const W = Math.round(widthMm * DOTS_PER_MM);
   const H = Math.round(heightMm * DOTS_PER_MM);
@@ -57,6 +58,13 @@ export async function drawBundleLabelCanvas(
   canvas.height = H;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas 2D 不可用");
+
+  // These tags hang hole-end-first, so the printer's leading edge is the tail;
+  // rotate the whole label 180° so it reads upright coming off the printer.
+  if (rotate180) {
+    ctx.translate(W, H);
+    ctx.rotate(Math.PI);
+  }
 
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, W, H);
