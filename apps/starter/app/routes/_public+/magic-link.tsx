@@ -19,7 +19,16 @@ export default function ConfirmMagicLink() {
   return (
     <>
       <div className="flex justify-center mb-4">
-        <img src="/carbon-logo-mark.svg" alt="Carbon Logo" className="w-36" />
+        <img
+          src="/carbon-mark-light.svg"
+          alt="Carbon Logo"
+          className="w-36 dark:hidden"
+        />
+        <img
+          src="/carbon-mark-dark.svg"
+          alt="Carbon Logo"
+          className="w-36 hidden dark:block"
+        />
       </div>
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
         <VStack spacing={4} className="items-center justify-center">
