@@ -13118,9 +13118,6 @@ msgstr "板块"
 msgid "Select"
 msgstr "选择"
 
-msgid "Select a assignee"
-msgstr "选择分配对象"
-
 msgid "Select a category"
 msgstr "选择类别"
 

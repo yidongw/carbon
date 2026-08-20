@@ -13117,9 +13117,6 @@ msgstr "Секции"
 msgid "Select"
 msgstr "Выбрать"
 
-msgid "Select a assignee"
-msgstr "Выберите исполнителя"
-
 msgid "Select a category"
 msgstr "Выберите категорию"
 

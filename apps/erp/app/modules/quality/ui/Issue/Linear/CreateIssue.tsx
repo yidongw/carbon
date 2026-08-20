@@ -82,7 +82,7 @@ export const CreateIssue = (props: Props) => {
         <Select
           label={t`Assign To`}
           name="assignee"
-          placeholder={t`Select a assignee`}
+          placeholder={t`Select an assignee`}
           isOptional
           options={membersOptions}
         />
