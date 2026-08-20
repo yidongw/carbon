@@ -38,6 +38,11 @@ type Snap = { status: BtStatus; deviceName: string | null };
 let snap: Snap = { status: "disconnected", deviceName: null };
 let device: any = null;
 let writeChar: any = null;
+// Once the operator has connected a printer, keep it live: on any drop, silently
+// reconnect in the background (no gesture needed for an already-granted device).
+// Cleared only on an explicit disconnect.
+let autoReconnect = false;
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 const listeners = new Set<() => void>();
 
 const emit = () => listeners.forEach((l) => l());
@@ -49,9 +54,31 @@ const set = (patch: Partial<Snap>) => {
 const bt = (): any | undefined =>
   typeof navigator !== "undefined" ? (navigator as any).bluetooth : undefined;
 
+function clearReconnectTimer() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+}
+
+// Retry reconnect with backoff (1s, 2s, 4s … capped at 15s) until it reconnects
+// or the operator disconnects. gatt.connect() on a known device needs no gesture.
+function scheduleReconnect(attempt: number) {
+  if (!autoReconnect) return;
+  clearReconnectTimer();
+  const delay = Math.min(15000, 1000 * 2 ** attempt);
+  reconnectTimer = setTimeout(async () => {
+    reconnectTimer = null;
+    if (!autoReconnect || snap.status === "connected") return;
+    const ok = await reconnect();
+    if (!ok) scheduleReconnect(Math.min(attempt + 1, 6));
+  }, delay);
+}
+
 function onDisconnected() {
   writeChar = null;
   set({ status: "disconnected" });
+  scheduleReconnect(0);
 }
 
 async function findWritable(server: any): Promise<any> {
@@ -81,6 +108,8 @@ async function attach(dev: any): Promise<boolean> {
     return false;
   }
   writeChar = ch;
+  autoReconnect = true;
+  clearReconnectTimer();
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: dev.name ?? "" }));
   } catch {
@@ -141,6 +170,8 @@ async function reconnect(): Promise<boolean> {
 }
 
 async function disconnect(): Promise<void> {
+  autoReconnect = false;
+  clearReconnectTimer();
   try {
     device?.gatt?.disconnect?.();
   } catch {
