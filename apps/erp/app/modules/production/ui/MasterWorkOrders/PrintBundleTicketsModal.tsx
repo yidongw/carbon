@@ -14,7 +14,13 @@ import {
 import { getLabelSizeLabel, labelSizes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LuBluetooth, LuCheck, LuMonitor, LuPrinter } from "react-icons/lu";
+import {
+  LuBluetooth,
+  LuCheck,
+  LuMonitor,
+  LuPrinter,
+  LuSettings2
+} from "react-icons/lu";
 import { usePrinting } from "~/hooks";
 import { useBluetoothLabelPrinter } from "~/hooks/useBluetoothLabelPrinter";
 import type { BundleWorkOrder } from "~/modules/production";
@@ -23,7 +29,9 @@ import {
   canvasToTsplLabel,
   drawBundleLabelCanvas,
   readLabelDensity,
-  readLabelThreshold
+  readLabelThreshold,
+  writeLabelDensity,
+  writeLabelThreshold
 } from "~/utils/labelBitmap";
 import { path } from "~/utils/path";
 
@@ -40,6 +48,15 @@ const BROWSER = "browser";
 const tagSizeOptions = labelSizes
   .filter((s) => s.id.startsWith("bundleTag"))
   .map((s) => ({ value: s.id, label: getLabelSizeLabel(s) }));
+
+const densityOptions = [8, 9, 10, 11, 12, 13, 14, 15].map((d) => ({
+  value: String(d),
+  label: String(d)
+}));
+const thresholdOptions = [120, 130, 140, 150, 160, 170, 180].map((v) => ({
+  value: String(v),
+  label: String(v)
+}));
 
 // A determinate ring that both spins and grows its arc from a dot to a full
 // circle as `value` goes 0 -> 1 (Spinner is indeterminate; Progress is a bar).
@@ -101,10 +118,21 @@ const PrintBundleTicketsModal = ({
     () => new Set(printable.map((b) => b.id!))
   );
   const [tagSize, setTagSize] = useState<string>("bundleTag40x80mm");
-  // Printer darkness/weight are per-device settings edited on the This Device
-  // page; read them once when the dialog opens.
-  const [density] = useState<number>(() => readLabelDensity());
-  const [threshold] = useState<number>(() => readLabelThreshold());
+  // Printer darkness/weight are per-device settings (localStorage), editable
+  // here via the gear on the Bluetooth row and on the This Device page.
+  const [density, setDensity] = useState<number>(() => readLabelDensity());
+  const [threshold, setThreshold] = useState<number>(() =>
+    readLabelThreshold()
+  );
+  const [showBtSettings, setShowBtSettings] = useState(false);
+  const changeDensity = useCallback((v: number) => {
+    setDensity(v);
+    writeLabelDensity(v);
+  }, []);
+  const changeThreshold = useCallback((v: number) => {
+    setThreshold(v);
+    writeLabelThreshold(v);
+  }, []);
 
   // Bluetooth is the default when the browser supports it (fastest — prints
   // straight to the label printer); otherwise fall back to the browser PDF.
@@ -511,6 +539,17 @@ const PrintBundleTicketsModal = ({
                       {statusText}
                     </span>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label={t`Printer settings`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowBtSettings((s) => !s);
+                    }}
+                  >
+                    <LuSettings2 className="size-4" />
+                  </Button>
                   {bt.isConnected ? (
                     <Button
                       variant="ghost"
@@ -538,6 +577,40 @@ const PrintBundleTicketsModal = ({
                   {destination === BLUETOOTH && (
                     <LuCheck className="size-4 text-primary shrink-0" />
                   )}
+                </div>
+              )}
+
+              {bt.supported && showBtSettings && (
+                <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/40 p-3">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium">
+                      <Trans>Print darkness</Trans>
+                    </span>
+                    <Combobox
+                      options={densityOptions}
+                      value={String(density)}
+                      onChange={(v) => v && changeDensity(Number(v))}
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      <Trans>Higher = darker. Default 11.</Trans>
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium">
+                      <Trans>Stroke thinness</Trans>
+                    </span>
+                    <Combobox
+                      options={thresholdOptions}
+                      value={String(threshold)}
+                      onChange={(v) => v && changeThreshold(Number(v))}
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      <Trans>
+                        Lower = thinner (dense Chinese stays legible). Default
+                        150.
+                      </Trans>
+                    </span>
+                  </div>
                 </div>
               )}
 
