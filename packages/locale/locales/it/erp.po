@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: it\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fornitore è una società o persona che vi vende parti o servizi."
@@ -93,6 +94,10 @@ msgstr "{credentialName} registrato"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} giorni ({formatted})"
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "{failed} di {0} etichette non riuscite"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
@@ -1587,6 +1592,9 @@ msgstr "Bloccato da {0}"
 msgid "Blocks save until resolved"
 msgstr "Blochi salva fino alla risoluzione"
 
+msgid "Bluetooth printer"
+msgstr "Stampante Bluetooth"
+
 msgid "BoM"
 msgstr "BoM"
 
@@ -2228,11 +2236,20 @@ msgstr "Connetti problema Jira"
 msgid "Connect Linear issue"
 msgstr "Connetti problema Linear"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "Collega prima la stampante Bluetooth"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "Connetti ai tuoi strumenti di contabilità, gestione progetti e CAD e molto altro."
 
+msgid "Connected"
+msgstr "Connessa"
+
 msgid "Connected to"
 msgstr "Connesso a"
+
+msgid "Connecting…"
+msgstr "Connessione…"
 
 msgid "Console Mode"
 msgstr "Modalità Console"
@@ -3579,6 +3596,9 @@ msgstr "Disabilitato"
 
 msgid "Discard"
 msgstr "Scarta"
+
+msgid "Disconnect"
+msgstr "Disconnetti"
 
 msgid "Discount"
 msgstr "Sconto"
@@ -6548,6 +6568,9 @@ msgstr "Impossibile caricare i lavori"
 msgid "Failed to load journal entry"
 msgstr "Caricamento dell'entraconto fallito"
 
+msgid "Failed to load label data"
+msgstr "Impossibile caricare i dati dell'etichetta"
+
 msgid "Failed to load line"
 msgstr "Caricamento della linea fallito"
 
@@ -8259,6 +8282,9 @@ msgstr "Alto"
 msgid "High Priority"
 msgstr "Priorità Alta"
 
+msgid "Higher = darker. Default 11."
+msgstr "Più alto = più scuro. Predefinito 11."
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "La priorità più alta vince i pareggi e si applica per prima per i ricarichi"
 
@@ -9388,6 +9414,9 @@ msgstr "Basso"
 
 msgid "Low Priority"
 msgstr "Priorità Bassa"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "Più basso = più sottile (il cinese fitto resta leggibile). Predefinito 150."
 
 msgid "Lower runs first"
 msgstr "Inizia con le scorte più basse"
@@ -10691,6 +10720,9 @@ msgstr "Flusso normale"
 msgid "Not available"
 msgstr "Non disponibile"
 
+msgid "Not connected"
+msgstr "Non connessa"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Non ci sono abbastanza lavori per coprire la quantità"
 
@@ -11548,6 +11580,10 @@ msgstr "Prefisso"
 msgid "Prepaid/ Pro forma"
 msgstr "Prepagato/ Pro forma"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "Preparazione {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "Settimana Corrente"
 
@@ -11671,6 +11707,12 @@ msgstr "Stampa {0} etichette"
 msgid "Print Bundle Tickets"
 msgstr "Stampa etichette dei pacchi"
 
+msgid "Print darkness"
+msgstr "Intensità di stampa"
+
+msgid "Print failed"
+msgstr "Stampa non riuscita"
+
 msgid "Print from this device"
 msgstr "Stampa da questo dispositivo"
 
@@ -11696,8 +11738,15 @@ msgstr "Stampa etichette"
 msgid "Print to"
 msgstr "Stampa su"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "{0} etichette stampate"
+
 msgid "Printer route deleted"
 msgstr "Route stampante eliminata"
+
+msgid "Printer settings"
+msgstr "Impostazioni stampante"
 
 msgid "Printer Settings"
 msgstr "Impostazioni stampante"
@@ -11710,6 +11759,10 @@ msgstr "Stampanti"
 
 msgid "Printing"
 msgstr "Stampa"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "Stampa {0}/{total}"
 
 msgid "Priorities"
 msgstr "Priorità"
@@ -14018,6 +14071,9 @@ msgstr "Memorizza un numero fisso di giorni su questo articolo. La data di inizi
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Memorizza un numero fisso di giorni su questo articolo. La data di inizio della scadenza viene impostata su ogni lotto o seriale quando viene ricevuto."
+
+msgid "Stroke thinness"
+msgstr "Spessore del tratto"
 
 msgid "style"
 msgstr "modello"

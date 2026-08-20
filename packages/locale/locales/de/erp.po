@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: de\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Ein Lieferant ist eine Geschäftsperson oder ein Unternehmer, der Ihnen Teile oder Dienstleistungen verkauft."
@@ -93,6 +94,10 @@ msgstr "{credentialName} registriert"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} Tage ({formatted})"
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} labels failed"
+msgstr "{failed} von {0} Etiketten fehlgeschlagen"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
@@ -1587,6 +1592,9 @@ msgstr "Blockiert durch {0}"
 msgid "Blocks save until resolved"
 msgstr "Blöcke speichern, bis sie ausgelöst werden"
 
+msgid "Bluetooth printer"
+msgstr "Bluetooth-Drucker"
+
 msgid "BoM"
 msgstr "BoM"
 
@@ -2228,11 +2236,20 @@ msgstr "Jira-Problem verbinden"
 msgid "Connect Linear issue"
 msgstr "Linear-Problem verbinden"
 
+msgid "Connect the Bluetooth printer first"
+msgstr "Zuerst den Bluetooth-Drucker verbinden"
+
 msgid "Connect to your accounting, project management, and CAD tools and much more."
 msgstr "Verbinden Sie sich mit Ihren Buchhaltungs-, Projektmanagement- und CAD-Anwendungen sowie vielem mehr."
 
+msgid "Connected"
+msgstr "Verbunden"
+
 msgid "Connected to"
 msgstr "Verbunden mit"
+
+msgid "Connecting…"
+msgstr "Verbinden…"
 
 msgid "Console Mode"
 msgstr "Konsolenmodus"
@@ -3579,6 +3596,9 @@ msgstr "Deaktiviert"
 
 msgid "Discard"
 msgstr "Verwerfen"
+
+msgid "Disconnect"
+msgstr "Trennen"
 
 msgid "Discount"
 msgstr "Rabatt"
@@ -6548,6 +6568,9 @@ msgstr "Fehler beim Laden von Aufträgen"
 msgid "Failed to load journal entry"
 msgstr "Fehler beim Laden des Journal-Eintrags"
 
+msgid "Failed to load label data"
+msgstr "Etikettendaten konnten nicht geladen werden"
+
 msgid "Failed to load line"
 msgstr "Fehler beim Laden der Linie"
 
@@ -8259,6 +8282,9 @@ msgstr "Hoch"
 msgid "High Priority"
 msgstr "Hohe Priorität"
 
+msgid "Higher = darker. Default 11."
+msgstr "Höher = dunkler. Standard 11."
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Höhere Priorität gewinnt bei Gleichständen und wird zuerst für Aufschläge angewendet"
 
@@ -9388,6 +9414,9 @@ msgstr "Niedrig"
 
 msgid "Low Priority"
 msgstr "Niedriges Prioritätsniveau"
+
+msgid "Lower = thinner (dense Chinese stays legible). Default 150."
+msgstr "Niedriger = dünner (dichtes Chinesisch bleibt lesbar). Standard 150."
 
 msgid "Lower runs first"
 msgstr "Runnen unter den niedrigeren"
@@ -10691,6 +10720,9 @@ msgstr "Normales Verfahren"
 msgid "Not available"
 msgstr "Nicht verfügbar"
 
+msgid "Not connected"
+msgstr "Nicht verbunden"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Nicht genug Aufträge zur Deckung der Menge"
 
@@ -11548,6 +11580,10 @@ msgstr "Präfix"
 msgid "Prepaid/ Pro forma"
 msgstr "Prepaid/Proforma"
 
+#. placeholder {0}: checkedIds.length
+msgid "Preparing {preparedCount}/{0}"
+msgstr "Wird vorbereitet {preparedCount}/{0}"
+
 msgid "Present Week"
 msgstr "Aktuelle Woche"
 
@@ -11671,6 +11707,12 @@ msgstr "{0} Tickets drucken"
 msgid "Print Bundle Tickets"
 msgstr "Bündeltickets drucken"
 
+msgid "Print darkness"
+msgstr "Druckschwärze"
+
+msgid "Print failed"
+msgstr "Druck fehlgeschlagen"
+
 msgid "Print from this device"
 msgstr "Von diesem Gerät drucken"
 
@@ -11696,8 +11738,15 @@ msgstr "Tickets drucken"
 msgid "Print to"
 msgstr "Drucken auf"
 
+#. placeholder {0}: checkedIds.length
+msgid "Printed {0} labels"
+msgstr "{0} Etiketten gedruckt"
+
 msgid "Printer route deleted"
 msgstr "Druckerroute gelöscht"
+
+msgid "Printer settings"
+msgstr "Druckereinstellungen"
 
 msgid "Printer Settings"
 msgstr "Drucker-Einstellungen"
@@ -11710,6 +11759,10 @@ msgstr "Drucker"
 
 msgid "Printing"
 msgstr "Drucken"
+
+#. placeholder {0}: i + 1
+msgid "Printing {0}/{total}"
+msgstr "Druckt {0}/{total}"
 
 msgid "Priorities"
 msgstr "Prioritäten"
@@ -14018,6 +14071,9 @@ msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablau
 
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablaufdatum wird für jede Charge oder Seriennummer bei Erhalt festgelegt."
+
+msgid "Stroke thinness"
+msgstr "Strichstärke"
 
 msgid "style"
 msgstr "Stil"

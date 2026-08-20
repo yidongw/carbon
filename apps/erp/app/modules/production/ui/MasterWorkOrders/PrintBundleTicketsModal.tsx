@@ -9,14 +9,31 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
+  ProgressRing,
   toast
 } from "@carbon/react";
 import { getLabelSizeLabel, labelSizes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useCallback, useMemo, useState } from "react";
-import { LuCheck, LuMonitor, LuPrinter } from "react-icons/lu";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  LuBluetooth,
+  LuCheck,
+  LuMonitor,
+  LuPrinter,
+  LuSettings2
+} from "react-icons/lu";
 import { usePrinting } from "~/hooks";
+import { useBluetoothLabelPrinter } from "~/hooks/useBluetoothLabelPrinter";
 import type { BundleWorkOrder } from "~/modules/production";
+import type { BundleLabelData } from "~/utils/labelBitmap";
+import {
+  canvasToTsplLabel,
+  drawBundleLabelCanvas,
+  readLabelDensity,
+  readLabelThreshold,
+  writeLabelDensity,
+  writeLabelThreshold
+} from "~/utils/labelBitmap";
 import { path } from "~/utils/path";
 
 type PrintBundleTicketsModalProps = {
@@ -24,13 +41,23 @@ type PrintBundleTicketsModalProps = {
   onClose: () => void;
 };
 
-// Destination for the single Print button: the browser's own print dialog, or
-// a configured print-server route id.
+// Destination for the single Print button: a directly-connected Bluetooth label
+// printer, the browser's own PDF/print dialog, or a configured print-server id.
+const BLUETOOTH = "bluetooth";
 const BROWSER = "browser";
 
 const tagSizeOptions = labelSizes
   .filter((s) => s.id.startsWith("bundleTag"))
   .map((s) => ({ value: s.id, label: getLabelSizeLabel(s) }));
+
+const densityOptions = [8, 9, 10, 11, 12, 13, 14, 15].map((d) => ({
+  value: String(d),
+  label: String(d)
+}));
+const thresholdOptions = [120, 130, 140, 150, 160, 170, 180].map((v) => ({
+  value: String(v),
+  label: String(v)
+}));
 
 const PrintBundleTicketsModal = ({
   bundles,
@@ -38,6 +65,7 @@ const PrintBundleTicketsModal = ({
 }: PrintBundleTicketsModalProps) => {
   const { t, i18n } = useLingui();
   const { printerRoutes } = usePrinting();
+  const bt = useBluetoothLabelPrinter();
 
   const printable = useMemo(
     () => bundles.filter((b) => Boolean(b.id)),
@@ -49,10 +77,116 @@ const PrintBundleTicketsModal = ({
     () => new Set(printable.map((b) => b.id!))
   );
   const [tagSize, setTagSize] = useState<string>("bundleTag40x80mm");
+  // Printer darkness/weight are per-device settings (localStorage), editable
+  // here via the gear on the Bluetooth row and on the This Device page.
+  const [density, setDensity] = useState<number>(() => readLabelDensity());
+  const [threshold, setThreshold] = useState<number>(() =>
+    readLabelThreshold()
+  );
+  const [showBtSettings, setShowBtSettings] = useState(false);
+  const changeDensity = useCallback((v: number) => {
+    setDensity(v);
+    writeLabelDensity(v);
+  }, []);
+  const changeThreshold = useCallback((v: number) => {
+    setThreshold(v);
+    writeLabelThreshold(v);
+  }, []);
 
-  // Browser printing is the default; print servers are opt-in alternatives.
-  const [destination, setDestination] = useState<string>(BROWSER);
+  // Bluetooth is the default when the browser supports it (fastest — prints
+  // straight to the label printer); otherwise fall back to the browser PDF.
+  const [destination, setDestination] = useState<string>(
+    bt.supported ? BLUETOOTH : BROWSER
+  );
   const [isPrinting, setIsPrinting] = useState(false);
+  const [progress, setProgress] = useState<string | null>(null);
+  const [printFrac, setPrintFrac] = useState(0);
+
+  // Pre-fetch label data and pre-build the TSPL bytes while the worker reviews
+  // the list, so clicking Print streams to the printer immediately instead of
+  // fetching + rendering on demand. Bytes are cached per (bundle, tag size).
+  const [labels, setLabels] = useState<Map<string, BundleLabelData> | null>(
+    null
+  );
+  const bytesCache = useRef<Map<string, Uint8Array>>(new Map());
+  const [readyTick, setReadyTick] = useState(0);
+
+  // Silently re-attach to the last printer when the modal opens, so the status
+  // shows green (and Print just works) without a chooser prompt.
+  useEffect(() => {
+    if (bt.supported && bt.status === "disconnected") {
+      void bt.reconnect();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const size = useMemo(
+    () => labelSizes.find((s) => s.id === tagSize),
+    [tagSize]
+  );
+  const widthMm = Math.round((size?.width ?? 1.5748) * 25.4);
+  const heightMm = Math.round((size?.height ?? 3.1496) * 25.4);
+
+  // Fetch label data (+ QR) for everything in the list once when the modal
+  // opens, so the bytes can be pre-built and Print never waits on the network.
+  useEffect(() => {
+    let cancelled = false;
+    const ids = printable.map((b) => b.id!);
+    if (ids.length === 0) return;
+    (async () => {
+      try {
+        const res = await fetch(
+          path.to.file.bundleWorkOrderLabelsJson(ids)
+        );
+        if (!res.ok) return;
+        const { labels: arr } = (await res.json()) as {
+          labels: BundleLabelData[];
+        };
+        if (!cancelled) setLabels(new Map(arr.map((l) => [l.id, l])));
+      } catch {
+        /* Print falls back to an on-demand fetch */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [printable]);
+
+  // Pre-render each label to TSPL bytes for the current tag size (yielding
+  // between labels so the UI stays responsive). Cached by (bundle, size).
+  useEffect(() => {
+    if (!labels) return;
+    let cancelled = false;
+    (async () => {
+      for (const b of printable) {
+        if (cancelled) return;
+        const id = b.id!;
+        const key = `${id}|${tagSize}|${density}|${threshold}`;
+        if (bytesCache.current.has(key)) continue;
+        const label = labels.get(id);
+        if (!label) continue;
+        try {
+          const canvas = await drawBundleLabelCanvas(
+            label,
+            widthMm,
+            heightMm,
+            true
+          );
+          bytesCache.current.set(
+            key,
+            canvasToTsplLabel(canvas, { widthMm, heightMm, density, threshold })
+          );
+          if (!cancelled) setReadyTick((n) => n + 1);
+        } catch {
+          /* skip; Print rebuilds on demand */
+        }
+        await new Promise((r) => setTimeout(r, 0));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [labels, tagSize, density, threshold, widthMm, heightMm, printable]);
 
   const checkedIds = useMemo(
     () => printable.filter((b) => checked.has(b.id!)).map((b) => b.id!),
@@ -84,12 +218,116 @@ const PrintBundleTicketsModal = ({
     [printable]
   );
 
+  // How many of the checked labels are already rendered (bytes cached) for the
+  // current size — drives the "preparing" hint. readyTick forces recompute as
+  // the pre-build effect fills the cache.
+  const preparedCount = useMemo(() => {
+    let c = 0;
+    for (const id of checkedIds) {
+      if (bytesCache.current.has(`${id}|${tagSize}|${density}|${threshold}`))
+        c++;
+    }
+    return c;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedIds, tagSize, density, threshold, readyTick]);
+
+  // Direct Bluetooth print: fetch the full label data (+ QR), render each label
+  // to a bitmap, and stream it as TSPL to the connected printer. No PDF, no
+  // print dialog. Requires an already-connected printer (connect via the row
+  // button — requestDevice needs its own user gesture and can't run after the
+  // async work here).
+  const handlePrintBluetooth = useCallback(async () => {
+    if (checkedIds.length === 0) return;
+    if (!bt.isConnected) {
+      const ok = await bt.reconnect();
+      if (!ok) {
+        toast.error(t`Connect the Bluetooth printer first`);
+        return;
+      }
+    }
+    setIsPrinting(true);
+    setPrintFrac(0);
+    try {
+      // Use prefetched data; only hit the network if the prefetch hasn't landed.
+      let labelMap = labels;
+      if (!labelMap) {
+        const res = await fetch(
+          path.to.file.bundleWorkOrderLabelsJson(checkedIds)
+        );
+        if (!res.ok) throw new Error(t`Failed to load label data`);
+        const { labels: arr } = (await res.json()) as {
+          labels: BundleLabelData[];
+        };
+        labelMap = new Map(arr.map((l) => [l.id, l]));
+        setLabels(labelMap);
+      }
+
+      let failed = 0;
+      const total = checkedIds.length;
+      for (let i = 0; i < total; i++) {
+        const id = checkedIds[i];
+        setProgress(t`Printing ${i + 1}/${total}`);
+        try {
+          const key = `${id}|${tagSize}|${density}|${threshold}`;
+          let bytes = bytesCache.current.get(key);
+          if (!bytes) {
+            const label = labelMap.get(id);
+            if (!label) {
+              failed++;
+              continue;
+            }
+            const canvas = await drawBundleLabelCanvas(
+              label,
+              widthMm,
+              heightMm,
+              true // tags hang hole-end-first — rotate so it reads upright
+            );
+            bytes = canvasToTsplLabel(canvas, {
+              widthMm,
+              heightMm,
+              density,
+              threshold
+            });
+            bytesCache.current.set(key, bytes);
+          }
+          await bt.sendBytes(bytes, (s, tot) => {
+            setPrintFrac((i + s / tot) / total);
+          });
+          setPrintFrac((i + 1) / total);
+          // Let the printer finish this label before streaming the next.
+          await new Promise((r) => setTimeout(r, 120));
+        } catch {
+          failed++;
+        }
+      }
+      if (failed > 0) {
+        toast.error(t`${failed} of ${checkedIds.length} labels failed`);
+      } else {
+        toast.success(t`Printed ${checkedIds.length} labels`);
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t`Print failed`);
+    } finally {
+      setIsPrinting(false);
+      setProgress(null);
+      onClose();
+    }
+  }, [
+    checkedIds,
+    bt,
+    labels,
+    tagSize,
+    density,
+    threshold,
+    widthMm,
+    heightMm,
+    onClose,
+    t
+  ]);
+
   // Print straight from the browser: open the server-generated PDF, sized
-  // exactly to the tag (one ticket per page), in a new tab. A real PDF at the
-  // tag dimensions prints and saves at true size on any OS printer or "Save as
-  // PDF" — unlike an HTML page, whose size the print dialog silently overrides.
-  // Opening it in its own tab keeps the PDF (and its URL) visible so it can be
-  // reviewed/shared before printing; print from the viewer (Cmd/Ctrl+P).
+  // exactly to the tag (one ticket per page), in a new tab; print from the
+  // viewer (Cmd/Ctrl+P).
   const handlePrintBrowser = useCallback(() => {
     if (checkedIds.length === 0) return;
     const url = path.to.file.bundleWorkOrderLabelsPdf(checkedIds, {
@@ -138,10 +376,31 @@ const PrintBundleTicketsModal = ({
 
   // Single Print button routes to whichever destination is selected.
   const handlePrint = useCallback(() => {
-    if (checkedIds.length === 0) return;
-    if (destination === BROWSER) handlePrintBrowser();
-    else handleSendToPrinter(destination);
-  }, [checkedIds, destination, handlePrintBrowser, handleSendToPrinter]);
+    if (isPrinting || checkedIds.length === 0) return;
+    if (destination === BLUETOOTH) void handlePrintBluetooth();
+    else if (destination === BROWSER) handlePrintBrowser();
+    else void handleSendToPrinter(destination);
+  }, [
+    isPrinting,
+    checkedIds,
+    destination,
+    handlePrintBluetooth,
+    handlePrintBrowser,
+    handleSendToPrinter
+  ]);
+
+  const statusDot =
+    bt.status === "connected"
+      ? "bg-emerald-500"
+      : bt.status === "connecting"
+        ? "bg-amber-500"
+        : "bg-red-500";
+  const statusText =
+    bt.status === "connected"
+      ? t`Connected` + (bt.deviceName ? ` · ${bt.deviceName}` : "")
+      : bt.status === "connecting"
+        ? t`Connecting…`
+        : t`Not connected`;
 
   return (
     <Modal
@@ -211,6 +470,109 @@ const PrintBundleTicketsModal = ({
               <span className="text-xs text-muted-foreground">
                 <Trans>Print to</Trans>
               </span>
+
+              {bt.supported && (
+                <div
+                  role="button"
+                  tabIndex={0}
+                  className={`flex items-center gap-3 rounded-lg border p-2 text-left transition-colors cursor-pointer ${
+                    destination === BLUETOOTH
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:bg-muted"
+                  }`}
+                  onClick={() => setDestination(BLUETOOTH)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ")
+                      setDestination(BLUETOOTH);
+                  }}
+                >
+                  <LuBluetooth className="size-4 text-muted-foreground shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium">
+                      <Trans>Bluetooth printer</Trans>
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span
+                        className={`inline-block size-2 rounded-full ${statusDot}`}
+                      />
+                      {statusText}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label={t`Printer settings`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowBtSettings((s) => !s);
+                    }}
+                  >
+                    <LuSettings2 className="size-4" />
+                  </Button>
+                  {bt.isConnected ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void bt.disconnect();
+                      }}
+                    >
+                      <Trans>Disconnect</Trans>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      isLoading={bt.status === "connecting"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void bt.connect();
+                      }}
+                    >
+                      <Trans>Connect</Trans>
+                    </Button>
+                  )}
+                  {destination === BLUETOOTH && (
+                    <LuCheck className="size-4 text-primary shrink-0" />
+                  )}
+                </div>
+              )}
+
+              {bt.supported && showBtSettings && (
+                <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/40 p-3">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium">
+                      <Trans>Print darkness</Trans>
+                    </span>
+                    <Combobox
+                      options={densityOptions}
+                      value={String(density)}
+                      onChange={(v) => v && changeDensity(Number(v))}
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      <Trans>Higher = darker. Default 11.</Trans>
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium">
+                      <Trans>Stroke thinness</Trans>
+                    </span>
+                    <Combobox
+                      options={thresholdOptions}
+                      value={String(threshold)}
+                      onChange={(v) => v && changeThreshold(Number(v))}
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      <Trans>
+                        Lower = thinner (dense Chinese stays legible). Default
+                        150.
+                      </Trans>
+                    </span>
+                  </div>
+                </div>
+              )}
+
               <button
                 type="button"
                 className={`flex items-center gap-3 rounded-lg border p-2 text-left transition-colors ${
@@ -260,18 +622,32 @@ const PrintBundleTicketsModal = ({
           </div>
         </ModalBody>
         <ModalFooter>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="primary"
-              leftIcon={<LuPrinter />}
+              leftIcon={
+                isPrinting ? (
+                  <ProgressRing value={printFrac} />
+                ) : (
+                  <LuPrinter />
+                )
+              }
               disabled={checkedIds.length === 0 || isPrinting}
               onClick={handlePrint}
             >
-              <Trans>Print ({checkedIds.length})</Trans>
+              {progress ?? t`Print (${checkedIds.length})`}
             </Button>
             <Button variant="solid" onClick={onClose}>
               <Trans>Cancel</Trans>
             </Button>
+            {destination === BLUETOOTH &&
+              !isPrinting &&
+              checkedIds.length > 0 &&
+              preparedCount < checkedIds.length && (
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t`Preparing ${preparedCount}/${checkedIds.length}`}
+                </span>
+              )}
           </div>
         </ModalFooter>
       </ModalContent>
