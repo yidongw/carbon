@@ -49,13 +49,15 @@ export default function useProductionSubmodules(opts?: {
           name: t`Master Work Orders`,
           to: path.to.masterWorkOrders,
           icon: <LuScissors />,
-          role: "employee"
+          role: "employee",
+          table: "masterWorkOrder"
         },
         {
           name: t`Bundle Work Orders`,
           to: path.to.bundleWorkOrders,
           icon: <LuPackageOpen />,
-          role: "employee"
+          role: "employee",
+          table: "bundleWorkOrder"
         },
         {
           name: t`Procedures`,

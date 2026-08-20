@@ -636,7 +636,7 @@ const PlanningTable = memo(
           }
           renderActions={renderActions}
           title={t`Planning`}
-          table="planning"
+          table="purchase-planning"
           withSavedView
           withSelectableRows
         />
