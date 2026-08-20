@@ -263,6 +263,7 @@ import {
   PopoverTrigger
 } from "./Popover";
 import { Progress } from "./Progress";
+import { ProgressRing } from "./ProgressRing";
 import { PulsingDot } from "./PulsingDot";
 import { RadioGroup, RadioGroupItem } from "./Radio";
 import {
@@ -548,6 +549,7 @@ export {
   PopoverHeader,
   PopoverTrigger,
   Progress,
+  ProgressRing,
   PulsingDot,
   RadioGroup,
   RadioGroupItem,
