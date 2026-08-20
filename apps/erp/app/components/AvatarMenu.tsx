@@ -61,6 +61,10 @@ import type { action } from "~/root";
 import { startModeTransition } from "~/utils/dom";
 import { path } from "~/utils/path";
 
+// Bump on each deploy so we can confirm which build is live (shown at the
+// bottom of the avatar menu).
+const BUILD_VERSION = "bt-3";
+
 const AvatarMenu = () => {
   const { t } = useLingui();
   const user = useUser();
@@ -400,6 +404,10 @@ const AvatarMenu = () => {
               </button>
             </Form>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <div className="px-2 py-1.5 text-xs text-muted-foreground tabular-nums">
+            {t`Build`} {BUILD_VERSION}
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
       {CONTROLLED_ENVIRONMENT && <ItarDisclosure disclosure={itarDisclosure} />}
