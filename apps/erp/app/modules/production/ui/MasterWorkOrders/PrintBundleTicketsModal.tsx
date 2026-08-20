@@ -62,6 +62,7 @@ const PrintBundleTicketsModal = ({
   );
   const [isPrinting, setIsPrinting] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
+  const [printFrac, setPrintFrac] = useState(0);
 
   // Pre-fetch label data and pre-build the TSPL bytes while the worker reviews
   // the list, so clicking Print streams to the printer immediately instead of
@@ -206,6 +207,7 @@ const PrintBundleTicketsModal = ({
       }
     }
     setIsPrinting(true);
+    setPrintFrac(0);
     try {
       // Use prefetched data; only hit the network if the prefetch hasn't landed.
       let labelMap = labels;
@@ -222,9 +224,10 @@ const PrintBundleTicketsModal = ({
       }
 
       let failed = 0;
-      for (let i = 0; i < checkedIds.length; i++) {
+      const total = checkedIds.length;
+      for (let i = 0; i < total; i++) {
         const id = checkedIds[i];
-        setProgress(t`Printing ${i + 1}/${checkedIds.length}`);
+        setProgress(t`Printing ${i + 1}/${total}`);
         try {
           const key = `${id}|${tagSize}`;
           let bytes = bytesCache.current.get(key);
@@ -243,9 +246,12 @@ const PrintBundleTicketsModal = ({
             bytes = canvasToTsplLabel(canvas, { widthMm, heightMm });
             bytesCache.current.set(key, bytes);
           }
-          await bt.sendBytes(bytes);
+          await bt.sendBytes(bytes, (s, tot) => {
+            setPrintFrac((i + s / tot) / total);
+          });
+          setPrintFrac((i + 1) / total);
           // Let the printer finish this label before streaming the next.
-          await new Promise((r) => setTimeout(r, 250));
+          await new Promise((r) => setTimeout(r, 120));
         } catch {
           failed++;
         }
@@ -355,6 +361,17 @@ const PrintBundleTicketsModal = ({
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-3">
+            {isPrinting && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-sm font-medium">{progress}</span>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-primary transition-[width] duration-150"
+                    style={{ width: `${Math.round(printFrac * 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
             <div className="flex flex-col gap-2">
               <button
                 type="button"

@@ -162,15 +162,33 @@ async function sendBytes(
 ): Promise<void> {
   const ch = writeChar;
   if (!ch) throw new Error("打印机未连接");
-  const chunkSize = 200;
-  const noResp =
-    ch.properties?.writeWithoutResponse && ch.writeValueWithoutResponse;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    const chunk = bytes.slice(i, i + chunkSize);
-    if (noResp) await ch.writeValueWithoutResponse(chunk);
-    else await ch.writeValue(chunk);
-    onProgress?.(Math.min(bytes.length, i + chunkSize), bytes.length);
-    await new Promise((r) => setTimeout(r, 8));
+  const noResp = !!(
+    ch.properties?.writeWithoutResponse && ch.writeValueWithoutResponse
+  );
+  // Start with a large packet for speed; if the negotiated BLE MTU can't take
+  // it the first write throws, so drop to a safe size and carry on. A short
+  // pause every few packets keeps the printer's receive buffer from overrunning.
+  let chunkSize = 512;
+  let sent = 0;
+  let since = 0;
+  while (sent < bytes.length) {
+    const chunk = bytes.slice(sent, sent + chunkSize);
+    try {
+      if (noResp) await ch.writeValueWithoutResponse(chunk);
+      else await ch.writeValue(chunk);
+    } catch (e) {
+      if (chunkSize > 180) {
+        chunkSize = 180;
+        continue;
+      }
+      throw e;
+    }
+    sent += chunk.length;
+    onProgress?.(sent, bytes.length);
+    if (++since >= 8) {
+      since = 0;
+      await new Promise((r) => setTimeout(r, 4));
+    }
   }
 }
 
