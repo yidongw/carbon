@@ -34,7 +34,8 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
         {
           name: t`Styles`,
           to: path.to.styles,
-          icon: <LuShirt />
+          icon: <LuShirt />,
+          table: "style"
         },
         {
           name: t`Samples`,
@@ -79,19 +80,22 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
           name: t`Attributes`,
           to: path.to.itemAttributes,
           icon: <LuShapes />,
-          role: "employee"
+          role: "employee",
+          table: "itemAttribute"
         },
         {
           name: t`Attribute Sets`,
           to: path.to.itemAttributeSets,
           icon: <LuGroup />,
-          role: "employee"
+          role: "employee",
+          table: "itemAttributeSet"
         },
         {
           name: t`Item Attribute Sets`,
           to: path.to.itemAttributeSetAssignments,
           icon: <LuPuzzle />,
-          role: "employee"
+          role: "employee",
+          table: "itemAttributeSetAssignment"
         }
       ]
     },

@@ -65,12 +65,14 @@ export default function useQualitySubmodules() {
         {
           name: t`Gauges`,
           to: path.to.gauges,
-          icon: <LuDraftingCompass />
+          icon: <LuDraftingCompass />,
+          table: "gauge"
         },
         {
           name: t`Records`,
           to: path.to.calibrations,
-          icon: <LuCircleGauge />
+          icon: <LuCircleGauge />,
+          table: "gaugeCalibrationRecord"
         }
       ]
     },
@@ -123,7 +125,8 @@ export default function useQualitySubmodules() {
         {
           name: t`Issue Workflows`,
           to: path.to.issueWorkflows,
-          icon: <LuWorkflow />
+          icon: <LuWorkflow />,
+          table: "nonConformanceWorkflow"
         }
       ]
     }

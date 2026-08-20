@@ -66,7 +66,8 @@ export default function useInventorySubmodules() {
           name: t`Kanbans`,
           to: path.to.kanbans,
           role: "employee",
-          icon: <LuScanQrCode />
+          icon: <LuScanQrCode />,
+          table: "kanban"
         },
         {
           name: t`Location Inventory`,
