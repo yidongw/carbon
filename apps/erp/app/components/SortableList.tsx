@@ -170,7 +170,12 @@ function SortableListItem<T>({
                     >
                       <HStack
                         className={cn(
-                          "w-full min-w-0 justify-between pr-8",
+                          // Reserve room for the top-right overlays: the header
+                          // action (right-3) and the drag-handle grip (right-9),
+                          // which together extend ~56px in. pr-8 only cleared one
+                          // icon, so trailing content (e.g. the OUTSIDE badge) slid
+                          // under the grip.
+                          "w-full min-w-0 justify-between pr-16",
                           !dragHandle && !isReadOnly && "cursor-grab"
                         )}
                       >
