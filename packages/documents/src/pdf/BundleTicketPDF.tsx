@@ -63,7 +63,7 @@ type Field = [string, string | number | null | undefined];
 const present = (fields: Field[]) =>
   fields.filter(([, v]) => v !== null && v !== undefined && v !== "");
 
-/** Left column: style / attributes / qty. */
+/** Left column: attributes / qty. 款号 is rendered on its own full-width row. */
 function leftRows(label: BundleTicketLabel) {
   const attrFields: Field[] =
     label.attributeLines && label.attributeLines.length > 0
@@ -71,11 +71,12 @@ function leftRows(label: BundleTicketLabel) {
       : label.attributeLabel
         ? present([["", label.attributeLabel]])
         : [];
-  return present([
-    ["款号: ", label.styleReadableId],
-    ...attrFields,
-    ["数量: ", label.quantity]
-  ]);
+  return present([...attrFields, ["数量: ", label.quantity]]);
+}
+
+/** 款号 — its own full-width row (style ids can be long). */
+function styleRow(label: BundleTicketLabel) {
+  return present([["款号: ", label.styleReadableId]]);
 }
 
 /** Right column: everything else (customer / work center / bundle counts). */
@@ -116,14 +117,15 @@ const BundleTicketPDF = ({
   return (
     <Document>
       {labels.map((label) => {
+        const style = styleRow(label);
         const left = leftRows(label);
         const right = rightRows(label);
-        // Two columns, so the field block is as tall as the taller column.
-        // Target ~42% of the printable height (fewer rows than a single list,
-        // so the QR gets more room); generous line factor for the medium face.
-        const maxRows = Math.max(1, left.length, right.length);
+        // 款号 gets its own full-width row, then two columns below — so the
+        // field block is one row plus the taller column. Target ~42% of the
+        // printable height; generous line factor for the medium face.
+        const rowCount = Math.max(1, left.length, right.length) + style.length;
         const perRowMm =
-          (contentMm * 0.42 - (maxRows - 1) * ROW_GAP_MM) / maxRows;
+          (contentMm * 0.42 - (rowCount - 1) * ROW_GAP_MM) / rowCount;
         const valueFont = Math.max(
           5,
           Math.min(11, (perRowMm * MM_TO_PT) / 1.5)
@@ -211,6 +213,7 @@ const BundleTicketPDF = ({
                 />
               </>
             )}
+            {renderRows(style)}
             <View style={{ display: "flex", flexDirection: "row" }}>
               <View
                 style={{ flex: 1, display: "flex", flexDirection: "column" }}
