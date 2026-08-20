@@ -134,7 +134,12 @@ const ProceduresTable = memo(({ data, tags, count }: ProceduresTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <TagsCell row={row.original} table="procedure" availableTags={tags} />
+          <TagsCell
+            tagKey={row.original.id}
+            tags={row.original.tags}
+            table="procedure"
+            availableTags={tags}
+          />
         ),
         meta: {
           filter: {

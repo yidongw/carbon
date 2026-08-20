@@ -322,7 +322,12 @@ export function buildDefaultStylesTableColumns({
       accessorKey: "tags",
       header: i18n._(msg`Tags`),
       cell: ({ row }) => (
-        <TagsCell row={row.original} table="style" availableTags={tags} />
+        <TagsCell
+          tagKey={row.original.readableId}
+          tags={row.original.tags}
+          table="style"
+          availableTags={tags}
+        />
       ),
       meta: {
         filter: {

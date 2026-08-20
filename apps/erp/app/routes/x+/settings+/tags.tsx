@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { data, Outlet, redirect, useLoaderData } from "react-router";
 import { TagsTable } from "~/modules/settings/ui/Tags";
 import { getTags } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
@@ -52,42 +52,45 @@ export async function action({ request }: ActionFunctionArgs) {
   const { client, userId } = await requirePermissions(request, {});
 
   const formData = await request.formData();
-  const ids = formData.getAll("ids");
-  const table = formData.get("table");
+  const ids = formData.getAll("ids") as string[];
+  const table = formData.get("table") as string;
   const value = formData.getAll("value");
 
+  // Every taggable table stores its tags on a row matched by its own `id` PK.
+  // The caller (<TagsCell tagKey=...>) is responsible for sending the value that
+  // matches that PK — readableId for item extension tables, id for everything
+  // else — since the list view's `id` differs from the write PK for item tables.
   const result = await client
-    // @ts-expect-error
-    .from(table as string)
-    .update({
-      tags: value,
-      updatedBy: userId,
-      updatedAt: new Date().toISOString()
-    })
-    .in(getIdField(table as string), ids as string[]);
+    // @ts-expect-error - `table` is a dynamic, caller-supplied table name
+    .from(table)
+    .update(
+      {
+        tags: value,
+        updatedBy: userId,
+        updatedAt: new Date().toISOString()
+      },
+      // Ask PostgREST for the affected-row count instead of `.select()`ing the
+      // rows — selecting across a dynamic table name blows up type inference,
+      // and count is all we need to detect a no-op write.
+      { count: "exact" }
+    )
+    .in("id", ids);
 
-  if (result.error) {
-    console.error(result.error);
+  // A 0-row update means the submitted id matched no row in `table` — almost
+  // always a wrong `tagKey` at the call site. Treat it like an error instead of
+  // silently dropping the write (the failure mode that hid the styles tags bug).
+  if (result.error || !result.count) {
+    console.error("Failed to update tags", { table, ids, error: result.error });
+    return data(
+      { success: false },
+      await flash(
+        request,
+        error(result.error ?? "no matching row", "Failed to update tags")
+      )
+    );
   }
 
-  return result;
-}
-
-function getIdField(table: string) {
-  switch (table) {
-    case "part":
-    case "tool":
-    case "material":
-    case "consumable":
-    case "service":
-    case "fixture":
-    case "job":
-    case "jobOperation":
-    case "methodOperation":
-    case "quoteOperation":
-    default:
-      return "id";
-  }
+  return data({ success: true });
 }
 
 export default function TagsRoute() {

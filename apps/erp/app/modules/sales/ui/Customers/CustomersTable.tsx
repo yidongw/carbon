@@ -198,7 +198,8 @@ const CustomersTable = memo(
           header: t`Tags`,
           cell: ({ row }) => (
             <TagsCell
-              row={row.original}
+              tagKey={row.original.id}
+              tags={row.original.tags}
               table="customer"
               availableTags={tags}
             />

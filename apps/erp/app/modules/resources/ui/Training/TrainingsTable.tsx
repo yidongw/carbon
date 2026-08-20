@@ -187,7 +187,12 @@ const TrainingsTable = memo(({ data, count, tags }: TrainingsTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <TagsCell row={row.original} table="training" availableTags={tags} />
+          <TagsCell
+            tagKey={row.original.id}
+            tags={row.original.tags}
+            table="training"
+            availableTags={tags}
+          />
         ),
         meta: {
           filter: {

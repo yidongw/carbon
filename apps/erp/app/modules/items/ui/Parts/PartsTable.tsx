@@ -363,7 +363,12 @@ const PartsTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <TagsCell row={row.original} table="part" availableTags={tags} />
+            <TagsCell
+              tagKey={row.original.readableId}
+              tags={row.original.tags}
+              table="part"
+              availableTags={tags}
+            />
           ),
           meta: {
             filter: {

@@ -129,7 +129,8 @@ const QualityDocumentsTable = memo(
           header: t`Tags`,
           cell: ({ row }) => (
             <TagsCell
-              row={row.original}
+              tagKey={row.original.id}
+              tags={row.original.tags}
               table="qualityDocument"
               availableTags={tags}
             />

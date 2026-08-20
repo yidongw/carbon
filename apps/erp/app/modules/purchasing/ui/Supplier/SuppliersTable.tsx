@@ -184,7 +184,12 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <TagsCell row={row.original} table="supplier" availableTags={tags} />
+          <TagsCell
+            tagKey={row.original.id}
+            tags={row.original.tags}
+            table="supplier"
+            availableTags={tags}
+          />
         ),
         meta: {
           filter: {
