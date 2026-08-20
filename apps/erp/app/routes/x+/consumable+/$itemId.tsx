@@ -18,6 +18,7 @@ import type { ConsumableSummary, ItemFile } from "~/modules/items";
 import {
   getConsumable,
   getItemFiles,
+  getMakeMethods,
   getMaterialUsedIn,
   getPickMethods,
   getSupplierParts
@@ -72,6 +73,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     files: getItemFiles(client, itemId, companyId),
     supplierParts: supplierParts.data ?? [],
     pickMethods: pickMethods.data ?? [],
+    makeMethods: getMakeMethods(client, itemId, companyId),
     tags: tags.data ?? [],
     usedIn: getMaterialUsedIn(client, itemId, companyId),
     attributeSetId: attributeState.data.attributeSetId,

@@ -13,6 +13,8 @@ export function getPathToMakeMethod(
       return `${path.to.style(id)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolDetails(id)}?methodId=${methodId}`;
+    case "Consumable":
+      return `${path.to.consumableDetails(id)}?methodId=${methodId}`;
     default:
       return "#";
   }

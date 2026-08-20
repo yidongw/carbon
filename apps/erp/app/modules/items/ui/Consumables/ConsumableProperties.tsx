@@ -11,6 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useCallback, useEffect } from "react";
 import { LuCopy, LuLink } from "react-icons/lu";
 import { Await, useFetcher, useParams } from "react-router";
@@ -20,6 +21,7 @@ import { MethodBadge, MethodIcon, TrackingTypeIcon } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { Boolean, ItemPostingGroup, Tags } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
+import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ItemThumbnailUpload } from "~/components/ItemThumnailUpload";
 import { useRouteData } from "~/hooks";
 import { methodType } from "~/modules/shared";
@@ -28,10 +30,14 @@ import { useSuppliers } from "~/stores";
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
 import { copyToClipboard } from "~/utils/string";
-import { itemTrackingTypes } from "../../items.models";
+import {
+  itemReplenishmentSystems,
+  itemTrackingTypes
+} from "../../items.models";
 import type {
   Consumable,
   ItemFile,
+  MakeMethod,
   PickMethod,
   SupplierPart
 } from "../../types";
@@ -46,6 +52,7 @@ type ConsumablePropertiesProps = {
     files: Promise<ItemFile[]>;
     supplierParts: SupplierPart[];
     pickMethods: PickMethod[];
+    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
     tags: { name: string }[];
   };
 };
@@ -80,6 +87,7 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
     files: Promise<ItemFile[]>;
     supplierParts: SupplierPart[];
     pickMethods: PickMethod[];
+    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
     tags: { name: string }[];
   }>(path.to.consumable(itemId));
   const routeData = data ?? routeDataFromRoute;
@@ -320,6 +328,48 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
 
       <ValidatedForm
         defaultValues={{
+          replenishmentSystem:
+            routeData?.consumableSummary?.replenishmentSystem ?? undefined
+        }}
+        validator={z.object({
+          replenishmentSystem: z.string()
+        })}
+        className="w-full"
+      >
+        <Select
+          name="replenishmentSystem"
+          label={t`Replenishment`}
+          inline={(value) => (
+            <Badge variant="secondary">
+              <ReplenishmentSystemIcon type={value} className="mr-2" />
+              <span>
+                {value === "Buy"
+                  ? t`Buy`
+                  : value === "Make"
+                    ? t`Make`
+                    : t`Buy and Make`}
+              </span>
+            </Badge>
+          )}
+          options={itemReplenishmentSystems
+            .filter((system) => system !== "Buy and Make")
+            .map((system) => ({
+              value: system,
+              label: (
+                <span className="flex items-center gap-2">
+                  <ReplenishmentSystemIcon type={system} />
+                  {system === "Buy" ? t`Buy` : t`Make`}
+                </span>
+              )
+            }))}
+          onChange={(value) => {
+            onUpdate("replenishmentSystem", value?.value ?? null);
+          }}
+        />
+      </ValidatedForm>
+
+      <ValidatedForm
+        defaultValues={{
           itemTrackingType:
             routeData?.consumableSummary?.itemTrackingType ?? undefined
         }}
@@ -372,7 +422,13 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
             </Badge>
           )}
           options={methodType
-            .filter((type) => type !== "Make to Order")
+            .filter((type) => {
+              const replenishment =
+                routeData?.consumableSummary?.replenishmentSystem;
+              if (replenishment === "Buy") return type !== "Make to Order";
+              if (replenishment === "Make") return type !== "Purchase to Order";
+              return true;
+            })
             .map((type) => ({
               value: type,
               label: (
@@ -420,7 +476,32 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
             <Trans>Methods</Trans>
           </h3>
         </HStack>
-
+        {routeData?.consumableSummary?.replenishmentSystem?.includes(
+          "Make"
+        ) && (
+          <Suspense fallback={null}>
+            <Await resolve={routeData?.makeMethods}>
+              {(makeMethods) =>
+                makeMethods.data
+                  ?.sort((a, b) => b.version - a.version)
+                  .map((method) => {
+                    const isActive =
+                      method.status === "Active" ||
+                      makeMethods.data?.length === 1;
+                    return (
+                      <MethodBadge
+                        key={method.id}
+                        type="Make to Order"
+                        text={`Version ${method.version}`}
+                        to={`${path.to.consumableDetails(itemId)}?methodId=${method.id}`}
+                        className={isActive ? undefined : "opacity-50"}
+                      />
+                    );
+                  })
+              }
+            </Await>
+          </Suspense>
+        )}
         {routeData?.consumableSummary?.replenishmentSystem?.includes("Buy") &&
           supplierParts.map((method) => (
             <MethodBadge

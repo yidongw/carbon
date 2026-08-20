@@ -108,7 +108,11 @@ export function SelectedItemProperties({
       return (
         <ConsumableProperties
           key={d.itemId}
-          data={{ ...common, consumableSummary: d.summary }}
+          data={{
+            ...common,
+            makeMethods: makeMethodsPromise,
+            consumableSummary: d.summary
+          }}
         />
       );
     default:
