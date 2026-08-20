@@ -13,9 +13,12 @@ export const DOTS_PER_MM = 8;
 export type BundleLabelData = {
   id: string;
   readableId?: string | null;
+  /** 款号 — parent style readable id. */
   styleReadableId?: string | null;
-  colorName?: string | null;
-  sizeCode?: string | null;
+  /** Variant attributes (颜色/尺码/…) as localized name/value pairs. */
+  attributeLines?: Array<{ name: string; value: string }> | null;
+  /** Single-line attribute summary when attributeLines is empty. */
+  attributeLabel?: string | null;
   quantity?: number | null;
   workCenterName?: string | null;
   sequence?: number | null;
@@ -75,39 +78,55 @@ export async function drawBundleLabelCanvas(
   const padX = Math.round(2 * DOTS_PER_MM);
   const topPad = Math.round(3 * DOTS_PER_MM);
   const holeReserve = Math.round(16 * DOTS_PER_MM);
-  const contentH = H - topPad - holeReserve;
+  const contentBottom = H - holeReserve;
+  const contentH = contentBottom - topPad;
 
-  const rows: Array<[string, string]> = (
-    [
-      ["款号", label.styleReadableId],
-      ["客户", label.customerName],
-      ["颜色", label.colorName],
-      ["尺码", label.sizeCode],
-      ["数量", label.quantity],
-      ["车间", label.workCenterName],
-      ["扎号", label.sequence],
-      ["总扎", label.totalBundles],
-      ["总裁", label.totalCut]
-    ] as Array<[string, unknown]>
-  )
-    .filter(([, v]) => present(v))
-    .map(([k, v]) => [k, String(v)] as [string, string]);
+  // Two columns, mirroring the PDF ticket: left = 款号 + attributes + 数量,
+  // right = 客户/车间/扎号/总扎/总裁. Color/size come as localized name/value
+  // pairs in attributeLines (with attributeLabel as a single-line fallback).
+  const attrFields: Array<[string, unknown]> =
+    label.attributeLines && label.attributeLines.length > 0
+      ? label.attributeLines.map((l) => [`${l.name}: `, l.value])
+      : label.attributeLabel
+        ? [["", label.attributeLabel]]
+        : [];
+  const toRows = (fields: Array<[string, unknown]>) =>
+    fields
+      .filter(([, v]) => present(v))
+      .map(([k, v]) => [k, String(v)] as [string, string]);
+  const leftRows = toRows([
+    ["款号: ", label.styleReadableId],
+    ...attrFields,
+    ["数量: ", label.quantity]
+  ]);
+  const rightRows = toRows([
+    ["客户: ", label.customerName],
+    ["车间: ", label.workCenterName],
+    ["扎号: ", label.sequence],
+    ["总扎: ", label.totalBundles],
+    ["总裁: ", label.totalCut]
+  ]);
 
-  const n = Math.max(1, rows.length);
-  const fieldsBudget = contentH * 0.55;
-  const rowH = fieldsBudget / n;
-  const fontPx = Math.max(16, Math.min(34, Math.floor(rowH * 0.72)));
+  const maxRows = Math.max(1, leftRows.length, rightRows.length);
+  const fieldsBudget = contentH * 0.52;
+  const rowH = fieldsBudget / maxRows;
+  const fontPx = Math.max(14, Math.min(26, Math.floor(rowH * 0.66)));
 
-  let y = topPad;
-  for (const [k, v] of rows) {
-    const keyText = `${k}: `;
-    ctx.font = `${fontPx}px ${CJK_FONT}`;
-    ctx.fillText(keyText, padX, y);
-    const kw = ctx.measureText(keyText).width;
-    ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
-    ctx.fillText(v, padX + kw, y, W - padX - kw - padX);
-    y += rowH;
-  }
+  const colGap = Math.round(1.5 * DOTS_PER_MM);
+  const colW = (W - 2 * padX - colGap) / 2;
+  const drawColumn = (rows: Array<[string, string]>, x: number) => {
+    let y = topPad;
+    for (const [k, v] of rows) {
+      ctx.font = `${fontPx}px ${CJK_FONT}`;
+      ctx.fillText(k, x, y);
+      const kw = ctx.measureText(k).width;
+      ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
+      ctx.fillText(v, x + kw, y, Math.max(8, colW - kw));
+      y += rowH;
+    }
+  };
+  drawColumn(leftRows, padX);
+  drawColumn(rightRows, padX + colW + colGap);
 
   // QR + id centered in the space left below the fields, above the hole strip.
   const qrTop = topPad + fieldsBudget;

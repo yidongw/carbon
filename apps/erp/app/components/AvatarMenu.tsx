@@ -63,7 +63,7 @@ import { path } from "~/utils/path";
 
 // Bump on each deploy so we can confirm which build is live (shown at the
 // bottom of the avatar menu).
-const BUILD_VERSION = "bt-3";
+const BUILD_VERSION = "bt-4";
 
 const AvatarMenu = () => {
   const { t } = useLingui();
