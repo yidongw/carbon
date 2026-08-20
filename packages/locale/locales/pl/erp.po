@@ -7742,6 +7742,9 @@ msgstr "Nie udało się zaktualizować linii dostawcy cenowego"
 msgid "Failed to update suppliers"
 msgstr "Nie udało się zaktualizować dostawców"
 
+msgid "Failed to update tags"
+msgstr "Nie udało się zaktualizować tagów"
+
 msgid "Failed to update task status"
 msgstr "Nie udało się zaktualizować-statusu zadania"
 

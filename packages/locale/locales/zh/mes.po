@@ -3777,6 +3777,9 @@ msgstr "更新供应商报价行失败"
 msgid "Failed to update suppliers"
 msgstr "更新供应商失败"
 
+msgid "Failed to update tags"
+msgstr "更新标签失败"
+
 msgid "Failed to update task status"
 msgstr "更新任务状态失败"
 
