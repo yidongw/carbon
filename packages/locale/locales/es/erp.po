@@ -4178,6 +4178,9 @@ msgstr "Habilitar en Configuración"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Habilitar notificaciones cuando una RFQ está marcada como lista para cotizar."
 
+msgid "Enable screensaver on this device"
+msgstr "Activar el protector de pantalla en este dispositivo"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Habilitar modo de estación de trabajo compartida para terminales MES. Los operadores se identifican mediante PIN antes de realizar el trabajo."
 
@@ -8363,6 +8366,9 @@ msgstr "¿Ideas, sugerencias o problemas con esta página?"
 msgid "Ideas, suggestions or problems?"
 msgstr "¿Ideas, sugerencias o problemas?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Tiempo de inactividad (minutos)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "Los IDs y descripciones se generan para materias primas."
 
@@ -10822,6 +10828,9 @@ msgstr "Sólo se pueden vender activos activos"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Sólo se pueden deshacer activos Activos o Plenamente depreciados"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "Solo se aplica a este dispositivo. Tras un periodo de inactividad, la pantalla muestra el panel del módulo actual; toca para volver. De forma predeterminada, el protector solo funciona en modo quiosco (la app nativa o una URL con ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Solo aparecen los empleados asignados al informar la cantidad. Dejar en blanco para permitir todos."
 
@@ -12612,6 +12621,9 @@ msgstr "Restablecer PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Restablecer PIN para {0} {1}"
 
+msgid "Reset to default"
+msgstr "Restablecer valores predeterminados"
+
 msgid "Reset View"
 msgstr "Restablecer vista"
 
@@ -13084,6 +13096,9 @@ msgstr "Razones de Rechazo"
 
 msgid "Scrap Sales"
 msgstr "Vendidas de Desecho"
+
+msgid "Screensaver"
+msgstr "Protector de pantalla"
 
 msgid "Search"
 msgstr "Buscar"
@@ -14894,6 +14909,9 @@ msgstr "Estos trabajos tienen operaciones asignadas a este centro de trabajo:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Esta ajuste tomaría una cantidad por debajo de cero."
+
+msgid "This Device"
+msgstr "Este dispositivo"
 
 msgid "This information will be used on document headers"
 msgstr "Esta información se utilizará en los encabezados de documentos"

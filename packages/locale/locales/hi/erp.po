@@ -4178,6 +4178,9 @@ msgstr "सेटिंग्स में सक्षम करें"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "जब कोई RFQ उद्धरण के लिए तैयार के रूप में चिह्नित किया जाता है तो सूचनाएं सक्षम करें।"
 
+msgid "Enable screensaver on this device"
+msgstr "इस डिवाइस पर स्क्रीनसेवर सक्षम करें"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "MES टर्मिनल के लिए साझा वर्कस्टेशन मोड सक्षम करें। ऑपरेटर काम करने से पहले PIN के माध्यम से स्वयं की पहचान करते हैं।"
 
@@ -8363,6 +8366,9 @@ msgstr "इस पृष्ठ के बारे में विचार, �
 msgid "Ideas, suggestions or problems?"
 msgstr "विचार, सुझाव या समस्याएं?"
 
+msgid "Idle timeout (minutes)"
+msgstr "निष्क्रिय टाइमआउट (मिनट)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "कच्चे माल के लिए आईडी और विवरण उत्पन्न किए जाते हैं।"
 
@@ -10822,6 +10828,9 @@ msgstr "केवल ऑक्टिव असेट्स को बेचा �
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "केवल ऑक्टाव या पूरी तरह से संपत्ति को डिस्पोज़ किए जा सकते हैं"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "केवल इस डिवाइस पर लागू होता है। स्क्रीन निष्क्रिय होने पर वर्तमान मॉड्यूल का डैशबोर्ड दिखाती है; वापस जाने के लिए स्पर्श करें। डिफ़ॉल्ट रूप से स्क्रीनसेवर केवल किओस्क मोड (नेटिव ऐप, या ?kiosk=1 वाला URL) में चलता है।"
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "वितरित कराए गए सिपाही ही दिखाई देते हैं जब मात्रा रिपोर्ट किया जाता है। सभी को अनुमति देने के लिए खाली छोड़कर रहें।"
 
@@ -12612,6 +12621,9 @@ msgstr "PIN रीसेट करें"
 msgid "Reset PIN for {0} {1}"
 msgstr "{0} {1} के लिए PIN रीसेट करें"
 
+msgid "Reset to default"
+msgstr "डिफ़ॉल्ट पर रीसेट करें"
+
 msgid "Reset View"
 msgstr "नक्शा रीसेट"
 
@@ -13084,6 +13096,9 @@ msgstr "स्क्रैप कारण"
 
 msgid "Scrap Sales"
 msgstr "विक्री व्यर्थ"
+
+msgid "Screensaver"
+msgstr "स्क्रीनसेवर"
 
 msgid "Search"
 msgstr "खोज"
@@ -14894,6 +14909,9 @@ msgstr "इन कार्यों के पास इस कार्य क
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "यह राजस्व तीव्रता धन के नegative नमूने से होगी।"
+
+msgid "This Device"
+msgstr "यह डिवाइस"
 
 msgid "This information will be used on document headers"
 msgstr "यह जानकारी दस्तावेज़ शीर्षलेख पर उपयोग की जाएगी"

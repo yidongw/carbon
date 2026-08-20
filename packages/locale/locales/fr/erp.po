@@ -4178,6 +4178,9 @@ msgstr "Activer dans les paramètres"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Activer les notifications lorsqu'une demande de devis est marquée comme prête pour la cotation."
 
+msgid "Enable screensaver on this device"
+msgstr "Activer l'économiseur d'écran sur cet appareil"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Activez le mode de poste de travail partagé pour les terminaux MES. Les opérateurs s'identifient via un code PIN avant d'effectuer le travail."
 
@@ -8363,6 +8366,9 @@ msgstr "Des idées, des suggestions ou des problèmes avec cette page ?"
 msgid "Ideas, suggestions or problems?"
 msgstr "Des idées, des suggestions ou des problèmes ?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Délai d'inactivité (minutes)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "Les IDs et descriptions sont générés pour les matières premières."
 
@@ -10822,6 +10828,9 @@ msgstr "Seuls les actifs actifs peuvent être vendus"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Seules les actifs actifs ou pleinement dépréciés peuvent être désossés"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "S'applique uniquement à cet appareil. Après inactivité, l'écran affiche le tableau de bord du module actuel ; touchez pour revenir. Par défaut, l'économiseur ne fonctionne qu'en mode kiosque (l'app native ou une URL avec ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Seuls les employés affectés apparaissent lors de la rapportation des quantités. Laissez ce champ vide pour autoriser tous les employés."
 
@@ -12612,6 +12621,9 @@ msgstr "Réinitialiser le PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Réinitialiser le PIN pour {0} {1}"
 
+msgid "Reset to default"
+msgstr "Réinitialiser par défaut"
+
 msgid "Reset View"
 msgstr "Réinitialiser la vue"
 
@@ -13084,6 +13096,9 @@ msgstr "Raisons de rebut"
 
 msgid "Scrap Sales"
 msgstr "Ventes de déchets"
+
+msgid "Screensaver"
+msgstr "Économiseur d'écran"
 
 msgid "Search"
 msgstr "Rechercher"
@@ -14894,6 +14909,9 @@ msgstr "Ces travaux ont des opérations assignées à ce centre de travail :"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Cette ajustement prendrait une quantité inférieure à zéro."
+
+msgid "This Device"
+msgstr "Cet appareil"
 
 msgid "This information will be used on document headers"
 msgstr "Ces informations seront utilisées dans les en-têtes de document"

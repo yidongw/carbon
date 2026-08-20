@@ -4177,6 +4177,9 @@ msgstr "Enable in Settings"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Enable notifications when an RFQ is marked as ready for quote."
 
+msgid "Enable screensaver on this device"
+msgstr "Enable screensaver on this device"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 
@@ -8362,6 +8365,9 @@ msgstr "Ideas, suggestions or problems with this page?"
 msgid "Ideas, suggestions or problems?"
 msgstr "Ideas, suggestions or problems?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Idle timeout (minutes)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "IDs and descriptions are generated for raw materials."
 
@@ -10821,6 +10827,9 @@ msgstr "Only active assets can be sold"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Only Active or Fully Depreciated assets can be disposed"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 
@@ -12611,6 +12620,9 @@ msgstr "Reset PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Reset PIN for {0} {1}"
 
+msgid "Reset to default"
+msgstr "Reset to default"
+
 msgid "Reset View"
 msgstr "Reset View"
 
@@ -13083,6 +13095,9 @@ msgstr "Scrap Reasons"
 
 msgid "Scrap Sales"
 msgstr "Scrap Sales"
+
+msgid "Screensaver"
+msgstr "Screensaver"
 
 msgid "Search"
 msgstr "Search"
@@ -14893,6 +14908,9 @@ msgstr "These jobs have operations assigned to this work center:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "This adjustment would take a quantity below zero."
+
+msgid "This Device"
+msgstr "This Device"
 
 msgid "This information will be used on document headers"
 msgstr "This information will be used on document headers"

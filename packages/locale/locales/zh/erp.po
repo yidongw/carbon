@@ -4178,6 +4178,9 @@ msgstr "在设置中启用"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "当询价单被标记为可报价时，启用通知。"
 
+msgid "Enable screensaver on this device"
+msgstr "在本设备启用屏保"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "启用MES终端共享工作站模式。操作员通过PIN识别自己后再进行工作。"
 
@@ -8363,6 +8366,9 @@ msgstr "本页有任何建议、意见或问题吗？"
 msgid "Ideas, suggestions or problems?"
 msgstr "建议或问题？"
 
+msgid "Idle timeout (minutes)"
+msgstr "空闲超时(分钟)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "原材料的ID和描述将被生成。"
 
@@ -10822,6 +10828,9 @@ msgstr "只有激活的资产才能出售"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "只有活动状态或完全报废的资产才能处置"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "仅对本设备生效。屏幕空闲后显示当前模块的仪表盘;触摸即可返回。默认仅在 kiosk 模式(原生 App,或带 ?kiosk=1 的网址)下启用。"
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "仅分配的员工上报数量时出现。留空表示全部。"
 
@@ -12612,6 +12621,9 @@ msgstr "重置PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "重置{0} {1}的PIN码"
 
+msgid "Reset to default"
+msgstr "恢复默认"
+
 msgid "Reset View"
 msgstr "重置视图"
 
@@ -13084,6 +13096,9 @@ msgstr "废料原因"
 
 msgid "Scrap Sales"
 msgstr "报废销售"
+
+msgid "Screensaver"
+msgstr "屏幕保护"
 
 msgid "Search"
 msgstr "搜索"
@@ -14894,6 +14909,9 @@ msgstr "这些工作已分配至该工作中心的操作："
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "此调整将涉及一个负数量。"
+
+msgid "This Device"
+msgstr "本设备"
 
 msgid "This information will be used on document headers"
 msgstr "这些信息将用于文档标题"

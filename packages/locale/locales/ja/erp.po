@@ -4178,6 +4178,9 @@ msgstr "設定で有効にする"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "RFQが見積もり準備完了としてマークされたときに通知を有効にします。"
 
+msgid "Enable screensaver on this device"
+msgstr "このデバイスでスクリーンセーバーを有効にする"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "MESターミナル用の共有ワークステーションモードを有効にします。オペレーターは作業を実行する前にPINで自分自身を識別します。"
 
@@ -8363,6 +8366,9 @@ msgstr "このページについてのアイデア、提案、または問題は
 msgid "Ideas, suggestions or problems?"
 msgstr "アイデア、提案、または問題はありますか？"
 
+msgid "Idle timeout (minutes)"
+msgstr "アイドルタイムアウト(分)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "IDと説明は原材料に対して生成されます。"
 
@@ -10822,6 +10828,9 @@ msgstr "有効な資産のみが販売可能です"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "有効または完全に減価償却された資産のみが処分可能です"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "このデバイスにのみ適用されます。ディスプレイがアイドルになると現在のモジュールのダッシュボードを表示し、タッチで戻ります。既定ではキオスクモード(ネイティブアプリ、または ?kiosk=1 付きの URL)でのみ動作します。"
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "割り当てられた従業員のみが表示されます。すべてを許可する場合は空にします。"
 
@@ -12612,6 +12621,9 @@ msgstr "PINをリセット"
 msgid "Reset PIN for {0} {1}"
 msgstr "{0} {1}のPINをリセット"
 
+msgid "Reset to default"
+msgstr "既定値に戻す"
+
 msgid "Reset View"
 msgstr "ビューをリセット"
 
@@ -13084,6 +13096,9 @@ msgstr "スクラップ理由"
 
 msgid "Scrap Sales"
 msgstr "Scrap Sales"
+
+msgid "Screensaver"
+msgstr "スクリーンセーバー"
 
 msgid "Search"
 msgstr "検索"
@@ -14894,6 +14909,9 @@ msgstr "これらのジョブにはこのワークセンターに割り当てら
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "この調整はゼロ未満の数量を設定します。"
+
+msgid "This Device"
+msgstr "このデバイス"
 
 msgid "This information will be used on document headers"
 msgstr "この情報はドキュメントヘッダーで使用されます"

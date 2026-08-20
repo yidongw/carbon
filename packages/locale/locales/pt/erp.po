@@ -4178,6 +4178,9 @@ msgstr "Ativar nas Configurações"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Ativar notificações quando uma RFQ é marcada como pronta para cotação."
 
+msgid "Enable screensaver on this device"
+msgstr "Ativar o protetor de tela neste dispositivo"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Ativar modo de estação de trabalho compartilhada para terminais MES. Os operadores se identificam via PIN antes de realizar o trabalho."
 
@@ -8363,6 +8366,9 @@ msgstr "Ideias, sugestões ou problemas com esta página?"
 msgid "Ideas, suggestions or problems?"
 msgstr "Ideias, sugestões ou problemas?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Tempo ocioso (minutos)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "IDs e descrições são gerados para matérias-primas."
 
@@ -10822,6 +10828,9 @@ msgstr "Apenas ativosativos ativosativosativosativosativosativosativosativosativ
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Apenas ativos Ativos Ativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativosativos"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "Aplica-se apenas a este dispositivo. Após ficar ocioso, a tela mostra o painel do módulo atual; toque para voltar. Por padrão, o protetor só funciona no modo quiosque (o app nativo ou uma URL com ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Apenas os funcionários atribuídos aparecem ao relatar a quantidade. Deixe em branco para permitir todos."
 
@@ -12612,6 +12621,9 @@ msgstr "Redefinir PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Redefinir PIN para {0} {1}"
 
+msgid "Reset to default"
+msgstr "Restaurar padrão"
+
 msgid "Reset View"
 msgstr "Resetar Visualização"
 
@@ -13084,6 +13096,9 @@ msgstr "Motivos de Sucata"
 
 msgid "Scrap Sales"
 msgstr "Vendas de Despejo"
+
+msgid "Screensaver"
+msgstr "Protetor de tela"
 
 msgid "Search"
 msgstr "Pesquisar"
@@ -14894,6 +14909,9 @@ msgstr "Estes trabalhos têm operações atribuídas a este centro de trabalho:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Esta ajuste levaria uma quantidade abaixo de zero."
+
+msgid "This Device"
+msgstr "Este dispositivo"
 
 msgid "This information will be used on document headers"
 msgstr "Esta informação será usada nos cabeçalhos de documentos"

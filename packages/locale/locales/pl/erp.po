@@ -4178,6 +4178,9 @@ msgstr "Włącz w Ustawieniach"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Włącz powiadomienia, gdy RFQ zostanie oznaczone jako gotowe do wyceny."
 
+msgid "Enable screensaver on this device"
+msgstr "Włącz wygaszacz ekranu na tym urządzeniu"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Włącz tryb wspólnej stacji roboczej dla terminali MES. Operatorzy identyfikują się za pomocą PIN przed wykonaniem pracy."
 
@@ -8363,6 +8366,9 @@ msgstr "Pomysły, sugestie lub problemy na tej stronie?"
 msgid "Ideas, suggestions or problems?"
 msgstr "Pomysly, sugestie lub problemy?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Limit bezczynności (minuty)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "Identyfikatory i opisy są generowane dla surowców."
 
@@ -10822,6 +10828,9 @@ msgstr "Tylko aktywne aktivo mogą być sprzedane"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Tylko aktywne lub całkowicie zaniedbane aktivo mogą być usunięte"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "Dotyczy tylko tego urządzenia. Po bezczynności ekran pokazuje pulpit bieżącego modułu; dotknij, aby wrócić. Domyślnie wygaszacz działa tylko w trybie kiosku (aplikacja natywna lub adres URL z ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Tylko przypisani pracownicy pojawią się w raporcie ilościowym. Zakładnie pole puste umożliwia wszystkich."
 
@@ -12612,6 +12621,9 @@ msgstr "Resetuj PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Resetuj PIN dla {0} {1}"
 
+msgid "Reset to default"
+msgstr "Przywróć domyślne"
+
 msgid "Reset View"
 msgstr "Zresetuj widok"
 
@@ -13084,6 +13096,9 @@ msgstr "Przyczyny złomu"
 
 msgid "Scrap Sales"
 msgstr "Sprzedaż zniszczeń"
+
+msgid "Screensaver"
+msgstr "Wygaszacz ekranu"
 
 msgid "Search"
 msgstr "Szukaj"
@@ -14894,6 +14909,9 @@ msgstr "Te zadania mają operacje przypisane do tego centrum pracy:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Ta dostosowanie wprowadziłoby ilość poniżej zera."
+
+msgid "This Device"
+msgstr "To urządzenie"
 
 msgid "This information will be used on document headers"
 msgstr "Te informacje będą używane w nagłówkach dokumentów"

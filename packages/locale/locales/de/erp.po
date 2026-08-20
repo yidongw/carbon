@@ -4178,6 +4178,9 @@ msgstr "In Einstellungen aktivieren"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Aktivieren Sie Benachrichtigungen, wenn eine Anfrage als angebotbereit markiert wird."
 
+msgid "Enable screensaver on this device"
+msgstr "Bildschirmschoner auf diesem Gerät aktivieren"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Aktivieren Sie den Modus für gemeinsame Arbeitsstationen für MES-Terminals. Operatoren identifizieren sich über eine PIN, bevor sie arbeiten."
 
@@ -8363,6 +8366,9 @@ msgstr "Ideen, Vorschläge oder Probleme mit dieser Seite?"
 msgid "Ideas, suggestions or problems?"
 msgstr "Ideen, Vorschläge oder Probleme?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Leerlauf-Timeout (Minuten)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "IDs und Beschreibungen werden für Rohstoffe generiert."
 
@@ -10822,6 +10828,9 @@ msgstr "Nur aktive Assets können verkauft werden"
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Nur aktive oder vollständig abgeschriebene Assets können abgeworfen werden"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "Gilt nur für dieses Gerät. Nach Leerlauf zeigt der Bildschirm das Dashboard des aktuellen Moduls; zum Zurückkehren tippen. Standardmäßig läuft der Bildschirmschoner nur im Kioskmodus (die native App oder eine URL mit ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Nur zugewiesene Mitarbeiter werden angezeigt, wenn die Anzahl gemeldet wird. Feld leer lassen, um alle zu erlauben."
 
@@ -12612,6 +12621,9 @@ msgstr "PIN zurücksetzen"
 msgid "Reset PIN for {0} {1}"
 msgstr "PIN zurücksetzen für {0} {1}"
 
+msgid "Reset to default"
+msgstr "Auf Standard zurücksetzen"
+
 msgid "Reset View"
 msgstr "Zurücksetzen des Ansichtsstands"
 
@@ -13084,6 +13096,9 @@ msgstr "Verschrottungsgründe"
 
 msgid "Scrap Sales"
 msgstr "Abfallverkäufe"
+
+msgid "Screensaver"
+msgstr "Bildschirmschoner"
 
 msgid "Search"
 msgstr "Suchen"
@@ -14894,6 +14909,9 @@ msgstr "Diese Aufträge haben Operationen, die diesem Arbeitszentrum zugewiesen 
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Diese Anpassung würde eine Menge unter null durchführen."
+
+msgid "This Device"
+msgstr "Dieses Gerät"
 
 msgid "This information will be used on document headers"
 msgstr "Diese Informationen werden in Dokumentkopfzeilen verwendet"

@@ -4178,6 +4178,9 @@ msgstr "Включить в параметрах"
 msgid "Enable notifications when an RFQ is marked as ready for quote."
 msgstr "Включить уведомления, когда запрос коммерческого предложения отмечен как готовый к цитированию."
 
+msgid "Enable screensaver on this device"
+msgstr "Включить заставку на этом устройстве"
+
 msgid "Enable shared workstation mode for MES terminals. Operators identify themselves via PIN before performing work."
 msgstr "Включите режим общей рабочей станции для терминалов MES. Операторы идентифицируют себя по PIN-коду перед выполнением работы."
 
@@ -8363,6 +8366,9 @@ msgstr "Идеи, предложения или проблемы на этой �
 msgid "Ideas, suggestions or problems?"
 msgstr "Идеи, предложения или проблемы?"
 
+msgid "Idle timeout (minutes)"
+msgstr "Тайм-аут простоя (минуты)"
+
 msgid "IDs and descriptions are generated for raw materials."
 msgstr "Идентификаторы и описания генерируются для сырья."
 
@@ -10822,6 +10828,9 @@ msgstr "Только активные актива могут быть прод�
 msgid "Only Active or Fully Depreciated assets can be disposed"
 msgstr "Только активные или полно depreciированные активы могут быть разобрано"
 
+msgid "Only applies to this device. After the display is idle it shows the current module's dashboard; touch to return. By default the screensaver runs only in kiosk mode (the native app, or a URL with ?kiosk=1)."
+msgstr "Применяется только к этому устройству. После простоя экран показывает панель текущего модуля; коснитесь, чтобы вернуться. По умолчанию заставка работает только в режиме киоска (нативное приложение или URL с ?kiosk=1)."
+
 msgid "Only assigned employees appear when reporting quantity. Leave empty to allow all."
 msgstr "Только присвоенные сотрудникам отображаются в отчете о количестве. Оставьте поле пустым для того, чтобы разрешить все."
 
@@ -12612,6 +12621,9 @@ msgstr "Сброс PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Сброс PIN для {0} {1}"
 
+msgid "Reset to default"
+msgstr "Сбросить по умолчанию"
+
 msgid "Reset View"
 msgstr "Сбросить представление"
 
@@ -13084,6 +13096,9 @@ msgstr "Причины брака"
 
 msgid "Scrap Sales"
 msgstr "Скачка продаж"
+
+msgid "Screensaver"
+msgstr "Заставка"
 
 msgid "Search"
 msgstr "Поиск"
@@ -14894,6 +14909,9 @@ msgstr "Эти задания имеют операции, назначенны�
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Эта корректировка установит количество ниже нуля."
+
+msgid "This Device"
+msgstr "Это устройство"
 
 msgid "This information will be used on document headers"
 msgstr "Эта информация будет использована в заголовках документов"
