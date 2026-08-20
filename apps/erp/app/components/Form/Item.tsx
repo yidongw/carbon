@@ -54,6 +54,14 @@ type ItemSelectProps = Omit<ComboboxProps, "options" | "type" | "inline"> & {
   type: MethodItemType | "Item";
   typeFieldName?: string;
   validItemTypes?: MethodItemType[];
+  /**
+   * BOM component picker mode. Default pickers list variant PARENTS; when set,
+   * this picker instead lists the leaf variant SKUs (labeled "parent · color")
+   * and hides any item that is a variant parent — you consume a concrete SKU,
+   * not the abstract template. Scoped to the BOM material picker; other pickers
+   * keep browsing parents.
+   */
+  variantSKUs?: boolean;
   whitelist?: string[];
   onConfigure?: () => void;
   onTypeChange?: (type: MethodItemType | "Item") => void;
@@ -102,6 +110,7 @@ const Item = ({
   onConfigure,
   onTypeChange,
   isReadOnly = false,
+  variantSKUs = false,
   ...props
 }: ItemSelectProps) => {
   const { t } = useLingui();
@@ -119,9 +128,35 @@ const Item = ({
     helperRight: string | undefined;
   } | null>(null);
 
+  // BOM component picker: pull the leaf variant SKUs (parents are hidden). Each
+  // row carries its parentItemId (to drop the parent) and a display combo; the
+  // parent's name/readableId come from the items store below.
+  const variantFetcher = useFetcher<{
+    data:
+      | { variantItemId: string; parentItemId: string; attributes: string }[]
+      | null;
+  }>();
+  const requestedVariants = useRef(false);
+  useEffect(() => {
+    if (variantSKUs && !requestedVariants.current) {
+      requestedVariants.current = true;
+      variantFetcher.load(path.to.api.itemBomVariants);
+    }
+  }, [variantSKUs, variantFetcher]);
+  const variantSkuRows = variantFetcher.data?.data;
+
   const options = useMemo(() => {
+    // BOM mode: any item that is a variant parent is excluded from the picker;
+    // its leaf SKUs are appended below instead.
+    const variantParentIds = variantSKUs
+      ? new Set((variantSkuRows ?? []).map((r) => r.parentItemId))
+      : null;
+
     let results = items
       .filter((item) => {
+        // Hide variant parents in BOM mode — consume the SKU, not the template.
+        if (variantParentIds?.has(item.id)) return false;
+
         // Filter by type
         // @ts-expect-error
         if (validItemTypes && !validItemTypes.includes(item.type)) return false;
@@ -159,6 +194,37 @@ const Item = ({
         };
       });
 
+    // Append leaf variant SKUs, displayed as "parent name · attributes" (the
+    // parent's own name/readableId come from the store; the variant's own
+    // name/readableId are intentionally not used).
+    if (variantSKUs && variantSkuRows?.length) {
+      const parentsById = new Map(items.map((item) => [item.id, item]));
+      const variantOptions = variantSkuRows
+        .map((row) => {
+          const parent = parentsById.get(row.parentItemId);
+          if (!parent) return null;
+
+          // @ts-expect-error
+          if (validItemTypes && !validItemTypes.includes(parent.type))
+            return null;
+          if (type !== "Item" && type !== parent.type) return null;
+          if (!props.includeInactive && !parent.active) return null;
+
+          const combo = row.attributes
+            ? ` · ${row.attributes.replaceAll("|", " · ")}`
+            : "";
+          return {
+            value: row.variantItemId,
+            label: `${parent.name}${combo}`,
+            helper: parent.readableIdWithRevision,
+            helperRight: undefined
+          };
+        })
+        .filter((o): o is NonNullable<typeof o> => o !== null)
+        .sort((a, b) => a.label.localeCompare(b.label));
+      results = [...results, ...variantOptions];
+    }
+
     if (props.whitelist) {
       results = results.filter((item) => props.whitelist?.includes(item.value));
     }
@@ -186,7 +252,9 @@ const Item = ({
     props.replenishmentSystem,
     props.whitelist,
     type,
-    validItemTypes
+    validItemTypes,
+    variantSKUs,
+    variantSkuRows
   ]);
 
   const selectTypeModal = useDisclosure();

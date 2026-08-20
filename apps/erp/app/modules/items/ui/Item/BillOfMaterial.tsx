@@ -891,6 +891,7 @@ function MaterialForm({
             includeInactive
             type={itemType}
             validItemTypes={["Consumable", "Material", "Part", "Style"]}
+            variantSKUs
             isConfigured={rulesByField.has(key("itemId"))}
             onChange={(value) => {
               onItemChange(value?.value as string);
