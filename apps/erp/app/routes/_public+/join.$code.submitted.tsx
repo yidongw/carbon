@@ -40,9 +40,14 @@ export default function JoinSubmittedRoute() {
   return (
     <VStack spacing={4} className="max-w-lg items-center text-center">
       <img
-        src="/carbon-logo-mark.svg"
+        src="/carbon-mark-light.svg"
         alt={t`Carbon Logo`}
-        className="w-24 mb-3"
+        className="w-24 mb-3 dark:hidden"
+      />
+      <img
+        src="/carbon-mark-dark.svg"
+        alt={t`Carbon Logo`}
+        className="w-24 mb-3 hidden dark:block"
       />
       <Heading size="h1" className="m-0">
         <Trans>Request Submitted</Trans>

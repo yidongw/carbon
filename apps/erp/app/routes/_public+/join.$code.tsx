@@ -56,9 +56,14 @@ export default function JoinRoute() {
       <VStack spacing={4} className="max-w-lg items-center text-center">
         <div className="flex justify-center mb-4">
           <img
-            src="/carbon-logo-mark.svg"
+            src="/carbon-mark-light.svg"
             alt={t`Carbon Logo`}
-            className="w-36"
+            className="w-36 dark:hidden"
+          />
+          <img
+            src="/carbon-mark-dark.svg"
+            alt={t`Carbon Logo`}
+            className="w-36 hidden dark:block"
           />
         </div>
         <VStack spacing={2} className="text-center w-full">
@@ -85,9 +90,14 @@ export default function JoinRoute() {
     return (
       <VStack spacing={4} className="max-w-lg items-center text-center">
         <img
-          src="/carbon-logo-mark.svg"
+          src="/carbon-mark-light.svg"
           alt={t`Carbon Logo`}
-          className="w-24 mb-3"
+          className="w-24 mb-3 dark:hidden"
+        />
+        <img
+          src="/carbon-mark-dark.svg"
+          alt={t`Carbon Logo`}
+          className="w-24 mb-3 hidden dark:block"
         />
         <Heading size="h1" className="m-0">
           <Trans>Invite Link Expired</Trans>
@@ -108,9 +118,14 @@ export default function JoinRoute() {
     return (
       <VStack spacing={4} className="max-w-lg items-center text-center">
         <img
-          src="/carbon-logo-mark.svg"
+          src="/carbon-mark-light.svg"
           alt={t`Carbon Logo`}
-          className="w-24 mb-3"
+          className="w-24 mb-3 dark:hidden"
+        />
+        <img
+          src="/carbon-mark-dark.svg"
+          alt={t`Carbon Logo`}
+          className="w-24 mb-3 hidden dark:block"
         />
         <Heading size="h1" className="m-0">
           <Trans>Already a Member</Trans>
@@ -131,9 +146,14 @@ export default function JoinRoute() {
     return (
       <VStack spacing={4} className="max-w-lg items-center text-center">
         <img
-          src="/carbon-logo-mark.svg"
+          src="/carbon-mark-light.svg"
           alt={t`Carbon Logo`}
-          className="w-24 mb-3"
+          className="w-24 mb-3 dark:hidden"
+        />
+        <img
+          src="/carbon-mark-dark.svg"
+          alt={t`Carbon Logo`}
+          className="w-24 mb-3 hidden dark:block"
         />
         <Heading size="h1" className="m-0">
           <Trans>Request Submitted</Trans>
@@ -159,9 +179,17 @@ export default function JoinRoute() {
           initial={{ opacity: 0, scale: 0.4 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2, ease: "easeInOut" }}
-          src="/carbon-logo-mark.svg"
+          src="/carbon-mark-light.svg"
           alt={t`Carbon Logo`}
-          className="w-24 mb-3"
+          className="w-24 mb-3 dark:hidden"
+        />
+        <motion.img
+          initial={{ opacity: 0, scale: 0.4 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+          src="/carbon-mark-dark.svg"
+          alt={t`Carbon Logo`}
+          className="w-24 mb-3 hidden dark:block"
         />
 
         <Heading

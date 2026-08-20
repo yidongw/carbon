@@ -170,9 +170,14 @@ export default function VerifyPhoneRoute() {
     <>
       <div className="flex justify-center mb-4">
         <img
-          src="/carbon-logo-mark.svg"
+          src="/carbon-mark-light.svg"
           alt={t`Carbon Logo`}
-          className="w-36"
+          className="w-36 dark:hidden"
+        />
+        <img
+          src="/carbon-mark-dark.svg"
+          alt={t`Carbon Logo`}
+          className="w-36 hidden dark:block"
         />
       </div>
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
