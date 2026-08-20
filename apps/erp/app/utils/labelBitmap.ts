@@ -114,14 +114,22 @@ export async function drawBundleLabelCanvas(
 
   const colGap = Math.round(1.5 * DOTS_PER_MM);
   const colW = (W - 2 * padX - colGap) / 2;
+  // Thermal print looks thin, so fatten strokes with a stroke pass (faux-bold),
+  // heavier on the value than the key.
+  ctx.strokeStyle = "#000";
+  ctx.lineJoin = "round";
   const drawColumn = (rows: Array<[string, string]>, x: number) => {
     let y = topPad;
     for (const [k, v] of rows) {
-      ctx.font = `${fontPx}px ${CJK_FONT}`;
-      ctx.fillText(k, x, y);
-      const kw = ctx.measureText(k).width;
       ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
-      ctx.fillText(v, x + kw, y, Math.max(8, colW - kw));
+      ctx.lineWidth = Math.max(0.6, fontPx * 0.05);
+      ctx.fillText(k, x, y);
+      ctx.strokeText(k, x, y);
+      const kw = ctx.measureText(k).width;
+      const vw = Math.max(8, colW - kw);
+      ctx.lineWidth = Math.max(0.8, fontPx * 0.07);
+      ctx.fillText(v, x + kw, y, vw);
+      ctx.strokeText(v, x + kw, y, vw);
       y += rowH;
     }
   };
@@ -186,7 +194,9 @@ export function canvasToTsplLabel(
   const { data } = ctx.getImageData(0, 0, W, H);
 
   const bytesPerRow = Math.ceil(W / 8);
-  const threshold = opts.threshold ?? 160;
+  // Higher threshold keeps more of the anti-aliased edge as black => bolder,
+  // darker glyphs on the thermal head.
+  const threshold = opts.threshold ?? 190;
   const mono = new Uint8Array(bytesPerRow * H).fill(0xff); // 1 = white
   let lastBlackRow = 0;
 
@@ -211,7 +221,7 @@ export function canvasToTsplLabel(
   const header = ascii(
     `SIZE ${opts.widthMm} mm,${opts.heightMm} mm\r\n` +
       `GAP ${opts.gapMm ?? 2} mm,0 mm\r\n` +
-      `DENSITY ${opts.density ?? 10}\r\n` +
+      `DENSITY ${opts.density ?? 13}\r\n` +
       `SPEED ${opts.speed ?? 4}\r\n` +
       `DIRECTION 1\r\n` +
       `REFERENCE 0,0\r\n` +
