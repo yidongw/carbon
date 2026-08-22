@@ -173,7 +173,7 @@ const IconThumbnail = ({ item }: { item: FilesIconItem }) => {
       <img
         alt=""
         className="h-full w-full object-cover"
-        src={path.to.file.previewFile(`private/${item.pathToFile}`)}
+        src={path.to.file.previewFileResized(`private/${item.pathToFile}`, 200)}
         onError={() => setFailed(true)}
       />
     );
