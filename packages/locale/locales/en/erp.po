@@ -7275,6 +7275,9 @@ msgstr "Failed to update consumable costing"
 msgid "Failed to update consumable inventory"
 msgstr "Failed to update consumable inventory"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "Failed to update consumable manufacturing"
+
 msgid "Failed to update consumable planning"
 msgstr "Failed to update consumable planning"
 
@@ -15527,6 +15530,9 @@ msgstr "Updated consumable costing"
 
 msgid "Updated consumable inventory"
 msgstr "Updated consumable inventory"
+
+msgid "Updated consumable manufacturing"
+msgstr "Updated consumable manufacturing"
 
 msgid "Updated consumable planning"
 msgstr "Updated consumable planning"

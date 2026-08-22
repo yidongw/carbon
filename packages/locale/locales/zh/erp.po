@@ -7276,6 +7276,9 @@ msgstr "更新消耗物料成本失败"
 msgid "Failed to update consumable inventory"
 msgstr "更新消耗库存失败"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "更新消耗品制造失败"
+
 msgid "Failed to update consumable planning"
 msgstr "更新消耗计划失败"
 
@@ -15528,6 +15531,9 @@ msgstr "已更新消耗品成本估算"
 
 msgid "Updated consumable inventory"
 msgstr "已更新消耗品库存"
+
+msgid "Updated consumable manufacturing"
+msgstr "已更新消耗品制造"
 
 msgid "Updated consumable planning"
 msgstr "已更新消耗品计划"

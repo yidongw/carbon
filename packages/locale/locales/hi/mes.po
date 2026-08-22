@@ -3296,6 +3296,9 @@ msgstr "अनुपयोगी लागत अपडेट करने म�
 msgid "Failed to update consumable inventory"
 msgstr "गतिवर्ती समन्वय अपडेट हो नहीं पाया"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "उपभोग्य विनिर्माण अपडेट करने में विफल"
+
 msgid "Failed to update consumable planning"
 msgstr "अनुपयोगी योजना को अपडेट करने में व़िश्य हो गए"
 
@@ -6084,6 +6087,9 @@ msgstr "अपडेट खर्चित कस्टिंग"
 
 msgid "Updated consumable inventory"
 msgstr "अपडेट खरीदारी सम्पत्ति"
+
+msgid "Updated consumable manufacturing"
+msgstr "उपभोग्य विनिर्माण अपडेट किया गया"
 
 msgid "Updated consumable planning"
 msgstr "अपडेट खर्चाता प्लैनिंग"

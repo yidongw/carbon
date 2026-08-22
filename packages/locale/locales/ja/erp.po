@@ -7276,6 +7276,9 @@ msgstr "消費材コスト更新に失敗しました"
 msgid "Failed to update consumable inventory"
 msgstr "消費品在庫更新に失敗しました"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "消耗品の製造の更新に失敗しました"
+
 msgid "Failed to update consumable planning"
 msgstr "消費材計画の更新に失敗しました"
 
@@ -15528,6 +15531,9 @@ msgstr "更新された消耗品コスト"
 
 msgid "Updated consumable inventory"
 msgstr "更新された消耗品在庫"
+
+msgid "Updated consumable manufacturing"
+msgstr "消耗品の製造を更新しました"
 
 msgid "Updated consumable planning"
 msgstr "更新された消耗品計画"

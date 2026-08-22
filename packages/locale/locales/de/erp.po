@@ -7276,6 +7276,9 @@ msgstr "Fehler beim Aktualisieren der Verbrauchsmaterialkosten"
 msgid "Failed to update consumable inventory"
 msgstr "Fehler beim Aktualisieren des Verbrauchsmaterials-Inventars"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "Fehler beim Aktualisieren der Herstellung des Verbrauchsmaterials"
+
 msgid "Failed to update consumable planning"
 msgstr "Fehler beim Aktualisieren der Verbrauchsschaltpläne"
 
@@ -15528,6 +15531,9 @@ msgstr "Aktualisierte Verbrauchsmaterialkosten"
 
 msgid "Updated consumable inventory"
 msgstr "Aktualisierte Verbrauchsmaterialien-Inventaristik"
+
+msgid "Updated consumable manufacturing"
+msgstr "Herstellung des Verbrauchsmaterials aktualisiert"
 
 msgid "Updated consumable planning"
 msgstr "Aktualisierte Verbrauchsmaterialplanung"
