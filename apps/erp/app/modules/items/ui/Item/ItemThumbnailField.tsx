@@ -9,6 +9,7 @@ import { LuImage, LuX } from "react-icons/lu";
 import { Hidden } from "~/components/Form";
 import { useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
+import { stripSpecialCharacters } from "~/utils/string";
 import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
 
 /**
@@ -42,6 +43,9 @@ export function ItemThumbnailField({
     defaultPath ? getPrivateUrl(defaultPath) : null
   );
   const [thumbnailName, setThumbnailName] = useState<string | null>(null);
+  // Staging path of the full-resolution original, moved into the item's Files by
+  // the create action (independent of the resized thumbnail).
+  const [originalPath, setOriginalPath] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const upload = async (file: File) => {
@@ -94,6 +98,22 @@ export function ItemThumbnailField({
 
       setThumbnailPath(data.path);
       setThumbnailName(file.name);
+
+      // Also stage the full-resolution original so the create action can drop it
+      // into the item's Files (the resized thumbnail is not the original).
+      const originalUpload = await carbon.storage
+        .from("private")
+        .upload(
+          `${companyId}/parts/staging/${nanoid()}/${stripSpecialCharacters(
+            file.name
+          )}`,
+          file,
+          { upsert: true }
+        );
+      if (!originalUpload.error && originalUpload.data) {
+        setOriginalPath(originalUpload.data.path);
+      }
+
       uploadToast.dismiss();
 
       onUpload?.(file.name);
@@ -109,6 +129,7 @@ export function ItemThumbnailField({
     setThumbnailPath(null);
     setThumbnailPreview(null);
     setThumbnailName(null);
+    setOriginalPath(null);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -125,6 +146,8 @@ export function ItemThumbnailField({
   return (
     <VStack spacing={1} className="mb-6 w-full">
       <Hidden name="thumbnailPath" value={thumbnailPath ?? ""} />
+      <Hidden name="thumbnailName" value={thumbnailName ?? ""} />
+      <Hidden name="thumbnailFilePath" value={originalPath ?? ""} />
       <label
         htmlFor={inputId}
         className="flex w-full items-center justify-between"

@@ -410,6 +410,7 @@ const MaterialProperties = ({ data }: MaterialPropertiesProps) => {
           <ItemThumbnailUpload
             path={routeData?.materialSummary?.thumbnailPath}
             itemId={itemId}
+            type="Material"
           />
         </VStack>
         {/* <VStack spacing={2}>

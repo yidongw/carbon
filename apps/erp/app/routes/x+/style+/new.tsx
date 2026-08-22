@@ -12,7 +12,7 @@ import {
   overlayToken,
   serializeSearch
 } from "~/components/Overlay/overlay";
-import { styleValidator } from "~/modules/items";
+import { copyThumbnailToItemFiles, styleValidator } from "~/modules/items";
 import { getAttributeSetFormOptionsForItemType } from "~/modules/items/itemAttribute.service";
 import { parseAndValidateItemAttributesForCreate } from "~/modules/items/itemAttributes.actions.server";
 import { applyTemplateToItem } from "~/modules/items/template.service";
@@ -142,6 +142,16 @@ export async function action({ request }: ActionFunctionArgs) {
         .update({ thumbnailPath: finalThumbnailPath })
         .eq("id", itemId);
     }
+    // Also drop a copy of the thumbnail into the item's Files (independent copy).
+    await copyThumbnailToItemFiles(client, {
+      companyId,
+      itemId,
+      userId,
+      thumbnailPath: move.error ? stagingThumbnailPath : finalThumbnailPath,
+      originalPath: (formData.get("thumbnailFilePath") as string) || undefined,
+      fileName: (formData.get("thumbnailName") as string) || fileName || "thumbnail",
+      type: "Style"
+    });
   }
 
   if (templateId) {

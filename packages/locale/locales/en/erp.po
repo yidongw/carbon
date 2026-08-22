@@ -7179,6 +7179,12 @@ msgstr "Failed to send verification code"
 msgid "Failed to set job release date"
 msgstr "Failed to set job release date"
 
+msgid "Failed to set thumbnail"
+msgstr "Failed to set thumbnail"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "Failed to set thumbnail: {message}"
+
 msgid "Failed to sign in"
 msgstr "Failed to sign in"
 
@@ -10746,6 +10752,9 @@ msgstr "Not available"
 msgid "Not connected"
 msgstr "Not connected"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "Not connected. Please refresh and try again."
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Not enough jobs to cover quantity"
 
@@ -13475,6 +13484,9 @@ msgstr "Service Charge Account"
 msgid "Session mismatch"
 msgstr "Session mismatch"
 
+msgid "Set as thumbnail"
+msgstr "Set as thumbnail"
+
 msgid "Set chip color"
 msgstr "Set chip color"
 
@@ -13511,6 +13523,9 @@ msgstr "Set Version {0} as Active Version?"
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Set your default location in profile settings to pick a storage unit."
+
+msgid "Setting thumbnail"
+msgstr "Setting thumbnail"
 
 msgid "Setting up your demo data…"
 msgstr "Setting up your demo data…"
@@ -15019,6 +15034,9 @@ msgstr "Thumbnail"
 
 msgid "Thumbnail removed"
 msgstr "Thumbnail removed"
+
+msgid "Thumbnail updated"
+msgstr "Thumbnail updated"
 
 msgid "Thursday"
 msgstr "Thursday"

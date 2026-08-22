@@ -5,7 +5,11 @@ import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
-import { toolValidator, upsertTool } from "~/modules/items";
+import {
+  copyThumbnailToItemFiles,
+  toolValidator,
+  upsertTool
+} from "~/modules/items";
 import {
   parseAndValidateItemAttributesForCreate,
   syncItemAttributesOnCreate
@@ -117,6 +121,16 @@ export async function action({ request }: ActionFunctionArgs) {
         .update({ thumbnailPath: finalThumbnailPath })
         .eq("id", itemId);
     }
+    // Also drop a copy of the thumbnail into the item's Files (independent copy).
+    await copyThumbnailToItemFiles(client, {
+      companyId,
+      itemId,
+      userId,
+      thumbnailPath: move.error ? stagingThumbnailPath : finalThumbnailPath,
+      originalPath: (formData.get("thumbnailFilePath") as string) || undefined,
+      fileName: (formData.get("thumbnailName") as string) || fileName || "thumbnail",
+      type: "Tool"
+    });
   }
 
   return modal

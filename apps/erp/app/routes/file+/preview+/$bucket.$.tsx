@@ -1,6 +1,11 @@
+import { SUPABASE_URL } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { LoaderFunctionArgs } from "react-router";
+
+// Raster image types the image-resizer handles reliably. SVG (vector), GIF
+// (animation), and webp/avif are served as-is.
+const resizableImageTypes = new Set(["jpg", "jpeg", "png"]);
 
 const supportedFileTypes: Record<string, string> = {
   pdf: "application/pdf",
@@ -85,6 +90,44 @@ export let loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   if (contentType) {
     headers.set("Content-Type", contentType);
+  }
+
+  // Optional on-the-fly downscale: `?height=N` returns a resized derivative so
+  // small thumbnails (grid tiles, hover previews) don't pull the full-res
+  // original. Best-effort — any failure falls through to the original bytes, and
+  // the resized URL is unique so it's browser-cached like the original.
+  const height = new URL(request.url).searchParams.get("height");
+  if (height && fileType && resizableImageTypes.has(fileType)) {
+    const parsed = Number(height);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      try {
+        const form = new FormData();
+        form.append(
+          "file",
+          new File([fileData], `image.${fileType}`, {
+            type: contentType ?? "image/png"
+          }),
+          `image.${fileType}`
+        );
+        form.append("height", String(Math.round(parsed)));
+
+        const resized = await fetch(
+          `${SUPABASE_URL}/functions/v1/image-resizer`,
+          { method: "POST", body: form }
+        );
+        if (resized.ok) {
+          const buffer = await resized.arrayBuffer();
+          const resizedHeaders = new Headers({
+            "Cache-Control": "private, max-age=31536000, immutable",
+            "Content-Type":
+              resized.headers.get("Content-Type") ?? contentType ?? "image/png"
+          });
+          return new Response(buffer, { status: 200, headers: resizedHeaders });
+        }
+      } catch (err) {
+        console.error("preview resize failed, serving original", err);
+      }
+    }
   }
 
   return new Response(fileData, { status: 200, headers });

@@ -406,9 +406,16 @@ export const path = {
       },
       preview: (bucket: string, path: string) =>
         generatePath(`${file}/preview/${bucket}/${path}`),
-      previewImage: (bucket: string, path: string) =>
-        generatePath(`${file}/preview/image?file=${bucket}/${path}`),
+      previewImage: (bucket: string, path: string, height?: number) =>
+        generatePath(
+          `${file}/preview/image?file=${bucket}/${path}${
+            height ? `&height=${height}` : ""
+          }`
+        ),
       previewFile: (path: string) => generatePath(`${file}/preview/${path}`),
+      // Downscaled variant served by the preview loader's `?height=` handling.
+      previewFileResized: (path: string, height: number) =>
+        generatePath(`${file}/preview/${path}?height=${height}`),
       purchaseOrder: (id: string) =>
         generatePath(`${file}/purchase-order/${id}.pdf`),
       receiptLabelsPdf: (

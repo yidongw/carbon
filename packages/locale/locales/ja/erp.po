@@ -7180,6 +7180,12 @@ msgstr "認証コードの送信に失敗しました"
 msgid "Failed to set job release date"
 msgstr "ジョブのリリース日を設定できませんでした"
 
+msgid "Failed to set thumbnail"
+msgstr "サムネイル設定に失敗しました"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "サムネイル設定に失敗しました：{message}"
+
 msgid "Failed to sign in"
 msgstr "サインインに失敗しました"
 
@@ -10747,6 +10753,9 @@ msgstr "利用不可"
 msgid "Not connected"
 msgstr "未接続"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "接続できません。再読み込み後、もう一度試してみてください。"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
@@ -13476,6 +13485,9 @@ msgstr "サービス料口座"
 msgid "Session mismatch"
 msgstr "セッション不一致"
 
+msgid "Set as thumbnail"
+msgstr "サムネイルに設定"
+
 msgid "Set chip color"
 msgstr "チップの色を設定"
 
@@ -13512,6 +13524,9 @@ msgstr "バージョン {0} をアクティブバージョンとして設定し�
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "プロフィール設定でデフォルトの場所を設定して、保管ユニットを選択してください。"
+
+msgid "Setting thumbnail"
+msgstr "サムネイル設定"
 
 msgid "Setting up your demo data…"
 msgstr "デモデータの設定中…"
@@ -15020,6 +15035,9 @@ msgstr "サムネイル"
 
 msgid "Thumbnail removed"
 msgstr "サムネイルが削除されました"
+
+msgid "Thumbnail updated"
+msgstr "サムネイルが更新されました"
 
 msgid "Thursday"
 msgstr "木曜日"

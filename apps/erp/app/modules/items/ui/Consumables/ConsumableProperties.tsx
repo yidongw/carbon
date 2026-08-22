@@ -293,6 +293,7 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
         <ItemThumbnailUpload
           path={routeData?.consumableSummary?.thumbnailPath}
           itemId={itemId}
+          type="Consumable"
         />
       </VStack>
       {/* <VStack spacing={2}>

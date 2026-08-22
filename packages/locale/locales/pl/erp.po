@@ -7180,6 +7180,12 @@ msgstr "Nie udało się wysłać kodu potwierdzającego"
 msgid "Failed to set job release date"
 msgstr "Nie udało się ustawić daty wydania zlecenia"
 
+msgid "Failed to set thumbnail"
+msgstr "Nie udało się ustawić miniatury"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "Nie można ustawić miniatury: {message}"
+
 msgid "Failed to sign in"
 msgstr "Nie udało się zalogować"
 
@@ -10747,6 +10753,9 @@ msgstr "Niedostępne"
 msgid "Not connected"
 msgstr "Nie połączono"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "Nierozłączony. Proszę o odświeżenie i spróbuj ponownie."
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Niewystarczająca liczba zadań do pokrycia ilości"
 
@@ -13476,6 +13485,9 @@ msgstr "Konto opłat serwisowych"
 msgid "Session mismatch"
 msgstr "Błąd zgodności sesji"
 
+msgid "Set as thumbnail"
+msgstr "Ustaw jako miniaturę"
+
 msgid "Set chip color"
 msgstr "Ustaw kolor etykiety"
 
@@ -13512,6 +13524,9 @@ msgstr "Ustawić wersję {0} jako aktywną wersję?"
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Ustaw swoją domyślną lokalizację w ustawieniach profilu, aby wybrać jednostkę magazynową."
+
+msgid "Setting thumbnail"
+msgstr "Ustawienie miniatury"
 
 msgid "Setting up your demo data…"
 msgstr "Ustawianie Twoich danych demo…"
@@ -15020,6 +15035,9 @@ msgstr "Miniatura"
 
 msgid "Thumbnail removed"
 msgstr "Miniatura usunięta"
+
+msgid "Thumbnail updated"
+msgstr "Zaktualizowano miniaturę"
 
 msgid "Thursday"
 msgstr "Czwartek"

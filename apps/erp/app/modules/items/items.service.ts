@@ -11,6 +11,7 @@ import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
+import { upsertDocument } from "~/modules/documents/documents.service";
 import {
   getStyleVariantQuantityParameters,
   loadVariantCombos,
@@ -22,6 +23,7 @@ import {
   setGenericQueryFilters,
   setSearchFilter
 } from "~/utils/query";
+import { stripSpecialCharacters } from "~/utils/string";
 import { sanitize } from "~/utils/supabase";
 import type {
   operationParameterValidator,
@@ -5737,4 +5739,80 @@ export async function getSupplierPartPriceBreaks(
     quantity: pb.quantity,
     unitPrice: pb.unitPrice
   }));
+}
+
+/**
+ * Copy an item's thumbnail image into its Files, as an independent object with a
+ * document record — the same place manual uploads land
+ * (`${companyId}/parts/${itemId}/...`). Used by the item create actions so a
+ * thumbnail chosen while creating an item also shows up in Files. The copy is
+ * independent of the thumbnail: deleting one never affects the other.
+ *
+ * If `originalPath` is provided (the full-resolution original staged by the
+ * create form), that file is moved into Files as-is — so Files keeps the real
+ * upload, not the downscaled thumbnail. Otherwise the resized `thumbnailPath` is
+ * copied as a fallback.
+ */
+export async function copyThumbnailToItemFiles(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    itemId: string;
+    userId: string;
+    thumbnailPath: string;
+    originalPath?: string | null;
+    fileName: string;
+    type: string;
+  }
+) {
+  const { companyId, itemId, userId, thumbnailPath, originalPath, fileName, type } =
+    args;
+
+  let targetPath: string;
+  let displayName: string;
+
+  if (originalPath) {
+    // Full-resolution original — move it into Files keeping its real name.
+    displayName = fileName;
+    targetPath = `${companyId}/parts/${itemId}/${stripSpecialCharacters(
+      fileName
+    )}`;
+    const move = await client.storage
+      .from("private")
+      .move(originalPath, targetPath);
+    if (move.error) {
+      return { error: move.error };
+    }
+  } else {
+    // No original available — copy the resized thumbnail, keeping its real
+    // extension but presenting it under the original file name.
+    const thumbExt = thumbnailPath.split(".").pop() || "png";
+    const dotIndex = fileName.lastIndexOf(".");
+    const baseName = dotIndex > 0 ? fileName.slice(0, dotIndex) : fileName;
+    displayName = `${baseName}.${thumbExt}`;
+    targetPath = `${companyId}/parts/${itemId}/${stripSpecialCharacters(
+      displayName
+    )}`;
+    const copy = await client.storage
+      .from("private")
+      .copy(thumbnailPath, targetPath);
+    if (copy.error) {
+      return { error: copy.error };
+    }
+  }
+
+  const document = await upsertDocument(client, {
+    path: targetPath,
+    name: displayName,
+    size: 0,
+    // MethodItemType is the same value manual item-file uploads use.
+    sourceDocument: type as never,
+    sourceDocumentId: itemId,
+    readGroups: [userId],
+    writeGroups: [userId],
+    createdBy: userId,
+    companyId
+  });
+
+  return { error: document.error };
 }

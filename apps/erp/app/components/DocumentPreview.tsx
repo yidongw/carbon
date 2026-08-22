@@ -48,7 +48,7 @@ const DocumentPreview = forwardRef<
             title={pathToFile}
             width="400"
             height="400"
-            src={path.to.file.previewImage(bucket, pathToFile)}
+            src={path.to.file.previewImage(bucket, pathToFile, 500)}
           />
         </HoverCardContent>
       )}

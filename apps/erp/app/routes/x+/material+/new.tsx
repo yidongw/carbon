@@ -5,7 +5,11 @@ import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
-import { materialValidator, upsertMaterial } from "~/modules/items";
+import {
+  copyThumbnailToItemFiles,
+  materialValidator,
+  upsertMaterial
+} from "~/modules/items";
 import {
   parseAndValidateItemAttributesForCreate,
   syncItemAttributesOnCreate
@@ -104,6 +108,25 @@ export async function action({ request }: ActionFunctionArgs) {
             error(attributeSyncError, "Failed to sync material variants")
           )
         );
+  }
+
+  // Materials intentionally keep the thumbnail at its staging path (variants can
+  // share one object), so there's no re-key here — but still drop a copy of the
+  // thumbnail into the item's Files (independent copy).
+  const stagingThumbnailPath = validation.data.thumbnailPath;
+  if (stagingThumbnailPath) {
+    await copyThumbnailToItemFiles(client, {
+      companyId,
+      itemId,
+      userId,
+      thumbnailPath: stagingThumbnailPath,
+      originalPath: (formData.get("thumbnailFilePath") as string) || undefined,
+      fileName:
+        (formData.get("thumbnailName") as string) ||
+        stagingThumbnailPath.split("/").pop() ||
+        "thumbnail",
+      type: "Material"
+    });
   }
 
   return modal

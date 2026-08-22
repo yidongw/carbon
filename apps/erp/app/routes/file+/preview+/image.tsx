@@ -10,6 +10,12 @@ export let loader = async ({ request }: LoaderFunctionArgs) => {
   const file = decodeURIComponent(searchParams.get("file") ?? "");
   if (!file) throw new Error("file not found");
 
+  const heightParam = Number(searchParams.get("height"));
+  const imgSrc =
+    Number.isFinite(heightParam) && heightParam > 0
+      ? path.to.file.previewFileResized(file, Math.round(heightParam))
+      : path.to.file.previewFile(file);
+
   const body = `
   <!DOCTYPE html>
     <html>
@@ -29,7 +35,7 @@ export let loader = async ({ request }: LoaderFunctionArgs) => {
         </style>
       </head>
       <body>
-        <img src="${path.to.file.previewFile(file)}" />
+        <img src="${imgSrc}" />
       </body>
     </html>`;
   const headers = new Headers({ "Content-Type": "text/html" });
