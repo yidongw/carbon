@@ -8,7 +8,7 @@ import {
   TooltipTrigger
 } from "@carbon/react";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LuTag } from "react-icons/lu";
 import { Link } from "react-router";
 import { useTopbarLeft } from "./TopbarContext";
@@ -41,36 +41,60 @@ type DetailTopbarIdProps = {
   children: ReactNode;
 };
 
-/** Max width leaves room for status badges, copy, and overflow menu. */
-const DETAIL_ID_MAX_WIDTH = "max-w-[calc(100%-7rem)]";
-
-/** Detail ID styled as a breadcrumb continuation on desktop. Pass `to` for a link, omit for plain text. */
+/**
+ * Detail ID styled as a breadcrumb continuation on desktop. It expands to use
+ * the available width and only truncates when it runs out of room (the copy
+ * button and overflow menu are `shrink-0` siblings, so flexbox already reserves
+ * their space — no fixed max-width needed).
+ *
+ * The full id is always available in a tooltip: on hover/focus, and — for the
+ * plain (no `to`) variant — on click/tap too, so touch users can reveal a
+ * truncated id without triggering navigation.
+ */
 export function DetailTopbarId({ to, children }: DetailTopbarIdProps) {
+  const [open, setOpen] = useState(false);
+
+  const idText = (
+    <span className="min-w-0 truncate font-semibold text-foreground">
+      {children}
+    </span>
+  );
+
   return (
-    <div
-      className={cn(
-        "flex min-w-0 shrink items-center overflow-hidden",
-        DETAIL_ID_MAX_WIDTH
-      )}
-    >
+    <div className="flex min-w-0 shrink items-center overflow-hidden">
       <span
         aria-hidden
         className="hidden md:inline shrink-0 px-1.5 text-accent-foreground"
       >
         /
       </span>
-      {to ? (
-        <Link
-          to={to}
-          className="min-w-0 truncate font-semibold text-foreground hover:underline"
+      <Tooltip open={open} onOpenChange={setOpen}>
+        <TooltipTrigger asChild>
+          {to ? (
+            <Link
+              to={to}
+              className="flex min-w-0 items-center rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {idText}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              className="flex min-w-0 items-center rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {idText}
+            </button>
+          )}
+        </TooltipTrigger>
+        <TooltipContent
+          side="bottom"
+          align="start"
+          className="max-w-[min(90vw,32rem)] break-all font-semibold"
         >
           {children}
-        </Link>
-      ) : (
-        <span className="truncate font-semibold text-foreground">
-          {children}
-        </span>
-      )}
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }
