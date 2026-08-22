@@ -337,7 +337,7 @@ serve(async (req: Request) => {
               .eq("companyId", companyId),
             client
               .from("job")
-              .select("locationId, quantity")
+              .select("locationId, quantity, itemId")
               .eq("id", jobId)
               .eq("companyId", companyId)
               .single(),
@@ -358,6 +358,97 @@ serve(async (req: Request) => {
         if (job.error) {
           throw new Error("Failed to get job");
         }
+
+        // "Apply on Variants": the attribute values (e.g. color/size) frozen on
+        // the job's target variant SKU. BOM lines / operations scoped to
+        // attribute values this variant does NOT carry are dropped at explosion
+        // time. Empty when the job item is not a variant, in which case only
+        // unscoped (applies-to-all) lines survive.
+        // Resolve from job.itemId (the actual job's item), NOT sourceId —
+        // callers pre-resolve sourceId to the parent Style, so a bundle's
+        // sourceId is the parent (no variant attrs). job.itemId is the real
+        // variant SKU for a bundle, and the parent Style for a master.
+        const jobItemId = job.data?.itemId ?? itemId;
+        const targetVariantAttrs = await client
+          .from("itemVariant")
+          .select("itemVariantAttribute(attributeValueId)")
+          .eq("variantItemId", jobItemId)
+          .eq("companyId", companyId)
+          .maybeSingle();
+        const targetVariantValueIds = new Set<string>(
+          (targetVariantAttrs.data?.itemVariantAttribute ?? []).map(
+            (a: { attributeValueId: string }) => a.attributeValueId
+          )
+        );
+        const scopeOf = (v: unknown): string[] =>
+          Array.isArray(v) ? (v as string[]) : [];
+        // A BOM line / operation applies iff every attribute value it is scoped
+        // to is present on the target variant. Empty scope = applies to all
+        // variants.
+        const appliesToTargetVariant = (
+          applyOnVariantValueIds: unknown
+        ): boolean => {
+          const applyOn = scopeOf(applyOnVariantValueIds);
+          return (
+            applyOn.length === 0 ||
+            applyOn.every((id) => targetVariantValueIds.has(id))
+          );
+        };
+
+        // Master cutting job: multi-variant (has jobVariantQuantity rows; a
+        // bundle/plain job has none). On the master, color-scoped fabric lines
+        // must NOT be dropped — instead emit each scaled by that color's planned
+        // qty (summed across its sizes). Read straight from jobVariantQuantity
+        // (masterWorkOrder/bundleWorkOrder rows don't exist yet at create time).
+        const jvq = await client
+          .from("jobVariantQuantity")
+          .select("variantItemId, quantity")
+          .eq("jobId", jobId)
+          .eq("companyId", companyId);
+        const jvqRows = (jvq.data ?? []) as Array<{
+          variantItemId: string;
+          quantity: number;
+        }>;
+        const isMaster = jvqRows.length > 0;
+        const variantPlans: Array<{ valueIds: Set<string>; quantity: number }> =
+          [];
+        if (isMaster) {
+          const variantIds = [
+            ...new Set(jvqRows.map((r) => r.variantItemId).filter(Boolean))
+          ];
+          const variants = variantIds.length
+            ? await client
+                .from("itemVariant")
+                .select("variantItemId, itemVariantAttribute(attributeValueId)")
+                .in("variantItemId", variantIds)
+                .eq("companyId", companyId)
+            : { data: [] };
+          const valuesByVariant = new Map<string, Set<string>>();
+          for (const v of (variants.data ?? []) as Array<{
+            variantItemId: string;
+            itemVariantAttribute: Array<{ attributeValueId: string }>;
+          }>) {
+            valuesByVariant.set(
+              v.variantItemId,
+              new Set((v.itemVariantAttribute ?? []).map((a) => a.attributeValueId))
+            );
+          }
+          for (const r of jvqRows) {
+            variantPlans.push({
+              valueIds: valuesByVariant.get(r.variantItemId) ?? new Set(),
+              quantity: Number(r.quantity) || 0
+            });
+          }
+        }
+        // Summed planned qty across every planned variant whose attributes are a
+        // superset of the line's scope (so a "red" fabric line = sum of red/S,
+        // red/M, red/L). 0 → that color isn't being produced → drop the line.
+        const plannedQtyForScope = (applyOn: string[]): number =>
+          variantPlans.reduce(
+            (sum, p) =>
+              applyOn.every((id) => p.valueIds.has(id)) ? sum + p.quantity : sum,
+            0
+          );
 
         const hydratedConfiguration = await hydrateConfiguration(
           client,
@@ -553,6 +644,15 @@ serve(async (req: Request) => {
             let jobOperationsInserts: Database["public"]["Tables"]["jobOperation"]["Insert"][] =
               [];
             for await (const op of relatedOperations?.data ?? []) {
+              // Apply on Variants: skip operations scoped to attribute values
+              // the target variant doesn't carry (e.g. a color-specific step).
+              if (
+                !appliesToTargetVariant(
+                  (op as Record<string, unknown>).applyOnVariantValueIds
+                )
+              )
+                continue;
+
               const [
                 processId,
                 procedureId,
@@ -814,8 +914,25 @@ serve(async (req: Request) => {
             const locationId = job.data?.locationId;
 
             const mapMethodMaterialToJobMaterial = async (
-              child: MethodTreeItem
+              child: MethodTreeItem,
+              // When set (master per-color expansion), the caller has already
+              // decided this line applies and provides the color's planned qty
+              // to scale by instead of the aggregate job total.
+              overrideBaseQuantity?: number
             ) => {
+              // Apply on Variants: drop lines scoped to attribute values the
+              // target variant doesn't carry. Runs before configuration
+              // overrides so config rules only reorder survivors.
+              // Skipped when the master path supplies an override (it already
+              // matched the line to a planned color).
+              if (
+                overrideBaseQuantity === undefined &&
+                !appliesToTargetVariant(
+                  (child.data as Record<string, unknown>).applyOnVariantValueIds
+                )
+              )
+                return null;
+
               let [
                 itemId,
                 description,
@@ -896,7 +1013,8 @@ serve(async (req: Request) => {
 
               // Calculate scrap quantities for this material
               // targetQuantity for this child = parent's total (including scrap) * quantity per parent
-              const childTargetQuantity = totalQuantityForChildren * quantity;
+              const childTargetQuantity =
+                (overrideBaseQuantity ?? totalQuantityForChildren) * quantity;
               // scrapQuantity = portion attributable to scrap
               const childScrapQuantity = childTargetQuantity * itemScrapPercentage;
               const childTotalWithScrap = Math.ceil(
@@ -938,11 +1056,42 @@ serve(async (req: Request) => {
                 companyId,
                 createdBy: userId,
                 customFields: {},
+                // Snapshot the line's per-color scope so `recalculate` can
+                // re-apply plannedQtyForScope on a master job (otherwise it
+                // recomputes estimatedQuantity = perUnit × job.quantity and
+                // clobbers the scaling). Empty = unscoped → recalc uses
+                // job.quantity as before. JSON-stringify so the pg driver writes
+                // it as jsonb (a bare JS array becomes a Postgres array literal
+                // `{...}`, which the jsonb column rejects).
+                applyOnVariantValueIds: JSON.stringify(
+                  scopeOf(
+                    (child.data as Record<string, unknown>)
+                      .applyOnVariantValueIds
+                  )
+                ),
               };
             };
 
             const jobMaterialResults = await Promise.all(
-              node.children.map(mapMethodMaterialToJobMaterial)
+              node.data.isRoot && isMaster
+                ? // Master cutting job: keep shared lines at the aggregate, and
+                  // emit each color-scoped line scaled by its color's planned
+                  // qty (dropping colors not in the plan).
+                  node.children.map((child) => {
+                    const applyOn = scopeOf(
+                      (child.data as Record<string, unknown>)
+                        .applyOnVariantValueIds
+                    );
+                    if (applyOn.length === 0) {
+                      return mapMethodMaterialToJobMaterial(child);
+                    }
+                    const qty = plannedQtyForScope(applyOn);
+                    if (qty <= 0) return Promise.resolve(null);
+                    return mapMethodMaterialToJobMaterial(child, qty);
+                  })
+                : node.children.map((child) =>
+                    mapMethodMaterialToJobMaterial(child)
+                  )
             );
             const validJobMaterialIndices = jobMaterialResults.reduce<number[]>((acc, m, i) => {
               if (m !== null) acc.push(i);
