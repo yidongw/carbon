@@ -28,10 +28,10 @@ export async function seedDemoStyleAttributeValues(
 
   for (const c of colors) {
     await client.query(
-      `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "companyId", "createdBy", "sortOrder")
-       VALUES ('iat_color', $1, $2, $3, $4, 100)
+      `INSERT INTO "itemAttributeValue" ("attributeId", "code", "name", "color", "companyId", "createdBy", "sortOrder")
+       VALUES ('iat_color', $1, $2, $3, $4, $5, 100)
        ON CONFLICT ("attributeId", "code", "companyId") DO NOTHING`,
-      [c.colorCode, c.colorName, companyId, userId]
+      [c.colorCode, c.colorName, c.color, companyId, userId]
     );
   }
 
