@@ -109,7 +109,7 @@ const QuoteToOrderDrawer = ({
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (!carbon) {
-      toast.error(t`Carbon client not available`);
+      toast.error(t`Not connected. Please refresh and try again.`);
       return;
     }
 
@@ -155,7 +155,7 @@ const QuoteToOrderDrawer = ({
 
   const removePurchaseOrder = async () => {
     if (!carbon) {
-      toast.error(t`Failed to initialize Carbon client`);
+      toast.error(t`Not connected. Please refresh and try again.`);
       return;
     }
 

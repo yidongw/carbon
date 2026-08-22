@@ -1838,15 +1838,6 @@ msgstr "Kann nicht in den Teile-Bucket ohne Element-ID hochgeladen werden"
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Bildschirm anzeigen des Modells im 3D-Viewer"
 
-msgid "Carbon client is not available"
-msgstr "Carbon-Client ist nicht verfügbar"
-
-msgid "Carbon client not available"
-msgstr "Carbon-Client nicht verfügbar"
-
-msgid "Carbon client not found"
-msgstr "Carbon-Client nicht gefunden"
-
 msgid "Carbon column"
 msgstr "Carbon-Spalte"
 
@@ -6117,9 +6108,6 @@ msgstr "Fehler beim Abrufen der Benutzerrechte"
 
 msgid "Failed to get WeChat user info"
 msgstr "Fehler beim Abrufen der WeChat-Nutzerinformationen"
-
-msgid "Failed to initialize Carbon client"
-msgstr "Fehler beim Initialisieren des Carbon-Clients"
 
 msgid "Failed to insert account"
 msgstr "Fehler beim Einfügen der Kontodaten"
