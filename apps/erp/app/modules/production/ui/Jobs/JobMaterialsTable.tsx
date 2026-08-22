@@ -189,7 +189,12 @@ const JobMaterialsTable = memo(
     const columns = useMemo<ColumnDef<JobMaterial>[]>(() => {
       return [
         {
-          accessorKey: "readableIdWithRevision",
+          // Use the real row field. get_job_quantity_on_hand returns the item
+          // identifier as `itemReadableId` (there is no `readableIdWithRevision`
+          // on the row), so pointing the accessor here is what lets the mobile
+          // card render the item name unpinned — and fixes item sort/filter,
+          // which silently matched a nonexistent field before.
+          accessorKey: "itemReadableId",
           header: t`Item`,
           cell: ({ row }) => (
             <HStack className="py-1">
@@ -212,7 +217,9 @@ const JobMaterialsTable = memo(
                         row.original.jobMakeMethodId
                       )}
                       onClick={() => {
-                        setSearchParams({ materialId: row.original.id ?? null });
+                        setSearchParams({
+                          materialId: row.original.id ?? null
+                        });
                       }}
                       className="max-w-[260px] truncate"
                     >
@@ -238,8 +245,10 @@ const JobMaterialsTable = memo(
             icon: <LuBookMarked />,
             filter: {
               type: "static",
+              // Match the row's `itemReadableId` (the plain readableId); fall
+              // back to the revision-qualified id when a plain one isn't loaded.
               options: items.map((item) => ({
-                value: item.readableIdWithRevision,
+                value: item.readableId ?? item.readableIdWithRevision,
                 label: item.readableIdWithRevision
               }))
             }
