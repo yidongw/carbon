@@ -93,7 +93,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  const insert = await insertMasterWorkOrder(client, {
+  const insert = await insertMasterWorkOrder(client, getDatabaseClient(), {
     ...rest,
     quantity,
     companyId,

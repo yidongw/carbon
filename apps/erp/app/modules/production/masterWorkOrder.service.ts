@@ -1,8 +1,9 @@
 import type { Database, Json } from "@carbon/database";
+import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
-  getParentJobNonCuttingOperationIdsToDelete,
-  isStyleCuttingOperation
+  isStyleCuttingOperation,
+  splitGarmentJobItems
 } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
@@ -45,14 +46,29 @@ export async function getMasterCuttingProgress(
     .filter((id): id is string => Boolean(id));
   if (jobIds.length === 0) return result;
 
-  const [ops] = await Promise.all([
+  const [ops, makeMethods] = await Promise.all([
     client
       .from("jobOperation")
-      .select("id, jobId, tags, customFields, order, quantityComplete")
+      .select(
+        "id, jobId, tags, customFields, order, quantityComplete, jobMakeMethodId"
+      )
       .in("jobId", jobIds)
       .eq("companyId", companyId)
-      .order("order", { ascending: true })
+      .order("order", { ascending: true }),
+    client
+      .from("jobMakeMethod")
+      .select("id, parentMaterialId")
+      .in("jobId", jobIds)
+      .eq("companyId", companyId)
   ]);
+
+  // Nested sub-assembly make methods — their ops (e.g. dyeing) are fabric prep,
+  // never the style's cutting op, even when re-sequenced ahead of it.
+  const nestedMakeMethodIds = new Set(
+    (makeMethods.data ?? [])
+      .filter((mm) => mm.parentMaterialId != null)
+      .map((mm) => mm.id)
+  );
 
   const opsByJob = new Map<string, NonNullable<typeof ops.data>>();
   for (const op of ops.data ?? []) {
@@ -82,13 +98,19 @@ export async function getMasterCuttingProgress(
     { id: string; quantityComplete: number }
   >();
   for (const [jobId, jobOps] of opsByJob) {
+    const rootOps = jobOps.filter(
+      (op) =>
+        !op.jobMakeMethodId || !nestedMakeMethodIds.has(op.jobMakeMethodId)
+    );
     const cutting =
-      jobOps.find((op) =>
+      rootOps.find((op) =>
         isStyleCuttingOperation({
           tags: op.tags ?? [],
           customFields: op.customFields
         })
-      ) ?? jobOps[0];
+      ) ??
+      rootOps[0] ??
+      jobOps[0];
     if (cutting) {
       cuttingOpByJob.set(jobId, {
         id: cutting.id,
@@ -169,6 +191,13 @@ export type MasterProcess = {
   /** True for the master's cutting process (style-identified), so the UI can
    * show a translated "Cutting" label instead of the raw description. */
   isCutting: boolean;
+  /** Inside / Outside / Inside and Outside — from the master job operation. */
+  operationType: string | null;
+  /** readableId of the item this process makes (the Style for the style's own
+   * ops; the sub-assembly, e.g. finished fabric, for nested prep ops). */
+  itemReadableId: string | null;
+  /** When the master job operation was assigned. */
+  assignedAt: string | null;
   bundleCount: number;
   quantity: number;
   reportedQuantity: number;
@@ -213,25 +242,70 @@ export async function getMasterProcessBreakdown(
 
   const masterOps = await client
     .from("jobOperation")
-    .select("id, description, quantityComplete, assignee, tags, customFields")
+    .select(
+      "id, description, quantityComplete, assignee, assignedAt, operationType, tags, customFields, jobMakeMethodId"
+    )
     .eq("jobId", masterJobId)
     .eq("companyId", companyId)
     .order("order", { ascending: true });
   if (masterOps.error) return [];
 
   // Identify the cutting operation the same way getMasterCuttingOperationId does
-  // — the style-tagged op, else the first (lowest-order) op. Master jobs aren't
-  // always tag/styleStage-stamped, so the tag check alone misses them.
+  // — the style-tagged op, else the first (lowest-order) ROOT-method op. Master
+  // jobs aren't always tag/styleStage-stamped, and nested sub-assembly prep
+  // (e.g. dyeing) can be re-sequenced ahead of cutting, so restrict the
+  // first-op fallback to root operations or a prep op would be mislabelled.
   const masterOpsData = masterOps.data ?? [];
+  const nestedIds = await getNestedMakeMethodIds(
+    client,
+    masterJobId,
+    companyId
+  );
+  const isRootOp = (op: { jobMakeMethodId?: string | null }) =>
+    !op.jobMakeMethodId || !nestedIds.has(op.jobMakeMethodId);
+  const rootMasterOps = masterOpsData.filter(isRootOp);
   const cuttingOpId =
-    masterOpsData.find((op) =>
+    rootMasterOps.find((op) =>
       isStyleCuttingOperation({
         tags: op.tags ?? [],
         customFields: op.customFields
       })
     )?.id ??
+    rootMasterOps[0]?.id ??
     masterOpsData[0]?.id ??
     null;
+
+  // Map each operation's make method → the item it makes, for the item column.
+  const makeMethodItems = await client
+    .from("jobMakeMethod")
+    .select("id, itemId")
+    .eq("jobId", masterJobId)
+    .eq("companyId", companyId);
+  const itemIdByMakeMethod = new Map(
+    (makeMethodItems.data ?? []).map((mm) => [mm.id, mm.itemId])
+  );
+  const itemIds = [
+    ...new Set(
+      [...itemIdByMakeMethod.values()].filter((id): id is string => !!id)
+    )
+  ];
+  const readableByItemId = new Map<string, string>();
+  if (itemIds.length) {
+    const items = await client
+      .from("item")
+      .select("id, readableId")
+      .in("id", itemIds)
+      .eq("companyId", companyId);
+    for (const it of items.data ?? []) {
+      readableByItemId.set(it.id, it.readableId ?? "");
+    }
+  }
+  const itemReadableForOp = (op: { jobMakeMethodId?: string | null }) => {
+    const itemId = op.jobMakeMethodId
+      ? itemIdByMakeMethod.get(op.jobMakeMethodId)
+      : null;
+    return itemId ? (readableByItemId.get(itemId) ?? null) : null;
+  };
 
   // Preserve operation order; seed each process from the master job's plan.
   const order: string[] = [];
@@ -243,6 +317,9 @@ export async function getMasterProcessBreakdown(
       process = {
         description,
         isCutting: false,
+        operationType: null,
+        itemReadableId: null,
+        assignedAt: null,
         bundleCount: 0,
         quantity: masterQuantity,
         reportedQuantity: 0,
@@ -259,6 +336,11 @@ export async function getMasterProcessBreakdown(
     const process = ensureProcess(op.description ?? "—");
     process.reportedQuantity += Number(op.quantityComplete ?? 0);
     if (op.assignee) process.assignee = op.assignee;
+    if (op.operationType) process.operationType = op.operationType;
+    if (!process.itemReadableId) {
+      process.itemReadableId = itemReadableForOp(op);
+    }
+    if (op.assignedAt) process.assignedAt = op.assignedAt;
     if (cuttingOpId && op.id === cuttingOpId) {
       process.isCutting = true;
     }
@@ -317,8 +399,34 @@ export async function getMasterProcessBreakdown(
 }
 
 /**
+ * Ids of a job's NESTED make methods (a sub-assembly hangs off a parent
+ * jobMaterial, so `parentMaterialId` is non-null). Used to exclude sub-assembly
+ * operations (e.g. fabric dyeing) from cutting detection — those are fabric prep,
+ * never the style's own cutting step.
+ */
+async function getNestedMakeMethodIds(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  companyId: string
+): Promise<Set<string>> {
+  const makeMethods = await client
+    .from("jobMakeMethod")
+    .select("id, parentMaterialId")
+    .eq("jobId", jobId)
+    .eq("companyId", companyId);
+  return new Set(
+    (makeMethods.data ?? [])
+      .filter((mm) => mm.parentMaterialId != null)
+      .map((mm) => mm.id)
+  );
+}
+
+/**
  * The jobOperation a Master Work Order's cutting is reported against — the
- * operation tagged as style cutting, falling back to the first operation.
+ * operation tagged as style cutting, falling back to the first ROOT-method
+ * operation. Nested sub-assembly ops (e.g. an outside dyeing op that now runs
+ * before cutting on the master) are excluded, so re-sequencing fabric prep ahead
+ * of cutting can't make a prep op masquerade as the cutting op.
  */
 export async function getMasterCuttingOperationId(
   client: SupabaseClient<Database>,
@@ -327,18 +435,24 @@ export async function getMasterCuttingOperationId(
 ): Promise<string | null> {
   const operations = await client
     .from("jobOperation")
-    .select("id, tags, customFields, order")
+    .select("id, tags, customFields, order, jobMakeMethodId")
     .eq("jobId", jobId)
     .eq("companyId", companyId)
     .order("order", { ascending: true });
   if (operations.error || !operations.data?.length) return null;
-  const cutting = operations.data.find((op) =>
+
+  const nestedIds = await getNestedMakeMethodIds(client, jobId, companyId);
+  const rootOps = operations.data.filter(
+    (op) => !op.jobMakeMethodId || !nestedIds.has(op.jobMakeMethodId)
+  );
+
+  const cutting = rootOps.find((op) =>
     isStyleCuttingOperation({
       tags: op.tags ?? [],
       customFields: op.customFields
     })
   );
-  return cutting?.id ?? operations.data[0]?.id ?? null;
+  return cutting?.id ?? rootOps[0]?.id ?? operations.data[0]?.id ?? null;
 }
 
 /**
@@ -439,6 +553,9 @@ export async function getMasterWorkOrder(
  */
 export async function insertMasterWorkOrder(
   client: SupabaseClient<Database>,
+  // Kysely connection so the garment split runs atomically (see
+  // splitGarmentJobItems); pass `getDatabaseClient()` from the route.
+  db: Kysely<KyselyDatabase>,
   input: {
     itemId: string;
     quantity: number;
@@ -465,25 +582,20 @@ export async function insertMasterWorkOrder(
     return { data: null, error: job.error };
   }
 
-  // A master work order only cuts — sew/finish are done on the bundles — so drop
-  // the non-cutting operations that get-method copied from the style method, so
-  // the master job carries only the cutting operation.
-  const masterOps = await client
-    .from("jobOperation")
-    .select("id, processId, order, tags, customFields")
-    .eq("jobId", job.data.id)
-    .eq("companyId", input.companyId);
-  if (masterOps.data && masterOps.data.length > 0) {
-    const nonCuttingIds = getParentJobNonCuttingOperationIdsToDelete({
-      operations: masterOps.data
-    });
-    if (nonCuttingIds.length > 0) {
-      await client
-        .from("jobOperation")
-        .delete()
-        .in("id", nonCuttingIds)
-        .eq("companyId", input.companyId);
-    }
+  // A master work order does the batch (cutting) plus any fabric prep that must
+  // happen before cutting (e.g. an outside dyeing op on the finished fabric, and
+  // the fabric/greige it consumes). Route every operation AND material by "home":
+  // the master keeps cutting + everything consumed at/before it; sew/finish and
+  // their inputs drop to the bundles. Materials follow their consuming op, so
+  // fabric stays on the master and is removed from bundles (no double consumption).
+  const split = await splitGarmentJobItems(client, {
+    jobId: job.data.id,
+    companyId: input.companyId,
+    role: "master",
+    db
+  });
+  if (split.error) {
+    return { data: null, error: split.error };
   }
 
   const masterWorkOrder = await client

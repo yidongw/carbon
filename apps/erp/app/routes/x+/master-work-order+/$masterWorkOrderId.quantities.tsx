@@ -34,32 +34,31 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
   const jobId = master.data.jobId;
 
+  // A garment master work order used to carry only its cutting operation, but it
+  // can now also run fabric-prep operations (e.g. an outside dyeing op that must
+  // finish before cutting). Surface EVERY master operation so the user can pick
+  // which process to report a completion against — not just cutting.
   const cuttingOperationId = await getMasterCuttingOperationId(
     client,
     jobId,
     companyId
   );
-  if (!cuttingOperationId) {
-    return { count: 0, events: [], operations: [], scrapReasons: [], jobId };
-  }
 
-  const cuttingOp = await client
+  const masterOps = await client
     .from("jobOperation")
     .select("id, description")
-    .eq("id", cuttingOperationId)
+    .eq("jobId", jobId)
     .eq("companyId", companyId)
-    .single();
-  // A master work order reports only its cutting operation, so mark it as such
-  // (the table shows a translated "Cutting" label instead of the raw name).
-  const operations = cuttingOp.data
-    ? [
-        {
-          id: cuttingOp.data.id,
-          description: cuttingOp.data.description,
-          isCutting: true
-        }
-      ]
-    : [];
+    .order("order", { ascending: true });
+  // Mark the cutting op so the table shows the translated "Cutting" label.
+  const operations = (masterOps.data ?? []).map((op) => ({
+    id: op.id,
+    description: op.description,
+    isCutting: op.id === cuttingOperationId
+  }));
+  if (operations.length === 0) {
+    return { count: 0, events: [], operations: [], scrapReasons: [], jobId };
+  }
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -67,7 +66,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
   const listQueryArgs = { search, sorts, filters };
-  const operationIds = [cuttingOperationId];
+  const operationIds = operations.map((op) => op.id);
 
   const [employeeQuantities, supplierQuantities, scrapReasons] =
     await Promise.all([

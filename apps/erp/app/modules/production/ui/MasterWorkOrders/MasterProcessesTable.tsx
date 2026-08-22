@@ -4,11 +4,14 @@ import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useMemo } from "react";
 import {
+  LuCalendarClock,
   LuCircleCheckBig,
   LuCircleDashed,
   LuClipboardList,
   LuHash,
+  LuLayers,
   LuPackageOpen,
+  LuShapes,
   LuUser
 } from "react-icons/lu";
 import { EmployeeAvatarGroup, Table } from "~/components";
@@ -68,6 +71,18 @@ const MasterProcessesTable = memo(
           meta: { icon: <LuClipboardList /> }
         },
         {
+          id: "item",
+          header: t`Item`,
+          cell: ({ row }) => row.original.itemReadableId ?? "—",
+          meta: { icon: <LuShapes /> }
+        },
+        {
+          id: "operationType",
+          header: t`Type`,
+          cell: ({ row }) => row.original.operationType ?? "—",
+          meta: { icon: <LuLayers /> }
+        },
+        {
           id: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => {
@@ -90,6 +105,15 @@ const MasterProcessesTable = memo(
             return <EmployeeAvatarGroup employeeIds={employeeIds} />;
           },
           meta: { icon: <LuUser /> }
+        },
+        {
+          id: "assignedAt",
+          header: t`Assigned At`,
+          cell: ({ row }) =>
+            row.original.assignedAt
+              ? row.original.assignedAt.slice(0, 10)
+              : "—",
+          meta: { icon: <LuCalendarClock /> }
         },
         {
           accessorKey: "bundleCount",

@@ -8,6 +8,7 @@ import {
   getCuttingSplitProposal,
   saveBundleSplit
 } from "~/modules/production";
+import { getDatabaseClient } from "~/services/database.server";
 
 export type MasterWorkOrderSplitBatchLoaderData = CuttingSplitProposal;
 
@@ -98,7 +99,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  const result = await saveBundleSplit(client, {
+  const result = await saveBundleSplit(client, getDatabaseClient(), {
     masterWorkOrderId,
     companyId,
     createdBy: userId,

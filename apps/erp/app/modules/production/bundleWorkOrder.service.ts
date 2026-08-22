@@ -1,4 +1,5 @@
 import type { Database } from "@carbon/database";
+import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import {
   localizeStyleColorNameByName,
   localizeVariantAttributeLabel
@@ -13,8 +14,8 @@ import {
   resolveVariantByValuesKey as resolveVariant
 } from "~/modules/items/itemAttribute.service";
 import {
-  getBundleJobCuttingOperationIdsToDelete,
-  resolveStyleMethodItemId
+  resolveStyleMethodItemId,
+  splitGarmentJobItems
 } from "~/modules/items/styleMethod.service";
 import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity.service";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -385,6 +386,9 @@ export async function getBundleProcessReports(
  */
 export async function insertBundleWorkOrder(
   client: SupabaseClient<Database>,
+  // Kysely connection so the garment split runs atomically (see
+  // splitGarmentJobItems); pass `getDatabaseClient()` from the route.
+  db: Kysely<KyselyDatabase>,
   input: {
     masterWorkOrderId: string;
     itemId: string;
@@ -431,26 +435,21 @@ export async function insertBundleWorkOrder(
     return { data: null, error: job.error };
   }
 
-  // Bundle jobs don't cut — cutting is done once on the master. Drop the cutting
-  // operation(s) that get-method copied from the style method so the bundle only
-  // carries the downstream (sew/finish) processes.
-  const bundleOps = await client
-    .from("jobOperation")
-    .select("id, processId, order, tags, customFields")
-    .eq("jobId", job.data.id)
-    .eq("companyId", input.companyId);
-  if (bundleOps.data && bundleOps.data.length > 0) {
-    const cuttingIds = getBundleJobCuttingOperationIdsToDelete({
-      operations: bundleOps.data,
-      cuttingProcessId: input.cuttingProcessId ?? null
-    });
-    if (cuttingIds.length > 0) {
-      await client
-        .from("jobOperation")
-        .delete()
-        .in("id", cuttingIds)
-        .eq("companyId", input.companyId);
-    }
+  // Bundle jobs do the per-variant downstream (sew/finish); cutting and fabric
+  // prep happen once on the master. Route every operation AND material by "home"
+  // and drop everything that belongs to the master: the cutting op, any fabric
+  // prep ops (e.g. dyeing), and the fabric/greige materials — so a bundle only
+  // carries sew/finish + the materials those consume, and never re-consumes the
+  // fabric the master already backflushed.
+  const split = await splitGarmentJobItems(client, {
+    jobId: job.data.id,
+    companyId: input.companyId,
+    role: "bundle",
+    cuttingProcessId: input.cuttingProcessId ?? null,
+    db
+  });
+  if (split.error) {
+    return { data: null, error: split.error };
   }
 
   return client
@@ -759,6 +758,9 @@ export async function getCuttingSplitProposal(
  */
 export async function saveBundleSplit(
   client: SupabaseClient<Database>,
+  // Kysely connection, threaded to insertBundleWorkOrder so each bundle's
+  // garment split runs atomically; pass `getDatabaseClient()` from the route.
+  db: Kysely<KyselyDatabase>,
   input: {
     masterWorkOrderId: string;
     companyId: string;
@@ -945,7 +947,7 @@ export async function saveBundleSplit(
         )
       };
     }
-    const inserted = await insertBundleWorkOrder(client, {
+    const inserted = await insertBundleWorkOrder(client, db, {
       masterWorkOrderId: input.masterWorkOrderId,
       itemId: resolved.data,
       quantity: op.quantity,
