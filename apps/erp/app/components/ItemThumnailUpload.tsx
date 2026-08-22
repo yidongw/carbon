@@ -79,7 +79,7 @@ export function ItemThumbnailUpload({
 
   const onFileRemove = useCallback(async () => {
     if (!carbon) {
-      toast.error(t`Carbon client not found`);
+      toast.error(t`Not connected. Please refresh and try again.`);
       return;
     }
 
@@ -117,7 +117,7 @@ export function ItemThumbnailUpload({
   const processFile = useCallback(
     async (file: File) => {
       if (!carbon) {
-        toast.error(t`Carbon client not found`);
+        toast.error(t`Not connected. Please refresh and try again.`);
         return;
       }
 

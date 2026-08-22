@@ -10753,6 +10753,9 @@ msgstr "暂不可用"
 msgid "Not connected"
 msgstr "未连接"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "未连接。请刷新后重试。"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"
 

@@ -10753,6 +10753,9 @@ msgstr "利用不可"
 msgid "Not connected"
 msgstr "未接続"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "接続できません。再読み込み後、もう一度試してみてください。"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 

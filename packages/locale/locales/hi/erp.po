@@ -10753,6 +10753,9 @@ msgstr "उपलब्ध नहीं"
 msgid "Not connected"
 msgstr "कनेक्ट नहीं है"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "नहीं जुड़ा। कृपया फिर से परोसेस करें और फिर प्रयास करें।"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "पर्याप्त नौकरियां नहीं हैं मात्रा को कवर करने के लिए"
 

@@ -503,7 +503,7 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
   const upload = useCallback(
     async (files: File[]) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Not connected. Please refresh and try again.`);
         return;
       }
 
@@ -553,7 +553,7 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
   const setAsThumbnail = useCallback(
     async (file: FileObject, modelId?: string | null) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Not connected. Please refresh and try again.`);
         return;
       }
 

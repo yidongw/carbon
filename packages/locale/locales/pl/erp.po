@@ -10753,6 +10753,9 @@ msgstr "Niedostępne"
 msgid "Not connected"
 msgstr "Nie połączono"
 
+msgid "Not connected. Please refresh and try again."
+msgstr "Nierozłączony. Proszę o odświeżenie i spróbuj ponownie."
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Niewystarczająca liczba zadań do pokrycia ilości"
 
