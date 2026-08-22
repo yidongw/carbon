@@ -313,6 +313,7 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
           path={routeData?.partSummary?.thumbnailPath}
           itemId={itemId}
           modelId={routeData?.partSummary?.modelId}
+          type="Part"
         />
       </VStack>
 

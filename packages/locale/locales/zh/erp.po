@@ -7180,6 +7180,12 @@ msgstr "发送验证码失败"
 msgid "Failed to set job release date"
 msgstr "设置作业释放日期失败"
 
+msgid "Failed to set thumbnail"
+msgstr "设置缩略图失败"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "设置缩略图失败:{message}"
+
 msgid "Failed to sign in"
 msgstr "登录失败"
 
@@ -13476,6 +13482,9 @@ msgstr "服务收费账户"
 msgid "Session mismatch"
 msgstr "会话不匹配"
 
+msgid "Set as thumbnail"
+msgstr "设为缩略图"
+
 msgid "Set chip color"
 msgstr "设置色块颜色"
 
@@ -13512,6 +13521,9 @@ msgstr "将版本 {0} 设置为激活版本？"
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "在资料设置中选择默认位置以选取存储单元。"
+
+msgid "Setting thumbnail"
+msgstr "设置缩略图"
 
 msgid "Setting up your demo data…"
 msgstr "设置您的演示数据…"
@@ -15020,6 +15032,9 @@ msgstr "缩略图"
 
 msgid "Thumbnail removed"
 msgstr "缩略图已删除"
+
+msgid "Thumbnail updated"
+msgstr "已更新缩略图"
 
 msgid "Thursday"
 msgstr "星期四"

@@ -30,6 +30,7 @@ type FilesIconViewProps<T = unknown> = {
   items: FilesIconItem<T>[];
   onDownload: (item: FilesIconItem<T>) => void;
   onDelete?: (item: FilesIconItem<T>) => void;
+  onSetThumbnail?: (item: FilesIconItem<T>) => void;
   canDelete?: boolean;
   emptyMessage?: React.ReactNode;
 };
@@ -38,6 +39,7 @@ const FilesIconView = <T,>({
   items,
   onDownload,
   onDelete,
+  onSetThumbnail,
   canDelete = false,
   emptyMessage
 }: FilesIconViewProps<T>) => {
@@ -60,6 +62,7 @@ const FilesIconView = <T,>({
           canDelete={canDelete}
           onDownload={onDownload}
           onDelete={onDelete}
+          onSetThumbnail={onSetThumbnail}
           t={t}
         />
       ))}
@@ -72,12 +75,14 @@ const IconTile = <T,>({
   canDelete,
   onDownload,
   onDelete,
+  onSetThumbnail,
   t
 }: {
   item: FilesIconItem<T>;
   canDelete: boolean;
   onDownload: (item: FilesIconItem<T>) => void;
   onDelete?: (item: FilesIconItem<T>) => void;
+  onSetThumbnail?: (item: FilesIconItem<T>) => void;
   t: ReturnType<typeof useLingui>["t"];
 }) => {
   const openItem = () => {
@@ -139,6 +144,11 @@ const IconTile = <T,>({
             <DropdownMenuItem onClick={() => onDownload(item)}>
               <Trans>Download</Trans>
             </DropdownMenuItem>
+            {onSetThumbnail && item.previewType === "Image" && !item.isModel && (
+              <DropdownMenuItem onClick={() => onSetThumbnail(item)}>
+                <Trans>Set as thumbnail</Trans>
+              </DropdownMenuItem>
+            )}
             {onDelete && (
               <DropdownMenuItem
                 destructive

@@ -299,6 +299,7 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
         <ItemThumbnailUpload
           path={routeData?.toolSummary?.thumbnailPath}
           itemId={itemId}
+          type="Tool"
         />
       </VStack>
 

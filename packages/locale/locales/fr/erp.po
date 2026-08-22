@@ -7180,6 +7180,12 @@ msgstr "Échec de l'envoi du code de vérification"
 msgid "Failed to set job release date"
 msgstr "Échec de la mise en date de la tâche"
 
+msgid "Failed to set thumbnail"
+msgstr "Échec de l'établissement de miniature"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "Échec de l'établissement de miniature : {message}"
+
 msgid "Failed to sign in"
 msgstr "Échec de connexion"
 
@@ -13476,6 +13482,9 @@ msgstr "Compte de frais de service"
 msgid "Session mismatch"
 msgstr "Échec de la session"
 
+msgid "Set as thumbnail"
+msgstr "Définir en tant que vignette"
+
 msgid "Set chip color"
 msgstr "Définir la couleur de la pastille"
 
@@ -13512,6 +13521,9 @@ msgstr "Définir la version {0} comme version active ?"
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Définissez votre emplacement par défaut dans les paramètres de profil pour sélectionner une unité de stockage."
+
+msgid "Setting thumbnail"
+msgstr "Paramètre vignette"
 
 msgid "Setting up your demo data…"
 msgstr "Mise en place de vos données de démonstration…"
@@ -15020,6 +15032,9 @@ msgstr "Miniature"
 
 msgid "Thumbnail removed"
 msgstr "Miniature supprimée"
+
+msgid "Thumbnail updated"
+msgstr "Miniature mise à jour"
 
 msgid "Thursday"
 msgstr "Jeudi"

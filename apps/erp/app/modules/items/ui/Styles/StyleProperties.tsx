@@ -278,6 +278,7 @@ const StyleProperties = () => {
         <ItemThumbnailUpload
           path={routeData.styleSummary.thumbnailPath}
           itemId={itemId}
+          type="Style"
         />
       </VStack>
 

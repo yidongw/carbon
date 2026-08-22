@@ -23,6 +23,7 @@ import {
 import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
+import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
 import { useCallback, useMemo } from "react";
 import { LuAxis3D, LuEllipsisVertical, LuUpload } from "react-icons/lu";
@@ -43,7 +44,11 @@ import { getDocumentType } from "~/modules/shared";
 import type { ModelUpload } from "~/types";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
-import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
+import {
+  createUploadToast,
+  resizeImageWithProgress,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 import type { ItemFile } from "../../types";
 
 type ItemDocumentsProps = {
@@ -63,12 +68,14 @@ const ItemDocuments = ({
   const { formatDate } = useDateFormatter();
   const {
     canDelete,
+    canUpdate,
     download,
     downloadModel,
     deleteFile,
     deleteModel,
     getPath,
     getModelPath,
+    setAsThumbnail,
     upload
   } = useItemDocuments({
     itemId,
@@ -165,6 +172,15 @@ const ItemDocuments = ({
                 deleteFile(item.raw);
               }
             }}
+            onSetThumbnail={
+              canUpdate
+                ? (item) => {
+                    if (item.raw) {
+                      setAsThumbnail(item.raw, modelUpload?.modelId);
+                    }
+                  }
+                : undefined
+            }
           />
         ) : (
           <Table>
@@ -294,6 +310,15 @@ const ItemDocuments = ({
                             <DropdownMenuItem onClick={() => download(file)}>
                               Download
                             </DropdownMenuItem>
+                            {canUpdate && type === "Image" && (
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  setAsThumbnail(file, modelUpload?.modelId)
+                                }
+                              >
+                                <Trans>Set as thumbnail</Trans>
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem
                               destructive
                               disabled={!canDelete}
@@ -370,6 +395,7 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
   const submit = useSubmit();
 
   const canDelete = permissions.can("delete", "parts");
+  const canUpdate = permissions.can("update", "parts");
   const getPath = useCallback(
     (file: { name: string }) => {
       return `${company.id}/parts/${itemId}/${stripSpecialCharacters(
@@ -521,14 +547,115 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
     [getPath, carbon, revalidator, submit, type, itemId, t]
   );
 
+  // Promote an existing image file to the item's thumbnail. The file is resized
+  // into a fresh, independent thumbnail object (so deleting the file later never
+  // breaks the thumbnail), and the previous thumbnail object is cleaned up.
+  const setAsThumbnail = useCallback(
+    async (file: FileObject, modelId?: string | null) => {
+      if (!carbon) {
+        toast.error(t`Carbon client not available`);
+        return;
+      }
+
+      const uploadToast = createUploadToast({
+        id: `set-thumbnail-${itemId}`,
+        label: (pct) => `${t`Setting thumbnail`} (${pct}%)`
+      });
+
+      try {
+        const url = path.to.file.previewFile(`private/${getPath(file)}`);
+        const response = await fetch(url);
+        const sourceBlob = await response.blob();
+        // `File` is imported from @carbon/react here, so use the DOM ctor.
+        const sourceFile = new globalThis.File([sourceBlob], file.name, {
+          type: sourceBlob.type || "image/png"
+        });
+
+        const { status, blob, contentType } = await resizeImageWithProgress(
+          sourceFile,
+          {},
+          uploadToast.onProgress
+        );
+        if (status < 200 || status >= 300) {
+          throw new Error("Failed to resize image");
+        }
+
+        const resolvedType = contentType || "image/png";
+        const fileExtension = resolvedType.includes("image/jpeg")
+          ? "jpg"
+          : "png";
+        const fileName = `${nanoid()}.${fileExtension}`;
+        const thumbnailFile = new globalThis.File([blob], fileName, {
+          type: resolvedType
+        });
+
+        // Read the current thumbnail first so we can clean it up afterwards.
+        const current = await carbon
+          .from("item")
+          .select("thumbnailPath")
+          .eq("id", itemId)
+          .maybeSingle();
+
+        const uploaded = await carbon.storage
+          .from("private")
+          .upload(
+            `${company.id}/thumbnails/${itemId}/${fileName}`,
+            thumbnailFile,
+            { upsert: true }
+          );
+        if (uploaded.error || !uploaded.data) {
+          uploadToast.error(t`Failed to set thumbnail`);
+          return;
+        }
+
+        const update = await carbon
+          .from("item")
+          .update({ thumbnailPath: uploaded.data.path })
+          .eq("id", itemId);
+        if (update.error) {
+          uploadToast.error(t`Failed to set thumbnail`);
+          return;
+        }
+
+        if (modelId) {
+          await carbon
+            .from("modelUpload")
+            .update({ thumbnailPath: uploaded.data.path })
+            .eq("id", modelId);
+        }
+
+        // Delete the previous thumbnail object (only within the thumbnails
+        // folder, and never the one we just wrote). Files are untouched.
+        const previous = current.data?.thumbnailPath;
+        if (
+          previous &&
+          previous.startsWith(`${company.id}/thumbnails/`) &&
+          previous !== uploaded.data.path
+        ) {
+          await carbon.storage.from("private").remove([previous]);
+        }
+
+        uploadToast.dismiss();
+        toast.success(t`Thumbnail updated`);
+        revalidator.revalidate();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        uploadToast.error(t`Failed to set thumbnail: ${message}`);
+      }
+    },
+    [carbon, company.id, itemId, getPath, revalidator, t]
+  );
+
   return {
     canDelete,
+    canUpdate,
     deleteFile,
     deleteModel,
     download,
     downloadModel,
     getPath,
     getModelPath,
+    setAsThumbnail,
     upload
   };
 };

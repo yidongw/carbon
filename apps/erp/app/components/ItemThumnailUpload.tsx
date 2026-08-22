@@ -6,21 +6,65 @@ import type { ChangeEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
+import { useSubmit } from "react-router";
 import { useUser } from "~/hooks";
-import { getPrivateUrl } from "~/utils/path";
-import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
+import type { MethodItemType } from "~/modules/shared";
+import { getPrivateUrl, path as routes } from "~/utils/path";
+import { stripSpecialCharacters } from "~/utils/string";
+import {
+  createUploadToast,
+  resizeImageWithProgress,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 export function ItemThumbnailUpload({
   path,
   itemId,
-  modelId
+  modelId,
+  type
 }: {
   path?: string | null;
   itemId: string;
   modelId?: string | null;
+  type: MethodItemType;
 }) {
   const { t } = useLingui();
   const { company } = useUser();
   const { carbon } = useCarbon();
+  const submit = useSubmit();
+
+  // Drop a copy of the uploaded image into the item's Files, as an independent
+  // object with a document record — the same place manual uploads land. This is
+  // independent of the thumbnail: deleting one never affects the other.
+  const copyToItemFiles = useCallback(
+    async (file: File) => {
+      if (!carbon) return;
+      const filePath = `${company.id}/parts/${itemId}/${stripSpecialCharacters(
+        file.name
+      )}`;
+      const fileUpload = await uploadToStorageWithProgress(carbon, {
+        bucket: "private",
+        path: filePath,
+        file,
+        cacheControl: `${12 * 60 * 60}`,
+        upsert: true
+      });
+      if (fileUpload.error || !fileUpload.data?.path) return;
+
+      const formData = new FormData();
+      formData.append("path", fileUpload.data.path);
+      formData.append("name", file.name);
+      formData.append("size", Math.round(file.size / 1024).toString());
+      formData.append("sourceDocument", type);
+      formData.append("sourceDocumentId", itemId);
+      submit(formData, {
+        method: "post",
+        action: routes.to.newDocument,
+        navigate: false,
+        fetcherKey: `item:${file.name}`
+      });
+    },
+    [carbon, company.id, itemId, type, submit]
+  );
 
   const [thumbnailPath, setThumbnailPath] = useState<string | null>(() => {
     if (path) {
@@ -169,6 +213,9 @@ export function ItemThumbnailUpload({
           setThumbnailPath(getPrivateUrl(data.path));
         }
         uploadToast.dismiss();
+
+        // Also keep an independent copy of the original in the item's Files.
+        await copyToItemFiles(file);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error";
@@ -176,7 +223,7 @@ export function ItemThumbnailUpload({
         uploadToast.error(t`Failed to resize image: ${errorMessage}`);
       }
     },
-    [carbon, company.id, itemId, modelId, t]
+    [carbon, company.id, itemId, modelId, t, copyToItemFiles]
   );
 
   const onFileChange = useCallback(

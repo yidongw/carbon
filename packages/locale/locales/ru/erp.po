@@ -7180,6 +7180,12 @@ msgstr "Не удалось отправить код верификации"
 msgid "Failed to set job release date"
 msgstr "Не удалось установить дату выпуска задачи"
 
+msgid "Failed to set thumbnail"
+msgstr "Не удалось установить миниатюру"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "Не удалось установить миниатюру: {message}"
+
 msgid "Failed to sign in"
 msgstr "Не удалось войти в систему"
 
@@ -13476,6 +13482,9 @@ msgstr "Аккаунт для оплаты услуг"
 msgid "Session mismatch"
 msgstr "Сессия несоответствует"
 
+msgid "Set as thumbnail"
+msgstr "Установить как миниатюру"
+
 msgid "Set chip color"
 msgstr "Задать цвет метки"
 
@@ -13512,6 +13521,9 @@ msgstr "Установить версию {0} как активную верси
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Установите местоположение по умолчанию в настройках профиля, чтобы выбрать единицу хранения."
+
+msgid "Setting thumbnail"
+msgstr "Настройка миниатюры"
 
 msgid "Setting up your demo data…"
 msgstr "Настройка демонстрационных данных…"
@@ -15020,6 +15032,9 @@ msgstr "Миниатюра"
 
 msgid "Thumbnail removed"
 msgstr "Миниатюра удалена"
+
+msgid "Thumbnail updated"
+msgstr "Превью обновлено"
 
 msgid "Thursday"
 msgstr "Четверг"

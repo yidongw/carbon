@@ -5,7 +5,11 @@ import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
-import { consumableValidator, upsertConsumable } from "~/modules/items";
+import {
+  consumableValidator,
+  copyThumbnailToItemFiles,
+  upsertConsumable
+} from "~/modules/items";
 import { getAttributeSetsForItemType } from "~/modules/items/itemAttribute.service";
 import {
   parseAndValidateItemAttributesForCreate,
@@ -148,6 +152,16 @@ export async function action({ request }: ActionFunctionArgs) {
         .update({ thumbnailPath: finalThumbnailPath })
         .eq("id", itemId);
     }
+    // Also drop a copy of the thumbnail into the item's Files (independent copy).
+    await copyThumbnailToItemFiles(client, {
+      companyId,
+      itemId,
+      userId,
+      thumbnailPath: move.error ? stagingThumbnailPath : finalThumbnailPath,
+      originalPath: (formData.get("thumbnailFilePath") as string) || undefined,
+      fileName: (formData.get("thumbnailName") as string) || fileName || "thumbnail",
+      type: "Consumable"
+    });
   }
 
   return modal

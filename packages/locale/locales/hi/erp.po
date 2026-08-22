@@ -7180,6 +7180,12 @@ msgstr "परीक्षण कोड भेजना फ़ले नही�
 msgid "Failed to set job release date"
 msgstr "कार्य की छोड़ने तिथि सेट करना फलदायक नहीं हुआ"
 
+msgid "Failed to set thumbnail"
+msgstr "फ़ाइल की तिथि सेट करने में वायेद हो गई"
+
+msgid "Failed to set thumbnail: {message}"
+msgstr "फ़ाइल को थिमबॉक्स में सेट करने में फाल्ट हुई: {message}"
+
 msgid "Failed to sign in"
 msgstr "सIGH IN वास्तविक नहीं हुआ"
 
@@ -13476,6 +13482,9 @@ msgstr "सेवा शुल्क खाता"
 msgid "Session mismatch"
 msgstr "सिझन मिशमेटच्या साथी"
 
+msgid "Set as thumbnail"
+msgstr "स्थैतिक तालिका के रूप में सेट करें"
+
 msgid "Set chip color"
 msgstr "चिप रंग सेट करें"
 
@@ -13512,6 +13521,9 @@ msgstr "संस्करण {0} को सक्रिय संस्कर�
 
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "अपनी डिफ़ॉल्ट स्थान को प्रोफ़ाइल सेटिंग्स में सेट करें स्टोरेज यूनिट चुनने के लिए।"
+
+msgid "Setting thumbnail"
+msgstr "स्थिति थumbnैलॉइन"
 
 msgid "Setting up your demo data…"
 msgstr "आपका डेमो डेटा सेट हो रहा है…"
@@ -15020,6 +15032,9 @@ msgstr "थंबनेल"
 
 msgid "Thumbnail removed"
 msgstr "थंबनेल हटाया गया"
+
+msgid "Thumbnail updated"
+msgstr "टाउनस्मैलअपडेट किया गया है"
 
 msgid "Thursday"
 msgstr "गुरुवार"
