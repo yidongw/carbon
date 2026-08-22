@@ -773,6 +773,12 @@ msgstr "Нападает на всех"
 msgid "Applies to all work centers"
 msgstr "Применяется ко всем центрам обработки"
 
+msgid "Applies to colors"
+msgstr "Применяется к цветам"
+
+msgid "Applies to colors (none = shared)"
+msgstr "Применяется к цветам (нет = общий)"
+
 msgid "Apply"
 msgstr "Применить"
 
@@ -1915,6 +1921,9 @@ msgstr "Чат"
 
 msgid "Check your email"
 msgstr "Проверьте вашу почту"
+
+msgid "Chip color"
+msgstr "Цвет метки"
 
 msgid "Choose a batch number"
 msgstr "Выберите номер лота"
@@ -4683,6 +4692,9 @@ msgstr "Не удалось добавить запись"
 
 msgid "Failed to add spare part"
 msgstr "Не удалось добавить запасную часть"
+
+msgid "Failed to apply per-color method to master"
+msgstr "Не удалось применить метод по цвету к главному заказу"
 
 msgid "Failed to assign"
 msgstr "Не удалось назначить"
@@ -7819,6 +7831,9 @@ msgstr "Не удалось обновить единицу измерения"
 msgid "Failed to update user permissions"
 msgstr "Не удалось обновить права пользователя"
 
+msgid "Failed to update variant scope"
+msgstr "Не удалось обновить область варианта"
+
 msgid "Failed to update variants quantity"
 msgstr "Не удалось обновить количество вариантов"
 
@@ -10546,11 +10561,17 @@ msgstr "Нет совпадений"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "Нет совпадений для \"{query}\". Попробуйте другой поисковый запрос."
 
+msgid "No material id"
+msgstr "Нет идентификатора материала"
+
 msgid "No new notifications"
 msgstr "Нет новых уведомлений"
 
 msgid "No notes"
 msgstr "Нет заметок"
+
+msgid "No operation id"
+msgstr "Нет идентификатора операции"
 
 msgid "No operations require picking at this location"
 msgstr "На этом месте ни одна операция не требует выборки"
@@ -13455,6 +13476,9 @@ msgstr "Аккаунт для оплаты услуг"
 msgid "Session mismatch"
 msgstr "Сессия несоответствует"
 
+msgid "Set chip color"
+msgstr "Задать цвет метки"
+
 msgid "Set Clock Out"
 msgstr "Установить время выхода"
 
@@ -13533,6 +13557,9 @@ msgstr "Поделиться предложением"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "Поделитесь этим PIN оператору для входа в систему на терминалах MES."
+
+msgid "Shared"
+msgstr "Общий"
 
 msgid "Shared Sections"
 msgstr "Совместные разделы"

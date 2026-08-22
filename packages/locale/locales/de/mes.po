@@ -941,6 +941,9 @@ msgstr "Fehler beim Hinzufügen"
 msgid "Failed to add spare part"
 msgstr "Fehler beim Hinzufügen von Ersatzteil"
 
+msgid "Failed to apply per-color method to master"
+msgstr "Farbspezifische Methode konnte nicht auf den Hauptauftrag angewendet werden"
+
 msgid "Failed to assign"
 msgstr "Fehler beim Zuweisen"
 
@@ -3821,6 +3824,9 @@ msgstr "Fehler beim Aktualisieren der Einheit der Maßeinheit"
 msgid "Failed to update user permissions"
 msgstr "Fehler beim Aktualisieren der Benutzerrechte"
 
+msgid "Failed to update variant scope"
+msgstr "Variantenbereich konnte nicht aktualisiert werden"
+
 msgid "Failed to update variants quantity"
 msgstr "Fehlgeschlagen beim Aktualisieren der Variante-Anzahl"
 
@@ -4547,11 +4553,17 @@ msgstr "Keine Instandhaltung für heute geplant"
 msgid "No master work orders"
 msgstr "Keine Meisterarbeitsanweisungen"
 
+msgid "No material id"
+msgstr "Keine Material-ID"
+
 msgid "No materials"
 msgstr "Keine Materialien"
 
 msgid "No open jobs"
 msgstr "Keine offenen Jobs"
+
+msgid "No operation id"
+msgstr "Keine Vorgangs-ID"
 
 msgid "No operators"
 msgstr "Keine Bediener"

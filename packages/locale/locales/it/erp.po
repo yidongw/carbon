@@ -773,6 +773,12 @@ msgstr "Si applica a tutti"
 msgid "Applies to all work centers"
 msgstr "Si applica a tutti i centri di lavoro"
 
+msgid "Applies to colors"
+msgstr "Si applica ai colori"
+
+msgid "Applies to colors (none = shared)"
+msgstr "Si applica ai colori (nessuno = condiviso)"
+
 msgid "Apply"
 msgstr "Applica"
 
@@ -1915,6 +1921,9 @@ msgstr "Chat"
 
 msgid "Check your email"
 msgstr "Controlla la tua email"
+
+msgid "Chip color"
+msgstr "Colore del chip"
 
 msgid "Choose a batch number"
 msgstr "Scegli un numero di lote"
@@ -4683,6 +4692,9 @@ msgstr "Fallito nell'aggiunta della voce"
 
 msgid "Failed to add spare part"
 msgstr "Fallito nell'aggiunta del componente di riserva"
+
+msgid "Failed to apply per-color method to master"
+msgstr "Impossibile applicare il metodo per colore all'ordine principale"
 
 msgid "Failed to assign"
 msgstr "Fallito l'assegnazione"
@@ -7819,6 +7831,9 @@ msgstr "Fallito aggiornamentounità di misura"
 msgid "Failed to update user permissions"
 msgstr "Fallito aggiornamento dei permessi utente"
 
+msgid "Failed to update variant scope"
+msgstr "Impossibile aggiornare l'ambito della variante"
+
 msgid "Failed to update variants quantity"
 msgstr "Fallito aggiornamento quantità varianti"
 
@@ -10546,11 +10561,17 @@ msgstr "Nessuna partita"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "Nessuna corrispondenza per \"{query}\". Prova un termine di ricerca diverso."
 
+msgid "No material id"
+msgstr "Nessun ID materiale"
+
 msgid "No new notifications"
 msgstr "Nessuna nuova notifica"
 
 msgid "No notes"
 msgstr "Nessuna nota"
+
+msgid "No operation id"
+msgstr "Nessun ID operazione"
 
 msgid "No operations require picking at this location"
 msgstr "Nessuna operazione richiede il prelievo in questa posizione"
@@ -13455,6 +13476,9 @@ msgstr "Conto di addebito del servizio"
 msgid "Session mismatch"
 msgstr "Discrepanza della sessione"
 
+msgid "Set chip color"
+msgstr "Imposta colore del chip"
+
 msgid "Set Clock Out"
 msgstr "Imposta Uscita"
 
@@ -13533,6 +13557,9 @@ msgstr "Condividi Preventivo"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "Condividi questo PIN con l'operatore affinché possa effettuare il pinch-in ai terminali MES."
+
+msgid "Shared"
+msgstr "Condiviso"
 
 msgid "Shared Sections"
 msgstr "Sezioni condivise"

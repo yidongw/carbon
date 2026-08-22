@@ -773,6 +773,12 @@ msgstr "すべてに適用"
 msgid "Applies to all work centers"
 msgstr "すべての作業センタに適用"
 
+msgid "Applies to colors"
+msgstr "対象カラー"
+
+msgid "Applies to colors (none = shared)"
+msgstr "対象カラー（未選択 = 共通）"
+
 msgid "Apply"
 msgstr "適用"
 
@@ -1915,6 +1921,9 @@ msgstr "チャット"
 
 msgid "Check your email"
 msgstr "メールを確認してください"
+
+msgid "Chip color"
+msgstr "チップの色"
 
 msgid "Choose a batch number"
 msgstr "バッチ番号を選択してください"
@@ -4683,6 +4692,9 @@ msgstr "追加に失敗しました"
 
 msgid "Failed to add spare part"
 msgstr "Spare partの追加に失敗しました"
+
+msgid "Failed to apply per-color method to master"
+msgstr "マスターへの色別方法の適用に失敗しました"
 
 msgid "Failed to assign"
 msgstr "割り当てに失敗しました"
@@ -7819,6 +7831,9 @@ msgstr "単位を更新できませんでした"
 msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
 
+msgid "Failed to update variant scope"
+msgstr "バリアント範囲の更新に失敗しました"
+
 msgid "Failed to update variants quantity"
 msgstr "変更を保存できませんでした"
 
@@ -10546,11 +10561,17 @@ msgstr "一致するものがありません"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "\"{query}\"に一致するものがありません。別の検索用語を試してください。"
 
+msgid "No material id"
+msgstr "材料IDがありません"
+
 msgid "No new notifications"
 msgstr "新しい通知はありません"
 
 msgid "No notes"
 msgstr "ノートなし"
+
+msgid "No operation id"
+msgstr "工程IDがありません"
 
 msgid "No operations require picking at this location"
 msgstr "この場所にはピックする作業はありません"
@@ -13455,6 +13476,9 @@ msgstr "サービス料口座"
 msgid "Session mismatch"
 msgstr "セッション不一致"
 
+msgid "Set chip color"
+msgstr "チップの色を設定"
+
 msgid "Set Clock Out"
 msgstr "クロックアウトを設定"
 
@@ -13533,6 +13557,9 @@ msgstr "見積もりを共有"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "MES-terminalにピンインするため、このPINを操作者と共有してください。"
+
+msgid "Shared"
+msgstr "共通"
 
 msgid "Shared Sections"
 msgstr "共有セクション"

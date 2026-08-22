@@ -941,6 +941,9 @@ msgstr "कैसी भी नंबर योजना नहीं जोड�
 msgid "Failed to add spare part"
 msgstr "गतिविधि न की जा सकी: बच्चे भाग जोड़ना"
 
+msgid "Failed to apply per-color method to master"
+msgstr "मास्टर पर प्रति-रंग विधि लागू करने में विफल"
+
 msgid "Failed to assign"
 msgstr "फत रहस्यमयी संबद्ध करने में विफल रहा"
 
@@ -3821,6 +3824,9 @@ msgstr "यक्ष्मा इकाई को अपडेट करने �
 msgid "Failed to update user permissions"
 msgstr "सउदाहरण अधिकारों का आधिकारिक प्रतिबद्ध होने में वफ़्डा नहीं आया"
 
+msgid "Failed to update variant scope"
+msgstr "वैरिएंट स्कोप अपडेट करने में विफल"
+
 msgid "Failed to update variants quantity"
 msgstr "वेरिएंट्स की मात्रा अपडेट होने पर विफल रही"
 
@@ -4547,11 +4553,17 @@ msgstr "आज के लिए कोई रखरखाव निर्धा�
 msgid "No master work orders"
 msgstr "कोई मास्टर उत्पादन कार्यरजिक नहीं"
 
+msgid "No material id"
+msgstr "कोई सामग्री आईडी नहीं"
+
 msgid "No materials"
 msgstr "कोई सामग्री नहीं"
 
 msgid "No open jobs"
 msgstr "कोई खुला काम नहीं है"
+
+msgid "No operation id"
+msgstr "कोई ऑपरेशन आईडी नहीं"
 
 msgid "No operators"
 msgstr "कोई ऑपरेटर नहीं"

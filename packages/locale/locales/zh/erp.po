@@ -773,6 +773,12 @@ msgstr "适用于所有"
 msgid "Applies to all work centers"
 msgstr "适用于所有工作中心"
 
+msgid "Applies to colors"
+msgstr "适用款色"
+
+msgid "Applies to colors (none = shared)"
+msgstr "适用款色（不选 = 共用）"
+
 msgid "Apply"
 msgstr "应用"
 
@@ -1915,6 +1921,9 @@ msgstr "聊天"
 
 msgid "Check your email"
 msgstr "检查您的电子邮件"
+
+msgid "Chip color"
+msgstr "色块颜色"
 
 msgid "Choose a batch number"
 msgstr "选择批号"
@@ -4683,6 +4692,9 @@ msgstr "添加失败"
 
 msgid "Failed to add spare part"
 msgstr "添加备件失败"
+
+msgid "Failed to apply per-color method to master"
+msgstr "为主工单应用分色方法失败"
 
 msgid "Failed to assign"
 msgstr "分配失败"
@@ -7819,6 +7831,9 @@ msgstr "更新计量单位失败"
 msgid "Failed to update user permissions"
 msgstr "更新用户权限失败"
 
+msgid "Failed to update variant scope"
+msgstr "更新适用款色失败"
+
 msgid "Failed to update variants quantity"
 msgstr "更新规格数量失败"
 
@@ -10546,11 +10561,17 @@ msgstr "没有匹配项"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "没有匹配\"{query}\"。尝试使用不同的搜索词。"
 
+msgid "No material id"
+msgstr "缺少材料 ID"
+
 msgid "No new notifications"
 msgstr "没有新的通知"
 
 msgid "No notes"
 msgstr "无笔记"
+
+msgid "No operation id"
+msgstr "缺少操作 ID"
 
 msgid "No operations require picking at this location"
 msgstr "在此位置无需拣选操作"
@@ -13455,6 +13476,9 @@ msgstr "服务收费账户"
 msgid "Session mismatch"
 msgstr "会话不匹配"
 
+msgid "Set chip color"
+msgstr "设置色块颜色"
+
 msgid "Set Clock Out"
 msgstr "设置下班时间"
 
@@ -13533,6 +13557,9 @@ msgstr "分享报价"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "将此PIN提供给操作员，以便他们在MES终端进行签到。"
+
+msgid "Shared"
+msgstr "共用"
 
 msgid "Shared Sections"
 msgstr "共享部分"

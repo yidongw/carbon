@@ -773,6 +773,12 @@ msgstr "सभी के लिए मालूम पड़ता है"
 msgid "Applies to all work centers"
 msgstr "सभी कार्य संकेतनों पर लागू होता है"
 
+msgid "Applies to colors"
+msgstr "रंगों पर लागू"
+
+msgid "Applies to colors (none = shared)"
+msgstr "रंगों पर लागू (कोई नहीं = साझा)"
+
 msgid "Apply"
 msgstr "लागू करें"
 
@@ -1915,6 +1921,9 @@ msgstr "चैट"
 
 msgid "Check your email"
 msgstr "अपना ईमेल जांचें"
+
+msgid "Chip color"
+msgstr "चिप रंग"
 
 msgid "Choose a batch number"
 msgstr "बच्चा संख्या चुनें"
@@ -4683,6 +4692,9 @@ msgstr "कैसी भी नंबर योजना नहीं जोड�
 
 msgid "Failed to add spare part"
 msgstr "गैर सफल राइप पार्ट को जोड़ना"
+
+msgid "Failed to apply per-color method to master"
+msgstr "मास्टर पर प्रति-रंग विधि लागू करने में विफल"
 
 msgid "Failed to assign"
 msgstr "फत रहस्यमयी संबधित करने में विफल रहा"
@@ -7819,6 +7831,9 @@ msgstr "यक्ष्मा इकाई को अपडेट करने �
 msgid "Failed to update user permissions"
 msgstr "सउदाहरण अनुप्रयोग का परिवर्तन नहीं हुआ"
 
+msgid "Failed to update variant scope"
+msgstr "वैरिएंट स्कोप अपडेट करने में विफल"
+
 msgid "Failed to update variants quantity"
 msgstr "वेरिएंट्स की मात्रा अपडेट होने पर विफल रही"
 
@@ -10546,11 +10561,17 @@ msgstr "कोई जोड़ नहीं"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "\"{query}\" के लिए कोई मिलान नहीं। एक अलग खोज शब्द आजमाएं।"
 
+msgid "No material id"
+msgstr "कोई सामग्री आईडी नहीं"
+
 msgid "No new notifications"
 msgstr "कोई नई सूचनाएं नहीं"
 
 msgid "No notes"
 msgstr "कोई नोट नहीं"
+
+msgid "No operation id"
+msgstr "कोई ऑपरेशन आईडी नहीं"
 
 msgid "No operations require picking at this location"
 msgstr "इस स्थान पर कोई ऑपरेशन चयन की आवश्यकता नहीं है"
@@ -13455,6 +13476,9 @@ msgstr "सेवा शुल्क खाता"
 msgid "Session mismatch"
 msgstr "सिझन मिशमेटच्या साथी"
 
+msgid "Set chip color"
+msgstr "चिप रंग सेट करें"
+
 msgid "Set Clock Out"
 msgstr "क्लॉक आउट सेट करें"
 
@@ -13533,6 +13557,9 @@ msgstr "उद्धरण साझा करें"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "इस PIN को ऑपरेटर सेแชर करें ताकि वे MES टर्मिनल पर पिन इन कर सकें।"
+
+msgid "Shared"
+msgstr "साझा"
 
 msgid "Shared Sections"
 msgstr "साझा खंडों"

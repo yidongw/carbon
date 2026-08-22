@@ -941,6 +941,9 @@ msgstr "Не удалось добавить запись"
 msgid "Failed to add spare part"
 msgstr "Не удалось добавить запасную часть"
 
+msgid "Failed to apply per-color method to master"
+msgstr "Не удалось применить метод по цвету к главному заказу"
+
 msgid "Failed to assign"
 msgstr "Не удалось назначить"
 
@@ -3821,6 +3824,9 @@ msgstr "Не удалось обновить единицу измерения"
 msgid "Failed to update user permissions"
 msgstr "Не удалось обновить права пользователя"
 
+msgid "Failed to update variant scope"
+msgstr "Не удалось обновить область варианта"
+
 msgid "Failed to update variants quantity"
 msgstr "Не удалось обновить количество вариантов"
 
@@ -4547,11 +4553,17 @@ msgstr "На сегодня обслуживание не запланирова
 msgid "No master work orders"
 msgstr "Нет основных производственных заказов"
 
+msgid "No material id"
+msgstr "Нет идентификатора материала"
+
 msgid "No materials"
 msgstr "Нет материалов"
 
 msgid "No open jobs"
 msgstr "Нет открытых задач"
+
+msgid "No operation id"
+msgstr "Нет идентификатора операции"
 
 msgid "No operators"
 msgstr "Нет операторов"
