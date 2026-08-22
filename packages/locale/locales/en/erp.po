@@ -772,6 +772,12 @@ msgstr "Applies to all"
 msgid "Applies to all work centers"
 msgstr "Applies to all work centers"
 
+msgid "Applies to colors"
+msgstr "Applies to colors"
+
+msgid "Applies to colors (none = shared)"
+msgstr "Applies to colors (none = shared)"
+
 msgid "Apply"
 msgstr "Apply"
 
@@ -1914,6 +1920,9 @@ msgstr "Chat"
 
 msgid "Check your email"
 msgstr "Check your email"
+
+msgid "Chip color"
+msgstr "Chip color"
 
 msgid "Choose a batch number"
 msgstr "Choose a batch number"
@@ -4682,6 +4691,9 @@ msgstr "Failed to add entry"
 
 msgid "Failed to add spare part"
 msgstr "Failed to add spare part"
+
+msgid "Failed to apply per-color method to master"
+msgstr "Failed to apply per-color method to master"
 
 msgid "Failed to assign"
 msgstr "Failed to assign"
@@ -7818,6 +7830,9 @@ msgstr "Failed to update unit of measure"
 msgid "Failed to update user permissions"
 msgstr "Failed to update user permissions"
 
+msgid "Failed to update variant scope"
+msgstr "Failed to update variant scope"
+
 msgid "Failed to update variants quantity"
 msgstr "Failed to update variants quantity"
 
@@ -10545,11 +10560,17 @@ msgstr "No matches"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "No matches for \"{query}\". Try a different search term."
 
+msgid "No material id"
+msgstr "No material id"
+
 msgid "No new notifications"
 msgstr "No new notifications"
 
 msgid "No notes"
 msgstr "No notes"
+
+msgid "No operation id"
+msgstr "No operation id"
 
 msgid "No operations require picking at this location"
 msgstr "No operations require picking at this location"
@@ -13454,6 +13475,9 @@ msgstr "Service Charge Account"
 msgid "Session mismatch"
 msgstr "Session mismatch"
 
+msgid "Set chip color"
+msgstr "Set chip color"
+
 msgid "Set Clock Out"
 msgstr "Set Clock Out"
 
@@ -13532,6 +13556,9 @@ msgstr "Share Quote"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "Share this PIN with the operator so they can pin in at MES terminals."
+
+msgid "Shared"
+msgstr "Shared"
 
 msgid "Shared Sections"
 msgstr "Shared Sections"

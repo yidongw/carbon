@@ -13,7 +13,8 @@ import {
 } from "~/components/Overlay/overlay";
 import {
   insertMasterWorkOrder,
-  masterWorkOrderValidator
+  masterWorkOrderValidator,
+  upsertJobMethod
 } from "~/modules/production";
 import {
   isVariantsQuantityPayload,
@@ -134,6 +135,24 @@ export async function action({ request }: ActionFunctionArgs) {
         request,
         error(replaced.error, "Failed to save variant quantities")
       );
+    } else {
+      // The initial get-method inside insertMasterWorkOrder ran before the
+      // variant plan existed, so it couldn't scale the master's per-color
+      // materials. Re-run it now that jobVariantQuantity is set so each
+      // color-scoped master material materializes scaled by that color's
+      // planned qty (shared lines stay at the aggregate).
+      const rescoped = await upsertJobMethod(client, "itemToJob", {
+        sourceId: rest.itemId,
+        targetId: insert.data.jobId,
+        companyId,
+        userId
+      });
+      if (rescoped.error) {
+        quantityFlash = await flash(
+          request,
+          error(rescoped.error, "Failed to apply per-color method to master")
+        );
+      }
     }
   }
 

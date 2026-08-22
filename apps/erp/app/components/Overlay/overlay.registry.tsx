@@ -252,6 +252,7 @@ export const overlayRegistry = {
                 name: string;
                 sortOrder: number;
                 companyId: string | null;
+                color: string | null;
               }>;
             }
           | undefined;
@@ -266,6 +267,7 @@ export const overlayRegistry = {
               id: v.id,
               code: v.code,
               name: v.name,
+              color: v.color ?? null,
               isSystem: v.companyId === null
             }))
           },

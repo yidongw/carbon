@@ -36,7 +36,13 @@ import {
   LuSearch,
   LuTable
 } from "react-icons/lu";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import {
+  Link,
+  useFetcher,
+  useNavigate,
+  useParams,
+  useSearchParams
+} from "react-router";
 import { MethodIcon, MethodItemTypeIcon } from "~/components";
 import { OnshapeStatus } from "~/components/Icons";
 import { ImportCSVModal } from "~/components/ImportCSVModal";
@@ -49,6 +55,7 @@ import type { MethodItemType } from "~/modules/shared";
 import { generateBomIds } from "~/utils/bom";
 import { path } from "~/utils/path";
 import type { MakeMethod, Method, MethodOperation } from "../../types";
+import { readApplyOnVariantValueIds, variantChipStyle } from "./BillOfMaterial";
 import { getLinkToItemDetails } from "./ItemForm";
 
 // Shared offscreen canvas for measuring text without touching the DOM.
@@ -161,6 +168,42 @@ const BoMExplorer = ({
     version: makeMethodVersion,
     status: makeMethodStatus
   } = makeMethod;
+
+  // "Apply on Variants": tag each tree node with its color scope. The tree
+  // itself stays a stable overview (it does NOT filter with the BOM list tabs —
+  // the chips already show each node's color; filtering here too just makes
+  // nodes vanish). Filtering lives on the right-hand BOM list only.
+  const rootItemId = itemIdOverride ?? makeMethod.itemId;
+  const variantLabelsFetcher = useFetcher<{
+    data: Array<{
+      value: string;
+      label: string;
+      attributeId: string;
+      color: string | null;
+    }>;
+  }>();
+  useEffect(() => {
+    if (rootItemId) {
+      variantLabelsFetcher.load(
+        `/api/items/${rootItemId}/variant-attribute-values`
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rootItemId]);
+  const variantShortLabelById = useMemo(() => {
+    const m = new Map<string, string>();
+    (variantLabelsFetcher.data?.data ?? []).forEach((o) =>
+      m.set(o.value, o.label.split(": ").pop() ?? o.label)
+    );
+    return m;
+  }, [variantLabelsFetcher.data]);
+  const variantColorById = useMemo(() => {
+    const m = new Map<string, string | null>();
+    (variantLabelsFetcher.data?.data ?? []).forEach((o) =>
+      m.set(o.value, o.color ?? null)
+    );
+    return m;
+  }, [variantLabelsFetcher.data]);
 
   const {
     nodes,
@@ -504,6 +547,24 @@ const BoMExplorer = ({
                           <NodeText node={node} />
                         </div>
                         <div className="flex items-center gap-1">
+                          {!node.data.isRoot &&
+                            readApplyOnVariantValueIds(node.data).map((id) => {
+                              const cs = variantChipStyle({
+                                color: variantColorById.get(id)
+                              });
+                              return (
+                                <span
+                                  key={id}
+                                  className={cn(
+                                    "flex-shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium",
+                                    cs.className
+                                  )}
+                                  style={cs.style}
+                                >
+                                  {variantShortLabelById.get(id) ?? id}
+                                </span>
+                              );
+                            })}
                           {node.data.isRoot ? (
                             <Badge variant="outline">
                               V{makeMethodVersion}

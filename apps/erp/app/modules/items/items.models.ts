@@ -419,8 +419,25 @@ export const methodMaterialValidator = z.object({
       return {};
     }
   }),
+  // NOTE: applyOnVariantValueIds ("Apply on Variants") is intentionally NOT on
+  // this form. It is authored inline via the per-row badge (see
+  // applyOnVariantValidator + the method-material.apply-on-variants route) so
+  // that editing other fields never clobbers a line's variant scope, and it is
+  // read straight from the DB column by get-method at explosion time.
   // FormData-only Style/attribute expand payload — never persisted on methodMaterial.
   variantQuantities: zfd.text(z.string().optional())
+});
+
+// Inline badge update: just the variant scope for one methodMaterial line.
+export const applyOnVariantValidator = z.object({
+  id: z.string().min(1, { message: "Material ID is required" }),
+  applyOnVariantValueIds: zfd.text(z.string().optional()).transform((val) => {
+    try {
+      return val ? (JSON.parse(val) as string[]) : [];
+    } catch {
+      return [];
+    }
+  })
 });
 
 export const methodOperationValidator = z
@@ -467,6 +484,12 @@ export const methodOperationValidator = z
     operationUnitCost: zfd.numeric(z.number().min(0).optional()),
     operationLeadTime: zfd.numeric(z.number().min(0).optional()),
     insideUnitCost: zfd.numeric(z.number().min(0).optional())
+    // NOTE: methodOperation also has an "applyOnVariantValueIds" jsonb column and
+    // get-method already filters operations by it at explosion time (read straight
+    // from the DB row). It is intentionally NOT in this validator yet — there is no
+    // operation-level "Apply on Variants" UI, so operations default to [] (all
+    // variants). Add it here together with the BillOfProcess selector in a later
+    // phase (mirror the methodMaterial handling + @ts-expect-error at call sites).
   })
   .refine(
     (data) => {

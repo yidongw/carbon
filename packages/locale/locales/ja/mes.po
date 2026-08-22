@@ -941,6 +941,9 @@ msgstr "追加に失敗しました"
 msgid "Failed to add spare part"
 msgstr "Spare 部品を追加に失敗しました"
 
+msgid "Failed to apply per-color method to master"
+msgstr "マスターへの色別方法の適用に失敗しました"
+
 msgid "Failed to assign"
 msgstr "割り当てに失敗しました"
 
@@ -3821,6 +3824,9 @@ msgstr "単位を更新できませんでした"
 msgid "Failed to update user permissions"
 msgstr "ユーザー権限の更新に失敗しました"
 
+msgid "Failed to update variant scope"
+msgstr "バリアント範囲の更新に失敗しました"
+
 msgid "Failed to update variants quantity"
 msgstr "変更を保存できませんでした"
 
@@ -4547,11 +4553,17 @@ msgstr "本日のメンテナンス予定はありません"
 msgid "No master work orders"
 msgstr "マスターワークオーダーがありません"
 
+msgid "No material id"
+msgstr "材料IDがありません"
+
 msgid "No materials"
 msgstr "材料なし"
 
 msgid "No open jobs"
 msgstr "開いたジョブがありません"
+
+msgid "No operation id"
+msgstr "工程IDがありません"
 
 msgid "No operators"
 msgstr "オペレーターなし"

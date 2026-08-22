@@ -353,6 +353,35 @@ const STYLE_SIZE_CODES: string[] = [
 ];
 
 /**
+ * Default display hex per standard color code, used to seed
+ * `itemAttributeValue.color`. Drives the per-color BOM chip color; values not
+ * listed here (and all sizes) seed with no color and render grey. Single source
+ * of truth shared by the seed and the color-backfill migration.
+ */
+export const STYLE_COLOR_DEFAULT_HEX: Record<string, string> = {
+  BG: "#E4D5B7",
+  BK: "#111827",
+  BL: "#2563EB",
+  BN: "#92400E",
+  CH: "#374151",
+  CR: "#FBF3D9",
+  GR: "#16A34A",
+  GY: "#6B7280",
+  KH: "#C3B091",
+  LBL: "#93C5FD",
+  LGY: "#D1D5DB",
+  NV: "#1E3A8A",
+  OL: "#808000",
+  OR: "#F97316",
+  PK: "#EC4899",
+  PP: "#9333EA",
+  RD: "#DC2626",
+  WH: "#FFFFFF",
+  WN: "#7B1E3D",
+  YL: "#FACC15"
+};
+
+/**
  * The color + size rows to seed for a company. Color names are stored as the
  * English base name; the UI translates them per-locale via the seed display-name
  * catalog (translateSeedDisplayName), so "Black" renders as 黑色 in zh, etc.
@@ -364,7 +393,8 @@ export function styleReferenceRows(language?: string) {
   return {
     colors: STYLE_COLORS.map((c) => ({
       colorCode: c.code,
-      colorName: c.names.en ?? c.code
+      colorName: c.names.en ?? c.code,
+      color: STYLE_COLOR_DEFAULT_HEX[c.code] ?? null
     })),
     // `index` is the canonical apparel order (XS→3XL, OS last) persisted as
     // `sortOrder` so downstream reads don't fall back to alphabetical.

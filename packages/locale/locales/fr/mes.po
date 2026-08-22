@@ -941,6 +941,9 @@ msgstr "Échec de l'ajout"
 msgid "Failed to add spare part"
 msgstr "Échec de l'ajout de pièce de rechange"
 
+msgid "Failed to apply per-color method to master"
+msgstr "Échec de l'application de la méthode par couleur à l'ordre principal"
+
 msgid "Failed to assign"
 msgstr "Échec de l'attribution"
 
@@ -3821,6 +3824,9 @@ msgstr "Échec de la mise à jour de l'unité de mesure"
 msgid "Failed to update user permissions"
 msgstr "Échec de la mise à jour des permissions utilisateur"
 
+msgid "Failed to update variant scope"
+msgstr "Échec de la mise à jour de la portée de la variante"
+
 msgid "Failed to update variants quantity"
 msgstr "Échec de la mise à jour de la quantité des variantes"
 
@@ -4547,11 +4553,17 @@ msgstr "Aucune maintenance planifiée pour aujourd'hui"
 msgid "No master work orders"
 msgstr "Aucun ordre de production maître"
 
+msgid "No material id"
+msgstr "Aucun identifiant de matériau"
+
 msgid "No materials"
 msgstr "Aucun matériau"
 
 msgid "No open jobs"
 msgstr "Aucun poste ouvert"
+
+msgid "No operation id"
+msgstr "Aucun identifiant d'opération"
 
 msgid "No operators"
 msgstr "Aucun opérateur"

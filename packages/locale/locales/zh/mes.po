@@ -942,6 +942,9 @@ msgstr "添加失败"
 msgid "Failed to add spare part"
 msgstr "添加备件失败"
 
+msgid "Failed to apply per-color method to master"
+msgstr "为主工单应用分色方法失败"
+
 msgid "Failed to assign"
 msgstr "分配失败"
 
@@ -3822,6 +3825,9 @@ msgstr "更新计量单位失败"
 msgid "Failed to update user permissions"
 msgstr "更新用户权限失败"
 
+msgid "Failed to update variant scope"
+msgstr "更新适用款色失败"
+
 msgid "Failed to update variants quantity"
 msgstr "更新规格数量失败"
 
@@ -4548,11 +4554,17 @@ msgstr "今天没有计划的维护"
 msgid "No master work orders"
 msgstr "没有主工单"
 
+msgid "No material id"
+msgstr "缺少材料 ID"
+
 msgid "No materials"
 msgstr "无材料"
 
 msgid "No open jobs"
 msgstr "没有未完成的工作订单"
+
+msgid "No operation id"
+msgstr "缺少操作 ID"
 
 msgid "No operators"
 msgstr "无操作员"

@@ -941,6 +941,9 @@ msgstr "Nie udało się dodać wpisu"
 msgid "Failed to add spare part"
 msgstr "Nie udało się dodać zastępczej części"
 
+msgid "Failed to apply per-color method to master"
+msgstr "Nie udało się zastosować metody dla koloru do zlecenia głównego"
+
 msgid "Failed to assign"
 msgstr "Nie można przypisać"
 
@@ -3821,6 +3824,9 @@ msgstr "Nie udało się zaktualizować jednostki miary"
 msgid "Failed to update user permissions"
 msgstr "Nie udało się zaktualizować uprawnień użytkownika"
 
+msgid "Failed to update variant scope"
+msgstr "Nie udało się zaktualizować zakresu wariantu"
+
 msgid "Failed to update variants quantity"
 msgstr "Nie udało się zaktualizować ilości wariantów"
 
@@ -4547,11 +4553,17 @@ msgstr "Brak zaplanowanego utrzymania ruchu na dziś"
 msgid "No master work orders"
 msgstr "Brak głównych zadań roboczych"
 
+msgid "No material id"
+msgstr "Brak identyfikatora materiału"
+
 msgid "No materials"
 msgstr "Brak materiałów"
 
 msgid "No open jobs"
 msgstr "Brak otwartych zadań"
+
+msgid "No operation id"
+msgstr "Brak identyfikatora operacji"
 
 msgid "No operators"
 msgstr "Brak operatorów"

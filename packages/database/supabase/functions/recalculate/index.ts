@@ -122,8 +122,21 @@ serve(async (req: Request) => {
           throw new Error("Method tree not found");
         }
 
+        // Same per-color durability as jobRequirements: if this recompute walks
+        // a master's root make method, its color-scoped root materials must stay
+        // scaled by plannedQtyForScope, not collapse to the job quantity. Null
+        // for non-master jobs / sub-make-methods → original behavior.
+        const variantCtx = await loadVariantScalingContext(
+          client,
+          jobMakeMethod.data.jobId,
+          companyId
+        );
+
         await db.transaction().execute(async (trx) => {
-          await updateJobQuantities(trx, jobMethodTree, parentQuantity);
+          await updateJobQuantities(trx, jobMethodTree, parentQuantity, {
+            parentIsRoot: false,
+            variantCtx,
+          });
         });
 
         break;
@@ -161,13 +174,26 @@ serve(async (req: Request) => {
           throw new Error("Method tree not found");
         }
 
+        // Per-color BOM (Apply on Variants) durability: a garment master
+        // cutting job carries jobVariantQuantity rows (the per-color plan). Its
+        // color-scoped root materials must stay scaled by each color's planned
+        // qty (matching get-method) instead of collapsing to
+        // perUnit × job.quantity. A bundle/plain job has no jobVariantQuantity
+        // → null context → quantities computed exactly as before.
+        const variantCtx = await loadVariantScalingContext(
+          client,
+          jobId,
+          companyId
+        );
+
         await db.transaction().execute(async (trx) => {
           // Use job.quantity as the root's target quantity (not productionQuantity)
           // The item's scrap percentage will be applied within updateJobQuantities
           await updateJobQuantities(
             trx,
             jobMethodTree,
-            job.data?.quantity ?? 1
+            job.data?.quantity ?? 1,
+            { parentIsRoot: false, variantCtx }
           );
         });
 
@@ -196,17 +222,109 @@ serve(async (req: Request) => {
   }
 });
 
+type VariantScalingContext = {
+  /** Summed planned qty of every planned variant whose attributes ⊇ the scope. */
+  plannedQtyForScope: (applyOn: string[]) => number;
+  /** jobMaterial.id → its per-color scope (attribute value ids), [] if unscoped. */
+  scopeById: Map<string, string[]>;
+};
+
+// Build the per-color scaling context for a job, or null when the job is not a
+// garment master (no jobVariantQuantity rows). Mirrors the setup get-method uses
+// so the two agree on how a master's color-scoped materials scale.
+const loadVariantScalingContext = async (
+  client: Awaited<ReturnType<typeof requirePermissions>>,
+  jobId: string,
+  companyId: string
+): Promise<VariantScalingContext | null> => {
+  const jvq = await client
+    .from("jobVariantQuantity")
+    .select("variantItemId, quantity")
+    .eq("jobId", jobId)
+    .eq("companyId", companyId);
+  const jvqRows = (jvq.data ?? []) as Array<{
+    variantItemId: string;
+    quantity: number;
+  }>;
+  if (jvqRows.length === 0) return null;
+
+  const variantIds = [
+    ...new Set(jvqRows.map((r) => r.variantItemId).filter(Boolean)),
+  ];
+  const variants = variantIds.length
+    ? await client
+        .from("itemVariant")
+        .select("variantItemId, itemVariantAttribute(attributeValueId)")
+        .in("variantItemId", variantIds)
+        .eq("companyId", companyId)
+    : { data: [] };
+  const valuesByVariant = new Map<string, Set<string>>();
+  for (const v of (variants.data ?? []) as Array<{
+    variantItemId: string;
+    itemVariantAttribute: Array<{ attributeValueId: string }>;
+  }>) {
+    valuesByVariant.set(
+      v.variantItemId,
+      new Set((v.itemVariantAttribute ?? []).map((a) => a.attributeValueId))
+    );
+  }
+  const variantPlans = jvqRows.map((r) => ({
+    valueIds: valuesByVariant.get(r.variantItemId) ?? new Set<string>(),
+    quantity: Number(r.quantity) || 0,
+  }));
+  const plannedQtyForScope = (applyOn: string[]): number =>
+    variantPlans.reduce(
+      (sum, p) =>
+        applyOn.every((id) => p.valueIds.has(id)) ? sum + p.quantity : sum,
+      0
+    );
+
+  const materials = await client
+    .from("jobMaterial")
+    .select("id, applyOnVariantValueIds")
+    .eq("jobId", jobId)
+    .eq("companyId", companyId);
+  const scopeById = new Map<string, string[]>();
+  for (const m of (materials.data ?? []) as Array<{
+    id: string;
+    applyOnVariantValueIds: unknown;
+  }>) {
+    scopeById.set(
+      m.id,
+      Array.isArray(m.applyOnVariantValueIds)
+        ? (m.applyOnVariantValueIds as string[])
+        : []
+    );
+  }
+
+  return { plannedQtyForScope, scopeById };
+};
+
 const updateJobQuantities = async (
   trx: Transaction<DB>,
   tree: JobMethodTreeItem,
-  parentEstimatedQuantity: number = 1
+  parentEstimatedQuantity: number = 1,
+  opts?: { parentIsRoot?: boolean; variantCtx?: VariantScalingContext | null }
 ) => {
+  // Master per-color scaling: when this node is a DIRECT child of the root (a
+  // top-level style BOM line) on a master job, and it carries a per-color scope,
+  // scale it by that color's planned qty instead of the whole job quantity —
+  // mirroring get-method. Shared lines (empty scope) and non-master jobs (no
+  // variantCtx) fall through to the original job-quantity math untouched.
+  let effectiveParentQuantity = parentEstimatedQuantity;
+  if (opts?.parentIsRoot && opts.variantCtx && !tree.data.isRoot) {
+    const scope = opts.variantCtx.scopeById.get(tree.id) ?? [];
+    if (scope.length > 0) {
+      effectiveParentQuantity = opts.variantCtx.plannedQtyForScope(scope);
+    }
+  }
+
   // Target quantity for this node:
   // - For root: targetQuantity = parentEstimatedQuantity (which is productionQuantity from job)
-  // - For children: targetQuantity = parentEstimatedQuantity * quantity (quantity per parent)
+  // - For children: targetQuantity = effectiveParentQuantity * quantity (quantity per parent)
   const targetQuantity = tree.data.isRoot
     ? parentEstimatedQuantity
-    : tree.data.quantity * parentEstimatedQuantity;
+    : tree.data.quantity * effectiveParentQuantity;
 
   // Get scrap percentage from jobMaterial (stored at job creation time)
   // Fall back to itemReplenishment if not stored
@@ -294,7 +412,10 @@ const updateJobQuantities = async (
   // Children use the total for their target calculation to properly cascade scrap
   if (tree.children) {
     for (const child of tree.children) {
-      await updateJobQuantities(trx, child, totalWithScrap);
+      await updateJobQuantities(trx, child, totalWithScrap, {
+        parentIsRoot: tree.data.isRoot,
+        variantCtx: opts?.variantCtx ?? null,
+      });
     }
   }
 };

@@ -4,7 +4,8 @@ import { zfd } from "zod-form-data";
 const itemAttributeValueInputSchema = z.object({
   id: z.string().optional(),
   code: z.string().min(1, { message: "Code is required" }).max(50),
-  name: z.string().min(1, { message: "Name is required" }).max(255)
+  name: z.string().min(1, { message: "Name is required" }).max(255),
+  color: z.string().nullish()
 });
 
 export const itemAttributeValidator = z.object({
@@ -37,7 +38,9 @@ export const itemAttributeValueValidator = z.object({
   attributeId: z.string().min(1, { message: "Attribute is required" }),
   code: z.string().min(1, { message: "Code is required" }).max(50),
   name: z.string().min(1, { message: "Name is required" }).max(255),
-  sortOrder: zfd.numeric(z.number().int().optional())
+  sortOrder: zfd.numeric(z.number().int().optional()),
+  // Optional display color (hex). Used as the per-color BOM chip color.
+  color: zfd.text(z.string().optional())
 });
 
 export const itemAttributeSetValidator = z.object({

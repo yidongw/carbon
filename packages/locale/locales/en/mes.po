@@ -941,6 +941,9 @@ msgstr "Failed to add entry"
 msgid "Failed to add spare part"
 msgstr "Failed to add spare part"
 
+msgid "Failed to apply per-color method to master"
+msgstr "Failed to apply per-color method to master"
+
 msgid "Failed to assign"
 msgstr "Failed to assign"
 
@@ -3821,6 +3824,9 @@ msgstr "Failed to update unit of measure"
 msgid "Failed to update user permissions"
 msgstr "Failed to update user permissions"
 
+msgid "Failed to update variant scope"
+msgstr "Failed to update variant scope"
+
 msgid "Failed to update variants quantity"
 msgstr "Failed to update variants quantity"
 
@@ -4547,11 +4553,17 @@ msgstr "No maintenance scheduled for today"
 msgid "No master work orders"
 msgstr "No master work orders"
 
+msgid "No material id"
+msgstr "No material id"
+
 msgid "No materials"
 msgstr "No materials"
 
 msgid "No open jobs"
 msgstr "No open jobs"
+
+msgid "No operation id"
+msgstr "No operation id"
 
 msgid "No operators"
 msgstr "No operators"

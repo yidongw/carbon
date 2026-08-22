@@ -941,6 +941,9 @@ msgstr "Fallito nell'aggiunta della voce"
 msgid "Failed to add spare part"
 msgstr "Fallito nell'aggiunta del componente di riserva"
 
+msgid "Failed to apply per-color method to master"
+msgstr "Impossibile applicare il metodo per colore all'ordine principale"
+
 msgid "Failed to assign"
 msgstr "Fallito l'assegnazione"
 
@@ -3821,6 +3824,9 @@ msgstr "Fallito aggiornamentounità di misura"
 msgid "Failed to update user permissions"
 msgstr "Fallito aggiornamento dei permessi utente"
 
+msgid "Failed to update variant scope"
+msgstr "Impossibile aggiornare l'ambito della variante"
+
 msgid "Failed to update variants quantity"
 msgstr "Fallito aggiornamento quantità varianti"
 
@@ -4547,11 +4553,17 @@ msgstr "Nessuna manutenzione programmata per oggi"
 msgid "No master work orders"
 msgstr "NESSUN PIANO DI PRODUZIONE MASTER"
 
+msgid "No material id"
+msgstr "Nessun ID materiale"
+
 msgid "No materials"
 msgstr "Nessun materiale"
 
 msgid "No open jobs"
 msgstr "Nessun incarico aperto"
+
+msgid "No operation id"
+msgstr "Nessun ID operazione"
 
 msgid "No operators"
 msgstr "Nessun operatore"

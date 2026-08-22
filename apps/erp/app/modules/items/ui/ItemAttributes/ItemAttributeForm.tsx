@@ -23,6 +23,8 @@ type AttributeValueRow = {
   id?: string;
   code: string;
   name: string;
+  /** Optional display color (hex) used for per-color BOM chips. */
+  color?: string | null;
   /** System catalog rows cannot be removed or reordered. */
   isSystem?: boolean;
 };
@@ -57,6 +59,7 @@ const ItemAttributeForm = ({
       id: v.id,
       code: v.code,
       name: v.name,
+      color: v.color ?? null,
       isSystem: v.isSystem ?? false
     }))
   );
@@ -101,8 +104,15 @@ const ItemAttributeForm = ({
       return next;
     });
 
-  const valuesPayload = selected.map(({ id, code, name }) =>
-    id ? { id, code, name } : { code, name }
+  const setColor = (index: number, color: string) =>
+    setSelected((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, color } : row))
+    );
+
+  const valuesPayload = selected.map(({ id, code, name, color }) =>
+    id
+      ? { id, code, name, color: color ?? null }
+      : { code, name, color: color ?? null }
   );
 
   return (
@@ -152,6 +162,30 @@ const ItemAttributeForm = ({
                         ? ` — ${row.name}`
                         : ""}
                     </span>
+                    <label
+                      className="relative h-6 w-6 shrink-0 cursor-pointer overflow-hidden rounded border border-border"
+                      title={row.color ? t`Chip color` : t`Set chip color`}
+                    >
+                      <span
+                        className="block h-full w-full"
+                        style={
+                          row.color
+                            ? { backgroundColor: row.color }
+                            : {
+                                backgroundImage:
+                                  "repeating-linear-gradient(45deg, #cbd5e1 0 2px, transparent 2px 5px)"
+                              }
+                        }
+                      />
+                      <input
+                        type="color"
+                        aria-label={t`Color`}
+                        disabled={isDisabled || row.isSystem}
+                        value={row.color ?? "#000000"}
+                        onChange={(e) => setColor(index, e.target.value)}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+                      />
+                    </label>
                     <IconButton
                       aria-label={t`Move up`}
                       variant="ghost"

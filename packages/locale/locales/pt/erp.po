@@ -773,6 +773,12 @@ msgstr "Aplica-se a todos"
 msgid "Applies to all work centers"
 msgstr "Aplica-se a todos os centros de trabalho"
 
+msgid "Applies to colors"
+msgstr "Aplica-se às cores"
+
+msgid "Applies to colors (none = shared)"
+msgstr "Aplica-se às cores (nenhuma = compartilhado)"
+
 msgid "Apply"
 msgstr "Aplicar"
 
@@ -1915,6 +1921,9 @@ msgstr "Chat"
 
 msgid "Check your email"
 msgstr "Verifique seu email"
+
+msgid "Chip color"
+msgstr "Cor da etiqueta"
 
 msgid "Choose a batch number"
 msgstr "Escolha um número de lote"
@@ -4683,6 +4692,9 @@ msgstr "Falhou ao adicionar entrada"
 
 msgid "Failed to add spare part"
 msgstr "Falhou ao adicionar peça de reposição"
+
+msgid "Failed to apply per-color method to master"
+msgstr "Falha ao aplicar o método por cor à ordem mestre"
 
 msgid "Failed to assign"
 msgstr "Falhou na atribuição"
@@ -7819,6 +7831,9 @@ msgstr "Falhou ao atualizar unidade de medida"
 msgid "Failed to update user permissions"
 msgstr "Falhou ao atualizar permissões do usuário"
 
+msgid "Failed to update variant scope"
+msgstr "Falha ao atualizar o escopo da variante"
+
 msgid "Failed to update variants quantity"
 msgstr "Falhou ao atualizar a quantidade das variantes"
 
@@ -10546,11 +10561,17 @@ msgstr "Sem partidas"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "Nenhuma correspondência para \"{query}\". Tente um termo de pesquisa diferente."
 
+msgid "No material id"
+msgstr "Nenhum ID de material"
+
 msgid "No new notifications"
 msgstr "Sem notificações novas"
 
 msgid "No notes"
 msgstr "Sem notas"
+
+msgid "No operation id"
+msgstr "Nenhum ID de operação"
 
 msgid "No operations require picking at this location"
 msgstr "Nenhuma operação requer picking neste local"
@@ -13455,6 +13476,9 @@ msgstr "Conta de cobrança de serviço de débito"
 msgid "Session mismatch"
 msgstr "Desconexão não correspondente"
 
+msgid "Set chip color"
+msgstr "Definir cor da etiqueta"
+
 msgid "Set Clock Out"
 msgstr "Definir Saída"
 
@@ -13533,6 +13557,9 @@ msgstr "Compartilhar Cotação"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "Compartilhe este PIN com o operador para que eles possam se autenticar nos terminais do MES."
+
+msgid "Shared"
+msgstr "Compartilhado"
 
 msgid "Shared Sections"
 msgstr "Seções Compartilhadas"

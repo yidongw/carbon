@@ -773,6 +773,12 @@ msgstr "S'applique à tous"
 msgid "Applies to all work centers"
 msgstr "S'applique à tous les centres de travail"
 
+msgid "Applies to colors"
+msgstr "S'applique aux couleurs"
+
+msgid "Applies to colors (none = shared)"
+msgstr "S'applique aux couleurs (aucune = partagé)"
+
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -1915,6 +1921,9 @@ msgstr "Chat"
 
 msgid "Check your email"
 msgstr "Vérifiez votre email"
+
+msgid "Chip color"
+msgstr "Couleur de la pastille"
 
 msgid "Choose a batch number"
 msgstr "Choisissez un numéro de lot"
@@ -4683,6 +4692,9 @@ msgstr "Échec de l'ajout"
 
 msgid "Failed to add spare part"
 msgstr "Échec de l'ajout de pièce de rechange"
+
+msgid "Failed to apply per-color method to master"
+msgstr "Échec de l'application de la méthode par couleur à l'ordre principal"
 
 msgid "Failed to assign"
 msgstr "Échec de l'attribution"
@@ -7819,6 +7831,9 @@ msgstr "Échec de la mise à jour de l'unité de mesure"
 msgid "Failed to update user permissions"
 msgstr "Échec de la mise à jour des permissions utilisateur"
 
+msgid "Failed to update variant scope"
+msgstr "Échec de la mise à jour de la portée de la variante"
+
 msgid "Failed to update variants quantity"
 msgstr "Échec de la mise à jour de la quantité des variantes"
 
@@ -10546,11 +10561,17 @@ msgstr "Aucune correspondance"
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "Aucune correspondance pour « {query} ». Essayez un terme de recherche différent."
 
+msgid "No material id"
+msgstr "Aucun identifiant de matériau"
+
 msgid "No new notifications"
 msgstr "Aucune nouvelle notification"
 
 msgid "No notes"
 msgstr "Aucune note"
+
+msgid "No operation id"
+msgstr "Aucun identifiant d'opération"
 
 msgid "No operations require picking at this location"
 msgstr "Aucune opération ne nécessite le picking à cette localisation"
@@ -13455,6 +13476,9 @@ msgstr "Compte de frais de service"
 msgid "Session mismatch"
 msgstr "Échec de la session"
 
+msgid "Set chip color"
+msgstr "Définir la couleur de la pastille"
+
 msgid "Set Clock Out"
 msgstr "Définir l'heure de départ"
 
@@ -13533,6 +13557,9 @@ msgstr "Partager le devis"
 
 msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "Partagez ce PIN avec l'opérateur pour qu'il puisse s'authentifier aux terminaux MES."
+
+msgid "Shared"
+msgstr "Partagé"
 
 msgid "Shared Sections"
 msgstr "Sections partagées"
