@@ -29,9 +29,7 @@ function BundleTopbarLeft({
 
   return (
     <DetailTopbarContent>
-      <DetailTopbarId to={path.to.bundleWorkOrder(bundleWorkOrderId)}>
-        {readableId}
-      </DetailTopbarId>
+      <DetailTopbarId>{readableId}</DetailTopbarId>
       <Copy text={readableId} />
       <JobStatus iconOnly status={status as (typeof jobStatus)[number]} />
     </DetailTopbarContent>
