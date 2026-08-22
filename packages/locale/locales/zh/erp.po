@@ -1838,15 +1838,6 @@ msgstr "没有物品ID无法上传到产品桶中"
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "在3D查看器中显示的模型画布"
 
-msgid "Carbon client is not available"
-msgstr "Carbon 客户端不可用"
-
-msgid "Carbon client not available"
-msgstr "Carbon 客户端不可用"
-
-msgid "Carbon client not found"
-msgstr "未找到 Carbon 客户端"
-
 msgid "Carbon column"
 msgstr "Carbon 列"
 
@@ -6117,9 +6108,6 @@ msgstr "获取用户权限失败"
 
 msgid "Failed to get WeChat user info"
 msgstr "获取微信用户信息失败"
-
-msgid "Failed to initialize Carbon client"
-msgstr "初始化Carbon客户端失败"
 
 msgid "Failed to insert account"
 msgstr "插入账号失败"

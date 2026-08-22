@@ -73,7 +73,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
     }[] = [];
 
     if (!carbon) {
-      toast.error(t`Carbon client is not available`);
+      toast.error(t`Not connected. Please refresh and try again.`);
       return;
     }
 

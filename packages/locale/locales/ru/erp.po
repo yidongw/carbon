@@ -1838,15 +1838,6 @@ msgstr "Невозможно загрузить в корзину деталей
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Канva, отображающая модель в 3D просмотровке"
 
-msgid "Carbon client is not available"
-msgstr "Клиент Carbon недоступен"
-
-msgid "Carbon client not available"
-msgstr "Клиент Carbon недоступен"
-
-msgid "Carbon client not found"
-msgstr "Клиент Carbon не найден"
-
 msgid "Carbon column"
 msgstr "Столбец Carbon"
 
@@ -6117,9 +6108,6 @@ msgstr "Не удалось получить разрешения пользов
 
 msgid "Failed to get WeChat user info"
 msgstr "Не удалось получить информацию о пользователе WeChat"
-
-msgid "Failed to initialize Carbon client"
-msgstr "Не удалось инициализировать клиент Carbon"
 
 msgid "Failed to insert account"
 msgstr "Не удалось добавить учетную запись"

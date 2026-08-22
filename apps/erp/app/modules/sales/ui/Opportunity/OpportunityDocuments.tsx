@@ -420,7 +420,7 @@ export const useOpportunityDocuments = ({
   const upload = useCallback(
     async (files: File[]) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Not connected. Please refresh and try again.`);
         return;
       }
 

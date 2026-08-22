@@ -1838,15 +1838,6 @@ msgstr "Não é possível fazer upload para o bucket de peças sem ID do item"
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Tela exibindo o modelo no Visualizador 3D"
 
-msgid "Carbon client is not available"
-msgstr "Cliente Carbon não está disponível"
-
-msgid "Carbon client not available"
-msgstr "Cliente Carbon não disponível"
-
-msgid "Carbon client not found"
-msgstr "Cliente Carbon não encontrado"
-
 msgid "Carbon column"
 msgstr "Coluna Carbon"
 
@@ -6117,9 +6108,6 @@ msgstr "Falhou ao obter permissões do usuário"
 
 msgid "Failed to get WeChat user info"
 msgstr "Falhou ao obter informações do usuário do WeChat"
-
-msgid "Failed to initialize Carbon client"
-msgstr "Falha ao inicializar cliente Carbon"
 
 msgid "Failed to insert account"
 msgstr "Falhou ao inserir conta"
