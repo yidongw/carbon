@@ -800,9 +800,12 @@ export async function getItemAttributes(
   const db = client as any;
   let query = db
     .from("itemAttribute")
-    .select("*, itemAttributeValue(id, code, name, sortOrder, companyId)", {
-      count: "exact"
-    })
+    .select(
+      "*, itemAttributeValue(id, code, name, sortOrder, companyId, color)",
+      {
+        count: "exact"
+      }
+    )
     .or(`companyId.eq.${companyId},companyId.is.null`)
     .order("sortOrder", { ascending: true })
     .order("code", { ascending: true });
@@ -856,7 +859,9 @@ export async function getItemAttributes(
 export async function getItemAttribute(client: Db, id: string) {
   return (client as any)
     .from("itemAttribute")
-    .select("*, itemAttributeValue(id, code, name, sortOrder, companyId)")
+    .select(
+      "*, itemAttributeValue(id, code, name, sortOrder, companyId, color)"
+    )
     .eq("id", id)
     .single();
 }
@@ -875,6 +880,7 @@ type ItemAttributeValueInput = {
   id?: string;
   code: string;
   name: string;
+  color?: string | null;
 };
 
 /**
@@ -1030,6 +1036,7 @@ async function syncItemAttributeValues(
           code: value.code,
           name: value.name,
           sortOrder,
+          color: value.color ?? null,
           updatedBy: userId,
           updatedAt: new Date().toISOString()
         })
@@ -1047,6 +1054,7 @@ async function syncItemAttributeValues(
           code: value.code,
           name: value.name,
           sortOrder,
+          color: value.color ?? null,
           companyId: tenantCompanyId,
           createdBy: userId
         }
@@ -1257,6 +1265,7 @@ export async function upsertItemAttributeValue(
         code: string;
         name: string;
         sortOrder?: number;
+        color?: string | null;
         companyId: string;
         createdBy: string;
       }
@@ -1266,6 +1275,7 @@ export async function upsertItemAttributeValue(
         code: string;
         name: string;
         sortOrder?: number;
+        color?: string | null;
         updatedBy: string;
       }
 ) {
@@ -1313,6 +1323,7 @@ export async function upsertItemAttributeValue(
         code: payload.code,
         name: payload.name,
         sortOrder: payload.sortOrder ?? 100,
+        color: payload.color ?? null,
         updatedBy: payload.updatedBy,
         updatedAt: new Date().toISOString()
       })
@@ -1328,6 +1339,7 @@ export async function upsertItemAttributeValue(
         code: payload.code,
         name: payload.name,
         sortOrder: payload.sortOrder ?? 100,
+        color: payload.color ?? null,
         companyId: payload.companyId,
         createdBy: payload.createdBy
       }
@@ -1821,6 +1833,121 @@ export async function getItemAttributeSelectionsForItem(
     return {
       data: { attributeSetId: null, selections: {} },
       error: toError(error, "Failed to load item attribute selections")
+    };
+  }
+}
+
+/**
+ * Labeled variant attribute-value options for the "Apply on Variants" picker on
+ * BOM lines / operations. Returns the values ENABLED on the given (make-method
+ * parent) item, each labeled "<Attribute>: <Value>" and ordered by catalog
+ * sortOrder. Empty when the item has no variant attributes.
+ */
+export async function getVariantAttributeValueOptionsForItem(
+  client: Db,
+  args: { itemId: string; companyId: string }
+): Promise<{
+  data: Array<{
+    value: string;
+    label: string;
+    attributeId: string;
+    color: string | null;
+  }>;
+  error: Error | null;
+}> {
+  const db = client as any;
+  try {
+    const { data: rows, error: selErr } = await db
+      .from("itemAttributeSelection")
+      .select("attributeId, attributeValueId")
+      .eq("itemId", args.itemId)
+      .eq("companyId", args.companyId);
+    if (selErr) throw selErr;
+    if (!rows?.length) return { data: [], error: null };
+
+    const valueIds = [
+      ...new Set(
+        (rows as Array<{ attributeValueId: string }>).map(
+          (r) => r.attributeValueId
+        )
+      )
+    ];
+    const attributeIds = [
+      ...new Set(
+        (rows as Array<{ attributeId: string }>).map((r) => r.attributeId)
+      )
+    ];
+
+    const [valuesRes, attrsRes] = await Promise.all([
+      db
+        .from("itemAttributeValue")
+        .select("id, name, code, sortOrder, attributeId, color")
+        .in("id", valueIds),
+      db.from("itemAttribute").select("id, name").in("id", attributeIds)
+    ]);
+
+    const attrName = new Map<string, string>(
+      ((attrsRes.data ?? []) as Array<{ id: string; name: string }>).map(
+        (a) => [a.id, a.name] as const
+      )
+    );
+    const valueMeta = new Map<
+      string,
+      {
+        name: string;
+        code: string;
+        sortOrder: number;
+        attributeId: string;
+        color: string | null;
+      }
+    >();
+    for (const v of (valuesRes.data ?? []) as Array<{
+      id: string;
+      name: string | null;
+      code: string | null;
+      sortOrder: number | null;
+      attributeId: string;
+      color: string | null;
+    }>) {
+      valueMeta.set(v.id, {
+        name: v.name ?? v.code ?? v.id,
+        code: v.code ?? "",
+        sortOrder: v.sortOrder ?? 100,
+        attributeId: v.attributeId,
+        color: v.color ?? null
+      });
+    }
+
+    const options = valueIds
+      .map((id) => {
+        const meta = valueMeta.get(id);
+        const attributeId = meta?.attributeId ?? "";
+        return {
+          value: id,
+          label: `${attrName.get(attributeId) ?? ""}: ${meta?.name ?? id}`,
+          attributeId,
+          color: meta?.color ?? null,
+          sortOrder: meta?.sortOrder ?? 100,
+          code: meta?.code ?? ""
+        };
+      })
+      .sort((a, b) =>
+        a.sortOrder !== b.sortOrder
+          ? a.sortOrder - b.sortOrder
+          : a.code.localeCompare(b.code)
+      )
+      .map(({ value, label, attributeId, color }) => ({
+        value,
+        label,
+        attributeId,
+        color
+      }));
+
+    return { data: options, error: null };
+  } catch (error) {
+    return {
+      data: [],
+      error: toError(error, "Failed to load variant attribute value options")
     };
   }
 }

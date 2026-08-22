@@ -52,6 +52,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       name: string;
       sortOrder: number;
       companyId: string | null;
+      color: string | null;
     }
   >();
   for (const row of (attribute.data.itemAttributeValue ?? []) as Array<{
@@ -60,6 +61,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     name: string;
     sortOrder: number;
     companyId: string | null;
+    color: string | null;
   }>) {
     // Only include system + this company's values
     if (row.companyId !== null && row.companyId !== companyId) continue;

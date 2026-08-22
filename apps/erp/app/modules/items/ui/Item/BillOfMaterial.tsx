@@ -19,6 +19,9 @@ import {
   HStack,
   IconButton,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -29,13 +32,15 @@ import {
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useStore } from "@nanostores/react";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { nanoid } from "nanoid";
-import type { Dispatch, SetStateAction } from "react";
+import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuArrowLeft,
+  LuCheck,
   LuChevronDown,
   LuChevronRight,
   LuCog,
@@ -101,6 +106,7 @@ import {
 } from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
+import { $bomVariantFilter } from "~/stores/bom-variant-filter";
 import type { ConfigurationRuleBindings } from "../../configurationRuleBindings";
 import type { methodOperationValidator } from "../../items.models";
 import { methodMaterialValidator } from "../../items.models";
@@ -167,6 +173,179 @@ const initialMethodMaterial: Omit<Material, "makeMethodId" | "order"> & {
   unitOfMeasureCode: "EA",
   storageUnitIds: {}
 };
+
+// Read the jsonb applyOnVariantValueIds off a material row (types.ts lags the
+// migration, so it arrives untyped) into a string[].
+export function readApplyOnVariantValueIds(row: unknown): string[] {
+  const raw = (row as { applyOnVariantValueIds?: unknown } | null)
+    ?.applyOnVariantValueIds;
+  const coerce = (arr: unknown[]) =>
+    arr.filter((v): v is string => typeof v === "string");
+  if (Array.isArray(raw)) return coerce(raw);
+  if (typeof raw === "string") {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? coerce(parsed) : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+export type VariantOption = {
+  value: string;
+  label: string;
+  attributeId: string;
+  color?: string | null;
+};
+
+// Black text on light fills, white on dark — readable label over any hex.
+function contrastText(hex: string): string {
+  const h = hex.replace("#", "").trim();
+  if (h.length < 6) return "#ffffff";
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.6 ? "#000000" : "#ffffff";
+}
+
+// Chip appearance for an attribute value: its assigned hex color when set
+// (contrast-aware label), otherwise neutral grey. Colors are assigned per value
+// in the attribute editor; unset = grey.
+export function variantChipStyle(opts?: { color?: string | null }): {
+  className: string;
+  style?: CSSProperties;
+} {
+  if (opts?.color) {
+    return {
+      className: "",
+      style: { backgroundColor: opts.color, color: contrastText(opts.color) }
+    };
+  }
+  return { className: "bg-muted text-muted-foreground" };
+}
+
+// Per-row "Apply on Variants" badge, reused for BOM materials and BOP
+// operations. Click to scope a row to specific attribute values (e.g. colors);
+// empty = shared (applies to all). Saves inline to `actionPath` so it never
+// rides the row's own form.
+export function VariantScopeBadge({
+  actionPath,
+  valueIds,
+  options,
+  isReadOnly
+}: {
+  actionPath: string;
+  valueIds: string[];
+  options: VariantOption[];
+  isReadOnly: boolean;
+}) {
+  const fetcher = useFetcher();
+  const { t } = useLingui();
+  const shortLabel = (o: VariantOption) => o.label.split(": ").pop() ?? o.label;
+
+  // Optimistically reflect an in-flight change.
+  const inFlight = fetcher.formData?.get("applyOnVariantValueIds");
+  const effective: string[] = (() => {
+    if (typeof inFlight === "string") {
+      try {
+        const p = JSON.parse(inFlight);
+        return Array.isArray(p) ? (p as string[]) : valueIds;
+      } catch {
+        return valueIds;
+      }
+    }
+    return valueIds;
+  })();
+
+  const submit = (next: string[]) =>
+    fetcher.submit(
+      { applyOnVariantValueIds: JSON.stringify(next) },
+      { method: "post", action: actionPath }
+    );
+  const toggle = (id: string) =>
+    submit(
+      effective.includes(id)
+        ? effective.filter((v) => v !== id)
+        : [...effective, id]
+    );
+
+  const labelById = new Map(options.map((o) => [o.value, shortLabel(o)]));
+  const colorById = new Map(options.map((o) => [o.value, o.color ?? null]));
+
+  const chips =
+    effective.length === 0 ? (
+      <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+        <Trans>Shared</Trans>
+      </span>
+    ) : (
+      <span className="flex flex-wrap items-center justify-end gap-1">
+        {effective.map((id) => {
+          const cs = variantChipStyle({ color: colorById.get(id) });
+          return (
+            <span
+              key={id}
+              className={cn(
+                "rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap",
+                cs.className
+              )}
+              style={cs.style}
+            >
+              {labelById.get(id) ?? id}
+            </span>
+          );
+        })}
+      </span>
+    );
+
+  if (isReadOnly || options.length === 0) return chips;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="cursor-pointer"
+          title={t`Applies to colors`}
+        >
+          {chips}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-56 p-1">
+        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+          <Trans>Applies to colors (none = shared)</Trans>
+        </div>
+        {options.map((o) => {
+          const checked = effective.includes(o.value);
+          return (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => toggle(o.value)}
+              className="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
+            >
+              <span className="flex items-center gap-2">
+                {(() => {
+                  const cs = variantChipStyle({ color: o.color });
+                  return (
+                    <span
+                      className={cn("h-2.5 w-2.5 rounded-full", cs.className)}
+                      style={cs.style}
+                    />
+                  );
+                })()}
+                {shortLabel(o)}
+              </span>
+              {checked && <LuCheck className="h-4 w-4 text-emerald-600" />}
+            </button>
+          );
+        })}
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 const BillOfMaterial = ({
   methodBindings,
@@ -250,14 +429,67 @@ const BillOfMaterial = ({
     configurationRules?.map((rule) => [rule.field, rule]) ?? []
   );
 
+  // "Apply on Variants": all attribute values for this style. Loaded before the
+  // rows so each row can render its scope chip in the right-hand details column.
+  const variantOptionsFetcher = useFetcher<{ data: VariantOption[] }>();
+  useEffect(() => {
+    if (makeMethod.itemId) {
+      variantOptionsFetcher.load(
+        `/api/items/${makeMethod.itemId}/variant-attribute-values`
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [makeMethod.itemId]);
+  const allVariantOptions: VariantOption[] =
+    variantOptionsFetcher.data?.data ?? [];
+
+  const renderVariantChip = (material: Material) =>
+    allVariantOptions.length > 0 &&
+    material.id &&
+    !temporaryItems[material.id] ? (
+      <VariantScopeBadge
+        actionPath={`/x/items/methods/material/apply-on-variants/${material.id}`}
+        valueIds={readApplyOnVariantValueIds(material)}
+        options={allVariantOptions}
+        isReadOnly={isReadOnly}
+      />
+    ) : null;
+
   const materials = makeItems(
     items,
     Array.from(materialsById.values()),
     orderState,
     checkedState,
     rulesByField,
-    replenishmentSystem
+    replenishmentSystem,
+    renderVariantChip
   ).sort((a, b) => a.data.order - b.data.order);
+
+  const assignedValueIds = new Set<string>();
+  materials.forEach((mi) =>
+    readApplyOnVariantValueIds(mi.data).forEach((v) => assignedValueIds.add(v))
+  );
+  const variantTabs = allVariantOptions.filter((o) =>
+    assignedValueIds.has(o.value)
+  );
+
+  // Shared with the left BoMExplorer so a color tab drives both panels.
+  const storeVariantFilter = useStore($bomVariantFilter);
+  const activeVariantTab = storeVariantFilter ?? "all";
+  const setActiveVariantTab = (value: string) =>
+    $bomVariantFilter.set(value === "all" ? null : value);
+  useEffect(() => () => $bomVariantFilter.set(null), []);
+  const effectiveVariantTab =
+    activeVariantTab !== "all" && assignedValueIds.has(activeVariantTab)
+      ? activeVariantTab
+      : "all";
+  const visibleMaterials =
+    effectiveVariantTab === "all"
+      ? materials
+      : materials.filter((mi) => {
+          const scope = readApplyOnVariantValueIds(mi.data);
+          return scope.length === 0 || scope.includes(effectiveVariantTab);
+        });
 
   const onToggleItem = (id: string) => {
     if (isReadOnly) return;
@@ -593,9 +825,47 @@ const BillOfMaterial = ({
         </CardAction>
       </HStack>
       <CardContent>
+        {variantTabs.length > 0 && (
+          <div className="mb-3 flex items-center gap-1 overflow-x-auto pb-1">
+            <button
+              type="button"
+              onClick={() => setActiveVariantTab("all")}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1 text-sm transition-colors",
+                effectiveVariantTab === "all"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              {t`All`}
+            </button>
+            {variantTabs.map((o) => {
+              const short = o.label.split(": ").pop() ?? o.label;
+              const active = effectiveVariantTab === o.value;
+              const cs = variantChipStyle({ color: o.color });
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => setActiveVariantTab(o.value)}
+                  className={cn(
+                    "shrink-0 rounded-full px-3 py-1 text-sm font-medium transition-all",
+                    cs.className,
+                    active
+                      ? "ring-2 ring-foreground/50 ring-inset"
+                      : "opacity-50 hover:opacity-100"
+                  )}
+                  style={cs.style}
+                >
+                  {short}
+                </button>
+              );
+            })}
+          </div>
+        )}
         <SortableList
           isReadOnly={isReadOnly}
-          items={materials}
+          items={visibleMaterials}
           onReorder={onReorder}
           onToggleItem={onToggleItem}
           onRemoveItem={onRemoveItem}
@@ -1314,7 +1584,8 @@ function makeItems(
   orderState: OrderState,
   checkedState: CheckedState,
   rulesByField?: Map<string, ConfigurationRule>,
-  replenishmentSystem?: string
+  replenishmentSystem?: string,
+  renderVariantChip?: (material: Material) => ReactNode
 ): ItemWithData[] {
   return materials.map((material) => {
     const order = material.id
@@ -1327,7 +1598,8 @@ function makeItems(
       order,
       checked,
       rulesByField,
-      replenishmentSystem
+      replenishmentSystem,
+      renderVariantChip
     );
   });
 }
@@ -1349,7 +1621,8 @@ function makeItem(
   order: number,
   checked: boolean,
   rulesByField?: Map<string, ConfigurationRule>,
-  replenishmentSystem?: string
+  replenishmentSystem?: string,
+  renderVariantChip?: (material: Material) => ReactNode
 ): ItemWithData {
   const hasRules = material.id
     ? materialHasRules(material.id, rulesByField)
@@ -1385,79 +1658,82 @@ function makeItem(
     ),
     checked,
     details: (
-      <HStack spacing={2}>
-        {["Batch", "Serial"].includes(
-          material.item?.itemTrackingType ?? ""
-        ) && (
+      <VStack spacing={1} className="items-end w-auto">
+        <HStack spacing={2}>
+          {["Batch", "Serial"].includes(
+            material.item?.itemTrackingType ?? ""
+          ) && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Badge variant="secondary">
+                  <TrackingTypeIcon
+                    type={material.item?.itemTrackingType ?? ""}
+                  />
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent>
+                {material.item.itemTrackingType === "Inventory" ? (
+                  <Trans>Inventory Tracking</Trans>
+                ) : material.item.itemTrackingType === "Non-Inventory" ? (
+                  <Trans>Non-Inventory Tracking</Trans>
+                ) : material.item.itemTrackingType === "Serial" ? (
+                  <Trans>Serial Tracking</Trans>
+                ) : (
+                  <Trans>Batch Tracking</Trans>
+                )}
+              </TooltipContent>
+            </Tooltip>
+          )}
+
           <Tooltip>
             <TooltipTrigger>
               <Badge variant="secondary">
-                <TrackingTypeIcon
-                  type={material.item?.itemTrackingType ?? ""}
-                />
+                <MethodIcon type={material.methodType} isKit={material.kit} />
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
-              {material.item.itemTrackingType === "Inventory" ? (
-                <Trans>Inventory Tracking</Trans>
-              ) : material.item.itemTrackingType === "Non-Inventory" ? (
-                <Trans>Non-Inventory Tracking</Trans>
-              ) : material.item.itemTrackingType === "Serial" ? (
-                <Trans>Serial Tracking</Trans>
+              {material.methodType === "Purchase to Order" ? (
+                <Trans>Purchase to Order</Trans>
+              ) : material.methodType === "Pull from Inventory" ? (
+                <Trans>Pull from Inventory</Trans>
               ) : (
-                <Trans>Batch Tracking</Trans>
+                <Trans>Make to Order</Trans>
               )}
             </TooltipContent>
           </Tooltip>
-        )}
 
-        <Tooltip>
-          <TooltipTrigger>
-            <Badge variant="secondary">
-              <MethodIcon type={material.methodType} isKit={material.kit} />
-            </Badge>
-          </TooltipTrigger>
-          <TooltipContent>
-            {material.methodType === "Purchase to Order" ? (
-              <Trans>Purchase to Order</Trans>
-            ) : material.methodType === "Pull from Inventory" ? (
-              <Trans>Pull from Inventory</Trans>
-            ) : (
-              <Trans>Make to Order</Trans>
-            )}
-          </TooltipContent>
-        </Tooltip>
+          {replenishmentSystem === "Buy and Make" && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Badge variant="secondary">
+                  <SourcingTypeIcon type={material.sourcingType} />
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent>{material.sourcingType}</TooltipContent>
+            </Tooltip>
+          )}
 
-        {replenishmentSystem === "Buy and Make" && (
+          <Badge variant="secondary">{material.quantity}</Badge>
+
           <Tooltip>
             <TooltipTrigger>
               <Badge variant="secondary">
-                <SourcingTypeIcon type={material.sourcingType} />
+                <MethodItemTypeIcon type={material.itemType} />
               </Badge>
             </TooltipTrigger>
-            <TooltipContent>{material.sourcingType}</TooltipContent>
+            <TooltipContent>
+              {material.itemType === "Consumable" ? (
+                <Trans>Consumable</Trans>
+              ) : material.itemType === "Material" ? (
+                <Trans>Material</Trans>
+              ) : (
+                <Trans>Part</Trans>
+              )}
+            </TooltipContent>
           </Tooltip>
-        )}
-
-        <Badge variant="secondary">{material.quantity}</Badge>
-
-        <Tooltip>
-          <TooltipTrigger>
-            <Badge variant="secondary">
-              <MethodItemTypeIcon type={material.itemType} />
-            </Badge>
-          </TooltipTrigger>
-          <TooltipContent>
-            {material.itemType === "Consumable" ? (
-              <Trans>Consumable</Trans>
-            ) : material.itemType === "Material" ? (
-              <Trans>Material</Trans>
-            ) : (
-              <Trans>Part</Trans>
-            )}
-          </TooltipContent>
-        </Tooltip>
-      </HStack>
+        </HStack>
+        {renderVariantChip?.(material)}
+      </VStack>
     ),
     data: {
       ...material,

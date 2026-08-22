@@ -38,15 +38,8 @@ import {
 import { Editor } from "@carbon/react/Editor";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { isStyleCuttingOperation } from "~/modules/items/styleMethod.service";
-import { useStyleProcessLabel } from "~/modules/production/productionLabels";
 import type { DragControls } from "framer-motion";
-import {
-  LayoutGroup,
-  motion,
-  Reorder,
-  useDragControls
-} from "framer-motion";
+import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import { nanoid } from "nanoid";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -103,6 +96,7 @@ import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { useTags } from "~/hooks/useTags";
+import { isStyleCuttingOperation } from "~/modules/items/styleMethod.service";
 import {
   defaultOperationTypeFromProcess,
   disablesOutsideBopDetailTabs,
@@ -110,6 +104,7 @@ import {
   isOutsideOperationType,
   showsSupplierRoutingFields
 } from "~/modules/production/operationType";
+import { useStyleProcessLabel } from "~/modules/production/productionLabels";
 import { OutsideOperationBadge } from "~/modules/production/ui/OutsideOperationBadge";
 import {
   MethodOperationInsideDetailTabs,
@@ -142,6 +137,11 @@ import type {
   ConfigurationRule,
   MakeMethod
 } from "../../types";
+import type { VariantOption } from "./BillOfMaterial";
+import {
+  readApplyOnVariantValueIds,
+  VariantScopeBadge
+} from "./BillOfMaterial";
 
 type Operation = z.infer<typeof methodOperationValidator> & {
   workInstruction: JSONContent | null;
@@ -346,7 +346,39 @@ const BillOfProcess = ({
     (a, b) => (orderState[a.id!] ?? a.order) - (orderState[b.id!] ?? b.order)
   );
 
-  const items = makeItems(operations, tags, styleProcessLabel).map((item) => ({
+  // "Apply on Variants": color options for this style + a per-operation scope
+  // chip (mirrors the BOM material chip). Cutting/system + temporary rows skip.
+  const variantOptionsFetcher = useFetcher<{ data: VariantOption[] }>();
+  useEffect(() => {
+    if (makeMethod.itemId) {
+      variantOptionsFetcher.load(
+        `/api/items/${makeMethod.itemId}/variant-attribute-values`
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [makeMethod.itemId]);
+  const allVariantOptions: VariantOption[] =
+    variantOptionsFetcher.data?.data ?? [];
+
+  const renderVariantChip = (operation: Operation) =>
+    allVariantOptions.length > 0 &&
+    operation.id &&
+    !temporaryItems[operation.id] &&
+    !isStyleCuttingOperation({ tags: operation.tags ?? [] }) ? (
+      <VariantScopeBadge
+        actionPath={`/x/items/methods/operation/apply-on-variants/${operation.id}`}
+        valueIds={readApplyOnVariantValueIds(operation)}
+        options={allVariantOptions}
+        isReadOnly={isReadOnly}
+      />
+    ) : null;
+
+  const items = makeItems(
+    operations,
+    tags,
+    styleProcessLabel,
+    renderVariantChip
+  ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
   }));
@@ -2677,10 +2709,11 @@ function makeItems(
   styleProcessLabel: (
     description: string | null | undefined,
     isCutting: boolean
-  ) => string
+  ) => string,
+  renderVariantChip?: (operation: Operation) => ReactNode
 ): ItemWithData[] {
   return operations.map((operation) =>
-    makeItem(operation, tags, styleProcessLabel)
+    makeItem(operation, tags, styleProcessLabel, renderVariantChip)
   );
 }
 
@@ -2690,7 +2723,8 @@ function makeItem(
   styleProcessLabel: (
     description: string | null | undefined,
     isCutting: boolean
-  ) => string
+  ) => string,
+  renderVariantChip?: (operation: Operation) => ReactNode
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -2713,32 +2747,35 @@ function makeItem(
     checked: false,
     order: operation.operationOrder,
     details: (
-      <HStack spacing={1}>
-        {isOutsideOperationType(operation.operationType) ? (
-          <OutsideOperationBadge />
-        ) : (
-          <>
-            {(operation?.setupTime ?? 0) > 0 && (
-              <Badge variant="secondary">
-                <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
-                {operation.setupTime} {operation.setupUnit}
-              </Badge>
-            )}
-            {(operation?.laborTime ?? 0) > 0 && (
-              <Badge variant="secondary">
-                <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
-                {operation.laborTime} {operation.laborUnit}
-              </Badge>
-            )}
-            {(operation?.machineTime ?? 0) > 0 && (
-              <Badge variant="secondary">
-                <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
-                {operation.machineTime} {operation.machineUnit}
-              </Badge>
-            )}
-          </>
-        )}
-      </HStack>
+      <VStack spacing={1} className="w-auto items-end">
+        <HStack spacing={1}>
+          {isOutsideOperationType(operation.operationType) ? (
+            <OutsideOperationBadge />
+          ) : (
+            <>
+              {(operation?.setupTime ?? 0) > 0 && (
+                <Badge variant="secondary">
+                  <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
+                  {operation.setupTime} {operation.setupUnit}
+                </Badge>
+              )}
+              {(operation?.laborTime ?? 0) > 0 && (
+                <Badge variant="secondary">
+                  <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
+                  {operation.laborTime} {operation.laborUnit}
+                </Badge>
+              )}
+              {(operation?.machineTime ?? 0) > 0 && (
+                <Badge variant="secondary">
+                  <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
+                  {operation.machineTime} {operation.machineUnit}
+                </Badge>
+              )}
+            </>
+          )}
+        </HStack>
+        {renderVariantChip?.(operation)}
+      </VStack>
     ),
     data: operation
   };

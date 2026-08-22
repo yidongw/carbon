@@ -4701,6 +4701,45 @@ export async function upsertMethodMaterial(
 }
 
 /**
+ * Inline "Apply on Variants" update for a single BOM line (the per-row badge).
+ * Kept separate from upsertMethodMaterial so editing other fields never
+ * clobbers a line's variant scope. Empty array = applies to all variants.
+ */
+export async function updateMethodMaterialApplyOnVariants(
+  client: SupabaseClient<Database>,
+  args: { id: string; applyOnVariantValueIds: string[]; updatedBy: string }
+) {
+  return client
+    .from("methodMaterial")
+    .update({
+      applyOnVariantValueIds: args.applyOnVariantValueIds,
+      updatedBy: args.updatedBy
+    } as never)
+    .eq("id", args.id)
+    .select("id")
+    .single();
+}
+
+/**
+ * Inline "Apply on Variants" update for a single BOP operation (per-row badge).
+ * get-method already filters operations by this column at explosion time.
+ */
+export async function updateMethodOperationApplyOnVariants(
+  client: SupabaseClient<Database>,
+  args: { id: string; applyOnVariantValueIds: string[]; updatedBy: string }
+) {
+  return client
+    .from("methodOperation")
+    .update({
+      applyOnVariantValueIds: args.applyOnVariantValueIds,
+      updatedBy: args.updatedBy
+    } as never)
+    .eq("id", args.id)
+    .select("id")
+    .single();
+}
+
+/**
  * Insert one methodMaterial per Style/attribute variant SKU (BOM expand).
  * First row keeps the submitted id so temporary BOM rows still clear on success.
  */
