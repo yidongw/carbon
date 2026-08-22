@@ -1234,6 +1234,8 @@ export const path = {
       generatePath(`${x}/bundle-work-order/${id}/processes`),
     bundleWorkOrderQuantities: (id: string) =>
       generatePath(`${x}/bundle-work-order/${id}/quantities`),
+    bundleWorkOrderMaterials: (id: string) =>
+      generatePath(`${x}/bundle-work-order/${id}/materials`),
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
     jobStatus: (id: string) => generatePath(`${x}/job/${id}/status`),

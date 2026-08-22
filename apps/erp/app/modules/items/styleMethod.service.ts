@@ -1,4 +1,5 @@
 import type { Database, Json } from "@carbon/database";
+import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export const STYLE_CUTTING_PROCESS_TAG = "style:cutting-process";
@@ -139,6 +140,438 @@ export function getParentJobNonCuttingOperationIdsToDelete(args: {
     .filter((id) => id !== firstOperation.id);
 }
 
+// ---------------------------------------------------------------------------
+// Nesting-aware garment job split
+//
+// A garment Style method explodes into a job as a tree of jobMakeMethods:
+// the root (parentMaterialId NULL) is the Style itself; each Make-to-Order
+// material (e.g. finished fabric 成品布) hangs a nested jobMakeMethod off the
+// jobMaterial that consumes it, carrying that sub-assembly's own operations
+// (e.g. an outside 印染/dyeing op) and materials (e.g. greige 胚布).
+//
+// The Master WO does the batch (cutting); Bundle WOs do the per-variant
+// downstream (sewing). We route EVERY operation AND material to exactly one
+// side ("home"), so nothing is done — or consumed — twice:
+//   - a fabric-prep op/material is produced before its consumer runs, so it
+//     goes wherever its consuming operation goes (default: cutting → master);
+//   - the Style's own ops split at cutting (cutting & the fabric it needs →
+//     master; sewing/finishing → bundle).
+// This both fixes sequencing (印染 runs on the master, before cutting) and the
+// pre-existing double-consumption bug (fabric backflushed once, on the master).
+// ---------------------------------------------------------------------------
+
+type GarmentHome = "master" | "bundle";
+
+type GarmentOperationRow = StyleOperationLike & {
+  id: string;
+  jobMakeMethodId?: string | null;
+};
+type GarmentMaterialRow = {
+  id: string;
+  jobMakeMethodId?: string | null;
+  jobOperationId?: string | null;
+};
+type GarmentMakeMethodRow = {
+  id: string;
+  parentMaterialId?: string | null;
+};
+
+function resolveCuttingOperationIds(
+  rootOperations: GarmentOperationRow[],
+  cuttingProcessId?: string | null
+): Set<string> {
+  const tagged = rootOperations
+    .filter((operation) => isStyleCuttingOperation(operation))
+    .map((operation) => operation.id);
+  if (tagged.length > 0) return new Set(tagged);
+
+  if (cuttingProcessId) {
+    const byProcess = rootOperations
+      .filter((operation) => operation.processId === cuttingProcessId)
+      .map((operation) => operation.id);
+    if (byProcess.length > 0) return new Set(byProcess);
+  }
+
+  const first = [...rootOperations]
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .find(Boolean);
+  return first ? new Set([first.id]) : new Set();
+}
+
+/**
+ * Classify every jobOperation and jobMaterial of a garment job as belonging to
+ * the master (cutting + fabric prep) or a bundle (downstream). Nested
+ * sub-assembly items follow the operation that consumes their product; a
+ * root-method material with no explicit consuming operation defaults to the
+ * cutting operation (→ master). Pure + memoized, with cycle guards.
+ */
+export function classifyGarmentJobItems(args: {
+  operations: GarmentOperationRow[];
+  materials: GarmentMaterialRow[];
+  makeMethods: GarmentMakeMethodRow[];
+  cuttingProcessId?: string | null;
+}): {
+  operationHome: Map<string, GarmentHome>;
+  materialHome: Map<string, GarmentHome>;
+  nestedMakeMethodHome: Map<string, GarmentHome>;
+} {
+  const mmById = new Map(args.makeMethods.map((m) => [m.id, m]));
+  const matById = new Map(args.materials.map((m) => [m.id, m]));
+  const opById = new Map(args.operations.map((o) => [o.id, o]));
+
+  const isNestedMethod = (mmId: string | null | undefined) => {
+    if (!mmId) return false;
+    const mm = mmById.get(mmId);
+    return !!mm && mm.parentMaterialId != null;
+  };
+  const isRootOperation = (op: GarmentOperationRow) =>
+    !isNestedMethod(op.jobMakeMethodId);
+
+  const rootOps = args.operations.filter(isRootOperation);
+  const cuttingIds = resolveCuttingOperationIds(rootOps, args.cuttingProcessId);
+
+  const opHome = new Map<string, GarmentHome>();
+  const mmHome = new Map<string, GarmentHome>();
+  const opInProgress = new Set<string>();
+  const mmInProgress = new Set<string>();
+
+  function homeOfOperation(op: GarmentOperationRow): GarmentHome {
+    const cached = opHome.get(op.id);
+    if (cached) return cached;
+    if (opInProgress.has(op.id)) return "master"; // cycle guard
+    opInProgress.add(op.id);
+    const home: GarmentHome = isRootOperation(op)
+      ? cuttingIds.has(op.id)
+        ? "master"
+        : "bundle"
+      : homeOfMakeMethod(op.jobMakeMethodId as string);
+    opInProgress.delete(op.id);
+    opHome.set(op.id, home);
+    return home;
+  }
+
+  function homeOfMaterial(mat: GarmentMaterialRow | undefined): GarmentHome {
+    if (!mat) return "master";
+    if (isNestedMethod(mat.jobMakeMethodId)) {
+      return homeOfMakeMethod(mat.jobMakeMethodId as string);
+    }
+    // Root-method (Style BOM) material: follow the operation that consumes it,
+    // so a material the BOM author assigned to a bundle-side operation (e.g. a
+    // trim consumed at sewing) is consumed on the bundle, while a material
+    // assigned to cutting — or not assigned to any operation — defaults to the
+    // master. get-method preserves this link via methodMaterial.methodOperationId
+    // (see migration 20260821140521_preserve-root-material-operation-link).
+    const consumer = mat.jobOperationId
+      ? opById.get(mat.jobOperationId)
+      : undefined;
+    return consumer ? homeOfOperation(consumer) : "master";
+  }
+
+  function homeOfMakeMethod(mmId: string): GarmentHome {
+    const cached = mmHome.get(mmId);
+    if (cached) return cached;
+    if (mmInProgress.has(mmId)) return "master"; // cycle guard
+    mmInProgress.add(mmId);
+    const mm = mmById.get(mmId);
+    const home: GarmentHome =
+      !mm || mm.parentMaterialId == null
+        ? "master"
+        : homeOfMaterial(matById.get(mm.parentMaterialId));
+    mmInProgress.delete(mmId);
+    mmHome.set(mmId, home);
+    return home;
+  }
+
+  const operationHome = new Map<string, GarmentHome>();
+  for (const op of args.operations)
+    operationHome.set(op.id, homeOfOperation(op));
+
+  const materialHome = new Map<string, GarmentHome>();
+  for (const mat of args.materials)
+    materialHome.set(mat.id, homeOfMaterial(mat));
+
+  const nestedMakeMethodHome = new Map<string, GarmentHome>();
+  for (const mm of args.makeMethods) {
+    if (mm.parentMaterialId != null) {
+      nestedMakeMethodHome.set(mm.id, homeOfMakeMethod(mm.id));
+    }
+  }
+
+  return { operationHome, materialHome, nestedMakeMethodHome };
+}
+
+/**
+ * Compute a corrected sequential `order` for a job's operations so that a nested
+ * sub-assembly's operations run BEFORE the operation that consumes the
+ * sub-assembly's product. get-method copies each `methodOperation.order`
+ * verbatim per make method, so a nested op (e.g. an outside 印染/dyeing op on
+ * finished fabric) keeps its own local order and can land AFTER the cutting op
+ * that consumes the fabric — which is physically wrong (you dye before you cut).
+ *
+ * Emits, for each root operation in order, first the ops of every sub-assembly
+ * consumed by it (deepest first), then the operation itself; leftovers append at
+ * the end. Returns opId → new zero-based order. Pure + cycle-guarded.
+ */
+export function sequenceGarmentJobOperations(args: {
+  operations: GarmentOperationRow[];
+  materials: GarmentMaterialRow[];
+  makeMethods: GarmentMakeMethodRow[];
+  cuttingProcessId?: string | null;
+}): Map<string, number> {
+  const opById = new Map(args.operations.map((o) => [o.id, o]));
+  const mmById = new Map(args.makeMethods.map((m) => [m.id, m]));
+  const matById = new Map(args.materials.map((m) => [m.id, m]));
+
+  const isNestedMethod = (mmId: string | null | undefined) => {
+    if (!mmId) return false;
+    const mm = mmById.get(mmId);
+    return !!mm && mm.parentMaterialId != null;
+  };
+
+  const byOrder = (a: GarmentOperationRow, b: GarmentOperationRow) =>
+    (a.order ?? 0) - (b.order ?? 0);
+
+  const rootOps = args.operations
+    .filter((o) => !isNestedMethod(o.jobMakeMethodId))
+    .sort(byOrder);
+  const cuttingIds = resolveCuttingOperationIds(rootOps, args.cuttingProcessId);
+  const defaultConsumerId =
+    [...cuttingIds].find((id) => opById.has(id)) ?? rootOps[0]?.id;
+
+  // Operations grouped by make method, each in local order.
+  const opsByMethod = new Map<string, GarmentOperationRow[]>();
+  for (const o of args.operations) {
+    if (!o.jobMakeMethodId) continue;
+    const arr = opsByMethod.get(o.jobMakeMethodId) ?? [];
+    arr.push(o);
+    opsByMethod.set(o.jobMakeMethodId, arr);
+  }
+  for (const arr of opsByMethod.values()) arr.sort(byOrder);
+
+  // Nested make methods (with kept ops) grouped by the op that consumes them.
+  const nestedByConsumer = new Map<string, string[]>();
+  for (const mm of args.makeMethods) {
+    if (mm.parentMaterialId == null) continue;
+    if (!opsByMethod.has(mm.id)) continue;
+    const parentMat = matById.get(mm.parentMaterialId);
+    const linked = parentMat?.jobOperationId;
+    const consumerId =
+      linked && opById.has(linked) ? linked : defaultConsumerId;
+    if (!consumerId) continue;
+    const arr = nestedByConsumer.get(consumerId) ?? [];
+    arr.push(mm.id);
+    nestedByConsumer.set(consumerId, arr);
+  }
+
+  const result: string[] = [];
+  const seen = new Set<string>();
+  const inProgress = new Set<string>();
+  const emitConsumedBy = (opId: string) => {
+    for (const mmId of nestedByConsumer.get(opId) ?? []) {
+      for (const o of opsByMethod.get(mmId) ?? []) {
+        if (seen.has(o.id) || inProgress.has(o.id)) continue;
+        inProgress.add(o.id);
+        emitConsumedBy(o.id); // deeper sub-assemblies first
+        inProgress.delete(o.id);
+        if (!seen.has(o.id)) {
+          seen.add(o.id);
+          result.push(o.id);
+        }
+      }
+    }
+  };
+  for (const c of rootOps) {
+    emitConsumedBy(c.id);
+    if (!seen.has(c.id)) {
+      seen.add(c.id);
+      result.push(c.id);
+    }
+  }
+  // Anything not reached (orphans) appends at the end, in `order` order so the
+  // result is deterministic regardless of the input array's order.
+  for (const o of [...args.operations].sort(byOrder)) {
+    if (!seen.has(o.id)) {
+      seen.add(o.id);
+      result.push(o.id);
+    }
+  }
+
+  const orderMap = new Map<string, number>();
+  result.forEach((id, index) => {
+    orderMap.set(id, index);
+  });
+  return orderMap;
+}
+
+/**
+ * Load a garment backing job's method tree, classify every operation/material,
+ * and delete everything whose home is the OTHER side. Then re-sequence the
+ * surviving operations so nested fabric-prep ops run before their consumer
+ * (e.g. 印染 before Cutting). Used by both the create paths
+ * (insertMasterWorkOrder / insertBundleWorkOrder) and the get-method re-apply
+ * path. No-op for jobs with no operations.
+ */
+export async function splitGarmentJobItems(
+  client: SupabaseClient<Database>,
+  args: {
+    jobId: string;
+    companyId: string;
+    role: GarmentHome;
+    cuttingProcessId?: string | null;
+    // When provided (the create paths, where a failed split would otherwise
+    // leave an orphaned job), the deletes + order updates run in ONE Kysely
+    // transaction so the split is all-or-nothing. Reads always use `client`.
+    db?: Kysely<KyselyDatabase>;
+  }
+): Promise<{ error: Error | null }> {
+  const [ops, mats, mms] = await Promise.all([
+    client
+      .from("jobOperation")
+      .select("id, processId, order, tags, customFields, jobMakeMethodId")
+      .eq("jobId", args.jobId)
+      .eq("companyId", args.companyId),
+    client
+      .from("jobMaterial")
+      .select("id, jobMakeMethodId, jobOperationId")
+      .eq("jobId", args.jobId)
+      .eq("companyId", args.companyId),
+    client
+      .from("jobMakeMethod")
+      .select("id, parentMaterialId")
+      .eq("jobId", args.jobId)
+      .eq("companyId", args.companyId)
+  ]);
+  if (ops.error) return { error: new Error(ops.error.message) };
+  if (mats.error) return { error: new Error(mats.error.message) };
+  if (mms.error) return { error: new Error(mms.error.message) };
+  if (!ops.data?.length) return { error: null };
+
+  const { operationHome, materialHome, nestedMakeMethodHome } =
+    classifyGarmentJobItems({
+      operations: ops.data,
+      materials: mats.data ?? [],
+      makeMethods: mms.data ?? [],
+      cuttingProcessId: args.cuttingProcessId ?? null
+    });
+
+  // Plan the writes. Delete everything whose home is the OTHER side. Deleting a
+  // nested make method cascades its own operations + materials; deleting an
+  // operation cascades the materials it consumes. Order matters: nested methods
+  // → operations → materials.
+  const nestedMethodIds = (mms.data ?? [])
+    .filter(
+      (mm) =>
+        mm.parentMaterialId != null &&
+        nestedMakeMethodHome.get(mm.id) !== args.role
+    )
+    .map((mm) => mm.id);
+  const opIds = ops.data
+    .filter((op) => operationHome.get(op.id) !== args.role)
+    .map((op) => op.id);
+  const matIds = (mats.data ?? [])
+    .filter((mat) => materialHome.get(mat.id) !== args.role)
+    .map((mat) => mat.id);
+
+  // Re-sequence the surviving operations so nested fabric-prep runs before the
+  // op that consumes it (e.g. 印染 before Cutting). Only rows whose order
+  // actually changed are written.
+  const keptOps = ops.data.filter(
+    (op) => operationHome.get(op.id) === args.role
+  );
+  const deletedMaterialIds = new Set(matIds);
+  const orderMap = sequenceGarmentJobOperations({
+    operations: keptOps,
+    materials: (mats.data ?? []).filter((m) => !deletedMaterialIds.has(m.id)),
+    makeMethods: (mms.data ?? []).filter(
+      (mm) => !nestedMethodIds.includes(mm.id)
+    ),
+    cuttingProcessId: args.cuttingProcessId ?? null
+  });
+  const orderUpdates: { id: string; next: number }[] = [];
+  for (const op of keptOps) {
+    const next = orderMap.get(op.id);
+    if (next == null || next === (op.order ?? 0)) continue;
+    orderUpdates.push({ id: op.id, next });
+  }
+
+  // Apply the plan. With a Kysely connection, run it in ONE transaction so a
+  // mid-way failure can't leave a half-split job (create paths). Without one,
+  // fall back to sequential PostgREST calls (get-method re-apply path).
+  if (args.db) {
+    try {
+      await args.db.transaction().execute(async (trx) => {
+        if (nestedMethodIds.length) {
+          await trx
+            .deleteFrom("jobMakeMethod")
+            .where("id", "in", nestedMethodIds)
+            .where("companyId", "=", args.companyId)
+            .execute();
+        }
+        if (opIds.length) {
+          await trx
+            .deleteFrom("jobOperation")
+            .where("id", "in", opIds)
+            .where("companyId", "=", args.companyId)
+            .execute();
+        }
+        if (matIds.length) {
+          await trx
+            .deleteFrom("jobMaterial")
+            .where("id", "in", matIds)
+            .where("companyId", "=", args.companyId)
+            .execute();
+        }
+        for (const { id, next } of orderUpdates) {
+          await trx
+            .updateTable("jobOperation")
+            .set({ order: next })
+            .where("id", "=", id)
+            .where("companyId", "=", args.companyId)
+            .execute();
+        }
+      });
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error(String(err)) };
+    }
+    return { error: null };
+  }
+
+  if (nestedMethodIds.length) {
+    const del = await client
+      .from("jobMakeMethod")
+      .delete()
+      .in("id", nestedMethodIds)
+      .eq("companyId", args.companyId);
+    if (del.error) return { error: new Error(del.error.message) };
+  }
+  if (opIds.length) {
+    const del = await client
+      .from("jobOperation")
+      .delete()
+      .in("id", opIds)
+      .eq("companyId", args.companyId);
+    if (del.error) return { error: new Error(del.error.message) };
+  }
+  if (matIds.length) {
+    const del = await client
+      .from("jobMaterial")
+      .delete()
+      .in("id", matIds)
+      .eq("companyId", args.companyId);
+    if (del.error) return { error: new Error(del.error.message) };
+  }
+  for (const { id, next } of orderUpdates) {
+    const upd = await client
+      .from("jobOperation")
+      .update({ order: next })
+      .eq("id", id)
+      .eq("companyId", args.companyId);
+    if (upd.error) return { error: new Error(upd.error.message) };
+  }
+
+  return { error: null };
+}
+
 /**
  * Bundle jobs are keyed by variant SKU `itemId`, but the Style BOP lives on the
  * parent Style. Resolve that parent for get-method; non-variant items pass through.
@@ -170,16 +603,6 @@ export async function applyGarmentJobOperationFilter(
     cuttingProcessId?: string | null;
   }
 ): Promise<{ error: Error | null }> {
-  const ops = await client
-    .from("jobOperation")
-    .select("id, processId, order, tags, customFields")
-    .eq("jobId", args.jobId)
-    .eq("companyId", args.companyId);
-  if (ops.error) {
-    return { error: new Error(ops.error.message) };
-  }
-  if (!ops.data?.length) return { error: null };
-
   const master = await client
     .from("masterWorkOrder")
     .select("id")
@@ -187,18 +610,12 @@ export async function applyGarmentJobOperationFilter(
     .eq("companyId", args.companyId)
     .maybeSingle();
   if (master.data?.id) {
-    const nonCuttingIds = getParentJobNonCuttingOperationIdsToDelete({
-      operations: ops.data
+    return splitGarmentJobItems(client, {
+      jobId: args.jobId,
+      companyId: args.companyId,
+      role: "master",
+      cuttingProcessId: args.cuttingProcessId ?? null
     });
-    if (nonCuttingIds.length === 0) return { error: null };
-    const deleted = await client
-      .from("jobOperation")
-      .delete()
-      .in("id", nonCuttingIds)
-      .eq("companyId", args.companyId);
-    return deleted.error
-      ? { error: new Error(deleted.error.message) }
-      : { error: null };
   }
 
   const bundle = await client
@@ -208,19 +625,12 @@ export async function applyGarmentJobOperationFilter(
     .eq("companyId", args.companyId)
     .maybeSingle();
   if (bundle.data?.id) {
-    const cuttingIds = getBundleJobCuttingOperationIdsToDelete({
-      operations: ops.data,
+    return splitGarmentJobItems(client, {
+      jobId: args.jobId,
+      companyId: args.companyId,
+      role: "bundle",
       cuttingProcessId: args.cuttingProcessId ?? null
     });
-    if (cuttingIds.length === 0) return { error: null };
-    const deleted = await client
-      .from("jobOperation")
-      .delete()
-      .in("id", cuttingIds)
-      .eq("companyId", args.companyId);
-    return deleted.error
-      ? { error: new Error(deleted.error.message) }
-      : { error: null };
   }
 
   return { error: null };

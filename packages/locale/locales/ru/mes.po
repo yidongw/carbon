@@ -3296,6 +3296,9 @@ msgstr "Не удалось обновить затраты наsumeable"
 msgid "Failed to update consumable inventory"
 msgstr "Не удалось обновить запасы расходных материалов"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "Не удалось обновить производство расходного материала"
+
 msgid "Failed to update consumable planning"
 msgstr "Не удалось обновить планирование расходных материалов"
 
@@ -6084,6 +6087,9 @@ msgstr "Обновленные затраты наsumeables"
 
 msgid "Updated consumable inventory"
 msgstr "Обновленный инвентарь расходных материалов"
+
+msgid "Updated consumable manufacturing"
+msgstr "Производство расходного материала обновлено"
 
 msgid "Updated consumable planning"
 msgstr "Обновленное планирование расходных материалов"

@@ -7276,6 +7276,9 @@ msgstr "Échec de la mise à jour du coût des consommables"
 msgid "Failed to update consumable inventory"
 msgstr "Échec de la mise à jour du stock consommable"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "Échec de la mise à jour de la fabrication du consommable"
+
 msgid "Failed to update consumable planning"
 msgstr "Échec de la mise à jour du plan d'utilisation"
 
@@ -15528,6 +15531,9 @@ msgstr "Mise à jour du coût des consommables"
 
 msgid "Updated consumable inventory"
 msgstr "Mise à jour de l'inventaire de consommables"
+
+msgid "Updated consumable manufacturing"
+msgstr "Fabrication du consommable mise à jour"
 
 msgid "Updated consumable planning"
 msgstr "Planification des consommables mise à jour"

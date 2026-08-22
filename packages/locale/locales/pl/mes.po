@@ -3296,6 +3296,9 @@ msgstr "Nie udało sięaktualizować kosztuwania zużycia"
 msgid "Failed to update consumable inventory"
 msgstr "Nie udało się zaktualizować zapasów zużytego materiału"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "Nie udało się zaktualizować produkcji materiału zużywalnego"
+
 msgid "Failed to update consumable planning"
 msgstr "Nie udało się zaktualizować planowania zużycia"
 
@@ -6084,6 +6087,9 @@ msgstr "Zaktualizowane koszty zużycia"
 
 msgid "Updated consumable inventory"
 msgstr "Zaktualizowana zapasowa inventura"
+
+msgid "Updated consumable manufacturing"
+msgstr "Zaktualizowano produkcję materiału zużywalnego"
 
 msgid "Updated consumable planning"
 msgstr "Zaktualizowana planowanie zużycia"

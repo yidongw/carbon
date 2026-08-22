@@ -1,7 +1,7 @@
 import { Copy, IconButton } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import { LuPanelRight } from "react-icons/lu";
 import { createPortal } from "react-dom";
+import { LuPanelRight } from "react-icons/lu";
 import { useParams } from "react-router";
 import {
   DetailsTopbar,
@@ -54,6 +54,10 @@ const BundleWorkOrderHeader = () => {
     {
       name: t`Process Completions`,
       to: path.to.bundleWorkOrderQuantities(bundleWorkOrderId)
+    },
+    {
+      name: t`Materials`,
+      to: path.to.bundleWorkOrderMaterials(bundleWorkOrderId)
     }
   ];
 

@@ -3296,6 +3296,9 @@ msgstr "Falló al actualizar el costo del consumo"
 msgid "Failed to update consumable inventory"
 msgstr "Falló al actualizar el inventario de consumibles"
 
+msgid "Failed to update consumable manufacturing"
+msgstr "Falló al actualizar la fabricación del consumible"
+
 msgid "Failed to update consumable planning"
 msgstr "Falló al actualizar el plan de consumo"
 
@@ -6084,6 +6087,9 @@ msgstr "Actualizado costo de consumibles"
 
 msgid "Updated consumable inventory"
 msgstr "Inventario de consumibles actualizado"
+
+msgid "Updated consumable manufacturing"
+msgstr "Fabricación del consumible actualizada"
 
 msgid "Updated consumable planning"
 msgstr "Planificación de consumibles actualizada"
