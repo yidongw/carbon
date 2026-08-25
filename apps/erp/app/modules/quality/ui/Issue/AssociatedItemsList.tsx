@@ -288,6 +288,55 @@ export function AssociatedItemsList({
               sameItemSiblings.length > 0 &&
               dragOverRowId === r.child.id;
 
+            // Overflow menu (Split line / Move entities). Rendered in two slots:
+            // pinned top-right of the title on mobile, and at the row end on
+            // desktop — only one is visible at a time via responsive classes.
+            const rowMenu =
+              canEdit && r.links.length > 0 ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <IconButton
+                      size="md"
+                      variant="secondary"
+                      aria-label={t`More actions`}
+                      icon={<LuEllipsisVertical />}
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {r.quantity > 1 && (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          setSplitTarget({
+                            id: r.child.id as string,
+                            itemId: item.id,
+                            maxQuantity: r.quantity,
+                            itemReadableId: item.readableIdWithRevision,
+                            links: r.links
+                          })
+                        }
+                      >
+                        <LuSplit className="mr-2 size-4" />
+                        <Trans>Split line</Trans>
+                      </DropdownMenuItem>
+                    )}
+                    {siblings.length > 0 && (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          setMoveTarget({
+                            sourceRowId: r.child.id as string,
+                            links: r.links,
+                            siblings
+                          })
+                        }
+                      >
+                        <LuArrowRightLeft className="mr-2 size-4" />
+                        <Trans>Move entities…</Trans>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null;
+
             return (
               <li
                 key={r.child.id}
@@ -335,112 +384,82 @@ export function AssociatedItemsList({
                   }
                 }}
               >
-                <div className="flex items-center w-full gap-4">
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <h3 className="font-semibold truncate">
-                      {item.readableIdWithRevision}
-                    </h3>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {item.name}
-                    </p>
-                  </div>
-                  <ValidatedForm
-                    key={`${r.child.id}-${r.quantity}`}
-                    defaultValues={{
-                      quantity: r.quantity
-                    }}
-                    validator={itemQuantityValidator}
-                    className="w-24 shrink-0"
-                  >
-                    <NumberInput
-                      label={t`Quantity`}
-                      name="quantity"
-                      isReadOnly={!canEdit || r.links.length > 0}
-                      minValue={0}
-                      size="sm"
-                      onBlur={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        const numValue = parseFloat(target.value) || 0;
-                        onUpdateQuantity(r.child.id, numValue);
-                      }}
-                    />
-                  </ValidatedForm>
-                  <ValidatedForm
-                    defaultValues={{
-                      disposition: r.disposition ?? "Pending"
-                    }}
-                    validator={z.object({
-                      disposition: z.string()
-                    })}
-                    className="w-[120px] shrink-0 items-center"
-                  >
-                    <Select
-                      options={disposition.map((d) => ({
-                        value: d,
-                        label: <DispositionStatus disposition={d} />
-                      }))}
-                      isReadOnly={!canEdit}
-                      label={t`Status`}
-                      name="disposition"
-                      inline={(value) => {
-                        return (
-                          <div className="h-8 flex items-center">
-                            <DispositionStatus disposition={value} />
-                          </div>
-                        );
-                      }}
-                      onChange={(value) => {
-                        if (value) {
-                          onUpdateDisposition(r.child.id, value.value);
-                        }
-                      }}
-                    />
-                  </ValidatedForm>
-                  <div className="w-10 shrink-0 flex items-end justify-end">
-                    {canEdit && r.links.length > 0 && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <IconButton
-                            size="md"
-                            variant="secondary"
-                            aria-label={t`More actions`}
-                            icon={<LuEllipsisVertical />}
-                          />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {r.quantity > 1 && (
-                            <DropdownMenuItem
-                              onClick={() =>
-                                setSplitTarget({
-                                  id: r.child.id as string,
-                                  itemId: item.id,
-                                  maxQuantity: r.quantity,
-                                  itemReadableId: item.readableIdWithRevision,
-                                  links: r.links
-                                })
-                              }
-                            >
-                              <LuSplit className="mr-2 size-4" />
-                              <Trans>Split line</Trans>
-                            </DropdownMenuItem>
-                          )}
-                          {siblings.length > 0 && (
-                            <DropdownMenuItem
-                              onClick={() =>
-                                setMoveTarget({
-                                  sourceRowId: r.child.id as string,
-                                  links: r.links,
-                                  siblings
-                                })
-                              }
-                            >
-                              <LuArrowRightLeft className="mr-2 size-4" />
-                              <Trans>Move entities…</Trans>
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:w-full md:gap-4">
+                  {/* Identity — full width on mobile, flex-1 on desktop. The
+                      overflow menu is pinned top-right on mobile only. */}
+                  <div className="flex items-start justify-between gap-2 md:min-w-0 md:flex-1">
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <h3 className="font-semibold truncate">
+                        {item.readableIdWithRevision}
+                      </h3>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {item.name}
+                      </p>
+                    </div>
+                    {rowMenu && (
+                      <div className="shrink-0 md:hidden">{rowMenu}</div>
                     )}
+                  </div>
+                  {/* Quantity + Status — side by side beneath the title on
+                      mobile; md:contents flattens them back into the row on
+                      desktop so the layout there is unchanged. */}
+                  <div className="flex items-end gap-4 md:contents">
+                    <ValidatedForm
+                      key={`${r.child.id}-${r.quantity}`}
+                      defaultValues={{
+                        quantity: r.quantity
+                      }}
+                      validator={itemQuantityValidator}
+                      className="w-24 shrink-0"
+                    >
+                      <NumberInput
+                        label={t`Quantity`}
+                        name="quantity"
+                        isReadOnly={!canEdit || r.links.length > 0}
+                        minValue={0}
+                        size="sm"
+                        onBlur={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          const numValue = parseFloat(target.value) || 0;
+                          onUpdateQuantity(r.child.id, numValue);
+                        }}
+                      />
+                    </ValidatedForm>
+                    <ValidatedForm
+                      defaultValues={{
+                        disposition: r.disposition ?? "Pending"
+                      }}
+                      validator={z.object({
+                        disposition: z.string()
+                      })}
+                      className="w-[120px] shrink-0 items-center"
+                    >
+                      <Select
+                        options={disposition.map((d) => ({
+                          value: d,
+                          label: <DispositionStatus disposition={d} />
+                        }))}
+                        isReadOnly={!canEdit}
+                        label={t`Status`}
+                        name="disposition"
+                        inline={(value) => {
+                          return (
+                            <div className="h-8 flex items-center">
+                              <DispositionStatus disposition={value} />
+                            </div>
+                          );
+                        }}
+                        onChange={(value) => {
+                          if (value) {
+                            onUpdateDisposition(r.child.id, value.value);
+                          }
+                        }}
+                      />
+                    </ValidatedForm>
+                  </div>
+                  {/* Overflow menu — desktop only, at the row end. */}
+                  <div className="hidden w-10 shrink-0 items-end justify-end md:flex">
+                    {rowMenu}
                   </div>
                 </div>
 
