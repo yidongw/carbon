@@ -396,8 +396,8 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex justify-between w-full">
-        <HStack>
+      <div className="bg-muted/30 border-t px-4 py-2 flex flex-col gap-2 w-full md:flex-row md:justify-between">
+        <HStack spacing={0} className="flex-wrap gap-2">
           <IssueTaskStatus
             task={task}
             type="investigation"
@@ -431,7 +431,7 @@ export function TaskItem({
             />
           )}
         </HStack>
-        <HStack>
+        <HStack className="justify-end">
           <Button
             isDisabled={isDisabled}
             leftIcon={statusAction.icon}
