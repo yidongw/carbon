@@ -2,12 +2,6 @@ import { useCarbon } from "@carbon/auth";
 import type { JSONContent } from "@carbon/react";
 import {
   BarProgress,
-  BottomSheet,
-  BottomSheetBody,
-  BottomSheetContent,
-  BottomSheetHeader,
-  BottomSheetTitle,
-  BottomSheetTrigger,
   Button,
   Command,
   CommandEmpty,
@@ -453,8 +447,8 @@ export function TaskItem({
         </HStack>
         <HStack className="shrink-0" spacing={2}>
           {secondaryControls && (
-            <BottomSheet>
-              <BottomSheetTrigger asChild>
+            <Popover>
+              <PopoverTrigger asChild>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -463,20 +457,17 @@ export function TaskItem({
                 >
                   <Trans>More</Trans>
                 </Button>
-              </BottomSheetTrigger>
-              <BottomSheetContent>
-                <BottomSheetHeader>
-                  <BottomSheetTitle>
-                    <Trans>More</Trans>
-                  </BottomSheetTitle>
-                </BottomSheetHeader>
-                <BottomSheetBody>
-                  <VStack spacing={4} className="items-start">
-                    {secondaryControls}
-                  </VStack>
-                </BottomSheetBody>
-              </BottomSheetContent>
-            </BottomSheet>
+              </PopoverTrigger>
+              <PopoverContent
+                side="top"
+                align="end"
+                className="w-auto p-2"
+              >
+                <VStack spacing={2} className="items-stretch [&>*]:w-full">
+                  {secondaryControls}
+                </VStack>
+              </PopoverContent>
+            </Popover>
           )}
           <Button
             isDisabled={isDisabled}
