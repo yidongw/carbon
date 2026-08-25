@@ -223,7 +223,9 @@ const MakeMethodTools = ({
               leftIcon={<LuGitBranch />}
               onClick={getMethodModal.onOpen}
             >
-              <Trans>Get Method</Trans>
+              <span className="sr-only md:not-sr-only">
+                <Trans>Get Method</Trans>
+              </span>
             </MenubarItem>
             <MenubarItem
               isDisabled={
@@ -233,12 +235,16 @@ const MakeMethodTools = ({
               leftIcon={<LuGitMerge />}
               onClick={saveMethodModal.onOpen}
             >
-              <Trans>Save Method</Trans>
+              <span className="sr-only md:not-sr-only">
+                <Trans>Save Method</Trans>
+              </span>
             </MenubarItem>
             {itemLink && (
               <MenubarItem leftIcon={<LuGitFork />} asChild>
                 <Link prefetch="intent" to={itemLink}>
-                  <Trans>Item Master</Trans>
+                  <span className="sr-only md:not-sr-only">
+                    <Trans>Item Master</Trans>
+                  </span>
                 </Link>
               </MenubarItem>
             )}
