@@ -399,7 +399,7 @@ export function TaskItem({
       <div className="bg-muted/30 border-t px-4 py-2 flex items-center gap-2 w-full">
         <HStack
           spacing={1}
-          className="min-w-0 flex-1 overflow-x-auto pb-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent [&>*]:shrink-0"
+          className="min-w-0 overflow-x-auto pb-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:flex-1 [&>*]:shrink-0"
         >
           <IssueTaskStatus
             task={task}
