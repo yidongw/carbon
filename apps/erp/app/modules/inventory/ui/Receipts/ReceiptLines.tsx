@@ -513,7 +513,7 @@ function ReceiptLineItem({
 
   return (
     <div className={cn("flex flex-col border-b p-6 gap-6 relative", className)}>
-      <div className="absolute top-4 right-6">
+      <div className="absolute top-2 right-2 md:top-4 md:right-6 z-10">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
