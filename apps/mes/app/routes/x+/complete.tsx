@@ -123,9 +123,11 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  // Rework pieces aren't finished — they still need to be redone and re-reported
+  // as Production (or cleared by a manager via Mark Rework Fixed) — so they must
+  // not close the operation. Only good + scrapped pieces are terminal.
   const totalAccountedQuantity =
     (jobOperation.data.quantityComplete ?? 0) +
-    (jobOperation.data.quantityReworked ?? 0) +
     (jobOperation.data.quantityScrapped ?? 0) +
     validation.data.quantity;
 
