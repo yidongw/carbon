@@ -147,7 +147,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const op = await serviceRole
     .from("jobOperation")
     .select(
-      "quantityComplete, quantityReworked, quantityScrapped, targetQuantity, operationQuantity"
+      "quantityComplete, quantityScrapped, targetQuantity, operationQuantity"
     )
     .eq("id", jobOperationId)
     .maybeSingle();
@@ -156,10 +156,14 @@ export async function action({ request }: ActionFunctionArgs) {
       op.data.targetQuantity && op.data.targetQuantity > 0
         ? op.data.targetQuantity
         : (op.data.operationQuantity ?? 0);
+    // Only good and scrapped pieces are terminal. Rework pieces are NOT finished
+    // — they still need to be redone and re-reported as Production — so an
+    // operation with pending rework must stay open (and visible via the
+    // `quantityReworked > 0` clause on the operations list) until a manager
+    // clears it with Mark Rework Fixed. Excluding rework here also realigns this
+    // with the DB auto-done trigger, which completes on quantityComplete alone.
     const accounted =
-      (op.data.quantityComplete ?? 0) +
-      (op.data.quantityReworked ?? 0) +
-      (op.data.quantityScrapped ?? 0);
+      (op.data.quantityComplete ?? 0) + (op.data.quantityScrapped ?? 0);
     if (target > 0 && accounted >= target) {
       await finishJobOperation(serviceRole, {
         jobOperationId,

@@ -2,25 +2,6 @@ import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
- * Bundle work orders released to the floor — the manual fallback list when a
- * worker can't scan the ticket. "Released" = the backing job is Ready / In
- * Progress / Paused (not Draft / Completed / Cancelled).
- */
-export async function getReleasedBundleWorkOrders(
-  client: SupabaseClient<Database>,
-  companyId: string
-) {
-  return client
-    .from("bundleWorkOrders")
-    .select(
-      "id, jobReadableId, attributeLabel, attributeValues, quantity, status"
-    )
-    .eq("companyId", companyId)
-    .in("status", ["Ready", "In Progress", "Paused"])
-    .order("jobReadableId", { ascending: true });
-}
-
-/**
  * Master work orders for the read-only MES list page (filter / sort / print).
  * Reads the enriched `masterWorkOrders` view.
  */
@@ -50,7 +31,7 @@ export async function getBundleWorkOrdersList(
   let query = client
     .from("bundleWorkOrders")
     .select(
-      "id, jobId, jobReadableId, readableIdWithRevision, itemName, attributeLabel, attributeValues, sequence, quantity, status, assignee, assignedAt, masterWorkOrderId, processCount"
+      "id, jobId, jobReadableId, readableIdWithRevision, styleReadableId, itemName, attributeLabel, attributeValues, sequence, quantity, status, assignee, assignedAt, masterWorkOrderId, processCount"
     )
     .eq("companyId", companyId);
 
@@ -61,6 +42,29 @@ export async function getBundleWorkOrdersList(
   return query
     .order("jobReadableId", { ascending: true })
     .order("sequence", { ascending: true });
+}
+
+/**
+ * Released bundle work orders that nobody has picked up yet (job assignee is
+ * null — pickup mirrors the assignee onto the job). Powers the pickup page's
+ * "find an unclaimed bundle by style" table.
+ */
+export async function getUnassignedBundleWorkOrders(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return client
+    .from("bundleWorkOrders")
+    .select(
+      "id, jobId, jobReadableId, readableIdWithRevision, styleReadableId, itemName, attributeLabel, attributeValues, quantity, status, processCount"
+    )
+    .eq("companyId", companyId)
+    .in("status", ["Ready", "In Progress", "Paused"])
+    .is("assignee", null)
+    // Only bundles that actually have an operation to pick up (a fresh bundle
+    // with no operation graph yet would dead-end on the job DAG).
+    .gt("processCount", 0)
+    .order("jobReadableId", { ascending: true });
 }
 
 /** A single bundle work order (via the read view) for the scan-landing page. */

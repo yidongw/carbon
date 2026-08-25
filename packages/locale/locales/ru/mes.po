@@ -314,9 +314,6 @@ msgstr "Запись калибровки создана"
 msgid "Camera unavailable — use manual selection below."
 msgstr "Камера недоступна — выберите вручную ниже."
 
-msgid "Can't scan? Select a released bundle"
-msgstr "Не удаётся отсканировать? Выберите выданную пачку"
-
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -5246,14 +5243,8 @@ msgstr "Сканировать"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "Отсканируйте ярлык пачки, чтобы взять задание и начать работу"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "Отсканируйте ярлык пачки, чтобы взять задание и начать работу."
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "Отсканируйте готовую пачку, чтобы указать выполненное количество"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Отсканируйте готовую пачку, чтобы указать выполненное количество."
 
 msgid "Scan batch number"
 msgstr "Сканирование номера лота"
@@ -5290,9 +5281,6 @@ msgstr "Списано в брак"
 
 msgid "Search"
 msgstr "Поиск"
-
-msgid "Search bundles…"
-msgstr "Поиск пачек…"
 
 msgid "Search by bundle or style"
 msgstr "Поиск по набору или стилю"

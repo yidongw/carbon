@@ -8,7 +8,6 @@ import {
   PopoverContent,
   PopoverTrigger,
   SidebarTrigger,
-  Status,
   Table,
   Tbody,
   Td,
@@ -29,6 +28,7 @@ import {
   Filter,
   useFilters
 } from "~/components/Filter";
+import { JobStatus } from "~/components/JobStatus";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
 import { useUrlParams } from "~/hooks";
@@ -139,28 +139,6 @@ type MasterWorkOrder = {
   salesOrderReadableId: string | null;
   locationName: string | null;
 };
-
-const STATUS_COLORS: Record<
-  string,
-  "gray" | "yellow" | "blue" | "orange" | "green" | "red"
-> = {
-  Draft: "gray",
-  Planned: "yellow",
-  Ready: "blue",
-  "In Progress": "blue",
-  Paused: "orange",
-  Completed: "green",
-  Closed: "gray",
-  Cancelled: "red"
-};
-
-function JobStatus({ status }: { status: string | null }) {
-  if (!status) return null;
-  const color = STATUS_COLORS[status] ?? "gray";
-  return (
-    <Status color={color}>{status === "Ready" ? "Released" : status}</Status>
-  );
-}
 
 function formatDate(value: string | null) {
   if (!value) return "—";

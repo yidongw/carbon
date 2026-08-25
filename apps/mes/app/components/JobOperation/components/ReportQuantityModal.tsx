@@ -28,6 +28,26 @@ type Bundle = {
 } | null;
 
 /**
+ * The subset of operation fields the report modal reads. Declared as a Pick of
+ * OperationWithDetails so the operation-detail page can pass its full loaded
+ * object, while the report table can pass a lighter row from
+ * `get_assigned_operations_for_report`.
+ */
+export type ReportableOperation = Pick<
+  OperationWithDetails,
+  | "id"
+  | "processId"
+  | "description"
+  | "itemReadableId"
+  | "operationQuantity"
+  | "targetQuantity"
+  | "quantityComplete"
+  | "quantityReworked"
+  | "quantityScrapped"
+  | "operationStatus"
+>;
+
+/**
  * The garment report-quantity modal: an info summary + a Completed stepper that
  * defaults to the remaining quantity and, when reduced, asks for the reason for
  * the shortfall (rework / scrap / not finished) — the same behaviour as the old
@@ -39,7 +59,7 @@ export function ReportQuantityModal({
   defaultEmployeeId,
   onClose
 }: {
-  operation: OperationWithDetails;
+  operation: ReportableOperation;
   bundle: Bundle;
   defaultEmployeeId: string;
   onClose: () => void;

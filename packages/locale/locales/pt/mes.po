@@ -314,9 +314,6 @@ msgstr "Registo de calibração criado"
 msgid "Camera unavailable — use manual selection below."
 msgstr "Câmera indisponível — use a seleção manual abaixo."
 
-msgid "Can't scan? Select a released bundle"
-msgstr "Não consegue escanear? Selecione um pacote liberado"
-
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -5246,14 +5243,8 @@ msgstr "Escanear"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "Escaneie um ticket do pacote para assumir a ordem e começar a trabalhar"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "Escaneie um ticket do pacote para assumir a ordem e começar a trabalhar."
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "Escaneie um pacote concluído para reportar a quantidade que você finalizou"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Escaneie um pacote concluído para reportar a quantidade que você finalizou."
 
 msgid "Scan batch number"
 msgstr "SCAN NÚMERO DE LOTE"
@@ -5290,9 +5281,6 @@ msgstr "Refugado"
 
 msgid "Search"
 msgstr "Pesquisar"
-
-msgid "Search bundles…"
-msgstr "Buscar pacotes…"
 
 msgid "Search by bundle or style"
 msgstr "Pesquisar por pacote ou estilo"

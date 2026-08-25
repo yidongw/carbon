@@ -58309,6 +58309,8 @@ export type Database = {
           sequence: number | null
           status: Database["public"]["Enums"]["jobStatus"] | null
           storageUnitId: string | null
+          styleId: string | null
+          styleReadableId: string | null
           tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
@@ -74994,6 +74996,31 @@ export type Database = {
           targetQuantity: number
           thumbnailPath: string
           workCenterId: string
+        }[]
+      }
+      get_assigned_operations_for_report: {
+        Args: { company_id: string }
+        Returns: {
+          assignee: string
+          attributeLabel: string
+          bundleWorkOrderId: string
+          description: string
+          id: string
+          itemName: string
+          itemReadableId: string
+          jobId: string
+          jobReadableId: string
+          masterWorkOrderId: string
+          operationOrder: number
+          operationQuantity: number
+          operationStatus: Database["public"]["Enums"]["jobOperationStatus"]
+          processId: string
+          quantityComplete: number
+          quantityReworked: number
+          quantityScrapped: number
+          readableIdWithRevision: string
+          styleReadableId: string
+          targetQuantity: number
         }[]
       }
       get_audit_log: {

@@ -5,7 +5,6 @@ import {
   Button,
   Heading,
   SidebarTrigger,
-  Status,
   Table,
   Tbody,
   Td,
@@ -26,6 +25,7 @@ import {
   Filter,
   useFilters
 } from "~/components/Filter";
+import { JobStatus } from "~/components/JobStatus";
 import {
   type PrintableBundle,
   PrintTicketsModal
@@ -79,6 +79,7 @@ type BundleWorkOrder = {
   jobId: string | null;
   jobReadableId: string | null;
   readableIdWithRevision: string | null;
+  styleReadableId: string | null;
   itemName: string | null;
   attributeLabel: string | null;
   attributeValues: Record<string, string> | null;
@@ -90,28 +91,6 @@ type BundleWorkOrder = {
   masterWorkOrderId: string | null;
   processCount: number | null;
 };
-
-const STATUS_COLORS: Record<
-  string,
-  "gray" | "yellow" | "blue" | "orange" | "green" | "red"
-> = {
-  Draft: "gray",
-  Planned: "yellow",
-  Ready: "blue",
-  "In Progress": "blue",
-  Paused: "orange",
-  Completed: "green",
-  Closed: "gray",
-  Cancelled: "red"
-};
-
-function JobStatus({ status }: { status: string | null }) {
-  if (!status) return null;
-  const color = STATUS_COLORS[status] ?? "gray";
-  return (
-    <Status color={color}>{status === "Ready" ? "Released" : status}</Status>
-  );
-}
 
 export default function BundleWorkOrdersRoute() {
   const { t, i18n } = useLingui();
@@ -154,7 +133,7 @@ export default function BundleWorkOrdersRoute() {
   const styleOptions = useMemo(
     () =>
       Array.from(
-        new Set(rows.map((r) => r.readableIdWithRevision).filter(Boolean))
+        new Set(rows.map((r) => r.styleReadableId).filter(Boolean))
       ).map((s) => ({ label: s as string, value: s as string })),
     [rows]
   );
@@ -188,7 +167,7 @@ export default function BundleWorkOrdersRoute() {
         filter: { type: "static", options: assigneeOptions }
       },
       {
-        accessorKey: "readableIdWithRevision",
+        accessorKey: "styleReadableId",
         header: t`Style`,
         filter: { type: "static", options: styleOptions }
       },
@@ -340,7 +319,7 @@ export default function BundleWorkOrdersRoute() {
                     <JobStatus status={row.status} />
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    <span>{row.readableIdWithRevision ?? "—"}</span>
+                    <span>{row.styleReadableId ?? "—"}</span>
                     {row.itemName && (
                       <span className="ml-1 text-xs">· {row.itemName}</span>
                     )}
@@ -426,7 +405,7 @@ export default function BundleWorkOrdersRoute() {
                       </Td>
                       <Td>
                         <VStack spacing={0}>
-                          <span>{row.readableIdWithRevision ?? "—"}</span>
+                          <span>{row.styleReadableId ?? "—"}</span>
                           {row.itemName && (
                             <span className="text-xs text-muted-foreground">
                               {row.itemName}

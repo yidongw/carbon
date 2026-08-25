@@ -314,9 +314,6 @@ msgstr "Zapis kalibracji utworzony"
 msgid "Camera unavailable — use manual selection below."
 msgstr "Kamera niedostępna — użyj ręcznego wyboru poniżej."
 
-msgid "Can't scan? Select a released bundle"
-msgstr "Nie możesz zeskanować? Wybierz wydany pakiet"
-
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -5246,14 +5243,8 @@ msgstr "Skanuj"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "Zeskanuj etykietę pakietu, aby podjąć zlecenie i rozpocząć pracę"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "Zeskanuj etykietę pakietu, aby podjąć zlecenie i rozpocząć pracę."
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "Zeskanuj ukończony pakiet, aby zgłosić wykonaną ilość"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Zeskanuj ukończony pakiet, aby zgłosić wykonaną ilość."
 
 msgid "Scan batch number"
 msgstr "Skanuj numer loteu"
@@ -5290,9 +5281,6 @@ msgstr "Odrzucone"
 
 msgid "Search"
 msgstr "Szukaj"
-
-msgid "Search bundles…"
-msgstr "Szukaj pakietów…"
 
 msgid "Search by bundle or style"
 msgstr "Szukaj według paczki lub stylu"
