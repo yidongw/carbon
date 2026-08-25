@@ -1,6 +1,7 @@
 import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useFetcher, useFetchers, useRevalidator } from "react-router";
 import { variantsQuantityModalContentClassName } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
@@ -164,17 +165,22 @@ export function RegisteredOverlay({
 
   return (
     <>
-      {/* Click-catcher scrim. The drawer's Radix overlay doesn't reliably block
-          the blurred list underneath, so a stray click there navigates the page
-          away while the drawer is still open. This transparent layer sits just
-          below the drawer and above the page content, so the first outside click
-          only closes the drawer instead of passing through. */}
-      <div
-        className="fixed inset-0"
-        style={{ zIndex: zIndex - 1 }}
-        onClick={() => onClose(instance.id)}
-        aria-hidden="true"
-      />
+      {/* Click-catcher scrim. The drawer's Radix overlay is pointer-events:none
+          (visible blur, but clicks fall straight through to the list underneath,
+          navigating the page away while the drawer stays open). Portal this
+          transparent layer into document.body so it shares the drawer's top-level
+          stacking context — sitting just below the drawer (zIndex - 1) and above
+          the page — so the first outside click only closes the drawer. */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0"
+            style={{ zIndex: zIndex - 1 }}
+            onClick={() => onClose(instance.id)}
+            aria-hidden="true"
+          />,
+          document.body
+        )}
       <Drawer
         open
         onOpenChange={(open) => {
