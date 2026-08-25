@@ -1,6 +1,7 @@
 import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useFetcher, useFetchers, useRevalidator } from "react-router";
 import { variantsQuantityModalContentClassName } from "~/modules/production/ui/Jobs/variantsQuantityShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
@@ -163,20 +164,38 @@ export function RegisteredOverlay({
   }
 
   return (
-    <Drawer
-      open
-      onOpenChange={(open) => {
-        if (!open) onClose(instance.id);
-      }}
-    >
-      <DrawerContent
-        style={{ zIndex }}
-        onOpenAutoFocus={(event) => {
-          if (isLoading) event.preventDefault();
+    <>
+      {/* Click-catcher scrim. The drawer's Radix overlay is pointer-events:none
+          (visible blur, but clicks fall straight through to the list underneath,
+          navigating the page away while the drawer stays open). Portal this
+          transparent layer into document.body so it shares the drawer's top-level
+          stacking context — sitting just below the drawer (zIndex - 1) and above
+          the page — so the first outside click only closes the drawer. */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0"
+            style={{ zIndex: zIndex - 1 }}
+            onClick={() => onClose(instance.id)}
+            aria-hidden="true"
+          />,
+          document.body
+        )}
+      <Drawer
+        open
+        onOpenChange={(open) => {
+          if (!open) onClose(instance.id);
         }}
       >
-        <Content {...contentProps} />
-      </DrawerContent>
-    </Drawer>
+        <DrawerContent
+          style={{ zIndex }}
+          onOpenAutoFocus={(event) => {
+            if (isLoading) event.preventDefault();
+          }}
+        >
+          <Content {...contentProps} />
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
