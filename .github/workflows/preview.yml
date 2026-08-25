@@ -70,6 +70,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           PREVIEW_READY_SECRET: ${{ secrets.PREVIEW_READY_SECRET }}
         run: |
           retry() {
@@ -100,8 +101,14 @@ jobs:
             --body "$BODY" \
             --edit-last \
             || retry gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$BODY"
-          # Notify Discord directly without waiting for the GitHub webhook roundtrip
-          retry curl -sf -X POST "http://localhost:3002/preview-ready" \
+          # Notify the Discord bot instance that owns this PR's thread, routed by
+          # PR author: devbot (alanywan9) listens on 3012, the main bot on 3002.
+          case "$PR_AUTHOR" in
+            alanywan9) PREVIEW_PORT=3012 ;;
+            *)         PREVIEW_PORT=3002 ;;
+          esac
+          echo "[preview] PR #${PR_NUMBER} by ${PR_AUTHOR} → notifying localhost:${PREVIEW_PORT}"
+          retry curl -sf -X POST "http://localhost:${PREVIEW_PORT}/preview-ready" \
             -H "Authorization: Bearer ${PREVIEW_READY_SECRET}" \
             -H "Content-Type: application/json" \
             -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${ERP_URL}\",\"mesUrl\":\"${MES_URL}\"}" \
