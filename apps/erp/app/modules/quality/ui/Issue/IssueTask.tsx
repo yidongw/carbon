@@ -396,8 +396,11 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex flex-col gap-2 w-full md:flex-row md:justify-between">
-        <HStack spacing={0} className="flex-wrap gap-2">
+      <div className="bg-muted/30 border-t px-4 py-2 flex items-center gap-2 w-full">
+        <HStack
+          spacing={1}
+          className="min-w-0 flex-1 overflow-x-auto pb-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent [&>*]:shrink-0"
+        >
           <IssueTaskStatus
             task={task}
             type="investigation"
@@ -431,7 +434,7 @@ export function TaskItem({
             />
           )}
         </HStack>
-        <HStack className="justify-end">
+        <HStack className="shrink-0">
           <Button
             isDisabled={isDisabled}
             leftIcon={statusAction.icon}
