@@ -314,9 +314,6 @@ msgstr "Enregistrement de calibration créé"
 msgid "Camera unavailable — use manual selection below."
 msgstr "Caméra indisponible — utilisez la sélection manuelle ci-dessous."
 
-msgid "Can't scan? Select a released bundle"
-msgstr "Impossible de scanner ? Sélectionnez un lot lancé"
-
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -5234,14 +5231,8 @@ msgstr "Scanner"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "Scannez une étiquette de lot pour prendre l'ordre et commencer"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "Scannez une étiquette de lot pour prendre l'ordre et commencer."
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "Scannez un lot terminé pour déclarer la quantité réalisée"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Scannez un lot terminé pour déclarer la quantité réalisée."
 
 msgid "Scan batch number"
 msgstr "Numéro de lots scannez"
@@ -5278,9 +5269,6 @@ msgstr "Rebuté"
 
 msgid "Search"
 msgstr "Rechercher"
-
-msgid "Search bundles…"
-msgstr "Rechercher des lots…"
 
 msgid "Search by bundle or style"
 msgstr "Recherche par lot ou par style"

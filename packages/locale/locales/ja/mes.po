@@ -314,9 +314,6 @@ msgstr "校正記録作成"
 msgid "Camera unavailable — use manual selection below."
 msgstr "カメラを使用できません — 下から手動で選択してください。"
 
-msgid "Can't scan? Select a released bundle"
-msgstr "スキャンできませんか？リリース済みのバンドルを選択"
-
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -5234,14 +5231,8 @@ msgstr "スキャン"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "バンドルチケットをスキャンして作業を受け取り開始します"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "バンドルチケットをスキャンして作業を受け取り開始します。"
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "完成したバンドルをスキャンして完了数量を報告します"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "完成したバンドルをスキャンして完了数量を報告します。"
 
 msgid "Scan batch number"
 msgstr "バッチ番号をスキャンします"
@@ -5278,9 +5269,6 @@ msgstr "スクラップ済み"
 
 msgid "Search"
 msgstr "検索"
-
-msgid "Search bundles…"
-msgstr "バンドルを検索…"
 
 msgid "Search by bundle or style"
 msgstr "バンドルまたはスタイルで検索"

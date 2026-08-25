@@ -582,6 +582,20 @@ export async function getJobOperationById(
   });
 }
 
+/**
+ * Every uncompleted operation assigned to someone on a garment bundle job,
+ * across all assignees. One row per assigned process, with the bundle/style
+ * context the report table and modal need. Powers `/x/report`.
+ */
+export async function getAssignedOperationsForReport(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return client.rpc("get_assigned_operations_for_report", {
+    company_id: companyId
+  });
+}
+
 export async function getJobOperationsByWorkCenter(
   client: SupabaseClient<Database>,
   { locationId, workCenterId }: { locationId: string; workCenterId: string }

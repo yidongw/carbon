@@ -315,9 +315,6 @@ msgstr "已创建校准记录"
 msgid "Camera unavailable — use manual selection below."
 msgstr "相机不可用 — 请使用下方手动选择。"
 
-msgid "Can't scan? Select a released bundle"
-msgstr "无法扫码？选择已下达的分包"
-
 msgid "Cancel"
 msgstr "取消"
 
@@ -5235,14 +5232,8 @@ msgstr "扫描"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "扫描分包标签以领取工单并开始工作"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "扫描分包标签以领取工单并开始工作。"
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "扫描已完成的分包以报告你完成的数量"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "扫描已完成的分包以报告你完成的数量。"
 
 msgid "Scan batch number"
 msgstr "扫描批次号"
@@ -5279,9 +5270,6 @@ msgstr "已报废"
 
 msgid "Search"
 msgstr "搜索"
-
-msgid "Search bundles…"
-msgstr "搜索分包…"
 
 msgid "Search by bundle or style"
 msgstr "按分包或款式搜索"

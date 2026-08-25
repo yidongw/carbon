@@ -314,9 +314,6 @@ msgstr "Calibration record created"
 msgid "Camera unavailable — use manual selection below."
 msgstr "Camera unavailable — use manual selection below."
 
-msgid "Can't scan? Select a released bundle"
-msgstr "Can't scan? Select a released bundle"
-
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -5234,14 +5231,8 @@ msgstr "Scan"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "Scan a bundle ticket to take the job and start working"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "Scan a bundle ticket to take the job and start working."
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "Scan a finished bundle to report the quantity you completed"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Scan a finished bundle to report the quantity you completed."
 
 msgid "Scan batch number"
 msgstr "Scan batch number"
@@ -5278,9 +5269,6 @@ msgstr "Scrapped"
 
 msgid "Search"
 msgstr "Search"
-
-msgid "Search bundles…"
-msgstr "Search bundles…"
 
 msgid "Search by bundle or style"
 msgstr "Search by bundle or style"

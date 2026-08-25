@@ -314,9 +314,6 @@ msgstr "कीर्तन रिकॉर्ड बनाया गया ह�
 msgid "Camera unavailable — use manual selection below."
 msgstr "कैमरा उपलब्ध नहीं — नीचे मैन्युअल चयन का उपयोग करें।"
 
-msgid "Can't scan? Select a released bundle"
-msgstr "स्कैन नहीं कर सकते? जारी किया गया बंडल चुनें"
-
 msgid "Cancel"
 msgstr "रद्द करें"
 
@@ -5234,14 +5231,8 @@ msgstr "स्कैन करें"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "कार्य लेने और काम शुरू करने के लिए बंडल टिकट स्कैन करें"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "कार्य लेने और काम शुरू करने के लिए बंडल टिकट स्कैन करें।"
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "आपके द्वारा पूर्ण की गई मात्रा रिपोर्ट करने के लिए पूर्ण बंडल स्कैन करें"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "आपके द्वारा पूर्ण की गई मात्रा रिपोर्ट करने के लिए पूर्ण बंडल स्कैन करें।"
 
 msgid "Scan batch number"
 msgstr "बच्चे क्रम संख्या अस्पर्श करें"
@@ -5278,9 +5269,6 @@ msgstr "स्क्रैप किया गया"
 
 msgid "Search"
 msgstr "खोजें"
-
-msgid "Search bundles…"
-msgstr "बंडल खोजें…"
 
 msgid "Search by bundle or style"
 msgstr "बंडल या स्टाइल में परीक्षण करें"

@@ -314,9 +314,6 @@ msgstr "Kalibrierungsprotokoll erstellt"
 msgid "Camera unavailable — use manual selection below."
 msgstr "Kamera nicht verfügbar – bitte unten manuell auswählen."
 
-msgid "Can't scan? Select a released bundle"
-msgstr "Scannen nicht möglich? Freigegebenes Bündel auswählen"
-
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -5234,14 +5231,8 @@ msgstr "Scannen"
 msgid "Scan a bundle ticket to take the job and start working"
 msgstr "Bündelticket scannen, um den Auftrag zu übernehmen und zu beginnen"
 
-msgid "Scan a bundle ticket to take the job and start working."
-msgstr "Bündelticket scannen, um den Auftrag zu übernehmen und zu beginnen."
-
 msgid "Scan a finished bundle to report the quantity you completed"
 msgstr "Fertiges Bündel scannen, um die von dir fertiggestellte Menge zu melden"
-
-msgid "Scan a finished bundle to report the quantity you completed."
-msgstr "Fertiges Bündel scannen, um die von dir fertiggestellte Menge zu melden."
 
 msgid "Scan batch number"
 msgstr "Scannen Sie den Batchnummer"
@@ -5278,9 +5269,6 @@ msgstr "Ausschuss"
 
 msgid "Search"
 msgstr "Suchen"
-
-msgid "Search bundles…"
-msgstr "Bündel suchen…"
 
 msgid "Search by bundle or style"
 msgstr "Suchen nach Bundel oder Stil"
