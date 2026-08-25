@@ -2,6 +2,12 @@ import { useCarbon } from "@carbon/auth";
 import type { JSONContent } from "@carbon/react";
 import {
   BarProgress,
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetContent,
+  BottomSheetHeader,
+  BottomSheetTitle,
+  BottomSheetTrigger,
   Button,
   Command,
   CommandEmpty,
@@ -24,7 +30,8 @@ import {
   PopoverTrigger,
   toast,
   useDebounce,
-  useDisclosure
+  useDisclosure,
+  VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { parseDate } from "@internationalized/date";
@@ -34,6 +41,7 @@ import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LuCalendar,
+  LuChevronDown,
   LuChevronRight,
   LuCircleCheck,
   LuCirclePlay,
@@ -323,6 +331,30 @@ export function TaskItem({
     taskTitle = `Supplier ${taskTitle}`;
   }
 
+  // Due date, processes and supplier are secondary metadata: shown inline in
+  // the footer on desktop, and collapsed into a "More" bottom sheet on mobile
+  // so the footer stays a single tidy row.
+  const secondaryControls =
+    type === "action" ? (
+      <>
+        <TaskDueDate task={task as IssueActionTask} isDisabled={isDisabled} />
+        <TaskProcesses task={task as IssueActionTask} isDisabled={isDisabled} />
+        <SupplierAssignment
+          task={task as IssueActionTask}
+          type={type}
+          supplierIds={suppliers.map((s) => s.supplierId)}
+          isDisabled={isDisabled}
+        />
+      </>
+    ) : type === "investigation" ? (
+      <SupplierAssignment
+        task={task as IssueActionTask}
+        type={type}
+        supplierIds={suppliers.map((s) => s.supplierId)}
+        isDisabled={isDisabled}
+      />
+    ) : null;
+
   return (
     <div className="rounded-lg border w-full flex flex-col bg-card">
       <div className="flex w-full justify-between px-4 py-2 items-center">
@@ -413,28 +445,39 @@ export function TaskItem({
             value={task.assignee ?? undefined}
             disabled={isDisabled}
           />
-          {type === "action" && (
-            <>
-              <TaskDueDate
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
-              />
-              <TaskProcesses
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
-              />
-            </>
-          )}
-          {(type === "investigation" || type === "action") && (
-            <SupplierAssignment
-              task={task as IssueActionTask}
-              type={type}
-              supplierIds={suppliers.map((s) => s.supplierId)}
-              isDisabled={isDisabled}
-            />
+          {/* Desktop: secondary controls inline (flattened via md:contents).
+              Mobile: hidden here — they live in the "More" sheet instead. */}
+          {secondaryControls && (
+            <div className="hidden md:contents">{secondaryControls}</div>
           )}
         </HStack>
-        <HStack className="shrink-0">
+        <HStack className="shrink-0" spacing={2}>
+          {secondaryControls && (
+            <BottomSheet>
+              <BottomSheetTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  rightIcon={<LuChevronDown />}
+                  className="md:hidden"
+                >
+                  <Trans>More</Trans>
+                </Button>
+              </BottomSheetTrigger>
+              <BottomSheetContent>
+                <BottomSheetHeader>
+                  <BottomSheetTitle>
+                    <Trans>More</Trans>
+                  </BottomSheetTitle>
+                </BottomSheetHeader>
+                <BottomSheetBody>
+                  <VStack spacing={4} className="items-start">
+                    {secondaryControls}
+                  </VStack>
+                </BottomSheetBody>
+              </BottomSheetContent>
+            </BottomSheet>
+          )}
           <Button
             isDisabled={isDisabled}
             leftIcon={statusAction.icon}
