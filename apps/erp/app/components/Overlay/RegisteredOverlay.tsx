@@ -163,20 +163,33 @@ export function RegisteredOverlay({
   }
 
   return (
-    <Drawer
-      open
-      onOpenChange={(open) => {
-        if (!open) onClose(instance.id);
-      }}
-    >
-      <DrawerContent
-        style={{ zIndex }}
-        onOpenAutoFocus={(event) => {
-          if (isLoading) event.preventDefault();
+    <>
+      {/* Click-catcher scrim. The drawer's Radix overlay doesn't reliably block
+          the blurred list underneath, so a stray click there navigates the page
+          away while the drawer is still open. This transparent layer sits just
+          below the drawer and above the page content, so the first outside click
+          only closes the drawer instead of passing through. */}
+      <div
+        className="fixed inset-0"
+        style={{ zIndex: zIndex - 1 }}
+        onClick={() => onClose(instance.id)}
+        aria-hidden="true"
+      />
+      <Drawer
+        open
+        onOpenChange={(open) => {
+          if (!open) onClose(instance.id);
         }}
       >
-        <Content {...contentProps} />
-      </DrawerContent>
-    </Drawer>
+        <DrawerContent
+          style={{ zIndex }}
+          onOpenAutoFocus={(event) => {
+            if (isLoading) event.preventDefault();
+          }}
+        >
+          <Content {...contentProps} />
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
