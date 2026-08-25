@@ -1658,8 +1658,8 @@ function makeItem(
     ),
     checked,
     details: (
-      <VStack spacing={1} className="items-end w-auto">
-        <HStack spacing={2}>
+      <VStack spacing={1} className="items-end w-auto max-w-[45%]">
+        <HStack spacing={0} className="flex-wrap justify-end gap-2">
           {["Batch", "Serial"].includes(
             material.item?.itemTrackingType ?? ""
           ) && (
