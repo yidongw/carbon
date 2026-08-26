@@ -89,57 +89,6 @@ export function buildStyleCuttingMethodOperation(args: {
   };
 }
 
-export function getBundleJobCuttingOperationIdsToDelete(args: {
-  operations: Array<
-    Required<Pick<StyleOperationLike, "id">> & StyleOperationLike
-  >;
-  cuttingProcessId?: string | null;
-}) {
-  const tagged = args.operations
-    .filter((operation) => isStyleCuttingOperation(operation))
-    .map((operation) => operation.id);
-  if (tagged.length > 0) return tagged;
-
-  if (args.cuttingProcessId) {
-    const byProcess = args.operations
-      .filter((operation) => operation.processId === args.cuttingProcessId)
-      .map((operation) => operation.id);
-    if (byProcess.length > 0) return byProcess;
-  }
-
-  const firstOperation = [...args.operations]
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .find(Boolean);
-
-  return firstOperation ? [firstOperation.id] : [];
-}
-
-export function getParentJobNonCuttingOperationIdsToDelete(args: {
-  operations: Array<
-    Required<Pick<StyleOperationLike, "id">> & StyleOperationLike
-  >;
-}) {
-  const cuttingIds = args.operations
-    .filter((operation) => isStyleCuttingOperation(operation))
-    .map((operation) => operation.id);
-
-  if (cuttingIds.length > 0) {
-    return args.operations
-      .map((operation) => operation.id)
-      .filter((id) => !cuttingIds.includes(id));
-  }
-
-  const firstOperation = [...args.operations]
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .find(Boolean);
-
-  if (!firstOperation) return [];
-
-  return args.operations
-    .map((operation) => operation.id)
-    .filter((id) => id !== firstOperation.id);
-}
-
 // ---------------------------------------------------------------------------
 // Nesting-aware garment job split
 //
