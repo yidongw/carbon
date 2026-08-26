@@ -253,7 +253,7 @@ export default function RuleAssignmentsList({
             <Trans>Status</Trans>
           </Th>
           {variant === "card" && (
-            <Th>
+            <Th className="hidden md:table-cell">
               <Trans>Message</Trans>
             </Th>
           )}
@@ -283,6 +283,11 @@ export default function RuleAssignmentsList({
                     </Badge>
                   )}
                 </HStack>
+                {variant === "card" && a.rule.message && (
+                  <p className="md:hidden mt-1 text-xs text-muted-foreground whitespace-normal break-words">
+                    {a.rule.message}
+                  </p>
+                )}
               </Td>
               <Td>
                 {a.rule.severity === "error" ? (
@@ -313,7 +318,7 @@ export default function RuleAssignmentsList({
                 )}
               </Td>
               {variant === "card" && (
-                <Td className="w-full max-w-0">
+                <Td className="w-full max-w-0 hidden md:table-cell">
                   <p className="text-muted-foreground truncate max-w-xl">
                     {a.rule.message}
                   </p>
