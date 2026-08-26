@@ -17,15 +17,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   generateHTML,
-  HStack,
   IconButton,
   Popover,
   PopoverContent,
   PopoverTrigger,
   toast,
   useDebounce,
-  useDisclosure,
-  VStack
+  useDisclosure
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { parseDate } from "@internationalized/date";
@@ -35,7 +33,6 @@ import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LuCalendar,
-  LuChevronDown,
   LuChevronRight,
   LuCircleCheck,
   LuCirclePlay,
@@ -422,65 +419,35 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex items-center gap-2 w-full">
-        <HStack
-          spacing={1}
-          className="min-w-0 overflow-x-auto pb-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:flex-1 [&>*]:shrink-0"
+      <div className="bg-muted/30 border-t px-4 py-2 flex flex-wrap items-center gap-2 w-full">
+        <IssueTaskStatus
+          task={task}
+          type="investigation"
+          isDisabled={isDisabled}
+        />
+        <Assignee
+          table={getTable(type)}
+          id={task.id}
+          size="sm"
+          value={task.assignee ?? undefined}
+          disabled={isDisabled}
+        />
+        {/* Secondary controls (due date, processes, supplier) stay inline and
+            wrap onto the next line when the row is too narrow, rather than
+            collapsing behind a "More" menu — so wide cards use the full width. */}
+        {secondaryControls}
+        <Button
+          className="ml-auto"
+          isDisabled={isDisabled}
+          leftIcon={statusAction.icon}
+          variant="secondary"
+          size="sm"
+          onClick={() => {
+            onOperationStatusChange(task.id!, statusAction.status);
+          }}
         >
-          <IssueTaskStatus
-            task={task}
-            type="investigation"
-            isDisabled={isDisabled}
-          />
-          <Assignee
-            table={getTable(type)}
-            id={task.id}
-            size="sm"
-            value={task.assignee ?? undefined}
-            disabled={isDisabled}
-          />
-          {/* Desktop: secondary controls inline (flattened via md:contents).
-              Mobile: hidden here — they live in the "More" sheet instead. */}
-          {secondaryControls && (
-            <div className="hidden md:contents">{secondaryControls}</div>
-          )}
-        </HStack>
-        <HStack className="shrink-0" spacing={2}>
-          {secondaryControls && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  rightIcon={<LuChevronDown />}
-                  className="md:hidden"
-                >
-                  <Trans>More</Trans>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                side="top"
-                align="end"
-                className="w-auto p-2"
-              >
-                <VStack spacing={2} className="items-stretch [&>*]:w-full">
-                  {secondaryControls}
-                </VStack>
-              </PopoverContent>
-            </Popover>
-          )}
-          <Button
-            isDisabled={isDisabled}
-            leftIcon={statusAction.icon}
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              onOperationStatusChange(task.id!, statusAction.status);
-            }}
-          >
-            {statusAction.action}
-          </Button>
-        </HStack>
+          {statusAction.action}
+        </Button>
       </div>
     </div>
   );
