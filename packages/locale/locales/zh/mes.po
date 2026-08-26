@@ -1500,6 +1500,9 @@ msgstr "删除建议失败"
 msgid "Failed to delete supplier contact"
 msgstr "删除供应商联系人失败"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "删除供应商工序失败"
 
@@ -1802,6 +1805,9 @@ msgstr "获取供应商联系人ID失败"
 
 msgid "Failed to get a supplier location id"
 msgstr "获取供应商位置ID失败"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "获取工作中心ID失败"
@@ -2199,6 +2205,9 @@ msgstr "获取供应商位置失败"
 msgid "Failed to get supplier locations"
 msgstr "获取供应商位置失败"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "获取供应商工序失败"
 
@@ -2459,6 +2468,9 @@ msgstr "插入存储单元失败"
 
 msgid "Failed to insert style inventory"
 msgstr "插入款式库存失败"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "插入供应商报价失败"
@@ -3752,6 +3764,9 @@ msgstr "更新供应商地址失败"
 
 msgid "Failed to update supplier contact"
 msgstr "更新供应商联系信息失败"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "更新供应商付款条款失败"
@@ -5759,6 +5774,9 @@ msgstr "成功删除供应商联系人"
 msgid "Successfully deleted supplier location"
 msgstr "成功删除供应商位置"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "成功删除供应商类型"
 
@@ -5839,6 +5857,9 @@ msgstr "已创建供应商位置"
 
 msgid "Supplier part updated"
 msgstr "供应商零件已更新"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "供应商报价已成功确认"
@@ -6355,6 +6376,9 @@ msgstr "更新成功"
 
 msgid "Updated supplier"
 msgstr "已更新供应商"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "已更新供应商付款条款"

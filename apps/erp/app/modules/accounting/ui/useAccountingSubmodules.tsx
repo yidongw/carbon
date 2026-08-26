@@ -17,7 +17,8 @@ import {
   LuLayers,
   LuScale,
   LuSheet,
-  LuTrendingUp
+  LuTrendingUp,
+  LuWallet
 } from "react-icons/lu";
 import { usePermissions, useRouteData, useSettings } from "~/hooks";
 import type { AuthenticatedRouteGroup, Role } from "~/types";
@@ -58,6 +59,17 @@ export default function useAccountingSubmodules() {
             to: path.to.accountingPayments,
             role: "employee",
             icon: <LuCircleCheck />
+          }
+        ]
+      },
+      {
+        name: t`Payables`,
+        routes: [
+          {
+            name: t`Supplier Payments`,
+            to: path.to.purchasePayments,
+            role: "employee",
+            icon: <LuWallet />
           }
         ]
       },
@@ -187,6 +199,9 @@ export default function useAccountingSubmodules() {
   const isRouteVisible = (route: { to: string; role?: string }) => {
     if (route.role && !permissions.is(route.role as Role)) return false;
     if (!hasMultipleCompanies && multiCompanyRoutes.has(route.to)) return false;
+    if (route.to === path.to.purchasePayments) {
+      return permissions.can("view", "invoicing");
+    }
     if (isPayrollRoute(route.to)) {
       return permissions.can("view", "people");
     }

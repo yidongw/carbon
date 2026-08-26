@@ -1783,6 +1783,12 @@ export const path = {
     purchaseInvoiceVoid: (id: string) =>
       generatePath(`${x}/purchase-invoice/${id}/void`),
     purchaseInvoices: `${x}/purchasing/invoices`,
+    purchasePayments: `${x}/accounting/purchase-payments`,
+    newPurchasePayment: `${x}/accounting/purchase-payments/new`,
+    purchasePayment: (id: string) =>
+      generatePath(`${x}/accounting/purchase-payments/${id}`),
+    deletePurchasePayment: (id: string) =>
+      generatePath(`${x}/accounting/purchase-payments/${id}/delete`),
     purchaseOrder: (id: string) => generatePath(`${x}/purchase-order/${id}`),
     purchaseOrderDuplicate: (id: string) =>
       generatePath(`${x}/purchase-order/${id}/duplicate`),

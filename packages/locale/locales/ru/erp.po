@@ -1108,6 +1108,10 @@ msgstr "Вы уверены, что хотите удалить тип хран�
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить хранилище: {0}? Это действие невозможно отменить."
 
+#. placeholder {0}: purchasePayment.paymentId
+msgid "Are you sure you want to delete the supplier payment: {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить тип поставщика: {0}? Это действие невозможно отменить."
@@ -2801,6 +2805,9 @@ msgstr "Тип хранилища создан"
 msgid "Created style"
 msgstr "Модель создана"
 
+msgid "Created supplier payment"
+msgstr ""
+
 msgid "Created supplier process"
 msgstr "Создан процесс поставщика"
 
@@ -3308,6 +3315,9 @@ msgstr "Удалить Passkey"
 
 msgid "Delete Passkey"
 msgstr "Удалить Passkey"
+
+msgid "Delete Payment"
+msgstr ""
 
 msgid "Delete Payment Term"
 msgstr "Удалить условие платежа"
@@ -3971,6 +3981,9 @@ msgstr "Редактировать партнера"
 msgid "Edit Passkey"
 msgstr "Изменить Passkey"
 
+msgid "Edit Payment"
+msgstr ""
+
 msgid "Edit Payment Term"
 msgstr "Редактировать условие платежа"
 
@@ -4075,6 +4088,9 @@ msgstr "Редактировать поставщика"
 
 msgid "Edit Supplier Item"
 msgstr "Редактировать поставляемый товар"
+
+msgid "Edit Supplier Payment"
+msgstr ""
 
 msgid "Edit supplier process"
 msgstr "Редактировать процесс поставщика"
@@ -5022,6 +5038,10 @@ msgstr "Не удалось создать модель: {0}"
 msgid "Failed to create supplier location"
 msgstr "Не удалось создать местоположение поставщика"
 
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create supplier payment: {0}"
+msgstr ""
+
 msgid "Failed to create supplier process"
 msgstr "Невозможно создать процесс поставщика"
 
@@ -5365,6 +5385,9 @@ msgstr "Не удалось удалить предложение"
 msgid "Failed to delete supplier contact"
 msgstr "Не удалось удалить контакт поставщика"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "Не удалось удалить процесс поставщика"
 
@@ -5673,6 +5696,9 @@ msgstr "Не удалось получить идентификатор конт
 
 msgid "Failed to get a supplier location id"
 msgstr "Не удалось получить идентификатор местоположения поставщика"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "Не удалось получить идентификатор рабочего центра"
@@ -6073,6 +6099,9 @@ msgstr "Не удалось получить местоположение пос
 msgid "Failed to get supplier locations"
 msgstr "Не удалось получить местоположения поставщиков"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "Не удалось получить процессы поставщиков"
 
@@ -6336,6 +6365,9 @@ msgstr "Не удалось добавить единицу хранения"
 
 msgid "Failed to insert style inventory"
 msgstr "Не удалось вставить стиль инвентаризации"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "Не удалось вставить поставщикную оферту"
@@ -7743,6 +7775,9 @@ msgstr "Не удалось обновить адрес поставщика"
 
 msgid "Failed to update supplier contact"
 msgstr "Не удалось обновить контакт поставщика"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "Не удалось обновить условия оплаты поставщика"
@@ -10295,6 +10330,9 @@ msgstr "Новый поставщик"
 msgid "New Supplier Item"
 msgstr "Новый поставщикowy품"
 
+msgid "New Supplier Payment"
+msgstr ""
+
 msgid "New Tag"
 msgstr "Новый тег"
 
@@ -11289,6 +11327,9 @@ msgstr "Платеж"
 msgid "Payment date"
 msgstr "Даталаты"
 
+msgid "Payment Date"
+msgstr ""
+
 msgid "Payment history"
 msgstr "Платежная история"
 
@@ -11297,6 +11338,9 @@ msgstr "Способ оплаты"
 
 msgid "Payment recorded successfully"
 msgstr "Платеж успешно зарегистрирован"
+
+msgid "Payment Reference"
+msgstr ""
 
 msgid "Payment successful! Your plan is now active."
 msgstr "Платёж прошёл успешно! Ваш план теперь активен."
@@ -14420,6 +14464,9 @@ msgstr "Успешно удалён контакт поставщика"
 msgid "Successfully deleted supplier location"
 msgstr "Успешно удалена поставка"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "Успешно удалён тип поставщика"
 
@@ -14567,8 +14614,14 @@ msgstr "Номер детали поставщика"
 msgid "Supplier part updated"
 msgstr "Поставщик обновлен"
 
+msgid "Supplier payment created"
+msgstr ""
+
 msgid "Supplier Payment Discounts"
 msgstr "Скидки при оплате поставщиком"
+
+msgid "Supplier Payments"
+msgstr ""
 
 msgid "Supplier Processes"
 msgstr "Процессы поставщика"
@@ -15831,6 +15884,9 @@ msgstr "Успешно обновлено"
 
 msgid "Updated supplier"
 msgstr "Обновленный поставщик"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "Обновленные условия оплаты поставщиков"

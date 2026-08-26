@@ -1499,6 +1499,9 @@ msgstr "Fallito durante il cancellamento della suggerimento"
 msgid "Failed to delete supplier contact"
 msgstr "Impossibile eliminare il contatto fornitore"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "Fallito durante l'eliminazione del processo fornitore"
 
@@ -1801,6 +1804,9 @@ msgstr "Impossibile ottenere un ID contatto fornitore"
 
 msgid "Failed to get a supplier location id"
 msgstr "Fallito nel recuperare l'id della località fornitore"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "Fallito nel recuperare l'ID centro lavoro"
@@ -2198,6 +2204,9 @@ msgstr "Impossibile ottenere la località del fornitore"
 msgid "Failed to get supplier locations"
 msgstr "Fallito nel recupero delle localizzazioni del fornitore"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "Fallito nel recupero dei processi fornitori"
 
@@ -2458,6 +2467,9 @@ msgstr "Impossibile inserire il storageUnit"
 
 msgid "Failed to insert style inventory"
 msgstr "Impossibile inserire lo stock di stile"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "Impossibile inserire la quotazione del fornitore"
@@ -3751,6 +3763,9 @@ msgstr "Fallito aggiornamento indirizzo fornitore"
 
 msgid "Failed to update supplier contact"
 msgstr "Fallito aggiornamento contatto fornitore"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "Fallito aggiornamento termini pagamenti fornitore"
@@ -5758,6 +5773,9 @@ msgstr "Eliminazione del contatto fornitore completata"
 msgid "Successfully deleted supplier location"
 msgstr "Eliminazione del sito fornitore completata"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "Tipo fornitore eliminato con successo"
 
@@ -5838,6 +5856,9 @@ msgstr "Località fornitore creata"
 
 msgid "Supplier part updated"
 msgstr "Prodotto fornitore aggiornato"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "Proponente offerta finalizzata con successo"
@@ -6354,6 +6375,9 @@ msgstr "Aggiornato con successo"
 
 msgid "Updated supplier"
 msgstr "Aggiornato fornitore"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "Termini di pagamento fornitori aggiornati"

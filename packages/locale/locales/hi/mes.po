@@ -1499,6 +1499,9 @@ msgstr "सUGGESTION हटाने में विफल रहा"
 msgid "Failed to delete supplier contact"
 msgstr "संप्रदाता कонтेक्ट को हटाने में विफल रहा"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "फ़ाइल को हटाने में व्याकरणीय त्रुटि होने पर"
 
@@ -1801,6 +1804,9 @@ msgstr "फ़ाइल कर ने कोई प्रदाता संप�
 
 msgid "Failed to get a supplier location id"
 msgstr "फ़ाइल्ड नहीं किया गया संपादक पозिशन आईडी"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "कार्य सेंटर आईडी प्राप्त करने में विफल रहा"
@@ -2198,6 +2204,9 @@ msgstr "संशोधक की स्थिति प्राप्त न�
 msgid "Failed to get supplier locations"
 msgstr "संशोधक की स्थान अमिट करने में व़िला"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "संशोधक प्रक्रियाएँ प्राप्त करने में वा सफल रहे"
 
@@ -2458,6 +2467,9 @@ msgstr "स्टोरेज यूनिट में इंサर्ट क�
 
 msgid "Failed to insert style inventory"
 msgstr "गैर सफल शॉप इनवार्टर का प्रवेन"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "फ़ाइल को डालने में व्याकरण त्रुटि हो गई"
@@ -3751,6 +3763,9 @@ msgstr "संशोधन करने में असफलता हुई �
 
 msgid "Failed to update supplier contact"
 msgstr "फ़ाइल को अपडेट करने में फाल्टी संशय प्रविष्टि"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "संशोधन करने में असफलता हुई: विनियमित क्रयकर्ता की भुगतान परियोजना"
@@ -5758,6 +5773,9 @@ msgstr "संपादकित विनियोजक संपर्क क
 msgid "Successfully deleted supplier location"
 msgstr "संपादक विभाग को सफलतापूर्वक हटा दिया.get@2023"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "समाप्ति से वित्तीय प्रकार हटा दिया"
 
@@ -5838,6 +5856,9 @@ msgstr "संशोधक स्थान बनाया गया है"
 
 msgid "Supplier part updated"
 msgstr "संशोधित विनायक भाग"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "संशोधित विनियमित क्रेडिटर अनुबंध सफलतापूर्वक पूरा हो गया"
@@ -6354,6 +6375,9 @@ msgstr "सफलतापूर्वक अपडेट किया गया
 
 msgid "Updated supplier"
 msgstr "अपडेट दिया गया संशोधक"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "अपडेट दिए गए प्रदाता की किस्मत संरचना"

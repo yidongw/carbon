@@ -21,6 +21,7 @@ import type {
   macrsConventions,
   macrsPropertyClasses,
   paymentTermValidator,
+  purchasePaymentValidator,
   taxDepreciationMethods
 } from "./accounting.models";
 import type { Transaction, TranslatedBalance } from "./types";
@@ -701,6 +702,78 @@ export async function upsertPaymentTerm(
     .eq("id", paymentTerm.id)
     .select("id")
     .single();
+}
+
+export async function getPurchasePayment(
+  client: SupabaseClient<Database>,
+  purchasePaymentId: string
+) {
+  return client
+    .from("purchasePayment")
+    .select("*")
+    .eq("id", purchasePaymentId)
+    .single();
+}
+
+export async function getPurchasePayments(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args: GenericQueryFilters & {
+    search: string | null;
+  }
+) {
+  let query = client
+    .from("purchasePayment")
+    .select("*", {
+      count: "exact"
+    })
+    .eq("companyId", companyId);
+
+  if (args.search) {
+    query = query.ilike("paymentId", `%${args.search}%`);
+  }
+
+  query = setGenericQueryFilters(query, args, [
+    { column: "paymentDate", ascending: false },
+    { column: "createdAt", ascending: false }
+  ]);
+  return query;
+}
+
+export async function upsertPurchasePayment(
+  client: SupabaseClient<Database>,
+  purchasePayment:
+    | (Omit<z.infer<typeof purchasePaymentValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
+      })
+    | (Omit<z.infer<typeof purchasePaymentValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
+) {
+  if ("createdBy" in purchasePayment) {
+    return client
+      .from("purchasePayment")
+      .insert([purchasePayment])
+      .select("id")
+      .single();
+  }
+  return client
+    .from("purchasePayment")
+    .update(sanitize(purchasePayment))
+    .eq("id", purchasePayment.id)
+    .select("id")
+    .single();
+}
+
+export async function deletePurchasePayment(
+  client: SupabaseClient<Database>,
+  purchasePaymentId: string
+) {
+  return client.from("purchasePayment").delete().eq("id", purchasePaymentId);
 }
 
 export async function deleteCostCenter(

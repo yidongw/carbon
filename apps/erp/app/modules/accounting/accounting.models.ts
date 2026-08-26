@@ -384,6 +384,17 @@ export const paymentTermValidator = z.object({
   })
 });
 
+export const purchasePaymentValidator = z.object({
+  id: zfd.text(z.string().optional()),
+  paymentId: z.string().min(1, { message: "Payment reference is required" }),
+  supplierId: z.string().min(1, { message: "Supplier is required" }),
+  paymentDate: zfd.text(z.string().optional()),
+  currencyCode: z.string().min(1, { message: "Currency is required" }),
+  totalAmount: zfd.numeric(
+    z.number().min(0, { message: "Amount must be greater than or equal to 0" })
+  )
+});
+
 export const costLedgerValidator = z.object({
   postingDate: zfd.text(z.string().optional()),
   itemLedgerType: z.enum(itemLedgerTypes),

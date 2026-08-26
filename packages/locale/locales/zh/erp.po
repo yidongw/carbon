@@ -1108,6 +1108,10 @@ msgstr "您确定要删除存储类型：{0}？此操作无法撤销。"
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "您确定要删除存储单元：{0}？此操作无法撤销。"
 
+#. placeholder {0}: purchasePayment.paymentId
+msgid "Are you sure you want to delete the supplier payment: {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "您确定要删除供应商类型：{0}？此操作无法撤销。"
@@ -2801,6 +2805,9 @@ msgstr "已创建存储类型"
 msgid "Created style"
 msgstr "已创建款式"
 
+msgid "Created supplier payment"
+msgstr ""
+
 msgid "Created supplier process"
 msgstr "已创建供应商工序"
 
@@ -3308,6 +3315,9 @@ msgstr "删除通行密钥"
 
 msgid "Delete Passkey"
 msgstr "删除通行密钥"
+
+msgid "Delete Payment"
+msgstr ""
 
 msgid "Delete Payment Term"
 msgstr "删除支付条款"
@@ -3971,6 +3981,9 @@ msgstr "编辑合作伙伴"
 msgid "Edit Passkey"
 msgstr "编辑通行密钥"
 
+msgid "Edit Payment"
+msgstr ""
+
 msgid "Edit Payment Term"
 msgstr "编辑付款条款"
 
@@ -4075,6 +4088,9 @@ msgstr "编辑供应商"
 
 msgid "Edit Supplier Item"
 msgstr "编辑供应商货品"
+
+msgid "Edit Supplier Payment"
+msgstr ""
 
 msgid "Edit supplier process"
 msgstr "编辑供应商工序"
@@ -5022,6 +5038,10 @@ msgstr "创建款式失败：{0}"
 msgid "Failed to create supplier location"
 msgstr "创建供应商位置失败"
 
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create supplier payment: {0}"
+msgstr ""
+
 msgid "Failed to create supplier process"
 msgstr "创建供应商工序失败"
 
@@ -5365,6 +5385,9 @@ msgstr "删除建议失败"
 msgid "Failed to delete supplier contact"
 msgstr "删除供应商联系人失败"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "删除供应商工序失败"
 
@@ -5673,6 +5696,9 @@ msgstr "获取供应商联系人ID失败"
 
 msgid "Failed to get a supplier location id"
 msgstr "获取供应商位置ID失败"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "获取工作中心ID失败"
@@ -6073,6 +6099,9 @@ msgstr "获取供应商位置失败"
 msgid "Failed to get supplier locations"
 msgstr "获取供应商位置失败"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "获取供应商工序失败"
 
@@ -6336,6 +6365,9 @@ msgstr "插入存储单元失败"
 
 msgid "Failed to insert style inventory"
 msgstr "插入款式库存失败"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "插入供应商报价失败"
@@ -7743,6 +7775,9 @@ msgstr "更新供应商地址失败"
 
 msgid "Failed to update supplier contact"
 msgstr "更新供应商联系信息失败"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "更新供应商付款条款失败"
@@ -10295,6 +10330,9 @@ msgstr "新供应商"
 msgid "New Supplier Item"
 msgstr "新建供应商货品"
 
+msgid "New Supplier Payment"
+msgstr ""
+
 msgid "New Tag"
 msgstr "新标签"
 
@@ -11289,6 +11327,9 @@ msgstr "付款"
 msgid "Payment date"
 msgstr "付款日期"
 
+msgid "Payment Date"
+msgstr ""
+
 msgid "Payment history"
 msgstr "付款历史"
 
@@ -11297,6 +11338,9 @@ msgstr "支付方式"
 
 msgid "Payment recorded successfully"
 msgstr "支付记录成功"
+
+msgid "Payment Reference"
+msgstr ""
 
 msgid "Payment successful! Your plan is now active."
 msgstr "付款成功！您的计划现已激活。"
@@ -14420,6 +14464,9 @@ msgstr "成功删除供应商联系人"
 msgid "Successfully deleted supplier location"
 msgstr "成功删除供应商位置"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "成功删除供应商类型"
 
@@ -14567,8 +14614,14 @@ msgstr "供应商产品号"
 msgid "Supplier part updated"
 msgstr "供应商零件已更新"
 
+msgid "Supplier payment created"
+msgstr ""
+
 msgid "Supplier Payment Discounts"
 msgstr "供应商付款折扣"
+
+msgid "Supplier Payments"
+msgstr ""
 
 msgid "Supplier Processes"
 msgstr "供应商工序"
@@ -15831,6 +15884,9 @@ msgstr "更新成功"
 
 msgid "Updated supplier"
 msgstr "已更新供应商"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "已更新供应商付款条款"

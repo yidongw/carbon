@@ -1499,6 +1499,9 @@ msgstr "削除に失敗しました"
 msgid "Failed to delete supplier contact"
 msgstr "削除に失敗しました：サプライヤーの連絡先"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "サプライヤープロセスの削除に失敗しました"
 
@@ -1801,6 +1804,9 @@ msgstr "サプライヤーの連絡先IDを取得できませんでした"
 
 msgid "Failed to get a supplier location id"
 msgstr "サプライヤーロケーションIDを取得できませんでした"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "作業センターアイデンティファイアを取得できませんでした"
@@ -2198,6 +2204,9 @@ msgstr "サプライヤーの場所を取得できませんでした"
 msgid "Failed to get supplier locations"
 msgstr "サプライヤーの場所を取得できませんでした"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "サプライヤープロセスの取得に失敗しました"
 
@@ -2458,6 +2467,9 @@ msgstr "ストレージ単位の登録に失敗しました"
 
 msgid "Failed to insert style inventory"
 msgstr "スタイルインベントリの登録に失敗しました"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "サプライヤーの見積りを挿入できませんでした"
@@ -3751,6 +3763,9 @@ msgstr "サプライヤー住所の更新に失敗しました"
 
 msgid "Failed to update supplier contact"
 msgstr "サプライヤーの連絡先を更新できませんでした"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "サプライヤーの支払い条件を更新できませんでした"
@@ -5758,6 +5773,9 @@ msgstr "成功しました。サプライヤーの連絡先を削除しました
 msgid "Successfully deleted supplier location"
 msgstr "成功しました。サプライヤーの場所を削除しました。"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "成功してサプライヤータイプを削除しました"
 
@@ -5838,6 +5856,9 @@ msgstr "サプライヤーの場所が作成されました"
 
 msgid "Supplier part updated"
 msgstr "サプライヤー品番が更新されました"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "サプライヤーの提示価格が確定しました"
@@ -6354,6 +6375,9 @@ msgstr "正常に更新されました"
 
 msgid "Updated supplier"
 msgstr "更新されたサプライヤ"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "更新されたサプライヤーの支払い条件"

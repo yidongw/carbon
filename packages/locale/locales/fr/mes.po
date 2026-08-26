@@ -1499,6 +1499,9 @@ msgstr "Échec de la suppression de la suggestion"
 msgid "Failed to delete supplier contact"
 msgstr "Échec de la suppression du contact fournisseur"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "Échec de la suppression du processus fournisseur"
 
@@ -1801,6 +1804,9 @@ msgstr "Échec de récupération de l'identifiant du contact fournisseur"
 
 msgid "Failed to get a supplier location id"
 msgstr "Échec de récupération de l'identifiant de localisation du fournisseur"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "Échec de récupération de l'ID du centre de travail"
@@ -2198,6 +2204,9 @@ msgstr "Échec de récupération de la localisation du fournisseur"
 msgid "Failed to get supplier locations"
 msgstr "Échec de récupération des emplacements fournisseur"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "Échec de récupération des processus fournisseur"
 
@@ -2458,6 +2467,9 @@ msgstr "Échec de l'insertion de l'unité de stockage"
 
 msgid "Failed to insert style inventory"
 msgstr "Échec de l'insertion du stock de styles"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "Échec de l'insertion du devis fournisseur"
@@ -3751,6 +3763,9 @@ msgstr "Échec de la mise à jour des informations du fournisseur"
 
 msgid "Failed to update supplier contact"
 msgstr "Échec de la mise à jour des coordonnées du fournisseur"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "Échec de la mise à jour des conditions de paiement du fournisseur"
@@ -5758,6 +5773,9 @@ msgstr "Suppression du contact fournisseur réussie"
 msgid "Successfully deleted supplier location"
 msgstr "Suppression du lieu de fournisseur réussie"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "Suppression du type de fournisseur réussie"
 
@@ -5838,6 +5856,9 @@ msgstr "Localisation du fournisseur créée"
 
 msgid "Supplier part updated"
 msgstr "Fournisseur partie mise à jour"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "Fournisseur : devis finalisé avec succès"
@@ -6354,6 +6375,9 @@ msgstr "Mis à jour avec succès"
 
 msgid "Updated supplier"
 msgstr "Mise à jour du fournisseur"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "Mises à jour des conditions de paiement des fournisseurs"
