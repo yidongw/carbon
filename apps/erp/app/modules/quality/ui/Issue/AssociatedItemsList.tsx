@@ -340,7 +340,7 @@ export function AssociatedItemsList({
             return (
               <li
                 key={r.child.id}
-                className={`py-4 first:pt-0 last:pb-0 transition-colors rounded-md ${
+                className={`@container py-4 first:pt-0 last:pb-0 transition-colors rounded-md ${
                   isDropTarget ? "bg-accent/40 ring-2 ring-accent" : ""
                 }`}
                 data-blocked={r.pending || r.sumMismatch ? "true" : undefined}
@@ -384,10 +384,12 @@ export function AssociatedItemsList({
                   }
                 }}
               >
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:w-full md:gap-4">
-                  {/* Identity — full width on mobile, flex-1 on desktop. The
-                      overflow menu is pinned top-right on mobile only. */}
-                  <div className="flex items-start justify-between gap-2 md:min-w-0 md:flex-1">
+                <div className="flex flex-col gap-3 @lg:flex-row @lg:items-center @lg:w-full @lg:gap-4">
+                  {/* Identity — full width when the card is narrow, flex-1 once
+                      it is wide enough (container query on the row, so it uses
+                      the card's real width, not the viewport). The overflow menu
+                      is pinned top-right only while stacked. */}
+                  <div className="flex items-start justify-between gap-2 @lg:min-w-0 @lg:flex-1">
                     <div className="flex flex-col min-w-0 flex-1">
                       <h3 className="font-semibold truncate">
                         {item.readableIdWithRevision}
@@ -397,13 +399,13 @@ export function AssociatedItemsList({
                       </p>
                     </div>
                     {rowMenu && (
-                      <div className="shrink-0 md:hidden">{rowMenu}</div>
+                      <div className="shrink-0 @lg:hidden">{rowMenu}</div>
                     )}
                   </div>
-                  {/* Quantity + Status — side by side beneath the title on
-                      mobile; md:contents flattens them back into the row on
-                      desktop so the layout there is unchanged. */}
-                  <div className="flex items-end gap-4 md:contents">
+                  {/* Quantity + Status — side by side beneath the title while
+                      the card is narrow; @lg:contents flattens them back into the
+                      row once it is wide enough. */}
+                  <div className="flex items-end gap-4 @lg:contents">
                     <ValidatedForm
                       key={`${r.child.id}-${r.quantity}`}
                       defaultValues={{
@@ -457,8 +459,8 @@ export function AssociatedItemsList({
                       />
                     </ValidatedForm>
                   </div>
-                  {/* Overflow menu — desktop only, at the row end. */}
-                  <div className="hidden w-10 shrink-0 items-end justify-end md:flex">
+                  {/* Overflow menu — at the row end once the row is horizontal. */}
+                  <div className="hidden w-10 shrink-0 items-end justify-end @lg:flex">
                     {rowMenu}
                   </div>
                 </div>
