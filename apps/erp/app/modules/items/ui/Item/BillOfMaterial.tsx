@@ -1628,10 +1628,12 @@ function makeItem(
     ? materialHasRules(material.id, rulesByField)
     : false;
 
-  // Badge cluster + variant chips. Rendered to the right of the title on
-  // desktop, and reflowed onto their own full-width row beneath the title on
-  // mobile (see title/details below), so they never squeeze or overlap the
-  // title on narrow screens.
+  // Badge cluster + variant chips. Always rendered on their own full-width
+  // wrapping row beneath the title (see below), at every width, so they never
+  // squeeze, overlap the title, or get clipped by the card. Rendered exactly
+  // once — the previous desktop/mobile split duplicated the same element in two
+  // slots, which overlapped the title on narrow panels and dropped the color
+  // chip below the `md` breakpoint.
   const badges = (
     <HStack spacing={2}>
       {["Batch", "Serial"].includes(material.item?.itemTrackingType ?? "") && (
@@ -1731,11 +1733,12 @@ function makeItem(
             </Link>
           )}
         </div>
-        {/* Mobile: badges reflow onto their own row beneath the title so they
-            never squeeze/overlap it. Hidden on desktop, where they live in the
-            right-hand details slot instead. */}
+        {/* Badges + variant color chips on their own full-width wrapping row
+            beneath the title, at every width, so they never squeeze/overlap the
+            title or get clipped. stopPropagation keeps tapping a badge or chip
+            from selecting the row. */}
         <div
-          className="mt-1 flex flex-wrap items-center gap-2 md:hidden"
+          className="mt-1 flex flex-wrap items-center gap-2"
           onClick={(e) => e.stopPropagation()}
         >
           {badges}
@@ -1744,12 +1747,9 @@ function makeItem(
       </VStack>
     ),
     checked,
-    details: (
-      <div className="hidden w-auto flex-col items-end gap-1 md:flex">
-        {badges}
-        {variantChip}
-      </div>
-    ),
+    // Badges live under the title (above) at all widths; no right-hand slot, so
+    // nothing can overlap the title or get clipped on narrow cards.
+    details: undefined,
     data: {
       ...material,
       order
