@@ -513,7 +513,7 @@ function ReceiptLineItem({
 
   return (
     <div className={cn("flex flex-col border-b p-6 gap-6 relative", className)}>
-      <div className="absolute top-4 right-6">
+      <div className="absolute top-2 right-2 md:top-4 md:right-6 z-10">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -542,8 +542,8 @@ function ReceiptLineItem({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="flex flex-1 justify-between items-center w-full">
-        <HStack spacing={4} className="w-1/2">
+      <div className="flex flex-1 items-center w-full gap-4 justify-start overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:justify-between md:gap-0 md:overflow-visible [&>*]:shrink-0">
+        <HStack spacing={4} className="md:w-1/2">
           <HStack spacing={4} className="flex-1">
             <ItemThumbnail
               size="md"
@@ -602,7 +602,7 @@ function ReceiptLineItem({
             </VStack>
           </HStack>
         </HStack>
-        <div className="flex flex-grow items-center justify-between gap-2 pl-4">
+        <div className="flex md:flex-grow items-center justify-between gap-4 md:gap-2 md:pl-4">
           <HStack spacing={4}>
             <VStack spacing={1} className="text-center items-center">
               <label className="text-xs text-muted-foreground">{t`Ordered`}</label>

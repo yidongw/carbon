@@ -1628,6 +1628,85 @@ function makeItem(
     ? materialHasRules(material.id, rulesByField)
     : false;
 
+  // Badge cluster + variant chips. Always rendered on their own full-width
+  // wrapping row beneath the title (see below), at every width, so they never
+  // squeeze, overlap the title, or get clipped by the card. Rendered exactly
+  // once — the previous desktop/mobile split duplicated the same element in two
+  // slots, which overlapped the title on narrow panels and dropped the color
+  // chip below the `md` breakpoint.
+  const badges = (
+    <HStack spacing={2}>
+      {["Batch", "Serial"].includes(material.item?.itemTrackingType ?? "") && (
+        <Tooltip>
+          <TooltipTrigger>
+            <Badge variant="secondary">
+              <TrackingTypeIcon type={material.item?.itemTrackingType ?? ""} />
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            {material.item.itemTrackingType === "Inventory" ? (
+              <Trans>Inventory Tracking</Trans>
+            ) : material.item.itemTrackingType === "Non-Inventory" ? (
+              <Trans>Non-Inventory Tracking</Trans>
+            ) : material.item.itemTrackingType === "Serial" ? (
+              <Trans>Serial Tracking</Trans>
+            ) : (
+              <Trans>Batch Tracking</Trans>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      )}
+
+      <Tooltip>
+        <TooltipTrigger>
+          <Badge variant="secondary">
+            <MethodIcon type={material.methodType} isKit={material.kit} />
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          {material.methodType === "Purchase to Order" ? (
+            <Trans>Purchase to Order</Trans>
+          ) : material.methodType === "Pull from Inventory" ? (
+            <Trans>Pull from Inventory</Trans>
+          ) : (
+            <Trans>Make to Order</Trans>
+          )}
+        </TooltipContent>
+      </Tooltip>
+
+      {replenishmentSystem === "Buy and Make" && (
+        <Tooltip>
+          <TooltipTrigger>
+            <Badge variant="secondary">
+              <SourcingTypeIcon type={material.sourcingType} />
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>{material.sourcingType}</TooltipContent>
+        </Tooltip>
+      )}
+
+      <Badge variant="secondary">{material.quantity}</Badge>
+
+      <Tooltip>
+        <TooltipTrigger>
+          <Badge variant="secondary">
+            <MethodItemTypeIcon type={material.itemType} />
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          {material.itemType === "Consumable" ? (
+            <Trans>Consumable</Trans>
+          ) : material.itemType === "Material" ? (
+            <Trans>Material</Trans>
+          ) : (
+            <Trans>Part</Trans>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    </HStack>
+  );
+  const variantChip = renderVariantChip?.(material);
+
   return {
     id: material.id!,
     title: (
@@ -1654,87 +1733,23 @@ function makeItem(
             </Link>
           )}
         </div>
+        {/* Badges + variant color chips on their own full-width wrapping row
+            beneath the title, at every width, so they never squeeze/overlap the
+            title or get clipped. stopPropagation keeps tapping a badge or chip
+            from selecting the row. */}
+        <div
+          className="mt-1 flex flex-wrap items-center gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {badges}
+          {variantChip}
+        </div>
       </VStack>
     ),
     checked,
-    details: (
-      <VStack spacing={1} className="items-end w-auto">
-        <HStack spacing={2}>
-          {["Batch", "Serial"].includes(
-            material.item?.itemTrackingType ?? ""
-          ) && (
-            <Tooltip>
-              <TooltipTrigger>
-                <Badge variant="secondary">
-                  <TrackingTypeIcon
-                    type={material.item?.itemTrackingType ?? ""}
-                  />
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent>
-                {material.item.itemTrackingType === "Inventory" ? (
-                  <Trans>Inventory Tracking</Trans>
-                ) : material.item.itemTrackingType === "Non-Inventory" ? (
-                  <Trans>Non-Inventory Tracking</Trans>
-                ) : material.item.itemTrackingType === "Serial" ? (
-                  <Trans>Serial Tracking</Trans>
-                ) : (
-                  <Trans>Batch Tracking</Trans>
-                )}
-              </TooltipContent>
-            </Tooltip>
-          )}
-
-          <Tooltip>
-            <TooltipTrigger>
-              <Badge variant="secondary">
-                <MethodIcon type={material.methodType} isKit={material.kit} />
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              {material.methodType === "Purchase to Order" ? (
-                <Trans>Purchase to Order</Trans>
-              ) : material.methodType === "Pull from Inventory" ? (
-                <Trans>Pull from Inventory</Trans>
-              ) : (
-                <Trans>Make to Order</Trans>
-              )}
-            </TooltipContent>
-          </Tooltip>
-
-          {replenishmentSystem === "Buy and Make" && (
-            <Tooltip>
-              <TooltipTrigger>
-                <Badge variant="secondary">
-                  <SourcingTypeIcon type={material.sourcingType} />
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent>{material.sourcingType}</TooltipContent>
-            </Tooltip>
-          )}
-
-          <Badge variant="secondary">{material.quantity}</Badge>
-
-          <Tooltip>
-            <TooltipTrigger>
-              <Badge variant="secondary">
-                <MethodItemTypeIcon type={material.itemType} />
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              {material.itemType === "Consumable" ? (
-                <Trans>Consumable</Trans>
-              ) : material.itemType === "Material" ? (
-                <Trans>Material</Trans>
-              ) : (
-                <Trans>Part</Trans>
-              )}
-            </TooltipContent>
-          </Tooltip>
-        </HStack>
-        {renderVariantChip?.(material)}
-      </VStack>
-    ),
+    // Badges live under the title (above) at all widths; no right-hand slot, so
+    // nothing can overlap the title or get clipped on narrow cards.
+    details: undefined,
     data: {
       ...material,
       order

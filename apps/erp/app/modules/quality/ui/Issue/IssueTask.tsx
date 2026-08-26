@@ -17,7 +17,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   generateHTML,
-  HStack,
   IconButton,
   Popover,
   PopoverContent,
@@ -323,6 +322,30 @@ export function TaskItem({
     taskTitle = `Supplier ${taskTitle}`;
   }
 
+  // Due date, processes and supplier are secondary metadata: shown inline in
+  // the footer on desktop, and collapsed into a "More" bottom sheet on mobile
+  // so the footer stays a single tidy row.
+  const secondaryControls =
+    type === "action" ? (
+      <>
+        <TaskDueDate task={task as IssueActionTask} isDisabled={isDisabled} />
+        <TaskProcesses task={task as IssueActionTask} isDisabled={isDisabled} />
+        <SupplierAssignment
+          task={task as IssueActionTask}
+          type={type}
+          supplierIds={suppliers.map((s) => s.supplierId)}
+          isDisabled={isDisabled}
+        />
+      </>
+    ) : type === "investigation" ? (
+      <SupplierAssignment
+        task={task as IssueActionTask}
+        type={type}
+        supplierIds={suppliers.map((s) => s.supplierId)}
+        isDisabled={isDisabled}
+      />
+    ) : null;
+
   return (
     <div className="rounded-lg border w-full flex flex-col bg-card">
       <div className="flex w-full justify-between px-4 py-2 items-center">
@@ -396,54 +419,35 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex justify-between w-full">
-        <HStack>
-          <IssueTaskStatus
-            task={task}
-            type="investigation"
-            isDisabled={isDisabled}
-          />
-          <Assignee
-            table={getTable(type)}
-            id={task.id}
-            size="sm"
-            value={task.assignee ?? undefined}
-            disabled={isDisabled}
-          />
-          {type === "action" && (
-            <>
-              <TaskDueDate
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
-              />
-              <TaskProcesses
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
-              />
-            </>
-          )}
-          {(type === "investigation" || type === "action") && (
-            <SupplierAssignment
-              task={task as IssueActionTask}
-              type={type}
-              supplierIds={suppliers.map((s) => s.supplierId)}
-              isDisabled={isDisabled}
-            />
-          )}
-        </HStack>
-        <HStack>
-          <Button
-            isDisabled={isDisabled}
-            leftIcon={statusAction.icon}
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              onOperationStatusChange(task.id!, statusAction.status);
-            }}
-          >
-            {statusAction.action}
-          </Button>
-        </HStack>
+      <div className="bg-muted/30 border-t px-4 py-2 flex flex-wrap items-center gap-2 w-full">
+        <IssueTaskStatus
+          task={task}
+          type="investigation"
+          isDisabled={isDisabled}
+        />
+        <Assignee
+          table={getTable(type)}
+          id={task.id}
+          size="sm"
+          value={task.assignee ?? undefined}
+          disabled={isDisabled}
+        />
+        {/* Secondary controls (due date, processes, supplier) stay inline and
+            wrap onto the next line when the row is too narrow, rather than
+            collapsing behind a "More" menu — so wide cards use the full width. */}
+        {secondaryControls}
+        <Button
+          className="ml-auto"
+          isDisabled={isDisabled}
+          leftIcon={statusAction.icon}
+          variant="secondary"
+          size="sm"
+          onClick={() => {
+            onOperationStatusChange(task.id!, statusAction.status);
+          }}
+        >
+          {statusAction.action}
+        </Button>
       </div>
     </div>
   );
