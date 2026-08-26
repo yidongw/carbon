@@ -176,6 +176,13 @@ type GarmentMakeMethodRow = {
   parentMaterialId?: string | null;
 };
 
+// Identify the cutting operation(s) among a job's root operations, using only
+// RELIABLE signals: (1) the style cutting tag / customFields.styleStage (carried
+// onto the job by get-method), or (2) an explicitly threaded cuttingProcessId.
+// There is deliberately NO "lowest-order root op" fallback — guessing silently
+// mislabels cutting when it isn't order-first, which is exactly how cutting used
+// to leak into bundles. When neither signal resolves, this returns an empty set
+// and the caller (classifyGarmentJobItems) fails loudly rather than mis-splitting.
 function resolveCuttingOperationIds(
   rootOperations: GarmentOperationRow[],
   cuttingProcessId?: string | null
@@ -192,10 +199,7 @@ function resolveCuttingOperationIds(
     if (byProcess.length > 0) return new Set(byProcess);
   }
 
-  const first = [...rootOperations]
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .find(Boolean);
-  return first ? new Set([first.id]) : new Set();
+  return new Set();
 }
 
 /**
@@ -229,6 +233,17 @@ export function classifyGarmentJobItems(args: {
 
   const rootOps = args.operations.filter(isRootOperation);
   const cuttingIds = resolveCuttingOperationIds(rootOps, args.cuttingProcessId);
+
+  // Fail loudly rather than guess. If the job has root operations but none can be
+  // identified as cutting (no style cutting tag/styleStage AND no matching
+  // cuttingProcessId), any home split would be arbitrary — cutting could end up on
+  // the bundles or sewing on the master. Surface it so the style method gets fixed
+  // (scaffold the cutting op) instead of silently producing a wrong split.
+  if (rootOps.length > 0 && cuttingIds.size === 0) {
+    throw new Error(
+      "Unable to identify the cutting operation for this garment job: no operation carries the style cutting tag/styleStage and no cuttingProcessId matched. Ensure the Style method has a cutting operation scaffolded."
+    );
+  }
 
   const opHome = new Map<string, GarmentHome>();
   const mmHome = new Map<string, GarmentHome>();
@@ -446,13 +461,21 @@ export async function splitGarmentJobItems(
   if (mms.error) return { error: new Error(mms.error.message) };
   if (!ops.data?.length) return { error: null };
 
-  const { operationHome, materialHome, nestedMakeMethodHome } =
-    classifyGarmentJobItems({
+  let classified;
+  try {
+    classified = classifyGarmentJobItems({
       operations: ops.data,
       materials: mats.data ?? [],
       makeMethods: mms.data ?? [],
       cuttingProcessId: args.cuttingProcessId ?? null
     });
+  } catch (err) {
+    // classifyGarmentJobItems throws when cutting can't be identified. Surface it
+    // as an error (aborts the create / re-apply) rather than mis-splitting the job.
+    const message = err instanceof Error ? err.message : String(err);
+    return { error: new Error(`${message} (job ${args.jobId})`) };
+  }
+  const { operationHome, materialHome, nestedMakeMethodHome } = classified;
 
   // Plan the writes. Delete everything whose home is the OTHER side. Deleting a
   // nested make method cascades its own operations + materials; deleting an
@@ -587,6 +610,42 @@ export async function resolveStyleMethodItemId(
     .eq("companyId", args.companyId)
     .maybeSingle();
   return data?.parentItemId ?? args.itemId;
+}
+
+/**
+ * The `processId` of a Style's cutting operation, read from the Style method
+ * (`methodOperation`), where the cutting tag / `customFields.styleStage` always
+ * survives (unlike jobOperations, which get-method may have created before those
+ * markers were carried across). Thread this into `splitGarmentJobItems` so the
+ * split can pin cutting by process even when a job's own tags are missing.
+ * Returns null when the style has no scaffolded cutting operation.
+ */
+export async function getStyleCuttingProcessId(
+  client: SupabaseClient<Database>,
+  args: { itemId: string; companyId: string }
+): Promise<string | null> {
+  const methodItemId = await resolveStyleMethodItemId(client, args);
+  const makeMethod = await client
+    .from("makeMethod")
+    .select("id")
+    .eq("itemId", methodItemId)
+    .eq("companyId", args.companyId)
+    .order("createdAt", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (makeMethod.error || !makeMethod.data?.id) return null;
+
+  const operations = await (client as SupabaseClient<any>)
+    .from("methodOperation")
+    .select("processId, tags, customFields, order")
+    .eq("makeMethodId", makeMethod.data.id)
+    .order("order", { ascending: true });
+  if (operations.error || !operations.data?.length) return null;
+
+  const cutting = operations.data.find((operation: any) =>
+    isStyleCuttingOperation(operation)
+  );
+  return cutting?.processId ?? null;
 }
 
 /**

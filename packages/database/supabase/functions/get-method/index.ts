@@ -758,7 +758,12 @@ serve(async (req: Request) => {
                 operationQuantity,
                 companyId,
                 createdBy: userId,
-                customFields: {},
+                // Carry the source operation's tags + customFields so markers like
+                // the style cutting tag / customFields.styleStage survive onto the
+                // job. Without these the garment cutting-vs-sewing split can't
+                // identify the cutting operation on a job (see splitGarmentJobItems).
+                tags: op.tags ?? [],
+                customFields: op.customFields ?? {},
               });
             }
 
@@ -1435,7 +1440,9 @@ serve(async (req: Request) => {
                 operationQuantity,
                 companyId,
                 createdBy: userId,
-                customFields: {},
+                // Carry customFields (e.g. styleStage="cutting") onto the job op so
+                // the garment split can identify cutting; tags already carried above.
+                customFields: op.customFields ?? {},
               })) ?? [];
 
             let methodOperationsToJobOperations: Record<string, string> = {};

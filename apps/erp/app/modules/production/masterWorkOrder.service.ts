@@ -2,6 +2,7 @@ import type { Database, Json } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
+  getStyleCuttingProcessId,
   isStyleCuttingOperation,
   splitGarmentJobItems
 } from "~/modules/items/styleMethod.service";
@@ -588,10 +589,17 @@ export async function insertMasterWorkOrder(
   // the master keeps cutting + everything consumed at/before it; sew/finish and
   // their inputs drop to the bundles. Materials follow their consuming op, so
   // fabric stays on the master and is removed from bundles (no double consumption).
+  // Pin cutting by process (read from the Style method, where the cutting tag
+  // always survives) so the split never has to guess which op is cutting.
+  const cuttingProcessId = await getStyleCuttingProcessId(client, {
+    itemId: input.itemId,
+    companyId: input.companyId
+  });
   const split = await splitGarmentJobItems(client, {
     jobId: job.data.id,
     companyId: input.companyId,
     role: "master",
+    cuttingProcessId,
     db
   });
   if (split.error) {
