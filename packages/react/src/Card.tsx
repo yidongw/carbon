@@ -94,7 +94,7 @@ const CardAttribute = forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex flex-row md:flex-col items-start justify-start gap-2",
+      "flex flex-col items-start justify-start gap-2 shrink-0",
       className
     )}
     {...props}
@@ -108,7 +108,10 @@ const CardAttributes = forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col md:flex-row gap-8", className)}
+    className={cn(
+      "flex gap-6 overflow-x-auto md:gap-8 md:overflow-x-visible",
+      className
+    )}
     {...props}
   />
 ));
