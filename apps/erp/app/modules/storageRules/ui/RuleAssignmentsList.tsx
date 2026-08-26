@@ -319,7 +319,7 @@ export default function RuleAssignmentsList({
               </Td>
               {variant === "card" && (
                 <Td className="w-full max-w-0 hidden md:table-cell">
-                  <p className="text-muted-foreground truncate max-w-xl">
+                  <p className="text-muted-foreground whitespace-normal break-words max-w-xl">
                     {a.rule.message}
                   </p>
                 </Td>
