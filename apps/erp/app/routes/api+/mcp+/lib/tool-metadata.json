@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-22T05:02:06.818Z",
-  "totalTools": 1278,
+  "generated": "2026-08-26T15:24:00.319Z",
+  "totalTools": 1281,
   "modules": 15,
   "tools": [
     {
@@ -12866,6 +12866,72 @@
       }
     },
     {
+      "name": "items_updateMethodMaterialApplyOnVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update method material apply on variants",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applyOnVariantValueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applyOnVariantValueIds"
+        ]
+      }
+    },
+    {
+      "name": "items_updateMethodOperationApplyOnVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update method operation apply on variants",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applyOnVariantValueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applyOnVariantValueIds"
+        ]
+      }
+    },
+    {
       "name": "items_insertMethodMaterialsFromVariants",
       "module": "items",
       "classification": "WRITE",
@@ -13528,6 +13594,51 @@
         },
         "required": [
           "supplierPartId"
+        ]
+      }
+    },
+    {
+      "name": "items_copyThumbnailToItemFiles",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "copy thumbnail to item files",
+      "paramCount": 5,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "thumbnailPath": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "thumbnailPath",
+          "fileName",
+          "type"
         ]
       }
     },

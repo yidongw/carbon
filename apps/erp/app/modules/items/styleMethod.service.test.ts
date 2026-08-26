@@ -417,17 +417,47 @@ describe("classifyGarmentJobItems", () => {
     expect(materialHome.get("fabric")).toBe("master");
   });
 
-  it("falls back to the lowest-order op as cutting when nothing is tagged", () => {
+  it("identifies cutting by cuttingProcessId when no op is tagged", () => {
+    // get-method may have created the job before cutting tags were carried across,
+    // so no op carries the tag; the threaded cuttingProcessId pins cutting instead.
     const { operationHome } = classifyGarmentJobItems({
       operations: [
-        { id: "a", order: 5, tags: [], jobMakeMethodId: "mmRoot" },
-        { id: "b", order: 1, tags: [], jobMakeMethodId: "mmRoot" }
+        {
+          id: "a",
+          order: 5,
+          tags: [],
+          processId: "sew-proc",
+          jobMakeMethodId: "mmRoot"
+        },
+        {
+          id: "b",
+          order: 1,
+          tags: [],
+          processId: "cut-proc",
+          jobMakeMethodId: "mmRoot"
+        }
       ],
       materials: [],
-      makeMethods: [{ id: "mmRoot", parentMaterialId: null }]
+      makeMethods: [{ id: "mmRoot", parentMaterialId: null }],
+      cuttingProcessId: "cut-proc"
     });
-    expect(operationHome.get("b")).toBe("master"); // lowest order = cutting
+    expect(operationHome.get("b")).toBe("master"); // matched by process = cutting
     expect(operationHome.get("a")).toBe("bundle");
+  });
+
+  it("throws when cutting cannot be identified (no tag, no matching process)", () => {
+    // No "lowest-order" guess: mislabeling cutting would leak it into bundles, so
+    // an unidentifiable cutting op must fail loudly instead of splitting arbitrarily.
+    expect(() =>
+      classifyGarmentJobItems({
+        operations: [
+          { id: "a", order: 5, tags: [], jobMakeMethodId: "mmRoot" },
+          { id: "b", order: 1, tags: [], jobMakeMethodId: "mmRoot" }
+        ],
+        materials: [],
+        makeMethods: [{ id: "mmRoot", parentMaterialId: null }]
+      })
+    ).toThrow(/cutting operation/i);
   });
 
   it("propagates home through 3+ nesting levels", () => {

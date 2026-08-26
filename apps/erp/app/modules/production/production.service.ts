@@ -12,6 +12,7 @@ import { sanitize } from "~/utils/supabase";
 import { getDefaultStorageUnitForJob } from "../inventory";
 import {
   applyGarmentJobOperationFilter,
+  getStyleCuttingProcessId,
   resolveStyleMethodItemId
 } from "../items/styleMethod.service";
 import { getEmployeeJob } from "../people";
@@ -3319,9 +3320,17 @@ export async function upsertJobMethod(
   // Master/Bundle WO jobs: re-apply cutting vs downstream split after a full
   // Style get-method (e.g. user clicked Get Method on the backing job).
   if (type === "itemToJob") {
+    // Pin cutting by process from the Style method (body.sourceId is the resolved
+    // style method item), so the re-split identifies cutting even if the job's
+    // operation tags weren't carried across by an older get-method run.
+    const cuttingProcessId = await getStyleCuttingProcessId(client, {
+      itemId: body.sourceId,
+      companyId: jobMethod.companyId
+    });
     const filtered = await applyGarmentJobOperationFilter(client, {
       jobId: jobMethod.targetId,
-      companyId: jobMethod.companyId
+      companyId: jobMethod.companyId,
+      cuttingProcessId
     });
     if (filtered.error) {
       return { data: null, error: filtered.error };
