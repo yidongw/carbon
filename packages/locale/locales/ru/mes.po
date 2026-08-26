@@ -1499,6 +1499,9 @@ msgstr "Не удалось удалить предложение"
 msgid "Failed to delete supplier contact"
 msgstr "Не удалось удалить контакт поставщика"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "Не удалось удалить процесс поставщика"
 
@@ -1801,6 +1804,9 @@ msgstr "Не удалось получить идентификатор конт
 
 msgid "Failed to get a supplier location id"
 msgstr "Не удалось получить идентификатор местоположения поставщика"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "Не удалось получить идентификатор рабочего центра"
@@ -2198,6 +2204,9 @@ msgstr "Не удалось получить местоположение пос
 msgid "Failed to get supplier locations"
 msgstr "Не удалось получить местоположения поставщиков"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "Не удалось получить процессы поставщика"
 
@@ -2458,6 +2467,9 @@ msgstr "Не удалось добавить единицу хранения"
 
 msgid "Failed to insert style inventory"
 msgstr "Не удалось вставить стиль инвентаризации"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "Не удалось добавить предложение поставщика"
@@ -3751,6 +3763,9 @@ msgstr "Не удалось обновить адрес поставщика"
 
 msgid "Failed to update supplier contact"
 msgstr "Не удалось обновить контакт поставщика"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "Не удалось обновить условия оплаты поставщика"
@@ -5758,6 +5773,9 @@ msgstr "Успешно удалён контакт поставщика"
 msgid "Successfully deleted supplier location"
 msgstr "Успешно удалена поставка"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "Успешно удалён тип поставщика"
 
@@ -5838,6 +5856,9 @@ msgstr "Локация поставщика создана"
 
 msgid "Supplier part updated"
 msgstr "Поставщик обновлен"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "Поставщикая оценка успешно завершена"
@@ -6354,6 +6375,9 @@ msgstr "Успешно обновлено"
 
 msgid "Updated supplier"
 msgstr "Обновленный поставщик"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "Обновленные условия оплаты поставщиков"

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-22T05:02:06.818Z",
-  "totalTools": 1278,
+  "generated": "2026-08-26T09:54:17.482Z",
+  "totalTools": 1285,
   "modules": 15,
   "tools": [
     {
@@ -1210,6 +1210,139 @@
         "required": [
           "name",
           "calculationMethod"
+        ]
+      }
+    },
+    {
+      "name": "accounting_getPurchasePayment",
+      "module": "accounting",
+      "classification": "READ",
+      "description": "get purchase payment",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "purchasePaymentId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchasePaymentId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "purchasePaymentId"
+        ]
+      }
+    },
+    {
+      "name": "accounting_getPurchasePayments",
+      "module": "accounting",
+      "classification": "READ",
+      "description": "get purchase payments",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "accounting_upsertPurchasePayment",
+      "module": "accounting",
+      "classification": "WRITE",
+      "description": "upsert purchase payment",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "purchasePayment"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "paymentId": {
+            "type": "string"
+          },
+          "supplierId": {
+            "type": "string"
+          },
+          "paymentDate": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "paymentId",
+          "supplierId",
+          "currencyCode"
+        ]
+      }
+    },
+    {
+      "name": "accounting_deletePurchasePayment",
+      "module": "accounting",
+      "classification": "DESTRUCTIVE",
+      "description": "delete purchase payment",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "purchasePaymentId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchasePaymentId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "purchasePaymentId"
         ]
       }
     },
@@ -12866,6 +12999,72 @@
       }
     },
     {
+      "name": "items_updateMethodMaterialApplyOnVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update method material apply on variants",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applyOnVariantValueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applyOnVariantValueIds"
+        ]
+      }
+    },
+    {
+      "name": "items_updateMethodOperationApplyOnVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update method operation apply on variants",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applyOnVariantValueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applyOnVariantValueIds"
+        ]
+      }
+    },
+    {
       "name": "items_insertMethodMaterialsFromVariants",
       "module": "items",
       "classification": "WRITE",
@@ -13528,6 +13727,51 @@
         },
         "required": [
           "supplierPartId"
+        ]
+      }
+    },
+    {
+      "name": "items_copyThumbnailToItemFiles",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "copy thumbnail to item files",
+      "paramCount": 5,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "thumbnailPath": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "thumbnailPath",
+          "fileName",
+          "type"
         ]
       }
     },

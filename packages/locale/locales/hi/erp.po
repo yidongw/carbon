@@ -1108,6 +1108,10 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप स्टोरेज यूनिट को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
 
+#. placeholder {0}: purchasePayment.paymentId
+msgid "Are you sure you want to delete the supplier payment: {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
@@ -2801,6 +2805,9 @@ msgstr "भंडारण प्रकार बनाया गया"
 msgid "Created style"
 msgstr "शैली बनाई गई"
 
+msgid "Created supplier payment"
+msgstr ""
+
 msgid "Created supplier process"
 msgstr "संचालित स्वीपर प्रक्रिया बनाया"
 
@@ -3308,6 +3315,9 @@ msgstr "Passkey हटाएं"
 
 msgid "Delete Passkey"
 msgstr "Passkey हटाएँ"
+
+msgid "Delete Payment"
+msgstr ""
 
 msgid "Delete Payment Term"
 msgstr "भुगतान अवधि हटाएं"
@@ -3971,6 +3981,9 @@ msgstr "पार्टनर संपादित करें"
 msgid "Edit Passkey"
 msgstr "Passkey संपादित करें"
 
+msgid "Edit Payment"
+msgstr ""
+
 msgid "Edit Payment Term"
 msgstr "भुगतान शर्त संपादित करें"
 
@@ -4075,6 +4088,9 @@ msgstr "आपूर्तिकर्ता संपादित करें"
 
 msgid "Edit Supplier Item"
 msgstr "संशोधन विनियमी पहचान"
+
+msgid "Edit Supplier Payment"
+msgstr ""
 
 msgid "Edit supplier process"
 msgstr "आपूर्तिकर्ता प्रक्रिया संपादित करें"
@@ -5022,6 +5038,10 @@ msgstr "शैली बनाने में विफल: {0}"
 msgid "Failed to create supplier location"
 msgstr "फ़ाइल कर समाधान यॉन्सिंग लोकेशन बनाने में फ़ाल कर गए"
 
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create supplier payment: {0}"
+msgstr ""
+
 msgid "Failed to create supplier process"
 msgstr "सupplier प्रक्रिया बनाने में विफल हो गया"
 
@@ -5365,6 +5385,9 @@ msgstr "सUGGESTION हटाने में विफल रहा"
 msgid "Failed to delete supplier contact"
 msgstr "फ़ाइल को हटाने में व्याकरण त्रुटि हो गई"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "संशोधक क्रम परिष्करण नहीं किया जा सका"
 
@@ -5673,6 +5696,9 @@ msgstr "फ़ाइल कर ने कोई प्रदाता संप�
 
 msgid "Failed to get a supplier location id"
 msgstr "फ़ाइल्ड नहीं किया गया संशोधक अवसर आईडी"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "कार्य सेंटर आईडी प्राप्त करने में फालतू हो गया"
@@ -6073,6 +6099,9 @@ msgstr "संशोधक की स्थिति प्राप्त न�
 msgid "Failed to get supplier locations"
 msgstr "संशोधक की स्थान अमिट करने में व़िला"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "संशोधक प्रक्रियाएँ प्राप्त नहीं की जा सकीं"
 
@@ -6336,6 +6365,9 @@ msgstr "स्टोरेज यूनिट में इंサर्ट क�
 
 msgid "Failed to insert style inventory"
 msgstr "गैर सफल शॉप इन्वेंटरी इंサर्ट"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "फ़ाइल को डालने में व्याकरण त्रुटि हो गई"
@@ -7743,6 +7775,9 @@ msgstr "संशोधन करने में असफलता हुई �
 
 msgid "Failed to update supplier contact"
 msgstr "फ़ाइल को अपडेट करने में फाल्टी संशय प्रदाता संपर्क"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "संशोधन करणे मागिशकडून वित्तीय शर्ते समावेश झाला नाही"
@@ -10295,6 +10330,9 @@ msgstr "नया स्वीपर"
 msgid "New Supplier Item"
 msgstr "नया उपकरण संबादी"
 
+msgid "New Supplier Payment"
+msgstr ""
+
 msgid "New Tag"
 msgstr "नया टैग"
 
@@ -11289,6 +11327,9 @@ msgstr "भुगतान"
 msgid "Payment date"
 msgstr "देय तिथि"
 
+msgid "Payment Date"
+msgstr ""
+
 msgid "Payment history"
 msgstr "भुगतान इतिहास"
 
@@ -11297,6 +11338,9 @@ msgstr "भुगतान विधि"
 
 msgid "Payment recorded successfully"
 msgstr "पेमेंट सफलतापूर्वक रिकॉर्ड किया.get_app()"
+
+msgid "Payment Reference"
+msgstr ""
 
 msgid "Payment successful! Your plan is now active."
 msgstr "भुगतान सफल! आपका प्लान अब सक्रिय है।"
@@ -14420,6 +14464,9 @@ msgstr "संपादकित विक्रेता कонтैक्ट 
 msgid "Successfully deleted supplier location"
 msgstr "संपन्न उद्योग स्थान हटा diya gaya"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "संपादक प्रकार सफलतापूर्वक हटा दिया.get@123"
 
@@ -14567,8 +14614,14 @@ msgstr "आपूर्तिकर्ता भाग संख्या"
 msgid "Supplier part updated"
 msgstr "संशोधित विनायक भाग"
 
+msgid "Supplier payment created"
+msgstr ""
+
 msgid "Supplier Payment Discounts"
 msgstr "सप्लायर भुगतान पर छूट"
+
+msgid "Supplier Payments"
+msgstr ""
 
 msgid "Supplier Processes"
 msgstr "आपूर्तिकर्ता प्रक्रियाएं"
@@ -15831,6 +15884,9 @@ msgstr "सफलतापूर्वक अपडेट किया गया
 
 msgid "Updated supplier"
 msgstr "अपडेट दिए गए संशोधक"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "अपडेट दिए गए प्रदाता की किस्मत संरचना"

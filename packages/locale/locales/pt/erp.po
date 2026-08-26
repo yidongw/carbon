@@ -1108,6 +1108,10 @@ msgstr "Tem a certeza de que deseja eliminar o tipo de armazenamento: {0}? Esta 
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Tem a certeza de que deseja eliminar a unidade de armazenamento: {0}? Esta ação não pode ser desfeita."
 
+#. placeholder {0}: purchasePayment.paymentId
+msgid "Are you sure you want to delete the supplier payment: {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Tem a certeza de que deseja eliminar o tipo de fornecedor: {0}? Esta ação não pode ser desfeita."
@@ -2801,6 +2805,9 @@ msgstr "Tipo de armazenamento criado"
 msgid "Created style"
 msgstr "Estilo criado"
 
+msgid "Created supplier payment"
+msgstr ""
+
 msgid "Created supplier process"
 msgstr "Processo de fornecedor criado"
 
@@ -3308,6 +3315,9 @@ msgstr "Excluir passkey"
 
 msgid "Delete Passkey"
 msgstr "Excluir Passkey"
+
+msgid "Delete Payment"
+msgstr ""
 
 msgid "Delete Payment Term"
 msgstr "Eliminar Termo de Pagamento"
@@ -3971,6 +3981,9 @@ msgstr "Editar Parceiro"
 msgid "Edit Passkey"
 msgstr "Editar Passkey"
 
+msgid "Edit Payment"
+msgstr ""
+
 msgid "Edit Payment Term"
 msgstr "Editar Termo de Pagamento"
 
@@ -4075,6 +4088,9 @@ msgstr "Editar Fornecedor"
 
 msgid "Edit Supplier Item"
 msgstr "Editar Item Fornecedor"
+
+msgid "Edit Supplier Payment"
+msgstr ""
 
 msgid "Edit supplier process"
 msgstr "Editar processo do fornecedor"
@@ -5022,6 +5038,10 @@ msgstr "Falha ao criar o estilo: {0}"
 msgid "Failed to create supplier location"
 msgstr "Falhou na criação da localização do fornecedor"
 
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create supplier payment: {0}"
+msgstr ""
+
 msgid "Failed to create supplier process"
 msgstr "Falhou criar processo de fornecedor"
 
@@ -5365,6 +5385,9 @@ msgstr "Falhou na exclusão da sugestão"
 msgid "Failed to delete supplier contact"
 msgstr "Falhou na exclusão do contato do fornecedor"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "Falhou na exclusão do processo do fornecedor"
 
@@ -5673,6 +5696,9 @@ msgstr "Falhou ao obter o ID do contato do fornecedor"
 
 msgid "Failed to get a supplier location id"
 msgstr "Falhou ao obter o ID da localização do fornecedor"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "Falhou ao obter o ID do centro de trabalho"
@@ -6073,6 +6099,9 @@ msgstr "Falhou ao obter a localização do fornecedor"
 msgid "Failed to get supplier locations"
 msgstr "Falhou ao obter as localizações do fornecedor"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "Falhou ao obter os processos do fornecedor"
 
@@ -6336,6 +6365,9 @@ msgstr "Falhou ao inserir storageUnit"
 
 msgid "Failed to insert style inventory"
 msgstr "Falhou ao inserir estoque de estilo"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "Falhou ao inserir cotação do fornecedor"
@@ -7743,6 +7775,9 @@ msgstr "Falhou na atualização do endereço do fornecedor"
 
 msgid "Failed to update supplier contact"
 msgstr "Falhou ao atualizar os dados de contato do fornecedor"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "Falhou ao atualizar as condições de pagamento do fornecedor"
@@ -10295,6 +10330,9 @@ msgstr "Novo Fornecedor"
 msgid "New Supplier Item"
 msgstr "Novo Item Fornecedor"
 
+msgid "New Supplier Payment"
+msgstr ""
+
 msgid "New Tag"
 msgstr "Nova etiqueta"
 
@@ -11289,6 +11327,9 @@ msgstr "Pagamento"
 msgid "Payment date"
 msgstr "Data de pagamento"
 
+msgid "Payment Date"
+msgstr ""
+
 msgid "Payment history"
 msgstr "Histórico de pagamento"
 
@@ -11297,6 +11338,9 @@ msgstr "Método de Pagamento"
 
 msgid "Payment recorded successfully"
 msgstr "Pagamento registrado com sucesso"
+
+msgid "Payment Reference"
+msgstr ""
 
 msgid "Payment successful! Your plan is now active."
 msgstr "Pagamento realizado com sucesso! Seu plano está ativo."
@@ -14420,6 +14464,9 @@ msgstr "Contato do fornecedor deletado com sucesso"
 msgid "Successfully deleted supplier location"
 msgstr "Deletado com sucesso o local do fornecedor"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "Tipo de fornecedor deletado com sucesso"
 
@@ -14567,8 +14614,14 @@ msgstr "Número da Peça do Fornecedor"
 msgid "Supplier part updated"
 msgstr "Fornecedor parte atualizada"
 
+msgid "Supplier payment created"
+msgstr ""
+
 msgid "Supplier Payment Discounts"
 msgstr "Descontos de pagamento do fornecedor"
+
+msgid "Supplier Payments"
+msgstr ""
 
 msgid "Supplier Processes"
 msgstr "Processos do Fornecedor"
@@ -15831,6 +15884,9 @@ msgstr "Atualizado com sucesso"
 
 msgid "Updated supplier"
 msgstr "Fornecedor atualizado"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "Termos de pagamento atualizados do fornecedor"

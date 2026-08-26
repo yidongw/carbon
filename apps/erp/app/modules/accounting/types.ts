@@ -9,7 +9,8 @@ import type {
   getDimensions,
   getJournalEntries,
   getJournalEntry,
-  getPaymentTerms
+  getPaymentTerms,
+  getPurchasePayments
 } from "./accounting.service";
 
 export type Account = NonNullable<
@@ -368,6 +369,10 @@ export type PaymentTermCalculationMethod =
 
 export type PaymentTerm = NonNullable<
   Awaited<ReturnType<typeof getPaymentTerms>>["data"]
+>[number];
+
+export type PurchasePayment = NonNullable<
+  Awaited<ReturnType<typeof getPurchasePayments>>["data"]
 >[number];
 
 export type Transaction = {

@@ -1108,6 +1108,10 @@ msgstr "ストレージタイプ: {0} を削除してもよろしいですか？
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "本当に保存ユニット: {0} を削除してもよろしいですか？この操作は取り消せません。"
 
+#. placeholder {0}: purchasePayment.paymentId
+msgid "Are you sure you want to delete the supplier payment: {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "サプライヤータイプ: {0} を削除してもよろしいですか？この操作は取り消せません。"
@@ -2801,6 +2805,9 @@ msgstr "ストレージタイプを作成しました"
 msgid "Created style"
 msgstr "スタイルを作成しました"
 
+msgid "Created supplier payment"
+msgstr ""
+
 msgid "Created supplier process"
 msgstr "created supplier process"
 
@@ -3308,6 +3315,9 @@ msgstr "Passkeyを削除"
 
 msgid "Delete Passkey"
 msgstr "パスキーを削除"
+
+msgid "Delete Payment"
+msgstr ""
 
 msgid "Delete Payment Term"
 msgstr "支払い条件を削除"
@@ -3971,6 +3981,9 @@ msgstr "パートナーを編集"
 msgid "Edit Passkey"
 msgstr "パスキーを編集"
 
+msgid "Edit Payment"
+msgstr ""
+
 msgid "Edit Payment Term"
 msgstr "支払い条件を編集"
 
@@ -4075,6 +4088,9 @@ msgstr "サプライヤーを編集"
 
 msgid "Edit Supplier Item"
 msgstr "サプライヤー項目編集"
+
+msgid "Edit Supplier Payment"
+msgstr ""
 
 msgid "Edit supplier process"
 msgstr "サプライヤープロセスを編集"
@@ -5022,6 +5038,10 @@ msgstr "スタイルの作成に失敗しました: {0}"
 msgid "Failed to create supplier location"
 msgstr "サプライヤー場所の作成に失敗しました"
 
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create supplier payment: {0}"
+msgstr ""
+
 msgid "Failed to create supplier process"
 msgstr "failed to create supplier process"
 
@@ -5365,6 +5385,9 @@ msgstr "削除に失敗しました"
 msgid "Failed to delete supplier contact"
 msgstr "サプライヤー連絡先の削除に失敗しました"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "サプライヤープロセスの削除に失敗しました"
 
@@ -5673,6 +5696,9 @@ msgstr "サプライヤーの連絡先IDを取得できませんでした"
 
 msgid "Failed to get a supplier location id"
 msgstr "サプライヤーロケーションIDを取得できませんでした"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "作業センターアイドを取得できませんでした"
@@ -6073,6 +6099,9 @@ msgstr "サプライヤーの位置情報取得に失敗しました"
 msgid "Failed to get supplier locations"
 msgstr "サプライヤーの場所を取得できませんでした"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "サプライヤープロセスの取得に失敗しました"
 
@@ -6336,6 +6365,9 @@ msgstr "ストレージ単位の登録に失敗しました"
 
 msgid "Failed to insert style inventory"
 msgstr "スタイルインベントリの追加に失敗しました"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "サプライヤーの見積りを追加できませんでした"
@@ -7743,6 +7775,9 @@ msgstr "サプライヤー住所の更新に失敗しました"
 
 msgid "Failed to update supplier contact"
 msgstr "サプライヤーの連絡先を更新できませんでした"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "サプライヤーの支払い条件を更新できませんでした"
@@ -10295,6 +10330,9 @@ msgstr "新サプライヤー"
 msgid "New Supplier Item"
 msgstr "新規サプライヤー品目"
 
+msgid "New Supplier Payment"
+msgstr ""
+
 msgid "New Tag"
 msgstr "新規タグ"
 
@@ -11289,6 +11327,9 @@ msgstr "支払い"
 msgid "Payment date"
 msgstr "払い金額の日付"
 
+msgid "Payment Date"
+msgstr ""
+
 msgid "Payment history"
 msgstr "払い出金史"
 
@@ -11297,6 +11338,9 @@ msgstr "支払い方法"
 
 msgid "Payment recorded successfully"
 msgstr "支払いが成功しました"
+
+msgid "Payment Reference"
+msgstr ""
 
 msgid "Payment successful! Your plan is now active."
 msgstr "支払い成功！プランが有効になりました。"
@@ -14420,6 +14464,9 @@ msgstr "成功しました。サプライヤーの連絡先を削除しました
 msgid "Successfully deleted supplier location"
 msgstr "成功しました。サプライヤーの場所を削除しました。"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "成功してサプライヤータイプを削除しました"
 
@@ -14567,8 +14614,14 @@ msgstr "仕入先部品番号"
 msgid "Supplier part updated"
 msgstr "サプライヤー部品が更新されました"
 
+msgid "Supplier payment created"
+msgstr ""
+
 msgid "Supplier Payment Discounts"
 msgstr "サプライヤー支払割引"
+
+msgid "Supplier Payments"
+msgstr ""
 
 msgid "Supplier Processes"
 msgstr "サプライヤープロセス"
@@ -15831,6 +15884,9 @@ msgstr "正常に更新されました"
 
 msgid "Updated supplier"
 msgstr "更新されたサプライヤ"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "更新されたサプライヤ支払い条件"

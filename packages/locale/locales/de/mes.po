@@ -1499,6 +1499,9 @@ msgstr "Fehler beim Löschen der Vorschlag"
 msgid "Failed to delete supplier contact"
 msgstr "Fehler beim Löschen des Lieferantenkontakts"
 
+msgid "Failed to delete supplier payment"
+msgstr ""
+
 msgid "Failed to delete supplier process"
 msgstr "Fehler beim Löschen des Lieferantenprozesses"
 
@@ -1801,6 +1804,9 @@ msgstr "Fehler beim Abrufen des Lieferantenkontaktids"
 
 msgid "Failed to get a supplier location id"
 msgstr "Fehler beim Abrufen der Lieferantenstandort-ID"
+
+msgid "Failed to get a supplier payment id"
+msgstr ""
 
 msgid "Failed to get a work center id"
 msgstr "Fehler: Work Center-ID konnte nicht abgerufen werden"
@@ -2198,6 +2204,9 @@ msgstr "Fehler beim Abrufen der Lieferantenposition"
 msgid "Failed to get supplier locations"
 msgstr "Fehler beim Abrufen der Lieferantenstellen"
 
+msgid "Failed to get supplier payment"
+msgstr ""
+
 msgid "Failed to get supplier processes"
 msgstr "Fehler beim Abrufen der Lieferantenprozesse"
 
@@ -2458,6 +2467,9 @@ msgstr "Fehler beim Speichern des Lagerplatzes"
 
 msgid "Failed to insert style inventory"
 msgstr "Fehler beim Einfügen des Stilinventars"
+
+msgid "Failed to insert supplier payment"
+msgstr ""
 
 msgid "Failed to insert supplier quote"
 msgstr "Fehler beim Einfügen der Lieferantenabschätzung"
@@ -3751,6 +3763,9 @@ msgstr "Fehler beim aktualisieren des Lieferantenadressen"
 
 msgid "Failed to update supplier contact"
 msgstr "Fehler beim Aktualisieren des Lieferantenkontakts"
+
+msgid "Failed to update supplier payment"
+msgstr ""
 
 msgid "Failed to update supplier payment terms"
 msgstr "Fehler beim Aktualisieren der Lieferanten Zahlungsbedingungen"
@@ -5758,6 +5773,9 @@ msgstr "Erfolgreich Lieferantenkontakt gelöscht"
 msgid "Successfully deleted supplier location"
 msgstr "Erfolgreich Lieferantenstandort gelöscht"
 
+msgid "Successfully deleted supplier payment"
+msgstr ""
+
 msgid "Successfully deleted supplier type"
 msgstr "Erfolgreich gelöschter Lieferantentyp"
 
@@ -5838,6 +5856,9 @@ msgstr "Lieferantenstandort erstellt"
 
 msgid "Supplier part updated"
 msgstr "Lieferantenteil aktualisiert"
+
+msgid "Supplier payment created"
+msgstr ""
 
 msgid "Supplier quote finalized successfully"
 msgstr "Lieferkostenabschlag erfolgreich finalisiert"
@@ -6354,6 +6375,9 @@ msgstr "Erfolgreich aktualisiert"
 
 msgid "Updated supplier"
 msgstr "Aktualisierte Lieferantengerichtlich"
+
+msgid "Updated supplier payment"
+msgstr ""
 
 msgid "Updated supplier payment terms"
 msgstr "Aktualisierte Lieferantenbezahltöchter"
