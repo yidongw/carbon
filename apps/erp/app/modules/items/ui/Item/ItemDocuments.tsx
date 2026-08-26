@@ -192,7 +192,7 @@ const ItemDocuments = ({
                 <Th>
                   <Trans>Size</Trans>
                 </Th>
-                <Th>
+                <Th className="whitespace-nowrap">
                   <Trans>Created</Trans>
                 </Th>
                 <Th></Th>
@@ -288,12 +288,12 @@ const ItemDocuments = ({
                         </span>
                       </HStack>
                     </Td>
-                    <Td className="text-xs font-mono">
+                    <Td className="text-xs font-mono whitespace-nowrap">
                       {convertKbToString(
                         Math.floor((file.metadata?.size ?? 0) / 1024)
                       )}
                     </Td>
-                    <Td className="text-xs font-mono">
+                    <Td className="text-xs font-mono whitespace-nowrap">
                       {file.created_at ? formatDate(file.created_at) : "--"}
                     </Td>
                     <Td>
