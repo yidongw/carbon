@@ -170,17 +170,13 @@ const SalaryPaymentsTable = memo(
           }
           return path.to.employeeSalaryMonth(sr.employeeId, sr.year, sr.month);
         }}
+        filterActions={
+          <SalaryPeriodPicker year={year} month={month} onChange={goToMonth} />
+        }
         primaryAction={
-          <HStack spacing={2} className="items-center">
-            <SalaryPeriodPicker
-              year={year}
-              month={month}
-              onChange={goToMonth}
-            />
-            {canCreatePayment ? (
-              <New label={t`Payment`} to={recordPaymentTo} />
-            ) : null}
-          </HStack>
+          canCreatePayment ? (
+            <New label={t`Payment`} to={recordPaymentTo} />
+          ) : null
         }
         withSearch
         withPagination
