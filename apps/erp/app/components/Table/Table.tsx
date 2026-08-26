@@ -101,6 +101,9 @@ interface TableProps<T extends object> {
     label: string;
   }[];
   primaryAction?: ReactNode;
+  // When false, the empty ("No data exists") state renders only the message,
+  // without the primaryAction button. Defaults to true (button shown).
+  withEmptyStatePrimaryAction?: boolean;
   filterActions?: ReactNode;
   table?: string;
   title?: string;
@@ -260,6 +263,7 @@ const Table = <T extends object>({
   editableComponents,
   importCSV,
   primaryAction,
+  withEmptyStatePrimaryAction = true,
   filterActions,
   table: tableName,
   title,
@@ -1160,9 +1164,9 @@ const Table = <T extends object>({
               <Button variant="secondary" onClick={clearFilters}>
                 <Trans>Remove Filters</Trans>
               </Button>
-            ) : (
+            ) : withEmptyStatePrimaryAction ? (
               primaryAction
-            )}
+            ) : null}
           </div>
         ) : mobileVirtualized ? (
           // Windowed cards: a spacer of the full list height holds the scroll
@@ -1273,7 +1277,7 @@ const Table = <T extends object>({
                 <span className="text-xs font-mono font-light text-foreground uppercase">
                   <Trans>No data exists</Trans>
                 </span>
-                {primaryAction}
+                {withEmptyStatePrimaryAction ? primaryAction : null}
               </div>
             )
           ) : (

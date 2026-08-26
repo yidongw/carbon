@@ -178,6 +178,7 @@ const SalaryPaymentsTable = memo(
             <New label={t`Payment`} to={recordPaymentTo} />
           ) : null
         }
+        withEmptyStatePrimaryAction={false}
         withSearch
         withPagination
         title={t`Payments`}
