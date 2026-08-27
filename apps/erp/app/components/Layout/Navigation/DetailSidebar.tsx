@@ -51,13 +51,13 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
               to={route.to}
               prefetch="intent"
               className={cn(
-                "inline-flex flex-1 min-w-fit items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "inline-flex flex-1 min-w-fit items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold antialiased transition-colors",
                 isActive
                   ? "bg-background text-foreground shadow-button-base"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-foreground/70 hover:text-foreground"
               )}
             >
-              {route.name}
+              <span>{route.name}</span>
               {route.count !== undefined && <Count count={route.count} />}
             </Link>
           );
