@@ -543,8 +543,8 @@ function ReceiptLineItem({
         </DropdownMenu>
       </div>
       <div className="flex flex-col gap-6 w-full sm:flex-row sm:flex-1 sm:justify-between sm:items-center sm:gap-0">
-        <div className="flex flex-col gap-4 w-full sm:w-1/2 sm:flex-row sm:items-center sm:gap-4">
-          <HStack spacing={4} className="flex-1 pr-10 sm:pr-0">
+        <HStack spacing={4} className="w-full sm:w-1/2">
+          <HStack spacing={4} className="flex-1">
             <ItemThumbnail
               size="md"
               thumbnailPath={line.thumbnailPath}
@@ -566,43 +566,43 @@ function ReceiptLineItem({
                 />
               </div>
             </VStack>
-          </HStack>
-          <VStack spacing={1} className="shrink-0">
-            <label className="text-xs text-muted-foreground">{t`Received`}</label>
+            <VStack spacing={1}>
+              <label className="text-xs text-muted-foreground">{t`Received`}</label>
 
-            {useVariantsQuantity ? (
-              <StyleLineQuantityInput
-                lineId={line.id!}
-                itemId={line.itemId ?? ""}
-                value={line.receivedQuantity ?? 0}
-                orderVariantQuantities={line.orderVariantQuantities}
-                isDisabled={isReadOnly}
-                isReadOnly={isReadOnly}
-                className="min-w-[100px]"
-                onQuantityChange={({ quantity, variantQuantities }) =>
-                  applyQuantity(quantity, variantQuantities)
-                }
-              />
-            ) : (
-              <NumberField
-                value={line.receivedQuantity ?? 0}
-                onChange={(value) => {
-                  // Default to 0 if value is NaN, null, or undefined
-                  const safeValue = isNaN(value) || value == null ? 0 : value;
-                  applyQuantity(safeValue);
-                }}
-              >
-                <NumberInput
-                  className="disabled:bg-transparent disabled:opacity-100 min-w-[100px]"
+              {useVariantsQuantity ? (
+                <StyleLineQuantityInput
+                  lineId={line.id!}
+                  itemId={line.itemId ?? ""}
+                  value={line.receivedQuantity ?? 0}
+                  orderVariantQuantities={line.orderVariantQuantities}
                   isDisabled={isReadOnly}
-                  size="sm"
-                  min={0}
+                  isReadOnly={isReadOnly}
+                  className="min-w-[100px]"
+                  onQuantityChange={({ quantity, variantQuantities }) =>
+                    applyQuantity(quantity, variantQuantities)
+                  }
                 />
-              </NumberField>
-            )}
-          </VStack>
-        </div>
-        <div className="flex flex-col gap-4 w-full sm:flex-row sm:flex-grow sm:items-center sm:justify-between sm:gap-2 sm:pl-4">
+              ) : (
+                <NumberField
+                  value={line.receivedQuantity ?? 0}
+                  onChange={(value) => {
+                    // Default to 0 if value is NaN, null, or undefined
+                    const safeValue = isNaN(value) || value == null ? 0 : value;
+                    applyQuantity(safeValue);
+                  }}
+                >
+                  <NumberInput
+                    className="disabled:bg-transparent disabled:opacity-100 min-w-[100px]"
+                    isDisabled={isReadOnly}
+                    size="sm"
+                    min={0}
+                  />
+                </NumberField>
+              )}
+            </VStack>
+          </HStack>
+        </HStack>
+        <div className="flex flex-grow items-center justify-between gap-2 w-full sm:w-auto sm:pl-4">
           <HStack spacing={4}>
             <VStack spacing={1} className="text-center items-center">
               <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
@@ -641,7 +641,7 @@ function ReceiptLineItem({
             </VStack>
           </HStack>
 
-          <div className="flex flex-col items-start gap-1 w-full sm:w-auto sm:min-w-[140px] text-sm">
+          <div className="flex flex-col items-start gap-1 min-w-[140px] text-sm">
             <label className="text-xs text-muted-foreground">
               {t`Storage Unit`}
             </label>
