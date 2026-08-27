@@ -14,7 +14,12 @@ import {
 } from "./jobVariantQuantity.service";
 import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
-import { computeVariantTableRemaining } from "./variantTable";
+import {
+  computeVariantTableRemaining,
+  computeVariantTableTotal,
+  minVariantTables,
+  sumVariantTables
+} from "./variantTable";
 
 export type MasterCuttingProgress = {
   jobId: string;
@@ -22,6 +27,13 @@ export type MasterCuttingProgress = {
   cuttingOperationId: string | null;
   reported: number;
   remaining: number;
+  /**
+   * Pieces the pre-cut process has released but that haven't been cut yet (the
+   * whole plan when there's no pre-cut process). Lets the UI tell "waiting on
+   * upstream" (availableToCut 0, remaining > 0) apart from "cutting done"
+   * (remaining 0).
+   */
+  availableToCut: number;
   // Remaining planned quantity per variant combo (for the read-only modal).
   remainingConfiguration: unknown;
 };
@@ -94,9 +106,18 @@ export async function getMasterCuttingProgress(
   );
 
   // Resolve the cutting operation per job (tagged cutting, else first-in-BOP).
+  // Every other operation on the master job is upstream prep that feeds cutting
+  // (downstream sewing/finishing lives on the bundle jobs), so the least-reported
+  // upstream op gates how much is available to cut — a chain's last step, or the
+  // slowest of several parallel feeds.
   const cuttingOpByJob = new Map<
     string,
     { id: string; quantityComplete: number }
+  >();
+  // Upstream ops per job (empty = no pre-cut process → the whole plan is available).
+  const upstreamOpsByJob = new Map<
+    string,
+    { id: string; quantityComplete: number }[]
   >();
   for (const [jobId, jobOps] of opsByJob) {
     const rootOps = jobOps.filter(
@@ -117,17 +138,33 @@ export async function getMasterCuttingProgress(
         id: cutting.id,
         quantityComplete: Number(cutting.quantityComplete) || 0
       });
+      upstreamOpsByJob.set(
+        jobId,
+        jobOps
+          .filter((op) => op.id !== cutting.id)
+          .map((op) => ({
+            id: op.id,
+            quantityComplete: Number(op.quantityComplete) || 0
+          }))
+      );
     }
   }
 
-  // Reported cutting config tables, grouped by cutting operation.
-  const cuttingOpIds = [...cuttingOpByJob.values()].map((c) => c.id);
+  // Reported production config tables, grouped by operation. We need the cutting
+  // op (what's already cut) AND the upstream ops (what each pre-cut process has
+  // released) so availability can be gated per variant, not by a scalar total.
+  const reportedOpIds = [
+    ...new Set([
+      ...[...cuttingOpByJob.values()].map((c) => c.id),
+      ...[...upstreamOpsByJob.values()].flatMap((ops) => ops.map((o) => o.id))
+    ])
+  ];
   const reportedVariantQuantitiesByOp = new Map<string, Json[]>();
-  if (cuttingOpIds.length > 0) {
+  if (reportedOpIds.length > 0) {
     const pq = await client
       .from("productionQuantity")
       .select("jobOperationId, variantQuantities")
-      .in("jobOperationId", cuttingOpIds)
+      .in("jobOperationId", reportedOpIds)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null);
@@ -149,12 +186,54 @@ export async function getMasterCuttingProgress(
     const plan = master.quantity ?? 0;
     const remaining = Math.max(0, plan - reported);
     const planConfig = planConfigByJob.get(master.jobId) ?? null;
+    const cuttingReportedTables = cuttingOp
+      ? (reportedVariantQuantitiesByOp.get(cuttingOp.id) ?? [])
+      : [];
     const remainingConfiguration = cuttingOp
-      ? computeVariantTableRemaining(
-          planConfig,
-          reportedVariantQuantitiesByOp.get(cuttingOp.id) ?? []
-        )
+      ? computeVariantTableRemaining(planConfig, cuttingReportedTables)
       : { variantTable: [] };
+
+    // Available to cut, gated by the pre-cut process per variant. Each upstream
+    // op releases specific variants, so cutting a variant is gated by the
+    // least-reported upstream op for THAT variant: capped_v = min(plan_v, min over
+    // upstream ops of released_v), then available_v = max(0, capped_v - cut_v).
+    // With no upstream op the plan alone caps it (nothing gates). Falls back to a
+    // scalar total when there's no variant plan or an upstream op reported
+    // aggregate-only (no variant breakdown to gate on).
+    const upstreamOps = upstreamOpsByJob.get(master.jobId) ?? [];
+    const upstreamReleasedTablesByOp = upstreamOps.map(
+      (op) =>
+        sumVariantTables(reportedVariantQuantitiesByOp.get(op.id) ?? [])
+          .variantQuantities
+    );
+    const someUpstreamAggregateOnly = upstreamOps.some(
+      (op, i) =>
+        op.quantityComplete > 0 &&
+        upstreamReleasedTablesByOp[i].variantTable.length === 0
+    );
+    let availableToCut: number;
+    if (
+      cuttingOp &&
+      computeVariantTableTotal(planConfig) > 0 &&
+      !someUpstreamAggregateOnly
+    ) {
+      const capped = minVariantTables([
+        planConfig,
+        ...upstreamReleasedTablesByOp
+      ]);
+      availableToCut = computeVariantTableTotal(
+        computeVariantTableRemaining(capped, cuttingReportedTables)
+      );
+    } else {
+      const upstreamReported =
+        upstreamOps.length === 0
+          ? plan
+          : upstreamOps.reduce(
+              (min, op) => Math.min(min, op.quantityComplete),
+              Number.POSITIVE_INFINITY
+            );
+      availableToCut = Math.max(0, Math.min(upstreamReported, plan) - reported);
+    }
 
     result[master.id] = {
       jobId: master.jobId,
@@ -162,6 +241,7 @@ export async function getMasterCuttingProgress(
       cuttingOperationId: cuttingOp?.id ?? null,
       reported,
       remaining,
+      availableToCut,
       remainingConfiguration
     };
   }

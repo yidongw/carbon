@@ -48,6 +48,7 @@ import { useUrlParams } from "~/hooks";
 import { useSavedViews } from "~/hooks/useSavedViews";
 import type { fieldMappings } from "~/modules/shared/imports.models";
 import type { action as savedViewAction } from "~/routes/x+/shared+/views";
+import { localizeViewName } from "~/utils/localizeViewName";
 import { path } from "~/utils/path";
 import Columns from "./Columns";
 import Download from "./Download";
@@ -127,7 +128,7 @@ const TableHeader = <T extends object>({
   sort,
   filterActions
 }: HeaderProps<T>) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const [params, setParams] = useUrlParams();
   const currentFilters = params.getAll("filter").filter(Boolean);
   const currentSorts = params.getAll("sort").filter(Boolean);
@@ -152,10 +153,13 @@ const TableHeader = <T extends object>({
   }, [fetcher.state, fetcher.data?.success]);
 
   const { currentView, hasView } = useSavedViews();
-  // title is already localized at the call site (t`…`) and a saved view's name
-  // is raw user data; neither should go through i18n._() (which would log
-  // "Uncompiled message detected"). Use the resolved string directly.
-  const viewTitle = currentView?.name ?? title;
+  // `title` is already localized at the call site (t`…`). A saved view's name is
+  // raw user data, so localizeViewName only translates the handful of names
+  // registered as catalog messages (e.g. "Ready to cut") and passes arbitrary
+  // user names through unchanged — no i18n._(rawString) "Uncompiled" warning.
+  const viewTitle = currentView
+    ? localizeViewName(i18n, currentView.name)
+    : title;
   // const viewDescription = currentView?.description ?? "";
   const savedViewFormValidator = useMemo(
     () =>

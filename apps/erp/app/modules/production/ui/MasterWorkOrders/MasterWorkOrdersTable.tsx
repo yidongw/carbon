@@ -1,4 +1,12 @@
-import { Badge, Button, cn, HStack, IconButton, VStack } from "@carbon/react";
+import {
+  Badge,
+  Button,
+  cn,
+  HStack,
+  IconButton,
+  Status,
+  VStack
+} from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
@@ -39,6 +47,7 @@ import type {
   MasterCuttingProgress,
   MasterWorkOrder
 } from "~/modules/production";
+import { deriveCuttingStatus } from "~/modules/production/cuttingStatus";
 import { useCustomers, usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
@@ -353,6 +362,48 @@ const MasterWorkOrdersTable = memo(
             );
           },
           meta: { icon: <LuCircleDashed /> }
+        },
+        {
+          id: "cuttingStatus",
+          header: t`Cutting`,
+          cell: ({ row }) => {
+            const progress = row.original.id
+              ? cuttingProgressByMasterId[row.original.id]
+              : undefined;
+            const status = deriveCuttingStatus(
+              progress,
+              row.original.quantity ?? 0
+            );
+            // Cut = done; Ready = pieces released by the pre-cut process are
+            // cuttable now; Waiting = remaining but nothing released yet.
+            switch (status) {
+              case "Cut":
+                return <Status color="green">{t`Cut`}</Status>;
+              case "Ready":
+                return <Status color="blue">{t`Ready to cut`}</Status>;
+              case "Waiting":
+                return <Status color="gray">{t`Waiting`}</Status>;
+              default:
+                return null;
+            }
+          },
+          meta: {
+            icon: <LuScissors />,
+            filter: {
+              type: "static",
+              options: [
+                {
+                  value: "Ready",
+                  label: <Status color="blue">{t`Ready to cut`}</Status>
+                },
+                {
+                  value: "Waiting",
+                  label: <Status color="gray">{t`Waiting`}</Status>
+                },
+                { value: "Cut", label: <Status color="green">{t`Cut`}</Status> }
+              ]
+            }
+          }
         },
         {
           id: "customerId",

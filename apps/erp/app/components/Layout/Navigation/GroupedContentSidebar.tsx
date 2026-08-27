@@ -25,6 +25,7 @@ import { Link, useNavigate, useSubmit } from "react-router";
 import { ConfirmDelete } from "~/components/Modals";
 import { useOptimisticLocation } from "~/hooks";
 import type { RouteGroup } from "~/types";
+import { localizeViewName } from "~/utils/localizeViewName";
 import { path } from "~/utils/path";
 import { CollapsibleSidebar } from "./CollapsibleSidebar";
 
@@ -360,7 +361,7 @@ const ViewsReorderGroup = ({
     sortOrder: number;
   }) => void;
 }) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const [sortedViews, setSortedViews] = useState(() => {
     if (views && views[Symbol.iterator]) {
       return [...views].sort((a, b) => a.sortOrder - b.sortOrder);
@@ -414,7 +415,7 @@ const ViewsReorderGroup = ({
                 )}
               >
                 <Link to={view.to} prefetch="intent">
-                  {view.name}
+                  {localizeViewName(i18n, view.name)}
                 </Link>
               </Button>
               <IconButton

@@ -10,6 +10,11 @@ import {
   getMasterCuttingProgress,
   getMasterWorkOrders
 } from "~/modules/production";
+import type { CuttingStatus } from "~/modules/production/cuttingStatus";
+import {
+  cuttingStatuses,
+  deriveCuttingStatus
+} from "~/modules/production/cuttingStatus";
 import { MasterWorkOrdersTable } from "~/modules/production/ui/MasterWorkOrders";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -20,6 +25,11 @@ export const handle: Handle = {
   to: path.to.masterWorkOrders,
   module: "production"
 };
+
+// Upper bound on masters scanned when the derived `cuttingStatus` filter is
+// active (we must compute progress for each to know its status). Generous —
+// real active-master counts sit well below this; a warning logs if it's hit.
+const DERIVED_FILTER_SCAN_LIMIT = 1000;
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -33,25 +43,115 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const masterWorkOrders = await getMasterWorkOrders(client, companyId, {
-    search,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  // `cuttingStatus` (Ready / Waiting / Cut) is derived in JS from cutting
+  // progress — it is NOT a column on the masterWorkOrders view — so pull it out
+  // of the DB filters and post-filter below. Everything else keeps filtering and
+  // paginating server-side.
+  const cuttingStatusFilter = (filters ?? []).find(
+    (f) => f.column === "cuttingStatus"
+  );
+  const requestedCuttingStatuses = cuttingStatusFilter?.value
+    ? cuttingStatusFilter.value
+        .split(",")
+        .filter((v): v is CuttingStatus =>
+          (cuttingStatuses as readonly string[]).includes(v)
+        )
+    : [];
+  const dbFilters = (filters ?? []).filter(
+    (f) => f.column !== "cuttingStatus"
+  );
 
-  if (masterWorkOrders.error) {
-    throw new Response(undefined, {
-      status: 500,
-      ...(await flash(
-        request,
-        error(masterWorkOrders.error, "Failed to load master work orders")
-      ))
+  let rows: NonNullable<
+    Awaited<ReturnType<typeof getMasterWorkOrders>>["data"]
+  >;
+  let count: number;
+  let cuttingProgressByMasterId: Awaited<
+    ReturnType<typeof getMasterCuttingProgress>
+  >;
+
+  if (requestedCuttingStatuses.length > 0) {
+    // Derived filter active: scan the matching masters (server-filtered by the
+    // remaining DB filters), compute cutting progress, keep only the requested
+    // statuses, then paginate in JS. Bounded by DERIVED_FILTER_SCAN_LIMIT — the
+    // heavier path only runs when this filter (e.g. a "Ready to cut" view) is on.
+    const candidates = await getMasterWorkOrders(client, companyId, {
+      search,
+      sorts,
+      filters: dbFilters,
+      limit: DERIVED_FILTER_SCAN_LIMIT,
+      offset: 0
     });
-  }
+    if (candidates.error) {
+      throw new Response(undefined, {
+        status: 500,
+        ...(await flash(
+          request,
+          error(candidates.error, "Failed to load master work orders")
+        ))
+      });
+    }
+    const candidateRows = candidates.data ?? [];
+    if (candidateRows.length === DERIVED_FILTER_SCAN_LIMIT) {
+      console.warn(
+        `master-work-orders cuttingStatus filter scan hit the ${DERIVED_FILTER_SCAN_LIMIT}-row cap; some rows may be excluded`
+      );
+    }
+    const progressAll = await getMasterCuttingProgress(
+      client,
+      candidateRows.map((r) => ({
+        id: r.id,
+        jobId: r.jobId,
+        itemId: r.itemId,
+        quantity: r.quantity
+      })),
+      companyId
+    );
+    const matched = candidateRows.filter((r) => {
+      const status = deriveCuttingStatus(
+        r.id ? progressAll[r.id] : undefined,
+        r.quantity ?? 0
+      );
+      return status !== null && requestedCuttingStatuses.includes(status);
+    });
+    count = matched.length;
+    rows = matched.slice(offset, offset + limit);
+    cuttingProgressByMasterId = {};
+    for (const r of rows) {
+      const progress = r.id ? progressAll[r.id] : undefined;
+      if (r.id && progress) cuttingProgressByMasterId[r.id] = progress;
+    }
+  } else {
+    const masterWorkOrders = await getMasterWorkOrders(client, companyId, {
+      search,
+      limit,
+      offset,
+      sorts,
+      filters: dbFilters
+    });
 
-  const rows = masterWorkOrders.data ?? [];
+    if (masterWorkOrders.error) {
+      throw new Response(undefined, {
+        status: 500,
+        ...(await flash(
+          request,
+          error(masterWorkOrders.error, "Failed to load master work orders")
+        ))
+      });
+    }
+
+    rows = masterWorkOrders.data ?? [];
+    count = masterWorkOrders.count ?? 0;
+    cuttingProgressByMasterId = await getMasterCuttingProgress(
+      client,
+      rows.map((r) => ({
+        id: r.id,
+        jobId: r.jobId,
+        itemId: r.itemId,
+        quantity: r.quantity
+      })),
+      companyId
+    );
+  }
   const itemIds = [
     ...new Set(
       rows.map((r) => r.itemId).filter((id): id is string => Boolean(id))
@@ -117,19 +217,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     processCountByMasterId[masterId] = descriptions.size;
   }
 
-  const cuttingProgressByMasterId = await getMasterCuttingProgress(
-    client,
-    rows.map((r) => ({
-      id: r.id,
-      jobId: r.jobId,
-      itemId: r.itemId,
-      quantity: r.quantity
-    })),
-    companyId
-  );
-
   return {
-    count: masterWorkOrders.count ?? 0,
+    count,
     masterWorkOrders: rows,
     itemIdsWithConfigurationParameters,
     bundleCountByMasterId,

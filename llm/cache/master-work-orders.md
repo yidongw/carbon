@@ -30,4 +30,8 @@ Reporting the **last** operation on a bundle to Done in MES (`report-quantity` �
 
 ## Style variant jobs must copy parent Style BOP
 
-Bundle (and any other) jobs keyed by variant SKU have no make method. `insertJob` / `upsertJobMethod` / `get-method` resolve `itemVariant.parentItemId` (`resolveStyleMethodItemId`). After Get Method on an existing master/bundle backing job, `applyGarmentJobOperationFilter` re-strips: master = cutting only; bundle = drop cutting.
+Bundle (and any other) jobs keyed by variant SKU have no make method. `insertJob` / `upsertJobMethod` / `get-method` resolve `itemVariant.parentItemId` (`resolveStyleMethodItemId`). After Get Method on an existing master/bundle backing job, `applyGarmentJobOperationFilter` re-strips by routing every op/material to one "home" (`classifyGarmentJobItems`, PR #367): **master = cutting + upstream prep** (cutting, plus any fabric-prep op/material produced before cutting consumes it — e.g. a nested sub-assembly 印染/dyeing op re-sequenced ahead of cutting); **bundle = downstream** (sewing/finishing; cutting dropped). So the master job is **not** "cutting only" — it can carry pre-cut prep operations, which run before cutting.
+
+## Cutting op detection on the master job
+
+Because nested prep (dyeing) can be re-sequenced ahead of cutting, "the cutting op" is the **style-tagged** op (`isStyleCuttingOperation`), else the first **root-method** op — nested sub-assembly ops are excluded so a prep op can't masquerade as cutting. Shared by `getMasterCuttingOperationId`, `getMasterProcessBreakdown`, and `getMasterCuttingProgress` (all filter out `jobMakeMethod.parentMaterialId != null` ops).
