@@ -56,7 +56,7 @@ const FiscalYearSettingsForm = ({
       className="w-full"
     >
       <div className="rounded-lg border border-border bg-card">
-        <div className="flex items-center justify-between border-b border-border p-6">
+        <div className="flex flex-col gap-4 border-b border-border p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
           <div>
             <h1 className="text-xl font-semibold text-foreground">
               <Trans>Fiscal Year Settings</Trans>
@@ -82,7 +82,7 @@ const FiscalYearSettingsForm = ({
               key={field.name}
               className="group rounded-lg border border-border p-4 transition-all hover:border-muted-foreground/30"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-medium text-foreground mb-1">
                     {field.label}
@@ -91,7 +91,7 @@ const FiscalYearSettingsForm = ({
                     {field.description}
                   </p>
                 </div>
-                <div className="flex-shrink-0 w-64">
+                <div className="w-full sm:w-64 sm:flex-shrink-0">
                   <Select
                     name={field.name}
                     options={months.map((month) => ({
