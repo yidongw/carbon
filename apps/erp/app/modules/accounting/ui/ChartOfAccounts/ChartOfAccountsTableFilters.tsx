@@ -33,9 +33,9 @@ const ChartOfAccountsTableFilters = ({
   const endDate = params.get("endDate");
 
   return (
-    <div className="flex px-4 py-3 items-center space-x-4 justify-between bg-card border-b border-border w-full">
-      <HStack>
-        <InputGroup size="sm" className="w-64">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 bg-card border-b border-border w-full">
+      <HStack spacing={0} className="flex-wrap gap-2">
+        <InputGroup size="sm" className="w-64 max-w-full">
           <InputLeftElement>
             <LuSearch className="h-4 w-4 text-muted-foreground" />
           </InputLeftElement>
@@ -98,7 +98,7 @@ const ChartOfAccountsTableFilters = ({
           </Button>
         )}
       </HStack>
-      <HStack>
+      <HStack className="ml-auto shrink-0">
         {permissions.can("create", "accounting") && (
           <>
             <New label={t`Group`} to={`new-group?${params.toString()}`} />
