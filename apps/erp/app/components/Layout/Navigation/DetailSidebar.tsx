@@ -42,7 +42,7 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
 
   if (isMobile) {
     return (
-      <div className="flex items-center gap-1 p-1 rounded-lg bg-muted overflow-x-auto shrink-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex w-full items-center gap-1 p-1 rounded-lg bg-muted overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {links.map((route) => {
           const isActive = location.pathname.includes(route.to);
           return (
@@ -51,7 +51,7 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
               to={route.to}
               prefetch="intent"
               className={cn(
-                "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "inline-flex flex-1 min-w-fit items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-background text-foreground shadow-button-base"
                   : "text-muted-foreground hover:text-foreground"
