@@ -6,8 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   useKeyboardShortcuts,
-  usePrettifyShortcut,
-  VStack
+  usePrettifyShortcut
 } from "@carbon/react";
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "react-router";
@@ -38,16 +37,13 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
   );
 
   return (
-    <VStack
-      className="overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent h-full"
-      spacing={1}
-    >
+    <nav className="flex flex-row md:flex-col w-full items-stretch gap-1 overflow-x-auto md:overflow-y-auto md:h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
       {links.map((route) => {
         const isActive = location.pathname.includes(route.to);
 
         return (
           <Tooltip key={route.name}>
-            <TooltipTrigger className="w-full">
+            <TooltipTrigger className="shrink-0 md:w-full">
               <Button
                 asChild
                 variant={isActive ? "active" : "ghost"}
@@ -59,7 +55,7 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
                   className="flex items-center justify-start gap-2"
                 >
                   {route.icon}
-                  <span>{route.name}</span>
+                  <span className="whitespace-nowrap">{route.name}</span>
                   {route.count !== undefined && (
                     <Count count={route.count} className="ml-auto" />
                   )}
@@ -74,7 +70,7 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
           </Tooltip>
         );
       })}
-    </VStack>
+    </nav>
   );
 };
 
