@@ -1,12 +1,10 @@
 import {
   Button,
   Count,
-  cn,
   HStack,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  useIsMobile,
   useKeyboardShortcuts,
   usePrettifyShortcut,
   VStack
@@ -29,7 +27,6 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
   const navigate = useNavigate();
   const location = useOptimisticLocation();
   const prettifyShortcut = usePrettifyShortcut();
-  const isMobile = useIsMobile();
 
   useKeyboardShortcuts(
     links.reduce<Record<string, () => void>>((acc, link) => {
@@ -39,32 +36,6 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
       return acc;
     }, {})
   );
-
-  if (isMobile) {
-    return (
-      <div className="flex w-full items-center gap-1 p-1 rounded-lg bg-muted overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        {links.map((route) => {
-          const isActive = location.pathname.includes(route.to);
-          return (
-            <Link
-              key={route.name}
-              to={route.to}
-              prefetch="intent"
-              className={cn(
-                "inline-flex flex-1 min-w-fit items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-background text-foreground shadow-button-base"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {route.name}
-              {route.count !== undefined && <Count count={route.count} />}
-            </Link>
-          );
-        })}
-      </div>
-    );
-  }
 
   return (
     <VStack
