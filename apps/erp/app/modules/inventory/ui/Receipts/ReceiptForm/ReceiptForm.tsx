@@ -8,9 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   useDisclosure,
+  useIsMobile,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { ReactNode } from "react";
 import {
   LuCheckCheck,
   LuCreditCard,
@@ -83,6 +85,8 @@ const ReceiptForm = ({
     setSourceDocument
   } = useReceiptForm({ status, initialValues });
 
+  const isMobile = useIsMobile();
+
   const postModal = useDisclosure();
   const voidModal = useDisclosure();
   const deleteDisclosure = useDisclosure();
@@ -131,6 +135,51 @@ const ReceiptForm = ({
             status={<ReceiptStatus status={status} />}
             menuItems={
               <>
+                {isMobile && (
+                  <>
+                    <SourceDocumentLink
+                      sourceDocument={
+                        routeData?.receipt?.sourceDocument ?? undefined
+                      }
+                      sourceDocumentId={
+                        routeData?.receipt?.sourceDocumentId ?? undefined
+                      }
+                      sourceDocumentReadableId={
+                        routeData?.receipt?.sourceDocumentReadableId ??
+                        undefined
+                      }
+                      asMenuItem
+                    />
+                    <DropdownMenuItem
+                      asChild={!!canInvoice}
+                      disabled={!canInvoice}
+                    >
+                      {canInvoice ? (
+                        <Link
+                          to={`${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${routeData?.receipt?.sourceDocumentId}`}
+                        >
+                          <DropdownMenuIcon icon={<LuCreditCard />} />
+                          <Trans>Invoice</Trans>
+                        </Link>
+                      ) : (
+                        <>
+                          <DropdownMenuIcon icon={<LuCreditCard />} />
+                          <Trans>Invoice</Trans>
+                        </>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={postModal.onOpen}
+                      disabled={
+                        !canPost || isPosted || !permissions.is("employee")
+                      }
+                    >
+                      <DropdownMenuIcon icon={<LuCheckCheck />} />
+                      <Trans>Post</Trans>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 {auditLogTrigger}
                 {isPosted && (
                   <>
@@ -177,39 +226,44 @@ const ReceiptForm = ({
                     }}
                   />
                 )}
-                <SourceDocumentLink
-                  sourceDocument={
-                    routeData?.receipt?.sourceDocument ?? undefined
-                  }
-                  sourceDocumentId={
-                    routeData?.receipt?.sourceDocumentId ?? undefined
-                  }
-                  sourceDocumentReadableId={
-                    routeData?.receipt?.sourceDocumentReadableId ?? undefined
-                  }
-                />
-                <Button
-                  variant={canInvoice ? "primary" : "secondary"}
-                  isDisabled={!canInvoice}
-                  leftIcon={<LuCreditCard />}
-                  asChild
-                >
-                  <Link
-                    to={`${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${routeData?.receipt?.sourceDocumentId}`}
-                  >
-                    <Trans>Invoice</Trans>
-                  </Link>
-                </Button>
-                <Button
-                  variant={canPost && !isPosted ? "primary" : "secondary"}
-                  onClick={postModal.onOpen}
-                  isDisabled={
-                    !canPost || isPosted || !permissions.is("employee")
-                  }
-                  leftIcon={<LuCheckCheck />}
-                >
-                  <Trans>Post</Trans>
-                </Button>
+                {!isMobile && (
+                  <>
+                    <SourceDocumentLink
+                      sourceDocument={
+                        routeData?.receipt?.sourceDocument ?? undefined
+                      }
+                      sourceDocumentId={
+                        routeData?.receipt?.sourceDocumentId ?? undefined
+                      }
+                      sourceDocumentReadableId={
+                        routeData?.receipt?.sourceDocumentReadableId ??
+                        undefined
+                      }
+                    />
+                    <Button
+                      variant={canInvoice ? "primary" : "secondary"}
+                      isDisabled={!canInvoice}
+                      leftIcon={<LuCreditCard />}
+                      asChild
+                    >
+                      <Link
+                        to={`${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${routeData?.receipt?.sourceDocumentId}`}
+                      >
+                        <Trans>Invoice</Trans>
+                      </Link>
+                    </Button>
+                    <Button
+                      variant={canPost && !isPosted ? "primary" : "secondary"}
+                      onClick={postModal.onOpen}
+                      isDisabled={
+                        !canPost || isPosted || !permissions.is("employee")
+                      }
+                      leftIcon={<LuCheckCheck />}
+                    >
+                      <Trans>Post</Trans>
+                    </Button>
+                  </>
+                )}
               </>
             }
           />
@@ -307,47 +361,65 @@ const ReceiptForm = ({
 function SourceDocumentLink({
   sourceDocument,
   sourceDocumentId,
-  sourceDocumentReadableId
+  sourceDocumentReadableId,
+  asMenuItem = false
 }: {
   sourceDocument?: string;
   sourceDocumentId?: string;
   sourceDocumentReadableId?: string;
+  asMenuItem?: boolean;
 }) {
   const permissions = usePermissions();
 
   if (!sourceDocument || !sourceDocumentId || !sourceDocumentReadableId)
     return null;
+
+  let config: { to: string; icon: JSX.Element; label: ReactNode } | null = null;
   switch (sourceDocument) {
     case "Purchase Order":
       if (!permissions.can("view", "purchasing")) return null;
-      return (
-        <Button variant="secondary" leftIcon={<LuShoppingCart />} asChild>
-          <Link to={path.to.purchaseOrderDetails(sourceDocumentId!)}>
-            <Trans>Purchase Order</Trans>
-          </Link>
-        </Button>
-      );
+      config = {
+        to: path.to.purchaseOrderDetails(sourceDocumentId),
+        icon: <LuShoppingCart />,
+        label: <Trans>Purchase Order</Trans>
+      };
+      break;
     case "Purchase Invoice":
       if (!permissions.can("view", "invoicing")) return null;
-      return (
-        <Button variant="secondary" leftIcon={<LuCreditCard />} asChild>
-          <Link to={path.to.purchaseInvoice(sourceDocumentId!)}>
-            <Trans>Purchase Invoice</Trans>
-          </Link>
-        </Button>
-      );
+      config = {
+        to: path.to.purchaseInvoice(sourceDocumentId),
+        icon: <LuCreditCard />,
+        label: <Trans>Purchase Invoice</Trans>
+      };
+      break;
     case "Inbound Transfer":
       if (!permissions.can("view", "inventory")) return null;
-      return (
-        <Button variant="secondary" leftIcon={<LuTruck />} asChild>
-          <Link to={path.to.warehouseTransferDetails(sourceDocumentId!)}>
-            <Trans>Warehouse Transfer</Trans>
-          </Link>
-        </Button>
-      );
+      config = {
+        to: path.to.warehouseTransferDetails(sourceDocumentId),
+        icon: <LuTruck />,
+        label: <Trans>Warehouse Transfer</Trans>
+      };
+      break;
     default:
       return null;
   }
+
+  if (asMenuItem) {
+    return (
+      <DropdownMenuItem asChild>
+        <Link to={config.to}>
+          <DropdownMenuIcon icon={config.icon} />
+          {config.label}
+        </Link>
+      </DropdownMenuItem>
+    );
+  }
+
+  return (
+    <Button variant="secondary" leftIcon={config.icon} asChild>
+      <Link to={config.to}>{config.label}</Link>
+    </Button>
+  );
 }
 
 export default ReceiptForm;
