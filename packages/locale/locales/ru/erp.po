@@ -3001,6 +3001,9 @@ msgstr "Клиенты"
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "Пристройте элементы вашей документации в PDF-формате — изменяйте порядок разделов, скрывайте ненужные части и добавляйте свои блоки."
 
+msgid "Cut"
+msgstr "Раскроено"
+
 msgid "Cutting"
 msgstr "Режим резки"
 
@@ -12201,6 +12204,9 @@ msgstr "Сparens"
 
 msgid "Ready for Quote"
 msgstr "Готово к предложению"
+
+msgid "Ready to cut"
+msgstr "Готов к раскрою"
 
 msgid "Reason"
 msgstr "Причина"

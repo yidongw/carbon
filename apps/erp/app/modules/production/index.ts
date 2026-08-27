@@ -1,4 +1,5 @@
 export * from "./bundleWorkOrder.service";
+export * from "./cuttingStatus";
 export * from "./jobOperationSupplierQuantityReport.models";
 export * from "./jobOperationSupplierQuantityReport.service";
 export * from "./jobVariantQuantity.service";

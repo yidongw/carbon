@@ -3001,6 +3001,9 @@ msgstr "客户"
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "自定义您的PDF文档布局——重新排列部分、隐藏不需要的内容，并添加您自己的区块。"
 
+msgid "Cut"
+msgstr "已裁剪"
+
 msgid "Cutting"
 msgstr "裁剪"
 
@@ -12201,6 +12204,9 @@ msgstr "准备就绪"
 
 msgid "Ready for Quote"
 msgstr "准备报价"
+
+msgid "Ready to cut"
+msgstr "可裁"
 
 msgid "Reason"
 msgstr "原因"

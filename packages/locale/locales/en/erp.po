@@ -3000,6 +3000,9 @@ msgstr "Customers"
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 
+msgid "Cut"
+msgstr "Cut"
+
 msgid "Cutting"
 msgstr "Cutting"
 
@@ -12200,6 +12203,9 @@ msgstr "Ready"
 
 msgid "Ready for Quote"
 msgstr "Ready for Quote"
+
+msgid "Ready to cut"
+msgstr "Ready to cut"
 
 msgid "Reason"
 msgstr "Reason"

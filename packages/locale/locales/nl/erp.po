@@ -1991,6 +1991,9 @@ msgstr ""
 msgid "Customers"
 msgstr ""
 
+msgid "Cut"
+msgstr "Gesneden"
+
 msgid "Daily Usage"
 msgstr ""
 
@@ -5919,6 +5922,9 @@ msgstr ""
 
 msgid "Ready for Quote"
 msgstr ""
+
+msgid "Ready to cut"
+msgstr "Klaar om te snijden"
 
 msgid "Reason"
 msgstr ""

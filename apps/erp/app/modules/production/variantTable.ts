@@ -192,6 +192,57 @@ export function reportsExceedVariantQuantitiesPlan(
 }
 
 /**
+ * Per-variant minimum across several variant-quantity tables, descriptor-matched.
+ * A variant absent from a table counts as 0 there, so a cell only survives if
+ * every table released it. Used to gate cutting availability by the least-reported
+ * upstream op *per variant* (a chain's last step, or the slowest parallel feed).
+ */
+export function minVariantTables(
+  tables: Array<Json | Record<string, unknown> | null | undefined>
+): VariantsQuantityData {
+  if (tables.length === 0) return { variantTable: [] };
+
+  const parsed = tables.map((table) => getVariantsQuantityTable(table));
+
+  // First-seen descriptor order + a representative row (for its descriptor cols).
+  const order: string[] = [];
+  const repBySignature = new Map<string, VariantsQuantityRow>();
+  // Each table's summed quantity per descriptor signature (absent → 0).
+  const valueByTable = parsed.map((rows) => {
+    const map = new Map<string, number>();
+    for (const row of rows) {
+      const signature = descriptorSignature(row);
+      if (!repBySignature.has(signature)) {
+        repBySignature.set(signature, row);
+        order.push(signature);
+      }
+      map.set(
+        signature,
+        (map.get(signature) ?? 0) + (Number(row[QUANTITY_COLUMN]) || 0)
+      );
+    }
+    return map;
+  });
+
+  const variantTable: VariantsQuantityRow[] = [];
+  for (const signature of order) {
+    const rep = repBySignature.get(signature);
+    if (!rep) continue;
+    let min = Number.POSITIVE_INFINITY;
+    for (const map of valueByTable) {
+      min = Math.min(min, map.get(signature) ?? 0);
+    }
+    const descriptor: VariantsQuantityRow = {};
+    for (const key of Object.keys(rep)) {
+      if (key !== QUANTITY_COLUMN) descriptor[key] = rep[key];
+    }
+    descriptor[QUANTITY_COLUMN] = Number.isFinite(min) ? min : 0;
+    variantTable.push(descriptor);
+  }
+  return { variantTable };
+}
+
+/**
  * Sums the `Quantities` column across `variantQuantities.variantTable`.
  */
 export function computeVariantTableTotal(

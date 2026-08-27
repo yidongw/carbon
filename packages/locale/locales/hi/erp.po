@@ -3001,6 +3001,9 @@ msgstr "ग्राहक"
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "पीडीएफ डॉक्युमेंट्स के परिवर्तनात्मक प्रणाली का परिचालन करें — सब्सेक्शन्स को रीऑर्डर करें, उपयुक्त नहीं होने वाले बातों को छुपा दें, और अपने खुद के टॉक्स जोड़ें।"
 
+msgid "Cut"
+msgstr "कटा हुआ"
+
 msgid "Cutting"
 msgstr "काटना"
 
@@ -12201,6 +12204,9 @@ msgstr "तैयार"
 
 msgid "Ready for Quote"
 msgstr "उद्धरण के लिए तैयार"
+
+msgid "Ready to cut"
+msgstr "काटने के लिए तैयार"
 
 msgid "Reason"
 msgstr "कारण"
