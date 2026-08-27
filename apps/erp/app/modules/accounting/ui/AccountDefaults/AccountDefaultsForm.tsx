@@ -514,9 +514,9 @@ const AccountDefaultsForm = ({
                     key={field.name}
                     className="group rounded-lg border border-border p-4 transition-all hover:border-muted-foreground/30"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
                           <h3 className="text-sm font-medium text-foreground">
                             {field.label}
                           </h3>
@@ -528,7 +528,7 @@ const AccountDefaultsForm = ({
                           {field.description}
                         </p>
                       </div>
-                      <div className="flex-shrink-0 w-64">
+                      <div className="w-full sm:w-64 sm:flex-shrink-0">
                         <Combobox
                           name={field.name}
                           options={accountOptions[field.accountType]}
