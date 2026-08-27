@@ -1,6 +1,7 @@
 import {
   Button,
   Count,
+  cn,
   HStack,
   Tooltip,
   TooltipContent,
@@ -41,25 +42,24 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
 
   if (isMobile) {
     return (
-      <div className="flex items-center gap-1 p-1.5 bg-card border border-border rounded-lg overflow-x-auto shrink-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex items-center gap-1 p-1 rounded-lg bg-muted overflow-x-auto shrink-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {links.map((route) => {
           const isActive = location.pathname.includes(route.to);
           return (
-            <Button
+            <Link
               key={route.name}
-              asChild
-              leftIcon={route.icon}
-              variant={isActive ? "active" : "ghost"}
-              size="sm"
-              className="shrink-0"
+              to={route.to}
+              prefetch="intent"
+              className={cn(
+                "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-background text-foreground shadow-button-base"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <Link to={route.to} prefetch="intent">
-                {route.name}
-                {route.count !== undefined && (
-                  <Count count={route.count} className="ml-1.5" />
-                )}
-              </Link>
-            </Button>
+              {route.name}
+              {route.count !== undefined && <Count count={route.count} />}
+            </Link>
           );
         })}
       </div>
