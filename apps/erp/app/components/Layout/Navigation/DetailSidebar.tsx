@@ -1,7 +1,11 @@
 import {
   Button,
   Count,
-  cn,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
   HStack,
   Tooltip,
   TooltipContent,
@@ -11,7 +15,10 @@ import {
   usePrettifyShortcut,
   VStack
 } from "@carbon/react";
+import { Trans } from "@lingui/react/macro";
 import type { ReactNode } from "react";
+import { useState } from "react";
+import { LuChevronDown, LuPanelLeft } from "react-icons/lu";
 import { Link, useNavigate } from "react-router";
 import { useOptimisticLocation } from "~/hooks";
 
@@ -30,6 +37,7 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
   const location = useOptimisticLocation();
   const prettifyShortcut = usePrettifyShortcut();
   const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
 
   useKeyboardShortcuts(
     links.reduce<Record<string, () => void>>((acc, link) => {
@@ -41,28 +49,60 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
   );
 
   if (isMobile) {
+    const current = links.find((route) => location.pathname.includes(route.to));
     return (
-      <div className="flex w-full items-center gap-1 p-1 rounded-lg bg-muted overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        {links.map((route) => {
-          const isActive = location.pathname.includes(route.to);
-          return (
-            <Link
-              key={route.name}
-              to={route.to}
-              prefetch="intent"
-              className={cn(
-                "inline-flex flex-1 min-w-fit items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold antialiased transition-colors",
-                isActive
-                  ? "bg-background text-foreground shadow-button-base"
-                  : "text-foreground/70 hover:text-foreground"
-              )}
-            >
-              <span>{route.name}</span>
-              {route.count !== undefined && <Count count={route.count} />}
-            </Link>
-          );
-        })}
-      </div>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
+          <Button
+            variant="secondary"
+            leftIcon={<LuPanelLeft />}
+            rightIcon={<LuChevronDown className="opacity-60" />}
+            className="justify-start font-semibold"
+          >
+            {current?.name ?? links[0]?.name}
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent
+          position="left"
+          size="content"
+          className="w-[78vw] max-w-xs"
+        >
+          <DrawerHeader>
+            <DrawerTitle>
+              <Trans>Navigation</Trans>
+            </DrawerTitle>
+          </DrawerHeader>
+          <VStack
+            spacing={1}
+            className="w-full flex-1 overflow-y-auto px-3 pb-4 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          >
+            {links.map((route) => {
+              const isActive = location.pathname.includes(route.to);
+              return (
+                <Button
+                  key={route.name}
+                  asChild
+                  variant={isActive ? "active" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setOpen(false)}
+                >
+                  <Link
+                    to={route.to}
+                    prefetch="intent"
+                    className="flex items-center justify-start gap-2"
+                  >
+                    {route.icon}
+                    <span>{route.name}</span>
+                    {route.count !== undefined && (
+                      <Count count={route.count} className="ml-auto" />
+                    )}
+                  </Link>
+                </Button>
+              );
+            })}
+          </VStack>
+        </DrawerContent>
+      </Drawer>
     );
   }
 
