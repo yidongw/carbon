@@ -217,7 +217,7 @@ const WarehouseTransferForm = ({
                           }
                           rightIcon={<LuChevronDown />}
                         >
-                          <Trans>Documents</Trans>
+                          <Trans context="warehouse transfer">Documents</Trans>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

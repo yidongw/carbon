@@ -3670,6 +3670,10 @@ msgstr "Błąd dokumentacji"
 msgid "Documents"
 msgstr "Dokumenty"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "Dokumenty"
+
 msgid "Don't Cancel"
 msgstr "Nie anuluj"
 

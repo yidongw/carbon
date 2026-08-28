@@ -3670,6 +3670,10 @@ msgstr "文档错误"
 msgid "Documents"
 msgstr "文档"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "单据"
+
 msgid "Don't Cancel"
 msgstr "不要取消"
 

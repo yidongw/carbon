@@ -3670,6 +3670,10 @@ msgstr "Ошибка в документации"
 msgid "Documents"
 msgstr "Документы"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "Документы"
+
 msgid "Don't Cancel"
 msgstr "Не отменять"
 

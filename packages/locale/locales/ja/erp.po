@@ -3670,6 +3670,10 @@ msgstr "ドキュメンテーションのエラー"
 msgid "Documents"
 msgstr "ドキュメント"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "ドキュメント"
+
 msgid "Don't Cancel"
 msgstr "キャンセルしない"
 
