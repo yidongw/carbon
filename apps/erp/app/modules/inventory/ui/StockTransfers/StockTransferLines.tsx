@@ -103,8 +103,8 @@ function StockTransferLineComponent({
         isPicked && "opacity-50 hover:opacity-100"
       )}
     >
-      <div className="flex justify-between items-center w-full">
-        <HStack spacing={4} className="w-1/2 justify-between">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center w-full gap-4 sm:gap-0">
+        <HStack spacing={4} className="w-full sm:w-1/2 justify-between">
           <HStack spacing={4}>
             <ItemThumbnail
               size="md"
@@ -143,7 +143,7 @@ function StockTransferLineComponent({
             )}
           />
         </HStack>
-        <div className="flex flex-grow items-center justify-between gap-4 pl-4 w-1/2">
+        <div className="flex flex-grow items-center justify-between gap-4 pl-0 sm:pl-4 w-full sm:w-1/2">
           <HStack spacing={4} className="text-left items-center">
             {"fromStorageUnitId" in line && (
               <span className="text-base font-medium  whitespace-nowrap">
