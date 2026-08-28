@@ -29,7 +29,7 @@ const DocumentHeader = ({
 }: DocumentHeaderProps) => {
   const { t } = useLingui();
   return (
-    <CardHeader className="flex-row items-center justify-between">
+    <CardHeader className="flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <HStack>
           <Heading as="h1" size="h3">
@@ -55,7 +55,9 @@ const DocumentHeader = ({
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         )}
       </div>
-      {actions && <HStack>{actions}</HStack>}
+      {actions && (
+        <HStack className="flex-wrap w-full md:w-auto">{actions}</HStack>
+      )}
     </CardHeader>
   );
 };
