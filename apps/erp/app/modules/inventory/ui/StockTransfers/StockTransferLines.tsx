@@ -99,8 +99,7 @@ function StockTransferLineComponent({
     <div
       className={cn(
         "flex flex-col border-b p-4 sm:p-6 gap-6",
-        index === totalLines - 1 && "border-none",
-        isPicked && "sm:opacity-50 sm:hover:opacity-100"
+        index === totalLines - 1 && "border-none"
       )}
     >
       <div className="relative">
