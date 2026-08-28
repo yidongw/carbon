@@ -13603,9 +13603,6 @@ msgstr "शिफ्ट अपडेट किया गया है"
 msgid "Shifts"
 msgstr "शिफ्ट"
 
-msgid "Ship"
-msgstr "भेजें"
-
 msgid "Ship some, stock some"
 msgstr "कुछ भेजें, कुछ स्टॉक करें"
 

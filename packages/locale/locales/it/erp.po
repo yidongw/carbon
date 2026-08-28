@@ -13603,9 +13603,6 @@ msgstr "Turno aggiornato"
 msgid "Shifts"
 msgstr "Turni"
 
-msgid "Ship"
-msgstr "Spedisci"
-
 msgid "Ship some, stock some"
 msgstr "Spedisci alcuni, immagazzina alcuni"
 

@@ -13603,9 +13603,6 @@ msgstr "Plage mise à jour"
 msgid "Shifts"
 msgstr "Quarts"
 
-msgid "Ship"
-msgstr "Expédier"
-
 msgid "Ship some, stock some"
 msgstr "Expédier une partie, stocker une partie"
 

@@ -13602,9 +13602,6 @@ msgstr "Shift updated"
 msgid "Shifts"
 msgstr "Shifts"
 
-msgid "Ship"
-msgstr "Ship"
-
 msgid "Ship some, stock some"
 msgstr "Ship some, stock some"
 
