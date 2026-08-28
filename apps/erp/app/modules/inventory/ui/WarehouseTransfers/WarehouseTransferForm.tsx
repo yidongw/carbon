@@ -96,6 +96,19 @@ const WarehouseTransferForm = ({
   const { receipts, shipments, ship, receive, hasShippedItems } =
     useWarehouseTransferRelatedDocuments(warehouseTransfer?.id);
 
+  // Header actions are gated by the transfer's status so the toolbar only shows
+  // what's actually actionable right now (keeps it from overflowing on mobile).
+  // Ship/Receive still render as dropdowns whenever related documents exist, so
+  // their links stay reachable even once the transfer is Completed/Cancelled.
+  const status = warehouseTransfer?.status ?? "";
+  const statusBusy = statusFetcher.state !== "idle";
+  const canUpdate = permissions.can("update", "inventory");
+  const canConfirm = status === "Draft";
+  const canCancel = !["Cancelled", "Completed"].includes(status);
+  const canShip = ["To Ship", "To Ship and Receive"].includes(status);
+  const canReceive =
+    ["To Receive", "To Ship and Receive"].includes(status) && hasShippedItems;
+
   return (
     <>
       <ValidatedForm
@@ -137,6 +150,17 @@ const WarehouseTransferForm = ({
                     <DropdownMenuIcon icon={<LuLoaderCircle />} />
                     <Trans>Reopen</Trans>
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={!canCancel || statusBusy || !canUpdate}
+                    onClick={() => {
+                      const fd = new FormData();
+                      fd.set("status", "Cancelled");
+                      statusRules.submit(fd);
+                    }}
+                  >
+                    <DropdownMenuIcon icon={<LuCircleStop />} />
+                    <Trans>Cancel</Trans>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     disabled={
@@ -154,56 +178,26 @@ const WarehouseTransferForm = ({
               }
               actions={
                 <>
-                  <Button
-                    type="button"
-                    leftIcon={<LuCheckCheck />}
-                    variant={
-                      warehouseTransfer.status === "Draft"
-                        ? "primary"
-                        : "secondary"
-                    }
-                    isDisabled={
-                      !["Draft"].includes(warehouseTransfer.status) ||
-                      statusFetcher.state !== "idle" ||
-                      !permissions.can("update", "inventory")
-                    }
-                    isLoading={
-                      statusFetcher.state !== "idle" &&
-                      statusFetcher.formData?.get("status") ===
-                        "To Ship and Receive"
-                    }
-                    onClick={() => {
-                      const fd = new FormData();
-                      fd.set("status", "To Ship and Receive");
-                      statusRules.submit(fd);
-                    }}
-                  >
-                    <Trans>Confirm</Trans>
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    leftIcon={<LuCircleStop />}
-                    isDisabled={
-                      ["Cancelled", "Completed"].includes(
-                        warehouseTransfer.status
-                      ) ||
-                      statusFetcher.state !== "idle" ||
-                      !permissions.can("update", "inventory")
-                    }
-                    isLoading={
-                      statusFetcher.state !== "idle" &&
-                      statusFetcher.formData?.get("status") === "Cancelled"
-                    }
-                    onClick={() => {
-                      const fd = new FormData();
-                      fd.set("status", "Cancelled");
-                      statusRules.submit(fd);
-                    }}
-                  >
-                    <Trans>Cancel</Trans>
-                  </Button>
+                  {canConfirm && (
+                    <Button
+                      type="button"
+                      leftIcon={<LuCheckCheck />}
+                      variant="primary"
+                      isDisabled={statusBusy || !canUpdate}
+                      isLoading={
+                        statusBusy &&
+                        statusFetcher.formData?.get("status") ===
+                          "To Ship and Receive"
+                      }
+                      onClick={() => {
+                        const fd = new FormData();
+                        fd.set("status", "To Ship and Receive");
+                        statusRules.submit(fd);
+                      }}
+                    >
+                      <Trans>Confirm</Trans>
+                    </Button>
+                  )}
 
                   {shipments.length > 0 ? (
                     <DropdownMenu>
@@ -242,26 +236,15 @@ const WarehouseTransferForm = ({
                         ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  ) : (
+                  ) : canShip ? (
                     <Button
                       leftIcon={<LuTruck />}
-                      isDisabled={
-                        !["To Ship", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        )
-                      }
-                      variant={
-                        ["To Ship", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        )
-                          ? "primary"
-                          : "secondary"
-                      }
+                      variant="primary"
                       onClick={() => ship(warehouseTransfer)}
                     >
                       <Trans>Ship</Trans>
                     </Button>
-                  )}
+                  ) : null}
 
                   {receipts.length > 0 ? (
                     <DropdownMenu>
@@ -306,26 +289,15 @@ const WarehouseTransferForm = ({
                         ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  ) : (
+                  ) : canReceive ? (
                     <Button
                       leftIcon={<LuHandCoins />}
-                      isDisabled={
-                        !["To Receive", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        ) || !hasShippedItems
-                      }
-                      variant={
-                        ["To Receive", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        ) && hasShippedItems
-                          ? "primary"
-                          : "secondary"
-                      }
+                      variant="primary"
                       onClick={() => receive(warehouseTransfer)}
                     >
                       <Trans>Receive</Trans>
                     </Button>
-                  )}
+                  ) : null}
                 </>
               }
             />
