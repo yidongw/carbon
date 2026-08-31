@@ -32,6 +32,7 @@ import {
   ModalTitle,
   toast,
   useDisclosure,
+  useIsMobile,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -43,6 +44,7 @@ import {
   LuChevronRight,
   LuCirclePlus,
   LuCopy,
+  LuEllipsisVertical,
   LuGitBranch,
   LuGitFork,
   LuGitMerge,
@@ -79,6 +81,7 @@ const MakeMethodTools = ({
 }: MakeMethodToolsProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
+  const isMobile = useIsMobile();
   const fetcher = useFetcher<{ error: string | null }>();
   const params = useParams();
   const { methodId, makeMethodId } = params;
@@ -212,37 +215,80 @@ const MakeMethodTools = ({
     <Fragment key={itemId}>
       <Menubar>
         <HStack className="w-full justify-between">
-          <HStack spacing={0}>
-            <MenubarItem
-              isLoading={isGetMethodLoading}
-              isDisabled={
-                !permissions.can("update", "parts") ||
-                isGetMethodLoading ||
-                activeMethod.status !== "Draft" // Can only overwrite Draft versions
-              }
-              leftIcon={<LuGitBranch />}
-              onClick={getMethodModal.onOpen}
-            >
-              <Trans>Get Method</Trans>
-            </MenubarItem>
-            <MenubarItem
-              isDisabled={
-                !permissions.can("update", "parts") || isSaveMethodLoading
-              }
-              isLoading={isSaveMethodLoading}
-              leftIcon={<LuGitMerge />}
-              onClick={saveMethodModal.onOpen}
-            >
-              <Trans>Save Method</Trans>
-            </MenubarItem>
-            {itemLink && (
-              <MenubarItem leftIcon={<LuGitFork />} asChild>
-                <Link prefetch="intent" to={itemLink}>
-                  <Trans>Item Master</Trans>
-                </Link>
+          {isMobile ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <MenubarItem
+                  leftIcon={<LuEllipsisVertical />}
+                  rightIcon={<LuChevronDown />}
+                >
+                  <Trans>Methods</Trans>
+                </MenubarItem>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem
+                  disabled={
+                    !permissions.can("update", "parts") ||
+                    isGetMethodLoading ||
+                    activeMethod.status !== "Draft" // Can only overwrite Draft versions
+                  }
+                  onClick={getMethodModal.onOpen}
+                >
+                  <DropdownMenuIcon icon={<LuGitBranch />} />
+                  <Trans>Get Method</Trans>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={
+                    !permissions.can("update", "parts") || isSaveMethodLoading
+                  }
+                  onClick={saveMethodModal.onOpen}
+                >
+                  <DropdownMenuIcon icon={<LuGitMerge />} />
+                  <Trans>Save Method</Trans>
+                </DropdownMenuItem>
+                {itemLink && (
+                  <DropdownMenuItem asChild>
+                    <Link prefetch="intent" to={itemLink}>
+                      <DropdownMenuIcon icon={<LuGitFork />} />
+                      <Trans>Item Master</Trans>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <HStack spacing={0}>
+              <MenubarItem
+                isLoading={isGetMethodLoading}
+                isDisabled={
+                  !permissions.can("update", "parts") ||
+                  isGetMethodLoading ||
+                  activeMethod.status !== "Draft" // Can only overwrite Draft versions
+                }
+                leftIcon={<LuGitBranch />}
+                onClick={getMethodModal.onOpen}
+              >
+                <Trans>Get Method</Trans>
               </MenubarItem>
-            )}
-          </HStack>
+              <MenubarItem
+                isDisabled={
+                  !permissions.can("update", "parts") || isSaveMethodLoading
+                }
+                isLoading={isSaveMethodLoading}
+                leftIcon={<LuGitMerge />}
+                onClick={saveMethodModal.onOpen}
+              >
+                <Trans>Save Method</Trans>
+              </MenubarItem>
+              {itemLink && (
+                <MenubarItem leftIcon={<LuGitFork />} asChild>
+                  <Link prefetch="intent" to={itemLink}>
+                    <Trans>Item Master</Trans>
+                  </Link>
+                </MenubarItem>
+              )}
+            </HStack>
+          )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
