@@ -216,7 +216,7 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
                   <Heading size="h4" as="h3" className="min-w-0 truncate">
                     {rule.name}
                   </Heading>
-                  <div className="order-last flex w-full items-center gap-3 min-w-0 overflow-x-auto sm:order-none sm:w-auto sm:flex-1 sm:overflow-visible">
+                  <div className="order-last flex w-full items-center gap-3 min-w-0 overflow-x-auto sm:order-none sm:w-auto sm:flex-1">
                     <Badge variant="secondary" className="shrink-0">
                       {TARGET_LABEL[rule.targetType]}
                     </Badge>
