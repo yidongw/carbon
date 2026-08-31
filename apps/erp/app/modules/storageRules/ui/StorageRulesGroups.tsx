@@ -211,7 +211,10 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
           <AccordionItem value={rule.id} className="border-none">
             <div className="relative">
               <AccordionTrigger className="px-6 py-6 hover:no-underline w-full">
-                <HStack spacing={4} className="flex-1 justify-between pr-12">
+                <HStack
+                  spacing={4}
+                  className="flex-1 min-w-0 justify-between pr-12"
+                >
                   <div className="flex items-center gap-3 min-w-0 overflow-x-auto sm:overflow-visible">
                     <Heading
                       size="h4"
