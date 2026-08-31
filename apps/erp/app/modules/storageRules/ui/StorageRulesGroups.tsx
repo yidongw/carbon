@@ -16,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Heading,
-  HStack,
   IconButton,
   ScrollArea,
   Status,
@@ -211,32 +210,55 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
           <AccordionItem value={rule.id} className="border-none">
             <div className="relative">
               <AccordionTrigger className="px-6 py-6 hover:no-underline w-full">
-                <HStack spacing={4} className="flex-1 justify-between pr-12">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Heading size="h4" as="h3" className="truncate">
-                      {rule.name}
-                    </Heading>
-                    <Badge variant="secondary">
-                      {TARGET_LABEL[rule.targetType]}
+                {/* The whole header row scrolls horizontally as one strip so
+                    nothing is clipped when it overflows; the menu + chevron stay
+                    pinned. Every item is shrink-0 so the row scrolls instead of
+                    squishing. mr-14 reserves the control zone on the right so the
+                    scrolling content stops before (never slides under) the pinned
+                    menu + chevron. */}
+                <div className="flex flex-1 items-center gap-3 min-w-0 overflow-x-auto scrollbar-hide mr-14">
+                  <Heading
+                    size="h4"
+                    as="h3"
+                    className="shrink-0 whitespace-nowrap"
+                  >
+                    {rule.name}
+                  </Heading>
+                  <Badge
+                    variant="secondary"
+                    className="shrink-0 whitespace-nowrap"
+                  >
+                    {TARGET_LABEL[rule.targetType]}
+                  </Badge>
+                  {rule.severity === "error" ? (
+                    <Badge variant="red" className="shrink-0 whitespace-nowrap">
+                      Error
                     </Badge>
-                    {rule.severity === "error" ? (
-                      <Badge variant="red">Error</Badge>
-                    ) : (
-                      <Badge variant="yellow">Warn</Badge>
-                    )}
-                    {broadcastLabel && (
-                      <Badge variant="outline">{broadcastLabel}</Badge>
-                    )}
-                  </div>
+                  ) : (
+                    <Badge
+                      variant="yellow"
+                      className="shrink-0 whitespace-nowrap"
+                    >
+                      Warn
+                    </Badge>
+                  )}
+                  {broadcastLabel && (
+                    <Badge
+                      variant="outline"
+                      className="shrink-0 whitespace-nowrap"
+                    >
+                      {broadcastLabel}
+                    </Badge>
+                  )}
                   <Status
                     color={rule.active ? "green" : "gray"}
-                    className="text-xs font-medium"
+                    className="text-xs font-medium shrink-0 whitespace-nowrap"
                   >
                     {rule.active ? "Active" : "Inactive"}
                   </Status>
-                </HStack>
+                </div>
               </AccordionTrigger>
-              <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10">
+              <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-card">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <IconButton
