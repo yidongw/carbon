@@ -210,34 +210,47 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
           <AccordionItem value={rule.id} className="border-none">
             <div className="relative">
               <AccordionTrigger className="px-6 py-6 hover:no-underline w-full">
-                {/* Mobile: title + status on row 1, badges scroll full-width on
-                    row 2. Desktop (sm+): single row, unchanged. */}
-                <div className="flex flex-1 min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 pr-12 sm:flex-nowrap">
-                  <Heading size="h4" as="h3" className="min-w-0 truncate">
+                {/* The whole header row scrolls horizontally as one strip so
+                    nothing is clipped when it overflows; the menu + chevron stay
+                    pinned. Every item is shrink-0 so the row scrolls instead of
+                    squishing. */}
+                <div className="flex flex-1 items-center gap-3 min-w-0 overflow-x-auto scrollbar-hide pr-12">
+                  <Heading
+                    size="h4"
+                    as="h3"
+                    className="shrink-0 whitespace-nowrap"
+                  >
                     {rule.name}
                   </Heading>
-                  <div className="order-last flex w-full items-center gap-3 min-w-0 overflow-x-auto sm:order-none sm:w-auto sm:flex-1">
-                    <Badge variant="secondary" className="shrink-0">
-                      {TARGET_LABEL[rule.targetType]}
+                  <Badge
+                    variant="secondary"
+                    className="shrink-0 whitespace-nowrap"
+                  >
+                    {TARGET_LABEL[rule.targetType]}
+                  </Badge>
+                  {rule.severity === "error" ? (
+                    <Badge variant="red" className="shrink-0 whitespace-nowrap">
+                      Error
                     </Badge>
-                    {rule.severity === "error" ? (
-                      <Badge variant="red" className="shrink-0">
-                        Error
-                      </Badge>
-                    ) : (
-                      <Badge variant="yellow" className="shrink-0">
-                        Warn
-                      </Badge>
-                    )}
-                    {broadcastLabel && (
-                      <Badge variant="outline" className="shrink-0">
-                        {broadcastLabel}
-                      </Badge>
-                    )}
-                  </div>
+                  ) : (
+                    <Badge
+                      variant="yellow"
+                      className="shrink-0 whitespace-nowrap"
+                    >
+                      Warn
+                    </Badge>
+                  )}
+                  {broadcastLabel && (
+                    <Badge
+                      variant="outline"
+                      className="shrink-0 whitespace-nowrap"
+                    >
+                      {broadcastLabel}
+                    </Badge>
+                  )}
                   <Status
                     color={rule.active ? "green" : "gray"}
-                    className="text-xs font-medium shrink-0"
+                    className="text-xs font-medium shrink-0 whitespace-nowrap"
                   >
                     {rule.active ? "Active" : "Inactive"}
                   </Status>
