@@ -396,8 +396,8 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex justify-between w-full">
-        <HStack>
+      <div className="bg-muted/30 border-t px-4 py-2 flex justify-between items-center gap-2 w-full">
+        <HStack className="min-w-0 flex-1 overflow-x-auto">
           <IssueTaskStatus
             task={task}
             type="investigation"
@@ -431,7 +431,7 @@ export function TaskItem({
             />
           )}
         </HStack>
-        <HStack>
+        <HStack className="shrink-0">
           <Button
             isDisabled={isDisabled}
             leftIcon={statusAction.icon}
