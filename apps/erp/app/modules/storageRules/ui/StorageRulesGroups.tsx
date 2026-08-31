@@ -16,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Heading,
-  HStack,
   IconButton,
   ScrollArea,
   Status,
@@ -211,37 +210,30 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
           <AccordionItem value={rule.id} className="border-none">
             <div className="relative">
               <AccordionTrigger className="px-6 py-6 hover:no-underline w-full">
-                <HStack
-                  spacing={4}
-                  className="flex-1 min-w-0 justify-between pr-12"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Heading
-                      size="h4"
-                      as="h3"
-                      className="shrink-0 whitespace-nowrap sm:shrink sm:min-w-0 sm:truncate"
-                    >
-                      {rule.name}
-                    </Heading>
-                    <div className="flex items-center gap-3 min-w-0 overflow-x-auto sm:overflow-visible">
-                      <Badge variant="secondary" className="shrink-0">
-                        {TARGET_LABEL[rule.targetType]}
+                {/* Mobile: title + status on row 1, badges scroll full-width on
+                    row 2. Desktop (sm+): single row, unchanged. */}
+                <div className="flex flex-1 min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 pr-12 sm:flex-nowrap">
+                  <Heading size="h4" as="h3" className="min-w-0 truncate">
+                    {rule.name}
+                  </Heading>
+                  <div className="order-last flex w-full items-center gap-3 min-w-0 overflow-x-auto sm:order-none sm:w-auto sm:flex-1 sm:overflow-visible">
+                    <Badge variant="secondary" className="shrink-0">
+                      {TARGET_LABEL[rule.targetType]}
+                    </Badge>
+                    {rule.severity === "error" ? (
+                      <Badge variant="red" className="shrink-0">
+                        Error
                       </Badge>
-                      {rule.severity === "error" ? (
-                        <Badge variant="red" className="shrink-0">
-                          Error
-                        </Badge>
-                      ) : (
-                        <Badge variant="yellow" className="shrink-0">
-                          Warn
-                        </Badge>
-                      )}
-                      {broadcastLabel && (
-                        <Badge variant="outline" className="shrink-0">
-                          {broadcastLabel}
-                        </Badge>
-                      )}
-                    </div>
+                    ) : (
+                      <Badge variant="yellow" className="shrink-0">
+                        Warn
+                      </Badge>
+                    )}
+                    {broadcastLabel && (
+                      <Badge variant="outline" className="shrink-0">
+                        {broadcastLabel}
+                      </Badge>
+                    )}
                   </div>
                   <Status
                     color={rule.active ? "green" : "gray"}
@@ -249,7 +241,7 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
                   >
                     {rule.active ? "Active" : "Inactive"}
                   </Status>
-                </HStack>
+                </div>
               </AccordionTrigger>
               <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10">
                 <DropdownMenu>
