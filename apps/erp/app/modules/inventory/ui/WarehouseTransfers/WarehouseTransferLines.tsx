@@ -150,43 +150,41 @@ function WarehouseTransferLineListItem({
 
   return (
     <div className={cn("border-b p-6", className)}>
-      <div className="flex flex-1 justify-between items-center w-full">
-        <HStack spacing={4} className="w-1/2">
-          <HStack spacing={4} className="flex-1">
-            <div className="flex items-center space-x-3">
-              <ItemThumbnail
-                size="sm"
-                thumbnailPath={line.item?.thumbnailPath}
-                // @ts-expect-error TS2339 - TODO: fix type
-                type={(item.type as "Part") ?? "Part"}
-              />
-              <VStack spacing={0}>
-                <span className="text-sm font-medium truncate">
-                  {/* @ts-expect-error TS2339 */}
-                  {item.name}
-                </span>
-                <span className="text-xs text-muted-foreground truncate">
-                  {itemReadableId}
-                </span>
-              </VStack>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary">
-                {Number(line.quantity).toLocaleString()}
-              </Badge>
-              {line.fromStorageUnit && (
-                <Badge variant="outline">{line.fromStorageUnit.name}</Badge>
-              )}
-              <LuArrowRight className="size-4" />
-              {line.toStorageUnit && (
-                <Badge variant="outline">{line.toStorageUnit.name}</Badge>
-              )}
-            </div>
-          </HStack>
-        </HStack>
-        <div className="flex items-center justify-end gap-2">
+      <div className="flex flex-1 justify-between items-start sm:items-center w-full gap-2">
+        <div className="flex flex-col gap-2 min-w-0 sm:flex-row sm:items-center sm:gap-4 sm:w-1/2">
+          <div className="flex items-center space-x-3 min-w-0">
+            <ItemThumbnail
+              size="sm"
+              thumbnailPath={line.item?.thumbnailPath}
+              // @ts-expect-error TS2339 - TODO: fix type
+              type={(item.type as "Part") ?? "Part"}
+            />
+            <VStack spacing={0}>
+              <span className="text-sm font-medium truncate">
+                {/* @ts-expect-error TS2339 */}
+                {item.name}
+              </span>
+              <span className="text-xs text-muted-foreground truncate">
+                {itemReadableId}
+              </span>
+            </VStack>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant="secondary">
+              {Number(line.quantity).toLocaleString()}
+            </Badge>
+            {line.fromStorageUnit && (
+              <Badge variant="outline">{line.fromStorageUnit.name}</Badge>
+            )}
+            <LuArrowRight className="size-4" />
+            {line.toStorageUnit && (
+              <Badge variant="outline">{line.toStorageUnit.name}</Badge>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-2 shrink-0">
           <HStack spacing={2}>
-            <span className="text-xs text-muted-foreground">
+            <span className="hidden sm:inline text-xs text-muted-foreground">
               {isUpdated ? t`Updated` : t`Created`} {formatRelativeTime(date)}
             </span>
             <EmployeeAvatar employeeId={person} withName={false} />
