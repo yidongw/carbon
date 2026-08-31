@@ -46,7 +46,16 @@ const New = ({ label, to, variant = "primary" }: NewProps) => {
           ref={buttonRef}
         >
           <Link to={to} prefetch="intent">
-            {label ? `${t`Add`} ${label}` : t`Add`}
+            {/* On mobile keep just "Add" (+ the icon) to save horizontal space;
+                the entity name only shows from md up. */}
+            {label ? (
+              <>
+                {t`Add`}
+                <span className="hidden md:inline"> {label}</span>
+              </>
+            ) : (
+              t`Add`
+            )}
           </Link>
         </Button>
       </TooltipTrigger>
