@@ -194,7 +194,7 @@ const LineItems = ({
                   className="flex flex-col cursor-pointer w-full"
                   onClick={() => toggleOpen(group.key)}
                 >
-                  <div className="flex items-center justify-between w-full">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between w-full">
                     <VStack
                       spacing={0}
                       className="flex-shrink-0 min-w-0 w-auto"
@@ -230,7 +230,7 @@ const LineItems = ({
                     </VStack>
                     <VStack
                       spacing={2}
-                      className="flex-shrink-0 items-end w-auto"
+                      className="flex-shrink-0 items-start sm:items-end w-auto"
                     >
                       <HStack spacing={4}>
                         <VStack spacing={0}>
@@ -254,7 +254,7 @@ const LineItems = ({
                           <LuChevronRight size={24} />
                         </motion.div>
                       </HStack>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         {!isIndirect && (
                           <Badge
                             variant="outline"
