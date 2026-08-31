@@ -135,6 +135,7 @@ const ShippingMethodsTable = memo(
         data={data}
         columns={columns}
         count={count}
+        collapseActionsOnMobile
         primaryAction={
           permissions.can("create", "inventory") && (
             <New

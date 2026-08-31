@@ -90,6 +90,10 @@ interface TableProps<T extends object> {
   columns: ColumnDef<T>[];
   count?: number;
   compact?: boolean;
+  // On mobile, collapse the trailing toolbar actions (sort/columns/download/…)
+  // into a single "…" popover and move the primary action inline onto the
+  // toolbar row (dropping the standalone title-bar row). Desktop is unchanged.
+  collapseActionsOnMobile?: boolean;
   data: T[];
   defaultFeaturedColumns?: string[];
   defaultColumnOrder?: string[];
@@ -252,6 +256,7 @@ const Table = <T extends object>({
   data,
   columns,
   compact = false,
+  collapseActionsOnMobile = false,
   count = 0,
   defaultFeaturedColumns,
   defaultColumnOrder,
@@ -1109,6 +1114,7 @@ const Table = <T extends object>({
           columnVisibility={columnVisibility}
           columns={table.getAllLeafColumns()}
           compact={compact}
+          collapseActionsOnMobile={collapseActionsOnMobile}
           data={data}
           editMode={editMode}
           filters={filters}
