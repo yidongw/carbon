@@ -20,7 +20,8 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-  useDisclosure
+  useDisclosure,
+  useIsMobile
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type {
@@ -32,7 +33,9 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
+  LuArrowUpDown,
   LuCheck,
+  LuColumns2,
   LuDownload,
   LuFilePen,
   LuLayers,
@@ -139,6 +142,13 @@ const TableHeader = <T extends object>({
 
   const savedViewDisclosure = useDisclosure();
   const canSaveView = withSavedView && !!table;
+
+  // On mobile the sort / columns / download icon buttons collapse into a single
+  // "..." menu; sort and columns render as controlled overlays outside the menu
+  // (a menu item unmounts on select, so the overlay can't live inside it).
+  const isMobile = useIsMobile();
+  const mobileSortDisclosure = useDisclosure();
+  const mobileColumnsDisclosure = useDisclosure();
 
   const fetcher = useFetcher<typeof savedViewAction>();
 
@@ -328,21 +338,86 @@ const TableHeader = <T extends object>({
           {filterActions}
         </HStack>
         <HStack className="shrink-0">
-          {sort === undefined ? (
-            <Sort columnAccessors={columnAccessors} />
+          {isMobile ? (
+            <>
+              {/* A custom sort node stays inline; the default sort/columns/
+                  download controls collapse into this "..." menu. */}
+              {sort !== undefined && sort}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <IconButton
+                    aria-label={t`Table actions`}
+                    variant="secondary"
+                    icon={<BsThreeDotsVertical />}
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {sort === undefined && (
+                    <DropdownMenuItem onClick={mobileSortDisclosure.onOpen}>
+                      <DropdownMenuIcon icon={<LuArrowUpDown />} />
+                      <Trans>Sort</Trans>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={mobileColumnsDisclosure.onOpen}>
+                    <DropdownMenuIcon icon={<LuColumns2 />} />
+                    <Trans>Columns</Trans>
+                  </DropdownMenuItem>
+                  <Download
+                    data={data}
+                    columnAccessors={columnAccessors}
+                    columnOrder={columnOrder}
+                    columnVisibility={columnVisibility}
+                    asMenuItem
+                  />
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {sort === undefined && (
+                <Sort
+                  columnAccessors={columnAccessors}
+                  asDrawer
+                  open={mobileSortDisclosure.isOpen}
+                  onOpenChange={(next) =>
+                    next
+                      ? mobileSortDisclosure.onOpen()
+                      : mobileSortDisclosure.onClose()
+                  }
+                />
+              )}
+              <Columns
+                featuredColumns={featuredColumns}
+                columnOrder={columnOrder}
+                columns={columns}
+                onPinnedReorder={onPinnedReorder}
+                setFeaturedColumns={setFeaturedColumns}
+                setColumnOrder={setColumnOrder}
+                withSelectableRows={withSelectableRows}
+                open={mobileColumnsDisclosure.isOpen}
+                onOpenChange={(next) =>
+                  next
+                    ? mobileColumnsDisclosure.onOpen()
+                    : mobileColumnsDisclosure.onClose()
+                }
+              />
+            </>
           ) : (
-            sort
-          )}
+            <>
+              {sort === undefined ? (
+                <Sort columnAccessors={columnAccessors} />
+              ) : (
+                sort
+              )}
 
-          <Columns
-            featuredColumns={featuredColumns}
-            columnOrder={columnOrder}
-            columns={columns}
-            onPinnedReorder={onPinnedReorder}
-            setFeaturedColumns={setFeaturedColumns}
-            setColumnOrder={setColumnOrder}
-            withSelectableRows={withSelectableRows}
-          />
+              <Columns
+                featuredColumns={featuredColumns}
+                columnOrder={columnOrder}
+                columns={columns}
+                onPinnedReorder={onPinnedReorder}
+                setFeaturedColumns={setFeaturedColumns}
+                setColumnOrder={setColumnOrder}
+                withSelectableRows={withSelectableRows}
+              />
+            </>
+          )}
 
           {canSaveView && (
             <Tooltip>
@@ -368,12 +443,14 @@ const TableHeader = <T extends object>({
             </Tooltip>
           )}
 
-          <Download
-            data={data}
-            columnAccessors={columnAccessors}
-            columnOrder={columnOrder}
-            columnVisibility={columnVisibility}
-          />
+          {!isMobile && (
+            <Download
+              data={data}
+              columnAccessors={columnAccessors}
+              columnOrder={columnOrder}
+              columnVisibility={columnVisibility}
+            />
+          )}
 
           {withPagination &&
             (pagination.canNextPage || pagination.canPreviousPage) && (

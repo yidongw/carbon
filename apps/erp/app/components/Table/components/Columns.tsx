@@ -34,6 +34,10 @@ type ColumnsProps<T> = {
   withSelectableRows: boolean;
   setColumnOrder: (newOrder: ColumnOrderState) => void;
   setFeaturedColumns: (cols: Set<string>) => void;
+  // When provided the drawer is controlled and its own icon trigger is omitted,
+  // so it can be opened from an external "..." menu item (mobile toolbar).
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 const Columns = <T extends object>({
@@ -43,8 +47,11 @@ const Columns = <T extends object>({
   onPinnedReorder,
   withSelectableRows,
   setColumnOrder,
-  setFeaturedColumns
+  setFeaturedColumns,
+  open,
+  onOpenChange
 }: ColumnsProps<T>) => {
+  const isControlled = open !== undefined;
   // Only pass toggleable IDs to Framer Motion so its position tracking is not
   // thrown off by non-rendered system columns (Select, Actions, Expand).
   const draggableOrder = columnOrder.filter((id) => {
@@ -90,27 +97,29 @@ const Columns = <T extends object>({
   const { t } = useLingui();
 
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       {/* Both triggers merge onto the single IconButton via asChild — nesting
           the Drawer/Tooltip triggers around a button (without asChild) renders
           <button><button> which is invalid HTML and breaks hydration. */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DrawerTrigger asChild>
-            <IconButton
-              aria-label={t`Columns`}
-              title={t`Columns`}
-              variant="ghost"
-              icon={<LuColumns2 />}
-            />
-          </DrawerTrigger>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>
-            <Trans>Column visibility and order</Trans>
-          </p>
-        </TooltipContent>
-      </Tooltip>
+      {!isControlled && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DrawerTrigger asChild>
+              <IconButton
+                aria-label={t`Columns`}
+                title={t`Columns`}
+                variant="ghost"
+                icon={<LuColumns2 />}
+              />
+            </DrawerTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>
+              <Trans>Column visibility and order</Trans>
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      )}
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>
