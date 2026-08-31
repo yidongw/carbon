@@ -207,30 +207,26 @@ const LineItems = ({
               {thumbnailPath ? (
                 <img
                   alt={itemReadableId!}
-                  className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg"
+                  className="w-14 h-14 sm:w-24 sm:h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg"
                   src={getPrivateUrl(thumbnailPath)}
                 />
               ) : (
-                <div className="w-24 h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg p-4">
-                  <LuImage className="w-16 h-16 text-muted-foreground" />
+                <div className="w-14 h-14 sm:w-24 sm:h-24 bg-gradient-to-bl from-muted to-muted/40 rounded-lg p-2 sm:p-4">
+                  <LuImage className="w-8 h-8 sm:w-16 sm:h-16 text-muted-foreground" />
                 </div>
               )}
 
-              <VStack spacing={0} className="w-full">
+              <VStack spacing={0} className="w-full min-w-0">
                 <div
                   className="flex flex-col cursor-pointer w-full"
                   onClick={() => toggleOpen(group.key)}
                 >
-                  <div className="flex items-center justify-between w-full">
-                    <VStack
-                      spacing={0}
-                      className="flex-shrink-0 min-w-0 w-auto"
-                    >
-                      <HStack
-                        spacing={2}
-                        className="flex min-w-0 flex-shrink-0"
-                      >
-                        <Heading className="truncate">{itemReadableId}</Heading>
+                  <div className="flex flex-col gap-1 w-full">
+                    <div className="flex items-start justify-between gap-2">
+                      <HStack spacing={2} className="flex-wrap min-w-0">
+                        <Heading className="text-lg sm:text-xl min-w-0">
+                          {itemReadableId}
+                        </Heading>
                         <Button
                           asChild
                           variant="link"
@@ -243,7 +239,9 @@ const LineItems = ({
                             className="inline-flex items-center gap-1"
                           >
                             <LuPencil />
-                            <Trans>Edit</Trans>
+                            <span className="hidden sm:inline">
+                              <Trans>Edit</Trans>
+                            </span>
                           </Link>
                         </Button>
                         <Button
@@ -261,71 +259,66 @@ const LineItems = ({
                             onDeleteLine(line);
                           }}
                         >
-                          <Trans>Delete</Trans>
+                          <span className="hidden sm:inline">
+                            <Trans>Delete</Trans>
+                          </span>
                         </Button>
                       </HStack>
-                      <span className="text-muted-foreground text-base truncate">
-                        {itemDescription}
+                      <motion.div
+                        className="flex-shrink-0 text-muted-foreground"
+                        animate={{
+                          rotate: openItems.includes(group.key) ? 90 : 0
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <LuChevronRight size={24} />
+                      </motion.div>
+                    </div>
+                    <span className="text-muted-foreground text-sm sm:text-base truncate">
+                      {itemDescription}
+                    </span>
+                    <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1.5 mt-0.5">
+                      <span className="font-bold text-sm sm:text-lg whitespace-nowrap">
+                        {formatter.format(total)}
                       </span>
-                      {variantDisplay ? (
-                        <VariantChips chips={variantDisplay.chips} />
-                      ) : null}
-                    </VStack>
-                    <VStack
-                      spacing={2}
-                      className="flex-shrink-0 items-end w-auto"
-                    >
-                      <HStack spacing={4}>
-                        <VStack spacing={0}>
-                          <span className="font-bold text-xl whitespace-nowrap">
-                            {formatter.format(total)}
-                          </span>
-                          {shouldConvertCurrency && (
-                            <span className="text-muted-foreground text-sm">
-                              {presentationCurrencyFormatter.format(
-                                supplierTotal
-                              )}
-                            </span>
-                          )}
-                        </VStack>
-                        <motion.div
-                          animate={{
-                            rotate: openItems.includes(group.key) ? 90 : 0
-                          }}
-                          transition={{ duration: 0.3 }}
+                      {shouldConvertCurrency && (
+                        <span className="text-muted-foreground text-xs whitespace-nowrap">
+                          {presentationCurrencyFormatter.format(supplierTotal)}
+                        </span>
+                      )}
+                      {!isIndirect && (
+                        <Badge
+                          variant="outline"
+                          className="flex items-center gap-2 text-[10px] sm:text-xs"
                         >
-                          <LuChevronRight size={24} />
-                        </motion.div>
-                      </HStack>
-                      <div className="flex items-center gap-2">
-                        {!isIndirect && (
-                          <Badge
-                            variant="outline"
-                            className="flex items-center gap-2"
-                          >
-                            {purchaseQuantity}
-                            <MethodIcon
-                              // @ts-ignore
-                              type={line.methodType ?? "Pull from Inventory"}
-                            />
-                          </Badge>
-                        )}
-                        <Badge variant="green">
-                          {formatter.format(unitPrice)}{" "}
-                          {
-                            unitOfMeasures.find(
-                              (uom) =>
-                                uom.value === line.purchaseUnitOfMeasureCode
-                            )?.label
-                          }
+                          {purchaseQuantity}
+                          <MethodIcon
+                            // @ts-ignore
+                            type={line.methodType ?? "Pull from Inventory"}
+                          />
                         </Badge>
-                        {(line.taxPercent ?? 0) > 0 ? (
-                          <Badge variant="red">
-                            {percentFormatter.format(line.taxPercent ?? 0)} Tax
-                          </Badge>
-                        ) : null}
-                      </div>
-                    </VStack>
+                      )}
+                      <Badge variant="green" className="text-[10px] sm:text-xs">
+                        {formatter.format(unitPrice)}{" "}
+                        {
+                          unitOfMeasures.find(
+                            (uom) =>
+                              uom.value === line.purchaseUnitOfMeasureCode
+                          )?.label
+                        }
+                      </Badge>
+                      {(line.taxPercent ?? 0) > 0 ? (
+                        <Badge variant="red" className="text-[10px] sm:text-xs">
+                          {percentFormatter.format(line.taxPercent ?? 0)} Tax
+                        </Badge>
+                      ) : null}
+                      {variantDisplay ? (
+                        <VariantChips
+                          chips={variantDisplay.chips}
+                          className="mt-0"
+                        />
+                      ) : null}
+                    </div>
                   </div>
                 </div>
 
