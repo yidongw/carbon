@@ -212,25 +212,35 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
             <div className="relative">
               <AccordionTrigger className="px-6 py-6 hover:no-underline w-full">
                 <HStack spacing={4} className="flex-1 justify-between pr-12">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Heading size="h4" as="h3" className="truncate">
+                  <div className="flex items-center gap-3 min-w-0 overflow-x-auto sm:overflow-visible">
+                    <Heading
+                      size="h4"
+                      as="h3"
+                      className="shrink-0 whitespace-nowrap sm:shrink sm:min-w-0 sm:truncate"
+                    >
                       {rule.name}
                     </Heading>
-                    <Badge variant="secondary">
+                    <Badge variant="secondary" className="shrink-0">
                       {TARGET_LABEL[rule.targetType]}
                     </Badge>
                     {rule.severity === "error" ? (
-                      <Badge variant="red">Error</Badge>
+                      <Badge variant="red" className="shrink-0">
+                        Error
+                      </Badge>
                     ) : (
-                      <Badge variant="yellow">Warn</Badge>
+                      <Badge variant="yellow" className="shrink-0">
+                        Warn
+                      </Badge>
                     )}
                     {broadcastLabel && (
-                      <Badge variant="outline">{broadcastLabel}</Badge>
+                      <Badge variant="outline" className="shrink-0">
+                        {broadcastLabel}
+                      </Badge>
                     )}
                   </div>
                   <Status
                     color={rule.active ? "green" : "gray"}
-                    className="text-xs font-medium"
+                    className="text-xs font-medium shrink-0"
                   >
                     {rule.active ? "Active" : "Inactive"}
                   </Status>
