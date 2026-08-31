@@ -213,8 +213,10 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
                 {/* The whole header row scrolls horizontally as one strip so
                     nothing is clipped when it overflows; the menu + chevron stay
                     pinned. Every item is shrink-0 so the row scrolls instead of
-                    squishing. */}
-                <div className="flex flex-1 items-center gap-3 min-w-0 overflow-x-auto scrollbar-hide pr-12">
+                    squishing. mr-14 reserves the control zone on the right so the
+                    scrolling content stops before (never slides under) the pinned
+                    menu + chevron. */}
+                <div className="flex flex-1 items-center gap-3 min-w-0 overflow-x-auto scrollbar-hide mr-14">
                   <Heading
                     size="h4"
                     as="h3"
@@ -256,7 +258,7 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
                   </Status>
                 </div>
               </AccordionTrigger>
-              <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10">
+              <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10 rounded-full bg-card">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <IconButton
