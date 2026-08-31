@@ -503,7 +503,7 @@ function ShipmentLineItem({
 
   return (
     <div className={cn("flex flex-col border-b p-6 gap-6 relative", className)}>
-      <div className="absolute top-6 right-6">
+      <div className="absolute top-6 right-6 z-20">
         {line.fulfillment?.type === "Job" ? (
           <div className="flex flex-col items-end gap-0">
             <span>{t`Job`}</span>
@@ -541,143 +541,154 @@ function ShipmentLineItem({
           </DropdownMenu>
         )}
       </div>
-      <div className="flex flex-1 justify-between items-center w-full">
-        <HStack spacing={4} className="w-1/2">
-          <HStack spacing={4}>
-            <ItemThumbnail
-              size="md"
-              thumbnailPath={line.thumbnailPath}
-              type={(item?.type as "Part") ?? "Part"}
-            />
-
-            <VStack spacing={0} className="max-w-[380px] w-full">
-              <div className="w-full overflow-hidden">
-                <span className="text-sm font-medium truncate block w-full">
-                  {item?.readableIdWithRevision ?? line.itemReadableId}
-                </span>
-                <span className="text-xs text-muted-foreground truncate block w-full">
-                  {item?.name ?? line.description}
-                </span>
-              </div>
-              <div className="mt-2">
-                <Enumerable
-                  value={
-                    unitsOfMeasure?.find((u) => u.value === line.unitOfMeasure)
-                      ?.label ?? null
-                  }
-                />
-              </div>
-            </VStack>
-          </HStack>
-        </HStack>
-        <div className="flex flex-grow items-center justify-between gap-2 pl-4 w-1/2">
-          <HStack spacing={4}>
-            <VStack spacing={1}>
-              <div className="flex items-center justify-between gap-1 w-full">
-                <label className="text-xs text-muted-foreground">{t`Shipped`}</label>
-                {isJobOverShipped && (
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <LuCircleAlert className="text-red-500" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {t`Shipped quantity exceeds job quantity`}
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-              </div>
-              {useVariantsQuantity ? (
-                <StyleLineQuantityInput
-                  lineId={line.id!}
-                  itemId={line.itemId ?? ""}
-                  value={line.shippedQuantity || 0}
-                  locationId={line.locationId ?? shipment?.locationId}
-                  orderVariantQuantities={line.orderVariantQuantities}
-                  isDisabled={quantityDisabled}
-                  isReadOnly={quantityDisabled}
-                  className={cn(
-                    "min-w-[100px]",
-                    isJobOverShipped &&
-                      "[&_input]:border-red-500 [&_input]:border-2"
-                  )}
-                  onQuantityChange={({ quantity, variantQuantities }) =>
-                    applyQuantity(quantity, variantQuantities)
-                  }
-                />
-              ) : (
-                <NumberField
-                  value={line.shippedQuantity || 0}
-                  onChange={(value) => {
-                    // Default to 0 if value is NaN, null, or undefined
-                    const safeValue = isNaN(value) || value == null ? 0 : value;
-                    applyQuantity(safeValue);
-                  }}
-                >
-                  <NumberInput
-                    className={cn(
-                      "disabled:bg-transparent disabled:opacity-100 min-w-[100px]",
-                      isJobOverShipped && "border-red-500 border-2"
-                    )}
-                    isDisabled={quantityDisabled}
-                    size="sm"
-                    min={0}
-                  />
-                </NumberField>
-              )}
-            </VStack>
-            <VStack spacing={1} className="text-center items-center">
-              <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
-              <span className="text-sm py-1.5">{line.orderQuantity || 0}</span>
-              {line.orderVariantQuantities ? (
-                <VariantChips
-                  chips={
-                    getVariantDisplay(line.orderVariantQuantities)?.chips ?? []
-                  }
-                />
-              ) : null}
-            </VStack>
-
-            <VStack spacing={1} className="text-center items-center">
-              <label className="text-xs text-muted-foreground">
-                {t`Outstanding`}
-              </label>
-              <HStack className="justify-center">
-                <span className="text-sm py-1.5">
-                  {(line.outstandingQuantity || 0) -
-                    (line.shippedQuantity || 0)}
-                </span>
-
-                {(line.shippedQuantity || 0) >
-                  (line.outstandingQuantity || 0) && (
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <LuCircleAlert className="text-red-500" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {t`There are more shipped than ordered`}
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-              </HStack>
-            </VStack>
-          </HStack>
-          {line.fulfillment?.type !== "Job" &&
-            shipment?.sourceDocument !== "Purchase Order" && (
-              <StorageUnit
-                locationId={line.locationId}
-                storageUnitId={line.storageUnitId}
-                itemId={line.itemId}
-                isReadOnly={isReadOnly}
-                onChange={(storageUnit) => {
-                  onUpdate({
-                    lineId: line.id!,
-                    field: "storageUnitId",
-                    value: storageUnit
-                  });
-                }}
+      <div className="relative w-full">
+        <div className="flex flex-1 items-center w-full gap-4 overflow-x-auto scrollbar-hide pr-10 md:pr-0 md:gap-0 md:justify-between md:overflow-visible">
+          <HStack spacing={4} className="shrink-0 md:w-1/2">
+            <HStack spacing={4}>
+              <ItemThumbnail
+                size="md"
+                thumbnailPath={line.thumbnailPath}
+                type={(item?.type as "Part") ?? "Part"}
               />
-            )}
+
+              <VStack
+                spacing={0}
+                className="max-w-[220px] md:max-w-[380px] w-full"
+              >
+                <div className="w-full overflow-hidden">
+                  <span className="text-sm font-medium truncate block w-full">
+                    {item?.readableIdWithRevision ?? line.itemReadableId}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate block w-full">
+                    {item?.name ?? line.description}
+                  </span>
+                </div>
+                <div className="mt-2">
+                  <Enumerable
+                    value={
+                      unitsOfMeasure?.find(
+                        (u) => u.value === line.unitOfMeasure
+                      )?.label ?? null
+                    }
+                  />
+                </div>
+              </VStack>
+            </HStack>
+          </HStack>
+          <div className="flex shrink-0 items-center gap-4 md:flex-grow md:justify-between md:gap-2 md:pl-4 md:w-1/2">
+            <HStack spacing={4}>
+              <VStack spacing={1}>
+                <div className="flex items-center justify-between gap-1 w-full">
+                  <label className="text-xs text-muted-foreground">{t`Shipped`}</label>
+                  {isJobOverShipped && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <LuCircleAlert className="text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {t`Shipped quantity exceeds job quantity`}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
+                {useVariantsQuantity ? (
+                  <StyleLineQuantityInput
+                    lineId={line.id!}
+                    itemId={line.itemId ?? ""}
+                    value={line.shippedQuantity || 0}
+                    locationId={line.locationId ?? shipment?.locationId}
+                    orderVariantQuantities={line.orderVariantQuantities}
+                    isDisabled={quantityDisabled}
+                    isReadOnly={quantityDisabled}
+                    className={cn(
+                      "min-w-[100px]",
+                      isJobOverShipped &&
+                        "[&_input]:border-red-500 [&_input]:border-2"
+                    )}
+                    onQuantityChange={({ quantity, variantQuantities }) =>
+                      applyQuantity(quantity, variantQuantities)
+                    }
+                  />
+                ) : (
+                  <NumberField
+                    value={line.shippedQuantity || 0}
+                    onChange={(value) => {
+                      // Default to 0 if value is NaN, null, or undefined
+                      const safeValue =
+                        isNaN(value) || value == null ? 0 : value;
+                      applyQuantity(safeValue);
+                    }}
+                  >
+                    <NumberInput
+                      className={cn(
+                        "disabled:bg-transparent disabled:opacity-100 min-w-[100px]",
+                        isJobOverShipped && "border-red-500 border-2"
+                      )}
+                      isDisabled={quantityDisabled}
+                      size="sm"
+                      min={0}
+                    />
+                  </NumberField>
+                )}
+              </VStack>
+              <VStack spacing={1} className="text-center items-center">
+                <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
+                <span className="text-sm py-1.5">
+                  {line.orderQuantity || 0}
+                </span>
+                {line.orderVariantQuantities ? (
+                  <VariantChips
+                    chips={
+                      getVariantDisplay(line.orderVariantQuantities)?.chips ??
+                      []
+                    }
+                  />
+                ) : null}
+              </VStack>
+
+              <VStack spacing={1} className="text-center items-center">
+                <label className="text-xs text-muted-foreground">
+                  {t`Outstanding`}
+                </label>
+                <HStack className="justify-center">
+                  <span className="text-sm py-1.5">
+                    {(line.outstandingQuantity || 0) -
+                      (line.shippedQuantity || 0)}
+                  </span>
+
+                  {(line.shippedQuantity || 0) >
+                    (line.outstandingQuantity || 0) && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <LuCircleAlert className="text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {t`There are more shipped than ordered`}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </HStack>
+              </VStack>
+            </HStack>
+            {line.fulfillment?.type !== "Job" &&
+              shipment?.sourceDocument !== "Purchase Order" && (
+                <StorageUnit
+                  locationId={line.locationId}
+                  storageUnitId={line.storageUnitId}
+                  itemId={line.itemId}
+                  isReadOnly={isReadOnly}
+                  onChange={(storageUnit) => {
+                    onUpdate({
+                      lineId: line.id!,
+                      field: "storageUnitId",
+                      value: storageUnit
+                    });
+                  }}
+                />
+              )}
+          </div>
         </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-card dark:from-muted to-transparent md:hidden" />
       </div>
       {line.requiresBatchTracking && (
         <BatchForm
