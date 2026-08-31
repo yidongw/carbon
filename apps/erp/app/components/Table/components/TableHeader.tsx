@@ -16,11 +16,15 @@ import {
   Heading,
   HStack,
   IconButton,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   toast,
-  useDisclosure
+  useDisclosure,
+  useIsMobile
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type {
@@ -68,6 +72,10 @@ type HeaderProps<T> = {
   columnVisibility: Record<string, boolean>;
   columns: Column<T, unknown>[];
   compact?: boolean;
+  // On mobile, collapse the trailing toolbar actions (sort/columns/download/…)
+  // into a single "…" popover and drop the standalone title-bar row so the
+  // primary action sits inline on the toolbar row. Desktop is unaffected.
+  collapseActionsOnMobile?: boolean;
   data: object[];
   editMode: boolean;
   filters: ColumnFilter[];
@@ -98,6 +106,7 @@ type HeaderProps<T> = {
 const TableHeader = <T extends object>({
   featuredColumns,
   compact,
+  collapseActionsOnMobile,
   columnAccessors,
   columnOrder,
   columnPinning,
@@ -129,6 +138,8 @@ const TableHeader = <T extends object>({
   filterActions
 }: HeaderProps<T>) => {
   const { t, i18n } = useLingui();
+  const isMobile = useIsMobile();
+  const collapseActions = !!collapseActionsOnMobile && isMobile;
   const [params, setParams] = useUrlParams();
   const currentFilters = params.getAll("filter").filter(Boolean);
   const currentSorts = params.getAll("sort").filter(Boolean);
@@ -179,6 +190,73 @@ const TableHeader = <T extends object>({
   );
 
   const hideTitleBar = !viewTitle && !primaryAction && !canSaveView;
+
+  const trailingActions = (
+    <>
+      {sort === undefined ? <Sort columnAccessors={columnAccessors} /> : sort}
+
+      <Columns
+        featuredColumns={featuredColumns}
+        columnOrder={columnOrder}
+        columns={columns}
+        onPinnedReorder={onPinnedReorder}
+        setFeaturedColumns={setFeaturedColumns}
+        setColumnOrder={setColumnOrder}
+        withSelectableRows={withSelectableRows}
+      />
+
+      {canSaveView && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <IconButton
+              aria-label={hasView ? t`Edit View` : t`Save View`}
+              variant={
+                savedViewDisclosure.isOpen || hasView ? "active" : "ghost"
+              }
+              icon={<LuLayers />}
+              onClick={savedViewDisclosure.onToggle}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>
+              {hasView ? <Trans>Edit View</Trans> : <Trans>Save View</Trans>}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      )}
+
+      <Download
+        data={data}
+        columnAccessors={columnAccessors}
+        columnOrder={columnOrder}
+        columnVisibility={columnVisibility}
+      />
+
+      {withPagination &&
+        (pagination.canNextPage || pagination.canPreviousPage) && (
+          <PaginationButtons {...pagination} condensed />
+        )}
+
+      {withInlineEditing &&
+        (editMode ? (
+          <Button
+            leftIcon={<LuLock />}
+            variant="secondary"
+            onClick={() => setEditMode(false)}
+          >
+            <Trans>Lock</Trans>
+          </Button>
+        ) : (
+          <Button
+            leftIcon={<LuFilePen />}
+            variant="secondary"
+            onClick={() => setEditMode(true)}
+          >
+            <Trans>Edit</Trans>
+          </Button>
+        ))}
+    </>
+  );
 
   return (
     <div className={cn("w-full flex flex-col", !compact && "mb-2 md:mb-8")}>
@@ -234,7 +312,8 @@ const TableHeader = <T extends object>({
           </Card>
         </ValidatedForm>
       ) : (
-        !hideTitleBar && (
+        !hideTitleBar &&
+        !collapseActions && (
           <HStack
             className={cn(
               compact
@@ -328,76 +407,25 @@ const TableHeader = <T extends object>({
           {filterActions}
         </HStack>
         <HStack className="shrink-0">
-          {sort === undefined ? (
-            <Sort columnAccessors={columnAccessors} />
+          {collapseActions ? (
+            <>
+              {primaryAction}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <IconButton
+                    aria-label={t`Table actions`}
+                    variant="secondary"
+                    icon={<BsThreeDotsVertical />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-auto p-1">
+                  <HStack spacing={1}>{trailingActions}</HStack>
+                </PopoverContent>
+              </Popover>
+            </>
           ) : (
-            sort
+            trailingActions
           )}
-
-          <Columns
-            featuredColumns={featuredColumns}
-            columnOrder={columnOrder}
-            columns={columns}
-            onPinnedReorder={onPinnedReorder}
-            setFeaturedColumns={setFeaturedColumns}
-            setColumnOrder={setColumnOrder}
-            withSelectableRows={withSelectableRows}
-          />
-
-          {canSaveView && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <IconButton
-                  aria-label={hasView ? t`Edit View` : t`Save View`}
-                  variant={
-                    savedViewDisclosure.isOpen || hasView ? "active" : "ghost"
-                  }
-                  icon={<LuLayers />}
-                  onClick={savedViewDisclosure.onToggle}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {hasView ? (
-                    <Trans>Edit View</Trans>
-                  ) : (
-                    <Trans>Save View</Trans>
-                  )}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          )}
-
-          <Download
-            data={data}
-            columnAccessors={columnAccessors}
-            columnOrder={columnOrder}
-            columnVisibility={columnVisibility}
-          />
-
-          {withPagination &&
-            (pagination.canNextPage || pagination.canPreviousPage) && (
-              <PaginationButtons {...pagination} condensed />
-            )}
-
-          {withInlineEditing &&
-            (editMode ? (
-              <Button
-                leftIcon={<LuLock />}
-                variant="secondary"
-                onClick={() => setEditMode(false)}
-              >
-                <Trans>Lock</Trans>
-              </Button>
-            ) : (
-              <Button
-                leftIcon={<LuFilePen />}
-                variant="secondary"
-                onClick={() => setEditMode(true)}
-              >
-                <Trans>Edit</Trans>
-              </Button>
-            ))}
         </HStack>
       </HStack>
       {currentFilters.length > 0 && (
