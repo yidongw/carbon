@@ -575,8 +575,14 @@ const KanbansTable = memo(
                 window.location.href = getLocationPath(selected);
               }}
             />
-            <Button variant="secondary" asChild leftIcon={<LuSettings />}>
-              <Link to={path.to.inventorySettings}>Settings</Link>
+            <Button
+              variant="secondary"
+              asChild
+              leftIcon={<LuSettings className="mr-0 lg:mr-2" />}
+            >
+              <Link to={path.to.inventorySettings}>
+                <span className="hidden lg:inline">Settings</span>
+              </Link>
             </Button>
             {permissions.can("create", "inventory") && (
               <New label={t`Kanban`} to={path.to.newKanban} />
