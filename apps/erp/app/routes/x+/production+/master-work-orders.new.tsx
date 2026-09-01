@@ -141,12 +141,25 @@ export async function action({ request }: ActionFunctionArgs) {
       // materials. Re-run it now that jobVariantQuantity is set so each
       // color-scoped master material materializes scaled by that color's
       // planned qty (shared lines stay at the aggregate).
-      const rescoped = await upsertJobMethod(client, "itemToJob", {
-        sourceId: rest.itemId,
-        targetId: insert.data.jobId,
-        companyId,
-        userId
-      });
+      //
+      // Use the service role, not the request `client`: this re-run re-explodes
+      // the full Style BOP (re-adding sew/finish ops) and then re-applies the
+      // garment split, which DELETEs the non-cutting operations. jobOperation
+      // DELETE is RLS-gated on `production_delete`; a creator with create/update
+      // but not delete would have that delete silently affect 0 rows, leaving
+      // 缝制 on the master (two processes). The split is a system invariant, so
+      // it must not depend on the caller's delete permission — mirror the
+      // service-role split insertMasterWorkOrder already runs.
+      const rescoped = await upsertJobMethod(
+        getCarbonServiceRole(),
+        "itemToJob",
+        {
+          sourceId: rest.itemId,
+          targetId: insert.data.jobId,
+          companyId,
+          userId
+        }
+      );
       if (rescoped.error) {
         quantityFlash = await flash(
           request,
