@@ -848,11 +848,10 @@ function getMaterialLink(
     case "Part":
       return `${path.to.partMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Style":
-      // Styles render their make method inline on the details page (no
-      // dedicated make route), like consumables. Link straight to the details
-      // route — path.to.style is an index redirect that strips the query
-      // string, dropping methodId/materialId.
-      return `${path.to.styleDetails(itemId)}?methodId=${methodId}`;
+      // Styles drill into a subassembly's make method on a dedicated make
+      // route, like parts. Carry the child makeMethodId in the path so the
+      // route can load and render that method's BoM/BoP.
+      return `${path.to.styleMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Consumable":
