@@ -20,7 +20,8 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-  useDisclosure
+  useDisclosure,
+  useIsMobile
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type {
@@ -129,6 +130,7 @@ const TableHeader = <T extends object>({
   filterActions
 }: HeaderProps<T>) => {
   const { t, i18n } = useLingui();
+  const isMobile = useIsMobile();
   const [params, setParams] = useUrlParams();
   const currentFilters = params.getAll("filter").filter(Boolean);
   const currentSorts = params.getAll("sort").filter(Boolean);
@@ -234,7 +236,11 @@ const TableHeader = <T extends object>({
           </Card>
         </ValidatedForm>
       ) : (
-        !hideTitleBar && (
+        // On mobile the primary action + import menu move into the toolbar row
+        // below, so the title bar (title itself is already hidden < md) is
+        // dropped entirely instead of taking a whole blank row for one button.
+        !hideTitleBar &&
+        !isMobile && (
           <HStack
             className={cn(
               compact
@@ -296,6 +302,10 @@ const TableHeader = <T extends object>({
         )}
       >
         <HStack className="shrink-0">
+          {/* On mobile the primary action lives here (leftmost) instead of on
+              its own title row, so it stays visible rather than scrolling off
+              the right edge of this overflow-x-auto toolbar. */}
+          {isMobile && primaryAction}
           {withSelectableRows &&
             selectedRows.length > 0 &&
             typeof renderActions === "function" && (
@@ -344,7 +354,7 @@ const TableHeader = <T extends object>({
             withSelectableRows={withSelectableRows}
           />
 
-          {canSaveView && (
+          {!isMobile && canSaveView && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <IconButton
@@ -368,12 +378,71 @@ const TableHeader = <T extends object>({
             </Tooltip>
           )}
 
-          <Download
-            data={data}
-            columnAccessors={columnAccessors}
-            columnOrder={columnOrder}
-            columnVisibility={columnVisibility}
-          />
+          {!isMobile && (
+            <Download
+              data={data}
+              columnAccessors={columnAccessors}
+              columnOrder={columnOrder}
+              columnVisibility={columnVisibility}
+            />
+          )}
+
+          {/* Mobile: collapse the plain actions (save view, download, bulk
+              import) into a single "..." menu. Sort and Columns stay visible as
+              their own icons because each opens its own popover/drawer and
+              cannot be nested inside a dropdown menu item. */}
+          {isMobile &&
+            (canSaveView ||
+              (data?.length ?? 0) > 0 ||
+              (importCSV?.length ?? 0) > 0) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <IconButton
+                    aria-label={t`Table actions`}
+                    variant="ghost"
+                    icon={<BsThreeDotsVertical />}
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {canSaveView && (
+                    <DropdownMenuItem onClick={savedViewDisclosure.onToggle}>
+                      <DropdownMenuIcon icon={<LuLayers />} />
+                      {hasView ? (
+                        <Trans>Edit View</Trans>
+                      ) : (
+                        <Trans>Save View</Trans>
+                      )}
+                    </DropdownMenuItem>
+                  )}
+                  <Download
+                    asMenuItem
+                    data={data}
+                    columnAccessors={columnAccessors}
+                    columnOrder={columnOrder}
+                    columnVisibility={columnVisibility}
+                  />
+                  {importCSV && importCSV.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>
+                        <Trans>Bulk Import</Trans>
+                      </DropdownMenuLabel>
+                      {importCSV.map(({ table, label }) => (
+                        <DropdownMenuItem
+                          key={table}
+                          onClick={() => {
+                            setImportCSVTable(table);
+                          }}
+                        >
+                          <DropdownMenuIcon icon={<LuDownload />} />
+                          {t`Import ${label} CSV`}
+                        </DropdownMenuItem>
+                      ))}
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
           {withPagination &&
             (pagination.canNextPage || pagination.canPreviousPage) && (
