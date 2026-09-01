@@ -1597,6 +1597,8 @@ export const path = {
     partSales: (id: string) => generatePath(`${x}/part/${id}/sales`),
     styleCosting: (id: string) => generatePath(`${x}/style/${id}/costing`),
     styleDetails: (id: string) => generatePath(`${x}/style/${id}/details`),
+    styleMake: (id: string, makeMethodId: string) =>
+      generatePath(`${x}/style/${id}/make/${makeMethodId}`),
     styleInventory: (id: string) => generatePath(`${x}/style/${id}/inventory`),
     styleInventoryLocation: (id: string, locationId: string) =>
       generatePath(`${x}/style/${id}/inventory?location=${locationId}`),

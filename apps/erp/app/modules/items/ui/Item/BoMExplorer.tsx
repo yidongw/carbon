@@ -826,6 +826,8 @@ function getRootLink(
   switch (itemType) {
     case "Part":
       return `${path.to.partDetails(itemId)}?methodId=${methodId}`;
+    case "Style":
+      return `${path.to.styleDetails(itemId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolDetails(itemId)}?methodId=${methodId}`;
     case "Consumable":
@@ -845,6 +847,11 @@ function getMaterialLink(
   switch (itemType) {
     case "Part":
       return `${path.to.partMake(itemId, makeMethodId)}?methodId=${methodId}`;
+    case "Style":
+      // Styles drill into a subassembly's make method on a dedicated make
+      // route, like parts. Carry the child makeMethodId in the path so the
+      // route can load and render that method's BoM/BoP.
+      return `${path.to.styleMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Consumable":
