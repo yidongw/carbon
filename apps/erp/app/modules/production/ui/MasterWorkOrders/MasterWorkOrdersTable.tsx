@@ -578,6 +578,16 @@ const MasterWorkOrdersTable = memo(
           meta: { icon: <LuTag />, isEmpty: (row) => !row.tags?.length }
         },
         {
+          accessorKey: "createdAt",
+          header: t`Created At`,
+          cell: ({ row }) =>
+            row.original.createdAt ? formatDate(row.original.createdAt) : null,
+          meta: {
+            icon: <LuCalendar />,
+            isEmpty: (row) => !row.createdAt
+          }
+        },
+        {
           accessorKey: "locationId",
           header: t`Location`,
           cell: editableCell<MasterWorkOrder>({
