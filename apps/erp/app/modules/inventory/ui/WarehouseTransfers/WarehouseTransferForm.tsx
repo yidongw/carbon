@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Heading,
@@ -26,6 +27,7 @@ import {
   LuChevronDown,
   LuCirclePlus,
   LuCircleStop,
+  LuFileText,
   LuHandCoins,
   LuLoaderCircle,
   LuTrash,
@@ -96,6 +98,25 @@ const WarehouseTransferForm = ({
   const { receipts, shipments, ship, receive, hasShippedItems } =
     useWarehouseTransferRelatedDocuments(warehouseTransfer?.id);
 
+  // Header actions are gated by the transfer's status so the toolbar only shows
+  // what's actually actionable right now (keeps it from overflowing on mobile).
+  // Ship/Receive still render as dropdowns whenever related documents exist, so
+  // their links stay reachable even once the transfer is Completed/Cancelled.
+  const status = warehouseTransfer?.status ?? "";
+  const statusBusy = statusFetcher.state !== "idle";
+  const canUpdate = permissions.can("update", "inventory");
+  const canConfirm = status === "Draft";
+  const canCancel = !["Cancelled", "Completed"].includes(status);
+  const canShip = ["To Ship", "To Ship and Receive"].includes(status);
+  const canReceive =
+    ["To Receive", "To Ship and Receive"].includes(status) && hasShippedItems;
+  // Shipments and Receipts share one "Documents" dropdown to keep the header on
+  // a single row on mobile. Each section shows when it's actionable now or has
+  // related documents to link to.
+  const showShipmentsSection = shipments.length > 0 || canShip;
+  const showReceiptsSection = receipts.length > 0 || canReceive;
+  const showDocuments = showShipmentsSection || showReceiptsSection;
+
   return (
     <>
       <ValidatedForm
@@ -137,6 +158,17 @@ const WarehouseTransferForm = ({
                     <DropdownMenuIcon icon={<LuLoaderCircle />} />
                     <Trans>Reopen</Trans>
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={!canCancel || statusBusy || !canUpdate}
+                    onClick={() => {
+                      const fd = new FormData();
+                      fd.set("status", "Cancelled");
+                      statusRules.submit(fd);
+                    }}
+                  >
+                    <DropdownMenuIcon icon={<LuCircleStop />} />
+                    <Trans>Cancel</Trans>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     disabled={
@@ -154,177 +186,98 @@ const WarehouseTransferForm = ({
               }
               actions={
                 <>
-                  <Button
-                    type="button"
-                    leftIcon={<LuCheckCheck />}
-                    variant={
-                      warehouseTransfer.status === "Draft"
-                        ? "primary"
-                        : "secondary"
-                    }
-                    isDisabled={
-                      !["Draft"].includes(warehouseTransfer.status) ||
-                      statusFetcher.state !== "idle" ||
-                      !permissions.can("update", "inventory")
-                    }
-                    isLoading={
-                      statusFetcher.state !== "idle" &&
-                      statusFetcher.formData?.get("status") ===
-                        "To Ship and Receive"
-                    }
-                    onClick={() => {
-                      const fd = new FormData();
-                      fd.set("status", "To Ship and Receive");
-                      statusRules.submit(fd);
-                    }}
-                  >
-                    <Trans>Confirm</Trans>
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    leftIcon={<LuCircleStop />}
-                    isDisabled={
-                      ["Cancelled", "Completed"].includes(
-                        warehouseTransfer.status
-                      ) ||
-                      statusFetcher.state !== "idle" ||
-                      !permissions.can("update", "inventory")
-                    }
-                    isLoading={
-                      statusFetcher.state !== "idle" &&
-                      statusFetcher.formData?.get("status") === "Cancelled"
-                    }
-                    onClick={() => {
-                      const fd = new FormData();
-                      fd.set("status", "Cancelled");
-                      statusRules.submit(fd);
-                    }}
-                  >
-                    <Trans>Cancel</Trans>
-                  </Button>
-
-                  {shipments.length > 0 ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          leftIcon={<LuTruck />}
-                          variant="secondary"
-                          rightIcon={<LuChevronDown />}
-                        >
-                          <Trans>Shipments</Trans>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem
-                          disabled={
-                            !["To Ship", "To Ship and Receive"].includes(
-                              warehouseTransfer.status ?? ""
-                            )
-                          }
-                          onClick={() => ship(warehouseTransfer)}
-                        >
-                          <DropdownMenuIcon icon={<LuCirclePlus />} />
-                          <Trans>New Shipment</Trans>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {shipments.map((shipment) => (
-                          <DropdownMenuItem key={shipment.id} asChild>
-                            <Link to={path.to.shipment(shipment.id)}>
-                              <DropdownMenuIcon icon={<LuTruck />} />
-                              <HStack spacing={8}>
-                                <span>{shipment.shipmentId}</span>
-                                <ShipmentStatus status={shipment.status} />
-                              </HStack>
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
+                  {canConfirm && (
                     <Button
-                      leftIcon={<LuTruck />}
-                      isDisabled={
-                        !["To Ship", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        )
+                      type="button"
+                      leftIcon={<LuCheckCheck />}
+                      variant="primary"
+                      isDisabled={statusBusy || !canUpdate}
+                      isLoading={
+                        statusBusy &&
+                        statusFetcher.formData?.get("status") ===
+                          "To Ship and Receive"
                       }
-                      variant={
-                        ["To Ship", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        )
-                          ? "primary"
-                          : "secondary"
-                      }
-                      onClick={() => ship(warehouseTransfer)}
+                      onClick={() => {
+                        const fd = new FormData();
+                        fd.set("status", "To Ship and Receive");
+                        statusRules.submit(fd);
+                      }}
                     >
-                      <Trans>Ship</Trans>
+                      <Trans>Confirm</Trans>
                     </Button>
                   )}
 
-                  {receipts.length > 0 ? (
+                  {showDocuments && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
-                          leftIcon={<LuHandCoins />}
+                          leftIcon={<LuFileText />}
                           variant={
-                            ["To Receive", "To Ship and Receive"].includes(
-                              warehouseTransfer.status ?? ""
-                            )
-                              ? "primary"
-                              : "secondary"
+                            canShip || canReceive ? "primary" : "secondary"
                           }
                           rightIcon={<LuChevronDown />}
                         >
-                          <Trans>Receipts</Trans>
+                          <Trans context="warehouse transfer">Documents</Trans>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem
-                          disabled={
-                            !["To Receive", "To Ship and Receive"].includes(
-                              warehouseTransfer.status ?? ""
-                            ) || !hasShippedItems
-                          }
-                          onClick={() => receive(warehouseTransfer)}
-                        >
-                          <DropdownMenuIcon icon={<LuCirclePlus />} />
-                          <Trans>New Receipt</Trans>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {receipts.map((receipt) => (
-                          <DropdownMenuItem key={receipt.id} asChild>
-                            <Link to={path.to.receipt(receipt.id)}>
-                              <DropdownMenuIcon icon={<LuHandCoins />} />
-                              <HStack spacing={8}>
-                                <span>{receipt.receiptId}</span>
-                                <ReceiptStatus status={receipt.status} />
-                              </HStack>
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
+                      <DropdownMenuContent align="end">
+                        {showShipmentsSection && (
+                          <>
+                            <DropdownMenuLabel>
+                              <Trans>Shipments</Trans>
+                            </DropdownMenuLabel>
+                            <DropdownMenuItem
+                              disabled={!canShip}
+                              onClick={() => ship(warehouseTransfer)}
+                            >
+                              <DropdownMenuIcon icon={<LuCirclePlus />} />
+                              <Trans>New Shipment</Trans>
+                            </DropdownMenuItem>
+                            {shipments.map((shipment) => (
+                              <DropdownMenuItem key={shipment.id} asChild>
+                                <Link to={path.to.shipment(shipment.id)}>
+                                  <DropdownMenuIcon icon={<LuTruck />} />
+                                  <HStack spacing={8}>
+                                    <span>{shipment.shipmentId}</span>
+                                    <ShipmentStatus status={shipment.status} />
+                                  </HStack>
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </>
+                        )}
+
+                        {showShipmentsSection && showReceiptsSection && (
+                          <DropdownMenuSeparator />
+                        )}
+
+                        {showReceiptsSection && (
+                          <>
+                            <DropdownMenuLabel>
+                              <Trans>Receipts</Trans>
+                            </DropdownMenuLabel>
+                            <DropdownMenuItem
+                              disabled={!canReceive}
+                              onClick={() => receive(warehouseTransfer)}
+                            >
+                              <DropdownMenuIcon icon={<LuCirclePlus />} />
+                              <Trans>New Receipt</Trans>
+                            </DropdownMenuItem>
+                            {receipts.map((receipt) => (
+                              <DropdownMenuItem key={receipt.id} asChild>
+                                <Link to={path.to.receipt(receipt.id)}>
+                                  <DropdownMenuIcon icon={<LuHandCoins />} />
+                                  <HStack spacing={8}>
+                                    <span>{receipt.receiptId}</span>
+                                    <ReceiptStatus status={receipt.status} />
+                                  </HStack>
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  ) : (
-                    <Button
-                      leftIcon={<LuHandCoins />}
-                      isDisabled={
-                        !["To Receive", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        ) || !hasShippedItems
-                      }
-                      variant={
-                        ["To Receive", "To Ship and Receive"].includes(
-                          warehouseTransfer.status ?? ""
-                        ) && hasShippedItems
-                          ? "primary"
-                          : "secondary"
-                      }
-                      onClick={() => receive(warehouseTransfer)}
-                    >
-                      <Trans>Receive</Trans>
-                    </Button>
                   )}
                 </>
               }

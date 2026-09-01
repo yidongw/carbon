@@ -3670,6 +3670,10 @@ msgstr "Błąd dokumentacji"
 msgid "Documents"
 msgstr "Dokumenty"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "Dokumenty"
+
 msgid "Don't Cancel"
 msgstr "Nie anuluj"
 
@@ -13602,9 +13606,6 @@ msgstr "Przeniesiono zmianę"
 
 msgid "Shifts"
 msgstr "Zmiany"
-
-msgid "Ship"
-msgstr "Wysyłka"
 
 msgid "Ship some, stock some"
 msgstr "Wyślij część, przechowaj część"

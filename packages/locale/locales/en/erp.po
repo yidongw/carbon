@@ -3669,6 +3669,10 @@ msgstr "Documentation Error"
 msgid "Documents"
 msgstr "Documents"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "Documents"
+
 msgid "Don't Cancel"
 msgstr "Don't Cancel"
 
@@ -13601,9 +13605,6 @@ msgstr "Shift updated"
 
 msgid "Shifts"
 msgstr "Shifts"
-
-msgid "Ship"
-msgstr "Ship"
 
 msgid "Ship some, stock some"
 msgstr "Ship some, stock some"

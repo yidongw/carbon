@@ -3670,6 +3670,10 @@ msgstr "文档错误"
 msgid "Documents"
 msgstr "文档"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "单据"
+
 msgid "Don't Cancel"
 msgstr "不要取消"
 
@@ -13602,9 +13606,6 @@ msgstr "班次已更新"
 
 msgid "Shifts"
 msgstr "班次"
-
-msgid "Ship"
-msgstr "发货"
 
 msgid "Ship some, stock some"
 msgstr "发货一些，库存一些"
