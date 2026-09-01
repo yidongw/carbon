@@ -102,6 +102,10 @@ interface TableProps<T extends object> {
   }[];
   primaryAction?: ReactNode;
   filterActions?: ReactNode;
+  // Mobile-only: drop the primary action into the search/filter toolbar row and
+  // collapse the sort/columns/download icons behind a "⋮" button that expands
+  // them inline. Opt-in per page (default off); desktop layout is unchanged.
+  collapseActionsOnMobile?: boolean;
   table?: string;
   title?: string;
   // Render the header row (title, primary action, search/filter/sort toolbar).
@@ -261,6 +265,7 @@ const Table = <T extends object>({
   importCSV,
   primaryAction,
   filterActions,
+  collapseActionsOnMobile = false,
   table: tableName,
   title,
   withHeader = true,
@@ -1115,6 +1120,7 @@ const Table = <T extends object>({
           importCSV={importCSV}
           pagination={pagination}
           primaryAction={primaryAction}
+          collapseActionsOnMobile={collapseActionsOnMobile}
           renderActions={renderActions}
           selectedRows={selectedRows}
           setFeaturedColumns={setFeaturedColumns}

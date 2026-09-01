@@ -2027,6 +2027,9 @@ msgstr "Code is required"
 msgid "Collapse"
 msgstr "Collapse"
 
+msgid "Collapse actions"
+msgstr "Collapse actions"
+
 msgid "Collapse all"
 msgstr "Collapse all"
 

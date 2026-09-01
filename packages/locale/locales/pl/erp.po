@@ -2028,6 +2028,9 @@ msgstr "Kod jest wymagany"
 msgid "Collapse"
 msgstr "Zwiń"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "Zwiń wszystko"
 

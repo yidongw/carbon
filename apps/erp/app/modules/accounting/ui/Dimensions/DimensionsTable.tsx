@@ -126,6 +126,7 @@ const DimensionsTable = memo(({ data, count }: DimensionsTableProps) => {
           <New label="Dimension" to={`new?${params.toString()}`} />
         )
       }
+      collapseActionsOnMobile
       renderContextMenu={renderContextMenu}
       title="Dimensions"
     />

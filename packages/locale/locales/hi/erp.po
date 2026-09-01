@@ -2028,6 +2028,9 @@ msgstr "कोड आवश्यक है"
 msgid "Collapse"
 msgstr "रोशनी घुमाparagus"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "सभी को संक्षिप्त करें"
 

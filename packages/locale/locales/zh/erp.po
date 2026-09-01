@@ -2028,6 +2028,9 @@ msgstr "代码为必填项"
 msgid "Collapse"
 msgstr "折叠"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "全部折叠"
 
