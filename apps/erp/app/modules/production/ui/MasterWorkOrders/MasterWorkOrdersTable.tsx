@@ -364,6 +364,16 @@ const MasterWorkOrdersTable = memo(
           meta: { icon: <LuCircleDashed /> }
         },
         {
+          accessorKey: "createdAt",
+          header: t`Created At`,
+          cell: ({ row }) =>
+            row.original.createdAt ? formatDate(row.original.createdAt) : null,
+          meta: {
+            icon: <LuCalendar />,
+            isEmpty: (row) => !row.createdAt
+          }
+        },
+        {
           id: "cuttingStatus",
           header: t`Cutting`,
           cell: ({ row }) => {
@@ -576,16 +586,6 @@ const MasterWorkOrdersTable = memo(
             </HStack>
           ),
           meta: { icon: <LuTag />, isEmpty: (row) => !row.tags?.length }
-        },
-        {
-          accessorKey: "createdAt",
-          header: t`Created At`,
-          cell: ({ row }) =>
-            row.original.createdAt ? formatDate(row.original.createdAt) : null,
-          meta: {
-            icon: <LuCalendar />,
-            isEmpty: (row) => !row.createdAt
-          }
         },
         {
           accessorKey: "locationId",
