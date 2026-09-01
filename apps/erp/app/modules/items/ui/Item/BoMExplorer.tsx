@@ -826,6 +826,8 @@ function getRootLink(
   switch (itemType) {
     case "Part":
       return `${path.to.partDetails(itemId)}?methodId=${methodId}`;
+    case "Style":
+      return `${path.to.style(itemId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolDetails(itemId)}?methodId=${methodId}`;
     case "Consumable":
@@ -845,6 +847,10 @@ function getMaterialLink(
   switch (itemType) {
     case "Part":
       return `${path.to.partMake(itemId, makeMethodId)}?methodId=${methodId}`;
+    case "Style":
+      // Styles render their make method inline on the style page
+      // (no dedicated make route), like consumables, so drill in there.
+      return `${path.to.style(itemId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Consumable":
