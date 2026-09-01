@@ -2028,6 +2028,9 @@ msgstr "Le code est requis"
 msgid "Collapse"
 msgstr "Réduire"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "Réduire tout"
 

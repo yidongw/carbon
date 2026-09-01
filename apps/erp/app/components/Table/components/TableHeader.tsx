@@ -36,7 +36,8 @@ import {
   LuDownload,
   LuFilePen,
   LuLayers,
-  LuLock
+  LuLock,
+  LuX
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { z } from "zod";
@@ -76,6 +77,7 @@ type HeaderProps<T> = {
     label: string;
   }[];
   primaryAction?: ReactNode;
+  collapseActionsOnMobile?: boolean;
   pagination: PaginationProps;
   selectedRows: T[];
   setFeaturedColumns: (cols: Set<string>) => void;
@@ -109,6 +111,7 @@ const TableHeader = <T extends object>({
   importCSV,
   onPinnedReorder,
   primaryAction,
+  collapseActionsOnMobile = false,
   pagination,
   selectedRows,
   renderActions,
@@ -136,6 +139,10 @@ const TableHeader = <T extends object>({
   const [importCSVTable, setImportCSVTable] = useState<
     keyof typeof fieldMappings | null
   >(null);
+
+  // Mobile-only (collapseActionsOnMobile): whether the "⋮" has expanded the
+  // sort/columns/download icons inline.
+  const [actionsExpanded, setActionsExpanded] = useState(false);
 
   const savedViewDisclosure = useDisclosure();
   const canSaveView = withSavedView && !!table;
@@ -179,6 +186,76 @@ const TableHeader = <T extends object>({
   );
 
   const hideTitleBar = !viewTitle && !primaryAction && !canSaveView;
+
+  // Sort / Columns / (Save View) / Download / pagination / edit — the toolbar's
+  // right-hand action icons. Shared by the desktop toolbar and, when
+  // collapseActionsOnMobile is set, the mobile "⋮" expanded state.
+  const actionButtons = (
+    <>
+      {sort === undefined ? <Sort columnAccessors={columnAccessors} /> : sort}
+
+      <Columns
+        featuredColumns={featuredColumns}
+        columnOrder={columnOrder}
+        columns={columns}
+        onPinnedReorder={onPinnedReorder}
+        setFeaturedColumns={setFeaturedColumns}
+        setColumnOrder={setColumnOrder}
+        withSelectableRows={withSelectableRows}
+      />
+
+      {canSaveView && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <IconButton
+              aria-label={hasView ? t`Edit View` : t`Save View`}
+              variant={
+                savedViewDisclosure.isOpen || hasView ? "active" : "ghost"
+              }
+              icon={<LuLayers />}
+              onClick={savedViewDisclosure.onToggle}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>
+              {hasView ? <Trans>Edit View</Trans> : <Trans>Save View</Trans>}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      )}
+
+      <Download
+        data={data}
+        columnAccessors={columnAccessors}
+        columnOrder={columnOrder}
+        columnVisibility={columnVisibility}
+      />
+
+      {withPagination &&
+        (pagination.canNextPage || pagination.canPreviousPage) && (
+          <PaginationButtons {...pagination} condensed />
+        )}
+
+      {withInlineEditing &&
+        (editMode ? (
+          <Button
+            leftIcon={<LuLock />}
+            variant="secondary"
+            onClick={() => setEditMode(false)}
+          >
+            <Trans>Lock</Trans>
+          </Button>
+        ) : (
+          <Button
+            leftIcon={<LuFilePen />}
+            variant="secondary"
+            onClick={() => setEditMode(true)}
+          >
+            <Trans>Edit</Trans>
+          </Button>
+        ))}
+    </>
+  );
 
   return (
     <div className={cn("w-full flex flex-col", !compact && "mb-2 md:mb-8")}>
@@ -240,7 +317,9 @@ const TableHeader = <T extends object>({
               compact
                 ? "px-4 py-2 bg-card border-b w-full"
                 : "px-4 md:px-0 py-2 md:py-6 bg-card w-full relative",
-              "flex-nowrap overflow-x-auto justify-end md:justify-between [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
+              "flex-nowrap overflow-x-auto justify-end md:justify-between [&::-webkit-scrollbar]:hidden [scrollbar-width:none]",
+              // Add button moves into the toolbar row on mobile; hide this row there.
+              collapseActionsOnMobile && "hidden md:flex"
             )}
           >
             <HStack spacing={1} className="hidden md:flex shrink-0">
@@ -327,78 +406,37 @@ const TableHeader = <T extends object>({
           {!!filters?.length && <Filter filters={filters} />}
           {filterActions}
         </HStack>
-        <HStack className="shrink-0">
-          {sort === undefined ? (
-            <Sort columnAccessors={columnAccessors} />
-          ) : (
-            sort
-          )}
-
-          <Columns
-            featuredColumns={featuredColumns}
-            columnOrder={columnOrder}
-            columns={columns}
-            onPinnedReorder={onPinnedReorder}
-            setFeaturedColumns={setFeaturedColumns}
-            setColumnOrder={setColumnOrder}
-            withSelectableRows={withSelectableRows}
-          />
-
-          {canSaveView && (
-            <Tooltip>
-              <TooltipTrigger asChild>
+        {collapseActionsOnMobile ? (
+          <>
+            {/* Desktop: action icons inline (unchanged). */}
+            <HStack className="shrink-0 hidden md:flex">{actionButtons}</HStack>
+            {/* Mobile: collapse the action icons behind a "⋮" that expands them
+                inline, and keep the primary action on this row. */}
+            <HStack className="shrink-0 flex md:hidden">
+              {actionsExpanded ? (
+                <>
+                  {actionButtons}
+                  <IconButton
+                    aria-label={t`Collapse actions`}
+                    variant="ghost"
+                    icon={<LuX />}
+                    onClick={() => setActionsExpanded(false)}
+                  />
+                </>
+              ) : (
                 <IconButton
-                  aria-label={hasView ? t`Edit View` : t`Save View`}
-                  variant={
-                    savedViewDisclosure.isOpen || hasView ? "active" : "ghost"
-                  }
-                  icon={<LuLayers />}
-                  onClick={savedViewDisclosure.onToggle}
+                  aria-label={t`Table actions`}
+                  variant="secondary"
+                  icon={<BsThreeDotsVertical />}
+                  onClick={() => setActionsExpanded(true)}
                 />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {hasView ? (
-                    <Trans>Edit View</Trans>
-                  ) : (
-                    <Trans>Save View</Trans>
-                  )}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          )}
-
-          <Download
-            data={data}
-            columnAccessors={columnAccessors}
-            columnOrder={columnOrder}
-            columnVisibility={columnVisibility}
-          />
-
-          {withPagination &&
-            (pagination.canNextPage || pagination.canPreviousPage) && (
-              <PaginationButtons {...pagination} condensed />
-            )}
-
-          {withInlineEditing &&
-            (editMode ? (
-              <Button
-                leftIcon={<LuLock />}
-                variant="secondary"
-                onClick={() => setEditMode(false)}
-              >
-                <Trans>Lock</Trans>
-              </Button>
-            ) : (
-              <Button
-                leftIcon={<LuFilePen />}
-                variant="secondary"
-                onClick={() => setEditMode(true)}
-              >
-                <Trans>Edit</Trans>
-              </Button>
-            ))}
-        </HStack>
+              )}
+              {primaryAction}
+            </HStack>
+          </>
+        ) : (
+          <HStack className="shrink-0">{actionButtons}</HStack>
+        )}
       </HStack>
       {currentFilters.length > 0 && (
         <HStack

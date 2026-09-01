@@ -2028,6 +2028,9 @@ msgstr "Код обязателен"
 msgid "Collapse"
 msgstr "Свернуть"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "Свернуть все"
 

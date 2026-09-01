@@ -2028,6 +2028,9 @@ msgstr "O código é obrigatório"
 msgid "Collapse"
 msgstr "Colapsar"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "Recolher tudo"
 

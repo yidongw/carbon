@@ -2028,6 +2028,9 @@ msgstr "コードは必須です"
 msgid "Collapse"
 msgstr "折りたたむ"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "すべて折りたたむ"
 

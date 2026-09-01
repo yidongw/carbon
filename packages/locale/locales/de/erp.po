@@ -2028,6 +2028,9 @@ msgstr "Code ist erforderlich"
 msgid "Collapse"
 msgstr "Zusammenfassen"
 
+msgid "Collapse actions"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "Alle einklappen"
 
