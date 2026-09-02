@@ -1,12 +1,8 @@
 import {
   Badge,
+  Button,
   Checkbox,
   cn,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
@@ -174,35 +170,40 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
     }
   }, [bulkShipFetcher.state, bulkShipFetcher.data, t]);
 
-  const renderActions = useCallback(
-    (selectedRows: SalesOrder[]) => {
-      const shippableCount = selectedRows.filter((row) =>
-        SHIPPABLE_STATUSES.includes(row.status ?? "")
-      ).length;
-      return (
-        <DropdownMenuContent align="end" className="min-w-[240px]">
-          <DropdownMenuLabel>
-            <Trans>Ship</Trans>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              disabled={
-                shippableCount === 0 ||
-                !permissions.can("create", "inventory") ||
-                bulkShipFetcher.state !== "idle"
-              }
-              onClick={() => onBulkShip(selectedRows)}
-            >
-              <MenuIcon icon={<LuTruck />} />
-              <Trans>Generate draft shipments ({shippableCount})</Trans>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      );
-    },
-    [onBulkShip, permissions, bulkShipFetcher.state]
+  // Lift selection out of the Table so we can show an explicit, labeled bulk
+  // action button (instead of the shared icon-only dropdown, which users miss).
+  const [selectedSalesOrders, setSelectedSalesOrders] = useState<SalesOrder[]>(
+    []
   );
+  const handleSelectedRowsChange = useCallback(
+    (rows: SalesOrder[]) => setSelectedSalesOrders(rows),
+    []
+  );
+
+  const shippableCount = useMemo(
+    () =>
+      selectedSalesOrders.filter((row) =>
+        SHIPPABLE_STATUSES.includes(row.status ?? "")
+      ).length,
+    [selectedSalesOrders]
+  );
+
+  const bulkShipAction =
+    selectedSalesOrders.length > 0 ? (
+      <Button
+        leftIcon={<LuTruck />}
+        variant="primary"
+        isDisabled={
+          shippableCount === 0 ||
+          !permissions.can("create", "inventory") ||
+          bulkShipFetcher.state !== "idle"
+        }
+        isLoading={bulkShipFetcher.state !== "idle"}
+        onClick={() => onBulkShip(selectedSalesOrders)}
+      >
+        <Trans>Generate draft shipments ({shippableCount})</Trans>
+      </Button>
+    ) : null;
 
   const customColumns = useCustomColumns<SalesOrder>("salesOrder");
 
@@ -700,7 +701,8 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
             <New label={t`Sales Order`} to={path.to.newSalesOrder} />
           )
         }
-        renderActions={renderActions}
+        filterActions={bulkShipAction}
+        onSelectedRowsChange={handleSelectedRowsChange}
         renderContextMenu={renderContextMenu}
         title={t`Sales Orders`}
         table="salesOrder"
