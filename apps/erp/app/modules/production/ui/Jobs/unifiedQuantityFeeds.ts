@@ -97,6 +97,30 @@ export type UnifiedProductionQuantityListItem =
   | (EmployeeProductionQuantity & { actorKind: "employee" })
   | (SupplierProductionQuantity & { actorKind: "supplier" });
 
+/**
+ * Money accrued by a single completion line, or null when it doesn't earn any:
+ * only completed production accrues pay (employee) / subcontract cost (supplier)
+ * — rework/scrap don't — and a missing unit price yields null (shown as "—").
+ * Employee = quantity × jobOperation.insideUnitCost (live wage rate).
+ * Supplier = quantity × snapshotted operationUnitCost (frozen subcontract rate).
+ */
+export function getUnifiedQuantityLineAmount(
+  item: UnifiedProductionQuantityListItem
+): number | null {
+  if (item.type !== "Production") return null;
+  const quantity = item.quantity ?? 0;
+
+  if (item.actorKind === "employee") {
+    const unitCost = item.jobOperation?.insideUnitCost;
+    if (unitCost == null) return null;
+    return quantity * unitCost;
+  }
+
+  const unitCost = item.report?.subcontractSnapshot?.operationUnitCost;
+  if (unitCost == null) return null;
+  return quantity * unitCost;
+}
+
 export function mergeProductionQuantityListItems(
   employee: EmployeeProductionQuantity[],
   supplier: SupplierProductionQuantity[],
