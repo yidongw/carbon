@@ -2971,15 +2971,19 @@ export async function seedDemoData(
       );
       const soRowId = soRow.rows[0]!.id;
 
+      // locationId must match the shipment location, else shipmentFromSalesOrder
+      // filters the line out (create/index.ts .eq("locationId", locationId)) and
+      // the generated shipment has no lines (Post stays disabled).
       await client.query(
-        `INSERT INTO "salesOrderLine" ("salesOrderId", "salesOrderLineType", "itemId", description, "saleQuantity", "unitPrice", "unitOfMeasureCode", "companyId", "createdBy")
-           VALUES ($1, 'Part'::"salesOrderLineType", $2, $3, $4, $5, 'EA', $6, $7)`,
+        `INSERT INTO "salesOrderLine" ("salesOrderId", "salesOrderLineType", "itemId", description, "saleQuantity", "unitPrice", "unitOfMeasureCode", "locationId", "companyId", "createdBy")
+           VALUES ($1, 'Part'::"salesOrderLineType", $2, $3, $4, $5, 'EA', $6, $7, $8)`,
         [
           soRowId,
           itemId,
           r.item,
           5 + ((i * 3) % 40),
           r.unitPrice,
+          shipLocationId,
           companyId,
           userId
         ]
