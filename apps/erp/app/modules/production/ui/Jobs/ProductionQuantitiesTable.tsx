@@ -4,31 +4,40 @@ import {
   HStack,
   MenuIcon,
   MenuItem,
+  toast,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useCallback, useMemo, useState } from "react";
-import { LuPencil, LuPlus, LuTrash } from "react-icons/lu";
-import { useParams, useRevalidator, useSearchParams } from "react-router";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { LuPencil, LuPlus, LuReceipt, LuTrash } from "react-icons/lu";
+import {
+  useFetcher,
+  useParams,
+  useRevalidator,
+  useSearchParams
+} from "react-router";
 import { SupplierAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
-import { usePermissions } from "~/hooks";
+import { useCurrencyFormatter, usePermissions } from "~/hooks";
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { ProductionQuantityTableQuantityCell } from "~/modules/production/ui/ProductionQuantityTableCells";
 import { useProductionQuantityLineCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import type { ScrapReason } from "../../types";
-import { ProductionQuantityReportReporter } from "./ProductionQuantityReportReporter";
 import { useStyleProcessLabel } from "./jobLabels";
+import { ProductionQuantityReportReporter } from "./ProductionQuantityReportReporter";
 import {
   PRODUCTION_QUANTITY_TYPES,
   useProductionQuantityTypeLabel
 } from "./productionQuantityLabels";
-import type { UnifiedProductionQuantityListItem } from "./unifiedQuantityFeeds";
+import {
+  getUnifiedQuantityLineAmount,
+  type UnifiedProductionQuantityListItem
+} from "./unifiedQuantityFeeds";
 
 type ProductionQuantitiesTableProps = {
   data: UnifiedProductionQuantityListItem[];
@@ -77,8 +86,38 @@ const ProductionQuantitiesTable = memo(
     const revalidator = useRevalidator();
     const permissions = usePermissions();
     const canUpdate = permissions.can("update", "production");
+    const canCreatePurchasing = permissions.can("create", "purchasing");
     const [people] = usePeople();
     const { saveCreatedAt, canEdit } = useProductionQuantityLineCreatedAtSave();
+    const currencyFormatter = useCurrencyFormatter();
+
+    // Turn a supplier completion report into an Outside Processing purchase
+    // order (the backend is idempotent-ish: it back-links the report to the new
+    // PO line so the action hides once created).
+    const createPoFetcher = useFetcher<{ error?: string }>();
+    const isCreatingPo = createPoFetcher.state !== "idle";
+    const createPo = useCallback(
+      (reportId: string) => {
+        createPoFetcher.submit(
+          {},
+          {
+            method: "post",
+            action: path.to.api.supplierQuantityReportCreatePo(reportId)
+          }
+        );
+      },
+      [createPoFetcher]
+    );
+
+    useEffect(() => {
+      if (createPoFetcher.state !== "idle" || !createPoFetcher.data) return;
+      if (createPoFetcher.data.error) {
+        toast.error(createPoFetcher.data.error);
+        return;
+      }
+      toast.success(t`Purchase order created`);
+      revalidator.revalidate();
+    }, [createPoFetcher.state, createPoFetcher.data, revalidator, t]);
 
     const openEdit = useCallback(
       (quantityId: string) => {
@@ -260,6 +299,20 @@ const ProductionQuantitiesTable = memo(
           )
         },
         {
+          id: "amount",
+          header: t`Amount`,
+          cell: ({ row }) => {
+            const amount = getUnifiedQuantityLineAmount(row.original);
+            return amount == null ? (
+              <span className="text-muted-foreground">—</span>
+            ) : (
+              <span className="tabular-nums">
+                {currencyFormatter.format(amount)}
+              </span>
+            );
+          }
+        },
+        {
           accessorKey: "scrapReasonId",
           header: t`Scrap Reason`,
           cell: ({ row }) => {
@@ -309,6 +362,7 @@ const ProductionQuantitiesTable = memo(
     }, [
       canEdit,
       canUpdate,
+      currencyFormatter,
       openEdit,
       operationLabel,
       operations,
@@ -336,27 +390,48 @@ const ProductionQuantitiesTable = memo(
     const renderContextMenu = useCallback<
       (row: UnifiedProductionQuantityListItem) => JSX.Element
     >(
-      (row) => (
-        <>
-          <MenuItem
-            disabled={!permissions.can("update", "production")}
-            onClick={() => openEdit(row.id)}
-          >
-            <MenuIcon icon={<LuPencil />} />
-            <Trans>Edit Process Completion</Trans>
-          </MenuItem>
-          <MenuItem
-            destructive
-            disabled={!permissions.can("delete", "production")}
-            onClick={() => onDelete(row)}
-          >
-            <MenuIcon icon={<LuTrash />} />
-            <Trans>Delete Process Completion</Trans>
-          </MenuItem>
-        </>
-      ),
+      (row) => {
+        // Offer PO creation once per supplier report, anchored on its
+        // Production line, and only until a PO has been created for it.
+        const supplierReportId =
+          row.actorKind === "supplier" &&
+          row.type === "Production" &&
+          !row.report?.purchaseOrderLineId &&
+          canCreatePurchasing
+            ? row.reportId
+            : null;
 
-      [openEdit, permissions]
+        return (
+          <>
+            {supplierReportId ? (
+              <MenuItem
+                disabled={isCreatingPo}
+                onClick={() => createPo(supplierReportId)}
+              >
+                <MenuIcon icon={<LuReceipt />} />
+                <Trans>Create PO</Trans>
+              </MenuItem>
+            ) : null}
+            <MenuItem
+              disabled={!permissions.can("update", "production")}
+              onClick={() => openEdit(row.id)}
+            >
+              <MenuIcon icon={<LuPencil />} />
+              <Trans>Edit Process Completion</Trans>
+            </MenuItem>
+            <MenuItem
+              destructive
+              disabled={!permissions.can("delete", "production")}
+              onClick={() => onDelete(row)}
+            >
+              <MenuIcon icon={<LuTrash />} />
+              <Trans>Delete Process Completion</Trans>
+            </MenuItem>
+          </>
+        );
+      },
+
+      [openEdit, permissions, canCreatePurchasing, createPo, isCreatingPo]
     );
 
     return (
