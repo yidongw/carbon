@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-13T02:22:15.288Z",
-  "totalTools": 1188,
+  "generated": "2026-09-02T02:21:36.494Z",
+  "totalTools": 1281,
   "modules": 15,
   "tools": [
     {
@@ -203,7 +203,7 @@
       "module": "account",
       "classification": "WRITE",
       "description": "update public account",
-      "paramCount": 5,
+      "paramCount": 6,
       "serviceParams": [
         "client",
         "account"
@@ -228,6 +228,9 @@
             "type": "string"
           },
           "phone": {
+            "type": "string"
+          },
+          "number": {
             "type": "string"
           }
         },
@@ -4112,6 +4115,35 @@
       }
     },
     {
+      "name": "inventory_reconcileReceiptSerialEntities",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "reconcile receipt serial entities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "receiptId": {
+            "type": "string"
+          },
+          "lines: {\n      id: string;\n      receivedQuantity: number | null;\n      requiresSerialTracking": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "receiptId"
+        ]
+      }
+    },
+    {
       "name": "inventory_getReceiptFiles",
       "module": "inventory",
       "classification": "READ",
@@ -4145,7 +4177,7 @@
       "module": "inventory",
       "classification": "READ",
       "description": "get serial numbers for item",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
         "args"
@@ -4158,10 +4190,83 @@
         "properties": {
           "itemId": {
             "type": "string"
+          },
+          "locationId": {
+            "type": "string"
           }
         },
         "required": [
           "itemId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getAvailableTrackedEntities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get available tracked entities",
+      "paramCount": 5,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "excludeLineside": {
+            "type": "boolean"
+          },
+          "excludeAllocated": {
+            "type": "boolean"
+          },
+          "excludeLineId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickOrder",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get pick order",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
         ]
       }
     },
@@ -4315,6 +4420,31 @@
       "module": "inventory",
       "classification": "READ",
       "description": "get storage unit",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "storageUnitId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "storageUnitId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "storageUnitId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getEffectiveWorkCenterId",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get effective work center id",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -4729,6 +4859,32 @@
       }
     },
     {
+      "name": "inventory_getInboundTransferShippedSerials",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get inbound transfer shipped serials",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "warehouseTransferId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "warehouseTransferId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "warehouseTransferId"
+        ]
+      }
+    },
+    {
       "name": "inventory_getShippingMethod",
       "module": "inventory",
       "classification": "READ",
@@ -5102,6 +5258,58 @@
       }
     },
     {
+      "name": "inventory_getItemWarehouseTransferQuantities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get item warehouse transfer quantities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getItemPendingReceiptQuantities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get item pending receipt quantities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
       "name": "inventory_insertManualInventoryAdjustment",
       "module": "inventory",
       "classification": "WRITE",
@@ -5335,7 +5543,7 @@
       "module": "inventory",
       "classification": "WRITE",
       "description": "upsert storage unit",
-      "paramCount": 6,
+      "paramCount": 7,
       "serviceParams": [
         "client",
         "storageUnit"
@@ -5361,6 +5569,9 @@
             "type": "string"
           },
           "parentId": {
+            "type": "string"
+          },
+          "workCenterId": {
             "type": "string"
           },
           "storageTypeIds": {
@@ -5642,6 +5853,202 @@
         },
         "required": [
           "line"
+        ]
+      }
+    },
+    {
+      "name": "inventory_replaceWarehouseTransferLineWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "replace warehouse transfer line with style variants",
+      "paramCount": 8,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "transferId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "fromLocationId": {
+            "type": "string"
+          },
+          "toLocationId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "transferId",
+          "replaceLineId",
+          "fromLocationId",
+          "toLocationId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "inventory_insertWarehouseTransferLinesWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "insert warehouse transfer lines with style variants",
+      "paramCount": 7,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "transferId": {
+            "type": "string"
+          },
+          "fromLocationId": {
+            "type": "string"
+          },
+          "toLocationId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "transferId",
+          "fromLocationId",
+          "toLocationId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "inventory_replaceStockTransferLineWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "replace stock transfer line with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "stockTransferId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "stockTransferId",
+          "replaceLineId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "inventory_insertStockTransferLinesWithStyleVariants",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "insert stock transfer lines with style variants",
+      "paramCount": 4,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "stockTransferId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variants": {}
+        },
+        "required": [
+          "stockTransferId",
+          "variants"
         ]
       }
     },
@@ -5976,6 +6383,708 @@
       }
     },
     {
+      "name": "inventory_getPickingLists",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking lists",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "assignee": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "locationId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "inventory_getPickingList",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking list",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "pickingListId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pickingListId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickingListLines",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking list lines",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "pickingListId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pickingListId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickingListAvailability",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking list availability",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "pickingListId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pickingListId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickingListRecommendations",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking list recommendations",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "pickingListId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pickingListId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickingListLine",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking list line",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "lineId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "lineId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lineId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickingListLineTrackedEntities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking list line tracked entities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "lineId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "lineId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lineId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_setPickingListLineTrackedEntity",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "set picking list line tracked entity",
+      "paramCount": 5,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListLineId": {
+            "type": "string"
+          },
+          "trackedEntityId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unpick": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "pickingListLineId",
+          "trackedEntityId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_upsertPickingList",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "upsert picking list",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "pickingList"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "pickingListId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_updatePickingListStatus",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "update picking list status",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "pickingListId",
+        "status",
+        "updatedBy"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListId": {
+            "type": "string"
+          },
+          "status": {}
+        },
+        "required": [
+          "pickingListId",
+          "status"
+        ]
+      }
+    },
+    {
+      "name": "inventory_upsertPickingListLine",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "upsert picking list line",
+      "paramCount": 8,
+      "serviceParams": [
+        "client",
+        "line"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "pickingListId": {
+            "type": "string"
+          },
+          "jobId": {
+            "type": "string"
+          },
+          "jobMaterialId": {
+            "type": "string"
+          },
+          "jobOperationId": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string"
+          },
+          "quantityToPick": {
+            "type": "number"
+          },
+          "storageUnitId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pickingListId",
+          "jobId",
+          "jobMaterialId",
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_deletePickingList",
+      "module": "inventory",
+      "classification": "DESTRUCTIVE",
+      "description": "delete picking list",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "pickingListId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pickingListId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_deletePickingListLine",
+      "module": "inventory",
+      "classification": "DESTRUCTIVE",
+      "description": "delete picking list line",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "lineId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "lineId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lineId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPickingSchedule",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get picking schedule",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          },
+          "search": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_generatePickingList",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "generate picking list",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dueDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "jobOperationIds",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_pickPickingListLine",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "pick picking list line",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickingListLineId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "markShort": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "pickingListLineId",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "inventory_resolveOrCreatePartnerLocation",
+      "module": "inventory",
+      "classification": "WRITE",
+      "description": "resolve or create partner location",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "userId",
+        "partner"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "partner": {}
+        },
+        "required": [
+          "partner"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPendingTransferQuantities",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get pending transfer quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "itemId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getPendingTransferQuantitiesByItem",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get pending transfer quantities by item",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getOpenTransferCommitments",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get open transfer commitments",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "locationId",
+        "itemIds",
+        "// Line ids to ignore — used when editing a line so it doesn't reserve against\n  // itself. Stock and warehouse line ids share one set (ids are globally unique).\n  excludeLineIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          },
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "// Line ids to ignore — used when editing a line so it doesn't reserve against\n  // itself. Stock and warehouse line ids share one set (ids are globally unique).\n  excludeLineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "locationId",
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "inventory_checkTransferLineAvailability",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "check transfer line availability",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "input"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string"
+          },
+          "fromStorageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trackedEntityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "excludeLineId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "locationId",
+          "itemId",
+          "quantity"
+        ]
+      }
+    },
+    {
       "name": "inventory_insertStockTransfer",
       "module": "inventory",
       "classification": "WRITE",
@@ -6134,6 +7243,71 @@
         },
         "required": [
           "id"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getTransferStockForItem",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get transfer stock for item",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "inventory_getStyleOnHandByColorSize",
+      "module": "inventory",
+      "classification": "READ",
+      "description": "get style on hand by color size",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId",
+        "locationId",
+        "/**\n   * - `undefined`"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "/**\n   * - `undefined`": {}
+        },
+        "required": [
+          "itemId",
+          "locationId",
+          "/**\n   * - `undefined`"
         ]
       }
     },
@@ -7086,6 +8260,38 @@
       }
     },
     {
+      "name": "invoicing_replacePurchaseInvoiceLinesWithStyleVariants",
+      "module": "invoicing",
+      "classification": "WRITE",
+      "description": "replace purchase invoice lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      invoiceLineType: z.infer<\n        typeof purchaseInvoiceLineValidator\n      >[\"invoiceLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "invoiceId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "invoicing_insertSalesInvoice",
       "module": "invoicing",
       "classification": "WRITE",
@@ -7404,6 +8610,78 @@
         "required": [
           "id",
           "sortOrder"
+        ]
+      }
+    },
+    {
+      "name": "invoicing_unitPriceForExpandedStyleVariants",
+      "module": "invoicing",
+      "classification": "WRITE",
+      "description": "unit price for expanded style variants",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "customerId": {},
+          "parentItemId": {
+            "type": "string"
+          },
+          "variants": {},
+          "fallbackUnitPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "customerId",
+          "parentItemId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "invoicing_replaceSalesInvoiceLinesWithStyleVariants",
+      "module": "invoicing",
+      "classification": "WRITE",
+      "description": "replace sales invoice lines with style variants",
+      "paramCount": 6,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "variants": {},
+          "base: {\n      invoiceLineType: z.infer<\n        typeof salesInvoiceLineValidator\n      >[\"invoiceLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "invoiceId",
+          "exchangeRate",
+          "variants"
         ]
       }
     },
@@ -8054,6 +9332,32 @@
       }
     },
     {
+      "name": "items_getQuantityGridParameters",
+      "module": "items",
+      "classification": "READ",
+      "description": "get quantity grid parameters",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
       "name": "items_getConfigurationRules",
       "module": "items",
       "classification": "READ",
@@ -8314,7 +9618,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -8350,7 +9655,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -8366,6 +9672,32 @@
           "itemId",
           "locationId",
           "periods"
+        ]
+      }
+    },
+    {
+      "name": "items_getVariantFamilyItemIds",
+      "module": "items",
+      "classification": "READ",
+      "description": "get variant family item ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId"
         ]
       }
     },
@@ -8566,6 +9898,37 @@
       }
     },
     {
+      "name": "items_getItemVariantQuantities",
+      "module": "items",
+      "classification": "READ",
+      "description": "get item variant quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId",
+          "locationId"
+        ]
+      }
+    },
+    {
       "name": "items_getItemReplenishment",
       "module": "items",
       "classification": "READ",
@@ -8623,6 +9986,37 @@
       }
     },
     {
+      "name": "items_getStyleStorageUnitQuantities",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style storage unit quantities",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "parentItemId",
+        "companyId",
+        "locationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "parentItemId",
+          "locationId"
+        ]
+      }
+    },
+    {
       "name": "items_getItemSupply",
       "module": "items",
       "classification": "READ",
@@ -8639,7 +10033,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9538,7 +10933,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9567,7 +10963,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9596,7 +10993,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9625,7 +11023,8 @@
         "type": "object",
         "properties": {
           "itemId": {
-            "type": "string"
+            "type": "array",
+            "items": {}
           },
           "locationId": {
             "type": "string"
@@ -9641,7 +11040,33 @@
       "name": "items_getPart",
       "module": "items",
       "classification": "READ",
-      "description": "Get details of a single part by ID.",
+      "description": "get part",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "items_getStyle",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -9667,7 +11092,7 @@
       "name": "items_getParts",
       "module": "items",
       "classification": "READ",
-      "description": "List all parts (manufactured or purchased items) in the system.",
+      "description": "get parts",
       "paramCount": 4,
       "serviceParams": [
         "client",
@@ -9704,6 +11129,199 @@
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyles",
+      "module": "items",
+      "classification": "READ",
+      "description": "get styles",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supplierId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyleSamples",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style samples",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supplierId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_ensureStyleSampleItem",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "ensure style sample item",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "styleId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "styleId"
+        ]
+      }
+    },
+    {
+      "name": "items_createStyleSamples",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "create style samples",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "styleId": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "selections": {},
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "selections",
+                "quantity"
+              ]
+            }
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "storageUnitId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "styleId",
+          "lines",
+          "locationId"
+        ]
+      }
+    },
+    {
+      "name": "items_seedStyleReference",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "seed style reference",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "userId",
+        "language"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
           }
         }
       }
@@ -10558,7 +12176,7 @@
       "module": "items",
       "classification": "WRITE",
       "description": "upsert pick method with shelf life",
-      "paramCount": 5,
+      "paramCount": 6,
       "serviceParams": [
         "db",
         "args"
@@ -10582,6 +12200,9 @@
               "string",
               "null"
             ]
+          },
+          "sortMethod": {
+            "type": "string"
           },
           "customFields": {},
           "shelfLife: {\n      mode": {
@@ -10621,6 +12242,37 @@
         "required": [
           "itemIds",
           "newType"
+        ]
+      }
+    },
+    {
+      "name": "items_updateItemMethodAndSourcing",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update item method and sourcing",
+      "paramCount": 3,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "itemUpdate: {\n      replenishmentSystem": {},
+          "cascade: {\n      sourcingType": {}
+        },
+        "required": [
+          "itemIds"
         ]
       }
     },
@@ -10736,6 +12388,31 @@
       }
     },
     {
+      "name": "items_upsertStyle",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "upsert style",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "style"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "style": {}
+        },
+        "required": [
+          "style"
+        ]
+      }
+    },
+    {
       "name": "items_updateItem",
       "module": "items",
       "classification": "WRITE",
@@ -10814,7 +12491,7 @@
       "module": "items",
       "classification": "WRITE",
       "description": "upsert pick method",
-      "paramCount": 3,
+      "paramCount": 4,
       "serviceParams": [
         "client",
         "pickMethod"
@@ -10834,6 +12511,9 @@
             "type": "string"
           },
           "defaultStorageUnitId": {
+            "type": "string"
+          },
+          "sortMethod": {
             "type": "string"
           }
         },
@@ -10883,14 +12563,42 @@
       }
     },
     {
+      "name": "items_itemPlanningSaveErrorMessage",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "item planning save error message",
+      "paramCount": 2,
+      "serviceParams": [
+        "err",
+        "fallback"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "err": {},
+          "fallback": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "err",
+          "fallback"
+        ]
+      }
+    },
+    {
       "name": "items_upsertItemPlanning",
       "module": "items",
       "classification": "WRITE",
       "description": "upsert item planning",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
-        "partPlanning"
+        "partPlanning",
+        "fanOut"
       ],
       "injectAuth": [
         "companyId",
@@ -10900,10 +12608,56 @@
       "schema": {
         "type": "object",
         "properties": {
-          "partPlanning": {}
+          "partPlanning": {},
+          "fanOut": {
+            "type": "object",
+            "properties": {
+              "mix": {
+                "type": "array",
+                "items": {}
+              }
+            }
+          }
         },
         "required": [
           "partPlanning"
+        ]
+      }
+    },
+    {
+      "name": "items_copyItemPlanningToVariantChildren",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "copy item planning to variant children",
+      "paramCount": 4,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parentItemId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "values": {},
+          "mix": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "parentItemId",
+          "locationId",
+          "values"
         ]
       }
     },
@@ -11144,6 +12898,109 @@
       "serviceParams": [
         "client",
         "methodMaterial"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "makeMethodId": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "itemType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "makeMethodId"
+        ]
+      }
+    },
+    {
+      "name": "items_updateMethodMaterialApplyOnVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update method material apply on variants",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applyOnVariantValueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applyOnVariantValueIds"
+        ]
+      }
+    },
+    {
+      "name": "items_updateMethodOperationApplyOnVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "update method operation apply on variants",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applyOnVariantValueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applyOnVariantValueIds"
+        ]
+      }
+    },
+    {
+      "name": "items_insertMethodMaterialsFromVariants",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "insert method materials from variants",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "args"
       ],
       "injectAuth": [
         "companyId",
@@ -11633,7 +13490,7 @@
       "name": "items_upsertService",
       "module": "items",
       "classification": "WRITE",
-      "description": "Create or update a service item (non-physical item).",
+      "description": "upsert service",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -11798,6 +13655,51 @@
         },
         "required": [
           "supplierPartId"
+        ]
+      }
+    },
+    {
+      "name": "items_copyThumbnailToItemFiles",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "copy thumbnail to item files",
+      "paramCount": 5,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "thumbnailPath": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "thumbnailPath",
+          "fileName",
+          "type"
         ]
       }
     },
@@ -13184,6 +15086,337 @@
       }
     },
     {
+      "name": "people_getEmployeeSalaryList",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary list",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryRecord",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary record",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId",
+        "year",
+        "month"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "employeeId",
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getSalaryRecordBalances",
+      "module": "people",
+      "classification": "READ",
+      "description": "get salary record balances",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "salaryRecordId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId"
+        ]
+      }
+    },
+    {
+      "name": "people_getAmountOwed",
+      "module": "people",
+      "classification": "READ",
+      "description": "get amount owed",
+      "paramCount": 2,
+      "serviceParams": [
+        "record"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "totalEarned": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "totalPaid": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryPayments",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary payments",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "salaryRecordId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId"
+        ]
+      }
+    },
+    {
+      "name": "people_getCompanySalaryPayments",
+      "module": "people",
+      "classification": "READ",
+      "description": "get company salary payments",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getSalaryReadyToPay",
+      "module": "people",
+      "classification": "READ",
+      "description": "get salary ready to pay",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_recordSalaryPayment",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "record salary payment",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "data"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "paidAt": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId",
+          "paidAt"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryHistory",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary history",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
       "name": "production_convertSalesOrderLinesToJobs",
       "module": "production",
       "classification": "WRITE",
@@ -13577,10 +15810,11 @@
       "module": "production",
       "classification": "DESTRUCTIVE",
       "description": "delete production quantity",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
-        "productionQuantityId"
+        "productionQuantityId",
+        "args"
       ],
       "injectAuth": [
         "companyId"
@@ -13590,10 +15824,46 @@
         "properties": {
           "productionQuantityId": {
             "type": "string"
+          },
+          "args": {
+            "type": "object",
+            "properties": {}
           }
         },
         "required": [
-          "productionQuantityId"
+          "productionQuantityId",
+          "args"
+        ]
+      }
+    },
+    {
+      "name": "production_deleteJobOperationSupplierQuantity",
+      "module": "production",
+      "classification": "DESTRUCTIVE",
+      "description": "delete job operation supplier quantity",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "supplierQuantityId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "supplierQuantityId": {
+            "type": "string"
+          },
+          "args": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "required": [
+          "supplierQuantityId",
+          "args"
         ]
       }
     },
@@ -14131,6 +16401,32 @@
       }
     },
     {
+      "name": "production_getJobProductionQuantitySummary",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job production quantity summary",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
       "name": "production_getJobByOperationId",
       "module": "production",
       "classification": "READ",
@@ -14473,6 +16769,113 @@
       "serviceParams": [
         "client",
         "jobOperationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationActorContext",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation actor context",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_validateActorMatchesOperationSupplierRouting",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "validate actor matches operation supplier routing",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "actor"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "actorKind": {
+                "type": "string",
+                "enum": [
+                  "employee",
+                  "supplier"
+                ]
+              },
+              "employeeId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supplierProcessId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "actorKind"
+            ]
+          }
+        },
+        "required": [
+          "jobOperationId",
+          "actor"
+        ]
+      }
+    },
+    {
+      "name": "production_assertSupplierQuantityAllowedForOperation",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "assert supplier quantity allowed for operation",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
       ],
       "injectAuth": [
         "companyId"
@@ -14999,6 +17402,61 @@
         "required": [
           "jobOperationId",
           "sortDescending",
+          "page"
+        ]
+      }
+    },
+    {
+      "name": "production_getProductionQuantitiesByOperation",
+      "module": "production",
+      "classification": "READ",
+      "description": "get production quantities by operation",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_getProductionQuantitiesPage",
+      "module": "production",
+      "classification": "READ",
+      "description": "get production quantities page",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "page"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "page": {}
+        },
+        "required": [
+          "jobOperationId",
           "page"
         ]
       }
@@ -15693,6 +18151,119 @@
       }
     },
     {
+      "name": "production_getTrackedEntitiesByJobMakeMethodIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get tracked entities by job make method ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "jobMakeMethodIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobMakeMethodIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "jobMakeMethodIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobIdsWithVariantQuantities",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job ids with variant quantities",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "jobIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "jobIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getItemIdsWithVariantQuantityGrid",
+      "module": "production",
+      "classification": "READ",
+      "description": "get item ids with variant quantity grid",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "itemIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getCurrentProcessByJobIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get current process by job ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobs"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "jobs"
+        ]
+      }
+    },
+    {
       "name": "production_getTrackedEntitiesByJobId",
       "module": "production",
       "classification": "READ",
@@ -16243,7 +18814,7 @@
       "module": "production",
       "classification": "WRITE",
       "description": "upsert production quantity",
-      "paramCount": 3,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "productionQuantity"
@@ -16256,18 +18827,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "jobOperationId": {
-            "type": "string"
-          },
-          "type": {
-            "type": "number"
-          }
+          "productionQuantity": {}
         },
         "required": [
-          "jobOperationId"
+          "productionQuantity"
         ]
       }
     },
@@ -16373,6 +18936,9 @@
                   "item",
                   "quoteLine"
                 ]
+              },
+              "/**\n     * Item whose make method to copy (get-method `sourceId`). Defaults to\n     * `input.itemId`. Bundle jobs set this to the parent Style so variant SKUs\n     * inherit Cutting/Assembly/etc. from the Style BOP.\n     */\n    methodItemId": {
+                "type": "string"
               }
             }
           }
@@ -17776,7 +20342,7 @@
       "name": "purchasing_getPurchaseOrder",
       "module": "purchasing",
       "classification": "READ",
-      "description": "Get details of a single purchase order by ID.",
+      "description": "get purchase order",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -17828,7 +20394,7 @@
       "name": "purchasing_getPurchaseOrders",
       "module": "purchasing",
       "classification": "READ",
-      "description": "List purchase orders. Filter by status (Draft, Submitted, Approved, Open, To Receive, To Receive and Invoice, To Invoice, Received, Closed) or supplierId.",
+      "description": "get purchase orders",
       "paramCount": 5,
       "serviceParams": [
         "client",
@@ -17954,7 +20520,7 @@
       "name": "purchasing_getPurchaseOrderLines",
       "module": "purchasing",
       "classification": "READ",
-      "description": "Get the line items of a purchase order.",
+      "description": "get purchase order lines",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -18114,7 +20680,7 @@
       "name": "purchasing_getSupplier",
       "module": "purchasing",
       "classification": "READ",
-      "description": "Get details of a single supplier by ID.",
+      "description": "get supplier",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -18713,7 +21279,7 @@
       "name": "purchasing_getSuppliers",
       "module": "purchasing",
       "classification": "READ",
-      "description": "List all suppliers. Can filter by status (Active, Inactive, Pending, Rejected).",
+      "description": "get suppliers",
       "paramCount": 5,
       "serviceParams": [
         "client",
@@ -19472,7 +22038,7 @@
       "name": "purchasing_insertPurchaseOrder",
       "module": "purchasing",
       "classification": "WRITE",
-      "description": "Create a new purchase order with all business logic. Requires supplierId.",
+      "description": "Create a new purchase order with all business logic - generates sequence, creates supplier interaction, resolves payment/shipping defaults from supplier. LLM can create a PO with just supplierId.",
       "paramCount": 15,
       "serviceParams": [
         "client",
@@ -19540,7 +22106,7 @@
       "name": "purchasing_updatePurchaseOrder",
       "module": "purchasing",
       "classification": "WRITE",
-      "description": "Update an existing purchase order.",
+      "description": "Update an existing purchase order - handles exchange rate updates when currency changes",
       "paramCount": 11,
       "serviceParams": [
         "client",
@@ -19682,6 +22248,102 @@
       }
     },
     {
+      "name": "purchasing_replacePurchaseOrderLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace purchase order lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      purchaseOrderLineType: z.infer<\n        typeof purchaseOrderLineValidator\n      >[\"purchaseOrderLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "purchaseOrderId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "purchasing_replaceSupplierQuoteLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace supplier quote lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "supplierQuoteId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      supplierQuoteLineType: z.infer<\n        typeof supplierQuoteLineValidator\n      >[\"supplierQuoteLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "supplierQuoteId",
+          "variants"
+        ]
+      }
+    },
+    {
+      "name": "purchasing_replacePurchasingRfqLinesWithStyleVariants",
+      "module": "purchasing",
+      "classification": "WRITE",
+      "description": "replace purchasing rfq lines with style variants",
+      "paramCount": 5,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "purchasingRfqId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "variants": {},
+          "base: {\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "purchasingRfqId",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "purchasing_updatePurchaseOrderLineOrder",
       "module": "purchasing",
       "classification": "WRITE",
@@ -19792,7 +22454,7 @@
       "module": "purchasing",
       "classification": "WRITE",
       "description": "upsert supplier process",
-      "paramCount": 5,
+      "paramCount": 6,
       "serviceParams": [
         "client",
         "supplierProcess"
@@ -19815,6 +22477,9 @@
             "type": "string"
           },
           "minimumCost": {
+            "type": "number"
+          },
+          "unitCost": {
             "type": "number"
           },
           "leadTime": {
@@ -24506,6 +27171,24 @@
       }
     },
     {
+      "name": "resources_getPartnerLocations",
+      "module": "resources",
+      "classification": "READ",
+      "description": "get partner locations",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "resources_getMaintenanceDispatch",
       "module": "resources",
       "classification": "READ",
@@ -26444,6 +29127,87 @@
       }
     },
     {
+      "name": "resources_getEmployeeProcessesByProcess",
+      "module": "resources",
+      "classification": "READ",
+      "description": "get employee processes by process",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "processId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "processId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "processId"
+        ]
+      }
+    },
+    {
+      "name": "resources_getEmployeeProcessesByEmployee",
+      "module": "resources",
+      "classification": "READ",
+      "description": "get employee processes by employee",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
+      "name": "resources_upsertEmployeeProcesses",
+      "module": "resources",
+      "classification": "WRITE",
+      "description": "upsert employee processes",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          },
+          "processes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
       "name": "resources_upsertTraining",
       "module": "resources",
       "classification": "WRITE",
@@ -27705,7 +30469,7 @@
       "name": "sales_getCustomers",
       "module": "sales",
       "classification": "READ",
-      "description": "List all customers.",
+      "description": "get customers",
       "paramCount": 3,
       "serviceParams": [
         "client",
@@ -28104,6 +30868,93 @@
       }
     },
     {
+      "name": "sales_getOrCreateOpportunityForRecord",
+      "module": "sales",
+      "classification": "READ",
+      "description": "get or create opportunity for record",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "record"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "table": {
+            "type": "string",
+            "enum": [
+              "salesOrder",
+              "salesRfq",
+              "quote"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "opportunityId",
+          "table"
+        ]
+      }
+    },
+    {
+      "name": "sales_getOrCreateOpportunityForSalesOrder",
+      "module": "sales",
+      "classification": "READ",
+      "description": "get or create opportunity for sales order",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "salesOrder"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "opportunityId"
+        ]
+      }
+    },
+    {
       "name": "sales_getOpportunityDocuments",
       "module": "sales",
       "classification": "READ",
@@ -28271,7 +31122,7 @@
       "name": "sales_getQuotes",
       "module": "sales",
       "classification": "READ",
-      "description": "List sales quotes.",
+      "description": "get quotes",
       "paramCount": 3,
       "serviceParams": [
         "client",
@@ -29720,6 +32571,42 @@
       }
     },
     {
+      "name": "sales_replaceSalesOrderLinesWithStyleVariants",
+      "module": "sales",
+      "classification": "WRITE",
+      "description": "replace sales order lines with style variants",
+      "paramCount": 6,
+      "serviceParams": [
+        "db",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string"
+          },
+          "replaceLineId": {
+            "type": "string"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "variants": {},
+          "base: {\n      salesOrderLineType: z.infer<\n        typeof salesOrderLineValidator\n      >[\"salesOrderLineType\"];\n      description": {},
+          "customFields": {}
+        },
+        "required": [
+          "salesOrderId",
+          "exchangeRate",
+          "variants"
+        ]
+      }
+    },
+    {
       "name": "sales_finalizeQuote",
       "module": "sales",
       "classification": "WRITE",
@@ -31073,7 +33960,7 @@
       "module": "sales",
       "classification": "WRITE",
       "description": "upsert quote line",
-      "paramCount": 4,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "quotationLine"
@@ -31086,22 +33973,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "quoteId": {
-            "type": "string"
-          },
-          "itemId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
+          "quotationLine": {}
         },
         "required": [
-          "quoteId",
-          "itemId"
+          "quotationLine"
         ]
       }
     },
@@ -32739,6 +35614,48 @@
       }
     },
     {
+      "name": "settings_getActiveUserCount",
+      "module": "settings",
+      "classification": "READ",
+      "description": "get active user count",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "settings_checkSeatAvailability",
+      "module": "settings",
+      "classification": "READ",
+      "description": "check seat availability",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "adding = 1"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "adding = 1": {}
+        },
+        "required": [
+          "adding = 1"
+        ]
+      }
+    },
+    {
       "name": "settings_getCompanySettings",
       "module": "settings",
       "classification": "READ",
@@ -33887,6 +36804,33 @@
       }
     },
     {
+      "name": "settings_updateLastNameFirstSetting",
+      "module": "settings",
+      "classification": "WRITE",
+      "description": "update last name first setting",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "lastNameFirst"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "lastNameFirst": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "lastNameFirst"
+        ]
+      }
+    },
+    {
       "name": "settings_updateKanbanOutputSetting",
       "module": "settings",
       "classification": "WRITE",
@@ -34132,6 +37076,66 @@
         },
         "required": [
           "materialGeneratedIds"
+        ]
+      }
+    },
+    {
+      "name": "settings_updateHiddenMesSectionsSetting",
+      "module": "settings",
+      "classification": "WRITE",
+      "description": "update hidden mes sections setting",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "hiddenMesSections"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "hiddenMesSections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "hiddenMesSections"
+        ]
+      }
+    },
+    {
+      "name": "settings_updateHiddenSubmodulesSetting",
+      "module": "settings",
+      "classification": "WRITE",
+      "description": "update hidden submodules setting",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "hiddenSubmodules"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "hiddenSubmodules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "hiddenSubmodules"
         ]
       }
     },
@@ -34666,16 +37670,51 @@
       }
     },
     {
+      "name": "shared_cancelApprovalRequestsForDocument",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "cancel approval requests for document",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "documentType",
+        "documentId",
+        "userId",
+        "decisionNotes"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "documentType": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": "string"
+          },
+          "decisionNotes": {}
+        },
+        "required": [
+          "documentType",
+          "documentId",
+          "decisionNotes"
+        ]
+      }
+    },
+    {
       "name": "shared_approveRequest",
       "module": "shared",
       "classification": "WRITE",
       "description": "approve request",
-      "paramCount": 2,
+      "paramCount": 3,
       "serviceParams": [
         "db",
         "id",
         "userId",
-        "notes"
+        "notes",
+        "options"
       ],
       "injectAuth": [
         "companyId",
@@ -34689,7 +37728,8 @@
           },
           "notes": {
             "type": "string"
-          }
+          },
+          "options": {}
         },
         "required": [
           "id"
@@ -35426,6 +38466,76 @@
       }
     },
     {
+      "name": "shared_getTags",
+      "module": "shared",
+      "classification": "READ",
+      "description": "get tags",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "shared_deleteTag",
+      "module": "shared",
+      "classification": "DESTRUCTIVE",
+      "description": "delete tag",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "table",
+        "name"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "table",
+          "name"
+        ]
+      }
+    },
+    {
       "name": "shared_hasPendingApproval",
       "module": "shared",
       "classification": "READ",
@@ -35804,12 +38914,13 @@
       "module": "shared",
       "classification": "WRITE",
       "description": "reject request",
-      "paramCount": 2,
+      "paramCount": 3,
       "serviceParams": [
         "db",
         "id",
         "userId",
-        "notes"
+        "notes",
+        "options"
       ],
       "injectAuth": [
         "companyId",
@@ -35823,7 +38934,8 @@
           },
           "notes": {
             "type": "string"
-          }
+          },
+          "options": {}
         },
         "required": [
           "id"
@@ -36059,6 +39171,41 @@
           "quantity",
           "fallbackUnitPrice",
           "exchangeRate"
+        ]
+      }
+    },
+    {
+      "name": "shared_requestProductionPayApproval",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "request production pay approval",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string"
+          },
+          "requestedBy": {
+            "type": "string"
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "reportId",
+          "requestedBy"
         ]
       }
     },
@@ -36356,24 +39503,6 @@
       }
     },
     {
-      "name": "users_getInvitable",
-      "module": "users",
-      "classification": "READ",
-      "description": "get invitable",
-      "paramCount": 0,
-      "serviceParams": [
-        "client",
-        "companyId"
-      ],
-      "injectAuth": [
-        "companyId"
-      ],
-      "schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
       "name": "users_getModules",
       "module": "users",
       "classification": "READ",
@@ -36627,7 +39756,7 @@
       "module": "users",
       "classification": "WRITE",
       "description": "insert employee type",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
         "employeeType"
@@ -36642,6 +39771,9 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "mesOnly": {
+            "type": "boolean"
           }
         },
         "required": [
