@@ -2,6 +2,11 @@ import {
   Badge,
   Checkbox,
   cn,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
@@ -11,6 +16,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  toast,
   useDisclosure
 } from "@carbon/react";
 import {
@@ -22,7 +28,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   LuBookMarked,
   LuCalendar,
@@ -42,6 +48,7 @@ import {
   LuTruck,
   LuUser
 } from "react-icons/lu";
+import { useFetcher } from "react-router";
 import {
   Assignee,
   CustomerAvatar,
@@ -77,6 +84,9 @@ const SALES_ORDER_UPDATE = {
   action: path.to.bulkUpdateSalesOrder,
   idKey: "ids" as const
 };
+
+// Statuses from which a sales order can be shipped (mirrors SalesOrderHeader "New Shipment").
+const SHIPPABLE_STATUSES = ["To Ship", "To Ship and Invoice", "To Invoice"];
 
 type SalesOrdersTableProps = {
   data: SalesOrder[];
@@ -119,6 +129,80 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
   const todaysDate = useMemo(() => today(getLocalTimeZone()), []);
 
   const { edit } = useSalesOrder();
+
+  const bulkShipFetcher = useFetcher<{
+    error: { message: string } | null;
+    data: {
+      createdCount: number;
+      skippedCount: number;
+      failedCount: number;
+    } | null;
+  }>();
+
+  const onBulkShip = useCallback(
+    (selectedRows: SalesOrder[]) => {
+      const formData = new FormData();
+      selectedRows.forEach((row) => {
+        if (row.id && SHIPPABLE_STATUSES.includes(row.status ?? "")) {
+          formData.append("ids", row.id);
+        }
+      });
+      bulkShipFetcher.submit(formData, {
+        method: "post",
+        action: path.to.bulkShipSalesOrders
+      });
+    },
+    [bulkShipFetcher]
+  );
+
+  useEffect(() => {
+    if (bulkShipFetcher.state !== "idle" || !bulkShipFetcher.data) return;
+    const { error, data: result } = bulkShipFetcher.data;
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (result) {
+      const parts = [t`Created ${result.createdCount} draft shipment(s)`];
+      if (result.skippedCount > 0) {
+        parts.push(t`skipped ${result.skippedCount} not ready to ship`);
+      }
+      if (result.failedCount > 0) {
+        parts.push(t`${result.failedCount} failed`);
+      }
+      toast.success(parts.join(", "));
+    }
+  }, [bulkShipFetcher.state, bulkShipFetcher.data, t]);
+
+  const renderActions = useCallback(
+    (selectedRows: SalesOrder[]) => {
+      const shippableCount = selectedRows.filter((row) =>
+        SHIPPABLE_STATUSES.includes(row.status ?? "")
+      ).length;
+      return (
+        <DropdownMenuContent align="end" className="min-w-[240px]">
+          <DropdownMenuLabel>
+            <Trans>Ship</Trans>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem
+              disabled={
+                shippableCount === 0 ||
+                !permissions.can("create", "inventory") ||
+                bulkShipFetcher.state !== "idle"
+              }
+              onClick={() => onBulkShip(selectedRows)}
+            >
+              <MenuIcon icon={<LuTruck />} />
+              <Trans>Generate draft shipments ({shippableCount})</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      );
+    },
+    [onBulkShip, permissions, bulkShipFetcher.state]
+  );
 
   const customColumns = useCustomColumns<SalesOrder>("salesOrder");
 
@@ -616,10 +700,12 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
             <New label={t`Sales Order`} to={path.to.newSalesOrder} />
           )
         }
+        renderActions={renderActions}
         renderContextMenu={renderContextMenu}
         title={t`Sales Orders`}
         table="salesOrder"
         withSavedView
+        withSelectableRows
       />
 
       {selectedSalesOrder && selectedSalesOrder.id && (

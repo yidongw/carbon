@@ -47,6 +47,10 @@ msgstr "{0} dni"
 msgid "{0} deleted successfully"
 msgstr "{0} usunięty pomyślnie"
 
+#. placeholder {0}: result.failedCount
+msgid "{0} failed"
+msgstr ""
+
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
@@ -2682,6 +2686,10 @@ msgstr "Utworzono"
 #. placeholder {0}: formatRelativeTime(record.createdAt ?? "")
 msgid "Created {0}"
 msgstr "Utworzony {0}"
+
+#. placeholder {0}: result.createdCount
+msgid "Created {0} draft shipment(s)"
+msgstr ""
 
 msgid "Created {relativeTime}"
 msgstr "Utworzony {relativeTime}"
@@ -8183,6 +8191,9 @@ msgstr "Księga główna"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "Wygeneruj nowy 4-cyfrowy PIN. Udostępnij go operatorowi, aby mógł się zalogować na terminalach MES."
 
+msgid "Generate draft shipments ({shippableCount})"
+msgstr ""
+
 msgid "Generate Eliminations"
 msgstr "Generuj eliminacje"
 
@@ -9869,6 +9880,9 @@ msgstr "Minuty/1000 Sztuk"
 
 msgid "Minutes/Piece"
 msgstr "Minuty/Sztuka"
+
+msgid "Missing"
+msgstr ""
 
 msgid "Missing code or state from WeChat"
 msgstr "Brak kodu lub stanu z WeChat"
@@ -13825,6 +13839,10 @@ msgstr "Pomiń zaplanowaną konserwację w dni świąt firmowych"
 
 msgid "Skipped"
 msgstr "Pominięte"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not ready to ship"
+msgstr ""
 
 msgid "SKU"
 msgstr "Kod SKU"
