@@ -97,6 +97,67 @@ export type UnifiedProductionQuantityListItem =
   | (EmployeeProductionQuantity & { actorKind: "employee" })
   | (SupplierProductionQuantity & { actorKind: "supplier" });
 
+/**
+ * Money accrued by a single completion line, or null when it doesn't earn any:
+ * only completed production accrues pay (employee) / subcontract cost (supplier)
+ * — rework/scrap don't — and a missing unit price yields null (shown as "—").
+ * Employee = quantity × jobOperation.insideUnitCost (live wage rate).
+ * Supplier = quantity × snapshotted operationUnitCost (frozen subcontract rate).
+ */
+export function getUnifiedQuantityLineAmount(
+  item: UnifiedProductionQuantityListItem
+): number | null {
+  if (item.type !== "Production") return null;
+  const quantity = item.quantity ?? 0;
+
+  if (item.actorKind === "employee") {
+    const unitCost = item.jobOperation?.insideUnitCost;
+    if (unitCost == null) return null;
+    return quantity * unitCost;
+  }
+
+  const unitCost = item.report?.subcontractSnapshot?.operationUnitCost;
+  if (unitCost == null) return null;
+  return quantity * unitCost;
+}
+
+/**
+ * Zero out the in-house wage rate before completion rows reach a client that
+ * lacks accounting:view. The real rate never leaves the server; callers pair
+ * this with hiding the Amount column (canViewCosts) so the placeholder 0 never
+ * renders. Pure + client-safe — the permission check lives in a .server module.
+ */
+export function redactEmployeeQuantityCosts(
+  rows: EmployeeProductionQuantity[]
+): EmployeeProductionQuantity[] {
+  return rows.map((row) =>
+    row.jobOperation
+      ? { ...row, jobOperation: { ...row.jobOperation, insideUnitCost: 0 } }
+      : row
+  );
+}
+
+/** Sibling of {@link redactEmployeeQuantityCosts} for subcontract unit costs. */
+export function redactSupplierQuantityCosts(
+  rows: SupplierProductionQuantity[]
+): SupplierProductionQuantity[] {
+  return rows.map((row) =>
+    row.report?.subcontractSnapshot
+      ? {
+          ...row,
+          report: {
+            ...row.report,
+            subcontractSnapshot: {
+              ...row.report.subcontractSnapshot,
+              operationUnitCost: 0,
+              operationMinimumCost: 0
+            }
+          }
+        }
+      : row
+  );
+}
+
 export function mergeProductionQuantityListItems(
   employee: EmployeeProductionQuantity[],
   supplier: SupplierProductionQuantity[],
