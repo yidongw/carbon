@@ -11,6 +11,7 @@ import {
   getProductionQuantities,
   getScrapReasons
 } from "~/modules/production";
+import { resolveQuantityCostVisibility } from "~/modules/production/quantityCostVisibility.server";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/Jobs";
 import {
   mergeProductionQuantityListItems,
@@ -20,7 +21,7 @@ import { path, requestReferrer } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "production"
   });
 
@@ -49,7 +50,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       count: 0,
       events: [],
       operations: [],
-      scrapReasons: []
+      scrapReasons: [],
+      canViewCosts: false
     };
   }
 
@@ -89,26 +91,31 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const { canViewCosts, employee, supplier } =
+    await resolveQuantityCostVisibility(
+      userId,
+      companyId,
+      employeeQuantities.data ?? [],
+      supplierQuantities.data ?? []
+    );
+
   // Pagination is applied client-side after merging both sources: each query
   // returns all matching rows so the merged order is stable across pages.
   // OK at typical job-sized event counts (low hundreds); revisit if jobs
   // routinely exceed a few thousand quantity rows.
-  const merged = mergeProductionQuantityListItems(
-    employeeQuantities.data ?? [],
-    supplierQuantities.data ?? [],
-    sorts
-  );
+  const merged = mergeProductionQuantityListItems(employee, supplier, sorts);
 
   return {
     count: (employeeQuantities.count ?? 0) + (supplierQuantities.count ?? 0),
     events: merged.slice(offset, offset + limit),
     operations: operations.data ?? [],
-    scrapReasons: scrapReasons.data ?? []
+    scrapReasons: scrapReasons.data ?? [],
+    canViewCosts
   };
 }
 
 export default function ProductionQuantitiesRoute() {
-  const { count, events, operations, scrapReasons } =
+  const { count, events, operations, scrapReasons, canViewCosts } =
     useLoaderData<typeof loader>();
 
   const { setIsExplorerCollapsed } = usePanels();
@@ -125,6 +132,7 @@ export default function ProductionQuantitiesRoute() {
           count={count}
           operations={operations}
           scrapReasons={scrapReasons}
+          canViewCosts={canViewCosts}
         />
       </VStack>
     </>

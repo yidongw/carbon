@@ -51,6 +51,9 @@ type ProductionQuantitiesTableProps = {
   // Override so the table can be reused outside the job route (e.g. a Bundle
   // Work Order's backing job). Falls back to the job route param.
   jobId?: string;
+  // Gate the Amount column behind accounting:view. When false the loader has
+  // also redacted the underlying unit costs, so the column is hidden here too.
+  canViewCosts?: boolean;
 };
 
 const ProductionQuantitiesTable = memo(
@@ -59,7 +62,8 @@ const ProductionQuantitiesTable = memo(
     count,
     operations,
     scrapReasons,
-    jobId: jobIdProp
+    jobId: jobIdProp,
+    canViewCosts = false
   }: ProductionQuantitiesTableProps) => {
     const params = useParams();
     const jobId = jobIdProp ?? params.jobId;
@@ -298,20 +302,28 @@ const ProductionQuantitiesTable = memo(
             />
           )
         },
-        {
-          id: "amount",
-          header: t`Amount`,
-          cell: ({ row }) => {
-            const amount = getUnifiedQuantityLineAmount(row.original);
-            return amount == null ? (
-              <span className="text-muted-foreground">—</span>
-            ) : (
-              <span className="tabular-nums">
-                {currencyFormatter.format(amount)}
-              </span>
-            );
-          }
-        },
+        ...(canViewCosts
+          ? [
+              {
+                id: "amount",
+                header: t`Amount`,
+                cell: ({
+                  row
+                }: {
+                  row: { original: UnifiedProductionQuantityListItem };
+                }) => {
+                  const amount = getUnifiedQuantityLineAmount(row.original);
+                  return amount == null ? (
+                    <span className="text-muted-foreground">—</span>
+                  ) : (
+                    <span className="tabular-nums">
+                      {currencyFormatter.format(amount)}
+                    </span>
+                  );
+                }
+              }
+            ]
+          : []),
         {
           accessorKey: "scrapReasonId",
           header: t`Scrap Reason`,
@@ -362,6 +374,7 @@ const ProductionQuantitiesTable = memo(
     }, [
       canEdit,
       canUpdate,
+      canViewCosts,
       currencyFormatter,
       openEdit,
       operationLabel,
