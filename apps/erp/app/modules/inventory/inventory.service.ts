@@ -30,7 +30,8 @@ import type {
 } from "./inventory.models";
 import {
   isPickingListLocked,
-  reconcileReceiptLineSerials
+  reconcileReceiptLineSerials,
+  SHIPMENT_MISSING
 } from "./inventory.models";
 
 export async function deleteBatchProperty(
@@ -950,9 +951,26 @@ export async function getShipments(
     );
   }
 
-  query = setGenericQueryFilters(query, args, [
-    { column: "shipmentId", ascending: false }
-  ]);
+  // "Missing" filters can't be expressed by the generic operator set (no is-null),
+  // so intercept the SHIPMENT_MISSING sentinel and apply the null/empty check here.
+  const passthroughFilters = (args.filters ?? []).filter((filter) => {
+    if (filter.value !== SHIPMENT_MISSING) return true;
+    if (filter.column === "shippingMethodId") {
+      query = query.is("shippingMethodId", null);
+      return false;
+    }
+    if (filter.column === "trackingNumber") {
+      query = query.or("trackingNumber.is.null,trackingNumber.eq.");
+      return false;
+    }
+    return true;
+  });
+
+  query = setGenericQueryFilters(
+    query,
+    { ...args, filters: passthroughFilters },
+    [{ column: "shipmentId", ascending: false }]
+  );
   return query;
 }
 

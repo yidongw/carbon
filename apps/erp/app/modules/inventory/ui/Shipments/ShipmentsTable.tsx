@@ -18,11 +18,13 @@ import {
   LuHash,
   LuPencil,
   LuTrash,
+  LuTruck,
   LuUser
 } from "react-icons/lu";
 import { useFetcher, useNavigate } from "react-router";
 import { CustomerAvatar, EmployeeAvatar, Hyperlink, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { useShippingMethod } from "~/components/Form/ShippingMethod";
 import { ConfirmDelete } from "~/components/Modals";
 import {
   useDateFormatter,
@@ -34,6 +36,7 @@ import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { useCustomers, usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import {
+  SHIPMENT_MISSING,
   shipmentSourceDocumentType,
   shipmentStatusType
 } from "../../inventory.models";
@@ -73,6 +76,7 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
   const rows = useMemo(() => data, [data]);
   const [people] = usePeople();
   const [customers] = useCustomers();
+  const shippingMethods = useShippingMethod();
   const customColumns = useCustomColumns<Shipment>("shipment");
 
   const columns = useMemo<ColumnDef<Shipment>[]>(() => {
@@ -312,11 +316,40 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
         meta: {
           icon: <LuCalendar />
         }
+      },
+      {
+        accessorKey: "shippingMethodId",
+        header: t`Shipping Method`,
+        cell: ({ row }) => {
+          const method = shippingMethods.find(
+            (m) => m.value === row.original.shippingMethodId
+          );
+          return method ? <Enumerable value={method.label} /> : null;
+        },
+        meta: {
+          filter: {
+            type: "static",
+            options: [{ value: SHIPMENT_MISSING, label: t`Missing` }]
+          },
+          icon: <LuTruck />
+        }
+      },
+      {
+        accessorKey: "trackingNumber",
+        header: t`Tracking Number`,
+        cell: (item) => item.getValue<string>(),
+        meta: {
+          filter: {
+            type: "static",
+            options: [{ value: SHIPMENT_MISSING, label: t`Missing` }]
+          },
+          icon: <LuHash />
+        }
       }
     ];
 
     return [...result, ...customColumns];
-  }, [people, customers, customColumns, t, formatDate]);
+  }, [people, customers, shippingMethods, customColumns, t, formatDate]);
 
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(
     null
@@ -372,7 +405,9 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
           createdAt: false,
           createdBy: false,
           updatedAt: false,
-          updatedBy: false
+          updatedBy: false,
+          shippingMethodId: false,
+          trackingNumber: false
         }}
         primaryAction={
           permissions.can("create", "inventory") && <NewShipment />
