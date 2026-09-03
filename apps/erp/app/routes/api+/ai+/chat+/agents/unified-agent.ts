@@ -9,7 +9,11 @@ import {
 import toolMetadata from "~/routes/api+/mcp+/lib/tool-metadata.json";
 import { createAgent } from "./shared/agent";
 import type { ChatContext } from "./shared/context";
-import { COMMON_AGENT_RULES, formatContextForLLM } from "./shared/prompts";
+import {
+  COMMON_AGENT_RULES,
+  customerServicePersona,
+  formatContextForLLM
+} from "./shared/prompts";
 
 type ToolMeta = {
   name: string;
@@ -34,9 +38,7 @@ type JsonSchema = {
 
 function isEmpty(v: unknown): boolean {
   return (
-    v === undefined ||
-    v === null ||
-    (typeof v === "string" && v.trim() === "")
+    v === undefined || v === null || (typeof v === "string" && v.trim() === "")
   );
 }
 
@@ -70,9 +72,7 @@ function findMissingRequiredFields(
       const childPath = pathPrefix ? `${pathPrefix}.${key}` : key;
       const child = (value as Record<string, unknown>)[key];
       if (child !== undefined && child !== null) {
-        missing.push(
-          ...findMissingRequiredFields(subSchema, child, childPath)
-        );
+        missing.push(...findMissingRequiredFields(subSchema, child, childPath));
       }
     }
   }
@@ -335,9 +335,8 @@ export const unifiedAgent = createAgent({
   modelSettings: {
     parallel_tool_calls: false
   },
-  instructions: (
-    ctx
-  ) => `You are an AI assistant for ${ctx.companyName}, a manufacturing ERP system.
+  instructions: (ctx) => `${customerServicePersona(ctx)}
+You are an AI assistant for ${ctx.companyName}, a manufacturing ERP system.
 
 ## Language and formatting
 
