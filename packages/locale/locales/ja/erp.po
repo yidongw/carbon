@@ -2215,6 +2215,12 @@ msgstr "確認"
 msgid "Confirm {0}"
 msgstr "{0}を確認"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "承認を確認"
 

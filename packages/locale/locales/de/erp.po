@@ -2215,6 +2215,12 @@ msgstr "Bestätigen"
 msgid "Confirm {0}"
 msgstr "Bestätigen {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Bestätigen Sie die Genehmigung"
 

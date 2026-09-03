@@ -15,6 +15,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  LuBadgeCheck,
   LuBookMarked,
   LuCalendar,
   LuContainer,
@@ -55,6 +56,7 @@ import { purchaseOrderStatusType } from "~/modules/purchasing";
 import type { action } from "~/routes/x+/purchase-order+/update";
 import { usePeople, useSuppliers } from "~/stores";
 import { path } from "~/utils/path";
+import BulkFinalizeConfirmModal from "./BulkFinalizeConfirmModal";
 import PurchasingStatus from "./PurchasingStatus";
 import { usePurchaseOrder } from "./usePurchaseOrder";
 
@@ -82,6 +84,8 @@ const PurchaseOrdersTable = memo(
       useState<PurchaseOrder | null>(null);
 
     const deletePurchaseOrderModal = useDisclosure();
+    const bulkFinalizeModal = useDisclosure();
+    const [bulkFinalizeIds, setBulkFinalizeIds] = useState<string[]>([]);
 
     const [people] = usePeople();
     const [suppliers] = useSuppliers();
@@ -384,10 +388,27 @@ const PurchaseOrdersTable = memo(
     const renderActions = useCallback(
       (selectedRows: typeof data) => {
         return (
-          <DropdownMenuContent align="end" className="min-w-[200px]">
+          <DropdownMenuContent align="end" className="min-w-[220px]">
             <DropdownMenuLabel>Update</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem
+                disabled={
+                  !permissions.can("create", "purchasing") ||
+                  !permissions.can("update", "inventory")
+                }
+                onClick={() => {
+                  setBulkFinalizeIds(
+                    selectedRows
+                      .map((row) => row.id)
+                      .filter((id): id is string => Boolean(id))
+                  );
+                  bulkFinalizeModal.onOpen();
+                }}
+              >
+                <MenuIcon icon={<LuBadgeCheck />} />
+                <Trans>Confirm & Receive</Trans>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 disabled={
                   !permissions.can("delete", "purchasing") ||
@@ -405,7 +426,7 @@ const PurchaseOrdersTable = memo(
           </DropdownMenuContent>
         );
       },
-      [onBulkUpdate, permissions]
+      [onBulkUpdate, permissions, bulkFinalizeModal]
     );
 
     const renderContextMenu = useCallback(
@@ -509,6 +530,17 @@ const PurchaseOrdersTable = memo(
             onSubmit={() => {
               deletePurchaseOrderModal.onClose();
               setSelectedPurchaseOrder(null);
+            }}
+          />
+        )}
+
+        {bulkFinalizeModal.isOpen && (
+          <BulkFinalizeConfirmModal
+            ids={bulkFinalizeIds}
+            isOpen={bulkFinalizeModal.isOpen}
+            onClose={() => {
+              bulkFinalizeModal.onClose();
+              setBulkFinalizeIds([]);
             }}
           />
         )}

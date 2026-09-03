@@ -2215,6 +2215,12 @@ msgstr "确认"
 msgid "Confirm {0}"
 msgstr "确认{0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "确认批准"
 

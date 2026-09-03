@@ -2215,6 +2215,12 @@ msgstr "पुष्टि करें"
 msgid "Confirm {0}"
 msgstr "की पुष्टि करें {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "प्रतियोगिता परीक्षण"
 

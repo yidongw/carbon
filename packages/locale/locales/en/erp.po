@@ -2214,6 +2214,12 @@ msgstr "Confirm"
 msgid "Confirm {0}"
 msgstr "Confirm {0}"
 
+msgid "Confirm & Receive"
+msgstr "Confirm & Receive"
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr "Confirm & Receive Purchase Orders"
+
 msgid "Confirm Approval"
 msgstr "Confirm Approval"
 

@@ -14,8 +14,8 @@ import { getSeedLocale } from "./seedDemoData.strings";
 // Composable per-domain seed building blocks. `seedDemoData` calls them to build
 // the full demo; module tests import the one they need to seed just that slice.
 export {
-  seedDemoStyleAttributeValues,
-  type SeedContext
+  type SeedContext,
+  seedDemoStyleAttributeValues
 } from "./seedDemo/styleAttributeValues";
 
 export async function seedDemoData(
@@ -512,6 +512,19 @@ export async function seedDemoData(
       [poReadableId, po.status, po.supplierId, interactionId, companyId, userId]
     );
     const poRowId = poRow.rows[0]!.id;
+
+    // Mirror insertPurchaseOrder: every PO needs its 1:1 delivery + payment
+    // rows. post-receipt reads purchaseOrderDelivery via .single(), so without
+    // these a receipt posted against a seeded PO fails ("Failed to fetch
+    // purchase order delivery").
+    await client.query(
+      `INSERT INTO "purchaseOrderDelivery" ("id", "companyId") VALUES ($1, $2)`,
+      [poRowId, companyId]
+    );
+    await client.query(
+      `INSERT INTO "purchaseOrderPayment" ("id", "companyId") VALUES ($1, $2)`,
+      [poRowId, companyId]
+    );
 
     for (const line of po.lines) {
       const itemId = itemIds[line.itemReadableId];
