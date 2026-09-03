@@ -14,8 +14,8 @@ import { getSeedLocale } from "./seedDemoData.strings";
 // Composable per-domain seed building blocks. `seedDemoData` calls them to build
 // the full demo; module tests import the one they need to seed just that slice.
 export {
-  seedDemoStyleAttributeValues,
-  type SeedContext
+  type SeedContext,
+  seedDemoStyleAttributeValues
 } from "./seedDemo/styleAttributeValues";
 
 export async function seedDemoData(
@@ -2905,6 +2905,103 @@ export async function seedDemoData(
     }
   }
   console.log(`   Created PO/SO payment and shipment settings`);
+
+  // ─── Step 60b: Ready-to-ship sales orders ─────────────────────────────────
+  // A backlog of confirmed orders awaiting shipment, so the "Generate draft
+  // shipments" bulk action on the sales-order list has something to act on.
+  // Idempotent: only seeded when no shippable order exists yet.
+  console.log("60b. Seeding ready-to-ship sales orders...");
+  const existingShippable = await client.query(
+    `SELECT 1 FROM "salesOrder" WHERE "companyId" = $1 AND status = 'To Ship and Invoice'::"salesOrderStatus" LIMIT 1`,
+    [companyId]
+  );
+  if ((existingShippable.rowCount ?? 0) === 0) {
+    const shipLocationRow = await client.query<{ id: string }>(
+      `SELECT id FROM location WHERE "companyId" = $1 ORDER BY name LIMIT 1`,
+      [companyId]
+    );
+    const shipLocationId = shipLocationRow.rows[0]?.id ?? null;
+
+    const rotation = [
+      {
+        customer: "Precision Motors LLC",
+        item: "BRACKET-001",
+        unitPrice: 125.0
+      },
+      {
+        customer: "West Coast Robotics",
+        item: "SHAFT-ASM-001",
+        unitPrice: 280.0
+      },
+      {
+        customer: "Northern Aerospace",
+        item: "CTRL-PCB-001",
+        unitPrice: 195.0
+      },
+      {
+        customer: "Precision Motors LLC",
+        item: "BEARING-6205",
+        unitPrice: 18.5
+      }
+    ];
+
+    let shipSeedCount = 0;
+    // 20 ready-to-ship + 2 draft (non-shippable) to exercise mixed selection.
+    for (let i = 0; i < 22; i++) {
+      const r = rotation[i % rotation.length]!;
+      const customerId = customerIds[r.customer];
+      const itemId = itemIds[r.item];
+      if (!customerId || !itemId) continue;
+
+      const status = i < 20 ? "To Ship and Invoice" : "Draft";
+      const soReadableId = await nextSeq("salesOrder");
+      const soRow = await client.query<{ id: string }>(
+        `INSERT INTO "salesOrder" ("salesOrderId", status, "currencyCode", "customerId", "customerReference", "orderDate", "companyId", "createdBy")
+           VALUES ($1, $2::"salesOrderStatus", 'USD', $3, $4, CURRENT_DATE - ($5)::int, $6, $7)
+           RETURNING id`,
+        [
+          soReadableId,
+          status,
+          customerId,
+          `PO-${4500 + i}`,
+          i % 30,
+          companyId,
+          userId
+        ]
+      );
+      const soRowId = soRow.rows[0]!.id;
+
+      // locationId must match the shipment location, else shipmentFromSalesOrder
+      // filters the line out (create/index.ts .eq("locationId", locationId)) and
+      // the generated shipment has no lines (Post stays disabled).
+      await client.query(
+        `INSERT INTO "salesOrderLine" ("salesOrderId", "salesOrderLineType", "itemId", description, "saleQuantity", "unitPrice", "unitOfMeasureCode", "locationId", "companyId", "createdBy")
+           VALUES ($1, 'Part'::"salesOrderLineType", $2, $3, $4, $5, 'EA', $6, $7, $8)`,
+        [
+          soRowId,
+          itemId,
+          r.item,
+          5 + ((i * 3) % 40),
+          r.unitPrice,
+          shipLocationId,
+          companyId,
+          userId
+        ]
+      );
+      await client.query(
+        `INSERT INTO "salesOrderShipment" (id, "locationId", "companyId") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        [soRowId, shipLocationId, companyId]
+      );
+      await client.query(
+        `INSERT INTO "salesOrderPayment" (id, "companyId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+        [soRowId, companyId]
+      );
+      shipSeedCount++;
+    }
+    console.log(`   Created ${shipSeedCount} ready-to-ship sales orders`);
+  } else {
+    console.log("   Ready-to-ship sales orders already present, skipping");
+  }
 
   // ─── Step 61: material reference tables ───────────────────────────────────
   console.log("61. Seeding material reference tables...");

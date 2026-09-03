@@ -46,6 +46,10 @@ msgstr "{0} days"
 msgid "{0} deleted successfully"
 msgstr "{0} deleted successfully"
 
+#. placeholder {0}: result.failedCount
+msgid "{0} failed"
+msgstr "{0} failed"
+
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
@@ -2681,6 +2685,10 @@ msgstr "Created"
 #. placeholder {0}: formatRelativeTime(record.createdAt ?? "")
 msgid "Created {0}"
 msgstr "Created {0}"
+
+#. placeholder {0}: result.createdCount
+msgid "Created {0} draft shipment(s)"
+msgstr "Created {0} draft shipment(s)"
 
 msgid "Created {relativeTime}"
 msgstr "Created {relativeTime}"
@@ -8182,6 +8190,9 @@ msgstr "General Ledger"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 
+msgid "Generate draft shipments ({shippableCount})"
+msgstr "Generate draft shipments ({shippableCount})"
+
 msgid "Generate Eliminations"
 msgstr "Generate Eliminations"
 
@@ -9868,6 +9879,9 @@ msgstr "Minutes/1000 Pieces"
 
 msgid "Minutes/Piece"
 msgstr "Minutes/Piece"
+
+msgid "Missing"
+msgstr "Missing"
 
 msgid "Missing code or state from WeChat"
 msgstr "Missing code or state from WeChat"
@@ -11561,11 +11575,18 @@ msgstr "Post Receipt"
 msgid "Post Shipment"
 msgstr "Post Shipment"
 
+msgid "Post shipments ({postableCount})"
+msgstr "Post shipments ({postableCount})"
+
 msgid "Postal Code"
 msgstr "Postal Code"
 
 msgid "Posted"
 msgstr "Posted"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr "Posted {0} shipment(s)"
 
 msgid "Posted At"
 msgstr "Posted At"
@@ -13824,6 +13845,14 @@ msgstr "Skip scheduled maintenance on company holidays"
 
 msgid "Skipped"
 msgstr "Skipped"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr "skipped {0} not in draft"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not ready to ship"
+msgstr "skipped {0} not ready to ship"
 
 msgid "SKU"
 msgstr "SKU"

@@ -692,6 +692,8 @@ export const path = {
     bulkUpdateQualityDocument: `${x}/quality-document/update`,
     bulkUpdateReceiptLine: `${x}/receipt/lines/update`,
     bulkUpdateSalesInvoice: `${x}/sales-invoice/update`,
+    bulkPostShipments: `${x}/shipment/bulk-post`,
+    bulkShipSalesOrders: `${x}/sales-order/bulk-ship`,
     bulkUpdateSalesOrder: `${x}/sales-order/update`,
     bulkUpdateSalesRfq: `${x}/sales-rfq/update`,
     bulkUpdateShipmentLine: `${x}/shipment/lines/update`,

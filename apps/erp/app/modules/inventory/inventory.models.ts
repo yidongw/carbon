@@ -209,6 +209,10 @@ export const shipmentStatusType = [
   "Voided"
 ] as const;
 
+// Sentinel filter value for "field not filled in" (null/empty) shipment filters
+// that the generic query operators (no is-null) can't express on their own.
+export const SHIPMENT_MISSING = "__none__";
+
 export const shipmentSourceDocumentType = [
   "Sales Order",
   // "Sales Invoice",

@@ -47,6 +47,10 @@ msgstr "{0}日"
 msgid "{0} deleted successfully"
 msgstr "{0}が正常に削除されました"
 
+#. placeholder {0}: result.failedCount
+msgid "{0} failed"
+msgstr ""
+
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
@@ -2682,6 +2686,10 @@ msgstr "作成日時"
 #. placeholder {0}: formatRelativeTime(record.createdAt ?? "")
 msgid "Created {0}"
 msgstr "created {0}"
+
+#. placeholder {0}: result.createdCount
+msgid "Created {0} draft shipment(s)"
+msgstr ""
 
 msgid "Created {relativeTime}"
 msgstr "Made {relativeTime}"
@@ -8183,6 +8191,9 @@ msgstr "総勘定元帳"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "新しい4桁のPINを生成します。オペレーターと共有して、MES端末にピンインできるようにしてください。"
 
+msgid "Generate draft shipments ({shippableCount})"
+msgstr ""
+
 msgid "Generate Eliminations"
 msgstr "削除を生成する"
 
@@ -9869,6 +9880,9 @@ msgstr "分/1000個"
 
 msgid "Minutes/Piece"
 msgstr "分/個"
+
+msgid "Missing"
+msgstr ""
 
 msgid "Missing code or state from WeChat"
 msgstr "WeChatから欠けたコードまたは状態"
@@ -11562,11 +11576,18 @@ msgstr "領収書を転記"
 msgid "Post Shipment"
 msgstr "配送を転記"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "郵便番号"
 
 msgid "Posted"
 msgstr "転記済み"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "投稿日時"
@@ -13825,6 +13846,14 @@ msgstr "会社の祝日に予定されたメンテナンスをスキップする
 
 msgid "Skipped"
 msgstr "スキップ"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not ready to ship"
+msgstr ""
 
 msgid "SKU"
 msgstr "SKU"

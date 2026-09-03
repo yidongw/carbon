@@ -203,3 +203,17 @@ To refactor warehouse transfers to match this pattern:
 - Flash messages for server errors
 - Inline error display for field validation
 - Graceful handling of concurrent updates
+## Bulk shipment creation from Sales Orders (committed)
+
+- **Sales Orders list** (`apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx`) has row selection (`withSelectableRows`) + a bulk action `renderActions` returning a `DropdownMenuContent` with **"Generate draft shipments (N)"**. It POSTs selected `ids` to `path.to.bulkShipSalesOrders`.
+- **Route** `apps/erp/app/routes/x+/sales-order+/bulk-ship.tsx` (`/x/sales-order/bulk-ship`): for each selected order whose `status` ∈ {`To Ship`, `To Ship and Invoice`, `To Invoice`} it invokes the `create` edge function `type: "shipmentFromSalesOrder"` (one draft shipment per order) via service role. Returns `{ createdCount, skippedCount, failedCount }`; non-shippable selections are skipped. Gating mirrors `SalesOrderHeader` "New Shipment".
+- Shippable-status list is duplicated as `SHIPPABLE_STATUSES` in both the table and the route.
+
+## Shipments list "missing" filters (committed)
+
+- `ShipmentsTable.tsx` adds two hidden-by-default columns `shippingMethodId` and `trackingNumber`, each with a single-option static filter using the sentinel value `SHIPMENT_MISSING` (`"__none__"`, exported from `inventory.models.ts`), labeled "Missing".
+- `getShipments` (`inventory.service.ts`) intercepts filters whose value is `SHIPMENT_MISSING` and applies an is-null/empty check (`.is("shippingMethodId", null)`, `.or("trackingNumber.is.null,trackingNumber.eq.")`) instead of passing them to the generic operator set (which has no is-null operator). Other filters pass through to `setGenericQueryFilters`.
+
+## Seed: ready-to-ship backlog
+
+- `seedDemoData.ts` Step 60b seeds 20 `To Ship and Invoice` + 2 `Draft` sales orders (header + line + salesOrderShipment + salesOrderPayment) so the bulk-ship action has data. Idempotent: skipped when any `To Ship and Invoice` order already exists for the company.
