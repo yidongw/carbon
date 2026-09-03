@@ -5635,6 +5635,9 @@ msgstr "PDFの生成に失敗しました"
 msgid "Failed to generate picking list"
 msgstr "ピッキングリストの生成に失敗しました"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "カテゴリIDを取得できませんでした"
 
@@ -8195,6 +8198,16 @@ msgstr "新しいPINを生成"
 msgid "Generate Picking List"
 msgstr "ピッキングリスト生成"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "生成されたIDは無効です"
 
@@ -10435,6 +10448,9 @@ msgstr "無し"
 msgid "No BOM input has a shelf-life policy"
 msgstr "BOMインプットに棚卸資産有効期限ポリシーがありません"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "キャリブレーション記録が見つかりません"
 
@@ -11435,6 +11451,9 @@ msgstr "ピッキングリストの備考"
 
 msgid "Picking Lists"
 msgstr "ピッキングリスト"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "個/時間"
@@ -12741,6 +12760,12 @@ msgstr "再加工数量が登録されました"
 
 msgid "Rework triggered successfully"
 msgstr "リワークが成功しました"
+
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
 
 msgid "RFQ"
 msgstr "RFQ"

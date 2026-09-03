@@ -1760,6 +1760,9 @@ msgstr "Échec de la génération du PDF"
 msgid "Failed to generate picking list"
 msgstr "Échec de la génération de la liste de picking"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Échec de récupération d'un ID de catégorie"
 
@@ -4522,6 +4525,9 @@ msgstr "Aucune entité suivie disponible trouvée"
 
 msgid "No bundle work orders"
 msgstr "Aucune commande de travail en lot"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Aucune dépréciation à calculer pour les actifs non couverts"

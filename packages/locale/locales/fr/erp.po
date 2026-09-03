@@ -5635,6 +5635,9 @@ msgstr "Échec de la génération du PDF"
 msgid "Failed to generate picking list"
 msgstr "Échec de la génération de la liste de picking"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Échec de récupération de l'ID de catégorie"
 
@@ -8195,6 +8198,16 @@ msgstr "Générer un nouveau PIN"
 msgid "Generate Picking List"
 msgstr "Générer la liste de picking"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "Les IDs générés sont désactivés"
 
@@ -10435,6 +10448,9 @@ msgstr "Aucun conteneur"
 msgid "No BOM input has a shelf-life policy"
 msgstr "Aucune entrée de nomenclature n'a de politique de durée de vie"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "Aucun enregistrement d'étalonnage trouvé"
 
@@ -11435,6 +11451,9 @@ msgstr "Notes de liste de picking"
 
 msgid "Picking Lists"
 msgstr "Listes de picking"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "Pièces/Heure"
@@ -12741,6 +12760,12 @@ msgstr "Quantité de rework enregistrée avec succès"
 
 msgid "Rework triggered successfully"
 msgstr "Rafraîchissement effectué avec succès"
+
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
 
 msgid "RFQ"
 msgstr "RFQ"

@@ -5635,6 +5635,9 @@ msgstr "फ़ाइल डीएफ़ए प्रिंट करने म�
 msgid "Failed to generate picking list"
 msgstr "पक्सिंग लिस्ट का उत्पादन फ़ल गया है"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "कатегорी आईडी प्राप्त करने में फालतू सफलता"
 
@@ -8195,6 +8198,16 @@ msgstr "नया PIN जेनरेट करें"
 msgid "Generate Picking List"
 msgstr "पीकिंग लिस्ट गनना"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "जेनरेट की गई आईडी अक्षम हैं"
 
@@ -10435,6 +10448,9 @@ msgstr "कोई बाउन्सर नहीं"
 msgid "No BOM input has a shelf-life policy"
 msgstr "कोई BOM इनपुट शेल्फ-लाइफ नीति नहीं है"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "कोई अंशांकन रिकॉर्ड नहीं मिला"
 
@@ -11435,6 +11451,9 @@ msgstr "पीकिंग लिस्ट के मार्कस"
 
 msgid "Picking Lists"
 msgstr "पीकिंग लिस्टेज"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
@@ -12741,6 +12760,12 @@ msgstr "रिकार्वर्क की मात्रा सफलता
 
 msgid "Rework triggered successfully"
 msgstr "रिफार्म की जगह सफलतापूर्वक उठाया गया"
+
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
 
 msgid "RFQ"
 msgstr "RFQ"

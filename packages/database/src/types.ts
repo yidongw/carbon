@@ -11692,6 +11692,48 @@ export type Database = {
           },
         ]
       }
+      garmentRfidCode: {
+        Row: {
+          bundleWorkOrderId: string
+          code: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          customFields: Json | null
+          id: string
+          sequence: number
+          tags: string[] | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          bundleWorkOrderId: string
+          code: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          customFields?: Json | null
+          id?: string
+          sequence?: number
+          tags?: string[] | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          bundleWorkOrderId?: string
+          code?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          customFields?: Json | null
+          id?: string
+          sequence?: number
+          tags?: string[] | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: []
+      }
       gauge: {
         Row: {
           calibrationIntervalInMonths: number

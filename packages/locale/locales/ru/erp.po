@@ -5635,6 +5635,9 @@ msgstr "Не удалось сгенерировать PDF"
 msgid "Failed to generate picking list"
 msgstr "Не удалось сгенерировать список отбора"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Не удалось получить идентификатор категории"
 
@@ -8195,6 +8198,16 @@ msgstr "Создать новый PIN"
 msgid "Generate Picking List"
 msgstr "Сформировать список выдачи"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "Сгенерированные ID отключены"
 
@@ -10435,6 +10448,9 @@ msgstr "Нет коробки"
 msgid "No BOM input has a shelf-life policy"
 msgstr "Ни один вход BOM не имеет политики срока хранения"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "Записи о калибровке не найдены"
 
@@ -11435,6 +11451,9 @@ msgstr "Заметки к списку выбора"
 
 msgid "Picking Lists"
 msgstr "Списки выбора"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "Штук/час"
@@ -12741,6 +12760,12 @@ msgstr "Количество переработки успешно зареги�
 
 msgid "Rework triggered successfully"
 msgstr "Переработка запущена успешно"
+
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
 
 msgid "RFQ"
 msgstr "РФП"

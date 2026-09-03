@@ -1760,6 +1760,9 @@ msgstr "फ़ॉलोअप पीडीएफ गनना में वि�
 msgid "Failed to generate picking list"
 msgstr "पोकिंग लिस्ट का उत्पादन फ़ल गया"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "कатегорी आईडी प्राप्त करने में व़िशा हुई"
 
@@ -4522,6 +4525,9 @@ msgstr "निकाल विषयक कोई उपलब्ध पंज�
 
 msgid "No bundle work orders"
 msgstr "कोई बन्ड उर्डर नहीं है"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "निरक्फलित अवसानों के लिए कीमत की कमी की गणना करने की कोई नहीं"

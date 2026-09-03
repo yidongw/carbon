@@ -5635,6 +5635,9 @@ msgstr "生成PDF失败"
 msgid "Failed to generate picking list"
 msgstr "生成拣货单失败"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "获取类别ID失败"
 
@@ -8195,6 +8198,16 @@ msgstr "生成新PIN"
 msgid "Generate Picking List"
 msgstr "生成拣货单"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "生成的ID已禁用"
 
@@ -10435,6 +10448,9 @@ msgstr "无存储单元"
 msgid "No BOM input has a shelf-life policy"
 msgstr "没有BOM输入有保质期政策"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "未找到校准记录"
 
@@ -11435,6 +11451,9 @@ msgstr "拣货单备注"
 
 msgid "Picking Lists"
 msgstr "拣货单"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "件/小时"
@@ -12741,6 +12760,12 @@ msgstr "重新加工数量记录成功"
 
 msgid "Rework triggered successfully"
 msgstr "重新加工已成功触发"
+
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
 
 msgid "RFQ"
 msgstr "询价单"
