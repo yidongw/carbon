@@ -1766,6 +1766,9 @@ msgstr "Не удалось сгенерировать PDF"
 msgid "Failed to generate picking list"
 msgstr "Не удалось сгенерировать список выдачи"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Не удалось получить идентификатор категории"
 
@@ -4532,6 +4535,8 @@ msgstr "Нет пакетных производственных заказов"
 msgid "No Deadline"
 msgstr "Без срока"
 
+msgid "No bundle work orders selected"
+msgstr ""
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Нет амортизации для расчета для незакрытых активов"
 

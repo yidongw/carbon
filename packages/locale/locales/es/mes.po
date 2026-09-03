@@ -1766,6 +1766,9 @@ msgstr "Falló al generar el PDF"
 msgid "Failed to generate picking list"
 msgstr "Falló al generar la lista de picking"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Falló al obtener un ID de categoría"
 
@@ -4532,6 +4535,8 @@ msgstr "Sin ordens de trabajo agrupadas"
 msgid "No Deadline"
 msgstr "Sin fecha límite"
 
+msgid "No bundle work orders selected"
+msgstr ""
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Sin depreciación por calcular para activos no cubiertos"
 
