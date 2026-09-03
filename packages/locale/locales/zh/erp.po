@@ -791,6 +791,9 @@ msgstr "应用到"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "接近 {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB限制。"
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "审批日期"
 

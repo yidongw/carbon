@@ -791,6 +791,9 @@ msgstr "Zastosuj do"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Deklaracja zbliża się do granicy {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB."
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Data zatwierdzenia"
 

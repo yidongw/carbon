@@ -791,6 +791,9 @@ msgstr "Применить к"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Достигнут лимит в {PO_EMAIL_ATTACHMENT_LIMIT_MB} МБ."
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Дата одобрения"
 

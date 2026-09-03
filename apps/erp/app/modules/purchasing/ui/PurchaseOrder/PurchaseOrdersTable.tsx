@@ -8,6 +8,7 @@ import {
   HStack,
   MenuIcon,
   MenuItem,
+  Status,
   toast,
   useDisclosure
 } from "@carbon/react";
@@ -69,10 +70,12 @@ const PO_UPDATE = {
 type PurchaseOrdersTableProps = {
   data: PurchaseOrder[];
   count: number;
+  // Lowest enabled purchase-order approval tier; null = nothing needs approval.
+  approvalThreshold?: number | null;
 };
 
 const PurchaseOrdersTable = memo(
-  ({ data, count }: PurchaseOrdersTableProps) => {
+  ({ data, count, approvalThreshold }: PurchaseOrdersTableProps) => {
     useRealtime("purchaseOrder");
 
     const { t } = useLingui();
@@ -159,6 +162,27 @@ const PurchaseOrdersTable = memo(
             },
             pluralHeader: t`Statuses`,
             icon: <LuStar />
+          }
+        },
+        {
+          id: "approvalRequirement",
+          header: t`Approval`,
+          cell: ({ row }) => {
+            const status = row.original.status ?? "";
+            // Only meaningful for orders that still go through finalize.
+            if (status !== "Draft" && status !== "Planned") return null;
+            const total = row.original.orderTotal ?? 0;
+            const needsApproval =
+              approvalThreshold != null && total >= approvalThreshold;
+            return needsApproval ? (
+              <Status color="yellow">需审批</Status>
+            ) : (
+              <Status color="green">免审</Status>
+            );
+          },
+          enableSorting: false,
+          meta: {
+            icon: <LuBadgeCheck />
           }
         },
         {
@@ -356,6 +380,7 @@ const PurchaseOrdersTable = memo(
       currencyFormatter,
       shippingMethods,
       paymentTerms,
+      approvalThreshold,
       t,
       formatDate
     ]);

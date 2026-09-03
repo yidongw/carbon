@@ -791,6 +791,9 @@ msgstr "Aplicar a"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Aproximándose al límite de {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB"
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Fecha de Aprobación"
 

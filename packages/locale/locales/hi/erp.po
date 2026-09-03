@@ -791,6 +791,9 @@ msgstr "लागू करें"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "आगामी {PO_EMAIL_ATTACHMENT_LIMIT_MB} मब्बा गुमाना।"
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "अनुमोदन तारीख"
 
