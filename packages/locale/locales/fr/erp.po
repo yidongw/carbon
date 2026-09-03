@@ -11576,11 +11576,18 @@ msgstr "Valider le reçu"
 msgid "Post Shipment"
 msgstr "Valider l'expédition"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "Code postal"
 
 msgid "Posted"
 msgstr "Publié"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "Date de publication"
@@ -13839,6 +13846,10 @@ msgstr "Ignorer la maintenance programmée lors des jours fériés de l'entrepri
 
 msgid "Skipped"
 msgstr "Ignoré"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"

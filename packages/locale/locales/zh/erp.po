@@ -11576,11 +11576,18 @@ msgstr "确认收货"
 msgid "Post Shipment"
 msgstr "确认发货"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "邮政编码"
 
 msgid "Posted"
 msgstr "已确认"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "确认时间"
@@ -13839,6 +13846,10 @@ msgstr "在公司节假日跳过计划维护"
 
 msgid "Skipped"
 msgstr "跳过"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"

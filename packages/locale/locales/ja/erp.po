@@ -11576,11 +11576,18 @@ msgstr "領収書を転記"
 msgid "Post Shipment"
 msgstr "配送を転記"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "郵便番号"
 
 msgid "Posted"
 msgstr "転記済み"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "投稿日時"
@@ -13839,6 +13846,10 @@ msgstr "会社の祝日に予定されたメンテナンスをスキップする
 
 msgid "Skipped"
 msgstr "スキップ"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"

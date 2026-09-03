@@ -11576,11 +11576,18 @@ msgstr "Отправить квитанцию"
 msgid "Post Shipment"
 msgstr "Отправить отправку"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "Почтовый индекс"
 
 msgid "Posted"
 msgstr "Опубликовано"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "Дата публикации"
@@ -13839,6 +13846,10 @@ msgstr "Пропускать запланированное техническо
 
 msgid "Skipped"
 msgstr "Пропущено"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"

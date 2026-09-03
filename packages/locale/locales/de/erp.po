@@ -11576,11 +11576,18 @@ msgstr "Beleg buchen"
 msgid "Post Shipment"
 msgstr "Sendung buchen"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "Postleitzahl"
 
 msgid "Posted"
 msgstr "Gebucht"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "Veröffentlicht am"
@@ -13839,6 +13846,10 @@ msgstr "Geplante Wartung an Betriebsfeiertagen überspringen"
 
 msgid "Skipped"
 msgstr "Übersprungen"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"

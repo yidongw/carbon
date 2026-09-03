@@ -11576,11 +11576,18 @@ msgstr "रसीद पोस्ट करें"
 msgid "Post Shipment"
 msgstr "शिपमेंट पोस्ट करें"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "पिन कोड"
 
 msgid "Posted"
 msgstr "पोस्ट किया गया"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "पोस्ट किया गया समय"
@@ -13839,6 +13846,10 @@ msgstr "कंपनी की छुट्टियों पर निर्�
 
 msgid "Skipped"
 msgstr "छोड़ा गया"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"

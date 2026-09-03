@@ -11576,11 +11576,18 @@ msgstr "Zaksięguj Paragon"
 msgid "Post Shipment"
 msgstr "Wyślij Przesyłkę"
 
+msgid "Post shipments ({postableCount})"
+msgstr ""
+
 msgid "Postal Code"
 msgstr "Kod pocztowy"
 
 msgid "Posted"
 msgstr "Opublikowano"
+
+#. placeholder {0}: result.postedCount
+msgid "Posted {0} shipment(s)"
+msgstr ""
 
 msgid "Posted At"
 msgstr "Zostało opublikowano"
@@ -13839,6 +13846,10 @@ msgstr "Pomiń zaplanowaną konserwację w dni świąt firmowych"
 
 msgid "Skipped"
 msgstr "Pominięte"
+
+#. placeholder {0}: result.skippedCount
+msgid "skipped {0} not in draft"
+msgstr ""
 
 #. placeholder {0}: result.skippedCount
 msgid "skipped {0} not ready to ship"
