@@ -3,15 +3,17 @@ import {
   Checkbox,
   MenuIcon,
   MenuItem,
+  toast,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   LuBookMarked,
   LuCalendar,
   LuCheck,
+  LuCheckCheck,
   LuCirclePlus,
   LuClock,
   LuFileText,
@@ -78,6 +80,75 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
   const [customers] = useCustomers();
   const shippingMethods = useShippingMethod();
   const customColumns = useCustomColumns<Shipment>("shipment");
+
+  // Bulk "Post" — mirror the sales-order bulk-ship UX: lift selection and show
+  // an explicit, labeled button for the action.
+  const bulkPostFetcher = useFetcher<{
+    error: { message: string } | null;
+    data: {
+      postedCount: number;
+      skippedCount: number;
+      failedCount: number;
+    } | null;
+  }>();
+
+  const [selectedShipments, setSelectedShipments] = useState<Shipment[]>([]);
+  const handleSelectedRowsChange = useCallback(
+    (selected: Shipment[]) => setSelectedShipments(selected),
+    []
+  );
+
+  const postableCount = useMemo(
+    () => selectedShipments.filter((s) => s.status === "Draft").length,
+    [selectedShipments]
+  );
+
+  const onBulkPost = useCallback(() => {
+    const formData = new FormData();
+    selectedShipments.forEach((s) => {
+      if (s.id && s.status === "Draft") formData.append("ids", s.id);
+    });
+    bulkPostFetcher.submit(formData, {
+      method: "post",
+      action: path.to.bulkPostShipments
+    });
+  }, [bulkPostFetcher, selectedShipments]);
+
+  useEffect(() => {
+    if (bulkPostFetcher.state !== "idle" || !bulkPostFetcher.data) return;
+    const { error, data: result } = bulkPostFetcher.data;
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (result) {
+      const parts = [t`Posted ${result.postedCount} shipment(s)`];
+      if (result.skippedCount > 0) {
+        parts.push(t`skipped ${result.skippedCount} not in draft`);
+      }
+      if (result.failedCount > 0) {
+        parts.push(t`${result.failedCount} failed`);
+      }
+      toast.success(parts.join(", "));
+    }
+  }, [bulkPostFetcher.state, bulkPostFetcher.data, t]);
+
+  const bulkPostAction =
+    selectedShipments.length > 0 ? (
+      <Button
+        leftIcon={<LuCheckCheck />}
+        variant="primary"
+        isDisabled={
+          postableCount === 0 ||
+          !permissions.can("update", "inventory") ||
+          bulkPostFetcher.state !== "idle"
+        }
+        isLoading={bulkPostFetcher.state !== "idle"}
+        onClick={onBulkPost}
+      >
+        <Trans>Post shipments ({postableCount})</Trans>
+      </Button>
+    ) : null;
 
   const columns = useMemo<ColumnDef<Shipment>[]>(() => {
     const result: ColumnDef<(typeof rows)[number]>[] = [
@@ -409,6 +480,8 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
           shippingMethodId: false,
           trackingNumber: false
         }}
+        filterActions={bulkPostAction}
+        onSelectedRowsChange={handleSelectedRowsChange}
         primaryAction={
           permissions.can("create", "inventory") && <NewShipment />
         }
@@ -416,6 +489,7 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
         title={t`Shipments`}
         table="shipment"
         withSavedView
+        withSelectableRows
       />
       {selectedShipment && selectedShipment.id && (
         <ConfirmDelete
