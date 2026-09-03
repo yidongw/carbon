@@ -123,7 +123,10 @@ export function ChatInterface({ geo, containerClassName }: Props) {
     })
   });
 
-  const { agentStatus, currentToolCall } = useChatStatus(messages, status);
+  const { agentStatus, currentToolCall, hasTextContent } = useChatStatus(
+    messages,
+    status
+  );
 
   // @ts-expect-error TS2339 - TODO: fix type
   const { artifacts } = useArtifacts();
@@ -187,6 +190,7 @@ export function ChatInterface({ geo, containerClassName }: Props) {
                       agentStatus={agentStatus}
                       currentToolCall={currentToolCall}
                       status={status}
+                      hasTextContent={hasTextContent}
                     />
                   </div>
                 </ConversationContent>

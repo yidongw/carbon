@@ -38,6 +38,10 @@ msgstr "{0} (供应商)"
 msgid "{0} by {1}"
 msgstr "{0}，由{1}"
 
+#. placeholder {0}: output.changes.length
+msgid "{0} changes pending your approval"
+msgstr ""
+
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} 天"
@@ -75,6 +79,11 @@ msgstr "{0} 选定"
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "少了 {0}"
+
+#. placeholder {0}: state.response.succeeded
+#. placeholder {1}: state.response.failed
+msgid "{0} succeeded, {1} failed"
+msgstr ""
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 #. placeholder {0}: percentFormatter.format(taxPercent)
@@ -148,6 +157,9 @@ msgstr "<0>更新</0>可以更新行。<1>更新</1>将默认匹配所有行。�
 
 msgid "<0>update</0> will also return the replaced values for UPDATE."
 msgstr "<0>更新</0>也将返回UPDATE替换后的值。"
+
+msgid "1 change pending your approval"
+msgstr ""
 
 msgid "1 day"
 msgstr "1天"
@@ -4539,6 +4551,9 @@ msgstr "汇率"
 #. placeholder {1}: (routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1 ? "s" : ""
 msgid "Excludes {0} invoice{1} in a different currency."
 msgstr "排除了使用不同货币的 {0} 份发票{1}。"
+
+msgid "Executing changes…"
+msgstr ""
 
 msgid "Expand"
 msgstr "展开"
