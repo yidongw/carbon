@@ -15,6 +15,11 @@ export interface ChatContext {
   city?: string;
   timezone: string;
   chatId: string;
+  // The authenticated user's real role/permissions, resolved server-side from
+  // their session — used to tell the assistant who it's talking to.
+  userRole?: string | null;
+  userViewableModules?: string[];
+  userEditableModules?: string[];
   // Allow additional properties to satisfy Record<string, unknown> constraint
   [key: string]: unknown;
 }
@@ -32,6 +37,9 @@ export function createChatContext(params: {
   baseCurrency?: string;
   locale?: string;
   timezone?: string;
+  userRole?: string | null;
+  userViewableModules?: string[];
+  userEditableModules?: string[];
 }) {
   return {
     userId: params.userId,
@@ -47,6 +55,9 @@ export function createChatContext(params: {
     locale: params.locale || "en-US",
     currentDateTime: new Date().toISOString(),
     timezone:
-      params.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+      params.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    userRole: params.userRole ?? null,
+    userViewableModules: params.userViewableModules ?? [],
+    userEditableModules: params.userEditableModules ?? []
   };
 }
