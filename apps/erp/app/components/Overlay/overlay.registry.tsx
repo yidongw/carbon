@@ -465,6 +465,7 @@ export const overlayRegistry = {
               } | null;
               itemId?: string | null;
               remainingByOperationId?: Record<string, number>;
+              masterRemarks?: string | null;
               processId?: string | null;
               operationType?: string | null;
               defaultActorKind?: "employee" | "supplier";
@@ -503,6 +504,7 @@ export const overlayRegistry = {
             ]
           },
           remainingByOperationId: data.remainingByOperationId ?? {},
+          masterRemarks: data.masterRemarks ?? null,
           operationOptions: data.operationOptions ?? [],
           variantQuantityParameters: data.variantQuantityParameters ?? null,
           variantsQuantityReferenceSource:

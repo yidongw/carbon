@@ -196,13 +196,34 @@ export async function loader({ request }: LoaderFunctionArgs) {
   for (const op of jobOperations ?? []) {
     if (!op.id) continue;
     if (op.processId) processByOperationId[op.id] = op.processId;
-    remainingByOperationId[op.id] = Math.max(
-      0,
-      (op.targetQuantity ?? op.operationQuantity ?? 0) -
-        (op.quantityComplete ?? 0) -
-        (op.quantityScrapped ?? 0) -
-        (op.quantityReworked ?? 0)
-    );
+    // A target of 0 (or none) means "no fixed plan" — leave the operation off the
+    // map so the form treats it as unlimited (matches the server, which skips the
+    // cap when the target isn't positive). This is what lets a Master Work Order
+    // opened cut-to-ratio report cutting freely.
+    const opTarget = op.targetQuantity ?? op.operationQuantity ?? null;
+    if (opTarget != null && opTarget > 0) {
+      remainingByOperationId[op.id] = Math.max(
+        0,
+        opTarget -
+          (op.quantityComplete ?? 0) -
+          (op.quantityScrapped ?? 0) -
+          (op.quantityReworked ?? 0)
+      );
+    }
+  }
+
+  // Surface a Master Work Order's remark on the cutting-report screen so the
+  // person reporting sees the real requirement (e.g. the color ratio) — most
+  // relevant when the master was opened with a 0 target.
+  let masterRemarks: string | null = null;
+  if (jobId) {
+    const master = await client
+      .from("masterWorkOrder")
+      .select("remarks")
+      .eq("jobId", jobId)
+      .eq("companyId", companyId)
+      .maybeSingle();
+    masterRemarks = master.data?.remarks ?? null;
   }
 
   return {
@@ -213,6 +234,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     processByOperationId,
     itemId,
     remainingByOperationId,
+    masterRemarks,
     // Lock job + operation when the caller seeds a specific operation to report
     // (e.g. a Master Work Order's cutting operation).
     lockJobSelection: lockOperation && Boolean(jobId),

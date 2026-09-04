@@ -1,5 +1,8 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Badge,
   Button,
   cn,
@@ -12,6 +15,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { LuNotebookPen } from "react-icons/lu";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import ScrapReason from "~/components/Form/ScrapReason";
@@ -109,6 +113,10 @@ export type ProductionQuantityFormProps = {
   // Remaining quantity per operation — used to prefill the Production line when
   // an operation is selected.
   remainingByOperationId?: Record<string, number>;
+  // A Master Work Order's remark, shown as a banner so whoever reports cutting
+  // sees the real requirement (e.g. the color ratio) — most relevant when the
+  // master was opened with a 0 target and cutting is unrestricted.
+  masterRemarks?: string | null;
   variantQuantityParameters?: ConfigurationParameter[] | null;
   variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
@@ -146,6 +154,7 @@ const ProductionQuantityForm = ({
   operationOptions = [],
   jobOptions,
   remainingByOperationId,
+  masterRemarks,
   variantQuantityParameters,
   variantsQuantityReferenceSource,
   itemId,
@@ -607,6 +616,17 @@ const ProductionQuantityForm = ({
         <DrawerBody>
           {isEditing ? <Hidden name="id" /> : null}
           <VStack ref={formBodyRef} spacing={4}>
+            {masterRemarks?.trim() ? (
+              <Alert variant="info">
+                <LuNotebookPen />
+                <AlertTitle>
+                  <Trans>Master Work Order Remarks</Trans>
+                </AlertTitle>
+                <AlertDescription className="whitespace-pre-wrap">
+                  {masterRemarks}
+                </AlertDescription>
+              </Alert>
+            ) : null}
             {hasJobPicker && !isEditing ? (
               <Select
                 name="jobId"

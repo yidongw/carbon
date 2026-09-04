@@ -9633,6 +9633,9 @@ msgstr "मास्टर कार्य आदेश"
 msgid "Master work order created"
 msgstr "मास्टर वर्कआउट बनाया गया है"
 
+msgid "Master Work Order Remarks"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr "मास्टर कार्य आदेश"
 
@@ -12376,6 +12379,9 @@ msgstr "शेष"
 
 msgid "Remaining after split stays on the original row."
 msgstr "विभाजन के बाद शेष मूल पंक्ति पर रहता है।"
+
+msgid "Remarks"
+msgstr ""
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "इस PIN को याद रखें। MES टर्मिनल पर कंसोल मोड से बाहर निकलने के लिए आपको इसकी आवश्यकता होगी।"

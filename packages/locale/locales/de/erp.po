@@ -9633,6 +9633,9 @@ msgstr "Hauptarbeitsauftrag"
 msgid "Master work order created"
 msgstr "Meister-Arbeitsanweisung erstellt"
 
+msgid "Master Work Order Remarks"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr "Hauptarbeitsaufträge"
 
@@ -12376,6 +12379,9 @@ msgstr "Verbleibend"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Verbleibende Menge bleibt in der ursprünglichen Zeile."
+
+msgid "Remarks"
+msgstr ""
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Merken Sie sich diese PIN. Sie benötigen sie, um den Konsolenmodus auf MES-Terminals zu beenden."

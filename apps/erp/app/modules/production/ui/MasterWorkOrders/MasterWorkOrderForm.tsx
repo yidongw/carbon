@@ -17,7 +17,8 @@ import {
   Item,
   Location,
   Select,
-  Submit
+  Submit,
+  TextArea
 } from "~/components/Form";
 import { useConfigurableItems } from "~/components/Form/Item";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
@@ -125,6 +126,14 @@ const MasterWorkOrderForm = ({
               variantsQuantityTotal={variantsQuantityTotal}
               hasVariantsQuantity={hasVariantsQuantity}
               onOpenVariantsQuantity={openVariantsQuantity}
+            />
+            <TextArea
+              name="remarks"
+              label={t`Remarks`}
+              // Required when the target quantity is 0 (no fixed plan) so the
+              // master work order always states its real requirement.
+              isRequired={quantity === 0}
+              characterLimit={500}
             />
             <Location name="locationId" label={t`Location`} />
             <DatePicker name="dueDate" label={t`Due Date`} />

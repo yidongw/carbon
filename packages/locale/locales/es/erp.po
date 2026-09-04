@@ -9633,6 +9633,9 @@ msgstr "Orden de trabajo maestra"
 msgid "Master work order created"
 msgstr "Orden maestra de trabajo creada"
 
+msgid "Master Work Order Remarks"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr "Órdenes de trabajo maestras"
 
@@ -12376,6 +12379,9 @@ msgstr "Restante"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Lo restante después de dividir permanece en la fila original."
+
+msgid "Remarks"
+msgstr ""
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Recuerda este PIN. Lo necesitarás para salir del modo consola en terminales MES."

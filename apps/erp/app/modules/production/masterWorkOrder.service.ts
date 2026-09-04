@@ -645,6 +645,7 @@ export async function insertMasterWorkOrder(
     locationId?: string;
     dueDate?: string;
     deadlineType?: (typeof deadlineTypes)[number];
+    remarks?: string;
     configuration?: Record<string, unknown>;
   }
 ) {
@@ -691,7 +692,8 @@ export async function insertMasterWorkOrder(
     .insert({
       jobId: job.data.id,
       companyId: input.companyId,
-      createdBy: input.createdBy
+      createdBy: input.createdBy,
+      remarks: input.remarks?.trim() ? input.remarks.trim() : null
     })
     .select("id, jobId")
     .single();
