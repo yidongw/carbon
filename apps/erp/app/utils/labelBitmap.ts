@@ -204,6 +204,121 @@ export async function drawBundleLabelCanvas(
   return canvas;
 }
 
+export type CareLabelData = {
+  /** The garment piece's unique RFID code (also encoded in the QR). */
+  code: string;
+  /** Piece sequence within the bundle (1-based). */
+  sequence?: number | null;
+  /** 款号 — parent style readable id. */
+  styleReadableId?: string | null;
+  /** Variant attributes (颜色/尺码/…) as localized name/value pairs. */
+  attributeLines?: Array<{ name: string; value: string }> | null;
+  /** PNG data URL of the QR encoding `code` (from the care-labels.json route). */
+  qrDataUrl: string;
+};
+
+// Fields the care label reserves space for but the system doesn't store yet —
+// printed as an empty labeled line so the physical label has a place for them
+// (filled by a woven/pre-printed base or a later data source). See the RFID
+// feature scope: composition/wash-care/origin are out of the current model.
+const CARE_PLACEHOLDER_FIELDS = ["成分", "洗涤", "产地"] as const;
+
+/**
+ * Draw one garment care label (水洗唛) onto an offscreen canvas at printer-dot
+ * resolution: 款号 + 颜色/尺码, then reserved placeholder lines for
+ * 成分/洗涤/产地, then the QR (of the RFID code) with the code text below.
+ * One label per garment piece.
+ */
+export async function drawCareLabelCanvas(
+  label: CareLabelData,
+  widthMm: number,
+  heightMm: number,
+  rotate180 = false
+): Promise<HTMLCanvasElement> {
+  const W = Math.round(widthMm * DOTS_PER_MM);
+  const H = Math.round(heightMm * DOTS_PER_MM);
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas 2D 不可用");
+
+  if (rotate180) {
+    ctx.translate(W, H);
+    ctx.rotate(Math.PI);
+  }
+
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#000";
+  ctx.textBaseline = "top";
+  ctx.textAlign = "left";
+
+  const padX = Math.round(2 * DOTS_PER_MM);
+  const topPad = Math.round(2 * DOTS_PER_MM);
+  const fontPx = Math.max(14, Math.min(22, Math.round(H * 0.045)));
+  const rowH = Math.round(fontPx * 1.5);
+  const contentW = W - 2 * padX;
+
+  // Header rows: 款号 + each variant attribute (颜色/尺码/…).
+  const headerRows: Array<[string, string]> = [];
+  if (present(label.styleReadableId)) {
+    headerRows.push(["款号: ", String(label.styleReadableId)]);
+  }
+  for (const line of label.attributeLines ?? []) {
+    if (present(line.value))
+      headerRows.push([`${line.name}: `, String(line.value)]);
+  }
+
+  let y = topPad;
+  const drawKeyValue = (key: string, value: string) => {
+    ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
+    ctx.fillText(key, padX, y);
+    const kw = ctx.measureText(key).width;
+    ctx.fillText(value, padX + kw, y, Math.max(8, contentW - kw));
+    y += rowH;
+  };
+  for (const [k, v] of headerRows) drawKeyValue(k, v);
+
+  // Reserved placeholder lines — labeled key with a light underline for the
+  // (currently unstored) 成分/洗涤/产地 values.
+  y += Math.round(fontPx * 0.3);
+  for (const field of CARE_PLACEHOLDER_FIELDS) {
+    const key = `${field}: `;
+    ctx.font = `${fontPx}px ${CJK_FONT}`;
+    ctx.fillText(key, padX, y);
+    const kw = ctx.measureText(key).width;
+    const lineY = y + fontPx - 2;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padX + kw, lineY);
+    ctx.lineTo(W - padX, lineY);
+    ctx.stroke();
+    y += rowH;
+  }
+
+  // QR (of the RFID code) + the code text, centered in the space below.
+  const idFont = Math.max(13, Math.floor(fontPx * 0.7));
+  const qrTop = y + Math.round(fontPx * 0.3);
+  const qrAreaH = H - topPad - qrTop;
+  const qrSize = Math.max(32, Math.min(W * 0.62, qrAreaH - idFont - 8));
+  const qrX = (W - qrSize) / 2;
+  const qrY = qrTop + Math.max(0, (qrAreaH - idFont - 6 - qrSize) / 2);
+  try {
+    const img = await loadImage(label.qrDataUrl);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+  } catch {
+    /* no QR — still print the code text */
+  }
+
+  ctx.font = `${idFont}px ${CJK_FONT}`;
+  ctx.textAlign = "center";
+  ctx.fillText(String(label.code), W / 2, qrY + qrSize + 4, W - 2 * padX);
+
+  return canvas;
+}
+
 const ascii = (s: string): number[] => {
   const out: number[] = [];
   for (let i = 0; i < s.length; i++) out.push(s.charCodeAt(i) & 0xff);
