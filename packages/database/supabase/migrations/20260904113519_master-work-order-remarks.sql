@@ -3,7 +3,7 @@
 -- color ratio", or "cut whatever the fabric yields"). A 0 target means "no fixed
 -- plan" — cutting is reported unrestricted — so the remark carries the real intent.
 
-ALTER TABLE "masterWorkOrder" ADD COLUMN "remarks" TEXT;
+ALTER TABLE "masterWorkOrder" ADD COLUMN IF NOT EXISTS "remarks" TEXT;
 
 -- Re-expose the list view with the new column (appended so existing columns keep
 -- their order, which CREATE OR REPLACE VIEW requires).
@@ -12,7 +12,6 @@ SELECT
   mwo."id",
   mwo."jobId",
   mwo."companyId",
-  mwo."colorSize",
   mwo."tags",
   mwo."createdAt",
   mwo."createdBy",
