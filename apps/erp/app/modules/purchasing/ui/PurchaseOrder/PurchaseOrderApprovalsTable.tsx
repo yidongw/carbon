@@ -5,6 +5,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   MenuIcon,
+  MenuItem,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -17,8 +18,10 @@ import {
   LuCircleX,
   LuContainer,
   LuDollarSign,
+  LuHandCoins,
   LuUser
 } from "react-icons/lu";
+import { useSubmit } from "react-router";
 import { EmployeeAvatar, Hyperlink, Table } from "~/components";
 import {
   useCurrencyFormatter,
@@ -49,6 +52,7 @@ const PurchaseOrderApprovalsTable = memo(
   ({ data, count }: PurchaseOrderApprovalsTableProps) => {
     const { t } = useLingui();
     const permissions = usePermissions();
+    const submit = useSubmit();
     const currencyFormatter = useCurrencyFormatter();
     const { formatDate } = useDateFormatter();
 
@@ -145,6 +149,40 @@ const PurchaseOrderApprovalsTable = memo(
       [openBulk, permissions]
     );
 
+    // "Approve & Receive" fast path (single row): approve, then land on the new
+    // receipt's review page. Runs through the PO approval action, which handles
+    // the approval + receipt creation and redirects us to the receipt.
+    const approveAndReceive = useCallback(
+      (row: ApprovalAwaitingUser) => {
+        const formData = new FormData();
+        formData.set("approvalRequestId", row.id);
+        formData.set("decision", "Approved");
+        formData.set("notification", "None");
+        formData.set("andReceive", "true");
+        submit(formData, {
+          method: "post",
+          action: path.to.purchaseOrder(row.documentId)
+        });
+      },
+      [submit]
+    );
+
+    const renderContextMenu = useCallback(
+      (row: ApprovalAwaitingUser) => (
+        <MenuItem
+          disabled={
+            !permissions.can("update", "purchasing") ||
+            !permissions.can("create", "inventory")
+          }
+          onClick={() => approveAndReceive(row)}
+        >
+          <MenuIcon icon={<LuHandCoins />} />
+          <Trans>Approve & Receive</Trans>
+        </MenuItem>
+      ),
+      [approveAndReceive, permissions]
+    );
+
     return (
       <>
         <Table<ApprovalAwaitingUser>
@@ -154,6 +192,7 @@ const PurchaseOrderApprovalsTable = memo(
           getRowId={(row) => row.id}
           title={t`Approvals`}
           renderActions={renderActions}
+          renderContextMenu={renderContextMenu}
           withSelectableRows
         />
 

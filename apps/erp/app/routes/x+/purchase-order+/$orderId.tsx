@@ -44,7 +44,7 @@ import {
 } from "~/modules/shared";
 import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import { buildAttributeValueNames } from "~/modules/shared/variantDisplay";
-import { getUser } from "~/modules/users/users.server";
+import { getUser, getUserDefaults } from "~/modules/users/users.server";
 import { loader as pdfLoader } from "~/routes/file+/purchase-order+/$orderId[.]pdf";
 import { getDatabaseClient } from "~/services/database.server";
 import type { Handle } from "~/utils/handle";
@@ -80,7 +80,8 @@ export async function action(args: ActionFunctionArgs) {
     decision,
     notification,
     supplierContact,
-    cc: ccSelections
+    cc: ccSelections,
+    andReceive
   } = validation.data;
 
   const serviceRole = getCarbonServiceRole();
@@ -355,6 +356,47 @@ export async function action(args: ActionFunctionArgs) {
         }
       }
     }
+  }
+
+  // "Approve & Receive" fast path: the approval is done and the PO is now at
+  // "To Receive"; create a receipt straight away and drop the approver on the
+  // receipt review page so they can post it without hunting for "New Receipt".
+  if (decision === "Approved" && andReceive === "true") {
+    const defaults = await getUserDefaults(serviceRole, userId, companyId);
+    const receipt = await serviceRole.functions.invoke<{ id: string }>(
+      "create",
+      {
+        body: {
+          type: "receiptFromPurchaseOrder",
+          companyId,
+          locationId: defaults.data?.locationId,
+          purchaseOrderId: orderId,
+          receiptId: undefined,
+          userId
+        }
+      }
+    );
+
+    if (receipt.error || !receipt.data) {
+      throw redirect(
+        path.to.purchaseOrder(orderId),
+        await flash(
+          request,
+          error(
+            receipt.error,
+            "Approved, but failed to create a receipt — receive it manually"
+          )
+        )
+      );
+    }
+
+    throw redirect(
+      path.to.receiptDetails(receipt.data.id),
+      await flash(
+        request,
+        success("Purchase order approved — review the receipt")
+      )
+    );
   }
 
   throw redirect(

@@ -830,6 +830,9 @@ msgstr ""
 msgid "Approve"
 msgstr "मंजूरी दें"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "स्वीकार करें या सभी अनुपस्थित सामग्री को मात्र मात्रा समीक्षा पृष्ठ पर प्रबंधित करें।"
 
@@ -847,6 +850,9 @@ msgstr "स्वीकृत पूर्ति(यों)"
 
 msgid "Approved completions"
 msgstr "स्वीकृत पूर्णता"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -11949,6 +11955,9 @@ msgstr "क्रय आदेश राशि"
 
 msgid "Purchase Order approval rule"
 msgstr "क्रय आदेश अनुमोदन नियम"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "पर्चेज ऑर्डर तैयार कीा गया है"

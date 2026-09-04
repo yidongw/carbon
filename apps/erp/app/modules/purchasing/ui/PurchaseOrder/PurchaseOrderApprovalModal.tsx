@@ -19,6 +19,7 @@ import {
   SelectControlled,
   SupplierContact
 } from "~/components/Form";
+import { usePermissions } from "~/hooks";
 import { useIntegrations } from "~/hooks/useIntegrations";
 import type { ApprovalDecision } from "~/modules/shared/types";
 import { path } from "~/utils/path";
@@ -46,8 +47,10 @@ const PurchaseOrderApprovalModal = ({
   if (!orderId) throw new Error("orderId not found");
 
   const { t } = useLingui();
+  const permissions = usePermissions();
   const integrations = useIntegrations();
   const canEmail = integrations.has("email");
+  const canReceive = permissions.can("create", "inventory");
   const isApproving = decision === "Approved";
 
   const [notificationType, setNotificationType] = useState(
@@ -134,6 +137,16 @@ const PurchaseOrderApprovalModal = ({
             >
               {isApproving ? "Approve" : "Reject"}
             </Button>
+            {isApproving && canReceive && (
+              <Button
+                type="submit"
+                name="andReceive"
+                value="true"
+                variant="primary"
+              >
+                <Trans>Approve & Receive</Trans>
+              </Button>
+            )}
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>

@@ -830,6 +830,9 @@ msgstr ""
 msgid "Approve"
 msgstr "承認"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "承認してくださいまたはすべての未承認品物を量検ページで管理することができます。"
 
@@ -847,6 +850,9 @@ msgstr "承認済み完了（ complete）"
 
 msgid "Approved completions"
 msgstr "承認済みの完了"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -11949,6 +11955,9 @@ msgstr "購買注文金額"
 
 msgid "Purchase Order approval rule"
 msgstr "購買注文承認ルール"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "購入注文を作成しました"

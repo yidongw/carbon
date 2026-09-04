@@ -830,6 +830,9 @@ msgstr ""
 msgid "Approve"
 msgstr "批准"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "在此批准，或在数量审核页面管理所有待处理的物品。"
 
@@ -847,6 +850,9 @@ msgstr "已批准完成"
 
 msgid "Approved completions"
 msgstr "已批准完成"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -11949,6 +11955,9 @@ msgstr "采购订单金额"
 
 msgid "Purchase Order approval rule"
 msgstr "采购订单审批规则"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "已创建采购订单"

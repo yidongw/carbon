@@ -830,6 +830,9 @@ msgstr ""
 msgid "Approve"
 msgstr "Одобрить"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Оцените здесь или управляйте всеми просроченными предметами на странице оценки количества."
 
@@ -847,6 +850,9 @@ msgstr "предоставленные завершения"
 
 msgid "Approved completions"
 msgstr "Оценены completioni"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -11949,6 +11955,9 @@ msgstr "Сумма заказа на покупку"
 
 msgid "Purchase Order approval rule"
 msgstr "Правило утверждения заказа на покупку"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "Заказ на покупку создан"

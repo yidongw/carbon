@@ -830,6 +830,9 @@ msgstr ""
 msgid "Approve"
 msgstr "Aprobar"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Aprova aquí o gestiona todos los artículos pendientes en la página de revisión de cantidad."
 
@@ -847,6 +850,9 @@ msgstr "completados aprobados"
 
 msgid "Approved completions"
 msgstr "Aprobadas completas"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -11949,6 +11955,9 @@ msgstr "Monto de Orden de Compra"
 
 msgid "Purchase Order approval rule"
 msgstr "Regla de aprobación de orden de compra"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "Orden de compra creada"
