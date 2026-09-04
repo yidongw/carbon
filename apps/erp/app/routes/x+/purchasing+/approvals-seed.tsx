@@ -1,6 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { redirect } from "react-router";
 import {
   createApprovalRequest,
   getApprovalRulesForApprover,
@@ -8,16 +7,12 @@ import {
 } from "~/modules/shared";
 
 /**
- * TEMPORARY dev-only seed: put a few EXISTING, receivable purchase orders into
- * "Needs Approval" with a Pending approvalRequest whose approver is the current
- * user, so the approvals list has realistic data to test "Approve & Receive"
- * against (the demo/preview DB is persistent — seedDemoData edits don't apply).
- *
- * We reuse existing POs that already have receivable lines so that after
- * approval the PO lands on "To Receive" and a receipt can actually be created —
- * unlike fabricated line-less POs, which resolve to "Completed" and can't be
- * received. Visit /x/purchasing/approvals-seed, then use the approvals list.
- * REMOVE before merge.
+ * TEMPORARY dev-only seed + diagnostic. Puts a few EXISTING receivable purchase
+ * orders into "Needs Approval" with a Pending approvalRequest whose approver is
+ * the current user, so "Approve & Receive" can be tested on the persistent
+ * preview DB. Returns a JSON report of exactly what it found/did (no redirect),
+ * so failures are debuggable. Visit /x/purchasing/approvals-seed, then go to the
+ * approvals list. REMOVE before merge.
  */
 const TOP_TIER_AMOUNT = 1_000_000_000; // grants upward authority over any amount
 const TARGET_COUNT = 3;
@@ -34,7 +29,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     bypassRls: true
   });
 
-  // A requester other than the viewer (the list hides your own requests).
+  const report: Record<string, unknown> = { companyId, userId };
+
+  // Requester (must differ from viewer — the list hides your own requests).
   const { data: otherEmployees } = await client
     .from("employee")
     .select("id")
@@ -42,20 +39,24 @@ export async function loader({ request }: LoaderFunctionArgs) {
     .neq("id", userId)
     .limit(1);
   const requesterId = otherEmployees?.[0]?.id ?? userId;
+  report.requesterId = requesterId;
+  report.requesterIsSelf = requesterId === userId;
 
-  // Make the current user an approver for any amount (top tier), once.
+  // Ensure the current user is a top-tier approver.
   const existingRules = await getApprovalRulesForApprover(
     client,
     "purchaseOrder",
     companyId
   );
+  report.enabledPoRuleCount = existingRules.data?.length ?? 0;
   const alreadyTopApprover = (existingRules.data ?? []).some(
     (r) =>
       r.defaultApproverId === userId &&
       (r.lowerBoundAmount ?? 0) >= TOP_TIER_AMOUNT
   );
+  report.alreadyTopApprover = alreadyTopApprover;
   if (!alreadyTopApprover) {
-    await upsertApprovalRule(client, {
+    const ruleResult = await upsertApprovalRule(client, {
       documentType: "purchaseOrder",
       approverGroupIds: [],
       defaultApproverId: userId,
@@ -64,16 +65,34 @@ export async function loader({ request }: LoaderFunctionArgs) {
       companyId,
       createdBy: userId
     });
+    report.ruleCreated = !ruleResult.error;
+    report.ruleError = ruleResult.error?.message ?? null;
   }
 
-  // Candidate POs: receivable status + has a non-comment line + no pending request.
+  // Overall PO status breakdown (helps see why there may be no candidates).
+  const { data: allPos } = await client
+    .from("purchaseOrders")
+    .select("id, status")
+    .eq("companyId", companyId)
+    .limit(500);
+  const statusCounts: Record<string, number> = {};
+  for (const p of allPos ?? []) {
+    const s = (p.status as string) ?? "null";
+    statusCounts[s] = (statusCounts[s] ?? 0) + 1;
+  }
+  report.totalPoCount = allPos?.length ?? 0;
+  report.statusCounts = statusCounts;
+
+  // Candidates: receivable status.
   const { data: candidates } = await client
     .from("purchaseOrders")
     .select("id, purchaseOrderId, status, orderTotal")
     .eq("companyId", companyId)
     .in("status", RECEIVABLE_STATUSES)
     .limit(30);
+  report.candidateCount = candidates?.length ?? 0;
 
+  const decisions: Array<Record<string, unknown>> = [];
   const seeded: string[] = [];
 
   for (const po of candidates ?? []) {
@@ -88,7 +107,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .neq("purchaseOrderLineType", "Comment")
       .limit(1)
       .maybeSingle();
-    if (!line) continue;
+    if (!line) {
+      decisions.push({ po: po.purchaseOrderId, skip: "no receivable line" });
+      continue;
+    }
 
     const { data: pending } = await client
       .from("approvalRequest")
@@ -97,7 +119,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .eq("status", "Pending")
       .limit(1)
       .maybeSingle();
-    if (pending) continue;
+    if (pending) {
+      decisions.push({ po: po.purchaseOrderId, skip: "already pending" });
+      continue;
+    }
 
     await client
       .from("purchaseOrder")
@@ -105,7 +130,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .eq("id", poId)
       .eq("companyId", companyId);
 
-    await createApprovalRequest(client, {
+    const req = await createApprovalRequest(client, {
       documentType: "purchaseOrder",
       documentId: poId,
       requestedBy: requesterId,
@@ -113,21 +138,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
       companyId,
       createdBy: requesterId
     });
+    if (req.error) {
+      decisions.push({ po: po.purchaseOrderId, error: req.error.message });
+      continue;
+    }
 
+    decisions.push({ po: po.purchaseOrderId, seeded: true });
     seeded.push(po.purchaseOrderId ?? poId);
   }
 
-  if (seeded.length === 0) {
-    return Response.json(
-      {
-        error:
-          "No eligible purchase orders to seed (need existing POs with lines in Draft/Planned/To Receive). Create a PO with at least one item line first."
-      },
-      { status: 400 }
-    );
-  }
+  report.decisions = decisions;
+  report.seeded = seeded;
+  report.hint =
+    seeded.length > 0
+      ? "Seeded. Open /x/purchasing/approvals to see them."
+      : "Nothing seeded — see statusCounts/candidateCount/decisions above.";
 
-  throw redirect("/x/purchasing/approvals");
+  return Response.json(report);
 }
 
 export default function ApprovalsSeedRoute() {
