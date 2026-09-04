@@ -791,6 +791,9 @@ msgstr "Zastosuj do"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Deklaracja zbliża się do granicy {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB."
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Data zatwierdzenia"
 
@@ -821,11 +824,20 @@ msgstr "Zmieniono regułę zatwierdzania"
 msgid "Approval Rules"
 msgstr "Reguły zatwierdzania"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Zatwierdź"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Odpowiedz teraz lub zarządzaj wszystkimi zadość wyznaczonymi artystami na stronie kontroli ilości."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Zatwierdzone"
@@ -838,6 +850,9 @@ msgstr "zatwierdzone wykonanie(ów)"
 
 msgid "Approved completions"
 msgstr "Zatwierdzone ukończenia"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -2215,6 +2230,12 @@ msgstr "Potwierdź"
 msgid "Confirm {0}"
 msgstr "Potwierdź {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Potwierdź zatwierdzenie"
 
@@ -3122,6 +3143,9 @@ msgstr "Wznowienia"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Zdecyduj, co operator widzi, jeśli spróbuje wydać partię lub numer seryjny, który już wygasł."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Zmniejsz skok"
@@ -11932,6 +11956,9 @@ msgstr "Kwota Zamówienia Zakupu"
 msgid "Purchase Order approval rule"
 msgstr "Reguła zatwierdzania zamówienia zakupu"
 
+msgid "Purchase order approved — review the receipt"
+msgstr ""
+
 msgid "Purchase order created"
 msgstr "Zamówienie zakupowe utworzone"
 
@@ -12350,6 +12377,9 @@ msgstr "Odrzuć gałąź"
 msgid "Reject Lot"
 msgstr "Odrzuć partię"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Odrzuć ofertę"
 
@@ -12570,6 +12600,12 @@ msgstr "Zapytanie powiodło się"
 
 msgid "Request to Join"
 msgstr "Zaproś dołączenie"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Data żądana"
@@ -13317,6 +13353,9 @@ msgstr "Wybierz artykuły"
 
 msgid "Select name"
 msgstr "Wybierz imię"
+
+msgid "select one"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "Wybierz drukarkę"

@@ -1,11 +1,10 @@
-import { error } from "@carbon/auth";
+import { error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import {
   dedupeViolations,
-  evaluateLinesForSurface,
-  isBlocked
+  evaluateLinesForSurface
 } from "@carbon/ee/storage-rules.server";
 import { trigger } from "@carbon/jobs";
 import { getCachedPrinterConfig } from "@carbon/printing/printing.server";
@@ -22,8 +21,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { receiptId } = params;
   if (!receiptId) throw new Error("receiptId not found");
 
-  const formData = await request.formData();
-  const acknowledged = formData.get("acknowledged") === "true";
+  await request.formData();
 
   // Item Rule evaluation across every line on this receipt before posting.
   // Use service role so item / storageUnit reads are not blocked by RLS for
@@ -95,7 +93,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const deduped = dedupeViolations(allViolations);
-  if (deduped.length > 0 && isBlocked(deduped, acknowledged)) {
+  // Only `error`-severity rules block the post; `warn`-severity rules are
+  // advisory and never gate receiving (receiving increases stock, so a
+  // low-stock warning here is just noise). Errors still open the blocking
+  // modal (with any warns shown alongside); warn-only posts proceed and get
+  // surfaced as a toast after posting.
+  const errors = deduped.filter((v) => v.severity === "error");
+  if (errors.length > 0) {
     return {
       error: null,
       data: null,
@@ -103,6 +107,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       ruleNames: allRuleNames
     };
   }
+  const warnings = deduped.filter((v) => v.severity === "warn");
 
   // Serial-tracked lines can accumulate stale tracked entities (reduced
   // quantity leaves orphans, edited serials leave duplicates) that would
@@ -224,6 +229,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
       }
     } catch (e) {
       console.error("Auto-print failed:", e);
+    }
+
+    // Post succeeded. Surface any advisory (warn) rule violations as a toast
+    // so they're not silently dropped now that they no longer block.
+    if (warnings.length > 0) {
+      const warningText = warnings
+        .map((v) => {
+          const name = allRuleNames[v.ruleId];
+          return name ? `${name}: ${v.message}` : v.message;
+        })
+        .join("; ");
+      throw redirect(
+        path.to.receipt(receiptId),
+        await flash(request, success(`Receipt posted — ${warningText}`))
+      );
     }
   } catch (thrown) {
     // Re-throw redirects — don't swallow them

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-26T15:37:46.627Z",
-  "totalTools": 1281,
+  "generated": "2026-09-04T09:44:01.939Z",
+  "totalTools": 1283,
   "modules": 15,
   "tools": [
     {
@@ -38161,6 +38161,54 @@
                 "default": 0
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "name": "shared_getApprovalCountAwaitingUser",
+      "module": "shared",
+      "classification": "READ",
+      "description": "get approval count awaiting user",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "userId",
+        "companyId",
+        "documentType"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "documentType": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "shared_getApprovalsAwaitingUser",
+      "module": "shared",
+      "classification": "READ",
+      "description": "get approvals awaiting user",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "userId",
+        "companyId",
+        "documentType"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "documentType": {
+            "type": "string"
           }
         }
       }

@@ -14,8 +14,8 @@ import { getSeedLocale } from "./seedDemoData.strings";
 // Composable per-domain seed building blocks. `seedDemoData` calls them to build
 // the full demo; module tests import the one they need to seed just that slice.
 export {
-  seedDemoStyleAttributeValues,
-  type SeedContext
+  type SeedContext,
+  seedDemoStyleAttributeValues
 } from "./seedDemo/styleAttributeValues";
 
 export async function seedDemoData(
@@ -512,6 +512,19 @@ export async function seedDemoData(
       [poReadableId, po.status, po.supplierId, interactionId, companyId, userId]
     );
     const poRowId = poRow.rows[0]!.id;
+
+    // Mirror insertPurchaseOrder: every PO needs its 1:1 delivery + payment
+    // rows. post-receipt reads purchaseOrderDelivery via .single(), so without
+    // these a receipt posted against a seeded PO fails ("Failed to fetch
+    // purchase order delivery").
+    await client.query(
+      `INSERT INTO "purchaseOrderDelivery" ("id", "companyId") VALUES ($1, $2)`,
+      [poRowId, companyId]
+    );
+    await client.query(
+      `INSERT INTO "purchaseOrderPayment" ("id", "companyId") VALUES ($1, $2)`,
+      [poRowId, companyId]
+    );
 
     for (const line of po.lines) {
       const itemId = itemIds[line.itemReadableId];
@@ -5151,21 +5164,29 @@ export async function seedDemoData(
       [companyId]
     );
     if (poRow.rows[0]) {
+      const poId = poRow.rows[0]!.id;
       const existsAR = await client.query(
         `SELECT id FROM "approvalRequest" WHERE "documentId"=$1 AND "companyId"=$2 LIMIT 1`,
-        [poRow.rows[0]!.id, companyId]
+        [poId, companyId]
       );
       if ((existsAR.rowCount ?? 0) === 0) {
+        // Keep the request and the PO consistent: a Pending purchaseOrder
+        // approvalRequest must sit on a PO that is actually "Needs Approval",
+        // otherwise the approve/reject handlers (which guard on that status)
+        // fail and the request can never be resolved. Also stamp the amount so
+        // the approvals list shows it.
+        const totalRow = await client.query<{ orderTotal: number | null }>(
+          `SELECT "orderTotal" FROM "purchaseOrders" WHERE id=$1`,
+          [poId]
+        );
+        const amount = totalRow.rows[0]?.orderTotal ?? 0;
         await client.query(
-          `INSERT INTO "approvalRequest" ("documentType", "documentId", status, "requestedBy", "companyId", "createdBy") VALUES ($1::\"approvalDocumentType\", $2, $3::\"approvalStatus\", $4, $5, $6) ON CONFLICT DO NOTHING`,
-          [
-            "purchaseOrder",
-            poRow.rows[0]!.id,
-            "Pending",
-            userId,
-            companyId,
-            userId
-          ]
+          `UPDATE "purchaseOrder" SET status='Needs Approval'::\"purchaseOrderStatus\" WHERE id=$1 AND "companyId"=$2`,
+          [poId, companyId]
+        );
+        await client.query(
+          `INSERT INTO "approvalRequest" ("documentType", "documentId", status, amount, "requestedBy", "companyId", "createdBy") VALUES ($1::\"approvalDocumentType\", $2, $3::\"approvalStatus\", $4, $5, $6, $7) ON CONFLICT DO NOTHING`,
+          ["purchaseOrder", poId, "Pending", amount, userId, companyId, userId]
         );
       }
     }

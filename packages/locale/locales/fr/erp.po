@@ -791,6 +791,9 @@ msgstr "Appliquer à"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Approchant la limite de {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB."
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Date d'approbation"
 
@@ -821,11 +824,20 @@ msgstr "Règle d'approbation mise à jour"
 msgid "Approval Rules"
 msgstr "Règles d'approbation"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Approuver"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Approuvez ici ou gérdez tous les articles en attente sur la page de revue de quantité."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Approuvé"
@@ -838,6 +850,9 @@ msgstr "completions approuvés"
 
 msgid "Approved completions"
 msgstr "Complétions approuvées"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -2215,6 +2230,12 @@ msgstr "Confirmer"
 msgid "Confirm {0}"
 msgstr "Confirmer {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Confirmer l'approbation"
 
@@ -3122,6 +3143,9 @@ msgstr "Débits"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Décidez ce qu'un opérateur voit s'il essaie d'émettre un lot ou un numéro de série qui a déjà expiré."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Diminuer les sauts"
@@ -11932,6 +11956,9 @@ msgstr "Montant de la commande d'achat"
 msgid "Purchase Order approval rule"
 msgstr "Règle d'approbation de bon de commande"
 
+msgid "Purchase order approved — review the receipt"
+msgstr ""
+
 msgid "Purchase order created"
 msgstr "Commande d'achat créée"
 
@@ -12350,6 +12377,9 @@ msgstr "Rejeter la branche"
 msgid "Reject Lot"
 msgstr "Rejeter le lot"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Rejeter le devis"
 
@@ -12570,6 +12600,12 @@ msgstr "Demande reçue avec succès"
 
 msgid "Request to Join"
 msgstr "Demande pour rejoindre"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Date demandée"
@@ -13317,6 +13353,9 @@ msgstr "Sélectionner les articles"
 
 msgid "Select name"
 msgstr "Sélectionner nom"
+
+msgid "select one"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "Sélectionnez imprimante"

@@ -144,6 +144,9 @@ msgstr "approved"
 msgid "Approved"
 msgstr "Approved"
 
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr "Approved, but failed to create a receipt — receive it manually"
+
 msgid "Archive ID is required"
 msgstr "Archive ID is required"
 
@@ -4981,6 +4984,9 @@ msgstr "Properties"
 
 msgid "Purchase invoice voided"
 msgstr "Purchase invoice voided"
+
+msgid "Purchase order approved — review the receipt"
+msgstr "Purchase order approved — review the receipt"
 
 msgid "Purchase order created"
 msgstr "Purchase order created"

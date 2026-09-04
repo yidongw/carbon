@@ -333,7 +333,10 @@ export const purchaseOrderApprovalValidator = z
     decision: z.enum(["Approved", "Rejected"]),
     notification: z.enum(["Email", "None"]).optional(),
     supplierContact: zfd.text(z.string().optional()),
-    cc: z.array(z.string()).optional()
+    cc: z.array(z.string()).optional(),
+    // When approving, "true" also creates a receipt and sends the approver to the
+    // receipt review page (the "Approve & Receive" fast path).
+    andReceive: zfd.text(z.string().optional())
   })
   .refine(
     (data) => (data.notification === "Email" ? data.supplierContact : true),

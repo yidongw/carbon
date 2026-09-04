@@ -791,6 +791,9 @@ msgstr "Применить к"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Достигнут лимит в {PO_EMAIL_ATTACHMENT_LIMIT_MB} МБ."
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Дата одобрения"
 
@@ -821,11 +824,20 @@ msgstr "Правило одобрения обновлено"
 msgid "Approval Rules"
 msgstr "Правила утверждения"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Одобрить"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Оцените здесь или управляйте всеми просроченными предметами на странице оценки количества."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Утвержден"
@@ -838,6 +850,9 @@ msgstr "предоставленные завершения"
 
 msgid "Approved completions"
 msgstr "Оценены completioni"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -2215,6 +2230,12 @@ msgstr "Подтвердить"
 msgid "Confirm {0}"
 msgstr "Подтвердить {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Подтвердить одобрение"
 
@@ -3122,6 +3143,9 @@ msgstr "Списание"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Решите, что видит оператор при попытке выдать партию или серийный номер, срок действия которого уже истек."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Уменьшить хопсы"
@@ -11932,6 +11956,9 @@ msgstr "Сумма заказа на покупку"
 msgid "Purchase Order approval rule"
 msgstr "Правило утверждения заказа на покупку"
 
+msgid "Purchase order approved — review the receipt"
+msgstr ""
+
 msgid "Purchase order created"
 msgstr "Заказ на покупку создан"
 
@@ -12350,6 +12377,9 @@ msgstr "Отклонить ветку"
 msgid "Reject Lot"
 msgstr "Отклонить партию"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Отклонить предложение"
 
@@ -12570,6 +12600,12 @@ msgstr "Запрос выполнен успешно"
 
 msgid "Request to Join"
 msgstr "Запрос на участие"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Запрашиваемая дата"
@@ -13317,6 +13353,9 @@ msgstr "Выберите товары"
 
 msgid "Select name"
 msgstr "Выберите имя"
+
+msgid "select one"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "Выберите принтер"

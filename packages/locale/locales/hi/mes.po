@@ -144,6 +144,9 @@ msgstr "स्वीकृत"
 msgid "Approved"
 msgstr "स्वीकृत"
 
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
+
 msgid "Archive ID is required"
 msgstr "एकार्किव आईडी का उपयोग करने के लिए यह आवश्यक है"
 
@@ -4981,6 +4984,9 @@ msgstr "प्रज्याति"
 
 msgid "Purchase invoice voided"
 msgstr "पर्चेज अकीदा हुआ है"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "पर्चेज ऑर्डर तैयार कीा गया है"

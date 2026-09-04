@@ -791,6 +791,9 @@ msgstr "Anwenden auf"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "Annäherung an den Limit von {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB."
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "Genehmigungsdatum"
 
@@ -821,11 +824,20 @@ msgstr "Bestätigungsregel aktualisiert"
 msgid "Approval Rules"
 msgstr "Genehmigungsregeln"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Genehmigen"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Genehmigen Sie hier oder verwalten Sie alle laufenden Bestände auf der Mengeprüfungsseite."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Genehmigt"
@@ -838,6 +850,9 @@ msgstr "Genehmigte Fertigstellung(en)"
 
 msgid "Approved completions"
 msgstr "Genehmigte Abschlüsse"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -2215,6 +2230,12 @@ msgstr "Bestätigen"
 msgid "Confirm {0}"
 msgstr "Bestätigen {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Bestätigen Sie die Genehmigung"
 
@@ -3122,6 +3143,9 @@ msgstr "Débits"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Entscheiden Sie, was ein Bediener sieht, wenn er versucht, einen Batch oder eine Seriennummer auszugeben, die bereits abgelaufen ist."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Verringere Hops"
@@ -11932,6 +11956,9 @@ msgstr "Bestellmenge"
 msgid "Purchase Order approval rule"
 msgstr "Genehmigungsregel für Bestellung"
 
+msgid "Purchase order approved — review the receipt"
+msgstr ""
+
 msgid "Purchase order created"
 msgstr "Bestellanfrage erstellt"
 
@@ -12350,6 +12377,9 @@ msgstr "Ablehnung abweichen"
 msgid "Reject Lot"
 msgstr "Los ablehnen"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Angebot ablehnen"
 
@@ -12570,6 +12600,12 @@ msgstr "Anfrage erfolgreich"
 
 msgid "Request to Join"
 msgstr "Anfrage zur Teilnahme stellen"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Angeforderte Datum"
@@ -13317,6 +13353,9 @@ msgstr "Artikel auswählen"
 
 msgid "Select name"
 msgstr "Wählen Sie den Namen"
+
+msgid "select one"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "Wählen Sie Drucker"

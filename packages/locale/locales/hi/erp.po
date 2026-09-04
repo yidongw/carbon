@@ -791,6 +791,9 @@ msgstr "लागू करें"
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
 msgstr "आगामी {PO_EMAIL_ATTACHMENT_LIMIT_MB} मब्बा गुमाना।"
 
+msgid "Approval"
+msgstr ""
+
 msgid "Approval Date"
 msgstr "अनुमोदन तारीख"
 
@@ -821,11 +824,20 @@ msgstr "APPROVAL RULE UPDATED"
 msgid "Approval Rules"
 msgstr "अनुमोदन नियम"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "मंजूरी दें"
 
+msgid "Approve & Receive"
+msgstr ""
+
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "स्वीकार करें या सभी अनुपस्थित सामग्री को मात्र मात्रा समीक्षा पृष्ठ पर प्रबंधित करें।"
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "APPROVED"
@@ -838,6 +850,9 @@ msgstr "स्वीकृत पूर्ति(यों)"
 
 msgid "Approved completions"
 msgstr "स्वीकृत पूर्णता"
+
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -2215,6 +2230,12 @@ msgstr "पुष्टि करें"
 msgid "Confirm {0}"
 msgstr "की पुष्टि करें {0}"
 
+msgid "Confirm & Receive"
+msgstr ""
+
+msgid "Confirm & Receive Purchase Orders"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "प्रतियोगिता परीक्षण"
 
@@ -3122,6 +3143,9 @@ msgstr "देटाईसे"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "तय करें कि यदि कोई ऑपरेटर एक बैच या सीरियल जारी करने का प्रयास करता है जो पहले से ही समाप्त हो गया है तो वह क्या देखता है।"
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "क्रम कम करें"
@@ -11932,6 +11956,9 @@ msgstr "क्रय आदेश राशि"
 msgid "Purchase Order approval rule"
 msgstr "क्रय आदेश अनुमोदन नियम"
 
+msgid "Purchase order approved — review the receipt"
+msgstr ""
+
 msgid "Purchase order created"
 msgstr "पर्चेज ऑर्डर तैयार कीा गया है"
 
@@ -12350,6 +12377,9 @@ msgstr "संकलन र eject"
 msgid "Reject Lot"
 msgstr "लॉट को अस्वीकार करें"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "उद्धरण अस्वीकार करें"
 
@@ -12570,6 +12600,12 @@ msgstr "प्रार्थना सफल रहीছে"
 
 msgid "Request to Join"
 msgstr "आवेदन करें"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "अनुरोधित तारीख"
@@ -13317,6 +13353,9 @@ msgstr "आइटम चुनें"
 
 msgid "Select name"
 msgstr "व्यक्ति का नाम चुनें"
+
+msgid "select one"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "चयन करें"

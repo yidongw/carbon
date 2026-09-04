@@ -51,18 +51,40 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
+  // Lowest enabled purchase-order approval tier. An order needs approval when
+  // its total reaches this amount; null means no enabled rule → nothing needs
+  // approval. Drives the per-row Approval badge (and mirrors isApprovalRequired).
+  const approvalRules = await client
+    .from("approvalRule")
+    .select("lowerBoundAmount")
+    .eq("companyId", companyId)
+    .eq("documentType", "purchaseOrder")
+    .eq("enabled", true);
+  const lowerBounds = (approvalRules.data ?? []).map((r) =>
+    Number(r.lowerBoundAmount ?? 0)
+  );
+  const approvalThreshold = lowerBounds.length
+    ? Math.min(...lowerBounds)
+    : null;
+
   return {
     count: purchasOrders.count ?? 0,
-    purchasOrders: purchasOrders.data ?? []
+    purchasOrders: purchasOrders.data ?? [],
+    approvalThreshold
   };
 }
 
 export default function PurchaseOrdersSearchRoute() {
-  const { count, purchasOrders } = useLoaderData<typeof loader>();
+  const { count, purchasOrders, approvalThreshold } =
+    useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <PurchaseOrdersTable data={purchasOrders} count={count} />
+      <PurchaseOrdersTable
+        data={purchasOrders}
+        count={count}
+        approvalThreshold={approvalThreshold}
+      />
       <Outlet />
     </VStack>
   );

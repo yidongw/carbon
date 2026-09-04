@@ -685,6 +685,8 @@ export const path = {
     assignIssueItemEntities: `${x}/issue/item/assign-entities`,
     issueActionTasksOrder: `${x}/issue/action-tasks/order`,
     bulkUpdateIssueWorkflow: `${x}/issue-workflow/update`,
+    bulkApprovePurchaseOrder: `${x}/purchase-order/bulk-approve`,
+    bulkFinalizePurchaseOrder: `${x}/purchase-order/bulk-finalize`,
     bulkUpdatePurchaseOrder: `${x}/purchase-order/update`,
     bulkUpdatePurchasingRfq: `${x}/purchasing-rfq/update`,
     bulkUpdatePurchaseInvoice: `${x}/purchase-invoice/update`,
@@ -1809,6 +1811,7 @@ export const path = {
     purchaseOrderStatus: (id: string) =>
       generatePath(`${x}/purchase-order/${id}/status`),
     purchaseOrders: `${x}/purchasing/orders`,
+    purchasingApprovals: `${x}/purchasing/approvals`,
     purchasing: `${x}/purchasing`,
     purchasingDashboard: `${x}/purchasing/dashboard`,
     purchasingPlanning: `${x}/purchasing/planning`,

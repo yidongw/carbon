@@ -145,6 +145,9 @@ msgstr "已批准"
 msgid "Approved"
 msgstr "已批准"
 
+msgid "Approved, but failed to create a receipt — receive it manually"
+msgstr ""
+
 msgid "Archive ID is required"
 msgstr "归档ID是必需的"
 
@@ -4982,6 +4985,9 @@ msgstr "属性"
 
 msgid "Purchase invoice voided"
 msgstr "采购发票已作废"
+
+msgid "Purchase order approved — review the receipt"
+msgstr ""
 
 msgid "Purchase order created"
 msgstr "已创建采购订单"
