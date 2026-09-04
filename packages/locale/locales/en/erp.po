@@ -13353,6 +13353,9 @@ msgstr "Select items"
 msgid "Select name"
 msgstr "Select name"
 
+msgid "select one"
+msgstr "select one"
+
 msgid "Select Printer"
 msgstr "Select Printer"
 

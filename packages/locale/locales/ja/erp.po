@@ -13354,6 +13354,9 @@ msgstr "アイテムを選択"
 msgid "Select name"
 msgstr "選択する名前"
 
+msgid "select one"
+msgstr ""
+
 msgid "Select Printer"
 msgstr "プリンターを選択してください"
 

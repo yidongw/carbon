@@ -13354,6 +13354,9 @@ msgstr "Seleccionar artículos"
 msgid "Select name"
 msgstr "Selecciona nombre"
 
+msgid "select one"
+msgstr ""
+
 msgid "Select Printer"
 msgstr "Seleccionar Impresora"
 

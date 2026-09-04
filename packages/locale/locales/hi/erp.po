@@ -13354,6 +13354,9 @@ msgstr "आइटम चुनें"
 msgid "Select name"
 msgstr "व्यक्ति का नाम चुनें"
 
+msgid "select one"
+msgstr ""
+
 msgid "Select Printer"
 msgstr "चयन करें"
 

@@ -117,38 +117,6 @@ const PurchaseOrderApprovalsTable = memo(
       [bulkApprovalModal]
     );
 
-    const renderActions = useCallback(
-      (selectedRows: ApprovalAwaitingUser[]) => {
-        const canDecide = permissions.can("update", "purchasing");
-        return (
-          <DropdownMenuContent align="end" className="min-w-[220px]">
-            <DropdownMenuLabel>
-              <Trans>Decision</Trans>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                disabled={!canDecide}
-                onClick={() => openBulk(selectedRows, "Approved")}
-              >
-                <MenuIcon icon={<LuBadgeCheck />} />
-                <Trans>Approve</Trans>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={!canDecide}
-                destructive
-                onClick={() => openBulk(selectedRows, "Rejected")}
-              >
-                <MenuIcon icon={<LuCircleX />} />
-                <Trans>Reject</Trans>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        );
-      },
-      [openBulk, permissions]
-    );
-
     // "Approve & Receive" fast path (single row): approve, then land on the new
     // receipt's review page. Runs through the PO approval action, which handles
     // the approval + receipt creation and redirects us to the receipt.
@@ -165,6 +133,52 @@ const PurchaseOrderApprovalsTable = memo(
         });
       },
       [submit]
+    );
+
+    const renderActions = useCallback(
+      (selectedRows: ApprovalAwaitingUser[]) => {
+        const canDecide = permissions.can("update", "purchasing");
+        const canReceive = permissions.can("create", "inventory");
+        const single = selectedRows.length === 1;
+        return (
+          <DropdownMenuContent align="end" className="min-w-[220px]">
+            <DropdownMenuLabel>
+              <Trans>Decision</Trans>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                disabled={!canDecide}
+                onClick={() => openBulk(selectedRows, "Approved")}
+              >
+                <MenuIcon icon={<LuBadgeCheck />} />
+                <Trans>Approve</Trans>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={!canDecide || !canReceive || !single}
+                onClick={() => approveAndReceive(selectedRows[0])}
+              >
+                <MenuIcon icon={<LuHandCoins />} />
+                <Trans>Approve & Receive</Trans>
+                {!single && (
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    <Trans>select one</Trans>
+                  </span>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={!canDecide}
+                destructive
+                onClick={() => openBulk(selectedRows, "Rejected")}
+              >
+                <MenuIcon icon={<LuCircleX />} />
+                <Trans>Reject</Trans>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        );
+      },
+      [openBulk, approveAndReceive, permissions]
     );
 
     const renderContextMenu = useCallback(
