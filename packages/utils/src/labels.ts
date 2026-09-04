@@ -73,6 +73,27 @@ const bundleTagSizes: LabelSize[] = BUNDLE_TAG_MM.map(([w, h]) => ({
   metric: true
 }));
 
+/**
+ * Garment care label (水洗唛) sizes in millimetres (width × height, portrait).
+ * One care label per garment piece, carrying its unique RFID code (QR + text).
+ * Bitmap/TSPL only (Chinese text) — printed on the Bluetooth garment printer.
+ */
+const CARE_LABEL_MM: [number, number][] = [
+  [40, 60],
+  [30, 60],
+  [35, 75],
+  [40, 80],
+  [50, 80]
+];
+
+const careLabelSizes: LabelSize[] = CARE_LABEL_MM.map(([w, h]) => ({
+  id: `careLabel${w}x${h}mm`,
+  name: `Care Label ${w}x${h}mm`,
+  width: w / MM_PER_IN,
+  height: h / MM_PER_IN,
+  metric: true
+}));
+
 export const labelSizes: LabelSize[] = [
   {
     id: "avery5163",
@@ -126,5 +147,6 @@ export const labelSizes: LabelSize[] = [
       height: 0.984
     }
   },
-  ...bundleTagSizes
+  ...bundleTagSizes,
+  ...careLabelSizes
 ];

@@ -103,6 +103,9 @@ msgstr "{0} 枚中 {failed} 枚のラベル印刷に失敗"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} 枚中 {failed} 枚の印刷に失敗しました"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
 
@@ -678,6 +681,9 @@ msgstr "すべてのタイプ"
 
 msgid "All Work Centers"
 msgstr "すべての作業センター"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "Allow[s] [acknowledge] & [continue]"
@@ -1849,6 +1855,9 @@ msgstr "カーボン値"
 
 msgid "Cards"
 msgstr "カード"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "配送業者"
@@ -10667,6 +10676,9 @@ msgstr "検索結果が見つかりません"
 msgid "No results found."
 msgstr "No results found."
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr "（規則が設定されていない）"
 
@@ -11736,6 +11748,7 @@ msgid "Print"
 msgstr "印刷"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "印刷（{0}）"
 
@@ -11749,6 +11762,9 @@ msgstr "{0} 枚のチケットを印刷"
 
 msgid "Print Bundle Tickets"
 msgstr "バンドルチケットを印刷"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "印刷濃度"
@@ -11784,6 +11800,9 @@ msgstr "印刷先"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "{0} 枚のラベルを印刷しました"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "プリンタルートが削除されました"
@@ -13264,6 +13283,7 @@ msgstr "アカウントを選択してください"
 msgid "Select all"
 msgstr "全選択"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "すべて選択（{0}）"

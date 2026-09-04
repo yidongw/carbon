@@ -1,8 +1,12 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { VStack } from "@carbon/react";
+import { Button, VStack } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
+import { useState } from "react";
+import { LuPrinter } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { redirect, useLoaderData, useParams } from "react-router";
 import { getBundleWorkOrder, getGarmentRfidCodes } from "~/modules/production";
+import PrintCareLabelsModal from "~/modules/production/ui/MasterWorkOrders/PrintCareLabelsModal";
 import RfidCodesTable from "~/modules/production/ui/MasterWorkOrders/RfidCodesTable";
 import { path } from "~/utils/path";
 
@@ -37,11 +41,33 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export default function BundleWorkOrderRfidCodesRoute() {
+  const { t } = useLingui();
   const { rfidCodes, count } = useLoaderData<typeof loader>();
+  const { bundleWorkOrderId } = useParams();
+  const [isPrinting, setIsPrinting] = useState(false);
 
   return (
     <VStack spacing={0} className="h-[calc(100dvh-99px)]">
-      <RfidCodesTable data={rfidCodes} count={count} />
+      <RfidCodesTable
+        data={rfidCodes}
+        count={count}
+        primaryAction={
+          <Button
+            leftIcon={<LuPrinter />}
+            variant="secondary"
+            onClick={() => setIsPrinting(true)}
+            isDisabled={count === 0}
+          >
+            {t`Print Care Labels`}
+          </Button>
+        }
+      />
+      {isPrinting && bundleWorkOrderId ? (
+        <PrintCareLabelsModal
+          bundleWorkOrderId={bundleWorkOrderId}
+          onClose={() => setIsPrinting(false)}
+        />
+      ) : null}
     </VStack>
   );
 }

@@ -103,6 +103,9 @@ msgstr "{0} में से {failed} लेबल विफल"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} टिकटों में से {failed} विफल रहे"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
 
@@ -678,6 +681,9 @@ msgstr "सभी प्रकार"
 
 msgid "All Work Centers"
 msgstr "सभी कार्य केंद्र"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "मान लें और आगे बढ़ें"
@@ -1849,6 +1855,9 @@ msgstr "कार्बन मान"
 
 msgid "Cards"
 msgstr "कार्ड्स"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "वाहक"
@@ -10667,6 +10676,9 @@ msgstr "कोई परिणाम नहीं मिला"
 msgid "No results found."
 msgstr "कोई परिणाम नहीं मिला।"
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr "कोई नियम निर्धारित नहीं हैं"
 
@@ -11736,6 +11748,7 @@ msgid "Print"
 msgstr "प्रिंट"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "प्रिंट करें ({0})"
 
@@ -11749,6 +11762,9 @@ msgstr "{0} टिकट प्रिंट करें"
 
 msgid "Print Bundle Tickets"
 msgstr "बंडल टिकट प्रिंट करें"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "प्रिंट गहराई"
@@ -11784,6 +11800,9 @@ msgstr "इस पर प्रिंट करें"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "{0} लेबल प्रिंट किए गए"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "प्रिंटर पथ डेलीट किया गया है"
@@ -13264,6 +13283,7 @@ msgstr "अाकाउंट चुनें"
 msgid "Select all"
 msgstr "सब कुछ चयन करें"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "सभी चुनें ({0})"

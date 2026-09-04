@@ -102,6 +102,9 @@ msgstr "{failed} of {0} labels failed"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} of {0} tickets failed"
 
+msgid "{failed} of {total} labels failed"
+msgstr "{failed} of {total} labels failed"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limit"
 
@@ -677,6 +680,9 @@ msgstr "All Types"
 
 msgid "All Work Centers"
 msgstr "All Work Centers"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr "Allow pop-ups to print from the browser"
 
 msgid "Allows acknowledge & continue"
 msgstr "Allows acknowledge & continue"
@@ -1848,6 +1854,9 @@ msgstr "Carbon Value"
 
 msgid "Cards"
 msgstr "Cards"
+
+msgid "Care Labels"
+msgstr "Care Labels"
 
 msgid "Carrier"
 msgstr "Carrier"
@@ -10666,6 +10675,9 @@ msgstr "No results found"
 msgid "No results found."
 msgstr "No results found."
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr "No RFID codes yet. Generate codes first, then print."
+
 msgid "No rules assigned"
 msgstr "No rules assigned"
 
@@ -11735,6 +11747,7 @@ msgid "Print"
 msgstr "Print"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "Print ({0})"
 
@@ -11748,6 +11761,9 @@ msgstr "Print {0} Tickets"
 
 msgid "Print Bundle Tickets"
 msgstr "Print Bundle Tickets"
+
+msgid "Print Care Labels"
+msgstr "Print Care Labels"
 
 msgid "Print darkness"
 msgstr "Print darkness"
@@ -11783,6 +11799,9 @@ msgstr "Print to"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "Printed {0} labels"
+
+msgid "Printed {total} labels"
+msgstr "Printed {total} labels"
 
 msgid "Printer route deleted"
 msgstr "Printer route deleted"
@@ -13263,6 +13282,7 @@ msgstr "Select account"
 msgid "Select all"
 msgstr "Select all"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Select all ({0})"

@@ -103,6 +103,9 @@ msgstr "{failed} étiquette(s) sur {0} en échec"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} étiquettes sur {0} ont échoué"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limite"
 
@@ -678,6 +681,9 @@ msgstr "Tous les types"
 
 msgid "All Work Centers"
 msgstr "Tous les centres de travail"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "Autorise et continuer"
@@ -1849,6 +1855,9 @@ msgstr "Valeur Carbon"
 
 msgid "Cards"
 msgstr "Cartes"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "Transporteur"
@@ -10667,6 +10676,9 @@ msgstr "Aucun résultat trouvé"
 msgid "No results found."
 msgstr "Aucunes résultats trouvés."
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr "Aucune règle n'est assignée"
 
@@ -11736,6 +11748,7 @@ msgid "Print"
 msgstr "Imprimer"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "Imprimer ({0})"
 
@@ -11749,6 +11762,9 @@ msgstr "Imprimer {0} étiquettes"
 
 msgid "Print Bundle Tickets"
 msgstr "Imprimer les étiquettes de lot"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "Intensité d'impression"
@@ -11784,6 +11800,9 @@ msgstr "Imprimer sur"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "{0} étiquettes imprimées"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "Route d'impression supprimée"
@@ -13264,6 +13283,7 @@ msgstr "Sélectionnez un compte"
 msgid "Select all"
 msgstr "Sélectionner tout"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Tout sélectionner ({0})"
