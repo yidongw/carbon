@@ -7,21 +7,14 @@ import {
 } from "~/modules/shared";
 
 /**
- * TEMPORARY dev-only seed + diagnostic. Puts a few EXISTING receivable purchase
- * orders into "Needs Approval" with a Pending approvalRequest whose approver is
- * the current user, so "Approve & Receive" can be tested on the persistent
- * preview DB. Returns a JSON report of exactly what it found/did (no redirect),
- * so failures are debuggable. Visit /x/purchasing/approvals-seed, then go to the
- * approvals list. REMOVE before merge.
+ * TEMPORARY dev-only seed + diagnostic (RESOURCE route — no component, returns
+ * raw JSON). Finds existing purchase orders that still have an unreceived item
+ * line, puts a few into "Needs Approval" with a Pending approvalRequest whose
+ * approver is the current user, so "Approve & Receive" can be tested on the
+ * persistent preview DB (seedDemoData edits don't reach it). REMOVE before merge.
  */
 const TOP_TIER_AMOUNT = 1_000_000_000; // grants upward authority over any amount
 const TARGET_COUNT = 3;
-const RECEIVABLE_STATUSES: (
-  | "Draft"
-  | "Planned"
-  | "To Receive"
-  | "To Receive and Invoice"
-)[] = ["Draft", "Planned", "To Receive", "To Receive and Invoice"];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId, userId } = await requirePermissions(request, {
@@ -42,7 +35,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   report.requesterId = requesterId;
   report.requesterIsSelf = requesterId === userId;
 
-  // Ensure the current user is a top-tier approver.
+  // Ensure the current user is a top-tier approver (once).
   const existingRules = await getApprovalRulesForApprover(
     client,
     "purchaseOrder",
@@ -69,48 +62,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
     report.ruleError = ruleResult.error?.message ?? null;
   }
 
-  // Overall PO status breakdown (helps see why there may be no candidates).
-  const { data: allPos } = await client
-    .from("purchaseOrders")
-    .select("id, status")
+  // POs that still have an unreceived, item-backed line (receivable after
+  // approval), regardless of current status. Dedupe the PO ids.
+  const { data: lines } = await client
+    .from("purchaseOrderLine")
+    .select("purchaseOrderId")
     .eq("companyId", companyId)
-    .limit(500);
-  const statusCounts: Record<string, number> = {};
-  for (const p of allPos ?? []) {
-    const s = (p.status as string) ?? "null";
-    statusCounts[s] = (statusCounts[s] ?? 0) + 1;
-  }
-  report.totalPoCount = allPos?.length ?? 0;
-  report.statusCounts = statusCounts;
-
-  // Candidates: receivable status.
-  const { data: candidates } = await client
-    .from("purchaseOrders")
-    .select("id, purchaseOrderId, status, orderTotal")
-    .eq("companyId", companyId)
-    .in("status", RECEIVABLE_STATUSES)
-    .limit(30);
-  report.candidateCount = candidates?.length ?? 0;
+    .not("itemId", "is", null)
+    .or("receivedComplete.is.null,receivedComplete.eq.false")
+    .limit(300);
+  const candidatePoIds = Array.from(
+    new Set((lines ?? []).map((l) => l.purchaseOrderId).filter(Boolean))
+  );
+  report.receivablePoCount = candidatePoIds.length;
 
   const decisions: Array<Record<string, unknown>> = [];
   const seeded: string[] = [];
 
-  for (const po of candidates ?? []) {
+  for (const poId of candidatePoIds) {
     if (seeded.length >= TARGET_COUNT) break;
-    const poId = po.id;
     if (!poId) continue;
 
-    const { data: line } = await client
-      .from("purchaseOrderLine")
-      .select("id")
-      .eq("purchaseOrderId", poId)
-      .neq("purchaseOrderLineType", "Comment")
-      .limit(1)
-      .maybeSingle();
-    if (!line) {
-      decisions.push({ po: po.purchaseOrderId, skip: "no receivable line" });
-      continue;
-    }
+    const { data: po } = await client
+      .from("purchaseOrders")
+      .select("id, purchaseOrderId, status, orderTotal")
+      .eq("id", poId)
+      .single();
+    if (!po) continue;
 
     const { data: pending } = await client
       .from("approvalRequest")
@@ -152,11 +130,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   report.hint =
     seeded.length > 0
       ? "Seeded. Open /x/purchasing/approvals to see them."
-      : "Nothing seeded — see statusCounts/candidateCount/decisions above.";
+      : "Nothing seeded — see receivablePoCount / decisions above.";
 
   return Response.json(report);
-}
-
-export default function ApprovalsSeedRoute() {
-  return null;
 }
