@@ -53,6 +53,22 @@ generic and should not need editing to add a new approvable type.
   numeric unread count; approval-request notifications get a highlight prop on the
   `Notification` component; inbox footer has a "查看全部待审批" link to the page.
 
+## Approve & Receive fast path (PO)
+
+To remove the "approve, then someone else clicks New Receipt" gap: the PO
+approval action (`$orderId.tsx`) takes an optional `andReceive` flag
+(`purchaseOrderApprovalValidator`). When approving with `andReceive === "true"`,
+after the normal approval side effects it invokes the `create`
+(`receiptFromPurchaseOrder`) edge function and redirects to
+`receiptDetails(receiptId)` — the approver lands on the receipt review page and
+posts it. Approval completes at click time (row leaves the awaiting list); the
+receipt/post is the follow-on. UI: a second "Approve & Receive" submit button in
+`PurchaseOrderApprovalModal` (gated on `create:inventory`) and a per-row
+"Approve & Receive" context action in `PurchaseOrderApprovalsTable` (single row
+only — bulk stays approve/reject). A receipt requires the PO to be at "To
+Receive", which is why approval must happen first (you can't defer approval until
+the receipt is posted).
+
 ## Single-document approve UI (pre-existing)
 
 PO detail: `PurchaseOrderHeader.tsx` Approve/Reject buttons (shown when
