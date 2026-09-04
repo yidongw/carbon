@@ -824,11 +824,17 @@ msgstr "审批规则已更新"
 msgid "Approval Rules"
 msgstr "审批规则"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "批准"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "在此批准，或在数量审核页面管理所有待处理的物品。"
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "已批准"
@@ -3131,6 +3137,9 @@ msgstr "借方"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "决定操作员在尝试发放已过期的批次或序列号时看到的内容。"
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "减少跳跃次数"
@@ -12359,6 +12368,9 @@ msgstr "拒绝分支"
 msgid "Reject Lot"
 msgstr "拒收批次"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "拒绝报价"
 
@@ -12579,6 +12591,12 @@ msgstr "请求成功"
 
 msgid "Request to Join"
 msgstr "申请加入"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "请求日期"

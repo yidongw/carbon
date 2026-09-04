@@ -81,6 +81,7 @@ const MobileGroupedNav = ({
                   replace
                 >
                   {route.name}
+                  {route.tag && <span className="ml-1.5">{route.tag}</span>}
                 </Link>
               </Button>
             );
@@ -289,6 +290,9 @@ const GroupedContentSidebarDesktop = ({
                           prefetch="intent"
                         >
                           {route.name}
+                          {route.tag && (
+                            <span className="ml-auto pl-2">{route.tag}</span>
+                          )}
                         </Link>
                       </Button>
                       {hasViews && (

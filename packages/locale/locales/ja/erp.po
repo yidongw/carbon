@@ -824,11 +824,17 @@ msgstr "承認ルールが更新されました"
 msgid "Approval Rules"
 msgstr "承認ルール"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "承認"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "承認してくださいまたはすべての未承認品物を量検ページで管理することができます。"
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "承認済み"
@@ -3131,6 +3137,9 @@ msgstr "控え"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "オペレーターが既に期限切れのバッチまたはシリアルを発行しようとした場合に表示される内容を決定します。"
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "ホップ数を減らす"
@@ -12359,6 +12368,9 @@ msgstr "拒否する"
 msgid "Reject Lot"
 msgstr "ロットを却下"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "見積もりを却下"
 
@@ -12579,6 +12591,12 @@ msgstr "リクエストが成功しました"
 
 msgid "Request to Join"
 msgstr "参加依頼"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "リクエスト日"

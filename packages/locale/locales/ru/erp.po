@@ -824,11 +824,17 @@ msgstr "Правило одобрения обновлено"
 msgid "Approval Rules"
 msgstr "Правила утверждения"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Одобрить"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Оцените здесь или управляйте всеми просроченными предметами на странице оценки количества."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Утвержден"
@@ -3131,6 +3137,9 @@ msgstr "Списание"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Решите, что видит оператор при попытке выдать партию или серийный номер, срок действия которого уже истек."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Уменьшить хопсы"
@@ -12359,6 +12368,9 @@ msgstr "Отклонить ветку"
 msgid "Reject Lot"
 msgstr "Отклонить партию"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Отклонить предложение"
 
@@ -12579,6 +12591,12 @@ msgstr "Запрос выполнен успешно"
 
 msgid "Request to Join"
 msgstr "Запрос на участие"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Запрашиваемая дата"

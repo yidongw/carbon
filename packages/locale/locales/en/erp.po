@@ -823,11 +823,17 @@ msgstr "Approval rule updated"
 msgid "Approval Rules"
 msgstr "Approval Rules"
 
+msgid "Approvals"
+msgstr "Approvals"
+
 msgid "Approve"
 msgstr "Approve"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Approve here or manage all pending items on the quantity review page."
+
+msgid "Approve Purchase Orders"
+msgstr "Approve Purchase Orders"
 
 msgid "Approved"
 msgstr "Approved"
@@ -3130,6 +3136,9 @@ msgstr "Debits"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Decide what an operator sees if they try to issue a batch or serial that's already expired."
+
+msgid "Decision"
+msgstr "Decision"
 
 msgid "Decrease hops"
 msgstr "Decrease hops"
@@ -12358,6 +12367,9 @@ msgstr "Reject branch"
 msgid "Reject Lot"
 msgstr "Reject Lot"
 
+msgid "Reject Purchase Orders"
+msgstr "Reject Purchase Orders"
+
 msgid "Reject Quote"
 msgstr "Reject Quote"
 
@@ -12578,6 +12590,12 @@ msgstr "Request succeeded"
 
 msgid "Request to Join"
 msgstr "Request to Join"
+
+msgid "Requested At"
+msgstr "Requested At"
+
+msgid "Requested By"
+msgstr "Requested By"
 
 msgid "Requested Date"
 msgstr "Requested Date"

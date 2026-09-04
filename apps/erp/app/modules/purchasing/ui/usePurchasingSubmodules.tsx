@@ -1,5 +1,7 @@
+import { Count } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import {
+  LuBadgeCheck,
   LuContainer,
   LuCreditCard,
   LuFileText,
@@ -14,7 +16,9 @@ import { useSavedViews } from "~/hooks/useSavedViews";
 import type { AuthenticatedRouteGroup } from "~/types";
 import { path } from "~/utils/path";
 
-export default function usePurchasingSubmodules() {
+export default function usePurchasingSubmodules(
+  pendingApprovalCount: number = 0
+) {
   const { t } = useLingui();
   const permissions = usePermissions();
   const { addSavedViewsToRoutes } = useSavedViews();
@@ -56,6 +60,15 @@ export default function usePurchasingSubmodules() {
           to: path.to.purchaseOrders,
           icon: <LuLayoutList />,
           table: "purchaseOrder"
+        },
+        {
+          name: t`Approvals`,
+          to: path.to.purchasingApprovals,
+          icon: <LuBadgeCheck />,
+          tag:
+            pendingApprovalCount > 0 ? (
+              <Count count={pendingApprovalCount} />
+            ) : undefined
         },
         {
           name: t`Invoices`,

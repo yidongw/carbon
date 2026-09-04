@@ -824,11 +824,17 @@ msgstr "Zmieniono regułę zatwierdzania"
 msgid "Approval Rules"
 msgstr "Reguły zatwierdzania"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Zatwierdź"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Odpowiedz teraz lub zarządzaj wszystkimi zadość wyznaczonymi artystami na stronie kontroli ilości."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Zatwierdzone"
@@ -3131,6 +3137,9 @@ msgstr "Wznowienia"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Zdecyduj, co operator widzi, jeśli spróbuje wydać partię lub numer seryjny, który już wygasł."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Zmniejsz skok"
@@ -12359,6 +12368,9 @@ msgstr "Odrzuć gałąź"
 msgid "Reject Lot"
 msgstr "Odrzuć partię"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Odrzuć ofertę"
 
@@ -12579,6 +12591,12 @@ msgstr "Zapytanie powiodło się"
 
 msgid "Request to Join"
 msgstr "Zaproś dołączenie"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Data żądana"

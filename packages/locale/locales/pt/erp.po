@@ -824,11 +824,17 @@ msgstr "Regra de aprovação atualizada"
 msgid "Approval Rules"
 msgstr "Regras de Aprovação"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "Aprovar"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Aprove aqui ou gerencie todos os itens pendentes na página de revisão de quantidade."
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "Aprovado"
@@ -3131,6 +3137,9 @@ msgstr "Débitos"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Decida o que um operador vê se tentar emitir um lote ou série que já expirou."
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "Diminuir pules"
@@ -12359,6 +12368,9 @@ msgstr "Rejeitar ramo"
 msgid "Reject Lot"
 msgstr "Rejeitar Lote"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "Rejeitar Cotação"
 
@@ -12579,6 +12591,12 @@ msgstr "Solicitação realizada com sucesso"
 
 msgid "Request to Join"
 msgstr "Solicitar Inscrição"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "Data Solicitada"

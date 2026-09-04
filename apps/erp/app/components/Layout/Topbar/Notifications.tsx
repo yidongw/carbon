@@ -3,6 +3,7 @@ import { NotificationEvent } from "@carbon/notifications";
 import {
   Badge,
   Button,
+  cn,
   IconButton,
   Popover,
   PopoverContent,
@@ -120,7 +121,8 @@ function Notification({
   createdAt,
   markMessageAsRead,
   from,
-  onClose
+  onClose,
+  highlight = false
 }: {
   icon: React.ReactNode;
   to: string;
@@ -129,6 +131,7 @@ function Notification({
   from?: string;
   markMessageAsRead?: () => void;
   onClose: () => void;
+  highlight?: boolean;
 }) {
   const { id: userId } = useUser();
   const { t } = useLingui();
@@ -143,14 +146,25 @@ function Notification({
     }
   }
   return (
-    <div className="flex items-between justify-between gap-x-4 px-3 py-3 hover:bg-secondary">
+    <div
+      className={cn(
+        "flex items-between justify-between gap-x-4 px-3 py-3 hover:bg-secondary",
+        highlight &&
+          "border-l-2 border-l-yellow-500 bg-yellow-500/5 hover:bg-yellow-500/10"
+      )}
+    >
       <Link
         className="flex items-between justify-between gap-x-4 "
         onClick={() => onClose()}
         to={to}
       >
         <div>
-          <div className="h-9 w-9 flex items-center justify-center gap-y-0 border rounded-full">
+          <div
+            className={cn(
+              "h-9 w-9 flex items-center justify-center gap-y-0 border rounded-full",
+              highlight && "border-yellow-500 text-yellow-600 bg-yellow-500/10"
+            )}
+          >
             {icon}
           </div>
         </div>
@@ -205,6 +219,7 @@ function GenericNotification({
               ? path.to.qualityDocument(id)
               : path.to.purchaseOrderDetails(id)
           }
+          highlight={event === NotificationEvent.ApprovalRequested}
           {...props}
         />
       );
@@ -562,8 +577,12 @@ const Notifications = () => {
           isIcon
           className="w-8 h-8 flex items-center relative"
         >
-          {hasUnseenNotifications && (
-            <div className="w-2 h-2 bg-red-500 rounded-full absolute top-0 right-0" />
+          {unreadNotifications.length > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium leading-none text-white tabular-nums">
+              {unreadNotifications.length > 99
+                ? "99+"
+                : unreadNotifications.length}
+            </span>
           )}
           <LuBell size={16} />
         </Button>
@@ -657,7 +676,15 @@ const Notifications = () => {
             )}
 
             {unreadNotifications.length > 0 && (
-              <div className="h-12 w-full absolute bottom-0 flex items-center justify-center border-t">
+              <div className="h-12 w-full absolute bottom-0 flex items-center justify-center gap-2 border-t">
+                <Button variant="ghost" asChild>
+                  <Link
+                    to={path.to.purchasingApprovals}
+                    onClick={() => setOpen(false)}
+                  >
+                    查看全部待审批
+                  </Link>
+                </Button>
                 <Button
                   variant="secondary"
                   className="bg-transparent"

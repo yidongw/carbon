@@ -867,6 +867,118 @@ export async function getApprovalsForUser(
   };
 }
 
+/**
+ * Pending approval requests that `userId` is authorized to decide on, excluding
+ * the user's own submissions. Shared core for the "awaiting my approval" list
+ * page and the sidebar badge count. Filters every pending request through
+ * `canApproveRequest` (amount-tier + group/default-approver authority). Note:
+ * this uses upward authority (unlike the dashboard's
+ * `getPendingApprovalsForApprover`, which uses the exact-window check), matching
+ * the authorization the approve action actually enforces.
+ */
+async function getPendingApprovalsAwaitingUser(
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string,
+  documentType?: (typeof approvalDocumentType)[number]
+) {
+  let query = client
+    .from("approvalRequest")
+    .select(
+      "id, documentType, documentId, amount, requestedBy, requestedAt, companyId"
+    )
+    .eq("companyId", companyId)
+    .eq("status", "Pending")
+    .neq("requestedBy", userId);
+
+  if (documentType) {
+    query = query.eq("documentType", documentType);
+  }
+
+  const { data, error } = await query;
+  if (error || !data) return [];
+
+  const authorized = await Promise.all(
+    data.map(async (row) => {
+      const canApprove = await canApproveRequest(
+        client,
+        {
+          amount: row.amount,
+          documentType: row.documentType,
+          companyId: row.companyId
+        },
+        userId
+      );
+      return canApprove ? row : null;
+    })
+  );
+
+  return authorized.filter(
+    (row): row is NonNullable<typeof row> => row !== null
+  );
+}
+
+/**
+ * Count of pending approval requests awaiting `userId`'s decision. Lightweight
+ * (no readable-field view join) — used for the sidebar/nav badge.
+ */
+export async function getApprovalCountAwaitingUser(
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string,
+  documentType?: (typeof approvalDocumentType)[number]
+): Promise<number> {
+  const rows = await getPendingApprovalsAwaitingUser(
+    client,
+    userId,
+    companyId,
+    documentType
+  );
+  return rows.length;
+}
+
+/**
+ * Pending approval requests awaiting `userId`'s decision, enriched with the
+ * readable document id + description from the `approvalRequests` view. Backs the
+ * "awaiting my approval" list page.
+ */
+export async function getApprovalsAwaitingUser(
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string,
+  documentType?: (typeof approvalDocumentType)[number]
+) {
+  const rows = await getPendingApprovalsAwaitingUser(
+    client,
+    userId,
+    companyId,
+    documentType
+  );
+
+  const enriched = await Promise.all(
+    rows.map(async (row) => {
+      const { data: viewData } = await client
+        .from("approvalRequests")
+        .select("documentReadableId, documentDescription")
+        .eq("id", row.id)
+        .single();
+
+      return {
+        ...row,
+        documentReadableId: viewData?.documentReadableId ?? null,
+        documentDescription: viewData?.documentDescription ?? null
+      };
+    })
+  );
+
+  enriched.sort(
+    (a, b) =>
+      new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime()
+  );
+
+  return { data: enriched, count: enriched.length, error: null };
+}
+
 export async function getBase64ImageFromSupabase(
   client: SupabaseClient<Database>,
   path: string

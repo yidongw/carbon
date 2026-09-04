@@ -1,10 +1,12 @@
+import { requirePermissions } from "@carbon/auth/auth.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import type { MetaFunction } from "react-router";
-import { Outlet } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { Outlet, useLoaderData } from "react-router";
 import { GroupedContentSidebar } from "~/components/Layout";
 import { CollapsibleSidebarProvider } from "~/components/Layout/Navigation";
 import usePurchasingSubmodules from "~/modules/purchasing/ui/usePurchasingSubmodules";
+import { getApprovalCountAwaitingUser } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -18,8 +20,25 @@ export const handle: Handle = {
   module: "purchasing"
 };
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { client, companyId, userId } = await requirePermissions(request, {
+    view: "purchasing",
+    bypassRls: true
+  });
+
+  const pendingApprovalCount = await getApprovalCountAwaitingUser(
+    client,
+    userId,
+    companyId,
+    "purchaseOrder"
+  );
+
+  return { pendingApprovalCount };
+}
+
 export default function UsersRoute() {
-  const { groups } = usePurchasingSubmodules();
+  const { pendingApprovalCount } = useLoaderData<typeof loader>();
+  const { groups } = usePurchasingSubmodules(pendingApprovalCount);
 
   return (
     <CollapsibleSidebarProvider>

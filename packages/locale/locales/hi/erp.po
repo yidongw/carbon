@@ -824,11 +824,17 @@ msgstr "APPROVAL RULE UPDATED"
 msgid "Approval Rules"
 msgstr "अनुमोदन नियम"
 
+msgid "Approvals"
+msgstr ""
+
 msgid "Approve"
 msgstr "मंजूरी दें"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "स्वीकार करें या सभी अनुपस्थित सामग्री को मात्र मात्रा समीक्षा पृष्ठ पर प्रबंधित करें।"
+
+msgid "Approve Purchase Orders"
+msgstr ""
 
 msgid "Approved"
 msgstr "APPROVED"
@@ -3131,6 +3137,9 @@ msgstr "देटाईसे"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "तय करें कि यदि कोई ऑपरेटर एक बैच या सीरियल जारी करने का प्रयास करता है जो पहले से ही समाप्त हो गया है तो वह क्या देखता है।"
+
+msgid "Decision"
+msgstr ""
 
 msgid "Decrease hops"
 msgstr "क्रम कम करें"
@@ -12359,6 +12368,9 @@ msgstr "संकलन र eject"
 msgid "Reject Lot"
 msgstr "लॉट को अस्वीकार करें"
 
+msgid "Reject Purchase Orders"
+msgstr ""
+
 msgid "Reject Quote"
 msgstr "उद्धरण अस्वीकार करें"
 
@@ -12579,6 +12591,12 @@ msgstr "प्रार्थना सफल रहीছে"
 
 msgid "Request to Join"
 msgstr "आवेदन करें"
+
+msgid "Requested At"
+msgstr ""
+
+msgid "Requested By"
+msgstr ""
 
 msgid "Requested Date"
 msgstr "अनुरोधित तारीख"
