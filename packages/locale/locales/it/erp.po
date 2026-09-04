@@ -9633,6 +9633,9 @@ msgstr "Ordine di lavoro principale"
 msgid "Master work order created"
 msgstr "Ordine di produzione principale creato"
 
+msgid "Master Work Order Remarks"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr "Ordini di lavoro principali"
 
@@ -12376,6 +12379,9 @@ msgstr "Rimanente"
 
 msgid "Remaining after split stays on the original row."
 msgstr "La quantità rimanente dopo la divisione rimane sulla riga originale."
+
+msgid "Remarks"
+msgstr ""
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Ricorda questo PIN. Ne avrai bisogno per uscire dalla modalità console sui terminali MES."

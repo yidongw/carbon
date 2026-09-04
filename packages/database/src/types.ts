@@ -24065,6 +24065,7 @@ export type Database = {
           customFields: Json | null
           id: string
           jobId: string
+          remarks: string | null
           tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
@@ -24076,6 +24077,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           jobId: string
+          remarks?: string | null
           tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
@@ -24087,6 +24089,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           jobId?: string
+          remarks?: string | null
           tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
@@ -63403,6 +63406,7 @@ export type Database = {
           locationName: string | null
           quantity: number | null
           readableIdWithRevision: string | null
+          remarks: string | null
           salesOrderId: string | null
           salesOrderLineId: string | null
           salesOrderReadableId: string | null

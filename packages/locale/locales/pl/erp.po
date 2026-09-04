@@ -9633,6 +9633,9 @@ msgstr "Główne zlecenie"
 msgid "Master work order created"
 msgstr "Zostala stworzona główna zlecenie produkcyjne"
 
+msgid "Master Work Order Remarks"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr "Główne zlecenia"
 
@@ -12376,6 +12379,9 @@ msgstr "Pozostało"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Pozostała ilość po podziale pozostaje w oryginalnym wierszu."
+
+msgid "Remarks"
+msgstr ""
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Zapamiętaj ten PIN. Będziesz go potrzebować, aby wyjść z trybu konsoli na terminalach MES."

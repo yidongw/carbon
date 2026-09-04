@@ -9632,6 +9632,9 @@ msgstr "Master Work Order"
 msgid "Master work order created"
 msgstr "Master work order created"
 
+msgid "Master Work Order Remarks"
+msgstr "Master Work Order Remarks"
+
 msgid "Master Work Orders"
 msgstr "Master Work Orders"
 
@@ -12375,6 +12378,9 @@ msgstr "Remaining"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Remaining after split stays on the original row."
+
+msgid "Remarks"
+msgstr "Remarks"
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Remember this PIN. You will need it to exit console mode on MES terminals."
