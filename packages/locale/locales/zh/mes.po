@@ -1761,6 +1761,9 @@ msgstr "生成PDF失败"
 msgid "Failed to generate picking list"
 msgstr "生成拣货单失败"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "获取类别ID失败"
 
@@ -4523,6 +4526,9 @@ msgstr "未找到可跟踪的实体"
 
 msgid "No bundle work orders"
 msgstr "无分包工单"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未覆盖资产无需计算折旧"

@@ -1760,6 +1760,9 @@ msgstr "Failed to generate PDF"
 msgid "Failed to generate picking list"
 msgstr "Failed to generate picking list"
 
+msgid "Failed to generate RFID codes"
+msgstr "Failed to generate RFID codes"
+
 msgid "Failed to get a category id"
 msgstr "Failed to get a category id"
 
@@ -4522,6 +4525,9 @@ msgstr "No available tracked entities found"
 
 msgid "No bundle work orders"
 msgstr "No bundle work orders"
+
+msgid "No bundle work orders selected"
+msgstr "No bundle work orders selected"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "No depreciation to calculate for uncovered assets"

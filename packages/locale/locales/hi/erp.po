@@ -103,6 +103,9 @@ msgstr "{0} में से {failed} लेबल विफल"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} टिकटों में से {failed} विफल रहे"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
 
@@ -678,6 +681,9 @@ msgstr "सभी प्रकार"
 
 msgid "All Work Centers"
 msgstr "सभी कार्य केंद्र"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "मान लें और आगे बढ़ें"
@@ -1849,6 +1855,9 @@ msgstr "कार्बन मान"
 
 msgid "Cards"
 msgstr "कार्ड्स"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "वाहक"
@@ -5635,6 +5644,9 @@ msgstr "फ़ाइल डीएफ़ए प्रिंट करने म�
 msgid "Failed to generate picking list"
 msgstr "पक्सिंग लिस्ट का उत्पादन फ़ल गया है"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "कатегорी आईडी प्राप्त करने में फालतू सफलता"
 
@@ -8195,6 +8207,16 @@ msgstr "नया PIN जेनरेट करें"
 msgid "Generate Picking List"
 msgstr "पीकिंग लिस्ट गनना"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "जेनरेट की गई आईडी अक्षम हैं"
 
@@ -10435,6 +10457,9 @@ msgstr "कोई बाउन्सर नहीं"
 msgid "No BOM input has a shelf-life policy"
 msgstr "कोई BOM इनपुट शेल्फ-लाइफ नीति नहीं है"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "कोई अंशांकन रिकॉर्ड नहीं मिला"
 
@@ -10650,6 +10675,9 @@ msgstr "कोई परिणाम नहीं मिला"
 
 msgid "No results found."
 msgstr "कोई परिणाम नहीं मिला।"
+
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
 
 msgid "No rules assigned"
 msgstr "कोई नियम निर्धारित नहीं हैं"
@@ -11436,6 +11464,9 @@ msgstr "पीकिंग लिस्ट के मार्कस"
 msgid "Picking Lists"
 msgstr "पीकिंग लिस्टेज"
 
+msgid "Piece"
+msgstr ""
+
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
 
@@ -11717,6 +11748,7 @@ msgid "Print"
 msgstr "प्रिंट"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "प्रिंट करें ({0})"
 
@@ -11730,6 +11762,9 @@ msgstr "{0} टिकट प्रिंट करें"
 
 msgid "Print Bundle Tickets"
 msgstr "बंडल टिकट प्रिंट करें"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "प्रिंट गहराई"
@@ -11765,6 +11800,9 @@ msgstr "इस पर प्रिंट करें"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "{0} लेबल प्रिंट किए गए"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "प्रिंटर पथ डेलीट किया गया है"
@@ -12742,6 +12780,12 @@ msgstr "रिकार्वर्क की मात्रा सफलता
 msgid "Rework triggered successfully"
 msgstr "रिफार्म की जगह सफलतापूर्वक उठाया गया"
 
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "RFQ"
 
@@ -13239,6 +13283,7 @@ msgstr "अाकाउंट चुनें"
 msgid "Select all"
 msgstr "सब कुछ चयन करें"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "सभी चुनें ({0})"

@@ -1760,6 +1760,9 @@ msgstr "Falhou na geração do PDF"
 msgid "Failed to generate picking list"
 msgstr "Falhou na geração da lista de pegagem"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Falhou ao obter um ID de categoria"
 
@@ -4522,6 +4525,9 @@ msgstr "Nenhum entidade rastreada disponível encontrado"
 
 msgid "No bundle work orders"
 msgstr "Sem ordens de trabalho em lote"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nenhuma depreciação para calcular para ativos não cobertos"

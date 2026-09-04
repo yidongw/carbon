@@ -1760,6 +1760,9 @@ msgstr "Nie udało się wygenerować PDF'a"
 msgid "Failed to generate picking list"
 msgstr "Nie udało się wygenerować listy poboru"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Nie można uzyskać ID kategorii"
 
@@ -4522,6 +4525,9 @@ msgstr "Brak dostępnych śledzonych elementów"
 
 msgid "No bundle work orders"
 msgstr "Brak zgrupowanych zadań😀"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Brak deprekacji do obliczenia dla niezakrytych aktywów"

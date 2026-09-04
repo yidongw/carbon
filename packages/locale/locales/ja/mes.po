@@ -1760,6 +1760,9 @@ msgstr "PDFの生成に失敗しました"
 msgid "Failed to generate picking list"
 msgstr "ピッキングリストの生成に失敗しました"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "カテゴリIDを取得できませんでした"
 
@@ -4522,6 +4525,9 @@ msgstr "追跡可能なエンティティが見つかりません"
 
 msgid "No bundle work orders"
 msgstr "バンドル仕事指示書なし"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未 COVERED 資産に対する減価額は計算できません"

@@ -364,6 +364,12 @@ export const path = {
           `${file}/bundle-work-order/labels.json?${params.toString()}`
         );
       },
+      bundleWorkOrderCareLabelsJson: (bundleWorkOrderId: string) => {
+        const params = new URLSearchParams({ bundleWorkOrderId });
+        return generatePath(
+          `${file}/bundle-work-order/care-labels.json?${params.toString()}`
+        );
+      },
       jobTraveler: (id: string) => generatePath(`${file}/traveler/${id}.pdf`),
       jobTravelerByJobId: (jobId: string) =>
         generatePath(`${file}/job/${jobId}/traveler.pdf`),
@@ -1243,6 +1249,9 @@ export const path = {
       generatePath(`${x}/bundle-work-order/${id}/quantities`),
     bundleWorkOrderMaterials: (id: string) =>
       generatePath(`${x}/bundle-work-order/${id}/materials`),
+    bundleWorkOrderRfidCodes: (id: string) =>
+      generatePath(`${x}/bundle-work-order/${id}/rfid-codes`),
+    rfidCodesGenerate: `${x}/production/rfid-codes/generate`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
     jobStatus: (id: string) => generatePath(`${x}/job/${id}/status`),

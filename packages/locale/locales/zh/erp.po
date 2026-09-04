@@ -103,6 +103,9 @@ msgstr "{0} 张标签中 {failed} 张失败"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed}/{0} 张标签打印失败"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
 
@@ -678,6 +681,9 @@ msgstr "所有类型"
 
 msgid "All Work Centers"
 msgstr "所有工作中心"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "允许确认并继续"
@@ -1849,6 +1855,9 @@ msgstr "Carbon 值"
 
 msgid "Cards"
 msgstr "卡片"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "承运商"
@@ -5635,6 +5644,9 @@ msgstr "生成PDF失败"
 msgid "Failed to generate picking list"
 msgstr "生成拣货单失败"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "获取类别ID失败"
 
@@ -8195,6 +8207,16 @@ msgstr "生成新PIN"
 msgid "Generate Picking List"
 msgstr "生成拣货单"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "生成的ID已禁用"
 
@@ -10435,6 +10457,9 @@ msgstr "无存储单元"
 msgid "No BOM input has a shelf-life policy"
 msgstr "没有BOM输入有保质期政策"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "未找到校准记录"
 
@@ -10650,6 +10675,9 @@ msgstr "未找到结果"
 
 msgid "No results found."
 msgstr "未找到相关结果。"
+
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
 
 msgid "No rules assigned"
 msgstr "未分配规则"
@@ -11436,6 +11464,9 @@ msgstr "拣货单备注"
 msgid "Picking Lists"
 msgstr "拣货单"
 
+msgid "Piece"
+msgstr ""
+
 msgid "Pieces/Hour"
 msgstr "件/小时"
 
@@ -11717,6 +11748,7 @@ msgid "Print"
 msgstr "打印"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "打印（{0}）"
 
@@ -11730,6 +11762,9 @@ msgstr "打印 {0} 张标签"
 
 msgid "Print Bundle Tickets"
 msgstr "打印分包标签"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "打印浓度"
@@ -11765,6 +11800,9 @@ msgstr "打印到"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "已打印 {0} 张标签"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "打印机路径已删除"
@@ -12742,6 +12780,12 @@ msgstr "重新加工数量记录成功"
 msgid "Rework triggered successfully"
 msgstr "重新加工已成功触发"
 
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "询价单"
 
@@ -13239,6 +13283,7 @@ msgstr "选择账户"
 msgid "Select all"
 msgstr "全选"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "全选（{0}）"

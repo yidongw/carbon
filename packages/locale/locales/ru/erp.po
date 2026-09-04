@@ -103,6 +103,9 @@ msgstr "Не удалось напечатать {failed} из {0} этикет�
 msgid "{failed} of {0} tickets failed"
 msgstr "Не удалось напечатать {failed} из {0} ярлыков"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}МБ максимум"
 
@@ -678,6 +681,9 @@ msgstr "Все типы"
 
 msgid "All Work Centers"
 msgstr "Все рабочие центры"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "Позволяет принять во внимание и продолжить"
@@ -1849,6 +1855,9 @@ msgstr "Значение Carbon"
 
 msgid "Cards"
 msgstr "Карты"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "Перевозчик"
@@ -5635,6 +5644,9 @@ msgstr "Не удалось сгенерировать PDF"
 msgid "Failed to generate picking list"
 msgstr "Не удалось сгенерировать список отбора"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Не удалось получить идентификатор категории"
 
@@ -8195,6 +8207,16 @@ msgstr "Создать новый PIN"
 msgid "Generate Picking List"
 msgstr "Сформировать список выдачи"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "Сгенерированные ID отключены"
 
@@ -10435,6 +10457,9 @@ msgstr "Нет коробки"
 msgid "No BOM input has a shelf-life policy"
 msgstr "Ни один вход BOM не имеет политики срока хранения"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "Записи о калибровке не найдены"
 
@@ -10650,6 +10675,9 @@ msgstr "Результатов не найдено"
 
 msgid "No results found."
 msgstr "Нет результатов."
+
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
 
 msgid "No rules assigned"
 msgstr "Нет заданных правил"
@@ -11436,6 +11464,9 @@ msgstr "Заметки к списку выбора"
 msgid "Picking Lists"
 msgstr "Списки выбора"
 
+msgid "Piece"
+msgstr ""
+
 msgid "Pieces/Hour"
 msgstr "Штук/час"
 
@@ -11717,6 +11748,7 @@ msgid "Print"
 msgstr "Печать"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "Печать ({0})"
 
@@ -11730,6 +11762,9 @@ msgstr "Печать {0} ярлыков"
 
 msgid "Print Bundle Tickets"
 msgstr "Печать ярлыков пачек"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "Плотность печати"
@@ -11765,6 +11800,9 @@ msgstr "Печатать на"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "Напечатано этикеток: {0}"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "Принтерная дорога удалена"
@@ -12742,6 +12780,12 @@ msgstr "Количество переработки успешно зареги�
 msgid "Rework triggered successfully"
 msgstr "Переработка запущена успешно"
 
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "РФП"
 
@@ -13239,6 +13283,7 @@ msgstr "Выберите счет"
 msgid "Select all"
 msgstr "Выбрать все"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Выбрать все ({0})"

@@ -103,6 +103,9 @@ msgstr "{failed} von {0} Etiketten fehlgeschlagen"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} von {0} Tickets fehlgeschlagen"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB-Limit"
 
@@ -678,6 +681,9 @@ msgstr "Alle Typen"
 
 msgid "All Work Centers"
 msgstr "Alle Arbeitszentren"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "Zulassen und fortsetzen"
@@ -1849,6 +1855,9 @@ msgstr "Carbon-Wert"
 
 msgid "Cards"
 msgstr "Karten"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "Spediteur"
@@ -5635,6 +5644,9 @@ msgstr "Fehler beim Generieren des PDFs"
 msgid "Failed to generate picking list"
 msgstr "Fehler beim Generieren der Picklisten"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Fehler beim Abrufen einer Kategorie-ID"
 
@@ -8195,6 +8207,16 @@ msgstr "Neue PIN generieren"
 msgid "Generate Picking List"
 msgstr "Generiere Picklisten"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "Generierte IDs sind deaktiviert"
 
@@ -10435,6 +10457,9 @@ msgstr "Kein Bin"
 msgid "No BOM input has a shelf-life policy"
 msgstr "Keine BOM-Eingabe hat eine Shelf-Life-Richtlinie"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "Keine Kalibrierungsdatensätze gefunden"
 
@@ -10650,6 +10675,9 @@ msgstr "Keine Ergebnisse gefunden"
 
 msgid "No results found."
 msgstr "Keine Ergebnisse gefunden."
+
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
 
 msgid "No rules assigned"
 msgstr "Keine Regeln zugewiesen"
@@ -11436,6 +11464,9 @@ msgstr "Lagerzettel-Bemerkungen"
 msgid "Picking Lists"
 msgstr "Lagerbestandslisten"
 
+msgid "Piece"
+msgstr ""
+
 msgid "Pieces/Hour"
 msgstr "Stück/Stunde"
 
@@ -11717,6 +11748,7 @@ msgid "Print"
 msgstr "Drucken"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "Drucken ({0})"
 
@@ -11730,6 +11762,9 @@ msgstr "{0} Tickets drucken"
 
 msgid "Print Bundle Tickets"
 msgstr "Bündeltickets drucken"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "Druckschwärze"
@@ -11765,6 +11800,9 @@ msgstr "Drucken auf"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "{0} Etiketten gedruckt"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "Druckerroute gelöscht"
@@ -12742,6 +12780,12 @@ msgstr "Rückgewinnungsmenge erfolgreich aufgezeichnet"
 msgid "Rework triggered successfully"
 msgstr "Rework wurde erfolgreich triggert"
 
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "RFQ"
 
@@ -13239,6 +13283,7 @@ msgstr "Wählen Sie Konto"
 msgid "Select all"
 msgstr "Selektiere alle"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Alle auswählen ({0})"
