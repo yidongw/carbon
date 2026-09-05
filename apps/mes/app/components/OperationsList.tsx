@@ -93,7 +93,7 @@ function OperationCard({
   showThumbnail
 }: OperationCardProps) {
   const { t } = useLingui();
-  const { formatDate, formatRelativeTime } = useDateFormatter();
+  const { formatDate, formatDateTime, formatRelativeTime } = useDateFormatter();
   const isOverdue =
     operation.jobDeadlineType !== "No Deadline" && operation.jobDueDate
       ? new Date(operation.jobDueDate) < new Date()
@@ -220,10 +220,16 @@ function OperationCard({
           )}
         </CardContent>
         {(operation.assignee ||
+          operation.assignedAt ||
           (operation.tags && operation.tags.length > 0)) && (
           <CardFooter className="items-center justify-start text-xs flex-wrap mt-auto">
             {operation.assignee && (
               <EmployeeAvatar size="xs" employeeId={operation.assignee} />
+            )}
+            {operation.assignedAt && (
+              <span className="text-muted-foreground">
+                {t`Assigned`}: {formatDateTime(operation.assignedAt)}
+              </span>
             )}
             {operation.tags?.map((tag) => (
               <Badge

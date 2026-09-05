@@ -92,6 +92,20 @@ type BundleWorkOrder = {
   processCount: number | null;
 };
 
+// assignedAt is a full timestamp (timestamptz).
+function formatDateTime(value: string | null) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 export default function BundleWorkOrdersRoute() {
   const { t, i18n } = useLingui();
   const { bundles, masterWorkOrderId, masterWOMap } =
@@ -343,6 +357,11 @@ export default function BundleWorkOrdersRoute() {
                         {t`Processes`}: {row.processCount}
                       </span>
                     )}
+                    {row.assignedAt && (
+                      <span>
+                        {t`Assigned`}: {formatDateTime(row.assignedAt)}
+                      </span>
+                    )}
                     <span className="ml-auto">
                       <EmployeeAvatar employeeId={row.assignee} />
                     </span>
@@ -376,6 +395,9 @@ export default function BundleWorkOrdersRoute() {
                     </Th>
                     <Th>
                       <Trans>Assignee</Trans>
+                    </Th>
+                    <Th>
+                      <Trans>Assigned At</Trans>
                     </Th>
                     <Th>
                       <Trans>Status</Trans>
@@ -427,6 +449,9 @@ export default function BundleWorkOrdersRoute() {
                       </Td>
                       <Td>
                         <EmployeeAvatar employeeId={row.assignee} />
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {formatDateTime(row.assignedAt)}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />
