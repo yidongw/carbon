@@ -62,6 +62,42 @@ export async function action({ request }: ActionFunctionArgs) {
       id = `${jobId}:${id}:${makeMethodId}:${materialId ?? ""}`;
     }
 
+    // Inverse of the jobOperation mirror above: when a Bundle Work Order (its
+    // underlying job) is assigned, propagate the assignee onto the first
+    // operation if it's still unassigned. The shop-floor report keys on
+    // jobOperation.assignee, so without this the sewing owner set on the bundle
+    // never reaches the operation and the report stays empty. Only fills an
+    // empty operation assignee; never overwrites one an operator already set.
+    if (table === "job" && assignee) {
+      const bundle = await client
+        .from("bundleWorkOrder")
+        .select("id")
+        .eq("jobId", id)
+        .eq("companyId", companyId)
+        .maybeSingle();
+      if (bundle.data) {
+        const firstOp = await client
+          .from("jobOperation")
+          .select("id, assignee")
+          .eq("jobId", id)
+          .eq("companyId", companyId)
+          .order("order", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (firstOp.data && !firstOp.data.assignee) {
+          await client
+            .from("jobOperation")
+            .update({
+              assignee,
+              assignedAt: new Date().toISOString(),
+              updatedBy: userId
+            })
+            .eq("id", firstOp.data.id)
+            .eq("companyId", companyId);
+        }
+      }
+    }
+
     if (
       table === "nonConformanceActionTask" ||
       table === "nonConformanceApprovalTask"
