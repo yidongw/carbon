@@ -12,7 +12,7 @@ export async function getMasterWorkOrdersList(
   return client
     .from("masterWorkOrders")
     .select(
-      "id, jobId, jobReadableId, readableIdWithRevision, itemName, quantity, status, assignee, dueDate, deadlineType, salesOrderReadableId, locationName"
+      "id, jobId, jobReadableId, readableIdWithRevision, itemName, quantity, status, assignee, assignedAt, dueDate, deadlineType, salesOrderReadableId, locationName"
     )
     .eq("companyId", companyId)
     .order("createdAt", { ascending: false });
@@ -53,18 +53,20 @@ export async function getUnassignedBundleWorkOrders(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
-  return client
-    .from("bundleWorkOrders")
-    .select(
-      "id, jobId, jobReadableId, readableIdWithRevision, styleReadableId, itemName, attributeLabel, attributeValues, quantity, status, processCount"
-    )
-    .eq("companyId", companyId)
-    .in("status", ["Ready", "In Progress", "Paused"])
-    .is("assignee", null)
-    // Only bundles that actually have an operation to pick up (a fresh bundle
-    // with no operation graph yet would dead-end on the job DAG).
-    .gt("processCount", 0)
-    .order("jobReadableId", { ascending: true });
+  return (
+    client
+      .from("bundleWorkOrders")
+      .select(
+        "id, jobId, jobReadableId, readableIdWithRevision, styleReadableId, itemName, attributeLabel, attributeValues, quantity, status, assignedAt, processCount"
+      )
+      .eq("companyId", companyId)
+      .in("status", ["Ready", "In Progress", "Paused"])
+      .is("assignee", null)
+      // Only bundles that actually have an operation to pick up (a fresh bundle
+      // with no operation graph yet would dead-end on the job DAG).
+      .gt("processCount", 0)
+      .order("jobReadableId", { ascending: true })
+  );
 }
 
 /** A single bundle work order (via the read view) for the scan-landing page. */

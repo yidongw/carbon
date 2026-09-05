@@ -134,6 +134,7 @@ type MasterWorkOrder = {
   quantity: number | null;
   status: string | null;
   assignee: string | null;
+  assignedAt: string | null;
   dueDate: string | null;
   deadlineType: string | null;
   salesOrderReadableId: string | null;
@@ -147,6 +148,20 @@ function formatDate(value: string | null) {
     month: "short",
     day: "numeric",
     year: "numeric"
+  });
+}
+
+// assignedAt is a full timestamp (timestamptz), unlike dueDate which is a date.
+function formatDateTime(value: string | null) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
   });
 }
 
@@ -296,6 +311,11 @@ export default function MasterWorkOrdersRoute() {
                       </>
                     )}
                     <span>{formatDate(row.dueDate)}</span>
+                    {row.assignedAt && (
+                      <span>
+                        {t`Assigned`}: {formatDateTime(row.assignedAt)}
+                      </span>
+                    )}
                     <span className="ml-auto">
                       <EmployeeAvatar employeeId={row.assignee} />
                     </span>
@@ -376,6 +396,9 @@ export default function MasterWorkOrdersRoute() {
                     </Th>
                     <Th>
                       <Trans>Due Date</Trans>
+                    </Th>
+                    <Th>
+                      <Trans>Assigned At</Trans>
                     </Th>
                     <Th>
                       <Trans>Status</Trans>
@@ -565,6 +588,9 @@ export default function MasterWorkOrdersRoute() {
                       </Td>
                       <Td className="text-muted-foreground">
                         {formatDate(row.dueDate)}
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {formatDateTime(row.assignedAt)}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />

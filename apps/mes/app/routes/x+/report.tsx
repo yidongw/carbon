@@ -64,7 +64,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 type ReportOperation = NonNullable<
   Awaited<ReturnType<typeof getAssignedOperationsForReport>>["data"]
->[number];
+>[number] & { assignedAt: string | null };
+
+// assignedAt is a full timestamp (timestamptz).
+function formatDateTime(value: string | null) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
 
 const OP_STATUS_COLORS: Record<
   string,
@@ -285,6 +299,11 @@ export default function ReportRoute() {
                         {t`Scrap`}: {Number(row.quantityScrapped)}
                       </span>
                     )}
+                    {row.assignedAt && (
+                      <span>
+                        {t`Assigned`}: {formatDateTime(row.assignedAt)}
+                      </span>
+                    )}
                     <span className="ml-auto">
                       <EmployeeAvatar employeeId={row.assignee} />
                     </span>
@@ -342,6 +361,9 @@ export default function ReportRoute() {
                       <Trans>Assignee</Trans>
                     </Th>
                     <Th>
+                      <Trans>Assigned At</Trans>
+                    </Th>
+                    <Th>
                       <Trans>Status</Trans>
                     </Th>
                     <Th />
@@ -389,6 +411,9 @@ export default function ReportRoute() {
                       </Td>
                       <Td>
                         <EmployeeAvatar employeeId={row.assignee} />
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {formatDateTime(row.assignedAt)}
                       </Td>
                       <Td>
                         <OperationStatus status={row.operationStatus} />

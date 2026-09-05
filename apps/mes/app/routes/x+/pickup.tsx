@@ -50,7 +50,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
 // The loader filters to rows with a non-null id, so id is a string here.
 type UnassignedBundle = NonNullable<
   Awaited<ReturnType<typeof getUnassignedBundleWorkOrders>>["data"]
->[number] & { id: string };
+>[number] & { id: string; assignedAt: string | null };
+
+// assignedAt is a full timestamp (timestamptz); null for still-unclaimed bundles.
+function formatDateTime(value: string | null) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
 
 export default function PickupRoute() {
   const { t, i18n } = useLingui();
@@ -230,6 +244,9 @@ export default function PickupRoute() {
                       <Trans>Processes</Trans>
                     </Th>
                     <Th>
+                      <Trans>Assigned At</Trans>
+                    </Th>
+                    <Th>
                       <Trans>Status</Trans>
                     </Th>
                     <Th />
@@ -253,6 +270,9 @@ export default function PickupRoute() {
                       </Td>
                       <Td className="text-muted-foreground tabular-nums">
                         {row.processCount ?? "—"}
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {formatDateTime(row.assignedAt)}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />
