@@ -1,5 +1,4 @@
 import {
-  CarbonEdition,
   CarbonProvider,
   CONTROLLED_ENVIRONMENT,
   getCarbon,
@@ -26,7 +25,7 @@ import {
   useNProgress
 } from "@carbon/react";
 import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
-import { Edition, formatPersonName } from "@carbon/utils";
+import { formatPersonName } from "@carbon/utils";
 import posthog from "posthog-js";
 import { Suspense } from "react";
 import type {
@@ -186,9 +185,12 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     locationId
   );
 
-  if (!companyPlan && CarbonEdition === Edition.Cloud) {
-    throw redirect(path.to.onboarding);
-  }
+  // Onboarding no longer requires a paid plan — cloud companies enter on the
+  // free tier and purchase later in Billing settings (mirrors the ERP app's /x
+  // layout, which only requires a company name). jilio bills via a one-time
+  // WeChat/Alipay term and has no Stripe customer, so the old
+  // `!companyPlan && Cloud` gate here wrongly bounced every user to ERP
+  // onboarding and made MES completely unreachable.
 
   if (!locations.data || locations.data.length === 0) {
     throw new Error(`No locations found for ${company.name}`);
