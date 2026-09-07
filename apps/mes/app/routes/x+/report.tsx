@@ -287,7 +287,10 @@ export default function ReportRoute() {
                       </span>
                     )}
                     <span className="tabular-nums">
-                      {t`Qty`}: {row.quantityComplete} / {operationTarget(row)}
+                      {t`Qty`}:{" "}
+                      <span className="font-semibold whitespace-nowrap">
+                        {row.quantityComplete} / {operationTarget(row)}
+                      </span>
                     </span>
                     {Number(row.quantityReworked) > 0 && (
                       <span className="tabular-nums text-amber-600 dark:text-amber-500">
