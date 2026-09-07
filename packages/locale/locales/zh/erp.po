@@ -1664,6 +1664,9 @@ msgstr "分包"
 msgid "Bundle not found"
 msgstr "未找到分包"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "分包工单"
 
@@ -8762,9 +8765,6 @@ msgstr "库存数量"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "库存预留/允许量"
-
-msgid "Inventory Scan"
-msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "已发货未开票库存"

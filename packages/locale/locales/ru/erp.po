@@ -1664,6 +1664,9 @@ msgstr "Пачка"
 msgid "Bundle not found"
 msgstr "Бандл не найден"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "Наряды на пачки"
 
@@ -8762,9 +8765,6 @@ msgstr "Кол-во в инвентаре"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Заключенные запасы / Допуски"
-
-msgid "Inventory Scan"
-msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Инвентарь отправлен без выставления счета"

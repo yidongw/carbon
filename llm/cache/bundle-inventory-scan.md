@@ -11,8 +11,10 @@ and real inventory posting are explicitly deferred (v2).
 `bundleInventoryMovement` (migration `20260907142853_bundle-inventory-movement.sql`):
 `id(id('bim'))`, `bundleWorkOrderId` (FK→bundleWorkOrder, cascade), `direction` TEXT
 CHECK In/Out, `quantity` INT, `scannedCode` TEXT (the actual piece code scanned),
-company + audit + customFields/tags. RLS mirrors `garmentRfidCode`: SELECT =
-employee role; INSERT/UPDATE/DELETE = `production_*`. Type hand-added to
+company + audit + customFields/tags. RLS: SELECT = employee role;
+INSERT/UPDATE/DELETE = `inventory_*` (the table first shipped with `production_*`,
+switched by follow-up migration `20260907151824_bundle-inventory-movement-inventory-perms.sql`
+when the feature moved to the Inventory module). Type hand-added to
 `packages/database/src/types.ts` (DB not rebuilt in-branch).
 
 ## Service — `apps/erp/app/modules/production/bundleInventoryMovement.service.ts`
@@ -26,15 +28,17 @@ employee role; INSERT/UPDATE/DELETE = `production_*`. Type hand-added to
 Re-exported via `~/modules/production` barrel (`index.ts`).
 
 ## UI
-- **Scan page** `apps/erp/app/routes/x+/production+/bundle-inventory.tsx`
-  (`path.to.bundleInventoryScan` = `/x/production/bundle-inventory`). Loader reads
+- **Scan page** `apps/erp/app/routes/x+/inventory+/bundle-inventory.tsx`
+  (`path.to.bundleInventoryScan` = `/x/inventory/bundle-inventory`). Lives under the
+  **Inventory** module (it's an in/out action), gated `view`/`create: "inventory"`.
+  Loader reads
   `?direction=In|Out&code=` → resolves + recent list. `ToggleGroup` In/Out (drives
   searchParams). Autofocused `<Input>` in a `method="get"` `<Form>` (1D gun types code
   + Enter submits → loader lookup); `key={location.key}` remounts it empty each nav.
   Resolved bundle card → `method="post"` `<Form>` (hidden bundleWorkOrderId/direction/
   quantity/scannedCode) → action inserts, `throw redirect(back, flash(success))`,
-  refocus. Nav entry "Inventory Scan" (`LuScanBarcode`) under Production/Manage in
-  `useProductionSubmodules.tsx`.
+  refocus. Nav entry "Bundle Scan" (`LuScanBarcode`) under **Inventory/Manage** in
+  `useInventorySubmodules.tsx` (alongside Receipts/Shipments/Transfers).
 - **Per-bundle history tab** `x+/bundle-work-order+/$bundleWorkOrderId.inventory.tsx`
   (`path.to.bundleWorkOrderInventory(id)`), link added to `BundleWorkOrderHeader`
   links array (after "RFID Codes"). Renders shared
@@ -45,4 +49,6 @@ Re-exported via `~/modules/production` barrel (`index.ts`).
 - Quantity = the bundle's full `quantity` at confirm time (whole-bundle only; no
   partial). Scanning one piece records the whole bundle.
 - No `itemLedger`/cost posting, no per-piece granularity, no location field (v1).
-- Action gated `create: "production"`; loader `view: "production"`, matching RLS.
+- Scan page gated `view`/`create: "inventory"`, matching RLS. The per-bundle history
+  tab stays under the bundle work order (production context) — its SELECT works via
+  the employee-role read policy.

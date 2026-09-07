@@ -1664,6 +1664,9 @@ msgstr "Bündel"
 msgid "Bundle not found"
 msgstr "Bundel nicht gefunden"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "Bündel-Arbeitsaufträge"
 
@@ -8762,9 +8765,6 @@ msgstr "Bestandsmenge"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Bewegliche Vorräte / Allowance"
-
-msgid "Inventory Scan"
-msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Der versendete Bestand wurde nicht in Rechnung gestellt"

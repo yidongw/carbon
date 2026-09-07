@@ -32,7 +32,7 @@ function parseDirection(value: unknown): "In" | "Out" {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
-    view: "production",
+    view: "inventory",
     role: "employee"
   });
 
@@ -58,7 +58,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, companyId, userId } = await requirePermissions(request, {
-    create: "production"
+    create: "inventory"
   });
 
   const formData = await request.formData();

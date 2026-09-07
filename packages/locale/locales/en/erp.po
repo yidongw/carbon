@@ -1663,6 +1663,9 @@ msgstr "Bundle"
 msgid "Bundle not found"
 msgstr "Bundle not found"
 
+msgid "Bundle Scan"
+msgstr "Bundle Scan"
+
 msgid "Bundle Work Orders"
 msgstr "Bundle Work Orders"
 
@@ -8761,9 +8764,6 @@ msgstr "Inventory Qty"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Inventory Reserves / Allowances"
-
-msgid "Inventory Scan"
-msgstr "Inventory Scan"
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Inventory Shipped Not Invoiced"

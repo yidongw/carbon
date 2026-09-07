@@ -1664,6 +1664,9 @@ msgstr "バンドル"
 msgid "Bundle not found"
 msgstr "バンドルが見つかりません"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "バンドル作業指示"
 
@@ -8762,9 +8765,6 @@ msgstr "在庫数量"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Inventory Reserves / Allowances"
-
-msgid "Inventory Scan"
-msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "出荷された在庫は請求されていません"

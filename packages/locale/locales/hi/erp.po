@@ -1664,6 +1664,9 @@ msgstr "बंडल"
 msgid "Bundle not found"
 msgstr "बंडल नहीं पाया"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "बंडल कार्य आदेश"
 
@@ -8762,9 +8765,6 @@ msgstr "इन्वेंटरी मात्रा"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "भंडारण आरक्षित / अनुमतियाँ"
-
-msgid "Inventory Scan"
-msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "इन्वेंटरी शिप किया गया इनवॉइस नहीं किया गया"
