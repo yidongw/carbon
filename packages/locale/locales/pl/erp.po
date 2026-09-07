@@ -1671,6 +1671,9 @@ msgstr "Pakiet"
 msgid "Bundle not found"
 msgstr "Szczyt nie został znaleziony"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "Zlecenia pakietów"
 
@@ -8791,9 +8794,6 @@ msgstr "Ilość w magazynie"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Zapasy magazynowe / Pozwolenia"
-
-msgid "Inventory Scan"
-msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Zapasy wysłane niezafakturowane"

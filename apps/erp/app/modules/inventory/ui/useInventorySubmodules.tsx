@@ -7,6 +7,7 @@ import {
   LuListChecks,
   LuNetwork,
   LuQrCode,
+  LuScanBarcode,
   LuScanQrCode,
   LuShieldCheck,
   LuTag,
@@ -56,6 +57,12 @@ export default function useInventorySubmodules() {
           to: path.to.warehouseTransfers,
           icon: <LuArrowRightLeft />,
           table: "warehouseTransfer"
+        },
+        {
+          name: t`Bundle Scan`,
+          to: path.to.bundleInventoryScan,
+          icon: <LuScanBarcode />,
+          role: "employee"
         }
       ]
     },
