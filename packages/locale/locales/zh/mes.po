@@ -178,6 +178,9 @@ msgstr "资产注册成功"
 msgid "Assigned"
 msgstr "已分配"
 
+msgid "Assigned At"
+msgstr "指派时间"
+
 msgid "Assigned to Me"
 msgstr "分配给我"
 
