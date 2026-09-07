@@ -23,6 +23,7 @@ import {
   LuHash,
   LuMapPin,
   LuPackageOpen,
+  LuPackagePlus,
   LuScissors,
   LuShirt,
   LuSquareUser,
@@ -124,6 +125,19 @@ const MasterWorkOrdersTable = memo(
         openOverlay(overlay.to.masterWorkOrderBundles({ masterWorkOrderId }));
       },
       [openOverlay]
+    );
+
+    // No bundles yet → let the user split the master into bundle work orders
+    // straight from the Bundles cell.
+    const openSplitBatch = useCallback(
+      (e: MouseEvent, masterWorkOrderId: string) => {
+        e.stopPropagation();
+        openOverlay(
+          overlay.to.masterWorkOrderSplitBatch({ masterWorkOrderId }),
+          { onCreated: revalidate }
+        );
+      },
+      [openOverlay, revalidate]
     );
 
     const openProcesses = useCallback(
@@ -265,15 +279,28 @@ const MasterWorkOrdersTable = memo(
               <HStack spacing={1}>
                 <span className="tabular-nums">{bundleCount}</span>
                 {row.original.id ? (
-                  <IconButton
-                    type="button"
-                    icon={<LuPackageOpen size="1em" strokeWidth={2.5} />}
-                    aria-label={t`View bundles`}
-                    size="sm"
-                    variant="secondary"
-                    isDisabled={bundleCount === 0}
-                    onClick={(e) => openBundles(e, row.original.id!)}
-                  />
+                  bundleCount === 0 ? (
+                    <IconButton
+                      type="button"
+                      icon={<LuPackagePlus size="1em" strokeWidth={2.5} />}
+                      aria-label={t`Split into bundles`}
+                      size="sm"
+                      variant="secondary"
+                      isDisabled={
+                        !canUpdateProduction || isJobLocked(row.original.status)
+                      }
+                      onClick={(e) => openSplitBatch(e, row.original.id!)}
+                    />
+                  ) : (
+                    <IconButton
+                      type="button"
+                      icon={<LuPackageOpen size="1em" strokeWidth={2.5} />}
+                      aria-label={t`View bundles`}
+                      size="sm"
+                      variant="secondary"
+                      onClick={(e) => openBundles(e, row.original.id!)}
+                    />
+                  )
                 ) : null}
               </HStack>
             );
@@ -623,6 +650,7 @@ const MasterWorkOrdersTable = memo(
       canUpdateProduction,
       bundleCountByMasterId,
       openBundles,
+      openSplitBatch,
       processCountByMasterId,
       openProcesses,
       cuttingProgressByMasterId,

@@ -13928,6 +13928,9 @@ msgstr "拆分批次"
 msgid "Split failed"
 msgstr "拆分失败"
 
+msgid "Split into bundles"
+msgstr "分包"
+
 msgid "Split line"
 msgstr "拆分行"
 
