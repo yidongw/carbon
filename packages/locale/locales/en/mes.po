@@ -3068,6 +3068,9 @@ msgstr "Failed to receive an operation id"
 msgid "Failed to record attribute"
 msgstr "Failed to record attribute"
 
+msgid "Failed to record movement"
+msgstr "Failed to record movement"
+
 msgid "Failed to record rework quantity"
 msgstr "Failed to record rework quantity"
 
@@ -3981,6 +3984,9 @@ msgstr "Imperial"
 
 msgid "In Progress"
 msgstr "In Progress"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr "Incomplete scan — nothing recorded"
 
 msgid "Increase"
 msgstr "Increase"

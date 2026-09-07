@@ -1,3 +1,4 @@
+export * from "./bundleInventoryMovement.service";
 export * from "./bundleWorkOrder.service";
 export * from "./cuttingStatus";
 export * from "./garmentRfidCode.service";

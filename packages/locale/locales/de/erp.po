@@ -2233,6 +2233,12 @@ msgstr "ID-Änderung bestätigen"
 msgid "Confirm Import"
 msgstr "Import bestätigen"
 
+msgid "Confirm In"
+msgstr ""
+
+msgid "Confirm Out"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr "Passwort bestätigen"
 
@@ -3602,6 +3608,9 @@ msgstr "Abmessungen"
 
 msgid "Direct"
 msgstr "Direkt"
+
+msgid "Direction"
+msgstr ""
 
 msgid "Disabled"
 msgstr "Deaktiviert"
@@ -7018,6 +7027,9 @@ msgstr "Fehler beim Empfang einer Operation-ID"
 msgid "Failed to record attribute"
 msgstr "Fehler beim Aufzeichnen des Attributs"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Fehler beim Aufzeichnen der Rework-Menge"
 
@@ -8421,6 +8433,9 @@ msgstr "Implementierungsunterstützung"
 msgid "Import {label} CSV"
 msgstr "Importiere {label} CSV"
 
+msgid "In"
+msgstr ""
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "Um diese Anfrage in ein Angebot umzuwandeln, müssen alle Positionen eine interne Teilenummer haben."
 
@@ -8495,6 +8510,9 @@ msgstr "Eingehend"
 
 msgid "Incoming Materials"
 msgstr "Eingehende Materialien"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Incoterm"
 msgstr "Incoterm"
@@ -8736,11 +8754,17 @@ msgstr "Lagerhistorie"
 msgid "Inventory Job Notifications"
 msgstr "Bestandsverwaltungs-Jobbenachrichtigungen"
 
+msgid "Inventory Movements"
+msgstr ""
+
 msgid "Inventory Qty"
 msgstr "Bestandsmenge"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Bewegliche Vorräte / Allowance"
+
+msgid "Inventory Scan"
+msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Der versendete Bestand wurde nicht in Rechnung gestellt"
@@ -10544,6 +10568,9 @@ msgstr "Keine Dateien hochgeladen"
 msgid "No forecast quantities provided"
 msgstr "Keine Vorhersagemengen angegeben"
 
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr ""
+
 msgid "No Gauge Selected"
 msgstr "Keine Messuhr ausgewählt"
 
@@ -11104,6 +11131,9 @@ msgstr "Sonstiger Typ"
 msgid "Ounce"
 msgstr "Unze"
 
+msgid "Out"
+msgstr ""
+
 msgid "Outbound Transfer"
 msgstr "Ausgangsübertragung"
 
@@ -11349,6 +11379,9 @@ msgstr "Zahlungen"
 
 msgid "Payroll"
 msgstr "Gehalt"
+
+msgid "pcs"
+msgstr ""
 
 msgid "PDF"
 msgstr "PDF"
@@ -12355,6 +12388,9 @@ msgstr "gespeichert {qty} Einheiten"
 msgid "recorded {qty} units ({reason})"
 msgstr "gespeichert {qty} Einheiten ({reason})"
 
+msgid "Recorded At"
+msgstr ""
+
 msgid "Records"
 msgstr "Aufzeichnungen"
 
@@ -13072,6 +13108,9 @@ msgstr "Speichern..."
 msgid "Scan"
 msgstr "Scannen"
 
+msgid "Scan a care-label barcode…"
+msgstr ""
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Scannen Sie eine Etikett oder suchen Sie nach Artikelnummer oder Verfolgungsnummer."
 
@@ -13095,6 +13134,9 @@ msgstr "Zum Verbinden mit WeChat scannen"
 
 msgid "Scan with WeChat to sign in"
 msgstr "Scannen Sie mit WeChat, um anzumelden"
+
+msgid "Scanned Code"
+msgstr ""
 
 msgid "SCAR"
 msgstr "SCAR"

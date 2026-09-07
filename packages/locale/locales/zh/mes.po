@@ -3069,6 +3069,9 @@ msgstr "未能接收操作ID"
 msgid "Failed to record attribute"
 msgstr "记录属性失败"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "记录返工数量失败"
 
@@ -3982,6 +3985,9 @@ msgstr "英制"
 
 msgid "In Progress"
 msgstr "进行中"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "增加"

@@ -3068,6 +3068,9 @@ msgstr "Fehler beim Empfang einer Operation-ID"
 msgid "Failed to record attribute"
 msgstr "Fehler beim Aufzeichnen des Attributs"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Fehler beim Aufzeichnen der Rework-Menge"
 
@@ -3981,6 +3984,9 @@ msgstr "Imperial"
 
 msgid "In Progress"
 msgstr "In Bearbeitung"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "Erhöhen"

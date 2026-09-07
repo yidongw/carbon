@@ -3068,6 +3068,9 @@ msgstr "Falhou na recepção do ID da operação"
 msgid "Failed to record attribute"
 msgstr "Falhou ao registrar atributo"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Falhou ao registrar quantidade de rework"
 
@@ -3981,6 +3984,9 @@ msgstr "Império"
 
 msgid "In Progress"
 msgstr "Em Andamento"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "Aumentar"

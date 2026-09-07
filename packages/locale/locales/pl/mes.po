@@ -3068,6 +3068,9 @@ msgstr "Nie udało się odebrać identyfikatora operacji"
 msgid "Failed to record attribute"
 msgstr "Nie udało się zarejestrować atrybutu"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Nie udało się zarejestrować ilości naprawy"
 
@@ -3981,6 +3984,9 @@ msgstr "Angielski"
 
 msgid "In Progress"
 msgstr "W toku"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "Zwiększ"

@@ -2233,6 +2233,12 @@ msgstr "Potwierdź zmianę ID"
 msgid "Confirm Import"
 msgstr "Potwierdź import"
 
+msgid "Confirm In"
+msgstr ""
+
+msgid "Confirm Out"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr "Potwierdź hasło"
 
@@ -3602,6 +3608,9 @@ msgstr "Wymiary"
 
 msgid "Direct"
 msgstr "Dyrekt"
+
+msgid "Direction"
+msgstr ""
 
 msgid "Disabled"
 msgstr "Wyłączone"
@@ -7018,6 +7027,9 @@ msgstr "Nie udało się odebrać identyfikatora operacji"
 msgid "Failed to record attribute"
 msgstr "Nie udało się zarejestrować atrybutu"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Niedostępna do zapisu ilość naprawy"
 
@@ -8421,6 +8433,9 @@ msgstr "Wsparcie wdrażania"
 msgid "Import {label} CSV"
 msgstr "Importuj {label} CSV"
 
+msgid "In"
+msgstr ""
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "Aby przekonwertować to RFQ na ofertę, wszystkie linie muszą mieć wewnętrzny numer części."
 
@@ -8495,6 +8510,9 @@ msgstr "Przychodzące"
 
 msgid "Incoming Materials"
 msgstr "Materiały przychodzące"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Incoterm"
 msgstr "Incoterm"
@@ -8736,11 +8754,17 @@ msgstr "Historia Invencji"
 msgid "Inventory Job Notifications"
 msgstr "Powiadomienia o zadaniach inwentaryzacyjnych"
 
+msgid "Inventory Movements"
+msgstr ""
+
 msgid "Inventory Qty"
 msgstr "Ilość w magazynie"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Zapasy magazynowe / Pozwolenia"
+
+msgid "Inventory Scan"
+msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Zapasy wysłane niezafakturowane"
@@ -10544,6 +10568,9 @@ msgstr "Brak przesłanych plików"
 msgid "No forecast quantities provided"
 msgstr "Brak przewidywanych ilości"
 
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr ""
+
 msgid "No Gauge Selected"
 msgstr "Nie wybrano miernika"
 
@@ -11104,6 +11131,9 @@ msgstr "Inny typ"
 msgid "Ounce"
 msgstr "Uncja"
 
+msgid "Out"
+msgstr ""
+
 msgid "Outbound Transfer"
 msgstr "Przenoszenie wychodzące"
 
@@ -11349,6 +11379,9 @@ msgstr "Płatności"
 
 msgid "Payroll"
 msgstr "Płacza"
+
+msgid "pcs"
+msgstr ""
 
 msgid "PDF"
 msgstr "PDF"
@@ -12355,6 +12388,9 @@ msgstr "zapisano {qty} jednostek"
 msgid "recorded {qty} units ({reason})"
 msgstr "zapisano {qty} jednostek ({reason})"
 
+msgid "Recorded At"
+msgstr ""
+
 msgid "Records"
 msgstr "Rekordy"
 
@@ -13072,6 +13108,9 @@ msgstr "Zapisywanie..."
 msgid "Scan"
 msgstr "Skanuj"
 
+msgid "Scan a care-label barcode…"
+msgstr ""
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Skanuj etykietę lub wyszukaj według numeru produktu lub identyfikatora śledzenia."
 
@@ -13095,6 +13134,9 @@ msgstr "Zeskanuj za pomocą WeChat, aby połączyć"
 
 msgid "Scan with WeChat to sign in"
 msgstr "Skanuj z WeChacie, aby się zarejestrować"
+
+msgid "Scanned Code"
+msgstr ""
 
 msgid "SCAR"
 msgstr "SCAR"

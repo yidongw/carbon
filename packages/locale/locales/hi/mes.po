@@ -3068,6 +3068,9 @@ msgstr "oprेशन आईडी का प्राप्त नहीं क�
 msgid "Failed to record attribute"
 msgstr "फलन गुण का रिकॉर्ड करने में व़ियाहो"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "रिउर्क की मात्रा रिकॉर्ड करने में वफ़ादरी नहीं की.get@1"
 
@@ -3981,6 +3984,9 @@ msgstr "इंग्लिश"
 
 msgid "In Progress"
 msgstr "प्रगति में"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "वृद्धि"

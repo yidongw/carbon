@@ -2233,6 +2233,12 @@ msgstr "Подтвердить изменение ID"
 msgid "Confirm Import"
 msgstr "Подтвердить импорт"
 
+msgid "Confirm In"
+msgstr ""
+
+msgid "Confirm Out"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr "Подтвердить пароль"
 
@@ -3602,6 +3608,9 @@ msgstr "Размеры"
 
 msgid "Direct"
 msgstr "Директ"
+
+msgid "Direction"
+msgstr ""
 
 msgid "Disabled"
 msgstr "Отключено"
@@ -7018,6 +7027,9 @@ msgstr "Не удалось получить идентификатор опер
 msgid "Failed to record attribute"
 msgstr "Не удалось записать атрибут"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Не удалось записать количество переработки"
 
@@ -8421,6 +8433,9 @@ msgstr "Поддержка внедрения"
 msgid "Import {label} CSV"
 msgstr "Импорт {label} CSV"
 
+msgid "In"
+msgstr ""
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "Чтобы преобразовать это РЗП в предложение, все строки должны иметь внутренний номер детали."
 
@@ -8495,6 +8510,9 @@ msgstr "Входящие"
 
 msgid "Incoming Materials"
 msgstr "Входящие материалы"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Incoterm"
 msgstr "Инкотермс"
@@ -8736,11 +8754,17 @@ msgstr "История инвентаризации"
 msgid "Inventory Job Notifications"
 msgstr "Уведомления о завершении работ по инвентаризации"
 
+msgid "Inventory Movements"
+msgstr ""
+
 msgid "Inventory Qty"
 msgstr "Кол-во в инвентаре"
 
 msgid "Inventory Reserves / Allowances"
 msgstr "Заключенные запасы / Допуски"
+
+msgid "Inventory Scan"
+msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
 msgstr "Инвентарь отправлен без выставления счета"
@@ -10544,6 +10568,9 @@ msgstr "Файлы не загружены"
 msgid "No forecast quantities provided"
 msgstr "Нет предоставленных прогнозных количеств"
 
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr ""
+
 msgid "No Gauge Selected"
 msgstr "Датчик не выбран"
 
@@ -11104,6 +11131,9 @@ msgstr "Другой тип"
 msgid "Ounce"
 msgstr "Унция"
 
+msgid "Out"
+msgstr ""
+
 msgid "Outbound Transfer"
 msgstr "Передача на склад выдачи"
 
@@ -11349,6 +11379,9 @@ msgstr "Платежи"
 
 msgid "Payroll"
 msgstr "Платежи"
+
+msgid "pcs"
+msgstr ""
 
 msgid "PDF"
 msgstr "PDF"
@@ -12355,6 +12388,9 @@ msgstr "записано {qty} единиц"
 msgid "recorded {qty} units ({reason})"
 msgstr "записано {qty} единиц ({reason})"
 
+msgid "Recorded At"
+msgstr ""
+
 msgid "Records"
 msgstr "Записи"
 
@@ -13072,6 +13108,9 @@ msgstr "Сохранение..."
 msgid "Scan"
 msgstr "Сканировать"
 
+msgid "Scan a care-label barcode…"
+msgstr ""
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Сканируйте этикетку или выполните поиск по идентификатору товара или отслеживания."
 
@@ -13095,6 +13134,9 @@ msgstr "Отсканируйте через WeChat для подключения
 
 msgid "Scan with WeChat to sign in"
 msgstr "Скан с ВКонтакте для регистрации"
+
+msgid "Scanned Code"
+msgstr ""
 
 msgid "SCAR"
 msgstr "SCAR"

@@ -6,6 +6,7 @@ import {
   LuListChecks,
   LuPackageCheck,
   LuPackageOpen,
+  LuScanBarcode,
   LuScissors,
   LuShieldCheck,
   LuSquareChartGantt,
@@ -58,6 +59,12 @@ export default function useProductionSubmodules(opts?: {
           icon: <LuPackageOpen />,
           role: "employee",
           table: "bundleWorkOrder"
+        },
+        {
+          name: t`Inventory Scan`,
+          to: path.to.bundleInventoryScan,
+          icon: <LuScanBarcode />,
+          role: "employee"
         },
         {
           name: t`Procedures`,
