@@ -18,17 +18,6 @@ import { data } from "react-router";
 // coarse per-IP limit that mirrors the email login flow.
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
-  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
-  const { success } = await ratelimit.limit(ip);
-  if (!success) {
-    return error(null, "Rate limit exceeded");
-  }
 
   const formData = await request.formData();
 
@@ -38,6 +27,19 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { phone } = validation.data;
+
+  // Rate-limit per phone number, not per IP: behind the China L4 proxy every
+  // mainland user shares one source IP, so an IP-keyed limit would throttle all
+  // of them together. Aliyun enforces its own per-number send throttle too.
+  const ratelimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
+    analytics: true
+  });
+  const { success } = await ratelimit.limit(`sms-send:${phone}`);
+  if (!success) {
+    return error(null, "Rate limit exceeded");
+  }
 
   // Enterprise deployments don't allow self-signup: only send a code to numbers
   // that already belong to a provisioned user (mirrors the email login gate).
