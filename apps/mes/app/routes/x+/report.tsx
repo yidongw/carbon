@@ -254,7 +254,9 @@ export default function ReportRoute() {
                         {row.jobReadableId ?? row.id}
                       </Link>
                       <p className="text-sm text-muted-foreground mt-0.5">
-                        {row.styleReadableId ?? "—"}
+                        <span className="font-semibold text-foreground">
+                          {row.styleReadableId ?? "—"}
+                        </span>
                         {row.description && (
                           <span className="ml-1 text-xs">
                             · {row.description}
@@ -266,7 +268,7 @@ export default function ReportRoute() {
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     {row.attributeLabel && (
-                      <span>
+                      <span className="font-semibold text-foreground">
                         {localizeVariantAttributeLabel(
                           row.attributeLabel,
                           i18n.locale
@@ -275,7 +277,7 @@ export default function ReportRoute() {
                     )}
                     <span className="tabular-nums">
                       {t`Qty`}:{" "}
-                      <span className="font-semibold whitespace-nowrap">
+                      <span className="font-semibold text-foreground whitespace-nowrap">
                         {row.quantityComplete} / {operationTarget(row)}
                       </span>
                     </span>
