@@ -31,7 +31,7 @@ import {
 import { JobStatus } from "~/components/JobStatus";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getMasterWorkOrdersList } from "~/services/bundle.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -151,22 +151,9 @@ function formatDate(value: string | null) {
   });
 }
 
-// assignedAt is a full timestamp (timestamptz), unlike dueDate which is a date.
-function formatDateTime(value: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
 export default function MasterWorkOrdersRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { masters, statsMap } = useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
   const [people] = usePeople();
@@ -590,7 +577,7 @@ export default function MasterWorkOrdersRoute() {
                         {formatDate(row.dueDate)}
                       </Td>
                       <Td className="text-muted-foreground">
-                        {formatDateTime(row.assignedAt)}
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />

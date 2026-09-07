@@ -32,7 +32,7 @@ import {
 } from "~/components/PrintTicketsModal";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getBundleWorkOrdersList } from "~/services/bundle.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -92,22 +92,9 @@ type BundleWorkOrder = {
   processCount: number | null;
 };
 
-// assignedAt is a full timestamp (timestamptz).
-function formatDateTime(value: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
 export default function BundleWorkOrdersRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { bundles, masterWorkOrderId, masterWOMap } =
     useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
@@ -451,7 +438,7 @@ export default function BundleWorkOrdersRoute() {
                         <EmployeeAvatar employeeId={row.assignee} />
                       </Td>
                       <Td className="text-muted-foreground">
-                        {formatDateTime(row.assignedAt)}
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />

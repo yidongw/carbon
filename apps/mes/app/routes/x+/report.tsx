@@ -33,7 +33,7 @@ import {
 } from "~/components/JobOperation/components/ReportQuantityModal";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getAssignedOperationsForReport } from "~/services/operations.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -66,20 +66,6 @@ type ReportOperation = NonNullable<
   Awaited<ReturnType<typeof getAssignedOperationsForReport>>["data"]
 >[number] & { assignedAt: string | null };
 
-// assignedAt is a full timestamp (timestamptz).
-function formatDateTime(value: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
 const OP_STATUS_COLORS: Record<
   string,
   "gray" | "yellow" | "blue" | "orange" | "green" | "red"
@@ -105,6 +91,7 @@ function operationTarget(row: ReportOperation) {
 
 export default function ReportRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { operations, userId, canManageProduction } =
     useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
@@ -416,7 +403,7 @@ export default function ReportRoute() {
                         <EmployeeAvatar employeeId={row.assignee} />
                       </Td>
                       <Td className="text-muted-foreground">
-                        {formatDateTime(row.assignedAt)}
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <OperationStatus status={row.operationStatus} />

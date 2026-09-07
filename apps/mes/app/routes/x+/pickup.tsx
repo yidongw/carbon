@@ -27,7 +27,7 @@ import {
 import { JobStatus } from "~/components/JobStatus";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getUnassignedBundleWorkOrders } from "~/services/bundle.service";
 import { path } from "~/utils/path";
 
@@ -52,22 +52,9 @@ type UnassignedBundle = NonNullable<
   Awaited<ReturnType<typeof getUnassignedBundleWorkOrders>>["data"]
 >[number] & { id: string; assignedAt: string | null };
 
-// assignedAt is a full timestamp (timestamptz); null for still-unclaimed bundles.
-function formatDateTime(value: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
 export default function PickupRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { bundles } = useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
   const { urlFiltersParams, hasFilters } = useFilters();
@@ -272,7 +259,7 @@ export default function PickupRoute() {
                         {row.processCount ?? "—"}
                       </Td>
                       <Td className="text-muted-foreground">
-                        {formatDateTime(row.assignedAt)}
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />
