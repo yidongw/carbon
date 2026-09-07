@@ -93,10 +93,3 @@ only. Bundle Count v1 above is still “scan one code → whole-bundle qty”.
   location+storageUnit; unscanned family SKUs with bin on-hand → **0**.
 - Review shows 账面/实盘/差异; foreign/unknown EPCs flagged, not posted.
 
-## Scope / gotchas
-- Quantity = the bundle's full `quantity` at confirm time (whole-bundle only; no
-  partial). Scanning one piece records the whole bundle.
-- No `itemLedger`/cost posting, no per-piece granularity, no location field (v1).
-- Scan page gated `view`/`create: "inventory"`, matching RLS. The per-bundle history
-  tab stays under the bundle work order (production context) — its SELECT works via
-  the employee-role read policy.
