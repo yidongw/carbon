@@ -22,6 +22,7 @@
     "./aliyun-sms.server": "./src/services/aliyun-sms.server.ts",
     "./identity.server": "./src/services/identity.server.ts",
     "./phone.server": "./src/services/phone.server.ts",
+    "./rate-limit.server": "./src/services/rate-limit.server.ts",
     "./middleware/flash.server": "./src/middleware/flash.server.ts",
     "./middleware/flash.client": "./src/middleware/flash.client.ts",
     "./wechat.server": "./src/services/wechat.server.ts"

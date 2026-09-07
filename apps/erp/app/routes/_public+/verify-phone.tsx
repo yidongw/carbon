@@ -3,7 +3,6 @@ import {
   CarbonEdition,
   error,
   phoneVerifyValidator,
-  RATE_LIMIT,
   safeRedirect
 } from "@carbon/auth";
 import { checkSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
@@ -14,6 +13,7 @@ import {
   findOrCreatePhoneUser,
   findPhoneUser
 } from "@carbon/auth/phone.server";
+import { checkLoginRateLimit } from "@carbon/auth/rate-limit.server";
 import {
   flash,
   getAuthSession,
@@ -21,7 +21,6 @@ import {
 } from "@carbon/auth/session.server";
 import { getPendingInvitesForUser } from "@carbon/auth/users.server";
 import { Hidden, InputOTP, ValidatedForm, validator } from "@carbon/form";
-import { Ratelimit, redis } from "@carbon/kv";
 import {
   Alert,
   AlertDescription,
@@ -67,20 +66,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
-  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
-  const { success } = await ratelimit.limit(ip);
-  if (!success) {
-    return data(
-      error(null, "Rate limit exceeded"),
-      await flash(request, error(null, "Rate limit exceeded"))
-    );
-  }
 
   const validation = await validator(phoneVerifyValidator).validate(
     await request.formData()
@@ -90,6 +75,15 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { phone, code, redirectTo } = validation.data;
+
+  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+  const allowed = await checkLoginRateLimit("sms-verify", phone, ip);
+  if (!allowed) {
+    return data(
+      error(null, "Rate limit exceeded"),
+      await flash(request, error(null, "Rate limit exceeded"))
+    );
+  }
 
   // Aliyun owns the code; trust only a "PASS" result.
   const isCodeValid = await checkSmsVerifyCode(phone, code);

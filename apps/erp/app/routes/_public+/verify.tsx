@@ -1,11 +1,12 @@
 import crypto from "node:crypto";
-import { assertIsPost, error, RATE_LIMIT, safeRedirect } from "@carbon/auth";
+import { assertIsPost, error, safeRedirect } from "@carbon/auth";
 import {
   createEmailAuthAccount,
   signInWithEmail,
   signInWithEmailViaAdmin
 } from "@carbon/auth/auth.server";
 import { linkIdentity } from "@carbon/auth/identity.server";
+import { checkLoginRateLimit } from "@carbon/auth/rate-limit.server";
 import {
   flash,
   getAuthSession,
@@ -14,7 +15,6 @@ import {
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { verifyEmailCode } from "@carbon/auth/verification.server";
 import { Hidden, InputOTP, ValidatedForm, validator } from "@carbon/form";
-import { Ratelimit, redis } from "@carbon/kv";
 import {
   Alert,
   AlertDescription,
@@ -65,22 +65,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
-  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
-
-  const { success } = await ratelimit.limit(ip);
-
-  if (!success) {
-    return data(
-      error(null, "Rate limit exceeded"),
-      await flash(request, error(null, "Rate limit exceeded"))
-    );
-  }
 
   const validation = await validator(verifyValidator).validate(
     await request.formData()
@@ -91,6 +75,15 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { email, code, redirectTo } = validation.data;
+
+  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+  const allowed = await checkLoginRateLimit("email-verify", email, ip);
+  if (!allowed) {
+    return data(
+      error(null, "Rate limit exceeded"),
+      await flash(request, error(null, "Rate limit exceeded"))
+    );
+  }
 
   // Verify the email code
   const isCodeValid = await verifyEmailCode(email, code);
