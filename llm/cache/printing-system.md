@@ -121,6 +121,17 @@ Opened from:
 - `BundleWorkOrdersTable` toolbar `primaryAction` ("Print Tickets" / "Print N Tickets" on row selection) — standalone `x/production/bundle-work-orders` page.
 - `MasterWorkOrderBundlesOverlay` footer button (next to Close) — the master-WO bundles overlay renders `BundleWorkOrdersTable` with `withHeader={false}`, which hides the table toolbar (and thus its Print button), so the overlay surfaces the same modal from its own footer (added PR #253).
 
+## Care Label Printing (garment 水洗唛 + RFID code)
+
+One care label **per garment piece**, consuming the per-piece `garmentRfidCode` rows (see `garmentRfidCode.service.ts`). Reuses the garment **bitmap/TSPL over Bluetooth** path (same as bundle tickets' BLE mode), not the ZPL/ProxyBox pipeline — Chinese text forces a rasterized canvas.
+
+- `drawCareLabelCanvas` in `apps/erp/app/utils/labelBitmap.ts` (alongside `drawBundleLabelCanvas`): 款号/颜色/尺码 header rows, reserved placeholder lines for 成分/洗涤/产地 (no data model yet — drawn as labeled underlines), then a **1D Code128 barcode** of the RFID code (drawn full-width, `imageSmoothingEnabled` on so downscaling averages instead of dropping thin bars) + the code text below. Type `CareLabelData` (field `barcodeDataUrl`). Converts via the shared `canvasToTsplLabel`. 1D (not QR) so plain linear barcode scanners can read it.
+- Care-label media sizes in `packages/utils/src/labels.ts`: `careLabel{w}x{h}mm` (40x60 default + 30x60/35x75/40x80/50x80), metric, bitmap-only (no `zpl`).
+- Data route `file+/bundle-work-order+/care-labels[.]json.tsx` (`path.to.file.bundleWorkOrderCareLabelsJson(bundleWorkOrderId)`): composes `getBundleTicketLabels([id])` (shared style/attributes) with `getGarmentRfidCodes(id)` (per-piece codes) + `generateBarcode(code, "code128")` (re-exported from `@carbon/documents/qr`, backed by `src/qr/barcode.ts`) → `CareLabelData[]`.
+- `PrintCareLabelsModal` (`.../MasterWorkOrders/PrintCareLabelsModal.tsx`): per-piece checklist keyed by `code`, care-size picker, destinations **Bluetooth + Browser only** (browser opens a client-built print window sized to the label; no server PDF/ProxyBox route in this version). Density/threshold reuse the same localStorage knobs.
+- Opened from the **RFID Codes tab** (`x+/bundle-work-order+/$bundleWorkOrderId.rfid-codes.tsx`) via a "Print Care Labels" `primaryAction` on `RfidCodesTable` (which now forwards an optional `primaryAction` to `Table`).
+- Scope: printed/scannable only — **no physical RFID chip (EPC) encoding** anywhere.
+
 ## Cleanup
 
 In `packages/jobs/src/inngest/functions/scheduled/cleanup.ts`: completed jobs > 30 days deleted, failed jobs > 90 days deleted.

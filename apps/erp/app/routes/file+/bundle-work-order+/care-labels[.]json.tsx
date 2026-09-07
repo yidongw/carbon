@@ -1,5 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { generateQRCode } from "@carbon/documents/qr";
+import { generateBarcode } from "@carbon/documents/qr";
 import { resolveLanguage } from "@carbon/locale";
 import { getPreferenceHeaders } from "@carbon/utils";
 import { setupI18n } from "@lingui/core";
@@ -14,7 +14,8 @@ import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 import type { CareLabelData } from "~/utils/labelBitmap";
 
 // Per-piece care-label (水洗唛) data for direct Bluetooth printing: one label per
-// garment piece, carrying its unique RFID code (QR + text). The bundle's
+// garment piece, carrying its unique RFID code (Code128 barcode + text). The
+// barcode is 1D so it reads on plain 1D barcode scanners, not just 2D. The bundle's
 // 款号/颜色/尺码 are shared across every piece; the code/sequence are per-piece.
 // The client draws each label to a canvas and streams it as a TSPL bitmap.
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -55,7 +56,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
       sequence: row.sequence,
       styleReadableId,
       attributeLines,
-      qrDataUrl: await generateQRCode(row.code, 36)
+      // 1D Code128 (not QR) so cheap linear scanners can read it. The human-
+      // readable code text is drawn by the canvas, so no includetext here.
+      barcodeDataUrl: await generateBarcode(row.code, "code128", {
+        scale: 2,
+        height: 10
+      })
     }))
   );
 

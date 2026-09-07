@@ -1,5 +1,10 @@
 import bwipjs from "@bwip-js/node";
 
+export type { BarcodeSymbology } from "./barcode";
+// Re-export the 1D/2D barcode helper so `@carbon/documents/qr` is the single
+// entry point for both QR and linear barcodes (e.g. Code128 care labels).
+export { generateBarcode } from "./barcode";
+
 export async function generateQRCode(
   text: string,
   size: number,
