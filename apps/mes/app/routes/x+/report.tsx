@@ -33,7 +33,7 @@ import {
 } from "~/components/JobOperation/components/ReportQuantityModal";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getAssignedOperationsForReport } from "~/services/operations.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -64,7 +64,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 type ReportOperation = NonNullable<
   Awaited<ReturnType<typeof getAssignedOperationsForReport>>["data"]
->[number];
+>[number] & { assignedAt: string | null };
 
 const OP_STATUS_COLORS: Record<
   string,
@@ -91,6 +91,7 @@ function operationTarget(row: ReportOperation) {
 
 export default function ReportRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { operations, userId, canManageProduction } =
     useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
@@ -253,7 +254,9 @@ export default function ReportRoute() {
                         {row.jobReadableId ?? row.id}
                       </Link>
                       <p className="text-sm text-muted-foreground mt-0.5">
-                        {row.styleReadableId ?? "—"}
+                        <span className="font-semibold text-foreground">
+                          {row.styleReadableId ?? "—"}
+                        </span>
                         {row.description && (
                           <span className="ml-1 text-xs">
                             · {row.description}
@@ -265,7 +268,7 @@ export default function ReportRoute() {
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     {row.attributeLabel && (
-                      <span>
+                      <span className="font-semibold text-foreground">
                         {localizeVariantAttributeLabel(
                           row.attributeLabel,
                           i18n.locale
@@ -273,7 +276,10 @@ export default function ReportRoute() {
                       </span>
                     )}
                     <span className="tabular-nums">
-                      {t`Qty`}: {row.quantityComplete} / {operationTarget(row)}
+                      {t`Qty`}:{" "}
+                      <span className="font-semibold text-foreground whitespace-nowrap">
+                        {row.quantityComplete} / {operationTarget(row)}
+                      </span>
                     </span>
                     {Number(row.quantityReworked) > 0 && (
                       <span className="tabular-nums text-amber-600 dark:text-amber-500">
@@ -283,6 +289,11 @@ export default function ReportRoute() {
                     {Number(row.quantityScrapped) > 0 && (
                       <span className="tabular-nums text-red-600 dark:text-red-500">
                         {t`Scrap`}: {Number(row.quantityScrapped)}
+                      </span>
+                    )}
+                    {row.assignedAt && (
+                      <span>
+                        {t`Assigned`}: {formatDateTime(row.assignedAt)}
                       </span>
                     )}
                     <span className="ml-auto">
@@ -342,6 +353,9 @@ export default function ReportRoute() {
                       <Trans>Assignee</Trans>
                     </Th>
                     <Th>
+                      <Trans>Assigned At</Trans>
+                    </Th>
+                    <Th>
                       <Trans>Status</Trans>
                     </Th>
                     <Th />
@@ -389,6 +403,9 @@ export default function ReportRoute() {
                       </Td>
                       <Td>
                         <EmployeeAvatar employeeId={row.assignee} />
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <OperationStatus status={row.operationStatus} />

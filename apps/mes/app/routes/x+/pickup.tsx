@@ -27,7 +27,7 @@ import {
 import { JobStatus } from "~/components/JobStatus";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getUnassignedBundleWorkOrders } from "~/services/bundle.service";
 import { path } from "~/utils/path";
 
@@ -50,10 +50,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 // The loader filters to rows with a non-null id, so id is a string here.
 type UnassignedBundle = NonNullable<
   Awaited<ReturnType<typeof getUnassignedBundleWorkOrders>>["data"]
->[number] & { id: string };
+>[number] & { id: string; assignedAt: string | null };
 
 export default function PickupRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { bundles } = useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
   const { urlFiltersParams, hasFilters } = useFilters();
@@ -230,6 +231,9 @@ export default function PickupRoute() {
                       <Trans>Processes</Trans>
                     </Th>
                     <Th>
+                      <Trans>Assigned At</Trans>
+                    </Th>
+                    <Th>
                       <Trans>Status</Trans>
                     </Th>
                     <Th />
@@ -253,6 +257,9 @@ export default function PickupRoute() {
                       </Td>
                       <Td className="text-muted-foreground tabular-nums">
                         {row.processCount ?? "—"}
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />

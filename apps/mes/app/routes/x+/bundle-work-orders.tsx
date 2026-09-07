@@ -32,7 +32,7 @@ import {
 } from "~/components/PrintTicketsModal";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getBundleWorkOrdersList } from "~/services/bundle.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -94,6 +94,7 @@ type BundleWorkOrder = {
 
 export default function BundleWorkOrdersRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { bundles, masterWorkOrderId, masterWOMap } =
     useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
@@ -343,6 +344,11 @@ export default function BundleWorkOrdersRoute() {
                         {t`Processes`}: {row.processCount}
                       </span>
                     )}
+                    {row.assignedAt && (
+                      <span>
+                        {t`Assigned`}: {formatDateTime(row.assignedAt)}
+                      </span>
+                    )}
                     <span className="ml-auto">
                       <EmployeeAvatar employeeId={row.assignee} />
                     </span>
@@ -376,6 +382,9 @@ export default function BundleWorkOrdersRoute() {
                     </Th>
                     <Th>
                       <Trans>Assignee</Trans>
+                    </Th>
+                    <Th>
+                      <Trans>Assigned At</Trans>
                     </Th>
                     <Th>
                       <Trans>Status</Trans>
@@ -427,6 +436,9 @@ export default function BundleWorkOrdersRoute() {
                       </Td>
                       <Td>
                         <EmployeeAvatar employeeId={row.assignee} />
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />
