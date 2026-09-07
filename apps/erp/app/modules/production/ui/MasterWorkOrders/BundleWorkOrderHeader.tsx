@@ -60,6 +60,10 @@ const BundleWorkOrderHeader = () => {
     {
       name: t`RFID Codes`,
       to: path.to.bundleWorkOrderRfidCodes(bundleWorkOrderId)
+    },
+    {
+      name: t`Inventory`,
+      to: path.to.bundleWorkOrderInventory(bundleWorkOrderId)
     }
   ];
 

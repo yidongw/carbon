@@ -3074,6 +3074,9 @@ msgstr "Не удалось получить идентификатор опер
 msgid "Failed to record attribute"
 msgstr "Не удалось записать атрибут"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Не удалось записать количество переработки"
 
@@ -3987,6 +3990,9 @@ msgstr "Имперская"
 
 msgid "In Progress"
 msgstr "В работе"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "Увеличить"
