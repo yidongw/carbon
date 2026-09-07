@@ -205,7 +205,7 @@ export async function drawBundleLabelCanvas(
 }
 
 export type CareLabelData = {
-  /** The garment piece's unique RFID code (also encoded in the QR). */
+  /** The garment piece's unique RFID code (also encoded in the barcode). */
   code: string;
   /** Piece sequence within the bundle (1-based). */
   sequence?: number | null;
@@ -213,8 +213,11 @@ export type CareLabelData = {
   styleReadableId?: string | null;
   /** Variant attributes (颜色/尺码/…) as localized name/value pairs. */
   attributeLines?: Array<{ name: string; value: string }> | null;
-  /** PNG data URL of the QR encoding `code` (from the care-labels.json route). */
-  qrDataUrl: string;
+  /**
+   * PNG data URL of the 1D Code128 barcode encoding `code` (from the
+   * care-labels.json route). 1D so it reads on plain linear scanners.
+   */
+  barcodeDataUrl: string;
 };
 
 // Fields the care label reserves space for but the system doesn't store yet —
@@ -226,8 +229,8 @@ const CARE_PLACEHOLDER_FIELDS = ["成分", "洗涤", "产地"] as const;
 /**
  * Draw one garment care label (水洗唛) onto an offscreen canvas at printer-dot
  * resolution: 款号 + 颜色/尺码, then reserved placeholder lines for
- * 成分/洗涤/产地, then the QR (of the RFID code) with the code text below.
- * One label per garment piece.
+ * 成分/洗涤/产地, then the 1D Code128 barcode (of the RFID code) with the code
+ * text below. One label per garment piece.
  */
 export async function drawCareLabelCanvas(
   label: CareLabelData,
@@ -297,24 +300,31 @@ export async function drawCareLabelCanvas(
     y += rowH;
   }
 
-  // QR (of the RFID code) + the code text, centered in the space below.
+  // 1D Code128 barcode (of the RFID code) drawn across the full width, with the
+  // code text below — sized for a linear scanner, not a QR reader.
   const idFont = Math.max(13, Math.floor(fontPx * 0.7));
-  const qrTop = y + Math.round(fontPx * 0.3);
-  const qrAreaH = H - topPad - qrTop;
-  const qrSize = Math.max(32, Math.min(W * 0.62, qrAreaH - idFont - 8));
-  const qrX = (W - qrSize) / 2;
-  const qrY = qrTop + Math.max(0, (qrAreaH - idFont - 6 - qrSize) / 2);
+  const bcTop = y + Math.round(fontPx * 0.3);
+  const bcAreaH = H - topPad - bcTop; // space left below the fields
+  const bcW = contentW; // full printable width → widest possible bars
+  const bcH = Math.max(
+    24,
+    Math.min(Math.round(H * 0.22), bcAreaH - idFont - 8)
+  );
+  const bcX = padX;
+  const bcY = bcTop + Math.max(0, (bcAreaH - idFont - 6 - bcH) / 2);
   try {
-    const img = await loadImage(label.qrDataUrl);
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+    const img = await loadImage(label.barcodeDataUrl);
+    // Smooth (not nearest-neighbor) so downscaling the dense bars averages
+    // instead of dropping thin bars; canvasToTsplLabel re-binarizes after.
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(img, bcX, bcY, bcW, bcH);
   } catch {
-    /* no QR — still print the code text */
+    /* no barcode — still print the code text */
   }
 
   ctx.font = `${idFont}px ${CJK_FONT}`;
   ctx.textAlign = "center";
-  ctx.fillText(String(label.code), W / 2, qrY + qrSize + 4, W - 2 * padX);
+  ctx.fillText(String(label.code), W / 2, bcY + bcH + 4, W - 2 * padX);
 
   return canvas;
 }
