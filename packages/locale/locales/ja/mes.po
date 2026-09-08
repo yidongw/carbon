@@ -1760,6 +1760,9 @@ msgstr "PDFの生成に失敗しました"
 msgid "Failed to generate picking list"
 msgstr "ピッキングリストの生成に失敗しました"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "カテゴリIDを取得できませんでした"
 
@@ -3065,6 +3068,9 @@ msgstr "操作IDの受信に失敗しました"
 msgid "Failed to record attribute"
 msgstr "属性の記録に失敗しました"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "再加工数量を登録できませんでした"
 
@@ -3979,6 +3985,9 @@ msgstr "英単位"
 msgid "In Progress"
 msgstr "進行中"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "増加"
 
@@ -4522,6 +4531,9 @@ msgstr "追跡可能なエンティティが見つかりません"
 
 msgid "No bundle work orders"
 msgstr "バンドル仕事指示書なし"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未 COVERED 資産に対する減価額は計算できません"

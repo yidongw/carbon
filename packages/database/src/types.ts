@@ -2366,6 +2366,51 @@ export type Database = {
           },
         ]
       }
+      bundleInventoryMovement: {
+        Row: {
+          bundleWorkOrderId: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          customFields: Json | null
+          direction: string
+          id: string
+          quantity: number
+          scannedCode: string
+          tags: string[] | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          bundleWorkOrderId: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          customFields?: Json | null
+          direction: string
+          id?: string
+          quantity: number
+          scannedCode: string
+          tags?: string[] | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          bundleWorkOrderId?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          customFields?: Json | null
+          direction?: string
+          id?: string
+          quantity?: number
+          scannedCode?: string
+          tags?: string[] | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: []
+      }
       bundleWorkOrder: {
         Row: {
           companyId: string
@@ -11691,6 +11736,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      garmentRfidCode: {
+        Row: {
+          bundleWorkOrderId: string
+          code: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          customFields: Json | null
+          id: string
+          sequence: number
+          tags: string[] | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          bundleWorkOrderId: string
+          code: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          customFields?: Json | null
+          id?: string
+          sequence?: number
+          tags?: string[] | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          bundleWorkOrderId?: string
+          code?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          customFields?: Json | null
+          id?: string
+          sequence?: number
+          tags?: string[] | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: []
       }
       gauge: {
         Row: {

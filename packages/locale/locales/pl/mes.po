@@ -1760,6 +1760,9 @@ msgstr "Nie udało się wygenerować PDF'a"
 msgid "Failed to generate picking list"
 msgstr "Nie udało się wygenerować listy poboru"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Nie można uzyskać ID kategorii"
 
@@ -3065,6 +3068,9 @@ msgstr "Nie udało się odebrać identyfikatora operacji"
 msgid "Failed to record attribute"
 msgstr "Nie udało się zarejestrować atrybutu"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Nie udało się zarejestrować ilości naprawy"
 
@@ -3979,6 +3985,9 @@ msgstr "Angielski"
 msgid "In Progress"
 msgstr "W toku"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "Zwiększ"
 
@@ -4522,6 +4531,9 @@ msgstr "Brak dostępnych śledzonych elementów"
 
 msgid "No bundle work orders"
 msgstr "Brak zgrupowanych zadań😀"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Brak deprekacji do obliczenia dla niezakrytych aktywów"

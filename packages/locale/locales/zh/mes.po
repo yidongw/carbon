@@ -1761,6 +1761,9 @@ msgstr "生成PDF失败"
 msgid "Failed to generate picking list"
 msgstr "生成拣货单失败"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "获取类别ID失败"
 
@@ -3066,6 +3069,9 @@ msgstr "未能接收操作ID"
 msgid "Failed to record attribute"
 msgstr "记录属性失败"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "记录返工数量失败"
 
@@ -3980,6 +3986,9 @@ msgstr "英制"
 msgid "In Progress"
 msgstr "进行中"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "增加"
 
@@ -4523,6 +4532,9 @@ msgstr "未找到可跟踪的实体"
 
 msgid "No bundle work orders"
 msgstr "无分包工单"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未覆盖资产无需计算折旧"

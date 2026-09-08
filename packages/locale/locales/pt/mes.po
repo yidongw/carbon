@@ -1760,6 +1760,9 @@ msgstr "Falhou na geração do PDF"
 msgid "Failed to generate picking list"
 msgstr "Falhou na geração da lista de pegagem"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Falhou ao obter um ID de categoria"
 
@@ -3065,6 +3068,9 @@ msgstr "Falhou na recepção do ID da operação"
 msgid "Failed to record attribute"
 msgstr "Falhou ao registrar atributo"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Falhou ao registrar quantidade de rework"
 
@@ -3979,6 +3985,9 @@ msgstr "Império"
 msgid "In Progress"
 msgstr "Em Andamento"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "Aumentar"
 
@@ -4522,6 +4531,9 @@ msgstr "Nenhum entidade rastreada disponível encontrado"
 
 msgid "No bundle work orders"
 msgstr "Sem ordens de trabalho em lote"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nenhuma depreciação para calcular para ativos não cobertos"

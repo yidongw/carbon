@@ -1760,6 +1760,9 @@ msgstr "Fallito nel generare il PDF"
 msgid "Failed to generate picking list"
 msgstr "Fallito nel generare la lista di estrazione"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Impossibile ottenere un ID categoria"
 
@@ -3065,6 +3068,9 @@ msgstr "Fallito nel ricevere un ID operazione"
 msgid "Failed to record attribute"
 msgstr "Impossibile registrare l'attributo"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Impossibile registrare la quantità di riparazione"
 
@@ -3979,6 +3985,9 @@ msgstr "Imperiale"
 msgid "In Progress"
 msgstr "In Corso"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "Incrementa"
 
@@ -4522,6 +4531,9 @@ msgstr "Nessun entità tracciata disponibile trovata"
 
 msgid "No bundle work orders"
 msgstr "NESSUN PAGNA DI COMMESSI"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nessuna depreciazione da calcolare per beni non coperti"

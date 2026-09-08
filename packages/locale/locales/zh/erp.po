@@ -103,6 +103,9 @@ msgstr "{0} 张标签中 {failed} 张失败"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed}/{0} 张标签打印失败"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
 
@@ -678,6 +681,9 @@ msgstr "所有类型"
 
 msgid "All Work Centers"
 msgstr "所有工作中心"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "允许确认并继续"
@@ -1655,11 +1661,20 @@ msgstr "批量工作"
 msgid "Bundle"
 msgstr "分包"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "未找到分包"
 
+msgid "Bundle Scan"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr "分包工单"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "分包"
@@ -1849,6 +1864,9 @@ msgstr "Carbon 值"
 
 msgid "Cards"
 msgstr "卡片"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "承运商"
@@ -2215,6 +2233,9 @@ msgstr "确认"
 msgid "Confirm {0}"
 msgstr "确认{0}"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "确认批准"
 
@@ -2224,8 +2245,17 @@ msgstr "确认ID变更"
 msgid "Confirm Import"
 msgstr "确认导入"
 
+msgid "Confirm In"
+msgstr ""
+
+msgid "Confirm Out"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr "确认密码"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "绑定"
@@ -2575,6 +2605,12 @@ msgstr "无法加载文档"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "无法加载微信二维码"
+
+msgid "Count location"
+msgstr ""
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "国家"
@@ -3573,6 +3609,9 @@ msgstr "完成了{0}的机器"
 msgid "did {0} of setup"
 msgstr "完成了{0}的设置"
 
+msgid "Diff"
+msgstr ""
+
 msgid "Digital Quote"
 msgstr "数字报价"
 
@@ -3593,6 +3632,9 @@ msgstr "尺寸"
 
 msgid "Direct"
 msgstr "直接"
+
+msgid "Direction"
+msgstr ""
 
 msgid "Disabled"
 msgstr "禁用"
@@ -5635,6 +5677,9 @@ msgstr "生成PDF失败"
 msgid "Failed to generate picking list"
 msgstr "生成拣货单失败"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "获取类别ID失败"
 
@@ -7006,6 +7051,9 @@ msgstr "未能接收操作ID"
 msgid "Failed to record attribute"
 msgstr "记录属性失败"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "记录返工数量失败"
 
@@ -8195,6 +8243,16 @@ msgstr "生成新PIN"
 msgid "Generate Picking List"
 msgstr "生成拣货单"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "生成的ID已禁用"
 
@@ -8399,6 +8457,9 @@ msgstr "实施支持"
 msgid "Import {label} CSV"
 msgstr "导入{label}CSV"
 
+msgid "In"
+msgstr ""
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "为了将此询价单转换为报价单，所有行必须具有内部产品编号。"
 
@@ -8473,6 +8534,9 @@ msgstr "入库"
 
 msgid "Incoming Materials"
 msgstr "入库物料"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Incoterm"
 msgstr "贸易术语"
@@ -8713,6 +8777,9 @@ msgstr "库存历史记录"
 
 msgid "Inventory Job Notifications"
 msgstr "库存工作通知"
+
+msgid "Inventory Movements"
+msgstr ""
 
 msgid "Inventory Qty"
 msgstr "库存数量"
@@ -10435,6 +10502,9 @@ msgstr "无存储单元"
 msgid "No BOM input has a shelf-life policy"
 msgstr "没有BOM输入有保质期政策"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "未找到校准记录"
 
@@ -10518,6 +10588,9 @@ msgstr "未上传文件"
 
 msgid "No forecast quantities provided"
 msgstr "未提供预测数量"
+
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr ""
 
 msgid "No Gauge Selected"
 msgstr "未选择量具"
@@ -10651,6 +10724,9 @@ msgstr "未找到结果"
 msgid "No results found."
 msgstr "未找到相关结果。"
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr "未分配规则"
 
@@ -10749,6 +10825,10 @@ msgstr "未连接。请刷新后重试。"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"
+
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
 
 msgid "Not Required"
 msgstr "非必需"
@@ -11076,6 +11156,9 @@ msgstr "其他类型"
 msgid "Ounce"
 msgstr "盎司"
 
+msgid "Out"
+msgstr ""
+
 msgid "Outbound Transfer"
 msgstr "出库转移"
 
@@ -11322,6 +11405,9 @@ msgstr "付款"
 msgid "Payroll"
 msgstr "工资单"
 
+msgid "pcs"
+msgstr ""
+
 msgid "PDF"
 msgstr "PDF"
 
@@ -11403,6 +11489,9 @@ msgstr "选择客户或客户类型以查看其报价。"
 msgid "Pick a date or leave blank to clear it."
 msgstr "选择日期或留空以清除。"
 
+msgid "Pick a location first"
+msgstr ""
+
 msgid "Pick a warehouse"
 msgstr "选择仓库"
 
@@ -11435,6 +11524,9 @@ msgstr "拣货单备注"
 
 msgid "Picking Lists"
 msgstr "拣货单"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "件/小时"
@@ -11717,6 +11809,7 @@ msgid "Print"
 msgstr "打印"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "打印（{0}）"
 
@@ -11730,6 +11823,9 @@ msgstr "打印 {0} 张标签"
 
 msgid "Print Bundle Tickets"
 msgstr "打印分包标签"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "打印浓度"
@@ -11765,6 +11861,9 @@ msgstr "打印到"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "已打印 {0} 张标签"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "打印机路径已删除"
@@ -12317,6 +12416,9 @@ msgstr "记录了 {qty} 个单位"
 msgid "recorded {qty} units ({reason})"
 msgstr "记录了 {qty} 个单位（原因：{reason}）"
 
+msgid "Recorded At"
+msgstr ""
+
 msgid "Records"
 msgstr "记录"
 
@@ -12742,6 +12844,12 @@ msgstr "重新加工数量记录成功"
 msgid "Rework triggered successfully"
 msgstr "重新加工已成功触发"
 
+msgid "RFID Code"
+msgstr ""
+
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "询价单"
 
@@ -13028,8 +13136,14 @@ msgstr "保存中..."
 msgid "Scan"
 msgstr "扫描"
 
+msgid "Scan a care-label barcode…"
+msgstr ""
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "扫描标签或按项目ID或跟踪ID搜索。"
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "扫描或输入追踪实体ID、序列号或批次"
@@ -13051,6 +13165,9 @@ msgstr "使用微信扫码绑定"
 
 msgid "Scan with WeChat to sign in"
 msgstr "使用微信扫码登录"
+
+msgid "Scanned Code"
+msgstr ""
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -13206,6 +13323,9 @@ msgstr "选择类别"
 msgid "Select a default approver"
 msgstr "选择默认审批人"
 
+msgid "Select a location…"
+msgstr ""
+
 msgid "Select a match..."
 msgstr "选择一个匹配项..."
 
@@ -13239,6 +13359,7 @@ msgstr "选择账户"
 msgid "Select all"
 msgstr "全选"
 
+#. placeholder {0}: labels?.length ?? 0
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "全选（{0}）"
@@ -14825,6 +14946,9 @@ msgstr "字体大小"
 
 msgid "Text Size"
 msgstr "字体大小"
+
+msgid "That bundle has no item — can't count"
+msgstr ""
 
 msgid "That WeChat is already linked to another account"
 msgstr "该微信已绑定到其他账号"
