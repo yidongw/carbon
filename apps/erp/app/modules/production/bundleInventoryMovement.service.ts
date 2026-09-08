@@ -32,7 +32,7 @@ export async function getBundleByGarmentCode(
   const bundle = await client
     .from("bundleWorkOrders")
     .select(
-      "id, jobReadableId, styleReadableId, quantity, attributeLabel, status"
+      "id, itemId, locationId, jobReadableId, styleReadableId, quantity, attributeLabel, status"
     )
     .eq("id", rfid.data.bundleWorkOrderId)
     .eq("companyId", companyId)

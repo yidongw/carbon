@@ -2,6 +2,7 @@ import { useLingui } from "@lingui/react/macro";
 import {
   LuArrowRightLeft,
   LuBoxes,
+  LuClipboardCheck,
   LuClipboardList,
   LuHandCoins,
   LuListChecks,
@@ -62,6 +63,12 @@ export default function useInventorySubmodules() {
           name: t`Bundle Scan`,
           to: path.to.bundleInventoryScan,
           icon: <LuScanBarcode />,
+          role: "employee"
+        },
+        {
+          name: t`Bundle Count`,
+          to: path.to.bundleCount,
+          icon: <LuClipboardCheck />,
           role: "employee"
         }
       ]
