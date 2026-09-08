@@ -50,6 +50,7 @@ jobs:
           retry gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$BODY"
 
       - name: Start preview
+        id: start
         if: github.event.action != 'closed'
         run: |
           /Users/xinjuan/git/preview-server/manage-preview.sh start \
@@ -91,8 +92,8 @@ jobs:
             return 1
           }
 
-          ERP_URL="http://43.133.217.62:$((4000 + PR_NUMBER))"
-          MES_URL="http://43.133.217.62:$((5000 + PR_NUMBER))"
+          ERP_URL="${{ steps.start.outputs.erp_url }}"
+          MES_URL="${{ steps.start.outputs.mes_url }}"
           BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n**MES:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
             "$ERP_URL" "$MES_URL" "$BRANCH" "$SHA")
           # Edit the "deploying..." comment in place (already notified above)
