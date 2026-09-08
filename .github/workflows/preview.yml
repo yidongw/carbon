@@ -91,8 +91,8 @@ jobs:
             return 1
           }
 
-          ERP_URL="https://erp-pr-${PR_NUMBER}.foxhole.bot"
-          MES_URL="https://mes-pr-${PR_NUMBER}.foxhole.bot"
+          ERP_URL="http://43.133.217.62:$((4000 + PR_NUMBER))"
+          MES_URL="http://43.133.217.62:$((5000 + PR_NUMBER))"
           BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n**MES:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
             "$ERP_URL" "$MES_URL" "$BRANCH" "$SHA")
           # Edit the "deploying..." comment in place (already notified above)
