@@ -2606,6 +2606,9 @@ msgstr "无法加载文档"
 msgid "Couldn't load the WeChat QR code"
 msgstr "无法加载微信二维码"
 
+msgid "Count location"
+msgstr ""
+
 msgid "Counted"
 msgstr ""
 
@@ -13319,6 +13322,9 @@ msgstr "选择类别"
 
 msgid "Select a default approver"
 msgstr "选择默认审批人"
+
+msgid "Select a location…"
+msgstr ""
 
 msgid "Select a match..."
 msgstr "选择一个匹配项..."

@@ -2606,6 +2606,9 @@ msgstr "दस्तावेज़ लोड नहीं हो सके"
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChat QR कोड लोड नहीं हो सका"
 
+msgid "Count location"
+msgstr ""
+
 msgid "Counted"
 msgstr ""
 
@@ -13319,6 +13322,9 @@ msgstr "क्लास सिलेक्ट करें"
 
 msgid "Select a default approver"
 msgstr "एक डिफ़ॉल्ट अनुमोदक चुनें"
+
+msgid "Select a location…"
+msgstr ""
 
 msgid "Select a match..."
 msgstr "चुनें एक मानक..."

@@ -2606,6 +2606,9 @@ msgstr "Impossible de charger les documents"
 msgid "Couldn't load the WeChat QR code"
 msgstr "Impossible de charger le QR code WeChat"
 
+msgid "Count location"
+msgstr ""
+
 msgid "Counted"
 msgstr ""
 
@@ -13319,6 +13322,9 @@ msgstr "Sélectionnez une catégorie"
 
 msgid "Select a default approver"
 msgstr "Sélectionner un approbateur par défaut"
+
+msgid "Select a location…"
+msgstr ""
 
 msgid "Select a match..."
 msgstr "Sélectionnez un ajustement..."

@@ -2606,6 +2606,9 @@ msgstr "ドキュメントを読み込めませんでした"
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChatのQRコードを読み込めませんでした"
 
+msgid "Count location"
+msgstr ""
+
 msgid "Counted"
 msgstr ""
 
@@ -13319,6 +13322,9 @@ msgstr "カテゴリを選択"
 
 msgid "Select a default approver"
 msgstr "デフォルト承認者を選択"
+
+msgid "Select a location…"
+msgstr ""
 
 msgid "Select a match..."
 msgstr "マッチを選択してください..."
