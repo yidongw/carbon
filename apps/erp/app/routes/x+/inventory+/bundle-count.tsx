@@ -265,6 +265,7 @@ export default function BundleCountRoute() {
       className="p-4 h-[calc(100dvh-49px)] overflow-y-auto items-center"
     >
       <div className="w-full max-w-2xl flex flex-col gap-4">
+        <h1 className="text-lg font-semibold">{t`Bundle Count`}</h1>
         <div className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3">
           <label
             htmlFor="count-location"
