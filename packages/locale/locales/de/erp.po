@@ -1661,6 +1661,9 @@ msgstr "Massenaufträge"
 msgid "Bundle"
 msgstr "Bündel"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "Bundel nicht gefunden"
 
@@ -1669,6 +1672,9 @@ msgstr ""
 
 msgid "Bundle Work Orders"
 msgstr "Bündel-Arbeitsaufträge"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "Bündel"
@@ -2227,6 +2233,9 @@ msgstr "Bestätigen"
 msgid "Confirm {0}"
 msgstr "Bestätigen {0}"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Bestätigen Sie die Genehmigung"
 
@@ -2244,6 +2253,9 @@ msgstr ""
 
 msgid "Confirm Password"
 msgstr "Passwort bestätigen"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "Verbinden"
@@ -2593,6 +2605,9 @@ msgstr "Dokumente konnten nicht geladen werden"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChat-QR-Code konnte nicht geladen werden"
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "Land"
@@ -3590,6 +3605,9 @@ msgstr "hat {0} Maschine"
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of setup"
 msgstr "hat {0} der Einstellung"
+
+msgid "Diff"
+msgstr ""
 
 msgid "Digital Quote"
 msgstr "Digitales Angebot"
@@ -10805,6 +10823,10 @@ msgstr "Nicht verbunden. Bitte aktualisieren und erneut versuchen."
 msgid "Not enough jobs to cover quantity"
 msgstr "Nicht genug Aufträge zur Deckung der Menge"
 
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
+
 msgid "Not Required"
 msgstr "Nicht erforderlich"
 
@@ -11463,6 +11485,9 @@ msgstr "Wählen Sie einen Kunden oder Kundentyp aus, um dessen Preise anzuzeigen
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "Wählen Sie ein Datum oder lassen Sie es leer, um es zu löschen."
+
+msgid "Pick a location first"
+msgstr ""
 
 msgid "Pick a warehouse"
 msgstr "Wählen Sie einen Lagerhof"
@@ -13113,6 +13138,9 @@ msgstr ""
 
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Scannen Sie eine Etikett oder suchen Sie nach Artikelnummer oder Verfolgungsnummer."
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "Scannen oder geben Sie die Kennung der verfolgten Entität, Seriennummer oder Chargennummer ein"
@@ -14912,6 +14940,9 @@ msgstr "Schriftgröße"
 
 msgid "Text Size"
 msgstr "Schriftgröße"
+
+msgid "That bundle has no item — can't count"
+msgstr ""
 
 msgid "That WeChat is already linked to another account"
 msgstr "Dieses WeChat ist bereits mit einem anderen Konto verknüpft"

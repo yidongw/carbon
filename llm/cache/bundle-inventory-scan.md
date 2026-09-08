@@ -45,6 +45,32 @@ Re-exported via `~/modules/production` barrel (`index.ts`).
   `BundleInventoryMovementsTable` (Direction badge In=green/Out=yellow, Quantity,
   Scanned Code, Recorded At).
 
+## Bundle Count (扫码按扎盘点 → writes REAL inventory)
+
+Separate from the scan-in/out ledger above: a **physical count** that overwrites
+system on-hand. `apps/erp/app/routes/x+/inventory+/bundle-count.tsx`
+(`path.to.bundleCount` = `/x/inventory/bundle-count`), nav "Bundle Count"
+(`LuClipboardCheck`) under Inventory/Manage. Gated `view`/`create: "inventory"`.
+
+- Single route does everything: loader resolves `?code=` via `getBundleByGarmentCode`
+  (extended to also select `itemId, locationId`) for scan lookups (hit by a
+  `useFetcher`), else computes a default location (URL → `getUserDefaults` →
+  `getLocationsList[0]`). Action handles `intent=review` (fetch `getItemQuantities`
+  on-hand per counted item at location) and `intent=commit`.
+- Client session (React state, keyed by bundleId, deduped) accumulates scans; a
+  garment's whole `quantity` counts toward its variant SKU `itemId` ("按扎"). Tally
+  groups by item. `useSubmit` posts review/commit (no reliance on Button name/value).
+- **Commit writes real stock** via `insertManualInventoryAdjustment` (from
+  `~/modules/inventory`) with `adjustmentType: "Set Quantity"`, `quantity: counted`,
+  per item+location → one Positive/Negative Adjmt. `itemLedger` row (the
+  `update_item_inventory_from_item_ledger_trigger` recomputes on-hand). No cost
+  ledger, no Kysely txn, no rule-eval — deliberately just the SKU adjustment.
+- **Safety:** only SCANNED items are overwritten; un-scanned stock is left unchanged
+  (no auto-zero) — avoids wiping stock you didn't count. Review shows 账面(system) vs
+  实盘(counted) vs diff before commit.
+- Location picker: native `<select>` fed by `useLocations()` (from
+  `~/components/Form/Location`). Finished garments only (need RFID code).
+
 ## Scope / gotchas
 - Quantity = the bundle's full `quantity` at confirm time (whole-bundle only; no
   partial). Scanning one piece records the whole bundle.

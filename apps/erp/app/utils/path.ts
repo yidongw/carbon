@@ -1255,6 +1255,7 @@ export const path = {
       generatePath(`${x}/bundle-work-order/${id}/inventory`),
     rfidCodesGenerate: `${x}/production/rfid-codes/generate`,
     bundleInventoryScan: `${x}/inventory/bundle-inventory`,
+    bundleCount: `${x}/inventory/bundle-count`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
     jobStatus: (id: string) => generatePath(`${x}/job/${id}/status`),

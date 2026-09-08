@@ -1661,6 +1661,9 @@ msgstr "一括ジョブ"
 msgid "Bundle"
 msgstr "バンドル"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "バンドルが見つかりません"
 
@@ -1669,6 +1672,9 @@ msgstr ""
 
 msgid "Bundle Work Orders"
 msgstr "バンドル作業指示"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "バンドル"
@@ -2227,6 +2233,9 @@ msgstr "確認"
 msgid "Confirm {0}"
 msgstr "{0}を確認"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "承認を確認"
 
@@ -2244,6 +2253,9 @@ msgstr ""
 
 msgid "Confirm Password"
 msgstr "パスワードを確認"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "連携"
@@ -2593,6 +2605,9 @@ msgstr "ドキュメントを読み込めませんでした"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChatのQRコードを読み込めませんでした"
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "国"
@@ -3590,6 +3605,9 @@ msgstr "{0} の機械"
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of setup"
 msgstr "did {0} of setup"
+
+msgid "Diff"
+msgstr ""
 
 msgid "Digital Quote"
 msgstr "デジタル見積"
@@ -10805,6 +10823,10 @@ msgstr "接続できません。再読み込み後、もう一度試してみて
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
+
 msgid "Not Required"
 msgstr "不要"
 
@@ -11463,6 +11485,9 @@ msgstr "顧客または顧客タイプを選択して価格を表示します。
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "日付を選択するか、空白のままにしてクリアしてください。"
+
+msgid "Pick a location first"
+msgstr ""
 
 msgid "Pick a warehouse"
 msgstr "倉庫を選択してください"
@@ -13113,6 +13138,9 @@ msgstr ""
 
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "ラベルをスキャン或者 项目ID或追踪ID进行搜索。"
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "スキャンするか、追跡対象エンティティID、シリアル番号、またはバッチ番号を入力してください"
@@ -14912,6 +14940,9 @@ msgstr "文字サイズ"
 
 msgid "Text Size"
 msgstr "文字サイズ"
+
+msgid "That bundle has no item — can't count"
+msgstr ""
 
 msgid "That WeChat is already linked to another account"
 msgstr "そのWeChatは既に別のアカウントに連携されています"

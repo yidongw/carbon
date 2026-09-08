@@ -1661,6 +1661,9 @@ msgstr "बल्क जॉब्स"
 msgid "Bundle"
 msgstr "बंडल"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "बंडल नहीं पाया"
 
@@ -1669,6 +1672,9 @@ msgstr ""
 
 msgid "Bundle Work Orders"
 msgstr "बंडल कार्य आदेश"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "बंडल"
@@ -2227,6 +2233,9 @@ msgstr "पुष्टि करें"
 msgid "Confirm {0}"
 msgstr "की पुष्टि करें {0}"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "प्रतियोगिता परीक्षण"
 
@@ -2244,6 +2253,9 @@ msgstr ""
 
 msgid "Confirm Password"
 msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "कनेक्ट करें"
@@ -2593,6 +2605,9 @@ msgstr "दस्तावेज़ लोड नहीं हो सके"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChat QR कोड लोड नहीं हो सका"
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "देश"
@@ -3590,6 +3605,9 @@ msgstr "किया गया है {0} मशीन"
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of setup"
 msgstr "किया गया था {0} सेटअप"
+
+msgid "Diff"
+msgstr ""
 
 msgid "Digital Quote"
 msgstr "डिजिटल उद्धरण"
@@ -10805,6 +10823,10 @@ msgstr "नहीं जुड़ा। कृपया फिर से पर�
 msgid "Not enough jobs to cover quantity"
 msgstr "पर्याप्त नौकरियां नहीं हैं मात्रा को कवर करने के लिए"
 
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
+
 msgid "Not Required"
 msgstr "आवश्यक नहीं"
 
@@ -11463,6 +11485,9 @@ msgstr "उनका किराया देखने के लिए ग्�
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "एक तारीख चुनें या इसे साफ करने के लिए खाली छोड़ें।"
+
+msgid "Pick a location first"
+msgstr ""
 
 msgid "Pick a warehouse"
 msgstr "स्टॉक स्टोरीज़ चुनें"
@@ -13113,6 +13138,9 @@ msgstr ""
 
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "लेबल का स्कैन करें या उपादान ID या ट्रैकिंग ID पर खोज करें।"
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "ट्रैक किए गए इकाई ID, सीरीज़ या बैच को स्कैन करें या दर्ज करें"
@@ -14912,6 +14940,9 @@ msgstr "साइज़ ऑफ़ टेक्स्ट"
 
 msgid "Text Size"
 msgstr "टेक्स्ट का आकार"
+
+msgid "That bundle has no item — can't count"
+msgstr ""
 
 msgid "That WeChat is already linked to another account"
 msgstr "वह WeChat पहले से ही किसी अन्य खाते से लिंक है"

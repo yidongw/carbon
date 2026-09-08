@@ -1661,6 +1661,9 @@ msgstr "批量工作"
 msgid "Bundle"
 msgstr "分包"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "未找到分包"
 
@@ -1669,6 +1672,9 @@ msgstr ""
 
 msgid "Bundle Work Orders"
 msgstr "分包工单"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "分包"
@@ -2227,6 +2233,9 @@ msgstr "确认"
 msgid "Confirm {0}"
 msgstr "确认{0}"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "确认批准"
 
@@ -2244,6 +2253,9 @@ msgstr ""
 
 msgid "Confirm Password"
 msgstr "确认密码"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "绑定"
@@ -2593,6 +2605,9 @@ msgstr "无法加载文档"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "无法加载微信二维码"
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "国家"
@@ -3590,6 +3605,9 @@ msgstr "完成了{0}的机器"
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of setup"
 msgstr "完成了{0}的设置"
+
+msgid "Diff"
+msgstr ""
 
 msgid "Digital Quote"
 msgstr "数字报价"
@@ -10805,6 +10823,10 @@ msgstr "未连接。请刷新后重试。"
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"
 
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
+
 msgid "Not Required"
 msgstr "非必需"
 
@@ -11463,6 +11485,9 @@ msgstr "选择客户或客户类型以查看其报价。"
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "选择日期或留空以清除。"
+
+msgid "Pick a location first"
+msgstr ""
 
 msgid "Pick a warehouse"
 msgstr "选择仓库"
@@ -13113,6 +13138,9 @@ msgstr ""
 
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "扫描标签或按项目ID或跟踪ID搜索。"
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "扫描或输入追踪实体ID、序列号或批次"
@@ -14912,6 +14940,9 @@ msgstr "字体大小"
 
 msgid "Text Size"
 msgstr "字体大小"
+
+msgid "That bundle has no item — can't count"
+msgstr ""
 
 msgid "That WeChat is already linked to another account"
 msgstr "该微信已绑定到其他账号"
