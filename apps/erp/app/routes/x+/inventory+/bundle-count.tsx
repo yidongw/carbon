@@ -265,13 +265,22 @@ export default function BundleCountRoute() {
       className="p-4 h-[calc(100dvh-49px)] overflow-y-auto items-center"
     >
       <div className="w-full max-w-2xl flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t`Location`}</span>
+        <div className="flex flex-col gap-1 rounded-lg border border-border bg-card p-3">
+          <label
+            htmlFor="count-location"
+            className="text-xs font-medium uppercase text-muted-foreground"
+          >
+            {t`Count location`}
+          </label>
           <select
+            id="count-location"
             value={locationId}
             onChange={(e) => setLocationId(e.target.value)}
-            className="flex h-9 rounded-md border border-border bg-card px-2 text-sm"
+            className="flex h-10 w-full rounded-md border border-border bg-background px-3 text-sm"
           >
+            <option value="" disabled>
+              {t`Select a location…`}
+            </option>
             {locationOptions.length === 0 && locationId ? (
               <option value={locationId}>{locationId}</option>
             ) : null}
