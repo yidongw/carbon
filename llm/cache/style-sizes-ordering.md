@@ -1,13 +1,18 @@
 # Style Sizes Ordering
 
-Apparel **sizes** must display in apparel order — smallest→largest with `OS` (one size) last — **not** alphabetically by code (which produces `2XL, 3XL, L, M, S, XL, XS, OS`).
+Apparel **sizes** must display in apparel order — smallest→largest with `OS` (one size) last — **not** alphabetically by code (which produces `2XL, 3XL, 4XL, L, M, S, XL, XS, OS`).
 
 ## Mechanism
 
-- Canonical order: `STYLE_SIZE_CODES` in `packages/database/src/styleReference.ts` (`sortOrder` = array index). Seeded into garment `itemAttributeValue` (Size); system Size rows have `companyId NULL`.
+- Canonical order: `STYLE_SIZE_CODES` in `packages/database/src/styleReference.ts` (`sortOrder` = array index, includes `4XL` before `OS`). Seeded into garment `itemAttributeValue` (Size); company-scoped Size rows.
 - Size pickers / lists order by `sortOrder`, then code.
+- Style 规格数量 grids build `optionVariantItemLabels` in value-`sortOrder` order and reorder saved combo rows to match (so existing `jobVariantQuantity` insertion order cannot put `4XL` first when catalog order is correct).
 
 When adding a new size read/display, order by `sortOrder`, not code.
+
+## Data fix
+
+Migration `20260909094717_fix_size_attribute_value_sort_order.sql` resets Size `sortOrder` for `XS`…`4XL`/`OS`. Company-only `4XL` often had a too-low `sortOrder` (e.g. `0`), which put it ahead of `L` across MWOs.
 
 ## Style pickers = itemAttributeValue ids (catalog only)
 
