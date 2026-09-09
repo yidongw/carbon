@@ -349,6 +349,7 @@ const STYLE_SIZE_CODES: string[] = [
   "XL",
   "2XL",
   "3XL",
+  "4XL",
   "OS"
 ];
 
@@ -396,7 +397,7 @@ export function styleReferenceRows(language?: string) {
       colorName: c.names.en ?? c.code,
       color: STYLE_COLOR_DEFAULT_HEX[c.code] ?? null
     })),
-    // `index` is the canonical apparel order (XS→3XL, OS last) persisted as
+    // `index` is the canonical apparel order (XS→4XL, OS last) persisted as
     // `sortOrder` so downstream reads don't fall back to alphabetical.
     sizes: STYLE_SIZE_CODES.map((code, index) => ({
       sizeCode: code,

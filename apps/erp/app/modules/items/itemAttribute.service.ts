@@ -159,10 +159,12 @@ export async function getBomComponentVariants(
     .eq("companyId", companyId);
   if (variants.error) return { data: null, error: variants.error };
 
-  const rows = ((variants.data ?? []) as Array<{
-    parentItemId: string | null;
-    variantItemId: string | null;
-  }>).filter(
+  const rows = (
+    (variants.data ?? []) as Array<{
+      parentItemId: string | null;
+      variantItemId: string | null;
+    }>
+  ).filter(
     (r): r is { parentItemId: string; variantItemId: string } =>
       Boolean(r.parentItemId) && Boolean(r.variantItemId)
   );
@@ -281,12 +283,15 @@ export async function getStyleVariantQuantityParameters(
   const variantItemIdByIvId = new Map(
     variantRowList.map((v) => [v.id, v.variantItemId])
   );
+  // Build labels then insert into the map in apparel/catalog order so
+  // Object.entries (规格数量 rows / add buttons) follows value sortOrder
+  // (e.g. L → XL → 2XL → 3XL → 4XL) instead of physical variant row order.
   const optionVariantItemLabels: Record<string, string> = {};
   if (variantRowList.length > 0) {
     const { data: vattrs, error: vattrsErr } = await db
       .from("itemVariantAttribute")
       .select(
-        "itemVariantId, attributeId, itemAttributeValue:attributeValueId(name, code)"
+        "itemVariantId, attributeId, itemAttributeValue:attributeValueId(name, code, sortOrder)"
       )
       .eq("companyId", companyId)
       .in(
@@ -296,33 +301,61 @@ export async function getStyleVariantQuantityParameters(
     if (vattrsErr) throw vattrsErr;
     const partsByIvId = new Map<
       string,
-      Array<{ attributeId: string; name: string }>
+      Array<{ attributeId: string; name: string; valueSortOrder: number }>
     >();
     for (const va of (vattrs ?? []) as Array<{
       itemVariantId: string;
       attributeId: string;
-      itemAttributeValue: { name: string | null; code: string | null } | null;
+      itemAttributeValue: {
+        name: string | null;
+        code: string | null;
+        sortOrder: number | null;
+      } | null;
     }>) {
       // Prefer the value's display name; fall back to its code only if unnamed.
       const name = va.itemAttributeValue?.name ?? va.itemAttributeValue?.code;
       if (!name) continue;
       const list = partsByIvId.get(va.itemVariantId) ?? [];
-      list.push({ attributeId: va.attributeId, name });
+      list.push({
+        attributeId: va.attributeId,
+        name,
+        valueSortOrder: va.itemAttributeValue?.sortOrder ?? 100
+      });
       partsByIvId.set(va.itemVariantId, list);
     }
+    const labeled: Array<{
+      variantItemId: string;
+      label: string;
+      sortKey: number[];
+    }> = [];
     for (const [ivId, parts] of partsByIvId) {
       const variantItemId = variantItemIdByIvId.get(ivId);
       if (!variantItemId) continue;
-      const label = parts
+      const orderedParts = parts
         .slice()
         .sort(
           (a, b) =>
             (sortByAttr.get(a.attributeId) ?? 100) -
             (sortByAttr.get(b.attributeId) ?? 100)
-        )
-        .map((p) => p.name)
-        .join(" · ");
-      if (label) optionVariantItemLabels[variantItemId] = label;
+        );
+      const label = orderedParts.map((p) => p.name).join(" · ");
+      if (!label) continue;
+      labeled.push({
+        variantItemId,
+        label,
+        sortKey: orderedParts.map((p) => p.valueSortOrder)
+      });
+    }
+    labeled.sort((a, b) => {
+      const len = Math.max(a.sortKey.length, b.sortKey.length);
+      for (let i = 0; i < len; i++) {
+        const d = (a.sortKey[i] ?? 0) - (b.sortKey[i] ?? 0);
+        if (d !== 0) return d;
+      }
+      return a.label.localeCompare(b.label);
+    });
+    for (const entry of labeled) {
+      optionVariantItemLabels[entry.variantItemId] = entry.label;
     }
   }
 

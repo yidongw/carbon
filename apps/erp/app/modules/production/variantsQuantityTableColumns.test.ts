@@ -314,4 +314,27 @@ describe("getVariantsQuantityCells", () => {
       { variantItemId: "iav_bk_s", Quantities: 6, label: "黑色 · S" }
     ]);
   });
+
+  it("sortRowsByOptionVariantOrder follows label-map insertion order", async () => {
+    const { sortRowsByOptionVariantOrder } = await import(
+      "./variantsQuantityTableColumns"
+    );
+    const labels = {
+      v_l: "黑色 · L",
+      v_xl: "黑色 · XL",
+      v_2xl: "黑色 · 2XL",
+      v_3xl: "黑色 · 3XL",
+      v_4xl: "黑色 · 4XL"
+    };
+    const rows = [
+      { variantItemId: "v_4xl", Quantities: 20 },
+      { variantItemId: "v_l", Quantities: 0 },
+      { variantItemId: "v_3xl", Quantities: 20 },
+      { variantItemId: "v_xl", Quantities: 0 },
+      { variantItemId: "v_2xl", Quantities: 20 }
+    ];
+    expect(
+      sortRowsByOptionVariantOrder(rows, labels).map((r) => r.variantItemId)
+    ).toEqual(["v_l", "v_xl", "v_2xl", "v_3xl", "v_4xl"]);
+  });
 });

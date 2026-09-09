@@ -6,7 +6,10 @@ import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { variantsQuantityToComboRows } from "~/modules/production/variantsQuantityTableColumns";
+import {
+  sortRowsByOptionVariantOrder,
+  variantsQuantityToComboRows
+} from "~/modules/production/variantsQuantityTableColumns";
 import { applyVariantTableAdjustment } from "~/modules/production/variantTable";
 import { localizeColorNameMap } from "~/modules/shared/variantDisplay";
 import type { AdjustmentMode, Row } from "./variantsQuantityShared";
@@ -79,16 +82,17 @@ function JobVariantsQuantity({
           optionVariantItemLabels
         ) as Row[])
       : initialRows;
-    return seed.map((row) => {
-      const normalized = normalizeRow(row, columns);
+    const normalized = seed.map((row) => {
+      const next = normalizeRow(row, columns);
       const variantItemId = String(row.variantItemId ?? "").trim();
       const label =
         String(row.label ?? "").trim() ||
         optionVariantItemLabels[variantItemId] ||
         "";
-      if (label) normalized.label = label;
-      return normalized;
+      if (label) next.label = label;
+      return next;
     });
+    return sortRowsByOptionVariantOrder(normalized, optionVariantItemLabels);
   }, [initialRows, columns, parameters, optionVariantItemLabels]);
 
   const [rows, setRows] = useState<Row[]>(() =>

@@ -23,6 +23,7 @@ import {
 import {
   buildVariantsQuantityEditorState,
   getVariantsQuantityRows,
+  sortRowsByOptionVariantOrder,
   type VariantsQuantityReferenceContext,
   type VariantsQuantityReferenceSource,
   variantsQuantityToComboRows
@@ -229,12 +230,15 @@ function VariantsQuantityModal({
           ? comboRowsFromInitial(initialRows, optionVariantItemLabels)
           : [];
       if (seed.length > 0) {
-        return seed.map((row) => {
-          const normalized = normalizeRow(row, flatColumns);
-          const label = String(row.label ?? "").trim();
-          if (label) normalized.label = label;
-          return normalized;
-        });
+        return sortRowsByOptionVariantOrder(
+          seed.map((row) => {
+            const normalized = normalizeRow(row, flatColumns);
+            const label = String(row.label ?? "").trim();
+            if (label) normalized.label = label;
+            return normalized;
+          }),
+          optionVariantItemLabels
+        );
       }
       // Combo grid: wait for add buttons (no blank seed row).
       return [];
@@ -248,16 +252,19 @@ function VariantsQuantityModal({
             optionVariantItemLabels
           ) as Row[])
         : initialRows;
-      return seedRows.map((row) => {
-        const normalized = normalizeRow(row, columns);
-        const variantItemId = String(row.variantItemId ?? "").trim();
-        const label =
-          String(row.label ?? "").trim() ||
-          optionVariantItemLabels[variantItemId] ||
-          "";
-        if (label) normalized.label = label;
-        return normalized;
-      });
+      return sortRowsByOptionVariantOrder(
+        seedRows.map((row) => {
+          const normalized = normalizeRow(row, columns);
+          const variantItemId = String(row.variantItemId ?? "").trim();
+          const label =
+            String(row.label ?? "").trim() ||
+            optionVariantItemLabels[variantItemId] ||
+            "";
+          if (label) normalized.label = label;
+          return normalized;
+        }),
+        optionVariantItemLabels
+      );
     }
     return getInitialRows(parameters, comboParam, columns);
   });
