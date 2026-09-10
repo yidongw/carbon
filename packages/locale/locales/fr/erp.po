@@ -6874,6 +6874,9 @@ msgstr "Échec du chargement des achats de style"
 msgid "Failed to load style quantities"
 msgstr "Échec du chargement des quantités de style"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "Échec du chargement de la sommaire des styles"
 
@@ -7128,6 +7131,9 @@ msgstr "Échec de la résolution des prix Pull depuis l'inventaire"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "Échec de la résolution des prix Achat vers Commande"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "Échec de la restauration du document"
@@ -10860,6 +10866,9 @@ msgstr "Rien dans l'archive"
 msgid "Nothing left to split for this work order."
 msgstr "Rien de plus à répartir pour cet ordre de fabrication."
 
+msgid "Nothing to post for this storage unit"
+msgstr ""
+
 msgid "Notification"
 msgstr "Notification"
 
@@ -13142,6 +13151,9 @@ msgstr ""
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Sélectionnez un étiquette ou recherchez par ID d'article ou ID de traçabilité."
 
+msgid "Scan count is only for Style items"
+msgstr ""
+
 msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
 msgstr ""
 
@@ -14219,6 +14231,9 @@ msgstr "Unité de stockage"
 
 msgid "Storage unit created"
 msgstr "Unité de stockage créée"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Storage Units"
 msgstr "Unités de stockage"
@@ -16776,6 +16791,21 @@ msgstr "ZPL (étiquette thermique)"
 msgid "ZPL Label Preview"
 msgstr "Prévisualisation étiquette ZPL"
 
+msgid "取消"
+msgstr ""
+
+msgid "存储单元"
+msgstr ""
+
+msgid "实盘"
+msgstr ""
+
+msgid "审阅"
+msgstr ""
+
+msgid "差异"
+msgstr ""
+
 #. placeholder {0}: fetcher.data.bound
 msgid "已绑定 {0} 件"
 msgstr ""
@@ -16783,10 +16813,22 @@ msgstr ""
 msgid "已读唯一芯片"
 msgstr ""
 
+msgid "当前货位"
+msgstr ""
+
+msgid "扫码盘点"
+msgstr ""
+
+msgid "扫码盘点已过账"
+msgstr ""
+
 msgid "数量不足，请重新扫描"
 msgstr ""
 
 msgid "数量过多，请重新扫描"
+msgstr ""
+
+msgid "未识别"
 msgstr ""
 
 msgid "水洗唛扫码绑定"
@@ -16798,7 +16840,13 @@ msgstr ""
 msgid "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
 msgstr ""
 
+msgid "盘点失败"
+msgstr ""
+
 msgid "确认绑定"
+msgstr ""
+
+msgid "确认过账"
 msgstr ""
 
 msgid "等待 PDA 读入 EPC…"
@@ -16816,5 +16864,17 @@ msgstr ""
 msgid "请先生成系统编码（完成「打印水洗唛」工序）"
 msgstr ""
 
+msgid "请选择存储单元"
+msgstr ""
+
+msgid "账面"
+msgstr ""
+
+msgid "选择存储单元后，用 UHF PDA 批量读取本款水洗唛芯片。确认过账会按件写入该货位，并将本款未扫到的 SKU 清零。"
+msgstr ""
+
 msgid "重新扫描"
+msgstr ""
+
+msgid "非本款"
 msgstr ""

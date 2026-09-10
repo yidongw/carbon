@@ -2897,6 +2897,9 @@ msgstr "Failed to load style purchasing"
 msgid "Failed to load style quantities"
 msgstr "Failed to load style quantities"
 
+msgid "Failed to load Style SKUs"
+msgstr "Failed to load Style SKUs"
+
 msgid "Failed to load style summary"
 msgstr "Failed to load style summary"
 
@@ -3127,6 +3130,9 @@ msgstr "Failed to resolve Pull from Inventory prices"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "Failed to resolve Purchase to Order prices"
+
+msgid "Failed to resolve scans"
+msgstr "Failed to resolve scans"
 
 msgid "Failed to restore document"
 msgstr "Failed to restore document"
@@ -4664,6 +4670,9 @@ msgstr "Not you?"
 msgid "Notes"
 msgstr "Notes"
 
+msgid "Nothing to post for this storage unit"
+msgstr "Nothing to post for this storage unit"
+
 msgid "OEE Impact"
 msgstr "OEE Impact"
 
@@ -5264,6 +5273,9 @@ msgstr "Scan a finished bundle to report the quantity you completed"
 msgid "Scan batch number"
 msgstr "Scan batch number"
 
+msgid "Scan count is only for Style items"
+msgstr "Scan count is only for Style items"
+
 msgid "Scan or enter serial number"
 msgstr "Scan or enter serial number"
 
@@ -5535,6 +5547,9 @@ msgstr "Storage Unit"
 
 msgid "Storage unit created"
 msgstr "Storage unit created"
+
+msgid "Storage unit is required"
+msgstr "Storage unit is required"
 
 msgid "Style"
 msgstr "Style"

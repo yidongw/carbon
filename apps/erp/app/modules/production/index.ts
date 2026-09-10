@@ -17,5 +17,6 @@ export * from "./productionQuantityList.service";
 export * from "./productionQuantityReport.models";
 export * from "./productionQuantityReport.service";
 export * from "./purchaseOrderFromJob.service";
+export * from "./scanInventoryCount";
 // @ts-ignore
 export * from "./types";

@@ -379,3 +379,13 @@ Patterns learned from corrections. Review at the start of each session.
 ## Inventory adjustment variant hints are display-only
 - Symptom/request: Style inventory adjustment needs on-hand hints per SKU, but clicking them must not fill cells (unlike transfers/production).
 - Rule: pass `referenceHintsClickable: false` through `openStyleVariantsQuantityWithInventory` / `useVariantsQuantityModal`. Default remains click-to-fill elsewhere.
+
+## Care-label floor scanner = UHF RFID PDA (bulk EPC), not 1D wedge
+- Floor device for 水洗唛绑定 / 扫码盘点 is a **超高频 U‑RFID 手持读写 PDA**: RF bulk-reads many chip EPCs in one go.
+- Do not design bind/count UX as single Code128 keyboard-wedge only. Ingest **EPC lists**, dedupe, resolve via `garmentRfidCode.externalCode` (and `code` for printed barcode fallback).
+- Existing Bundle Count “one scan = whole bundle” is a different product shape; piece-level UHF count should accumulate unique EPCs → pieces → SKU qty.
+
+## 扫码盘点 (planned): storage unit required; leave manual adjustment alone
+- **扫码盘点**: `storageUnitId` **required** (scan a whole bin/rack). Piece-level UHF; scope = current item/Style at that location+unit. Unscanned SKUs of that Style **in that storage unit** → set to 0 on commit (whole-bin semantics).
+- **库存调整** (`InventoryStorageUnits` / adjustment modal): do **not** change — storage unit stays optional; manual Set/Pos/Neg as today.
+- Entry: next to adjustment on location inventory detail; separate flow, not a change to adjustment.

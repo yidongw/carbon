@@ -71,6 +71,24 @@ system on-hand. `apps/erp/app/routes/x+/inventory+/bundle-count.tsx`
 - Location picker: native `<select>` fed by `useLocations()` (from
   `~/components/Form/Location`). Finished garments only (need RFID code).
 
+## Floor scanner hardware (product note)
+
+Care-label / chip floor work uses a **UHF RFID handheld PDA** (超高频): one trigger
+can return **many EPCs**. Bind and future piece-level 扫码盘点 should ingest bulk
+EPC lists + dedupe via `garmentRfidCode.externalCode`, not assume 1D keyboard-wedge
+only. Bundle Count v1 above is still “scan one code → whole-bundle qty”.
+
+## Planned: 扫码盘点 (piece-level, next to inventory adjustment)
+
+Product decisions (locked):
+- Entry: location inventory item detail, **beside** 库存调整 — do **not** change the
+  manual adjustment modal (storage unit stays optional there).
+- **存储单元 required**; 位置 from page context. Semantics = count **one whole bin/rack**.
+- Granularity: unique UHF EPC → 1 piece → variant SKU tally (not 按扎 Bundle Count).
+- Scope: current item / Style family only; foreign/unknown EPCs flagged, not posted.
+- Commit: `insertManualInventoryAdjustment` Set Quantity per SKU at location+storageUnit;
+  unscanned SKUs of that Style **in that storage unit** → **0** (whole-bin clear).
+
 ## Scope / gotchas
 - Quantity = the bundle's full `quantity` at confirm time (whole-bundle only; no
   partial). Scanning one piece records the whole bundle.

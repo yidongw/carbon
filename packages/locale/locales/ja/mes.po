@@ -2897,6 +2897,9 @@ msgstr "スタイル購入の読み込みに失敗しました"
 msgid "Failed to load style quantities"
 msgstr "スタイル数量の読み込みに失敗しました"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "スタイルサマリの読み込みに失敗しました"
 
@@ -3127,6 +3130,9 @@ msgstr "在庫からPull価格を解決できませんでした"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "購入価格を注文価格に解決できませんでした"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "ドキュメントの復元に失敗しました"
@@ -4664,6 +4670,9 @@ msgstr "あなたではありません？"
 msgid "Notes"
 msgstr "備考"
 
+msgid "Nothing to post for this storage unit"
+msgstr ""
+
 msgid "OEE Impact"
 msgstr "OEE影響度"
 
@@ -5264,6 +5273,9 @@ msgstr "完成したバンドルをスキャンして完了数量を報告しま
 msgid "Scan batch number"
 msgstr "バッチ番号をスキャンします"
 
+msgid "Scan count is only for Style items"
+msgstr ""
+
 msgid "Scan or enter serial number"
 msgstr "シリアル番号をスキャンまたは入力"
 
@@ -5535,6 +5547,9 @@ msgstr "保管場所"
 
 msgid "Storage unit created"
 msgstr "ストレージ単位を作成しました"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Style"
 msgstr "スタイル"

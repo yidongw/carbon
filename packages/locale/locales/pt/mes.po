@@ -2897,6 +2897,9 @@ msgstr "Falhou ao carregar a compra de estilo"
 msgid "Failed to load style quantities"
 msgstr "Falhou ao carregar quantidades de estilo"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "Falhou ao carregar resumo de estilo"
 
@@ -3127,6 +3130,9 @@ msgstr "Falhou ao resolver os preços daPull do Inventário"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "Falhou ao resolver preços de Compra para Ordem"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "Falhou ao restaurar o documento"
@@ -4664,6 +4670,9 @@ msgstr "Não você?"
 msgid "Notes"
 msgstr "Observações"
 
+msgid "Nothing to post for this storage unit"
+msgstr ""
+
 msgid "OEE Impact"
 msgstr "Impacto OEE"
 
@@ -5264,6 +5273,9 @@ msgstr "Escaneie um pacote concluído para reportar a quantidade que você final
 msgid "Scan batch number"
 msgstr "SCAN NÚMERO DE LOTE"
 
+msgid "Scan count is only for Style items"
+msgstr ""
+
 msgid "Scan or enter serial number"
 msgstr "Escanear ou inserir número de série"
 
@@ -5535,6 +5547,9 @@ msgstr "Unidade de Armazenamento"
 
 msgid "Storage unit created"
 msgstr "Unidade de armazenamento criada"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Style"
 msgstr "Estilo"

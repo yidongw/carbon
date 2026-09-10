@@ -64,6 +64,161 @@ export async function getBundleByGarmentCode(
   };
 }
 
+export type ResolvedGarmentPiece = {
+  scannedCode: string;
+  garmentRfidCodeId: string;
+  systemCode: string;
+  externalCode: string | null;
+  /** Variant SKU that holds inventory for this piece's bundle. */
+  variantItemId: string;
+  /** Style parent when the SKU is an itemVariant child; null otherwise. */
+  parentItemId: string | null;
+  styleReadableId: string | null;
+  attributeLabel: string | null;
+};
+
+/**
+ * Batch-resolve PDA scans (system Code128 or bound UHF EPC) to individual
+ * garment pieces. Unlike `getBundleByGarmentCode`, this does not collapse to
+ * whole-bundle quantity — each unique code is one piece.
+ */
+export async function resolveGarmentPiecesByScannedCodes(
+  client: SupabaseClient<Database>,
+  codes: string[],
+  companyId: string
+): Promise<{
+  data: ResolvedGarmentPiece[];
+  unknown: string[];
+  error: unknown;
+}> {
+  const unique: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of codes) {
+    const code = raw.trim();
+    if (!code || seen.has(code)) continue;
+    seen.add(code);
+    unique.push(code);
+  }
+  if (unique.length === 0) {
+    return { data: [], unknown: [], error: null };
+  }
+
+  const bySystem = await client
+    .from("garmentRfidCode")
+    .select("id, code, externalCode, bundleWorkOrderId")
+    .eq("companyId", companyId)
+    .in("code", unique);
+  if (bySystem.error) {
+    return { data: [], unknown: unique, error: bySystem.error };
+  }
+
+  const matched = new Map<
+    string,
+    {
+      id: string;
+      code: string;
+      externalCode: string | null;
+      bundleWorkOrderId: string;
+      scannedCode: string;
+    }
+  >();
+  for (const row of bySystem.data ?? []) {
+    if (unique.includes(row.code)) {
+      matched.set(row.code, {
+        id: row.id,
+        code: row.code,
+        externalCode: row.externalCode,
+        bundleWorkOrderId: row.bundleWorkOrderId,
+        scannedCode: row.code
+      });
+    }
+  }
+
+  const remaining = unique.filter((c) => !matched.has(c));
+  if (remaining.length > 0) {
+    const byEpc = await client
+      .from("garmentRfidCode")
+      .select("id, code, externalCode, bundleWorkOrderId")
+      .eq("companyId", companyId)
+      .in("externalCode", remaining);
+    if (byEpc.error) {
+      return { data: [], unknown: unique, error: byEpc.error };
+    }
+    for (const row of byEpc.data ?? []) {
+      const epc = row.externalCode?.trim();
+      if (!epc || matched.has(epc)) continue;
+      if (!remaining.includes(epc)) continue;
+      matched.set(epc, {
+        id: row.id,
+        code: row.code,
+        externalCode: row.externalCode,
+        bundleWorkOrderId: row.bundleWorkOrderId,
+        scannedCode: epc
+      });
+    }
+  }
+
+  const unknown = unique.filter((c) => !matched.has(c));
+  const matchedRows = [...matched.values()];
+  if (matchedRows.length === 0) {
+    return { data: [], unknown, error: null };
+  }
+
+  const bundleIds = [...new Set(matchedRows.map((r) => r.bundleWorkOrderId))];
+  const bundles = await client
+    .from("bundleWorkOrders")
+    .select("id, itemId, styleReadableId, attributeLabel")
+    .eq("companyId", companyId)
+    .in("id", bundleIds);
+  if (bundles.error) {
+    return { data: [], unknown: unique, error: bundles.error };
+  }
+  const bundleById = new Map((bundles.data ?? []).map((b) => [b.id, b]));
+
+  const variantIds = [
+    ...new Set(
+      (bundles.data ?? [])
+        .map((b) => b.itemId)
+        .filter((id): id is string => Boolean(id))
+    )
+  ];
+  const parentByVariant = new Map<string, string>();
+  if (variantIds.length > 0) {
+    const parents = await client
+      .from("itemVariant")
+      .select("variantItemId, parentItemId")
+      .eq("companyId", companyId)
+      .in("variantItemId", variantIds);
+    if (parents.error) {
+      return { data: [], unknown: unique, error: parents.error };
+    }
+    for (const row of parents.data ?? []) {
+      parentByVariant.set(row.variantItemId, row.parentItemId);
+    }
+  }
+
+  const data: ResolvedGarmentPiece[] = [];
+  for (const row of matchedRows) {
+    const bundle = bundleById.get(row.bundleWorkOrderId);
+    if (!bundle?.itemId) {
+      unknown.push(row.scannedCode);
+      continue;
+    }
+    data.push({
+      scannedCode: row.scannedCode,
+      garmentRfidCodeId: row.id,
+      systemCode: row.code,
+      externalCode: row.externalCode,
+      variantItemId: bundle.itemId,
+      parentItemId: parentByVariant.get(bundle.itemId) ?? null,
+      styleReadableId: bundle.styleReadableId,
+      attributeLabel: bundle.attributeLabel
+    });
+  }
+
+  return { data, unknown, error: null };
+}
+
 /** Log one whole-bundle in/out movement (standalone ledger — no itemLedger post). */
 export async function recordBundleInventoryMovement(
   client: SupabaseClient<Database>,
