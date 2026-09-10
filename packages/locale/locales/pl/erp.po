@@ -9937,6 +9937,9 @@ msgstr "Minuty/1000 Sztuk"
 msgid "Minutes/Piece"
 msgstr "Minuty/Sztuka"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "Brak kodu lub stanu z WeChat"
 
@@ -12843,9 +12846,6 @@ msgstr "Kwota reworku zapisana pomyślnie"
 
 msgid "Rework triggered successfully"
 msgstr "Sukces: Zainicjowano ponowną obrabieć"
-
-msgid "RFID Code"
-msgstr ""
 
 msgid "RFID Codes"
 msgstr ""
@@ -16775,3 +16775,43 @@ msgstr "ZPL (Etykietka termiczna)"
 
 msgid "ZPL Label Preview"
 msgstr "Podgląd etykiety ZPL"
+
+#. placeholder {0}: fetcher.data.bound
+msgid "已绑定 {0} 件"
+msgstr ""
+
+msgid "已读唯一芯片"
+msgstr ""
+
+msgid "数量不足，请重新扫描"
+msgstr ""
+
+msgid "数量过多，请重新扫描"
+msgstr ""
+
+msgid "水洗唛扫码绑定"
+msgstr ""
+
+msgid "水洗唛芯片"
+msgstr ""
+
+msgid "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
+msgstr ""
+
+msgid "确认绑定"
+msgstr ""
+
+msgid "等待 PDA 读入 EPC…"
+msgstr ""
+
+msgid "系统编码"
+msgstr ""
+
+msgid "绑定时间"
+msgstr ""
+
+msgid "请先生成系统编码"
+msgstr ""
+
+msgid "重新扫描"
+msgstr ""

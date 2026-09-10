@@ -4411,6 +4411,9 @@ msgstr "メソッド操作ツールが更新されました"
 msgid "Metric"
 msgstr "メトリック"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "WeChatから欠けたコードまたは状態"
 

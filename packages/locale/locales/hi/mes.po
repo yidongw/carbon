@@ -4411,6 +4411,9 @@ msgstr "मॉडल कार्य संपादित गया है"
 msgid "Metric"
 msgstr "मीट्रिक"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "वेचेट में लापता कोड या रिक्त स्थिति"
 

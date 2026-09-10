@@ -4412,6 +4412,9 @@ msgstr "已更新方法工序工具"
 msgid "Metric"
 msgstr "公制"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "缺少微信代码或状态"
 

@@ -11739,12 +11739,15 @@ export type Database = {
       }
       garmentRfidCode: {
         Row: {
+          boundAt: string | null
+          boundBy: string | null
           bundleWorkOrderId: string
           code: string
           companyId: string
           createdAt: string
           createdBy: string
           customFields: Json | null
+          externalCode: string | null
           id: string
           sequence: number
           tags: string[] | null
@@ -11752,12 +11755,15 @@ export type Database = {
           updatedBy: string | null
         }
         Insert: {
+          boundAt?: string | null
+          boundBy?: string | null
           bundleWorkOrderId: string
           code: string
           companyId: string
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          externalCode?: string | null
           id?: string
           sequence?: number
           tags?: string[] | null
@@ -11765,12 +11771,15 @@ export type Database = {
           updatedBy?: string | null
         }
         Update: {
+          boundAt?: string | null
+          boundBy?: string | null
           bundleWorkOrderId?: string
           code?: string
           companyId?: string
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          externalCode?: string | null
           id?: string
           sequence?: number
           tags?: string[] | null

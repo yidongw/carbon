@@ -4411,6 +4411,9 @@ msgstr "Инструмент операции обновлен"
 msgid "Metric"
 msgstr "Метрическая"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "Отсутствующий код или состояние из WeChat"
 

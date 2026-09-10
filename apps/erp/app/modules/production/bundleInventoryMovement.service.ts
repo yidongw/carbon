@@ -20,13 +20,28 @@ export async function getBundleByGarmentCode(
   code: string,
   companyId: string
 ) {
-  const rfid = await client
+  const scanned = code.trim();
+  if (!scanned) return { data: null, error: null };
+
+  // Prefer system code; fall back to bound UHF chip EPC (externalCode).
+  let rfid = await client
     .from("garmentRfidCode")
-    .select("id, code, bundleWorkOrderId, sequence")
+    .select("id, code, externalCode, bundleWorkOrderId, sequence")
     .eq("companyId", companyId)
-    .eq("code", code)
+    .eq("code", scanned)
     .maybeSingle();
   if (rfid.error) return { data: null, error: rfid.error };
+
+  if (!rfid.data) {
+    rfid = await client
+      .from("garmentRfidCode")
+      .select("id, code, externalCode, bundleWorkOrderId, sequence")
+      .eq("companyId", companyId)
+      .eq("externalCode", scanned)
+      .maybeSingle();
+    if (rfid.error) return { data: null, error: rfid.error };
+  }
+
   if (!rfid.data) return { data: null, error: null };
 
   const bundle = await client
@@ -41,7 +56,10 @@ export async function getBundleByGarmentCode(
   if (!bundle.data) return { data: null, error: null };
 
   return {
-    data: { scannedCode: rfid.data.code, bundle: bundle.data },
+    data: {
+      scannedCode: scanned,
+      bundle: bundle.data
+    },
     error: null
   };
 }

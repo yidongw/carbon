@@ -1,5 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isStyleCareLabelOperation } from "~/modules/items/styleMethod.service";
+import { validateCareLabelBulkBind } from "./careLabelBind";
 
 /**
  * Mint the RFID/EPC code for a single garment piece.
@@ -41,7 +43,7 @@ export async function getGarmentRfidCodes(
  * the button twice never duplicates or renumbers existing codes.
  *
  * Scope is deliberately narrow — this only mints and stores codes. Printing the
- * care label and encoding the physical RFID chip are handled outside the system.
+ * care label uses PrintCareLabelsModal; physical RFID chip encoding is outside.
  */
 export async function generateGarmentRfidCodesForBundles(
   client: SupabaseClient<Database>,
@@ -101,4 +103,153 @@ export async function generateGarmentRfidCodesForBundles(
   if (insert.error) return { error: insert.error, generated: 0 };
 
   return { error: null, generated: rows.length };
+}
+
+/**
+ * When a bundle's「打印水洗唛」job operation reaches Done, mint missing RFID
+ * codes for that bundle. No-op for other ops / master jobs / incomplete ops.
+ * Idempotent via generateGarmentRfidCodesForBundles.
+ */
+export async function maybeMintGarmentRfidOnCareLabelDone(
+  client: SupabaseClient<Database>,
+  input: {
+    jobOperationId: string;
+    companyId: string;
+    userId: string;
+  }
+): Promise<{ error: Error | null; generated: number }> {
+  const operation = await client
+    .from("jobOperation")
+    .select("id, jobId, status, tags, customFields")
+    .eq("id", input.jobOperationId)
+    .eq("companyId", input.companyId)
+    .maybeSingle();
+
+  if (operation.error) return { error: operation.error, generated: 0 };
+  if (!operation.data || operation.data.status !== "Done") {
+    return { error: null, generated: 0 };
+  }
+  if (!isStyleCareLabelOperation(operation.data)) {
+    return { error: null, generated: 0 };
+  }
+
+  const bundle = await client
+    .from("bundleWorkOrder")
+    .select("id")
+    .eq("jobId", operation.data.jobId)
+    .eq("companyId", input.companyId)
+    .maybeSingle();
+
+  if (bundle.error) return { error: bundle.error, generated: 0 };
+  if (!bundle.data?.id) return { error: null, generated: 0 };
+
+  return generateGarmentRfidCodesForBundles(client, {
+    bundleWorkOrderIds: [bundle.data.id],
+    companyId: input.companyId,
+    createdBy: input.userId
+  });
+}
+
+export type BindGarmentRfidResult =
+  | { error: null; bound: number }
+  | {
+      error: Error;
+      bound: 0;
+      reason?: "tooFew" | "tooMany" | "empty" | "noSystemCodes" | "chipInUse";
+      uniqueCount?: number;
+      expectedCount?: number;
+    };
+
+/**
+ * Bulk-bind UHF chip EPCs from a handheld PDA read to this bundle's system
+ * codes (1:1 by sequence). Unique EPC count must equal the number of system
+ * rows; otherwise reject and ask the floor to re-scan. Replaces prior binds on
+ * this bundle when successful.
+ */
+export async function bindGarmentRfidExternalCodes(
+  client: SupabaseClient<Database>,
+  input: {
+    bundleWorkOrderId: string;
+    companyId: string;
+    userId: string;
+    rawExternalCodes: string[];
+  }
+): Promise<BindGarmentRfidResult> {
+  const rows = await client
+    .from("garmentRfidCode")
+    .select("id, sequence, externalCode")
+    .eq("bundleWorkOrderId", input.bundleWorkOrderId)
+    .eq("companyId", input.companyId)
+    .order("sequence", { ascending: true });
+
+  if (rows.error) return { error: rows.error, bound: 0 };
+
+  const systemRows = rows.data ?? [];
+  const validation = validateCareLabelBulkBind({
+    rawExternalCodes: input.rawExternalCodes,
+    expectedCount: systemRows.length
+  });
+
+  if (!validation.ok) {
+    return {
+      error: new Error(
+        validation.reason === "tooFew"
+          ? "数量不足，请重新扫描"
+          : validation.reason === "tooMany"
+            ? "数量过多，请重新扫描"
+            : validation.reason === "noSystemCodes"
+              ? "请先生成系统编码"
+              : "未读到芯片，请重新扫描"
+      ),
+      bound: 0,
+      reason: validation.reason,
+      uniqueCount: validation.uniqueCount,
+      expectedCount: validation.expectedCount
+    };
+  }
+
+  const externalCodes = validation.externalCodes;
+
+  // Reject chips already bound to a different bundle (same bundle re-bind OK).
+  const inUse = await client
+    .from("garmentRfidCode")
+    .select("id, externalCode, bundleWorkOrderId")
+    .eq("companyId", input.companyId)
+    .in("externalCode", externalCodes);
+
+  if (inUse.error) return { error: inUse.error, bound: 0 };
+
+  const conflict = (inUse.data ?? []).find(
+    (row) =>
+      row.externalCode && row.bundleWorkOrderId !== input.bundleWorkOrderId
+  );
+  if (conflict) {
+    return {
+      error: new Error("芯片已被其他扎占用，请重新扫描"),
+      bound: 0,
+      reason: "chipInUse",
+      uniqueCount: externalCodes.length,
+      expectedCount: systemRows.length
+    };
+  }
+
+  const now = new Date().toISOString();
+  for (let i = 0; i < systemRows.length; i++) {
+    const row = systemRows[i];
+    const externalCode = externalCodes[i];
+    const updated = await client
+      .from("garmentRfidCode")
+      .update({
+        externalCode,
+        boundAt: now,
+        boundBy: input.userId,
+        updatedAt: now,
+        updatedBy: input.userId
+      })
+      .eq("id", row.id)
+      .eq("companyId", input.companyId);
+    if (updated.error) return { error: updated.error, bound: 0 };
+  }
+
+  return { error: null, bound: systemRows.length };
 }
