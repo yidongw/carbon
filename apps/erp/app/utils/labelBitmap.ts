@@ -215,25 +215,169 @@ export type CareLabelData = {
   attributeLines?: Array<{ name: string; value: string }> | null;
   /**
    * Optional pre-rendered Code128 PNG. Prefer omitting — `drawCareLabelCanvas`
-   * generates the barcode from `code` in the browser so large bundles don't
-   * download thousands of data URLs up front.
+   * draws Code128 bars directly from `code` so large bundles don't download
+   * thousands of data URLs, and print doesn't depend on a dynamic barcode lib.
    */
   barcodeDataUrl?: string;
 };
 
-/** Render Code128 of `text` to a PNG data URL (browser only). */
-async function generateCareLabelBarcodeDataUrl(text: string): Promise<string> {
-  const bwipjs = (await import("@bwip-js/browser")).default;
-  const canvas = document.createElement("canvas");
-  await bwipjs.toCanvas(canvas, {
-    bcid: "code128",
-    text: text || " ",
-    scale: 2,
-    height: 10,
-    includetext: false,
-    textxalign: "center"
-  });
-  return canvas.toDataURL("image/png");
+// Code128 patterns (11 modules each). Index = code value 0..106.
+// Source: ISO/IEC 15417 Code 128; used for Code-B (ASCII 32–127).
+const CODE128_PATTERNS: readonly string[] = [
+  "11011001100",
+  "11001101100",
+  "11001100110",
+  "10010011000",
+  "10010001100",
+  "10001001100",
+  "10011001000",
+  "10011000100",
+  "10001100100",
+  "11001001000",
+  "11001000100",
+  "11000100100",
+  "10110011100",
+  "10011011100",
+  "10011001110",
+  "10111001100",
+  "10011101100",
+  "10011100110",
+  "11001110010",
+  "11001011100",
+  "11001001110",
+  "11011100100",
+  "11001110100",
+  "11101101110",
+  "11101001100",
+  "11100101100",
+  "11100100110",
+  "11101100100",
+  "11100110100",
+  "11100110010",
+  "11011011000",
+  "11011000110",
+  "11000110110",
+  "10100011000",
+  "10001011000",
+  "10001000110",
+  "10110001000",
+  "10001101000",
+  "10001100010",
+  "11010001000",
+  "11000101000",
+  "11000100010",
+  "10110111000",
+  "10110001110",
+  "10001101110",
+  "10111011000",
+  "10111000110",
+  "10001110110",
+  "11101110110",
+  "11010001110",
+  "11000101110",
+  "11011101000",
+  "11011100010",
+  "11011101110",
+  "11101011000",
+  "11101000110",
+  "11100010110",
+  "11101101000",
+  "11101100010",
+  "11100011010",
+  "11101111010",
+  "11001000010",
+  "11110001010",
+  "10100110000",
+  "10100001100",
+  "10010110000",
+  "10010000110",
+  "10000101100",
+  "10000100110",
+  "10110010000",
+  "10110000100",
+  "10011010000",
+  "10011000010",
+  "10000110100",
+  "10000110010",
+  "11000010010",
+  "11001010000",
+  "11110111010",
+  "11000010100",
+  "10001111010",
+  "10100111100",
+  "10010111100",
+  "10010011110",
+  "10111100100",
+  "10011110100",
+  "10011110010",
+  "11110100100",
+  "11110010100",
+  "11110010010",
+  "11011011110",
+  "11011110110",
+  "11110110110",
+  "10101111000",
+  "10100011110",
+  "10001011110",
+  "10111101000",
+  "10111100010",
+  "11110101000",
+  "11110100010",
+  "10111011110",
+  "10111101110",
+  "11101011110",
+  "11110101110",
+  "11010000100",
+  "11010010000",
+  "11010011100",
+  "11000111010"
+];
+
+/**
+ * Draw Code128-B bars directly onto the canvas (no PNG / no dynamic import).
+ * Integer module widths keep bars crisp for TSPL thresholding and browser print.
+ */
+function drawCode128B(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
+  const codes: number[] = [104]; // Start Code B
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c < 32 || c > 127) {
+      throw new Error(`Code128-B cannot encode char ${c}`);
+    }
+    codes.push(c - 32);
+  }
+  let checksum = codes[0]!;
+  for (let i = 1; i < codes.length; i++) {
+    checksum += codes[i]! * i;
+  }
+  codes.push(checksum % 103);
+  codes.push(106); // Stop
+
+  let modules = "";
+  for (const code of codes) {
+    const pat = CODE128_PATTERNS[code];
+    if (!pat) throw new Error(`Missing Code128 pattern for ${code}`);
+    modules += pat;
+  }
+  modules += "11"; // termination bar
+
+  const moduleW = Math.max(1, Math.floor(w / modules.length));
+  const totalW = moduleW * modules.length;
+  let dx = x + Math.floor((w - totalW) / 2);
+  ctx.fillStyle = "#000";
+  for (let i = 0; i < modules.length; i++) {
+    if (modules[i] === "1") {
+      ctx.fillRect(dx, y, moduleW, h);
+    }
+    dx += moduleW;
+  }
 }
 
 // Fields the care label reserves space for but the system doesn't store yet —
@@ -329,16 +473,19 @@ export async function drawCareLabelCanvas(
   const bcX = padX;
   const bcY = bcTop + Math.max(0, (bcAreaH - idFont - 6 - bcH) / 2);
   try {
-    const barcodeDataUrl =
-      label.barcodeDataUrl ||
-      (await generateCareLabelBarcodeDataUrl(String(label.code)));
-    const img = await loadImage(barcodeDataUrl);
-    // Smooth (not nearest-neighbor) so downscaling the dense bars averages
-    // instead of dropping thin bars; canvasToTsplLabel re-binarizes after.
-    ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(img, bcX, bcY, bcW, bcH);
-  } catch {
-    /* no barcode — still print the code text */
+    if (label.barcodeDataUrl) {
+      const img = await loadImage(label.barcodeDataUrl);
+      // Smooth so downscaling averages thin bars; TSPL re-binarizes after.
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(img, bcX, bcY, bcW, bcH);
+    } else {
+      // Draw bars directly — no dynamic bwip import (was failing silently and
+      // leaving care labels with only the human-readable code text).
+      ctx.imageSmoothingEnabled = false;
+      drawCode128B(ctx, String(label.code), bcX, bcY, bcW, bcH);
+    }
+  } catch (err) {
+    console.error("care-label barcode failed", err);
   }
 
   ctx.font = `${idFont}px ${CJK_FONT}`;
