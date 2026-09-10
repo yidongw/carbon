@@ -27,9 +27,6 @@ catalogs:
     '@internationalized/date':
       specifier: 3.12.0
       version: 3.12.0
-    '@lingui/cli':
-      specifier: 5.9.4
-      version: 5.9.4
     '@lingui/core':
       specifier: 5.9.4
       version: 5.9.4
@@ -63,18 +60,6 @@ catalogs:
     '@react-router/serve':
       specifier: 7.15.1
       version: 7.15.1
-    '@shikijs/langs':
-      specifier: 4.0.2
-      version: 4.0.2
-    '@shikijs/themes':
-      specifier: 4.0.2
-      version: 4.0.2
-    '@shikijs/types':
-      specifier: 4.0.2
-      version: 4.0.2
-    '@slack/web-api':
-      specifier: 7.10.0
-      version: 7.10.0
     '@supabase/functions-js':
       specifier: 2.1.5
       version: 2.1.5
@@ -93,43 +78,7 @@ catalogs:
     '@tailwindcss/vite':
       specifier: 4.3.0
       version: 4.3.0
-    '@tiptap/core':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-color':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-list-item':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-table':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-table-cell':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-table-header':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-table-row':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-text-style':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-underline':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/extension-youtube':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/pm':
-      specifier: 2.27.2
-      version: 2.27.2
     '@tiptap/react':
-      specifier: 2.27.2
-      version: 2.27.2
-    '@tiptap/starter-kit':
       specifier: 2.27.2
       version: 2.27.2
     '@types/react':
@@ -147,9 +96,6 @@ catalogs:
     '@vercel/react-router':
       specifier: 1.2.6
       version: 1.2.6
-    axios:
-      specifier: 1.15.0
-      version: 1.15.0
     class-variance-authority:
       specifier: 0.7.1
       version: 0.7.1
@@ -171,9 +117,6 @@ catalogs:
     isbot:
       specifier: '5'
       version: 5.1.37
-    jose:
-      specifier: 6.0.11
-      version: 6.0.11
     kysely:
       specifier: 0.28.15
       version: 0.28.15
@@ -225,9 +168,6 @@ catalogs:
     remix-flat-routes:
       specifier: 0.8.5
       version: 0.8.5
-    rimraf:
-      specifier: 5.0.10
-      version: 5.0.10
     sst:
       specifier: 4.6.9
       version: 4.6.9
@@ -252,9 +192,6 @@ catalogs:
     tsup:
       specifier: 8.5.1
       version: 8.5.1
-    tsx:
-      specifier: 4.21.0
-      version: 4.21.0
     typescript:
       specifier: 5.8.3
       version: 5.8.3
@@ -267,9 +204,6 @@ catalogs:
     vitest:
       specifier: 4.1.6
       version: 4.1.6
-    wait-on:
-      specifier: 7.2.0
-      version: 7.2.0
     zod:
       specifier: 3.25.76
       version: 3.25.76
@@ -650,9 +584,6 @@ importers:
       '@ai-sdk/react':
         specifier: 2.0.174
         version: 2.0.174(react@18.3.1)(zod@3.25.76)
-      '@bwip-js/browser':
-        specifier: 4.9.0
-        version: 4.9.0
       '@carbon/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -3639,9 +3570,6 @@ packages:
 
   '@bufbuild/protobuf@2.11.0':
     resolution: {integrity: sha512-sBXGT13cpmPR5BMgHE6UEEfEaShh5Ror6rfN3yEK5si7QVrtZg8LEPQb0VVhiLRUslD2yLnXtnRzG035J/mZXQ==}
-
-  '@bwip-js/browser@4.9.0':
-    resolution: {integrity: sha512-0HPAafLihTdOVVNgyhB4C1L9sZ2dpXNyX1EXpT4JqUTKwtDLyVKhQ58hD45RBYHNU1Jgg52BKQevAS3ERKwX1g==}
 
   '@bwip-js/node@4.9.0':
     resolution: {integrity: sha512-OqYyjyte8eDMsQxbZ4tZD/R/c/JBkv/Qcqs3E3ZwA7JUbgnPOCDbGg7MPT6KvnxJAV46zs3efwaBkGbbzbMTnw==}
@@ -15077,8 +15005,6 @@ snapshots:
 
   '@bufbuild/protobuf@2.11.0': {}
 
-  '@bwip-js/browser@4.9.0': {}
-
   '@bwip-js/node@4.9.0': {}
 
   '@cfcs/core@0.0.6':
@@ -25785,7 +25711,7 @@ snapshots:
 
   postcss@8.4.31:
     dependencies:
-      nanoid: 3.3.11
+      nanoid: 3.3.12
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
