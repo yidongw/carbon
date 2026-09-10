@@ -177,14 +177,20 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
     // read `requiresConfiguration` directly off each item.
     // Variant SKU children are hidden from default item pickers/lists — users
     // browse parents; inventory/jobs resolve to children under the hood.
-    const variantResult = await (carbon as any)
-      .from("itemVariant")
-      .select("variantItemId")
-      .eq("companyId", companyId);
+    // Must paginate: PostgREST max_rows=1000; production companies exceed that
+    // and a plain .select() leaves children in the store (Style pickers leak
+    // SKUs like 1182-BN-2XL next to parent 1182).
+    const variantResult = await fetchAllFromTable<{ variantItemId: string }>(
+      carbon,
+      "itemVariant",
+      "variantItemId",
+      (query) => query.eq("companyId", companyId)
+    );
+    if (variantResult.error) {
+      throw new Error("Failed to fetch item variants");
+    }
     const variantIds = new Set<string>(
-      ((variantResult.data ?? []) as { variantItemId: string }[]).map(
-        (r) => r.variantItemId
-      )
+      (variantResult.data ?? []).map((r) => r.variantItemId)
     );
 
     const itemsData = (items.data ?? [])
@@ -307,6 +313,29 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
               default:
                 break;
             }
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "itemVariant"
+          },
+          (payload) => {
+            // syncItemVariants inserts the child item first (realtime item INSERT
+            // adds it to the store), then the itemVariant row. Strip the child so
+            // Style/Part pickers keep browsing parents only.
+            if (
+              "companyId" in payload.new &&
+              payload.new.companyId !== companyId
+            )
+              return;
+            const variantItemId = payload.new.variantItemId as
+              | string
+              | undefined;
+            if (!variantItemId) return;
+            setItems((items) => items.filter((i) => i.id !== variantItemId));
           }
         )
         .on(

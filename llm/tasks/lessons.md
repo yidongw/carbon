@@ -2,6 +2,11 @@
 
 Patterns learned from corrections. Review at the start of each session.
 
+## PostgREST max_rows=1000 — always paginate exclusion lists
+- Symptom: Style pickers (Master WO create, etc.) showed variant SKUs (`1182-BN-2XL`) next to Style parents.
+- Root cause: items-store hydrate filtered children via a plain `.from("itemVariant").select(...)` which stops at PostgREST `max_rows=1000`. Production had more variants; leftover children stayed in the nanostore. Realtime `item` INSERT also added newly synced SKUs with no `itemVariant` follow-up strip.
+- Rule: any "fetch all IDs to exclude" must use `fetchAllFromTable` (or equivalent pagination). After `item` INSERT of a variant child, strip on `itemVariant` INSERT. Do not rely on `type === "Style"` alone — children share the parent type.
+
 ## Variant quantity UX is has-attributes vs not — Style is not special
 - Two item kinds for line qty: parents with `itemAttributeSelection` rows use the variant grid (default qty 0); plain SKUs use a scalar default (usually 1 / min order).
 - Do not special-case `type === "Style"` for quantity defaults, grid visibility, or submit blockers. Share helpers in `modules/shared/variantQuantityLine.ts` (`defaultLineQuantity`, `shouldShowVariantQuantityGrid`, `isMissingVariantQuantity`).
