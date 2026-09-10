@@ -102,6 +102,9 @@ msgstr "{failed} of {0} labels failed"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} of {0} tickets failed"
 
+msgid "{failed} of {total} labels failed"
+msgstr "{failed} of {total} labels failed"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limit"
 
@@ -677,6 +680,9 @@ msgstr "All Types"
 
 msgid "All Work Centers"
 msgstr "All Work Centers"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr "Allow pop-ups to print from the browser"
 
 msgid "Allows acknowledge & continue"
 msgstr "Allows acknowledge & continue"
@@ -1654,11 +1660,17 @@ msgstr "Bulk Jobs"
 msgid "Bundle"
 msgstr "Bundle"
 
+msgid "Bundle Count"
+msgstr "Bundle Count"
+
 msgid "Bundle not found"
 msgstr "Bundle not found"
 
 msgid "Bundle Work Orders"
 msgstr "Bundle Work Orders"
+
+msgid "bundles"
+msgstr "bundles"
 
 msgid "Bundles"
 msgstr "Bundles"
@@ -1848,6 +1860,9 @@ msgstr "Carbon Value"
 
 msgid "Cards"
 msgstr "Cards"
+
+msgid "Care Labels"
+msgstr "Care Labels"
 
 msgid "Carrier"
 msgstr "Carrier"
@@ -2214,6 +2229,9 @@ msgstr "Confirm"
 msgid "Confirm {0}"
 msgstr "Confirm {0}"
 
+msgid "Confirm & Post"
+msgstr "Confirm & Post"
+
 msgid "Confirm Approval"
 msgstr "Confirm Approval"
 
@@ -2223,8 +2241,17 @@ msgstr "Confirm ID Change"
 msgid "Confirm Import"
 msgstr "Confirm Import"
 
+msgid "Confirm In"
+msgstr "Confirm In"
+
+msgid "Confirm Out"
+msgstr "Confirm Out"
+
 msgid "Confirm Password"
 msgstr "Confirm Password"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
 
 msgid "Connect"
 msgstr "Connect"
@@ -2574,6 +2601,12 @@ msgstr "Couldn't load documents"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "Couldn't load the WeChat QR code"
+
+msgid "Count location"
+msgstr "Count location"
+
+msgid "Counted"
+msgstr "Counted"
 
 msgid "Country"
 msgstr "Country"
@@ -3572,6 +3605,9 @@ msgstr "did {0} of machine"
 msgid "did {0} of setup"
 msgstr "did {0} of setup"
 
+msgid "Diff"
+msgstr "Diff"
+
 msgid "Digital Quote"
 msgstr "Digital Quote"
 
@@ -3592,6 +3628,9 @@ msgstr "Dimensions"
 
 msgid "Direct"
 msgstr "Direct"
+
+msgid "Direction"
+msgstr "Direction"
 
 msgid "Disabled"
 msgstr "Disabled"
@@ -5634,6 +5673,9 @@ msgstr "Failed to generate PDF"
 msgid "Failed to generate picking list"
 msgstr "Failed to generate picking list"
 
+msgid "Failed to generate RFID codes"
+msgstr "Failed to generate RFID codes"
+
 msgid "Failed to get a category id"
 msgstr "Failed to get a category id"
 
@@ -6408,6 +6450,9 @@ msgstr "Failed to load balance sheet"
 msgid "Failed to load bundle work orders"
 msgstr "Failed to load bundle work orders"
 
+msgid "Failed to load care labels"
+msgstr "Failed to load care labels"
+
 msgid "Failed to load companies"
 msgstr "Failed to load companies"
 
@@ -7004,6 +7049,9 @@ msgstr "Failed to receive an operation id"
 
 msgid "Failed to record attribute"
 msgstr "Failed to record attribute"
+
+msgid "Failed to record movement"
+msgstr "Failed to record movement"
 
 msgid "Failed to record rework quantity"
 msgstr "Failed to record rework quantity"
@@ -8194,6 +8242,16 @@ msgstr "Generate new PIN"
 msgid "Generate Picking List"
 msgstr "Generate Picking List"
 
+msgid "Generate RFID Codes"
+msgstr "Generate RFID Codes"
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr "Generate RFID Codes ({0})"
+
+msgid "Generated At"
+msgstr "Generated At"
+
 msgid "Generated IDs are disabled"
 msgstr "Generated IDs are disabled"
 
@@ -8398,6 +8456,9 @@ msgstr "Implementation Support"
 msgid "Import {label} CSV"
 msgstr "Import {label} CSV"
 
+msgid "In"
+msgstr "In"
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "In order to convert this RFQ to a quote, all lines must have an internal part number."
 
@@ -8472,6 +8533,9 @@ msgstr "Incoming"
 
 msgid "Incoming Materials"
 msgstr "Incoming Materials"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr "Incomplete scan — nothing recorded"
 
 msgid "Incoterm"
 msgstr "Incoterm"
@@ -8712,6 +8776,9 @@ msgstr "Inventory History"
 
 msgid "Inventory Job Notifications"
 msgstr "Inventory Job Notifications"
+
+msgid "Inventory Movements"
+msgstr "Inventory Movements"
 
 msgid "Inventory Qty"
 msgstr "Inventory Qty"
@@ -9869,6 +9936,9 @@ msgstr "Minutes/1000 Pieces"
 msgid "Minutes/Piece"
 msgstr "Minutes/Piece"
 
+msgid "Missing bundle work order"
+msgstr "Missing bundle work order"
+
 msgid "Missing code or state from WeChat"
 msgstr "Missing code or state from WeChat"
 
@@ -10434,6 +10504,9 @@ msgstr "No bin"
 msgid "No BOM input has a shelf-life policy"
 msgstr "No BOM input has a shelf-life policy"
 
+msgid "No bundle work orders selected"
+msgstr "No bundle work orders selected"
+
 msgid "No calibration records found"
 msgstr "No calibration records found"
 
@@ -10517,6 +10590,9 @@ msgstr "No files uploaded"
 
 msgid "No forecast quantities provided"
 msgstr "No forecast quantities provided"
+
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
 
 msgid "No Gauge Selected"
 msgstr "No Gauge Selected"
@@ -10650,6 +10726,9 @@ msgstr "No results found"
 msgid "No results found."
 msgstr "No results found."
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr "No RFID codes yet. Generate codes first, then print."
+
 msgid "No rules assigned"
 msgstr "No rules assigned"
 
@@ -10748,6 +10827,10 @@ msgstr "Not connected. Please refresh and try again."
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Not enough jobs to cover quantity"
+
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr "Not found: {0}"
 
 msgid "Not Required"
 msgstr "Not Required"
@@ -11075,6 +11158,9 @@ msgstr "Other Type"
 msgid "Ounce"
 msgstr "Ounce"
 
+msgid "Out"
+msgstr "Out"
+
 msgid "Outbound Transfer"
 msgstr "Outbound Transfer"
 
@@ -11321,6 +11407,9 @@ msgstr "Payments"
 msgid "Payroll"
 msgstr "Payroll"
 
+msgid "pcs"
+msgstr "pcs"
+
 msgid "PDF"
 msgstr "PDF"
 
@@ -11402,6 +11491,9 @@ msgstr "Pick a customer or customer type to view their pricing."
 msgid "Pick a date or leave blank to clear it."
 msgstr "Pick a date or leave blank to clear it."
 
+msgid "Pick a location first"
+msgstr "Pick a location first"
+
 msgid "Pick a warehouse"
 msgstr "Pick a warehouse"
 
@@ -11434,6 +11526,9 @@ msgstr "Picking List Notes"
 
 msgid "Picking Lists"
 msgstr "Picking Lists"
+
+msgid "Piece"
+msgstr "Piece"
 
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
@@ -11716,6 +11811,7 @@ msgid "Print"
 msgstr "Print"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "Print ({0})"
 
@@ -11729,6 +11825,9 @@ msgstr "Print {0} Tickets"
 
 msgid "Print Bundle Tickets"
 msgstr "Print Bundle Tickets"
+
+msgid "Print Care Labels"
+msgstr "Print Care Labels"
 
 msgid "Print darkness"
 msgstr "Print darkness"
@@ -11764,6 +11863,9 @@ msgstr "Print to"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "Printed {0} labels"
+
+msgid "Printed {total} labels"
+msgstr "Printed {total} labels"
 
 msgid "Printer route deleted"
 msgstr "Printer route deleted"
@@ -12316,6 +12418,9 @@ msgstr "recorded {qty} units"
 msgid "recorded {qty} units ({reason})"
 msgstr "recorded {qty} units ({reason})"
 
+msgid "Recorded At"
+msgstr "Recorded At"
+
 msgid "Records"
 msgstr "Records"
 
@@ -12741,6 +12846,9 @@ msgstr "Rework quantity recorded successfully"
 msgid "Rework triggered successfully"
 msgstr "Rework triggered successfully"
 
+msgid "RFID Codes"
+msgstr "RFID Codes"
+
 msgid "RFQ"
 msgstr "RFQ"
 
@@ -13027,8 +13135,14 @@ msgstr "Saving..."
 msgid "Scan"
 msgstr "Scan"
 
+msgid "Scan a care-label barcode…"
+msgstr "Scan a care-label barcode…"
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Scan a label or search by item ID or tracking ID."
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr "Scan garments to build the count. One scan per bundle counts the whole bundle."
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "Scan or enter tracked entity ID, serial, or batch"
@@ -13050,6 +13164,9 @@ msgstr "Scan with WeChat to connect"
 
 msgid "Scan with WeChat to sign in"
 msgstr "Scan with WeChat to sign in"
+
+msgid "Scanned Code"
+msgstr "Scanned Code"
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -13205,6 +13322,9 @@ msgstr "Select a category"
 msgid "Select a default approver"
 msgstr "Select a default approver"
 
+msgid "Select a location…"
+msgstr "Select a location…"
+
 msgid "Select a match..."
 msgstr "Select a match..."
 
@@ -13238,6 +13358,7 @@ msgstr "Select account"
 msgid "Select all"
 msgstr "Select all"
 
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Select all ({0})"
@@ -14824,6 +14945,9 @@ msgstr "Text size"
 
 msgid "Text Size"
 msgstr "Text Size"
+
+msgid "That bundle has no item — can't count"
+msgstr "That bundle has no item — can't count"
 
 msgid "That WeChat is already linked to another account"
 msgstr "That WeChat is already linked to another account"
@@ -16650,3 +16774,46 @@ msgstr "ZPL (Thermal Label)"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL Label Preview"
+
+#. placeholder {0}: fetcher.data.bound
+msgid "已绑定 {0} 件"
+msgstr "已绑定 {0} 件"
+
+msgid "已读唯一芯片"
+msgstr "已读唯一芯片"
+
+msgid "数量不足，请重新扫描"
+msgstr "数量不足，请重新扫描"
+
+msgid "数量过多，请重新扫描"
+msgstr "数量过多，请重新扫描"
+
+msgid "水洗唛扫码绑定"
+msgstr "水洗唛扫码绑定"
+
+msgid "水洗唛芯片"
+msgstr "水洗唛芯片"
+
+msgid "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
+msgstr "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
+
+msgid "确认绑定"
+msgstr "确认绑定"
+
+msgid "等待 PDA 读入 EPC…"
+msgstr "等待 PDA 读入 EPC…"
+
+msgid "系统编码"
+msgstr "系统编码"
+
+msgid "绑定时间"
+msgstr "绑定时间"
+
+msgid "请先生成系统编码"
+msgstr "请先生成系统编码"
+
+msgid "请先生成系统编码（完成「打印水洗唛」工序）"
+msgstr "请先生成系统编码（完成「打印水洗唛」工序）"
+
+msgid "重新扫描"
+msgstr "重新扫描"

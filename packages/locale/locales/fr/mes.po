@@ -1760,6 +1760,9 @@ msgstr "Échec de la génération du PDF"
 msgid "Failed to generate picking list"
 msgstr "Échec de la génération de la liste de picking"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Échec de récupération d'un ID de catégorie"
 
@@ -3065,6 +3068,9 @@ msgstr "Échec de réception de l'ID d'opération"
 msgid "Failed to record attribute"
 msgstr "Échec enregistrement attribut"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Échec enregistrement quantité de rétroussage"
 
@@ -3979,6 +3985,9 @@ msgstr "Impérial"
 msgid "In Progress"
 msgstr "En cours"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "Augmenter"
 
@@ -4402,6 +4411,9 @@ msgstr "Outil d'opération de méthode mis à jour"
 msgid "Metric"
 msgstr "Métrique"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "Code ou état manquant de WeChat"
 
@@ -4522,6 +4534,9 @@ msgstr "Aucune entité suivie disponible trouvée"
 
 msgid "No bundle work orders"
 msgstr "Aucune commande de travail en lot"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Aucune dépréciation à calculer pour les actifs non couverts"

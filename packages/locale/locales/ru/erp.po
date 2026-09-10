@@ -103,6 +103,9 @@ msgstr "Не удалось напечатать {failed} из {0} этикет�
 msgid "{failed} of {0} tickets failed"
 msgstr "Не удалось напечатать {failed} из {0} ярлыков"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}МБ максимум"
 
@@ -678,6 +681,9 @@ msgstr "Все типы"
 
 msgid "All Work Centers"
 msgstr "Все рабочие центры"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "Позволяет принять во внимание и продолжить"
@@ -1655,11 +1661,17 @@ msgstr "Массовые задания"
 msgid "Bundle"
 msgstr "Пачка"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "Бандл не найден"
 
 msgid "Bundle Work Orders"
 msgstr "Наряды на пачки"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "Пачки"
@@ -1849,6 +1861,9 @@ msgstr "Значение Carbon"
 
 msgid "Cards"
 msgstr "Карты"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "Перевозчик"
@@ -2215,6 +2230,9 @@ msgstr "Подтвердить"
 msgid "Confirm {0}"
 msgstr "Подтвердить {0}"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "Подтвердить одобрение"
 
@@ -2224,8 +2242,17 @@ msgstr "Подтвердить изменение ID"
 msgid "Confirm Import"
 msgstr "Подтвердить импорт"
 
+msgid "Confirm In"
+msgstr ""
+
+msgid "Confirm Out"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr "Подтвердить пароль"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "Подключить"
@@ -2575,6 +2602,12 @@ msgstr "Не удалось загрузить документы"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "Не удалось загрузить QR-код WeChat"
+
+msgid "Count location"
+msgstr ""
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "Страна"
@@ -3573,6 +3606,9 @@ msgstr "did {0} of machine"
 msgid "did {0} of setup"
 msgstr "did {0} настройки"
 
+msgid "Diff"
+msgstr ""
+
 msgid "Digital Quote"
 msgstr "Цифровая котировка"
 
@@ -3593,6 +3629,9 @@ msgstr "Размеры"
 
 msgid "Direct"
 msgstr "Директ"
+
+msgid "Direction"
+msgstr ""
 
 msgid "Disabled"
 msgstr "Отключено"
@@ -5635,6 +5674,9 @@ msgstr "Не удалось сгенерировать PDF"
 msgid "Failed to generate picking list"
 msgstr "Не удалось сгенерировать список отбора"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Не удалось получить идентификатор категории"
 
@@ -6409,6 +6451,9 @@ msgstr "Не удалось загрузить балансовую ведомо
 msgid "Failed to load bundle work orders"
 msgstr "Не удалось загрузить пакеты заказов на работу"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "Не удалось загрузить компании"
 
@@ -7005,6 +7050,9 @@ msgstr "Не удалось получить идентификатор опер
 
 msgid "Failed to record attribute"
 msgstr "Не удалось записать атрибут"
+
+msgid "Failed to record movement"
+msgstr ""
 
 msgid "Failed to record rework quantity"
 msgstr "Не удалось записать количество переработки"
@@ -8195,6 +8243,16 @@ msgstr "Создать новый PIN"
 msgid "Generate Picking List"
 msgstr "Сформировать список выдачи"
 
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
+
 msgid "Generated IDs are disabled"
 msgstr "Сгенерированные ID отключены"
 
@@ -8399,6 +8457,9 @@ msgstr "Поддержка внедрения"
 msgid "Import {label} CSV"
 msgstr "Импорт {label} CSV"
 
+msgid "In"
+msgstr ""
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "Чтобы преобразовать это РЗП в предложение, все строки должны иметь внутренний номер детали."
 
@@ -8473,6 +8534,9 @@ msgstr "Входящие"
 
 msgid "Incoming Materials"
 msgstr "Входящие материалы"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Incoterm"
 msgstr "Инкотермс"
@@ -8713,6 +8777,9 @@ msgstr "История инвентаризации"
 
 msgid "Inventory Job Notifications"
 msgstr "Уведомления о завершении работ по инвентаризации"
+
+msgid "Inventory Movements"
+msgstr ""
 
 msgid "Inventory Qty"
 msgstr "Кол-во в инвентаре"
@@ -9870,6 +9937,9 @@ msgstr "Минуты/1000 Деталей"
 msgid "Minutes/Piece"
 msgstr "Минут/Деталь"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "Отсутствующий код или состояние из WeChat"
 
@@ -10435,6 +10505,9 @@ msgstr "Нет коробки"
 msgid "No BOM input has a shelf-life policy"
 msgstr "Ни один вход BOM не имеет политики срока хранения"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "Записи о калибровке не найдены"
 
@@ -10518,6 +10591,9 @@ msgstr "Файлы не загружены"
 
 msgid "No forecast quantities provided"
 msgstr "Нет предоставленных прогнозных количеств"
+
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr ""
 
 msgid "No Gauge Selected"
 msgstr "Датчик не выбран"
@@ -10651,6 +10727,9 @@ msgstr "Результатов не найдено"
 msgid "No results found."
 msgstr "Нет результатов."
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr "Нет заданных правил"
 
@@ -10749,6 +10828,10 @@ msgstr "Не подключено. Пожалуйста, обновите и п�
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Недостаточно заданий для покрытия количества"
+
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
 
 msgid "Not Required"
 msgstr "Не требуется"
@@ -11076,6 +11159,9 @@ msgstr "Другой тип"
 msgid "Ounce"
 msgstr "Унция"
 
+msgid "Out"
+msgstr ""
+
 msgid "Outbound Transfer"
 msgstr "Передача на склад выдачи"
 
@@ -11322,6 +11408,9 @@ msgstr "Платежи"
 msgid "Payroll"
 msgstr "Платежи"
 
+msgid "pcs"
+msgstr ""
+
 msgid "PDF"
 msgstr "PDF"
 
@@ -11403,6 +11492,9 @@ msgstr "Выберите клиента или тип клиента, чтобы
 msgid "Pick a date or leave blank to clear it."
 msgstr "Выберите дату или оставьте пустым, чтобы очистить."
 
+msgid "Pick a location first"
+msgstr ""
+
 msgid "Pick a warehouse"
 msgstr "Выберите склад"
 
@@ -11435,6 +11527,9 @@ msgstr "Заметки к списку выбора"
 
 msgid "Picking Lists"
 msgstr "Списки выбора"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "Штук/час"
@@ -11717,6 +11812,7 @@ msgid "Print"
 msgstr "Печать"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "Печать ({0})"
 
@@ -11730,6 +11826,9 @@ msgstr "Печать {0} ярлыков"
 
 msgid "Print Bundle Tickets"
 msgstr "Печать ярлыков пачек"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "Плотность печати"
@@ -11765,6 +11864,9 @@ msgstr "Печатать на"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "Напечатано этикеток: {0}"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "Принтерная дорога удалена"
@@ -12317,6 +12419,9 @@ msgstr "записано {qty} единиц"
 msgid "recorded {qty} units ({reason})"
 msgstr "записано {qty} единиц ({reason})"
 
+msgid "Recorded At"
+msgstr ""
+
 msgid "Records"
 msgstr "Записи"
 
@@ -12742,6 +12847,9 @@ msgstr "Количество переработки успешно зареги�
 msgid "Rework triggered successfully"
 msgstr "Переработка запущена успешно"
 
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "РФП"
 
@@ -13028,8 +13136,14 @@ msgstr "Сохранение..."
 msgid "Scan"
 msgstr "Сканировать"
 
+msgid "Scan a care-label barcode…"
+msgstr ""
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "Сканируйте этикетку или выполните поиск по идентификатору товара или отслеживания."
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "Отсканируйте или введите ID отслеживаемого объекта, серийный номер или партию"
@@ -13051,6 +13165,9 @@ msgstr "Отсканируйте через WeChat для подключения
 
 msgid "Scan with WeChat to sign in"
 msgstr "Скан с ВКонтакте для регистрации"
+
+msgid "Scanned Code"
+msgstr ""
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -13206,6 +13323,9 @@ msgstr "Выберите категорию"
 msgid "Select a default approver"
 msgstr "Выберите утверждающего по умолчанию"
 
+msgid "Select a location…"
+msgstr ""
+
 msgid "Select a match..."
 msgstr "Выберите соответствующий вариант..."
 
@@ -13239,6 +13359,7 @@ msgstr "Выберите счет"
 msgid "Select all"
 msgstr "Выбрать все"
 
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Выбрать все ({0})"
@@ -14825,6 +14946,9 @@ msgstr "Размер текста"
 
 msgid "Text Size"
 msgstr "Размер текста"
+
+msgid "That bundle has no item — can't count"
+msgstr ""
 
 msgid "That WeChat is already linked to another account"
 msgstr "Этот WeChat уже привязан к другому аккаунту"
@@ -16651,3 +16775,46 @@ msgstr "ZPL (Тепловая этикетка)"
 
 msgid "ZPL Label Preview"
 msgstr "Предварительный просмотр метки ZPL"
+
+#. placeholder {0}: fetcher.data.bound
+msgid "已绑定 {0} 件"
+msgstr ""
+
+msgid "已读唯一芯片"
+msgstr ""
+
+msgid "数量不足，请重新扫描"
+msgstr ""
+
+msgid "数量过多，请重新扫描"
+msgstr ""
+
+msgid "水洗唛扫码绑定"
+msgstr ""
+
+msgid "水洗唛芯片"
+msgstr ""
+
+msgid "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
+msgstr ""
+
+msgid "确认绑定"
+msgstr ""
+
+msgid "等待 PDA 读入 EPC…"
+msgstr ""
+
+msgid "系统编码"
+msgstr ""
+
+msgid "绑定时间"
+msgstr ""
+
+msgid "请先生成系统编码"
+msgstr ""
+
+msgid "请先生成系统编码（完成「打印水洗唛」工序）"
+msgstr ""
+
+msgid "重新扫描"
+msgstr ""

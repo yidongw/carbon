@@ -1760,6 +1760,9 @@ msgstr "फ़ॉलोअप पीडीएफ गनना में वि�
 msgid "Failed to generate picking list"
 msgstr "पोकिंग लिस्ट का उत्पादन फ़ल गया"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "कатегорी आईडी प्राप्त करने में व़िशा हुई"
 
@@ -3065,6 +3068,9 @@ msgstr "oprेशन आईडी का प्राप्त नहीं क�
 msgid "Failed to record attribute"
 msgstr "फलन गुण का रिकॉर्ड करने में व़ियाहो"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "रिउर्क की मात्रा रिकॉर्ड करने में वफ़ादरी नहीं की.get@1"
 
@@ -3979,6 +3985,9 @@ msgstr "इंग्लिश"
 msgid "In Progress"
 msgstr "प्रगति में"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "वृद्धि"
 
@@ -4402,6 +4411,9 @@ msgstr "मॉडल कार्य संपादित गया है"
 msgid "Metric"
 msgstr "मीट्रिक"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "वेचेट में लापता कोड या रिक्त स्थिति"
 
@@ -4522,6 +4534,9 @@ msgstr "निकाल विषयक कोई उपलब्ध पंज�
 
 msgid "No bundle work orders"
 msgstr "कोई बन्ड उर्डर नहीं है"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "निरक्फलित अवसानों के लिए कीमत की कमी की गणना करने की कोई नहीं"
