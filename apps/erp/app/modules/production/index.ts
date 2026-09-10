@@ -1,5 +1,6 @@
 export * from "./bundleInventoryMovement.service";
 export * from "./bundleWorkOrder.service";
+export * from "./careLabelBind";
 export * from "./cuttingStatus";
 export * from "./garmentRfidCode.service";
 export * from "./jobOperationSupplierQuantityReport.models";

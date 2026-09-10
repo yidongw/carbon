@@ -2,7 +2,7 @@ import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, type ReactNode, useMemo } from "react";
-import { LuClock, LuHash, LuTag } from "react-icons/lu";
+import { LuClock, LuHash, LuLink, LuTag } from "react-icons/lu";
 import { Table } from "~/components";
 import type { GarmentRfidCode } from "~/modules/production";
 
@@ -32,11 +32,31 @@ const RfidCodesTable = memo(
         },
         {
           accessorKey: "code",
-          header: t`RFID Code`,
+          header: t`系统编码`,
           cell: ({ row }) => (
             <span className="font-mono">{row.original.code}</span>
           ),
           meta: { icon: <LuTag /> }
+        },
+        {
+          accessorKey: "externalCode",
+          header: t`水洗唛芯片`,
+          cell: ({ row }) =>
+            row.original.externalCode ? (
+              <span className="font-mono">{row.original.externalCode}</span>
+            ) : (
+              "—"
+            ),
+          meta: { icon: <LuLink /> }
+        },
+        {
+          accessorKey: "boundAt",
+          header: t`绑定时间`,
+          cell: ({ row }) =>
+            row.original.boundAt
+              ? dateFormatter.format(new Date(row.original.boundAt))
+              : "—",
+          meta: { icon: <LuClock /> }
         },
         {
           accessorKey: "createdAt",

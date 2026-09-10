@@ -1,11 +1,12 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { Button, VStack } from "@carbon/react";
+import { Button, HStack, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { LuPrinter } from "react-icons/lu";
+import { LuNfc, LuPrinter } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
 import { getBundleWorkOrder, getGarmentRfidCodes } from "~/modules/production";
+import BindCareLabelChipsModal from "~/modules/production/ui/MasterWorkOrders/BindCareLabelChipsModal";
 import PrintCareLabelsModal from "~/modules/production/ui/MasterWorkOrders/PrintCareLabelsModal";
 import RfidCodesTable from "~/modules/production/ui/MasterWorkOrders/RfidCodesTable";
 import { path } from "~/utils/path";
@@ -45,6 +46,7 @@ export default function BundleWorkOrderRfidCodesRoute() {
   const { rfidCodes, count } = useLoaderData<typeof loader>();
   const { bundleWorkOrderId } = useParams();
   const [isPrinting, setIsPrinting] = useState(false);
+  const [isBinding, setIsBinding] = useState(false);
 
   return (
     <VStack spacing={0} className="h-[calc(100dvh-99px)]">
@@ -52,20 +54,37 @@ export default function BundleWorkOrderRfidCodesRoute() {
         data={rfidCodes}
         count={count}
         primaryAction={
-          <Button
-            leftIcon={<LuPrinter />}
-            variant="secondary"
-            onClick={() => setIsPrinting(true)}
-            isDisabled={count === 0}
-          >
-            {t`Print Care Labels`}
-          </Button>
+          <HStack>
+            <Button
+              leftIcon={<LuNfc />}
+              variant="secondary"
+              onClick={() => setIsBinding(true)}
+              isDisabled={count === 0}
+            >
+              {t`水洗唛扫码绑定`}
+            </Button>
+            <Button
+              leftIcon={<LuPrinter />}
+              variant="secondary"
+              onClick={() => setIsPrinting(true)}
+              isDisabled={count === 0}
+            >
+              {t`Print Care Labels`}
+            </Button>
+          </HStack>
         }
       />
       {isPrinting && bundleWorkOrderId ? (
         <PrintCareLabelsModal
           bundleWorkOrderId={bundleWorkOrderId}
           onClose={() => setIsPrinting(false)}
+        />
+      ) : null}
+      {isBinding && bundleWorkOrderId ? (
+        <BindCareLabelChipsModal
+          bundleWorkOrderId={bundleWorkOrderId}
+          expectedCount={count}
+          onClose={() => setIsBinding(false)}
         />
       ) : null}
     </VStack>

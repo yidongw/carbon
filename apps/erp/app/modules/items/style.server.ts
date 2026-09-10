@@ -10,7 +10,13 @@ import {
 } from "./items.service";
 import type { styleValidator } from "./style.models";
 import {
+  buildStyleCareLabelBindMethodOperation,
+  buildStyleCareLabelMethodOperation,
   buildStyleCuttingMethodOperation,
+  STYLE_CARE_LABEL_BIND_OPERATION_TAG,
+  STYLE_CARE_LABEL_BIND_PROCESS_TAG,
+  STYLE_CARE_LABEL_OPERATION_TAG,
+  STYLE_CARE_LABEL_PROCESS_TAG,
   STYLE_CUTTING_OPERATION_TAG,
   STYLE_CUTTING_PROCESS_TAG,
   STYLE_SYSTEM_OPERATION_TAG
@@ -205,122 +211,436 @@ export async function ensureStyleMethodScaffoldWithDb(args: {
       limit 1
     `.execute(db);
 
-    if (existingCuttingOperation.rows[0]?.id) {
-      return {
-        data: {
+    let cuttingOperationId = existingCuttingOperation.rows[0]?.id ?? null;
+
+    if (!cuttingOperationId) {
+      const firstOperation = await sql<{
+        id: string;
+        processId: string | null;
+        order: number | null;
+      }>`
+        select "id", "processId", "order"
+        from "methodOperation"
+        where "makeMethodId" = ${makeMethodId}
+        order by "order" asc
+        limit 1
+      `.execute(db);
+
+      const first = firstOperation.rows[0];
+      if (first?.id && first.processId === cuttingProcessId) {
+        await sql`
+          update "methodOperation"
+          set
+            "tags" = array(
+              select distinct tag
+              from unnest(
+                array_append(
+                  array_append(coalesce("tags", '{}'::text[]), ${STYLE_CUTTING_OPERATION_TAG}),
+                  ${STYLE_SYSTEM_OPERATION_TAG}
+                )
+              ) as tag
+            ),
+            "customFields" = coalesce("customFields", '{}'::jsonb) || ${JSON.stringify(
+              {
+                styleStage: "cutting",
+                styleSystemOwned: true
+              }
+            )}::jsonb,
+            "updatedBy" = ${args.userId}
+          where "id" = ${first.id}
+        `.execute(db);
+
+        cuttingOperationId = first.id;
+      } else {
+        const seededCuttingOperation = buildStyleCuttingMethodOperation({
           makeMethodId,
-          cuttingOperationId: existingCuttingOperation.rows[0].id
-        },
-        error: null
+          processId: cuttingProcessId,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          order: first && typeof first.order === "number" ? first.order - 1 : 0
+        });
+
+        const insertedOperation = await sql<{ id: string }>`
+          insert into "methodOperation" (
+            "makeMethodId",
+            "processId",
+            "companyId",
+            "createdBy",
+            "order",
+            "operationOrder",
+            "operationType",
+            "description",
+            "setupUnit",
+            "setupTime",
+            "laborUnit",
+            "laborTime",
+            "machineUnit",
+            "machineTime",
+            "insideUnitCost",
+            "tags",
+            "customFields"
+          ) values (
+            ${seededCuttingOperation.makeMethodId},
+            ${seededCuttingOperation.processId},
+            ${seededCuttingOperation.companyId},
+            ${seededCuttingOperation.createdBy},
+            ${seededCuttingOperation.order},
+            ${seededCuttingOperation.operationOrder},
+            ${seededCuttingOperation.operationType},
+            ${seededCuttingOperation.description},
+            ${seededCuttingOperation.setupUnit},
+            ${seededCuttingOperation.setupTime},
+            ${seededCuttingOperation.laborUnit},
+            ${seededCuttingOperation.laborTime},
+            ${seededCuttingOperation.machineUnit},
+            ${seededCuttingOperation.machineTime},
+            ${seededCuttingOperation.insideUnitCost},
+            array[${STYLE_CUTTING_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
+            ${JSON.stringify(seededCuttingOperation.customFields)}::jsonb
+          )
+          returning "id"
+        `.execute(db);
+
+        cuttingOperationId = insertedOperation.rows[0]?.id ?? null;
+        if (!cuttingOperationId) {
+          return {
+            data: null,
+            error: new Error("Failed to create style cutting operation")
+          };
+        }
+      }
+    }
+
+    // --- Care-label op (after cutting; backfills existing styles) ---
+    const existingCareLabelProcess = await sql<{ id: string; name: string }>`
+      select "id", "name"
+      from "process"
+      where "companyId" = ${args.companyId}
+        and ${STYLE_CARE_LABEL_PROCESS_TAG} = any(coalesce("tags", '{}'::text[]))
+      order by "createdAt" asc
+      limit 1
+    `.execute(db);
+
+    let careLabelProcessId = existingCareLabelProcess.rows[0]?.id ?? null;
+
+    if (!careLabelProcessId) {
+      const namedCareLabelProcess = await sql<{ id: string; name: string }>`
+        select "id", "name"
+        from "process"
+        where "companyId" = ${args.companyId}
+          and "name" in ('打印水洗唛', 'Care Label', 'Print Care Label')
+        order by "createdAt" asc
+        limit 1
+      `.execute(db);
+
+      const namedCareLabelProcessId = namedCareLabelProcess.rows[0]?.id ?? null;
+      if (namedCareLabelProcessId) {
+        await sql`
+          update "process"
+          set
+            "tags" = array(
+              select distinct tag
+              from unnest(array_append(coalesce("tags", '{}'::text[]), ${STYLE_CARE_LABEL_PROCESS_TAG})) as tag
+            ),
+            "updatedBy" = ${args.userId}
+          where "id" = ${namedCareLabelProcessId}
+        `.execute(db);
+        careLabelProcessId = namedCareLabelProcessId;
+      } else {
+        const insertedCareLabelProcess = await sql<{ id: string }>`
+          insert into "process" (
+            "name",
+            "processType",
+            "defaultStandardFactor",
+            "completeAllOnScan",
+            "tags",
+            "companyId",
+            "createdBy"
+          ) values (
+            '打印水洗唛',
+            'Inside',
+            'Minutes/Piece',
+            false,
+            array[${STYLE_CARE_LABEL_PROCESS_TAG}]::text[],
+            ${args.companyId},
+            ${args.userId}
+          )
+          returning "id"
+        `.execute(db);
+
+        careLabelProcessId = insertedCareLabelProcess.rows[0]?.id ?? null;
+      }
+    }
+
+    if (!careLabelProcessId) {
+      return {
+        data: null,
+        error: new Error("Failed to resolve style care-label process")
       };
     }
 
-    const firstOperation = await sql<{
-      id: string;
-      processId: string | null;
-      order: number | null;
-    }>`
-      select "id", "processId", "order"
+    const existingCareLabelOperation = await sql<{ id: string }>`
+      select "id"
       from "methodOperation"
       where "makeMethodId" = ${makeMethodId}
+        and (
+          ${STYLE_CARE_LABEL_OPERATION_TAG} = any(coalesce("tags", '{}'::text[]))
+          or "customFields" ->> 'styleStage' = 'care-label'
+        )
       order by "order" asc
       limit 1
     `.execute(db);
 
-    const first = firstOperation.rows[0];
-    if (first?.id && first.processId === cuttingProcessId) {
+    let careLabelOperationId = existingCareLabelOperation.rows[0]?.id ?? null;
+
+    if (!careLabelOperationId) {
+      const cuttingOrderRow = await sql<{ order: number | null }>`
+        select "order"
+        from "methodOperation"
+        where "id" = ${cuttingOperationId}
+        limit 1
+      `.execute(db);
+      const cuttingOrder =
+        typeof cuttingOrderRow.rows[0]?.order === "number"
+          ? cuttingOrderRow.rows[0].order
+          : 0;
+      const careOrder = cuttingOrder + 1;
+
       await sql`
         update "methodOperation"
         set
-          "tags" = array(
-            select distinct tag
-            from unnest(
-              array_append(
-                array_append(coalesce("tags", '{}'::text[]), ${STYLE_CUTTING_OPERATION_TAG}),
-                ${STYLE_SYSTEM_OPERATION_TAG}
-              )
-            ) as tag
-          ),
-          "customFields" = coalesce("customFields", '{}'::jsonb) || ${JSON.stringify(
-            {
-              styleStage: "cutting",
-              styleSystemOwned: true
-            }
-          )}::jsonb,
+          "order" = "order" + 1,
           "updatedBy" = ${args.userId}
-        where "id" = ${first.id}
+        where "makeMethodId" = ${makeMethodId}
+          and "order" >= ${careOrder}
       `.execute(db);
 
+      const seededCareLabelOperation = buildStyleCareLabelMethodOperation({
+        makeMethodId,
+        processId: careLabelProcessId,
+        companyId: args.companyId,
+        createdBy: args.userId,
+        order: careOrder
+      });
+
+      const insertedCareLabel = await sql<{ id: string }>`
+        insert into "methodOperation" (
+          "makeMethodId",
+          "processId",
+          "companyId",
+          "createdBy",
+          "order",
+          "operationOrder",
+          "operationType",
+          "description",
+          "setupUnit",
+          "setupTime",
+          "laborUnit",
+          "laborTime",
+          "machineUnit",
+          "machineTime",
+          "insideUnitCost",
+          "tags",
+          "customFields"
+        ) values (
+          ${seededCareLabelOperation.makeMethodId},
+          ${seededCareLabelOperation.processId},
+          ${seededCareLabelOperation.companyId},
+          ${seededCareLabelOperation.createdBy},
+          ${seededCareLabelOperation.order},
+          ${seededCareLabelOperation.operationOrder},
+          ${seededCareLabelOperation.operationType},
+          ${seededCareLabelOperation.description},
+          ${seededCareLabelOperation.setupUnit},
+          ${seededCareLabelOperation.setupTime},
+          ${seededCareLabelOperation.laborUnit},
+          ${seededCareLabelOperation.laborTime},
+          ${seededCareLabelOperation.machineUnit},
+          ${seededCareLabelOperation.machineTime},
+          ${seededCareLabelOperation.insideUnitCost},
+          array[${STYLE_CARE_LABEL_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
+          ${JSON.stringify(seededCareLabelOperation.customFields)}::jsonb
+        )
+        returning "id"
+      `.execute(db);
+
+      careLabelOperationId = insertedCareLabel.rows[0]?.id ?? null;
+      if (!careLabelOperationId) {
+        return {
+          data: null,
+          error: new Error("Failed to create style care-label operation")
+        };
+      }
+    }
+
+    // --- Care-label bind op (after print care label) ---
+    const existingBindProcess = await sql<{ id: string; name: string }>`
+      select "id", "name"
+      from "process"
+      where "companyId" = ${args.companyId}
+        and ${STYLE_CARE_LABEL_BIND_PROCESS_TAG} = any(coalesce("tags", '{}'::text[]))
+      order by "createdAt" asc
+      limit 1
+    `.execute(db);
+
+    let bindProcessId = existingBindProcess.rows[0]?.id ?? null;
+
+    if (!bindProcessId) {
+      const namedBindProcess = await sql<{ id: string; name: string }>`
+        select "id", "name"
+        from "process"
+        where "companyId" = ${args.companyId}
+          and "name" in ('水洗唛扫码绑定', 'Care Label Bind', 'Bind Care Label')
+        order by "createdAt" asc
+        limit 1
+      `.execute(db);
+
+      const namedBindProcessId = namedBindProcess.rows[0]?.id ?? null;
+      if (namedBindProcessId) {
+        await sql`
+          update "process"
+          set
+            "tags" = array(
+              select distinct tag
+              from unnest(array_append(coalesce("tags", '{}'::text[]), ${STYLE_CARE_LABEL_BIND_PROCESS_TAG})) as tag
+            ),
+            "updatedBy" = ${args.userId}
+          where "id" = ${namedBindProcessId}
+        `.execute(db);
+        bindProcessId = namedBindProcessId;
+      } else {
+        const insertedBindProcess = await sql<{ id: string }>`
+          insert into "process" (
+            "name",
+            "processType",
+            "defaultStandardFactor",
+            "completeAllOnScan",
+            "tags",
+            "companyId",
+            "createdBy"
+          ) values (
+            '水洗唛扫码绑定',
+            'Inside',
+            'Minutes/Piece',
+            false,
+            array[${STYLE_CARE_LABEL_BIND_PROCESS_TAG}]::text[],
+            ${args.companyId},
+            ${args.userId}
+          )
+          returning "id"
+        `.execute(db);
+
+        bindProcessId = insertedBindProcess.rows[0]?.id ?? null;
+      }
+    }
+
+    if (!bindProcessId) {
       return {
-        data: {
-          makeMethodId,
-          cuttingOperationId: first.id
-        },
-        error: null
+        data: null,
+        error: new Error("Failed to resolve style care-label bind process")
       };
     }
 
-    const seededCuttingOperation = buildStyleCuttingMethodOperation({
-      makeMethodId,
-      processId: cuttingProcessId,
-      companyId: args.companyId,
-      createdBy: args.userId,
-      order: first && typeof first.order === "number" ? first.order - 1 : 0
-    });
-
-    const insertedOperation = await sql<{ id: string }>`
-      insert into "methodOperation" (
-        "makeMethodId",
-        "processId",
-        "companyId",
-        "createdBy",
-        "order",
-        "operationOrder",
-        "operationType",
-        "description",
-        "setupUnit",
-        "setupTime",
-        "laborUnit",
-        "laborTime",
-        "machineUnit",
-        "machineTime",
-        "insideUnitCost",
-        "tags",
-        "customFields"
-      ) values (
-        ${seededCuttingOperation.makeMethodId},
-        ${seededCuttingOperation.processId},
-        ${seededCuttingOperation.companyId},
-        ${seededCuttingOperation.createdBy},
-        ${seededCuttingOperation.order},
-        ${seededCuttingOperation.operationOrder},
-        ${seededCuttingOperation.operationType},
-        ${seededCuttingOperation.description},
-        ${seededCuttingOperation.setupUnit},
-        ${seededCuttingOperation.setupTime},
-        ${seededCuttingOperation.laborUnit},
-        ${seededCuttingOperation.laborTime},
-        ${seededCuttingOperation.machineUnit},
-        ${seededCuttingOperation.machineTime},
-        ${seededCuttingOperation.insideUnitCost},
-        array[${STYLE_CUTTING_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
-        ${JSON.stringify(seededCuttingOperation.customFields)}::jsonb
-      )
-      returning "id"
+    const existingBindOperation = await sql<{ id: string }>`
+      select "id"
+      from "methodOperation"
+      where "makeMethodId" = ${makeMethodId}
+        and (
+          ${STYLE_CARE_LABEL_BIND_OPERATION_TAG} = any(coalesce("tags", '{}'::text[]))
+          or "customFields" ->> 'styleStage' = 'care-label-bind'
+        )
+      order by "order" asc
+      limit 1
     `.execute(db);
 
-    const cuttingOperationId = insertedOperation.rows[0]?.id ?? null;
-    if (!cuttingOperationId) {
-      return {
-        data: null,
-        error: new Error("Failed to create style cutting operation")
-      };
+    let careLabelBindOperationId = existingBindOperation.rows[0]?.id ?? null;
+
+    if (!careLabelBindOperationId) {
+      const careOrderRow = await sql<{ order: number | null }>`
+        select "order"
+        from "methodOperation"
+        where "id" = ${careLabelOperationId}
+        limit 1
+      `.execute(db);
+      const careOrder =
+        typeof careOrderRow.rows[0]?.order === "number"
+          ? careOrderRow.rows[0].order
+          : 1;
+      const bindOrder = careOrder + 1;
+
+      await sql`
+        update "methodOperation"
+        set
+          "order" = "order" + 1,
+          "updatedBy" = ${args.userId}
+        where "makeMethodId" = ${makeMethodId}
+          and "order" >= ${bindOrder}
+      `.execute(db);
+
+      const seededBindOperation = buildStyleCareLabelBindMethodOperation({
+        makeMethodId,
+        processId: bindProcessId,
+        companyId: args.companyId,
+        createdBy: args.userId,
+        order: bindOrder
+      });
+
+      const insertedBind = await sql<{ id: string }>`
+        insert into "methodOperation" (
+          "makeMethodId",
+          "processId",
+          "companyId",
+          "createdBy",
+          "order",
+          "operationOrder",
+          "operationType",
+          "description",
+          "setupUnit",
+          "setupTime",
+          "laborUnit",
+          "laborTime",
+          "machineUnit",
+          "machineTime",
+          "insideUnitCost",
+          "tags",
+          "customFields"
+        ) values (
+          ${seededBindOperation.makeMethodId},
+          ${seededBindOperation.processId},
+          ${seededBindOperation.companyId},
+          ${seededBindOperation.createdBy},
+          ${seededBindOperation.order},
+          ${seededBindOperation.operationOrder},
+          ${seededBindOperation.operationType},
+          ${seededBindOperation.description},
+          ${seededBindOperation.setupUnit},
+          ${seededBindOperation.setupTime},
+          ${seededBindOperation.laborUnit},
+          ${seededBindOperation.laborTime},
+          ${seededBindOperation.machineUnit},
+          ${seededBindOperation.machineTime},
+          ${seededBindOperation.insideUnitCost},
+          array[${STYLE_CARE_LABEL_BIND_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
+          ${JSON.stringify(seededBindOperation.customFields)}::jsonb
+        )
+        returning "id"
+      `.execute(db);
+
+      careLabelBindOperationId = insertedBind.rows[0]?.id ?? null;
+      if (!careLabelBindOperationId) {
+        return {
+          data: null,
+          error: new Error("Failed to create style care-label bind operation")
+        };
+      }
     }
 
     return {
       data: {
         makeMethodId,
-        cuttingOperationId
+        cuttingOperationId,
+        careLabelOperationId,
+        careLabelBindOperationId
       },
       error: null
     };

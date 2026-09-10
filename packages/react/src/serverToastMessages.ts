@@ -1223,6 +1223,7 @@ const serverToastMessages: Record<string, MessageDescriptor> = {
   "Method operation parameter updated": msg`Method operation parameter updated`,
   "Method operation step updated": msg`Method operation step updated`,
   "Method operation tool updated": msg`Method operation tool updated`,
+  "Missing bundle work order": msg`Missing bundle work order`,
   "Missing code or state from WeChat": msg`Missing code or state from WeChat`,
   "Missing credentialId": msg`Missing credentialId`,
   "Missing depreciation run ID": msg`Missing depreciation run ID`,

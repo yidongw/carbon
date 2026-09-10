@@ -1,11 +1,19 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildStyleCareLabelBindMethodOperation,
+  buildStyleCareLabelMethodOperation,
   buildStyleCuttingMethodOperation,
   classifyGarmentJobItems,
+  isStyleCareLabelBindOperation,
+  isStyleCareLabelOperation,
   isStyleCuttingOperation,
   isStyleCuttingOperationFirst,
   isStyleSystemOwnedOperation,
   resolveStyleMethodItemId,
+  STYLE_CARE_LABEL_BIND_OPERATION_TAG,
+  STYLE_CARE_LABEL_BIND_PROCESS_TAG,
+  STYLE_CARE_LABEL_OPERATION_TAG,
+  STYLE_CARE_LABEL_PROCESS_TAG,
   STYLE_CUTTING_OPERATION_TAG,
   STYLE_CUTTING_PROCESS_TAG,
   STYLE_SYSTEM_OPERATION_TAG,
@@ -68,6 +76,117 @@ describe("buildStyleCuttingMethodOperation", () => {
         ]),
         customFields: expect.objectContaining({
           styleStage: "cutting",
+          styleSystemOwned: true
+        })
+      })
+    );
+  });
+});
+
+describe("isStyleCareLabelOperation", () => {
+  it("accepts care-label operations tagged by the style scaffold", () => {
+    expect(
+      isStyleCareLabelOperation({
+        tags: [STYLE_CARE_LABEL_OPERATION_TAG, STYLE_SYSTEM_OPERATION_TAG],
+        customFields: null
+      })
+    ).toBe(true);
+  });
+
+  it("accepts legacy operations marked in custom fields", () => {
+    expect(
+      isStyleCareLabelOperation({
+        tags: null,
+        customFields: {
+          styleStage: "care-label"
+        }
+      })
+    ).toBe(true);
+  });
+
+  it("rejects cutting and ordinary downstream operations", () => {
+    expect(
+      isStyleCareLabelOperation({
+        tags: [STYLE_CUTTING_OPERATION_TAG],
+        customFields: { styleStage: "cutting" }
+      })
+    ).toBe(false);
+    expect(
+      isStyleCareLabelOperation({
+        tags: ["sewing"],
+        customFields: { styleStage: "downstream" }
+      })
+    ).toBe(false);
+  });
+});
+
+describe("buildStyleCareLabelMethodOperation", () => {
+  it("builds a seeded care-label operation after cutting", () => {
+    const operation = buildStyleCareLabelMethodOperation({
+      makeMethodId: "mm-1",
+      processId: "proc-care",
+      companyId: "co-1",
+      createdBy: "user-1",
+      order: 1
+    });
+
+    expect(operation).toEqual(
+      expect.objectContaining({
+        makeMethodId: "mm-1",
+        processId: "proc-care",
+        description: "打印水洗唛",
+        operationType: "Inside",
+        order: 1,
+        tags: expect.arrayContaining([
+          STYLE_CARE_LABEL_OPERATION_TAG,
+          STYLE_SYSTEM_OPERATION_TAG
+        ]),
+        customFields: expect.objectContaining({
+          styleStage: "care-label",
+          styleSystemOwned: true
+        })
+      })
+    );
+  });
+});
+
+describe("isStyleCareLabelBindOperation", () => {
+  it("accepts care-label-bind scaffold tags and styleStage", () => {
+    expect(
+      isStyleCareLabelBindOperation({
+        tags: [STYLE_CARE_LABEL_BIND_OPERATION_TAG],
+        customFields: null
+      })
+    ).toBe(true);
+    expect(
+      isStyleCareLabelBindOperation({
+        tags: null,
+        customFields: { styleStage: "care-label-bind" }
+      })
+    ).toBe(true);
+  });
+});
+
+describe("buildStyleCareLabelBindMethodOperation", () => {
+  it("builds the bind operation after care-label print", () => {
+    const operation = buildStyleCareLabelBindMethodOperation({
+      makeMethodId: "mm-1",
+      processId: "proc-bind",
+      companyId: "co-1",
+      createdBy: "user-1",
+      order: 2
+    });
+
+    expect(operation).toEqual(
+      expect.objectContaining({
+        description: "水洗唛扫码绑定",
+        order: 2,
+        tags: expect.arrayContaining([
+          STYLE_CARE_LABEL_BIND_OPERATION_TAG,
+          STYLE_SYSTEM_OPERATION_TAG
+        ]),
+        customFields: expect.objectContaining({
+          styleStage: "care-label-bind",
           styleSystemOwned: true
         })
       })
@@ -186,6 +305,16 @@ describe("style process tags", () => {
   it("keeps a distinct process-level tag for the seeded cutting process", () => {
     expect(STYLE_CUTTING_PROCESS_TAG).toBe("style:cutting-process");
   });
+
+  it("keeps a distinct process-level tag for the seeded care-label process", () => {
+    expect(STYLE_CARE_LABEL_PROCESS_TAG).toBe("style:care-label-process");
+  });
+
+  it("keeps a distinct process-level tag for the care-label bind process", () => {
+    expect(STYLE_CARE_LABEL_BIND_PROCESS_TAG).toBe(
+      "style:care-label-bind-process"
+    );
+  });
 });
 
 describe("classifyGarmentJobItems", () => {
@@ -239,6 +368,33 @@ describe("classifyGarmentJobItems", () => {
     // Nested make methods
     expect(nestedMakeMethodHome.get("mmFabric")).toBe("master");
     expect(nestedMakeMethodHome.get("mmApplique")).toBe("bundle");
+  });
+
+  it("routes the care-label root op to the bundle (post-cutting)", () => {
+    const careTags = [
+      STYLE_CARE_LABEL_OPERATION_TAG,
+      STYLE_SYSTEM_OPERATION_TAG
+    ];
+    const bindTags = [
+      STYLE_CARE_LABEL_BIND_OPERATION_TAG,
+      STYLE_SYSTEM_OPERATION_TAG
+    ];
+    const { operationHome } = classifyGarmentJobItems({
+      ...scenario,
+      operations: [
+        { id: "cut", order: 0, tags: cuttingTags, jobMakeMethodId: "mmRoot" },
+        { id: "care", order: 1, tags: careTags, jobMakeMethodId: "mmRoot" },
+        { id: "bind", order: 2, tags: bindTags, jobMakeMethodId: "mmRoot" },
+        { id: "sew", order: 3, tags: [], jobMakeMethodId: "mmRoot" },
+        { id: "dye", order: 0, tags: [], jobMakeMethodId: "mmFabric" },
+        { id: "embroider", order: 0, tags: [], jobMakeMethodId: "mmApplique" }
+      ]
+    });
+
+    expect(operationHome.get("cut")).toBe("master");
+    expect(operationHome.get("care")).toBe("bundle");
+    expect(operationHome.get("bind")).toBe("bundle");
+    expect(operationHome.get("sew")).toBe("bundle");
   });
 
   it("routes unassigned root-method materials (jobOperationId null) to master", () => {
