@@ -6454,6 +6454,9 @@ msgstr "Falló al cargar el estado de equilibrio"
 msgid "Failed to load bundle work orders"
 msgstr "Falló al cargar las órdenes de trabajo"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "Falló al cargar las empresas"
 
@@ -13359,7 +13362,7 @@ msgstr "Seleccionar cuenta"
 msgid "Select all"
 msgstr "Seleccionar todo"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Seleccionar todo ({0})"

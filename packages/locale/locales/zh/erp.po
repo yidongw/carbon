@@ -6454,6 +6454,9 @@ msgstr "加载资产负债表失败"
 msgid "Failed to load bundle work orders"
 msgstr "加载分包工单失败"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "加载公司失败"
 
@@ -13359,7 +13362,7 @@ msgstr "选择账户"
 msgid "Select all"
 msgstr "全选"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "全选（{0}）"

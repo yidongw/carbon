@@ -6454,6 +6454,9 @@ msgstr "Caricamento bilancio fallito"
 msgid "Failed to load bundle work orders"
 msgstr "Caricamento delle commissioni di lavoro fallito"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "Caricamento aziende fallito"
 
@@ -13359,7 +13362,7 @@ msgstr "Seleziona conto"
 msgid "Select all"
 msgstr "Seleziona tutti"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Seleziona tutto ({0})"

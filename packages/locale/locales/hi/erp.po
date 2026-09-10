@@ -6454,6 +6454,9 @@ msgstr "लोड करने में व़िता साल्ड फै�
 msgid "Failed to load bundle work orders"
 msgstr "बैंडल वर्क ऑर्डर लोड करने में फालतु हुई"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "कंपनियां लोड होती नहीं"
 
@@ -13359,7 +13362,7 @@ msgstr "अाकाउंट चुनें"
 msgid "Select all"
 msgstr "सब कुछ चयन करें"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "सभी चुनें ({0})"

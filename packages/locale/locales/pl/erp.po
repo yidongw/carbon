@@ -6454,6 +6454,9 @@ msgstr "Nie удалось załadować bilansu"
 msgid "Failed to load bundle work orders"
 msgstr "Nie można załadować zadań associated z grupą robót"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "Niedostępne firmy"
 
@@ -13359,7 +13362,7 @@ msgstr "Wybierz konto"
 msgid "Select all"
 msgstr "Zaznacz wszystko"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Zaznacz wszystko ({0})"

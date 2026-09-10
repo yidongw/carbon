@@ -104,7 +104,8 @@ const PrintCareLabelsModal = ({
   const widthMm = Math.round((size?.width ?? 1.5748) * 25.4);
   const heightMm = Math.round((size?.height ?? 2.3622) * 25.4);
 
-  // Fetch per-piece label data (+ QR of each code) once when the modal opens.
+  // Fetch per-piece label data once when the modal opens. Barcodes are drawn
+  // client-side at print time so this stays fast for 1000+ piece bundles.
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -112,7 +113,13 @@ const PrintCareLabelsModal = ({
         const res = await fetch(
           path.to.file.bundleWorkOrderCareLabelsJson(bundleWorkOrderId)
         );
-        if (!res.ok) return;
+        if (!res.ok) {
+          if (!cancelled) {
+            setLabels([]);
+            toast.error(t`Failed to load care labels`);
+          }
+          return;
+        }
         const { labels: arr } = (await res.json()) as {
           labels: CareLabelData[];
         };
@@ -121,13 +128,16 @@ const PrintCareLabelsModal = ({
           setChecked(new Set(arr.map((l) => l.code)));
         }
       } catch {
-        /* leave the list empty; the button stays disabled */
+        if (!cancelled) {
+          setLabels([]);
+          toast.error(t`Failed to load care labels`);
+        }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [bundleWorkOrderId]);
+  }, [bundleWorkOrderId, t]);
 
   const checkedLabels = useMemo(
     () => (labels ?? []).filter((l) => checked.has(l.code)),
@@ -302,9 +312,16 @@ const PrintCareLabelsModal = ({
                 disabled={!labels || labels.length === 0}
               >
                 <Checkbox isChecked={allChecked} />
-                <Trans>Select all ({labels?.length ?? 0})</Trans>
+                <Trans>
+                  Select all ({labels == null ? "…" : labels.length})
+                </Trans>
               </button>
               <div className="flex flex-col gap-1 max-h-[280px] overflow-y-auto">
+                {labels == null ? (
+                  <span className="text-sm text-muted-foreground p-2">
+                    <Trans>Loading…</Trans>
+                  </span>
+                ) : null}
                 {(labels ?? []).map((l) => (
                   <button
                     type="button"

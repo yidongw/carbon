@@ -6454,6 +6454,9 @@ msgstr "Не удалось загрузить балансовую ведомо
 msgid "Failed to load bundle work orders"
 msgstr "Не удалось загрузить пакеты заказов на работу"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "Не удалось загрузить компании"
 
@@ -13359,7 +13362,7 @@ msgstr "Выберите счет"
 msgid "Select all"
 msgstr "Выбрать все"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Выбрать все ({0})"

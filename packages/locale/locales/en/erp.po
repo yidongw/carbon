@@ -6453,6 +6453,9 @@ msgstr "Failed to load balance sheet"
 msgid "Failed to load bundle work orders"
 msgstr "Failed to load bundle work orders"
 
+msgid "Failed to load care labels"
+msgstr "Failed to load care labels"
+
 msgid "Failed to load companies"
 msgstr "Failed to load companies"
 
@@ -13358,7 +13361,7 @@ msgstr "Select account"
 msgid "Select all"
 msgstr "Select all"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Select all ({0})"

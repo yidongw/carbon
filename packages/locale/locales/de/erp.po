@@ -6454,6 +6454,9 @@ msgstr "Fehler beim Laden des Bilanzblatts"
 msgid "Failed to load bundle work orders"
 msgstr "Fehler beim Laden der Arbeitsaufträge-Packbänder"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "Fehler beim Laden der Unternehmen"
 
@@ -13359,7 +13362,7 @@ msgstr "Wählen Sie Konto"
 msgid "Select all"
 msgstr "Selektiere alle"
 
-#. placeholder {0}: labels?.length ?? 0
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "Alle auswählen ({0})"

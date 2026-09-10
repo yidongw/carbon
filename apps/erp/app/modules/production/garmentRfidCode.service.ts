@@ -1,4 +1,5 @@
 import type { Database } from "@carbon/database";
+import { fetchAllFromTable } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isStyleCareLabelOperation } from "~/modules/items/styleMethod.service";
 import { validateCareLabelBulkBind } from "./careLabelBind";
@@ -18,9 +19,8 @@ export function generateRfidCode(
   return `${bundleReadableId}-${String(sequence).padStart(3, "0")}`;
 }
 
-export type GarmentRfidCode = NonNullable<
-  Awaited<ReturnType<typeof getGarmentRfidCodes>>["data"]
->[number];
+export type GarmentRfidCode =
+  Database["public"]["Tables"]["garmentRfidCode"]["Row"];
 
 /** All RFID codes generated for a bundle work order, ordered by piece sequence. */
 export async function getGarmentRfidCodes(
@@ -28,12 +28,17 @@ export async function getGarmentRfidCodes(
   bundleWorkOrderId: string,
   companyId: string
 ) {
-  return client
-    .from("garmentRfidCode")
-    .select("*", { count: "exact" })
-    .eq("bundleWorkOrderId", bundleWorkOrderId)
-    .eq("companyId", companyId)
-    .order("sequence", { ascending: true });
+  // Bundles can mint 1000+ pieces — page past PostgREST's default 1000-row cap.
+  return fetchAllFromTable<GarmentRfidCode>(
+    client,
+    "garmentRfidCode",
+    "*",
+    (query) =>
+      query
+        .eq("bundleWorkOrderId", bundleWorkOrderId)
+        .eq("companyId", companyId)
+        .order("sequence", { ascending: true })
+  );
 }
 
 /**
