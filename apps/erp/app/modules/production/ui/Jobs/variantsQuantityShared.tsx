@@ -168,6 +168,7 @@ export function getInitialRows(
   // Style combo: one row per synced variant SKU. The descriptor cell is the
   // stable `variantItemId`; its display label comes straight from the param's
   // label map (attribute value names) — no code combo.
+  // Label map insertion order is catalog sortOrder (see getStyleVariantQuantityParameters).
   if (comboParam?.optionVariantItemLabels != null) {
     return Object.entries(comboParam.optionVariantItemLabels).map(
       ([variantItemId, label]): Row => ({

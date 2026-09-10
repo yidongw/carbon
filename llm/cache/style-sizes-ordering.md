@@ -4,8 +4,9 @@ Apparel **sizes** must display in apparel order — smallest→largest with `OS`
 
 ## Mechanism
 
-- Canonical order: `STYLE_SIZE_CODES` in `packages/database/src/styleReference.ts` (`sortOrder` = array index). Seeded into garment `itemAttributeValue` (Size); system Size rows have `companyId NULL`.
-- Size pickers / lists order by `sortOrder`, then code.
+- Canonical order: `STYLE_SIZE_CODES` in `packages/database/src/styleReference.ts` (`sortOrder` = array index). Seeded into garment `itemAttributeValue` (Size); company-scoped Size rows (custom sizes like `4XL` are company-only with their own `sortOrder`).
+- Size pickers / attribute editor order by `sortOrder`, then code.
+- Style 规格数量 grids must also order by value `sortOrder`: build `optionVariantItemLabels` in that order and reorder saved combo rows to match. Do **not** rely on `itemVariant` / `jobVariantQuantity` insertion order — that is what put `4XL` first even when the Size attribute editor was already correct.
 
 When adding a new size read/display, order by `sortOrder`, not code.
 

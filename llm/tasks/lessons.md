@@ -379,3 +379,9 @@ Patterns learned from corrections. Review at the start of each session.
 ## Inventory adjustment variant hints are display-only
 - Symptom/request: Style inventory adjustment needs on-hand hints per SKU, but clicking them must not fill cells (unlike transfers/production).
 - Rule: pass `referenceHintsClickable: false` through `openStyleVariantsQuantityWithInventory` / `useVariantsQuantityModal`. Default remains click-to-fill elsewhere.
+
+## Attribute editor correct ≠ qty grid correct
+- Symptom: Size attribute editor shows L→XL→2XL→3XL→4XL, but 规格数量 puts 4XL first.
+- Wrong diagnosis: assumed bad itemAttributeValue.sortOrder / needed a data migration.
+- Real cause: getStyleVariantQuantityParameters built optionVariantItemLabels from unordered itemVariant rows; jobVariantQuantity initialRows kept insertion order. Attribute editor sorts by sortOrder; qty grid did not.
+- Rule: if the catalog/attribute UI order looks right, do not “fix data” first — check whether the broken surface sorts by sortOrder. Confirm root cause against the surface that still works.

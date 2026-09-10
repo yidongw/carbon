@@ -254,6 +254,26 @@ export function variantsQuantityToComboRows(
   return out;
 }
 
+/**
+ * Reorder combo qty rows to match `optionVariantItemLabels` insertion order
+ * (apparel/catalog sortOrder). Unknown ids keep relative order at the end.
+ */
+export function sortRowsByOptionVariantOrder<
+  T extends { variantItemId?: unknown }
+>(rows: T[], optionVariantItemLabels: Record<string, string>): T[] {
+  const order = new Map(
+    Object.keys(optionVariantItemLabels).map((id, index) => [id, index])
+  );
+  return [...rows].sort((a, b) => {
+    const ia = order.get(String(a.variantItemId ?? "").trim());
+    const ib = order.get(String(b.variantItemId ?? "").trim());
+    if (ia == null && ib == null) return 0;
+    if (ia == null) return 1;
+    if (ib == null) return -1;
+    return ia - ib;
+  });
+}
+
 export function formatVariantRowLabel(
   row: VariantsQuantityRow,
   columns: VariantsQuantityColumn[],
