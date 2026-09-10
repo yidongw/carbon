@@ -392,7 +392,7 @@ export default function SalesDashboard() {
           <Trans>Dashboard</Trans>
         </Heading>
       </HStack>
-      <div className="grid w-full gap-4 grid-cols-1 @sm:grid-cols-2 @2xl:grid-cols-3">
+      <div className="grid w-full gap-4 grid-cols-1 @lg:grid-cols-2 @3xl:grid-cols-3">
         <Card>
           <CardHeader className="flex-row gap-2">
             <RiProgress2Line className="text-muted-foreground" />
