@@ -16813,5 +16813,8 @@ msgstr ""
 msgid "请先生成系统编码"
 msgstr ""
 
+msgid "请先生成系统编码（完成「打印水洗唛」工序）"
+msgstr ""
+
 msgid "重新扫描"
 msgstr ""

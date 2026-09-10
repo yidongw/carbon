@@ -1,5 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { Button, HStack, VStack } from "@carbon/react";
+import { Button, HStack, toast, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuNfc, LuPrinter } from "react-icons/lu";
@@ -48,6 +48,14 @@ export default function BundleWorkOrderRfidCodesRoute() {
   const [isPrinting, setIsPrinting] = useState(false);
   const [isBinding, setIsBinding] = useState(false);
 
+  const requireCodes = (next: () => void) => {
+    if (count === 0) {
+      toast.error(t`请先生成系统编码（完成「打印水洗唛」工序）`);
+      return;
+    }
+    next();
+  };
+
   return (
     <VStack spacing={0} className="h-[calc(100dvh-99px)]">
       <RfidCodesTable
@@ -56,18 +64,18 @@ export default function BundleWorkOrderRfidCodesRoute() {
         primaryAction={
           <HStack>
             <Button
+              type="button"
               leftIcon={<LuNfc />}
               variant="secondary"
-              onClick={() => setIsBinding(true)}
-              isDisabled={count === 0}
+              onClick={() => requireCodes(() => setIsBinding(true))}
             >
               {t`水洗唛扫码绑定`}
             </Button>
             <Button
+              type="button"
               leftIcon={<LuPrinter />}
               variant="secondary"
-              onClick={() => setIsPrinting(true)}
-              isDisabled={count === 0}
+              onClick={() => requireCodes(() => setIsPrinting(true))}
             >
               {t`Print Care Labels`}
             </Button>

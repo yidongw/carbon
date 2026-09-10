@@ -1,13 +1,5 @@
-import {
-  Badge,
-  Button,
-  cn,
-  HStack,
-  IconButton,
-  Status,
-  VStack
-} from "@carbon/react";
-import { Trans, useLingui } from "@lingui/react/macro";
+import { Badge, cn, HStack, IconButton, Status, VStack } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
 import { memo, useCallback, useMemo } from "react";
@@ -17,7 +9,6 @@ import {
   LuCircleCheckBig,
   LuCircleDashed,
   LuCirclePlay,
-  LuCirclePlus,
   LuClipboardList,
   LuClock,
   LuHash,
@@ -36,6 +27,7 @@ import {
   CustomerAvatar,
   Hyperlink,
   ItemThumbnail,
+  New,
   Table
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
@@ -101,12 +93,6 @@ const MasterWorkOrdersTable = memo(
       () => new Set(itemIdsWithConfigurationParameters),
       [itemIdsWithConfigurationParameters]
     );
-
-    const openNew = useCallback(() => {
-      openOverlay(overlay.to.newMasterWorkOrder(), {
-        onCreated: () => revalidator.revalidate()
-      });
-    }, [openOverlay, revalidator]);
 
     const openVariantsQuantity = useCallback(
       (e: MouseEvent, jobId: string) => {
@@ -643,14 +629,7 @@ const MasterWorkOrdersTable = memo(
         }
         primaryAction={
           permissions.can("create", "production") && (
-            <Button
-              type="button"
-              variant="primary"
-              leftIcon={<LuCirclePlus />}
-              onClick={openNew}
-            >
-              <Trans>Master Work Order</Trans>
-            </Button>
+            <New label={t`Master Work Order`} to={path.to.newMasterWorkOrder} />
           )
         }
         title={t`Master Work Orders`}
