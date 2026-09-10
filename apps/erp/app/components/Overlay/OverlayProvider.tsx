@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import {
   createContext,
   type ReactNode,
@@ -34,7 +35,9 @@ type OverlayContextValue = {
 const OverlayContext = createContext<OverlayContextValue | null>(null);
 
 function createInstanceId() {
-  return crypto.randomUUID();
+  // Prefer nanoid: crypto.randomUUID is secure-context-only and throws on
+  // HTTP IP previews (e.g. 43.x.x.x) which are not https/localhost.
+  return nanoid();
 }
 
 function createInstance(
