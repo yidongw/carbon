@@ -98,142 +98,151 @@ function StockTransferLineComponent({
   return (
     <div
       className={cn(
-        "flex flex-col border-b p-6 gap-6",
-        index === totalLines - 1 && "border-none",
-        isPicked && "opacity-50 hover:opacity-100"
+        "flex flex-col border-b p-4 sm:p-6 gap-6",
+        index === totalLines - 1 && "border-none"
       )}
     >
-      <div className="flex justify-between items-center w-full">
-        <HStack spacing={4} className="w-1/2 justify-between">
-          <HStack spacing={4}>
-            <ItemThumbnail
-              size="md"
-              thumbnailPath={line.thumbnailPath}
-              type={(item?.type as "Part") ?? "Part"}
-            />
-            <VStack spacing={0} className="max-w-[380px] w-full">
-              <div className="w-full overflow-hidden">
-                <span className="text-sm font-medium truncate block w-full">
-                  {itemName}
-                </span>
-                <span className="text-xs text-muted-foreground truncate block w-full">
-                  {itemReadableId}
-                </span>
-                {line.trackedEntityId && (
-                  <span className="flex gap-1 text-xs text-muted-foreground truncate items-center w-full">
-                    <LuQrCode /> {line.trackedEntityId}
-                  </span>
-                )}
-              </div>
-              <div className="mt-2">
-                <Enumerable
-                  value={
-                    unitsOfMeasure?.find((u) => u.value === line.unitOfMeasure)
-                      ?.label ?? null
-                  }
-                />
-              </div>
-            </VStack>
-          </HStack>
-          <Count
-            count={line.quantity ?? 0}
-            className={cn(
-              "text-right text-white text-base",
-              isPicked ? "bg-emerald-600" : "bg-red-600"
-            )}
-          />
-        </HStack>
-        <div className="flex flex-grow items-center justify-between gap-4 pl-4 w-1/2">
-          <HStack spacing={4} className="text-left items-center">
-            {"fromStorageUnitId" in line && (
-              <span className="text-base font-medium  whitespace-nowrap">
-                {line.fromStorageUnitName ?? ""}
-              </span>
-            )}
-            <LuArrowRight className="size-4" />
-            {"toStorageUnitId" in line && (
-              <span className="text-base font-medium  whitespace-nowrap">
-                {line.toStorageUnitName ?? ""}
-              </span>
-            )}
-          </HStack>
-          <HStack spacing={1}>
-            {line.trackedEntityId && (
-              <PrintButton
-                sourceDocument="Entity"
-                sourceDocumentId={line.trackedEntityId}
-                locationId={locationId}
-                context="inventory"
-                fileRoutes={{
-                  pdf: path.to.file.trackedEntityLabelPdf,
-                  zpl: path.to.file.trackedEntityLabelZpl
-                }}
+      <div className="relative">
+        <div className="flex items-center w-full gap-6 overflow-x-auto scrollbar-hide sm:justify-between sm:gap-0 sm:overflow-x-visible">
+          <HStack
+            spacing={4}
+            className="shrink-0 sm:shrink sm:w-1/2 sm:justify-between"
+          >
+            <HStack spacing={4}>
+              <ItemThumbnail
+                size="md"
+                thumbnailPath={line.thumbnailPath}
+                type={(item?.type as "Part") ?? "Part"}
               />
-            )}
-            {pickedQuantity === line.quantity ? (
-              <Button
-                variant="secondary"
-                isDisabled={!isPickable || isPending}
-                isLoading={isPending}
-                leftIcon={<LuUndo2 />}
-                onClick={() => onUnpick(line)}
+              <VStack
+                spacing={0}
+                className="max-w-[180px] sm:max-w-[380px] w-full"
               >
-                Unpick
-              </Button>
-            ) : (
-              <Button
-                isDisabled={!isPickable || isPending}
-                isLoading={isPending}
-                leftIcon={isTracked ? <LuQrCode /> : <LuCirclePlus />}
-                onClick={
-                  isTracked
-                    ? () => navigate(path.to.stockTransferScan(id, line.id!))
-                    : () => onPick(line)
-                }
-              >
-                Pick
-              </Button>
-            )}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <IconButton
-                  variant="secondary"
-                  isDisabled={!isEditable}
-                  icon={<LuEllipsisVertical />}
-                  aria-label={t`Line options`}
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  disabled={
-                    !isEditable || !permissions.can("update", "inventory")
-                  }
-                  asChild
-                >
-                  <Link
-                    to={path.to.stockTransferLine(
-                      line.stockTransferId!,
-                      line.id!
-                    )}
-                  >
-                    <DropdownMenuIcon icon={<LuPencilLine />} />
-                    <Trans>Edit Line</Trans>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={
-                    !isEditable || !permissions.can("delete", "inventory")
-                  }
-                  destructive
-                  onClick={() => onDelete(line)}
-                >
-                  <DropdownMenuIcon icon={<LuTrash />} />
-                  <Trans>Delete Line</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <div className="w-full overflow-hidden">
+                  <span className="text-sm font-medium truncate block w-full">
+                    {itemName}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate block w-full">
+                    {itemReadableId}
+                  </span>
+                  {line.trackedEntityId && (
+                    <span className="flex gap-1 text-xs text-muted-foreground truncate items-center w-full">
+                      <LuQrCode /> {line.trackedEntityId}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <Enumerable
+                    value={
+                      unitsOfMeasure?.find(
+                        (u) => u.value === line.unitOfMeasure
+                      )?.label ?? null
+                    }
+                  />
+                </div>
+              </VStack>
+            </HStack>
+            <Count
+              count={line.quantity ?? 0}
+              className={cn(
+                "text-right text-white text-base",
+                isPicked ? "bg-emerald-600" : "bg-red-600"
+              )}
+            />
           </HStack>
+          <div className="flex items-center gap-4 shrink-0 sm:flex-grow sm:justify-between sm:pl-4 sm:w-1/2">
+            <HStack spacing={4} className="text-left items-center">
+              {"fromStorageUnitId" in line && (
+                <span className="text-base font-medium  whitespace-nowrap">
+                  {line.fromStorageUnitName ?? ""}
+                </span>
+              )}
+              <LuArrowRight className="size-4" />
+              {"toStorageUnitId" in line && (
+                <span className="text-base font-medium  whitespace-nowrap">
+                  {line.toStorageUnitName ?? ""}
+                </span>
+              )}
+            </HStack>
+            <HStack spacing={1}>
+              {line.trackedEntityId && (
+                <PrintButton
+                  sourceDocument="Entity"
+                  sourceDocumentId={line.trackedEntityId}
+                  locationId={locationId}
+                  context="inventory"
+                  fileRoutes={{
+                    pdf: path.to.file.trackedEntityLabelPdf,
+                    zpl: path.to.file.trackedEntityLabelZpl
+                  }}
+                />
+              )}
+              {pickedQuantity === line.quantity ? (
+                <Button
+                  variant="secondary"
+                  isDisabled={!isPickable || isPending}
+                  isLoading={isPending}
+                  leftIcon={<LuUndo2 />}
+                  onClick={() => onUnpick(line)}
+                >
+                  Unpick
+                </Button>
+              ) : (
+                <Button
+                  isDisabled={!isPickable || isPending}
+                  isLoading={isPending}
+                  leftIcon={isTracked ? <LuQrCode /> : <LuCirclePlus />}
+                  onClick={
+                    isTracked
+                      ? () => navigate(path.to.stockTransferScan(id, line.id!))
+                      : () => onPick(line)
+                  }
+                >
+                  Pick
+                </Button>
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <IconButton
+                    variant="secondary"
+                    isDisabled={!isEditable}
+                    icon={<LuEllipsisVertical />}
+                    aria-label={t`Line options`}
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    disabled={
+                      !isEditable || !permissions.can("update", "inventory")
+                    }
+                    asChild
+                  >
+                    <Link
+                      to={path.to.stockTransferLine(
+                        line.stockTransferId!,
+                        line.id!
+                      )}
+                    >
+                      <DropdownMenuIcon icon={<LuPencilLine />} />
+                      <Trans>Edit Line</Trans>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={
+                      !isEditable || !permissions.can("delete", "inventory")
+                    }
+                    destructive
+                    onClick={() => onDelete(line)}
+                  >
+                    <DropdownMenuIcon icon={<LuTrash />} />
+                    <Trans>Delete Line</Trans>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </HStack>
+          </div>
         </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-card to-transparent dark:from-muted/40 sm:hidden" />
       </div>
     </div>
   );
