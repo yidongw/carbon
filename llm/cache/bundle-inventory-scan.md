@@ -80,14 +80,18 @@ only. Bundle Count v1 above is still “scan one code → whole-bundle qty”.
 
 ## Planned: 扫码盘点 (piece-level, next to inventory adjustment)
 
-Product decisions (locked):
-- Entry: location inventory item detail, **beside** 库存调整 — do **not** change the
-  manual adjustment modal (storage unit stays optional there).
-- **存储单元 required**; 位置 from page context. Semantics = count **one whole bin/rack**.
-- Granularity: unique UHF EPC → 1 piece → variant SKU tally (not 按扎 Bundle Count).
-- Scope: current item / Style family only; foreign/unknown EPCs flagged, not posted.
-- Commit: `insertManualInventoryAdjustment` Set Quantity per SKU at location+storageUnit;
-  unscanned SKUs of that Style **in that storage unit** → **0** (whole-bin clear).
+**Shipped** on Style location inventory detail (`InventoryStorageUnits` +
+`ScanCountModal` → `path.to.inventoryItemScanCount` /
+`quantities/$itemId.scan-count.tsx`):
+
+- Entry beside 库存调整; manual adjustment modal **unchanged** (storage unit optional).
+- **存储单元 required**; 位置 from `pickMethod.locationId`.
+- Bulk UHF EPC via `normalizeScannedExternalCodes`; resolve with
+  `resolveGarmentPiecesByScannedCodes` (code|externalCode → variant SKU, +1).
+- Scope: Style parent only (`tallyStyleScanCount` / `buildStyleScanCountCommitLines`).
+- Commit: `insertManualInventoryAdjustment` Set Quantity per variant at
+  location+storageUnit; unscanned family SKUs with bin on-hand → **0**.
+- Review shows 账面/实盘/差异; foreign/unknown EPCs flagged, not posted.
 
 ## Scope / gotchas
 - Quantity = the bundle's full `quantity` at confirm time (whole-bundle only; no
