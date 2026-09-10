@@ -1667,9 +1667,6 @@ msgstr ""
 msgid "Bundle not found"
 msgstr "Бандл не найден"
 
-msgid "Bundle Scan"
-msgstr ""
-
 msgid "Bundle Work Orders"
 msgstr "Наряды на пачки"
 

@@ -1667,9 +1667,6 @@ msgstr ""
 msgid "Bundle not found"
 msgstr "バンドルが見つかりません"
 
-msgid "Bundle Scan"
-msgstr ""
-
 msgid "Bundle Work Orders"
 msgstr "バンドル作業指示"
 

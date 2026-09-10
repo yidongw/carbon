@@ -1667,9 +1667,6 @@ msgstr ""
 msgid "Bundle not found"
 msgstr "Paquete no encontrado"
 
-msgid "Bundle Scan"
-msgstr ""
-
 msgid "Bundle Work Orders"
 msgstr "Órdenes de trabajo de paquete"
 
