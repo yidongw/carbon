@@ -1673,9 +1673,6 @@ msgstr "Bundle Count"
 msgid "Bundle not found"
 msgstr "Bundle not found"
 
-msgid "Bundle Scan"
-msgstr "Bundle Scan"
-
 msgid "Bundle Work Orders"
 msgstr "Bundle Work Orders"
 
