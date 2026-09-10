@@ -47,6 +47,7 @@ import { useMemo, useState } from "react";
 import {
   LuCheck,
   LuEllipsisVertical,
+  LuNfc,
   LuPencil,
   LuPrinter,
   LuQrCode
@@ -77,6 +78,7 @@ import { inventoryAdjustmentValidator } from "../../inventory.models";
 import { aggregateStorageUnitsBySku } from "../../styleBreakdown";
 import type { BreakdownEntry } from "../../types";
 import { openStyleVariantsQuantityWithInventory } from "../openStyleVariantsQuantityWithInventory";
+import ScanCountModal from "./ScanCountModal";
 
 // Style storage rows carry the SKU (variantItemId/skuLabel) they belong to so
 // the card can aggregate one row per storage unit with a per-SKU breakdown.
@@ -96,6 +98,8 @@ type InventoryStorageUnitsProps = {
   } | null;
   trackedEntityExpirations: Record<string, string | null>;
   storageUnits: { value: string; label: string }[];
+  /** Style parents get 扫码盘点 (UHF piece count); leave false for plain SKUs. */
+  isStyle?: boolean;
 };
 
 const InventoryStorageUnits = ({
@@ -105,16 +109,26 @@ const InventoryStorageUnits = ({
   itemShelfLife,
   trackedEntityExpirations,
   pickMethod,
-  storageUnits
+  storageUnits,
+  isStyle = false
 }: InventoryStorageUnitsProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
   const { locale } = useLocale();
   const adjustmentModal = useDisclosure();
+  const scanCountModal = useDisclosure();
+  const [scanCountStorageUnitId, setScanCountStorageUnitId] = useState<
+    string | null
+  >(null);
   const ruleViolations = useStorageRuleViolations({
     action: path.to.inventoryItemAdjustment(pickMethod.itemId),
     onSuccess: adjustmentModal.onClose
   });
+
+  const openScanCountModal = (storageUnitId?: string | null) => {
+    setScanCountStorageUnitId(storageUnitId ?? null);
+    scanCountModal.onOpen();
+  };
 
   const unitOfMeasures = useUnitOfMeasure();
 
@@ -361,9 +375,20 @@ const InventoryStorageUnits = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            <Button onClick={() => openAdjustmentModal()}>
-              <Trans>Inventory Adjustment</Trans>
-            </Button>
+            <HStack>
+              {isStyle && permissions.can("create", "inventory") ? (
+                <Button
+                  variant="secondary"
+                  leftIcon={<LuNfc />}
+                  onClick={() => openScanCountModal()}
+                >
+                  <Trans>扫码盘点</Trans>
+                </Button>
+              ) : null}
+              <Button onClick={() => openAdjustmentModal()}>
+                <Trans>Inventory Adjustment</Trans>
+              </Button>
+            </HStack>
           </CardAction>
         </HStack>
         <CardContent>
@@ -446,6 +471,18 @@ const InventoryStorageUnits = ({
                           />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
+                          {isStyle &&
+                          permissions.can("create", "inventory") &&
+                          item.storageUnitId ? (
+                            <DropdownMenuItem
+                              onClick={() =>
+                                openScanCountModal(item.storageUnitId)
+                              }
+                            >
+                              <DropdownMenuIcon icon={<LuNfc />} />
+                              <Trans>扫码盘点</Trans>
+                            </DropdownMenuItem>
+                          ) : null}
                           <DropdownMenuItem
                             onClick={() =>
                               openAdjustmentModal(
@@ -482,6 +519,18 @@ const InventoryStorageUnits = ({
           </Table>
         </CardContent>
       </Card>
+      {scanCountModal.isOpen && isStyle ? (
+        <ScanCountModal
+          itemId={pickMethod.itemId}
+          locationId={pickMethod.locationId}
+          initialStorageUnitId={scanCountStorageUnitId}
+          storageUnitOptions={storageUnits}
+          onClose={() => {
+            scanCountModal.onClose();
+            setScanCountStorageUnitId(null);
+          }}
+        />
+      ) : null}
       {adjustmentModal.isOpen && (
         <Modal
           open
