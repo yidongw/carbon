@@ -134,7 +134,7 @@ const BindCareLabelChipsModal = ({
         if (!open) onClose();
       }}
     >
-      <ModalContent size="md">
+      <ModalContent size="medium">
         <ModalHeader>
           <ModalTitle>{t`水洗唛扫码绑定`}</ModalTitle>
         </ModalHeader>
