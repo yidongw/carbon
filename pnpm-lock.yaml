@@ -650,6 +650,9 @@ importers:
       '@ai-sdk/react':
         specifier: 2.0.174
         version: 2.0.174(react@18.3.1)(zod@3.25.76)
+      '@bwip-js/browser':
+        specifier: 4.9.0
+        version: 4.9.0
       '@carbon/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -3636,6 +3639,9 @@ packages:
 
   '@bufbuild/protobuf@2.11.0':
     resolution: {integrity: sha512-sBXGT13cpmPR5BMgHE6UEEfEaShh5Ror6rfN3yEK5si7QVrtZg8LEPQb0VVhiLRUslD2yLnXtnRzG035J/mZXQ==}
+
+  '@bwip-js/browser@4.9.0':
+    resolution: {integrity: sha512-0HPAafLihTdOVVNgyhB4C1L9sZ2dpXNyX1EXpT4JqUTKwtDLyVKhQ58hD45RBYHNU1Jgg52BKQevAS3ERKwX1g==}
 
   '@bwip-js/node@4.9.0':
     resolution: {integrity: sha512-OqYyjyte8eDMsQxbZ4tZD/R/c/JBkv/Qcqs3E3ZwA7JUbgnPOCDbGg7MPT6KvnxJAV46zs3efwaBkGbbzbMTnw==}
@@ -15070,6 +15076,8 @@ snapshots:
       citty: 0.1.6
 
   '@bufbuild/protobuf@2.11.0': {}
+
+  '@bwip-js/browser@4.9.0': {}
 
   '@bwip-js/node@4.9.0': {}
 

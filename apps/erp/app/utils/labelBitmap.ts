@@ -214,11 +214,27 @@ export type CareLabelData = {
   /** Variant attributes (颜色/尺码/…) as localized name/value pairs. */
   attributeLines?: Array<{ name: string; value: string }> | null;
   /**
-   * PNG data URL of the 1D Code128 barcode encoding `code` (from the
-   * care-labels.json route). 1D so it reads on plain linear scanners.
+   * Optional pre-rendered Code128 PNG. Prefer omitting — `drawCareLabelCanvas`
+   * generates the barcode from `code` in the browser so large bundles don't
+   * download thousands of data URLs up front.
    */
-  barcodeDataUrl: string;
+  barcodeDataUrl?: string;
 };
+
+/** Render Code128 of `text` to a PNG data URL (browser only). */
+async function generateCareLabelBarcodeDataUrl(text: string): Promise<string> {
+  const bwipjs = (await import("@bwip-js/browser")).default;
+  const canvas = document.createElement("canvas");
+  await bwipjs.toCanvas(canvas, {
+    bcid: "code128",
+    text: text || " ",
+    scale: 2,
+    height: 10,
+    includetext: false,
+    textxalign: "center"
+  });
+  return canvas.toDataURL("image/png");
+}
 
 // Fields the care label reserves space for but the system doesn't store yet —
 // printed as an empty labeled line so the physical label has a place for them
@@ -313,7 +329,10 @@ export async function drawCareLabelCanvas(
   const bcX = padX;
   const bcY = bcTop + Math.max(0, (bcAreaH - idFont - 6 - bcH) / 2);
   try {
-    const img = await loadImage(label.barcodeDataUrl);
+    const barcodeDataUrl =
+      label.barcodeDataUrl ||
+      (await generateCareLabelBarcodeDataUrl(String(label.code)));
+    const img = await loadImage(barcodeDataUrl);
     // Smooth (not nearest-neighbor) so downscaling the dense bars averages
     // instead of dropping thin bars; canvasToTsplLabel re-binarizes after.
     ctx.imageSmoothingEnabled = true;
