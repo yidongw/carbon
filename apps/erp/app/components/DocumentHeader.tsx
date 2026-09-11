@@ -20,6 +20,9 @@ type DocumentHeaderProps = {
   status?: ReactNode;
   menuItems?: ReactNode;
   actions?: ReactNode;
+  // The page's most important action (e.g. Post/Confirm). Unlike `actions`, it
+  // stays visible on mobile instead of collapsing into the more-options menu.
+  primaryAction?: ReactNode;
 };
 
 const DocumentHeader = ({
@@ -27,7 +30,8 @@ const DocumentHeader = ({
   subtitle,
   status,
   menuItems,
-  actions
+  actions,
+  primaryAction
 }: DocumentHeaderProps) => {
   const { t } = useLingui();
   const isMobile = useIsMobile();
@@ -82,7 +86,14 @@ const DocumentHeader = ({
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         )}
       </div>
-      {actions && !isMobile && <HStack>{actions}</HStack>}
+      {/* Full actions row on desktop; on mobile only the primary action stays
+          visible (the rest live in the more-options menu above). */}
+      {(primaryAction || (actions && !isMobile)) && (
+        <HStack className="shrink-0">
+          {!isMobile && actions}
+          {primaryAction}
+        </HStack>
+      )}
     </CardHeader>
   );
 };

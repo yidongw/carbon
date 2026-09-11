@@ -223,20 +223,22 @@ const ShipmentForm = ({
                     onCreateInvoice={createInvoice}
                   />
                 )}
-                <Button
-                  variant={!isPosted && !isVoided ? "primary" : "secondary"}
-                  onClick={postModal.onOpen}
-                  isDisabled={
-                    !canPost ||
-                    isPosted ||
-                    isVoided ||
-                    !permissions.is("employee")
-                  }
-                  leftIcon={<LuCheckCheck />}
-                >
-                  <Trans>Post</Trans>
-                </Button>
               </>
+            }
+            primaryAction={
+              <Button
+                variant={!isPosted && !isVoided ? "primary" : "secondary"}
+                onClick={postModal.onOpen}
+                isDisabled={
+                  !canPost ||
+                  isPosted ||
+                  isVoided ||
+                  !permissions.is("employee")
+                }
+                leftIcon={<LuCheckCheck />}
+              >
+                <Trans>Post</Trans>
+              </Button>
             }
           />
 
