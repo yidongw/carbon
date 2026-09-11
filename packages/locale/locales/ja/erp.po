@@ -13607,6 +13607,9 @@ msgstr "シフトが更新されました"
 msgid "Shifts"
 msgstr "シフト"
 
+msgid "Ship"
+msgstr ""
+
 msgid "Ship some, stock some"
 msgstr "一部を出荷し、一部を在庫に"
 

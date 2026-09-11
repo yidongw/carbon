@@ -13607,6 +13607,9 @@ msgstr "Uhrzeit aktualisiert"
 msgid "Shifts"
 msgstr "Schichten"
 
+msgid "Ship"
+msgstr ""
+
 msgid "Ship some, stock some"
 msgstr "Einige versenden, einige lagern"
 

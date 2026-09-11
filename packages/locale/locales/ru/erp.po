@@ -13607,6 +13607,9 @@ msgstr "Смена обновлена"
 msgid "Shifts"
 msgstr "Смены"
 
+msgid "Ship"
+msgstr ""
+
 msgid "Ship some, stock some"
 msgstr "Отправить часть, оставить часть на складе"
 
