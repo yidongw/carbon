@@ -24,16 +24,13 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
-import {
-  formatRelativeTime,
-  getItemById,
-  getItemReadableId
-} from "@carbon/utils";
+import { getItemById, getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useRef } from "react";
 import { LuArrowRight, LuCirclePlus, LuEllipsisVertical } from "react-icons/lu";
 import { Link, Outlet, useFetcher, useNavigate } from "react-router";
 import { EmployeeAvatar, Empty, ItemThumbnail } from "~/components";
+import { useDateFormatter } from "~/hooks";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import type { WarehouseTransfer, WarehouseTransferLine } from "../../types";
@@ -129,6 +126,7 @@ function WarehouseTransferLineListItem({
   className?: string;
 }) {
   const { t } = useLingui();
+  const { formatRelativeTime } = useDateFormatter();
   const deleteModalDisclosure = useDisclosure();
 
   const [items] = useItems();
