@@ -1447,8 +1447,12 @@ function StorageUnit({
   if (!locationId) return null;
 
   return (
-    <VStack spacing={1} className="min-w-[140px] text-sm">
-      <label className="text-xs text-muted-foreground">
+    // Hug the content: VStack defaults to w-full, which balloons an empty
+    // storage-unit combobox to a wide, mostly-blank column that looks like
+    // dead space when the mobile row is scrolled to it. w-fit keeps it as
+    // wide as its label/value only.
+    <VStack spacing={1} className="w-fit text-sm">
+      <label className="text-xs text-muted-foreground whitespace-nowrap">
         <Trans>Storage Unit</Trans>
       </label>
       <div className="py-1">
