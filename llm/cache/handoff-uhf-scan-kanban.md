@@ -78,6 +78,20 @@ Open product choice: Make only, Buy only, or both.
 
 ---
 
+## 库存转移 Scan Pick (locked — not built yet)
+
+User confirmed (库存转移 / Stock Transfer **Pick**):
+
+- **成衣必须**用水洗唛 UHF 扫码确认数量（不能一键 Pick 跳过）
+- **必须扫满**计划件数才能过账（不允许部分拣先过账）
+- 判定成衣：行 SKU 属于 **Style/款式**（变体或父级是 Style）——**没有**单独 `isGarment()`；不要用序列号追踪开关代替
+- 非成衣（Part/Material 等）：保持现有一键 Pick
+- 扫码校验：EPC → `garmentRfidCode` → bundle `itemId`；必须匹配本行 `itemId`（规格对）；错码/未识别标红不计入
+- 过账：仍走库存转移 Transfer（from/to storage unit），**不是**扫码盘点的 Set Quantity
+- 复用：`normalizeScannedExternalCodes` + `resolveGarmentPiecesByScannedCodes`（依赖 #430）
+
+---
+
 ## Key paths
 
 - `apps/erp/app/modules/inventory/ui/Inventory/ScanCountModal.tsx`
@@ -92,10 +106,9 @@ Open product choice: Make only, Buy only, or both.
 
 ## Suggested next steps for this PR
 
-1. Confirm with user: UHF confirm on **Make complete**, **Buy receipt**, or both  
-2. Design minimal UX: scan card → scan EPCs (scope to card SKU) → confirm qty  
-3. Reuse `normalizeScannedExternalCodes` + piece resolve; filter `variantItemId === kanban.itemId`  
-4. Depend on / rebase after #430 merge if scan helpers are needed from that branch  
+1. Implement **库存转移** Style-line **扫码 Pick** (must fill qty; non-Style one-click Pick unchanged) — highest clarity from user
+2. Then 补货卡 / 仓库调拨收货扫码（另议）
+3. Reuse EPC helpers from #430 (rebase/merge after #430 lands)
 
 ---
 
