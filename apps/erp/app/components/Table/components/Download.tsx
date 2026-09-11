@@ -1,6 +1,4 @@
 import {
-  DropdownMenuIcon,
-  DropdownMenuItem,
   IconButton,
   Tooltip,
   TooltipContent,
@@ -17,17 +15,13 @@ type DownloadProps = {
   columnAccessors: Record<string, string>;
   columnOrder: string[];
   columnVisibility: Record<string, boolean>;
-  // When true, render as a dropdown menu item instead of a toolbar icon button
-  // (used to collapse the toolbar controls into a "..." menu on mobile).
-  asMenuItem?: boolean;
 };
 
 const Download = ({
   data,
   columnAccessors,
   columnOrder,
-  columnVisibility,
-  asMenuItem = false
+  columnVisibility
 }: DownloadProps) => {
   const { t } = useLingui();
 
@@ -89,15 +83,6 @@ const Download = ({
 
   if (!data?.length) {
     return null;
-  }
-
-  if (asMenuItem) {
-    return (
-      <DropdownMenuItem onClick={onClick}>
-        <DropdownMenuIcon icon={<LuDownload />} />
-        <Trans>Download CSV</Trans>
-      </DropdownMenuItem>
-    );
   }
 
   return (
