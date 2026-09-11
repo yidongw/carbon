@@ -7230,6 +7230,9 @@ msgstr "Failed to set thumbnail"
 msgid "Failed to set thumbnail: {message}"
 msgstr "Failed to set thumbnail: {message}"
 
+msgid "Failed to settle line qty"
+msgstr "Failed to settle line qty"
+
 msgid "Failed to sign in"
 msgstr "Failed to sign in"
 
@@ -8714,9 +8717,6 @@ msgstr "Invalid Invite Link"
 msgid "Invalid job configuration"
 msgstr "Invalid job configuration"
 
-msgid "Invalid line quantity"
-msgstr "Invalid line quantity"
-
 msgid "Invalid lines data"
 msgstr "Invalid lines data"
 
@@ -9294,6 +9294,9 @@ msgstr "Likelihood"
 
 msgid "Line"
 msgstr "Line"
+
+msgid "Line already fully picked"
+msgstr "Line already fully picked"
 
 msgid "Line already picked"
 msgstr "Line already picked"
@@ -10873,6 +10876,9 @@ msgstr "Nothing in the archive"
 
 msgid "Nothing left to split for this work order."
 msgstr "Nothing left to split for this work order."
+
+msgid "Nothing scanned yet"
+msgstr "Nothing scanned yet"
 
 msgid "Nothing to post for this storage unit"
 msgstr "Nothing to post for this storage unit"
@@ -16805,8 +16811,29 @@ msgstr "ZPL (Thermal Label)"
 msgid "ZPL Label Preview"
 msgstr "ZPL Label Preview"
 
+msgid "人工数量须在 1–{remaining}"
+msgstr "人工数量须在 1–{remaining}"
+
+msgid "人工确认"
+msgstr "人工确认"
+
+msgid "人工确认件数"
+msgstr "人工确认件数"
+
+msgid "关闭"
+msgstr "关闭"
+
+msgid "剩余未调度"
+msgstr "剩余未调度"
+
 msgid "取消"
 msgstr "取消"
+
+msgid "只调度已扫货物"
+msgstr "只调度已扫货物"
+
+msgid "可多次扫码确认；剩余可用人工补数，或选择只调度已扫货物。规格不符点跳过不计入。"
+msgstr "可多次扫码确认；剩余可用人工补数，或选择只调度已扫货物。规格不符点跳过不计入。"
 
 msgid "存储单元"
 msgstr "存储单元"
@@ -16820,21 +16847,21 @@ msgstr "审阅"
 msgid "差异"
 msgstr "差异"
 
+msgid "已拣"
+msgstr "已拣"
+
+msgid "已更新"
+msgstr "已更新"
+
 #. placeholder {0}: fetcher.data.bound
 msgid "已绑定 {0} 件"
 msgstr "已绑定 {0} 件"
-
-msgid "已计入本行"
-msgstr "已计入本行"
 
 msgid "已读唯一芯片"
 msgstr "已读唯一芯片"
 
 msgid "当前货位"
 msgstr "当前货位"
-
-msgid "成衣须用水洗唛 UHF 扫码确认。仅计入本行规格；不符或未识别会弹出警告，点跳过后继续扫。"
-msgstr "成衣须用水洗唛 UHF 扫码确认。仅计入本行规格；不符或未识别会弹出警告，点跳过后继续扫。"
 
 msgid "扫到"
 msgstr "扫到"
@@ -16848,14 +16875,14 @@ msgstr "扫到的码无法识别为已绑定水洗唛，已不计入。"
 msgid "扫码拣货"
 msgstr "扫码拣货"
 
-msgid "扫码拣货失败"
-msgstr "扫码拣货失败"
-
 msgid "扫码盘点"
 msgstr "扫码盘点"
 
 msgid "扫码盘点已过账"
 msgstr "扫码盘点已过账"
+
+msgid "操作失败"
+msgstr "操作失败"
 
 msgid "数量不足，请重新扫描"
 msgstr "数量不足，请重新扫描"
@@ -16869,8 +16896,20 @@ msgstr "未识别"
 msgid "未识别芯片"
 msgstr "未识别芯片"
 
+msgid "未调度"
+msgstr "未调度"
+
+msgid "本行已拣满"
+msgstr "本行已拣满"
+
 msgid "本行需要"
 msgstr "本行需要"
+
+msgid "本轮已匹配"
+msgstr "本轮已匹配"
+
+msgid "本轮扫描已达剩余数量，请先确认"
+msgstr "本轮扫描已达剩余数量，请先确认"
 
 msgid "水洗唛扫码绑定"
 msgstr "水洗唛扫码绑定"
@@ -16878,14 +16917,17 @@ msgstr "水洗唛扫码绑定"
 msgid "水洗唛芯片"
 msgstr "水洗唛芯片"
 
+msgid "清空本轮"
+msgstr "清空本轮"
+
 msgid "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
 msgstr "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
 
 msgid "盘点失败"
 msgstr "盘点失败"
 
-msgid "确认拣货"
-msgstr "确认拣货"
+msgid "确认本轮扫码"
+msgstr "确认本轮扫码"
 
 msgid "确认绑定"
 msgstr "确认绑定"
@@ -16902,14 +16944,20 @@ msgstr "系统编码"
 msgid "绑定时间"
 msgstr "绑定时间"
 
+msgid "继续拣货"
+msgstr "继续拣货"
+
 msgid "规格不符"
 msgstr "规格不符"
 
-msgid "计划数量"
-msgstr "计划数量"
+msgid "计划"
+msgstr "计划"
 
 msgid "该芯片已计入"
 msgstr "该芯片已计入"
+
+msgid "请先扫描本行规格芯片"
+msgstr "请先扫描本行规格芯片"
 
 msgid "请先生成系统编码"
 msgstr "请先生成系统编码"
@@ -16926,6 +16974,9 @@ msgstr "账面"
 msgid "跳过"
 msgstr "跳过"
 
+msgid "还没有已扫数量"
+msgstr "还没有已扫数量"
+
 msgid "选择存储单元后，用 UHF PDA 批量读取本款水洗唛芯片。确认过账会按件写入该货位，并将本款未扫到的 SKU 清零。"
 msgstr "选择存储单元后，用 UHF PDA 批量读取本款水洗唛芯片。确认过账会按件写入该货位，并将本款未扫到的 SKU 清零。"
 
@@ -16934,6 +16985,3 @@ msgstr "重新扫描"
 
 msgid "非本款"
 msgstr "非本款"
-
-msgid "须扫满 {planned} 件本行规格的水洗唛"
-msgstr "须扫满 {planned} 件本行规格的水洗唛"

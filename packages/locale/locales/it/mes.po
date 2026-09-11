@@ -3212,6 +3212,9 @@ msgstr "Fallito invio del codice di verifica"
 msgid "Failed to set job release date"
 msgstr "Impossibile impostare la data di rilascio della consegna"
 
+msgid "Failed to settle line qty"
+msgstr ""
+
 msgid "Failed to sign in"
 msgstr "Fallito il login"
 
@@ -4039,9 +4042,6 @@ msgstr "Invito non valido"
 msgid "Invalid job configuration"
 msgstr "Configurazione del lavoro invalida"
 
-msgid "Invalid line quantity"
-msgstr ""
-
 msgid "Invalid lines data"
 msgstr "Dati delle linee non validi"
 
@@ -4239,6 +4239,9 @@ msgstr "Chiudi questa pagina"
 
 msgid "Let's build something"
 msgstr "Costruiamo qualcosa"
+
+msgid "Line already fully picked"
+msgstr ""
 
 msgid "Line already picked"
 msgstr "Linea già selezionata"
@@ -4678,6 +4681,9 @@ msgstr "Non sei tu?"
 
 msgid "Notes"
 msgstr "Note"
+
+msgid "Nothing scanned yet"
+msgstr ""
 
 msgid "Nothing to post for this storage unit"
 msgstr ""

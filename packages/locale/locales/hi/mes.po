@@ -3212,6 +3212,9 @@ msgstr "परीक्षण कोड भेजना फ़ले नही�
 msgid "Failed to set job release date"
 msgstr "कार्य की छोड़ने तिथि सेट करना फलदायक नहीं हुआ"
 
+msgid "Failed to settle line qty"
+msgstr ""
+
 msgid "Failed to sign in"
 msgstr "सIGH IN वाला फेल हुआ"
 
@@ -4039,9 +4042,6 @@ msgstr "अवैध आमंत्रण"
 msgid "Invalid job configuration"
 msgstr "अवैध जोब कonfiguration"
 
-msgid "Invalid line quantity"
-msgstr ""
-
 msgid "Invalid lines data"
 msgstr "अवैध लाइन्स डेटा"
 
@@ -4239,6 +4239,9 @@ msgstr "इस पेज से निकलना"
 
 msgid "Let's build something"
 msgstr "चलिए कुछ बनाते हैं"
+
+msgid "Line already fully picked"
+msgstr ""
 
 msgid "Line already picked"
 msgstr "रेखा पहले से चुनी गई है"
@@ -4678,6 +4681,9 @@ msgstr "नहीं तुम?"
 
 msgid "Notes"
 msgstr "नोट्स"
+
+msgid "Nothing scanned yet"
+msgstr ""
 
 msgid "Nothing to post for this storage unit"
 msgstr ""

@@ -59,7 +59,7 @@ interface StockTransferLineProps {
   isPickable: boolean;
   isEditable: boolean;
   isPending: boolean;
-  /** Style variant SKU — must use UHF care-label scan pick (full qty). */
+  /** Style variant SKU — UHF garment pick hub (partial/manual/settle). */
   isGarmentStyleLine: boolean;
   onPick: (line: StockTransferLine) => void;
   onUnpick: (line: StockTransferLine) => void;
@@ -152,6 +152,11 @@ function StockTransferLineComponent({
                 isPicked ? "bg-emerald-600" : "bg-red-600"
               )}
             />
+            {isGarmentStyleLine && (line.quantity ?? 0) > 0 ? (
+              <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                {t`已拣`} {pickedQuantity}/{line.quantity}
+              </span>
+            ) : null}
           </HStack>
           <div className="flex items-center gap-4 shrink-0 sm:flex-grow sm:justify-between sm:pl-4 sm:w-1/2">
             <HStack spacing={4} className="text-left items-center">
@@ -190,22 +195,23 @@ function StockTransferLineComponent({
                 >
                   Unpick
                 </Button>
+              ) : isGarmentStyleLine ? (
+                <Button
+                  isDisabled={!isPickable || isPending}
+                  isLoading={isPending}
+                  leftIcon={<LuQrCode />}
+                  onClick={() =>
+                    navigate(path.to.stockTransferGarmentPick(id, line.id!))
+                  }
+                >
+                  {pickedQuantity > 0 ? t`继续拣货` : t`扫码拣货`}
+                </Button>
               ) : (
                 <Button
                   isDisabled={!isPickable || isPending}
                   isLoading={isPending}
-                  leftIcon={
-                    isGarmentStyleLine || isTracked ? (
-                      <LuQrCode />
-                    ) : (
-                      <LuCirclePlus />
-                    )
-                  }
+                  leftIcon={isTracked ? <LuQrCode /> : <LuCirclePlus />}
                   onClick={() => {
-                    if (isGarmentStyleLine) {
-                      navigate(path.to.stockTransferGarmentPick(id, line.id!));
-                      return;
-                    }
                     if (isTracked) {
                       navigate(path.to.stockTransferScan(id, line.id!));
                       return;
@@ -213,7 +219,7 @@ function StockTransferLineComponent({
                     onPick(line);
                   }}
                 >
-                  {isGarmentStyleLine ? t`扫码拣货` : "Pick"}
+                  Pick
                 </Button>
               )}
               <DropdownMenu>

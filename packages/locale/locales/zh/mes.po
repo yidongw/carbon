@@ -3213,6 +3213,9 @@ msgstr "发送验证码失败"
 msgid "Failed to set job release date"
 msgstr "设置作业释放日期失败"
 
+msgid "Failed to settle line qty"
+msgstr ""
+
 msgid "Failed to sign in"
 msgstr "登录失败"
 
@@ -4040,9 +4043,6 @@ msgstr "无效邀请"
 msgid "Invalid job configuration"
 msgstr "无效的工作配置"
 
-msgid "Invalid line quantity"
-msgstr ""
-
 msgid "Invalid lines data"
 msgstr "无效的生产线数据"
 
@@ -4240,6 +4240,9 @@ msgstr "离开此页"
 
 msgid "Let's build something"
 msgstr "让我们开始构建"
+
+msgid "Line already fully picked"
+msgstr ""
 
 msgid "Line already picked"
 msgstr "已选择生产线"
@@ -4679,6 +4682,9 @@ msgstr "不是你？"
 
 msgid "Notes"
 msgstr "备注"
+
+msgid "Nothing scanned yet"
+msgstr ""
 
 msgid "Nothing to post for this storage unit"
 msgstr ""

@@ -80,14 +80,14 @@ Open product choice: Make only, Buy only, or both.
 
 ## 库存转移 Scan Pick (locked — shipped on this branch)
 
-User confirmed (库存转移 / Stock Transfer **Pick**):
+Stock Transfer Style garment pick hub (`$id.garment-pick.$lineId.tsx`):
 
-- **成衣必须**用水洗唛 UHF 扫码确认数量（不能一键 Pick 跳过）
-- **必须扫满**计划件数才能过账（不允许部分拣先过账）
-- 判定成衣：行 SKU 属于 **Style/款式**（`itemVariant` + parent `type === "Style"`）
-- 非成衣：保持现有一键 Pick；序列号/批次：现有 scan 路由
-- 路由：`path.to.stockTransferGarmentPick` → `$id.garment-pick.$lineId.tsx`
-- 过账：`post-stock-transfer` type `inventory`（Transfer），不是 Set Quantity
+- Multi-round **扫码确认** (partial OK; posts matching EPC count ≤ remaining)
+- **人工确认**: type qty for remainder (no picker name)
+- **只调度已扫**: set `line.quantity = pickedQuantity` (no transfer of remainder)
+- Wrong/unknown EPC: exclude + blocking **跳过** warning
+- No RFID-coverage force-scan validation (deferred)
+- Non-Style: one-click Pick; serial/batch: existing scan route
 
 ---
 

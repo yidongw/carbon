@@ -3212,6 +3212,9 @@ msgstr "Échec de l'envoi du code de vérification"
 msgid "Failed to set job release date"
 msgstr "Échec de la mise en date de la tâche"
 
+msgid "Failed to settle line qty"
+msgstr ""
+
 msgid "Failed to sign in"
 msgstr "Échec de connexion"
 
@@ -4039,9 +4042,6 @@ msgstr "Invitation invalide"
 msgid "Invalid job configuration"
 msgstr "Configuration de tâche invalide"
 
-msgid "Invalid line quantity"
-msgstr ""
-
 msgid "Invalid lines data"
 msgstr "Données de lignes invalides"
 
@@ -4239,6 +4239,9 @@ msgstr "Quitter cette page"
 
 msgid "Let's build something"
 msgstr "Construisons quelque chose"
+
+msgid "Line already fully picked"
+msgstr ""
 
 msgid "Line already picked"
 msgstr "Ligne déjà choisie"
@@ -4678,6 +4681,9 @@ msgstr "Pas vous ?"
 
 msgid "Notes"
 msgstr "Notes"
+
+msgid "Nothing scanned yet"
+msgstr ""
 
 msgid "Nothing to post for this storage unit"
 msgstr ""
