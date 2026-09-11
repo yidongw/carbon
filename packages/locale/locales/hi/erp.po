@@ -3670,6 +3670,10 @@ msgstr "डॉक्यूमेंटेशन में गड़बड़ी"
 msgid "Documents"
 msgstr "दस्तावेज़"
 
+msgctxt "warehouse transfer"
+msgid "Documents"
+msgstr "दस्तावेज़"
+
 msgid "Don't Cancel"
 msgstr "रद्द न करें"
 

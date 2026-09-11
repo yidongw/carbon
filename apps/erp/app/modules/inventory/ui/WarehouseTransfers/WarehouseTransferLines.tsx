@@ -24,16 +24,13 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
-import {
-  formatRelativeTime,
-  getItemById,
-  getItemReadableId
-} from "@carbon/utils";
+import { getItemById, getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useRef } from "react";
 import { LuArrowRight, LuCirclePlus, LuEllipsisVertical } from "react-icons/lu";
 import { Link, Outlet, useFetcher, useNavigate } from "react-router";
 import { EmployeeAvatar, Empty, ItemThumbnail } from "~/components";
+import { useDateFormatter } from "~/hooks";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import type { WarehouseTransfer, WarehouseTransferLine } from "../../types";
@@ -129,6 +126,7 @@ function WarehouseTransferLineListItem({
   className?: string;
 }) {
   const { t } = useLingui();
+  const { formatRelativeTime } = useDateFormatter();
   const deleteModalDisclosure = useDisclosure();
 
   const [items] = useItems();
@@ -150,81 +148,84 @@ function WarehouseTransferLineListItem({
 
   return (
     <div className={cn("border-b p-6", className)}>
-      <div className="flex flex-1 justify-between items-center w-full">
-        <HStack spacing={4} className="w-1/2">
-          <HStack spacing={4} className="flex-1">
-            <div className="flex items-center space-x-3">
-              <ItemThumbnail
-                size="sm"
-                thumbnailPath={line.item?.thumbnailPath}
-                // @ts-expect-error TS2339 - TODO: fix type
-                type={(item.type as "Part") ?? "Part"}
-              />
-              <VStack spacing={0}>
-                <span className="text-sm font-medium truncate">
-                  {/* @ts-expect-error TS2339 */}
-                  {item.name}
-                </span>
-                <span className="text-xs text-muted-foreground truncate">
-                  {itemReadableId}
-                </span>
-              </VStack>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary">
-                {Number(line.quantity).toLocaleString()}
-              </Badge>
-              {line.fromStorageUnit && (
-                <Badge variant="outline">{line.fromStorageUnit.name}</Badge>
-              )}
-              <LuArrowRight className="size-4" />
-              {line.toStorageUnit && (
-                <Badge variant="outline">{line.toStorageUnit.name}</Badge>
-              )}
-            </div>
-          </HStack>
-        </HStack>
-        <div className="flex items-center justify-end gap-2">
-          <HStack spacing={2}>
-            <span className="text-xs text-muted-foreground">
-              {isUpdated ? t`Updated` : t`Created`} {formatRelativeTime(date)}
-            </span>
-            <EmployeeAvatar employeeId={person} withName={false} />
-          </HStack>
-          {!isDisabled && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <IconButton
-                  aria-label={t`Open menu`}
-                  icon={<LuEllipsisVertical />}
-                  variant="ghost"
+      <div className="relative">
+        <div className="flex items-center w-full gap-6 overflow-x-auto scrollbar-hide sm:justify-between sm:gap-0 sm:overflow-x-visible">
+          <HStack spacing={4} className="shrink-0 sm:shrink sm:w-1/2">
+            <HStack spacing={4} className="flex-1">
+              <div className="flex items-center space-x-3">
+                <ItemThumbnail
+                  size="sm"
+                  thumbnailPath={line.item?.thumbnailPath}
+                  // @ts-expect-error TS2339 - TODO: fix type
+                  type={(item.type as "Part") ?? "Part"}
                 />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  disabled={isDisabled}
-                  onClick={() =>
-                    navigate(
-                      path.to.warehouseTransferLine(
-                        warehouseTransfer.id,
-                        line.id
+                <VStack spacing={0} className="max-w-[140px] sm:max-w-none">
+                  <span className="text-sm font-medium truncate block w-full">
+                    {/* @ts-expect-error TS2339 */}
+                    {item.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate block w-full">
+                    {itemReadableId}
+                  </span>
+                </VStack>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant="secondary">
+                  {Number(line.quantity).toLocaleString()}
+                </Badge>
+                {line.fromStorageUnit && (
+                  <Badge variant="outline">{line.fromStorageUnit.name}</Badge>
+                )}
+                <LuArrowRight className="size-4" />
+                {line.toStorageUnit && (
+                  <Badge variant="outline">{line.toStorageUnit.name}</Badge>
+                )}
+              </div>
+            </HStack>
+          </HStack>
+          <div className="flex items-center justify-end gap-2 shrink-0">
+            <HStack spacing={2}>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {isUpdated ? t`Updated` : t`Created`} {formatRelativeTime(date)}
+              </span>
+              <EmployeeAvatar employeeId={person} withName={false} />
+            </HStack>
+            {!isDisabled && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <IconButton
+                    aria-label={t`Open menu`}
+                    icon={<LuEllipsisVertical />}
+                    variant="ghost"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    disabled={isDisabled}
+                    onClick={() =>
+                      navigate(
+                        path.to.warehouseTransferLine(
+                          warehouseTransfer.id,
+                          line.id
+                        )
                       )
-                    )
-                  }
-                >
-                  <Trans>Edit</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={isDisabled}
-                  destructive
-                  onClick={deleteModalDisclosure.onOpen}
-                >
-                  <Trans>Delete</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                    }
+                  >
+                    <Trans>Edit</Trans>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={isDisabled}
+                    destructive
+                    onClick={deleteModalDisclosure.onOpen}
+                  >
+                    <Trans>Delete</Trans>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-card to-transparent dark:from-card sm:hidden" />
       </div>
 
       {deleteModalDisclosure.isOpen && (
