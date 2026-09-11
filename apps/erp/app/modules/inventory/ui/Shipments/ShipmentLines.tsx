@@ -562,7 +562,7 @@ function ShipmentLineItem({
           </DropdownMenu>
         )}
       </div>
-      <div className="relative w-full pr-10 md:pr-0">
+      <div className="relative w-full pr-10">
         <div
           ref={scrollRef}
           className="flex flex-1 items-center w-full justify-between gap-4 overflow-x-auto scrollbar-hide md:gap-0 md:overflow-visible"
