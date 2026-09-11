@@ -284,7 +284,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
     }
 
-    await trigger(client, "stock-transfer-status", { stockTransferId: id });
+    try {
+      await trigger(client, "stock-transfer-status", { stockTransferId: id });
+    } catch {
+      // Status job is best-effort; pick/settle must not fail if Inngest is down.
+    }
 
     return data(
       {
@@ -348,7 +352,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
     }
 
-    await trigger(client, "stock-transfer-status", { stockTransferId: id });
+    try {
+      await trigger(client, "stock-transfer-status", { stockTransferId: id });
+    } catch {
+      // Status job is best-effort; pick must not fail if Inngest is down.
+    }
 
     const newPicked = alreadyPicked + qty;
     return data(
@@ -450,7 +458,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
     }
 
-    await trigger(client, "stock-transfer-status", { stockTransferId: id });
+    try {
+      await trigger(client, "stock-transfer-status", { stockTransferId: id });
+    } catch {
+      // Status job is best-effort; pick must not fail if Inngest is down.
+    }
 
     const newPicked = alreadyPicked + qty;
     return data(
