@@ -68,7 +68,7 @@ const DocumentHeader = ({
                       menu row: no border/shadow/fill, shared padding, weight
                       and hover. `!` beats the variants' dark-mode utilities.
                     */}
-                    <div className="flex flex-col items-stretch gap-1 p-1 [&_a]:h-8 [&_a]:w-full [&_a]:justify-start [&_a]:px-2 [&_a]:font-normal [&_a]:text-foreground [&_a]:before:hidden [&_a]:!border-0 [&_a]:!bg-transparent [&_a]:!shadow-none [&_a:hover]:!bg-accent [&_button]:h-8 [&_button]:w-full [&_button]:justify-start [&_button]:px-2 [&_button]:font-normal [&_button]:text-foreground [&_button]:before:hidden [&_button]:!border-0 [&_button]:!bg-transparent [&_button]:!shadow-none [&_button:hover]:!bg-accent">
+                    <div className="flex flex-col items-stretch gap-1 p-1 [&_a]:h-8 [&_a]:w-full [&_a]:justify-start [&_a]:px-2 [&_a]:font-normal [&_a]:text-foreground [&_a]:before:hidden [&_a]:!border-0 [&_a]:!bg-transparent [&_a]:!bg-none [&_a]:!shadow-none [&_a:hover]:!bg-accent [&_button]:h-8 [&_button]:w-full [&_button]:justify-start [&_button]:px-2 [&_button]:font-normal [&_button]:text-foreground [&_button]:before:hidden [&_button]:!border-0 [&_button]:!bg-transparent [&_button]:!bg-none [&_button]:!shadow-none [&_button:hover]:!bg-accent">
                       {actions}
                     </div>
                   </>
