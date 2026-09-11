@@ -1760,6 +1760,9 @@ msgstr "Fallito nel generare il PDF"
 msgid "Failed to generate picking list"
 msgstr "Fallito nel generare la lista di estrazione"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Impossibile ottenere un ID categoria"
 
@@ -2894,6 +2897,9 @@ msgstr "Caricamento stile acquisto fallito"
 msgid "Failed to load style quantities"
 msgstr "Caricamento quantità stile fallito"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "Caricamento del riassunto dello stile fallito"
 
@@ -3065,6 +3071,9 @@ msgstr "Fallito nel ricevere un ID operazione"
 msgid "Failed to record attribute"
 msgstr "Impossibile registrare l'attributo"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Impossibile registrare la quantità di riparazione"
 
@@ -3121,6 +3130,9 @@ msgstr "Fallito nel risolvere i prezzi del Pull dall'inventario"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "Impossibile risolvere i prezzi di Acquisto da Ordine"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "Fallito il ripristino del documento"
@@ -3979,6 +3991,9 @@ msgstr "Imperiale"
 msgid "In Progress"
 msgstr "In Corso"
 
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
+
 msgid "Increase"
 msgstr "Incrementa"
 
@@ -4402,6 +4417,9 @@ msgstr "Strumento operazione metodo aggiornato"
 msgid "Metric"
 msgstr "Metrica"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "Codice mancante o stato da WeChat"
 
@@ -4522,6 +4540,9 @@ msgstr "Nessun entità tracciata disponibile trovata"
 
 msgid "No bundle work orders"
 msgstr "NESSUN PAGNA DI COMMESSI"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nessuna depreciazione da calcolare per beni non coperti"
@@ -4648,6 +4669,9 @@ msgstr "Non sei tu?"
 
 msgid "Notes"
 msgstr "Note"
+
+msgid "Nothing to post for this storage unit"
+msgstr ""
 
 msgid "OEE Impact"
 msgstr "Impatto OEE"
@@ -5249,6 +5273,9 @@ msgstr "Scansiona un pacco completato per registrare la quantità che hai comple
 msgid "Scan batch number"
 msgstr "Scani il numero di lote"
 
+msgid "Scan count is only for Style items"
+msgstr ""
+
 msgid "Scan or enter serial number"
 msgstr "Scansiona o inserisci il numero di serie"
 
@@ -5520,6 +5547,9 @@ msgstr "Unità di Stoccaggio"
 
 msgid "Storage unit created"
 msgstr "Unità di magazzino creata"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Style"
 msgstr "Stile"

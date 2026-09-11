@@ -12,6 +12,7 @@ import { sanitize } from "~/utils/supabase";
 import { getDefaultStorageUnitForJob } from "../inventory";
 import {
   applyGarmentJobOperationFilter,
+  ensureStyleMethodScaffold,
   getStyleCuttingProcessId,
   resolveStyleMethodItemId
 } from "../items/styleMethod.service";
@@ -2927,6 +2928,25 @@ export async function insertJob(
           itemId: input.itemId,
           companyId: input.companyId
         }));
+      // Styles created before care-label scaffolding must get「打印水洗唛」/
+      // 「水洗唛扫码绑定」before get-method, otherwise new master/bundle jobs
+      // copy a BOP that still only has Cutting + Assembly.
+      const methodItem = await client
+        .from("item")
+        .select("type")
+        .eq("id", methodItemId)
+        .eq("companyId", input.companyId)
+        .maybeSingle();
+      if (methodItem.data?.type === "Style") {
+        const scaffolded = await ensureStyleMethodScaffold(client, {
+          itemId: methodItemId,
+          companyId: input.companyId,
+          userId: input.createdBy
+        });
+        if (scaffolded.error) {
+          return { data: null, error: scaffolded.error as PostgrestError };
+        }
+      }
       const body: Record<string, unknown> = {
         type: "itemToJob",
         sourceId: methodItemId,
@@ -3298,6 +3318,25 @@ export async function upsertJobMethod(
       itemId: jobMethod.sourceId,
       companyId: jobMethod.companyId
     });
+    // Backfill Style system ops (cutting + care-label + bind) so Get Method on
+    // an existing master/bundle picks up ops that were added after the Style
+    // was first created.
+    const methodItem = await client
+      .from("item")
+      .select("type")
+      .eq("id", body.sourceId)
+      .eq("companyId", jobMethod.companyId)
+      .maybeSingle();
+    if (methodItem.data?.type === "Style") {
+      const scaffolded = await ensureStyleMethodScaffold(client, {
+        itemId: body.sourceId,
+        companyId: jobMethod.companyId,
+        userId: jobMethod.userId
+      });
+      if (scaffolded.error) {
+        return { data: null, error: scaffolded.error };
+      }
+    }
   }
 
   // Only add configuration if it exists

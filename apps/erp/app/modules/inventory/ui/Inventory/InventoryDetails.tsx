@@ -37,6 +37,8 @@ type InventoryDetailsProps = {
   storageUnits: { value: string; label: string }[];
   // Per-variant (SKU) on-hand for Style items; empty for non-Style items.
   variantQuantities?: SkuQuantityRow[];
+  /** Authoritative Style flag for 扫码盘点 entry (not inferred from qty rows). */
+  isStyle?: boolean;
 };
 
 const InventoryDetails = ({
@@ -49,7 +51,8 @@ const InventoryDetails = ({
   quantities,
   pendingTransfers,
   storageUnits,
-  variantQuantities
+  variantQuantities,
+  isStyle: isStyleProp
 }: InventoryDetailsProps) => {
   const { locale } = useLocale();
   const formatter = Intl.NumberFormat(locale, {
@@ -65,7 +68,7 @@ const InventoryDetails = ({
 
   // Style items (with variant SKUs) get a clickable SKU breakdown on the
   // On Hand / On Jobs cards, sourced from the RPC's variant-rollup jsonb.
-  const isStyle = (variantQuantities?.length ?? 0) > 0;
+  const isStyle = isStyleProp ?? (variantQuantities?.length ?? 0) > 0;
   const breakdown =
     (quantities as { breakdown?: BreakdownEntry[] } | null)?.breakdown ?? [];
   const jobBreakdown =
@@ -260,6 +263,7 @@ const InventoryDetails = ({
         trackedEntityExpirations={trackedEntityExpirations}
         pickMethod={pickMethod}
         storageUnits={storageUnits}
+        isStyle={isStyle}
       />
     </VStack>
   );
