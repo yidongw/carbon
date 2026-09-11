@@ -501,6 +501,27 @@ function ShipmentLineItem({
     }
   };
 
+  // Show the right-edge scroll fade only while there is genuinely more content
+  // to the right. Otherwise (row not overflowing, or already scrolled to the
+  // end) the gradient just sits over the last column and makes its text look
+  // faded/cut off.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () =>
+      setCanScrollRight(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className={cn("flex flex-col border-b p-6 gap-6 relative", className)}>
       <div className="absolute top-6 right-6 z-20">
@@ -542,7 +563,10 @@ function ShipmentLineItem({
         )}
       </div>
       <div className="relative w-full pr-10 md:pr-0">
-        <div className="flex flex-1 items-center w-full justify-between gap-4 overflow-x-auto scrollbar-hide md:gap-0 md:overflow-visible">
+        <div
+          ref={scrollRef}
+          className="flex flex-1 items-center w-full justify-between gap-4 overflow-x-auto scrollbar-hide md:gap-0 md:overflow-visible"
+        >
           <HStack spacing={4} className="shrink-0 md:w-1/2">
             <HStack spacing={4}>
               <ItemThumbnail
@@ -688,7 +712,12 @@ function ShipmentLineItem({
               )}
           </div>
         </div>
-        <div className="pointer-events-none absolute inset-y-0 right-10 w-12 bg-gradient-to-l from-card dark:from-muted to-transparent md:hidden" />
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 right-10 w-12 bg-gradient-to-l from-card dark:from-muted to-transparent transition-opacity duration-150 md:hidden",
+            canScrollRight ? "opacity-100" : "opacity-0"
+          )}
+        />
       </div>
       {line.requiresBatchTracking && (
         <BatchForm
