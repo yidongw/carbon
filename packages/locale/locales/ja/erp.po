@@ -13608,7 +13608,7 @@ msgid "Shifts"
 msgstr "シフト"
 
 msgid "Ship"
-msgstr ""
+msgstr "出荷"
 
 msgid "Ship some, stock some"
 msgstr "一部を出荷し、一部を在庫に"
