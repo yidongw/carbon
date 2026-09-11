@@ -3218,6 +3218,9 @@ msgstr "Не удалось отправить код верификации"
 msgid "Failed to set job release date"
 msgstr "Не удалось установить дату выпуска задачи"
 
+msgid "Failed to settle line qty"
+msgstr ""
+
 msgid "Failed to sign in"
 msgstr "Не удалось войти в систему"
 
@@ -4045,9 +4048,6 @@ msgstr "Недействительное приглашение"
 msgid "Invalid job configuration"
 msgstr "Неверная конфигурация задания"
 
-msgid "Invalid line quantity"
-msgstr ""
-
 msgid "Invalid lines data"
 msgstr "Неверные данные по линиям"
 
@@ -4245,6 +4245,9 @@ msgstr "Оставить эту страницу"
 
 msgid "Let's build something"
 msgstr "Давайте создадим что-то"
+
+msgid "Line already fully picked"
+msgstr ""
 
 msgid "Line already picked"
 msgstr "Линия уже выбрана"
@@ -4686,6 +4689,9 @@ msgstr "Не вы?"
 
 msgid "Notes"
 msgstr "Примечания"
+
+msgid "Nothing scanned yet"
+msgstr ""
 
 msgid "Nothing to post for this storage unit"
 msgstr ""
