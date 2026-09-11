@@ -542,7 +542,7 @@ function ShipmentLineItem({
         )}
       </div>
       <div className="relative w-full pr-10 md:pr-0">
-        <div className="flex flex-1 items-center w-full gap-4 overflow-x-auto scrollbar-hide md:gap-0 md:justify-between md:overflow-visible">
+        <div className="flex flex-1 items-center w-full justify-between gap-4 overflow-x-auto scrollbar-hide md:gap-0 md:overflow-visible">
           <HStack spacing={4} className="shrink-0 md:w-1/2">
             <HStack spacing={4}>
               <ItemThumbnail
