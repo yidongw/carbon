@@ -541,8 +541,8 @@ function ShipmentLineItem({
           </DropdownMenu>
         )}
       </div>
-      <div className="relative w-full">
-        <div className="flex flex-1 items-center w-full gap-4 overflow-x-auto scrollbar-hide pr-10 md:pr-0 md:gap-0 md:justify-between md:overflow-visible">
+      <div className="relative w-full pr-10 md:pr-0">
+        <div className="flex flex-1 items-center w-full gap-4 overflow-x-auto scrollbar-hide md:gap-0 md:justify-between md:overflow-visible">
           <HStack spacing={4} className="shrink-0 md:w-1/2">
             <HStack spacing={4}>
               <ItemThumbnail
@@ -688,7 +688,7 @@ function ShipmentLineItem({
               )}
           </div>
         </div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-card dark:from-muted to-transparent md:hidden" />
+        <div className="pointer-events-none absolute inset-y-0 right-10 w-12 bg-gradient-to-l from-card dark:from-muted to-transparent md:hidden" />
       </div>
       {line.requiresBatchTracking && (
         <BatchForm
