@@ -226,19 +226,19 @@ const ShipmentForm = ({
               </>
             }
             primaryAction={
-              <Button
-                variant={!isPosted && !isVoided ? "primary" : "secondary"}
-                onClick={postModal.onOpen}
-                isDisabled={
-                  !canPost ||
-                  isPosted ||
-                  isVoided ||
-                  !permissions.is("employee")
-                }
-                leftIcon={<LuCheckCheck />}
-              >
-                <Trans>Post</Trans>
-              </Button>
+              // Only surface Post while it's a relevant action. Once the
+              // shipment is posted/voided (or the user can't post) it would
+              // just be a greyed-out button taking up space, so drop it.
+              !isPosted && !isVoided && permissions.is("employee") ? (
+                <Button
+                  variant="primary"
+                  onClick={postModal.onOpen}
+                  isDisabled={!canPost}
+                  leftIcon={<LuCheckCheck />}
+                >
+                  <Trans>Post</Trans>
+                </Button>
+              ) : undefined
             }
           />
 
