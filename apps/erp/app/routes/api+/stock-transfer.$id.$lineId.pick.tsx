@@ -3,10 +3,11 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request, params }: ActionFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     update: "inventory"
   });
 
@@ -20,10 +21,6 @@ export async function loader({ request, params }: ActionFunctionArgs) {
   if (type && ["serial", "batch"].includes(type)) {
     throw redirect(path.to.stockTransferScan(id, lineId));
   }
-
-  const updateQuantityUrl = new URL(
-    `${url.origin}${path.to.stockTransferLineQuantity(lineId)}`
-  );
 
   const [stockTransferLine, stockTransfer] = await Promise.all([
     client.from("stockTransferLine").select("*").eq("id", lineId).single(),
@@ -43,6 +40,35 @@ export async function loader({ request, params }: ActionFunctionArgs) {
     );
   }
 
+  // Style variant SKUs must use care-label UHF garment pick (not one-click).
+  const variantMeta = await getStyleVariantLineMetaByItemIds(
+    client,
+    [stockTransferLine.data?.itemId].filter(Boolean) as string[],
+    companyId
+  );
+  const meta = variantMeta[stockTransferLine.data?.itemId ?? ""];
+  if (meta) {
+    const parent = await client
+      .from("item")
+      .select("type")
+      .eq("id", meta.parentItemId)
+      .maybeSingle();
+    if (parent.data?.type === "Style") {
+      throw redirect(path.to.stockTransferGarmentPick(id, lineId));
+    }
+  }
+
+  if (
+    stockTransferLine.data?.requiresSerialTracking ||
+    stockTransferLine.data?.requiresBatchTracking
+  ) {
+    throw redirect(path.to.stockTransferScan(id, lineId));
+  }
+
+  const updateQuantityUrl = new URL(
+    `${url.origin}${path.to.stockTransferLineQuantity(id)}`
+  );
+
   if (!["In Progress", "Released"].includes(stockTransfer.data?.status ?? "")) {
     throw redirect(
       path.to.stockTransfer(id),
@@ -56,7 +82,7 @@ export async function loader({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  if (stockTransferLine.data?.pickedQuantity > 0) {
+  if ((stockTransferLine.data?.pickedQuantity ?? 0) > 0) {
     throw redirect(
       path.to.stockTransfer(id),
       await flash(request, error("Line already picked", "Line already picked"))

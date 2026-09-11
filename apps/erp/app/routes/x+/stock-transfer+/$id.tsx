@@ -11,6 +11,7 @@ import { getStockTransfer, getStockTransferLines } from "~/modules/inventory";
 import StockTransferHeader from "~/modules/inventory/ui/StockTransfers/StockTransferHeader";
 import StockTransferLines from "~/modules/inventory/ui/StockTransfers/StockTransferLines";
 import StockTransferNotes from "~/modules/inventory/ui/StockTransfers/StockTransferNotes";
+import { getStyleVariantLineMetaByItemIds } from "~/modules/shared/styleVariantLineMeta.server";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -46,9 +47,40 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.stockTransfers);
   }
 
+  const lines = stockTransferLines.data ?? [];
+  const variantMeta = await getStyleVariantLineMetaByItemIds(
+    client,
+    lines.map((l) => l.itemId).filter(Boolean),
+    companyId
+  );
+
+  // Garment scan-pick only for SKUs whose parent item is Style.
+  const parentIds = [
+    ...new Set(Object.values(variantMeta).map((m) => m.parentItemId))
+  ];
+  const styleParentIds = new Set<string>();
+  if (parentIds.length > 0) {
+    const parents = await client
+      .from("item")
+      .select("id, type")
+      .eq("companyId", companyId)
+      .in("id", parentIds);
+    for (const row of parents.data ?? []) {
+      if (row.type === "Style") styleParentIds.add(row.id);
+    }
+  }
+
+  const styleVariantItemIds: Record<string, true> = {};
+  for (const [variantItemId, meta] of Object.entries(variantMeta)) {
+    if (styleParentIds.has(meta.parentItemId)) {
+      styleVariantItemIds[variantItemId] = true;
+    }
+  }
+
   return {
     stockTransfer: stockTransfer.data,
-    stockTransferLines: stockTransferLines.data ?? []
+    stockTransferLines: lines,
+    styleVariantItemIds
   };
 }
 

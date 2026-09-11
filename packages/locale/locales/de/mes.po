@@ -3928,6 +3928,9 @@ msgstr "Angepasstes Anlagevermögen"
 msgid "Forgot to Clock Out?"
 msgstr "Vergessen auszustempeln?"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Go back to operation"
 msgstr "Zurück zur Operation"
 
@@ -4041,6 +4044,9 @@ msgstr "Ungültige Einladung"
 
 msgid "Invalid job configuration"
 msgstr "Ungültige Job-Konfiguration"
+
+msgid "Invalid line quantity"
+msgstr ""
 
 msgid "Invalid lines data"
 msgstr "Ungültige Linien-Daten"
@@ -4245,6 +4251,9 @@ msgstr "Linie bereits ausgewählt"
 
 msgid "Line created"
 msgstr "Linie erstellt"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line split"
 msgstr "Linie teilen"
@@ -5538,6 +5547,9 @@ msgstr "Schritte fehlen"
 msgid "Stock transfer is not in progress or released"
 msgstr "Der Lagerumsatz ist nicht im Lauf oder freigegeben"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "Lagerübergabengang nicht gefunden"
 
@@ -5935,6 +5947,9 @@ msgstr "Es gibt serien- oder chargenverfolgte Materialien in der Stückliste, di
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "Dieses Item wird durch Attribute konfiguriert – geben Sie den pro-Variante-Bestand vor dem Berichten an."
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "Dieser Lote ist abgelaufen und kann nicht ausgewählt werden."
