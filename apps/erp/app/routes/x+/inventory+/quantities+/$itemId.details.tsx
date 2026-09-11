@@ -272,6 +272,7 @@ export default function ItemInventoryRoute() {
         pendingTransfers={pendingTransfers}
         storageUnits={storageUnits.options}
         variantQuantities={variantQuantities}
+        isStyle={item.type === "Style"}
       />
     </VStack>
   );

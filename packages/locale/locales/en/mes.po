@@ -1760,6 +1760,9 @@ msgstr "Failed to generate PDF"
 msgid "Failed to generate picking list"
 msgstr "Failed to generate picking list"
 
+msgid "Failed to generate RFID codes"
+msgstr "Failed to generate RFID codes"
+
 msgid "Failed to get a category id"
 msgstr "Failed to get a category id"
 
@@ -2894,6 +2897,9 @@ msgstr "Failed to load style purchasing"
 msgid "Failed to load style quantities"
 msgstr "Failed to load style quantities"
 
+msgid "Failed to load Style SKUs"
+msgstr "Failed to load Style SKUs"
+
 msgid "Failed to load style summary"
 msgstr "Failed to load style summary"
 
@@ -3065,6 +3071,9 @@ msgstr "Failed to receive an operation id"
 msgid "Failed to record attribute"
 msgstr "Failed to record attribute"
 
+msgid "Failed to record movement"
+msgstr "Failed to record movement"
+
 msgid "Failed to record rework quantity"
 msgstr "Failed to record rework quantity"
 
@@ -3121,6 +3130,9 @@ msgstr "Failed to resolve Pull from Inventory prices"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "Failed to resolve Purchase to Order prices"
+
+msgid "Failed to resolve scans"
+msgstr "Failed to resolve scans"
 
 msgid "Failed to restore document"
 msgstr "Failed to restore document"
@@ -3199,6 +3211,9 @@ msgstr "Failed to send verification code"
 
 msgid "Failed to set job release date"
 msgstr "Failed to set job release date"
+
+msgid "Failed to settle line qty"
+msgstr "Failed to settle line qty"
 
 msgid "Failed to sign in"
 msgstr "Failed to sign in"
@@ -3910,6 +3925,9 @@ msgstr "Fixed asset updated"
 msgid "Forgot to Clock Out?"
 msgstr "Forgot to Clock Out?"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr "Garment scan pick is only for Style SKUs"
+
 msgid "Go back to operation"
 msgstr "Go back to operation"
 
@@ -3978,6 +3996,9 @@ msgstr "Imperial"
 
 msgid "In Progress"
 msgstr "In Progress"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr "Incomplete scan — nothing recorded"
 
 msgid "Increase"
 msgstr "Increase"
@@ -4219,11 +4240,17 @@ msgstr "Leave this page"
 msgid "Let's build something"
 msgstr "Let's build something"
 
+msgid "Line already fully picked"
+msgstr "Line already fully picked"
+
 msgid "Line already picked"
 msgstr "Line already picked"
 
 msgid "Line created"
 msgstr "Line created"
+
+msgid "Line not found"
+msgstr "Line not found"
 
 msgid "Line split"
 msgstr "Line split"
@@ -4402,6 +4429,9 @@ msgstr "Method operation tool updated"
 msgid "Metric"
 msgstr "Metric"
 
+msgid "Missing bundle work order"
+msgstr "Missing bundle work order"
+
 msgid "Missing code or state from WeChat"
 msgstr "Missing code or state from WeChat"
 
@@ -4522,6 +4552,9 @@ msgstr "No available tracked entities found"
 
 msgid "No bundle work orders"
 msgstr "No bundle work orders"
+
+msgid "No bundle work orders selected"
+msgstr "No bundle work orders selected"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "No depreciation to calculate for uncovered assets"
@@ -4648,6 +4681,12 @@ msgstr "Not you?"
 
 msgid "Notes"
 msgstr "Notes"
+
+msgid "Nothing scanned yet"
+msgstr "Nothing scanned yet"
+
+msgid "Nothing to post for this storage unit"
+msgstr "Nothing to post for this storage unit"
 
 msgid "OEE Impact"
 msgstr "OEE Impact"
@@ -5249,6 +5288,9 @@ msgstr "Scan a finished bundle to report the quantity you completed"
 msgid "Scan batch number"
 msgstr "Scan batch number"
 
+msgid "Scan count is only for Style items"
+msgstr "Scan count is only for Style items"
+
 msgid "Scan or enter serial number"
 msgstr "Scan or enter serial number"
 
@@ -5503,6 +5545,9 @@ msgstr "Steps are missing"
 msgid "Stock transfer is not in progress or released"
 msgstr "Stock transfer is not in progress or released"
 
+msgid "Stock transfer is not pickable"
+msgstr "Stock transfer is not pickable"
+
 msgid "Stock transfer line not found"
 msgstr "Stock transfer line not found"
 
@@ -5520,6 +5565,9 @@ msgstr "Storage Unit"
 
 msgid "Storage unit created"
 msgstr "Storage unit created"
+
+msgid "Storage unit is required"
+msgstr "Storage unit is required"
 
 msgid "Style"
 msgstr "Style"
@@ -5897,6 +5945,9 @@ msgstr "There are serial or batch tracked materials on the bill of material that
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "This item is configured by attributes — enter the per-variant breakdown before reporting."
+
+msgid "This line is not a Style SKU"
+msgstr "This line is not a Style SKU"
 
 msgid "This lot is expired and can't be picked."
 msgstr "This lot is expired and can't be picked."

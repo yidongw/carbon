@@ -1760,6 +1760,9 @@ msgstr "Falhou na geração do PDF"
 msgid "Failed to generate picking list"
 msgstr "Falhou na geração da lista de pegagem"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "Falhou ao obter um ID de categoria"
 
@@ -2894,6 +2897,9 @@ msgstr "Falhou ao carregar a compra de estilo"
 msgid "Failed to load style quantities"
 msgstr "Falhou ao carregar quantidades de estilo"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "Falhou ao carregar resumo de estilo"
 
@@ -3065,6 +3071,9 @@ msgstr "Falhou na recepção do ID da operação"
 msgid "Failed to record attribute"
 msgstr "Falhou ao registrar atributo"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "Falhou ao registrar quantidade de rework"
 
@@ -3121,6 +3130,9 @@ msgstr "Falhou ao resolver os preços daPull do Inventário"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "Falhou ao resolver preços de Compra para Ordem"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "Falhou ao restaurar o documento"
@@ -3199,6 +3211,9 @@ msgstr "Falhou ao enviar o código de verificação"
 
 msgid "Failed to set job release date"
 msgstr "Falhou ao definir a data de liberação da tarefa"
+
+msgid "Failed to settle line qty"
+msgstr ""
 
 msgid "Failed to sign in"
 msgstr "Falhou no login"
@@ -3910,6 +3925,9 @@ msgstr "Ativo fixo atualizado"
 msgid "Forgot to Clock Out?"
 msgstr "Esqueceu de Registrar Saída?"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Go back to operation"
 msgstr "Volte à operação"
 
@@ -3978,6 +3996,9 @@ msgstr "Império"
 
 msgid "In Progress"
 msgstr "Em Andamento"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "Aumentar"
@@ -4219,11 +4240,17 @@ msgstr "Sair desta página"
 msgid "Let's build something"
 msgstr "Vamos construir algo"
 
+msgid "Line already fully picked"
+msgstr ""
+
 msgid "Line already picked"
 msgstr "Linha já selecionada"
 
 msgid "Line created"
 msgstr "Linha criada"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line split"
 msgstr "Divisão de linha"
@@ -4402,6 +4429,9 @@ msgstr "Operação da ferramenta atualizada"
 msgid "Metric"
 msgstr "Métrica"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "Código ou estado do WeChat ausente"
 
@@ -4522,6 +4552,9 @@ msgstr "Nenhum entidade rastreada disponível encontrado"
 
 msgid "No bundle work orders"
 msgstr "Sem ordens de trabalho em lote"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nenhuma depreciação para calcular para ativos não cobertos"
@@ -4648,6 +4681,12 @@ msgstr "Não você?"
 
 msgid "Notes"
 msgstr "Observações"
+
+msgid "Nothing scanned yet"
+msgstr ""
+
+msgid "Nothing to post for this storage unit"
+msgstr ""
 
 msgid "OEE Impact"
 msgstr "Impacto OEE"
@@ -5249,6 +5288,9 @@ msgstr "Escaneie um pacote concluído para reportar a quantidade que você final
 msgid "Scan batch number"
 msgstr "SCAN NÚMERO DE LOTE"
 
+msgid "Scan count is only for Style items"
+msgstr ""
+
 msgid "Scan or enter serial number"
 msgstr "Escanear ou inserir número de série"
 
@@ -5503,6 +5545,9 @@ msgstr "Etapas ausentes"
 msgid "Stock transfer is not in progress or released"
 msgstr "Transferência de estoque não está em progresso ou liberada"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "Linha de transferência de estoque não encontrada"
 
@@ -5520,6 +5565,9 @@ msgstr "Unidade de Armazenamento"
 
 msgid "Storage unit created"
 msgstr "Unidade de armazenamento criada"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Style"
 msgstr "Estilo"
@@ -5897,6 +5945,9 @@ msgstr "Existem materiais rastreados por série ou lote na lista de materiais qu
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "Este item está configurado por atributos — insira o desgloce por variante antes de relatar."
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "Este lote venceu e não pode ser selecionado."

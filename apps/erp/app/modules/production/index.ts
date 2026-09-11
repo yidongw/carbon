@@ -1,5 +1,8 @@
+export * from "./bundleInventoryMovement.service";
 export * from "./bundleWorkOrder.service";
+export * from "./careLabelBind";
 export * from "./cuttingStatus";
+export * from "./garmentRfidCode.service";
 export * from "./jobOperationSupplierQuantityReport.models";
 export * from "./jobOperationSupplierQuantityReport.service";
 export * from "./jobVariantQuantity.service";
@@ -14,5 +17,6 @@ export * from "./productionQuantityList.service";
 export * from "./productionQuantityReport.models";
 export * from "./productionQuantityReport.service";
 export * from "./purchaseOrderFromJob.service";
+export * from "./scanInventoryCount";
 // @ts-ignore
 export * from "./types";

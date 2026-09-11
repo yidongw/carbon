@@ -4,6 +4,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 export const STYLE_CUTTING_PROCESS_TAG = "style:cutting-process";
 export const STYLE_CUTTING_OPERATION_TAG = "style:cutting-operation";
+export const STYLE_CARE_LABEL_PROCESS_TAG = "style:care-label-process";
+export const STYLE_CARE_LABEL_OPERATION_TAG = "style:care-label-operation";
+export const STYLE_CARE_LABEL_BIND_PROCESS_TAG =
+  "style:care-label-bind-process";
+export const STYLE_CARE_LABEL_BIND_OPERATION_TAG =
+  "style:care-label-bind-operation";
 export const STYLE_SYSTEM_OPERATION_TAG = "style:system-operation";
 
 type StyleOperationLike = {
@@ -25,6 +31,22 @@ export function isStyleCuttingOperation(operation: StyleOperationLike) {
   return (
     tags.includes(STYLE_CUTTING_OPERATION_TAG) ||
     getStyleStage(operation.customFields) === "cutting"
+  );
+}
+
+export function isStyleCareLabelOperation(operation: StyleOperationLike) {
+  const tags = operation.tags ?? [];
+  return (
+    tags.includes(STYLE_CARE_LABEL_OPERATION_TAG) ||
+    getStyleStage(operation.customFields) === "care-label"
+  );
+}
+
+export function isStyleCareLabelBindOperation(operation: StyleOperationLike) {
+  const tags = operation.tags ?? [];
+  return (
+    tags.includes(STYLE_CARE_LABEL_BIND_OPERATION_TAG) ||
+    getStyleStage(operation.customFields) === "care-label-bind"
   );
 }
 
@@ -84,6 +106,68 @@ export function buildStyleCuttingMethodOperation(args: {
     tags: [STYLE_CUTTING_OPERATION_TAG, STYLE_SYSTEM_OPERATION_TAG],
     customFields: {
       styleStage: "cutting",
+      styleSystemOwned: true
+    }
+  };
+}
+
+export function buildStyleCareLabelMethodOperation(args: {
+  makeMethodId: string;
+  processId: string;
+  companyId: string;
+  createdBy: string;
+  order?: number;
+}) {
+  return {
+    makeMethodId: args.makeMethodId,
+    processId: args.processId,
+    companyId: args.companyId,
+    createdBy: args.createdBy,
+    order: args.order ?? 1,
+    operationOrder: "After Previous" as const,
+    operationType: "Inside" as const,
+    description: "打印水洗唛",
+    setupUnit: "Minutes/Piece" as const,
+    setupTime: 0,
+    laborUnit: "Minutes/Piece" as const,
+    laborTime: 0,
+    machineUnit: "Minutes/Piece" as const,
+    machineTime: 0,
+    insideUnitCost: 0,
+    tags: [STYLE_CARE_LABEL_OPERATION_TAG, STYLE_SYSTEM_OPERATION_TAG],
+    customFields: {
+      styleStage: "care-label",
+      styleSystemOwned: true
+    }
+  };
+}
+
+export function buildStyleCareLabelBindMethodOperation(args: {
+  makeMethodId: string;
+  processId: string;
+  companyId: string;
+  createdBy: string;
+  order?: number;
+}) {
+  return {
+    makeMethodId: args.makeMethodId,
+    processId: args.processId,
+    companyId: args.companyId,
+    createdBy: args.createdBy,
+    order: args.order ?? 2,
+    operationOrder: "After Previous" as const,
+    operationType: "Inside" as const,
+    description: "水洗唛扫码绑定",
+    setupUnit: "Minutes/Piece" as const,
+    setupTime: 0,
+    laborUnit: "Minutes/Piece" as const,
+    laborTime: 0,
+    machineUnit: "Minutes/Piece" as const,
+    machineTime: 0,
+    insideUnitCost: 0,
+    tags: [STYLE_CARE_LABEL_BIND_OPERATION_TAG, STYLE_SYSTEM_OPERATION_TAG],
+    customFields: {
+      styleStage: "care-label-bind",
       styleSystemOwned: true
     }
   };
@@ -826,6 +910,283 @@ export async function ensureStyleCuttingOperation(
   return insert;
 }
 
+export async function ensureStyleCareLabelProcess(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    userId: string;
+  }
+) {
+  const processClient = client as SupabaseClient<any>;
+  const existing = await processClient
+    .from("process")
+    .select("id, name, tags")
+    .eq("companyId", args.companyId)
+    .contains("tags", [STYLE_CARE_LABEL_PROCESS_TAG])
+    .limit(1)
+    .maybeSingle();
+
+  if (existing.error) return { data: null, error: existing.error };
+  if (existing.data?.id) {
+    return {
+      data: { id: existing.data.id, name: existing.data.name as string },
+      error: null
+    };
+  }
+
+  const byName = await processClient
+    .from("process")
+    .select("id, name, tags")
+    .eq("companyId", args.companyId)
+    .in("name", ["打印水洗唛", "Care Label", "Print Care Label"])
+    .order("createdAt", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (byName.error) return { data: null, error: byName.error };
+  if (byName.data?.id) {
+    const tags = Array.from(
+      new Set([...(byName.data.tags ?? []), STYLE_CARE_LABEL_PROCESS_TAG])
+    );
+    const updated = await processClient
+      .from("process")
+      .update({ tags, updatedBy: args.userId })
+      .eq("id", byName.data.id);
+
+    if (updated.error) return { data: null, error: updated.error };
+
+    return {
+      data: { id: byName.data.id, name: byName.data.name as string },
+      error: null
+    };
+  }
+
+  return processClient
+    .from("process")
+    .insert({
+      name: "打印水洗唛",
+      processType: "Inside",
+      defaultStandardFactor: "Minutes/Piece",
+      completeAllOnScan: false,
+      tags: [STYLE_CARE_LABEL_PROCESS_TAG],
+      companyId: args.companyId,
+      createdBy: args.userId
+    })
+    .select("id, name")
+    .single();
+}
+
+export async function ensureStyleCareLabelOperation(
+  client: SupabaseClient<Database>,
+  args: {
+    makeMethodId: string;
+    companyId: string;
+    userId: string;
+    cuttingOperationId?: string | null;
+  }
+) {
+  const process = await ensureStyleCareLabelProcess(client, args);
+  if (process.error || !process.data?.id) {
+    return { data: null, error: process.error };
+  }
+
+  const operationClient = client as SupabaseClient<any>;
+  const operations = await operationClient
+    .from("methodOperation")
+    .select("id, processId, order, tags, customFields")
+    .eq("makeMethodId", args.makeMethodId)
+    .order("order", { ascending: true });
+
+  if (operations.error) return { data: null, error: operations.error };
+
+  const existingCareLabel = (operations.data ?? []).find((operation: any) =>
+    isStyleCareLabelOperation(operation)
+  );
+  if (existingCareLabel?.id) {
+    return { data: { id: existingCareLabel.id }, error: null };
+  }
+
+  const cutting =
+    (operations.data ?? []).find((operation: any) =>
+      args.cuttingOperationId
+        ? operation.id === args.cuttingOperationId
+        : isStyleCuttingOperation(operation)
+    ) ?? null;
+
+  const cuttingOrder =
+    cutting && typeof cutting.order === "number" ? cutting.order : 0;
+  const careOrder = cuttingOrder + 1;
+
+  // Make room immediately after cutting so sewing/finishing stay downstream.
+  for (const operation of operations.data ?? []) {
+    if (typeof operation.order !== "number") continue;
+    if (operation.order < careOrder) continue;
+    const bumped = await operationClient
+      .from("methodOperation")
+      .update({
+        order: operation.order + 1,
+        updatedBy: args.userId
+      })
+      .eq("id", operation.id);
+    if (bumped.error) return { data: null, error: bumped.error };
+  }
+
+  const insert = await operationClient
+    .from("methodOperation")
+    .insert(
+      buildStyleCareLabelMethodOperation({
+        makeMethodId: args.makeMethodId,
+        processId: process.data.id,
+        companyId: args.companyId,
+        createdBy: args.userId,
+        order: careOrder
+      })
+    )
+    .select("id")
+    .single();
+
+  if (insert.error) return { data: null, error: insert.error };
+  return insert;
+}
+
+export async function ensureStyleCareLabelBindProcess(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    userId: string;
+  }
+) {
+  const processClient = client as SupabaseClient<any>;
+  const existing = await processClient
+    .from("process")
+    .select("id, name, tags")
+    .eq("companyId", args.companyId)
+    .contains("tags", [STYLE_CARE_LABEL_BIND_PROCESS_TAG])
+    .limit(1)
+    .maybeSingle();
+
+  if (existing.error) return { data: null, error: existing.error };
+  if (existing.data?.id) {
+    return {
+      data: { id: existing.data.id, name: existing.data.name as string },
+      error: null
+    };
+  }
+
+  const byName = await processClient
+    .from("process")
+    .select("id, name, tags")
+    .eq("companyId", args.companyId)
+    .in("name", ["水洗唛扫码绑定", "Care Label Bind", "Bind Care Label"])
+    .order("createdAt", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (byName.error) return { data: null, error: byName.error };
+  if (byName.data?.id) {
+    const tags = Array.from(
+      new Set([...(byName.data.tags ?? []), STYLE_CARE_LABEL_BIND_PROCESS_TAG])
+    );
+    const updated = await processClient
+      .from("process")
+      .update({ tags, updatedBy: args.userId })
+      .eq("id", byName.data.id);
+
+    if (updated.error) return { data: null, error: updated.error };
+
+    return {
+      data: { id: byName.data.id, name: byName.data.name as string },
+      error: null
+    };
+  }
+
+  return processClient
+    .from("process")
+    .insert({
+      name: "水洗唛扫码绑定",
+      processType: "Inside",
+      defaultStandardFactor: "Minutes/Piece",
+      completeAllOnScan: false,
+      tags: [STYLE_CARE_LABEL_BIND_PROCESS_TAG],
+      companyId: args.companyId,
+      createdBy: args.userId
+    })
+    .select("id, name")
+    .single();
+}
+
+export async function ensureStyleCareLabelBindOperation(
+  client: SupabaseClient<Database>,
+  args: {
+    makeMethodId: string;
+    companyId: string;
+    userId: string;
+    careLabelOperationId?: string | null;
+  }
+) {
+  const process = await ensureStyleCareLabelBindProcess(client, args);
+  if (process.error || !process.data?.id) {
+    return { data: null, error: process.error };
+  }
+
+  const operationClient = client as SupabaseClient<any>;
+  const operations = await operationClient
+    .from("methodOperation")
+    .select("id, processId, order, tags, customFields")
+    .eq("makeMethodId", args.makeMethodId)
+    .order("order", { ascending: true });
+
+  if (operations.error) return { data: null, error: operations.error };
+
+  const existingBind = (operations.data ?? []).find((operation: any) =>
+    isStyleCareLabelBindOperation(operation)
+  );
+  if (existingBind?.id) {
+    return { data: { id: existingBind.id }, error: null };
+  }
+
+  const careLabel =
+    (operations.data ?? []).find((operation: any) =>
+      args.careLabelOperationId
+        ? operation.id === args.careLabelOperationId
+        : isStyleCareLabelOperation(operation)
+    ) ?? null;
+
+  const careOrder =
+    careLabel && typeof careLabel.order === "number" ? careLabel.order : 1;
+  const bindOrder = careOrder + 1;
+
+  for (const operation of operations.data ?? []) {
+    if (typeof operation.order !== "number") continue;
+    if (operation.order < bindOrder) continue;
+    const bumped = await operationClient
+      .from("methodOperation")
+      .update({
+        order: operation.order + 1,
+        updatedBy: args.userId
+      })
+      .eq("id", operation.id);
+    if (bumped.error) return { data: null, error: bumped.error };
+  }
+
+  const insert = await operationClient
+    .from("methodOperation")
+    .insert(
+      buildStyleCareLabelBindMethodOperation({
+        makeMethodId: args.makeMethodId,
+        processId: process.data.id,
+        companyId: args.companyId,
+        createdBy: args.userId,
+        order: bindOrder
+      })
+    )
+    .select("id")
+    .single();
+
+  if (insert.error) return { data: null, error: insert.error };
+  return insert;
+}
+
 export async function ensureStyleMethodScaffold(
   client: SupabaseClient<Database>,
   args: {
@@ -844,10 +1205,28 @@ export async function ensureStyleMethodScaffold(
   });
   if (cutting.error) return { data: null, error: cutting.error };
 
+  const careLabel = await ensureStyleCareLabelOperation(client, {
+    makeMethodId: makeMethod.data.id,
+    companyId: args.companyId,
+    userId: args.userId,
+    cuttingOperationId: cutting.data?.id ?? null
+  });
+  if (careLabel.error) return { data: null, error: careLabel.error };
+
+  const careLabelBind = await ensureStyleCareLabelBindOperation(client, {
+    makeMethodId: makeMethod.data.id,
+    companyId: args.companyId,
+    userId: args.userId,
+    careLabelOperationId: careLabel.data?.id ?? null
+  });
+  if (careLabelBind.error) return { data: null, error: careLabelBind.error };
+
   return {
     data: {
       makeMethodId: makeMethod.data.id,
-      cuttingOperationId: cutting.data?.id ?? null
+      cuttingOperationId: cutting.data?.id ?? null,
+      careLabelOperationId: careLabel.data?.id ?? null,
+      careLabelBindOperationId: careLabelBind.data?.id ?? null
     },
     error: null
   };

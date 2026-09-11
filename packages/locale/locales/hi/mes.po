@@ -1760,6 +1760,9 @@ msgstr "फ़ॉलोअप पीडीएफ गनना में वि�
 msgid "Failed to generate picking list"
 msgstr "पोकिंग लिस्ट का उत्पादन फ़ल गया"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "कатегорी आईडी प्राप्त करने में व़िशा हुई"
 
@@ -2894,6 +2897,9 @@ msgstr "फाइल डाउनलोड करणे विफल झाल�
 msgid "Failed to load style quantities"
 msgstr "stile की मात्रा लोड होने में विफल रहे"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "stile सारांश लोड होने में फाल्टी हुई"
 
@@ -3065,6 +3071,9 @@ msgstr "oprेशन आईडी का प्राप्त नहीं क�
 msgid "Failed to record attribute"
 msgstr "फलन गुण का रिकॉर्ड करने में व़ियाहो"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "रिउर्क की मात्रा रिकॉर्ड करने में वफ़ादरी नहीं की.get@1"
 
@@ -3121,6 +3130,9 @@ msgstr "फाइल नहीं हो सका अपडेट करने 
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "क्रय मूल्यों को अर्डर में हिसाब नहीं लगा सका"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "दокумент रिस्टोर करने में व़िश्य हुआ"
@@ -3199,6 +3211,9 @@ msgstr "परीक्षण कोड भेजना फ़ले नही�
 
 msgid "Failed to set job release date"
 msgstr "कार्य की छोड़ने तिथि सेट करना फलदायक नहीं हुआ"
+
+msgid "Failed to settle line qty"
+msgstr ""
 
 msgid "Failed to sign in"
 msgstr "सIGH IN वाला फेल हुआ"
@@ -3910,6 +3925,9 @@ msgstr "संतुलित धारा अपडेट की गई"
 msgid "Forgot to Clock Out?"
 msgstr "घड़ी से बाहर निकलना भूल गए?"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Go back to operation"
 msgstr "प्रणाली में पुनः वापस जाएं"
 
@@ -3978,6 +3996,9 @@ msgstr "इंग्लिश"
 
 msgid "In Progress"
 msgstr "प्रगति में"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Increase"
 msgstr "वृद्धि"
@@ -4219,11 +4240,17 @@ msgstr "इस पेज से निकलना"
 msgid "Let's build something"
 msgstr "चलिए कुछ बनाते हैं"
 
+msgid "Line already fully picked"
+msgstr ""
+
 msgid "Line already picked"
 msgstr "रेखा पहले से चुनी गई है"
 
 msgid "Line created"
 msgstr "रेखा बनाई गई"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line split"
 msgstr "रेखा विभाजन"
@@ -4402,6 +4429,9 @@ msgstr "मॉडल कार्य संपादित गया है"
 msgid "Metric"
 msgstr "मीट्रिक"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "वेचेट में लापता कोड या रिक्त स्थिति"
 
@@ -4522,6 +4552,9 @@ msgstr "निकाल विषयक कोई उपलब्ध पंज�
 
 msgid "No bundle work orders"
 msgstr "कोई बन्ड उर्डर नहीं है"
+
+msgid "No bundle work orders selected"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "निरक्फलित अवसानों के लिए कीमत की कमी की गणना करने की कोई नहीं"
@@ -4648,6 +4681,12 @@ msgstr "नहीं तुम?"
 
 msgid "Notes"
 msgstr "नोट्स"
+
+msgid "Nothing scanned yet"
+msgstr ""
+
+msgid "Nothing to post for this storage unit"
+msgstr ""
 
 msgid "OEE Impact"
 msgstr "OEE प्रभाव"
@@ -5249,6 +5288,9 @@ msgstr "आपके द्वारा पूर्ण की गई मात�
 msgid "Scan batch number"
 msgstr "बच्चे क्रम संख्या अस्पर्श करें"
 
+msgid "Scan count is only for Style items"
+msgstr ""
+
 msgid "Scan or enter serial number"
 msgstr "स्कैन करें या सीरियल नंबर दर्ज करें"
 
@@ -5503,6 +5545,9 @@ msgstr "चरण गायब हैं"
 msgid "Stock transfer is not in progress or released"
 msgstr "स्टॉक ट्रांसफर की प्रगति या जारी होने की कोई नहीं है"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "स्टॉक ट्रांसफर लाइन नहीं मिली"
 
@@ -5520,6 +5565,9 @@ msgstr "भंडारण इकाई"
 
 msgid "Storage unit created"
 msgstr "स्टोरेज इकाई बनाई गई"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Style"
 msgstr "स्टाइल"
@@ -5897,6 +5945,9 @@ msgstr "बिल ऑफ मेटेरियल पर सीरियल य�
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "इस आइटम को संरचनाओं से कonfigुर किया जाता है — पहले वैरिएंट के मूल्यांकन की रिपोर्ट करने से पहले प्रति-वैरिएंट का विस्तार दर्ज करें."
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "इस लोट की उम्र है जितनी कि इसे चयन करने में अनुमति नहीं है।"

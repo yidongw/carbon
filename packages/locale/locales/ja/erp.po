@@ -103,6 +103,9 @@ msgstr "{0} 枚中 {failed} 枚のラベル印刷に失敗"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} 枚中 {failed} 枚の印刷に失敗しました"
 
+msgid "{failed} of {total} labels failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
 
@@ -678,6 +681,9 @@ msgstr "すべてのタイプ"
 
 msgid "All Work Centers"
 msgstr "すべての作業センター"
+
+msgid "Allow pop-ups to print from the browser"
+msgstr ""
 
 msgid "Allows acknowledge & continue"
 msgstr "Allow[s] [acknowledge] & [continue]"
@@ -1655,11 +1661,17 @@ msgstr "一括ジョブ"
 msgid "Bundle"
 msgstr "バンドル"
 
+msgid "Bundle Count"
+msgstr ""
+
 msgid "Bundle not found"
 msgstr "バンドルが見つかりません"
 
 msgid "Bundle Work Orders"
 msgstr "バンドル作業指示"
+
+msgid "bundles"
+msgstr ""
 
 msgid "Bundles"
 msgstr "バンドル"
@@ -1849,6 +1861,9 @@ msgstr "カーボン値"
 
 msgid "Cards"
 msgstr "カード"
+
+msgid "Care Labels"
+msgstr ""
 
 msgid "Carrier"
 msgstr "配送業者"
@@ -2215,6 +2230,9 @@ msgstr "確認"
 msgid "Confirm {0}"
 msgstr "{0}を確認"
 
+msgid "Confirm & Post"
+msgstr ""
+
 msgid "Confirm Approval"
 msgstr "承認を確認"
 
@@ -2224,8 +2242,17 @@ msgstr "IDの変更を確認"
 msgid "Confirm Import"
 msgstr "インポートを確認"
 
+msgid "Confirm In"
+msgstr ""
+
+msgid "Confirm Out"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr "パスワードを確認"
+
+msgid "Confirming overwrites on-hand for the items above at this location. Un-scanned items are left unchanged."
+msgstr ""
 
 msgid "Connect"
 msgstr "連携"
@@ -2575,6 +2602,12 @@ msgstr "ドキュメントを読み込めませんでした"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChatのQRコードを読み込めませんでした"
+
+msgid "Count location"
+msgstr ""
+
+msgid "Counted"
+msgstr ""
 
 msgid "Country"
 msgstr "国"
@@ -3573,6 +3606,9 @@ msgstr "{0} の機械"
 msgid "did {0} of setup"
 msgstr "did {0} of setup"
 
+msgid "Diff"
+msgstr ""
+
 msgid "Digital Quote"
 msgstr "デジタル見積"
 
@@ -3593,6 +3629,9 @@ msgstr "寸法"
 
 msgid "Direct"
 msgstr "直線"
+
+msgid "Direction"
+msgstr ""
 
 msgid "Disabled"
 msgstr "無効"
@@ -5635,6 +5674,9 @@ msgstr "PDFの生成に失敗しました"
 msgid "Failed to generate picking list"
 msgstr "ピッキングリストの生成に失敗しました"
 
+msgid "Failed to generate RFID codes"
+msgstr ""
+
 msgid "Failed to get a category id"
 msgstr "カテゴリIDを取得できませんでした"
 
@@ -6409,6 +6451,9 @@ msgstr "バランスシートの読み込みに失敗しました"
 msgid "Failed to load bundle work orders"
 msgstr "バンドル仕事指示の読み込みに失敗しました"
 
+msgid "Failed to load care labels"
+msgstr ""
+
 msgid "Failed to load companies"
 msgstr "会社の読み込みに失敗しました"
 
@@ -6829,6 +6874,9 @@ msgstr "スタイル購入の読み込みに失敗しました"
 msgid "Failed to load style quantities"
 msgstr "スタイル数量の読み込みに失敗しました"
 
+msgid "Failed to load Style SKUs"
+msgstr ""
+
 msgid "Failed to load style summary"
 msgstr "スタイルサマリの読み込みに失敗しました"
 
@@ -7006,6 +7054,9 @@ msgstr "操作IDの受信に失敗しました"
 msgid "Failed to record attribute"
 msgstr "レコード作成に失敗しました"
 
+msgid "Failed to record movement"
+msgstr ""
+
 msgid "Failed to record rework quantity"
 msgstr "再加工数量の記録に失敗しました"
 
@@ -7080,6 +7131,9 @@ msgstr "在庫からPull価格を解決できませんでした"
 
 msgid "Failed to resolve Purchase to Order prices"
 msgstr "購入価格を注文価格に解決できませんでした"
+
+msgid "Failed to resolve scans"
+msgstr ""
 
 msgid "Failed to restore document"
 msgstr "ドキュメントの復元に失敗しました"
@@ -7176,6 +7230,9 @@ msgstr "サムネイル設定に失敗しました"
 
 msgid "Failed to set thumbnail: {message}"
 msgstr "サムネイル設定に失敗しました：{message}"
+
+msgid "Failed to settle line qty"
+msgstr ""
 
 msgid "Failed to sign in"
 msgstr "サインインに失敗しました"
@@ -8156,6 +8213,9 @@ msgstr "衣料品"
 msgid "Garment or footwear for cutting and production."
 msgstr "カットおよび生産用の衣料品または靴"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Gauge"
 msgstr "ゲージ"
 
@@ -8194,6 +8254,16 @@ msgstr "新しいPINを生成"
 
 msgid "Generate Picking List"
 msgstr "ピッキングリスト生成"
+
+msgid "Generate RFID Codes"
+msgstr ""
+
+#. placeholder {0}: selectedRows.length
+msgid "Generate RFID Codes ({0})"
+msgstr ""
+
+msgid "Generated At"
+msgstr ""
 
 msgid "Generated IDs are disabled"
 msgstr "生成されたIDは無効です"
@@ -8399,6 +8469,9 @@ msgstr "実装サポート"
 msgid "Import {label} CSV"
 msgstr "{label} CSV をインポート"
 
+msgid "In"
+msgstr ""
+
 msgid "In order to convert this RFQ to a quote, all lines must have an internal part number."
 msgstr "このRFQを見積に変換するには、すべての行に内部部品番号が必要です。"
 
@@ -8473,6 +8546,9 @@ msgstr "入荷予定"
 
 msgid "Incoming Materials"
 msgstr "入ってくる原料"
+
+msgid "Incomplete scan — nothing recorded"
+msgstr ""
 
 msgid "Incoterm"
 msgstr "インコターム"
@@ -8713,6 +8789,9 @@ msgstr "在庫履歴"
 
 msgid "Inventory Job Notifications"
 msgstr "在庫ジョブ通知"
+
+msgid "Inventory Movements"
+msgstr ""
 
 msgid "Inventory Qty"
 msgstr "在庫数量"
@@ -9217,6 +9296,9 @@ msgstr "可能性"
 msgid "Line"
 msgstr "ライン"
 
+msgid "Line already fully picked"
+msgstr ""
+
 msgid "Line already picked"
 msgstr "ラインは既に選択されています"
 
@@ -9228,6 +9310,9 @@ msgstr "ラインの説明（任意）"
 
 msgid "Line Item Comparison"
 msgstr "明細項目の比較"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line options"
 msgstr "行オプション"
@@ -9870,6 +9955,9 @@ msgstr "分/1000個"
 msgid "Minutes/Piece"
 msgstr "分/個"
 
+msgid "Missing bundle work order"
+msgstr ""
+
 msgid "Missing code or state from WeChat"
 msgstr "WeChatから欠けたコードまたは状態"
 
@@ -10435,6 +10523,9 @@ msgstr "無し"
 msgid "No BOM input has a shelf-life policy"
 msgstr "BOMインプットに棚卸資産有効期限ポリシーがありません"
 
+msgid "No bundle work orders selected"
+msgstr ""
+
 msgid "No calibration records found"
 msgstr "キャリブレーション記録が見つかりません"
 
@@ -10518,6 +10609,9 @@ msgstr "ファイルがアップロードされていません"
 
 msgid "No forecast quantities provided"
 msgstr "予測数量が提供されていません"
+
+msgid "No garment found for that code. Check the label, or generate RFID codes for the bundle first."
+msgstr ""
 
 msgid "No Gauge Selected"
 msgstr "ゲージが選択されていません"
@@ -10651,6 +10745,9 @@ msgstr "検索結果が見つかりません"
 msgid "No results found."
 msgstr "No results found."
 
+msgid "No RFID codes yet. Generate codes first, then print."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr "（規則が設定されていない）"
 
@@ -10750,6 +10847,10 @@ msgstr "接続できません。再読み込み後、もう一度試してみて
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
+#. placeholder {0}: d.code
+msgid "Not found: {0}"
+msgstr ""
+
 msgid "Not Required"
 msgstr "不要"
 
@@ -10776,6 +10877,12 @@ msgstr "アーカイブに何もありません"
 
 msgid "Nothing left to split for this work order."
 msgstr "この作業指示に分割するものはありません。"
+
+msgid "Nothing scanned yet"
+msgstr ""
+
+msgid "Nothing to post for this storage unit"
+msgstr ""
 
 msgid "Notification"
 msgstr "通知"
@@ -11076,6 +11183,9 @@ msgstr "その他のタイプ"
 msgid "Ounce"
 msgstr "オンス"
 
+msgid "Out"
+msgstr ""
+
 msgid "Outbound Transfer"
 msgstr "出荷移動"
 
@@ -11322,6 +11432,9 @@ msgstr "お金の支払い"
 msgid "Payroll"
 msgstr "給与"
 
+msgid "pcs"
+msgstr ""
+
 msgid "PDF"
 msgstr "PDF"
 
@@ -11403,6 +11516,9 @@ msgstr "顧客または顧客タイプを選択して価格を表示します。
 msgid "Pick a date or leave blank to clear it."
 msgstr "日付を選択するか、空白のままにしてクリアしてください。"
 
+msgid "Pick a location first"
+msgstr ""
+
 msgid "Pick a warehouse"
 msgstr "倉庫を選択してください"
 
@@ -11435,6 +11551,9 @@ msgstr "ピッキングリストの備考"
 
 msgid "Picking Lists"
 msgstr "ピッキングリスト"
+
+msgid "Piece"
+msgstr ""
 
 msgid "Pieces/Hour"
 msgstr "個/時間"
@@ -11717,6 +11836,7 @@ msgid "Print"
 msgstr "印刷"
 
 #. placeholder {0}: checkedIds.length
+#. placeholder {0}: checkedLabels.length
 msgid "Print ({0})"
 msgstr "印刷（{0}）"
 
@@ -11730,6 +11850,9 @@ msgstr "{0} 枚のチケットを印刷"
 
 msgid "Print Bundle Tickets"
 msgstr "バンドルチケットを印刷"
+
+msgid "Print Care Labels"
+msgstr ""
 
 msgid "Print darkness"
 msgstr "印刷濃度"
@@ -11765,6 +11888,9 @@ msgstr "印刷先"
 #. placeholder {0}: checkedIds.length
 msgid "Printed {0} labels"
 msgstr "{0} 枚のラベルを印刷しました"
+
+msgid "Printed {total} labels"
+msgstr ""
 
 msgid "Printer route deleted"
 msgstr "プリンタルートが削除されました"
@@ -12317,6 +12443,9 @@ msgstr "recorded {qty} units"
 msgid "recorded {qty} units ({reason})"
 msgstr "recorded {qty} units ({reason})"
 
+msgid "Recorded At"
+msgstr ""
+
 msgid "Records"
 msgstr "記録"
 
@@ -12742,6 +12871,9 @@ msgstr "再加工数量が登録されました"
 msgid "Rework triggered successfully"
 msgstr "リワークが成功しました"
 
+msgid "RFID Codes"
+msgstr ""
+
 msgid "RFQ"
 msgstr "RFQ"
 
@@ -13028,8 +13160,17 @@ msgstr "保存中..."
 msgid "Scan"
 msgstr "スキャン"
 
+msgid "Scan a care-label barcode…"
+msgstr ""
+
 msgid "Scan a label or search by item ID or tracking ID."
 msgstr "ラベルをスキャン或者 项目ID或追踪ID进行搜索。"
+
+msgid "Scan count is only for Style items"
+msgstr ""
+
+msgid "Scan garments to build the count. One scan per bundle counts the whole bundle."
+msgstr ""
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "スキャンするか、追跡対象エンティティID、シリアル番号、またはバッチ番号を入力してください"
@@ -13051,6 +13192,9 @@ msgstr "WeChatでスキャンして連携"
 
 msgid "Scan with WeChat to sign in"
 msgstr "スキャンすることでWeChatを使用してログイン"
+
+msgid "Scanned Code"
+msgstr ""
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -13206,6 +13350,9 @@ msgstr "カテゴリを選択"
 msgid "Select a default approver"
 msgstr "デフォルト承認者を選択"
 
+msgid "Select a location…"
+msgstr ""
+
 msgid "Select a match..."
 msgstr "マッチを選択してください..."
 
@@ -13239,6 +13386,7 @@ msgstr "アカウントを選択してください"
 msgid "Select all"
 msgstr "全選択"
 
+#. placeholder {0}: labels == null ? "…" : labels.length
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
 msgstr "すべて選択（{0}）"
@@ -14054,6 +14202,9 @@ msgstr "在庫移動ID"
 msgid "Stock transfer is not in progress or released"
 msgstr "在庫移動は進行中またはリリースされていません"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "在庫移動行が見つかりません"
 
@@ -14098,6 +14249,9 @@ msgstr "保管単位"
 
 msgid "Storage unit created"
 msgstr "ストレージ単位を作成しました"
+
+msgid "Storage unit is required"
+msgstr ""
 
 msgid "Storage Units"
 msgstr "保管単位"
@@ -14826,6 +14980,9 @@ msgstr "文字サイズ"
 msgid "Text Size"
 msgstr "文字サイズ"
 
+msgid "That bundle has no item — can't count"
+msgstr ""
+
 msgid "That WeChat is already linked to another account"
 msgstr "そのWeChatは既に別のアカウントに連携されています"
 
@@ -14966,6 +15123,9 @@ msgstr "このジョブはインベントリに受け取られます。ショッ
 
 msgid "This job will no longer be available on the shop floor."
 msgstr "このジョブはショップフロアで利用できなくなります。"
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "このロットは期限が过了できClassNotFoundException被拣选。"
@@ -16651,3 +16811,178 @@ msgstr "ZPL（熱感ラベル）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPLラベルプレビュー"
+
+msgid "人工数量须在 1–{remaining}"
+msgstr ""
+
+msgid "人工确认"
+msgstr ""
+
+msgid "人工确认件数"
+msgstr ""
+
+msgid "关闭"
+msgstr ""
+
+msgid "剩余未调度"
+msgstr ""
+
+msgid "取消"
+msgstr ""
+
+msgid "只调度已扫货物"
+msgstr ""
+
+msgid "可多次扫码确认；剩余可用人工补数，或选择只调度已扫货物。规格不符点跳过不计入。"
+msgstr ""
+
+msgid "存储单元"
+msgstr ""
+
+msgid "实盘"
+msgstr ""
+
+msgid "审阅"
+msgstr ""
+
+msgid "差异"
+msgstr ""
+
+msgid "已拣"
+msgstr ""
+
+msgid "已更新"
+msgstr ""
+
+#. placeholder {0}: fetcher.data.bound
+msgid "已绑定 {0} 件"
+msgstr ""
+
+msgid "已读唯一芯片"
+msgstr ""
+
+msgid "当前货位"
+msgstr ""
+
+msgid "扫到"
+msgstr ""
+
+msgid "扫到的水洗唛不是本行要调度的规格，已不计入。"
+msgstr ""
+
+msgid "扫到的码无法识别为已绑定水洗唛，已不计入。"
+msgstr ""
+
+msgid "扫码拣货"
+msgstr ""
+
+msgid "扫码盘点"
+msgstr ""
+
+msgid "扫码盘点已过账"
+msgstr ""
+
+msgid "操作失败"
+msgstr ""
+
+msgid "数量不足，请重新扫描"
+msgstr ""
+
+msgid "数量过多，请重新扫描"
+msgstr ""
+
+msgid "未识别"
+msgstr ""
+
+msgid "未识别芯片"
+msgstr ""
+
+msgid "未调度"
+msgstr ""
+
+msgid "本行已拣满"
+msgstr ""
+
+msgid "本行需要"
+msgstr ""
+
+msgid "本轮已匹配"
+msgstr ""
+
+msgid "本轮扫描已达剩余数量，请先确认"
+msgstr ""
+
+msgid "水洗唛扫码绑定"
+msgstr ""
+
+msgid "水洗唛芯片"
+msgstr ""
+
+msgid "清空本轮"
+msgstr ""
+
+msgid "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系统编码件数，再确认绑定。"
+msgstr ""
+
+msgid "盘点失败"
+msgstr ""
+
+msgid "确认本轮扫码"
+msgstr ""
+
+msgid "确认绑定"
+msgstr ""
+
+msgid "确认过账"
+msgstr ""
+
+msgid "等待 PDA 读入 EPC…"
+msgstr ""
+
+msgid "系统编码"
+msgstr ""
+
+msgid "绑定时间"
+msgstr ""
+
+msgid "继续拣货"
+msgstr ""
+
+msgid "规格不符"
+msgstr ""
+
+msgid "计划"
+msgstr ""
+
+msgid "该芯片已计入"
+msgstr ""
+
+msgid "请先扫描本行规格芯片"
+msgstr ""
+
+msgid "请先生成系统编码"
+msgstr ""
+
+msgid "请先生成系统编码（完成「打印水洗唛」工序）"
+msgstr ""
+
+msgid "请选择存储单元"
+msgstr ""
+
+msgid "账面"
+msgstr ""
+
+msgid "跳过"
+msgstr ""
+
+msgid "还没有已扫数量"
+msgstr ""
+
+msgid "选择存储单元后，用 UHF PDA 批量读取本款水洗唛芯片。确认过账会按件写入该货位，并将本款未扫到的 SKU 清零。"
+msgstr ""
+
+msgid "重新扫描"
+msgstr ""
+
+msgid "非本款"
+msgstr ""

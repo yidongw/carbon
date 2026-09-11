@@ -204,6 +204,297 @@ export async function drawBundleLabelCanvas(
   return canvas;
 }
 
+export type CareLabelData = {
+  /** The garment piece's unique RFID code (also encoded in the barcode). */
+  code: string;
+  /** Piece sequence within the bundle (1-based). */
+  sequence?: number | null;
+  /** 款号 — parent style readable id. */
+  styleReadableId?: string | null;
+  /** Variant attributes (颜色/尺码/…) as localized name/value pairs. */
+  attributeLines?: Array<{ name: string; value: string }> | null;
+  /**
+   * Optional pre-rendered Code128 PNG. Prefer omitting — `drawCareLabelCanvas`
+   * draws Code128 bars directly from `code` so large bundles don't download
+   * thousands of data URLs, and print doesn't depend on a dynamic barcode lib.
+   */
+  barcodeDataUrl?: string;
+};
+
+// Code128 patterns (11 modules each). Index = code value 0..106.
+// Source: ISO/IEC 15417 Code 128; used for Code-B (ASCII 32–127).
+const CODE128_PATTERNS: readonly string[] = [
+  "11011001100",
+  "11001101100",
+  "11001100110",
+  "10010011000",
+  "10010001100",
+  "10001001100",
+  "10011001000",
+  "10011000100",
+  "10001100100",
+  "11001001000",
+  "11001000100",
+  "11000100100",
+  "10110011100",
+  "10011011100",
+  "10011001110",
+  "10111001100",
+  "10011101100",
+  "10011100110",
+  "11001110010",
+  "11001011100",
+  "11001001110",
+  "11011100100",
+  "11001110100",
+  "11101101110",
+  "11101001100",
+  "11100101100",
+  "11100100110",
+  "11101100100",
+  "11100110100",
+  "11100110010",
+  "11011011000",
+  "11011000110",
+  "11000110110",
+  "10100011000",
+  "10001011000",
+  "10001000110",
+  "10110001000",
+  "10001101000",
+  "10001100010",
+  "11010001000",
+  "11000101000",
+  "11000100010",
+  "10110111000",
+  "10110001110",
+  "10001101110",
+  "10111011000",
+  "10111000110",
+  "10001110110",
+  "11101110110",
+  "11010001110",
+  "11000101110",
+  "11011101000",
+  "11011100010",
+  "11011101110",
+  "11101011000",
+  "11101000110",
+  "11100010110",
+  "11101101000",
+  "11101100010",
+  "11100011010",
+  "11101111010",
+  "11001000010",
+  "11110001010",
+  "10100110000",
+  "10100001100",
+  "10010110000",
+  "10010000110",
+  "10000101100",
+  "10000100110",
+  "10110010000",
+  "10110000100",
+  "10011010000",
+  "10011000010",
+  "10000110100",
+  "10000110010",
+  "11000010010",
+  "11001010000",
+  "11110111010",
+  "11000010100",
+  "10001111010",
+  "10100111100",
+  "10010111100",
+  "10010011110",
+  "10111100100",
+  "10011110100",
+  "10011110010",
+  "11110100100",
+  "11110010100",
+  "11110010010",
+  "11011011110",
+  "11011110110",
+  "11110110110",
+  "10101111000",
+  "10100011110",
+  "10001011110",
+  "10111101000",
+  "10111100010",
+  "11110101000",
+  "11110100010",
+  "10111011110",
+  "10111101110",
+  "11101011110",
+  "11110101110",
+  "11010000100",
+  "11010010000",
+  "11010011100",
+  "11000111010"
+];
+
+/**
+ * Draw Code128-B bars directly onto the canvas (no PNG / no dynamic import).
+ * Integer module widths keep bars crisp for TSPL thresholding and browser print.
+ */
+function drawCode128B(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
+  const codes: number[] = [104]; // Start Code B
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c < 32 || c > 127) {
+      throw new Error(`Code128-B cannot encode char ${c}`);
+    }
+    codes.push(c - 32);
+  }
+  let checksum = codes[0]!;
+  for (let i = 1; i < codes.length; i++) {
+    checksum += codes[i]! * i;
+  }
+  codes.push(checksum % 103);
+  codes.push(106); // Stop
+
+  let modules = "";
+  for (const code of codes) {
+    const pat = CODE128_PATTERNS[code];
+    if (!pat) throw new Error(`Missing Code128 pattern for ${code}`);
+    modules += pat;
+  }
+  modules += "11"; // termination bar
+
+  const moduleW = Math.max(1, Math.floor(w / modules.length));
+  const totalW = moduleW * modules.length;
+  let dx = x + Math.floor((w - totalW) / 2);
+  ctx.fillStyle = "#000";
+  for (let i = 0; i < modules.length; i++) {
+    if (modules[i] === "1") {
+      ctx.fillRect(dx, y, moduleW, h);
+    }
+    dx += moduleW;
+  }
+}
+
+// Fields the care label reserves space for but the system doesn't store yet —
+// printed as an empty labeled line so the physical label has a place for them
+// (filled by a woven/pre-printed base or a later data source). See the RFID
+// feature scope: composition/wash-care/origin are out of the current model.
+const CARE_PLACEHOLDER_FIELDS = ["成分", "洗涤", "产地"] as const;
+
+/**
+ * Draw one garment care label (水洗唛) onto an offscreen canvas at printer-dot
+ * resolution: 款号 + 颜色/尺码, then reserved placeholder lines for
+ * 成分/洗涤/产地, then the 1D Code128 barcode (of the RFID code) with the code
+ * text below. One label per garment piece.
+ */
+export async function drawCareLabelCanvas(
+  label: CareLabelData,
+  widthMm: number,
+  heightMm: number,
+  rotate180 = false
+): Promise<HTMLCanvasElement> {
+  const W = Math.round(widthMm * DOTS_PER_MM);
+  const H = Math.round(heightMm * DOTS_PER_MM);
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas 2D 不可用");
+
+  if (rotate180) {
+    ctx.translate(W, H);
+    ctx.rotate(Math.PI);
+  }
+
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#000";
+  ctx.textBaseline = "top";
+  ctx.textAlign = "left";
+
+  const padX = Math.round(2 * DOTS_PER_MM);
+  const topPad = Math.round(2 * DOTS_PER_MM);
+  const fontPx = Math.max(14, Math.min(22, Math.round(H * 0.045)));
+  const rowH = Math.round(fontPx * 1.5);
+  const contentW = W - 2 * padX;
+
+  // Header rows: 款号 + each variant attribute (颜色/尺码/…).
+  const headerRows: Array<[string, string]> = [];
+  if (present(label.styleReadableId)) {
+    headerRows.push(["款号: ", String(label.styleReadableId)]);
+  }
+  for (const line of label.attributeLines ?? []) {
+    if (present(line.value))
+      headerRows.push([`${line.name}: `, String(line.value)]);
+  }
+
+  let y = topPad;
+  const drawKeyValue = (key: string, value: string) => {
+    ctx.font = `bold ${fontPx}px ${CJK_FONT}`;
+    ctx.fillText(key, padX, y);
+    const kw = ctx.measureText(key).width;
+    ctx.fillText(value, padX + kw, y, Math.max(8, contentW - kw));
+    y += rowH;
+  };
+  for (const [k, v] of headerRows) drawKeyValue(k, v);
+
+  // Reserved placeholder lines — labeled key with a light underline for the
+  // (currently unstored) 成分/洗涤/产地 values.
+  y += Math.round(fontPx * 0.3);
+  for (const field of CARE_PLACEHOLDER_FIELDS) {
+    const key = `${field}: `;
+    ctx.font = `${fontPx}px ${CJK_FONT}`;
+    ctx.fillText(key, padX, y);
+    const kw = ctx.measureText(key).width;
+    const lineY = y + fontPx - 2;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padX + kw, lineY);
+    ctx.lineTo(W - padX, lineY);
+    ctx.stroke();
+    y += rowH;
+  }
+
+  // 1D Code128 barcode (of the RFID code) drawn across the full width, with the
+  // code text below — sized for a linear scanner, not a QR reader.
+  const idFont = Math.max(13, Math.floor(fontPx * 0.7));
+  const bcTop = y + Math.round(fontPx * 0.3);
+  const bcAreaH = H - topPad - bcTop; // space left below the fields
+  const bcW = contentW; // full printable width → widest possible bars
+  const bcH = Math.max(
+    24,
+    Math.min(Math.round(H * 0.22), bcAreaH - idFont - 8)
+  );
+  const bcX = padX;
+  const bcY = bcTop + Math.max(0, (bcAreaH - idFont - 6 - bcH) / 2);
+  try {
+    if (label.barcodeDataUrl) {
+      const img = await loadImage(label.barcodeDataUrl);
+      // Smooth so downscaling averages thin bars; TSPL re-binarizes after.
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(img, bcX, bcY, bcW, bcH);
+    } else {
+      // Draw bars directly — no dynamic bwip import (was failing silently and
+      // leaving care labels with only the human-readable code text).
+      ctx.imageSmoothingEnabled = false;
+      drawCode128B(ctx, String(label.code), bcX, bcY, bcW, bcH);
+    }
+  } catch (err) {
+    console.error("care-label barcode failed", err);
+  }
+
+  ctx.font = `${idFont}px ${CJK_FONT}`;
+  ctx.textAlign = "center";
+  ctx.fillText(String(label.code), W / 2, bcY + bcH + 4, W - 2 * padX);
+
+  return canvas;
+}
+
 const ascii = (s: string): number[] => {
   const out: number[] = [];
   for (let i = 0; i < s.length; i++) out.push(s.charCodeAt(i) & 0xff);
