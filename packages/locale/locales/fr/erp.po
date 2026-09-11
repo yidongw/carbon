@@ -16825,13 +16825,25 @@ msgstr ""
 msgid "已绑定 {0} 件"
 msgstr ""
 
+msgid "已计入本行"
+msgstr ""
+
 msgid "已读唯一芯片"
 msgstr ""
 
 msgid "当前货位"
 msgstr ""
 
-msgid "成衣须用水洗唛 UHF 扫码确认。唯一芯片数须等于本行数量，且规格须匹配。"
+msgid "成衣须用水洗唛 UHF 扫码确认。仅计入本行规格；不符或未识别会弹出警告，点跳过后继续扫。"
+msgstr ""
+
+msgid "扫到"
+msgstr ""
+
+msgid "扫到的水洗唛不是本行要调度的规格，已不计入。"
+msgstr ""
+
+msgid "扫到的码无法识别为已绑定水洗唛，已不计入。"
 msgstr ""
 
 msgid "扫码拣货"
@@ -16853,6 +16865,12 @@ msgid "数量过多，请重新扫描"
 msgstr ""
 
 msgid "未识别"
+msgstr ""
+
+msgid "未识别芯片"
+msgstr ""
+
+msgid "本行需要"
 msgstr ""
 
 msgid "水洗唛扫码绑定"
@@ -16891,6 +16909,9 @@ msgstr ""
 msgid "计划数量"
 msgstr ""
 
+msgid "该芯片已计入"
+msgstr ""
+
 msgid "请先生成系统编码"
 msgstr ""
 
@@ -16901,6 +16922,9 @@ msgid "请选择存储单元"
 msgstr ""
 
 msgid "账面"
+msgstr ""
+
+msgid "跳过"
 msgstr ""
 
 msgid "选择存储单元后，用 UHF PDA 批量读取本款水洗唛芯片。确认过账会按件写入该货位，并将本款未扫到的 SKU 清零。"

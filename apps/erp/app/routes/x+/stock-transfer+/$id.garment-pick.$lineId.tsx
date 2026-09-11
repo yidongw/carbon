@@ -20,7 +20,6 @@ import {
   type KeyboardEvent,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState
 } from "react";
@@ -119,6 +118,80 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!id) throw new Error("id is not found");
   if (!lineId) throw new Error("lineId is not found");
 
+  const formData = await request.formData();
+  const intent = String(formData.get("intent") ?? "pick");
+
+  const line = await client
+    .from("stockTransferLine")
+    .select("*")
+    .eq("id", lineId)
+    .eq("stockTransferId", id)
+    .single();
+  if (line.error || !line.data) {
+    return data(
+      { intent, ok: false as const, message: "Line not found" },
+      await flash(request, error(line.error, "Line not found"))
+    );
+  }
+
+  const planned = line.data.quantity ?? 0;
+  const lineItemId = line.data.itemId;
+
+  // Single-code check for live scan feedback (wrong SKU → warning + skip).
+  if (intent === "check") {
+    const code = String(formData.get("code") ?? "").trim();
+    if (!code) {
+      return data({
+        intent: "check" as const,
+        ok: true as const,
+        status: "empty" as const,
+        code: ""
+      });
+    }
+
+    const resolved = await resolveGarmentPiecesByScannedCodes(
+      client,
+      [code],
+      companyId
+    );
+    if (resolved.error) {
+      return data({
+        intent: "check" as const,
+        ok: false as const,
+        status: "unknown" as const,
+        code,
+        message: "Failed to resolve scan"
+      });
+    }
+
+    if (resolved.unknown.includes(code) || resolved.data.length === 0) {
+      return data({
+        intent: "check" as const,
+        ok: true as const,
+        status: "unknown" as const,
+        code
+      });
+    }
+
+    const piece = resolved.data[0];
+    if (piece.variantItemId !== lineItemId) {
+      return data({
+        intent: "check" as const,
+        ok: true as const,
+        status: "wrongSku" as const,
+        code,
+        scannedLabel: piece.attributeLabel ?? piece.variantItemId
+      });
+    }
+
+    return data({
+      intent: "check" as const,
+      ok: true as const,
+      status: "match" as const,
+      code
+    });
+  }
+
   const transfer = await getStockTransfer(client, id);
   await requireUnlocked({
     request,
@@ -129,34 +202,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (!["Released", "In Progress"].includes(transfer.data?.status ?? "")) {
     return data(
-      { ok: false as const, message: "Stock transfer is not pickable" },
+      { intent, ok: false as const, message: "Stock transfer is not pickable" },
       await flash(request, error(null, "Stock transfer is not pickable"))
     );
   }
 
-  const formData = await request.formData();
   const rawCodes = formData.getAll("code").map(String);
   const locationId = String(
     formData.get("locationId") ?? transfer.data?.locationId ?? ""
   ).trim();
 
-  const line = await client
-    .from("stockTransferLine")
-    .select("*")
-    .eq("id", lineId)
-    .eq("stockTransferId", id)
-    .single();
-  if (line.error || !line.data) {
-    return data(
-      { ok: false as const, message: "Line not found" },
-      await flash(request, error(line.error, "Line not found"))
-    );
-  }
-
-  const planned = line.data.quantity ?? 0;
   if (planned <= 0) {
     return data(
-      { ok: false as const, message: "Invalid line quantity" },
+      { intent, ok: false as const, message: "Invalid line quantity" },
       await flash(request, error(null, "Invalid line quantity"))
     );
   }
@@ -169,7 +227,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   );
   if (resolved.error) {
     return data(
-      { ok: false as const, message: "Failed to resolve scans" },
+      { intent, ok: false as const, message: "Failed to resolve scans" },
       await flash(request, error(resolved.error, "Failed to resolve scans"))
     );
   }
@@ -185,13 +243,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
     rawCodes: uniqueCodes,
     resolvedByCode,
     unknownCodes: resolved.unknown,
-    lineItemId: line.data.itemId,
+    lineItemId,
     plannedQuantity: planned
   });
 
   if (!tally.canConfirm) {
     return data(
       {
+        intent: "pick" as const,
         ok: false as const,
         matchingCount: tally.matchingCount,
         plannedQuantity: planned,
@@ -226,7 +285,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (functionError) {
     return data(
-      { ok: false as const, message: functionError.message || "Pick failed" },
+      {
+        intent: "pick" as const,
+        ok: false as const,
+        message: functionError.message || "Pick failed"
+      },
       await flash(
         request,
         error(functionError.message || "Pick failed", "Failed to pick line")
@@ -242,13 +305,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
   );
 }
 
-type ActionData = {
+type CheckActionData = {
+  intent: "check";
+  ok: boolean;
+  status: "match" | "wrongSku" | "unknown" | "empty";
+  code: string;
+  scannedLabel?: string | null;
+  message?: string;
+};
+
+type PickActionData = {
+  intent?: "pick";
   ok: boolean;
   message?: string;
   matchingCount?: number;
   plannedQuantity?: number;
   wrongSkuCodes?: string[];
   unknownCodes?: string[];
+};
+
+type ScanWarning = {
+  code: string;
+  reason: "wrongSku" | "unknown";
+  scannedLabel?: string | null;
 };
 
 export default function StockTransferGarmentPickRoute() {
@@ -264,15 +343,13 @@ export default function StockTransferGarmentPickRoute() {
     stockTransferLines: StockTransferLine[];
   }>(path.to.stockTransfer(id));
 
-  const fetcher = useFetcher<ActionData>();
+  const pickFetcher = useFetcher<PickActionData>();
+  const checkFetcher = useFetcher<CheckActionData>();
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastChecked = useRef("");
   const [draft, setDraft] = useState("");
-  const [rawCodes, setRawCodes] = useState<string[]>([]);
-
-  const uniqueCodes = useMemo(
-    () => normalizeScannedExternalCodes(rawCodes),
-    [rawCodes]
-  );
+  const [acceptedCodes, setAcceptedCodes] = useState<string[]>([]);
+  const [warning, setWarning] = useState<ScanWarning | null>(null);
 
   const lineLabel = [
     loaderData.itemReadableId,
@@ -290,39 +367,87 @@ export default function StockTransferGarmentPickRoute() {
   }, [focusInput]);
 
   useEffect(() => {
-    if (fetcher.state !== "idle" || !fetcher.data) return;
-    if (!fetcher.data.ok) {
-      toast.error(fetcher.data.message ?? t`扫码拣货失败`);
+    if (pickFetcher.state !== "idle" || !pickFetcher.data) return;
+    if (pickFetcher.data.intent === "check") return;
+    if (!pickFetcher.data.ok) {
+      toast.error(pickFetcher.data.message ?? t`扫码拣货失败`);
       focusInput();
     }
-  }, [fetcher.state, fetcher.data, focusInput, t]);
+  }, [pickFetcher.state, pickFetcher.data, focusInput, t]);
+
+  // Apply single-code check result: match → accept; wrong/unknown → warning modal.
+  useEffect(() => {
+    if (checkFetcher.state !== "idle" || !checkFetcher.data) return;
+    if (checkFetcher.data.intent !== "check") return;
+    const result = checkFetcher.data;
+    if (!result.code || result.code === lastChecked.current) return;
+    lastChecked.current = result.code;
+
+    if (result.status === "match") {
+      setAcceptedCodes((prev) =>
+        prev.includes(result.code) ? prev : [...prev, result.code]
+      );
+      focusInput();
+      return;
+    }
+
+    if (result.status === "wrongSku" || result.status === "unknown") {
+      setWarning({
+        code: result.code,
+        reason: result.status,
+        scannedLabel: result.scannedLabel
+      });
+    }
+  }, [checkFetcher.state, checkFetcher.data, focusInput]);
 
   const onClose = () => navigate(path.to.stockTransfer(id));
 
-  const addCode = (value: string) => {
+  const submitCheck = (value: string) => {
     const code = value.trim();
     if (!code) return;
-    setRawCodes((prev) => [...prev, code]);
+    if (acceptedCodes.includes(code)) {
+      toast.error(t`该芯片已计入`);
+      setDraft("");
+      focusInput();
+      return;
+    }
+    if (warning) return; // must dismiss warning first
+    lastChecked.current = "";
     setDraft("");
-    focusInput();
+    const form = new FormData();
+    form.set("intent", "check");
+    form.set("code", code);
+    checkFetcher.submit(form, {
+      method: "post",
+      action: path.to.stockTransferGarmentPick(id, lineId)
+    });
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
     event.preventDefault();
-    addCode(draft);
+    submitCheck(draft);
   };
 
   const clearScan = () => {
-    setRawCodes([]);
+    setAcceptedCodes([]);
     setDraft("");
+    setWarning(null);
+    lastChecked.current = "";
+    focusInput();
+  };
+
+  const dismissWarning = () => {
+    setWarning(null);
     focusInput();
   };
 
   const planned = loaderData.quantity;
-  // Client-side gate uses unique count only; server re-validates SKU match.
   const canConfirm =
-    planned > 0 && uniqueCodes.length === planned && fetcher.state === "idle";
+    planned > 0 &&
+    acceptedCodes.length === planned &&
+    pickFetcher.state === "idle" &&
+    !warning;
 
   const submitPick = () => {
     if (!canConfirm) {
@@ -330,114 +455,148 @@ export default function StockTransferGarmentPickRoute() {
       return;
     }
     const form = new FormData();
+    form.set("intent", "pick");
     form.set("locationId", routeData?.stockTransfer?.locationId ?? "");
-    for (const code of uniqueCodes) {
+    for (const code of acceptedCodes) {
       form.append("code", code);
     }
-    fetcher.submit(form, {
+    pickFetcher.submit(form, {
       method: "post",
       action: path.to.stockTransferGarmentPick(id, lineId)
     });
   };
 
-  const busy = fetcher.state !== "idle";
-  const wrongFromAction = fetcher.data?.wrongSkuCodes ?? [];
-  const unknownFromAction = fetcher.data?.unknownCodes ?? [];
+  const busy =
+    pickFetcher.state !== "idle" ||
+    checkFetcher.state !== "idle" ||
+    Boolean(warning);
 
   return (
-    <Modal
-      open
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-    >
-      <ModalContent size="medium">
-        <ModalHeader>
-          <ModalTitle>{t`扫码拣货`}</ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <VStack spacing={4}>
-            <p className="text-sm text-muted-foreground">
-              {t`成衣须用水洗唛 UHF 扫码确认。唯一芯片数须等于本行数量，且规格须匹配。`}
-            </p>
-            <div className="rounded border p-3 text-sm space-y-1">
-              <div className="font-medium">
-                {lineLabel || loaderData.itemId}
+    <>
+      <Modal
+        open
+        onOpenChange={(open) => {
+          if (!open && !warning) onClose();
+        }}
+      >
+        <ModalContent size="medium">
+          <ModalHeader>
+            <ModalTitle>{t`扫码拣货`}</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
+            <VStack spacing={4}>
+              <p className="text-sm text-muted-foreground">
+                {t`成衣须用水洗唛 UHF 扫码确认。仅计入本行规格；不符或未识别会弹出警告，点跳过后继续扫。`}
+              </p>
+              <div className="rounded border p-3 text-sm space-y-1">
+                <div className="font-medium">
+                  {lineLabel || loaderData.itemId}
+                </div>
+                <div className="tabular-nums text-muted-foreground">
+                  {t`计划数量`}: {planned}
+                </div>
               </div>
-              <div className="tabular-nums text-muted-foreground">
-                {t`计划数量`}: {planned}
-              </div>
-            </div>
-            <HStack className="justify-between w-full text-sm">
-              <span>
-                {t`已读唯一芯片`}{" "}
-                <span className="font-semibold tabular-nums">
-                  {uniqueCodes.length}
+              <HStack className="justify-between w-full text-sm">
+                <span>
+                  {t`已计入本行`}{" "}
+                  <span className="font-semibold tabular-nums">
+                    {acceptedCodes.length}
+                  </span>
+                  {" / "}
+                  <span className="tabular-nums">{planned}</span>
                 </span>
-                {" / "}
-                <span className="tabular-nums">{planned}</span>
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                leftIcon={<LuRotateCcw />}
-                onClick={clearScan}
-                isDisabled={rawCodes.length === 0 || busy}
-              >
-                {t`重新扫描`}
-              </Button>
-            </HStack>
-            <Input
-              ref={inputRef}
-              value={draft}
-              autoFocus
-              placeholder={t`等待 PDA 读入 EPC…`}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={onKeyDown}
-              isDisabled={busy}
-            />
-            {uniqueCodes.length > 0 ? (
-              <div className="max-h-40 overflow-auto rounded border p-2 font-mono text-xs space-y-1">
-                {uniqueCodes.map((code) => (
-                  <div key={code}>{code}</div>
-                ))}
-              </div>
-            ) : null}
-            {unknownFromAction.length > 0 || wrongFromAction.length > 0 ? (
-              <VStack spacing={1} className="text-xs text-red-600">
-                {unknownFromAction.length > 0 ? (
-                  <span>
-                    {t`未识别`} ({unknownFromAction.length}):{" "}
-                    {unknownFromAction.slice(0, 5).join(", ")}
-                    {unknownFromAction.length > 5 ? "…" : ""}
-                  </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={<LuRotateCcw />}
+                  onClick={clearScan}
+                  isDisabled={
+                    (acceptedCodes.length === 0 && !warning) ||
+                    pickFetcher.state !== "idle"
+                  }
+                >
+                  {t`重新扫描`}
+                </Button>
+              </HStack>
+              <Input
+                ref={inputRef}
+                value={draft}
+                autoFocus
+                placeholder={t`等待 PDA 读入 EPC…`}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={onKeyDown}
+                isDisabled={busy}
+              />
+              {acceptedCodes.length > 0 ? (
+                <div className="max-h-40 overflow-auto rounded border p-2 font-mono text-xs space-y-1">
+                  {acceptedCodes.map((code) => (
+                    <div key={code}>{code}</div>
+                  ))}
+                </div>
+              ) : null}
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="secondary"
+              onClick={onClose}
+              isDisabled={pickFetcher.state !== "idle"}
+            >
+              {t`取消`}
+            </Button>
+            <Button
+              variant="primary"
+              leftIcon={<LuNfc />}
+              onClick={submitPick}
+              isLoading={pickFetcher.state !== "idle"}
+              isDisabled={!canConfirm}
+            >
+              {t`确认拣货`}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {warning ? (
+        <Modal
+          open
+          onOpenChange={(open) => {
+            // Must click 跳过 — ignore outside dismiss.
+            if (!open) return;
+          }}
+        >
+          <ModalContent size="small">
+            <ModalHeader>
+              <ModalTitle>
+                {warning.reason === "wrongSku" ? t`规格不符` : t`未识别芯片`}
+              </ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <VStack spacing={2}>
+                <p className="text-sm">
+                  {warning.reason === "wrongSku"
+                    ? t`扫到的水洗唛不是本行要调度的规格，已不计入。`
+                    : t`扫到的码无法识别为已绑定水洗唛，已不计入。`}
+                </p>
+                <p className="font-mono text-xs break-all">{warning.code}</p>
+                {warning.reason === "wrongSku" && warning.scannedLabel ? (
+                  <p className="text-sm text-muted-foreground">
+                    {t`扫到`}: {warning.scannedLabel}
+                  </p>
                 ) : null}
-                {wrongFromAction.length > 0 ? (
-                  <span>
-                    {t`规格不符`} ({wrongFromAction.length}):{" "}
-                    {wrongFromAction.slice(0, 5).join(", ")}
-                    {wrongFromAction.length > 5 ? "…" : ""}
-                  </span>
-                ) : null}
+                <p className="text-sm text-muted-foreground">
+                  {t`本行需要`}: {lineLabel || loaderData.itemId}
+                </p>
               </VStack>
-            ) : null}
-          </VStack>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="secondary" onClick={onClose} isDisabled={busy}>
-            {t`取消`}
-          </Button>
-          <Button
-            variant="primary"
-            leftIcon={<LuNfc />}
-            onClick={submitPick}
-            isLoading={busy}
-            isDisabled={!canConfirm}
-          >
-            {t`确认拣货`}
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="primary" onClick={dismissWarning}>
+                {t`跳过`}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
+    </>
   );
 }
