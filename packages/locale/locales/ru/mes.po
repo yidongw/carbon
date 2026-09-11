@@ -3922,6 +3922,9 @@ msgstr "Дополнительное имущество обновлено"
 msgid "Forgot to Clock Out?"
 msgstr "Забыли отметить уход?"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Go back to operation"
 msgstr "Вернуться к операции"
 
@@ -4035,6 +4038,9 @@ msgstr "Недействительное приглашение"
 
 msgid "Invalid job configuration"
 msgstr "Неверная конфигурация задания"
+
+msgid "Invalid line quantity"
+msgstr ""
 
 msgid "Invalid lines data"
 msgstr "Неверные данные по линиям"
@@ -4239,6 +4245,9 @@ msgstr "Линия уже выбрана"
 
 msgid "Line created"
 msgstr "Линия создана"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line split"
 msgstr "Строка разделения"
@@ -5530,6 +5539,9 @@ msgstr "Шаги не заполнены"
 msgid "Stock transfer is not in progress or released"
 msgstr "Трансфер складских мест не выполняется или не был опущен"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "Линия передачи запасов не найдена"
 
@@ -5927,6 +5939,9 @@ msgstr "В спецификации есть материалы с серийн�
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "Этот элемент настроен с помощью атрибутов — введите разбивку по вариантам перед отчетом."
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "Эта партия истекла и не может быть выбрана."

@@ -8210,6 +8210,9 @@ msgstr "सरंगी"
 msgid "Garment or footwear for cutting and production."
 msgstr "काटने और उत्पादन के लिए कपड़ा या सूजन।"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Gauge"
 msgstr "गेज"
 
@@ -8711,6 +8714,9 @@ msgstr "अवैध इमिटेव लिंक"
 
 msgid "Invalid job configuration"
 msgstr "अवैध जोब कonfiguration"
+
+msgid "Invalid line quantity"
+msgstr ""
 
 msgid "Invalid lines data"
 msgstr "अवैध लाइन्स डेटा"
@@ -9301,6 +9307,9 @@ msgstr "लाइन विवरण (वैकल्पिक)"
 
 msgid "Line Item Comparison"
 msgstr "लाइन आइटम तुलना"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line options"
 msgstr "पंक्ति विकल्प"
@@ -14187,6 +14196,9 @@ msgstr "स्टॉक ट्रांसफर आईडी"
 msgid "Stock transfer is not in progress or released"
 msgstr "स्टॉक ट्रांसफर की प्रगति या जारी होने की कोई नहीं है"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "स्टॉक ट्रांसफर पंक्ति नहीं मिली"
 
@@ -15105,6 +15117,9 @@ msgstr "यह जॉब इन्वेंटरी में प्राप�
 
 msgid "This job will no longer be available on the shop floor."
 msgstr "यह नौकरी अब शॉप फ्लोर पर उपलब्ध नहीं होगी।"
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "इस लोट की उम्र है कि इसे चयनित किया गया नहीं जा सकता।"
@@ -16816,6 +16831,15 @@ msgstr ""
 msgid "当前货位"
 msgstr ""
 
+msgid "成衣须用水洗唛 UHF 扫码确认。唯一芯片数须等于本行数量，且规格须匹配。"
+msgstr ""
+
+msgid "扫码拣货"
+msgstr ""
+
+msgid "扫码拣货失败"
+msgstr ""
+
 msgid "扫码盘点"
 msgstr ""
 
@@ -16843,6 +16867,9 @@ msgstr ""
 msgid "盘点失败"
 msgstr ""
 
+msgid "确认拣货"
+msgstr ""
+
 msgid "确认绑定"
 msgstr ""
 
@@ -16856,6 +16883,12 @@ msgid "系统编码"
 msgstr ""
 
 msgid "绑定时间"
+msgstr ""
+
+msgid "规格不符"
+msgstr ""
+
+msgid "计划数量"
 msgstr ""
 
 msgid "请先生成系统编码"
@@ -16877,4 +16910,7 @@ msgid "重新扫描"
 msgstr ""
 
 msgid "非本款"
+msgstr ""
+
+msgid "须扫满 {planned} 件本行规格的水洗唛"
 msgstr ""

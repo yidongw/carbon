@@ -3922,6 +3922,9 @@ msgstr "संतुलित धारा अपडेट की गई"
 msgid "Forgot to Clock Out?"
 msgstr "घड़ी से बाहर निकलना भूल गए?"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Go back to operation"
 msgstr "प्रणाली में पुनः वापस जाएं"
 
@@ -4035,6 +4038,9 @@ msgstr "अवैध आमंत्रण"
 
 msgid "Invalid job configuration"
 msgstr "अवैध जोब कonfiguration"
+
+msgid "Invalid line quantity"
+msgstr ""
 
 msgid "Invalid lines data"
 msgstr "अवैध लाइन्स डेटा"
@@ -4239,6 +4245,9 @@ msgstr "रेखा पहले से चुनी गई है"
 
 msgid "Line created"
 msgstr "रेखा बनाई गई"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line split"
 msgstr "रेखा विभाजन"
@@ -5530,6 +5539,9 @@ msgstr "चरण गायब हैं"
 msgid "Stock transfer is not in progress or released"
 msgstr "स्टॉक ट्रांसफर की प्रगति या जारी होने की कोई नहीं है"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "स्टॉक ट्रांसफर लाइन नहीं मिली"
 
@@ -5927,6 +5939,9 @@ msgstr "बिल ऑफ मेटेरियल पर सीरियल य�
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "इस आइटम को संरचनाओं से कonfigुर किया जाता है — पहले वैरिएंट के मूल्यांकन की रिपोर्ट करने से पहले प्रति-वैरिएंट का विस्तार दर्ज करें."
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "इस लोट की उम्र है जितनी कि इसे चयन करने में अनुमति नहीं है।"

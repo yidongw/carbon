@@ -3923,6 +3923,9 @@ msgstr "固定资产已更新"
 msgid "Forgot to Clock Out?"
 msgstr "忘记打卡下班了？"
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Go back to operation"
 msgstr "返回操作"
 
@@ -4036,6 +4039,9 @@ msgstr "无效邀请"
 
 msgid "Invalid job configuration"
 msgstr "无效的工作配置"
+
+msgid "Invalid line quantity"
+msgstr ""
 
 msgid "Invalid lines data"
 msgstr "无效的生产线数据"
@@ -4240,6 +4246,9 @@ msgstr "已选择生产线"
 
 msgid "Line created"
 msgstr "已创建生产线"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line split"
 msgstr "已拆分该行"
@@ -5531,6 +5540,9 @@ msgstr "缺少步骤"
 msgid "Stock transfer is not in progress or released"
 msgstr "库存转移未进行或未发布"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "库存转移行未找到"
 
@@ -5928,6 +5940,9 @@ msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。
 
 msgid "This item is configured by attributes — enter the per-variant breakdown before reporting."
 msgstr "此物品由属性配置——在上报前请输入各规格的明细。"
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "此批号已过期，无法拣选。"

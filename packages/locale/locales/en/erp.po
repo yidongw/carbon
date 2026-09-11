@@ -8209,6 +8209,9 @@ msgstr "Garment"
 msgid "Garment or footwear for cutting and production."
 msgstr "Garment or footwear for cutting and production."
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr "Garment scan pick is only for Style SKUs"
+
 msgid "Gauge"
 msgstr "Gauge"
 
@@ -8710,6 +8713,9 @@ msgstr "Invalid Invite Link"
 
 msgid "Invalid job configuration"
 msgstr "Invalid job configuration"
+
+msgid "Invalid line quantity"
+msgstr "Invalid line quantity"
 
 msgid "Invalid lines data"
 msgstr "Invalid lines data"
@@ -9300,6 +9306,9 @@ msgstr "Line description (optional)"
 
 msgid "Line Item Comparison"
 msgstr "Line Item Comparison"
+
+msgid "Line not found"
+msgstr "Line not found"
 
 msgid "Line options"
 msgstr "Line options"
@@ -14186,6 +14195,9 @@ msgstr "Stock Transfer ID"
 msgid "Stock transfer is not in progress or released"
 msgstr "Stock transfer is not in progress or released"
 
+msgid "Stock transfer is not pickable"
+msgstr "Stock transfer is not pickable"
+
 msgid "Stock transfer line not found"
 msgstr "Stock transfer line not found"
 
@@ -15104,6 +15116,9 @@ msgstr "This job will be received to inventory. It will no longer be available o
 
 msgid "This job will no longer be available on the shop floor."
 msgstr "This job will no longer be available on the shop floor."
+
+msgid "This line is not a Style SKU"
+msgstr "This line is not a Style SKU"
 
 msgid "This lot is expired and can't be picked."
 msgstr "This lot is expired and can't be picked."
@@ -16815,6 +16830,15 @@ msgstr "已读唯一芯片"
 msgid "当前货位"
 msgstr "当前货位"
 
+msgid "成衣须用水洗唛 UHF 扫码确认。唯一芯片数须等于本行数量，且规格须匹配。"
+msgstr "成衣须用水洗唛 UHF 扫码确认。唯一芯片数须等于本行数量，且规格须匹配。"
+
+msgid "扫码拣货"
+msgstr "扫码拣货"
+
+msgid "扫码拣货失败"
+msgstr "扫码拣货失败"
+
 msgid "扫码盘点"
 msgstr "扫码盘点"
 
@@ -16842,6 +16866,9 @@ msgstr "用 UHF PDA 对本扎批量读芯片。读到的唯一数量须等于系
 msgid "盘点失败"
 msgstr "盘点失败"
 
+msgid "确认拣货"
+msgstr "确认拣货"
+
 msgid "确认绑定"
 msgstr "确认绑定"
 
@@ -16856,6 +16883,12 @@ msgstr "系统编码"
 
 msgid "绑定时间"
 msgstr "绑定时间"
+
+msgid "规格不符"
+msgstr "规格不符"
+
+msgid "计划数量"
+msgstr "计划数量"
 
 msgid "请先生成系统编码"
 msgstr "请先生成系统编码"
@@ -16877,3 +16910,6 @@ msgstr "重新扫描"
 
 msgid "非本款"
 msgstr "非本款"
+
+msgid "须扫满 {planned} 件本行规格的水洗唛"
+msgstr "须扫满 {planned} 件本行规格的水洗唛"

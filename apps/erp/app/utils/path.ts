@@ -1683,6 +1683,8 @@ export const path = {
       generatePath(`${x}/stock-transfer/${id}/line/quantity`),
     stockTransferScan: (id: string, lineId: string) =>
       generatePath(`${x}/stock-transfer/${id}/scan/${lineId}`),
+    stockTransferGarmentPick: (id: string, lineId: string) =>
+      generatePath(`${x}/stock-transfer/${id}/garment-pick/${lineId}`),
     stockTransferStatus: (id: string) =>
       generatePath(`${x}/stock-transfer/${id}/status`),
     stockTransfers: `${x}/inventory/stock-transfers`,

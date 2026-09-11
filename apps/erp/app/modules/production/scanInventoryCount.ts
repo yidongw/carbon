@@ -130,3 +130,54 @@ export function buildStyleScanCountCommitLines(args: {
   lines.sort((a, b) => a.variantItemId.localeCompare(b.variantItemId));
   return lines;
 }
+
+/**
+ * Stock-transfer Style pick: count unique scans that match one line SKU.
+ * Confirm is allowed only when matchingCount === plannedQuantity.
+ */
+export function tallyLineGarmentPickScans(args: {
+  rawCodes: string[];
+  resolvedByCode: Record<string, { variantItemId: string } | undefined>;
+  unknownCodes?: string[];
+  lineItemId: string;
+  plannedQuantity: number;
+}): {
+  matchingCodes: string[];
+  wrongSkuCodes: string[];
+  unknownCodes: string[];
+  matchingCount: number;
+  canConfirm: boolean;
+} {
+  const unique = normalizeScannedExternalCodes(args.rawCodes);
+  const unknownSet = new Set(args.unknownCodes ?? []);
+  const matchingCodes: string[] = [];
+  const wrongSkuCodes: string[] = [];
+  const unknownCodes: string[] = [];
+
+  for (const code of unique) {
+    if (unknownSet.has(code)) {
+      unknownCodes.push(code);
+      continue;
+    }
+    const piece = args.resolvedByCode[code];
+    if (!piece) {
+      unknownCodes.push(code);
+      continue;
+    }
+    if (piece.variantItemId !== args.lineItemId) {
+      wrongSkuCodes.push(code);
+      continue;
+    }
+    matchingCodes.push(code);
+  }
+
+  const matchingCount = matchingCodes.length;
+  return {
+    matchingCodes,
+    wrongSkuCodes,
+    unknownCodes,
+    matchingCount,
+    canConfirm:
+      args.plannedQuantity > 0 && matchingCount === args.plannedQuantity
+  };
+}

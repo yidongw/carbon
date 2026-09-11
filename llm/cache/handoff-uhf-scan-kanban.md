@@ -78,17 +78,16 @@ Open product choice: Make only, Buy only, or both.
 
 ---
 
-## 库存转移 Scan Pick (locked — not built yet)
+## 库存转移 Scan Pick (locked — shipped on this branch)
 
 User confirmed (库存转移 / Stock Transfer **Pick**):
 
 - **成衣必须**用水洗唛 UHF 扫码确认数量（不能一键 Pick 跳过）
 - **必须扫满**计划件数才能过账（不允许部分拣先过账）
-- 判定成衣：行 SKU 属于 **Style/款式**（变体或父级是 Style）——**没有**单独 `isGarment()`；不要用序列号追踪开关代替
-- 非成衣（Part/Material 等）：保持现有一键 Pick
-- 扫码校验：EPC → `garmentRfidCode` → bundle `itemId`；必须匹配本行 `itemId`（规格对）；错码/未识别标红不计入
-- 过账：仍走库存转移 Transfer（from/to storage unit），**不是**扫码盘点的 Set Quantity
-- 复用：`normalizeScannedExternalCodes` + `resolveGarmentPiecesByScannedCodes`（依赖 #430）
+- 判定成衣：行 SKU 属于 **Style/款式**（`itemVariant` + parent `type === "Style"`）
+- 非成衣：保持现有一键 Pick；序列号/批次：现有 scan 路由
+- 路由：`path.to.stockTransferGarmentPick` → `$id.garment-pick.$lineId.tsx`
+- 过账：`post-stock-transfer` type `inventory`（Transfer），不是 Set Quantity
 
 ---
 

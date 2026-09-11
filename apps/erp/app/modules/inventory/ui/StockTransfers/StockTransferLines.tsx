@@ -59,6 +59,8 @@ interface StockTransferLineProps {
   isPickable: boolean;
   isEditable: boolean;
   isPending: boolean;
+  /** Style variant SKU — must use UHF care-label scan pick (full qty). */
+  isGarmentStyleLine: boolean;
   onPick: (line: StockTransferLine) => void;
   onUnpick: (line: StockTransferLine) => void;
   onDelete: (line: StockTransferLine) => void;
@@ -74,6 +76,7 @@ function StockTransferLineComponent({
   isPickable,
   isEditable,
   isPending,
+  isGarmentStyleLine,
   onPick,
   onUnpick,
   onDelete,
@@ -191,14 +194,26 @@ function StockTransferLineComponent({
                 <Button
                   isDisabled={!isPickable || isPending}
                   isLoading={isPending}
-                  leftIcon={isTracked ? <LuQrCode /> : <LuCirclePlus />}
-                  onClick={
-                    isTracked
-                      ? () => navigate(path.to.stockTransferScan(id, line.id!))
-                      : () => onPick(line)
+                  leftIcon={
+                    isGarmentStyleLine || isTracked ? (
+                      <LuQrCode />
+                    ) : (
+                      <LuCirclePlus />
+                    )
                   }
+                  onClick={() => {
+                    if (isGarmentStyleLine) {
+                      navigate(path.to.stockTransferGarmentPick(id, line.id!));
+                      return;
+                    }
+                    if (isTracked) {
+                      navigate(path.to.stockTransferScan(id, line.id!));
+                      return;
+                    }
+                    onPick(line);
+                  }}
                 >
-                  Pick
+                  {isGarmentStyleLine ? t`扫码拣货` : "Pick"}
                 </Button>
               )}
               <DropdownMenu>
@@ -259,6 +274,7 @@ export default function StockTransferLines() {
   const routeData = useRouteData<{
     stockTransfer: StockTransfer;
     stockTransferLines: StockTransferLine[];
+    styleVariantItemIds?: Record<string, true>;
   }>(path.to.stockTransfer(id));
 
   const isPickable = ["Released", "In Progress"].includes(
@@ -401,6 +417,9 @@ export default function StockTransferLines() {
                   isPending={
                     pendingQuantities?.some((q) => q.id === line.id) ?? false
                   }
+                  isGarmentStyleLine={Boolean(
+                    line.itemId && routeData?.styleVariantItemIds?.[line.itemId]
+                  )}
                   onPick={onPick}
                   onUnpick={onUnpick}
                   onDelete={() => {

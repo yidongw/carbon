@@ -8210,6 +8210,9 @@ msgstr "Vêtement"
 msgid "Garment or footwear for cutting and production."
 msgstr "Vêtement ou chaussure pour la découpe et la production."
 
+msgid "Garment scan pick is only for Style SKUs"
+msgstr ""
+
 msgid "Gauge"
 msgstr "Jauge"
 
@@ -8711,6 +8714,9 @@ msgstr "Lien d'invitation invalide"
 
 msgid "Invalid job configuration"
 msgstr "Configuration de tâche invalide"
+
+msgid "Invalid line quantity"
+msgstr ""
 
 msgid "Invalid lines data"
 msgstr "Données de lignes invalides"
@@ -9301,6 +9307,9 @@ msgstr "Description de ligne ( facultatif )"
 
 msgid "Line Item Comparison"
 msgstr "Comparaison des articles"
+
+msgid "Line not found"
+msgstr ""
 
 msgid "Line options"
 msgstr "Options de ligne"
@@ -14187,6 +14196,9 @@ msgstr "ID de transfert de stock"
 msgid "Stock transfer is not in progress or released"
 msgstr "Le transfert de stock n'est pas en cours ou non libéré"
 
+msgid "Stock transfer is not pickable"
+msgstr ""
+
 msgid "Stock transfer line not found"
 msgstr "Ligne de transfert en stock non trouvée"
 
@@ -15105,6 +15117,9 @@ msgstr "Ce travail sera reçu en inventaire. Il ne sera plus disponible sur l'at
 
 msgid "This job will no longer be available on the shop floor."
 msgstr "Ce travail ne sera plus disponible sur l'atelier."
+
+msgid "This line is not a Style SKU"
+msgstr ""
 
 msgid "This lot is expired and can't be picked."
 msgstr "Ce lot est expiré et ne peut pas être sélectionné."
@@ -16816,6 +16831,15 @@ msgstr ""
 msgid "当前货位"
 msgstr ""
 
+msgid "成衣须用水洗唛 UHF 扫码确认。唯一芯片数须等于本行数量，且规格须匹配。"
+msgstr ""
+
+msgid "扫码拣货"
+msgstr ""
+
+msgid "扫码拣货失败"
+msgstr ""
+
 msgid "扫码盘点"
 msgstr ""
 
@@ -16843,6 +16867,9 @@ msgstr ""
 msgid "盘点失败"
 msgstr ""
 
+msgid "确认拣货"
+msgstr ""
+
 msgid "确认绑定"
 msgstr ""
 
@@ -16856,6 +16883,12 @@ msgid "系统编码"
 msgstr ""
 
 msgid "绑定时间"
+msgstr ""
+
+msgid "规格不符"
+msgstr ""
+
+msgid "计划数量"
 msgstr ""
 
 msgid "请先生成系统编码"
@@ -16877,4 +16910,7 @@ msgid "重新扫描"
 msgstr ""
 
 msgid "非本款"
+msgstr ""
+
+msgid "须扫满 {planned} 件本行规格的水洗唛"
 msgstr ""

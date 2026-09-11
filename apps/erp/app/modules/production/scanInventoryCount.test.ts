@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildStyleScanCountCommitLines,
+  tallyLineGarmentPickScans,
   tallyStyleScanCount
 } from "./scanInventoryCount";
 
@@ -81,5 +82,40 @@ describe("buildStyleScanCountCommitLines", () => {
       onHandByVariantId: {}
     });
     expect(lines).toEqual([{ variantItemId: "sku-m", counted: 1, onHand: 0 }]);
+  });
+});
+
+describe("tallyLineGarmentPickScans", () => {
+  it("requires exact planned qty of matching SKU codes", () => {
+    const result = tallyLineGarmentPickScans({
+      rawCodes: ["A", "B", "C", "WRONG", "MISS"],
+      lineItemId: "sku-m",
+      plannedQuantity: 2,
+      unknownCodes: ["MISS"],
+      resolvedByCode: {
+        A: { variantItemId: "sku-m" },
+        B: { variantItemId: "sku-m" },
+        C: { variantItemId: "sku-m" },
+        WRONG: { variantItemId: "sku-l" }
+      }
+    });
+    expect(result.matchingCount).toBe(3);
+    expect(result.wrongSkuCodes).toEqual(["WRONG"]);
+    expect(result.unknownCodes).toEqual(["MISS"]);
+    expect(result.canConfirm).toBe(false);
+  });
+
+  it("canConfirm when unique matching count equals planned qty", () => {
+    const result = tallyLineGarmentPickScans({
+      rawCodes: ["A", "A", "B"],
+      lineItemId: "sku-m",
+      plannedQuantity: 2,
+      resolvedByCode: {
+        A: { variantItemId: "sku-m" },
+        B: { variantItemId: "sku-m" }
+      }
+    });
+    expect(result.matchingCount).toBe(2);
+    expect(result.canConfirm).toBe(true);
   });
 });
