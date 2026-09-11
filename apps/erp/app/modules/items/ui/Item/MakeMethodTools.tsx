@@ -210,7 +210,7 @@ const MakeMethodTools = ({
 
   return (
     <Fragment key={itemId}>
-      <Menubar>
+      <Menubar className="overflow-x-auto overscroll-x-contain">
         <HStack className="w-full justify-between">
           <HStack spacing={0}>
             <MenubarItem
