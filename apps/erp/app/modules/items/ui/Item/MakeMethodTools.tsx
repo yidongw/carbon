@@ -35,7 +35,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuCheck,
@@ -69,6 +69,59 @@ type MakeMethodToolsProps = {
   type: MethodItemType;
   makeMethods: MakeMethod[];
   currentMethodId?: string;
+};
+
+// Horizontally scrollable button group that fades its edges (matching the
+// Menubar's `bg-card`) whenever there's more content off-screen — used to keep
+// the method toolbar usable on narrow/mobile widths. Edge gradients only appear
+// when the row actually overflows, so it's a no-op on desktop.
+const ScrollFadeGroup = ({ children }: { children: React.ReactNode }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ left: false, right: false });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      setEdges({
+        left: el.scrollLeft > 1,
+        right: el.scrollWidth - el.clientWidth - el.scrollLeft > 1
+      });
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <div className="relative min-w-0 flex-1">
+      <div
+        ref={ref}
+        className="overflow-x-auto overscroll-x-contain scrollbar-hide"
+      >
+        {children}
+      </div>
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-card to-transparent transition-opacity duration-200",
+          edges.left ? "opacity-100" : "opacity-0"
+        )}
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-card to-transparent transition-opacity duration-200",
+          edges.right ? "opacity-100" : "opacity-0"
+        )}
+      />
+    </div>
+  );
 };
 
 const MakeMethodTools = ({
@@ -212,37 +265,39 @@ const MakeMethodTools = ({
     <Fragment key={itemId}>
       <Menubar>
         <HStack className="w-full justify-between">
-          <HStack spacing={0}>
-            <MenubarItem
-              isLoading={isGetMethodLoading}
-              isDisabled={
-                !permissions.can("update", "parts") ||
-                isGetMethodLoading ||
-                activeMethod.status !== "Draft" // Can only overwrite Draft versions
-              }
-              leftIcon={<LuGitBranch />}
-              onClick={getMethodModal.onOpen}
-            >
-              <Trans>Get Method</Trans>
-            </MenubarItem>
-            <MenubarItem
-              isDisabled={
-                !permissions.can("update", "parts") || isSaveMethodLoading
-              }
-              isLoading={isSaveMethodLoading}
-              leftIcon={<LuGitMerge />}
-              onClick={saveMethodModal.onOpen}
-            >
-              <Trans>Save Method</Trans>
-            </MenubarItem>
-            {itemLink && (
-              <MenubarItem leftIcon={<LuGitFork />} asChild>
-                <Link prefetch="intent" to={itemLink}>
-                  <Trans>Item Master</Trans>
-                </Link>
+          <ScrollFadeGroup>
+            <HStack spacing={0} className="w-max">
+              <MenubarItem
+                isLoading={isGetMethodLoading}
+                isDisabled={
+                  !permissions.can("update", "parts") ||
+                  isGetMethodLoading ||
+                  activeMethod.status !== "Draft" // Can only overwrite Draft versions
+                }
+                leftIcon={<LuGitBranch />}
+                onClick={getMethodModal.onOpen}
+              >
+                <Trans>Get Method</Trans>
               </MenubarItem>
-            )}
-          </HStack>
+              <MenubarItem
+                isDisabled={
+                  !permissions.can("update", "parts") || isSaveMethodLoading
+                }
+                isLoading={isSaveMethodLoading}
+                leftIcon={<LuGitMerge />}
+                onClick={saveMethodModal.onOpen}
+              >
+                <Trans>Save Method</Trans>
+              </MenubarItem>
+              {itemLink && (
+                <MenubarItem leftIcon={<LuGitFork />} asChild>
+                  <Link prefetch="intent" to={itemLink}>
+                    <Trans>Item Master</Trans>
+                  </Link>
+                </MenubarItem>
+              )}
+            </HStack>
+          </ScrollFadeGroup>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
