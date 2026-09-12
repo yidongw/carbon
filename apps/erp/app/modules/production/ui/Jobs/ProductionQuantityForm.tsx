@@ -1,5 +1,8 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Badge,
   Button,
   cn,
@@ -12,6 +15,8 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { LuLockOpen } from "react-icons/lu";
+import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import ScrapReason from "~/components/Form/ScrapReason";
@@ -21,6 +26,7 @@ import type { ProductionQuantityLineInput } from "~/modules/production/productio
 import { path } from "~/utils/path";
 import type { productionActorKinds } from "../../production.models";
 import {
+  isJobLocked,
   productionQuantityCreateFormValidator,
   productionQuantityValidator
 } from "../../production.models";
@@ -113,6 +119,9 @@ export type ProductionQuantityFormProps = {
   variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
   jobId?: string | null;
+  /** Job status of the edited record's job — locks the form (read-only + reopen
+   * affordance) when the job is Completed/Closed/Cancelled. */
+  jobStatus?: string | null;
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
@@ -150,6 +159,7 @@ const ProductionQuantityForm = ({
   variantsQuantityReferenceSource,
   itemId,
   jobId: jobIdProp,
+  jobStatus,
   processId,
   operationType,
   defaultActorKind,
@@ -192,9 +202,33 @@ const ProductionQuantityForm = ({
   const isCreateMultiLine =
     !isEditing && isCreateMultiLineInitial(initialValues);
 
-  const isDisabled = isEditing
-    ? !permissions.can("update", "production")
-    : !permissions.can("create", "production");
+  // A locked job (Completed/Closed/Cancelled) can't be modified — the action
+  // rejects the write. Disable the whole form so the edit drawer opens read-only
+  // with a "reopen job" affordance instead of failing on submit. Folds into
+  // `isDisabled`, which cascades to every field and the Submit button.
+  const isLocked = isJobLocked(jobStatus);
+  const isDisabled =
+    isLocked ||
+    (isEditing
+      ? !permissions.can("update", "production")
+      : !permissions.can("create", "production"));
+  const canReopenJob = permissions.can("update", "production");
+
+  // Reopen uses its OWN fetcher (not the injected submit `fetcher`): when it
+  // settles, the overlay host re-loads this route's loader (it watches non-GET
+  // fetchers), so `jobStatus` refreshes and the drawer unlocks in place without
+  // reopening the overlay. `?stay=1` makes the status action return data instead
+  // of redirecting, so the fetcher settles cleanly. Mirrors JobHeader's reopen.
+  const reopenFetcher = useFetcher<{ success: boolean }>();
+  const reopenTarget = jobStatus === "Cancelled" ? "Draft" : "In Progress";
+  const isReopening = reopenFetcher.state !== "idle";
+  const handleReopenJob = () => {
+    if (!jobId || !canReopenJob) return;
+    reopenFetcher.submit(
+      { status: reopenTarget },
+      { method: "post", action: `${path.to.jobStatus(jobId)}?stay=1` }
+    );
+  };
 
   const [type, setType] = useState<"Production" | "Scrap" | "Rework">(
     isCreateMultiLine
@@ -607,6 +641,36 @@ const ProductionQuantityForm = ({
         <DrawerBody>
           {isEditing ? <Hidden name="id" /> : null}
           <VStack ref={formBodyRef} spacing={4}>
+            {isLocked ? (
+              <Alert variant="warning">
+                <AlertTitle>
+                  <Trans>Job is locked</Trans>
+                </AlertTitle>
+                <AlertDescription>
+                  <VStack spacing={2}>
+                    <span>
+                      <Trans>
+                        Editing process completion requires reopening the job
+                        first. Reopening changes the job status back to In
+                        Progress.
+                      </Trans>
+                    </span>
+                    {canReopenJob ? (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        leftIcon={<LuLockOpen />}
+                        isLoading={isReopening}
+                        isDisabled={isReopening}
+                        onClick={handleReopenJob}
+                      >
+                        <Trans>Reopen job</Trans>
+                      </Button>
+                    ) : null}
+                  </VStack>
+                </AlertDescription>
+              </Alert>
+            ) : null}
             {hasJobPicker && !isEditing ? (
               <Select
                 name="jobId"
