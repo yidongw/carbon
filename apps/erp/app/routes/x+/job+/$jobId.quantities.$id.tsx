@@ -92,7 +92,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     operationOptions,
     variantQuantityParameters:
       variantQuantityParameters.length > 0 ? variantQuantityParameters : null,
-    itemId
+    itemId,
+    // Surface the job status so the edit drawer can render read-only with a
+    // "reopen job" affordance when the job is locked (Completed/Closed/Cancelled),
+    // instead of letting the user submit an edit that the action rejects.
+    jobStatus: job.data?.status ?? null
   };
 
   if (isSupplierQuantityReportId(id)) {
