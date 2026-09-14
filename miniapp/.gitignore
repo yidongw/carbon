@@ -1,0 +1,13 @@
+node_modules/
+dist/
+lib/
+.temp/
+.rn_temp/
+.DS_Store
+*.log
+.swc/
+
+# 微信上传密钥 & 生成的预览码 —— 绝不入库
+private.*.key
+*.key
+preview-qr.png

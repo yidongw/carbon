@@ -1,0 +1,52 @@
+.home {
+  padding: 24px;
+
+  &__header {
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    display: block;
+    font-size: 44px;
+    font-weight: 600;
+  }
+
+  &__subtitle {
+    display: block;
+    margin-top: 4px;
+    font-size: 26px;
+    color: #86868b;
+  }
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}
+
+.card {
+  width: calc((100% - 20px) / 2);
+  box-sizing: border-box;
+  padding: 28px 24px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  &--hover {
+    background-color: #f0f0f2;
+  }
+
+  &__title {
+    display: block;
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  &__desc {
+    display: block;
+    margin-top: 8px;
+    font-size: 24px;
+    color: #86868b;
+  }
+}
