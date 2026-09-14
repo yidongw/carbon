@@ -62,6 +62,30 @@ export async function action({ request }: ActionFunctionArgs) {
       id = `${jobId}:${id}:${makeMethodId}:${materialId ?? ""}`;
     }
 
+    if (table === "job") {
+      // If this job is a Bundle Work Order, mirror the assignee down onto its
+      // operations. The MES report reads the operation-level assignee
+      // (jobOperation.assignee), so without this the bundle's 负责人 change
+      // would never show up there.
+      const bundle = await client
+        .from("bundleWorkOrder")
+        .select("id")
+        .eq("jobId", id)
+        .eq("companyId", companyId)
+        .maybeSingle();
+      if (bundle.data) {
+        await client
+          .from("jobOperation")
+          .update({
+            assignee: assignee ? assignee : null,
+            assignedAt: assignee ? new Date().toISOString() : null,
+            updatedBy: userId
+          })
+          .eq("jobId", id)
+          .eq("companyId", companyId);
+      }
+    }
+
     if (
       table === "nonConformanceActionTask" ||
       table === "nonConformanceApprovalTask"
