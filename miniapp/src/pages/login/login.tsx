@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { View, Text, Input } from '@tarojs/components'
+import { View, Text, Input, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { sendCode, verifyCode } from '../../services/auth'
 import type { LoginChannel, LoginResponse } from '../../services/auth'
@@ -73,10 +73,13 @@ export default function Login() {
       return
     }
     setLoading(true)
+    Taro.showLoading({ title: '登录中…', mask: true })
     try {
       const res = await verifyCode(channel, value, code)
+      Taro.hideLoading()
       afterLogin(res)
     } catch (e: any) {
+      Taro.hideLoading()
       Taro.showToast({ title: e?.message || '登录失败', icon: 'none' })
     } finally {
       setLoading(false)
@@ -141,13 +144,14 @@ export default function Login() {
         </Text>
       </View>
 
-      <View
-        className={`login__btn ${loading ? 'login__btn--loading' : ''}`}
-        hoverClass='login__btn--hover'
-        onClick={loading ? undefined : onLogin}
+      <Button
+        className='login__btn'
+        type='primary'
+        loading={loading}
+        onClick={onLogin}
       >
-        <Text className='login__btn-text'>{loading ? '登录中…' : '登录'}</Text>
-      </View>
+        登录
+      </Button>
 
       <Text className='login__hint'>
         首次登录请使用管理员已邀请的手机号 / 邮箱。

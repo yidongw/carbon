@@ -75,25 +75,16 @@
   &__btn {
     margin-top: 16px;
     height: 96px;
+    line-height: 96px;
     border-radius: 999px;
     background-color: #0071e3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &--hover {
-      background-color: #005bb5;
-    }
-
-    &--loading {
-      opacity: 0.6;
-    }
-  }
-
-  &__btn-text {
     color: #ffffff;
     font-size: 32px;
     font-weight: 600;
+
+    &::after {
+      border: none;
+    }
   }
 
   &__hint {
