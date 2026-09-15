@@ -3,14 +3,14 @@ page {
 }
 
 .tasks {
-  padding: 24px 24px 200px;
+  padding: 0 24px 200px;
 
   &__segs {
     display: flex;
     background: #eef0f4;
     border-radius: 16px;
     padding: 6px;
-    margin-bottom: 24px;
+    margin: 12px 0 24px;
   }
 
   &__seg {

@@ -5,6 +5,7 @@ import { logout } from '../../services/auth'
 import { getMe } from '../../services/me'
 import type { Me } from '../../services/me'
 import TabBar from '../../components/TabBar'
+import NavBar from '../../components/NavBar'
 import './index.scss'
 
 const ITEMS = [
@@ -31,6 +32,10 @@ export default function Profile() {
       Taro.navigateTo({ url: '/pages/functions/index' })
       return
     }
+    if (key === 'salary') {
+      Taro.navigateTo({ url: '/pages/salary/index' })
+      return
+    }
     Taro.showToast({ title: `TODO: ${key}`, icon: 'none' })
   }
 
@@ -38,6 +43,7 @@ export default function Profile() {
 
   return (
     <View className='me'>
+      <NavBar title='我的' />
       <View className='me__head'>
         <View className='me__avatar'>
           {me?.avatarUrl ? (

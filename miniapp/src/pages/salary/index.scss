@@ -1,0 +1,130 @@
+page {
+  background: #f3f5f9;
+}
+
+.sal {
+  padding: 0 24px 60px;
+
+  &__card {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #1f2733, #0f141c);
+    border-radius: 28px;
+    padding: 40px 36px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 16px 40px rgba(15, 20, 28, 0.28);
+  }
+
+  &__month {
+    font-size: 24px;
+    color: #9aa6b8;
+  }
+
+  &__earned {
+    margin-top: 12px;
+    font-size: 76px;
+    font-weight: 800;
+    color: #fbbf24;
+    letter-spacing: 1px;
+  }
+
+  &__earned-label {
+    margin-top: 6px;
+    font-size: 24px;
+    color: #9aa6b8;
+  }
+
+  &__split {
+    margin-top: 32px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  &__split-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__split-num {
+    font-size: 34px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  &__split-label {
+    margin-top: 6px;
+    font-size: 22px;
+    color: #9aa6b8;
+  }
+
+  &__split-divider {
+    width: 1px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  &__sec {
+    display: block;
+    margin: 32px 4px 14px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #5b6472;
+  }
+
+  &__list {
+    background: #ffffff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.05);
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: 26px 28px;
+    border-bottom: 1px solid #f2f4f7;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__row-mid {
+    flex: 1;
+  }
+
+  &__row-title {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__row-sub {
+    display: block;
+    margin-top: 6px;
+    font-size: 22px;
+    color: #8a94a6;
+  }
+
+  &__row-earned {
+    font-size: 30px;
+    font-weight: 700;
+    color: #16a34a;
+  }
+
+  &__empty {
+    padding: 120px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__empty-text {
+    font-size: 26px;
+    color: #9aa3b2;
+  }
+}

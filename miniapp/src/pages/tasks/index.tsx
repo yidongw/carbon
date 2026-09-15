@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import { getOperations } from '../../services/operations'
 import type { OpsData, OpItem } from '../../services/operations'
 import TabBar from '../../components/TabBar'
+import NavBar from '../../components/NavBar'
 import './index.scss'
 
 const SEGS = [
@@ -32,6 +33,7 @@ export default function Tasks() {
 
   return (
     <View className='tasks'>
+      <NavBar title='我的任务' />
       <View className='tasks__segs'>
         {SEGS.map((s) => (
           <View

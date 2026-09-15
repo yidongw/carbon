@@ -1,4 +1,4 @@
 export default definePageConfig({
-  navigationBarTitleText: '消息',
+  navigationBarTitleText: '我的工资',
   navigationStyle: 'custom',
 })
