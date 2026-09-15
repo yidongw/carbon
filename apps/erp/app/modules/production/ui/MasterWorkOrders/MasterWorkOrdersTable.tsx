@@ -48,7 +48,7 @@ import type {
   MasterWorkOrder
 } from "~/modules/production";
 import { deriveCuttingStatus } from "~/modules/production/cuttingStatus";
-import { useCustomers, usePeople } from "~/stores";
+import { useCustomers, usePeople, useStyles } from "~/stores";
 import { path } from "~/utils/path";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { Job } from "../../types";
@@ -91,6 +91,7 @@ const MasterWorkOrdersTable = memo(
     const getDeadlineTypeLabel = useDeadlineTypeLabel();
     const [customers] = useCustomers();
     const [people] = usePeople();
+    const styles = useStyles();
     const locations = useLocations();
     // usePermissions() returns a fresh object each render, so depend on a stable
     // boolean instead — keeping it in the columns deps would recompute `columns`
@@ -220,7 +221,16 @@ const MasterWorkOrdersTable = memo(
               </HStack>
             );
           },
-          meta: { icon: <LuShirt /> }
+          meta: {
+            icon: <LuShirt />,
+            filter: {
+              type: "static",
+              options: styles.map((style) => ({
+                value: style.readableIdWithRevision,
+                label: style.readableIdWithRevision
+              }))
+            }
+          }
         },
         {
           accessorKey: "quantity",
@@ -626,6 +636,7 @@ const MasterWorkOrdersTable = memo(
       formatDate,
       customers,
       people,
+      styles,
       locations,
       getDeadlineTypeLabel,
       configuredItemIds,
