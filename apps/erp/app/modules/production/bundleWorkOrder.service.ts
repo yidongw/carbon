@@ -86,7 +86,10 @@ type CuttingCell = {
 
 export type BundleWorkOrder = NonNullable<
   Awaited<ReturnType<typeof getBundleWorkOrders>>["data"]
->[number];
+>[number] & {
+  /** Enriched by getBundleWorkOrdersList for the Master WO column. */
+  masterJobReadableId?: string | null;
+};
 
 /** All bundle work orders belonging to a master work order (ordered by sequence). */
 export async function getBundleWorkOrders(
@@ -105,6 +108,7 @@ export async function getBundleWorkOrders(
 /**
  * Paginated list of bundle work orders. Company-wide for the list page, or
  * scoped to a single master via `masterWorkOrderId` (the Master WO detail tab).
+ * Enriches each row with `masterJobReadableId` for the Master WO column.
  */
 export async function getBundleWorkOrdersList(
   client: SupabaseClient<Database>,
@@ -135,7 +139,52 @@ export async function getBundleWorkOrdersList(
     ]);
   }
 
-  return query;
+  const result = await query;
+  if (result.error || !result.data) {
+    return result;
+  }
+
+  const data = await attachMasterJobReadableIds(client, companyId, result.data);
+  return { ...result, data };
+}
+
+async function attachMasterJobReadableIds<
+  T extends { masterWorkOrderId?: string | null }
+>(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  rows: T[]
+): Promise<Array<T & { masterJobReadableId: string | null }>> {
+  const masterIds = [
+    ...new Set(
+      rows
+        .map((row) => row.masterWorkOrderId)
+        .filter((id): id is string => Boolean(id))
+    )
+  ];
+  if (masterIds.length === 0) {
+    return rows.map((row) => ({ ...row, masterJobReadableId: null }));
+  }
+
+  const { data: masters } = await client
+    .from("masterWorkOrders")
+    .select("id, jobReadableId")
+    .eq("companyId", companyId)
+    .in("id", masterIds);
+
+  const readableById = new Map<string, string>();
+  for (const master of masters ?? []) {
+    if (master.id && master.jobReadableId) {
+      readableById.set(master.id, master.jobReadableId);
+    }
+  }
+
+  return rows.map((row) => ({
+    ...row,
+    masterJobReadableId: row.masterWorkOrderId
+      ? (readableById.get(row.masterWorkOrderId) ?? null)
+      : null
+  }));
 }
 
 export async function getBundleWorkOrder(

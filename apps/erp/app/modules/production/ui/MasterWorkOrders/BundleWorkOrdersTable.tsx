@@ -9,6 +9,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
 import {
+  LuBookMarked,
   LuCirclePlay,
   LuClipboardList,
   LuClock,
@@ -136,6 +137,39 @@ const BundleWorkOrdersTable = memo(
           ),
           meta: { icon: <LuPackageOpen /> }
         },
+        // Standalone list: show Master WO. Hidden when already scoped inside a
+        // master WO shell/overlay (masterWorkOrderId prop is set).
+        ...(!masterWorkOrderId
+          ? ([
+              {
+                accessorKey: "masterWorkOrderId",
+                header: t`Master Work Order`,
+                cell: ({
+                  row
+                }: {
+                  row: { original: (typeof rows)[number] };
+                }) => {
+                  const masterId = row.original.masterWorkOrderId;
+                  const label =
+                    row.original.masterJobReadableId?.trim() || masterId;
+                  if (!masterId || !label) return "—";
+                  return (
+                    <Hyperlink
+                      to={path.to.masterWorkOrder(masterId)}
+                      className="font-mono text-sm font-medium"
+                      onClick={(e: MouseEvent) => e.stopPropagation()}
+                    >
+                      {label}
+                    </Hyperlink>
+                  );
+                },
+                meta: {
+                  icon: <LuBookMarked />,
+                  pluralHeader: t`Master Work Orders`
+                }
+              }
+            ] as ColumnDef<(typeof rows)[number]>[])
+          : []),
         {
           accessorKey: "quantity",
           header: t`Quantity`,
@@ -291,7 +325,16 @@ const BundleWorkOrdersTable = memo(
       }
 
       return cols;
-    }, [t, i18n, people, styles, dateFormatter, openProcesses, rows]);
+    }, [
+      t,
+      i18n,
+      people,
+      styles,
+      dateFormatter,
+      openProcesses,
+      rows,
+      masterWorkOrderId
+    ]);
 
     return (
       <>
