@@ -7,6 +7,7 @@ type JobOperationItem = {
 type JobOperationJob = {
   id?: string | null;
   jobId?: string | null;
+  quantity?: number | null;
   item?: JobOperationItem | JobOperationItem[] | null;
 };
 
@@ -95,6 +96,13 @@ export function getItemReadableIdWithRevision(row: JobOperationRow) {
 
 export function getItemName(row: JobOperationRow) {
   return getItem(row)?.name ?? "";
+}
+
+/** Planned WO quantity from the nested job, when selected. */
+export function getJobQuantity(row: JobOperationRow): number | null {
+  const job = getJob(row);
+  const qty = job?.quantity;
+  return typeof qty === "number" && Number.isFinite(qty) ? qty : null;
 }
 
 export function getJobInternalId(row: {

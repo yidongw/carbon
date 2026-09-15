@@ -16466,6 +16466,9 @@ msgstr "WIP"
 msgid "With Previous"
 msgstr "With Previous"
 
+msgid "WO Qty"
+msgstr "WO Qty"
+
 msgid "Won"
 msgstr "Won"
 

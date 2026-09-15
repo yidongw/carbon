@@ -41,7 +41,7 @@ const productionPayApprovalSelect = `
   employee:user!productionQuantity_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
-    job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
+    job:jobId(id, jobId, quantity, item:itemId(id, readableIdWithRevision, name))
   )
 `;
 
@@ -50,7 +50,7 @@ const productionPayApprovalReportSelect = `
   employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
-    job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
+    job:jobId(id, jobId, quantity, item:itemId(id, readableIdWithRevision, name))
   )
 `;
 
@@ -59,7 +59,7 @@ const productionQuantityReportListSelect = `
   employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
-    job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
+    job:jobId(id, jobId, quantity, item:itemId(id, readableIdWithRevision, name))
   )
 `;
 
@@ -146,6 +146,15 @@ function getJobIdFromJobOperation(jobOperation: unknown): string | null {
   const job = Array.isArray(jo.job) ? jo.job[0] : jo.job;
   if (!job || typeof job !== "object" || !("id" in job)) return null;
   return typeof job.id === "string" ? job.id : null;
+}
+
+function getJobQuantityFromJobOperation(jobOperation: unknown): number | null {
+  const jo = Array.isArray(jobOperation) ? jobOperation[0] : jobOperation;
+  if (!jo || typeof jo !== "object" || !("job" in jo)) return null;
+  const job = Array.isArray(jo.job) ? jo.job[0] : jo.job;
+  if (!job || typeof job !== "object" || !("quantity" in job)) return null;
+  const qty = (job as { quantity?: unknown }).quantity;
+  return typeof qty === "number" && Number.isFinite(qty) ? qty : null;
 }
 
 function scopeWantsStatus(
@@ -411,6 +420,129 @@ function getFilterValuesFromFilters(
   return ids.size > 0 ? [...ids] : null;
 }
 
+/**
+ * Expand Style parent item ids (and any legacy variant SKU ids) into the full
+ * set of item ids that may appear on jobs: the parents themselves plus every
+ * child variant SKU. Used so a Style filter matches both master WO jobs
+ * (parent itemId) and bundle WO jobs (variant itemId).
+ */
+async function expandStyleFilterToItemIds(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  selectedIds: string[]
+): Promise<{ data: string[] | null; error: unknown }> {
+  if (selectedIds.length === 0) {
+    return { data: [], error: null };
+  }
+
+  const ids = new Set(selectedIds);
+
+  const [
+    { data: asChildren, error: asChildrenError },
+    { data: asParents, error: asParentsError }
+  ] = await Promise.all([
+    client
+      .from("itemVariant")
+      .select("variantItemId, parentItemId")
+      .eq("companyId", companyId)
+      .in("variantItemId", selectedIds),
+    client
+      .from("itemVariant")
+      .select("variantItemId, parentItemId")
+      .eq("companyId", companyId)
+      .in("parentItemId", selectedIds)
+  ]);
+
+  if (asChildrenError) return { data: null, error: asChildrenError };
+  if (asParentsError) return { data: null, error: asParentsError };
+
+  const parentIds = new Set<string>();
+  for (const row of asChildren ?? []) {
+    if (row.parentItemId) {
+      ids.add(row.parentItemId);
+      parentIds.add(row.parentItemId);
+    }
+    if (row.variantItemId) ids.add(row.variantItemId);
+  }
+  for (const row of asParents ?? []) {
+    if (row.parentItemId) parentIds.add(row.parentItemId);
+    if (row.variantItemId) ids.add(row.variantItemId);
+  }
+
+  // If the selection included a variant SKU, pull in all siblings under that
+  // Style so the filter behaves like "this style", not "this one SKU".
+  if (parentIds.size > 0) {
+    const missingParents = [...parentIds].filter(
+      (id) => !selectedIds.includes(id)
+    );
+    if (missingParents.length > 0) {
+      const { data: siblings, error: siblingsError } = await client
+        .from("itemVariant")
+        .select("variantItemId")
+        .eq("companyId", companyId)
+        .in("parentItemId", missingParents);
+      if (siblingsError) return { data: null, error: siblingsError };
+      for (const row of siblings ?? []) {
+        if (row.variantItemId) ids.add(row.variantItemId);
+      }
+    }
+  }
+
+  return { data: [...ids], error: null };
+}
+
+/**
+ * Map variant/parent item ids → Style readable id (parent's readableId when
+ * the item is a variant SKU; otherwise the item's own readable id).
+ */
+async function resolveStyleReadableIdsByItemId(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  itemIds: string[]
+): Promise<Map<string, string>> {
+  const result = new Map<string, string>();
+  if (itemIds.length === 0) return result;
+
+  const { data: variants } = await client
+    .from("itemVariant")
+    .select(
+      "variantItemId, parent:item!itemVariant_parentItemId_fkey(id, readableIdWithRevision, readableId)"
+    )
+    .eq("companyId", companyId)
+    .in("variantItemId", itemIds);
+
+  for (const row of variants ?? []) {
+    const parent = row.parent as {
+      id?: string | null;
+      readableIdWithRevision?: string | null;
+      readableId?: string | null;
+    } | null;
+    const label =
+      parent?.readableId?.trim() ||
+      parent?.readableIdWithRevision?.trim() ||
+      null;
+    if (row.variantItemId && label) {
+      result.set(row.variantItemId, label);
+    }
+  }
+
+  const unresolved = itemIds.filter((id) => !result.has(id));
+  if (unresolved.length > 0) {
+    const { data: items } = await client
+      .from("item")
+      .select("id, readableId, readableIdWithRevision")
+      .eq("companyId", companyId)
+      .in("id", unresolved);
+    for (const item of items ?? []) {
+      const label =
+        item.readableId?.trim() || item.readableIdWithRevision?.trim() || null;
+      if (item.id && label) result.set(item.id, label);
+    }
+  }
+
+  return result;
+}
+
 export async function getProductionQuantityReportFilterOptions(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -477,8 +609,12 @@ export async function getProductionQuantityReportFilterOptions(
   }
 
   const jobsMap = new Map<string, ProductionQuantityReportFilterOption>();
-  const itemsMap = new Map<string, ProductionQuantityReportFilterOption>();
   const operationsMap = new Map<string, ProductionQuantityReportFilterOption>();
+  const rawItems: Array<{
+    id: string;
+    readableIdWithRevision: string | null;
+    name: string | null;
+  }> = [];
 
   for (const row of data ?? []) {
     const job = Array.isArray(row.job) ? row.job[0] : row.job;
@@ -488,11 +624,7 @@ export async function getProductionQuantityReportFilterOptions(
     const item = job?.item;
     const itemRow = Array.isArray(item) ? item[0] : item;
     if (itemRow?.id) {
-      const label =
-        itemRow.readableIdWithRevision?.trim() ||
-        itemRow.name?.trim() ||
-        itemRow.id;
-      itemsMap.set(itemRow.id, { id: itemRow.id, label });
+      rawItems.push(itemRow);
     }
     type JoRow = {
       process:
@@ -508,6 +640,62 @@ export async function getProductionQuantityReportFilterOptions(
       const proc = Array.isArray(jo.process) ? jo.process[0] : jo.process;
       if (proc?.id && proc.name) {
         operationsMap.set(proc.id, { id: proc.id, label: proc.name });
+      }
+    }
+  }
+
+  // Collapse variant SKUs into their parent Style so the filter only lists
+  // style codes (1177), not SKUs (1177-PP-3XL). Option id = Style item id.
+  const itemsMap = new Map<string, ProductionQuantityReportFilterOption>();
+  const uniqueItemIds = [...new Set(rawItems.map((i) => i.id))];
+  if (uniqueItemIds.length > 0) {
+    const { data: variants } = await client
+      .from("itemVariant")
+      .select(
+        "variantItemId, parentItemId, parent:item!itemVariant_parentItemId_fkey(id, readableId, readableIdWithRevision, name)"
+      )
+      .eq("companyId", companyId)
+      .in("variantItemId", uniqueItemIds);
+
+    const parentByVariant = new Map<
+      string,
+      {
+        id: string;
+        readableId?: string | null;
+        readableIdWithRevision?: string | null;
+        name?: string | null;
+      }
+    >();
+    for (const v of variants ?? []) {
+      const parent = v.parent as {
+        id?: string | null;
+        readableId?: string | null;
+        readableIdWithRevision?: string | null;
+        name?: string | null;
+      } | null;
+      if (v.variantItemId && parent?.id) {
+        parentByVariant.set(v.variantItemId, {
+          id: parent.id,
+          readableId: parent.readableId,
+          readableIdWithRevision: parent.readableIdWithRevision,
+          name: parent.name
+        });
+      }
+    }
+
+    for (const item of rawItems) {
+      const parent = parentByVariant.get(item.id);
+      if (parent) {
+        const label =
+          parent.readableId?.trim() ||
+          parent.readableIdWithRevision?.trim() ||
+          parent.name?.trim() ||
+          parent.id;
+        itemsMap.set(parent.id, { id: parent.id, label });
+      } else {
+        const label =
+          item.readableIdWithRevision?.trim() || item.name?.trim() || item.id;
+        itemsMap.set(item.id, { id: item.id, label });
       }
     }
   }
@@ -964,11 +1152,25 @@ export async function getProductionQuantityReportPayRows(
   let resolvedJobIds: string[] | null = filterJobIds;
 
   if (filterItemIds) {
+    // Filter options are Style parent ids; expand to parent + all variant SKUs
+    // so both master WO and bundle WO reports match.
+    const { data: expandedItemIds, error: expandError } =
+      await expandStyleFilterToItemIds(client, companyId, filterItemIds);
+    if (expandError) {
+      return {
+        data: null,
+        error: expandError,
+        count: null,
+        status: 0,
+        statusText: ""
+      };
+    }
+
     const { data: jobsForItems, error: jobsForItemsError } = await client
       .from("job")
       .select("id")
       .eq("companyId", companyId)
-      .in("itemId", filterItemIds);
+      .in("itemId", expandedItemIds ?? []);
 
     if (jobsForItemsError) {
       return {
@@ -1198,6 +1400,7 @@ export async function getProductionQuantityReportPayRows(
       createdBy: primary?.createdBy ?? report.createdBy ?? null,
       jobId: getJobIdFromJobOperation(jobOperation),
       itemId: getItemIdFromJobOperation(jobOperation),
+      jobQuantity: getJobQuantityFromJobOperation(jobOperation),
       paymentYear,
       paymentMonth,
       invalidatedAt: primary?.invalidatedAt ?? null,
@@ -1205,6 +1408,30 @@ export async function getProductionQuantityReportPayRows(
       employee: primary?.employee ?? report.employee ?? null,
       jobOperation
     });
+  }
+
+  const styleByItemId = await resolveStyleReadableIdsByItemId(
+    client,
+    companyId,
+    [
+      ...new Set(
+        rows.map((row) => row.itemId).filter((id): id is string => Boolean(id))
+      )
+    ]
+  );
+  for (const row of rows) {
+    if (!row.itemId) continue;
+    row.styleReadableId =
+      styleByItemId.get(row.itemId) ??
+      // Fall back to the nested item readable id when not a variant.
+      (() => {
+        const jo = Array.isArray(row.jobOperation)
+          ? row.jobOperation[0]
+          : row.jobOperation;
+        const job = Array.isArray(jo?.job) ? jo?.job[0] : jo?.job;
+        const item = Array.isArray(job?.item) ? job?.item[0] : job?.item;
+        return item?.readableIdWithRevision ?? null;
+      })();
   }
 
   return {

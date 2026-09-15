@@ -19,6 +19,8 @@ export type ProductionQuantityTableRowLike =
   ProductionQuantityJobOperationRow & {
     jobId?: string | null;
     itemId?: string | null;
+    styleReadableId?: string | null;
+    jobQuantity?: number | null;
     variantQuantities?: unknown;
   };
 
@@ -55,14 +57,18 @@ export function ProductionQuantityTableItemCell({
   row: ProductionQuantityTableRowLike;
 }) {
   const itemInternalId = getItemInternalId(row);
-  const readableId = getItemReadableIdWithRevision(row);
+  const styleReadableId =
+    row.styleReadableId?.trim() || getItemReadableIdWithRevision(row);
+  const skuReadableId = getItemReadableIdWithRevision(row);
   const name = getItemName(row) || "—";
+  const showSkuSubtitle =
+    skuReadableId !== "—" && skuReadableId !== styleReadableId;
 
   const content = (
     <VStack spacing={0}>
-      <span className="text-sm font-medium">{readableId}</span>
+      <span className="text-sm font-medium">{styleReadableId}</span>
       <div className="w-full truncate text-muted-foreground text-xs">
-        {name}
+        {showSkuSubtitle ? skuReadableId : name}
       </div>
     </VStack>
   );
