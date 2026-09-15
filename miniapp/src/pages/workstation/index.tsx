@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
+import { FN_GROUPS } from '../../constants/functions'
 import TabBar from '../../components/TabBar'
 import './index.scss'
 
@@ -51,6 +52,24 @@ export default function Workstation() {
     } catch {
       /* 取消扫码 */
     }
+  }
+
+  // 首页功能区:横向模块 tab + 宫格。
+  const [modKey, setModKey] = useState(FN_GROUPS[0].key)
+  const group = FN_GROUPS.find((g) => g.key === modKey) ?? FN_GROUPS[0]
+
+  const badgeOf = (key: string) => {
+    if (key === 'assigned' && data?.assignedCount) return String(data.assignedCount)
+    if (key === 'active' && data?.activeCount) return String(data.activeCount)
+    return ''
+  }
+
+  const onFn = (key: string) => {
+    if (key === 'salary') {
+      Taro.navigateTo({ url: '/pages/salary/index' })
+      return
+    }
+    Taro.showToast({ title: '功能开发中', icon: 'none' })
   }
 
   const w = data?.worker
@@ -161,6 +180,40 @@ export default function Workstation() {
           </View>
         </>
       ) : null}
+
+      {/* 功能区:横向模块 tab + 宫格 */}
+      <Text className='ws__sec'>功能</Text>
+      <ScrollView className='ws__mods' scrollX showScrollbar={false}>
+        {FN_GROUPS.map((g) => (
+          <View
+            key={g.key}
+            className={`ws__mod ${modKey === g.key ? 'ws__mod--active' : ''}`}
+            onClick={() => setModKey(g.key)}
+          >
+            <Text className='ws__mod-text'>{g.title}</Text>
+          </View>
+        ))}
+      </ScrollView>
+      <View className='ws__fn-grid'>
+        {group.items.map((it) => (
+          <View
+            key={it.key}
+            className='ws__fn-cell'
+            hoverClass='ws__fn-cell--hover'
+            onClick={() => onFn(it.key)}
+          >
+            <View className={`ws__fn-ic ws__fn-ic--${group.color}`}>
+              <Text className='ws__fn-ic-text'>{it.icon}</Text>
+              {badgeOf(it.key) ? (
+                <View className='ws__fn-badge'>
+                  <Text className='ws__fn-badge-text'>{badgeOf(it.key)}</Text>
+                </View>
+              ) : null}
+            </View>
+            <Text className='ws__fn-label'>{it.text}</Text>
+          </View>
+        ))}
+      </View>
 
       <TabBar active='workstation' />
     </View>

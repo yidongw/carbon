@@ -375,4 +375,99 @@ page {
     font-weight: 700;
     color: #fff;
   }
+
+  /* 功能区:横向模块 tab + 宫格 */
+  &__mods {
+    white-space: nowrap;
+    margin-bottom: 16px;
+  }
+
+  &__mod {
+    display: inline-block;
+    padding: 12px 28px;
+    margin-right: 16px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(31, 45, 74, 0.05);
+
+    &--active {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+  }
+
+  &__mod-text {
+    font-size: 26px;
+    color: #5b6472;
+  }
+
+  &__mod--active &__mod-text {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  &__fn-grid {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 20px 6px;
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.05);
+  }
+
+  &__fn-cell {
+    width: 25%;
+    text-align: center;
+    padding: 16px 0;
+
+    &--hover {
+      opacity: 0.6;
+    }
+  }
+
+  &__fn-ic {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    border-radius: 28px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--blue { background: #e8f0ff; }
+    &--purple { background: #f0eaff; }
+    &--green { background: #e6f8ee; }
+    &--orange { background: #fff1e0; }
+    &--gray { background: #eef0f4; }
+  }
+
+  &__fn-ic-text {
+    font-size: 44px;
+  }
+
+  &__fn-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    background: #ff3b30;
+    border: 4px solid #ffffff;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__fn-badge-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  &__fn-label {
+    font-size: 24px;
+    color: #3b4353;
+  }
 }
