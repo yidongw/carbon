@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import './index.scss'
@@ -26,6 +27,17 @@ export default function Workstation() {
   const c = MOCK.current
   const pct = Math.min(100, Math.round((c.done / c.target) * 100))
 
+  // 自定义导航栏:按右上角胶囊按钮位置留出顶部安全区,避免身份栏和胶囊重叠。
+  const [topPad, setTopPad] = useState(64)
+  useEffect(() => {
+    try {
+      const r = Taro.getMenuButtonBoundingClientRect()
+      if (r?.bottom) setTopPad(r.bottom + 10)
+    } catch {
+      /* 忽略 */
+    }
+  }, [])
+
   const onReport = async () => {
     try {
       const r = await Taro.scanCode({ onlyFromCamera: false })
@@ -36,7 +48,7 @@ export default function Workstation() {
   }
 
   return (
-    <View className='ws'>
+    <View className='ws' style={{ paddingTop: `${topPad}px` }}>
       {/* 身份区 */}
       <View className='ws__id'>
         <View className='ws__avatar'>
