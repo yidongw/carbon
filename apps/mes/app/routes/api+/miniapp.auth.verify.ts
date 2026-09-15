@@ -1,4 +1,4 @@
-import { assertIsPost, RATE_LIMIT } from "@carbon/auth";
+import { assertIsPost, isBypassEmail, RATE_LIMIT } from "@carbon/auth";
 import { checkSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
 import { signInWithUserIdViaAdmin } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
@@ -51,11 +51,12 @@ export async function action({ request }: ActionFunctionArgs) {
     return jsonResponse({ message: "请求体不是合法 JSON" }, { status: 400 });
   }
 
-  if (!code) return jsonResponse({ message: "请输入验证码" }, { status: 400 });
-
   let userId = "";
 
   if (phone) {
+    if (!code) {
+      return jsonResponse({ message: "请输入验证码" }, { status: 400 });
+    }
     const valid = await checkSmsVerifyCode(phone, code);
     if (!valid) {
       return jsonResponse({ message: "验证码错误或已过期" }, { status: 401 });
@@ -72,16 +73,35 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     userId = user.id;
   } else if (email) {
-    const valid = await verifyEmailCode(email, code);
-    if (!valid) {
-      return jsonResponse({ message: "验证码错误或已过期" }, { status: 401 });
-    }
+    // DEV_BYPASS_EMAIL 白名单里的邮箱免验证码直接登录(与 MES 网页登录一致)。
+    // 只需该邮箱是激活用户;非白名单邮箱仍必须输验证码。
+    if (isBypassEmail(email)) {
+      const user = await getUserByEmail(email);
+      if (!user.data || !user.data.active) {
+        return jsonResponse(
+          { message: "该邮箱未注册或未激活" },
+          { status: 403 }
+        );
+      }
+      userId = user.data.id;
+    } else {
+      if (!code) {
+        return jsonResponse({ message: "请输入验证码" }, { status: 400 });
+      }
+      const valid = await verifyEmailCode(email, code);
+      if (!valid) {
+        return jsonResponse({ message: "验证码错误或已过期" }, { status: 401 });
+      }
 
-    const user = await getUserByEmail(email);
-    if (!user.data || !user.data.active) {
-      return jsonResponse({ message: "该邮箱未注册或未激活" }, { status: 403 });
+      const user = await getUserByEmail(email);
+      if (!user.data || !user.data.active) {
+        return jsonResponse(
+          { message: "该邮箱未注册或未激活" },
+          { status: 403 }
+        );
+      }
+      userId = user.data.id;
     }
-    userId = user.data.id;
   } else {
     return jsonResponse({ message: "请提供手机号或邮箱" }, { status: 400 });
   }

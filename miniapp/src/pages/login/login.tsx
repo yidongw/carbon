@@ -73,7 +73,8 @@ export default function Login() {
       Taro.showToast({ title: '请填写正确的登录账号', icon: 'none' })
       return
     }
-    if (!/^\d{4,6}$/.test(code)) {
+    // 手机号必须输验证码;邮箱允许空验证码(后端判断是否为免验证码白名单邮箱)。
+    if (channel === 'phone' && !/^\d{4,6}$/.test(code)) {
       Taro.showToast({ title: '请输入验证码', icon: 'none' })
       return
     }
