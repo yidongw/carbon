@@ -4,6 +4,7 @@ export default defineAppConfig({
     'pages/workstation/index',
     'pages/tasks/index',
     'pages/profile/index',
+    'pages/functions/index',
   ],
   tabBar: {
     custom: true,

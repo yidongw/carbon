@@ -11,6 +11,10 @@ const ITEMS = [
 
 export default function Profile() {
   const onItem = (key: string) => {
+    if (key === 'all') {
+      Taro.navigateTo({ url: '/pages/functions/index' })
+      return
+    }
     Taro.showToast({ title: `TODO: ${key}`, icon: 'none' })
   }
 
