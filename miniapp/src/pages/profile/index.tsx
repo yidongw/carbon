@@ -1,6 +1,9 @@
-import { View, Text } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import { useState } from 'react'
+import { View, Text, Image } from '@tarojs/components'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { logout } from '../../services/auth'
+import { getMe } from '../../services/me'
+import type { Me } from '../../services/me'
 import TabBar from '../../components/TabBar'
 import './index.scss'
 
@@ -11,6 +14,18 @@ const ITEMS = [
 ]
 
 export default function Profile() {
+  const [me, setMe] = useState<Me | null>(null)
+
+  useDidShow(() => {
+    getMe()
+      .then(setMe)
+      .catch((e: any) => {
+        if (e?.statusCode !== 401) {
+          Taro.showToast({ title: e?.message || '加载失败', icon: 'none' })
+        }
+      })
+  })
+
   const onItem = (key: string) => {
     if (key === 'all') {
       Taro.navigateTo({ url: '/pages/functions/index' })
@@ -19,15 +34,21 @@ export default function Profile() {
     Taro.showToast({ title: `TODO: ${key}`, icon: 'none' })
   }
 
+  const sub = [me?.companyName, me?.workCenter].filter(Boolean).join(' · ')
+
   return (
     <View className='me'>
       <View className='me__head'>
         <View className='me__avatar'>
-          <Text className='me__avatar-text'>王</Text>
+          {me?.avatarUrl ? (
+            <Image className='me__avatar-img' src={me.avatarUrl} />
+          ) : (
+            <Text className='me__avatar-text'>{me?.initial || '·'}</Text>
+          )}
         </View>
         <View className='me__info'>
-          <Text className='me__name'>王师傅</Text>
-          <Text className='me__sub'>华东制衣一厂 · 3号缝纫线</Text>
+          <Text className='me__name'>{me?.name || '加载中…'}</Text>
+          <Text className='me__sub'>{sub || '未加入公司'}</Text>
         </View>
       </View>
 
