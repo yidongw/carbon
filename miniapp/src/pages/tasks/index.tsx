@@ -1,47 +1,70 @@
 import { useState } from 'react'
 import { View, Text } from '@tarojs/components'
+import Taro, { useDidShow } from '@tarojs/taro'
+import { getOperations } from '../../services/operations'
+import type { OpsData, OpItem } from '../../services/operations'
 import TabBar from '../../components/TabBar'
 import './index.scss'
 
-const SEGS = ['已分配', '进行中', '最近'] as const
-
-// TODO: 接 /api/miniapp/operations/assigned|active|recent。
-const MOCK = [
-  { id: '1', title: '领口锁边 · JOB-2048', sub: '3号缝纫线 · 待开工', tag: '待开工' },
-  { id: '2', title: '袖口缝合 · JOB-2043', sub: '目标 200 / 已报 128', tag: '进行中' },
-  { id: '3', title: '门襟压线 · JOB-2039', sub: '今日完成', tag: '已完成' },
-]
+const SEGS = [
+  { key: 'assigned', text: '已分配' },
+  { key: 'active', text: '进行中' },
+  { key: 'recent', text: '最近' },
+] as const
 
 export default function Tasks() {
-  const [seg, setSeg] = useState<(typeof SEGS)[number]>('已分配')
+  const [seg, setSeg] = useState<(typeof SEGS)[number]['key']>('assigned')
+  const [data, setData] = useState<OpsData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useDidShow(() => {
+    getOperations()
+      .then(setData)
+      .catch((e: any) => {
+        if (e?.statusCode !== 401) {
+          Taro.showToast({ title: e?.message || '加载失败', icon: 'none' })
+        }
+      })
+      .finally(() => setLoading(false))
+  })
+
+  const list: OpItem[] = data ? data[seg] : []
 
   return (
     <View className='tasks'>
       <View className='tasks__segs'>
         {SEGS.map((s) => (
           <View
-            key={s}
-            className={`tasks__seg ${seg === s ? 'tasks__seg--active' : ''}`}
-            onClick={() => setSeg(s)}
+            key={s.key}
+            className={`tasks__seg ${seg === s.key ? 'tasks__seg--active' : ''}`}
+            onClick={() => setSeg(s.key)}
           >
-            <Text className='tasks__seg-text'>{s}</Text>
+            <Text className='tasks__seg-text'>{s.text}</Text>
           </View>
         ))}
       </View>
 
-      <View className='tasks__list'>
-        {MOCK.map((t) => (
-          <View key={t.id} className='tasks__row'>
-            <View className='tasks__row-mid'>
-              <Text className='tasks__row-title'>{t.title}</Text>
-              <Text className='tasks__row-sub'>{t.sub}</Text>
+      {list.length > 0 ? (
+        <View className='tasks__list'>
+          {list.map((t) => (
+            <View key={t.id} className='tasks__row'>
+              <View className='tasks__row-mid'>
+                <Text className='tasks__row-title'>{t.title}</Text>
+                <Text className='tasks__row-sub'>{t.sub}</Text>
+              </View>
+              <View className='tasks__tag'>
+                <Text className='tasks__tag-text'>{t.tag}</Text>
+              </View>
             </View>
-            <View className='tasks__tag'>
-              <Text className='tasks__tag-text'>{t.tag}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
+      ) : (
+        <View className='tasks__empty'>
+          <Text className='tasks__empty-text'>
+            {loading ? '加载中…' : '暂无任务'}
+          </Text>
+        </View>
+      )}
 
       <TabBar active='tasks' />
     </View>

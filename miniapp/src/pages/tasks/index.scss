@@ -81,4 +81,15 @@ page {
     font-size: 22px;
     color: #2563eb;
   }
+
+  &__empty {
+    padding-top: 200px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__empty-text {
+    font-size: 26px;
+    color: #9aa3b2;
+  }
 }
