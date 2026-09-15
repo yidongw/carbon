@@ -31,6 +31,10 @@ export type ProductionQuantityListRow = {
   styleReadableId?: string | null;
   /** Planned / target quantity on the work order (`job.quantity`). */
   jobQuantity?: number | null;
+  /** Master WO id when this report's job is a master backing job or a bundle under one. */
+  masterWorkOrderId?: string | null;
+  /** Master WO job readable id (e.g. "J000125") for display/link. */
+  masterJobReadableId?: string | null;
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;
