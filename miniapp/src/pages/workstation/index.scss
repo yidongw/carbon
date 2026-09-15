@@ -208,6 +208,31 @@ page {
     letter-spacing: 2px;
   }
 
+  /* 空闲态 */
+  &__idle {
+    margin-top: 24px;
+    background: #fff;
+    border-radius: 28px;
+    padding: 48px 32px 40px;
+    text-align: center;
+    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.07);
+  }
+
+  &__idle-title {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__idle-sub {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 28px;
+    font-size: 24px;
+    color: #8a94a6;
+  }
+
   /* 待办 */
   &__sec {
     display: block;
