@@ -27,6 +27,7 @@ export async function request<T = unknown>(
   const res = await Taro.request({
     ...rest,
     url: url.startsWith('http') ? url : `${BASE_URL}${url}`,
+    timeout: 20000,
     header: {
       'content-type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -34,7 +35,9 @@ export async function request<T = unknown>(
     },
   })
 
-  if (res.statusCode === 401) {
+  // 仅对已登录请求把 401 当作会话过期跳登录;登录类接口(auth:false)的 401
+  // 是"验证码错误"等业务错误,应正常抛出消息,不要跳转覆盖提示。
+  if (auth && res.statusCode === 401) {
     Taro.removeStorageSync(TOKEN_KEY)
     Taro.reLaunch({ url: '/pages/login/login' })
     throw { statusCode: 401, message: '登录已过期' } as ApiError
