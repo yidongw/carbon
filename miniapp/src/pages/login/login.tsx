@@ -46,7 +46,11 @@ export default function Login() {
       Taro.showToast({ title: '验证码已发送', icon: 'none' })
       startCountdown()
     } catch (e: any) {
-      Taro.showToast({ title: e?.message || '发送失败', icon: 'none' })
+      Taro.showModal({
+        title: '发送失败',
+        content: e?.message || '发送失败',
+        showCancel: false,
+      })
     } finally {
       setSending(false)
     }
@@ -80,7 +84,11 @@ export default function Login() {
       afterLogin(res)
     } catch (e: any) {
       Taro.hideLoading()
-      Taro.showToast({ title: e?.message || '登录失败', icon: 'none' })
+      Taro.showModal({
+        title: '登录失败',
+        content: e?.message || '登录失败',
+        showCancel: false,
+      })
     } finally {
       setLoading(false)
     }

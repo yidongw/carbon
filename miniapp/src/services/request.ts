@@ -24,16 +24,29 @@ export async function request<T = unknown>(
   const { auth = true, header, url, ...rest } = options
   const token = auth ? Taro.getStorageSync(TOKEN_KEY) : ''
 
-  const res = await Taro.request({
-    ...rest,
-    url: url.startsWith('http') ? url : `${BASE_URL}${url}`,
-    timeout: 20000,
-    header: {
-      'content-type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(header || {}),
-    },
-  })
+  const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`
+
+  let res: Taro.request.SuccessCallbackResult
+  try {
+    res = await Taro.request({
+      ...rest,
+      url: fullUrl,
+      timeout: 10000,
+      header: {
+        'content-type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(header || {}),
+      },
+    })
+  } catch (err: any) {
+    // wx.request 失败(超时 / 域名不合法 / 网络等)会 reject,原始信息在 errMsg。
+    // 抛出可读消息,便于界面直接展示真正的失败原因。
+    throw {
+      statusCode: 0,
+      message: err?.errMsg ? `网络请求失败: ${err.errMsg}` : '网络请求失败',
+      data: err,
+    } as ApiError
+  }
 
   // 仅对已登录请求把 401 当作会话过期跳登录;登录类接口(auth:false)的 401
   // 是"验证码错误"等业务错误,应正常抛出消息,不要跳转覆盖提示。
