@@ -1,0 +1,15 @@
+import { View, Text } from '@tarojs/components'
+import TabBar from '../../components/TabBar'
+import './index.scss'
+
+export default function Messages() {
+  return (
+    <View className='msg'>
+      <View className='msg__empty'>
+        <Text className='msg__empty-title'>暂无消息</Text>
+        <Text className='msg__empty-sub'>新工单、报工审批结果会在这里通知你</Text>
+      </View>
+      <TabBar active='messages' />
+    </View>
+  )
+}

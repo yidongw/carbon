@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react'
-import { View, Text } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
 import TabBar from '../../components/TabBar'
 import './index.scss'
+
+// 空闲态的扫码大图(角框 + 内部网格,品牌蓝)。
+const SCAN_ILLUS = `data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24V14a6 6 0 0 1 6-6h10"/><path d="M40 8h10a6 6 0 0 1 6 6v10"/><path d="M56 40v10a6 6 0 0 1-6 6H40"/><path d="M24 56H14a6 6 0 0 1-6-6V40"/><rect x="23" y="23" width="18" height="18" rx="2" stroke-width="2.4"/><path d="M29 23v18M35 23v18M23 29h18M23 35h18" stroke-width="1.6"/></svg>`,
+)}`
 
 export default function Workstation() {
   const [data, setData] = useState<Dashboard | null>(null)
@@ -110,10 +115,24 @@ export default function Workstation() {
         </View>
       ) : (
         <View className='ws__idle'>
-          <Text className='ws__idle-title'>{loading ? '加载中…' : '暂无进行中的工序'}</Text>
-          <Text className='ws__idle-sub'>扫描工单/扎包标签,领取并开始工作</Text>
-          <View className='ws__report' hoverClass='ws__report--hover' onClick={onScan}>
-            <Text className='ws__report-text'>扫码领工单</Text>
+          <View className='ws__scan-card'>
+            <Image className='ws__scan-illus' src={SCAN_ILLUS} />
+          </View>
+          <Text className='ws__idle-title'>
+            {loading ? '加载中…' : '扫码开始工作'}
+          </Text>
+          <Text className='ws__idle-sub'>扫描分包标签即可自动领取工单</Text>
+          <Text className='ws__idle-sub'>或进入报工,无需手动查找</Text>
+
+          <View className='ws__idle-primary' hoverClass='ws__idle-primary--hover' onClick={onScan}>
+            <Text className='ws__idle-primary-text'>扫码领工单</Text>
+          </View>
+          <View
+            className='ws__idle-secondary'
+            hoverClass='ws__idle-secondary--hover'
+            onClick={() => Taro.showToast({ title: '手动选择工单(开发中)', icon: 'none' })}
+          >
+            <Text className='ws__idle-secondary-text'>手动选择工单</Text>
           </View>
         </View>
       )}

@@ -1,0 +1,26 @@
+page {
+  background: #f3f5f9;
+}
+
+.msg {
+  min-height: 100vh;
+
+  &__empty {
+    padding-top: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__empty-title {
+    font-size: 30px;
+    font-weight: 600;
+    color: #5b6472;
+  }
+
+  &__empty-sub {
+    margin-top: 14px;
+    font-size: 24px;
+    color: #9aa3b2;
+  }
+}

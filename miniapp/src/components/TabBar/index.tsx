@@ -3,19 +3,22 @@ import Taro from '@tarojs/taro'
 import { svgIcon } from './icons'
 import './index.scss'
 
-export type TabKey = 'workstation' | 'tasks' | 'profile'
+export type TabKey = 'workstation' | 'tasks' | 'messages' | 'profile'
 
 const ACTIVE = '#2563eb'
 const INACTIVE = '#9aa3b2'
 
-const NAV: { key: TabKey; text: string; icon: string; path: string }[] = [
-  { key: 'workstation', text: '工作台', icon: 'home', path: '/pages/workstation/index' },
-  { key: 'tasks', text: '我的任务', icon: 'tasks', path: '/pages/tasks/index' },
+const LEFT: { key: TabKey; text: string; icon: string; path: string }[] = [
+  { key: 'workstation', text: '工作台', icon: 'grid', path: '/pages/workstation/index' },
+  { key: 'tasks', text: '任务', icon: 'list', path: '/pages/tasks/index' },
+]
+const RIGHT: { key: TabKey; text: string; icon: string; path: string }[] = [
+  { key: 'messages', text: '消息', icon: 'chat', path: '/pages/messages/index' },
   { key: 'profile', text: '我的', icon: 'user', path: '/pages/profile/index' },
 ]
 
 export default function TabBar({ active }: { active: TabKey }) {
-  const go = (item: (typeof NAV)[number]) => {
+  const go = (item: { key: TabKey; path: string }) => {
     if (item.key === active) return
     Taro.reLaunch({ url: item.path })
   }
@@ -29,7 +32,7 @@ export default function TabBar({ active }: { active: TabKey }) {
     }
   }
 
-  const item = (t: (typeof NAV)[number]) => {
+  const item = (t: (typeof LEFT)[number]) => {
     const on = active === t.key
     return (
       <View
@@ -45,8 +48,7 @@ export default function TabBar({ active }: { active: TabKey }) {
 
   return (
     <View className='tabbar'>
-      {item(NAV[0])}
-      {item(NAV[1])}
+      {LEFT.map(item)}
       <View className='tabbar__scan-slot'>
         <View className='tabbar__scan-wrap'>
           <View className='tabbar__scan' hoverClass='tabbar__scan--hover' onClick={onScan}>
@@ -55,7 +57,7 @@ export default function TabBar({ active }: { active: TabKey }) {
         </View>
         <Text className='tabbar__scan-text'>扫码</Text>
       </View>
-      {item(NAV[2])}
+      {RIGHT.map(item)}
     </View>
   )
 }

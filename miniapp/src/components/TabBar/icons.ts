@@ -1,10 +1,11 @@
-// 统一的细线条图标(feather 风格),单色、可按选中态着色。用 data-URI SVG,
-// 无需图标字体依赖,渲染清晰、商务。
+// 统一细线条图标(feather 风格),单色、按选中态着色。data-URI SVG,渲染清晰、商务。
 const PATHS: Record<string, string> = {
-  home:
-    '<path d="M3 9.8 12 3l9 6.8"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M9.5 21v-6.5h5V21"/>',
-  tasks:
-    '<rect x="7.5" y="3" width="9" height="4" rx="1.2"/><path d="M9 5H6.5A1.5 1.5 0 0 0 5 6.5v13A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 17.5 5H15"/><path d="M8.5 12h7"/><path d="M8.5 16h5"/>',
+  grid:
+    '<rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/>',
+  list:
+    '<line x1="8.5" y1="6" x2="20" y2="6"/><line x1="8.5" y1="12" x2="20" y2="12"/><line x1="8.5" y1="18" x2="20" y2="18"/><circle cx="4.2" cy="6" r="1.1"/><circle cx="4.2" cy="12" r="1.1"/><circle cx="4.2" cy="18" r="1.1"/>',
+  chat:
+    '<path d="M20.5 11.4a7.9 7.9 0 0 1-8 7.9 8 8 0 0 1-3.5-.8L4 20l1.5-4.9a7.9 7.9 0 0 1-.9-3.7A7.9 7.9 0 0 1 12.5 3.5a7.9 7.9 0 0 1 8 7.9z"/>',
   user:
     '<circle cx="12" cy="8" r="3.4"/><path d="M5.2 20a6.8 6.8 0 0 1 13.6 0"/>',
   scan:

@@ -56,16 +56,16 @@
 
   &__scan {
     position: absolute;
-    bottom: -12px;
-    width: 100px;
-    height: 100px;
+    bottom: -10px;
+    width: 92px;
+    height: 92px;
     border-radius: 50%;
     background: linear-gradient(135deg, #4f8bff, #2563eb);
-    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.38);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 8px solid #ffffff;
+    border: 7px solid #ffffff;
 
     &--hover {
       transform: scale(0.93);
@@ -73,8 +73,8 @@
   }
 
   &__scan-icon {
-    width: 46px;
-    height: 46px;
+    width: 40px;
+    height: 40px;
   }
 
   &__scan-text {

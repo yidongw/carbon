@@ -3,6 +3,7 @@ export default defineAppConfig({
     'pages/login/login',
     'pages/workstation/index',
     'pages/tasks/index',
+    'pages/messages/index',
     'pages/profile/index',
     'pages/functions/index',
   ],
