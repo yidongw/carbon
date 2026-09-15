@@ -144,12 +144,7 @@ export default function Login() {
         </Text>
       </View>
 
-      <Button
-        className='login__btn'
-        type='primary'
-        loading={loading}
-        onClick={onLogin}
-      >
+      <Button className='login__btn' loading={loading} onClick={onLogin}>
         登录
       </Button>
 
