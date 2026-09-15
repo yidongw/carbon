@@ -156,10 +156,6 @@ export default function Login() {
       <Button className='login__btn' loading={loading} onClick={onLogin}>
         登录
       </Button>
-
-      <Text className='login__hint'>
-        首次登录请使用管理员已邀请的手机号 / 邮箱。
-      </Text>
     </View>
   )
 }
