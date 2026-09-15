@@ -1,61 +1,95 @@
-import { useState } from 'react'
-import { View, Text, Button } from '@tarojs/components'
-import type { ButtonProps } from '@tarojs/components'
+import { useEffect, useRef, useState } from 'react'
+import { View, Text, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { login } from '../../services/auth'
-import type { LoginResponse } from '../../services/auth'
+import { sendCode, verifyCode } from '../../services/auth'
+import type { LoginChannel, LoginResponse } from '../../services/auth'
 import './login.scss'
 
+const COUNTDOWN = 60
+
 export default function Login() {
+  const [channel, setChannel] = useState<LoginChannel>('phone')
+  const [value, setValue] = useState('')
+  const [code, setCode] = useState('')
+  const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(false)
-  // 首次登录后端要求授权手机号 → 切换到「授权手机号」按钮。
-  const [needPhone, setNeedPhone] = useState(false)
+  const [left, setLeft] = useState(0) // 验证码重发倒计时
+  const timer = useRef<ReturnType<typeof setInterval>>()
+
+  useEffect(() => () => clearInterval(timer.current), [])
+
+  const startCountdown = () => {
+    setLeft(COUNTDOWN)
+    clearInterval(timer.current)
+    timer.current = setInterval(() => {
+      setLeft((n) => {
+        if (n <= 1) clearInterval(timer.current)
+        return n - 1
+      })
+    }, 1000)
+  }
+
+  const valueValid =
+    channel === 'phone' ? /^1\d{10}$/.test(value) : /^[^@]+@[^@]+$/.test(value)
+
+  const onSend = async () => {
+    if (!valueValid) {
+      Taro.showToast({
+        title: channel === 'phone' ? '请输入正确的手机号' : '请输入正确的邮箱',
+        icon: 'none',
+      })
+      return
+    }
+    setSending(true)
+    try {
+      await sendCode(channel, value)
+      Taro.showToast({ title: '验证码已发送', icon: 'none' })
+      startCountdown()
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '发送失败', icon: 'none' })
+    } finally {
+      setSending(false)
+    }
+  }
 
   const afterLogin = (res: LoginResponse) => {
     if (!res.hasCompany) {
       Taro.showModal({
         title: '登录成功',
-        content: '当前微信账号尚未绑定员工/公司,暂无可查看的数据。请联系管理员邀请你的手机号。',
+        content: '当前账号尚未加入任何公司,暂无可查看的数据。请联系管理员邀请。',
         showCancel: false,
       })
     }
     Taro.reLaunch({ url: '/pages/index/index' })
   }
 
-  // 第一步:仅用 wx.login 的 code 尝试(老用户一步到位)。
   const onLogin = async () => {
+    if (!valueValid) {
+      Taro.showToast({ title: '请填写正确的登录账号', icon: 'none' })
+      return
+    }
+    if (!/^\d{4,6}$/.test(code)) {
+      Taro.showToast({ title: '请输入验证码', icon: 'none' })
+      return
+    }
     setLoading(true)
     try {
-      const res = await login()
+      const res = await verifyCode(channel, value, code)
       afterLogin(res)
     } catch (e: any) {
-      if (e?.statusCode === 409) {
-        setNeedPhone(true)
-        Taro.showToast({ title: '首次登录,请授权手机号', icon: 'none' })
-      } else {
-        Taro.showToast({ title: e?.message || '登录失败,请重试', icon: 'none' })
-      }
+      Taro.showToast({ title: e?.message || '登录失败', icon: 'none' })
     } finally {
       setLoading(false)
     }
   }
 
-  // 第二步:授权手机号 → 带 phoneCode 重试(login 内部会重新取新鲜的登录 code)。
-  const onGetPhone: ButtonProps['onGetPhoneNumber'] = async (e) => {
-    const phoneCode = e.detail?.code
-    if (!phoneCode) {
-      Taro.showToast({ title: '需授权手机号才能登录', icon: 'none' })
-      return
-    }
-    setLoading(true)
-    try {
-      const res = await login(phoneCode)
-      afterLogin(res)
-    } catch (err: any) {
-      Taro.showToast({ title: err?.message || '登录失败,请重试', icon: 'none' })
-    } finally {
-      setLoading(false)
-    }
+  const switchChannel = (next: LoginChannel) => {
+    if (next === channel) return
+    setChannel(next)
+    setValue('')
+    setCode('')
+    setLeft(0)
+    clearInterval(timer.current)
   }
 
   return (
@@ -65,29 +99,58 @@ export default function Login() {
         <Text className='login__subtitle'>车间操作端</Text>
       </View>
 
-      {needPhone ? (
-        <Button
-          className='login__btn'
-          type='primary'
-          loading={loading}
-          openType='getPhoneNumber'
-          onGetPhoneNumber={onGetPhone}
+      <View className='login__tabs'>
+        <Text
+          className={`login__tab ${channel === 'phone' ? 'login__tab--active' : ''}`}
+          onClick={() => switchChannel('phone')}
         >
-          授权手机号登录
-        </Button>
-      ) : (
-        <Button
-          className='login__btn'
-          type='primary'
-          loading={loading}
-          onClick={onLogin}
+          手机号登录
+        </Text>
+        <Text
+          className={`login__tab ${channel === 'email' ? 'login__tab--active' : ''}`}
+          onClick={() => switchChannel('email')}
         >
-          微信登录
-        </Button>
-      )}
+          邮箱登录
+        </Text>
+      </View>
+
+      <View className='login__field'>
+        <Input
+          className='login__input'
+          type={channel === 'phone' ? 'number' : 'text'}
+          placeholder={channel === 'phone' ? '请输入手机号' : '请输入邮箱'}
+          value={value}
+          onInput={(e) => setValue(e.detail.value)}
+        />
+      </View>
+
+      <View className='login__field login__field--code'>
+        <Input
+          className='login__input'
+          type='number'
+          maxlength={6}
+          placeholder='请输入验证码'
+          value={code}
+          onInput={(e) => setCode(e.detail.value)}
+        />
+        <Text
+          className={`login__send ${left > 0 || sending ? 'login__send--disabled' : ''}`}
+          onClick={left > 0 || sending ? undefined : onSend}
+        >
+          {left > 0 ? `${left}s 后重发` : sending ? '发送中…' : '获取验证码'}
+        </Text>
+      </View>
+
+      <View
+        className={`login__btn ${loading ? 'login__btn--loading' : ''}`}
+        hoverClass='login__btn--hover'
+        onClick={loading ? undefined : onLogin}
+      >
+        <Text className='login__btn-text'>{loading ? '登录中…' : '登录'}</Text>
+      </View>
 
       <Text className='login__hint'>
-        使用微信登录。首次登录需授权手机号,以关联管理员已邀请的员工账号。
+        首次登录请使用管理员已邀请的手机号 / 邮箱。
       </Text>
     </View>
   )

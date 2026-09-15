@@ -12,28 +12,34 @@ export interface LoginResponse {
 
 export const COMPANY_KEY = 'carbon_miniapp_company'
 
-/**
- * 微信小程序登录。
- *
- * 流程:wx.login 拿临时 code → 后端用 jscode2session(需小程序 AppID/Secret)
- * 换取 openid/unionid → 关联 Carbon user(复用 findOrCreateWeChatUser)→
- * 签发 token 返回。token 存本地,后续请求走 Bearer。
- *
- * 后端登录接口尚未实现(需 AppID),这里先打通前端链路。
- */
-/**
- * 微信登录。首次登录后端会返回 409 { needPhone: true },前端据此弹「授权手机号」
- * 按钮,拿到 phoneCode 后再带上重试。老用户(已绑定 wechat 身份)不需要手机号。
- * 注意:每次调用都重新 wx.login 取新鲜 code(code 单次有效、易过期)。
- */
-export async function login(phoneCode?: string): Promise<LoginResponse> {
-  const { code } = await Taro.login()
+export type LoginChannel = 'phone' | 'email'
 
-  const res = await request<LoginResponse>({
-    url: '/api/miniapp/auth/login',
+// 手机号/邮箱验证码登录 —— 与 MES 网页登录同源(短信 / 邮件 6 位码)。
+
+/** 发送验证码。手机号走短信,邮箱走邮件。 */
+export async function sendCode(
+  channel: LoginChannel,
+  value: string,
+): Promise<void> {
+  await request({
+    url: '/api/miniapp/auth/send-code',
     method: 'POST',
     auth: false,
-    data: phoneCode ? { code, phoneCode } : { code },
+    data: channel === 'phone' ? { phone: value } : { email: value },
+  })
+}
+
+/** 校验验证码并登录,成功后存 token。 */
+export async function verifyCode(
+  channel: LoginChannel,
+  value: string,
+  code: string,
+): Promise<LoginResponse> {
+  const res = await request<LoginResponse>({
+    url: '/api/miniapp/auth/verify',
+    method: 'POST',
+    auth: false,
+    data: channel === 'phone' ? { phone: value, code } : { email: value, code },
   })
 
   Taro.setStorageSync(TOKEN_KEY, res.token)

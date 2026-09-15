@@ -1,8 +1,10 @@
 import Taro from '@tarojs/taro'
 
-// 后端 API 宿主 —— 指向已部署 MES 的 https 预览域名(apps/mes 暴露 /api/miniapp/*)。
+// 后端 API 宿主 —— 直连本预览机 mes-pr-607(5607)的临时 cloudflared 隧道。
+// (foxhole.bot 当前指向旧源站、无新路由,故走这条 https 直连隧道。)
 // 真机要求 https 且该域名已在小程序后台「request 合法域名」白名单中。
-export const BASE_URL = 'https://mes-pr-607.foxhole.bot'
+// 注意:trycloudflare 域名是临时的,重启隧道会变,需同步更新此处 + 后台白名单。
+export const BASE_URL = 'https://just-nicholas-owns-textiles.trycloudflare.com'
 
 export const TOKEN_KEY = 'carbon_miniapp_token'
 
