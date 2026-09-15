@@ -65,7 +65,7 @@ export default function Login() {
         showCancel: false,
       })
     }
-    Taro.switchTab({ url: '/pages/workstation/index' })
+    Taro.reLaunch({ url: '/pages/workstation/index' })
   }
 
   const onLogin = async () => {

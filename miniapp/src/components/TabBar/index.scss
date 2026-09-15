@@ -3,8 +3,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(98px + constant(safe-area-inset-bottom));
-  height: calc(98px + env(safe-area-inset-bottom));
+  height: calc(100px + constant(safe-area-inset-bottom));
+  height: calc(100px + env(safe-area-inset-bottom));
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
   background: #ffffff;
@@ -28,7 +28,7 @@
 
   &__icon {
     font-size: 40px;
-    line-height: 44px;
+    line-height: 46px;
   }
 
   &__text {
@@ -46,16 +46,16 @@
 
   &__scan {
     position: absolute;
-    top: -46px;
-    width: 112px;
-    height: 112px;
+    top: -48px;
+    width: 116px;
+    height: 116px;
     border-radius: 50%;
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 6px solid #ffffff;
+    border: 8px solid #ffffff;
 
     &--hover {
       transform: scale(0.94);
@@ -64,11 +64,11 @@
 
   &__scan-icon {
     color: #ffffff;
-    font-size: 48px;
+    font-size: 50px;
   }
 
   &__scan-text {
-    margin-top: 70px;
+    margin-top: 74px;
     font-size: 20px;
     color: #2563eb;
   }

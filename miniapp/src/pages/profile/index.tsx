@@ -1,6 +1,7 @@
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { logout } from '../../services/auth'
+import TabBar from '../../components/TabBar'
 import './index.scss'
 
 const ITEMS = [
@@ -43,6 +44,8 @@ export default function Profile() {
       <View className='me__logout' hoverClass='me__logout--hover' onClick={logout}>
         <Text className='me__logout-text'>退出登录</Text>
       </View>
+
+      <TabBar active='profile' />
     </View>
   )
 }

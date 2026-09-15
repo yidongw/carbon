@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Text } from '@tarojs/components'
+import TabBar from '../../components/TabBar'
 import './index.scss'
 
 const SEGS = ['已分配', '进行中', '最近'] as const
@@ -41,6 +42,8 @@ export default function Tasks() {
           </View>
         ))}
       </View>
+
+      <TabBar active='tasks' />
     </View>
   )
 }

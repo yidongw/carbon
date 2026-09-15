@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
+import TabBar from '../../components/TabBar'
 import './index.scss'
 
 export default function Workstation() {
@@ -141,6 +142,8 @@ export default function Workstation() {
           </View>
         </>
       ) : null}
+
+      <TabBar active='workstation' />
     </View>
   )
 }
