@@ -33,6 +33,7 @@ export default function Login() {
     channel === 'phone' ? /^1\d{10}$/.test(value) : /^[^@]+@[^@]+$/.test(value)
 
   const onSend = async () => {
+    if (sending || left > 0) return
     if (!valueValid) {
       Taro.showToast({
         title: channel === 'phone' ? '请输入正确的手机号' : '请输入正确的邮箱',
@@ -146,7 +147,7 @@ export default function Login() {
         />
         <Text
           className={`login__send ${left > 0 || sending ? 'login__send--disabled' : ''}`}
-          onClick={left > 0 || sending ? undefined : onSend}
+          onClick={onSend}
         >
           {left > 0 ? `${left}s 后重发` : sending ? '发送中…' : '获取验证码'}
         </Text>
