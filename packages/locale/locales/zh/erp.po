@@ -16467,6 +16467,9 @@ msgstr "在制品"
 msgid "With Previous"
 msgstr "与上道工序并行"
 
+msgid "WO Qty"
+msgstr "工单总数"
+
 msgid "Won"
 msgstr "赢得"
 

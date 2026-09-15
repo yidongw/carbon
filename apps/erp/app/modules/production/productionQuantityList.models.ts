@@ -27,6 +27,10 @@ export type ProductionQuantityListRow = {
   createdBy?: string | null;
   jobId?: string | null;
   itemId?: string | null;
+  /** Parent Style readable id (e.g. "1177"); falls back to item readable id. */
+  styleReadableId?: string | null;
+  /** Planned / target quantity on the work order (`job.quantity`). */
+  jobQuantity?: number | null;
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;

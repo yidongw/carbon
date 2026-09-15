@@ -14,7 +14,6 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AiOutlinePartition } from "react-icons/ai";
 import {
   LuBriefcase,
   LuCalendar,
@@ -23,6 +22,7 @@ import {
   LuCog,
   LuHash,
   LuPlus,
+  LuShirt,
   LuUser
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
@@ -475,13 +475,13 @@ const ProductionQuantitiesTable = memo(
         },
         {
           accessorKey: "itemId",
-          header: t`Item`,
+          header: t`Style`,
           cell: ({ row }) => (
             <ProductionQuantityTableItemCell row={row.original} />
           ),
           meta: {
-            icon: <AiOutlinePartition />,
-            pluralHeader: t`Items`,
+            icon: <LuShirt />,
+            pluralHeader: t`Styles`,
             filter: items.length
               ? {
                   type: "static" as const,
@@ -514,6 +514,21 @@ const ProductionQuantitiesTable = memo(
                   isArray: false
                 }
               : undefined
+          }
+        },
+        {
+          accessorKey: "jobQuantity",
+          header: t`WO Qty`,
+          cell: ({ row }) => {
+            const qty = row.original.jobQuantity;
+            return (
+              <span className="tabular-nums">
+                {typeof qty === "number" ? qty : "—"}
+              </span>
+            );
+          },
+          meta: {
+            icon: <LuHash />
           }
         },
         {
