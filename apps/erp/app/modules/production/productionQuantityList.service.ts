@@ -1434,6 +1434,12 @@ export async function getProductionQuantityReportPayRows(
       })();
   }
 
+  await enrichProductionQuantityRowsWithMasterWorkOrders(
+    client,
+    companyId,
+    rows
+  );
+
   return {
     data: rows,
     error: null,
@@ -1441,6 +1447,73 @@ export async function getProductionQuantityReportPayRows(
     status: reports.status,
     statusText: reports.statusText
   };
+}
+
+/**
+ * Attach master WO id + readable job id when the report's job is either a
+ * Master WO backing job or a Bundle WO child under a master.
+ */
+async function enrichProductionQuantityRowsWithMasterWorkOrders(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  rows: ProductionQuantityListRow[]
+) {
+  const jobIds = [
+    ...new Set(
+      rows.map((row) => row.jobId).filter((id): id is string => Boolean(id))
+    )
+  ];
+  if (jobIds.length === 0) return;
+
+  const [{ data: bundles }, { data: mastersByJob }] = await Promise.all([
+    client
+      .from("bundleWorkOrder")
+      .select("jobId, masterWorkOrderId")
+      .eq("companyId", companyId)
+      .in("jobId", jobIds),
+    client
+      .from("masterWorkOrder")
+      .select("id, jobId")
+      .eq("companyId", companyId)
+      .in("jobId", jobIds)
+  ]);
+
+  const masterIdByJobId = new Map<string, string>();
+  for (const row of mastersByJob ?? []) {
+    if (row.jobId && row.id) masterIdByJobId.set(row.jobId, row.id);
+  }
+  for (const row of bundles ?? []) {
+    if (row.jobId && row.masterWorkOrderId) {
+      // Bundle wins only if this job isn't itself a master (shouldn't happen).
+      if (!masterIdByJobId.has(row.jobId)) {
+        masterIdByJobId.set(row.jobId, row.masterWorkOrderId);
+      }
+    }
+  }
+
+  const masterIds = [...new Set(masterIdByJobId.values())];
+  if (masterIds.length === 0) return;
+
+  const { data: masterRows } = await client
+    .from("masterWorkOrders")
+    .select("id, jobReadableId")
+    .eq("companyId", companyId)
+    .in("id", masterIds);
+
+  const readableByMasterId = new Map<string, string>();
+  for (const row of masterRows ?? []) {
+    if (row.id && row.jobReadableId) {
+      readableByMasterId.set(row.id, row.jobReadableId);
+    }
+  }
+
+  for (const row of rows) {
+    if (!row.jobId) continue;
+    const masterId = masterIdByJobId.get(row.jobId);
+    if (!masterId) continue;
+    row.masterWorkOrderId = masterId;
+    row.masterJobReadableId = readableByMasterId.get(masterId) ?? null;
+  }
 }
 
 export async function ensureProductionQuantityApprovalRequest(

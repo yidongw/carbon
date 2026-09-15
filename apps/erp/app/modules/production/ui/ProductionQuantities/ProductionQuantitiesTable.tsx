@@ -15,6 +15,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  LuBookMarked,
   LuBriefcase,
   LuCalendar,
   LuCircleCheck,
@@ -32,7 +33,7 @@ import {
   useRevalidator,
   useSearchParams
 } from "react-router";
-import { Table } from "~/components";
+import { Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import type {
@@ -473,6 +474,37 @@ const ProductionQuantitiesTable = memo(
               : undefined
           }
         },
+        ...(data.some((row) => row.masterWorkOrderId)
+          ? ([
+              {
+                accessorKey: "masterWorkOrderId",
+                header: t`Master Work Order`,
+                cell: ({
+                  row
+                }: {
+                  row: { original: ProductionQuantityTableRow };
+                }) => {
+                  const masterId = row.original.masterWorkOrderId;
+                  const label =
+                    row.original.masterJobReadableId?.trim() || masterId;
+                  if (!masterId || !label) return "—";
+                  return (
+                    <Hyperlink
+                      to={path.to.masterWorkOrder(masterId)}
+                      className="font-mono text-sm font-medium"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      {label}
+                    </Hyperlink>
+                  );
+                },
+                meta: {
+                  icon: <LuBookMarked />,
+                  pluralHeader: t`Master Work Orders`
+                }
+              }
+            ] as ColumnDef<ProductionQuantityTableRow>[])
+          : []),
         {
           accessorKey: "itemId",
           header: t`Style`,
@@ -648,6 +680,7 @@ const ProductionQuantitiesTable = memo(
     }, [
       canEdit,
       configurableItemIdSet,
+      data,
       employees,
       fetcher,
       items,
