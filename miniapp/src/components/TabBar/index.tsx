@@ -1,13 +1,17 @@
-import { View, Text } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { svgIcon } from './icons'
 import './index.scss'
 
 export type TabKey = 'workstation' | 'tasks' | 'profile'
 
+const ACTIVE = '#2563eb'
+const INACTIVE = '#9aa3b2'
+
 const NAV: { key: TabKey; text: string; icon: string; path: string }[] = [
-  { key: 'workstation', text: '工作台', icon: '🏠', path: '/pages/workstation/index' },
-  { key: 'tasks', text: '我的任务', icon: '📋', path: '/pages/tasks/index' },
-  { key: 'profile', text: '我的', icon: '👤', path: '/pages/profile/index' },
+  { key: 'workstation', text: '工作台', icon: 'home', path: '/pages/workstation/index' },
+  { key: 'tasks', text: '我的任务', icon: 'tasks', path: '/pages/tasks/index' },
+  { key: 'profile', text: '我的', icon: 'user', path: '/pages/profile/index' },
 ]
 
 export default function TabBar({ active }: { active: TabKey }) {
@@ -25,16 +29,19 @@ export default function TabBar({ active }: { active: TabKey }) {
     }
   }
 
-  const item = (t: (typeof NAV)[number]) => (
-    <View
-      key={t.key}
-      className={`tabbar__item ${active === t.key ? 'tabbar__item--active' : ''}`}
-      onClick={() => go(t)}
-    >
-      <Text className='tabbar__icon'>{t.icon}</Text>
-      <Text className='tabbar__text'>{t.text}</Text>
-    </View>
-  )
+  const item = (t: (typeof NAV)[number]) => {
+    const on = active === t.key
+    return (
+      <View
+        key={t.key}
+        className={`tabbar__item ${on ? 'tabbar__item--active' : ''}`}
+        onClick={() => go(t)}
+      >
+        <Image className='tabbar__icon' src={svgIcon(t.icon, on ? ACTIVE : INACTIVE)} />
+        <Text className='tabbar__text'>{t.text}</Text>
+      </View>
+    )
+  }
 
   return (
     <View className='tabbar'>
@@ -42,7 +49,7 @@ export default function TabBar({ active }: { active: TabKey }) {
       {item(NAV[1])}
       <View className='tabbar__scan-slot'>
         <View className='tabbar__scan' hoverClass='tabbar__scan--hover' onClick={onScan}>
-          <Text className='tabbar__scan-icon'>⛶</Text>
+          <Image className='tabbar__scan-icon' src={svgIcon('scan', '#ffffff')} />
         </View>
         <Text className='tabbar__scan-text'>扫码</Text>
       </View>
