@@ -48,8 +48,10 @@ export default function TabBar({ active }: { active: TabKey }) {
       {item(NAV[0])}
       {item(NAV[1])}
       <View className='tabbar__scan-slot'>
-        <View className='tabbar__scan' hoverClass='tabbar__scan--hover' onClick={onScan}>
-          <Image className='tabbar__scan-icon' src={svgIcon('scan', '#ffffff')} />
+        <View className='tabbar__scan-wrap'>
+          <View className='tabbar__scan' hoverClass='tabbar__scan--hover' onClick={onScan}>
+            <Image className='tabbar__scan-icon' src={svgIcon('scan', '#ffffff')} />
+          </View>
         </View>
         <Text className='tabbar__scan-text'>扫码</Text>
       </View>
