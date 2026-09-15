@@ -125,7 +125,7 @@ export async function getBundleWorkOrdersList(
 
   if (args?.search) {
     query = query.or(
-      `itemName.ilike.%${args.search}%,attributeLabel.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%`
+      `itemName.ilike.%${args.search}%,attributeLabel.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%,styleReadableId.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`
     );
   }
 

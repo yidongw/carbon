@@ -225,14 +225,21 @@ const BundleWorkOrdersTable = memo(
           }
         },
         {
-          accessorKey: "readableIdWithRevision",
+          // Parent Style readable id (e.g. "1177"), not the variant SKU
+          // ("1177-PP-3XL"). The SKU lives on readableIdWithRevision; Color/Size
+          // are in the dynamic attribute columns below.
+          accessorKey: "styleReadableId",
           header: t`Style`,
           cell: ({ row }) =>
-            row.original.readableIdWithRevision ?? row.original.itemName,
+            row.original.styleReadableId ??
+            row.original.readableIdWithRevision ??
+            row.original.itemName,
           meta: {
             filter: {
               type: "static",
               options: styles.map((style) => ({
+                // styleReadableId is item.readableId; for revision "0" that
+                // equals readableIdWithRevision (see revisions.sql).
                 value: style.readableIdWithRevision,
                 label: style.readableIdWithRevision
               }))
