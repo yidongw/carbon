@@ -1,9 +1,28 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { getMyCompletions, getMySalaryRecord } from "~/services/people.service";
+import {
+  getMyCompletions,
+  getMyPendingCompletions,
+  getMySalaryRecord
+} from "~/services/people.service";
 import { requireMiniappUser } from "~/utils/miniapp-auth.server";
 import { jsonResponse } from "~/utils/miniapp-response";
 
-// 我的工资:本月薪资汇总(已赚/已发/待发)+ 本月已核准的计件明细。取自现有 people.service。
+const earnedOf = (r: any) =>
+  (r.quantity ?? 0) * (r.jobOperation?.insideUnitCost ?? 0);
+
+const normalize = (r: any) => {
+  const jo = r.jobOperation ?? {};
+  return {
+    id: r.id,
+    process: jo.process?.name ?? jo.description ?? "工序",
+    job: jo.job?.jobId ?? "",
+    quantity: r.quantity ?? 0,
+    unitCost: jo.insideUnitCost ?? 0,
+    earned: earnedOf(r)
+  };
+};
+
+// 我的工资:本月 已获得 / 已支付 / 欠款 / 待批准 四项 + 本月已核准计件明细。
 export async function loader({ request }: LoaderFunctionArgs) {
   const { userId, companyId, client } = await requireMiniappUser(request);
 
@@ -18,40 +37,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
       totalEarned: 0,
       totalPaid: 0,
       amountOwed: 0,
+      pendingAmount: 0,
+      approvedCount: 0,
+      pendingCount: 0,
       status: null,
       completions: []
     });
   }
 
-  const [recRes, compRes] = await Promise.all([
+  const [recRes, compRes, pendingRes] = await Promise.all([
     getMySalaryRecord(client, userId, companyId, year, month),
-    getMyCompletions(client, userId, companyId, year, month)
+    getMyCompletions(client, userId, companyId, year, month),
+    getMyPendingCompletions(client, userId, companyId)
   ]);
 
-  const completions = ((compRes.data ?? []) as any[]).map((r) => {
-    const jo = r.jobOperation ?? {};
-    const process = jo.process?.name ?? jo.description ?? "工序";
-    const job = jo.job?.jobId ?? "";
-    const unitCost = jo.insideUnitCost ?? 0;
-    const quantity = r.quantity ?? 0;
-    return {
-      id: r.id,
-      process,
-      job,
-      quantity,
-      unitCost,
-      earned: quantity * unitCost
-    };
-  });
+  const completions = ((compRes.data ?? []) as any[]).map(normalize);
+  const pending = (pendingRes.data ?? []) as any[];
+  const pendingAmount = pending.reduce((s, r) => s + earnedOf(r), 0);
 
   const s = recRes.data as any;
   const earnedFromRows = completions.reduce((sum, c) => sum + c.earned, 0);
+  const totalEarned = s?.totalEarned ?? earnedFromRows;
+  const totalPaid = s?.totalPaid ?? 0;
 
   return jsonResponse({
     month: label,
-    totalEarned: s?.totalEarned ?? earnedFromRows,
-    totalPaid: s?.totalPaid ?? 0,
-    amountOwed: s?.amountOwed ?? s?.totalEarned ?? earnedFromRows,
+    totalEarned,
+    totalPaid,
+    amountOwed: s?.amountOwed ?? totalEarned - totalPaid,
+    pendingAmount,
+    approvedCount: completions.length,
+    pendingCount: pending.length,
     status: s?.status ?? null,
     completions
   });

@@ -14,6 +14,9 @@ export interface Salary {
   totalEarned: number
   totalPaid: number
   amountOwed: number
+  pendingAmount: number
+  approvedCount: number
+  pendingCount: number
   status: string | null
   completions: SalaryCompletion[]
 }

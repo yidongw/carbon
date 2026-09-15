@@ -29,20 +29,27 @@ export default function SalaryPage() {
     <View className='sal'>
       <NavBar title='我的工资' back />
 
-      {/* 汇总卡 */}
+      {/* 汇总卡:已获得 + 已支付 / 欠款 / 待批准 */}
       <View className='sal__card'>
         <Text className='sal__month'>{data?.month || ''}</Text>
         <Text className='sal__earned'>{money(data?.totalEarned ?? 0)}</Text>
-        <Text className='sal__earned-label'>本月计件已赚</Text>
+        <Text className='sal__earned-label'>
+          本月已获得 · {data?.approvedCount ?? 0} 已批准
+        </Text>
         <View className='sal__split'>
           <View className='sal__split-item'>
             <Text className='sal__split-num'>{money(data?.totalPaid ?? 0)}</Text>
-            <Text className='sal__split-label'>已发</Text>
+            <Text className='sal__split-label'>已支付</Text>
           </View>
           <View className='sal__split-divider' />
           <View className='sal__split-item'>
             <Text className='sal__split-num'>{money(data?.amountOwed ?? 0)}</Text>
-            <Text className='sal__split-label'>待发</Text>
+            <Text className='sal__split-label'>欠款</Text>
+          </View>
+          <View className='sal__split-divider' />
+          <View className='sal__split-item'>
+            <Text className='sal__split-num'>{money(data?.pendingAmount ?? 0)}</Text>
+            <Text className='sal__split-label'>待批准</Text>
           </View>
         </View>
       </View>
