@@ -107,6 +107,7 @@ page {
 
     &--code {
       justify-content: space-between;
+      padding-right: 12px;
     }
   }
 
@@ -123,15 +124,33 @@ page {
 
   &__send {
     flex-shrink: 0;
-    font-size: 28px;
-    color: #2563eb;
-    font-weight: 600;
-    padding-left: 28px;
-    border-left: 2px solid #e3e8f0;
+    height: 68px;
+    padding: 0 28px;
+    border-radius: 999px;
+    background-color: #eaf1fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.08s ease;
+
+    &-text {
+      font-size: 26px;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    &--hover {
+      background-color: #d6e4fd;
+      transform: scale(0.94);
+    }
 
     &--disabled {
-      color: #b6bfcd;
-      font-weight: 400;
+      background-color: #eef0f4;
+
+      .login__send-text {
+        color: #b6bfcd;
+        font-weight: 400;
+      }
     }
   }
 

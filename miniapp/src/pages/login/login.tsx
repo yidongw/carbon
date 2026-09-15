@@ -151,12 +151,16 @@ export default function Login() {
             value={code}
             onInput={(e) => setCode(e.detail.value)}
           />
-          <Text
+          <View
             className={`login__send ${left > 0 || sending ? 'login__send--disabled' : ''}`}
+            hoverClass={left > 0 || sending ? 'none' : 'login__send--hover'}
+            hoverStayTime={80}
             onClick={onSend}
           >
-            {left > 0 ? `${left}s` : sending ? '发送中' : '获取验证码'}
-          </Text>
+            <Text className='login__send-text'>
+              {left > 0 ? `${left}s` : sending ? '发送中' : '获取验证码'}
+            </Text>
+          </View>
         </View>
 
         <Button className='login__btn' loading={loading} onClick={onLogin}>
