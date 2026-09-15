@@ -11,12 +11,13 @@ import {
 import { verifyEmailCode } from "@carbon/auth/verification.server";
 import { Ratelimit, redis } from "@carbon/kv";
 import type { ActionFunctionArgs } from "react-router";
+import { jsonResponse } from "~/utils/miniapp-response";
 
 // 小程序登录:校验验证码 → 解析/建立员工 user → 接受待处理邀请(入职)→ 签发 token。
 // 手机号:验证码通过则 findOrCreatePhoneUser;邮箱:仅认已有账号。都汇到
 // signInWithUserIdViaAdmin(内部解析 auth 邮箱、选公司)。与 MES 网页登录同源。
 //
-// 用 Response.json(定长 body + Content-Length),微信 wx.request 才能正常收到响应。
+// 用 jsonResponse(定长 body + Content-Length),微信 wx.request 才能正常收到响应。
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
 
@@ -28,7 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
   });
   const { success } = await ratelimit.limit(ip);
   if (!success) {
-    return Response.json(
+    return jsonResponse(
       { message: "请求过于频繁,请稍后再试" },
       { status: 429 }
     );
@@ -47,24 +48,24 @@ export async function action({ request }: ActionFunctionArgs) {
     email = (body.email ?? "").trim().toLowerCase();
     code = (body.code ?? "").trim();
   } catch {
-    return Response.json({ message: "请求体不是合法 JSON" }, { status: 400 });
+    return jsonResponse({ message: "请求体不是合法 JSON" }, { status: 400 });
   }
 
-  if (!code) return Response.json({ message: "请输入验证码" }, { status: 400 });
+  if (!code) return jsonResponse({ message: "请输入验证码" }, { status: 400 });
 
   let userId = "";
 
   if (phone) {
     const valid = await checkSmsVerifyCode(phone, code);
     if (!valid) {
-      return Response.json({ message: "验证码错误或已过期" }, { status: 401 });
+      return jsonResponse({ message: "验证码错误或已过期" }, { status: 401 });
     }
 
     const user = await findOrCreatePhoneUser(phone);
     if (!user)
-      return Response.json({ message: "关联员工失败" }, { status: 500 });
+      return jsonResponse({ message: "关联员工失败" }, { status: 500 });
     if (!user.active) {
-      return Response.json(
+      return jsonResponse(
         { message: "账号未激活,请联系管理员" },
         { status: 403 }
       );
@@ -73,19 +74,16 @@ export async function action({ request }: ActionFunctionArgs) {
   } else if (email) {
     const valid = await verifyEmailCode(email, code);
     if (!valid) {
-      return Response.json({ message: "验证码错误或已过期" }, { status: 401 });
+      return jsonResponse({ message: "验证码错误或已过期" }, { status: 401 });
     }
 
     const user = await getUserByEmail(email);
     if (!user.data || !user.data.active) {
-      return Response.json(
-        { message: "该邮箱未注册或未激活" },
-        { status: 403 }
-      );
+      return jsonResponse({ message: "该邮箱未注册或未激活" }, { status: 403 });
     }
     userId = user.data.id;
   } else {
-    return Response.json({ message: "请提供手机号或邮箱" }, { status: 400 });
+    return jsonResponse({ message: "请提供手机号或邮箱" }, { status: 400 });
   }
 
   const serviceRole = getCarbonServiceRole();
@@ -99,10 +97,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const authSession = await signInWithUserIdViaAdmin(userId);
   if (!authSession) {
-    return Response.json({ message: "创建会话失败" }, { status: 500 });
+    return jsonResponse({ message: "创建会话失败" }, { status: 500 });
   }
 
-  return Response.json({
+  return jsonResponse({
     token: authSession.accessToken,
     refreshToken: authSession.refreshToken,
     userId: authSession.userId,
