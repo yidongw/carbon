@@ -106,56 +106,65 @@ export default function Login() {
 
   return (
     <View className='login'>
-      <View className='login__brand'>
+      <View className='login__hero'>
+        <View className='login__logo'>
+          <Text className='login__logo-text'>C</Text>
+        </View>
         <Text className='login__title'>Carbon MES</Text>
         <Text className='login__subtitle'>车间操作端</Text>
       </View>
 
-      <View className='login__tabs'>
-        <Text
-          className={`login__tab ${channel === 'phone' ? 'login__tab--active' : ''}`}
-          onClick={() => switchChannel('phone')}
-        >
-          手机号登录
-        </Text>
-        <Text
-          className={`login__tab ${channel === 'email' ? 'login__tab--active' : ''}`}
-          onClick={() => switchChannel('email')}
-        >
-          邮箱登录
-        </Text>
+      <View className='login__card'>
+        <View className='login__tabs'>
+          <View
+            className={`login__tab ${channel === 'phone' ? 'login__tab--active' : ''}`}
+            onClick={() => switchChannel('phone')}
+          >
+            <Text className='login__tab-text'>手机号</Text>
+          </View>
+          <View
+            className={`login__tab ${channel === 'email' ? 'login__tab--active' : ''}`}
+            onClick={() => switchChannel('email')}
+          >
+            <Text className='login__tab-text'>邮箱</Text>
+          </View>
+        </View>
+
+        <View className='login__field'>
+          <Input
+            className='login__input'
+            type={channel === 'phone' ? 'number' : 'text'}
+            placeholder={channel === 'phone' ? '请输入手机号' : '请输入邮箱'}
+            placeholderClass='login__ph'
+            value={value}
+            onInput={(e) => setValue(e.detail.value)}
+          />
+        </View>
+
+        <View className='login__field login__field--code'>
+          <Input
+            className='login__input'
+            type='number'
+            maxlength={6}
+            placeholder='请输入验证码'
+            placeholderClass='login__ph'
+            value={code}
+            onInput={(e) => setCode(e.detail.value)}
+          />
+          <Text
+            className={`login__send ${left > 0 || sending ? 'login__send--disabled' : ''}`}
+            onClick={onSend}
+          >
+            {left > 0 ? `${left}s` : sending ? '发送中' : '获取验证码'}
+          </Text>
+        </View>
+
+        <Button className='login__btn' loading={loading} onClick={onLogin}>
+          登录
+        </Button>
       </View>
 
-      <View className='login__field'>
-        <Input
-          className='login__input'
-          type={channel === 'phone' ? 'number' : 'text'}
-          placeholder={channel === 'phone' ? '请输入手机号' : '请输入邮箱'}
-          value={value}
-          onInput={(e) => setValue(e.detail.value)}
-        />
-      </View>
-
-      <View className='login__field login__field--code'>
-        <Input
-          className='login__input'
-          type='number'
-          maxlength={6}
-          placeholder='请输入验证码'
-          value={code}
-          onInput={(e) => setCode(e.detail.value)}
-        />
-        <Text
-          className={`login__send ${left > 0 || sending ? 'login__send--disabled' : ''}`}
-          onClick={onSend}
-        >
-          {left > 0 ? `${left}s 后重发` : sending ? '发送中…' : '获取验证码'}
-        </Text>
-      </View>
-
-      <Button className='login__btn' loading={loading} onClick={onLogin}>
-        登录
-      </Button>
+      <Text className='login__foot'>登录即代表同意相关服务条款</Text>
     </View>
   )
 }
