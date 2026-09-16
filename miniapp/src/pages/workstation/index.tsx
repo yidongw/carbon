@@ -13,6 +13,11 @@ const SCAN_ILLUS = `data:image/svg+xml,${encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24V14a6 6 0 0 1 6-6h10"/><path d="M40 8h10a6 6 0 0 1 6 6v10"/><path d="M56 40v10a6 6 0 0 1-6 6H40"/><path d="M24 56H14a6 6 0 0 1-6-6V40"/><rect x="23" y="23" width="18" height="18" rx="2" stroke-width="2.4"/><path d="M29 23v18M35 23v18M23 29h18M23 35h18" stroke-width="1.6"/></svg>`,
 )}`
 
+// 公司切换胶囊里的下拉箭头(灰)。
+const CHEVRON = `data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5b6472" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
+)}`
+
 export default function Workstation() {
   const [data, setData] = useState<Dashboard | null>(null)
   const [loading, setLoading] = useState(true)
@@ -101,33 +106,17 @@ export default function Workstation() {
     Taro.showToast({ title: '功能开发中', icon: 'none' })
   }
 
-  const w = data?.worker
   const c = data?.current
   const pct = c && c.target > 0 ? Math.min(100, Math.round((c.done / c.target) * 100)) : 0
 
   return (
     <View className='ws' style={{ paddingTop: `${topPad}px` }}>
-      {/* 顶部:当前公司 + 切换(左上角横向药丸) */}
+      {/* 顶部:当前公司 + 切换(门店切换条样式,只展示公司) */}
       <View className='ws__topbar'>
         <View className='ws__company' hoverClass='ws__company--hover' onClick={onSwitchCompany}>
           <Text className='ws__company-name'>{data?.company?.name || '选择公司'}</Text>
-          <Text className='ws__company-caret'>⌄</Text>
-        </View>
-      </View>
-
-      {/* 身份区 */}
-      <View className='ws__id'>
-        <View className='ws__avatar'>
-          <Text className='ws__avatar-text'>{w?.initial || '·'}</Text>
-        </View>
-        <View className='ws__id-info'>
-          <Text className='ws__id-name'>{w?.name || (loading ? '加载中…' : '员工')}</Text>
-          <View className='ws__id-sub'>
-            {w?.onDuty ? <View className='ws__dot' /> : null}
-            <Text className='ws__id-sub-text'>
-              {w?.workCenter ? `${w.workCenter} · ` : ''}
-              {w?.onDuty ? '已上工' : '未上工'}
-            </Text>
+          <View className='ws__company-ch'>
+            <Image className='ws__company-ch-ic' src={CHEVRON} />
           </View>
         </View>
       </View>

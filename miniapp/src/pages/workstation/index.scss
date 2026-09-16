@@ -58,42 +58,52 @@ page {
     color: #8a94a6;
   }
 
-  /* 顶部当前公司 + 切换(左上角横向药丸) */
+  /* 顶部当前公司 + 切换(门店切换条:白胶囊 + 圆形箭头) */
   &__topbar {
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 20px;
+    margin-bottom: 28px;
   }
 
   &__company {
     display: inline-flex;
     align-items: center;
-    max-width: 440px;
-    background: #eef4ff;
+    max-width: 560px;
+    background: #ffffff;
     border-radius: 999px;
-    padding: 12px 24px;
+    padding: 14px 14px 14px 28px;
+    box-shadow: 0 6px 18px rgba(31, 45, 74, 0.07);
 
     &--hover {
-      opacity: 0.7;
+      opacity: 0.75;
     }
   }
 
   &__company-name {
-    max-width: 360px;
-    font-size: 24px;
-    font-weight: 600;
-    color: #2563eb;
+    max-width: 440px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  &__company-caret {
-    margin-left: 12px;
-    font-size: 26px;
-    line-height: 1;
-    color: #2563eb;
-    transform: translateY(-2px);
+  &__company-ch {
+    width: 40px;
+    height: 40px;
+    margin-left: 14px;
+    border-radius: 50%;
+    background: #f1f4f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__company-ch-ic {
+    width: 22px;
+    height: 22px;
   }
 
   &__clock {
