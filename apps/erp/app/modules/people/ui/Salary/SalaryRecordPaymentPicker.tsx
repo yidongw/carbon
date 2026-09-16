@@ -12,10 +12,11 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import { useNavigate, useSearchParams } from "react-router";
 import { useCurrencyFormatter } from "~/hooks";
 import { path } from "~/utils/path";
-import { getEmployeeName, MONTH_NAMES } from "./salaryDetail.utils";
+import { formatSalaryPeriod, getEmployeeName } from "./salaryDetail.utils";
 
 export type SalaryRecordPaymentOption = {
   employeeId: string | null;
@@ -40,9 +41,10 @@ export default function SalaryRecordPaymentPicker({
   returnTo
 }: SalaryRecordPaymentPickerProps) {
   const navigate = useNavigate();
+  const { locale } = useLocale();
   const [searchParams] = useSearchParams();
   const currencyFormatter = useCurrencyFormatter({ minimumFractionDigits: 2 });
-  const periodLabel = `${MONTH_NAMES[month - 1]} ${year}`;
+  const periodLabel = formatSalaryPeriod(year, month, locale);
 
   const payable = records.filter(
     (row) => row.employeeId && (row.amountOwed ?? 0) > 0

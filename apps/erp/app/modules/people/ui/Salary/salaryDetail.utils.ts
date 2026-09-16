@@ -1,17 +1,21 @@
-export const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-] as const;
+/** Localized full month name, e.g. "September" (en) / "九月" (zh). */
+export function formatMonthName(month: number, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { month: "long" }).format(
+    new Date(2000, month - 1, 1)
+  );
+}
+
+/** Localized month + year label, e.g. "September 2026" (en) / "2026年9月" (zh). */
+export function formatSalaryPeriod(
+  year: number,
+  month: number,
+  locale: string
+): string {
+  return new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long"
+  }).format(new Date(year, month - 1, 1));
+}
 
 export type { ProductionQuantityJobOperationRow as SalaryCompletionRow } from "~/modules/production/productionQuantityDisplay.utils";
 export {

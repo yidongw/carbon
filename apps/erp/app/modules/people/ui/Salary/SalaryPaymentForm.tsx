@@ -15,6 +15,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import type { ReactNode } from "react";
 import { useFormAction, useNavigate } from "react-router";
 import {
@@ -26,7 +27,7 @@ import {
 } from "~/components/Form";
 import { useCurrencyFormatter } from "~/hooks";
 import { salaryPaymentValidator } from "~/modules/people/people.models";
-import { MONTH_NAMES } from "./salaryDetail.utils";
+import { formatSalaryPeriod } from "./salaryDetail.utils";
 
 type SalaryPaymentFormProps = {
   salaryRecordId: string;
@@ -58,6 +59,7 @@ export default function SalaryPaymentForm({
   returnTo
 }: SalaryPaymentFormProps) {
   const { t } = useLingui();
+  const { locale } = useLocale();
   const navigate = useNavigate();
   const formAction = useFormAction();
   const currencyFormatter = useCurrencyFormatter({ minimumFractionDigits: 2 });
@@ -65,7 +67,7 @@ export default function SalaryPaymentForm({
 
   const now = new Date();
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  const periodLabel = `${MONTH_NAMES[month - 1]} ${year}`;
+  const periodLabel = formatSalaryPeriod(year, month, locale);
 
   return (
     <ModalDrawerProvider type="drawer">
