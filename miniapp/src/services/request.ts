@@ -4,7 +4,7 @@ import Taro from '@tarojs/taro'
 // (foxhole.bot 当前指向旧源站、无新路由,故走这条 https 直连隧道。)
 // 真机要求 https 且该域名已在小程序后台「request 合法域名」白名单中。
 // 注意:trycloudflare 域名是临时的,重启隧道会变,需同步更新此处 + 后台白名单。
-export const BASE_URL = 'https://refer-fireplace-contributing-knights.trycloudflare.com'
+export const BASE_URL = 'https://surely-ave-fitting-millennium.trycloudflare.com'
 
 export const TOKEN_KEY = 'carbon_miniapp_token'
 export const COMPANY_KEY = 'carbon_miniapp_company'
