@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getOperations } from '../../services/operations'
 import type { OpsData, OpItem } from '../../services/operations'
+import { opStatusCls, opStatusLabel } from '../../utils/opStatus'
 import TabBar from '../../components/TabBar'
 import NavBar from '../../components/NavBar'
 import './index.scss'
@@ -59,8 +60,8 @@ export default function Tasks() {
                 <Text className='tasks__row-title'>{t.title}</Text>
                 <Text className='tasks__row-sub'>{t.sub}</Text>
               </View>
-              <View className='tasks__tag'>
-                <Text className='tasks__tag-text'>{t.tag}</Text>
+              <View className={`tasks__badge tasks__badge--${opStatusCls(t.status)}`}>
+                <Text className='tasks__badge-text'>{opStatusLabel(t.status)}</Text>
               </View>
             </View>
           ))}

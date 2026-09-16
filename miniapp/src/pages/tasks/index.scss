@@ -71,15 +71,32 @@ page {
     color: #8a94a6;
   }
 
-  &__tag {
-    background: #eef4ff;
-    border-radius: 8px;
-    padding: 8px 16px;
+  &__badge {
+    flex-shrink: 0;
+    border-radius: 999px;
+    padding: 8px 18px;
+
+    &--gray { background: #eef0f4; }
+    &--blue { background: #e8f0ff; }
+    &--green { background: #e6f8ee; }
+    &--orange { background: #fff1e0; }
+    &--yellow { background: #fef3c7; }
+    &--red { background: #fee2e2; }
   }
 
-  &__tag-text {
+  &__badge-text {
     font-size: 22px;
-    color: #2563eb;
+    font-weight: 600;
+  }
+  &__badge--gray &__badge-text { color: #64748b; }
+  &__badge--blue &__badge-text { color: #2563eb; }
+  &__badge--green &__badge-text { color: #16a34a; }
+  &__badge--orange &__badge-text { color: #ea8a12; }
+  &__badge--yellow &__badge-text { color: #b45309; }
+  &__badge--red &__badge-text { color: #dc2626; }
+
+  &__row--hover {
+    background: #f7f9fc;
   }
 
   &__empty {

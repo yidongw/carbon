@@ -119,7 +119,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     sub: string;
     badge: string;
     danger: boolean;
+    status?: string;
   }[] = [];
+
+  // 批量取待办工序的工作中心名(行里只有 workCenterId)。
+  const todoWcIds = [
+    ...new Set(assigned.map((o) => o.workCenterId).filter(Boolean))
+  ];
+  const todoWcMap = new Map<string, string>();
+  if (todoWcIds.length) {
+    const wcs = await client
+      .from("workCenter")
+      .select("id, name")
+      .in("id", todoWcIds);
+    for (const w of (wcs.data ?? []) as any[]) todoWcMap.set(w.id, w.name);
+  }
 
   for (const op of assigned.slice(0, 6)) {
     if (cur && op.id === cur.id) continue;
@@ -127,9 +141,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
       key: op.id,
       icon: "📋",
       title: `${op.description ?? "工序"} · ${op.jobReadableId ?? ""}`.trim(),
-      sub: "已分配 · 待开工",
-      badge: "待开工",
-      danger: true
+      sub: todoWcMap.get(op.workCenterId) ?? "已分配",
+      badge: "",
+      danger: false,
+      // 真实工序状态,前端据此本地化 + 上色。
+      status: op.operationStatus ?? ""
     });
   }
 

@@ -4,20 +4,8 @@ import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
 import { getOperation, reportQuantity } from '../../services/operation'
 import type { OperationDetail } from '../../services/operation'
+import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
-
-// 工序状态本地化 + 配色。
-const STATUS: Record<string, { label: string; cls: string }> = {
-  Todo: { label: '待开始', cls: 'blue' },
-  Ready: { label: '待开始', cls: 'blue' },
-  Waiting: { label: '等待', cls: 'gray' },
-  'In Progress': { label: '进行中', cls: 'blue' },
-  Paused: { label: '已暂停', cls: 'orange' },
-  Done: { label: '已完成', cls: 'green' },
-  Canceled: { label: '已取消', cls: 'red' },
-}
-const statusLabel = (s: string) => STATUS[s]?.label ?? s
-const statusCls = (s: string) => STATUS[s]?.cls ?? 'gray'
 
 export default function Operation() {
   const router = useRouter()

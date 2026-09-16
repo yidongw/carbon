@@ -44,25 +44,27 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const title = (o: any) =>
     `${o.description ?? "工序"} · ${o.jobReadableId ?? ""}`.trim();
   const wc = (o: any) => wcMap.get(o.workCenterId) ?? "";
+  // 真实工序状态(枚举),前端据此本地化 + 上色。
+  const status = (o: any) => o.operationStatus ?? "";
 
   return jsonResponse({
     assigned: assigned.map((o) => ({
       id: o.id,
       title: title(o),
-      sub: [wc(o), "待开工"].filter(Boolean).join(" · "),
-      tag: "待开工"
+      sub: wc(o) || "已分配",
+      status: status(o)
     })),
     active: active.map((o) => ({
       id: o.id,
       title: title(o),
       sub: `目标 ${o.targetQuantity ?? o.operationQuantity ?? 0} / 已报 ${o.quantityComplete ?? 0}`,
-      tag: "进行中"
+      status: status(o)
     })),
     recent: recent.map((o) => ({
       id: o.id,
       title: title(o),
-      sub: [wc(o), "已完成"].filter(Boolean).join(" · "),
-      tag: "已完成"
+      sub: wc(o),
+      status: status(o)
     }))
   });
 }

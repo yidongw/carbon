@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { DashboardTodo } from '../../services/dashboard'
 import { computeUnread, getReadSet, markRead, setUnreadCount } from '../../utils/unread'
+import { opStatusCls, opStatusLabel } from '../../utils/opStatus'
 import TabBar from '../../components/TabBar'
 import NavBar from '../../components/NavBar'
 import './index.scss'
@@ -69,7 +70,11 @@ export default function Messages() {
                   <Text className='msg__title'>{t.title}</Text>
                   <Text className='msg__sub'>{t.sub}</Text>
                 </View>
-                {t.badge ? (
+                {t.status ? (
+                  <View className={`msg__badge msg__badge--${opStatusCls(t.status)}`}>
+                    <Text className='msg__badge-text'>{opStatusLabel(t.status)}</Text>
+                  </View>
+                ) : t.badge ? (
                   <View className={`msg__chip ${t.danger ? 'msg__chip--danger' : 'msg__chip--muted'}`}>
                     <Text className='msg__chip-text'>{t.badge}</Text>
                   </View>

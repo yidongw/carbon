@@ -7,6 +7,7 @@ export interface DashboardTodo {
   sub: string
   badge: string
   danger: boolean
+  status?: string
 }
 
 export interface Company {

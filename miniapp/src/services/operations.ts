@@ -4,7 +4,7 @@ export interface OpItem {
   id: string
   title: string
   sub: string
-  tag: string
+  status: string
 }
 
 export interface OpsData {

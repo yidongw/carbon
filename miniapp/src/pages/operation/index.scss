@@ -55,6 +55,7 @@ page {
     &--blue { background: #e8f0ff; }
     &--orange { background: #fff1e0; }
     &--green { background: #e6f8ee; }
+    &--yellow { background: #fef3c7; }
     &--red { background: #fee2e2; }
   }
 
@@ -66,6 +67,7 @@ page {
   &__badge--blue &__badge-text { color: #2563eb; }
   &__badge--orange &__badge-text { color: #ea8a12; }
   &__badge--green &__badge-text { color: #16a34a; }
+  &__badge--yellow &__badge-text { color: #b45309; }
   &__badge--red &__badge-text { color: #dc2626; }
 
   /* 统计卡 2 列 */
