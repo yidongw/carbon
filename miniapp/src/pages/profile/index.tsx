@@ -11,7 +11,6 @@ import './index.scss'
 const ITEMS = [
   { key: 'salary', icon: '💰', text: '我的工资' },
   { key: 'reports', icon: '✅', text: '报工审批' },
-  { key: 'all', icon: '⋯', text: '全部功能' },
 ]
 
 export default function Profile() {
@@ -28,15 +27,11 @@ export default function Profile() {
   })
 
   const onItem = (key: string) => {
-    if (key === 'all') {
-      Taro.navigateTo({ url: '/pages/functions/index' })
-      return
-    }
     if (key === 'salary') {
       Taro.navigateTo({ url: '/pages/salary/index' })
       return
     }
-    Taro.showToast({ title: `TODO: ${key}`, icon: 'none' })
+    Taro.showToast({ title: '功能开发中', icon: 'none' })
   }
 
   const sub = [me?.companyName, me?.workCenter].filter(Boolean).join(' · ')
