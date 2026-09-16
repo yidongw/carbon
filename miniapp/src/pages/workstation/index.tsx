@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
-import { FN_GROUPS } from '../../constants/functions'
+import { FN_GROUPS, FN_STROKE, fnIcon } from '../../constants/functions'
 import TabBar from '../../components/TabBar'
 import './index.scss'
 
@@ -53,10 +53,6 @@ export default function Workstation() {
       /* 取消扫码 */
     }
   }
-
-  // 首页功能区:横向模块 tab + 宫格。
-  const [modKey, setModKey] = useState(FN_GROUPS[0].key)
-  const group = FN_GROUPS.find((g) => g.key === modKey) ?? FN_GROUPS[0]
 
   const badgeOf = (key: string) => {
     if (key === 'assigned' && data?.assignedCount) return String(data.assignedCount)
@@ -181,39 +177,33 @@ export default function Workstation() {
         </>
       ) : null}
 
-      {/* 功能区:横向模块 tab + 宫格 */}
+      {/* 功能区:分组卡片(一屏看全,每模块一张卡) */}
       <Text className='ws__sec'>功能</Text>
-      <ScrollView className='ws__mods' scrollX showScrollbar={false}>
-        {FN_GROUPS.map((g) => (
-          <View
-            key={g.key}
-            className={`ws__mod ${modKey === g.key ? 'ws__mod--active' : ''}`}
-            onClick={() => setModKey(g.key)}
-          >
-            <Text className='ws__mod-text'>{g.title}</Text>
-          </View>
-        ))}
-      </ScrollView>
-      <View className='ws__fn-grid'>
-        {group.items.map((it) => (
-          <View
-            key={it.key}
-            className='ws__fn-cell'
-            hoverClass='ws__fn-cell--hover'
-            onClick={() => onFn(it.key)}
-          >
-            <View className={`ws__fn-ic ws__fn-ic--${group.color}`}>
-              <Text className='ws__fn-ic-text'>{it.icon}</Text>
-              {badgeOf(it.key) ? (
-                <View className='ws__fn-badge'>
-                  <Text className='ws__fn-badge-text'>{badgeOf(it.key)}</Text>
+      {FN_GROUPS.map((g) => (
+        <View key={g.key} className='ws__fn-group'>
+          <Text className='ws__fn-group-title'>{g.title}</Text>
+          <View className='ws__fn-grid'>
+            {g.items.map((it) => (
+              <View
+                key={it.key}
+                className='ws__fn-cell'
+                hoverClass='ws__fn-cell--hover'
+                onClick={() => onFn(it.key)}
+              >
+                <View className={`ws__fn-ic ws__fn-ic--${g.color}`}>
+                  <Image className='ws__fn-ic-img' src={fnIcon(it.svg, FN_STROKE[g.color])} />
+                  {badgeOf(it.key) ? (
+                    <View className='ws__fn-badge'>
+                      <Text className='ws__fn-badge-text'>{badgeOf(it.key)}</Text>
+                    </View>
+                  ) : null}
                 </View>
-              ) : null}
-            </View>
-            <Text className='ws__fn-label'>{it.text}</Text>
+                <Text className='ws__fn-label'>{it.text}</Text>
+              </View>
+            ))}
           </View>
-        ))}
-      </View>
+        </View>
+      ))}
 
       <TabBar active='workstation' />
     </View>

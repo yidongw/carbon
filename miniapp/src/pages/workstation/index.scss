@@ -376,42 +376,26 @@ page {
     color: #fff;
   }
 
-  /* 功能区:横向模块 tab + 宫格 */
-  &__mods {
-    white-space: nowrap;
-    margin-bottom: 16px;
-  }
-
-  &__mod {
-    display: inline-block;
-    padding: 12px 28px;
-    margin-right: 16px;
-    border-radius: 999px;
+  /* 功能区:分组卡片(每模块一张卡) */
+  &__fn-group {
     background: #ffffff;
-    box-shadow: 0 4px 14px rgba(31, 45, 74, 0.05);
-
-    &--active {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-    }
+    border-radius: 24px;
+    padding: 22px 6px 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.05);
   }
 
-  &__mod-text {
-    font-size: 26px;
-    color: #5b6472;
-  }
-
-  &__mod--active &__mod-text {
-    color: #ffffff;
+  &__fn-group-title {
+    display: block;
+    margin: 0 18px 6px;
+    font-size: 24px;
     font-weight: 600;
+    color: #8a94a6;
   }
 
   &__fn-grid {
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 20px 6px;
     display: flex;
     flex-wrap: wrap;
-    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.05);
   }
 
   &__fn-cell {
@@ -426,23 +410,22 @@ page {
 
   &__fn-ic {
     position: relative;
-    width: 96px;
-    height: 96px;
-    border-radius: 28px;
+    width: 92px;
+    height: 92px;
+    border-radius: 26px;
     margin: 0 auto 12px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    &--blue { background: #e8f0ff; }
     &--purple { background: #f0eaff; }
     &--green { background: #e6f8ee; }
     &--orange { background: #fff1e0; }
-    &--gray { background: #eef0f4; }
   }
 
-  &__fn-ic-text {
-    font-size: 44px;
+  &__fn-ic-img {
+    width: 46px;
+    height: 46px;
   }
 
   &__fn-badge {
