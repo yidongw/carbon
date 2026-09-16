@@ -9,8 +9,7 @@ export const FN_GROUPS: FnGroup[] = [
     title: '工序',
     color: 'blue',
     items: [
-      { key: 'pickup', icon: '📥', text: '领活' },
-      { key: 'report', icon: '📤', text: '报工' },
+      // 领活/报工是扫码闭环,已由中间扫码键 + 「扫码领工单」承担,不再放宫格入口。
       { key: 'assigned', icon: '📋', text: '已分配' },
       { key: 'active', icon: '⏱️', text: '进行中' },
       { key: 'recent', icon: '🕘', text: '最近' },
