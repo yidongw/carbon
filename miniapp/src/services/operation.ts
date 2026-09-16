@@ -42,3 +42,12 @@ export const reportQuantity = (payload: ReportPayload) =>
     method: 'POST',
     data: payload,
   })
+
+export type OperationActionType = 'start' | 'pause' | 'finish' | 'pickup'
+
+export const operationAction = (jobOperationId: string, action: OperationActionType) =>
+  request<{ success: boolean; message?: string }>({
+    url: '/api/miniapp/operation-action',
+    method: 'POST',
+    data: { jobOperationId, action },
+  })

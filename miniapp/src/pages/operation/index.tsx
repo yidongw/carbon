@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { View, Text, Input } from '@tarojs/components'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
-import { getOperation, reportQuantity } from '../../services/operation'
-import type { OperationDetail } from '../../services/operation'
+import { getOperation, reportQuantity, operationAction } from '../../services/operation'
+import type { OperationDetail, OperationActionType } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
 
@@ -20,6 +20,9 @@ export default function Operation() {
   const [rework, setRework] = useState(0)
   const [scrap, setScrap] = useState(0)
   const [submitting, setSubmitting] = useState(false)
+  // 更多操作弹层 + 动作进行中
+  const [more, setMore] = useState(false)
+  const [acting, setActing] = useState(false)
 
   const load = () => {
     if (!id) return
@@ -34,6 +37,32 @@ export default function Operation() {
   }
 
   useDidShow(load)
+
+  const soon = () => Taro.showToast({ title: '功能开发中', icon: 'none' })
+
+  const runAction = async (action: OperationActionType, confirm?: string) => {
+    if (!d || acting) return
+    if (confirm) {
+      const r = await Taro.showModal({ title: '确认', content: confirm })
+      if (!r.confirm) return
+    }
+    setActing(true)
+    try {
+      const res = await operationAction(d.id, action)
+      if (res.success) {
+        setMore(false)
+        Taro.showToast({ title: '操作成功', icon: 'success' })
+        setLoading(true)
+        load()
+      } else {
+        Taro.showToast({ title: res.message || '操作失败', icon: 'none' })
+      }
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '操作失败', icon: 'none' })
+    } finally {
+      setActing(false)
+    }
+  }
 
   const openSheet = () => {
     const remain = d ? Math.max(0, d.target - d.completed - d.scrap) : 0
@@ -125,7 +154,12 @@ export default function Operation() {
               <Text className='op__stat-value'>{d.scrap}</Text>
             </View>
             <View className='op__stat'>
-              <Text className='op__stat-label'>待审批</Text>
+              <View className='op__stat-head'>
+                <Text className='op__stat-label'>待审批</Text>
+                {d.pending > 0 ? (
+                  <Text className='op__stat-link' onClick={soon}>审核 ›</Text>
+                ) : null}
+              </View>
               <Text className='op__stat-value'>{d.pending}</Text>
             </View>
             <View className='op__stat'>
@@ -158,11 +192,22 @@ export default function Operation() {
         </View>
       )}
 
-      {/* 底部操作栏 */}
+      {/* 底部操作栏(随状态变化) */}
       {d && d.found && d.status !== 'Done' && d.status !== 'Canceled' ? (
         <View className='op__bar'>
-          <View className='op__report' hoverClass='op__report--hover' onClick={openSheet}>
-            <Text className='op__report-text'>记录数量</Text>
+          <View
+            className={`op__act ${d.active ? 'op__act--pause' : 'op__act--start'}`}
+            onClick={() => runAction(d.active ? 'pause' : 'start')}
+          >
+            <Text className='op__act-text'>
+              {d.active ? '暂停' : d.status === 'Paused' ? '继续' : '开始'}
+            </Text>
+          </View>
+          <View className='op__act op__act--report' onClick={openSheet}>
+            <Text className='op__act-text'>记录数量</Text>
+          </View>
+          <View className='op__act op__act--more' onClick={() => setMore(true)}>
+            <Text className='op__act-more'>⋯</Text>
           </View>
         </View>
       ) : null}
@@ -202,6 +247,60 @@ export default function Operation() {
           </View>
         </View>
       ) : null}
+
+      {/* 更多操作弹层 */}
+      {more && d ? (
+        <View className='op__sheet-wrap'>
+          <View className='op__mask' onClick={() => setMore(false)} />
+          <View className='op__sheet'>
+            <View className='op__sheet-head'>
+              <Text className='op__sheet-title'>更多操作</Text>
+              <Text className='op__sheet-x' onClick={() => setMore(false)}>✕</Text>
+            </View>
+            <MoreItem
+              cls='green'
+              name='完成工序'
+              hint='标记该工序为已完成'
+              onClick={() => runAction('finish', '确认完成该工序?')}
+            />
+            {!d.isMine ? (
+              <MoreItem
+                cls='blue'
+                name='领取 / 接手工序'
+                hint='把该工序分配给自己'
+                onClick={() => runAction('pickup')}
+              />
+            ) : null}
+            <MoreItem cls='amber' name='返工' hint='把数量返工到指定工序' onClick={soon} />
+            <MoreItem cls='red' name='报废' hint='报废并选择原因' onClick={soon} />
+            <MoreItem cls='purple' name='维护' hint='报修工作中心' onClick={soon} />
+            <MoreItem cls='gray' name='质量问题' hint='提交质量异常' onClick={soon} />
+          </View>
+        </View>
+      ) : null}
+    </View>
+  )
+}
+
+function MoreItem({
+  cls,
+  name,
+  hint,
+  onClick,
+}: {
+  cls: string
+  name: string
+  hint: string
+  onClick: () => void
+}) {
+  return (
+    <View className='op__mi' hoverClass='op__mi--hover' onClick={onClick}>
+      <View className={`op__mi-ic op__mi-ic--${cls}`} />
+      <View className='op__mi-mid'>
+        <Text className='op__mi-name'>{name}</Text>
+        <Text className='op__mi-hint'>{hint}</Text>
+      </View>
+      <Text className='op__mi-arrow'>›</Text>
     </View>
   )
 }

@@ -170,6 +170,22 @@ page {
     color: #97a1b3;
   }
 
+  /* 状态链接(待审批「审核」) */
+  &__stat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__stat-link {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2563eb;
+    border: 1px solid #cfe0ff;
+    border-radius: 8px;
+    padding: 4px 12px;
+  }
+
   /* 底部操作栏 */
   &__bar {
     position: fixed;
@@ -178,30 +194,107 @@ page {
     bottom: 0;
     background: #ffffff;
     border-top: 1px solid #eef0f4;
-    padding: 20px 24px calc(20px + constant(safe-area-inset-bottom));
-    padding: 20px 24px calc(20px + env(safe-area-inset-bottom));
+    padding: 18px 24px calc(18px + constant(safe-area-inset-bottom));
+    padding: 18px 24px calc(18px + env(safe-area-inset-bottom));
     box-shadow: 0 -6px 24px rgba(31, 45, 74, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 
-  &__report {
+  &__act {
     height: 96px;
     border-radius: 20px;
-    background: linear-gradient(135deg, #4f8bff, #2563eb);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
 
-    &--hover {
-      opacity: 0.9;
+    &--start {
+      flex: 1.2;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      box-shadow: 0 12px 26px rgba(22, 163, 74, 0.28);
+    }
+
+    &--pause {
+      flex: 1.2;
+      background: linear-gradient(135deg, #fb923c, #ea8a12);
+      box-shadow: 0 12px 26px rgba(234, 138, 18, 0.28);
+    }
+
+    &--report {
+      flex: 1;
+      background: linear-gradient(135deg, #4f8bff, #2563eb);
+      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+    }
+
+    &--more {
+      width: 96px;
+      flex-shrink: 0;
+      background: #f1f4f9;
     }
   }
 
-  &__report-text {
+  &__act-text {
     color: #ffffff;
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 700;
     letter-spacing: 1px;
+  }
+
+  &__act-more {
+    font-size: 44px;
+    color: #5b6472;
+    line-height: 1;
+  }
+
+  /* 更多操作项 */
+  &__mi {
+    display: flex;
+    align-items: center;
+    padding: 26px 4px;
+    border-top: 1px solid #f2f4f7;
+
+    &--hover {
+      opacity: 0.6;
+    }
+  }
+
+  &__mi-ic {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    flex-shrink: 0;
+
+    &--green { background: #e6f8ee; }
+    &--blue { background: #e8f0ff; }
+    &--amber { background: #fff1e0; }
+    &--red { background: #fee2e2; }
+    &--purple { background: #f0eaff; }
+    &--gray { background: #eef0f4; }
+  }
+
+  &__mi-mid {
+    flex: 1;
+    margin-left: 22px;
+  }
+
+  &__mi-name {
+    display: block;
+    font-size: 30px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__mi-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 22px;
+    color: #97a1b3;
+  }
+
+  &__mi-arrow {
+    font-size: 40px;
+    color: #c4ccd8;
   }
 
   /* 报工弹层 */
