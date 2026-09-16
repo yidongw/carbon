@@ -42,3 +42,31 @@ export async function requireMiniappUser(request: Request): Promise<{
     client
   };
 }
+
+/**
+ * 派生当前小程序用户的 locationId(与网页 `getLocation` 同逻辑,去掉 cookie 步骤):
+ * 优先取员工岗位默认库位 `employeeJob.locationId`(其 id 即 userId),
+ * 否则回退到公司的第一个 location。都没有则返回 null。
+ */
+export async function getMiniappLocationId(
+  client: SupabaseClient<Database>,
+  userId: string,
+  companyId: string
+): Promise<string | null> {
+  const ej = await client
+    .from("employeeJob")
+    .select("locationId")
+    .eq("id", userId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+  if (ej.data?.locationId) return ej.data.locationId as string;
+
+  const loc = await client
+    .from("location")
+    .select("id")
+    .eq("companyId", companyId)
+    .order("name", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  return (loc.data?.id as string | undefined) ?? null;
+}

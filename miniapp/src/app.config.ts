@@ -7,6 +7,7 @@ export default defineAppConfig({
     'pages/profile/index',
     'pages/functions/index',
     'pages/salary/index',
+    'pages/work-orders/index',
   ],
   window: {
     backgroundTextStyle: 'light',

@@ -60,9 +60,18 @@ export default function Workstation() {
     return ''
   }
 
+  // 功能宫格 → 对应真实页面。工单模块直连 MES 视图列表。
+  const FN_ROUTE: Record<string, string> = {
+    jobs: '/pages/work-orders/index?type=jobs',
+    masterWorkOrders: '/pages/work-orders/index?type=master',
+    bundleWorkOrders: '/pages/work-orders/index?type=bundle',
+    salary: '/pages/salary/index',
+  }
+
   const onFn = (key: string) => {
-    if (key === 'salary') {
-      Taro.navigateTo({ url: '/pages/salary/index' })
+    const url = FN_ROUTE[key]
+    if (url) {
+      Taro.navigateTo({ url })
       return
     }
     Taro.showToast({ title: '功能开发中', icon: 'none' })
