@@ -162,6 +162,9 @@ msgstr "Вы действительно хотите завершить эту �
 msgid "Are you sure you want to leave this page?"
 msgstr "Вы действительно хотите покинуть эту страницу?"
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Asset class created"
 msgstr "Класс активы создан"
 
@@ -3934,6 +3937,9 @@ msgstr "Группа не найдена"
 msgid "Group updated successfully"
 msgstr "Группа успешно обновлена"
 
+msgid "Hard Deadline"
+msgstr ""
+
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Возникла техническая проблема? Обратитесь в <0>службу поддержки Carbon.</0>"
 
@@ -4522,6 +4528,9 @@ msgstr "Найдено нетracked объектов"
 
 msgid "No bundle work orders"
 msgstr "Нет пакетных производственных заказов"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Нет амортизации для расчета для незакрытых активов"
@@ -5454,6 +5463,9 @@ msgstr "Серебристый"
 
 msgid "Size"
 msgstr "Размер"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Source"
 msgstr "Источник"

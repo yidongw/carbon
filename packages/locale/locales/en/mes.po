@@ -162,6 +162,9 @@ msgstr "Are you sure you want to finish this operation? This will end all active
 msgid "Are you sure you want to leave this page?"
 msgstr "Are you sure you want to leave this page?"
 
+msgid "ASAP"
+msgstr "ASAP"
+
 msgid "Asset class created"
 msgstr "Asset class created"
 
@@ -3934,6 +3937,9 @@ msgstr "Group not found"
 msgid "Group updated successfully"
 msgstr "Group updated successfully"
 
+msgid "Hard Deadline"
+msgstr "Hard Deadline"
+
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Have a technical issue? Contact <0>Carbon Support.</0>"
 
@@ -4522,6 +4528,9 @@ msgstr "No available tracked entities found"
 
 msgid "No bundle work orders"
 msgstr "No bundle work orders"
+
+msgid "No Deadline"
+msgstr "No Deadline"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "No depreciation to calculate for uncovered assets"
@@ -5454,6 +5463,9 @@ msgstr "Silver"
 
 msgid "Size"
 msgstr "Size"
+
+msgid "Soft Deadline"
+msgstr "Soft Deadline"
 
 msgid "Source"
 msgstr "Source"

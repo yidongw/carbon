@@ -162,6 +162,9 @@ msgstr "この操作を終了してもよろしいですか？これにより、
 msgid "Are you sure you want to leave this page?"
 msgstr "このページを離れますか？"
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Asset class created"
 msgstr "資産クラスを作成しました"
 
@@ -3934,6 +3937,9 @@ msgstr "グループが見つかりません"
 msgid "Group updated successfully"
 msgstr "グループが更新されました"
 
+msgid "Hard Deadline"
+msgstr ""
+
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "技術的な問題がありますか？<0>Carbonサポート</0>にお問い合わせください。"
 
@@ -4522,6 +4528,9 @@ msgstr "追跡可能なエンティティが見つかりません"
 
 msgid "No bundle work orders"
 msgstr "バンドル仕事指示書なし"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未 COVERED 資産に対する減価額は計算できません"
@@ -5454,6 +5463,9 @@ msgstr "シルバー"
 
 msgid "Size"
 msgstr "サイズ"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Source"
 msgstr "ソース"

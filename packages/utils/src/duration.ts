@@ -33,7 +33,19 @@ type DurationOptions = {
   style?: "long" | "short";
   maxDecimalPoints?: number;
   units?: Unit[];
+  /** BCP-47 locale (e.g. "zh-CN") used to localize unit words. Defaults to English. */
+  locale?: string;
 };
+
+/** Map a BCP-47 locale to a humanize-duration language code (falls back to English). */
+function humanizeLanguage(locale?: string): string {
+  if (!locale) return "en";
+  const lower = locale.toLowerCase();
+  if (lower.startsWith("zh")) {
+    return lower.includes("tw") || lower.includes("hant") ? "zh_TW" : "zh_CN";
+  }
+  return lower.split("-")[0] ?? "en";
+}
 
 export function formatDuration(
   start?: Date | null,
@@ -102,7 +114,9 @@ export function formatDurationMilliseconds(
         ? belowOneSecondUnits
         : aboveOneSecondUnits,
     maxDecimalPoints: options?.maxDecimalPoints ?? 0,
-    largest: 2
+    largest: 2,
+    language: humanizeLanguage(options?.locale),
+    fallbacks: ["en"]
   });
 
   if (!options) {
