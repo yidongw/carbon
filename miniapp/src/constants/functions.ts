@@ -25,7 +25,7 @@ export const FN_GROUPS: FnGroup[] = [
     title: '工单',
     color: 'purple',
     items: [
-      { key: 'jobs', text: '工单', svg: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>' },
+      { key: 'jobs', text: '任务', svg: '<circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8"/>' },
       { key: 'masterWorkOrders', text: '主工单', svg: '<path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 13l9 5 9-5"/>' },
       { key: 'bundleWorkOrders', text: '分包工单', svg: '<path d="M20 12l-8 8-9-9V4h7l10 8z"/><circle cx="7.5" cy="7.5" r="1.3"/>' },
     ],

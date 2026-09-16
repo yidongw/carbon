@@ -14,7 +14,7 @@ type WoType = 'jobs' | 'master' | 'bundle'
 type AnyRow = JobRow | MasterRow | BundleRow
 
 const TITLE: Record<WoType, string> = {
-  jobs: '工单',
+  jobs: '任务',
   master: '主工单',
   bundle: '分包工单',
 }
