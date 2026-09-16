@@ -11,6 +11,7 @@ import './index.scss'
 const ITEMS = [
   { key: 'salary', icon: '💰', text: '我的工资' },
   { key: 'reports', icon: '✅', text: '报工审批' },
+  { key: 'schedule', icon: '📆', text: '排程' },
 ]
 
 export default function Profile() {
