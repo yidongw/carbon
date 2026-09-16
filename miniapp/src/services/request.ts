@@ -7,6 +7,7 @@ import Taro from '@tarojs/taro'
 export const BASE_URL = 'https://refer-fireplace-contributing-knights.trycloudflare.com'
 
 export const TOKEN_KEY = 'carbon_miniapp_token'
+export const COMPANY_KEY = 'carbon_miniapp_company'
 
 export interface ApiError {
   statusCode: number
@@ -23,6 +24,8 @@ export async function request<T = unknown>(
 ): Promise<T> {
   const { auth = true, header, url, ...rest } = options
   const token = auth ? Taro.getStorageSync(TOKEN_KEY) : ''
+  // 选中的公司(切换公司功能):随请求头下发,后端校验归属后据此取数。
+  const companyId = auth ? Taro.getStorageSync(COMPANY_KEY) : ''
 
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`
 
@@ -35,6 +38,7 @@ export async function request<T = unknown>(
       header: {
         'content-type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(companyId ? { 'X-Company-Id': companyId } : {}),
         ...(header || {}),
       },
     })

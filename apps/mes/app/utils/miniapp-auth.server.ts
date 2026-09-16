@@ -27,18 +27,35 @@ export async function requireMiniappUser(request: Request): Promise<{
   }
 
   const serviceRole = getCarbonServiceRole();
-  const utc = await serviceRole
-    .from("userToCompany")
-    .select("companyId")
-    .eq("userId", account.id)
-    .limit(1)
-    .maybeSingle();
+
+  // 选中的公司:客户端通过 `X-Company-Id` 头传入(小程序无 cookie,故用请求头
+  // 代替网页端的 companyId cookie)。必须校验该用户确实归属这家公司,否则忽略。
+  const chosen = (request.headers.get("X-Company-Id") ?? "").trim();
+  let companyId = "";
+  if (chosen) {
+    const member = await serviceRole
+      .from("userToCompany")
+      .select("companyId")
+      .eq("userId", account.id)
+      .eq("companyId", chosen)
+      .maybeSingle();
+    if (member.data?.companyId) companyId = member.data.companyId as string;
+  }
+  if (!companyId) {
+    const utc = await serviceRole
+      .from("userToCompany")
+      .select("companyId")
+      .eq("userId", account.id)
+      .limit(1)
+      .maybeSingle();
+    companyId = (utc.data?.companyId as string | undefined) ?? "";
+  }
 
   const client = await getUserScopedClient(account.id);
 
   return {
     userId: account.id,
-    companyId: (utc.data?.companyId as string | undefined) ?? "",
+    companyId,
     client
   };
 }

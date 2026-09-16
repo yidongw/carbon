@@ -1,3 +1,4 @@
+import { getCompanies } from "@carbon/auth";
 import { getUserById } from "@carbon/auth/users.server";
 import type { LoaderFunctionArgs } from "react-router";
 import {
@@ -23,10 +24,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
     [u?.firstName, u?.lastName].filter(Boolean).join(" ").trim() || "员工";
   const initial = (u?.firstName || name || "员").slice(0, 1);
 
+  // 用户归属的所有公司(用于顶部「切换公司」)。company = 当前生效公司。
+  const companiesRes = await getCompanies(client, userId);
+  const companies = (companiesRes.data ?? [])
+    .map((c: any) => ({
+      id: c.companyId as string,
+      name: (c.name as string) ?? ""
+    }))
+    .filter((c: { id: string }) => Boolean(c.id));
+  const company =
+    companies.find((c) => c.id === companyId) ?? companies[0] ?? null;
+
   if (!companyId) {
     return jsonResponse({
       hasCompany: false,
       worker: { name, initial, workCenter: null, onDuty: false },
+      company,
+      companies,
       todayPieces: 0,
       todayEarn: 0,
       monthEarn: 0,
@@ -134,6 +148,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return jsonResponse({
     hasCompany: true,
     worker: { name, initial, workCenter, onDuty: active.length > 0 },
+    company,
+    companies,
     todayPieces,
     todayEarn,
     monthEarn,

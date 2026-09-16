@@ -1,5 +1,7 @@
 import Taro from '@tarojs/taro'
-import { request, TOKEN_KEY } from './request'
+import { request, TOKEN_KEY, COMPANY_KEY } from './request'
+
+export { COMPANY_KEY }
 
 export interface LoginResponse {
   token: string
@@ -9,8 +11,6 @@ export interface LoginResponse {
   expiresAt: number
   hasCompany: boolean
 }
-
-export const COMPANY_KEY = 'carbon_miniapp_company'
 
 export type LoginChannel = 'phone' | 'email'
 

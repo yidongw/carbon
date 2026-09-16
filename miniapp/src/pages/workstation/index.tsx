@@ -3,6 +3,7 @@ import { View, Text, Image } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
+import { COMPANY_KEY } from '../../services/request'
 import { FN_GROUPS, FN_STROKE, fnIcon } from '../../constants/functions'
 import TabBar from '../../components/TabBar'
 import './index.scss'
@@ -44,6 +45,29 @@ export default function Workstation() {
   useDidShow(() => {
     load()
   })
+
+  // 切换公司:列出用户归属的公司,选中后写入本地并按新公司重新取数
+  // (X-Company-Id 请求头随后带上,所有接口都按新公司返回)。
+  const onSwitchCompany = () => {
+    const list = data?.companies ?? []
+    if (list.length <= 1) {
+      Taro.showToast({ title: '当前仅归属一家公司', icon: 'none' })
+      return
+    }
+    Taro.showActionSheet({ itemList: list.map((c) => c.name || '未命名公司') })
+      .then((r) => {
+        const picked = list[r.tapIndex]
+        if (picked && picked.id !== data?.company?.id) {
+          Taro.setStorageSync(COMPANY_KEY, picked.id)
+          Taro.showToast({ title: `已切换到 ${picked.name}`, icon: 'none' })
+          setLoading(true)
+          load()
+        }
+      })
+      .catch(() => {
+        /* 取消 */
+      })
+  }
 
   const onScan = async () => {
     try {
@@ -97,6 +121,10 @@ export default function Workstation() {
               {w?.onDuty ? '已上工' : '未上工'}
             </Text>
           </View>
+        </View>
+        <View className='ws__company' hoverClass='ws__company--hover' onClick={onSwitchCompany}>
+          <Text className='ws__company-name'>{data?.company?.name || '选择公司'}</Text>
+          <Text className='ws__company-caret'>⇅</Text>
         </View>
       </View>
 

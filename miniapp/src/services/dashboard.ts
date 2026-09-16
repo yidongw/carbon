@@ -9,9 +9,16 @@ export interface DashboardTodo {
   danger: boolean
 }
 
+export interface Company {
+  id: string
+  name: string
+}
+
 export interface Dashboard {
   hasCompany: boolean
   worker: { name: string; initial: string; workCenter: string | null; onDuty: boolean }
+  company: Company | null
+  companies: Company[]
   todayPieces: number
   todayEarn: number
   monthEarn: number
