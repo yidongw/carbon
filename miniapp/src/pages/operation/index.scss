@@ -1,0 +1,356 @@
+page {
+  background: #f3f5f9;
+}
+
+.op {
+  &__body {
+    padding: 0 24px 200px;
+  }
+
+  &__card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 28px rgba(31, 45, 74, 0.05);
+  }
+
+  &__card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__op-name {
+    font-size: 36px;
+    font-weight: 800;
+    color: #1a2233;
+  }
+
+  &__op-item {
+    display: block;
+    margin-top: 8px;
+    font-size: 26px;
+    color: #8a94a6;
+  }
+
+  &__wc {
+    display: inline-block;
+    margin-top: 16px;
+    background: #f1f4f9;
+    border-radius: 10px;
+    padding: 8px 16px;
+  }
+
+  &__wc-text {
+    font-size: 22px;
+    color: #5b6472;
+  }
+
+  &__badge {
+    padding: 6px 18px;
+    border-radius: 999px;
+
+    &--gray { background: #eef0f4; }
+    &--blue { background: #e8f0ff; }
+    &--orange { background: #fff1e0; }
+    &--green { background: #e6f8ee; }
+    &--red { background: #fee2e2; }
+  }
+
+  &__badge-text {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  &__badge--gray &__badge-text { color: #64748b; }
+  &__badge--blue &__badge-text { color: #2563eb; }
+  &__badge--orange &__badge-text { color: #ea8a12; }
+  &__badge--green &__badge-text { color: #16a34a; }
+  &__badge--red &__badge-text { color: #dc2626; }
+
+  /* 统计卡 2 列 */
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &__stat {
+    width: 48.5%;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 22px rgba(31, 45, 74, 0.05);
+  }
+
+  &__stat-label {
+    display: block;
+    font-size: 22px;
+    color: #8a94a6;
+  }
+
+  &__stat-value {
+    display: block;
+    margin-top: 12px;
+    font-size: 44px;
+    font-weight: 800;
+    color: #1a2233;
+  }
+
+  &__stat-sub {
+    font-size: 24px;
+    font-weight: 600;
+    color: #9aa6b8;
+  }
+
+  &__stat-name {
+    display: block;
+    margin-top: 14px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__sec {
+    display: block;
+    margin: 12px 4px 14px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__log {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 8px 22px rgba(31, 45, 74, 0.05);
+  }
+
+  &__log-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__log-k {
+    font-size: 24px;
+    color: #5b6472;
+  }
+
+  &__log-v {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__prog {
+    margin-top: 14px;
+    height: 16px;
+    border-radius: 999px;
+    background: #eef0f4;
+    overflow: hidden;
+  }
+
+  &__prog-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+  }
+
+  &__empty {
+    padding: 200px 0;
+    text-align: center;
+  }
+
+  &__empty-text {
+    font-size: 26px;
+    color: #97a1b3;
+  }
+
+  /* 底部操作栏 */
+  &__bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    border-top: 1px solid #eef0f4;
+    padding: 20px 24px calc(20px + constant(safe-area-inset-bottom));
+    padding: 20px 24px calc(20px + env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 24px rgba(31, 45, 74, 0.06);
+  }
+
+  &__report {
+    height: 96px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #4f8bff, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+
+    &--hover {
+      opacity: 0.9;
+    }
+  }
+
+  &__report-text {
+    color: #ffffff;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  /* 报工弹层 */
+  &__sheet-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+  }
+
+  &__mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 26, 36, 0.45);
+  }
+
+  &__sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    border-radius: 32px 32px 0 0;
+    padding: 30px 30px calc(40px + constant(safe-area-inset-bottom));
+    padding: 30px 30px calc(40px + env(safe-area-inset-bottom));
+  }
+
+  &__sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__sheet-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #1a2233;
+  }
+
+  &__sheet-x {
+    font-size: 34px;
+    color: #9aa6b8;
+    padding: 4px 10px;
+  }
+
+  &__sheet-sub {
+    display: block;
+    margin: 8px 0 8px;
+    font-size: 24px;
+    color: #8a94a6;
+  }
+
+  &__stp {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 0;
+    border-top: 1px solid #f2f4f7;
+  }
+
+  &__stp-left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__stp-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    margin-right: 18px;
+
+    &--green { background: #16a34a; }
+    &--amber { background: #ea8a12; }
+    &--red { background: #dc2626; }
+  }
+
+  &__stp-name {
+    display: block;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__stp-hint {
+    display: block;
+    margin-top: 2px;
+    font-size: 20px;
+    color: #97a1b3;
+  }
+
+  &__stepper {
+    display: flex;
+    align-items: center;
+  }
+
+  &__stp-op {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: #f1f4f9;
+    text-align: center;
+    line-height: 60px;
+    font-size: 40px;
+    color: #5b6472;
+  }
+
+  &__stp-num {
+    width: 110px;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 800;
+    color: #1a2233;
+  }
+
+  &__emp {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 0;
+    border-top: 1px solid #f2f4f7;
+    border-bottom: 1px solid #f2f4f7;
+    margin-bottom: 26px;
+  }
+
+  &__emp-k {
+    font-size: 26px;
+    color: #5b6472;
+  }
+
+  &__emp-v {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__submit {
+    height: 100px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #4f8bff, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+
+    &--disabled {
+      opacity: 0.6;
+    }
+  }
+
+  &__submit-text {
+    color: #ffffff;
+    font-size: 32px;
+    font-weight: 800;
+  }
+}

@@ -49,7 +49,12 @@ export default function Tasks() {
       {list.length > 0 ? (
         <View className='tasks__list'>
           {list.map((t) => (
-            <View key={t.id} className='tasks__row'>
+            <View
+              key={t.id}
+              className='tasks__row'
+              hoverClass='tasks__row--hover'
+              onClick={() => Taro.navigateTo({ url: `/pages/operation/index?id=${t.id}` })}
+            >
               <View className='tasks__row-mid'>
                 <Text className='tasks__row-title'>{t.title}</Text>
                 <Text className='tasks__row-sub'>{t.sub}</Text>
