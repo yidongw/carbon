@@ -58,15 +58,20 @@ page {
     color: #8a94a6;
   }
 
-  /* 当前公司 + 切换 */
-  &__company {
+  /* 顶部当前公司 + 切换(左上角横向药丸) */
+  &__topbar {
     display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
+
+  &__company {
+    display: inline-flex;
     align-items: center;
-    flex-shrink: 0;
-    max-width: 260px;
+    max-width: 440px;
     background: #eef4ff;
     border-radius: 999px;
-    padding: 12px 22px;
+    padding: 12px 24px;
 
     &--hover {
       opacity: 0.7;
@@ -74,8 +79,8 @@ page {
   }
 
   &__company-name {
-    max-width: 180px;
-    font-size: 22px;
+    max-width: 360px;
+    font-size: 24px;
     font-weight: 600;
     color: #2563eb;
     overflow: hidden;
@@ -84,9 +89,11 @@ page {
   }
 
   &__company-caret {
-    margin-left: 10px;
-    font-size: 24px;
+    margin-left: 12px;
+    font-size: 26px;
+    line-height: 1;
     color: #2563eb;
+    transform: translateY(-2px);
   }
 
   &__clock {

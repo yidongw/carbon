@@ -107,6 +107,14 @@ export default function Workstation() {
 
   return (
     <View className='ws' style={{ paddingTop: `${topPad}px` }}>
+      {/* 顶部:当前公司 + 切换(左上角横向药丸) */}
+      <View className='ws__topbar'>
+        <View className='ws__company' hoverClass='ws__company--hover' onClick={onSwitchCompany}>
+          <Text className='ws__company-name'>{data?.company?.name || '选择公司'}</Text>
+          <Text className='ws__company-caret'>⌄</Text>
+        </View>
+      </View>
+
       {/* 身份区 */}
       <View className='ws__id'>
         <View className='ws__avatar'>
@@ -121,10 +129,6 @@ export default function Workstation() {
               {w?.onDuty ? '已上工' : '未上工'}
             </Text>
           </View>
-        </View>
-        <View className='ws__company' hoverClass='ws__company--hover' onClick={onSwitchCompany}>
-          <Text className='ws__company-name'>{data?.company?.name || '选择公司'}</Text>
-          <Text className='ws__company-caret'>⇅</Text>
         </View>
       </View>
 
