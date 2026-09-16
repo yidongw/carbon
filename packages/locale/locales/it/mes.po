@@ -162,6 +162,9 @@ msgstr "Sei sicuro di voler completare questa operazione? Questo terminerà tutt
 msgid "Are you sure you want to leave this page?"
 msgstr "Sei sicuro di voler lasciare questa pagina?"
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Asset class created"
 msgstr "Classe di attivo creata"
 
@@ -3934,6 +3937,9 @@ msgstr "Gruppo non trovato"
 msgid "Group updated successfully"
 msgstr "Gruppo aggiornato con successo"
 
+msgid "Hard Deadline"
+msgstr ""
+
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Hai un problema tecnico? Contatta il <0>Supporto Carbon.</0>"
 
@@ -4522,6 +4528,9 @@ msgstr "Nessun entità tracciata disponibile trovata"
 
 msgid "No bundle work orders"
 msgstr "NESSUN PAGNA DI COMMESSI"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nessuna depreciazione da calcolare per beni non coperti"
@@ -5454,6 +5463,9 @@ msgstr "Argento"
 
 msgid "Size"
 msgstr "Dimensione"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Source"
 msgstr "Origine"

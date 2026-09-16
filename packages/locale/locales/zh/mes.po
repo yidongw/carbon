@@ -163,6 +163,9 @@ msgstr "您确定要完成此操作吗？这将结束此操作的所有正在进
 msgid "Are you sure you want to leave this page?"
 msgstr "您确定要离开此页面吗？"
 
+msgid "ASAP"
+msgstr "尽快"
+
 msgid "Asset class created"
 msgstr "已创建资产类别"
 
@@ -3935,6 +3938,9 @@ msgstr "未找到分组"
 msgid "Group updated successfully"
 msgstr "组更新成功"
 
+msgid "Hard Deadline"
+msgstr "硬性截止日期"
+
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
 
@@ -4523,6 +4529,9 @@ msgstr "未找到可跟踪的实体"
 
 msgid "No bundle work orders"
 msgstr "无分包工单"
+
+msgid "No Deadline"
+msgstr "无截止日期"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未覆盖资产无需计算折旧"
@@ -5455,6 +5464,9 @@ msgstr "银色"
 
 msgid "Size"
 msgstr "大小"
+
+msgid "Soft Deadline"
+msgstr "软截止日期"
 
 msgid "Source"
 msgstr "来源"

@@ -16,6 +16,7 @@ import {
   formatDurationMilliseconds
 } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import { cva } from "class-variance-authority";
 import {
   LuBoxes,
@@ -93,7 +94,25 @@ function OperationCard({
   showThumbnail
 }: OperationCardProps) {
   const { t } = useLingui();
+  const { locale } = useLocale();
   const { formatDate, formatRelativeTime } = useDateFormatter();
+
+  const statusLabels: Record<string, string> = {
+    Todo: t`Todo`,
+    Ready: t`Ready`,
+    Waiting: t`Waiting`,
+    "In Progress": t`In Progress`,
+    Paused: t`Paused`,
+    Done: t`Done`,
+    Canceled: t`Canceled`
+  };
+  const deadlineLabels: Record<string, string> = {
+    "No Deadline": t`No Deadline`,
+    ASAP: t`ASAP`,
+    "Soft Deadline": t`Soft Deadline`,
+    "Hard Deadline": t`Hard Deadline`
+  };
+
   const isOverdue =
     operation.jobDeadlineType !== "No Deadline" && operation.jobDueDate
       ? new Date(operation.jobDueDate) < new Date()
@@ -169,14 +188,17 @@ function OperationCard({
           {showStatus && operation.operationStatus && (
             <HStack className="justify-start space-x-2">
               <OperationStatusIcon status={operation.operationStatus} />
-              <span className="text-sm">{operation.operationStatus}</span>
+              <span className="text-sm">
+                {statusLabels[operation.operationStatus] ??
+                  operation.operationStatus}
+              </span>
             </HStack>
           )}
           {showDuration && typeof operation.duration === "number" && (
             <HStack className="justify-start space-x-2">
               <LuTimer className="text-muted-foreground" />
               <span className="text-sm">
-                {formatDurationMilliseconds(operation.duration)}
+                {formatDurationMilliseconds(operation.duration, { locale })}
               </span>
             </HStack>
           )}
@@ -195,7 +217,8 @@ function OperationCard({
                       {["ASAP", "No Deadline"].includes(
                         operation.jobDeadlineType
                       )
-                        ? operation.jobDeadlineType
+                        ? (deadlineLabels[operation.jobDeadlineType] ??
+                          operation.jobDeadlineType)
                         : operation.jobDueDate
                           ? t`Due ${formatRelativeTime(
                               convertDateStringToIsoString(operation.jobDueDate)
@@ -204,7 +227,8 @@ function OperationCard({
                     </span>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    {operation.jobDeadlineType}
+                    {deadlineLabels[operation.jobDeadlineType] ??
+                      operation.jobDeadlineType}
                   </TooltipContent>
                 </Tooltip>
               </HStack>

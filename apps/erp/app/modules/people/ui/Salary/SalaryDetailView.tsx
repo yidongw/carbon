@@ -19,6 +19,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import { useEffect } from "react";
 import {
   LuBanknote,
@@ -31,6 +32,7 @@ import { useCurrencyFormatter, usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import {
   formatDateTime,
+  formatSalaryPeriod,
   getEarned,
   getEmployeeName,
   getJobOperationDescription,
@@ -38,7 +40,6 @@ import {
   getProcessName,
   getSalaryPaymentStatus,
   getUnitCost,
-  MONTH_NAMES,
   type SalaryCompletionRow,
   statusVariant
 } from "./salaryDetail.utils";
@@ -178,6 +179,7 @@ export default function SalaryDetailView({
   payments
 }: SalaryDetailViewProps) {
   const { t } = useLingui();
+  const { locale } = useLocale();
   const navigate = useNavigate();
   const fetcher = useFetcher<{ ok?: boolean; error?: string }>();
   const permissions = usePermissions();
@@ -217,7 +219,7 @@ export default function SalaryDetailView({
     employeeId;
   const employeeAvatar =
     employee?.avatarUrl ?? salaryRecord?.avatarUrl ?? undefined;
-  const periodLabel = `${MONTH_NAMES[month - 1]} ${year}`;
+  const periodLabel = formatSalaryPeriod(year, month, locale);
 
   const totalEarned = salaryRecord?.totalEarned ?? 0;
   const totalPaid = salaryRecord?.totalPaid ?? 0;

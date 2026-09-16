@@ -162,6 +162,9 @@ msgstr "आपकी यह प्रक्रिया पूरा करन�
 msgid "Are you sure you want to leave this page?"
 msgstr "आपकी पागलें को छोड़ना चाहते हैं?"
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Asset class created"
 msgstr "अधिकार कक्ष बनाया गया है"
 
@@ -3934,6 +3937,9 @@ msgstr "गруппа नहीं मिली"
 msgid "Group updated successfully"
 msgstr "गруппа सफलतापूर्वक अपडेट की गई"
 
+msgid "Hard Deadline"
+msgstr ""
+
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "क्या आपको कोई तकनीकी समस्या है? <0>Carbon Support</0> से संपर्क करें।"
 
@@ -4522,6 +4528,9 @@ msgstr "निकाल विषयक कोई उपलब्ध पंज�
 
 msgid "No bundle work orders"
 msgstr "कोई बन्ड उर्डर नहीं है"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "निरक्फलित अवसानों के लिए कीमत की कमी की गणना करने की कोई नहीं"
@@ -5454,6 +5463,9 @@ msgstr "चांदी"
 
 msgid "Size"
 msgstr "आकार"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Source"
 msgstr "स्रोत"

@@ -8,8 +8,9 @@ import {
   SelectValue
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
-import { MONTH_NAMES } from "./salaryDetail.utils";
+import { formatMonthName } from "./salaryDetail.utils";
 
 type SalaryPeriodPickerProps = {
   year: number;
@@ -23,6 +24,7 @@ export default function SalaryPeriodPicker({
   onChange
 }: SalaryPeriodPickerProps) {
   const { t } = useLingui();
+  const { locale } = useLocale();
   const prevMonth = () =>
     month === 1 ? onChange(year - 1, 12) : onChange(year, month - 1);
   const nextMonth = () =>
@@ -49,9 +51,9 @@ export default function SalaryPeriodPicker({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {MONTH_NAMES.map((name, i) => (
+          {Array.from({ length: 12 }, (_, i) => (
             <SelectItem key={i + 1} value={String(i + 1)}>
-              {name}
+              {formatMonthName(i + 1, locale)}
             </SelectItem>
           ))}
         </SelectContent>
