@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
 import { COMPANY_KEY } from '../../services/request'
+import { computeUnread, setUnreadCount } from '../../utils/unread'
 import { FN_GROUPS, FN_STROKE, fnIcon } from '../../constants/functions'
 import TabBar from '../../components/TabBar'
 import './index.scss'
@@ -37,6 +38,8 @@ export default function Workstation() {
     try {
       const d = await getDashboard()
       setData(d)
+      // 待办改到「消息」tab 展示,这里只据此更新底部未读徽标数。
+      setUnreadCount(computeUnread((d.todos || []).map((t) => t.key)))
     } catch (e: any) {
       if (e?.statusCode !== 401) {
         Taro.showToast({ title: e?.message || '加载失败', icon: 'none' })
@@ -169,31 +172,6 @@ export default function Workstation() {
           </View>
         </View>
       )}
-
-      {/* 待办 */}
-      {data && data.todos.length > 0 ? (
-        <>
-          <Text className='ws__sec'>待办</Text>
-          <View className='ws__list'>
-            {data.todos.map((t) => (
-              <View key={t.key} className='ws__row'>
-                <View className='ws__row-ic'>
-                  <Text className='ws__row-ic-text'>{t.icon}</Text>
-                </View>
-                <View className='ws__row-mid'>
-                  <Text className='ws__row-title'>{t.title}</Text>
-                  <Text className='ws__row-sub'>{t.sub}</Text>
-                </View>
-                {t.badge ? (
-                  <View className={`ws__chip ${t.danger ? 'ws__chip--danger' : 'ws__chip--muted'}`}>
-                    <Text className='ws__chip-text'>{t.badge}</Text>
-                  </View>
-                ) : null}
-              </View>
-            ))}
-          </View>
-        </>
-      ) : null}
 
       {/* 功能区:分组卡片(一屏看全,每模块一张卡) */}
       <Text className='ws__sec'>功能</Text>

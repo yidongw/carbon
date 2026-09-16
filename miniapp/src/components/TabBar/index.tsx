@@ -1,6 +1,7 @@
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { svgIcon } from './icons'
+import { getUnreadCount } from '../../utils/unread'
 import './index.scss'
 
 export type TabKey = 'workstation' | 'tasks' | 'messages' | 'profile'
@@ -32,15 +33,25 @@ export default function TabBar({ active }: { active: TabKey }) {
     }
   }
 
+  const unread = getUnreadCount()
+
   const item = (t: (typeof LEFT)[number]) => {
     const on = active === t.key
+    const badge = t.key === 'messages' && unread > 0 ? unread : 0
     return (
       <View
         key={t.key}
         className={`tabbar__item ${on ? 'tabbar__item--active' : ''}`}
         onClick={() => go(t)}
       >
-        <Image className='tabbar__icon' src={svgIcon(t.icon, on ? ACTIVE : INACTIVE)} />
+        <View className='tabbar__icon-wrap'>
+          <Image className='tabbar__icon' src={svgIcon(t.icon, on ? ACTIVE : INACTIVE)} />
+          {badge ? (
+            <View className='tabbar__badge'>
+              <Text className='tabbar__badge-text'>{badge > 99 ? '99+' : badge}</Text>
+            </View>
+          ) : null}
+        </View>
         <Text className='tabbar__text'>{t.text}</Text>
       </View>
     )

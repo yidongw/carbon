@@ -22,9 +22,36 @@
     align-items: center;
   }
 
+  &__icon-wrap {
+    position: relative;
+  }
+
   &__icon {
     width: 46px;
     height: 46px;
+    display: block;
+  }
+
+  &__badge {
+    position: absolute;
+    top: -8px;
+    right: -14px;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: #ff3b30;
+    border: 3px solid #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__badge-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
   }
 
   &__text {

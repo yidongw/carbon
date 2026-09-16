@@ -3,24 +3,125 @@ page {
 }
 
 .msg {
-  min-height: 100vh;
+  &__list {
+    margin: 8px 24px;
+    background: #ffffff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.05);
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: 28px 28px;
+    border-bottom: 1px solid #f2f4f7;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--hover {
+      background: #f7f9fc;
+    }
+  }
+
+  &__ic {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    border-radius: 20px;
+    background: #f4f6fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__ic-text {
+    font-size: 36px;
+  }
+
+  &__dot {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ff3b30;
+    border: 4px solid #ffffff;
+  }
+
+  &__mid {
+    flex: 1;
+    margin-left: 22px;
+  }
+
+  &__title {
+    display: block;
+    font-size: 30px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__sub {
+    display: block;
+    margin-top: 6px;
+    font-size: 24px;
+    color: #8a94a6;
+  }
+
+  &__chip {
+    min-width: 44px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--danger {
+      background: #ff3b30;
+    }
+
+    &--muted {
+      background: #eef0f4;
+    }
+  }
+
+  &__chip-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  &__chip--muted &__chip-text {
+    color: #8a94a6;
+  }
+
+  &__arrow {
+    font-size: 40px;
+    color: #c4ccd8;
+    margin-left: 8px;
+  }
 
   &__empty {
-    padding-top: 320px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 200px 40px;
+    text-align: center;
   }
 
   &__empty-title {
+    display: block;
     font-size: 30px;
     font-weight: 600;
     color: #5b6472;
   }
 
   &__empty-sub {
-    margin-top: 14px;
+    display: block;
+    margin-top: 12px;
     font-size: 24px;
-    color: #9aa3b2;
+    color: #97a1b3;
   }
 }
