@@ -91,18 +91,6 @@ export default function Workstation() {
         </View>
       </View>
 
-      {/* 计件激励条 */}
-      <View className='ws__earn'>
-        <View>
-          <Text className='ws__earn-label'>今日已赚</Text>
-          <Text className='ws__earn-num'>¥{(data?.todayEarn ?? 0).toFixed(2)}</Text>
-        </View>
-        <View className='ws__rank'>
-          <Text className='ws__rank-text'>本月已赚</Text>
-          <Text className='ws__rank-num'>¥{(data?.monthEarn ?? 0).toFixed(2)}</Text>
-        </View>
-      </View>
-
       {/* 当前工序 / 空闲 */}
       {c ? (
         <View className='ws__current'>

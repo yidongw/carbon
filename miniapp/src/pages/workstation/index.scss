@@ -70,50 +70,6 @@ page {
     font-weight: 600;
   }
 
-  /* 计件条 */
-  &__earn {
-    background: linear-gradient(135deg, #1f2733, #0f141c);
-    border-radius: 28px;
-    padding: 32px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 14px 34px rgba(15, 20, 28, 0.28);
-  }
-
-  &__earn-label {
-    display: block;
-    font-size: 22px;
-    color: #9aa6b8;
-  }
-
-  &__earn-num {
-    display: block;
-    margin-top: 6px;
-    font-size: 60px;
-    font-weight: 800;
-    color: #fbbf24;
-    letter-spacing: 1px;
-  }
-
-  &__rank {
-    text-align: right;
-  }
-
-  &__rank-text {
-    display: block;
-    font-size: 22px;
-    color: #9aa6b8;
-  }
-
-  &__rank-num {
-    display: block;
-    margin-top: 6px;
-    font-size: 34px;
-    font-weight: 700;
-    color: #fff;
-  }
-
   /* 当前工序卡 */
   &__current {
     margin-top: 24px;
