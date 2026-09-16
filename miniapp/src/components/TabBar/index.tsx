@@ -55,7 +55,6 @@ export default function TabBar({ active }: { active: TabKey }) {
             <Image className='tabbar__scan-icon' src={svgIcon('scan', '#ffffff')} />
           </View>
         </View>
-        <Text className='tabbar__scan-text'>扫码</Text>
       </View>
       {RIGHT.map(item)}
     </View>

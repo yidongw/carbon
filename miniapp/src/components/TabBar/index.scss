@@ -56,9 +56,9 @@
 
   &__scan {
     position: absolute;
-    bottom: -10px;
-    width: 92px;
-    height: 92px;
+    bottom: -14px;
+    width: 108px;
+    height: 108px;
     border-radius: 50%;
     background: linear-gradient(135deg, #4f8bff, #2563eb);
     box-shadow: 0 8px 18px rgba(37, 99, 235, 0.38);
@@ -73,14 +73,7 @@
   }
 
   &__scan-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  &__scan-text {
-    margin-top: 6px;
-    font-size: 20px;
-    color: #2563eb;
-    font-weight: 500;
+    width: 48px;
+    height: 48px;
   }
 }
