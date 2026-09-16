@@ -1,11 +1,20 @@
 import { useState } from 'react'
-import { View, Text, Input } from '@tarojs/components'
+import { View, Text, Input, Image } from '@tarojs/components'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
 import { getOperation, reportQuantity, operationAction } from '../../services/operation'
 import type { OperationDetail, OperationActionType } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
+
+// 进度环(灰色轨道 + 蓝色进度弧),按百分比生成 data-URI SVG。
+const RING_C = 402 // 2πr, r=64
+const ringSvg = (pct: number) => {
+  const off = Math.max(0, RING_C * (1 - Math.min(100, Math.max(0, pct)) / 100))
+  return `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="64" fill="none" stroke="#eef0f4" stroke-width="14"/><circle cx="75" cy="75" r="64" fill="none" stroke="#2563eb" stroke-width="14" stroke-linecap="round" stroke-dasharray="${RING_C}" stroke-dashoffset="${off}" transform="rotate(-90 75 75)"/></svg>`,
+  )}`
+}
 
 export default function Operation() {
   const router = useRouter()
@@ -133,54 +142,50 @@ export default function Operation() {
             ) : null}
           </View>
 
-          {/* 统计卡 */}
-          <View className='op__grid'>
-            <View className='op__stat'>
-              <Text className='op__stat-label'>负责人</Text>
-              <Text className='op__stat-name'>{d.assignee || '未分配'}</Text>
-            </View>
-            <View className='op__stat'>
-              <Text className='op__stat-label'>已完成</Text>
-              <Text className='op__stat-value'>
-                {d.completed} <Text className='op__stat-sub'>/ {d.target}</Text>
-              </Text>
-            </View>
-            <View className='op__stat'>
-              <Text className='op__stat-label'>返工</Text>
-              <Text className='op__stat-value'>{d.rework}</Text>
-            </View>
-            <View className='op__stat'>
-              <Text className='op__stat-label'>已报废</Text>
-              <Text className='op__stat-value'>{d.scrap}</Text>
-            </View>
-            <View className='op__stat'>
-              <View className='op__stat-head'>
-                <Text className='op__stat-label'>待审批</Text>
-                {d.pending > 0 ? (
-                  <Text className='op__stat-link' onClick={soon}>审核 ›</Text>
-                ) : null}
+          {/* 进度环 Hero */}
+          <View className='op__hero'>
+            <View className='op__ring'>
+              <Image className='op__ring-img' src={ringSvg(pct)} />
+              <View className='op__ring-center'>
+                <Text className='op__ring-num'>
+                  {d.completed}
+                  <Text className='op__ring-den'>/{d.target}</Text>
+                </Text>
+                <Text className='op__ring-label'>已完成</Text>
               </View>
-              <Text className='op__stat-value'>{d.pending}</Text>
             </View>
-            <View className='op__stat'>
-              <Text className='op__stat-label'>截止日期</Text>
-              <Text className='op__stat-name'>
-                {d.dueDate ? d.dueDate.slice(0, 10) : '无截止'}
-              </Text>
+            <View className='op__who'>
+              <View className='op__who-a'>
+                <Text className='op__who-a-text'>{(d.assignee || '·').slice(0, 1)}</Text>
+              </View>
+              <Text className='op__who-name'>{d.assignee || '未分配'}</Text>
             </View>
           </View>
 
-          {/* 生产日志 */}
-          <Text className='op__sec'>生产日志</Text>
-          <View className='op__log'>
-            <View className='op__log-meta'>
-              <Text className='op__log-k'>累计完成</Text>
-              <Text className='op__log-v'>
-                {d.completed} / {d.target} 件
-              </Text>
+          {/* 2×2 指标 */}
+          <View className='op__quad'>
+            <View className='op__q'>
+              <Text className='op__q-label'>返工</Text>
+              <Text className='op__q-value op__q-value--amber'>{d.rework}</Text>
             </View>
-            <View className='op__prog'>
-              <View className='op__prog-bar' style={{ width: `${pct}%` }} />
+            <View className='op__q'>
+              <Text className='op__q-label'>已报废</Text>
+              <Text className='op__q-value op__q-value--red'>{d.scrap}</Text>
+            </View>
+            <View className='op__q'>
+              <View className='op__q-head'>
+                <Text className='op__q-label'>待审批</Text>
+                {d.pending > 0 ? (
+                  <Text className='op__q-link' onClick={soon}>审核 ›</Text>
+                ) : null}
+              </View>
+              <Text className='op__q-value'>{d.pending}</Text>
+            </View>
+            <View className='op__q'>
+              <Text className='op__q-label'>截止日期</Text>
+              <Text className='op__q-date'>
+                {d.dueDate ? d.dueDate.slice(0, 10) : '无截止'}
+              </Text>
             </View>
           </View>
         </View>

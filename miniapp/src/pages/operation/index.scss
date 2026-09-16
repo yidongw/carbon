@@ -70,94 +70,145 @@ page {
   &__badge--yellow &__badge-text { color: #b45309; }
   &__badge--red &__badge-text { color: #dc2626; }
 
-  /* 统计卡 2 列 */
-  &__grid {
+  /* 进度环 Hero */
+  &__hero {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px 24px 34px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 10px 28px rgba(31, 45, 74, 0.05);
+  }
+
+  &__ring {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin-bottom: 20px;
+  }
+
+  &__ring-img {
+    width: 300px;
+    height: 300px;
+    display: block;
+  }
+
+  &__ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__ring-num {
+    font-size: 76px;
+    font-weight: 800;
+    color: #1a2233;
+    line-height: 1;
+  }
+
+  &__ring-den {
+    font-size: 34px;
+    font-weight: 700;
+    color: #9aa6b8;
+  }
+
+  &__ring-label {
+    margin-top: 10px;
+    font-size: 24px;
+    color: #97a1b3;
+  }
+
+  &__who {
+    display: inline-flex;
+    align-items: center;
+    background: #f1f4f9;
+    border-radius: 999px;
+    padding: 12px 24px;
+  }
+
+  &__who-a {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin-right: 14px;
+    background: linear-gradient(135deg, #2dd4bf, #14b8a6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__who-a-text {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  &__who-name {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  /* 2×2 指标 */
+  &__quad {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
   }
 
-  &__stat {
+  &__q {
+    box-sizing: border-box;
     width: 48.5%;
     background: #ffffff;
-    border-radius: 18px;
-    padding: 22px 24px;
-    margin-bottom: 18px;
+    border-radius: 20px;
+    padding: 26px 28px;
+    margin-bottom: 20px;
     box-shadow: 0 8px 22px rgba(31, 45, 74, 0.05);
   }
 
-  &__stat-label {
-    display: block;
-    font-size: 22px;
-    color: #8a94a6;
-  }
-
-  &__stat-value {
-    display: block;
-    margin-top: 12px;
-    font-size: 44px;
-    font-weight: 800;
-    color: #1a2233;
-  }
-
-  &__stat-sub {
-    font-size: 24px;
-    font-weight: 600;
-    color: #9aa6b8;
-  }
-
-  &__stat-name {
-    display: block;
-    margin-top: 14px;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a2233;
-  }
-
-  &__sec {
-    display: block;
-    margin: 12px 4px 14px;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a2233;
-  }
-
-  &__log {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 8px 22px rgba(31, 45, 74, 0.05);
-  }
-
-  &__log-meta {
+  &__q-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  &__log-k {
+  &__q-label {
+    display: block;
     font-size: 24px;
-    color: #5b6472;
+    color: #8a94a6;
   }
 
-  &__log-v {
-    font-size: 24px;
+  &__q-link {
+    font-size: 20px;
     font-weight: 600;
-    color: #1a2233;
+    color: #2563eb;
+    border: 1px solid #cfe0ff;
+    border-radius: 8px;
+    padding: 3px 12px;
   }
 
-  &__prog {
+  &__q-value {
+    display: block;
     margin-top: 14px;
-    height: 16px;
-    border-radius: 999px;
-    background: #eef0f4;
-    overflow: hidden;
+    font-size: 48px;
+    font-weight: 800;
+    color: #1a2233;
+
+    &--amber { color: #ea8a12; }
+    &--red { color: #dc2626; }
   }
 
-  &__prog-bar {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #3b82f6, #2563eb);
+  &__q-date {
+    display: block;
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
   }
 
   &__empty {
