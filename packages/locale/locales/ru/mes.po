@@ -162,6 +162,9 @@ msgstr "Вы действительно хотите завершить эту �
 msgid "Are you sure you want to leave this page?"
 msgstr "Вы действительно хотите покинуть эту страницу?"
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Asset class created"
 msgstr "Класс активы создан"
 
@@ -4525,6 +4528,9 @@ msgstr "Найдено нетracked объектов"
 
 msgid "No bundle work orders"
 msgstr "Нет пакетных производственных заказов"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Нет амортизации для расчета для незакрытых активов"

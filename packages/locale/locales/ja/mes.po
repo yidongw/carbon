@@ -162,6 +162,9 @@ msgstr "この操作を終了してもよろしいですか？これにより、
 msgid "Are you sure you want to leave this page?"
 msgstr "このページを離れますか？"
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Asset class created"
 msgstr "資産クラスを作成しました"
 
@@ -4525,6 +4528,9 @@ msgstr "追跡可能なエンティティが見つかりません"
 
 msgid "No bundle work orders"
 msgstr "バンドル仕事指示書なし"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未 COVERED 資産に対する減価額は計算できません"

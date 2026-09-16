@@ -163,6 +163,9 @@ msgstr "您确定要完成此操作吗？这将结束此操作的所有正在进
 msgid "Are you sure you want to leave this page?"
 msgstr "您确定要离开此页面吗？"
 
+msgid "ASAP"
+msgstr "尽快"
+
 msgid "Asset class created"
 msgstr "已创建资产类别"
 
@@ -4526,6 +4529,9 @@ msgstr "未找到可跟踪的实体"
 
 msgid "No bundle work orders"
 msgstr "无分包工单"
+
+msgid "No Deadline"
+msgstr "无截止日期"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未覆盖资产无需计算折旧"
