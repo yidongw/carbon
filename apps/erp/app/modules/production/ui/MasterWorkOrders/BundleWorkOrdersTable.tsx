@@ -300,6 +300,27 @@ const BundleWorkOrdersTable = memo(
       });
 
       for (const code of sortedCodes) {
+        const valueOptions = Array.from(
+          new Set(
+            rows
+              .map((row) => {
+                const vals = (
+                  row as { attributeValues?: Record<string, string> }
+                ).attributeValues;
+                return vals?.[code];
+              })
+              .filter((v): v is string => Boolean(v))
+          )
+        )
+          .sort((a, b) => a.localeCompare(b))
+          .map((value) => ({
+            value,
+            label:
+              localizeStyleColorName(value, i18n.locale) ||
+              localizeStyleColorNameByName(value, i18n.locale) ||
+              value
+          }));
+
         cols.push({
           id: `attr-${code}`,
           header: translateItemAttributeCatalogName(code, i18n),
@@ -319,7 +340,16 @@ const BundleWorkOrdersTable = memo(
             );
           },
           meta: {
-            icon: code === "Size" ? <LuRuler /> : <LuPalette />
+            icon: code === "Size" ? <LuRuler /> : <LuPalette />,
+            // Filter key is `attr-<code>` (e.g. attr-Color); the list service
+            // maps those onto attributeValues->>code JSONB predicates.
+            filter: valueOptions.length
+              ? {
+                  type: "static" as const,
+                  options: valueOptions,
+                  isArray: true
+                }
+              : undefined
           }
         });
       }
