@@ -31,7 +31,7 @@ import {
 import { JobStatus } from "~/components/JobStatus";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
-import { useUrlParams } from "~/hooks";
+import { useDateFormatter, useUrlParams } from "~/hooks";
 import { getMasterWorkOrdersList } from "~/services/bundle.service";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -134,6 +134,7 @@ type MasterWorkOrder = {
   quantity: number | null;
   status: string | null;
   assignee: string | null;
+  assignedAt: string | null;
   dueDate: string | null;
   deadlineType: string | null;
   salesOrderReadableId: string | null;
@@ -152,6 +153,7 @@ function formatDate(value: string | null) {
 
 export default function MasterWorkOrdersRoute() {
   const { t, i18n } = useLingui();
+  const { formatDateTime } = useDateFormatter();
   const { masters, statsMap } = useLoaderData<typeof loader>();
   const [params, setParams] = useUrlParams();
   const [people] = usePeople();
@@ -296,6 +298,11 @@ export default function MasterWorkOrdersRoute() {
                       </>
                     )}
                     <span>{formatDate(row.dueDate)}</span>
+                    {row.assignedAt && (
+                      <span>
+                        {t`Assigned`}: {formatDateTime(row.assignedAt)}
+                      </span>
+                    )}
                     <span className="ml-auto">
                       <EmployeeAvatar employeeId={row.assignee} />
                     </span>
@@ -376,6 +383,9 @@ export default function MasterWorkOrdersRoute() {
                     </Th>
                     <Th>
                       <Trans>Due Date</Trans>
+                    </Th>
+                    <Th>
+                      <Trans>Assigned At</Trans>
                     </Th>
                     <Th>
                       <Trans>Status</Trans>
@@ -565,6 +575,9 @@ export default function MasterWorkOrdersRoute() {
                       </Td>
                       <Td className="text-muted-foreground">
                         {formatDate(row.dueDate)}
+                      </Td>
+                      <Td className="text-muted-foreground">
+                        {row.assignedAt ? formatDateTime(row.assignedAt) : "—"}
                       </Td>
                       <Td>
                         <JobStatus status={row.status} />

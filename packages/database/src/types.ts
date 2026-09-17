@@ -63386,6 +63386,7 @@ export type Database = {
       }
       masterWorkOrders: {
         Row: {
+          assignedAt: string | null
           assignee: string | null
           companyId: string | null
           createdAt: string | null

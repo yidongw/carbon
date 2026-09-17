@@ -59,7 +59,10 @@ export type JobOperationParameter = NonNullable<
   Awaited<ReturnType<typeof getJobOperationProcedure>>["parameters"]
 >[number];
 
-export type Operation = BaseOperation & Durations;
+// assignedAt is optional: only the "Assigned" list's RPC
+// (get_assigned_job_operations) returns it; recent/active lists don't.
+export type Operation = BaseOperation &
+  Durations & { assignedAt?: string | null };
 export type OperationWithDetails = BaseOperationWithDetails & Durations;
 
 export type OperationSettings = {
