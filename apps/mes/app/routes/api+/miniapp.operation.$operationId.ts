@@ -1,6 +1,8 @@
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
 import type { LoaderFunctionArgs } from "react-router";
 import {
+  getJobMaterialsByOperationId,
   getJobOperationById,
   getProductionEventsForJobOperation,
   getProductionQuantitiesForJobOperation,
@@ -14,6 +16,7 @@ import { jsonResponse } from "~/utils/miniapp-response";
 // 统计数字用「未作废报工记录实时求和」,与网页 sumLiveQuantity 口径一致。
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { userId, companyId, client } = await requireMiniappUser(request);
+  const serviceRole = getCarbonServiceRole();
   const operationId = params.operationId ?? "";
   if (!companyId || !operationId) {
     return jsonResponse({ found: false });
@@ -93,7 +96,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       date: q.createdAt as string
     }));
 
-  // 材料清单(产品/来源/估计/实际 + 发料所需 materialId/itemId/待发数)。
+  // 材料清单 —— 与网页 getJobMaterialsByOperationId 同口径(含 kit 展开),
+  // 用 serviceRole 避免 MES 员工 RLS 读不到 jobMaterial 视图。
   let materials: {
     id: string;
     materialId: string;
@@ -107,12 +111,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }[] = [];
   if (op.jobMakeMethodId) {
     try {
-      const m = await client
-        .from("jobMaterialWithMakeMethodId")
-        .select("*")
-        .eq("jobMakeMethodId", op.jobMakeMethodId)
-        .order("itemReadableId", { ascending: true });
-      materials = ((m.data ?? []) as any[]).map((r) => {
+      const m = await getJobMaterialsByOperationId(serviceRole, {
+        operation: op,
+        trackedEntityId: undefined,
+        requiresSerialTracking: false
+      });
+      materials = ((m.materials ?? []) as any[]).map((r) => {
         const estimated = r.estimatedQuantity ?? r.quantity ?? 0;
         const actual = r.quantityIssued ?? 0;
         return {

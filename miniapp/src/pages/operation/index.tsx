@@ -8,6 +8,7 @@ import {
   operationAction,
   getScrapReasons,
   getReworkTargets,
+  searchItems,
 } from '../../services/operation'
 import type {
   OperationDetail,
@@ -15,6 +16,7 @@ import type {
   ScrapReason,
   ReworkTarget,
   OpMaterial,
+  ItemHit,
 } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
@@ -85,6 +87,9 @@ export default function Operation() {
   const [issueOpen, setIssueOpen] = useState(false)
   const [issueMat, setIssueMat] = useState<OpMaterial | null>(null)
   const [issueQty, setIssueQty] = useState(0)
+  const [issueQuery, setIssueQuery] = useState('')
+  const [issueHits, setIssueHits] = useState<ItemHit[]>([])
+  const [issueSearching, setIssueSearching] = useState(false)
 
   const load = () => {
     if (!id) return
@@ -259,7 +264,7 @@ export default function Operation() {
 
   const goApprovals = () => Taro.navigateTo({ url: '/pages/approvals/index' })
 
-  // 发放材料（对齐 MES 网页 IssueMaterialModal 的库存领用路径）
+  // 发放材料（对齐 MES 网页:BOM 可为空,仍可选手动物料发放）
   const openIssue = (m: OpMaterial) => {
     if (!m?.itemId) {
       Taro.showToast({ title: '材料缺少物料信息，无法发放', icon: 'none' })
@@ -268,30 +273,78 @@ export default function Operation() {
     }
     setIssueMat(m)
     setIssueQty(Math.max(1, Math.round(m.toIssue || 1)))
+    setIssueQuery('')
+    setIssueHits([])
+    setIssueOpen(true)
+  }
+  const openIssuePicker = () => {
+    // 网页点「发放材料」即使 materials 为空也会打开弹层让选物料。
+    setIssueMat(null)
+    setIssueQty(1)
+    setIssueQuery('')
+    setIssueHits([])
     setIssueOpen(true)
   }
   const onIssueBtn = () => {
     const list = d?.materials || []
     console.log('[issue] tap 发放材料', { count: list.length, ids: list.map((m) => m.itemId) })
     if (!list.length) {
-      Taro.showToast({ title: '无材料可发放', icon: 'none' })
+      openIssuePicker()
       return
     }
     if (list.length === 1) {
       openIssue(list[0])
       return
     }
-    Taro.showActionSheet({ itemList: list.map((m) => m.name || '材料') })
+    Taro.showActionSheet({
+      itemList: [...list.map((m) => m.name || '材料'), '其他物料…'],
+    })
       .then((r) => {
+        if (r.tapIndex >= list.length) {
+          openIssuePicker()
+          return
+        }
         const m = list[r.tapIndex]
         if (m) openIssue(m)
       })
       .catch(() => {})
   }
+  const onIssueSearch = async (q: string) => {
+    setIssueQuery(q)
+    if (!q.trim()) {
+      setIssueHits([])
+      return
+    }
+    setIssueSearching(true)
+    try {
+      const res = await searchItems(q.trim())
+      setIssueHits(res.rows || [])
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '搜索失败', icon: 'none' })
+    } finally {
+      setIssueSearching(false)
+    }
+  }
+  const pickIssueItem = (hit: ItemHit) => {
+    setIssueMat({
+      id: hit.id,
+      materialId: '',
+      itemId: hit.id,
+      name: hit.name,
+      desc: hit.desc,
+      source: '',
+      estimated: 0,
+      actual: 0,
+      toIssue: 1,
+    })
+    setIssueQty(1)
+    setIssueHits([])
+    setIssueQuery(hit.name)
+  }
   const submitIssue = async () => {
     if (!d || !issueMat || acting) return
     if (!issueMat.itemId) {
-      Taro.showToast({ title: '材料缺少物料信息，无法发放', icon: 'none' })
+      Taro.showToast({ title: '请先选择物料', icon: 'none' })
       return
     }
     if (issueQty <= 0) {
@@ -302,7 +355,7 @@ export default function Operation() {
     try {
       const res = await operationAction(d.id, 'issue', {
         itemId: issueMat.itemId,
-        materialId: issueMat.materialId,
+        materialId: issueMat.materialId || undefined,
         quantity: issueQty,
         adjustmentType: 'Negative Adjmt.',
       })
@@ -682,8 +735,8 @@ export default function Operation() {
         </View>
       ) : null}
 
-      {/* 发放材料弹层 */}
-      {issueOpen && issueMat ? (
+      {/* 发放材料弹层 —— BOM 可为空(对齐网页 IssueMaterialModal) */}
+      {issueOpen ? (
         <View className='op__sheet-wrap'>
           <View className='op__mask' onClick={() => setIssueOpen(false)} />
           <View className='op__sheet'>
@@ -691,24 +744,60 @@ export default function Operation() {
               <Text className='op__sheet-title'>发放材料</Text>
               <Text className='op__sheet-x' onClick={() => setIssueOpen(false)}>✕</Text>
             </View>
-            <Text className='op__sheet-sub'>
-              {[issueMat.name, `已发 ${issueMat.actual} / 需 ${issueMat.estimated}`]
-                .filter(Boolean)
-                .join(' · ')}
-            </Text>
-            <Stepper
-              label='发放数量'
-              hint='从库存领用到本工序的数量'
-              cls='green'
-              value={issueQty}
-              onChange={setIssueQty}
-            />
-            <View
-              className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
-              onClick={acting ? undefined : submitIssue}
-            >
-              <Text className='op__submit-text'>确认发放</Text>
-            </View>
+            {issueMat ? (
+              <Text className='op__sheet-sub'>
+                {[issueMat.name, issueMat.estimated || issueMat.actual
+                  ? `已发 ${issueMat.actual} / 需 ${issueMat.estimated}`
+                  : issueMat.desc]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </Text>
+            ) : (
+              <>
+                <Text className='op__sheet-sub'>
+                  本工序 BOM 无材料行，可搜索物料后发放（与网页一致）
+                </Text>
+                <Input
+                  className='op__reason-input'
+                  value={issueQuery}
+                  placeholder='搜索物料编码 / 名称'
+                  onInput={(e) => onIssueSearch(e.detail.value)}
+                />
+                {issueSearching ? (
+                  <Text className='op__empty2'>搜索中…</Text>
+                ) : null}
+                {issueHits.map((h) => (
+                  <View
+                    key={h.id}
+                    className='op__mat'
+                    hoverClass='op__mat--hover'
+                    onClick={() => pickIssueItem(h)}
+                  >
+                    <View className='op__mat-l'>
+                      <Text className='op__mat-name'>{h.name || '—'}</Text>
+                      {h.desc ? <Text className='op__mat-src'>{h.desc}</Text> : null}
+                    </View>
+                  </View>
+                ))}
+              </>
+            )}
+            {issueMat ? (
+              <>
+                <Stepper
+                  label='发放数量'
+                  hint='从库存领用到本工序的数量'
+                  cls='green'
+                  value={issueQty}
+                  onChange={setIssueQty}
+                />
+                <View
+                  className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
+                  onClick={acting ? undefined : submitIssue}
+                >
+                  <Text className='op__submit-text'>确认发放</Text>
+                </View>
+              </>
+            ) : null}
           </View>
         </View>
       ) : null}
