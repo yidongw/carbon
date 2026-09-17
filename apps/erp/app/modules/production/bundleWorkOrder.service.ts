@@ -133,8 +133,38 @@ export async function getBundleWorkOrdersList(
     );
   }
 
+  // Dynamic attribute columns filter as `attr-<code>` (e.g. attr-Color). Map
+  // those onto JSONB path predicates; leave other filters to the generic helper.
+  const attrFilters =
+    args?.filters?.filter((f) => f.column.startsWith("attr-")) ?? [];
+  const otherFilters =
+    args?.filters?.filter((f) => !f.column.startsWith("attr-")) ?? undefined;
+
+  for (const filter of attrFilters) {
+    if (!filter.value) continue;
+    const code = filter.column.slice("attr-".length);
+    if (!code || code.includes(".") || code.includes(",")) continue;
+    const values =
+      filter.operator === "in" || filter.operator === "contains"
+        ? filter.value
+            .split(",")
+            .map((v) => v.trim())
+            .filter(Boolean)
+        : [filter.value];
+    if (values.length === 0) continue;
+
+    const path = `attributeValues->>${code}`;
+    if (values.length === 1) {
+      query = query.filter(path, "eq", values[0]);
+    } else {
+      // Quote each value so names with spaces (e.g. "Navy Blue") stay intact.
+      const list = values.map((v) => `"${v.replace(/"/g, '\\"')}"`).join(",");
+      query = query.filter(path, "in", `(${list})`);
+    }
+  }
+
   if (args) {
-    query = setGenericQueryFilters(query, args, [
+    query = setGenericQueryFilters(query, { ...args, filters: otherFilters }, [
       { column: "createdAt", ascending: false }
     ]);
   }
