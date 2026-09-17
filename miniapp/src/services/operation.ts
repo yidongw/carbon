@@ -107,3 +107,16 @@ export const getReworkTargets = (id: string) =>
     url: `/api/miniapp/rework-targets/${id}`,
     method: 'GET',
   })
+
+export interface ItemHit {
+  id: string
+  name: string
+  desc: string
+}
+
+/** 物料搜索(BOM 为空时选手动物料发放,对齐网页 IssueMaterialModal) */
+export const searchItems = (q: string) =>
+  request<{ rows: ItemHit[] }>({
+    url: `/api/miniapp/items?q=${encodeURIComponent(q)}`,
+    method: 'GET',
+  })

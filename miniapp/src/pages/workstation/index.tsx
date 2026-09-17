@@ -98,6 +98,7 @@ export default function Workstation() {
     masterWorkOrders: '/pages/work-orders/index?type=master',
     bundleWorkOrders: '/pages/work-orders/index?type=bundle',
     salary: '/pages/salary/index',
+    picking: '/pages/picking/index',
   }
 
   const onFn = (key: string) => {

@@ -532,12 +532,19 @@ page {
   }
 
   &__sec-btn {
-    font-size: 22px;
-    font-weight: 600;
-    color: #2563eb;
     background: #eef4ff;
     border-radius: 10px;
     padding: 8px 18px;
+
+    &--hover {
+      opacity: 0.7;
+    }
+  }
+
+  &__sec-btn-text {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2563eb;
   }
 
   &__card2 {
@@ -554,6 +561,68 @@ page {
     padding: 32px 0;
     font-size: 24px;
     color: #97a1b3;
+  }
+
+  &__field-label {
+    display: block;
+    margin: 8px 0 10px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #5b6472;
+  }
+
+  /* 物料下拉列表(对齐网页 Combobox options) */
+  &__pick-list {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid #e8ecf2;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    background: #fafbfd;
+  }
+
+  &__pick-row {
+    padding: 22px 24px;
+    border-bottom: 1px solid #eef0f4;
+
+    &--hover {
+      background: #eef4ff;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__pick-name {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__pick-desc {
+    display: block;
+    margin-top: 4px;
+    font-size: 22px;
+    color: #97a1b3;
+  }
+
+  &__pick-selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px;
+    margin-bottom: 12px;
+    border: 1px solid #cfe0ff;
+    border-radius: 16px;
+    background: #eef4ff;
+  }
+
+  &__pick-change {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2563eb;
   }
 
   /* 材料行 */

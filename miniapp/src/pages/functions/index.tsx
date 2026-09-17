@@ -57,7 +57,20 @@ const GROUPS: Group[] = [
 ]
 
 export default function Functions() {
+  const FN_ROUTE: Record<string, string> = {
+    jobs: '/pages/work-orders/index?type=jobs',
+    masterWorkOrders: '/pages/work-orders/index?type=master',
+    bundleWorkOrders: '/pages/work-orders/index?type=bundle',
+    salary: '/pages/salary/index',
+    picking: '/pages/picking/index',
+  }
+
   const onItem = (key: string) => {
+    const url = FN_ROUTE[key]
+    if (url) {
+      Taro.navigateTo({ url })
+      return
+    }
     Taro.showToast({ title: `TODO: ${key}`, icon: 'none' })
   }
 

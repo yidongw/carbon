@@ -8,6 +8,7 @@ import {
   operationAction,
   getScrapReasons,
   getReworkTargets,
+  searchItems,
 } from '../../services/operation'
 import type {
   OperationDetail,
@@ -15,6 +16,7 @@ import type {
   ScrapReason,
   ReworkTarget,
   OpMaterial,
+  ItemHit,
 } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
@@ -85,6 +87,9 @@ export default function Operation() {
   const [issueOpen, setIssueOpen] = useState(false)
   const [issueMat, setIssueMat] = useState<OpMaterial | null>(null)
   const [issueQty, setIssueQty] = useState(0)
+  const [issueQuery, setIssueQuery] = useState('')
+  const [issueHits, setIssueHits] = useState<ItemHit[]>([])
+  const [issueSearching, setIssueSearching] = useState(false)
 
   const load = () => {
     if (!id) return
@@ -259,31 +264,89 @@ export default function Operation() {
 
   const goApprovals = () => Taro.navigateTo({ url: '/pages/approvals/index' })
 
-  // 发放材料
+  // 发放材料（对齐 MES 网页:BOM 可为空,仍可选手动物料发放）
   const openIssue = (m: OpMaterial) => {
+    if (!m?.itemId) {
+      Taro.showToast({ title: '材料缺少物料信息，无法发放', icon: 'none' })
+      console.warn('[issue] material missing itemId', m)
+      return
+    }
     setIssueMat(m)
     setIssueQty(Math.max(1, Math.round(m.toIssue || 1)))
+    setIssueQuery('')
+    setIssueHits([])
     setIssueOpen(true)
+  }
+  const loadIssueItems = async (q = '') => {
+    setIssueSearching(true)
+    try {
+      const res = await searchItems(q)
+      setIssueHits(res.rows || [])
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '加载物料失败', icon: 'none' })
+    } finally {
+      setIssueSearching(false)
+    }
+  }
+  const openIssuePicker = () => {
+    // 对齐网页 Combobox:打开即展示可选物料列表,搜索只是筛选。
+    setIssueMat(null)
+    setIssueQty(1)
+    setIssueQuery('')
+    setIssueHits([])
+    setIssueOpen(true)
+    void loadIssueItems('')
   }
   const onIssueBtn = () => {
     const list = d?.materials || []
+    console.log('[issue] tap 发放材料', { count: list.length, ids: list.map((m) => m.itemId) })
     if (!list.length) {
-      Taro.showToast({ title: '无材料可发放', icon: 'none' })
+      openIssuePicker()
       return
     }
     if (list.length === 1) {
       openIssue(list[0])
       return
     }
-    Taro.showActionSheet({ itemList: list.map((m) => m.name || '材料') })
+    Taro.showActionSheet({
+      itemList: [...list.map((m) => m.name || '材料'), '其他物料…'],
+    })
       .then((r) => {
+        if (r.tapIndex >= list.length) {
+          openIssuePicker()
+          return
+        }
         const m = list[r.tapIndex]
         if (m) openIssue(m)
       })
       .catch(() => {})
   }
+  const onIssueSearch = (q: string) => {
+    setIssueQuery(q)
+    // 筛选列表(与网页 Combobox 输入过滤一致)
+    void loadIssueItems(q.trim())
+  }
+  const pickIssueItem = (hit: ItemHit) => {
+    setIssueMat({
+      id: hit.id,
+      materialId: '',
+      itemId: hit.id,
+      name: hit.name,
+      desc: hit.desc,
+      source: '',
+      estimated: 0,
+      actual: 0,
+      toIssue: 1,
+    })
+    setIssueQty(1)
+    setIssueQuery(hit.name)
+  }
   const submitIssue = async () => {
     if (!d || !issueMat || acting) return
+    if (!issueMat.itemId) {
+      Taro.showToast({ title: '请先选择物料', icon: 'none' })
+      return
+    }
     if (issueQty <= 0) {
       Taro.showToast({ title: '请输入数量', icon: 'none' })
       return
@@ -292,7 +355,7 @@ export default function Operation() {
     try {
       const res = await operationAction(d.id, 'issue', {
         itemId: issueMat.itemId,
-        materialId: issueMat.materialId,
+        materialId: issueMat.materialId || undefined,
         quantity: issueQty,
         adjustmentType: 'Negative Adjmt.',
       })
@@ -304,6 +367,8 @@ export default function Operation() {
       } else {
         Taro.showToast({ title: res.message || '发放失败', icon: 'none' })
       }
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '发放失败', icon: 'none' })
     } finally {
       setActing(false)
     }
@@ -433,10 +498,16 @@ export default function Operation() {
             </View>
           </View>
 
-          {/* 材料 */}
+          {/* 材料 — 用 View 包按钮，避免 Text 在真机上点按无响应 */}
           <View className='op__sec'>
             <Text className='op__sec-title'>材料</Text>
-            <Text className='op__sec-btn' onClick={onIssueBtn}>发放材料</Text>
+            <View
+              className='op__sec-btn'
+              hoverClass='op__sec-btn--hover'
+              onClick={onIssueBtn}
+            >
+              <Text className='op__sec-btn-text'>发放材料</Text>
+            </View>
           </View>
           <View className='op__card2'>
             {d.materials.length > 0 ? (
@@ -664,8 +735,8 @@ export default function Operation() {
         </View>
       ) : null}
 
-      {/* 发放材料弹层 */}
-      {issueOpen && issueMat ? (
+      {/* 发放材料弹层 —— 对齐网页 IssueMaterialModal 的「选择物料」下拉 */}
+      {issueOpen ? (
         <View className='op__sheet-wrap'>
           <View className='op__mask' onClick={() => setIssueOpen(false)} />
           <View className='op__sheet'>
@@ -673,24 +744,69 @@ export default function Operation() {
               <Text className='op__sheet-title'>发放材料</Text>
               <Text className='op__sheet-x' onClick={() => setIssueOpen(false)}>✕</Text>
             </View>
-            <Text className='op__sheet-sub'>
-              {[issueMat.name, `已发 ${issueMat.actual} / 需 ${issueMat.estimated}`]
-                .filter(Boolean)
-                .join(' · ')}
-            </Text>
-            <Stepper
-              label='发放数量'
-              hint='从库存领用到本工序的数量'
-              cls='green'
-              value={issueQty}
-              onChange={setIssueQty}
+            <Text className='op__sheet-sub'>选择物料并填写发放数量</Text>
+
+            <Text className='op__field-label'>物料</Text>
+            <Input
+              className='op__reason-input'
+              value={issueQuery}
+              placeholder='选择物料…'
+              onInput={(e) => {
+                // 已选中时再改输入 = 重新筛选列表
+                if (issueMat) setIssueMat(null)
+                onIssueSearch(e.detail.value)
+              }}
+              onFocus={() => {
+                if (!issueHits.length && !issueSearching) void loadIssueItems(issueQuery.trim())
+              }}
             />
-            <View
-              className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
-              onClick={acting ? undefined : submitIssue}
-            >
-              <Text className='op__submit-text'>确认发放</Text>
-            </View>
+            {!issueMat ? (
+              <View className='op__pick-list'>
+                {issueSearching ? (
+                  <Text className='op__empty2'>加载中…</Text>
+                ) : issueHits.length === 0 ? (
+                  <Text className='op__empty2'>暂无可选物料</Text>
+                ) : (
+                  issueHits.map((h) => (
+                    <View
+                      key={h.id}
+                      className='op__pick-row'
+                      hoverClass='op__pick-row--hover'
+                      onClick={() => pickIssueItem(h)}
+                    >
+                      <Text className='op__pick-name'>{h.name || '—'}</Text>
+                      {h.desc ? <Text className='op__pick-desc'>{h.desc}</Text> : null}
+                    </View>
+                  ))
+                )}
+              </View>
+            ) : (
+              <View className='op__pick-selected' onClick={() => {
+                setIssueMat(null)
+                void loadIssueItems(issueQuery.trim())
+              }}>
+                <Text className='op__pick-name'>{issueMat.name}</Text>
+                <Text className='op__pick-change'>更换 ›</Text>
+              </View>
+            )}
+
+            {issueMat ? (
+              <>
+                <Stepper
+                  label='发放数量'
+                  hint='从库存领用到本工序的数量'
+                  cls='green'
+                  value={issueQty}
+                  onChange={setIssueQty}
+                />
+                <View
+                  className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
+                  onClick={acting ? undefined : submitIssue}
+                >
+                  <Text className='op__submit-text'>确认发放</Text>
+                </View>
+              </>
+            ) : null}
           </View>
         </View>
       ) : null}
