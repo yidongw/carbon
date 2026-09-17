@@ -16,6 +16,29 @@ const ringSvg = (pct: number) => {
   )}`
 }
 
+// 毫秒 → 人类可读工时。
+const fmtMs = (ms: number) => {
+  if (!ms || ms <= 0) return '0'
+  const s = Math.round(ms / 1000)
+  if (s < 60) return `${s}秒`
+  const m = Math.floor(s / 60)
+  const ss = s % 60
+  if (m < 60) return ss ? `${m}分${ss}秒` : `${m}分`
+  const h = Math.floor(m / 60)
+  const mm = m % 60
+  return mm ? `${h}时${mm}分` : `${h}时`
+}
+
+// 报工日期 ISO → "MM-DD HH:mm"。
+const fmtDate = (iso: string) => (iso ? iso.slice(5, 16).replace('T', ' ') : '')
+
+// 报工类型 → 中文 + 色板 key。
+const LOG_META: Record<string, { label: string; cls: string }> = {
+  Production: { label: '合格', cls: 'green' },
+  Rework: { label: '返工', cls: 'amber' },
+  Scrap: { label: '报废', cls: 'red' },
+}
+
 export default function Operation() {
   const router = useRouter()
   const id = (router.params.id as string) || ''
@@ -159,7 +182,15 @@ export default function Operation() {
                 <Text className='op__who-a-text'>{(d.assignee || '·').slice(0, 1)}</Text>
               </View>
               <Text className='op__who-name'>{d.assignee || '未分配'}</Text>
+              {!d.isMine ? (
+                <Text className='op__who-take' onClick={() => runAction('pickup')}>
+                  {d.assigneeId ? '接手' : '领取'}
+                </Text>
+              ) : null}
             </View>
+            <Text className='op__hero-time'>
+              单件工时 {fmtMs(d.timePerUnitMs)} · 累计 {fmtMs(d.timeTotalMs)}
+            </Text>
           </View>
 
           {/* 2×2 指标 */}
@@ -187,6 +218,71 @@ export default function Operation() {
                 {d.dueDate ? d.dueDate.slice(0, 10) : '无截止'}
               </Text>
             </View>
+          </View>
+
+          {/* 材料 */}
+          <View className='op__sec'>
+            <Text className='op__sec-title'>材料</Text>
+            <Text className='op__sec-btn' onClick={soon}>发放材料</Text>
+          </View>
+          <View className='op__card2'>
+            {d.materials.length > 0 ? (
+              d.materials.map((m) => (
+                <View key={m.id} className='op__mat'>
+                  <View className='op__mat-l'>
+                    <Text className='op__mat-name'>{m.name || '—'}</Text>
+                    {m.source ? <Text className='op__mat-src'>{m.source}</Text> : null}
+                  </View>
+                  <View className='op__mat-r'>
+                    <Text className='op__mat-q'>
+                      {m.actual} / {m.estimated}
+                    </Text>
+                    <Text className='op__mat-q-l'>实际 / 估计</Text>
+                  </View>
+                </View>
+              ))
+            ) : (
+              <Text className='op__empty2'>无材料</Text>
+            )}
+          </View>
+
+          {/* 生产日志 */}
+          <View className='op__sec'>
+            <Text className='op__sec-title'>生产日志</Text>
+          </View>
+          <View className='op__card2'>
+            <View className='op__totals'>
+              <View className='op__total'>
+                <Text className='op__total-n op__total-n--green'>{d.completed}</Text>
+                <Text className='op__total-l'>合格</Text>
+              </View>
+              <View className='op__total'>
+                <Text className='op__total-n op__total-n--amber'>{d.rework}</Text>
+                <Text className='op__total-l'>返工</Text>
+              </View>
+              <View className='op__total'>
+                <Text className='op__total-n op__total-n--red'>{d.scrap}</Text>
+                <Text className='op__total-l'>报废</Text>
+              </View>
+            </View>
+            {d.logs.length > 0 ? (
+              d.logs.map((g) => (
+                <View key={g.id} className='op__log-row'>
+                  <View
+                    className={`op__log-badge op__log-badge--${LOG_META[g.type]?.cls || 'gray'}`}
+                  >
+                    <Text className='op__log-badge-t'>{LOG_META[g.type]?.label || g.type}</Text>
+                  </View>
+                  <View className='op__log-mid'>
+                    <Text className='op__log-who'>{g.who || '—'}</Text>
+                    <Text className='op__log-date'>{fmtDate(g.date)}</Text>
+                  </View>
+                  <Text className='op__log-qty'>{g.quantity}</Text>
+                </View>
+              ))
+            ) : (
+              <Text className='op__empty2'>暂无报工记录</Text>
+            )}
           </View>
         </View>
       ) : (

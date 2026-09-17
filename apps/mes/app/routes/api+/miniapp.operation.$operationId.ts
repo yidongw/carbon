@@ -38,12 +38,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const scrap = sum("Scrap");
   const pending = sum("Production", (q) => q.paymentYear == null);
 
-  // 是否有进行中的生产事件(未结束)。
+  // 生产事件:是否进行中 + 累计实际工时(已结束用时长,进行中算到当下)。
   const eRes = await getProductionEventsForJobOperation(client, {
     operationId,
     userId
   });
-  const active = ((eRes.data ?? []) as any[]).some((e) => !e.endTime);
+  const events = (eRes.data ?? []) as any[];
+  const active = events.some((e) => !e.endTime);
+  let timeTotalMs = 0;
+  for (const e of events) {
+    const start = e.startTime ? Date.parse(e.startTime) : 0;
+    if (!start) continue;
+    const end = e.endTime ? Date.parse(e.endTime) : Date.now();
+    timeTotalMs += Math.max(0, end - start);
+  }
+  const timePerUnitMs = completed > 0 ? Math.round(timeTotalMs / completed) : 0;
 
   // 工作中心名。
   let workCenter = "";
@@ -66,6 +75,51 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       .eq("companyId", companyId)
       .maybeSingle();
     variant = localizeVariantAttributeLabel(b.data?.attributeLabel, "zh");
+  }
+
+  // 生产日志:未作废的报工记录(合格/返工/报废),含报工人姓名与时间。
+  const logs = quantities
+    .slice()
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .map((q) => ({
+      id: q.id,
+      type: q.type as string,
+      quantity: q.quantity ?? 0,
+      who:
+        [q.employee?.firstName, q.employee?.lastName]
+          .filter(Boolean)
+          .join(" ")
+          .trim() || "",
+      date: q.createdAt as string
+    }));
+
+  // 材料清单(产品/来源/估计/实际)。列名多变,出错则空,不影响主页面。
+  let materials: {
+    id: string;
+    name: string;
+    desc: string;
+    source: string;
+    estimated: number;
+    actual: number;
+  }[] = [];
+  if (op.jobMakeMethodId) {
+    try {
+      const m = await client
+        .from("jobMaterialWithMakeMethodId")
+        .select("*")
+        .eq("jobMakeMethodId", op.jobMakeMethodId)
+        .order("itemReadableId", { ascending: true });
+      materials = ((m.data ?? []) as any[]).map((r) => ({
+        id: r.id,
+        name: r.itemReadableId ?? r.description ?? "",
+        desc: r.description ?? "",
+        source: r.methodType ?? "",
+        estimated: r.estimatedQuantity ?? r.quantity ?? 0,
+        actual: r.quantityIssued ?? 0
+      }));
+    } catch {
+      /* 忽略 */
+    }
   }
 
   const names = await resolveUserNames(client, [op.assignee]);
@@ -95,6 +149,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     deadlineType: op.jobDeadlineType ?? null,
     dueDate: op.operationDueDate ?? op.jobDueDate ?? null,
     workCenter,
-    active
+    active,
+    timeTotalMs,
+    timePerUnitMs,
+    unitOfMeasureText: op.itemUnitOfMeasure ?? "件",
+    materials,
+    logs
   });
 }

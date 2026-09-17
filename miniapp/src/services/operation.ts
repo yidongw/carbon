@@ -23,6 +23,28 @@ export interface OperationDetail {
   dueDate: string | null
   workCenter: string
   active: boolean
+  timeTotalMs: number
+  timePerUnitMs: number
+  unitOfMeasureText: string
+  materials: OpMaterial[]
+  logs: OpLog[]
+}
+
+export interface OpMaterial {
+  id: string
+  name: string
+  desc: string
+  source: string
+  estimated: number
+  actual: number
+}
+
+export interface OpLog {
+  id: string
+  type: string // Production | Rework | Scrap
+  quantity: number
+  who: string
+  date: string
 }
 
 export const getOperation = (id: string) =>

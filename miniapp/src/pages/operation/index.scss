@@ -499,4 +499,187 @@ page {
     font-size: 32px;
     font-weight: 800;
   }
+
+  /* 负责人接手 + 单件工时 */
+  &__who-take {
+    margin-left: 16px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #2563eb;
+    border: 1px solid #cfe0ff;
+    border-radius: 999px;
+    padding: 4px 18px;
+  }
+
+  &__hero-time {
+    margin-top: 16px;
+    font-size: 22px;
+    color: #97a1b3;
+  }
+
+  /* 区块标题行 */
+  &__sec {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 8px 4px 12px;
+  }
+
+  &__sec-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__sec-btn {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2563eb;
+    background: #eef4ff;
+    border-radius: 10px;
+    padding: 8px 18px;
+  }
+
+  &__card2 {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 8px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 22px rgba(31, 45, 74, 0.05);
+  }
+
+  &__empty2 {
+    display: block;
+    text-align: center;
+    padding: 32px 0;
+    font-size: 24px;
+    color: #97a1b3;
+  }
+
+  /* 材料行 */
+  &__mat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 1px solid #f2f4f7;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__mat-name {
+    display: block;
+    font-size: 26px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__mat-src {
+    display: block;
+    margin-top: 4px;
+    font-size: 20px;
+    color: #8a94a6;
+  }
+
+  &__mat-r { text-align: right; }
+
+  &__mat-q {
+    display: block;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__mat-q-l {
+    display: block;
+    margin-top: 2px;
+    font-size: 18px;
+    color: #97a1b3;
+  }
+
+  /* 生产日志合计 */
+  &__totals {
+    display: flex;
+    padding: 18px 0;
+    border-bottom: 1px solid #f2f4f7;
+  }
+
+  &__total {
+    flex: 1;
+    text-align: center;
+  }
+
+  &__total-n {
+    display: block;
+    font-size: 40px;
+    font-weight: 800;
+    color: #1a2233;
+
+    &--green { color: #16a34a; }
+    &--amber { color: #ea8a12; }
+    &--red { color: #dc2626; }
+  }
+
+  &__total-l {
+    display: block;
+    margin-top: 2px;
+    font-size: 20px;
+    color: #8a94a6;
+  }
+
+  /* 生产日志行 */
+  &__log-row {
+    display: flex;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 1px solid #f2f4f7;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__log-badge {
+    min-width: 64px;
+    text-align: center;
+    border-radius: 999px;
+    padding: 6px 16px;
+
+    &--green { background: #e6f8ee; }
+    &--amber { background: #fff1e0; }
+    &--red { background: #fee2e2; }
+    &--gray { background: #eef0f4; }
+  }
+
+  &__log-badge-t {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  &__log-badge--green &__log-badge-t { color: #16a34a; }
+  &__log-badge--amber &__log-badge-t { color: #ea8a12; }
+  &__log-badge--red &__log-badge-t { color: #dc2626; }
+  &__log-badge--gray &__log-badge-t { color: #64748b; }
+
+  &__log-mid {
+    flex: 1;
+    margin-left: 20px;
+  }
+
+  &__log-who {
+    display: block;
+    font-size: 26px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__log-date {
+    display: block;
+    margin-top: 4px;
+    font-size: 20px;
+    color: #97a1b3;
+  }
+
+  &__log-qty {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a2233;
+  }
 }
