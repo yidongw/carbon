@@ -14,6 +14,7 @@ import type {
   OperationActionType,
   ScrapReason,
   ReworkTarget,
+  OpMaterial,
 } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
@@ -79,6 +80,11 @@ export default function Operation() {
   const [reworkTargets, setReworkTargets] = useState<ReworkTarget[]>([])
   const [reworkTarget, setReworkTarget] = useState<ReworkTarget | null>(null)
   const [reworkReason, setReworkReason] = useState('')
+
+  // 发放材料弹层
+  const [issueOpen, setIssueOpen] = useState(false)
+  const [issueMat, setIssueMat] = useState<OpMaterial | null>(null)
+  const [issueQty, setIssueQty] = useState(0)
 
   const load = () => {
     if (!id) return
@@ -253,6 +259,56 @@ export default function Operation() {
 
   const goApprovals = () => Taro.navigateTo({ url: '/pages/approvals/index' })
 
+  // 发放材料
+  const openIssue = (m: OpMaterial) => {
+    setIssueMat(m)
+    setIssueQty(Math.max(1, Math.round(m.toIssue || 1)))
+    setIssueOpen(true)
+  }
+  const onIssueBtn = () => {
+    const list = d?.materials || []
+    if (!list.length) {
+      Taro.showToast({ title: '无材料可发放', icon: 'none' })
+      return
+    }
+    if (list.length === 1) {
+      openIssue(list[0])
+      return
+    }
+    Taro.showActionSheet({ itemList: list.map((m) => m.name || '材料') })
+      .then((r) => {
+        const m = list[r.tapIndex]
+        if (m) openIssue(m)
+      })
+      .catch(() => {})
+  }
+  const submitIssue = async () => {
+    if (!d || !issueMat || acting) return
+    if (issueQty <= 0) {
+      Taro.showToast({ title: '请输入数量', icon: 'none' })
+      return
+    }
+    setActing(true)
+    try {
+      const res = await operationAction(d.id, 'issue', {
+        itemId: issueMat.itemId,
+        materialId: issueMat.materialId,
+        quantity: issueQty,
+        adjustmentType: 'Negative Adjmt.',
+      })
+      if (res.success) {
+        setIssueOpen(false)
+        Taro.showToast({ title: '已发放', icon: 'success' })
+        setLoading(true)
+        load()
+      } else {
+        Taro.showToast({ title: res.message || '发放失败', icon: 'none' })
+      }
+    } finally {
+      setActing(false)
+    }
+  }
+
   const openSheet = () => {
     const remain = d ? Math.max(0, d.target - d.completed - d.scrap) : 0
     setFinished(remain)
@@ -380,12 +436,17 @@ export default function Operation() {
           {/* 材料 */}
           <View className='op__sec'>
             <Text className='op__sec-title'>材料</Text>
-            <Text className='op__sec-btn' onClick={soon}>发放材料</Text>
+            <Text className='op__sec-btn' onClick={onIssueBtn}>发放材料</Text>
           </View>
           <View className='op__card2'>
             {d.materials.length > 0 ? (
               d.materials.map((m) => (
-                <View key={m.id} className='op__mat'>
+                <View
+                  key={m.id}
+                  className='op__mat'
+                  hoverClass='op__mat--hover'
+                  onClick={() => openIssue(m)}
+                >
                   <View className='op__mat-l'>
                     <Text className='op__mat-name'>{m.name || '—'}</Text>
                     {m.source ? <Text className='op__mat-src'>{m.source}</Text> : null}
@@ -598,6 +659,37 @@ export default function Operation() {
               onClick={acting ? undefined : submitRework}
             >
               <Text className='op__submit-text'>提交返工</Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
+
+      {/* 发放材料弹层 */}
+      {issueOpen && issueMat ? (
+        <View className='op__sheet-wrap'>
+          <View className='op__mask' onClick={() => setIssueOpen(false)} />
+          <View className='op__sheet'>
+            <View className='op__sheet-head'>
+              <Text className='op__sheet-title'>发放材料</Text>
+              <Text className='op__sheet-x' onClick={() => setIssueOpen(false)}>✕</Text>
+            </View>
+            <Text className='op__sheet-sub'>
+              {[issueMat.name, `已发 ${issueMat.actual} / 需 ${issueMat.estimated}`]
+                .filter(Boolean)
+                .join(' · ')}
+            </Text>
+            <Stepper
+              label='发放数量'
+              hint='从库存领用到本工序的数量'
+              cls='green'
+              value={issueQty}
+              onChange={setIssueQty}
+            />
+            <View
+              className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
+              onClick={acting ? undefined : submitIssue}
+            >
+              <Text className='op__submit-text'>确认发放</Text>
             </View>
           </View>
         </View>

@@ -32,11 +32,14 @@ export interface OperationDetail {
 
 export interface OpMaterial {
   id: string
+  materialId: string
+  itemId: string
   name: string
   desc: string
   source: string
   estimated: number
   actual: number
+  toIssue: number
 }
 
 export interface OpLog {
@@ -73,6 +76,7 @@ export type OperationActionType =
   | 'scrap'
   | 'rework'
   | 'markFixed'
+  | 'issue'
 
 export const operationAction = (
   jobOperationId: string,

@@ -194,5 +194,31 @@ export async function action({ request }: ActionFunctionArgs) {
     return jsonResponse({ success: true });
   }
 
+  if (act === "issue") {
+    // 发放材料:把某材料按数量从库存领用到本工序,对齐网页 /x/issue(partToOperation)。
+    const itemId = String(body.itemId ?? "");
+    const materialId = String(body.materialId ?? "") || undefined;
+    const quantity = Number(body.quantity);
+    const adjustmentType = String(body.adjustmentType ?? "Negative Adjmt.");
+    if (!itemId) return jsonResponse({ success: false, message: "缺少物料" });
+    if (!Number.isFinite(quantity) || quantity <= 0)
+      return jsonResponse({ success: false, message: "请输入数量" });
+    const inv = await serviceRole.functions.invoke("issue", {
+      body: {
+        id: jobOperationId,
+        type: "partToOperation",
+        itemId,
+        materialId,
+        quantity,
+        adjustmentType,
+        companyId,
+        userId
+      }
+    });
+    if (inv.error)
+      return jsonResponse({ success: false, message: "发放材料失败" });
+    return jsonResponse({ success: true });
+  }
+
   return jsonResponse({ success: false, message: "未知动作" });
 }

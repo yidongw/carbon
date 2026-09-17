@@ -565,6 +565,8 @@ page {
     border-bottom: 1px solid #f2f4f7;
 
     &:last-child { border-bottom: none; }
+
+    &--hover { opacity: 0.6; }
   }
 
   &__mat-name {

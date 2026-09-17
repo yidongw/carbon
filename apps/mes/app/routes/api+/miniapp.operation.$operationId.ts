@@ -93,14 +93,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       date: q.createdAt as string
     }));
 
-  // 材料清单(产品/来源/估计/实际)。列名多变,出错则空,不影响主页面。
+  // 材料清单(产品/来源/估计/实际 + 发料所需 materialId/itemId/待发数)。
   let materials: {
     id: string;
+    materialId: string;
+    itemId: string;
     name: string;
     desc: string;
     source: string;
     estimated: number;
     actual: number;
+    toIssue: number;
   }[] = [];
   if (op.jobMakeMethodId) {
     try {
@@ -109,14 +112,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         .select("*")
         .eq("jobMakeMethodId", op.jobMakeMethodId)
         .order("itemReadableId", { ascending: true });
-      materials = ((m.data ?? []) as any[]).map((r) => ({
-        id: r.id,
-        name: r.itemReadableId ?? r.description ?? "",
-        desc: r.description ?? "",
-        source: r.methodType ?? "",
-        estimated: r.estimatedQuantity ?? r.quantity ?? 0,
-        actual: r.quantityIssued ?? 0
-      }));
+      materials = ((m.data ?? []) as any[]).map((r) => {
+        const estimated = r.estimatedQuantity ?? r.quantity ?? 0;
+        const actual = r.quantityIssued ?? 0;
+        return {
+          id: r.id,
+          materialId: r.id,
+          itemId: r.itemId ?? "",
+          name: r.itemReadableId ?? r.description ?? "",
+          desc: r.description ?? "",
+          source: r.methodType ?? "",
+          estimated,
+          actual,
+          toIssue: r.quantityToIssue ?? Math.max(0, estimated - actual)
+        };
+      });
     } catch {
       /* 忽略 */
     }
