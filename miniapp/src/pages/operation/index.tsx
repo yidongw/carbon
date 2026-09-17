@@ -259,14 +259,20 @@ export default function Operation() {
 
   const goApprovals = () => Taro.navigateTo({ url: '/pages/approvals/index' })
 
-  // 发放材料
+  // 发放材料（对齐 MES 网页 IssueMaterialModal 的库存领用路径）
   const openIssue = (m: OpMaterial) => {
+    if (!m?.itemId) {
+      Taro.showToast({ title: '材料缺少物料信息，无法发放', icon: 'none' })
+      console.warn('[issue] material missing itemId', m)
+      return
+    }
     setIssueMat(m)
     setIssueQty(Math.max(1, Math.round(m.toIssue || 1)))
     setIssueOpen(true)
   }
   const onIssueBtn = () => {
     const list = d?.materials || []
+    console.log('[issue] tap 发放材料', { count: list.length, ids: list.map((m) => m.itemId) })
     if (!list.length) {
       Taro.showToast({ title: '无材料可发放', icon: 'none' })
       return
@@ -284,6 +290,10 @@ export default function Operation() {
   }
   const submitIssue = async () => {
     if (!d || !issueMat || acting) return
+    if (!issueMat.itemId) {
+      Taro.showToast({ title: '材料缺少物料信息，无法发放', icon: 'none' })
+      return
+    }
     if (issueQty <= 0) {
       Taro.showToast({ title: '请输入数量', icon: 'none' })
       return
@@ -304,6 +314,8 @@ export default function Operation() {
       } else {
         Taro.showToast({ title: res.message || '发放失败', icon: 'none' })
       }
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '发放失败', icon: 'none' })
     } finally {
       setActing(false)
     }
@@ -433,10 +445,16 @@ export default function Operation() {
             </View>
           </View>
 
-          {/* 材料 */}
+          {/* 材料 — 用 View 包按钮，避免 Text 在真机上点按无响应 */}
           <View className='op__sec'>
             <Text className='op__sec-title'>材料</Text>
-            <Text className='op__sec-btn' onClick={onIssueBtn}>发放材料</Text>
+            <View
+              className='op__sec-btn'
+              hoverClass='op__sec-btn--hover'
+              onClick={onIssueBtn}
+            >
+              <Text className='op__sec-btn-text'>发放材料</Text>
+            </View>
           </View>
           <View className='op__card2'>
             {d.materials.length > 0 ? (
