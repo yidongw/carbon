@@ -10,6 +10,8 @@ export default defineAppConfig({
     'pages/work-orders/index',
     'pages/operation/index',
     'pages/approvals/index',
+    'pages/picking/index',
+    'pages/picking/detail',
   ],
   window: {
     backgroundTextStyle: 'light',
