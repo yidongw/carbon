@@ -65,11 +65,41 @@ export const reportQuantity = (payload: ReportPayload) =>
     data: payload,
   })
 
-export type OperationActionType = 'start' | 'pause' | 'finish' | 'pickup'
+export type OperationActionType =
+  | 'start'
+  | 'pause'
+  | 'finish'
+  | 'pickup'
+  | 'scrap'
+  | 'rework'
+  | 'markFixed'
 
-export const operationAction = (jobOperationId: string, action: OperationActionType) =>
+export const operationAction = (
+  jobOperationId: string,
+  action: OperationActionType,
+  extra: Record<string, unknown> = {},
+) =>
   request<{ success: boolean; message?: string }>({
     url: '/api/miniapp/operation-action',
     method: 'POST',
-    data: { jobOperationId, action },
+    data: { jobOperationId, action, ...extra },
+  })
+
+export interface ScrapReason {
+  id: string
+  name: string
+}
+export const getScrapReasons = () =>
+  request<{ rows: ScrapReason[] }>({ url: '/api/miniapp/scrap-reasons', method: 'GET' })
+
+export interface ReworkTarget {
+  id: string
+  description: string
+  item: string
+  status: string
+}
+export const getReworkTargets = (id: string) =>
+  request<{ rows: ReworkTarget[] }>({
+    url: `/api/miniapp/rework-targets/${id}`,
+    method: 'GET',
   })

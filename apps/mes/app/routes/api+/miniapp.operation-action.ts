@@ -5,10 +5,17 @@ import {
   endProductionEvent,
   endProductionEventsForJobOperation,
   finishJobOperation,
+  insertScrapQuantity,
+  markReworkFixed,
   startProductionEvent
 } from "~/services/operations.service";
 import { requireMiniappUser } from "~/utils/miniapp-auth.server";
 import { jsonResponse } from "~/utils/miniapp-response";
+
+const toInt = (v: unknown) => {
+  const n = Math.floor(Number(v));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+};
 
 // 工序动作:开始 / 暂停 / 完成 / 领取。逻辑对齐网页 /x/event、/x/finish、/x/pickup-operation。
 // 状态流转(Todo/Ready→进行中→已暂停→已完成)由数据库触发器随生产事件/finish 自动完成。
@@ -110,6 +117,80 @@ export async function action({ request }: ActionFunctionArgs) {
     });
     if (assigned.error)
       return jsonResponse({ success: false, message: "领取失败" });
+    return jsonResponse({ success: true });
+  }
+
+  if (act === "scrap") {
+    // 报废(选原因):记一条 Scrap 报工并自动扣料,逻辑对齐网页 /x/scrap。
+    const quantity = toInt(body.quantity);
+    if (quantity <= 0)
+      return jsonResponse({ success: false, message: "请输入报废数量" });
+    const scrapReasonId = String(body.scrapReasonId ?? "") || null;
+    const notes = String(body.notes ?? "") || null;
+    const ins = await insertScrapQuantity(client, {
+      jobOperationId,
+      quantity,
+      scrapReasonId,
+      notes,
+      companyId,
+      createdBy: userId,
+      employeeId: userId
+    });
+    if (ins.error) return jsonResponse({ success: false, message: "报废失败" });
+    await serviceRole.functions.invoke("issue", {
+      body: {
+        id: jobOperationId,
+        type: "jobOperation",
+        quantity,
+        companyId,
+        userId
+      }
+    });
+    return jsonResponse({ success: true });
+  }
+
+  if (act === "rework") {
+    // 返工(选目标工序):调用与网页 /x/trigger-rework 相同的边缘函数。
+    if (!op.jobId) return jsonResponse({ success: false, message: "缺少工单" });
+    const quantity = toInt(body.quantity);
+    const targetJobOperationId = String(body.targetJobOperationId ?? "");
+    const reason = String(body.reason ?? "").trim();
+    if (quantity <= 0)
+      return jsonResponse({ success: false, message: "请输入返工数量" });
+    if (!targetJobOperationId)
+      return jsonResponse({ success: false, message: "请选择目标工序" });
+    if (!reason)
+      return jsonResponse({ success: false, message: "请填写返工原因" });
+    const inv = await serviceRole.functions.invoke("trigger-rework", {
+      body: {
+        jobId: op.jobId,
+        triggeredAtJobOperationId: jobOperationId,
+        targetJobOperationId,
+        reason,
+        quantity,
+        companyId,
+        userId
+      }
+    });
+    if (inv.error) return jsonResponse({ success: false, message: "返工失败" });
+    await serviceRole.functions.invoke("recalculate", {
+      body: { type: "jobRequirements", id: op.jobId, companyId, userId }
+    });
+    return jsonResponse({ success: true });
+  }
+
+  if (act === "markFixed") {
+    // 返工「标记已修」:把返工数量转回合格(经理),对齐网页 /x/rework-to-production。
+    const quantity = toInt(body.quantity);
+    if (quantity <= 0)
+      return jsonResponse({ success: false, message: "请输入数量" });
+    const r = await markReworkFixed(serviceRole, {
+      jobOperationId,
+      companyId,
+      userId,
+      quantity
+    });
+    if (r.error) return jsonResponse({ success: false, message: "标记失败" });
     return jsonResponse({ success: true });
   }
 

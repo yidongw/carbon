@@ -9,6 +9,7 @@ export default defineAppConfig({
     'pages/salary/index',
     'pages/work-orders/index',
     'pages/operation/index',
+    'pages/approvals/index',
   ],
   window: {
     backgroundTextStyle: 'light',

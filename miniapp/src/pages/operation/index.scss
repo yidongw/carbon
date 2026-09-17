@@ -682,4 +682,42 @@ page {
     font-weight: 800;
     color: #1a2233;
   }
+
+  /* 弹层里的选择行 / 原因输入 */
+  &__pick {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 0;
+    border-top: 1px solid #f2f4f7;
+  }
+
+  &__pick-k {
+    font-size: 28px;
+    color: #5b6472;
+  }
+
+  &__pick-v {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2233;
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__reason {
+    border-top: 1px solid #f2f4f7;
+    padding: 22px 0 6px;
+  }
+
+  &__reason-input {
+    height: 72px;
+    background: #f4f6fa;
+    border-radius: 14px;
+    padding: 0 24px;
+    font-size: 28px;
+    color: #1a2233;
+  }
 }

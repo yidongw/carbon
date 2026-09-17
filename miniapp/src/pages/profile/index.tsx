@@ -32,6 +32,10 @@ export default function Profile() {
       Taro.navigateTo({ url: '/pages/salary/index' })
       return
     }
+    if (key === 'reports') {
+      Taro.navigateTo({ url: '/pages/approvals/index' })
+      return
+    }
     Taro.showToast({ title: '功能开发中', icon: 'none' })
   }
 

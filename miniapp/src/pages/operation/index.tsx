@@ -2,8 +2,19 @@ import { useState } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
-import { getOperation, reportQuantity, operationAction } from '../../services/operation'
-import type { OperationDetail, OperationActionType } from '../../services/operation'
+import {
+  getOperation,
+  reportQuantity,
+  operationAction,
+  getScrapReasons,
+  getReworkTargets,
+} from '../../services/operation'
+import type {
+  OperationDetail,
+  OperationActionType,
+  ScrapReason,
+  ReworkTarget,
+} from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
 import './index.scss'
 
@@ -56,6 +67,19 @@ export default function Operation() {
   const [more, setMore] = useState(false)
   const [acting, setActing] = useState(false)
 
+  // 报废弹层
+  const [scrapOpen, setScrapOpen] = useState(false)
+  const [scrapQty, setScrapQty] = useState(0)
+  const [scrapReasons, setScrapReasons] = useState<ScrapReason[]>([])
+  const [scrapReason, setScrapReason] = useState<ScrapReason | null>(null)
+
+  // 返工弹层
+  const [reworkOpen, setReworkOpen] = useState(false)
+  const [reworkQty, setReworkQty] = useState(0)
+  const [reworkTargets, setReworkTargets] = useState<ReworkTarget[]>([])
+  const [reworkTarget, setReworkTarget] = useState<ReworkTarget | null>(null)
+  const [reworkReason, setReworkReason] = useState('')
+
   const load = () => {
     if (!id) return
     getOperation(id)
@@ -95,6 +119,139 @@ export default function Operation() {
       setActing(false)
     }
   }
+
+  // 报废
+  const openScrap = () => {
+    setScrapQty(0)
+    setScrapReason(null)
+    setScrapOpen(true)
+    setMore(false)
+    getScrapReasons()
+      .then((r) => setScrapReasons(r.rows))
+      .catch(() => {})
+  }
+  const chooseScrapReason = () => {
+    if (!scrapReasons.length) {
+      Taro.showToast({ title: '暂无报废原因', icon: 'none' })
+      return
+    }
+    Taro.showActionSheet({ itemList: scrapReasons.map((x) => x.name) })
+      .then((r) => setScrapReason(scrapReasons[r.tapIndex] || null))
+      .catch(() => {})
+  }
+  const submitScrap = async () => {
+    if (!d || acting) return
+    if (scrapQty <= 0) {
+      Taro.showToast({ title: '请输入报废数量', icon: 'none' })
+      return
+    }
+    if (!scrapReason) {
+      Taro.showToast({ title: '请选择报废原因', icon: 'none' })
+      return
+    }
+    setActing(true)
+    try {
+      const res = await operationAction(d.id, 'scrap', {
+        quantity: scrapQty,
+        scrapReasonId: scrapReason.id,
+      })
+      if (res.success) {
+        setScrapOpen(false)
+        Taro.showToast({ title: '已报废', icon: 'success' })
+        setLoading(true)
+        load()
+      } else {
+        Taro.showToast({ title: res.message || '报废失败', icon: 'none' })
+      }
+    } finally {
+      setActing(false)
+    }
+  }
+
+  // 返工
+  const openRework = () => {
+    if (!d) return
+    setReworkQty(0)
+    setReworkTarget(null)
+    setReworkReason('')
+    setReworkTargets([])
+    setReworkOpen(true)
+    setMore(false)
+    getReworkTargets(d.id)
+      .then((r) => setReworkTargets(r.rows))
+      .catch(() => {})
+  }
+  const chooseReworkTarget = () => {
+    if (!reworkTargets.length) {
+      Taro.showToast({ title: '无可返回的上游工序', icon: 'none' })
+      return
+    }
+    Taro.showActionSheet({
+      itemList: reworkTargets.map((t) => t.description || t.item || '工序'),
+    })
+      .then((r) => setReworkTarget(reworkTargets[r.tapIndex] || null))
+      .catch(() => {})
+  }
+  const submitRework = async () => {
+    if (!d || acting) return
+    if (reworkQty <= 0) {
+      Taro.showToast({ title: '请输入返工数量', icon: 'none' })
+      return
+    }
+    if (!reworkTarget) {
+      Taro.showToast({ title: '请选择目标工序', icon: 'none' })
+      return
+    }
+    if (!reworkReason.trim()) {
+      Taro.showToast({ title: '请填写返工原因', icon: 'none' })
+      return
+    }
+    setActing(true)
+    try {
+      const res = await operationAction(d.id, 'rework', {
+        quantity: reworkQty,
+        targetJobOperationId: reworkTarget.id,
+        reason: reworkReason.trim(),
+      })
+      if (res.success) {
+        setReworkOpen(false)
+        Taro.showToast({ title: '已触发返工', icon: 'success' })
+        setLoading(true)
+        load()
+      } else {
+        Taro.showToast({ title: res.message || '返工失败', icon: 'none' })
+      }
+    } finally {
+      setActing(false)
+    }
+  }
+
+  // 返工「标记已修」(经理)
+  const doMarkFixed = async () => {
+    if (!d) return
+    setMore(false)
+    const r = await Taro.showModal({
+      title: '标记已修',
+      editable: true,
+      placeholderText: `数量(可返工 ${d.rework})`,
+    })
+    if (!r.confirm) return
+    const q = Math.floor(Number(r.content))
+    if (!Number.isFinite(q) || q <= 0) {
+      Taro.showToast({ title: '请输入数量', icon: 'none' })
+      return
+    }
+    const res = await operationAction(d.id, 'markFixed', { quantity: q })
+    if (res.success) {
+      Taro.showToast({ title: '已标记已修', icon: 'success' })
+      setLoading(true)
+      load()
+    } else {
+      Taro.showToast({ title: res.message || '标记失败', icon: 'none' })
+    }
+  }
+
+  const goApprovals = () => Taro.navigateTo({ url: '/pages/approvals/index' })
 
   const openSheet = () => {
     const remain = d ? Math.max(0, d.target - d.completed - d.scrap) : 0
@@ -207,7 +364,7 @@ export default function Operation() {
               <View className='op__q-head'>
                 <Text className='op__q-label'>待审批</Text>
                 {d.pending > 0 ? (
-                  <Text className='op__q-link' onClick={soon}>审核 ›</Text>
+                  <Text className='op__q-link' onClick={goApprovals}>审核 ›</Text>
                 ) : null}
               </View>
               <Text className='op__q-value'>{d.pending}</Text>
@@ -372,10 +529,76 @@ export default function Operation() {
                 onClick={() => runAction('pickup')}
               />
             ) : null}
-            <MoreItem cls='amber' name='返工' hint='把数量返工到指定工序' onClick={soon} />
-            <MoreItem cls='red' name='报废' hint='报废并选择原因' onClick={soon} />
+            <MoreItem cls='amber' name='返工' hint='把数量返工到指定工序' onClick={openRework} />
+            {d.rework > 0 ? (
+              <MoreItem
+                cls='green'
+                name='标记已修'
+                hint='把返工数量转回合格'
+                onClick={doMarkFixed}
+              />
+            ) : null}
+            <MoreItem cls='red' name='报废' hint='报废并选择原因' onClick={openScrap} />
             <MoreItem cls='purple' name='维护' hint='报修工作中心' onClick={soon} />
             <MoreItem cls='gray' name='质量问题' hint='提交质量异常' onClick={soon} />
+          </View>
+        </View>
+      ) : null}
+
+      {/* 报废弹层 */}
+      {scrapOpen && d ? (
+        <View className='op__sheet-wrap'>
+          <View className='op__mask' onClick={() => setScrapOpen(false)} />
+          <View className='op__sheet'>
+            <View className='op__sheet-head'>
+              <Text className='op__sheet-title'>报废</Text>
+              <Text className='op__sheet-x' onClick={() => setScrapOpen(false)}>✕</Text>
+            </View>
+            <Stepper label='报废数量' hint='本次报废件数' cls='red' value={scrapQty} onChange={setScrapQty} />
+            <View className='op__pick' onClick={chooseScrapReason}>
+              <Text className='op__pick-k'>报废原因</Text>
+              <Text className='op__pick-v'>{scrapReason?.name || '请选择 ›'}</Text>
+            </View>
+            <View
+              className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
+              onClick={acting ? undefined : submitScrap}
+            >
+              <Text className='op__submit-text'>提交报废</Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
+
+      {/* 返工弹层 */}
+      {reworkOpen && d ? (
+        <View className='op__sheet-wrap'>
+          <View className='op__mask' onClick={() => setReworkOpen(false)} />
+          <View className='op__sheet'>
+            <View className='op__sheet-head'>
+              <Text className='op__sheet-title'>返工</Text>
+              <Text className='op__sheet-x' onClick={() => setReworkOpen(false)}>✕</Text>
+            </View>
+            <Stepper label='返工数量' hint='退回上游返修的件数' cls='amber' value={reworkQty} onChange={setReworkQty} />
+            <View className='op__pick' onClick={chooseReworkTarget}>
+              <Text className='op__pick-k'>目标工序</Text>
+              <Text className='op__pick-v'>
+                {reworkTarget ? reworkTarget.description || reworkTarget.item : '请选择 ›'}
+              </Text>
+            </View>
+            <View className='op__reason'>
+              <Input
+                className='op__reason-input'
+                value={reworkReason}
+                placeholder='返工原因'
+                onInput={(e) => setReworkReason(e.detail.value)}
+              />
+            </View>
+            <View
+              className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
+              onClick={acting ? undefined : submitRework}
+            >
+              <Text className='op__submit-text'>提交返工</Text>
+            </View>
           </View>
         </View>
       ) : null}
