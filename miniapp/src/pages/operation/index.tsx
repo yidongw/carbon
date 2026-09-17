@@ -277,13 +277,25 @@ export default function Operation() {
     setIssueHits([])
     setIssueOpen(true)
   }
+  const loadIssueItems = async (q = '') => {
+    setIssueSearching(true)
+    try {
+      const res = await searchItems(q)
+      setIssueHits(res.rows || [])
+    } catch (e: any) {
+      Taro.showToast({ title: e?.message || '加载物料失败', icon: 'none' })
+    } finally {
+      setIssueSearching(false)
+    }
+  }
   const openIssuePicker = () => {
-    // 网页点「发放材料」即使 materials 为空也会打开弹层让选物料。
+    // 对齐网页 Combobox:打开即展示可选物料列表,搜索只是筛选。
     setIssueMat(null)
     setIssueQty(1)
     setIssueQuery('')
     setIssueHits([])
     setIssueOpen(true)
+    void loadIssueItems('')
   }
   const onIssueBtn = () => {
     const list = d?.materials || []
@@ -309,21 +321,10 @@ export default function Operation() {
       })
       .catch(() => {})
   }
-  const onIssueSearch = async (q: string) => {
+  const onIssueSearch = (q: string) => {
     setIssueQuery(q)
-    if (!q.trim()) {
-      setIssueHits([])
-      return
-    }
-    setIssueSearching(true)
-    try {
-      const res = await searchItems(q.trim())
-      setIssueHits(res.rows || [])
-    } catch (e: any) {
-      Taro.showToast({ title: e?.message || '搜索失败', icon: 'none' })
-    } finally {
-      setIssueSearching(false)
-    }
+    // 筛选列表(与网页 Combobox 输入过滤一致)
+    void loadIssueItems(q.trim())
   }
   const pickIssueItem = (hit: ItemHit) => {
     setIssueMat({
@@ -338,7 +339,6 @@ export default function Operation() {
       toIssue: 1,
     })
     setIssueQty(1)
-    setIssueHits([])
     setIssueQuery(hit.name)
   }
   const submitIssue = async () => {
@@ -735,7 +735,7 @@ export default function Operation() {
         </View>
       ) : null}
 
-      {/* 发放材料弹层 —— BOM 可为空(对齐网页 IssueMaterialModal) */}
+      {/* 发放材料弹层 —— 对齐网页 IssueMaterialModal 的「选择物料」下拉 */}
       {issueOpen ? (
         <View className='op__sheet-wrap'>
           <View className='op__mask' onClick={() => setIssueOpen(false)} />
@@ -744,43 +744,52 @@ export default function Operation() {
               <Text className='op__sheet-title'>发放材料</Text>
               <Text className='op__sheet-x' onClick={() => setIssueOpen(false)}>✕</Text>
             </View>
-            {issueMat ? (
-              <Text className='op__sheet-sub'>
-                {[issueMat.name, issueMat.estimated || issueMat.actual
-                  ? `已发 ${issueMat.actual} / 需 ${issueMat.estimated}`
-                  : issueMat.desc]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </Text>
-            ) : (
-              <>
-                <Text className='op__sheet-sub'>
-                  本工序 BOM 无材料行，可搜索物料后发放（与网页一致）
-                </Text>
-                <Input
-                  className='op__reason-input'
-                  value={issueQuery}
-                  placeholder='搜索物料编码 / 名称'
-                  onInput={(e) => onIssueSearch(e.detail.value)}
-                />
+            <Text className='op__sheet-sub'>选择物料并填写发放数量</Text>
+
+            <Text className='op__field-label'>物料</Text>
+            <Input
+              className='op__reason-input'
+              value={issueQuery}
+              placeholder='选择物料…'
+              onInput={(e) => {
+                // 已选中时再改输入 = 重新筛选列表
+                if (issueMat) setIssueMat(null)
+                onIssueSearch(e.detail.value)
+              }}
+              onFocus={() => {
+                if (!issueHits.length && !issueSearching) void loadIssueItems(issueQuery.trim())
+              }}
+            />
+            {!issueMat ? (
+              <View className='op__pick-list'>
                 {issueSearching ? (
-                  <Text className='op__empty2'>搜索中…</Text>
-                ) : null}
-                {issueHits.map((h) => (
-                  <View
-                    key={h.id}
-                    className='op__mat'
-                    hoverClass='op__mat--hover'
-                    onClick={() => pickIssueItem(h)}
-                  >
-                    <View className='op__mat-l'>
-                      <Text className='op__mat-name'>{h.name || '—'}</Text>
-                      {h.desc ? <Text className='op__mat-src'>{h.desc}</Text> : null}
+                  <Text className='op__empty2'>加载中…</Text>
+                ) : issueHits.length === 0 ? (
+                  <Text className='op__empty2'>暂无可选物料</Text>
+                ) : (
+                  issueHits.map((h) => (
+                    <View
+                      key={h.id}
+                      className='op__pick-row'
+                      hoverClass='op__pick-row--hover'
+                      onClick={() => pickIssueItem(h)}
+                    >
+                      <Text className='op__pick-name'>{h.name || '—'}</Text>
+                      {h.desc ? <Text className='op__pick-desc'>{h.desc}</Text> : null}
                     </View>
-                  </View>
-                ))}
-              </>
+                  ))
+                )}
+              </View>
+            ) : (
+              <View className='op__pick-selected' onClick={() => {
+                setIssueMat(null)
+                void loadIssueItems(issueQuery.trim())
+              }}>
+                <Text className='op__pick-name'>{issueMat.name}</Text>
+                <Text className='op__pick-change'>更换 ›</Text>
+              </View>
             )}
+
             {issueMat ? (
               <>
                 <Stepper
