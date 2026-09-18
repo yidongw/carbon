@@ -4,13 +4,12 @@ import {
   CLOUDFLARE_TURNSTILE_SECRET_KEY,
   CLOUDFLARE_TURNSTILE_SITE_KEY,
   error,
-  phoneLoginValidator,
-  RATE_LIMIT
+  phoneLoginValidator
 } from "@carbon/auth";
 import { sendSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
 import { findPhoneUser } from "@carbon/auth/phone.server";
+import { checkLoginRateLimit } from "@carbon/auth/rate-limit.server";
 import { validator } from "@carbon/form";
-import { Ratelimit, redis } from "@carbon/kv";
 import { Edition } from "@carbon/utils";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
@@ -21,16 +20,6 @@ import { data } from "react-router";
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
-  const { success } = await ratelimit.limit(ip);
-  if (!success) {
-    return error(null, "Rate limit exceeded");
-  }
 
   const formData = await request.formData();
 
@@ -64,6 +53,11 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { phone } = validation.data;
+
+  const allowed = await checkLoginRateLimit("sms-send", phone, ip);
+  if (!allowed) {
+    return error(null, "Rate limit exceeded");
+  }
 
   // Enterprise deployments don't allow self-signup: only send a code to numbers
   // that already belong to a provisioned user (mirrors the email login gate).

@@ -468,9 +468,19 @@ export const DEFAULT_LANGUAGE =
   }) ?? "en";
 
 export const RATE_LIMIT = parseInt(
-  getEnv("RATE_LIMIT", { isRequired: false, isSecret: false }) || "5",
+  getEnv("RATE_LIMIT", { isRequired: false, isSecret: false }) || "10",
   10
 );
+
+// IPs that front many real users behind one source IP (e.g. the China L4
+// SNI-passthrough proxy, where every mainland visitor shares the box's IP).
+// Per-IP login limits use a much larger aggregate ceiling for these so a whole
+// site isn't throttled together, while per-identifier limits still apply to each
+// user. Comma-separated; empty by default.
+export const TRUSTED_PROXY_IPS = getEnv("TRUSTED_PROXY_IPS", {
+  isRequired: false,
+  isSecret: false
+});
 
 export function getAppUrl() {
   if (VERCEL_ENV === "production" || NODE_ENV === "production") {

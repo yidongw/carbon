@@ -9,7 +9,6 @@ import {
   LOGIN_METHOD,
   magicLinkValidator,
   phoneLoginValidator,
-  RATE_LIMIT,
   safeRedirect
 } from "@carbon/auth";
 import {
@@ -17,6 +16,7 @@ import {
   signInWithBypassEmail,
   verifyAuthSession
 } from "@carbon/auth/auth.server";
+import { checkLoginRateLimit } from "@carbon/auth/rate-limit.server";
 import {
   clearAuthCookies,
   flash,
@@ -27,7 +27,6 @@ import {
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { sendVerificationCode } from "@carbon/auth/verification.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
-import { Ratelimit, redis } from "@carbon/kv";
 import {
   Alert,
   AlertDescription,
@@ -132,27 +131,21 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
-  const { success } = await ratelimit.limit(ip);
-
-  if (!success) {
-    return data(
-      error(null, "Rate limit exceeded"),
-      await flash(request, error(null, "Rate limit exceeded"))
-    );
-  }
-
   const validation = await validator(magicLinkValidator).validate(formData);
   if (validation.error) {
     return error(validation.error, "Invalid email address");
   }
 
   const { email, redirectTo } = validation.data;
+
+  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+  const allowed = await checkLoginRateLimit("email-login", email, ip);
+  if (!allowed) {
+    return data(
+      error(null, "Rate limit exceeded"),
+      await flash(request, error(null, "Rate limit exceeded"))
+    );
+  }
   const user = await getUserByEmail(email);
 
   if (user.data && user.data.active) {
