@@ -830,6 +830,96 @@ export async function getCuttingSplitProposal(
   };
 }
 
+export type UpdateBundleQuantityResult =
+  | { ok: true }
+  | {
+      ok: false;
+      reason: "not_found" | "cap" | "reported" | "save";
+      max?: number;
+      reported?: number;
+    };
+
+/**
+ * Update one existing bundle's target quantity (backing `job.quantity`) with the
+ * same cut-cap / reported-floor rules as Split Batch. Sibling bundles for the
+ * same variant SKU are included in the cap sum. When no cut cell exists for the
+ * variant (e.g. bundle created outside the cutting flow), only the reported
+ * floor is enforced.
+ */
+export async function updateBundleQuantity(
+  client: SupabaseClient<Database>,
+  input: {
+    bundleWorkOrderId: string;
+    quantity: number;
+    companyId: string;
+    updatedBy: string;
+  }
+): Promise<UpdateBundleQuantityResult> {
+  const bundle = await getBundleWorkOrder(
+    client,
+    input.bundleWorkOrderId,
+    input.companyId
+  );
+  if (bundle.error || !bundle.data?.jobId || !bundle.data.masterWorkOrderId) {
+    return { ok: false, reason: "not_found" };
+  }
+
+  const quantity = Number(input.quantity) || 0;
+  if (quantity < 0) {
+    return { ok: false, reason: "save" };
+  }
+
+  const masterWorkOrderId = bundle.data.masterWorkOrderId;
+  const jobId = bundle.data.jobId;
+  const variantItemId = cellKey(
+    (bundle.data as { itemId?: string | null }).itemId
+  );
+
+  const proposal = await getCuttingSplitProposal(
+    client,
+    masterWorkOrderId,
+    input.companyId
+  );
+
+  const existing = proposal.existingBundles.find(
+    (b) => b.id === input.bundleWorkOrderId
+  );
+  const reported = existing?.reportedQuantity ?? 0;
+  if (quantity < reported) {
+    return { ok: false, reason: "reported", reported };
+  }
+
+  const cutCell = proposal.cells.find(
+    (c) => cellKey(c.variantItemId) === variantItemId
+  );
+  if (cutCell) {
+    const siblingSum = proposal.existingBundles
+      .filter((b) => cellKey(b.variantItemId) === variantItemId)
+      .reduce(
+        (sum, b) =>
+          sum + (b.id === input.bundleWorkOrderId ? quantity : b.quantity),
+        0
+      );
+    if (siblingSum > cutCell.cut + 0.0001) {
+      return { ok: false, reason: "cap", max: cutCell.cut };
+    }
+  }
+
+  const jobUpdate = await client
+    .from("job")
+    .update({
+      quantity,
+      updatedBy: input.updatedBy,
+      updatedAt: new Date().toISOString()
+    })
+    .eq("id", jobId)
+    .eq("companyId", input.companyId);
+  if (jobUpdate.error) {
+    return { ok: false, reason: "save" };
+  }
+  return { ok: true };
+}
+
 /**
  * Save a reviewed/edited split: create new bundles (rows without an id, quantity
  * > 0) and update the quantity of existing bundles (rows with an id). Bundle

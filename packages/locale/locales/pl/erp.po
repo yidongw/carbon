@@ -174,6 +174,7 @@ msgid "5MB file limit"
 msgstr "Limit pliku 5MB"
 
 #. placeholder {0}: num("reported")
+#. placeholder {0}: result.reported ?? 0
 msgid "A bundle can't be set below its reported quantity ({0})"
 msgstr "Pakiet nie może być ustawiony poniżej jego ilości zgłoszonej ({0})"
 
@@ -707,6 +708,7 @@ msgid "An approval request already exists for this supplier"
 msgstr "Zażądanie zatwierdzenia już istnieje dla tego dostawcy"
 
 #. placeholder {0}: num("max")
+#. placeholder {0}: result.max ?? 0
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
 msgstr "Kombinacja atrybutów nie może przekroczyć ilości kroju (maks. {0})"
 
@@ -7617,6 +7619,9 @@ msgstr "Nie udało się zaktualizować płatności zamówienia zakupowego"
 
 msgid "Failed to update purchasing order status"
 msgstr "Nie udało się zaktualizować statusu zamówienia zakupów"
+
+msgid "Failed to update quantity"
+msgstr ""
 
 msgid "Failed to update question"
 msgstr "Nie udało się zaktualizować pytania"

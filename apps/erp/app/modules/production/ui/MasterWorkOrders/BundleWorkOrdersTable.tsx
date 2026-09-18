@@ -2,12 +2,13 @@ import {
   localizeStyleColorName,
   localizeStyleColorNameByName
 } from "@carbon/database/style-reference";
-import { Button, HStack, IconButton } from "@carbon/react";
+import { Button, HStack, IconButton, toast } from "@carbon/react";
+import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { MouseEvent } from "react";
-import { memo, useCallback, useMemo, useState } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   LuBookMarked,
   LuCirclePlay,
@@ -23,12 +24,13 @@ import {
   LuSplit,
   LuUser
 } from "react-icons/lu";
-import { useRevalidator } from "react-router";
+import { useFetcher, useRevalidator } from "react-router";
 import { Assignee, Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import type { BundleWorkOrder } from "~/modules/production";
+import type { BundleQuantityUpdateResult } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.quantity";
 import { usePeople, useStyles } from "~/stores";
 import { path } from "~/utils/path";
 import { jobStatus } from "../../production.models";
@@ -47,6 +49,134 @@ type BundleWorkOrdersTableProps = {
   // Hide the table's header row (title + toolbar) — e.g. inside a modal.
   withHeader?: boolean;
 };
+
+function quantityErrorMessage(
+  result: Extract<BundleQuantityUpdateResult, { ok: false }>,
+  i18n: { _: (descriptor: ReturnType<typeof msg>) => string }
+) {
+  switch (result.reason) {
+    case "cap":
+      return i18n._(
+        msg`An attribute combo can't exceed the cut quantity (max ${result.max ?? 0})`
+      );
+    case "reported":
+      return i18n._(
+        msg`A bundle can't be set below its reported quantity (${result.reported ?? 0})`
+      );
+    case "not_found":
+      return i18n._(msg`Bundle not found`);
+    default:
+      return i18n._(msg`Failed to update quantity`);
+  }
+}
+
+function BundleQuantityCell({
+  bundleWorkOrderId,
+  quantity,
+  canEdit
+}: {
+  bundleWorkOrderId: string;
+  quantity: number | null | undefined;
+  canEdit: boolean;
+}) {
+  const { i18n } = useLingui();
+  const revalidator = useRevalidator();
+  const fetcher = useFetcher<BundleQuantityUpdateResult>();
+  const serverQty = Number(quantity) || 0;
+  const [localQty, setLocalQty] = useState(serverQty);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(serverQty);
+  const isSubmitting = fetcher.state !== "idle";
+
+  useEffect(() => {
+    setLocalQty(serverQty);
+    setDraft(serverQty);
+  }, [serverQty]);
+
+  useEffect(() => {
+    if (fetcher.state !== "idle" || !fetcher.data) return;
+    if (fetcher.data.ok) {
+      revalidator.revalidate();
+      return;
+    }
+    setLocalQty(serverQty);
+    setDraft(serverQty);
+    toast.error(quantityErrorMessage(fetcher.data, i18n));
+  }, [fetcher.state, fetcher.data, serverQty, i18n, revalidator]);
+
+  const commit = useCallback(
+    (next: number) => {
+      if (!Number.isFinite(next) || next === localQty) {
+        setDraft(localQty);
+        setEditing(false);
+        return;
+      }
+      setLocalQty(next);
+      setEditing(false);
+      const formData = new FormData();
+      formData.append("quantity", String(next));
+      fetcher.submit(formData, {
+        method: "post",
+        action: path.to.api.bundleWorkOrderQuantity(bundleWorkOrderId)
+      });
+    },
+    [bundleWorkOrderId, localQty, fetcher]
+  );
+
+  if (!canEdit || !bundleWorkOrderId) {
+    return <span className="tabular-nums">{localQty}</span>;
+  }
+
+  if (editing) {
+    return (
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <input
+          type="number"
+          min={0}
+          className="h-8 w-20 rounded-md border bg-transparent px-2 text-sm tabular-nums focus:outline-none focus:ring-1"
+          value={draft}
+          disabled={isSubmitting}
+          autoFocus
+          onFocus={(e) => e.currentTarget.select()}
+          onChange={(e) => setDraft(Number(e.target.value) || 0)}
+          onBlur={() => commit(draft)}
+          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              // Blur commits once — avoid Enter + blur double-submit.
+              e.currentTarget.blur();
+            } else if (e.key === "Escape") {
+              e.preventDefault();
+              setDraft(localQty);
+              setEditing(false);
+            }
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="tabular-nums rounded px-1 -mx-1 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setDraft(localQty);
+        setEditing(true);
+      }}
+    >
+      {localQty}
+    </button>
+  );
+}
 
 const BundleWorkOrdersTable = memo(
   ({
@@ -67,6 +197,7 @@ const BundleWorkOrdersTable = memo(
       dateStyle: "medium",
       timeStyle: "short"
     });
+    const canUpdateQuantity = permissions.can("update", "production");
 
     const rows = useMemo(() => data, [data]);
 
@@ -173,7 +304,16 @@ const BundleWorkOrdersTable = memo(
         {
           accessorKey: "quantity",
           header: t`Quantity`,
-          cell: ({ row }) => row.original.quantity,
+          cell: ({ row }) =>
+            row.original.id ? (
+              <BundleQuantityCell
+                bundleWorkOrderId={row.original.id}
+                quantity={row.original.quantity}
+                canEdit={canUpdateQuantity}
+              />
+            ) : (
+              <span className="tabular-nums">{row.original.quantity ?? 0}</span>
+            ),
           meta: { icon: <LuHash /> }
         },
         {
@@ -363,7 +503,8 @@ const BundleWorkOrdersTable = memo(
       dateFormatter,
       openProcesses,
       rows,
-      masterWorkOrderId
+      masterWorkOrderId,
+      canUpdateQuantity
     ]);
 
     return (

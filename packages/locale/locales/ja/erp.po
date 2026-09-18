@@ -174,6 +174,7 @@ msgid "5MB file limit"
 msgstr "5MBファイル制限"
 
 #. placeholder {0}: num("reported")
+#. placeholder {0}: result.reported ?? 0
 msgid "A bundle can't be set below its reported quantity ({0})"
 msgstr "1個分が報告数量（{0}）以下に設定することはできません"
 
@@ -707,6 +708,7 @@ msgid "An approval request already exists for this supplier"
 msgstr "このサプライヤーに対する承認リクエストが既に存在します"
 
 #. placeholder {0}: num("max")
+#. placeholder {0}: result.max ?? 0
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
 msgstr "属性の組み合わせは裁断数量を超えてはいけません（最大 {0}）"
 
@@ -7617,6 +7619,9 @@ msgstr "購入注文の支払いを更新できませんでした"
 
 msgid "Failed to update purchasing order status"
 msgstr "購入注文のステータス更新に失敗しました"
+
+msgid "Failed to update quantity"
+msgstr ""
 
 msgid "Failed to update question"
 msgstr "更新に失敗しました"
