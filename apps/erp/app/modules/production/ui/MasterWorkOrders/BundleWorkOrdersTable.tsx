@@ -2,13 +2,13 @@ import {
   localizeStyleColorName,
   localizeStyleColorNameByName
 } from "@carbon/database/style-reference";
-import { Button, HStack, IconButton, toast } from "@carbon/react";
+import { Button, HStack, IconButton, Spinner, toast } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { KeyboardEvent, MouseEvent } from "react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LuBookMarked,
   LuCirclePlay,
@@ -87,23 +87,57 @@ function BundleQuantityCell({
   const [localQty, setLocalQty] = useState(serverQty);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(serverQty);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const baselineQty = useRef(serverQty);
+  const pendingQty = useRef<number | null>(null);
+  const handledDataRef = useRef<typeof fetcher.data>(undefined);
   const isSubmitting = fetcher.state !== "idle";
 
   useEffect(() => {
+    // Don't clobber an in-flight optimistic value with stale props.
+    if (isSubmitting || pendingQty.current !== null) return;
     setLocalQty(serverQty);
     setDraft(serverQty);
-  }, [serverQty]);
+    baselineQty.current = serverQty;
+  }, [serverQty, isSubmitting]);
 
   useEffect(() => {
-    if (fetcher.state !== "idle" || !fetcher.data) return;
+    if (fetcher.state !== "idle") return;
+
+    // Network / non-JSON failure: no structured payload, but we still have a
+    // pending optimistic edit to undo.
+    if (!fetcher.data) {
+      if (pendingQty.current === null) return;
+      pendingQty.current = null;
+      const message = i18n._(msg`Failed to update quantity`);
+      setLocalQty(baselineQty.current);
+      setDraft(baselineQty.current);
+      setErrorMessage(message);
+      toast.error(message);
+      return;
+    }
+
+    // Handle each response once — fetcher.data stays until the next submit.
+    if (handledDataRef.current === fetcher.data) return;
+    handledDataRef.current = fetcher.data;
+
     if (fetcher.data.ok) {
+      setErrorMessage(null);
+      if (pendingQty.current !== null) {
+        baselineQty.current = pendingQty.current;
+      }
+      pendingQty.current = null;
       revalidator.revalidate();
       return;
     }
-    setLocalQty(serverQty);
-    setDraft(serverQty);
-    toast.error(quantityErrorMessage(fetcher.data, i18n));
-  }, [fetcher.state, fetcher.data, serverQty, i18n, revalidator]);
+
+    const message = quantityErrorMessage(fetcher.data, i18n);
+    pendingQty.current = null;
+    setLocalQty(baselineQty.current);
+    setDraft(baselineQty.current);
+    setErrorMessage(message);
+    toast.error(message);
+  }, [fetcher.state, fetcher.data, i18n, revalidator]);
 
   const commit = useCallback(
     (next: number) => {
@@ -112,6 +146,9 @@ function BundleQuantityCell({
         setEditing(false);
         return;
       }
+      setErrorMessage(null);
+      baselineQty.current = localQty;
+      pendingQty.current = next;
       setLocalQty(next);
       setEditing(false);
       const formData = new FormData();
@@ -128,10 +165,12 @@ function BundleQuantityCell({
     (e: MouseEvent) => {
       e.stopPropagation();
       e.preventDefault();
+      if (isSubmitting) return;
+      setErrorMessage(null);
       setDraft(localQty);
       setEditing(true);
     },
-    [localQty]
+    [localQty, isSubmitting]
   );
 
   if (!canEdit || !bundleWorkOrderId) {
@@ -174,17 +213,34 @@ function BundleQuantityCell({
   }
 
   return (
-    <HStack spacing={1}>
-      <span className="tabular-nums">{localQty}</span>
-      <IconButton
-        type="button"
-        icon={<LuSlidersHorizontal size="1em" strokeWidth={2.5} />}
-        aria-label={t`Edit quantity`}
-        size="sm"
-        variant="secondary"
-        onClick={startEditing}
-      />
-    </HStack>
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <HStack spacing={1}>
+        <span
+          className={
+            errorMessage ? "tabular-nums text-destructive" : "tabular-nums"
+          }
+        >
+          {localQty}
+        </span>
+        {isSubmitting ? (
+          <Spinner className="h-4 w-4" />
+        ) : (
+          <IconButton
+            type="button"
+            icon={<LuSlidersHorizontal size="1em" strokeWidth={2.5} />}
+            aria-label={t`Edit quantity`}
+            size="sm"
+            variant="secondary"
+            onClick={startEditing}
+          />
+        )}
+      </HStack>
+      {errorMessage ? (
+        <span className="text-[11px] leading-tight text-destructive max-w-[12rem]">
+          {errorMessage}
+        </span>
+      ) : null}
+    </div>
   );
 }
 

@@ -913,8 +913,11 @@ export async function updateBundleQuantity(
       updatedAt: new Date().toISOString()
     })
     .eq("id", jobId)
-    .eq("companyId", input.companyId);
-  if (jobUpdate.error) {
+    .eq("companyId", input.companyId)
+    // Require a returned row — RLS / miss can "succeed" with 0 rows and no error.
+    .select("id")
+    .maybeSingle();
+  if (jobUpdate.error || !jobUpdate.data?.id) {
     return { ok: false, reason: "save" };
   }
   return { ok: true };
