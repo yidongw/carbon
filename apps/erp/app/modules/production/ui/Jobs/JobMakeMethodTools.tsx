@@ -45,6 +45,7 @@ import { Link, useFetcher, useLocation, useParams } from "react-router";
 import { PrintButton } from "~/components";
 import { ConfiguratorModal } from "~/components/Configurator/ConfiguratorForm";
 import { Hidden, Item, Submit, useConfigurableItems } from "~/components/Form";
+import ScrollFadeGroup from "~/components/ScrollFadeGroup";
 import type { Tree } from "~/components/TreeView";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import {
@@ -235,9 +236,9 @@ const JobMakeMethodTools = ({ makeMethod }: { makeMethod?: JobMakeMethod }) => {
     <Fragment key={jobId}>
       {permissions.can("update", "production") &&
         (isJobMethod || isJobMakeMethod) && (
-          <Menubar className="overflow-x-auto overscroll-x-contain">
-            <HStack className="w-full justify-start">
-              <HStack spacing={0}>
+          <Menubar>
+            <ScrollFadeGroup>
+              <HStack spacing={0} className="w-max">
                 <MenubarItem
                   isLoading={isGetMethodLoading}
                   isDisabled={isDisabled || isGetMethodLoading}
@@ -298,7 +299,7 @@ const JobMakeMethodTools = ({ makeMethod }: { makeMethod?: JobMakeMethod }) => {
                     />
                   )}
               </HStack>
-            </HStack>
+            </ScrollFadeGroup>
           </Menubar>
         )}
       {getMethodModal.isOpen && (

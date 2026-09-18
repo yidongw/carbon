@@ -17,7 +17,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   generateHTML,
-  HStack,
   IconButton,
   Popover,
   PopoverContent,
@@ -47,6 +46,7 @@ import { useFetchers, useParams, useSubmit } from "react-router";
 import { Assignee } from "~/components";
 import { useProcesses } from "~/components/Form/Process";
 import { IssueTaskStatusIcon } from "~/components/Icons";
+import ScrollFadeGroup from "~/components/ScrollFadeGroup";
 import SupplierAvatar from "~/components/SupplierAvatar";
 import {
   useDateFormatter,
@@ -323,6 +323,31 @@ export function TaskItem({
     taskTitle = `Supplier ${taskTitle}`;
   }
 
+  // Due date, processes and supplier are secondary metadata: they sit inline on
+  // the footer's single scrollable row (which scrolls horizontally when too
+  // narrow) rather than collapsing behind a "More" menu or wrapping onto extra
+  // lines — keeping the Start/Complete action pinned on the right.
+  const secondaryControls =
+    type === "action" ? (
+      <>
+        <TaskDueDate task={task as IssueActionTask} isDisabled={isDisabled} />
+        <TaskProcesses task={task as IssueActionTask} isDisabled={isDisabled} />
+        <SupplierAssignment
+          task={task as IssueActionTask}
+          type={type}
+          supplierIds={suppliers.map((s) => s.supplierId)}
+          isDisabled={isDisabled}
+        />
+      </>
+    ) : type === "investigation" ? (
+      <SupplierAssignment
+        task={task as IssueActionTask}
+        type={type}
+        supplierIds={suppliers.map((s) => s.supplierId)}
+        isDisabled={isDisabled}
+      />
+    ) : null;
+
   return (
     <div className="rounded-lg border w-full flex flex-col bg-card">
       <div className="flex w-full justify-between px-4 py-2 items-center">
@@ -396,54 +421,36 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex justify-between items-center gap-2 w-full">
-        <HStack className="min-w-0 flex-1 overflow-x-auto">
-          <IssueTaskStatus
-            task={task}
-            type="investigation"
-            isDisabled={isDisabled}
-          />
-          <Assignee
-            table={getTable(type)}
-            id={task.id}
-            size="sm"
-            value={task.assignee ?? undefined}
-            disabled={isDisabled}
-          />
-          {type === "action" && (
-            <>
-              <TaskDueDate
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
-              />
-              <TaskProcesses
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
-              />
-            </>
-          )}
-          {(type === "investigation" || type === "action") && (
-            <SupplierAssignment
-              task={task as IssueActionTask}
-              type={type}
-              supplierIds={suppliers.map((s) => s.supplierId)}
+      <div className="bg-muted/30 border-t px-4 py-2 flex items-center justify-between gap-2 w-full">
+        <ScrollFadeGroup>
+          <div className="flex items-center gap-2 w-max">
+            <IssueTaskStatus
+              task={task}
+              type="investigation"
               isDisabled={isDisabled}
             />
-          )}
-        </HStack>
-        <HStack className="shrink-0">
-          <Button
-            isDisabled={isDisabled}
-            leftIcon={statusAction.icon}
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              onOperationStatusChange(task.id!, statusAction.status);
-            }}
-          >
-            {statusAction.action}
-          </Button>
-        </HStack>
+            <Assignee
+              table={getTable(type)}
+              id={task.id}
+              size="sm"
+              value={task.assignee ?? undefined}
+              disabled={isDisabled}
+            />
+            {secondaryControls}
+          </div>
+        </ScrollFadeGroup>
+        <Button
+          className="shrink-0"
+          isDisabled={isDisabled}
+          leftIcon={statusAction.icon}
+          variant="secondary"
+          size="sm"
+          onClick={() => {
+            onOperationStatusChange(task.id!, statusAction.status);
+          }}
+        >
+          {statusAction.action}
+        </Button>
       </div>
     </div>
   );

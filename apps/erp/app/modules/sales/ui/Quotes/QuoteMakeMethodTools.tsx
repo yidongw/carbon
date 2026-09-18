@@ -44,6 +44,7 @@ import { RiProgress4Line } from "react-icons/ri";
 import { Link, useFetcher, useLocation, useParams } from "react-router";
 import { ConfiguratorModal } from "~/components/Configurator/ConfiguratorForm";
 import { Hidden, Item, Submit, useConfigurableItems } from "~/components/Form";
+import ScrollFadeGroup from "~/components/ScrollFadeGroup";
 import type { Tree } from "~/components/TreeView";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import {
@@ -241,8 +242,8 @@ const QuoteMakeMethodTools = () => {
         permissions.can("update", "sales") &&
         (isQuoteLineMethod || isQuoteMakeMethod) && (
           <Menubar>
-            <HStack className="w-full justify-start">
-              <HStack spacing={0}>
+            <ScrollFadeGroup>
+              <HStack spacing={0} className="w-max">
                 <MenubarItem
                   isLoading={isGetMethodLoading}
                   isDisabled={isGetMethodLoading}
@@ -284,7 +285,7 @@ const QuoteMakeMethodTools = () => {
                   </MenubarItem>
                 )}
               </HStack>
-            </HStack>
+            </ScrollFadeGroup>
           </Menubar>
         )}
       {getMethodModal.isOpen && (
