@@ -223,20 +223,22 @@ const ShipmentForm = ({
                     onCreateInvoice={createInvoice}
                   />
                 )}
+              </>
+            }
+            primaryAction={
+              // Only surface Post while it's a relevant action. Once the
+              // shipment is posted/voided (or the user can't post) it would
+              // just be a greyed-out button taking up space, so drop it.
+              !isPosted && !isVoided && permissions.is("employee") ? (
                 <Button
-                  variant={!isPosted && !isVoided ? "primary" : "secondary"}
+                  variant="primary"
                   onClick={postModal.onOpen}
-                  isDisabled={
-                    !canPost ||
-                    isPosted ||
-                    isVoided ||
-                    !permissions.is("employee")
-                  }
+                  isDisabled={!canPost}
                   leftIcon={<LuCheckCheck />}
                 >
                   <Trans>Post</Trans>
                 </Button>
-              </>
+              ) : undefined
             }
           />
 
