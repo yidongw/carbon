@@ -177,6 +177,9 @@ msgstr "Zarejestrowano zasób pomyślnie"
 msgid "Assigned"
 msgstr "Przypisane"
 
+msgid "Assigned At"
+msgstr ""
+
 msgid "Assigned to Me"
 msgstr "Przypisane do mnie"
 

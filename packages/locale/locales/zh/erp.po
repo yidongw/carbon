@@ -103,6 +103,9 @@ msgstr "{0} 张标签中 {failed} 张失败"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed}/{0} 张标签打印失败"
 
+msgid "{leftToCut} left to cut"
+msgstr "剩余 {leftToCut} 待裁切"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
 
@@ -114,6 +117,9 @@ msgstr "{name} 已删除"
 
 msgid "{remaining} left"
 msgstr "剩余{remaining}"
+
+msgid "{remainingToSplit} left to split"
+msgstr "剩余 {remainingToSplit} 待分包"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 个权限"
@@ -13957,6 +13963,9 @@ msgstr "拆分收款行"
 
 msgid "Split Receipt Line"
 msgstr "拆分收款行"
+
+msgid "Split remaining"
+msgstr "分包剩余"
 
 msgid "Split shipment line"
 msgstr "拆分运输单行"

@@ -103,6 +103,9 @@ msgstr "{0} में से {failed} लेबल विफल"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} टिकटों में से {failed} विफल रहे"
 
+msgid "{leftToCut} left to cut"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
 
@@ -114,6 +117,9 @@ msgstr "{name} की हटाई गई है"
 
 msgid "{remaining} left"
 msgstr "काम में शेष {remaining}"
+
+msgid "{remainingToSplit} left to split"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} अनुमतियाँ"
@@ -13937,6 +13943,9 @@ msgstr "बैच विभाजित करें"
 msgid "Split failed"
 msgstr "सारणी विभाजन वा"
 
+msgid "Split into bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "लाइन को विभाजित करें"
 
@@ -13954,6 +13963,9 @@ msgstr "रसीद लाइन को विभाजित करें"
 
 msgid "Split Receipt Line"
 msgstr "विभाजन रिसेप्ट लाइन"
+
+msgid "Split remaining"
+msgstr ""
 
 msgid "Split shipment line"
 msgstr "शिपमेंट लाइन को विभाजित करें"

@@ -103,6 +103,9 @@ msgstr "Не удалось напечатать {failed} из {0} этикет�
 msgid "{failed} of {0} tickets failed"
 msgstr "Не удалось напечатать {failed} из {0} ярлыков"
 
+msgid "{leftToCut} left to cut"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}МБ максимум"
 
@@ -114,6 +117,9 @@ msgstr "{name} удалён"
 
 msgid "{remaining} left"
 msgstr "Осталось {remaining}"
+
+msgid "{remainingToSplit} left to split"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} разрешений"
@@ -13937,6 +13943,9 @@ msgstr "Разделить партию"
 msgid "Split failed"
 msgstr "Разделение не удалось"
 
+msgid "Split into bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "Разделить строку"
 
@@ -13954,6 +13963,9 @@ msgstr "Разделить строку приемки"
 
 msgid "Split Receipt Line"
 msgstr "Разделить строку чека"
+
+msgid "Split remaining"
+msgstr ""
 
 msgid "Split shipment line"
 msgstr "Разделить строку отправки"

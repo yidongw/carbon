@@ -82,7 +82,10 @@ export default function MasterWorkOrderBundlesOverlay({
                   )
                 }
               >
-                <Trans>Split remaining ({remainingToSplit})</Trans>
+                {/* Keep the count outside <Trans> so a missing catalog entry
+                    still shows the number (hash-only labels hide it). */}
+                <Trans>Split remaining</Trans>
+                {` (${remainingToSplit})`}
               </Button>
             ) : null}
           </div>

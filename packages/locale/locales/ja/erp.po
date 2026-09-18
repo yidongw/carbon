@@ -103,6 +103,9 @@ msgstr "{0} 枚中 {failed} 枚のラベル印刷に失敗"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} 枚中 {failed} 枚の印刷に失敗しました"
 
+msgid "{leftToCut} left to cut"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
 
@@ -114,6 +117,9 @@ msgstr "{name} を削除しました"
 
 msgid "{remaining} left"
 msgstr "残り{remaining}"
+
+msgid "{remainingToSplit} left to split"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 個の権限"
@@ -13937,6 +13943,9 @@ msgstr "バッチを分割"
 msgid "Split failed"
 msgstr "分割失敗"
 
+msgid "Split into bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "ラインを分割"
 
@@ -13954,6 +13963,9 @@ msgstr "領収書行を分割"
 
 msgid "Split Receipt Line"
 msgstr "受領明細分割"
+
+msgid "Split remaining"
+msgstr ""
 
 msgid "Split shipment line"
 msgstr "出荷ラインを分割"

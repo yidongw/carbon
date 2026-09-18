@@ -70,6 +70,8 @@ type MasterWorkOrdersTableProps = {
   count: number;
   itemIdsWithConfigurationParameters: string[];
   bundleCountByMasterId: Record<string, number>;
+  /** Cut pieces not yet in a bundle (cut − bundled). Drives the scissors badge. */
+  remainingToSplitByMasterId: Record<string, number>;
   processCountByMasterId: Record<string, number>;
   cuttingProgressByMasterId: Record<string, MasterCuttingProgress>;
 };
@@ -80,6 +82,7 @@ const MasterWorkOrdersTable = memo(
     count,
     itemIdsWithConfigurationParameters,
     bundleCountByMasterId,
+    remainingToSplitByMasterId,
     processCountByMasterId,
     cuttingProgressByMasterId
   }: MasterWorkOrdersTableProps) => {
@@ -285,11 +288,21 @@ const MasterWorkOrdersTable = memo(
             const bundleCount = row.original.id
               ? (bundleCountByMasterId[row.original.id] ?? 0)
               : 0;
-            // How much of the plan is still uncut (plan − cut). Shown next to the
-            // bundle count so a partially-cut master reads "N bundles · M to cut".
+            // Prefer cut-but-not-bundled (actionable "split remaining"); fall
+            // back to plan−cut when nothing is cut yet so an unstarted master
+            // still reads "N left to cut".
+            const remainingToSplit = row.original.id
+              ? (remainingToSplitByMasterId[row.original.id] ?? 0)
+              : 0;
             const leftToCut = row.original.id
               ? (cuttingProgressByMasterId[row.original.id]?.remaining ?? 0)
               : 0;
+            const scissorsQty =
+              remainingToSplit > 0 ? remainingToSplit : leftToCut;
+            const scissorsTitle =
+              remainingToSplit > 0
+                ? t`${remainingToSplit} left to split`
+                : t`${leftToCut} left to cut`;
             return (
               <HStack spacing={1}>
                 <span className="tabular-nums">{bundleCount}</span>
@@ -317,13 +330,13 @@ const MasterWorkOrdersTable = memo(
                     />
                   )
                 ) : null}
-                {leftToCut > 0 ? (
+                {scissorsQty > 0 ? (
                   <span
                     className="ml-1 inline-flex items-center gap-0.5 text-muted-foreground tabular-nums"
-                    title={t`${leftToCut} left to cut`}
+                    title={scissorsTitle}
                   >
                     <LuScissors className="h-3 w-3" />
-                    {leftToCut}
+                    {scissorsQty}
                   </span>
                 ) : null}
               </HStack>
@@ -684,6 +697,7 @@ const MasterWorkOrdersTable = memo(
       openVariantsQuantity,
       canUpdateProduction,
       bundleCountByMasterId,
+      remainingToSplitByMasterId,
       openBundles,
       openSplitBatch,
       processCountByMasterId,

@@ -177,6 +177,9 @@ msgstr "Asset registered successfully"
 msgid "Assigned"
 msgstr "Assigned"
 
+msgid "Assigned At"
+msgstr "Assigned At"
+
 msgid "Assigned to Me"
 msgstr "Assigned to Me"
 

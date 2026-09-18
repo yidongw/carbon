@@ -103,6 +103,9 @@ msgstr "{failed} von {0} Etiketten fehlgeschlagen"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} von {0} Tickets fehlgeschlagen"
 
+msgid "{leftToCut} left to cut"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB-Limit"
 
@@ -114,6 +117,9 @@ msgstr "{name} gelöscht"
 
 msgid "{remaining} left"
 msgstr "{remaining} übrig"
+
+msgid "{remainingToSplit} left to split"
+msgstr ""
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} Berechtigungen"
@@ -13937,6 +13943,9 @@ msgstr "Charge aufteilen"
 msgid "Split failed"
 msgstr "Teilung fehlgeschlagen"
 
+msgid "Split into bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "Zeile teilen"
 
@@ -13954,6 +13963,9 @@ msgstr "Beleg-Position aufteilen"
 
 msgid "Split Receipt Line"
 msgstr "Teile Auftragszeile"
+
+msgid "Split remaining"
+msgstr ""
 
 msgid "Split shipment line"
 msgstr "Versandzeile teilen"

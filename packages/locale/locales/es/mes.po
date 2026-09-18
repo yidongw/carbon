@@ -177,6 +177,9 @@ msgstr "Activo registrado con éxito"
 msgid "Assigned"
 msgstr "Asignado"
 
+msgid "Assigned At"
+msgstr ""
+
 msgid "Assigned to Me"
 msgstr "Asignado a mí"
 
