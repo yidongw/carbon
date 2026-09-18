@@ -65,6 +65,9 @@ export default function Functions() {
     picking: '/pages/picking/index',
     addInventory: '/pages/inventory/adjust?mode=add',
     removeInventory: '/pages/inventory/adjust?mode=remove',
+    maintenance: '/pages/maintenance/index',
+    suggestion: '/pages/suggestion/index',
+    endShift: '/pages/end-shift/index',
   }
 
   const onItem = (key: string) => {

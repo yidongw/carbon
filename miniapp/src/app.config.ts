@@ -14,6 +14,9 @@ export default defineAppConfig({
     'pages/picking/index',
     'pages/picking/detail',
     'pages/inventory/adjust',
+    'pages/maintenance/index',
+    'pages/suggestion/index',
+    'pages/end-shift/index',
   ],
   window: {
     backgroundTextStyle: 'light',

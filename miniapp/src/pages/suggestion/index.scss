@@ -1,0 +1,122 @@
+page {
+  background: #f3f5f9;
+}
+
+.sug {
+  padding: 16px 24px 60px;
+
+  &__card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 10px 28px rgba(31, 45, 74, 0.05);
+  }
+
+  &__input {
+    width: 100%;
+    min-height: 220px;
+    font-size: 28px;
+    color: #1a2233;
+    line-height: 1.5;
+  }
+
+  &__row {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__anon {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__check {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--on {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+  }
+
+  &__check-t {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  &__anon-t {
+    font-size: 26px;
+    color: #1a2233;
+  }
+
+  &__emojis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__emoji {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: #f3f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--on {
+      background: #fff1e0;
+      border: 2px solid #ea8a12;
+    }
+  }
+
+  &__emoji-t {
+    font-size: 32px;
+  }
+
+  &__actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+  }
+
+  &__btn {
+    flex: 1;
+    height: 80px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--ghost {
+      background: #f3f5f9;
+    }
+    &--primary {
+      background: #2563eb;
+      flex: 1.4;
+    }
+    &--disabled {
+      opacity: 0.45;
+    }
+  }
+
+  &__btn-t {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2233;
+
+    &--w {
+      color: #ffffff;
+    }
+  }
+}
