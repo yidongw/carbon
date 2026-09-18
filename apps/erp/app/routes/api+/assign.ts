@@ -63,10 +63,11 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     if (table === "job") {
-      // If this job is a Bundle Work Order, mirror the assignee down onto its
-      // operations. The MES report reads the operation-level assignee
-      // (jobOperation.assignee), so without this the bundle's 负责人 change
-      // would never show up there.
+      // If this job is a Bundle Work Order with a SINGLE operation, mirror the
+      // assignee down onto that one operation so the MES report (which reads
+      // the operation-level jobOperation.assignee) reflects the bundle's 负责人.
+      // Bundles with multiple operations are assigned per-process, so we leave
+      // their operation assignees untouched.
       const bundle = await client
         .from("bundleWorkOrder")
         .select("id")
@@ -74,15 +75,23 @@ export async function action({ request }: ActionFunctionArgs) {
         .eq("companyId", companyId)
         .maybeSingle();
       if (bundle.data) {
-        await client
+        const operations = await client
           .from("jobOperation")
-          .update({
-            assignee: assignee ? assignee : null,
-            assignedAt: assignee ? new Date().toISOString() : null,
-            updatedBy: userId
-          })
+          .select("id")
           .eq("jobId", id)
           .eq("companyId", companyId);
+        const bundleOperations = operations.data ?? [];
+        if (bundleOperations.length === 1) {
+          await client
+            .from("jobOperation")
+            .update({
+              assignee: assignee ? assignee : null,
+              assignedAt: assignee ? new Date().toISOString() : null,
+              updatedBy: userId
+            })
+            .eq("id", bundleOperations[0].id)
+            .eq("companyId", companyId);
+        }
       }
     }
 
