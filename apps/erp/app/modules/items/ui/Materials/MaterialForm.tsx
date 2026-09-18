@@ -13,7 +13,7 @@ import {
 } from "@carbon/react";
 import { getMaterialDescription, getMaterialId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { PostgrestResponse } from "@supabase/supabase-js";
+import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
@@ -53,6 +53,8 @@ type MaterialFormProps = {
   initialValues: z.infer<typeof materialValidator> & { tags?: string[] };
   type?: "card" | "modal";
   onClose?: () => void;
+  /** Fired after a successful modal create with the new item's id. */
+  onCreated?: (id: string) => void;
 };
 
 function startsWithLetter(value: string) {
@@ -62,7 +64,8 @@ function startsWithLetter(value: string) {
 const MaterialForm = ({
   initialValues,
   type = "card",
-  onClose
+  onClose,
+  onCreated
 }: MaterialFormProps) => {
   const { t } = useLingui();
   const [materialId, setMaterialId] = useState(initialValues.id ?? "");
@@ -87,7 +90,7 @@ const MaterialForm = ({
   const { company } = useUser();
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
-  const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const fetcher = useFetcher<PostgrestSingleResponse<{ id: string }>>();
   const materialTypes = useMaterialTypes(substanceId, formId);
   const substance = useSubstance();
   const shape = useShape();
@@ -101,12 +104,13 @@ const MaterialForm = ({
     if (type !== "modal") return;
 
     if (fetcher.state === "loading" && fetcher.data?.data) {
-      onClose?.();
+      if (onCreated) onCreated(fetcher.data.data.id);
+      else onClose?.();
       toast.success(t`Created material`);
     } else if (fetcher.state === "idle" && fetcher.data?.error) {
       toast.error(t`Failed to create material: ${fetcher.data.error.message}`);
     }
-  }, [fetcher.data, fetcher.state, onClose, type, t]);
+  }, [fetcher.data, fetcher.state, onClose, onCreated, type, t]);
 
   const { id, onIdChange, loading } = useNextItemId("Material");
 

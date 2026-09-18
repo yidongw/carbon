@@ -21,7 +21,7 @@ import {
   supportedModelTypes
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { PostgrestResponse } from "@supabase/supabase-js";
+import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
@@ -59,6 +59,8 @@ type ToolFormProps = {
   initialValues: z.infer<typeof toolValidator> & { tags: string[] };
   type?: "card" | "modal";
   onClose?: () => void;
+  /** Fired after a successful modal create with the new item's id. */
+  onCreated?: (id: string) => void;
 };
 
 const SIZE_LIMIT = getFileSizeLimit("CAD_MODEL_UPLOAD");
@@ -67,12 +69,17 @@ function startsWithLetter(value: string) {
   return /^[A-Za-z]/.test(value);
 }
 
-const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
+const ToolForm = ({
+  initialValues,
+  type = "card",
+  onClose,
+  onCreated
+}: ToolFormProps) => {
   const { t } = useLingui();
   const { company } = useUser();
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
-  const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const fetcher = useFetcher<PostgrestSingleResponse<{ id: string }>>();
 
   const [modelUploadId, setModelUploadId] = useState<string | null>(null);
   const [modelIsUploading, setModelIsUploading] = useState(false);
@@ -168,12 +175,13 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
     if (type !== "modal") return;
 
     if (fetcher.state === "loading" && fetcher.data?.data) {
-      onClose?.();
+      if (onCreated) onCreated(fetcher.data.data.id);
+      else onClose?.();
       toast.success(t`Created tool`);
     } else if (fetcher.state === "idle" && fetcher.data?.error) {
       toast.error(t`Failed to create tool: ${fetcher.data.error.message}`);
     }
-  }, [fetcher.data, fetcher.state, onClose, type, t]);
+  }, [fetcher.data, fetcher.state, onClose, onCreated, type, t]);
 
   const { id, onIdChange, loading } = useNextItemId("Tool");
   const permissions = usePermissions();
