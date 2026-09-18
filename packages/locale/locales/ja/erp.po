@@ -12090,6 +12090,9 @@ msgstr "この作業に割り当てられたまたは受け取った数量。"
 msgid "Quantity Completed"
 msgstr "完了数量"
 
+msgid "Quantity did not save. Try again or use Split Batch."
+msgstr ""
+
 msgid "Quantity finished and reported for this operation."
 msgstr "この作業で完了且つ報告された数量。"
 

@@ -12090,6 +12090,9 @@ msgstr "为该操作分配或领取的数量。"
 msgid "Quantity Completed"
 msgstr "已完成数量"
 
+msgid "Quantity did not save. Try again or use Split Batch."
+msgstr ""
+
 msgid "Quantity finished and reported for this operation."
 msgstr "已完成并报告的本工序数量。"
 

@@ -855,8 +855,11 @@ export async function updateBundleQuantity(
     quantity: number;
     companyId: string;
     updatedBy: string;
-  }
+  },
+  // Optional privileged client for the write/verify (bypasses RLS no-ops).
+  writeClient?: SupabaseClient<Database>
 ): Promise<UpdateBundleQuantityResult> {
+  const writer = writeClient ?? client;
   const bundle = await getBundleWorkOrder(
     client,
     input.bundleWorkOrderId,
@@ -918,9 +921,9 @@ export async function updateBundleQuantity(
     }
   }
 
-  // Same write shape as saveBundleSplit (no RETURNING) — chaining .select()
-  // after update has been observed to fail even when the row was written.
-  const jobUpdate = await client
+  // Same write shape as saveBundleSplit (no RETURNING). Prefer service-role
+  // writer when provided so a permission edge-case can't silently no-op.
+  const jobUpdate = await writer
     .from("job")
     .update({
       quantity,
@@ -937,7 +940,7 @@ export async function updateBundleQuantity(
     };
   }
 
-  const verify = await client
+  const verify = await writer
     .from("job")
     .select("quantity")
     .eq("id", jobId)

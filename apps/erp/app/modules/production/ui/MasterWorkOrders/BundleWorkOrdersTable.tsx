@@ -75,6 +75,23 @@ function quantityErrorMessage(
   }
 }
 
+/** Survives cell remount when the overlay reloads after a mutation. */
+const quantityEditErrors = new Map<string, string>();
+const quantityEditPending = new Map<string, number>();
+
+function reportQuantityError(bundleWorkOrderId: string, message: string) {
+  quantityEditErrors.set(bundleWorkOrderId, message);
+  quantityEditPending.delete(bundleWorkOrderId);
+  // Modal top-layer often hides Sonner toasts — console + alert guarantee visibility.
+  console.error("[bundle-qty]", bundleWorkOrderId, message);
+  toast.error(message);
+  window.alert(message);
+}
+
+function clearQuantityError(bundleWorkOrderId: string) {
+  quantityEditErrors.delete(bundleWorkOrderId);
+}
+
 function BundleQuantityCell({
   bundleWorkOrderId,
   quantity,
@@ -88,22 +105,53 @@ function BundleQuantityCell({
   const revalidator = useRevalidator();
   const fetcher = useFetcher<BundleQuantityUpdateResult>();
   const serverQty = Number(quantity) || 0;
-  const [localQty, setLocalQty] = useState(serverQty);
+  const initialPending = quantityEditPending.get(bundleWorkOrderId);
+  const [localQty, setLocalQty] = useState(initialPending ?? serverQty);
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(serverQty);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [draft, setDraft] = useState(initialPending ?? serverQty);
+  const [errorMessage, setErrorMessage] = useState<string | null>(
+    () => quantityEditErrors.get(bundleWorkOrderId) ?? null
+  );
   const baselineQty = useRef(serverQty);
-  const pendingQty = useRef<number | null>(null);
+  const pendingQty = useRef<number | null>(initialPending ?? null);
   const handledDataRef = useRef<typeof fetcher.data>(undefined);
+  const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSubmitting = fetcher.state !== "idle";
 
   useEffect(() => {
-    // Don't clobber an in-flight optimistic value with stale props.
-    if (isSubmitting || pendingQty.current !== null) return;
+    return () => {
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isSubmitting) return;
+
+    const pending =
+      pendingQty.current ?? quantityEditPending.get(bundleWorkOrderId) ?? null;
+
+    // Keep optimistic qty until the overlay/list actually reflects the write.
+    // Clearing pending too early lets a stale overlay reload silently revert.
+    if (pending !== null) {
+      pendingQty.current = pending;
+      if (serverQty === pending) {
+        pendingQty.current = null;
+        quantityEditPending.delete(bundleWorkOrderId);
+        baselineQty.current = serverQty;
+        setLocalQty(serverQty);
+        setDraft(serverQty);
+        clearQuantityError(bundleWorkOrderId);
+        setErrorMessage(null);
+      } else {
+        setLocalQty(pending);
+      }
+      return;
+    }
+
     setLocalQty(serverQty);
     setDraft(serverQty);
     baselineQty.current = serverQty;
-  }, [serverQty, isSubmitting]);
+  }, [serverQty, isSubmitting, bundleWorkOrderId]);
 
   useEffect(() => {
     if (fetcher.state !== "idle") return;
@@ -113,11 +161,12 @@ function BundleQuantityCell({
     if (!fetcher.data) {
       if (pendingQty.current === null) return;
       pendingQty.current = null;
+      quantityEditPending.delete(bundleWorkOrderId);
       const message = i18n._(msg`Failed to update quantity`);
       setLocalQty(baselineQty.current);
       setDraft(baselineQty.current);
       setErrorMessage(message);
-      toast.error(message);
+      reportQuantityError(bundleWorkOrderId, message);
       return;
     }
 
@@ -126,22 +175,37 @@ function BundleQuantityCell({
     handledDataRef.current = fetcher.data;
 
     if (fetcher.data.ok) {
+      clearQuantityError(bundleWorkOrderId);
       setErrorMessage(null);
-      if (pendingQty.current !== null) {
-        baselineQty.current = pendingQty.current;
-      }
-      pendingQty.current = null;
+      const expected = pendingQty.current;
       revalidator.revalidate();
+      // If the write didn't stick, props never catch up — surface that as an error.
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+      confirmTimerRef.current = setTimeout(() => {
+        if (pendingQty.current === null || pendingQty.current !== expected) {
+          return;
+        }
+        pendingQty.current = null;
+        quantityEditPending.delete(bundleWorkOrderId);
+        setLocalQty(baselineQty.current);
+        setDraft(baselineQty.current);
+        const message = i18n._(
+          msg`Quantity did not save. Try again or use Split Batch.`
+        );
+        setErrorMessage(message);
+        reportQuantityError(bundleWorkOrderId, message);
+      }, 2500);
       return;
     }
 
     const message = quantityErrorMessage(fetcher.data, i18n);
     pendingQty.current = null;
+    quantityEditPending.delete(bundleWorkOrderId);
     setLocalQty(baselineQty.current);
     setDraft(baselineQty.current);
     setErrorMessage(message);
-    toast.error(message);
-  }, [fetcher.state, fetcher.data, i18n, revalidator]);
+    reportQuantityError(bundleWorkOrderId, message);
+  }, [fetcher.state, fetcher.data, i18n, revalidator, bundleWorkOrderId]);
 
   const commit = useCallback(
     (next: number) => {
@@ -150,9 +214,11 @@ function BundleQuantityCell({
         setEditing(false);
         return;
       }
+      clearQuantityError(bundleWorkOrderId);
       setErrorMessage(null);
       baselineQty.current = localQty;
       pendingQty.current = next;
+      quantityEditPending.set(bundleWorkOrderId, next);
       setLocalQty(next);
       setEditing(false);
       const formData = new FormData();
@@ -170,11 +236,12 @@ function BundleQuantityCell({
       e.stopPropagation();
       e.preventDefault();
       if (isSubmitting) return;
+      clearQuantityError(bundleWorkOrderId);
       setErrorMessage(null);
       setDraft(localQty);
       setEditing(true);
     },
-    [localQty, isSubmitting]
+    [localQty, isSubmitting, bundleWorkOrderId]
   );
 
   if (!canEdit || !bundleWorkOrderId) {
@@ -240,7 +307,10 @@ function BundleQuantityCell({
         )}
       </HStack>
       {errorMessage ? (
-        <span className="text-[11px] leading-tight text-destructive max-w-[12rem]">
+        <span
+          role="alert"
+          className="text-xs leading-snug text-destructive font-medium max-w-[14rem]"
+        >
           {errorMessage}
         </span>
       ) : null}

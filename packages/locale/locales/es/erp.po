@@ -12090,6 +12090,9 @@ msgstr "Cantidad asignada o recogida para esta operación."
 msgid "Quantity Completed"
 msgstr "Cantidad Completada"
 
+msgid "Quantity did not save. Try again or use Split Batch."
+msgstr ""
+
 msgid "Quantity finished and reported for this operation."
 msgstr "Cantidad finalizada y reportada para esta operación."
 

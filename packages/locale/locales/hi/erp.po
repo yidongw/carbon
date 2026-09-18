@@ -12090,6 +12090,9 @@ msgstr "इस ऑपरेशन के लिए दी गई या सं�
 msgid "Quantity Completed"
 msgstr "पूर्ण मात्रा"
 
+msgid "Quantity did not save. Try again or use Split Batch."
+msgstr ""
+
 msgid "Quantity finished and reported for this operation."
 msgstr "इस अपरेशन के पूरा होने वाली और रिपोर्ट किए गए मात्रा।"
 

@@ -12090,6 +12090,9 @@ msgstr "Количество назначено или забрано для э�
 msgid "Quantity Completed"
 msgstr "Завершено количество"
 
+msgid "Quantity did not save. Try again or use Split Batch."
+msgstr ""
+
 msgid "Quantity finished and reported for this operation."
 msgstr "Количество выполнено и отчетно представлено для этой операции."
 

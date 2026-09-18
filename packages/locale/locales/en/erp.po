@@ -12089,6 +12089,9 @@ msgstr "Quantity assigned or picked up for this operation."
 msgid "Quantity Completed"
 msgstr "Quantity Completed"
 
+msgid "Quantity did not save. Try again or use Split Batch."
+msgstr "Quantity did not save. Try again or use Split Batch."
+
 msgid "Quantity finished and reported for this operation."
 msgstr "Quantity finished and reported for this operation."
 
