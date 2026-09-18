@@ -118,11 +118,14 @@ export default function PickingDetailPage() {
 
   const openShort = (line: PickingLine) => {
     setShortLine(line)
-    setShortQty(
-      String(
-        line.quantityPicked > 0 ? line.quantityPicked : line.quantityToPick,
-      ),
-    )
+    // 没有库存时默认 0；已有拣数则回填；否则与网页一致回填应拣数
+    const noStock = !line.fromBin && line.availableQuantity <= 0
+    const initial = line.quantityPicked > 0
+      ? line.quantityPicked
+      : noStock
+        ? 0
+        : line.quantityToPick
+    setShortQty(String(initial))
   }
 
   const confirmShort = async () => {

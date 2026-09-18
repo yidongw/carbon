@@ -171,38 +171,43 @@ export async function setPickingListLineQuantity(
     // A null source is allowed: the kitter can pick material the system shows no
     // stock for (counts are often wrong) — on-hand simply goes negative at the
     // source until it's reconciled. Only the lineside destination is required.
+    // Exception: marking Short with no lineside bin still records the shortage
+    // without a stock move (common when the line already shows 没有库存).
     if (delta > 0 && !line.toStorageUnitId) {
-      return {
-        data: null,
-        error: "No lineside destination is set for this line"
-      };
-    }
+      if (!args.markShort) {
+        return {
+          data: null,
+          error: "此行未设置线边仓位，无法拣货。请在 ERP 为该行指定线边仓。"
+        };
+      }
+      // fall through to Short status update below
+    } else {
+      const body =
+        delta > 0
+          ? {
+              type: "inventory",
+              pickingListId: line.pickingListId,
+              pickingListLineId: line.id,
+              quantity: delta,
+              locationId: pickingList.locationId,
+              userId: args.userId,
+              companyId: pickingList.companyId
+            }
+          : {
+              type: "unpickInventory",
+              pickingListId: line.pickingListId,
+              pickingListLineId: line.id,
+              quantity: -delta,
+              locationId: pickingList.locationId,
+              userId: args.userId,
+              companyId: pickingList.companyId
+            };
 
-    const body =
-      delta > 0
-        ? {
-            type: "inventory",
-            pickingListId: line.pickingListId,
-            pickingListLineId: line.id,
-            quantity: delta,
-            locationId: pickingList.locationId,
-            userId: args.userId,
-            companyId: pickingList.companyId
-          }
-        : {
-            type: "unpickInventory",
-            pickingListId: line.pickingListId,
-            pickingListLineId: line.id,
-            quantity: -delta,
-            locationId: pickingList.locationId,
-            userId: args.userId,
-            companyId: pickingList.companyId
-          };
+      const result = await client.functions.invoke("post-picking", { body });
 
-    const result = await client.functions.invoke("post-picking", { body });
-
-    if (result.error) {
-      return { data: null, error: getPostPickingErrorMessage(result.error) };
+      if (result.error) {
+        return { data: null, error: getPostPickingErrorMessage(result.error) };
+      }
     }
   }
 

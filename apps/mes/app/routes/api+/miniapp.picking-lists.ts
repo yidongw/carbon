@@ -4,7 +4,7 @@ import { getAssignedPickingLists } from "~/services/picking.service";
 import { requireMiniappUser } from "~/utils/miniapp-auth.server";
 import { jsonResponse } from "~/utils/miniapp-response";
 
-/** 已分配给我的拣货单 — 对齐 MES /x/picking */
+/** 已分配给我的拣货单 — 对齐 MES /x/picking（严格按当前公司过滤） */
 export async function loader({ request }: LoaderFunctionArgs) {
   const { userId, companyId } = await requireMiniappUser(request);
   if (!companyId) return jsonResponse({ rows: [] });
@@ -12,7 +12,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const serviceRole = getCarbonServiceRole();
   const r = await getAssignedPickingLists(serviceRole, userId);
   const rows = ((r.data ?? []) as any[]).filter(
-    (pl) => !pl.companyId || pl.companyId === companyId
+    (pl) => pl.companyId === companyId
   );
 
   return jsonResponse({
@@ -25,6 +25,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         status: (pl.status as string) || "",
         locationName: (pl.locationName as string) || "",
         dueDate: (pl.dueDate as string) || null,
+        companyId: (pl.companyId as string) || companyId,
         lineCount,
         completedLineCount,
         progress:
