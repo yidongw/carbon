@@ -480,6 +480,32 @@ const MasterWorkOrdersTable = memo(
           }
         },
         {
+          accessorKey: "status",
+          header: t`Status`,
+          cell: ({ row }) => (
+            <JobStatusMenu
+              disableComplete
+              job={
+                {
+                  ...row.original,
+                  id: row.original.jobId,
+                  jobId: row.original.jobReadableId
+                } as unknown as Job
+              }
+            />
+          ),
+          meta: {
+            icon: <LuCirclePlay />,
+            filter: {
+              type: "static",
+              options: jobStatus.map((status) => ({
+                label: <JobStatus status={status} />,
+                value: status
+              }))
+            }
+          }
+        },
+        {
           id: "customerId",
           header: t`Customer`,
           cell: editableCell<MasterWorkOrder>({
@@ -521,32 +547,6 @@ const MasterWorkOrdersTable = memo(
           meta: {
             icon: <LuBookMarked />,
             isEmpty: (row) => !row.salesOrderId || !row.salesOrderReadableId
-          }
-        },
-        {
-          accessorKey: "status",
-          header: t`Status`,
-          cell: ({ row }) => (
-            <JobStatusMenu
-              disableComplete
-              job={
-                {
-                  ...row.original,
-                  id: row.original.jobId,
-                  jobId: row.original.jobReadableId
-                } as unknown as Job
-              }
-            />
-          ),
-          meta: {
-            icon: <LuCirclePlay />,
-            filter: {
-              type: "static",
-              options: jobStatus.map((status) => ({
-                label: <JobStatus status={status} />,
-                value: status
-              }))
-            }
           }
         },
         {
