@@ -152,21 +152,17 @@ const WarehouseTransferForm = ({
                   </DropdownMenuItem>
                 </>
               }
-              actions={
-                <>
+              primaryAction={
+                // Confirm is the draft's main action; keep it visible on
+                // mobile. Once confirmed (or without permission) it no longer
+                // applies, so drop it instead of showing a greyed button.
+                warehouseTransfer.status === "Draft" &&
+                permissions.can("update", "inventory") ? (
                   <Button
                     type="button"
+                    variant="primary"
                     leftIcon={<LuCheckCheck />}
-                    variant={
-                      warehouseTransfer.status === "Draft"
-                        ? "primary"
-                        : "secondary"
-                    }
-                    isDisabled={
-                      !["Draft"].includes(warehouseTransfer.status) ||
-                      statusFetcher.state !== "idle" ||
-                      !permissions.can("update", "inventory")
-                    }
+                    isDisabled={statusFetcher.state !== "idle"}
                     isLoading={
                       statusFetcher.state !== "idle" &&
                       statusFetcher.formData?.get("status") ===
@@ -180,7 +176,10 @@ const WarehouseTransferForm = ({
                   >
                     <Trans>Confirm</Trans>
                   </Button>
-
+                ) : undefined
+              }
+              actions={
+                <>
                   <Button
                     type="button"
                     variant="secondary"
