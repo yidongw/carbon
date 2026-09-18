@@ -2,6 +2,7 @@ import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { svgIcon } from './icons'
 import { getUnreadCount } from '../../utils/unread'
+import { t } from '../../i18n'
 import './index.scss'
 
 export type TabKey = 'workstation' | 'tasks' | 'messages' | 'profile'
@@ -9,17 +10,19 @@ export type TabKey = 'workstation' | 'tasks' | 'messages' | 'profile'
 const ACTIVE = '#2563eb'
 const INACTIVE = '#9aa3b2'
 
-const LEFT: { key: TabKey; text: string; icon: string; path: string }[] = [
-  { key: 'workstation', text: '工作台', icon: 'grid', path: '/pages/workstation/index' },
-  { key: 'tasks', text: '任务', icon: 'list', path: '/pages/tasks/index' },
+type TabItem = { key: TabKey; textKey: string; icon: string; path: string }
+
+const LEFT: TabItem[] = [
+  { key: 'workstation', textKey: 'nav.workstation', icon: 'grid', path: '/pages/workstation/index' },
+  { key: 'tasks', textKey: 'nav.tasks', icon: 'list', path: '/pages/tasks/index' },
 ]
-const RIGHT: { key: TabKey; text: string; icon: string; path: string }[] = [
-  { key: 'messages', text: '消息', icon: 'chat', path: '/pages/messages/index' },
-  { key: 'profile', text: '我的', icon: 'user', path: '/pages/profile/index' },
+const RIGHT: TabItem[] = [
+  { key: 'messages', textKey: 'nav.messages', icon: 'chat', path: '/pages/messages/index' },
+  { key: 'profile', textKey: 'nav.profile', icon: 'user', path: '/pages/profile/index' },
 ]
 
 export default function TabBar({ active }: { active: TabKey }) {
-  const go = (item: { key: TabKey; path: string }) => {
+  const go = (item: TabItem) => {
     if (item.key === active) return
     Taro.reLaunch({ url: item.path })
   }
@@ -27,39 +30,43 @@ export default function TabBar({ active }: { active: TabKey }) {
   const onScan = async () => {
     try {
       const r = await Taro.scanCode({ onlyFromCamera: false })
-      Taro.showModal({ title: '扫描结果', content: r.result || '(空)', showCancel: false })
+      Taro.showModal({
+        title: t('common.scanResult'),
+        content: r.result || '(empty)',
+        showCancel: false,
+      })
     } catch {
-      /* 取消扫码 */
+      /* cancelled */
     }
   }
 
   const unread = getUnreadCount()
 
-  const item = (t: (typeof LEFT)[number]) => {
-    const on = active === t.key
-    const badge = t.key === 'messages' && unread > 0 ? unread : 0
+  const renderItem = (tab: TabItem) => {
+    const on = active === tab.key
+    const badge = tab.key === 'messages' && unread > 0 ? unread : 0
     return (
       <View
-        key={t.key}
+        key={tab.key}
         className={`tabbar__item ${on ? 'tabbar__item--active' : ''}`}
-        onClick={() => go(t)}
+        onClick={() => go(tab)}
       >
         <View className='tabbar__icon-wrap'>
-          <Image className='tabbar__icon' src={svgIcon(t.icon, on ? ACTIVE : INACTIVE)} />
+          <Image className='tabbar__icon' src={svgIcon(tab.icon, on ? ACTIVE : INACTIVE)} />
           {badge ? (
             <View className='tabbar__badge'>
               <Text className='tabbar__badge-text'>{badge > 99 ? '99+' : badge}</Text>
             </View>
           ) : null}
         </View>
-        <Text className='tabbar__text'>{t.text}</Text>
+        <Text className='tabbar__text'>{t(tab.textKey)}</Text>
       </View>
     )
   }
 
   return (
     <View className='tabbar'>
-      {LEFT.map(item)}
+      {LEFT.map(renderItem)}
       <View className='tabbar__scan-slot'>
         <View className='tabbar__scan-wrap'>
           <View className='tabbar__scan' hoverClass='tabbar__scan--hover' onClick={onScan}>
@@ -67,7 +74,7 @@ export default function TabBar({ active }: { active: TabKey }) {
           </View>
         </View>
       </View>
-      {RIGHT.map(item)}
+      {RIGHT.map(renderItem)}
     </View>
   )
 }

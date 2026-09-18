@@ -7,6 +7,7 @@ import { COMPANY_KEY } from '../../services/request'
 import { computeUnread, setUnreadCount } from '../../utils/unread'
 import { FN_GROUPS, FN_STROKE, fnIcon } from '../../constants/functions'
 import TabBar from '../../components/TabBar'
+import { t } from '../../i18n'
 import './index.scss'
 
 // 空闲态的扫码大图(角框 + 内部网格,品牌蓝)。
@@ -180,7 +181,7 @@ export default function Workstation() {
       <Text className='ws__sec'>功能</Text>
       {FN_GROUPS.map((g) => (
         <View key={g.key} className='ws__fn-group'>
-          <Text className='ws__fn-group-title'>{g.title}</Text>
+          <Text className='ws__fn-group-title'>{t(g.titleKey)}</Text>
           <View className='ws__fn-grid'>
             {g.items.map((it) => (
               <View
@@ -197,7 +198,7 @@ export default function Workstation() {
                     </View>
                   ) : null}
                 </View>
-                <Text className='ws__fn-label'>{it.text}</Text>
+                <Text className='ws__fn-label'>{t(it.textKey)}</Text>
               </View>
             ))}
           </View>

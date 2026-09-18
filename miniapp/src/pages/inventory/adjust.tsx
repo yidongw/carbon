@@ -8,6 +8,7 @@ import {
   submitInventoryAdjustment,
 } from '../../services/inventory'
 import type { ItemHit, StorageUnitRow } from '../../services/inventory'
+import { t } from '../../i18n'
 import './index.scss'
 
 type Mode = 'add' | 'remove'
@@ -16,7 +17,7 @@ export default function InventoryAdjustPage() {
   const router = useRouter()
   const mode = ((router.params.mode as Mode) || 'add') as Mode
   const isAdd = mode !== 'remove'
-  const title = isAdd ? '添加库存' : '移除库存'
+  const title = isAdd ? t('inv.add') : t('inv.remove')
   const entryType = isAdd
     ? ('Positive Adjmt.' as const)
     : ('Negative Adjmt.' as const)
