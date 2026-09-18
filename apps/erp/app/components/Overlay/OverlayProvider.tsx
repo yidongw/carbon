@@ -33,8 +33,21 @@ type OverlayContextValue = {
 
 const OverlayContext = createContext<OverlayContextValue | null>(null);
 
+let overlayInstanceCounter = 0;
+
 function createInstanceId() {
-  return crypto.randomUUID();
+  // `crypto.randomUUID` is only exposed in secure contexts (HTTPS or
+  // localhost). On a plain-HTTP preview (e.g. http://<ip>:<port>) or in some
+  // in-app webviews it's undefined, which would throw here and stop EVERY
+  // overlay from opening. The id only needs to be unique per instance (React
+  // key + fetcher key), so fall back to a non-crypto unique string.
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  overlayInstanceCounter += 1;
+  return `overlay-${Date.now().toString(36)}-${overlayInstanceCounter.toString(
+    36
+  )}-${Math.random().toString(36).slice(2)}`;
 }
 
 function createInstance(

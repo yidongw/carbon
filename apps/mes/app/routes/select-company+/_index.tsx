@@ -179,7 +179,12 @@ export default function SelectCompany() {
               const isSubmitting =
                 isBusy && navigation.formAction === switchAction;
               return (
-                <Form key={c.id} method="post" action={switchAction}>
+                <Form
+                  key={c.id}
+                  method="post"
+                  action={switchAction}
+                  reloadDocument
+                >
                   {redirectTo && (
                     <input type="hidden" name="redirectTo" value={redirectTo} />
                   )}
@@ -228,6 +233,7 @@ export default function SelectCompany() {
                       key={invite.id}
                       method="post"
                       action={path.to.selectCompany}
+                      reloadDocument
                     >
                       <input type="hidden" name="inviteId" value={invite.id} />
                       {redirectTo && (

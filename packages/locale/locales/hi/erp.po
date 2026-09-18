@@ -4121,6 +4121,9 @@ msgstr "वेबहुक संपादित करें"
 msgid "Edit Work Center"
 msgstr "कार्य केंद्र संपादित करें"
 
+msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
+msgstr ""
+
 msgid "Elimination entries generated"
 msgstr "निर्माणित हटाव बिछड़े"
 
@@ -8960,6 +8963,9 @@ msgstr "कार्य सफलतापूर्वक पूरा हो �
 msgid "Job ID"
 msgstr "जॉब आईडी"
 
+msgid "Job is locked"
+msgstr ""
+
 msgid "Job Location"
 msgstr "जॉब स्थान"
 
@@ -12461,6 +12467,9 @@ msgstr "किराया और सुविधाएं (नॉन-फैक�
 
 msgid "Reopen"
 msgstr "फिर से खोलें"
+
+msgid "Reopen job"
+msgstr ""
 
 msgid "Reorder"
 msgstr "पुनः क्रमित करें"

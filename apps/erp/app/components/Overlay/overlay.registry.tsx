@@ -658,6 +658,8 @@ export const overlayRegistry = {
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
+              jobId?: string | null;
+              jobStatus?: string | null;
             }
           | undefined;
         if (!data) return null;
@@ -669,7 +671,9 @@ export const overlayRegistry = {
             data.variantsQuantityReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
-          operationType: data.operationType ?? null
+          operationType: data.operationType ?? null,
+          jobId: data.jobId ?? null,
+          jobStatus: data.jobStatus ?? null
         };
 
         if (data.mode === "supplier-report" && data.supplierReport) {
