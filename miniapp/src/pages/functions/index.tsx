@@ -63,6 +63,8 @@ export default function Functions() {
     bundleWorkOrders: '/pages/work-orders/index?type=bundle',
     salary: '/pages/salary/index',
     picking: '/pages/picking/index',
+    addInventory: '/pages/inventory/adjust?mode=add',
+    removeInventory: '/pages/inventory/adjust?mode=remove',
   }
 
   const onItem = (key: string) => {

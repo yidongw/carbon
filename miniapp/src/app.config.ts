@@ -12,6 +12,7 @@ export default defineAppConfig({
     'pages/approvals/index',
     'pages/picking/index',
     'pages/picking/detail',
+    'pages/inventory/adjust',
   ],
   window: {
     backgroundTextStyle: 'light',
