@@ -162,6 +162,9 @@ msgstr "Czy na pewno chcesz zakończyć tę operację? To zakończy wszystkie ak
 msgid "Are you sure you want to leave this page?"
 msgstr "Czy na pewno chcesz opuścić tę stronę?"
 
+msgid "ASAP"
+msgstr "Jak najszybciej"
+
 msgid "Asset class created"
 msgstr "Klasa aktiva utworzona"
 
@@ -4525,6 +4528,9 @@ msgstr "Brak dostępnych śledzonych elementów"
 
 msgid "No bundle work orders"
 msgstr "Brak zgrupowanych zadań😀"
+
+msgid "No Deadline"
+msgstr "Brak terminu"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Brak deprekacji do obliczenia dla niezakrytych aktywów"

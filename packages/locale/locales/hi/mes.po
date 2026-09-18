@@ -162,6 +162,9 @@ msgstr "आपकी यह प्रक्रिया पूरा करन�
 msgid "Are you sure you want to leave this page?"
 msgstr "आपकी पागलें को छोड़ना चाहते हैं?"
 
+msgid "ASAP"
+msgstr "यथाशीघ्र"
+
 msgid "Asset class created"
 msgstr "अधिकार कक्ष बनाया गया है"
 
@@ -4525,6 +4528,9 @@ msgstr "निकाल विषयक कोई उपलब्ध पंज�
 
 msgid "No bundle work orders"
 msgstr "कोई बन्ड उर्डर नहीं है"
+
+msgid "No Deadline"
+msgstr "कोई समय सीमा नहीं"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "निरक्फलित अवसानों के लिए कीमत की कमी की गणना करने की कोई नहीं"

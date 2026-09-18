@@ -33,7 +33,23 @@ type DurationOptions = {
   style?: "long" | "short";
   maxDecimalPoints?: number;
   units?: Unit[];
+  /** App locale (e.g. "zh", "zh-CN", "fr"); localizes the unit words. */
+  language?: string;
 };
+
+// Maps a Carbon app locale onto a humanize-duration language code. Only locales
+// that differ from their humanize-duration equivalent need an entry; everything
+// else falls through to its two-letter prefix (which humanize-duration accepts
+// directly) and, failing that, to English via `fallbacks`.
+const HUMANIZE_LANGUAGE_OVERRIDES: Record<string, string> = {
+  zh: "zh_CN"
+};
+
+function resolveHumanizeLanguage(language?: string): string {
+  if (!language) return "en";
+  const prefix = language.toLowerCase().split("-")[0] || "en";
+  return HUMANIZE_LANGUAGE_OVERRIDES[prefix] ?? prefix;
+}
 
 export function formatDuration(
   start?: Date | null,
@@ -102,7 +118,9 @@ export function formatDurationMilliseconds(
         ? belowOneSecondUnits
         : aboveOneSecondUnits,
     maxDecimalPoints: options?.maxDecimalPoints ?? 0,
-    largest: 2
+    largest: 2,
+    language: resolveHumanizeLanguage(options?.language),
+    fallbacks: ["en"]
   });
 
   if (!options) {

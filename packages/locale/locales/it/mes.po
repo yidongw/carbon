@@ -162,6 +162,9 @@ msgstr "Sei sicuro di voler completare questa operazione? Questo terminerà tutt
 msgid "Are you sure you want to leave this page?"
 msgstr "Sei sicuro di voler lasciare questa pagina?"
 
+msgid "ASAP"
+msgstr "Al più presto"
+
 msgid "Asset class created"
 msgstr "Classe di attivo creata"
 
@@ -4525,6 +4528,9 @@ msgstr "Nessun entità tracciata disponibile trovata"
 
 msgid "No bundle work orders"
 msgstr "NESSUN PAGNA DI COMMESSI"
+
+msgid "No Deadline"
+msgstr "Nessuna scadenza"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nessuna depreciazione da calcolare per beni non coperti"

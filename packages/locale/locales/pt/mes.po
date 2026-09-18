@@ -162,6 +162,9 @@ msgstr "Tem certeza que deseja concluir esta operação? Isso encerrará todos o
 msgid "Are you sure you want to leave this page?"
 msgstr "Tem certeza de que deseja sair desta página?"
 
+msgid "ASAP"
+msgstr "Assim que possível"
+
 msgid "Asset class created"
 msgstr "Classe de ativo criada"
 
@@ -4525,6 +4528,9 @@ msgstr "Nenhum entidade rastreada disponível encontrado"
 
 msgid "No bundle work orders"
 msgstr "Sem ordens de trabalho em lote"
+
+msgid "No Deadline"
+msgstr "Sem prazo"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Nenhuma depreciação para calcular para ativos não cobertos"
