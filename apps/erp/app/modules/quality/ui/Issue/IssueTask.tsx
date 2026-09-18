@@ -46,6 +46,7 @@ import { useFetchers, useParams, useSubmit } from "react-router";
 import { Assignee } from "~/components";
 import { useProcesses } from "~/components/Form/Process";
 import { IssueTaskStatusIcon } from "~/components/Icons";
+import ScrollFadeGroup from "~/components/ScrollFadeGroup";
 import SupplierAvatar from "~/components/SupplierAvatar";
 import {
   useDateFormatter,
@@ -322,9 +323,10 @@ export function TaskItem({
     taskTitle = `Supplier ${taskTitle}`;
   }
 
-  // Due date, processes and supplier are secondary metadata: they stay inline in
-  // the footer and wrap onto the next line when the row is too narrow, rather
-  // than collapsing behind a "More" menu — so wide cards use the full width.
+  // Due date, processes and supplier are secondary metadata: they sit inline on
+  // the footer's single scrollable row (which scrolls horizontally when too
+  // narrow) rather than collapsing behind a "More" menu or wrapping onto extra
+  // lines — keeping the Start/Complete action pinned on the right.
   const secondaryControls =
     type === "action" ? (
       <>
@@ -419,22 +421,26 @@ export function TaskItem({
         </div>
       )}
 
-      <div className="bg-muted/30 border-t px-4 py-2 flex flex-wrap items-center gap-2 w-full">
-        <IssueTaskStatus
-          task={task}
-          type="investigation"
-          isDisabled={isDisabled}
-        />
-        <Assignee
-          table={getTable(type)}
-          id={task.id}
-          size="sm"
-          value={task.assignee ?? undefined}
-          disabled={isDisabled}
-        />
-        {secondaryControls}
+      <div className="bg-muted/30 border-t px-4 py-2 flex items-center justify-between gap-2 w-full">
+        <ScrollFadeGroup>
+          <div className="flex items-center gap-2 w-max">
+            <IssueTaskStatus
+              task={task}
+              type="investigation"
+              isDisabled={isDisabled}
+            />
+            <Assignee
+              table={getTable(type)}
+              id={task.id}
+              size="sm"
+              value={task.assignee ?? undefined}
+              disabled={isDisabled}
+            />
+            {secondaryControls}
+          </div>
+        </ScrollFadeGroup>
         <Button
-          className="ml-auto"
+          className="shrink-0"
           isDisabled={isDisabled}
           leftIcon={statusAction.icon}
           variant="secondary"
