@@ -4121,6 +4121,9 @@ msgstr "编辑Webhook"
 msgid "Edit Work Center"
 msgstr "编辑工作中心"
 
+msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
+msgstr ""
+
 msgid "Elimination entries generated"
 msgstr "生成的消除条目"
 
@@ -8960,6 +8963,9 @@ msgstr "任务完成成功"
 msgid "Job ID"
 msgstr "工作ID"
 
+msgid "Job is locked"
+msgstr ""
+
 msgid "Job Location"
 msgstr "工作地点"
 
@@ -12461,6 +12467,9 @@ msgstr "租金及公用事业（非工厂）"
 
 msgid "Reopen"
 msgstr "重新打开"
+
+msgid "Reopen job"
+msgstr ""
 
 msgid "Reorder"
 msgstr "重新订购"

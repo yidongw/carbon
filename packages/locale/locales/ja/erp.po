@@ -4121,6 +4121,9 @@ msgstr "Webhookを編集"
 msgid "Edit Work Center"
 msgstr "ワークセンターを編集"
 
+msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
+msgstr ""
+
 msgid "Elimination entries generated"
 msgstr "生成された削除-entry"
 
@@ -8960,6 +8963,9 @@ msgstr "ジョブが成功しました"
 msgid "Job ID"
 msgstr "ジョブID"
 
+msgid "Job is locked"
+msgstr ""
+
 msgid "Job Location"
 msgstr "ジョブロケーション"
 
@@ -12461,6 +12467,9 @@ msgstr "レンタル＆ユニティ（非工場）"
 
 msgid "Reopen"
 msgstr "再度開く"
+
+msgid "Reopen job"
+msgstr ""
 
 msgid "Reorder"
 msgstr "並び替え"

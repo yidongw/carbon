@@ -4121,6 +4121,9 @@ msgstr "Редактировать Webhook"
 msgid "Edit Work Center"
 msgstr "Редактировать рабочий центр"
 
+msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
+msgstr ""
+
 msgid "Elimination entries generated"
 msgstr "Удаление записей, сгенерированных"
 
@@ -8960,6 +8963,9 @@ msgstr "Задача выполнена успешно"
 msgid "Job ID"
 msgstr "ID задания"
 
+msgid "Job is locked"
+msgstr ""
+
 msgid "Job Location"
 msgstr "Местоположение задания"
 
@@ -12461,6 +12467,9 @@ msgstr "Сдача и услуги (Нерабочая фабрика)"
 
 msgid "Reopen"
 msgstr "Переоткрыть"
+
+msgid "Reopen job"
+msgstr ""
 
 msgid "Reorder"
 msgstr "Переупорядочить"

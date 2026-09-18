@@ -228,7 +228,16 @@ export default function SelectCompany() {
                   const isSubmitting =
                     isBusy && navigation.formAction === switchAction;
                   return (
-                    <Form key={c.companyId} method="post" action={switchAction}>
+                    // Full document POST: switching lands in the /x layout tree.
+                    // A client-side transition must lazy-load that layout module; if
+                    // the asset is missing (stale preview build) RR reloads *this*
+                    // page and the click looks like a no-op even though cookies set.
+                    <Form
+                      key={c.companyId}
+                      method="post"
+                      action={switchAction}
+                      reloadDocument
+                    >
                       {redirectTo && (
                         <input
                           type="hidden"
@@ -285,6 +294,7 @@ export default function SelectCompany() {
                     // `?index` targets THIS index route's action; without it a POST
                     // to /select-company hits the (action-less) _layout route.
                     action={`${path.to.selectCompany}?index`}
+                    reloadDocument
                   >
                     <input type="hidden" name="inviteId" value={invite.id} />
                     {redirectTo && (
