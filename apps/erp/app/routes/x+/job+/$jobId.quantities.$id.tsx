@@ -93,6 +93,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     variantQuantityParameters:
       variantQuantityParameters.length > 0 ? variantQuantityParameters : null,
     itemId,
+    // Needed by the drawer's "Reopen job" button (POST /job/:id/status).
+    jobId,
     // Surface the job status so the edit drawer can render read-only with a
     // "reopen job" affordance when the job is locked (Completed/Closed/Cancelled),
     // instead of letting the user submit an edit that the action rejects.

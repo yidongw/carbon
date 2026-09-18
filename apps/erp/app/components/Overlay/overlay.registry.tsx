@@ -658,6 +658,7 @@ export const overlayRegistry = {
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
+              jobId?: string | null;
               jobStatus?: string | null;
             }
           | undefined;
@@ -671,6 +672,7 @@ export const overlayRegistry = {
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
+          jobId: data.jobId ?? null,
           jobStatus: data.jobStatus ?? null
         };
 
