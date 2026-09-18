@@ -82,10 +82,8 @@ const quantityEditPending = new Map<string, number>();
 function reportQuantityError(bundleWorkOrderId: string, message: string) {
   quantityEditErrors.set(bundleWorkOrderId, message);
   quantityEditPending.delete(bundleWorkOrderId);
-  // Modal top-layer often hides Sonner toasts — console + alert guarantee visibility.
   console.error("[bundle-qty]", bundleWorkOrderId, message);
   toast.error(message);
-  window.alert(message);
 }
 
 function clearQuantityError(bundleWorkOrderId: string) {
