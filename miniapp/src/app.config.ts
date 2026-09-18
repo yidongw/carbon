@@ -8,6 +8,7 @@ export default defineAppConfig({
     'pages/functions/index',
     'pages/salary/index',
     'pages/work-orders/index',
+    'pages/job/index',
     'pages/operation/index',
     'pages/approvals/index',
     'pages/picking/index',

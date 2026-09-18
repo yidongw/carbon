@@ -51,3 +51,31 @@ export const getMasterWorkOrders = () =>
 
 export const getBundleWorkOrders = () =>
   request<{ rows: BundleRow[] }>({ url: '/api/miniapp/bundle-work-orders', method: 'GET' })
+
+/** 任务工序 DAG，对齐 MES `/x/job/:jobId`。 */
+export interface JobDagOp {
+  id: string
+  description: string
+  status: string
+  quantityComplete: number
+  targetQuantity: number
+  quantityReworked: number
+  quantityScrapped: number
+  isRework: boolean
+  itemId: string | null
+}
+
+export interface JobDagDep {
+  operationId: string
+  dependsOnId: string
+}
+
+export interface JobDagData {
+  found: boolean
+  readableId?: string
+  operations?: JobDagOp[]
+  dependencies?: JobDagDep[]
+}
+
+export const getJobDag = (jobId: string) =>
+  request<JobDagData>({ url: `/api/miniapp/job/${jobId}`, method: 'GET' })
