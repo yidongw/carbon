@@ -21,3 +21,7 @@ Reuse `picking.service.ts` / `inventory.service.ts` same as web `/x/picking`.
 - **Required:** any page with `<NavBar>` must set `navigationStyle: 'custom'` or WeChat shows a double header (Carbon MES + page title).
 
 Live preview MES for miniapp tunnel: pr-607 on `:5607`.
+
+
+## UI parity (v0.0.10+)
+- Detail matches MES kit cards: `job · process`, yellow **没有库存**, Count badge (non-tracked shows toPick only), buttons **短缺** + **+ 选择**, tracked **扫描**.
