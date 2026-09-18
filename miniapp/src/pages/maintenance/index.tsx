@@ -120,7 +120,16 @@ export default function MaintenancePage() {
       {list.length > 0 ? (
         <View className='mnt__list'>
           {list.map((d) => (
-            <View key={d.id} className='mnt__card'>
+            <View
+              key={d.id}
+              className='mnt__card'
+              hoverClass='mnt__card--hover'
+              onClick={() =>
+                Taro.navigateTo({
+                  url: `/pages/maintenance/detail?id=${d.id}`,
+                })
+              }
+            >
               <View className='mnt__head'>
                 <View className='mnt__id-row'>
                   <Text className='mnt__id'>{d.maintenanceDispatchId}</Text>

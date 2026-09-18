@@ -15,6 +15,7 @@ export default defineAppConfig({
     'pages/picking/detail',
     'pages/inventory/adjust',
     'pages/maintenance/index',
+    'pages/maintenance/detail',
     'pages/suggestion/index',
     'pages/end-shift/index',
   ],
