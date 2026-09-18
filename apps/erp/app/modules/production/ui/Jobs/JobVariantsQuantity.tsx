@@ -95,11 +95,26 @@ function JobVariantsQuantity({
     return sortRowsByOptionVariantOrder(normalized, optionVariantItemLabels);
   }, [initialRows, columns, parameters, optionVariantItemLabels]);
 
-  const [rows, setRows] = useState<Row[]>(() =>
-    currentRows.length > 0
-      ? currentRows.map((row) => zeroQuantities(row, columns))
-      : getInitialRows(parameters, comboParam, columns)
-  );
+  const [rows, setRows] = useState<Row[]>(() => {
+    // Show a row for every synced variant SKU (all colors/sizes), not just the
+    // ones already planned — otherwise a job with only 紫色·L planned can't add
+    // quantities for other sizes. Seed the full variant set from the combo
+    // param, union in any current rows that fall outside it (e.g. a planned
+    // variant no longer in the style's range), zero every quantity for delta
+    // entry, and keep catalog sort order.
+    const byKey = new Map<string, Row>();
+    for (const row of getInitialRows(parameters, comboParam, columns)) {
+      byKey.set(getMergeKey(row, columns), zeroQuantities(row, columns));
+    }
+    for (const row of currentRows) {
+      const key = getMergeKey(row, columns);
+      if (!byKey.has(key)) byKey.set(key, zeroQuantities(row, columns));
+    }
+    return sortRowsByOptionVariantOrder(
+      Array.from(byKey.values()),
+      optionVariantItemLabels
+    );
+  });
   const initialRowKeysRef = useRef<Set<string> | null>(null);
   if (initialRowKeysRef.current === null) {
     initialRowKeysRef.current = new Set(
