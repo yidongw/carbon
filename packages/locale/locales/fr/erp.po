@@ -4015,6 +4015,9 @@ msgstr "Modifier les propriétés"
 msgid "Edit purchase order line type"
 msgstr "Modifier le type de ligne de commande d'achat"
 
+msgid "Edit quantity"
+msgstr ""
+
 msgid "Edit Question"
 msgstr "Modifier la question"
 

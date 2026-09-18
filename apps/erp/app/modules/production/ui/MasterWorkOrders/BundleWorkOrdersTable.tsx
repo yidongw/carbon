@@ -21,6 +21,7 @@ import {
   LuRuler,
   LuScissors,
   LuShirt,
+  LuSlidersHorizontal,
   LuSplit,
   LuUser
 } from "react-icons/lu";
@@ -79,7 +80,7 @@ function BundleQuantityCell({
   quantity: number | null | undefined;
   canEdit: boolean;
 }) {
-  const { i18n } = useLingui();
+  const { t, i18n } = useLingui();
   const revalidator = useRevalidator();
   const fetcher = useFetcher<BundleQuantityUpdateResult>();
   const serverQty = Number(quantity) || 0;
@@ -123,6 +124,16 @@ function BundleQuantityCell({
     [bundleWorkOrderId, localQty, fetcher]
   );
 
+  const startEditing = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      setDraft(localQty);
+      setEditing(true);
+    },
+    [localQty]
+  );
+
   if (!canEdit || !bundleWorkOrderId) {
     return <span className="tabular-nums">{localQty}</span>;
   }
@@ -163,18 +174,17 @@ function BundleQuantityCell({
   }
 
   return (
-    <button
-      type="button"
-      className="tabular-nums rounded px-1 -mx-1 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setDraft(localQty);
-        setEditing(true);
-      }}
-    >
-      {localQty}
-    </button>
+    <HStack spacing={1}>
+      <span className="tabular-nums">{localQty}</span>
+      <IconButton
+        type="button"
+        icon={<LuSlidersHorizontal size="1em" strokeWidth={2.5} />}
+        aria-label={t`Edit quantity`}
+        size="sm"
+        variant="secondary"
+        onClick={startEditing}
+      />
+    </HStack>
   );
 }
 

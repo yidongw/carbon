@@ -4015,6 +4015,9 @@ msgstr "Bearbeiten Eigenschaften"
 msgid "Edit purchase order line type"
 msgstr "Bestellpositionstyp bearbeiten"
 
+msgid "Edit quantity"
+msgstr ""
+
 msgid "Edit Question"
 msgstr "Frage bearbeiten"
 

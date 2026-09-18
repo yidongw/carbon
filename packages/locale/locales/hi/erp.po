@@ -4015,6 +4015,9 @@ msgstr "संप्रबंध सunting"
 msgid "Edit purchase order line type"
 msgstr "क्रय आदेश लाइन प्रकार संपादित करें"
 
+msgid "Edit quantity"
+msgstr ""
+
 msgid "Edit Question"
 msgstr "प्रश्न संपादित करें"
 

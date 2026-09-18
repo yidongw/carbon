@@ -4015,6 +4015,9 @@ msgstr "プロパティ編集"
 msgid "Edit purchase order line type"
 msgstr "購買注文行タイプを編集"
 
+msgid "Edit quantity"
+msgstr ""
+
 msgid "Edit Question"
 msgstr "質問を編集"
 
