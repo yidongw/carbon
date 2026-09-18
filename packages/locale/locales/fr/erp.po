@@ -174,6 +174,7 @@ msgid "5MB file limit"
 msgstr "Limite de fichier 5MB"
 
 #. placeholder {0}: num("reported")
+#. placeholder {0}: result.reported ?? 0
 msgid "A bundle can't be set below its reported quantity ({0})"
 msgstr "Un lot ne peut pas être défini en dessous de sa quantité rapportée ({0})"
 
@@ -1811,6 +1812,9 @@ msgstr "Ne pouvez pas modifier la valeur de l'attribut système"
 msgid "Cannot finish operation"
 msgstr "Impossible de finaliser l'opération"
 
+msgid "Cannot modify a locked job. Reopen it first."
+msgstr ""
+
 msgid "Cannot modify a locked picking list. Reopen it first."
 msgstr "Ne pouvez pas modifier une liste de picking verrouillée. Ouvrez-la en premier."
 
@@ -2575,6 +2579,19 @@ msgstr "Impossible de générer le PDF. Essayez à nouveau."
 
 msgid "Could not prepare region image for analysis"
 msgstr "Impossible de préparer l'image de la région pour l'analyse"
+
+msgid "Could not save quantity"
+msgstr ""
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr ""
+
+msgid "Could not save quantity: no response from server"
+msgstr ""
+
+msgid "Could not save quantity: unexpected response"
+msgstr ""
 
 msgid "Couldn't load documents"
 msgstr "Impossible de charger les documents"
@@ -4012,6 +4029,9 @@ msgstr "Modifier les propriétés"
 
 msgid "Edit purchase order line type"
 msgstr "Modifier le type de ligne de commande d'achat"
+
+msgid "Edit quantity"
+msgstr ""
 
 msgid "Edit Question"
 msgstr "Modifier la question"
@@ -12080,6 +12100,9 @@ msgstr "Quantité attribuée ou prélevée pour cette opération."
 msgid "Quantity Completed"
 msgstr "Quantité complétée"
 
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
+msgstr ""
+
 msgid "Quantity finished and reported for this operation."
 msgstr "Quantité produite et rapportée pour cette opération."
 
@@ -14954,6 +14977,10 @@ msgstr "Ces travaux ont des opérations assignées à ce centre de travail :"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Cette ajustement prendrait une quantité inférieure à zéro."
+
+#. placeholder {0}: result.max ?? 0
+msgid "This bundle can't exceed the remaining cut for its attributes (max {0})"
+msgstr ""
 
 msgid "This information will be used on document headers"
 msgstr "Ces informations seront utilisées dans les en-têtes de document"

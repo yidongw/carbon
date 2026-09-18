@@ -2,12 +2,13 @@ import {
   localizeStyleColorName,
   localizeStyleColorNameByName
 } from "@carbon/database/style-reference";
-import { Button, HStack, IconButton } from "@carbon/react";
+import { Button, HStack, IconButton, Spinner, toast } from "@carbon/react";
+import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { MouseEvent } from "react";
-import { memo, useCallback, useMemo, useState } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LuBookMarked,
   LuCirclePlay,
@@ -20,15 +21,17 @@ import {
   LuRuler,
   LuScissors,
   LuShirt,
+  LuSlidersHorizontal,
   LuSplit,
   LuUser
 } from "react-icons/lu";
-import { useRevalidator } from "react-router";
+import { useFetcher, useRevalidator } from "react-router";
 import { Assignee, Hyperlink, Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { translateItemAttributeCatalogName } from "~/modules/items/itemAttributeDisplayName";
 import type { BundleWorkOrder } from "~/modules/production";
+import type { BundleQuantityUpdateResult } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.quantity";
 import { usePeople, useStyles } from "~/stores";
 import { path } from "~/utils/path";
 import { jobStatus } from "../../production.models";
@@ -47,6 +50,296 @@ type BundleWorkOrdersTableProps = {
   // Hide the table's header row (title + toolbar) — e.g. inside a modal.
   withHeader?: boolean;
 };
+
+function quantityErrorMessage(
+  result: Extract<BundleQuantityUpdateResult, { ok: false }>,
+  i18n: { _: (descriptor: ReturnType<typeof msg>) => string }
+) {
+  switch (result.reason) {
+    case "cap":
+      return i18n._(
+        msg`This bundle can't exceed the remaining cut for its attributes (max ${result.max ?? 0})`
+      );
+    case "reported":
+      return i18n._(
+        msg`A bundle can't be set below its reported quantity (${result.reported ?? 0})`
+      );
+    case "locked":
+      return i18n._(msg`Cannot modify a locked job. Reopen it first.`);
+    case "not_found":
+      return i18n._(msg`Bundle not found`);
+    case "save":
+      return result.message
+        ? i18n._(msg`Could not save quantity: ${result.message}`)
+        : i18n._(msg`Could not save quantity`);
+    default:
+      return result.message
+        ? i18n._(msg`Could not save quantity: ${result.message}`)
+        : i18n._(msg`Could not save quantity`);
+  }
+}
+
+/** Survives cell remount when the overlay reloads after a mutation. */
+const quantityEditErrors = new Map<string, string>();
+const quantityEditPending = new Map<string, number>();
+
+function reportQuantityError(bundleWorkOrderId: string, message: string) {
+  quantityEditErrors.set(bundleWorkOrderId, message);
+  quantityEditPending.delete(bundleWorkOrderId);
+  console.error("[bundle-qty]", bundleWorkOrderId, message);
+  toast.error(message);
+}
+
+function clearQuantityError(bundleWorkOrderId: string) {
+  quantityEditErrors.delete(bundleWorkOrderId);
+}
+
+function isQuantityFailure(
+  value: unknown
+): value is Extract<BundleQuantityUpdateResult, { ok: false }> {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "ok" in value &&
+    (value as { ok?: unknown }).ok === false
+  );
+}
+
+function BundleQuantityCell({
+  bundleWorkOrderId,
+  quantity,
+  canEdit
+}: {
+  bundleWorkOrderId: string;
+  quantity: number | null | undefined;
+  canEdit: boolean;
+}) {
+  const { t, i18n } = useLingui();
+  const revalidator = useRevalidator();
+  const fetcher = useFetcher<BundleQuantityUpdateResult>();
+  const serverQty = Number(quantity) || 0;
+  const initialPending = quantityEditPending.get(bundleWorkOrderId);
+  const [localQty, setLocalQty] = useState(initialPending ?? serverQty);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(initialPending ?? serverQty);
+  const [errorMessage, setErrorMessage] = useState<string | null>(
+    () => quantityEditErrors.get(bundleWorkOrderId) ?? null
+  );
+  const baselineQty = useRef(serverQty);
+  const pendingQty = useRef<number | null>(initialPending ?? null);
+  const handledDataRef = useRef<typeof fetcher.data>(undefined);
+  const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSubmitting = fetcher.state !== "idle";
+
+  useEffect(() => {
+    return () => {
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isSubmitting) return;
+
+    const pending =
+      pendingQty.current ?? quantityEditPending.get(bundleWorkOrderId) ?? null;
+
+    // Keep optimistic qty until the overlay/list actually reflects the write.
+    // Clearing pending too early lets a stale overlay reload silently revert.
+    if (pending !== null) {
+      pendingQty.current = pending;
+      if (serverQty === pending) {
+        pendingQty.current = null;
+        quantityEditPending.delete(bundleWorkOrderId);
+        baselineQty.current = serverQty;
+        setLocalQty(serverQty);
+        setDraft(serverQty);
+        clearQuantityError(bundleWorkOrderId);
+        setErrorMessage(null);
+      } else {
+        setLocalQty(pending);
+      }
+      return;
+    }
+
+    setLocalQty(serverQty);
+    setDraft(serverQty);
+    baselineQty.current = serverQty;
+  }, [serverQty, isSubmitting, bundleWorkOrderId]);
+
+  useEffect(() => {
+    if (fetcher.state !== "idle") return;
+
+    // Network / non-JSON failure: no structured payload, but we still have a
+    // pending optimistic edit to undo.
+    if (!fetcher.data) {
+      if (pendingQty.current === null) return;
+      pendingQty.current = null;
+      quantityEditPending.delete(bundleWorkOrderId);
+      const message = i18n._(
+        msg`Could not save quantity: no response from server`
+      );
+      setLocalQty(baselineQty.current);
+      setDraft(baselineQty.current);
+      setErrorMessage(message);
+      reportQuantityError(bundleWorkOrderId, message);
+      return;
+    }
+
+    // Handle each response once — fetcher.data stays until the next submit.
+    if (handledDataRef.current === fetcher.data) return;
+    handledDataRef.current = fetcher.data;
+
+    if (
+      fetcher.data &&
+      typeof fetcher.data === "object" &&
+      "ok" in fetcher.data &&
+      fetcher.data.ok === true
+    ) {
+      clearQuantityError(bundleWorkOrderId);
+      setErrorMessage(null);
+      const expected = pendingQty.current;
+      revalidator.revalidate();
+      // If the write didn't stick, props never catch up — surface that as an error.
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+      confirmTimerRef.current = setTimeout(() => {
+        if (pendingQty.current === null || pendingQty.current !== expected) {
+          return;
+        }
+        pendingQty.current = null;
+        quantityEditPending.delete(bundleWorkOrderId);
+        setLocalQty(baselineQty.current);
+        setDraft(baselineQty.current);
+        const message = i18n._(
+          msg`Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining.`
+        );
+        setErrorMessage(message);
+        reportQuantityError(bundleWorkOrderId, message);
+      }, 2500);
+      return;
+    }
+
+    const message = isQuantityFailure(fetcher.data)
+      ? quantityErrorMessage(fetcher.data, i18n)
+      : i18n._(msg`Could not save quantity: unexpected response`);
+    console.error("[bundle-qty] failure payload", fetcher.data);
+    pendingQty.current = null;
+    quantityEditPending.delete(bundleWorkOrderId);
+    setLocalQty(baselineQty.current);
+    setDraft(baselineQty.current);
+    setErrorMessage(message);
+    reportQuantityError(bundleWorkOrderId, message);
+  }, [fetcher.state, fetcher.data, i18n, revalidator, bundleWorkOrderId]);
+
+  const commit = useCallback(
+    (next: number) => {
+      if (!Number.isFinite(next) || next === localQty) {
+        setDraft(localQty);
+        setEditing(false);
+        return;
+      }
+      clearQuantityError(bundleWorkOrderId);
+      setErrorMessage(null);
+      baselineQty.current = localQty;
+      pendingQty.current = next;
+      quantityEditPending.set(bundleWorkOrderId, next);
+      setLocalQty(next);
+      setEditing(false);
+      const formData = new FormData();
+      formData.append("quantity", String(next));
+      fetcher.submit(formData, {
+        method: "post",
+        action: path.to.api.bundleWorkOrderQuantity(bundleWorkOrderId)
+      });
+    },
+    [bundleWorkOrderId, localQty, fetcher]
+  );
+
+  const startEditing = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (isSubmitting) return;
+      clearQuantityError(bundleWorkOrderId);
+      setErrorMessage(null);
+      setDraft(localQty);
+      setEditing(true);
+    },
+    [localQty, isSubmitting, bundleWorkOrderId]
+  );
+
+  if (!canEdit || !bundleWorkOrderId) {
+    return <span className="tabular-nums">{localQty}</span>;
+  }
+
+  if (editing) {
+    return (
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <input
+          type="number"
+          min={0}
+          className="h-8 w-20 rounded-md border bg-transparent px-2 text-sm tabular-nums focus:outline-none focus:ring-1"
+          value={draft}
+          disabled={isSubmitting}
+          autoFocus
+          onFocus={(e) => e.currentTarget.select()}
+          onChange={(e) => setDraft(Number(e.target.value) || 0)}
+          onBlur={() => commit(draft)}
+          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              // Blur commits once — avoid Enter + blur double-submit.
+              e.currentTarget.blur();
+            } else if (e.key === "Escape") {
+              e.preventDefault();
+              setDraft(localQty);
+              setEditing(false);
+            }
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <HStack spacing={1}>
+        <span
+          className={
+            errorMessage ? "tabular-nums text-destructive" : "tabular-nums"
+          }
+        >
+          {localQty}
+        </span>
+        {isSubmitting ? (
+          <Spinner className="h-4 w-4" />
+        ) : (
+          <IconButton
+            type="button"
+            icon={<LuSlidersHorizontal size="1em" strokeWidth={2.5} />}
+            aria-label={t`Edit quantity`}
+            size="sm"
+            variant="secondary"
+            onClick={startEditing}
+          />
+        )}
+      </HStack>
+      {errorMessage ? (
+        <span
+          role="alert"
+          className="text-xs leading-snug text-destructive font-medium max-w-[14rem]"
+        >
+          {errorMessage}
+        </span>
+      ) : null}
+    </div>
+  );
+}
 
 const BundleWorkOrdersTable = memo(
   ({
@@ -67,6 +360,7 @@ const BundleWorkOrdersTable = memo(
       dateStyle: "medium",
       timeStyle: "short"
     });
+    const canUpdateQuantity = permissions.can("update", "production");
 
     const rows = useMemo(() => data, [data]);
 
@@ -173,7 +467,16 @@ const BundleWorkOrdersTable = memo(
         {
           accessorKey: "quantity",
           header: t`Quantity`,
-          cell: ({ row }) => row.original.quantity,
+          cell: ({ row }) =>
+            row.original.id ? (
+              <BundleQuantityCell
+                bundleWorkOrderId={row.original.id}
+                quantity={row.original.quantity}
+                canEdit={canUpdateQuantity}
+              />
+            ) : (
+              <span className="tabular-nums">{row.original.quantity ?? 0}</span>
+            ),
           meta: { icon: <LuHash /> }
         },
         {
@@ -363,7 +666,8 @@ const BundleWorkOrdersTable = memo(
       dateFormatter,
       openProcesses,
       rows,
-      masterWorkOrderId
+      masterWorkOrderId,
+      canUpdateQuantity
     ]);
 
     return (

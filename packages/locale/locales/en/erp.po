@@ -173,6 +173,7 @@ msgid "5MB file limit"
 msgstr "5MB file limit"
 
 #. placeholder {0}: num("reported")
+#. placeholder {0}: result.reported ?? 0
 msgid "A bundle can't be set below its reported quantity ({0})"
 msgstr "A bundle can't be set below its reported quantity ({0})"
 
@@ -1810,6 +1811,9 @@ msgstr "Cannot edit system attribute value"
 msgid "Cannot finish operation"
 msgstr "Cannot finish operation"
 
+msgid "Cannot modify a locked job. Reopen it first."
+msgstr "Cannot modify a locked job. Reopen it first."
+
 msgid "Cannot modify a locked picking list. Reopen it first."
 msgstr "Cannot modify a locked picking list. Reopen it first."
 
@@ -2574,6 +2578,19 @@ msgstr "Could not build PDF. Try again."
 
 msgid "Could not prepare region image for analysis"
 msgstr "Could not prepare region image for analysis"
+
+msgid "Could not save quantity"
+msgstr "Could not save quantity"
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr "Could not save quantity: {0}"
+
+msgid "Could not save quantity: no response from server"
+msgstr "Could not save quantity: no response from server"
+
+msgid "Could not save quantity: unexpected response"
+msgstr "Could not save quantity: unexpected response"
 
 msgid "Couldn't load documents"
 msgstr "Couldn't load documents"
@@ -4011,6 +4028,9 @@ msgstr "Edit Properties"
 
 msgid "Edit purchase order line type"
 msgstr "Edit purchase order line type"
+
+msgid "Edit quantity"
+msgstr "Edit quantity"
 
 msgid "Edit Question"
 msgstr "Edit Question"
@@ -12079,6 +12099,9 @@ msgstr "Quantity assigned or picked up for this operation."
 msgid "Quantity Completed"
 msgstr "Quantity Completed"
 
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
+msgstr "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
+
 msgid "Quantity finished and reported for this operation."
 msgstr "Quantity finished and reported for this operation."
 
@@ -14953,6 +14976,10 @@ msgstr "These jobs have operations assigned to this work center:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "This adjustment would take a quantity below zero."
+
+#. placeholder {0}: result.max ?? 0
+msgid "This bundle can't exceed the remaining cut for its attributes (max {0})"
+msgstr "This bundle can't exceed the remaining cut for its attributes (max {0})"
 
 msgid "This information will be used on document headers"
 msgstr "This information will be used on document headers"
