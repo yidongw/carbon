@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   getStyleCuttingProcessId,
   isStyleCuttingOperation,
+  resolveStyleMethodItemId,
   splitGarmentJobItems
 } from "~/modules/items/styleMethod.service";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -12,6 +13,7 @@ import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable
 } from "./jobVariantQuantity.service";
+import { mergeMasterProcessDescriptions } from "./masterProcessDescriptions";
 import type { deadlineTypes } from "./production.models";
 import { insertJob } from "./production.service";
 import {
@@ -20,6 +22,8 @@ import {
   minVariantTables,
   sumVariantTables
 } from "./variantTable";
+
+export { mergeMasterProcessDescriptions } from "./masterProcessDescriptions";
 
 export type MasterCuttingProgress = {
   jobId: string;
@@ -291,20 +295,209 @@ export type MasterProcess = {
   bundles: MasterProcessBundle[];
 };
 
+export type StyleMethodOperationSeed = {
+  description: string;
+  isCutting: boolean;
+  operationType: string | null;
+};
+
 /**
- * The Master Work Order's processes: one row per distinct operation, taken from
- * the master job's own operations (so they show even before any bundle exists),
- * with the plan quantity, and each bundle (assignee, reported/remaining
- * quantity, timestamps, status) rolled up as expandable children.
+ * Style make-method operations in method order — the canonical process list for
+ * a master WO even after garment split strips sewing off the master job.
+ */
+export async function getStyleMethodOperationSeeds(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+): Promise<StyleMethodOperationSeed[]> {
+  const methodItemId = await resolveStyleMethodItemId(client, {
+    itemId,
+    companyId
+  });
+  const makeMethod = await client
+    .from("makeMethod")
+    .select("id")
+    .eq("itemId", methodItemId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (makeMethod.error || !makeMethod.data?.id) return [];
+
+  const operations = await client
+    .from("methodOperation")
+    .select("description, order, operationType, tags, customFields")
+    .eq("makeMethodId", makeMethod.data.id)
+    .order("order", { ascending: true });
+  if (operations.error || !operations.data?.length) return [];
+
+  return operations.data.map((op) => ({
+    description: op.description ?? "—",
+    isCutting: isStyleCuttingOperation({
+      tags: op.tags ?? [],
+      customFields: op.customFields
+    }),
+    operationType: op.operationType ?? null
+  }));
+}
+
+/**
+ * Batched process counts for the master WO list — same description union as
+ * `getMasterProcessBreakdown` (Style BOP ∪ master job ops ∪ bundle job ops).
+ */
+export async function getMasterProcessCounts(
+  client: SupabaseClient<Database>,
+  masters: {
+    id: string | null;
+    jobId: string | null;
+    itemId: string | null;
+  }[],
+  companyId: string
+): Promise<Record<string, number>> {
+  const result: Record<string, number> = {};
+  const rows = masters.filter(
+    (m): m is { id: string; jobId: string | null; itemId: string | null } =>
+      !!m.id
+  );
+  for (const m of rows) result[m.id] = 0;
+  if (rows.length === 0) return result;
+
+  const masterIds = rows.map((m) => m.id);
+  const masterJobIds = rows
+    .map((m) => m.jobId)
+    .filter((id): id is string => !!id);
+  const masterIdByJobId = new Map<string, string>();
+  for (const m of rows) {
+    if (m.jobId) masterIdByJobId.set(m.jobId, m.id);
+  }
+
+  const itemIds = [
+    ...new Set(rows.map((m) => m.itemId).filter((id): id is string => !!id))
+  ];
+  const styleByItemId = new Map<string, string>(
+    itemIds.map((id) => [id, id] as const)
+  );
+  if (itemIds.length > 0) {
+    const variants = await client
+      .from("itemVariant")
+      .select("variantItemId, parentItemId")
+      .in("variantItemId", itemIds)
+      .eq("companyId", companyId);
+    for (const v of variants.data ?? []) {
+      if (v.variantItemId && v.parentItemId) {
+        styleByItemId.set(v.variantItemId, v.parentItemId);
+      }
+    }
+  }
+
+  const styleItemIds = [...new Set(styleByItemId.values())];
+  const makeMethodByStyleId = new Map<string, string>();
+  if (styleItemIds.length > 0) {
+    const makeMethods = await client
+      .from("makeMethod")
+      .select("id, itemId, createdAt")
+      .in("itemId", styleItemIds)
+      .eq("companyId", companyId)
+      .order("createdAt", { ascending: true });
+    for (const mm of makeMethods.data ?? []) {
+      if (mm.itemId && mm.id && !makeMethodByStyleId.has(mm.itemId)) {
+        makeMethodByStyleId.set(mm.itemId, mm.id);
+      }
+    }
+  }
+
+  const styleDescsByMakeMethodId = new Map<string, string[]>();
+  const makeMethodIds = [...makeMethodByStyleId.values()];
+  if (makeMethodIds.length > 0) {
+    const methodOps = await client
+      .from("methodOperation")
+      .select("makeMethodId, description, order")
+      .in("makeMethodId", makeMethodIds)
+      .order("order", { ascending: true });
+    for (const op of methodOps.data ?? []) {
+      if (!op.makeMethodId) continue;
+      const list = styleDescsByMakeMethodId.get(op.makeMethodId) ?? [];
+      list.push(op.description ?? "—");
+      styleDescsByMakeMethodId.set(op.makeMethodId, list);
+    }
+  }
+
+  const styleDescsByMasterId = new Map<string, string[]>();
+  for (const m of rows) {
+    if (!m.itemId) continue;
+    const styleId = styleByItemId.get(m.itemId) ?? m.itemId;
+    const makeMethodId = makeMethodByStyleId.get(styleId);
+    styleDescsByMasterId.set(
+      m.id,
+      makeMethodId ? (styleDescsByMakeMethodId.get(makeMethodId) ?? []) : []
+    );
+  }
+
+  const jobDescsByMasterId = new Map<string, string[]>();
+  const pushJobDesc = (masterId: string, description: string) => {
+    const list = jobDescsByMasterId.get(masterId) ?? [];
+    list.push(description);
+    jobDescsByMasterId.set(masterId, list);
+  };
+
+  if (masterJobIds.length > 0) {
+    const masterOps = await client
+      .from("jobOperation")
+      .select("jobId, description")
+      .in("jobId", masterJobIds)
+      .eq("companyId", companyId);
+    for (const op of masterOps.data ?? []) {
+      const masterId = op.jobId ? masterIdByJobId.get(op.jobId) : undefined;
+      if (!masterId) continue;
+      pushJobDesc(masterId, op.description ?? "—");
+    }
+  }
+
+  const bundles = await client
+    .from("bundleWorkOrder")
+    .select("masterWorkOrderId, jobId")
+    .in("masterWorkOrderId", masterIds)
+    .eq("companyId", companyId);
+  const bundleJobToMaster = new Map<string, string>();
+  for (const b of bundles.data ?? []) {
+    if (b.jobId && b.masterWorkOrderId) {
+      bundleJobToMaster.set(b.jobId, b.masterWorkOrderId);
+    }
+  }
+  const bundleJobIds = [...bundleJobToMaster.keys()];
+  if (bundleJobIds.length > 0) {
+    const bundleOps = await client
+      .from("jobOperation")
+      .select("jobId, description")
+      .in("jobId", bundleJobIds)
+      .eq("companyId", companyId);
+    for (const op of bundleOps.data ?? []) {
+      const masterId = op.jobId ? bundleJobToMaster.get(op.jobId) : undefined;
+      if (!masterId) continue;
+      pushJobDesc(masterId, op.description ?? "—");
+    }
+  }
+
+  for (const m of rows) {
+    result[m.id] = mergeMasterProcessDescriptions(
+      styleDescsByMasterId.get(m.id) ?? [],
+      jobDescsByMasterId.get(m.id) ?? []
+    ).length;
+  }
+  return result;
+}
+
+/**
+ * The Master Work Order's processes: seeded from the Style BOP (so sewing shows
+ * even after garment split removes it from the master job), with progress from
+ * master job ops (cutting / prep) and bundle job ops (downstream), rolled up as
+ * expandable children.
  */
 export async function getMasterProcessBreakdown(
   client: SupabaseClient<Database>,
   masterWorkOrderId: string,
   companyId: string
 ): Promise<MasterProcess[]> {
-  // The canonical process list comes from the master job's own operations, so a
-  // freshly-created master work order shows its processes before it's split into
-  // bundles.
   const master = await client
     .from("masterWorkOrder")
     .select("jobId")
@@ -316,10 +509,18 @@ export async function getMasterProcessBreakdown(
   const masterJobId = master.data.jobId;
   const masterJob = await client
     .from("job")
-    .select("quantity")
+    .select("quantity, itemId")
     .eq("id", masterJobId)
     .single();
   const masterQuantity = Number(masterJob.data?.quantity ?? 0);
+
+  const styleSeeds = masterJob.data?.itemId
+    ? await getStyleMethodOperationSeeds(
+        client,
+        masterJob.data.itemId,
+        companyId
+      )
+    : [];
 
   const masterOps = await client
     .from("jobOperation")
@@ -388,17 +589,24 @@ export async function getMasterProcessBreakdown(
     return itemId ? (readableByItemId.get(itemId) ?? null) : null;
   };
 
-  // Preserve operation order; seed each process from the master job's plan.
-  const order: string[] = [];
+  const styleDescByName = new Map(
+    styleSeeds.map((s) => [s.description, s] as const)
+  );
+  const order = mergeMasterProcessDescriptions(
+    styleSeeds.map((s) => s.description),
+    masterOpsData.map((op) => op.description ?? "—")
+  );
+
   const byDescription = new Map<string, MasterProcess>();
   const ensureProcess = (description: string): MasterProcess => {
     let process = byDescription.get(description);
     if (!process) {
-      order.push(description);
+      if (!order.includes(description)) order.push(description);
+      const seed = styleDescByName.get(description);
       process = {
         description,
-        isCutting: false,
-        operationType: null,
+        isCutting: seed?.isCutting ?? false,
+        operationType: seed?.operationType ?? null,
         itemReadableId: null,
         assignedAt: null,
         bundleCount: 0,
@@ -411,6 +619,11 @@ export async function getMasterProcessBreakdown(
     }
     return process;
   };
+
+  for (const description of order) {
+    ensureProcess(description);
+  }
+
   for (const op of masterOpsData) {
     // The master reports its own operation(s) directly (e.g. cutting), so seed
     // the process's reported quantity from the master op's completed count.
@@ -474,6 +687,17 @@ export async function getMasterProcessBreakdown(
       assignee: bundle.assignee,
       assignedAt: bundle.assignedAt
     });
+  }
+
+  // Leftover downstream ops on the master (pre–garment-split data) would
+  // double-count reported qty once bundles also report — prefer bundle totals.
+  for (const process of byDescription.values()) {
+    if (process.bundleCount > 0 && !process.isCutting) {
+      process.reportedQuantity = process.bundles.reduce(
+        (sum, b) => sum + b.reportedQuantity,
+        0
+      );
+    }
   }
 
   return order.map((d) => byDescription.get(d)!);

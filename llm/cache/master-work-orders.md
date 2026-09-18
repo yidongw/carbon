@@ -35,3 +35,14 @@ Bundle (and any other) jobs keyed by variant SKU have no make method. `insertJob
 ## Cutting op detection on the master job
 
 Because nested prep (dyeing) can be re-sequenced ahead of cutting, "the cutting op" is the **style-tagged** op (`isStyleCuttingOperation`), else the first **root-method** op — nested sub-assembly ops are excluded so a prep op can't masquerade as cutting. Shared by `getMasterCuttingOperationId`, `getMasterProcessBreakdown`, and `getMasterCuttingProgress` (all filter out `jobMakeMethod.parentMaterialId != null` ops).
+
+## Processes column / overlay (Style BOP seed)
+
+List **工序** count and `getMasterProcessBreakdown` use the same union:
+
+1. Seed from Style `methodOperation` descriptions (`getStyleMethodOperationSeeds` / batched in `getMasterProcessCounts`)
+2. Union master job ops + bundle job ops (`mergeMasterProcessDescriptions`)
+
+So after garment split, **缝制** still shows (and counts) even when it only lives on bundles. Cutting-only Style BOP → count stays 1. Non-cutting processes with bundle children take reported qty from bundles only (avoids double-count when leftover sewing still sits on an old master job).
+
+Helpers: `masterProcessDescriptions.ts`, `getMasterProcessCounts`, `getStyleMethodOperationSeeds` in `masterWorkOrder.service.ts`. Loader: `x+/production+/master-work-orders.tsx`.

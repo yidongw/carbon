@@ -8,6 +8,7 @@ import { Outlet, useLoaderData } from "react-router";
 import {
   getItemIdsWithVariantQuantityGrid,
   getMasterCuttingProgress,
+  getMasterProcessCounts,
   getMasterWorkOrders
 } from "~/modules/production";
 import type { CuttingStatus } from "~/modules/production/cuttingStatus";
@@ -196,38 +197,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     remainingToSplitByMasterId[r.id] = Math.max(0, cut - bundled);
   }
 
-  // Total processes per master = distinct operation descriptions on the master
-  // job's own operations (matches the master Processes tab breakdown, and shows
-  // before the master is split into bundles).
-  const masterIdByMasterJobId: Record<string, string> = {};
-  const masterJobIds: string[] = [];
-  for (const r of rows) {
-    if (r.jobId && r.id) {
-      masterIdByMasterJobId[r.jobId] = r.id;
-      masterJobIds.push(r.jobId);
-    }
-  }
-  const processDescByMasterId: Record<string, Set<string>> = {};
-  if (masterJobIds.length > 0) {
-    const ops = await client
-      .from("jobOperation")
-      .select("jobId, description")
-      .in("jobId", masterJobIds)
-      .eq("companyId", companyId);
-    for (const op of ops.data ?? []) {
-      const masterId = op.jobId ? masterIdByMasterJobId[op.jobId] : undefined;
-      if (!masterId) continue;
-      (processDescByMasterId[masterId] ??= new Set()).add(
-        op.description ?? "—"
-      );
-    }
-  }
-  const processCountByMasterId: Record<string, number> = {};
-  for (const [masterId, descriptions] of Object.entries(
-    processDescByMasterId
-  )) {
-    processCountByMasterId[masterId] = descriptions.size;
-  }
+  // Total processes per master = Style BOP ∪ master job ops ∪ bundle job ops
+  // (same union as getMasterProcessBreakdown), so the list count matches the
+  // processes overlay after garment split moves sewing onto bundles.
+  const processCountByMasterId = await getMasterProcessCounts(
+    client,
+    rows.map((r) => ({
+      id: r.id,
+      jobId: r.jobId,
+      itemId: r.itemId
+    })),
+    companyId
+  );
 
   return {
     count,
