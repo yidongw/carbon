@@ -390,3 +390,8 @@ Patterns learned from corrections. Review at the start of each session.
 - Wrong diagnosis: assumed bad itemAttributeValue.sortOrder / needed a data migration.
 - Real cause: getStyleVariantQuantityParameters built optionVariantItemLabels from unordered itemVariant rows; jobVariantQuantity initialRows kept insertion order. Attribute editor sorts by sortOrder; qty grid did not.
 - Rule: if the catalog/attribute UI order looks right, do not “fix data” first — check whether the broken surface sorts by sortOrder. Confirm root cause against the surface that still works.
+
+## Miniapp pages with custom NavBar need navigationStyle: custom
+- Symptom: double header — WeChat default "Carbon MES" bar stacked above custom NavBar (e.g. 拣货).
+- Cause: page used `<NavBar>` but missing `*.config.ts` with `navigationStyle: 'custom'`.
+- Rule: every new miniapp page that renders `NavBar` MUST ship a sibling `index.config.ts` / `detail.config.ts` with `navigationStyle: 'custom'` (mirror work-orders / operation / salary). Never rely on app.config defaults.

@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import {
+  WECHAT_MINIAPP_APP_ID,
+  WECHAT_MINIAPP_APP_SECRET,
   WECHAT_MP_APP_ID,
   WECHAT_MP_APP_SECRET,
   WECHAT_WEBHOOK_TOKEN
@@ -44,6 +46,104 @@ export async function exchangeWeChatCode(
     openid: data.openid,
     unionid: data.unionid ?? data.openid
   };
+}
+
+// ── 小程序 (Mini Program) login ───────────────────────────────────────────────
+// The mini-program client calls wx.login() to get a short-lived `code`, then POSTs
+// it to us. We exchange it via jscode2session (a DIFFERENT endpoint + a DIFFERENT
+// AppID/Secret than the 公众号 web-OAuth flow above). `unionid` is only returned
+// when the mini-program is bound to the same 微信开放平台 subject; otherwise we
+// fall back to the mini-program-scoped `openid`.
+export async function exchangeMiniProgramCode(
+  code: string
+): Promise<{ openid: string; unionid: string; sessionKey: string } | null> {
+  const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${WECHAT_MINIAPP_APP_ID}&secret=${WECHAT_MINIAPP_APP_SECRET}&js_code=${code}&grant_type=authorization_code`;
+  const resp = await fetch(url);
+  const data = (await resp.json()) as {
+    openid?: string;
+    unionid?: string;
+    session_key?: string;
+    errcode?: number;
+    errmsg?: string;
+  };
+
+  if (data.errcode || !data.openid) {
+    console.error("[wechat jscode2session] failed", JSON.stringify(data));
+    return null;
+  }
+
+  return {
+    openid: data.openid,
+    unionid: data.unionid ?? data.openid,
+    sessionKey: data.session_key ?? ""
+  };
+}
+
+/** Global access_token for mini-program cgi-bin APIs, cached in Redis (~7200s). */
+export async function getMiniProgramAccessToken(): Promise<string | null> {
+  const cached = await redis.get("wechat:miniapp:access_token");
+  if (cached) return cached as string;
+
+  const resp = await fetch(
+    `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${WECHAT_MINIAPP_APP_ID}&secret=${WECHAT_MINIAPP_APP_SECRET}`
+  );
+  const data = (await resp.json()) as {
+    access_token?: string;
+    expires_in?: number;
+    errcode?: number;
+    errmsg?: string;
+  };
+
+  if (!data.access_token) {
+    console.error("[wechat miniapp token] failed", JSON.stringify(data));
+    return null;
+  }
+
+  await redis.set(
+    "wechat:miniapp:access_token",
+    data.access_token,
+    "EX",
+    Math.max((data.expires_in ?? 7200) - 200, 60)
+  );
+  return data.access_token;
+}
+
+/**
+ * Resolve the phone number the user authorized via the mini-program
+ * `<button open-type="getPhoneNumber">`. The client hands us a short-lived phone
+ * `code` (NOT the login code); we exchange it server-side. Returns the national
+ * number (`purePhoneNumber`, e.g. "13800138000"), or null on failure.
+ */
+export async function getMiniProgramPhoneNumber(
+  phoneCode: string
+): Promise<string | null> {
+  const token = await getMiniProgramAccessToken();
+  if (!token) return null;
+
+  const resp = await fetch(
+    `https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=${token}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: phoneCode })
+    }
+  );
+  const data = (await resp.json()) as {
+    errcode?: number;
+    errmsg?: string;
+    phone_info?: {
+      phoneNumber?: string;
+      purePhoneNumber?: string;
+      countryCode?: string;
+    };
+  };
+
+  if (data.errcode || !data.phone_info) {
+    console.error("[wechat getphonenumber] failed", JSON.stringify(data));
+    return null;
+  }
+
+  return data.phone_info.purePhoneNumber ?? data.phone_info.phoneNumber ?? null;
 }
 
 export async function getWeChatUserInfo(
