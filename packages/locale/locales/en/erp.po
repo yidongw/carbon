@@ -2579,6 +2579,19 @@ msgstr "Could not build PDF. Try again."
 msgid "Could not prepare region image for analysis"
 msgstr "Could not prepare region image for analysis"
 
+msgid "Could not save quantity"
+msgstr "Could not save quantity"
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr "Could not save quantity: {0}"
+
+msgid "Could not save quantity: no response from server"
+msgstr "Could not save quantity: no response from server"
+
+msgid "Could not save quantity: unexpected response"
+msgstr "Could not save quantity: unexpected response"
+
 msgid "Couldn't load documents"
 msgstr "Couldn't load documents"
 
@@ -7624,9 +7637,6 @@ msgstr "Failed to update purchase order payment"
 msgid "Failed to update purchasing order status"
 msgstr "Failed to update purchasing order status"
 
-msgid "Failed to update quantity"
-msgstr "Failed to update quantity"
-
 msgid "Failed to update question"
 msgstr "Failed to update question"
 
@@ -12089,8 +12099,8 @@ msgstr "Quantity assigned or picked up for this operation."
 msgid "Quantity Completed"
 msgstr "Quantity Completed"
 
-msgid "Quantity did not save. Try again or use Split Batch."
-msgstr "Quantity did not save. Try again or use Split Batch."
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
+msgstr "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
 
 msgid "Quantity finished and reported for this operation."
 msgstr "Quantity finished and reported for this operation."

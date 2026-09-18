@@ -949,11 +949,12 @@ export async function updateBundleQuantity(
   if (verify.error) {
     return { ok: false, reason: "save", message: verify.error.message };
   }
-  if (Number(verify.data?.quantity) !== quantity) {
+  const savedQty = Number(verify.data?.quantity);
+  if (!Number.isFinite(savedQty) || savedQty !== quantity) {
     return {
       ok: false,
       reason: "save",
-      message: "Quantity did not persist — check permissions"
+      message: `Expected ${quantity} but job still has ${verify.data?.quantity ?? "null"}`
     };
   }
 

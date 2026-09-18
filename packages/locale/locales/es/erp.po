@@ -2580,6 +2580,19 @@ msgstr "No se pudo construir el PDF. Intente de nuevo."
 msgid "Could not prepare region image for analysis"
 msgstr "No se pudo preparar la imagen de la región para el análisis"
 
+msgid "Could not save quantity"
+msgstr ""
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr ""
+
+msgid "Could not save quantity: no response from server"
+msgstr ""
+
+msgid "Could not save quantity: unexpected response"
+msgstr ""
+
 msgid "Couldn't load documents"
 msgstr "No se pudieron cargar los documentos"
 
@@ -7625,9 +7638,6 @@ msgstr "Falló al actualizar el pago de la orden de compra"
 msgid "Failed to update purchasing order status"
 msgstr "Falló al actualizar el estado de la orden de compra"
 
-msgid "Failed to update quantity"
-msgstr ""
-
 msgid "Failed to update question"
 msgstr "Falló al actualizar la pregunta"
 
@@ -12090,7 +12100,7 @@ msgstr "Cantidad asignada o recogida para esta operación."
 msgid "Quantity Completed"
 msgstr "Cantidad Completada"
 
-msgid "Quantity did not save. Try again or use Split Batch."
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
 msgstr ""
 
 msgid "Quantity finished and reported for this operation."

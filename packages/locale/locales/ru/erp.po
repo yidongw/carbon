@@ -2580,6 +2580,19 @@ msgstr "Не удалось создать PDF. Попробуйте снова.
 msgid "Could not prepare region image for analysis"
 msgstr "Не удалось подготовить изображение региона для анализа"
 
+msgid "Could not save quantity"
+msgstr ""
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr ""
+
+msgid "Could not save quantity: no response from server"
+msgstr ""
+
+msgid "Could not save quantity: unexpected response"
+msgstr ""
+
 msgid "Couldn't load documents"
 msgstr "Не удалось загрузить документы"
 
@@ -7625,9 +7638,6 @@ msgstr "Не удалось обновить оплату заказа поку�
 msgid "Failed to update purchasing order status"
 msgstr "Не удалось обновить статус закупочного заказа"
 
-msgid "Failed to update quantity"
-msgstr ""
-
 msgid "Failed to update question"
 msgstr "Не удалось обновить вопрос"
 
@@ -12090,7 +12100,7 @@ msgstr "Количество назначено или забрано для э�
 msgid "Quantity Completed"
 msgstr "Завершено количество"
 
-msgid "Quantity did not save. Try again or use Split Batch."
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
 msgstr ""
 
 msgid "Quantity finished and reported for this operation."

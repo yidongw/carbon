@@ -2580,6 +2580,19 @@ msgstr "PDFの作成に失敗しました。もう一度試してください。
 msgid "Could not prepare region image for analysis"
 msgstr "分析用の地域画像を準備できませんでした"
 
+msgid "Could not save quantity"
+msgstr ""
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr ""
+
+msgid "Could not save quantity: no response from server"
+msgstr ""
+
+msgid "Could not save quantity: unexpected response"
+msgstr ""
+
 msgid "Couldn't load documents"
 msgstr "ドキュメントを読み込めませんでした"
 
@@ -7625,9 +7638,6 @@ msgstr "購入注文の支払いを更新できませんでした"
 msgid "Failed to update purchasing order status"
 msgstr "購入注文のステータス更新に失敗しました"
 
-msgid "Failed to update quantity"
-msgstr ""
-
 msgid "Failed to update question"
 msgstr "更新に失敗しました"
 
@@ -12090,7 +12100,7 @@ msgstr "この作業に割り当てられたまたは受け取った数量。"
 msgid "Quantity Completed"
 msgstr "完了数量"
 
-msgid "Quantity did not save. Try again or use Split Batch."
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
 msgstr ""
 
 msgid "Quantity finished and reported for this operation."

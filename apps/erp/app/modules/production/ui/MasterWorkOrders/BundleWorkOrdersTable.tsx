@@ -68,10 +68,14 @@ function quantityErrorMessage(
       return i18n._(msg`Cannot modify a locked job. Reopen it first.`);
     case "not_found":
       return i18n._(msg`Bundle not found`);
+    case "save":
+      return result.message
+        ? i18n._(msg`Could not save quantity: ${result.message}`)
+        : i18n._(msg`Could not save quantity`);
     default:
       return result.message
-        ? result.message
-        : i18n._(msg`Failed to update quantity`);
+        ? i18n._(msg`Could not save quantity: ${result.message}`)
+        : i18n._(msg`Could not save quantity`);
   }
 }
 
@@ -88,6 +92,17 @@ function reportQuantityError(bundleWorkOrderId: string, message: string) {
 
 function clearQuantityError(bundleWorkOrderId: string) {
   quantityEditErrors.delete(bundleWorkOrderId);
+}
+
+function isQuantityFailure(
+  value: unknown
+): value is Extract<BundleQuantityUpdateResult, { ok: false }> {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "ok" in value &&
+    (value as { ok?: unknown }).ok === false
+  );
 }
 
 function BundleQuantityCell({
@@ -160,7 +175,9 @@ function BundleQuantityCell({
       if (pendingQty.current === null) return;
       pendingQty.current = null;
       quantityEditPending.delete(bundleWorkOrderId);
-      const message = i18n._(msg`Failed to update quantity`);
+      const message = i18n._(
+        msg`Could not save quantity: no response from server`
+      );
       setLocalQty(baselineQty.current);
       setDraft(baselineQty.current);
       setErrorMessage(message);
@@ -172,7 +189,12 @@ function BundleQuantityCell({
     if (handledDataRef.current === fetcher.data) return;
     handledDataRef.current = fetcher.data;
 
-    if (fetcher.data.ok) {
+    if (
+      fetcher.data &&
+      typeof fetcher.data === "object" &&
+      "ok" in fetcher.data &&
+      fetcher.data.ok === true
+    ) {
       clearQuantityError(bundleWorkOrderId);
       setErrorMessage(null);
       const expected = pendingQty.current;
@@ -188,7 +210,7 @@ function BundleQuantityCell({
         setLocalQty(baselineQty.current);
         setDraft(baselineQty.current);
         const message = i18n._(
-          msg`Quantity did not save. Try again or use Split Batch.`
+          msg`Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining.`
         );
         setErrorMessage(message);
         reportQuantityError(bundleWorkOrderId, message);
@@ -196,7 +218,10 @@ function BundleQuantityCell({
       return;
     }
 
-    const message = quantityErrorMessage(fetcher.data, i18n);
+    const message = isQuantityFailure(fetcher.data)
+      ? quantityErrorMessage(fetcher.data, i18n)
+      : i18n._(msg`Could not save quantity: unexpected response`);
+    console.error("[bundle-qty] failure payload", fetcher.data);
     pendingQty.current = null;
     quantityEditPending.delete(bundleWorkOrderId);
     setLocalQty(baselineQty.current);

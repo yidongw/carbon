@@ -2580,6 +2580,19 @@ msgstr "无法生成PDF。请重试。"
 msgid "Could not prepare region image for analysis"
 msgstr "无法准备区域图像进行分析"
 
+msgid "Could not save quantity"
+msgstr ""
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr ""
+
+msgid "Could not save quantity: no response from server"
+msgstr ""
+
+msgid "Could not save quantity: unexpected response"
+msgstr ""
+
 msgid "Couldn't load documents"
 msgstr "无法加载文档"
 
@@ -7625,9 +7638,6 @@ msgstr "采购订单付款更新失败"
 msgid "Failed to update purchasing order status"
 msgstr "采购订单状态更新失败"
 
-msgid "Failed to update quantity"
-msgstr ""
-
 msgid "Failed to update question"
 msgstr "更新问题失败"
 
@@ -12090,7 +12100,7 @@ msgstr "为该操作分配或领取的数量。"
 msgid "Quantity Completed"
 msgstr "已完成数量"
 
-msgid "Quantity did not save. Try again or use Split Batch."
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
 msgstr ""
 
 msgid "Quantity finished and reported for this operation."

@@ -11,31 +11,60 @@ export type BundleQuantityUpdateResult = Awaited<
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, companyId, userId } = await requirePermissions(request, {
-    update: "production"
-  });
 
-  const { bundleWorkOrderId } = params;
-  if (!bundleWorkOrderId) {
-    return data({ ok: false as const, reason: "not_found" as const });
+  try {
+    const { client, companyId, userId } = await requirePermissions(request, {
+      update: "production"
+    });
+
+    const { bundleWorkOrderId } = params;
+    if (!bundleWorkOrderId) {
+      return data({ ok: false as const, reason: "not_found" as const });
+    }
+
+    const formData = await request.formData();
+    const raw = formData.get("quantity");
+    const quantity = Number(raw);
+    if (!Number.isFinite(quantity)) {
+      return data({
+        ok: false as const,
+        reason: "save" as const,
+        message: `Invalid quantity: ${String(raw)}`
+      });
+    }
+
+    // Prefer service role for the write; fall back to the user client if the
+    // service role isn't available in this environment.
+    let writeClient = client;
+    try {
+      writeClient = await getCarbonServiceRole();
+    } catch (error) {
+      console.error(
+        "[bundle-qty] service role unavailable, using user client",
+        error
+      );
+    }
+
+    const result = await updateBundleQuantity(
+      client,
+      {
+        bundleWorkOrderId,
+        quantity,
+        companyId,
+        updatedBy: userId
+      },
+      writeClient
+    );
+
+    return data(result);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unexpected server error";
+    console.error("[bundle-qty] action failed", error);
+    return data({
+      ok: false as const,
+      reason: "save" as const,
+      message
+    });
   }
-
-  const formData = await request.formData();
-  const quantity = Number(formData.get("quantity"));
-  // Permission already checked above; write with service role so RLS can't
-  // silently no-op the job.quantity update (same pattern as job recalc).
-  const serviceRole = await getCarbonServiceRole();
-
-  const result = await updateBundleQuantity(
-    client,
-    {
-      bundleWorkOrderId,
-      quantity,
-      companyId,
-      updatedBy: userId
-    },
-    serviceRole
-  );
-
-  return data(result);
 }
