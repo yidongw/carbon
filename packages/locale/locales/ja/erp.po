@@ -104,7 +104,7 @@ msgid "{failed} of {0} tickets failed"
 msgstr "{0} 枚中 {failed} 枚の印刷に失敗しました"
 
 msgid "{leftToCut} left to cut"
-msgstr ""
+msgstr "未裁断 {leftToCut}"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
@@ -119,7 +119,7 @@ msgid "{remaining} left"
 msgstr "残り{remaining}"
 
 msgid "{remainingToSplit} left to split"
-msgstr ""
+msgstr "未分割 {remainingToSplit}"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 個の権限"
@@ -4128,7 +4128,7 @@ msgid "Edit Work Center"
 msgstr "ワークセンターを編集"
 
 msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
-msgstr ""
+msgstr "工程完了を編集するには、先にジョブを再開してください。再開するとステータスが進行中に戻ります。"
 
 msgid "Elimination entries generated"
 msgstr "生成された削除-entry"
@@ -8970,7 +8970,7 @@ msgid "Job ID"
 msgstr "ジョブID"
 
 msgid "Job is locked"
-msgstr ""
+msgstr "ジョブはロックされています"
 
 msgid "Job Location"
 msgstr "ジョブロケーション"
@@ -12475,7 +12475,7 @@ msgid "Reopen"
 msgstr "再度開く"
 
 msgid "Reopen job"
-msgstr ""
+msgstr "ジョブを再開"
 
 msgid "Reorder"
 msgstr "並び替え"
@@ -13944,7 +13944,7 @@ msgid "Split failed"
 msgstr "分割失敗"
 
 msgid "Split into bundles"
-msgstr ""
+msgstr "バンドルに分割"
 
 msgid "Split line"
 msgstr "ラインを分割"
@@ -13965,7 +13965,7 @@ msgid "Split Receipt Line"
 msgstr "受領明細分割"
 
 msgid "Split remaining"
-msgstr ""
+msgstr "残りを分割"
 
 msgid "Split shipment line"
 msgstr "出荷ラインを分割"
@@ -16489,7 +16489,7 @@ msgid "With Previous"
 msgstr "Previous"
 
 msgid "WO Qty"
-msgstr ""
+msgstr "WO数量"
 
 msgid "Won"
 msgstr "獲得"

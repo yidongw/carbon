@@ -178,7 +178,7 @@ msgid "Assigned"
 msgstr "Zugewiesen"
 
 msgid "Assigned At"
-msgstr ""
+msgstr "Zugewiesen am"
 
 msgid "Assigned to Me"
 msgstr "Mir zugewiesen"

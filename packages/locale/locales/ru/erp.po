@@ -104,7 +104,7 @@ msgid "{failed} of {0} tickets failed"
 msgstr "Не удалось напечатать {failed} из {0} ярлыков"
 
 msgid "{leftToCut} left to cut"
-msgstr ""
+msgstr "Осталось {leftToCut} для раскроя"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}МБ максимум"
@@ -119,7 +119,7 @@ msgid "{remaining} left"
 msgstr "Осталось {remaining}"
 
 msgid "{remainingToSplit} left to split"
-msgstr ""
+msgstr "Осталось {remainingToSplit} для разделения"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} разрешений"
@@ -4128,7 +4128,7 @@ msgid "Edit Work Center"
 msgstr "Редактировать рабочий центр"
 
 msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
-msgstr ""
+msgstr "Чтобы изменить завершение операции, сначала снова откройте заказ. При повторном открытии статус станет «В работе»."
 
 msgid "Elimination entries generated"
 msgstr "Удаление записей, сгенерированных"
@@ -8970,7 +8970,7 @@ msgid "Job ID"
 msgstr "ID задания"
 
 msgid "Job is locked"
-msgstr ""
+msgstr "Заказ заблокирован"
 
 msgid "Job Location"
 msgstr "Местоположение задания"
@@ -12475,7 +12475,7 @@ msgid "Reopen"
 msgstr "Переоткрыть"
 
 msgid "Reopen job"
-msgstr ""
+msgstr "Открыть заказ снова"
 
 msgid "Reorder"
 msgstr "Переупорядочить"
@@ -13944,7 +13944,7 @@ msgid "Split failed"
 msgstr "Разделение не удалось"
 
 msgid "Split into bundles"
-msgstr ""
+msgstr "Разделить на партии"
 
 msgid "Split line"
 msgstr "Разделить строку"
@@ -13965,7 +13965,7 @@ msgid "Split Receipt Line"
 msgstr "Разделить строку чека"
 
 msgid "Split remaining"
-msgstr ""
+msgstr "Разделить оставшееся"
 
 msgid "Split shipment line"
 msgstr "Разделить строку отправки"
@@ -16489,7 +16489,7 @@ msgid "With Previous"
 msgstr "Назад"
 
 msgid "WO Qty"
-msgstr ""
+msgstr "Кол-во ЗН"
 
 msgid "Won"
 msgstr "Выиграно"

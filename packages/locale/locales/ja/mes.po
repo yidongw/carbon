@@ -178,7 +178,7 @@ msgid "Assigned"
 msgstr "割当済み"
 
 msgid "Assigned At"
-msgstr ""
+msgstr "割り当て日時"
 
 msgid "Assigned to Me"
 msgstr "自分に割当"

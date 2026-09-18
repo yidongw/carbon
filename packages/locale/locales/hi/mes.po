@@ -178,7 +178,7 @@ msgid "Assigned"
 msgstr "निर्दिष्ट"
 
 msgid "Assigned At"
-msgstr ""
+msgstr "असाइन किया गया"
 
 msgid "Assigned to Me"
 msgstr "मुझे असाइन किया गया"

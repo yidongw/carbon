@@ -178,7 +178,7 @@ msgid "Assigned"
 msgstr "Assegnato"
 
 msgid "Assigned At"
-msgstr ""
+msgstr "Assegnato il"
 
 msgid "Assigned to Me"
 msgstr "Assegnato a Me"
