@@ -14,7 +14,7 @@ import {
 import { getMaterialDescription, getMaterialId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { TrackingTypeIcon } from "~/components";
@@ -91,6 +91,10 @@ const MaterialForm = ({
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
   const fetcher = useFetcher<PostgrestSingleResponse<{ id: string }>>();
+  // Fire the modal-create success handler exactly once (see StyleForm) — the
+  // fetcher stays in `loading` across renders and onCreated's identity changes
+  // each render, so an unlatched effect would loop (React #185).
+  const createHandledRef = useRef(false);
   const materialTypes = useMaterialTypes(substanceId, formId);
   const substance = useSubstance();
   const shape = useShape();
@@ -104,6 +108,8 @@ const MaterialForm = ({
     if (type !== "modal") return;
 
     if (fetcher.state === "loading" && fetcher.data?.data) {
+      if (createHandledRef.current) return;
+      createHandledRef.current = true;
       if (onCreated) onCreated(fetcher.data.data.id);
       else onClose?.();
       toast.success(t`Created material`);

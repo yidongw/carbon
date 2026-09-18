@@ -82,6 +82,10 @@ const PartForm = ({
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
   const fetcher = useFetcher<PostgrestSingleResponse<{ id: string }>>();
+  // Fire the modal-create success handler exactly once (see StyleForm) — the
+  // fetcher stays in `loading` across renders and onCreated's identity changes
+  // each render, so an unlatched effect would loop (React #185).
+  const createHandledRef = useRef(false);
 
   const [modelUploadId, setModelUploadId] = useState<string | null>(null);
   const [modelIsUploading, setModelIsUploading] = useState(false);
@@ -179,6 +183,8 @@ const PartForm = ({
     if (type !== "modal") return;
 
     if (fetcher.state === "loading" && fetcher.data?.data) {
+      if (createHandledRef.current) return;
+      createHandledRef.current = true;
       if (onCreated) onCreated(fetcher.data.data.id);
       else onClose?.();
       toast.success(t`Created part`);

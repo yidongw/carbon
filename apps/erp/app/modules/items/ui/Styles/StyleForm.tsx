@@ -81,10 +81,18 @@ const StyleForm = ({
   const fetcher = overlayFetcher ?? localFetcher;
   const dismiss = onDismiss ?? onClose;
 
+  // Fire the success handler exactly once. The fetcher sits in `loading` for
+  // several renders during revalidation, and onCreated/onClose have a fresh
+  // identity each render, so without this latch the effect re-runs and calls
+  // onCreated repeatedly — an infinite update loop (React #185).
+  const createHandledRef = useRef(false);
+
   useEffect(() => {
     if (type !== "modal") return;
 
     if (localFetcher.state === "loading" && localFetcher.data?.data) {
+      if (createHandledRef.current) return;
+      createHandledRef.current = true;
       // Prefer onCreated (auto-selects the new item in the picker); fall back to
       // onClose for callers that only need the modal dismissed.
       if (onCreated) onCreated(localFetcher.data.data.id);
