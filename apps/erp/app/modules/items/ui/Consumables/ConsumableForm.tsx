@@ -14,7 +14,7 @@ import {
   useMount
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { PostgrestResponse } from "@supabase/supabase-js";
+import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
@@ -53,6 +53,8 @@ type ConsumableFormProps = {
   attributeSetOptions?: Array<{ label: string; value: string }>;
   type?: "card" | "modal";
   onClose?: () => void;
+  /** Fired after a successful modal create with the new item's id. */
+  onCreated?: (id: string) => void;
 };
 
 function startsWithLetter(value: string) {
@@ -63,12 +65,17 @@ const ConsumableForm = ({
   initialValues,
   attributeSetOptions: attributeSetOptionsProp = [],
   type = "card",
-  onClose
+  onClose,
+  onCreated
 }: ConsumableFormProps) => {
   const { company } = useUser();
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
-  const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const fetcher = useFetcher<PostgrestSingleResponse<{ id: string }>>();
+  // Fire the modal-create success handler exactly once (see StyleForm) — the
+  // fetcher stays in `loading` across renders and onCreated's identity changes
+  // each render, so an unlatched effect would loop (React #185).
+  const createHandledRef = useRef(false);
   const attributeSetsFetcher = useFetcher<{
     data: AttributeSetFormOption[];
     error: Error | null;
@@ -117,14 +124,17 @@ const ConsumableForm = ({
     if (type !== "modal") return;
 
     if (fetcher.state === "loading" && fetcher.data?.data) {
-      onClose?.();
+      if (createHandledRef.current) return;
+      createHandledRef.current = true;
+      if (onCreated) onCreated(fetcher.data.data.id);
+      else onClose?.();
       toast.success(t`Created consumable`);
     } else if (fetcher.state === "idle" && fetcher.data?.error) {
       toast.error(
         t`Failed to create consumable: ${fetcher.data.error.message}`
       );
     }
-  }, [fetcher.data, fetcher.state, onClose, type, t]);
+  }, [fetcher.data, fetcher.state, onClose, onCreated, type, t]);
 
   const { id, onIdChange, loading } = useNextItemId("Consumable");
   const permissions = usePermissions();
