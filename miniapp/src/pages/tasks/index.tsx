@@ -1,27 +1,42 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { View, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getOperations } from '../../services/operations'
-import type { OpsData, OpItem } from '../../services/operations'
+import type { OpItem } from '../../services/operations'
 import { opStatusCls, opStatusLabel } from '../../utils/opStatus'
 import TabBar from '../../components/TabBar'
 import NavBar from '../../components/NavBar'
 import './index.scss'
 
 const SEGS = [
-  { key: 'assigned', text: '已分配' },
   { key: 'active', text: '进行中' },
-  { key: 'recent', text: '最近' },
+  { key: 'ready', text: '就绪' },
+  { key: 'todo', text: '待处理' },
+  { key: 'assigned', text: '已分配' },
 ] as const
 
+type SegKey = (typeof SEGS)[number]['key']
+
+function filterBySeg(rows: OpItem[], seg: SegKey): OpItem[] {
+  if (seg === 'assigned') return rows
+  if (seg === 'active') {
+    return rows.filter(
+      (r) => r.status === 'In Progress' || r.status === 'Paused',
+    )
+  }
+  if (seg === 'ready') return rows.filter((r) => r.status === 'Ready')
+  if (seg === 'todo') return rows.filter((r) => r.status === 'Todo')
+  return rows
+}
+
 export default function Tasks() {
-  const [seg, setSeg] = useState<(typeof SEGS)[number]['key']>('assigned')
-  const [data, setData] = useState<OpsData | null>(null)
+  const [seg, setSeg] = useState<SegKey>('active')
+  const [rows, setRows] = useState<OpItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useDidShow(() => {
     getOperations()
-      .then(setData)
+      .then((d) => setRows(d.assigned ?? []))
       .catch((e: any) => {
         if (e?.statusCode !== 401) {
           Taro.showToast({ title: e?.message || '加载失败', icon: 'none' })
@@ -30,7 +45,7 @@ export default function Tasks() {
       .finally(() => setLoading(false))
   })
 
-  const list: OpItem[] = data ? data[seg] : []
+  const list = useMemo(() => filterBySeg(rows, seg), [rows, seg])
 
   return (
     <View className='tasks'>
@@ -49,19 +64,25 @@ export default function Tasks() {
 
       {list.length > 0 ? (
         <View className='tasks__list'>
-          {list.map((t) => (
+          {list.map((item) => (
             <View
-              key={t.id}
+              key={item.id}
               className='tasks__row'
               hoverClass='tasks__row--hover'
-              onClick={() => Taro.navigateTo({ url: `/pages/operation/index?id=${t.id}` })}
+              onClick={() =>
+                Taro.navigateTo({ url: `/pages/operation/index?id=${item.id}` })
+              }
             >
               <View className='tasks__row-mid'>
-                <Text className='tasks__row-title'>{t.title}</Text>
-                <Text className='tasks__row-sub'>{t.sub}</Text>
+                <Text className='tasks__row-title'>{item.title}</Text>
+                <Text className='tasks__row-sub'>{item.sub}</Text>
               </View>
-              <View className={`tasks__badge tasks__badge--${opStatusCls(t.status)}`}>
-                <Text className='tasks__badge-text'>{opStatusLabel(t.status)}</Text>
+              <View
+                className={`tasks__badge tasks__badge--${opStatusCls(item.status)}`}
+              >
+                <Text className='tasks__badge-text'>
+                  {opStatusLabel(item.status)}
+                </Text>
               </View>
             </View>
           ))}

@@ -395,3 +395,7 @@ Patterns learned from corrections. Review at the start of each session.
 - Symptom: double header — WeChat default "Carbon MES" bar stacked above custom NavBar (e.g. 拣货).
 - Cause: page used `<NavBar>` but missing `*.config.ts` with `navigationStyle: 'custom'`.
 - Rule: every new miniapp page that renders `NavBar` MUST ship a sibling `index.config.ts` / `detail.config.ts` with `navigationStyle: 'custom'` (mirror work-orders / operation / salary). Never rely on app.config defaults.
+
+## Miniapp picking UI must mirror MES web labels and chrome
+- Symptom: picking detail looked like a generic form (缺货/拣货, 0/15 qty) instead of MES kit cards.
+- Rule: match `picking.$pickingListId` + zh `mes.po`: kit `job · process`, yellow **没有库存**, solid Count (non-tracked shows toPick only), buttons **短缺** + **+ 选择**, tracked **扫描**. Always ship `navigationStyle: custom` with NavBar.

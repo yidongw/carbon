@@ -9,8 +9,6 @@ export interface OpItem {
 
 export interface OpsData {
   assigned: OpItem[]
-  active: OpItem[]
-  recent: OpItem[]
 }
 
 export function getOperations(): Promise<OpsData> {
