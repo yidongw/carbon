@@ -52,6 +52,7 @@ import {
 import { Link, useFetcher, useParams } from "react-router";
 import { Hidden, Item, useConfigurableItems } from "~/components/Form";
 import { Confirm } from "~/components/Modals";
+import ScrollFadeGroup from "~/components/ScrollFadeGroup";
 import { usePermissions, useUser } from "~/hooks";
 import type { MethodItemType } from "~/modules/shared";
 import { path } from "~/utils/path";
@@ -212,37 +213,39 @@ const MakeMethodTools = ({
     <Fragment key={itemId}>
       <Menubar>
         <HStack className="w-full justify-between">
-          <HStack spacing={0}>
-            <MenubarItem
-              isLoading={isGetMethodLoading}
-              isDisabled={
-                !permissions.can("update", "parts") ||
-                isGetMethodLoading ||
-                activeMethod.status !== "Draft" // Can only overwrite Draft versions
-              }
-              leftIcon={<LuGitBranch />}
-              onClick={getMethodModal.onOpen}
-            >
-              <Trans>Get Method</Trans>
-            </MenubarItem>
-            <MenubarItem
-              isDisabled={
-                !permissions.can("update", "parts") || isSaveMethodLoading
-              }
-              isLoading={isSaveMethodLoading}
-              leftIcon={<LuGitMerge />}
-              onClick={saveMethodModal.onOpen}
-            >
-              <Trans>Save Method</Trans>
-            </MenubarItem>
-            {itemLink && (
-              <MenubarItem leftIcon={<LuGitFork />} asChild>
-                <Link prefetch="intent" to={itemLink}>
-                  <Trans>Item Master</Trans>
-                </Link>
+          <ScrollFadeGroup>
+            <HStack spacing={0} className="w-max">
+              <MenubarItem
+                isLoading={isGetMethodLoading}
+                isDisabled={
+                  !permissions.can("update", "parts") ||
+                  isGetMethodLoading ||
+                  activeMethod.status !== "Draft" // Can only overwrite Draft versions
+                }
+                leftIcon={<LuGitBranch />}
+                onClick={getMethodModal.onOpen}
+              >
+                <Trans>Get Method</Trans>
               </MenubarItem>
-            )}
-          </HStack>
+              <MenubarItem
+                isDisabled={
+                  !permissions.can("update", "parts") || isSaveMethodLoading
+                }
+                isLoading={isSaveMethodLoading}
+                leftIcon={<LuGitMerge />}
+                onClick={saveMethodModal.onOpen}
+              >
+                <Trans>Save Method</Trans>
+              </MenubarItem>
+              {itemLink && (
+                <MenubarItem leftIcon={<LuGitFork />} asChild>
+                  <Link prefetch="intent" to={itemLink}>
+                    <Trans>Item Master</Trans>
+                  </Link>
+                </MenubarItem>
+              )}
+            </HStack>
+          </ScrollFadeGroup>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
