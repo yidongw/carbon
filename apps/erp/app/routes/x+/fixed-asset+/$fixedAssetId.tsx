@@ -159,7 +159,7 @@ export default function FixedAssetDetailRoute() {
                 )}
               </>
             }
-            actions={
+            primaryAction={
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
