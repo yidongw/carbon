@@ -542,7 +542,7 @@ export default function StyleRoute() {
                 </div>
               }
               content={
-                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <Outlet />
                 </div>
               }
