@@ -163,7 +163,7 @@ msgid "Are you sure you want to leave this page?"
 msgstr "Êtes-vous sûr de vouloir quitter cette page ?"
 
 msgid "ASAP"
-msgstr ""
+msgstr "Dès que possible"
 
 msgid "Asset class created"
 msgstr "Classe d'actif créée"
@@ -4530,7 +4530,7 @@ msgid "No bundle work orders"
 msgstr "Aucune commande de travail en lot"
 
 msgid "No Deadline"
-msgstr ""
+msgstr "Sans échéance"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "Aucune dépréciation à calculer pour les actifs non couverts"

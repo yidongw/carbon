@@ -163,7 +163,7 @@ msgid "Are you sure you want to leave this page?"
 msgstr "このページを離れますか？"
 
 msgid "ASAP"
-msgstr ""
+msgstr "至急"
 
 msgid "Asset class created"
 msgstr "資産クラスを作成しました"
@@ -4530,7 +4530,7 @@ msgid "No bundle work orders"
 msgstr "バンドル仕事指示書なし"
 
 msgid "No Deadline"
-msgstr ""
+msgstr "期限なし"
 
 msgid "No depreciation to calculate for uncovered assets"
 msgstr "未 COVERED 資産に対する減価額は計算できません"
