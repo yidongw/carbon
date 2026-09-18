@@ -285,6 +285,11 @@ const MasterWorkOrdersTable = memo(
             const bundleCount = row.original.id
               ? (bundleCountByMasterId[row.original.id] ?? 0)
               : 0;
+            // How much of the plan is still uncut (plan − cut). Shown next to the
+            // bundle count so a partially-cut master reads "N bundles · M to cut".
+            const leftToCut = row.original.id
+              ? (cuttingProgressByMasterId[row.original.id]?.remaining ?? 0)
+              : 0;
             return (
               <HStack spacing={1}>
                 <span className="tabular-nums">{bundleCount}</span>
@@ -311,6 +316,15 @@ const MasterWorkOrdersTable = memo(
                       onClick={(e) => openBundles(e, row.original.id!)}
                     />
                   )
+                ) : null}
+                {leftToCut > 0 ? (
+                  <span
+                    className="ml-1 inline-flex items-center gap-0.5 text-muted-foreground tabular-nums"
+                    title={t`${leftToCut} left to cut`}
+                  >
+                    <LuScissors className="h-3 w-3" />
+                    {leftToCut}
+                  </span>
                 ) : null}
               </HStack>
             );
