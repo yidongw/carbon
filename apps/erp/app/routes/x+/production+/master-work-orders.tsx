@@ -57,9 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
           (cuttingStatuses as readonly string[]).includes(v)
         )
     : [];
-  const dbFilters = (filters ?? []).filter(
-    (f) => f.column !== "cuttingStatus"
-  );
+  const dbFilters = (filters ?? []).filter((f) => f.column !== "cuttingStatus");
 
   let rows: NonNullable<
     Awaited<ReturnType<typeof getMasterWorkOrders>>["data"]
@@ -166,22 +164,36 @@ export async function loader({ request }: LoaderFunctionArgs) {
     masterIds.length > 0
       ? client
           .from("bundleWorkOrders")
-          .select("masterWorkOrderId, jobId")
+          .select("masterWorkOrderId, jobId, quantity")
           .eq("companyId", companyId)
           .in("masterWorkOrderId", masterIds)
       : Promise.resolve({
           data: [] as {
             masterWorkOrderId: string | null;
             jobId: string | null;
+            quantity: number | null;
           }[]
         })
   ]);
 
   const bundleCountByMasterId: Record<string, number> = {};
-  for (const { masterWorkOrderId } of bundleRows.data ?? []) {
+  // Sum of bundle quantities per master — paired with cutting progress to get
+  // remainingToSplit (cut − bundled) for the Bundles cell scissors badge.
+  const bundledQuantityByMasterId: Record<string, number> = {};
+  for (const { masterWorkOrderId, quantity } of bundleRows.data ?? []) {
     if (!masterWorkOrderId) continue;
     bundleCountByMasterId[masterWorkOrderId] =
       (bundleCountByMasterId[masterWorkOrderId] ?? 0) + 1;
+    bundledQuantityByMasterId[masterWorkOrderId] =
+      (bundledQuantityByMasterId[masterWorkOrderId] ?? 0) + (quantity ?? 0);
+  }
+
+  const remainingToSplitByMasterId: Record<string, number> = {};
+  for (const r of rows) {
+    if (!r.id) continue;
+    const cut = cuttingProgressByMasterId[r.id]?.reported ?? 0;
+    const bundled = bundledQuantityByMasterId[r.id] ?? 0;
+    remainingToSplitByMasterId[r.id] = Math.max(0, cut - bundled);
   }
 
   // Total processes per master = distinct operation descriptions on the master
@@ -222,6 +234,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     masterWorkOrders: rows,
     itemIdsWithConfigurationParameters,
     bundleCountByMasterId,
+    remainingToSplitByMasterId,
     processCountByMasterId,
     cuttingProgressByMasterId
   };
@@ -233,6 +246,7 @@ export default function MasterWorkOrdersRoute() {
     masterWorkOrders,
     itemIdsWithConfigurationParameters,
     bundleCountByMasterId,
+    remainingToSplitByMasterId,
     processCountByMasterId,
     cuttingProgressByMasterId
   } = useLoaderData<typeof loader>();
@@ -244,6 +258,7 @@ export default function MasterWorkOrdersRoute() {
         count={count}
         itemIdsWithConfigurationParameters={itemIdsWithConfigurationParameters}
         bundleCountByMasterId={bundleCountByMasterId}
+        remainingToSplitByMasterId={remainingToSplitByMasterId}
         processCountByMasterId={processCountByMasterId}
         cuttingProgressByMasterId={cuttingProgressByMasterId}
       />

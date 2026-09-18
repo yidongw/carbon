@@ -23,6 +23,7 @@ import {
   LuHash,
   LuMapPin,
   LuPackageOpen,
+  LuPackagePlus,
   LuScissors,
   LuShirt,
   LuSquareUser,
@@ -69,6 +70,8 @@ type MasterWorkOrdersTableProps = {
   count: number;
   itemIdsWithConfigurationParameters: string[];
   bundleCountByMasterId: Record<string, number>;
+  /** Cut pieces not yet in a bundle (cut − bundled). Drives the scissors badge. */
+  remainingToSplitByMasterId: Record<string, number>;
   processCountByMasterId: Record<string, number>;
   cuttingProgressByMasterId: Record<string, MasterCuttingProgress>;
 };
@@ -79,6 +82,7 @@ const MasterWorkOrdersTable = memo(
     count,
     itemIdsWithConfigurationParameters,
     bundleCountByMasterId,
+    remainingToSplitByMasterId,
     processCountByMasterId,
     cuttingProgressByMasterId
   }: MasterWorkOrdersTableProps) => {
@@ -125,6 +129,19 @@ const MasterWorkOrdersTable = memo(
         openOverlay(overlay.to.masterWorkOrderBundles({ masterWorkOrderId }));
       },
       [openOverlay]
+    );
+
+    // No bundles yet → let the user split the master into bundle work orders
+    // straight from the Bundles cell.
+    const openSplitBatch = useCallback(
+      (e: MouseEvent, masterWorkOrderId: string) => {
+        e.stopPropagation();
+        openOverlay(
+          overlay.to.masterWorkOrderSplitBatch({ masterWorkOrderId }),
+          { onCreated: revalidate }
+        );
+      },
+      [openOverlay, revalidate]
     );
 
     const openProcesses = useCallback(
@@ -271,19 +288,56 @@ const MasterWorkOrdersTable = memo(
             const bundleCount = row.original.id
               ? (bundleCountByMasterId[row.original.id] ?? 0)
               : 0;
+            // Prefer cut-but-not-bundled (actionable "split remaining"); fall
+            // back to plan−cut when nothing is cut yet so an unstarted master
+            // still reads "N left to cut".
+            const remainingToSplit = row.original.id
+              ? (remainingToSplitByMasterId[row.original.id] ?? 0)
+              : 0;
+            const leftToCut = row.original.id
+              ? (cuttingProgressByMasterId[row.original.id]?.remaining ?? 0)
+              : 0;
+            const scissorsQty =
+              remainingToSplit > 0 ? remainingToSplit : leftToCut;
+            const scissorsTitle =
+              remainingToSplit > 0
+                ? t`${remainingToSplit} left to split`
+                : t`${leftToCut} left to cut`;
             return (
               <HStack spacing={1}>
                 <span className="tabular-nums">{bundleCount}</span>
                 {row.original.id ? (
-                  <IconButton
-                    type="button"
-                    icon={<LuPackageOpen size="1em" strokeWidth={2.5} />}
-                    aria-label={t`View bundles`}
-                    size="sm"
-                    variant="secondary"
-                    isDisabled={bundleCount === 0}
-                    onClick={(e) => openBundles(e, row.original.id!)}
-                  />
+                  bundleCount === 0 ? (
+                    <IconButton
+                      type="button"
+                      icon={<LuPackagePlus size="1em" strokeWidth={2.5} />}
+                      aria-label={t`Split into bundles`}
+                      size="sm"
+                      variant="secondary"
+                      isDisabled={
+                        !canUpdateProduction || isJobLocked(row.original.status)
+                      }
+                      onClick={(e) => openSplitBatch(e, row.original.id!)}
+                    />
+                  ) : (
+                    <IconButton
+                      type="button"
+                      icon={<LuPackageOpen size="1em" strokeWidth={2.5} />}
+                      aria-label={t`View bundles`}
+                      size="sm"
+                      variant="secondary"
+                      onClick={(e) => openBundles(e, row.original.id!)}
+                    />
+                  )
+                ) : null}
+                {scissorsQty > 0 ? (
+                  <span
+                    className="ml-1 inline-flex items-center gap-0.5 text-muted-foreground tabular-nums"
+                    title={scissorsTitle}
+                  >
+                    <LuScissors className="h-3 w-3" />
+                    {scissorsQty}
+                  </span>
                 ) : null}
               </HStack>
             );
@@ -643,7 +697,9 @@ const MasterWorkOrdersTable = memo(
       openVariantsQuantity,
       canUpdateProduction,
       bundleCountByMasterId,
+      remainingToSplitByMasterId,
       openBundles,
+      openSplitBatch,
       processCountByMasterId,
       openProcesses,
       cuttingProgressByMasterId,

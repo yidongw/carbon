@@ -1,8 +1,11 @@
 import { Button, HStack } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
 import { useState } from "react";
-import { LuPrinter } from "react-icons/lu";
+import { LuPrinter, LuScissors } from "react-icons/lu";
+import { useRevalidator } from "react-router";
+import { overlay, useOverlay } from "~/components/Overlay";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
+import { usePermissions } from "~/hooks";
 import type { BundleWorkOrder } from "~/modules/production";
 import {
   variantsQuantityModalBodyClassName,
@@ -15,22 +18,33 @@ export type MasterWorkOrderBundlesOverlayProps = {
   bundleWorkOrders: BundleWorkOrder[];
   count: number;
   masterDisplayId?: string | null;
+  masterWorkOrderId: string;
+  remainingToSplit: number;
 } & Pick<OverlayFormInjectedProps, "onDismiss">;
 
 /**
  * Read-only modal showing a master work order's bundles — the same table as the
  * details page's Bundle Work Orders tab, opened from the Master Work Orders list.
+ * When some cut pieces aren't in a bundle yet, a "Split remaining" button opens
+ * the split-batch overlay to bundle them.
  */
 export default function MasterWorkOrderBundlesOverlay({
   bundleWorkOrders,
   count,
   masterDisplayId,
+  masterWorkOrderId,
+  remainingToSplit,
   onDismiss
 }: MasterWorkOrderBundlesOverlayProps) {
   // The table's own Print button lives in its header toolbar, which is hidden
   // here (withHeader={false}). Surface the same flow from the overlay footer;
   // the modal's per-bundle checklist stands in for row selection.
   const [printOpen, setPrintOpen] = useState(false);
+  const permissions = usePermissions();
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
+  const canSplit =
+    permissions.can("update", "production") && remainingToSplit > 0;
 
   return (
     <div className={variantsQuantityModalShellClassName}>
@@ -54,19 +68,41 @@ export default function MasterWorkOrderBundlesOverlay({
         </div>
       </div>
       <div className="shrink-0 border-t border-border px-6 py-4">
-        <HStack className="justify-end">
-          <Button
-            type="button"
-            variant="secondary"
-            leftIcon={<LuPrinter />}
-            onClick={() => setPrintOpen(true)}
-            isDisabled={bundleWorkOrders.length === 0}
-          >
-            <Trans>Print Tickets</Trans>
-          </Button>
-          <Button type="button" variant="primary" onClick={onDismiss}>
-            <Trans>Close</Trans>
-          </Button>
+        <HStack className="justify-between">
+          <div>
+            {canSplit ? (
+              <Button
+                type="button"
+                variant="secondary"
+                leftIcon={<LuScissors />}
+                onClick={() =>
+                  openOverlay(
+                    overlay.to.masterWorkOrderSplitBatch({ masterWorkOrderId }),
+                    { onCreated: revalidate }
+                  )
+                }
+              >
+                {/* Keep the count outside <Trans> so a missing catalog entry
+                    still shows the number (hash-only labels hide it). */}
+                <Trans>Split remaining</Trans>
+                {` (${remainingToSplit})`}
+              </Button>
+            ) : null}
+          </div>
+          <HStack className="justify-end">
+            <Button
+              type="button"
+              variant="secondary"
+              leftIcon={<LuPrinter />}
+              onClick={() => setPrintOpen(true)}
+              isDisabled={bundleWorkOrders.length === 0}
+            >
+              <Trans>Print Tickets</Trans>
+            </Button>
+            <Button type="button" variant="primary" onClick={onDismiss}>
+              <Trans>Close</Trans>
+            </Button>
+          </HStack>
         </HStack>
       </div>
       {printOpen ? (

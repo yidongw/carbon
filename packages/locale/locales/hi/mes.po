@@ -177,6 +177,9 @@ msgstr "संपत्ति सफलतापूर्वक पंजीक�
 msgid "Assigned"
 msgstr "निर्दिष्ट"
 
+msgid "Assigned At"
+msgstr "असाइन किया गया"
+
 msgid "Assigned to Me"
 msgstr "मुझे असाइन किया गया"
 

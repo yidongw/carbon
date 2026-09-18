@@ -103,6 +103,9 @@ msgstr "{0} में से {failed} लेबल विफल"
 msgid "{failed} of {0} tickets failed"
 msgstr "{0} टिकटों में से {failed} विफल रहे"
 
+msgid "{leftToCut} left to cut"
+msgstr "काटने के लिए {leftToCut} शेष"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
 
@@ -114,6 +117,9 @@ msgstr "{name} की हटाई गई है"
 
 msgid "{remaining} left"
 msgstr "काम में शेष {remaining}"
+
+msgid "{remainingToSplit} left to split"
+msgstr "विभाजित करने के लिए {remainingToSplit} शेष"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} अनुमतियाँ"
@@ -4122,7 +4128,7 @@ msgid "Edit Work Center"
 msgstr "कार्य केंद्र संपादित करें"
 
 msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
-msgstr ""
+msgstr "प्रोसेस पूर्णता संपादित करने के लिए पहले जॉब फिर खोलें। फिर खोलने पर स्थिति प्रगति पर वापस हो जाएगी।"
 
 msgid "Elimination entries generated"
 msgstr "निर्माणित हटाव बिछड़े"
@@ -8964,7 +8970,7 @@ msgid "Job ID"
 msgstr "जॉब आईडी"
 
 msgid "Job is locked"
-msgstr ""
+msgstr "जॉब लॉक है"
 
 msgid "Job Location"
 msgstr "जॉब स्थान"
@@ -12469,7 +12475,7 @@ msgid "Reopen"
 msgstr "फिर से खोलें"
 
 msgid "Reopen job"
-msgstr ""
+msgstr "जॉब फिर खोलें"
 
 msgid "Reorder"
 msgstr "पुनः क्रमित करें"
@@ -13937,6 +13943,9 @@ msgstr "बैच विभाजित करें"
 msgid "Split failed"
 msgstr "सारणी विभाजन वा"
 
+msgid "Split into bundles"
+msgstr "बंडलों में विभाजित करें"
+
 msgid "Split line"
 msgstr "लाइन को विभाजित करें"
 
@@ -13954,6 +13963,9 @@ msgstr "रसीद लाइन को विभाजित करें"
 
 msgid "Split Receipt Line"
 msgstr "विभाजन रिसेप्ट लाइन"
+
+msgid "Split remaining"
+msgstr "शेष विभाजित करें"
 
 msgid "Split shipment line"
 msgstr "शिपमेंट लाइन को विभाजित करें"
@@ -16477,7 +16489,7 @@ msgid "With Previous"
 msgstr "पिछले"
 
 msgid "WO Qty"
-msgstr ""
+msgstr "WO मात्रा"
 
 msgid "Won"
 msgstr "जीता"

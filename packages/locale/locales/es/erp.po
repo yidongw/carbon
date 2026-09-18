@@ -103,6 +103,9 @@ msgstr "{failed} de {0} etiquetas fallaron"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed} de {0} etiquetas fallaron"
 
+msgid "{leftToCut} left to cut"
+msgstr "Quedan {leftToCut} por cortar"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB límite"
 
@@ -114,6 +117,9 @@ msgstr "{name} eliminado"
 
 msgid "{remaining} left"
 msgstr "{remaining} restantes"
+
+msgid "{remainingToSplit} left to split"
+msgstr "Quedan {remainingToSplit} por dividir"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permisos"
@@ -4122,7 +4128,7 @@ msgid "Edit Work Center"
 msgstr "Editar Centro de Trabajo"
 
 msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
-msgstr ""
+msgstr "Para editar la finalización del proceso, primero hay que reabrir la orden. Al reabrir, el estado vuelve a En progreso."
 
 msgid "Elimination entries generated"
 msgstr "Entradas de eliminación generadas"
@@ -8964,7 +8970,7 @@ msgid "Job ID"
 msgstr "ID de Trabajo"
 
 msgid "Job is locked"
-msgstr ""
+msgstr "La orden está bloqueada"
 
 msgid "Job Location"
 msgstr "Ubicación del Trabajo"
@@ -12469,7 +12475,7 @@ msgid "Reopen"
 msgstr "Reabrir"
 
 msgid "Reopen job"
-msgstr ""
+msgstr "Reabrir orden"
 
 msgid "Reorder"
 msgstr "Reordenar"
@@ -13937,6 +13943,9 @@ msgstr "Dividir lote"
 msgid "Split failed"
 msgstr "Split fallido"
 
+msgid "Split into bundles"
+msgstr "Dividir en lotes"
+
 msgid "Split line"
 msgstr "Dividir línea"
 
@@ -13954,6 +13963,9 @@ msgstr "Dividir línea de recepción"
 
 msgid "Split Receipt Line"
 msgstr "Dividir línea de recibo"
+
+msgid "Split remaining"
+msgstr "Dividir restante"
 
 msgid "Split shipment line"
 msgstr "Dividir línea de envío"
@@ -16477,7 +16489,7 @@ msgid "With Previous"
 msgstr "Anterior"
 
 msgid "WO Qty"
-msgstr ""
+msgstr "Cant. OT"
 
 msgid "Won"
 msgstr "Ganado"

@@ -103,6 +103,9 @@ msgstr "{0} 张标签中 {failed} 张失败"
 msgid "{failed} of {0} tickets failed"
 msgstr "{failed}/{0} 张标签打印失败"
 
+msgid "{leftToCut} left to cut"
+msgstr "剩余 {leftToCut} 待裁切"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
 
@@ -114,6 +117,9 @@ msgstr "{name} 已删除"
 
 msgid "{remaining} left"
 msgstr "剩余{remaining}"
+
+msgid "{remainingToSplit} left to split"
+msgstr "剩余 {remainingToSplit} 待分包"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 个权限"
@@ -4122,7 +4128,7 @@ msgid "Edit Work Center"
 msgstr "编辑工作中心"
 
 msgid "Editing process completion requires reopening the job first. Reopening changes the job status back to In Progress."
-msgstr ""
+msgstr "编辑工序完成需要先重新打开工单。重新打开后工单状态将变回进行中。"
 
 msgid "Elimination entries generated"
 msgstr "生成的消除条目"
@@ -8964,7 +8970,7 @@ msgid "Job ID"
 msgstr "工作ID"
 
 msgid "Job is locked"
-msgstr ""
+msgstr "工单已锁定"
 
 msgid "Job Location"
 msgstr "工作地点"
@@ -12469,7 +12475,7 @@ msgid "Reopen"
 msgstr "重新打开"
 
 msgid "Reopen job"
-msgstr ""
+msgstr "重新打开工单"
 
 msgid "Reorder"
 msgstr "重新订购"
@@ -13937,6 +13943,9 @@ msgstr "拆分批次"
 msgid "Split failed"
 msgstr "拆分失败"
 
+msgid "Split into bundles"
+msgstr "拆分分包"
+
 msgid "Split line"
 msgstr "拆分行"
 
@@ -13954,6 +13963,9 @@ msgstr "拆分收款行"
 
 msgid "Split Receipt Line"
 msgstr "拆分收款行"
+
+msgid "Split remaining"
+msgstr "分包剩余"
 
 msgid "Split shipment line"
 msgstr "拆分运输单行"
@@ -16477,7 +16489,7 @@ msgid "With Previous"
 msgstr "与上道工序并行"
 
 msgid "WO Qty"
-msgstr "工单总数"
+msgstr "工单数量"
 
 msgid "Won"
 msgstr "赢得"

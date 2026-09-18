@@ -858,7 +858,9 @@ export const overlayRegistry = {
         return {
           bundleWorkOrders: data.bundleWorkOrders,
           count: data.count,
-          masterDisplayId: data.masterDisplayId
+          masterDisplayId: data.masterDisplayId,
+          masterWorkOrderId: data.masterWorkOrderId,
+          remainingToSplit: data.remainingToSplit
         };
       },
       () =>

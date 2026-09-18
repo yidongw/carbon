@@ -1,15 +1,20 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
 import {
+  type BundleWorkOrder,
   getBundleWorkOrdersList,
-  getMasterWorkOrder,
-  type BundleWorkOrder
+  getMasterCuttingProgress,
+  getMasterWorkOrder
 } from "~/modules/production";
 
 export type MasterWorkOrderBundlesOverlayLoaderData = {
   bundleWorkOrders: BundleWorkOrder[];
   count: number;
   masterDisplayId: string | null;
+  masterWorkOrderId: string;
+  // Pieces already cut but not yet placed in a bundle (cut − bundled). Drives
+  // the overlay's "Split remaining" button; 0 hides it.
+  remainingToSplit: number;
 };
 
 export async function loader({
@@ -32,9 +37,26 @@ export async function loader({
     })
   ]);
 
+  const bundles = bundleWorkOrders.data ?? [];
+
+  let remainingToSplit = 0;
+  const m = master.data;
+  if (m?.id && m.jobId) {
+    const progress = await getMasterCuttingProgress(
+      client,
+      [{ id: m.id, jobId: m.jobId, itemId: m.itemId, quantity: m.quantity }],
+      companyId
+    );
+    const cut = progress[m.id]?.reported ?? 0;
+    const bundled = bundles.reduce((sum, b) => sum + (b.quantity ?? 0), 0);
+    remainingToSplit = Math.max(0, cut - bundled);
+  }
+
   return {
-    bundleWorkOrders: bundleWorkOrders.data ?? [],
+    bundleWorkOrders: bundles,
     count: bundleWorkOrders.count ?? 0,
-    masterDisplayId: master.data?.jobReadableId ?? null
+    masterDisplayId: master.data?.jobReadableId ?? null,
+    masterWorkOrderId,
+    remainingToSplit
   };
 }
