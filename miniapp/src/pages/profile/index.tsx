@@ -39,7 +39,7 @@ export default function Profile() {
       { key: 'schedule', icon: '📆', text: t('profile.schedule') },
       {
         key: 'language',
-        icon: '文A',
+        icon: '🌐',
         text: t('profile.language'),
         value: getLocaleLabel(locale),
       },

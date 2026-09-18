@@ -71,26 +71,40 @@ page {
   }
 
   &__row-ic {
-    font-size: 34px;
     width: 48px;
+    height: 48px;
+    font-size: 34px;
+    line-height: 48px;
+    text-align: center;
+    flex-shrink: 0;
   }
 
   &__row-text {
     flex: 1;
     margin-left: 16px;
     font-size: 30px;
+    line-height: 44px;
     color: #1a2233;
   }
 
   &__row-value {
     margin-right: 8px;
     font-size: 26px;
+    line-height: 44px;
     color: #8a94a6;
+    max-width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &__row-arrow {
-    font-size: 40px;
+    width: 32px;
+    font-size: 36px;
+    line-height: 44px;
     color: #c4ccd8;
+    text-align: right;
+    flex-shrink: 0;
   }
 
   &__logout {
