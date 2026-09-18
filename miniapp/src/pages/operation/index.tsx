@@ -9,6 +9,8 @@ import {
   getScrapReasons,
   getReworkTargets,
   searchItems,
+  fileDownloadUrl,
+  fileAuthHeader,
 } from '../../services/operation'
 import type {
   OperationDetail,
@@ -16,6 +18,7 @@ import type {
   ScrapReason,
   ReworkTarget,
   OpMaterial,
+  OpFile,
   ItemHit,
 } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
@@ -51,6 +54,48 @@ const LOG_META: Record<string, { label: string; cls: string }> = {
   Production: { label: '合格', cls: 'green' },
   Rework: { label: '返工', cls: 'amber' },
   Scrap: { label: '报废', cls: 'red' },
+}
+
+function openOpFile(file: OpFile) {
+  const url = fileDownloadUrl(file.path)
+  Taro.showLoading({ title: '打开中…', mask: true })
+  Taro.downloadFile({
+    url,
+    header: fileAuthHeader(),
+    success: (res) => {
+      Taro.hideLoading()
+      if (res.statusCode !== 200 || !res.tempFilePath) {
+        Taro.showToast({ title: '下载失败', icon: 'none' })
+        return
+      }
+      if (file.type === 'Image') {
+        Taro.previewImage({ urls: [res.tempFilePath], current: res.tempFilePath })
+        return
+      }
+      Taro.openDocument({
+        filePath: res.tempFilePath,
+        showMenu: true,
+        fail: () => {
+          Taro.showToast({ title: '无法预览，已下载到临时文件', icon: 'none' })
+        },
+      })
+    },
+    fail: () => {
+      Taro.hideLoading()
+      Taro.showToast({ title: '下载失败', icon: 'none' })
+    },
+  })
+}
+
+function onFileMore(file: OpFile) {
+  Taro.showActionSheet({
+    itemList: ['下载 / 打开'],
+    success: (res) => {
+      if (res.tapIndex === 0) openOpFile(file)
+    },
+  }).catch(() => {
+    /* 用户取消 */
+  })
 }
 
 export default function Operation() {
@@ -532,6 +577,49 @@ export default function Operation() {
               ))
             ) : (
               <Text className='op__empty2'>无材料</Text>
+            )}
+          </View>
+
+          {/* 文件 — 对齐 MES JobOperation Files */}
+          <View className='op__sec'>
+            <Text className='op__sec-title'>文件</Text>
+          </View>
+          <Text className='op__sec-sub'>与工单和商机相关的文件。</Text>
+          <View className='op__card2'>
+            {(d.files ?? []).length > 0 ? (
+              <>
+                <View className='op__file-head'>
+                  <Text className='op__file-h'>名称</Text>
+                  <Text className='op__file-h op__file-h--size'>大小</Text>
+                  <View className='op__file-h-spacer' />
+                </View>
+                {(d.files ?? []).map((f) => (
+                  <View key={f.id} className='op__file'>
+                    <View
+                      className='op__file-main'
+                      hoverClass='op__file-main--hover'
+                      onClick={() => openOpFile(f)}
+                    >
+                      <View className='op__file-ic'>
+                        <Text className='op__file-ic-t'>
+                          {f.type === 'Image' ? '🖼' : f.type === 'PDF' ? 'PDF' : '📄'}
+                        </Text>
+                      </View>
+                      <Text className='op__file-name'>{f.name}</Text>
+                      <Text className='op__file-size'>{f.size}</Text>
+                    </View>
+                    <View
+                      className='op__file-more'
+                      hoverClass='op__file-more--hover'
+                      onClick={() => onFileMore(f)}
+                    >
+                      <Text className='op__file-more-t'>⋮</Text>
+                    </View>
+                  </View>
+                ))}
+              </>
+            ) : (
+              <Text className='op__empty2'>无文件</Text>
             )}
           </View>
 

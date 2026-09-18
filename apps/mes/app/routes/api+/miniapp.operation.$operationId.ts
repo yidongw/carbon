@@ -1,7 +1,11 @@
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { localizeVariantAttributeLabel } from "@carbon/database/style-reference";
+import { convertKbToString } from "@carbon/utils";
 import type { LoaderFunctionArgs } from "react-router";
 import {
+  getFileType,
+  getJobByOperationId,
+  getJobFiles,
   getJobMaterialsByOperationId,
   getJobOperationById,
   getProductionEventsForJobOperation,
@@ -142,6 +146,44 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       ? op.targetQuantity
       : (op.operationQuantity ?? 0);
 
+  // 文件列表 —— 对齐网页 getJobFiles(job + opportunity-line + parts)。
+  let files: {
+    id: string;
+    name: string;
+    size: string;
+    type: string;
+    path: string;
+  }[] = [];
+  try {
+    const jobRes = await getJobByOperationId(serviceRole, operationId);
+    const job = jobRes.data as any;
+    if (job?.id) {
+      const items = op.itemId ? [{ itemId: op.itemId as string }] : [];
+      const raw = await getJobFiles(serviceRole, companyId, job, items);
+      files = (raw ?? [])
+        .filter((f: any) => f?.id && f?.name && f.metadata != null)
+        .map((f: any) => {
+          const bucket = f.bucket as string;
+          let folderId: string | null | undefined = "";
+          if (bucket === "job") folderId = job.id;
+          else if (bucket === "opportunity-line")
+            folderId = job.salesOrderLineId ?? job.quoteLineId;
+          else if (bucket === "parts") folderId = f.itemId ?? job.itemId;
+          const storagePath = `${companyId}/${bucket}/${folderId}/${f.name}`;
+          const sizeKb = Math.floor(Number(f.metadata?.size ?? 0) / 1024);
+          return {
+            id: String(f.id),
+            name: f.name as string,
+            size: convertKbToString(sizeKb),
+            type: getFileType(f.name),
+            path: storagePath
+          };
+        });
+    }
+  } catch {
+    /* 忽略 */
+  }
+
   return jsonResponse({
     found: true,
     id: op.id,
@@ -168,6 +210,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     timePerUnitMs,
     unitOfMeasureText: op.itemUnitOfMeasure ?? "件",
     materials,
+    files,
     logs
   });
 }
