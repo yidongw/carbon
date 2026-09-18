@@ -708,7 +708,6 @@ msgid "An approval request already exists for this supplier"
 msgstr "Se ha realizado ya una solicitud de aprobación para este proveedor"
 
 #. placeholder {0}: num("max")
-#. placeholder {0}: result.max ?? 0
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
 msgstr "Un atributo combina no puede superar la cantidad de corte (máx {0})"
 
@@ -1812,6 +1811,9 @@ msgstr "No se puede editar el valor del atributo del sistema"
 
 msgid "Cannot finish operation"
 msgstr "No se puede completar la operación"
+
+msgid "Cannot modify a locked job. Reopen it first."
+msgstr ""
 
 msgid "Cannot modify a locked picking list. Reopen it first."
 msgstr "No se puede modificar una lista de recolección bloqueada. Únete la primera y vuelve a abrirla."
@@ -14962,6 +14964,10 @@ msgstr "Estos trabajos tienen operaciones asignadas a este centro de trabajo:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Esta ajuste tomaría una cantidad por debajo de cero."
+
+#. placeholder {0}: result.max ?? 0
+msgid "This bundle can't exceed the remaining cut for its attributes (max {0})"
+msgstr ""
 
 msgid "This information will be used on document headers"
 msgstr "Esta información se utilizará en los encabezados de documentos"

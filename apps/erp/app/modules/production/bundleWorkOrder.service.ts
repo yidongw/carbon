@@ -21,6 +21,7 @@ import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
+import { isJobLocked } from "./production.models";
 import { insertJob } from "./production.service";
 
 type VariantsQuantityRow = Record<string, string | number | boolean>;
@@ -834,9 +835,10 @@ export type UpdateBundleQuantityResult =
   | { ok: true }
   | {
       ok: false;
-      reason: "not_found" | "cap" | "reported" | "save";
+      reason: "not_found" | "cap" | "reported" | "locked" | "save";
       max?: number;
       reported?: number;
+      message?: string;
     };
 
 /**
@@ -866,11 +868,20 @@ export async function updateBundleQuantity(
 
   const quantity = Number(input.quantity) || 0;
   if (quantity < 0) {
-    return { ok: false, reason: "save" };
+    return {
+      ok: false,
+      reason: "save",
+      message: "Quantity cannot be negative"
+    };
   }
 
   const masterWorkOrderId = bundle.data.masterWorkOrderId;
   const jobId = bundle.data.jobId;
+  const status = (bundle.data as { status?: string | null }).status;
+  if (isJobLocked(status)) {
+    return { ok: false, reason: "locked" };
+  }
+
   const variantItemId = cellKey(
     (bundle.data as { itemId?: string | null }).itemId
   );
@@ -893,18 +904,22 @@ export async function updateBundleQuantity(
     (c) => cellKey(c.variantItemId) === variantItemId
   );
   if (cutCell) {
-    const siblingSum = proposal.existingBundles
-      .filter((b) => cellKey(b.variantItemId) === variantItemId)
-      .reduce(
-        (sum, b) =>
-          sum + (b.id === input.bundleWorkOrderId ? quantity : b.quantity),
-        0
-      );
-    if (siblingSum > cutCell.cut + 0.0001) {
-      return { ok: false, reason: "cap", max: cutCell.cut };
+    const others = proposal.existingBundles
+      .filter(
+        (b) =>
+          cellKey(b.variantItemId) === variantItemId &&
+          b.id !== input.bundleWorkOrderId
+      )
+      .reduce((sum, b) => sum + b.quantity, 0);
+    // Max this one bundle can take = cell cut − siblings (not the full cell cut).
+    const maxForBundle = Math.max(0, cutCell.cut - others);
+    if (quantity > maxForBundle + 0.0001) {
+      return { ok: false, reason: "cap", max: maxForBundle };
     }
   }
 
+  // Same write shape as saveBundleSplit (no RETURNING) — chaining .select()
+  // after update has been observed to fail even when the row was written.
   const jobUpdate = await client
     .from("job")
     .update({
@@ -913,13 +928,32 @@ export async function updateBundleQuantity(
       updatedAt: new Date().toISOString()
     })
     .eq("id", jobId)
-    .eq("companyId", input.companyId)
-    // Require a returned row — RLS / miss can "succeed" with 0 rows and no error.
-    .select("id")
-    .maybeSingle();
-  if (jobUpdate.error || !jobUpdate.data?.id) {
-    return { ok: false, reason: "save" };
+    .eq("companyId", input.companyId);
+  if (jobUpdate.error) {
+    return {
+      ok: false,
+      reason: "save",
+      message: jobUpdate.error.message
+    };
   }
+
+  const verify = await client
+    .from("job")
+    .select("quantity")
+    .eq("id", jobId)
+    .eq("companyId", input.companyId)
+    .maybeSingle();
+  if (verify.error) {
+    return { ok: false, reason: "save", message: verify.error.message };
+  }
+  if (Number(verify.data?.quantity) !== quantity) {
+    return {
+      ok: false,
+      reason: "save",
+      message: "Quantity did not persist — check permissions"
+    };
+  }
+
   return { ok: true };
 }
 

@@ -58,16 +58,20 @@ function quantityErrorMessage(
   switch (result.reason) {
     case "cap":
       return i18n._(
-        msg`An attribute combo can't exceed the cut quantity (max ${result.max ?? 0})`
+        msg`This bundle can't exceed the remaining cut for its attributes (max ${result.max ?? 0})`
       );
     case "reported":
       return i18n._(
         msg`A bundle can't be set below its reported quantity (${result.reported ?? 0})`
       );
+    case "locked":
+      return i18n._(msg`Cannot modify a locked job. Reopen it first.`);
     case "not_found":
       return i18n._(msg`Bundle not found`);
     default:
-      return i18n._(msg`Failed to update quantity`);
+      return result.message
+        ? result.message
+        : i18n._(msg`Failed to update quantity`);
   }
 }
 

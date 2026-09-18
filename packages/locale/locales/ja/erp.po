@@ -708,7 +708,6 @@ msgid "An approval request already exists for this supplier"
 msgstr "このサプライヤーに対する承認リクエストが既に存在します"
 
 #. placeholder {0}: num("max")
-#. placeholder {0}: result.max ?? 0
 msgid "An attribute combo can't exceed the cut quantity (max {0})"
 msgstr "属性の組み合わせは裁断数量を超えてはいけません（最大 {0}）"
 
@@ -1812,6 +1811,9 @@ msgstr "システム属性値を編集できません"
 
 msgid "Cannot finish operation"
 msgstr "操作を終了できません"
+
+msgid "Cannot modify a locked job. Reopen it first."
+msgstr ""
 
 msgid "Cannot modify a locked picking list. Reopen it first."
 msgstr "ロックされているピッキングリストは修改できません。まず開くことを確認してください。"
@@ -14962,6 +14964,10 @@ msgstr "これらのジョブにはこのワークセンターに割り当てら
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "この調整はゼロ未満の数量を設定します。"
+
+#. placeholder {0}: result.max ?? 0
+msgid "This bundle can't exceed the remaining cut for its attributes (max {0})"
+msgstr ""
 
 msgid "This information will be used on document headers"
 msgstr "この情報はドキュメントヘッダーで使用されます"
