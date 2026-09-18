@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, type ReactNode } from 'react'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
@@ -276,7 +276,7 @@ export default function PickingDetailPage() {
             (s, l) => s + Math.min(l.quantityPicked, l.quantityToPick),
             0,
           )
-          const pct = toPick > 0 ? Math.round((picked / toPick) * 100) : 0
+          const pct = toPick > 0 ? (picked / toPick) * 100 : 0
           return (
             <View key={kit.id} className='pk__kit'>
               <View className='pk__kit-head'>
@@ -284,9 +284,7 @@ export default function PickingDetailPage() {
                 {kit.workCenterName ? (
                   <Text className='pk__kit-sub'>{kit.workCenterName}</Text>
                 ) : null}
-              </View>
-              <View className='pk__kit-bar'>
-                <View className='pk__kit-bar-fill' style={{ width: `${pct}%` }} />
+                <BarProgress progress={pct} />
               </View>
               <View className='pk__kit-body'>
                 {kit.lines.map((line, i) => (
@@ -408,6 +406,22 @@ export default function PickingDetailPage() {
   )
 }
 
+/** 对齐网页 BarProgress：一排细竖条进度 */
+function BarProgress({ progress }: { progress: number }) {
+  const total = 36
+  const active = Math.round((Math.min(100, Math.max(0, progress)) / 100) * total)
+  return (
+    <View className='pk__bars'>
+      {Array.from({ length: total }, (_, i) => (
+        <View
+          key={i}
+          className={`pk__bar-tick ${i < active ? 'pk__bar-tick--on' : ''}`}
+        />
+      ))}
+    </View>
+  )
+}
+
 function LineCard({
   line,
   locked,
@@ -436,100 +450,118 @@ function LineCard({
   const resolved = isResolved(line)
   const noStock = !line.fromBin && line.availableQuantity <= 0 && !full
 
-  // 对齐网页 Count: 非追溯只显示应拣数量(短缺时显示已拣); 追溯显示 已拣/应拣
-  const qtyCls = full ? 'green' : short || (tracked && line.quantityPicked > 0) ? 'orange' : 'red'
+  const qtyCls = full
+    ? 'green'
+    : short || (tracked && line.quantityPicked > 0)
+      ? 'orange'
+      : 'red'
   const qtyText = tracked
     ? `${line.quantityPicked}/${line.quantityToPick}`
     : String(short ? line.quantityPicked : line.quantityToPick)
 
+  const showNoStockTip = () => {
+    Taro.showModal({
+      title: '没有库存',
+      content:
+        '此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。',
+      showCancel: false,
+      confirmText: '知道了',
+    })
+  }
+
+  let actions: ReactNode = null
+  if (locked || cancelled) {
+    actions = cancelled ? (
+      <View className='pk__badge pk__badge--red'>
+        <Text className='pk__badge-text'>已取消</Text>
+      </View>
+    ) : null
+  } else if (tracked) {
+    actions = (
+      <>
+        {line.trackedEntities.map((te) => (
+          <View
+            key={te.trackedEntityId}
+            className='pk__btn pk__btn--outline'
+            onClick={() => !busy && onUnpickLot(te.trackedEntityId)}
+          >
+            <Text className='pk__btn-t'>撤销 {te.readableId || ''}</Text>
+          </View>
+        ))}
+        {!full ? (
+          <View
+            className='pk__btn pk__btn--outline'
+            onClick={() => !busy && onScan()}
+          >
+            <Text className='pk__btn-t'>扫描</Text>
+          </View>
+        ) : null}
+      </>
+    )
+  } else if (full) {
+    actions = (
+      <View
+        className='pk__btn pk__btn--outline'
+        onClick={() => !busy && onUnpick()}
+      >
+        <Text className='pk__btn-t'>撤销</Text>
+      </View>
+    )
+  } else {
+    actions = (
+      <>
+        <View
+          className='pk__btn pk__btn--outline'
+          onClick={() => !busy && onShort()}
+        >
+          <Text className='pk__btn-t'>短缺</Text>
+        </View>
+        <View
+          className='pk__btn pk__btn--solid'
+          onClick={() => !busy && onPick()}
+        >
+          <Text className='pk__btn-plus'>⊕</Text>
+          <Text className='pk__btn-t pk__btn-t--w'>选择</Text>
+        </View>
+      </>
+    )
+  }
+
+  // 对齐网页桌面行：缩略图 | 名称/编码 | 没有库存 | 数量 | 短缺 | +选择
   return (
     <View
-      className={`pk__line ${resolved ? 'pk__line--done' : ''} ${
-        isLast ? 'pk__line--last' : ''
+      className={`pk__row ${resolved ? 'pk__row--done' : ''} ${
+        isLast ? 'pk__row--last' : ''
       }`}
     >
-      <View className='pk__line-main'>
-        <View className='pk__thumb'>
-          <Text className='pk__thumb-ic'>▣</Text>
-        </View>
-        <View className='pk__line-info'>
-          <Text className='pk__line-name'>
-            {line.itemDesc || line.itemName || '—'}
-          </Text>
-          <Text className='pk__line-sku'>{line.itemName}</Text>
-        </View>
+      <View className='pk__thumb'>
+        <Text className='pk__thumb-ic'>◈</Text>
+      </View>
+
+      <View className='pk__ident'>
+        <Text className='pk__name' numberOfLines={1}>
+          {line.itemDesc || line.itemName || '—'}
+        </Text>
+        <Text className='pk__sku' numberOfLines={1}>
+          {line.itemName}
+        </Text>
+      </View>
+
+      <View className='pk__right'>
+        {line.fromBin ? (
+          <Text className='pk__bin'>{line.fromBin}</Text>
+        ) : noStock ? (
+          <View className='pk__nostock' onClick={showNoStockTip}>
+            <Text className='pk__nostock-ic'>△</Text>
+            <Text className='pk__nostock-text'>没有库存</Text>
+          </View>
+        ) : null}
+
         <View className={`pk__count pk__count--${qtyCls}`}>
           <Text className='pk__count-text'>{qtyText}</Text>
         </View>
-      </View>
 
-      <View className='pk__line-foot'>
-        <View className='pk__line-meta'>
-          {line.fromBin ? (
-            <Text className='pk__bin'>{line.fromBin}</Text>
-          ) : noStock ? (
-            <View className='pk__nostock'>
-              <Text className='pk__nostock-ic'>⚠</Text>
-              <Text className='pk__nostock-text'>没有库存</Text>
-            </View>
-          ) : (
-            <View />
-          )}
-        </View>
-
-        {locked || cancelled ? (
-          cancelled ? (
-            <View className='pk__badge pk__badge--red'>
-              <Text className='pk__badge-text'>已取消</Text>
-            </View>
-          ) : null
-        ) : tracked ? (
-          <View className='pk__btns'>
-            {line.trackedEntities.map((te) => (
-              <View
-                key={te.trackedEntityId}
-                className='pk__act pk__act--ghost pk__act--sm'
-                onClick={() => !busy && onUnpickLot(te.trackedEntityId)}
-              >
-                <Text className='pk__act-text pk__act-text--dark'>
-                  撤销 {te.readableId || ''}
-                </Text>
-              </View>
-            ))}
-            {!full ? (
-              <View
-                className='pk__act pk__act--ghost pk__act--sm'
-                onClick={() => !busy && onScan()}
-              >
-                <Text className='pk__act-text pk__act-text--dark'>扫描</Text>
-              </View>
-            ) : null}
-          </View>
-        ) : full ? (
-          <View className='pk__btns'>
-            <View
-              className='pk__act pk__act--ghost pk__act--sm'
-              onClick={() => !busy && onUnpick()}
-            >
-              <Text className='pk__act-text pk__act-text--dark'>撤销</Text>
-            </View>
-          </View>
-        ) : (
-          <View className='pk__btns'>
-            <View
-              className='pk__act pk__act--ghost pk__act--sm'
-              onClick={() => !busy && onShort()}
-            >
-              <Text className='pk__act-text pk__act-text--dark'>短缺</Text>
-            </View>
-            <View
-              className='pk__act pk__act--dark pk__act--sm'
-              onClick={() => !busy && onPick()}
-            >
-              <Text className='pk__act-text'>+ 选择</Text>
-            </View>
-          </View>
-        )}
+        <View className='pk__actions'>{actions}</View>
       </View>
     </View>
   )
