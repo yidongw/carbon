@@ -18,6 +18,7 @@ export default defineAppConfig({
     'pages/maintenance/detail',
     'pages/suggestion/index',
     'pages/end-shift/index',
+    'pages/schedule/index',
   ],
   window: {
     backgroundTextStyle: 'light',

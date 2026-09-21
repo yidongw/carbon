@@ -1,0 +1,236 @@
+page {
+  background: #f3f5f9;
+}
+
+.sch {
+  padding: 0 24px 60px;
+
+  &__filters {
+    margin: 8px 0 18px;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 0 26px;
+    height: 76px;
+    box-shadow: 0 6px 20px rgba(31, 45, 74, 0.05);
+  }
+
+  &__search-ic {
+    font-size: 28px;
+    margin-right: 14px;
+    opacity: 0.5;
+  }
+
+  &__search-input {
+    flex: 1;
+    font-size: 28px;
+    color: #1a2233;
+  }
+
+  &__wc {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px 24px;
+    box-shadow: 0 4px 12px rgba(31, 45, 74, 0.04);
+  }
+
+  &__wc-t {
+    font-size: 26px;
+    color: #1a2233;
+    font-weight: 600;
+  }
+
+  &__wc-arrow {
+    font-size: 22px;
+    color: #97a1b3;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__col-h {
+    margin-bottom: 12px;
+  }
+
+  &__col-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__pulse {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+  }
+
+  &__col-title {
+    flex: 1;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__col-count {
+    font-size: 24px;
+    color: #97a1b3;
+    font-weight: 600;
+  }
+
+  &__blocked {
+    display: block;
+    margin-top: 6px;
+    font-size: 22px;
+    color: #dc2626;
+  }
+
+  &__card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px 24px;
+    margin-bottom: 12px;
+    border: 1px solid #eef0f4;
+    border-left: 6px solid #e5e7eb;
+    box-shadow: 0 8px 20px rgba(31, 45, 74, 0.04);
+
+    &--green { border-left-color: #10b981; }
+    &--blue { border-left-color: #3b82f6; }
+    &--orange { border-left-color: #f59e0b; }
+    &--yellow { border-left-color: #eab308; }
+    &--red { border-left-color: #ef4444; opacity: 0.7; }
+    &--gray { border-left-color: #d1d5db; }
+
+    &--hover { opacity: 0.92; }
+  }
+
+  &__card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__job {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2233;
+  }
+
+  &__badge {
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: #eef0f4;
+
+    &--green { background: #e6f8ee; }
+    &--blue { background: #e8f0ff; }
+    &--orange { background: #fff1e0; }
+    &--yellow { background: #fef3c7; }
+    &--red { background: #fee2e2; }
+  }
+
+  &__badge-t {
+    font-size: 20px;
+    font-weight: 600;
+    color: #5b6472;
+  }
+
+  &__badge--green &__badge-t { color: #16a34a; }
+  &__badge--blue &__badge-t { color: #2563eb; }
+  &__badge--orange &__badge-t { color: #ea8a12; }
+  &__badge--yellow &__badge-t { color: #b45309; }
+  &__badge--red &__badge-t { color: #dc2626; }
+
+  &__item {
+    display: block;
+    margin-top: 8px;
+    font-size: 26px;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  &__desc {
+    display: block;
+    margin-top: 6px;
+    font-size: 24px;
+    color: #6b7280;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  &__meta-t {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a2233;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__scrap {
+    font-size: 22px;
+    color: #dc2626;
+  }
+
+  &__rework {
+    font-size: 20px;
+    font-weight: 700;
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 2px 10px;
+    border-radius: 6px;
+  }
+
+  &__dur {
+    font-size: 22px;
+    color: #97a1b3;
+    font-family: ui-monospace, monospace;
+  }
+
+  &__foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f2f4f7;
+  }
+
+  &__foot-t {
+    font-size: 22px;
+    color: #97a1b3;
+  }
+
+  &__empty-col {
+    display: block;
+    padding: 16px 8px 8px;
+    font-size: 24px;
+    color: #97a1b3;
+  }
+
+  &__empty {
+    padding: 120px 0;
+    text-align: center;
+  }
+
+  &__empty-t {
+    font-size: 26px;
+    color: #97a1b3;
+  }
+}

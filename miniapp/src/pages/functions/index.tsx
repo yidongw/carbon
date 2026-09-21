@@ -68,6 +68,7 @@ export default function Functions() {
     maintenance: '/pages/maintenance/index',
     suggestion: '/pages/suggestion/index',
     endShift: '/pages/end-shift/index',
+    schedule: '/pages/schedule/index',
   }
 
   const onItem = (key: string) => {

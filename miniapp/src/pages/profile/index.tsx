@@ -58,6 +58,10 @@ export default function Profile() {
       Taro.navigateTo({ url: '/pages/approvals/index' })
       return
     }
+    if (key === 'schedule') {
+      Taro.navigateTo({ url: '/pages/schedule/index' })
+      return
+    }
     if (key === 'language') {
       setLangOpen(true)
       return
