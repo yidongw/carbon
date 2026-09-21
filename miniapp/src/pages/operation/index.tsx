@@ -131,6 +131,9 @@ export default function Operation() {
   const [reworkTarget, setReworkTarget] = useState<ReworkTarget | null>(null)
   const [reworkReason, setReworkReason] = useState('')
 
+  // 领取/接手确认弹层(对齐网页 ConfirmPickupModal)
+  const [pickupOpen, setPickupOpen] = useState(false)
+
   // 发放材料弹层
   const [issueOpen, setIssueOpen] = useState(false)
   const [issueMat, setIssueMat] = useState<OpMaterial | null>(null)
@@ -310,6 +313,16 @@ export default function Operation() {
     }
   }
 
+  // 领取 / 接手:先弹确认(对齐网页 ConfirmPickupModal),确认后再真正分配。
+  const openPickup = () => {
+    setMore(false)
+    setPickupOpen(true)
+  }
+  const submitPickup = async () => {
+    setPickupOpen(false)
+    await runAction('pickup')
+  }
+
   const goApprovals = () => Taro.navigateTo({ url: '/pages/approvals/index' })
 
   // 发放材料（对齐 MES 网页:BOM 可为空,仍可选手动物料发放）
@@ -467,7 +480,7 @@ export default function Operation() {
     if (auto === 'report') {
       openSheet()
     } else if (auto === 'pickup' && !d.isMine) {
-      runAction('pickup')
+      openPickup()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [d])
@@ -521,7 +534,7 @@ export default function Operation() {
               </View>
               <Text className='op__who-name'>{d.assignee || '未分配'}</Text>
               {!d.isMine ? (
-                <Text className='op__who-take' onClick={() => runAction('pickup')}>
+                <Text className='op__who-take' onClick={openPickup}>
                   {d.assigneeId ? '接手' : '领取'}
                 </Text>
               ) : null}
@@ -759,9 +772,9 @@ export default function Operation() {
             {!d.isMine ? (
               <MoreItem
                 cls='blue'
-                name='领取 / 接手工序'
+                name={d.assigneeId ? '接手工序' : '领取工序'}
                 hint='把该工序分配给自己'
-                onClick={() => runAction('pickup')}
+                onClick={openPickup}
               />
             ) : null}
             <MoreItem cls='amber' name='返工' hint='把数量返工到指定工序' onClick={openRework} />
@@ -776,6 +789,48 @@ export default function Operation() {
             <MoreItem cls='red' name='报废' hint='报废并选择原因' onClick={openScrap} />
             <MoreItem cls='purple' name='维护' hint='报修工作中心' onClick={soon} />
             <MoreItem cls='gray' name='质量问题' hint='提交质量异常' onClick={soon} />
+          </View>
+        </View>
+      ) : null}
+
+      {/* 领取 / 接手确认弹层 —— 对齐网页 ConfirmPickupModal */}
+      {pickupOpen && d ? (
+        <View className='op__sheet-wrap'>
+          <View className='op__mask' onClick={() => setPickupOpen(false)} />
+          <View className='op__sheet'>
+            <View className='op__sheet-head'>
+              <Text className='op__sheet-title'>
+                {d.assigneeId ? '接手' : '领取'}
+                {d.itemReadableId ? ` ${d.itemReadableId}` : ''}
+              </Text>
+              <Text className='op__sheet-x' onClick={() => setPickupOpen(false)}>✕</Text>
+            </View>
+            <Text className='op__sheet-sub'>{d.description || '工序'}</Text>
+
+            <View className='op__emp'>
+              <Text className='op__emp-k'>数量</Text>
+              <Text className='op__emp-v'>{d.target}</Text>
+            </View>
+            {d.assigneeId ? (
+              <View className='op__emp'>
+                <Text className='op__emp-k'>当前负责人</Text>
+                <Text className='op__emp-v'>{d.assignee || '他人'}</Text>
+              </View>
+            ) : null}
+            {d.assigneeId ? (
+              <Text className='op__sheet-sub'>
+                该工序当前由他人负责,接手会停止其计时。
+              </Text>
+            ) : null}
+
+            <View
+              className={`op__submit ${acting ? 'op__submit--disabled' : ''}`}
+              onClick={acting ? undefined : submitPickup}
+            >
+              <Text className='op__submit-text'>
+                {acting ? '处理中…' : d.assigneeId ? '确认接手' : '确认领取'}
+              </Text>
+            </View>
           </View>
         </View>
       ) : null}
