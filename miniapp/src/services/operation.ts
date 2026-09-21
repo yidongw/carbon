@@ -1,4 +1,5 @@
-import { request } from './request'
+import Taro from '@tarojs/taro'
+import { request, BASE_URL, TOKEN_KEY, COMPANY_KEY } from './request'
 
 // 工序执行详情(对齐 MES /x/operation/:id)。
 export interface OperationDetail {
@@ -27,6 +28,7 @@ export interface OperationDetail {
   timePerUnitMs: number
   unitOfMeasureText: string
   materials: OpMaterial[]
+  files: OpFile[]
   logs: OpLog[]
 }
 
@@ -40,6 +42,14 @@ export interface OpMaterial {
   estimated: number
   actual: number
   toIssue: number
+}
+
+export interface OpFile {
+  id: string
+  name: string
+  size: string
+  type: string // Image | PDF | Document | …
+  path: string // private storage path under company
 }
 
 export interface OpLog {
@@ -120,3 +130,17 @@ export const searchItems = (q: string) =>
     url: `/api/miniapp/items?q=${encodeURIComponent(q)}`,
     method: 'GET',
   })
+
+/** 文件下载 URL（需带 Bearer；给 Taro.downloadFile 用） */
+export function fileDownloadUrl(path: string) {
+  return `${BASE_URL}/api/miniapp/file?path=${encodeURIComponent(path)}`
+}
+
+export function fileAuthHeader() {
+  const token = Taro.getStorageSync(TOKEN_KEY) || ''
+  const companyId = Taro.getStorageSync(COMPANY_KEY) || ''
+  return {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(companyId ? { 'X-Company-Id': companyId } : {}),
+  }
+}

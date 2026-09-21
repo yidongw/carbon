@@ -6,7 +6,9 @@ import type { Dashboard } from '../../services/dashboard'
 import { COMPANY_KEY } from '../../services/request'
 import { computeUnread, setUnreadCount } from '../../utils/unread'
 import { FN_GROUPS, FN_STROKE, fnIcon } from '../../constants/functions'
+import { scanToOperation } from '../../utils/scan'
 import TabBar from '../../components/TabBar'
+import { t } from '../../i18n'
 import './index.scss'
 
 // 空闲态的扫码大图(角框 + 内部网格,品牌蓝)。
@@ -77,14 +79,10 @@ export default function Workstation() {
       })
   }
 
-  const onScan = async () => {
-    try {
-      const r = await Taro.scanCode({ onlyFromCamera: false })
-      Taro.showModal({ title: '扫描结果', content: r.result || '(空)', showCancel: false })
-    } catch {
-      /* 取消扫码 */
-    }
-  }
+  // 扫码报工:扫分包码 → 解析当前工序 → 跳工序页并打开报工弹层。
+  const onScanReport = () => scanToOperation('report')
+  // 扫码领工单:扫分包码 → 解析当前工序 → 跳工序页并领取/接手。
+  const onScanPickup = () => scanToOperation('pickup')
 
   const badgeOf = (key: string) => {
     if (key === 'assigned' && data?.assignedCount) return String(data.assignedCount)
@@ -99,6 +97,11 @@ export default function Workstation() {
     bundleWorkOrders: '/pages/work-orders/index?type=bundle',
     salary: '/pages/salary/index',
     picking: '/pages/picking/index',
+    addInventory: '/pages/inventory/adjust?mode=add',
+    removeInventory: '/pages/inventory/adjust?mode=remove',
+    maintenance: '/pages/maintenance/index',
+    suggestion: '/pages/suggestion/index',
+    endShift: '/pages/end-shift/index',
   }
 
   const onFn = (key: string) => {
@@ -146,7 +149,7 @@ export default function Workstation() {
             <Text className='ws__current-est'>今日已报 {data?.todayPieces ?? 0} 件</Text>
           </View>
 
-          <View className='ws__report' hoverClass='ws__report--hover' onClick={onScan}>
+          <View className='ws__report' hoverClass='ws__report--hover' onClick={onScanReport}>
             <Text className='ws__report-text'>扫码报工</Text>
           </View>
         </View>
@@ -161,7 +164,7 @@ export default function Workstation() {
           <Text className='ws__idle-sub'>扫描分包标签即可自动领取工单</Text>
           <Text className='ws__idle-sub'>或进入报工,无需手动查找</Text>
 
-          <View className='ws__idle-primary' hoverClass='ws__idle-primary--hover' onClick={onScan}>
+          <View className='ws__idle-primary' hoverClass='ws__idle-primary--hover' onClick={onScanPickup}>
             <Text className='ws__idle-primary-text'>扫码领工单</Text>
           </View>
           <View
@@ -178,7 +181,7 @@ export default function Workstation() {
       <Text className='ws__sec'>功能</Text>
       {FN_GROUPS.map((g) => (
         <View key={g.key} className='ws__fn-group'>
-          <Text className='ws__fn-group-title'>{g.title}</Text>
+          <Text className='ws__fn-group-title'>{t(g.titleKey)}</Text>
           <View className='ws__fn-grid'>
             {g.items.map((it) => (
               <View
@@ -195,7 +198,7 @@ export default function Workstation() {
                     </View>
                   ) : null}
                 </View>
-                <Text className='ws__fn-label'>{it.text}</Text>
+                <Text className='ws__fn-label'>{t(it.textKey)}</Text>
               </View>
             ))}
           </View>

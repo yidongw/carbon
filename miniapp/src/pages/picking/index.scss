@@ -13,6 +13,8 @@ page {
     flex-direction: column;
     height: 100vh;
     padding-bottom: 0;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   &__search {
@@ -28,6 +30,8 @@ page {
     &--modal {
       margin: 16px 0;
       height: 68px;
+      box-shadow: none;
+      background: #f3f5f9;
     }
   }
 
@@ -154,15 +158,17 @@ page {
     color: #97a1b3;
   }
 
-  &__detail-bar {
+  /* —— Detail (pixel-match MES web kit card) —— */
+
+  &__toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 12px 0 20px;
+    gap: 12px;
+    padding: 8px 0 16px;
   }
 
-  &__detail-meta {
+  &__toolbar-left {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -171,13 +177,13 @@ page {
     min-width: 0;
   }
 
-  &__detail-progress {
+  &__toolbar-count {
     font-size: 24px;
-    color: #5b6472;
+    color: #64748b;
     font-variant-numeric: tabular-nums;
   }
 
-  &__detail-loc {
+  &__toolbar-loc {
     font-size: 22px;
     color: #97a1b3;
   }
@@ -190,92 +196,166 @@ page {
 
   &__kit {
     background: #ffffff;
-    border-radius: 24px;
-    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 10px 28px rgba(31, 45, 74, 0.05);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
   }
 
   &__kit-head {
-    margin-bottom: 8px;
+    padding: 28px 28px 20px;
+    background: #ffffff;
   }
 
   &__kit-title {
     display: block;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    color: #1a2233;
+    color: #111827;
+    margin-bottom: 16px;
   }
 
   &__kit-sub {
     display: block;
-    margin-top: 6px;
+    margin: -8px 0 14px;
     font-size: 22px;
-    color: #8a94a6;
+    color: #9ca3af;
   }
 
-  &__line {
-    padding: 22px 0;
-    border-top: 1px solid #f2f4f7;
+  /* BarProgress clone: thin vertical ticks */
+  &__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 28px;
+    overflow: hidden;
+  }
 
-    &--done {
-      opacity: 0.65;
+  &__bar-tick {
+    width: 4px;
+    height: 28px;
+    border-radius: 1px;
+    background: rgba(17, 24, 39, 0.12);
+    flex-shrink: 0;
+
+    &--on {
+      background: #10b981;
     }
   }
 
-  &__line-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
+  &__kit-body {
+    border-top: none;
   }
 
-  &__line-info {
-    flex: 1;
+  /* Single horizontal row like MES desktop PickLineItem */
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 16px;
+    padding: 28px 24px;
+    border-top: 1px solid #eef0f4;
+
+    &--done {
+      opacity: 0.55;
+    }
+  }
+
+  &__thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__thumb-ic {
+    font-size: 34px;
+    color: #9ca3af;
+    line-height: 1;
+  }
+
+  &__ident {
+    flex: 1 1 160px;
     min-width: 0;
   }
 
-  &__line-name {
+  &__name {
     display: block;
     font-size: 28px;
     font-weight: 600;
-    color: #1a2233;
+    color: #111827;
+    line-height: 1.3;
   }
 
-  &__line-sku {
+  &__sku {
     display: block;
     margin-top: 4px;
     font-size: 22px;
-    color: #8a94a6;
+    color: #9ca3af;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
-  &__line-bin {
-    display: block;
-    margin-top: 6px;
-    font-size: 22px;
-    color: #5b6472;
+  &__right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex: 1 1 auto;
+    margin-left: auto;
   }
 
-  &__line-warn {
-    display: block;
-    margin-top: 6px;
-    font-size: 22px;
-    color: #b45309;
+  &__bin {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
   }
 
-  &__qty {
-    padding: 8px 16px;
-    border-radius: 12px;
+  &__nostock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    flex-shrink: 0;
+  }
+
+  &__nostock-ic {
+    font-size: 20px;
+    color: #d97706;
+    font-weight: 700;
+  }
+
+  &__nostock-text {
+    font-size: 22px;
+    font-weight: 600;
+    color: #d97706;
+    white-space: nowrap;
+  }
+
+  &__count {
+    min-width: 56px;
+    height: 56px;
+    padding: 0 18px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 
     &--green { background: #16a34a; }
-    &--orange { background: #ea8a12; }
+    &--orange { background: #f59e0b; }
     &--red { background: #dc2626; }
   }
 
-  &__qty-text {
-    font-size: 24px;
+  &__count-text {
+    font-size: 28px;
     font-weight: 700;
     color: #ffffff;
     font-variant-numeric: tabular-nums;
@@ -283,27 +363,62 @@ page {
 
   &__actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 16px;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
   }
 
   &__btn {
-    padding: 16px 28px;
-    border-radius: 16px;
-    background: #e8f0ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 64px;
+    padding: 0 22px;
+    border-radius: 14px;
+    flex-shrink: 0;
 
-    &--primary {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
+    &--outline {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
     }
 
-    &--secondary {
-      background: #eef0f4;
+    &--solid {
+      background: #171717;
+      border: 1px solid #171717;
+    }
+  }
+
+  &__btn-plus {
+    font-size: 28px;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  &__btn-t {
+    font-size: 26px;
+    font-weight: 600;
+    color: #111827;
+
+    &--w {
+      color: #ffffff;
+    }
+  }
+
+  &__act {
+    padding: 14px 26px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--dark {
+      background: #171717;
     }
 
     &--ghost {
-      background: #f3f5f9;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
     }
 
     &--sm {
@@ -312,32 +427,19 @@ page {
 
     &--block {
       width: 100%;
-      text-align: center;
       margin-top: 12px;
       box-sizing: border-box;
     }
-
-    &--hover {
-      opacity: 0.88;
-    }
   }
 
-  &__btn-text {
+  &__act-text {
     font-size: 26px;
     font-weight: 600;
-    color: #2563eb;
-  }
-
-  &__btn--primary &__btn-text {
     color: #ffffff;
-  }
 
-  &__btn--secondary &__btn-text {
-    color: #475569;
-  }
-
-  &__btn--ghost &__btn-text {
-    color: #64748b;
+    &--dark {
+      color: #334155;
+    }
   }
 
   &__mask {

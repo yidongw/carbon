@@ -11,12 +11,14 @@ page {
     border-radius: 16px;
     padding: 6px;
     margin: 12px 0 24px;
+    gap: 4px;
   }
 
   &__seg {
     flex: 1;
+    min-width: 0;
     text-align: center;
-    padding: 16px 0;
+    padding: 14px 4px;
     border-radius: 12px;
 
     &--active {
@@ -26,8 +28,9 @@ page {
   }
 
   &__seg-text {
-    font-size: 26px;
+    font-size: 24px;
     color: #5b6472;
+    white-space: nowrap;
   }
 
   &__seg--active &__seg-text {
@@ -73,8 +76,14 @@ page {
 
   &__badge {
     flex-shrink: 0;
+    min-width: 120px;
+    height: 48px;
+    box-sizing: border-box;
     border-radius: 999px;
-    padding: 8px 18px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &--gray { background: #eef0f4; }
     &--blue { background: #e8f0ff; }
@@ -87,6 +96,8 @@ page {
   &__badge-text {
     font-size: 22px;
     font-weight: 600;
+    line-height: 1;
+    text-align: center;
   }
   &__badge--gray &__badge-text { color: #64748b; }
   &__badge--blue &__badge-text { color: #2563eb; }

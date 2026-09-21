@@ -126,7 +126,18 @@ export default function WorkOrders() {
       {filtered.length > 0 ? (
         <View className='wo__list'>
           {filtered.map((r) => (
-            <View key={r.id} className='wo__card'>
+            <View
+              key={r.id}
+              className='wo__card'
+              hoverClass='wo__card--hover'
+              onClick={() => {
+                if (type === 'jobs') {
+                  Taro.navigateTo({
+                    url: `/pages/job/index?id=${r.id}`,
+                  })
+                }
+              }}
+            >
               {type === 'jobs' ? <JobCard row={r as JobRow} /> : null}
               {type === 'master' ? <MasterCard row={r as MasterRow} /> : null}
               {type === 'bundle' ? <BundleCard row={r as BundleRow} /> : null}

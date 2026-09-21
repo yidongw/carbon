@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
 import { getPickingLists } from '../../services/picking'
 import type { PickingListRow } from '../../services/picking'
+import { t } from '../../i18n'
 import './index.scss'
 
 const STATUS: Record<string, { label: string; cls: string }> = {
@@ -49,7 +50,7 @@ export default function PickingListPage() {
 
   return (
     <View className='pk'>
-      <NavBar title='拣货' back />
+      <NavBar title={t('picking.title')} back />
 
       <View className='pk__search'>
         <Text className='pk__search-ic'>🔍</Text>
@@ -108,7 +109,7 @@ export default function PickingListPage() {
       ) : (
         <View className='pk__empty'>
           <Text className='pk__empty-text'>
-            {loading ? '加载中…' : '暂无分配给你的拣货单'}
+            {loading ? t('common.loading') : t('picking.empty')}
           </Text>
         </View>
       )}

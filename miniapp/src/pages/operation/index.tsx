@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
@@ -9,6 +9,8 @@ import {
   getScrapReasons,
   getReworkTargets,
   searchItems,
+  fileDownloadUrl,
+  fileAuthHeader,
 } from '../../services/operation'
 import type {
   OperationDetail,
@@ -16,6 +18,7 @@ import type {
   ScrapReason,
   ReworkTarget,
   OpMaterial,
+  OpFile,
   ItemHit,
 } from '../../services/operation'
 import { opStatusCls as statusCls, opStatusLabel as statusLabel } from '../../utils/opStatus'
@@ -53,9 +56,54 @@ const LOG_META: Record<string, { label: string; cls: string }> = {
   Scrap: { label: '报废', cls: 'red' },
 }
 
+function openOpFile(file: OpFile) {
+  const url = fileDownloadUrl(file.path)
+  Taro.showLoading({ title: '打开中…', mask: true })
+  Taro.downloadFile({
+    url,
+    header: fileAuthHeader(),
+    success: (res) => {
+      Taro.hideLoading()
+      if (res.statusCode !== 200 || !res.tempFilePath) {
+        Taro.showToast({ title: '下载失败', icon: 'none' })
+        return
+      }
+      if (file.type === 'Image') {
+        Taro.previewImage({ urls: [res.tempFilePath], current: res.tempFilePath })
+        return
+      }
+      Taro.openDocument({
+        filePath: res.tempFilePath,
+        showMenu: true,
+        fail: () => {
+          Taro.showToast({ title: '无法预览，已下载到临时文件', icon: 'none' })
+        },
+      })
+    },
+    fail: () => {
+      Taro.hideLoading()
+      Taro.showToast({ title: '下载失败', icon: 'none' })
+    },
+  })
+}
+
+function onFileMore(file: OpFile) {
+  Taro.showActionSheet({
+    itemList: ['下载 / 打开'],
+    success: (res) => {
+      if (res.tapIndex === 0) openOpFile(file)
+    },
+  }).catch(() => {
+    /* 用户取消 */
+  })
+}
+
 export default function Operation() {
   const router = useRouter()
   const id = (router.params.id as string) || ''
+  // 扫码进来时带的意图:report=自动打开报工弹层,pickup=自动领取/接手。
+  const auto = (router.params.auto as string) || ''
+  const autoHandled = useRef(false)
 
   const [d, setD] = useState<OperationDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -412,6 +460,18 @@ export default function Operation() {
     }
   }
 
+  // 扫码带 auto 意图:首次加载出工序后自动执行一次(报工弹层 / 领取)。
+  useEffect(() => {
+    if (autoHandled.current || !d || !d.found) return
+    autoHandled.current = true
+    if (auto === 'report') {
+      openSheet()
+    } else if (auto === 'pickup' && !d.isMine) {
+      runAction('pickup')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [d])
+
   const pct =
     d && d.target > 0 ? Math.min(100, Math.round((d.completed / d.target) * 100)) : 0
 
@@ -532,6 +592,49 @@ export default function Operation() {
               ))
             ) : (
               <Text className='op__empty2'>无材料</Text>
+            )}
+          </View>
+
+          {/* 文件 — 对齐 MES JobOperation Files */}
+          <View className='op__sec'>
+            <Text className='op__sec-title'>文件</Text>
+          </View>
+          <Text className='op__sec-sub'>与工单和商机相关的文件。</Text>
+          <View className='op__card2'>
+            {(d.files ?? []).length > 0 ? (
+              <>
+                <View className='op__file-head'>
+                  <Text className='op__file-h'>名称</Text>
+                  <Text className='op__file-h op__file-h--size'>大小</Text>
+                  <View className='op__file-h-spacer' />
+                </View>
+                {(d.files ?? []).map((f) => (
+                  <View key={f.id} className='op__file'>
+                    <View
+                      className='op__file-main'
+                      hoverClass='op__file-main--hover'
+                      onClick={() => openOpFile(f)}
+                    >
+                      <View className='op__file-ic'>
+                        <Text className='op__file-ic-t'>
+                          {f.type === 'Image' ? '🖼' : f.type === 'PDF' ? 'PDF' : '📄'}
+                        </Text>
+                      </View>
+                      <Text className='op__file-name'>{f.name}</Text>
+                      <Text className='op__file-size'>{f.size}</Text>
+                    </View>
+                    <View
+                      className='op__file-more'
+                      hoverClass='op__file-more--hover'
+                      onClick={() => onFileMore(f)}
+                    >
+                      <Text className='op__file-more-t'>⋮</Text>
+                    </View>
+                  </View>
+                ))}
+              </>
+            ) : (
+              <Text className='op__empty2'>无文件</Text>
             )}
           </View>
 
