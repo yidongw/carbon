@@ -53,10 +53,12 @@ import { useCustomers, usePeople, useStyles } from "~/stores";
 import { path } from "~/utils/path";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { Job } from "../../types";
+import { EditableCreatedAtCell } from "../EditableCreatedAtCell";
 import { getDeadlineIcon } from "../Jobs/Deadline";
 import JobStatus from "../Jobs/JobStatus";
 import JobStatusMenu from "../Jobs/JobStatusMenu";
 import { useDeadlineTypeLabel } from "../Jobs/jobLabels";
+import { useMasterWorkOrderCreatedAtSave } from "../useEditableCreatedAt";
 
 // Master work orders are backed by a job; inline edits target that job via
 // `idAccessor: (r) => r.jobId` on the shared job bulk-update action.
@@ -101,6 +103,8 @@ const MasterWorkOrdersTable = memo(
     // boolean instead — keeping it in the columns deps would recompute `columns`
     // every render and thrash the table into a re-render loop.
     const canUpdateProduction = permissions.can("update", "production");
+    const { saveCreatedAt, canEdit: canEditCreatedAt } =
+      useMasterWorkOrderCreatedAtSave();
 
     const configuredItemIds = useMemo(
       () => new Set(itemIdsWithConfigurationParameters),
@@ -431,7 +435,16 @@ const MasterWorkOrdersTable = memo(
           accessorKey: "createdAt",
           header: t`Created At`,
           cell: ({ row }) =>
-            row.original.createdAt ? formatDate(row.original.createdAt) : null,
+            row.original.id ? (
+              <EditableCreatedAtCell
+                createdAt={row.original.createdAt}
+                row={{ id: row.original.id }}
+                onSave={saveCreatedAt}
+                canEdit={canEditCreatedAt}
+              />
+            ) : row.original.createdAt ? (
+              formatDate(row.original.createdAt)
+            ) : null,
           meta: {
             icon: <LuCalendar />,
             isEmpty: (row) => !row.createdAt
@@ -696,6 +709,8 @@ const MasterWorkOrdersTable = memo(
       configuredItemIds,
       openVariantsQuantity,
       canUpdateProduction,
+      canEditCreatedAt,
+      saveCreatedAt,
       bundleCountByMasterId,
       remainingToSplitByMasterId,
       openBundles,
