@@ -342,8 +342,9 @@ export async function getStyleMethodOperationSeeds(
 }
 
 /**
- * Batched process counts for the master WO list — same description union as
- * `getMasterProcessBreakdown` (Style BOP ∪ master job ops ∪ bundle job ops).
+ * Process counts for the master WO list. Uses the same Style-seed helper as
+ * `getMasterProcessBreakdown` (not a separate batched makeMethod query) so the
+ * list number always matches the processes overlay after garment split.
  */
 export async function getMasterProcessCounts(
   client: SupabaseClient<Database>,
@@ -371,67 +372,24 @@ export async function getMasterProcessCounts(
     if (m.jobId) masterIdByJobId.set(m.jobId, m.id);
   }
 
+  // Same Style BOP seed as the overlay — one lookup per distinct item.
   const itemIds = [
     ...new Set(rows.map((m) => m.itemId).filter((id): id is string => !!id))
   ];
-  const styleByItemId = new Map<string, string>(
-    itemIds.map((id) => [id, id] as const)
+  const styleDescsByItemId = new Map<string, string[]>();
+  await Promise.all(
+    itemIds.map(async (itemId) => {
+      const seeds = await getStyleMethodOperationSeeds(
+        client,
+        itemId,
+        companyId
+      );
+      styleDescsByItemId.set(
+        itemId,
+        seeds.map((s) => s.description)
+      );
+    })
   );
-  if (itemIds.length > 0) {
-    const variants = await client
-      .from("itemVariant")
-      .select("variantItemId, parentItemId")
-      .in("variantItemId", itemIds)
-      .eq("companyId", companyId);
-    for (const v of variants.data ?? []) {
-      if (v.variantItemId && v.parentItemId) {
-        styleByItemId.set(v.variantItemId, v.parentItemId);
-      }
-    }
-  }
-
-  const styleItemIds = [...new Set(styleByItemId.values())];
-  const makeMethodByStyleId = new Map<string, string>();
-  if (styleItemIds.length > 0) {
-    const makeMethods = await client
-      .from("makeMethod")
-      .select("id, itemId, createdAt")
-      .in("itemId", styleItemIds)
-      .eq("companyId", companyId)
-      .order("createdAt", { ascending: true });
-    for (const mm of makeMethods.data ?? []) {
-      if (mm.itemId && mm.id && !makeMethodByStyleId.has(mm.itemId)) {
-        makeMethodByStyleId.set(mm.itemId, mm.id);
-      }
-    }
-  }
-
-  const styleDescsByMakeMethodId = new Map<string, string[]>();
-  const makeMethodIds = [...makeMethodByStyleId.values()];
-  if (makeMethodIds.length > 0) {
-    const methodOps = await client
-      .from("methodOperation")
-      .select("makeMethodId, description, order")
-      .in("makeMethodId", makeMethodIds)
-      .order("order", { ascending: true });
-    for (const op of methodOps.data ?? []) {
-      if (!op.makeMethodId) continue;
-      const list = styleDescsByMakeMethodId.get(op.makeMethodId) ?? [];
-      list.push(op.description ?? "—");
-      styleDescsByMakeMethodId.set(op.makeMethodId, list);
-    }
-  }
-
-  const styleDescsByMasterId = new Map<string, string[]>();
-  for (const m of rows) {
-    if (!m.itemId) continue;
-    const styleId = styleByItemId.get(m.itemId) ?? m.itemId;
-    const makeMethodId = makeMethodByStyleId.get(styleId);
-    styleDescsByMasterId.set(
-      m.id,
-      makeMethodId ? (styleDescsByMakeMethodId.get(makeMethodId) ?? []) : []
-    );
-  }
 
   const jobDescsByMasterId = new Map<string, string[]>();
   const pushJobDesc = (masterId: string, description: string) => {
@@ -453,8 +411,9 @@ export async function getMasterProcessCounts(
     }
   }
 
+  // Same source as getMasterProcessBreakdown (view, not base table).
   const bundles = await client
-    .from("bundleWorkOrder")
+    .from("bundleWorkOrders")
     .select("masterWorkOrderId, jobId")
     .in("masterWorkOrderId", masterIds)
     .eq("companyId", companyId);
@@ -480,7 +439,7 @@ export async function getMasterProcessCounts(
 
   for (const m of rows) {
     result[m.id] = mergeMasterProcessDescriptions(
-      styleDescsByMasterId.get(m.id) ?? [],
+      m.itemId ? (styleDescsByItemId.get(m.itemId) ?? []) : [],
       jobDescsByMasterId.get(m.id) ?? []
     ).length;
   }
