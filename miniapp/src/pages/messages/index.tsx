@@ -39,9 +39,9 @@ export default function Messages() {
     const next = { ...getReadSet() }
     setRead(next)
     setUnreadCount(computeUnread(todos.map((x) => x.key)))
-    // 待审批类消息暂无独立页面;工序类跳转到工序执行页。
+    // pending = 报工待审批 → 审批页；其余 key 是工序 id → 工序执行页。
     if (t.key === 'pending') {
-      Taro.showToast({ title: '报工审批(开发中)', icon: 'none' })
+      Taro.navigateTo({ url: '/pages/approvals/index' })
       return
     }
     Taro.navigateTo({ url: `/pages/operation/index?id=${t.key}` })
