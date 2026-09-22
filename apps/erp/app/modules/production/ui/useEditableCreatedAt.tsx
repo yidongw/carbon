@@ -169,3 +169,30 @@ export function useProductionQuantityReportCreatedAtSave() {
     canEdit: permissions.can("update", "production")
   };
 }
+
+export function useMasterWorkOrderCreatedAtSave() {
+  const permissions = usePermissions();
+  const { carbon, userId, companyId } = useCreatedAtMutationContext();
+
+  const saveCreatedAt = useCallback(
+    async (newValue: string, row: CreatedAtRow) => {
+      if (!carbon) throw new Error("Carbon client not found");
+
+      return carbon
+        .from("masterWorkOrder")
+        .update({
+          createdAt: newValue,
+          updatedBy: userId,
+          updatedAt: new Date().toISOString()
+        })
+        .eq("id", row.id)
+        .eq("companyId", companyId);
+    },
+    [carbon, companyId, userId]
+  );
+
+  return {
+    saveCreatedAt,
+    canEdit: permissions.can("update", "production")
+  };
+}
