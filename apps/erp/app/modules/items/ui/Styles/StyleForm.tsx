@@ -14,7 +14,7 @@ import {
   toast
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { PostgrestResponse } from "@supabase/supabase-js";
+import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
@@ -51,6 +51,8 @@ type StyleFormProps = {
   initialValues: z.infer<typeof styleValidator> & { tags?: string[] };
   type?: "card" | "modal" | "overlay";
   onClose?: () => void;
+  /** Fired after a successful modal create with the new item's id. */
+  onCreated?: (id: string) => void;
   /** Prefetched attribute sets from the overlay loader (skips client fetch). */
   attributeSets?: AttributeSetFormOption[];
 } & Partial<Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">>;
@@ -63,6 +65,7 @@ const StyleForm = ({
   initialValues,
   type = "card",
   onClose,
+  onCreated,
   onDismiss,
   fetcher: overlayFetcher,
   action: overlayAction,
@@ -72,24 +75,35 @@ const StyleForm = ({
   const { company } = useUser();
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
-  const localFetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const localFetcher = useFetcher<PostgrestSingleResponse<{ id: string }>>();
   const isOverlay = type === "overlay";
   // Overlay host owns the submit fetcher (closes + revalidates on `{ ok: true }`).
   const fetcher = overlayFetcher ?? localFetcher;
   const dismiss = onDismiss ?? onClose;
 
+  // Fire the success handler exactly once. The fetcher sits in `loading` for
+  // several renders during revalidation, and onCreated/onClose have a fresh
+  // identity each render, so without this latch the effect re-runs and calls
+  // onCreated repeatedly — an infinite update loop (React #185).
+  const createHandledRef = useRef(false);
+
   useEffect(() => {
     if (type !== "modal") return;
 
     if (localFetcher.state === "loading" && localFetcher.data?.data) {
-      onClose?.();
+      if (createHandledRef.current) return;
+      createHandledRef.current = true;
+      // Prefer onCreated (auto-selects the new item in the picker); fall back to
+      // onClose for callers that only need the modal dismissed.
+      if (onCreated) onCreated(localFetcher.data.data.id);
+      else onClose?.();
       toast.success(t`Created style`);
     } else if (localFetcher.state === "idle" && localFetcher.data?.error) {
       toast.error(
         t`Failed to create style: ${localFetcher.data.error.message}`
       );
     }
-  }, [localFetcher.data, localFetcher.state, onClose, type, t]);
+  }, [localFetcher.data, localFetcher.state, onClose, onCreated, type, t]);
 
   const { id, onIdChange, loading } = useNextItemId("Style");
   const permissions = usePermissions();

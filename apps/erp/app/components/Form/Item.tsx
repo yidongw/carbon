@@ -348,6 +348,19 @@ const Item = ({
     triggerRef.current?.click();
   };
 
+  // Inline-created item: select it so the form submits the new id, not
+  // whatever was selected before "Create" was clicked. The orphanOption effect
+  // resolves its label even before the items store refreshes. Without this the
+  // field keeps its prior value and the record is created against the wrong item.
+  const handleCreated = (newId: string) => {
+    setCreated("");
+    newItemsModal.onClose();
+    if (!newId) return;
+    setValue(newId);
+    onChange(newId);
+    validate();
+  };
+
   return (
     <>
       <FormControl isInvalid={!!error} className="w-full">
@@ -551,11 +564,8 @@ const Item = ({
       {type === "Part" && newItemsModal.isOpen && (
         <PartForm
           type="modal"
-          onClose={() => {
-            setCreated("");
-            newItemsModal.onClose();
-            triggerRef.current?.click();
-          }}
+          onClose={handleCreateClose}
+          onCreated={handleCreated}
           initialValues={{
             id: "",
             revision: "0",
@@ -579,6 +589,7 @@ const Item = ({
         <StyleForm
           type="modal"
           onClose={handleCreateClose}
+          onCreated={handleCreated}
           initialValues={{
             id: "",
             revision: "0",
@@ -598,11 +609,8 @@ const Item = ({
       {type === "Consumable" && newItemsModal.isOpen && (
         <ConsumableForm
           type="modal"
-          onClose={() => {
-            setCreated("");
-            newItemsModal.onClose();
-            triggerRef.current?.click();
-          }}
+          onClose={handleCreateClose}
+          onCreated={handleCreated}
           initialValues={{
             id: "",
             name: created,
@@ -620,11 +628,8 @@ const Item = ({
       {type === "Material" && newItemsModal.isOpen && (
         <MaterialForm
           type="modal"
-          onClose={() => {
-            setCreated("");
-            newItemsModal.onClose();
-            triggerRef.current?.click();
-          }}
+          onClose={handleCreateClose}
+          onCreated={handleCreated}
           initialValues={{
             id: "",
             name: created,
@@ -645,11 +650,8 @@ const Item = ({
       {type === "Tool" && newItemsModal.isOpen && (
         <ToolForm
           type="modal"
-          onClose={() => {
-            setCreated("");
-            newItemsModal.onClose();
-            triggerRef.current?.click();
-          }}
+          onClose={handleCreateClose}
+          onCreated={handleCreated}
           initialValues={{
             id: "",
             revision: "0",
