@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "resolveJsonModule": true
-  },
-  "extends": "@carbon/config/tsconfig/react-library.json",
-  "include": ["src"],
-  "exclude": ["**/*.d.ts", "./dist", "node_modules"]
-}

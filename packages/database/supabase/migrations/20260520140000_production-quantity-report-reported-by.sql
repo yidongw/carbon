@@ -1,3 +1,0 @@
--- No-op: logic moved to 20260520150000_production-quantity-report-employee-id.sql.
--- This file is retained so databases that already applied this migration version
--- stay in sync with the local migrations directory.
