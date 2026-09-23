@@ -1,0 +1,28 @@
+export default defineAppConfig({
+  pages: [
+    'pages/login/login',
+    'pages/workstation/index',
+    'pages/tasks/index',
+    'pages/messages/index',
+    'pages/profile/index',
+    'pages/functions/index',
+    'pages/salary/index',
+    'pages/work-orders/index',
+    'pages/job/index',
+    'pages/operation/index',
+    'pages/approvals/index',
+    'pages/picking/index',
+    'pages/picking/detail',
+    'pages/inventory/adjust',
+    'pages/maintenance/index',
+    'pages/maintenance/detail',
+    'pages/suggestion/index',
+    'pages/end-shift/index',
+  ],
+  window: {
+    backgroundTextStyle: 'light',
+    navigationBarBackgroundColor: '#ffffff',
+    navigationBarTitleText: 'Carbon MES',
+    navigationBarTextStyle: 'black',
+  },
+})

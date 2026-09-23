@@ -1,0 +1,123 @@
+page {
+  background: #f3f5f9;
+}
+
+.tasks {
+  padding: 0 24px 200px;
+
+  &__segs {
+    display: flex;
+    background: #eef0f4;
+    border-radius: 16px;
+    padding: 6px;
+    margin: 12px 0 24px;
+    gap: 4px;
+  }
+
+  &__seg {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 14px 4px;
+    border-radius: 12px;
+
+    &--active {
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(31, 45, 74, 0.08);
+    }
+  }
+
+  &__seg-text {
+    font-size: 24px;
+    color: #5b6472;
+    white-space: nowrap;
+  }
+
+  &__seg--active &__seg-text {
+    color: #1a2233;
+    font-weight: 600;
+  }
+
+  &__list {
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 34px rgba(31, 45, 74, 0.05);
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: 28px;
+    border-bottom: 1px solid #f2f4f7;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__row-mid {
+    flex: 1;
+  }
+
+  &__row-title {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a2233;
+  }
+
+  &__row-sub {
+    display: block;
+    margin-top: 6px;
+    font-size: 22px;
+    color: #8a94a6;
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    min-width: 120px;
+    height: 48px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--gray { background: #eef0f4; }
+    &--blue { background: #e8f0ff; }
+    &--green { background: #e6f8ee; }
+    &--orange { background: #fff1e0; }
+    &--yellow { background: #fef3c7; }
+    &--red { background: #fee2e2; }
+  }
+
+  &__badge-text {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+  }
+  &__badge--gray &__badge-text { color: #64748b; }
+  &__badge--blue &__badge-text { color: #2563eb; }
+  &__badge--green &__badge-text { color: #16a34a; }
+  &__badge--orange &__badge-text { color: #ea8a12; }
+  &__badge--yellow &__badge-text { color: #b45309; }
+  &__badge--red &__badge-text { color: #dc2626; }
+
+  &__row--hover {
+    background: #f7f9fc;
+  }
+
+  &__empty {
+    padding-top: 200px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__empty-text {
+    font-size: 26px;
+    color: #9aa3b2;
+  }
+}
