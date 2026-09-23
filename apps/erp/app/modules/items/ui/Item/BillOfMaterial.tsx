@@ -527,6 +527,12 @@ const BillOfMaterial = ({
   // so it never fights the URL-seeded initial selection.
   useEffect(() => {
     if (!bomSelectedMaterialId) return;
+    // eslint-disable-next-line no-console
+    console.debug("[BoM effect] open command", {
+      command: bomSelectedMaterialId,
+      matchesACard: materials.some((m) => m.id === bomSelectedMaterialId),
+      cardIds: materials.map((m) => m.id)
+    });
     setSelectedItemId(bomSelectedMaterialId);
     syncMaterialIdToUrl(bomSelectedMaterialId);
     // Bring the row into view via its checkbox anchor (a stable per-row id).

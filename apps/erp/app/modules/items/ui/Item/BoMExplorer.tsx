@@ -473,15 +473,39 @@ const BoMExplorer = ({
                         }
                         if (!itemId || !methodId) return;
 
-                        const targetMakeMethodId =
-                          node.data.replenishmentSystem !== "Buy"
-                            ? node.data.materialMakeMethodId
-                            : node.data.makeMethodId;
+                        // Only a Made subassembly (e.g. 成布) has its own
+                        // BoM/process to drill into. Everything else — Pull from
+                        // Inventory, Buy, Pick — is a leaf whose details live
+                        // inline in the right BillOfMaterial card, so clicking it
+                        // opens that card in place (no route change).
+                        //
+                        // NB: key off methodType, NOT materialMakeMethodId:
+                        // get_method_tree coalesces a materialMakeMethodId onto
+                        // Pull rows (pointing at the pulled item's active method),
+                        // so its presence does NOT mean the row is drillable.
+                        const isMakeSubassembly =
+                          node.data.methodType === "Make to Order" &&
+                          !!node.data.materialMakeMethodId;
 
-                        // Leaf material (no sub-method to drill into): there is
-                        // no route to navigate to, so just open its card in the
-                        // right BillOfMaterial via the shared store (same page).
-                        if (!node.data.isRoot && !targetMakeMethodId) {
+                        // eslint-disable-next-line no-console
+                        console.debug("[BoM click]", {
+                          desc: node.data.description,
+                          isRoot: node.data.isRoot,
+                          methodType: node.data.methodType,
+                          methodMaterialId: node.data.methodMaterialId,
+                          materialMakeMethodId: node.data.materialMakeMethodId,
+                          isMakeSubassembly,
+                          branch:
+                            !node.data.isRoot && !isMakeSubassembly
+                              ? "LEAF->expand card"
+                              : node.data.isRoot
+                                ? "root->details"
+                                : "make->drill in"
+                        });
+
+                        // Leaf material: open its card in the right panel
+                        // (same page) via the shared store — no route to drill.
+                        if (!node.data.isRoot && !isMakeSubassembly) {
                           $bomSelectedMaterialId.set(
                             node.data.methodMaterialId
                           );
@@ -494,7 +518,7 @@ const BoMExplorer = ({
                               itemType,
                               itemId,
                               methodId,
-                              targetMakeMethodId,
+                              node.data.materialMakeMethodId as string,
                               node
                             );
 
