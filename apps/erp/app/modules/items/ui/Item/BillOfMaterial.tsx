@@ -106,6 +106,7 @@ import {
 } from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
+import { $bomSelectedMaterialId } from "~/stores/bom-selected-material";
 import { $bomVariantFilter } from "~/stores/bom-variant-filter";
 import type { ConfigurationRuleBindings } from "../../configurationRuleBindings";
 import type { methodOperationValidator } from "../../items.models";
@@ -475,6 +476,9 @@ const BillOfMaterial = ({
 
   // Shared with the left BoMExplorer so a color tab drives both panels.
   const storeVariantFilter = useStore($bomVariantFilter);
+  // One-shot command from the left BoMExplorer: open a material's card when its
+  // leaf node is clicked (no route change to remount + reseed from the URL).
+  const bomSelectedMaterialId = useStore($bomSelectedMaterialId);
   const activeVariantTab = storeVariantFilter ?? "all";
   const setActiveVariantTab = (value: string) =>
     $bomVariantFilter.set(value === "all" ? null : value);
@@ -517,6 +521,23 @@ const BillOfMaterial = ({
       window.location.hash;
     window.history.replaceState(window.history.state, "", url);
   }, []);
+
+  // Apply a pending "open this material" command from the left tree, then reset
+  // it so re-clicking the same node re-fires. Runs only on a non-null command,
+  // so it never fights the URL-seeded initial selection.
+  useEffect(() => {
+    if (!bomSelectedMaterialId) return;
+    setSelectedItemId(bomSelectedMaterialId);
+    syncMaterialIdToUrl(bomSelectedMaterialId);
+    // Bring the row into view via its checkbox anchor (a stable per-row id).
+    document
+      .getElementById(`checkbox-${bomSelectedMaterialId}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    $bomSelectedMaterialId.set(null);
+  }, [bomSelectedMaterialId, syncMaterialIdToUrl]);
+
+  // Clear the cross-panel command on unmount so it never leaks to another page.
+  useEffect(() => () => $bomSelectedMaterialId.set(null), []);
 
   const onAddItem = () => {
     if (isReadOnly) return;

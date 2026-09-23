@@ -52,6 +52,7 @@ import type { FlatTreeItem } from "~/components/TreeView";
 import { LevelLine, TreeView, useTree } from "~/components/TreeView";
 import { useIntegrations } from "~/hooks/useIntegrations";
 import type { MethodItemType } from "~/modules/shared";
+import { $bomSelectedMaterialId } from "~/stores/bom-selected-material";
 import { generateBomIds } from "~/utils/bom";
 import { path } from "~/utils/path";
 import type { MakeMethod, Method, MethodOperation } from "../../types";
@@ -477,7 +478,15 @@ const BoMExplorer = ({
                             ? node.data.materialMakeMethodId
                             : node.data.makeMethodId;
 
-                        if (!node.data.isRoot && !targetMakeMethodId) return;
+                        // Leaf material (no sub-method to drill into): there is
+                        // no route to navigate to, so just open its card in the
+                        // right BillOfMaterial via the shared store (same page).
+                        if (!node.data.isRoot && !targetMakeMethodId) {
+                          $bomSelectedMaterialId.set(
+                            node.data.methodMaterialId
+                          );
+                          return;
+                        }
 
                         const nodePath = node.data.isRoot
                           ? getRootLink(itemType, itemId, methodId)
