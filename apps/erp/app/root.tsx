@@ -275,7 +275,15 @@ export function Document({
       </head>
       <body className="h-full overflow-hidden bg-background antialiased selection:bg-primary/10 selection:text-primary">
         {children}
-        <Toaster position="bottom-right" visibleToasts={5} />
+        <Toaster
+          position="bottom-right"
+          visibleToasts={5}
+          // Above Radix modal/drawer overlays (stack starts at z-50).
+          style={{ zIndex: 99999 }}
+          toastOptions={{
+            style: { zIndex: 99999 }
+          }}
+        />
         <ScrollRestoration />
         <Scripts />
         {!CONTROLLED_ENVIRONMENT && !DISABLE_VERCEL_ANALYTICS && <Analytics />}

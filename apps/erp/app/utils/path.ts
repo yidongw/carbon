@@ -105,6 +105,10 @@ export const path = {
         generatePath(
           `${api}/production/bundle-work-orders/${bundleWorkOrderId}/processes`
         ),
+      bundleWorkOrderQuantity: (bundleWorkOrderId: string) =>
+        generatePath(
+          `${api}/production/bundle-work-orders/${bundleWorkOrderId}/quantity`
+        ),
       operationQuantityReports: (operationId: string) =>
         generatePath(
           `${api}/production/operations/${operationId}/quantity-reports`

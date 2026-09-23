@@ -846,7 +846,7 @@ export const overlayRegistry = {
   },
   masterWorkOrderBundles: {
     type: "modal",
-    // Read-only view of a master work order's bundles; its only button dismisses.
+    // Bundle list for a master WO (qty is inline-editable); dismiss-only chrome.
     confirmMode: "none",
     render: renderLazyOverlay(
       (ctx) => {
