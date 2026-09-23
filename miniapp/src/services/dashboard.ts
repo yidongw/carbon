@@ -26,6 +26,7 @@ export interface Dashboard {
   assignedCount: number
   activeCount: number
   current: null | {
+    id: string
     jobReadableId: string
     process: string
     done: number

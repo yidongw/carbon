@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import NavBar from '../../components/NavBar'
@@ -101,9 +101,11 @@ function onFileMore(file: OpFile) {
 export default function Operation() {
   const router = useRouter()
   const id = (router.params.id as string) || ''
+  const wantReport = router.params.report === '1'
 
   const [d, setD] = useState<OperationDetail | null>(null)
   const [loading, setLoading] = useState(true)
+  const [reportOpened, setReportOpened] = useState(false)
 
   // 报工弹层
   const [sheet, setSheet] = useState(false)
@@ -149,6 +151,17 @@ export default function Operation() {
   }
 
   useDidShow(load)
+
+  // 扫码报工入口：加载完成后自动打开报工弹层
+  useEffect(() => {
+    if (!wantReport || reportOpened || loading || !d?.found) return
+    setReportOpened(true)
+    const remain = Math.max(0, d.target - d.completed - d.scrap)
+    setFinished(remain)
+    setRework(0)
+    setScrap(0)
+    setSheet(true)
+  }, [wantReport, reportOpened, loading, d])
 
   const soon = () => Taro.showToast({ title: '功能开发中', icon: 'none' })
 

@@ -104,6 +104,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const current = cur
     ? {
+        id: cur.id as string,
         jobReadableId: cur.jobReadableId ?? "",
         process: cur.description ?? "",
         done: cur.quantityComplete ?? 0,

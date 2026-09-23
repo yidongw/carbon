@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import { getDashboard } from '../../services/dashboard'
 import type { Dashboard } from '../../services/dashboard'
 import { COMPANY_KEY } from '../../services/request'
+import { handleShopFloorScan } from '../../services/scan'
 import { computeUnread, setUnreadCount } from '../../utils/unread'
 import { FN_GROUPS, FN_STROKE, fnIcon } from '../../constants/functions'
 import TabBar from '../../components/TabBar'
@@ -78,12 +79,26 @@ export default function Workstation() {
       })
   }
 
-  const onScan = async () => {
-    try {
-      const r = await Taro.scanCode({ onlyFromCamera: false })
-      Taro.showModal({ title: '扫描结果', content: r.result || '(空)', showCancel: false })
-    } catch {
-      /* 取消扫码 */
+  const onScanPickup = () => {
+    void handleShopFloorScan('pickup')
+  }
+
+  const onScanReport = () => {
+    // 已有进行中工序：直接打开报工；否则扫分包票再进报工。
+    if (data?.current?.id) {
+      Taro.navigateTo({
+        url: `/pages/operation/index?id=${data.current.id}&report=1`,
+      })
+      return
+    }
+    void handleShopFloorScan('report')
+  }
+
+  const openCurrent = () => {
+    if (data?.current?.id) {
+      Taro.navigateTo({
+        url: `/pages/operation/index?id=${data.current.id}`,
+      })
     }
   }
 
@@ -134,25 +149,37 @@ export default function Workstation() {
       {/* 当前工序 / 空闲 */}
       {c ? (
         <View className='ws__current'>
-          <View className='ws__current-head'>
-            <Text className='ws__current-job'>{c.jobReadableId}</Text>
-            <View className='ws__current-tag'>
-              <Text className='ws__current-tag-text'>进行中</Text>
+          <View
+            className='ws__current-body'
+            hoverClass='ws__current-body--hover'
+            onClick={openCurrent}
+          >
+            <View className='ws__current-head'>
+              <Text className='ws__current-job'>{c.jobReadableId}</Text>
+              <View className='ws__current-tag'>
+                <Text className='ws__current-tag-text'>进行中</Text>
+              </View>
+            </View>
+            <Text className='ws__current-process'>{c.process}</Text>
+
+            <View className='ws__progress'>
+              <View className='ws__progress-bar' style={{ width: `${pct}%` }} />
+            </View>
+            <View className='ws__current-meta'>
+              <Text className='ws__current-qty'>
+                {c.done} / {c.target} 件
+              </Text>
+              <Text className='ws__current-est'>
+                今日已报 {data?.todayPieces ?? 0} 件
+              </Text>
             </View>
           </View>
-          <Text className='ws__current-process'>{c.process}</Text>
 
-          <View className='ws__progress'>
-            <View className='ws__progress-bar' style={{ width: `${pct}%` }} />
-          </View>
-          <View className='ws__current-meta'>
-            <Text className='ws__current-qty'>
-              {c.done} / {c.target} 件
-            </Text>
-            <Text className='ws__current-est'>今日已报 {data?.todayPieces ?? 0} 件</Text>
-          </View>
-
-          <View className='ws__report' hoverClass='ws__report--hover' onClick={onScan}>
+          <View
+            className='ws__report'
+            hoverClass='ws__report--hover'
+            onClick={onScanReport}
+          >
             <Text className='ws__report-text'>扫码报工</Text>
           </View>
         </View>
@@ -167,13 +194,17 @@ export default function Workstation() {
           <Text className='ws__idle-sub'>扫描分包标签即可自动领取工单</Text>
           <Text className='ws__idle-sub'>或进入报工,无需手动查找</Text>
 
-          <View className='ws__idle-primary' hoverClass='ws__idle-primary--hover' onClick={onScan}>
+          <View
+            className='ws__idle-primary'
+            hoverClass='ws__idle-primary--hover'
+            onClick={onScanPickup}
+          >
             <Text className='ws__idle-primary-text'>扫码领工单</Text>
           </View>
           <View
             className='ws__idle-secondary'
             hoverClass='ws__idle-secondary--hover'
-            onClick={() => Taro.showToast({ title: '手动选择工单(开发中)', icon: 'none' })}
+            onClick={() => Taro.reLaunch({ url: '/pages/tasks/index' })}
           >
             <Text className='ws__idle-secondary-text'>手动选择工单</Text>
           </View>

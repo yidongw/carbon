@@ -2,6 +2,7 @@ import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { svgIcon } from './icons'
 import { getUnreadCount } from '../../utils/unread'
+import { handleShopFloorScan } from '../../services/scan'
 import { t } from '../../i18n'
 import './index.scss'
 
@@ -27,17 +28,8 @@ export default function TabBar({ active }: { active: TabKey }) {
     Taro.reLaunch({ url: item.path })
   }
 
-  const onScan = async () => {
-    try {
-      const r = await Taro.scanCode({ onlyFromCamera: false })
-      Taro.showModal({
-        title: t('common.scanResult'),
-        content: r.result || '(empty)',
-        showCancel: false,
-      })
-    } catch {
-      /* cancelled */
-    }
+  const onScan = () => {
+    void handleShopFloorScan('view')
   }
 
   const unread = getUnreadCount()
