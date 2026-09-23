@@ -231,9 +231,11 @@ export async function validateProductionQuantityRemaining(
   const existingRows = existing.data ?? [];
 
   // (2) Operation target cap — completed + scrapped + reworked can't exceed it.
+  // A target of 0 means "no fixed plan" (e.g. a Master Work Order opened
+  // cut-to-ratio), so reporting is left unrestricted — the same as a null target.
   const target =
     operation.data?.targetQuantity ?? operation.data?.operationQuantity ?? null;
-  if (target != null) {
+  if (target != null && target > 0) {
     const reportedSoFar = existingRows.reduce(
       (sum, r) => sum + (Number(r.quantity) || 0),
       0

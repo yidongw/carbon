@@ -15,7 +15,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { LuLockOpen } from "react-icons/lu";
+import { LuLockOpen, LuNotebookPen } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
@@ -115,6 +115,10 @@ export type ProductionQuantityFormProps = {
   // Remaining quantity per operation — used to prefill the Production line when
   // an operation is selected.
   remainingByOperationId?: Record<string, number>;
+  // A Master Work Order's remark, shown as a banner so whoever reports cutting
+  // sees the real requirement (e.g. the color ratio) — most relevant when the
+  // master was opened with a 0 target and cutting is unrestricted.
+  masterRemarks?: string | null;
   variantQuantityParameters?: ConfigurationParameter[] | null;
   variantsQuantityReferenceSource?: VariantsQuantityReferenceSource | null;
   itemId?: string | null;
@@ -155,6 +159,7 @@ const ProductionQuantityForm = ({
   operationOptions = [],
   jobOptions,
   remainingByOperationId,
+  masterRemarks,
   variantQuantityParameters,
   variantsQuantityReferenceSource,
   itemId,
@@ -668,6 +673,17 @@ const ProductionQuantityForm = ({
                       </Button>
                     ) : null}
                   </VStack>
+                </AlertDescription>
+              </Alert>
+            ) : null}
+            {masterRemarks?.trim() ? (
+              <Alert variant="info">
+                <LuNotebookPen />
+                <AlertTitle>
+                  <Trans>Master Work Order Remarks</Trans>
+                </AlertTitle>
+                <AlertDescription className="whitespace-pre-wrap">
+                  {masterRemarks}
                 </AlertDescription>
               </Alert>
             ) : null}

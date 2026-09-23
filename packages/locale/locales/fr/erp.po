@@ -9665,6 +9665,9 @@ msgstr "Ordre de fabrication principal"
 msgid "Master work order created"
 msgstr "Commande maîtresse créée"
 
+msgid "Master Work Order Remarks"
+msgstr "Remarques de l'ordre de fabrication principal"
+
 msgid "Master Work Orders"
 msgstr "Ordres de fabrication principaux"
 
@@ -12411,6 +12414,9 @@ msgstr "Restant"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Le reste après la division reste sur la ligne d'origine."
+
+msgid "Remarks"
+msgstr "Remarques"
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Mémorisez ce code PIN. Vous en aurez besoin pour quitter le mode console sur les terminaux MES."
