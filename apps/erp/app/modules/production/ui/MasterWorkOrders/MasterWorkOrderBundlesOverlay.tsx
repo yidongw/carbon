@@ -23,10 +23,10 @@ export type MasterWorkOrderBundlesOverlayProps = {
 } & Pick<OverlayFormInjectedProps, "onDismiss">;
 
 /**
- * Read-only modal showing a master work order's bundles — the same table as the
- * details page's Bundle Work Orders tab, opened from the Master Work Orders list.
- * When some cut pieces aren't in a bundle yet, a "Split remaining" button opens
- * the split-batch overlay to bundle them.
+ * Modal showing a master work order's bundles — the same table as the details
+ * page's Bundle Work Orders tab, opened from the Master Work Orders list.
+ * Quantity is inline-editable. When some cut pieces aren't in a bundle yet, a
+ * "Split remaining" button opens the split-batch overlay to bundle them.
  */
 export default function MasterWorkOrderBundlesOverlay({
   bundleWorkOrders,
@@ -63,6 +63,7 @@ export default function MasterWorkOrderBundlesOverlay({
           <BundleWorkOrdersTable
             data={bundleWorkOrders}
             count={count}
+            masterWorkOrderId={masterWorkOrderId}
             withHeader={false}
           />
         </div>

@@ -21,6 +21,7 @@ import { getJobVariantQuantities } from "~/modules/production/jobVariantQuantity
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
+import { isJobLocked } from "./production.models";
 import { insertJob } from "./production.service";
 
 type VariantsQuantityRow = Record<string, string | number | boolean>;
@@ -828,6 +829,136 @@ export async function getCuttingSplitProposal(
     existingBundles,
     splitRows
   };
+}
+
+export type UpdateBundleQuantityResult =
+  | { ok: true }
+  | {
+      ok: false;
+      reason: "not_found" | "cap" | "reported" | "locked" | "save";
+      max?: number;
+      reported?: number;
+      message?: string;
+    };
+
+/**
+ * Update one existing bundle's target quantity (backing `job.quantity`) with the
+ * same cut-cap / reported-floor rules as Split Batch. Sibling bundles for the
+ * same variant SKU are included in the cap sum. When no cut cell exists for the
+ * variant (e.g. bundle created outside the cutting flow), only the reported
+ * floor is enforced.
+ */
+export async function updateBundleQuantity(
+  client: SupabaseClient<Database>,
+  input: {
+    bundleWorkOrderId: string;
+    quantity: number;
+    companyId: string;
+    updatedBy: string;
+  },
+  // Optional privileged client for the write/verify (bypasses RLS no-ops).
+  writeClient?: SupabaseClient<Database>
+): Promise<UpdateBundleQuantityResult> {
+  const writer = writeClient ?? client;
+  const bundle = await getBundleWorkOrder(
+    client,
+    input.bundleWorkOrderId,
+    input.companyId
+  );
+  if (bundle.error || !bundle.data?.jobId || !bundle.data.masterWorkOrderId) {
+    return { ok: false, reason: "not_found" };
+  }
+
+  const quantity = Number(input.quantity) || 0;
+  if (quantity < 0) {
+    return {
+      ok: false,
+      reason: "save",
+      message: "Quantity cannot be negative"
+    };
+  }
+
+  const masterWorkOrderId = bundle.data.masterWorkOrderId;
+  const jobId = bundle.data.jobId;
+  const status = (bundle.data as { status?: string | null }).status;
+  if (isJobLocked(status)) {
+    return { ok: false, reason: "locked" };
+  }
+
+  const variantItemId = cellKey(
+    (bundle.data as { itemId?: string | null }).itemId
+  );
+
+  const proposal = await getCuttingSplitProposal(
+    client,
+    masterWorkOrderId,
+    input.companyId
+  );
+
+  const existing = proposal.existingBundles.find(
+    (b) => b.id === input.bundleWorkOrderId
+  );
+  const reported = existing?.reportedQuantity ?? 0;
+  if (quantity < reported) {
+    return { ok: false, reason: "reported", reported };
+  }
+
+  const cutCell = proposal.cells.find(
+    (c) => cellKey(c.variantItemId) === variantItemId
+  );
+  if (cutCell) {
+    const others = proposal.existingBundles
+      .filter(
+        (b) =>
+          cellKey(b.variantItemId) === variantItemId &&
+          b.id !== input.bundleWorkOrderId
+      )
+      .reduce((sum, b) => sum + b.quantity, 0);
+    // Max this one bundle can take = cell cut − siblings (not the full cell cut).
+    const maxForBundle = Math.max(0, cutCell.cut - others);
+    if (quantity > maxForBundle + 0.0001) {
+      return { ok: false, reason: "cap", max: maxForBundle };
+    }
+  }
+
+  // Same write shape as saveBundleSplit (no RETURNING). Prefer service-role
+  // writer when provided so a permission edge-case can't silently no-op.
+  const jobUpdate = await writer
+    .from("job")
+    .update({
+      quantity,
+      updatedBy: input.updatedBy,
+      updatedAt: new Date().toISOString()
+    })
+    .eq("id", jobId)
+    .eq("companyId", input.companyId);
+  if (jobUpdate.error) {
+    return {
+      ok: false,
+      reason: "save",
+      message: jobUpdate.error.message
+    };
+  }
+
+  const verify = await writer
+    .from("job")
+    .select("quantity")
+    .eq("id", jobId)
+    .eq("companyId", input.companyId)
+    .maybeSingle();
+  if (verify.error) {
+    return { ok: false, reason: "save", message: verify.error.message };
+  }
+  const savedQty = Number(verify.data?.quantity);
+  if (!Number.isFinite(savedQty) || savedQty !== quantity) {
+    return {
+      ok: false,
+      reason: "save",
+      message: `Expected ${quantity} but job still has ${verify.data?.quantity ?? "null"}`
+    };
+  }
+
+  return { ok: true };
 }
 
 /**

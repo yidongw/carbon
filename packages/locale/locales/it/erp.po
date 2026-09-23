@@ -174,6 +174,7 @@ msgid "5MB file limit"
 msgstr "Limite di file 5MB"
 
 #. placeholder {0}: num("reported")
+#. placeholder {0}: result.reported ?? 0
 msgid "A bundle can't be set below its reported quantity ({0})"
 msgstr "Un fascio non può essere impostato sotto la sua quantità richiesta ({0})"
 
@@ -1811,6 +1812,9 @@ msgstr "Non è possibile modificare il valore dell'attributo sistema"
 msgid "Cannot finish operation"
 msgstr "Impossibile completare l'operazione"
 
+msgid "Cannot modify a locked job. Reopen it first."
+msgstr "Impossibile modificare un lavoro bloccato. Riapirlo prima."
+
 msgid "Cannot modify a locked picking list. Reopen it first."
 msgstr "Non puoi modificare una lista di raccolta bloccata. Riaprila prima."
 
@@ -2575,6 +2579,19 @@ msgstr "Non è stato possibile generare il PDF. Prova di nuovo."
 
 msgid "Could not prepare region image for analysis"
 msgstr "Impossibile preparare l'immagine della regione per l'analisi"
+
+msgid "Could not save quantity"
+msgstr "Impossibile salvare la quantità"
+
+#. placeholder {0}: result.message
+msgid "Could not save quantity: {0}"
+msgstr "Impossibile salvare la quantità: {0}"
+
+msgid "Could not save quantity: no response from server"
+msgstr "Impossibile salvare la quantità: nessuna risposta dal server"
+
+msgid "Could not save quantity: unexpected response"
+msgstr "Impossibile salvare la quantità: risposta imprevista"
 
 msgid "Couldn't load documents"
 msgstr "Impossibile caricare i documenti"
@@ -4012,6 +4029,9 @@ msgstr "Modifica proprietà"
 
 msgid "Edit purchase order line type"
 msgstr "Modifica tipo di riga ordine di acquisto"
+
+msgid "Edit quantity"
+msgstr "Modifica quantità"
 
 msgid "Edit Question"
 msgstr "Modifica Domanda"
@@ -12080,6 +12100,9 @@ msgstr "Quantità assegnata o raccolta per questa operazione."
 msgid "Quantity Completed"
 msgstr "Quantità Completata"
 
+msgid "Quantity did not save. The server still shows the old value — try Split Batch or check cut remaining."
+msgstr "La quantità non è stata salvata. Il server mostra ancora il vecchio valore — prova Split Batch o controlla il taglio rimanente."
+
 msgid "Quantity finished and reported for this operation."
 msgstr "Quantità completata e riferita per questa operazione."
 
@@ -14954,6 +14977,10 @@ msgstr "Questi lavori hanno operazioni assegnate a questo centro di lavoro:"
 
 msgid "This adjustment would take a quantity below zero."
 msgstr "Questa modifica prevederebbe una quantità inferiore a zero."
+
+#. placeholder {0}: result.max ?? 0
+msgid "This bundle can't exceed the remaining cut for its attributes (max {0})"
+msgstr "Questo lotto non può superare il taglio rimanente per i suoi attributi (max {0})"
 
 msgid "This information will be used on document headers"
 msgstr "Queste informazioni verranno utilizzate nelle intestazioni dei documenti"
