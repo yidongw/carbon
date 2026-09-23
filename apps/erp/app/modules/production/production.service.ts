@@ -1723,7 +1723,7 @@ export async function getProductionQuantities(
   let query = client
     .from("productionQuantity")
     .select(
-      "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, job(item(id, readableIdWithRevision)), jobMakeMethod(parentMaterialId, item(id, readableIdWithRevision)))",
+      "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, insideUnitCost, job(item(id, readableIdWithRevision)), jobMakeMethod(parentMaterialId, item(id, readableIdWithRevision)))",
       {
         count: "exact"
       }
@@ -1752,7 +1752,7 @@ export async function getProductionDataByOperations(
     client
       .from("productionQuantity")
       .select(
-        "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, job(item(id, readableIdWithRevision)), jobMakeMethod(parentMaterialId, item(id, readableIdWithRevision)))"
+        "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, insideUnitCost, job(item(id, readableIdWithRevision)), jobMakeMethod(parentMaterialId, item(id, readableIdWithRevision)))"
       )
       .in("jobOperationId", jobOperationIds)
       .is("invalidatedAt", null),

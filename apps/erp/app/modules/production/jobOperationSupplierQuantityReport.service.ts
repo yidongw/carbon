@@ -702,7 +702,8 @@ export async function getJobOperationSupplierQuantities(
     .select(
       `*,
       jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision))),
-      supplierProcess!jobOperationSupplierQuantity_supplierProcessId_fkey(id, supplierId, processId)`,
+      supplierProcess!jobOperationSupplierQuantity_supplierProcessId_fkey(id, supplierId, processId),
+      report:reportId(purchaseOrderLineId, subcontractSnapshot:subcontractSnapshotId(operationUnitCost, operationMinimumCost))`,
       { count: "exact" }
     )
     .in("jobOperationId", jobOperationIds)

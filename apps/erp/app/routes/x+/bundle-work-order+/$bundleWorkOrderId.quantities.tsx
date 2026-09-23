@@ -11,6 +11,7 @@ import {
   getProductionQuantities,
   getScrapReasons
 } from "~/modules/production";
+import { resolveQuantityCostVisibility } from "~/modules/production/quantityCostVisibility.server";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/Jobs";
 import {
   mergeProductionQuantityListItems,
@@ -20,7 +21,7 @@ import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "production",
     role: "employee"
   });
@@ -61,7 +62,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       events: [],
       operations: [],
       scrapReasons: [],
-      jobId
+      jobId,
+      canViewCosts: false
     };
   }
 
@@ -101,23 +103,28 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const merged = mergeProductionQuantityListItems(
-    employeeQuantities.data ?? [],
-    supplierQuantities.data ?? [],
-    sorts
-  );
+  const { canViewCosts, employee, supplier } =
+    await resolveQuantityCostVisibility(
+      userId,
+      companyId,
+      employeeQuantities.data ?? [],
+      supplierQuantities.data ?? []
+    );
+
+  const merged = mergeProductionQuantityListItems(employee, supplier, sorts);
 
   return {
     count: (employeeQuantities.count ?? 0) + (supplierQuantities.count ?? 0),
     events: merged.slice(offset, offset + limit),
     operations: operations.data ?? [],
     scrapReasons: scrapReasons.data ?? [],
-    jobId
+    jobId,
+    canViewCosts
   };
 }
 
 export default function BundleWorkOrderQuantitiesRoute() {
-  const { count, events, operations, scrapReasons, jobId } =
+  const { count, events, operations, scrapReasons, jobId, canViewCosts } =
     useLoaderData<typeof loader>();
 
   return (
@@ -128,6 +135,7 @@ export default function BundleWorkOrderQuantitiesRoute() {
         operations={operations}
         scrapReasons={scrapReasons}
         jobId={jobId}
+        canViewCosts={canViewCosts}
       />
     </VStack>
   );
