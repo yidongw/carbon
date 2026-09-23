@@ -2,7 +2,7 @@ import {
   localizeStyleColorName,
   localizeStyleColorNameByName
 } from "@carbon/database/style-reference";
-import { Button, HStack, IconButton, Spinner } from "@carbon/react";
+import { Button, HStack, IconButton, Spinner, toast } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
@@ -105,7 +105,7 @@ function reportQuantityError(bundleWorkOrderId: string, message: string) {
     quantityEditConfirmTimers.delete(bundleWorkOrderId);
   }
   console.error("[bundle-qty]", bundleWorkOrderId, message);
-  // Inline under the cell only — toast duplicated the same message.
+  toast.error(message);
   notifyQuantityEdit(bundleWorkOrderId);
 }
 
@@ -327,37 +327,28 @@ function BundleQuantityCell({
   }
 
   return (
-    <div className="flex flex-col gap-0.5 min-w-0">
-      <HStack spacing={1}>
-        <span
-          className={
-            errorMessage ? "tabular-nums text-destructive" : "tabular-nums"
-          }
-        >
-          {serverQty}
-        </span>
-        {showSpinner ? (
-          <Spinner className="h-4 w-4" />
-        ) : (
-          <IconButton
-            type="button"
-            icon={<LuSlidersHorizontal size="1em" strokeWidth={2.5} />}
-            aria-label={t`Edit quantity`}
-            size="sm"
-            variant="secondary"
-            onClick={startEditing}
-          />
-        )}
-      </HStack>
-      {errorMessage ? (
-        <span
-          role="alert"
-          className="text-xs leading-snug text-destructive font-medium max-w-[14rem]"
-        >
-          {errorMessage}
-        </span>
-      ) : null}
-    </div>
+    <HStack spacing={1}>
+      <span
+        className={
+          errorMessage ? "tabular-nums text-destructive" : "tabular-nums"
+        }
+        title={errorMessage ?? undefined}
+      >
+        {serverQty}
+      </span>
+      {showSpinner ? (
+        <Spinner className="h-4 w-4" />
+      ) : (
+        <IconButton
+          type="button"
+          icon={<LuSlidersHorizontal size="1em" strokeWidth={2.5} />}
+          aria-label={t`Edit quantity`}
+          size="sm"
+          variant="secondary"
+          onClick={startEditing}
+        />
+      )}
+    </HStack>
   );
 }
 
