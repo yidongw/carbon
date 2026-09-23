@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   useDisclosure,
-  useIsMobile,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -85,8 +84,6 @@ const ReceiptForm = ({
     setSourceDocument
   } = useReceiptForm({ status, initialValues });
 
-  const isMobile = useIsMobile();
-
   const postModal = useDisclosure();
   const voidModal = useDisclosure();
   const deleteDisclosure = useDisclosure();
@@ -135,51 +132,6 @@ const ReceiptForm = ({
             status={<ReceiptStatus status={status} />}
             menuItems={
               <>
-                {isMobile && (
-                  <>
-                    <SourceDocumentLink
-                      sourceDocument={
-                        routeData?.receipt?.sourceDocument ?? undefined
-                      }
-                      sourceDocumentId={
-                        routeData?.receipt?.sourceDocumentId ?? undefined
-                      }
-                      sourceDocumentReadableId={
-                        routeData?.receipt?.sourceDocumentReadableId ??
-                        undefined
-                      }
-                      asMenuItem
-                    />
-                    <DropdownMenuItem
-                      asChild={!!canInvoice}
-                      disabled={!canInvoice}
-                    >
-                      {canInvoice ? (
-                        <Link
-                          to={`${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${routeData?.receipt?.sourceDocumentId}`}
-                        >
-                          <DropdownMenuIcon icon={<LuCreditCard />} />
-                          <Trans>Invoice</Trans>
-                        </Link>
-                      ) : (
-                        <>
-                          <DropdownMenuIcon icon={<LuCreditCard />} />
-                          <Trans>Invoice</Trans>
-                        </>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={postModal.onOpen}
-                      disabled={
-                        !canPost || isPosted || !permissions.is("employee")
-                      }
-                    >
-                      <DropdownMenuIcon icon={<LuCheckCheck />} />
-                      <Trans>Post</Trans>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                  </>
-                )}
                 {auditLogTrigger}
                 {isPosted && (
                   <>
@@ -226,45 +178,44 @@ const ReceiptForm = ({
                     }}
                   />
                 )}
-                {!isMobile && (
-                  <>
-                    <SourceDocumentLink
-                      sourceDocument={
-                        routeData?.receipt?.sourceDocument ?? undefined
-                      }
-                      sourceDocumentId={
-                        routeData?.receipt?.sourceDocumentId ?? undefined
-                      }
-                      sourceDocumentReadableId={
-                        routeData?.receipt?.sourceDocumentReadableId ??
-                        undefined
-                      }
-                    />
-                    <Button
-                      variant={canInvoice ? "primary" : "secondary"}
-                      isDisabled={!canInvoice}
-                      leftIcon={<LuCreditCard />}
-                      asChild
-                    >
-                      <Link
-                        to={`${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${routeData?.receipt?.sourceDocumentId}`}
-                      >
-                        <Trans>Invoice</Trans>
-                      </Link>
-                    </Button>
-                    <Button
-                      variant={canPost && !isPosted ? "primary" : "secondary"}
-                      onClick={postModal.onOpen}
-                      isDisabled={
-                        !canPost || isPosted || !permissions.is("employee")
-                      }
-                      leftIcon={<LuCheckCheck />}
-                    >
-                      <Trans>Post</Trans>
-                    </Button>
-                  </>
-                )}
+                <SourceDocumentLink
+                  sourceDocument={
+                    routeData?.receipt?.sourceDocument ?? undefined
+                  }
+                  sourceDocumentId={
+                    routeData?.receipt?.sourceDocumentId ?? undefined
+                  }
+                  sourceDocumentReadableId={
+                    routeData?.receipt?.sourceDocumentReadableId ?? undefined
+                  }
+                />
+                <Button
+                  variant={canInvoice ? "primary" : "secondary"}
+                  isDisabled={!canInvoice}
+                  leftIcon={<LuCreditCard />}
+                  asChild
+                >
+                  <Link
+                    to={`${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${routeData?.receipt?.sourceDocumentId}`}
+                  >
+                    <Trans>Invoice</Trans>
+                  </Link>
+                </Button>
               </>
+            }
+            primaryAction={
+              // Only surface Post while it applies; a posted receipt or a user
+              // without permission shouldn't keep a greyed-out button around.
+              !isPosted && permissions.is("employee") ? (
+                <Button
+                  variant="primary"
+                  onClick={postModal.onOpen}
+                  isDisabled={!canPost}
+                  leftIcon={<LuCheckCheck />}
+                >
+                  <Trans>Post</Trans>
+                </Button>
+              ) : undefined
             }
           />
 
