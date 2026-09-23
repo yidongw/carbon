@@ -3,26 +3,30 @@ import {
   Checkbox,
   MenuIcon,
   MenuItem,
+  toast,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   LuBookMarked,
   LuCalendar,
   LuCheck,
+  LuCheckCheck,
   LuCirclePlus,
   LuClock,
   LuFileText,
   LuHash,
   LuPencil,
   LuTrash,
+  LuTruck,
   LuUser
 } from "react-icons/lu";
 import { useFetcher, useNavigate } from "react-router";
 import { CustomerAvatar, EmployeeAvatar, Hyperlink, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { useShippingMethod } from "~/components/Form/ShippingMethod";
 import { ConfirmDelete } from "~/components/Modals";
 import {
   useDateFormatter,
@@ -34,6 +38,7 @@ import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { useCustomers, usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import {
+  SHIPMENT_MISSING,
   shipmentSourceDocumentType,
   shipmentStatusType
 } from "../../inventory.models";
@@ -73,7 +78,77 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
   const rows = useMemo(() => data, [data]);
   const [people] = usePeople();
   const [customers] = useCustomers();
+  const shippingMethods = useShippingMethod();
   const customColumns = useCustomColumns<Shipment>("shipment");
+
+  // Bulk "Post" — mirror the sales-order bulk-ship UX: lift selection and show
+  // an explicit, labeled button for the action.
+  const bulkPostFetcher = useFetcher<{
+    error: { message: string } | null;
+    data: {
+      postedCount: number;
+      skippedCount: number;
+      failedCount: number;
+    } | null;
+  }>();
+
+  const [selectedShipments, setSelectedShipments] = useState<Shipment[]>([]);
+  const handleSelectedRowsChange = useCallback(
+    (selected: Shipment[]) => setSelectedShipments(selected),
+    []
+  );
+
+  const postableCount = useMemo(
+    () => selectedShipments.filter((s) => s.status === "Draft").length,
+    [selectedShipments]
+  );
+
+  const onBulkPost = useCallback(() => {
+    const formData = new FormData();
+    selectedShipments.forEach((s) => {
+      if (s.id && s.status === "Draft") formData.append("ids", s.id);
+    });
+    bulkPostFetcher.submit(formData, {
+      method: "post",
+      action: path.to.bulkPostShipments
+    });
+  }, [bulkPostFetcher, selectedShipments]);
+
+  useEffect(() => {
+    if (bulkPostFetcher.state !== "idle" || !bulkPostFetcher.data) return;
+    const { error, data: result } = bulkPostFetcher.data;
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (result) {
+      const parts = [t`Posted ${result.postedCount} shipment(s)`];
+      if (result.skippedCount > 0) {
+        parts.push(t`skipped ${result.skippedCount} not in draft`);
+      }
+      if (result.failedCount > 0) {
+        parts.push(t`${result.failedCount} failed`);
+      }
+      toast.success(parts.join(", "));
+    }
+  }, [bulkPostFetcher.state, bulkPostFetcher.data, t]);
+
+  const bulkPostAction =
+    selectedShipments.length > 0 ? (
+      <Button
+        leftIcon={<LuCheckCheck />}
+        variant="primary"
+        isDisabled={
+          postableCount === 0 ||
+          !permissions.can("update", "inventory") ||
+          bulkPostFetcher.state !== "idle"
+        }
+        isLoading={bulkPostFetcher.state !== "idle"}
+        onClick={onBulkPost}
+      >
+        <Trans>Post shipments ({postableCount})</Trans>
+      </Button>
+    ) : null;
 
   const columns = useMemo<ColumnDef<Shipment>[]>(() => {
     const result: ColumnDef<(typeof rows)[number]>[] = [
@@ -312,11 +387,40 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
         meta: {
           icon: <LuCalendar />
         }
+      },
+      {
+        accessorKey: "shippingMethodId",
+        header: t`Shipping Method`,
+        cell: ({ row }) => {
+          const method = shippingMethods.find(
+            (m) => m.value === row.original.shippingMethodId
+          );
+          return method ? <Enumerable value={method.label} /> : null;
+        },
+        meta: {
+          filter: {
+            type: "static",
+            options: [{ value: SHIPMENT_MISSING, label: t`Missing` }]
+          },
+          icon: <LuTruck />
+        }
+      },
+      {
+        accessorKey: "trackingNumber",
+        header: t`Tracking Number`,
+        cell: (item) => item.getValue<string>(),
+        meta: {
+          filter: {
+            type: "static",
+            options: [{ value: SHIPMENT_MISSING, label: t`Missing` }]
+          },
+          icon: <LuHash />
+        }
       }
     ];
 
     return [...result, ...customColumns];
-  }, [people, customers, customColumns, t, formatDate]);
+  }, [people, customers, shippingMethods, customColumns, t, formatDate]);
 
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(
     null
@@ -372,8 +476,12 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
           createdAt: false,
           createdBy: false,
           updatedAt: false,
-          updatedBy: false
+          updatedBy: false,
+          shippingMethodId: false,
+          trackingNumber: false
         }}
+        filterActions={bulkPostAction}
+        onSelectedRowsChange={handleSelectedRowsChange}
         primaryAction={
           permissions.can("create", "inventory") && <NewShipment />
         }
@@ -381,6 +489,7 @@ const ShipmentsTable = memo(({ data, count }: ShipmentsTableProps) => {
         title={t`Shipments`}
         table="shipment"
         withSavedView
+        withSelectableRows
       />
       {selectedShipment && selectedShipment.id && (
         <ConfirmDelete
