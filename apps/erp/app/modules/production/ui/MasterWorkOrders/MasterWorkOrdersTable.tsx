@@ -22,6 +22,7 @@ import {
   LuClock,
   LuHash,
   LuMapPin,
+  LuNotebookPen,
   LuPackageOpen,
   LuPackagePlus,
   LuScissors,
@@ -430,6 +431,23 @@ const MasterWorkOrdersTable = memo(
             );
           },
           meta: { icon: <LuCircleDashed /> }
+        },
+        {
+          accessorKey: "remarks",
+          header: t`Remarks`,
+          cell: ({ row }) =>
+            row.original.remarks ? (
+              <span
+                className="line-clamp-2 max-w-[280px] whitespace-pre-wrap text-sm"
+                title={row.original.remarks}
+              >
+                {row.original.remarks}
+              </span>
+            ) : null,
+          meta: {
+            icon: <LuNotebookPen />,
+            isEmpty: (row) => !row.remarks
+          }
         },
         {
           accessorKey: "createdAt",

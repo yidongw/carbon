@@ -9666,7 +9666,7 @@ msgid "Master work order created"
 msgstr "Заказ производства создан"
 
 msgid "Master Work Order Remarks"
-msgstr ""
+msgstr "Замечания основного наряда"
 
 msgid "Master Work Orders"
 msgstr "Основные наряды"
@@ -12416,7 +12416,7 @@ msgid "Remaining after split stays on the original row."
 msgstr "Остаток после разделения остается в исходной строке."
 
 msgid "Remarks"
-msgstr ""
+msgstr "Замечания"
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Запомните этот PIN-код. Он потребуется вам для выхода из режима консоли на терминалах MES."

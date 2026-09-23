@@ -9666,7 +9666,7 @@ msgid "Master work order created"
 msgstr "マスターワークオーダー作成"
 
 msgid "Master Work Order Remarks"
-msgstr ""
+msgstr "マスター作業指示の備考"
 
 msgid "Master Work Orders"
 msgstr "マスター作業指示"
@@ -12416,7 +12416,7 @@ msgid "Remaining after split stays on the original row."
 msgstr "分割後の残りは元の行に留まります。"
 
 msgid "Remarks"
-msgstr ""
+msgstr "備考"
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "このPINを覚えておいてください。MES端末でコンソールモードを終了するために必要になります。"

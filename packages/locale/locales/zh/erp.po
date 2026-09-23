@@ -9666,7 +9666,7 @@ msgid "Master work order created"
 msgstr "已创建主工单"
 
 msgid "Master Work Order Remarks"
-msgstr ""
+msgstr "主工单备注"
 
 msgid "Master Work Orders"
 msgstr "主工单"
@@ -12416,7 +12416,7 @@ msgid "Remaining after split stays on the original row."
 msgstr "分隔后剩余的留在原行。"
 
 msgid "Remarks"
-msgstr ""
+msgstr "备注"
 
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "记住此PIN码。您将在MES终端退出控制模式时需要它。"
