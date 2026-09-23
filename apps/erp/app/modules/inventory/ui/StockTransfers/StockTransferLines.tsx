@@ -19,7 +19,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LuArrowRight,
   LuCirclePlus,
@@ -87,6 +87,25 @@ function StockTransferLineComponent({
   const [items] = useItems();
   const unitsOfMeasure = useUnitOfMeasure();
 
+  // Show the right-edge scroll fade only while there is genuinely more content
+  // to the right; otherwise it just sits over the last column and greys it out.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () =>
+      setCanScrollRight(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
   const item = items.find((p) => p.id === line.itemId);
   // Variant SKUs are excluded from the shared items store — use line join fields.
   const itemName = item?.name ?? line.itemDescription ?? "";
@@ -103,7 +122,10 @@ function StockTransferLineComponent({
       )}
     >
       <div className="relative">
-        <div className="flex items-center w-full gap-6 overflow-x-auto scrollbar-hide sm:justify-between sm:gap-0 sm:overflow-x-visible">
+        <div
+          ref={scrollRef}
+          className="flex items-center w-full gap-6 overflow-x-auto scrollbar-hide sm:justify-between sm:gap-0 sm:overflow-x-visible"
+        >
           <HStack
             spacing={4}
             className="shrink-0 sm:shrink sm:w-1/2 sm:justify-between"
@@ -242,7 +264,12 @@ function StockTransferLineComponent({
             </HStack>
           </div>
         </div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-card to-transparent dark:from-muted/40 sm:hidden" />
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-card to-transparent dark:from-muted/40 transition-opacity duration-150 sm:hidden",
+            canScrollRight ? "opacity-100" : "opacity-0"
+          )}
+        />
       </div>
     </div>
   );

@@ -41,7 +41,7 @@ import type { TrackedEntityAttributes } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   LuCalendar,
   LuCircleAlert,
@@ -488,6 +488,25 @@ function ReceiptLineItem({
     line.orderVariantQuantities != null &&
     configurableItemIds.includes(line.itemId);
 
+  // Show the right-edge scroll fade only while there is genuinely more content
+  // to the right; otherwise it just sits over the last column and greys it out.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () =>
+      setCanScrollRight(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
   const applyQuantity = (
     safeValue: number,
     variantQuantities?: Json | null
@@ -542,123 +561,139 @@ function ReceiptLineItem({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="flex flex-1 items-center w-full gap-4 justify-start overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:justify-between md:gap-0 md:overflow-visible [&>*]:shrink-0">
-        <HStack spacing={4} className="md:w-1/2">
-          <HStack spacing={4} className="flex-1">
-            <ItemThumbnail
-              size="md"
-              thumbnailPath={line.thumbnailPath}
-              type={(item?.type as "Part") ?? "Part"}
-            />
-            <VStack spacing={0}>
-              <span className="text-sm font-medium">
-                {item?.name ?? line.description}
-              </span>
-              <span className="text-xs text-muted-foreground line-clamp-2">
-                {item?.readableIdWithRevision ?? line.itemReadableId}
-              </span>
-              <div className="mt-2">
-                <Enumerable
-                  value={
-                    unitsOfMeasure?.find((u) => u.value === line.unitOfMeasure)
-                      ?.label ?? null
-                  }
-                />
-              </div>
-            </VStack>
-            <VStack spacing={1}>
-              <label className="text-xs text-muted-foreground">{t`Received`}</label>
-
-              {useVariantsQuantity ? (
-                <StyleLineQuantityInput
-                  lineId={line.id!}
-                  itemId={line.itemId ?? ""}
-                  value={line.receivedQuantity ?? 0}
-                  orderVariantQuantities={line.orderVariantQuantities}
-                  isDisabled={isReadOnly}
-                  isReadOnly={isReadOnly}
-                  className="min-w-[100px]"
-                  onQuantityChange={({ quantity, variantQuantities }) =>
-                    applyQuantity(quantity, variantQuantities)
-                  }
-                />
-              ) : (
-                <NumberField
-                  value={line.receivedQuantity ?? 0}
-                  onChange={(value) => {
-                    // Default to 0 if value is NaN, null, or undefined
-                    const safeValue = isNaN(value) || value == null ? 0 : value;
-                    applyQuantity(safeValue);
-                  }}
-                >
-                  <NumberInput
-                    className="disabled:bg-transparent disabled:opacity-100 min-w-[100px]"
-                    isDisabled={isReadOnly}
-                    size="sm"
-                    min={0}
-                  />
-                </NumberField>
-              )}
-            </VStack>
-          </HStack>
-        </HStack>
-        <div className="flex md:flex-grow items-center justify-between gap-4 md:gap-2 md:pl-4">
-          <HStack spacing={4}>
-            <VStack spacing={1} className="text-center items-center">
-              <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
-              <span className="text-sm py-1.5">{line.orderQuantity ?? 0}</span>
-              {line.orderVariantQuantities ? (
-                <VariantChips
-                  chips={
-                    getVariantDisplay(line.orderVariantQuantities)?.chips ?? []
-                  }
-                />
-              ) : null}
-            </VStack>
-
-            <VStack spacing={1} className="text-center items-center">
-              <label className="text-xs text-muted-foreground">
-                {t`Outstanding`}
-              </label>
-              <HStack className="justify-center">
-                <span className="text-sm py-1.5">
-                  {(line.outstandingQuantity ?? 0) -
-                    (line.receivedQuantity ?? 0)}
+      <div className="relative w-full">
+        <div
+          ref={scrollRef}
+          className="flex flex-1 items-center w-full gap-4 justify-between overflow-x-auto scrollbar-hide md:gap-0 md:overflow-visible [&>*]:shrink-0"
+        >
+          <HStack spacing={4} className="md:w-1/2">
+            <HStack spacing={4} className="flex-1">
+              <ItemThumbnail
+                size="md"
+                thumbnailPath={line.thumbnailPath}
+                type={(item?.type as "Part") ?? "Part"}
+              />
+              <VStack spacing={0}>
+                <span className="text-sm font-medium">
+                  {item?.name ?? line.description}
                 </span>
+                <span className="text-xs text-muted-foreground line-clamp-2">
+                  {item?.readableIdWithRevision ?? line.itemReadableId}
+                </span>
+                <div className="mt-2">
+                  <Enumerable
+                    value={
+                      unitsOfMeasure?.find(
+                        (u) => u.value === line.unitOfMeasure
+                      )?.label ?? null
+                    }
+                  />
+                </div>
+              </VStack>
+              <VStack spacing={1}>
+                <label className="text-xs text-muted-foreground">{t`Received`}</label>
 
-                {(line.receivedQuantity ?? 0) >
-                  (line.outstandingQuantity ?? 0) && (
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <LuCircleAlert className="text-red-500" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      There are more received than ordered
-                    </TooltipContent>
-                  </Tooltip>
+                {useVariantsQuantity ? (
+                  <StyleLineQuantityInput
+                    lineId={line.id!}
+                    itemId={line.itemId ?? ""}
+                    value={line.receivedQuantity ?? 0}
+                    orderVariantQuantities={line.orderVariantQuantities}
+                    isDisabled={isReadOnly}
+                    isReadOnly={isReadOnly}
+                    className="min-w-[100px]"
+                    onQuantityChange={({ quantity, variantQuantities }) =>
+                      applyQuantity(quantity, variantQuantities)
+                    }
+                  />
+                ) : (
+                  <NumberField
+                    value={line.receivedQuantity ?? 0}
+                    onChange={(value) => {
+                      // Default to 0 if value is NaN, null, or undefined
+                      const safeValue =
+                        isNaN(value) || value == null ? 0 : value;
+                      applyQuantity(safeValue);
+                    }}
+                  >
+                    <NumberInput
+                      className="disabled:bg-transparent disabled:opacity-100 min-w-[100px]"
+                      isDisabled={isReadOnly}
+                      size="sm"
+                      min={0}
+                    />
+                  </NumberField>
                 )}
-              </HStack>
-            </VStack>
+              </VStack>
+            </HStack>
           </HStack>
+          <div className="flex md:flex-grow items-center justify-between gap-4 md:gap-2 md:pl-4">
+            <HStack spacing={4}>
+              <VStack spacing={1} className="text-center items-center">
+                <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
+                <span className="text-sm py-1.5">
+                  {line.orderQuantity ?? 0}
+                </span>
+                {line.orderVariantQuantities ? (
+                  <VariantChips
+                    chips={
+                      getVariantDisplay(line.orderVariantQuantities)?.chips ??
+                      []
+                    }
+                  />
+                ) : null}
+              </VStack>
 
-          <div className="flex flex-col items-start gap-1 min-w-[140px] text-sm">
-            <label className="text-xs text-muted-foreground">
-              {t`Storage Unit`}
-            </label>
-            <StorageUnit
-              locationId={line.locationId}
-              value={line.storageUnitId}
-              isReadOnly={isReadOnly}
-              onChange={(storageUnit) => {
-                onUpdate({
-                  lineId: line.id!,
-                  field: "storageUnitId",
-                  value: storageUnit?.id ?? ""
-                });
-              }}
-            />
+              <VStack spacing={1} className="text-center items-center">
+                <label className="text-xs text-muted-foreground">
+                  {t`Outstanding`}
+                </label>
+                <HStack className="justify-center">
+                  <span className="text-sm py-1.5">
+                    {(line.outstandingQuantity ?? 0) -
+                      (line.receivedQuantity ?? 0)}
+                  </span>
+
+                  {(line.receivedQuantity ?? 0) >
+                    (line.outstandingQuantity ?? 0) && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <LuCircleAlert className="text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        There are more received than ordered
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </HStack>
+              </VStack>
+            </HStack>
+
+            <div className="flex flex-col items-start gap-1 min-w-[140px] text-sm">
+              <label className="text-xs text-muted-foreground">
+                {t`Storage Unit`}
+              </label>
+              <StorageUnit
+                locationId={line.locationId}
+                value={line.storageUnitId}
+                isReadOnly={isReadOnly}
+                onChange={(storageUnit) => {
+                  onUpdate({
+                    lineId: line.id!,
+                    field: "storageUnitId",
+                    value: storageUnit?.id ?? ""
+                  });
+                }}
+              />
+            </div>
           </div>
         </div>
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-card dark:from-muted to-transparent transition-opacity duration-150 md:hidden",
+            canScrollRight ? "opacity-100" : "opacity-0"
+          )}
+        />
       </div>
       {line.requiresBatchTracking && (
         <>
