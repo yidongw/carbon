@@ -78,7 +78,8 @@ import type { styleValidator } from "./style.models";
 import {
   ensureStyleMethodScaffold,
   isStyleCuttingOperationFirst,
-  isStyleSystemOwnedOperation
+  isStyleSystemOwnedOperation,
+  preserveStyleSystemMarkers
 } from "./styleMethod.service";
 import {
   omitPlanningVariantMixCustomFields,
@@ -4814,19 +4815,17 @@ export async function upsertMethodOperation(
     .single();
 
   if (currentOperation.error) return currentOperation;
-  if (isStyleSystemOwnedOperation(currentOperation.data)) {
-    return {
-      data: null,
-      error: {
-        message:
-          "System-owned Style cutting operations cannot be edited from the bill of process."
-      }
-    };
-  }
+
+  // The Style cutting operation is system-owned. Allow editing all of its business
+  // fields, but keep the identity markers (tags/customFields) intact so garment job
+  // splitting keeps recognizing it as the cutting operation.
+  const operationToUpdate = isStyleSystemOwnedOperation(currentOperation.data)
+    ? preserveStyleSystemMarkers(methodOperation, currentOperation.data)
+    : methodOperation;
 
   return client
     .from("methodOperation")
-    .update(sanitize(methodOperation))
+    .update(sanitize(operationToUpdate))
     .eq("id", methodOperation.id)
     .select("id")
     .single();
@@ -5765,8 +5764,15 @@ export async function copyThumbnailToItemFiles(
     type: string;
   }
 ) {
-  const { companyId, itemId, userId, thumbnailPath, originalPath, fileName, type } =
-    args;
+  const {
+    companyId,
+    itemId,
+    userId,
+    thumbnailPath,
+    originalPath,
+    fileName,
+    type
+  } = args;
 
   let targetPath: string;
   let displayName: string;

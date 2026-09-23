@@ -41,6 +41,48 @@ export function isStyleSystemOwnedOperation(operation: StyleOperationLike) {
   );
 }
 
+// The Style cutting operation is system-owned: users may edit its business fields
+// (process, work center, description, costs, labor/machine times…), but the markers
+// that identify it as the cutting operation must survive the update so garment job
+// splitting keeps recognizing it. This merges those markers back into an update
+// payload that would otherwise overwrite them (e.g. customFields is always rebuilt
+// from the form and would drop styleStage/styleSystemOwned).
+export function preserveStyleSystemMarkers<
+  T extends { tags?: string[] | null; customFields?: Json }
+>(incoming: T, current: StyleOperationLike): T {
+  const currentCustom =
+    current.customFields && typeof current.customFields === "object"
+      ? (current.customFields as Record<string, unknown>)
+      : {};
+  const incomingCustom =
+    incoming.customFields && typeof incoming.customFields === "object"
+      ? (incoming.customFields as Record<string, unknown>)
+      : {};
+
+  const mergedCustomFields: Record<string, unknown> = { ...incomingCustom };
+  if ("styleStage" in currentCustom) {
+    mergedCustomFields.styleStage = currentCustom.styleStage;
+  }
+  if ("styleSystemOwned" in currentCustom) {
+    mergedCustomFields.styleSystemOwned = currentCustom.styleSystemOwned;
+  }
+
+  const preservedTags = (current.tags ?? []).filter(
+    (tag) =>
+      tag === STYLE_CUTTING_OPERATION_TAG || tag === STYLE_SYSTEM_OPERATION_TAG
+  );
+
+  return {
+    ...incoming,
+    // Only touch the tags column if the payload already carries tags; otherwise
+    // leave the existing (correct) tags untouched.
+    ...(incoming.tags
+      ? { tags: Array.from(new Set([...incoming.tags, ...preservedTags])) }
+      : {}),
+    customFields: mergedCustomFields as Json
+  };
+}
+
 export function isStyleCuttingOperationFirst(operations: StyleOperationLike[]) {
   if (operations.length === 0) return true;
 
