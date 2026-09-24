@@ -49,8 +49,10 @@ import { useOperationTypeLabel } from "~/modules/production/ui/Jobs/productionQu
 import { isStyleCuttingOperation } from "~/modules/items/styleMethod.service";
 import { operationTypes } from "~/modules/shared";
 import { path } from "~/utils/path";
+import { isOutsideOperationType } from "../../operationType";
 import { jobOperationStatus } from "../../production.models";
 import type { Job, JobOperation } from "../../types";
+import { SupplierAssignee } from "./SupplierAssignee";
 
 type JobOperationsTableProps = {
   data: JobOperation[];
@@ -330,15 +332,25 @@ const JobOperationsTable = memo(
       {
         id: "assignee",
         header: t`Assignee`,
-        cell: ({ row }) => (
-          <Assignee
-            id={row.original.id ?? ""}
-            table="jobOperation"
-            value={row.original.assignee ?? ""}
-            variant="button"
-            size="sm"
-          />
-        ),
+        cell: ({ row }) =>
+          // Outside-processing operations are subcontracted, so the 负责人 is a
+          // supplier (stored on operationSupplierProcessId), not an employee.
+          isOutsideOperationType(row.original.operationType) ? (
+            <SupplierAssignee
+              id={row.original.id ?? ""}
+              processId={row.original.processId}
+              value={row.original.operationSupplierProcessId ?? ""}
+              size="sm"
+            />
+          ) : (
+            <Assignee
+              id={row.original.id ?? ""}
+              table="jobOperation"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
+          ),
         meta: {
           icon: <LuUser />,
           filter: {
