@@ -488,7 +488,7 @@ const BoMExplorer = ({
                           !!node.data.materialMakeMethodId;
 
                         // eslint-disable-next-line no-console
-                        console.debug("[BoM click]", {
+                        console.log("[BoM click]", {
                           desc: node.data.description,
                           isRoot: node.data.isRoot,
                           methodType: node.data.methodType,

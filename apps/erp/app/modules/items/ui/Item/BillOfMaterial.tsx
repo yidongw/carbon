@@ -528,7 +528,7 @@ const BillOfMaterial = ({
   useEffect(() => {
     if (!bomSelectedMaterialId) return;
     // eslint-disable-next-line no-console
-    console.debug("[BoM effect] open command", {
+    console.log("[BoM effect] open command", {
       command: bomSelectedMaterialId,
       matchesACard: materials.some((m) => m.id === bomSelectedMaterialId),
       cardIds: materials.map((m) => m.id)
