@@ -11,6 +11,8 @@ import type { KeyboardEvent, MouseEvent } from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LuBookMarked,
+  LuCircleCheckBig,
+  LuCircleDashed,
   LuCirclePlay,
   LuClipboardList,
   LuClock,
@@ -489,6 +491,30 @@ const BundleWorkOrdersTable = memo(
               <span className="tabular-nums">{row.original.quantity ?? 0}</span>
             ),
           meta: { icon: <LuHash /> }
+        },
+        {
+          id: "processQuantityComplete",
+          header: t`Completed`,
+          cell: ({ row }) => (
+            <span className="tabular-nums">
+              {row.original.processQuantityComplete ?? 0}
+            </span>
+          ),
+          enableSorting: false,
+          meta: { icon: <LuCircleCheckBig /> }
+        },
+        {
+          id: "processQuantityRemaining",
+          header: t`Remaining`,
+          cell: ({ row }) => (
+            <span className="tabular-nums">
+              {row.original.processQuantityRemaining ??
+                row.original.quantity ??
+                0}
+            </span>
+          ),
+          enableSorting: false,
+          meta: { icon: <LuCircleDashed /> }
         },
         {
           id: "processes",
