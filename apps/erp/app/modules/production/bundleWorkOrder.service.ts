@@ -130,6 +130,13 @@ export async function getBundleWorkOrdersList(
     masterWorkOrderId?: string;
   } & Partial<GenericQueryFilters>
 ) {
+  // A master WO's bundles represent a Style quantity grid. Its natural order is
+  // therefore attribute order (Color, then Size), rather than the order in
+  // which split batches happened to be created. Keep an explicitly requested
+  // table sort intact.
+  const sortByAttributes = Boolean(
+    args?.masterWorkOrderId && !(args.sorts?.length ?? 0)
+  );
   let query = client
     .from("bundleWorkOrders")
     .select("*", { count: "exact" })
@@ -176,9 +183,21 @@ export async function getBundleWorkOrdersList(
   }
 
   if (args) {
-    query = setGenericQueryFilters(query, { ...args, filters: otherFilters }, [
-      { column: "createdAt", ascending: false }
-    ]);
+    query = setGenericQueryFilters(
+      query,
+      sortByAttributes
+        ? {
+            ...args,
+            filters: otherFilters,
+            sorts: [],
+            // Attribute sort keys live on the variant-attribute join, so sort
+            // and paginate below rather than dropping rows before sorting.
+            limit: undefined,
+            offset: undefined
+          }
+        : { ...args, filters: otherFilters },
+      sortByAttributes ? undefined : [{ column: "createdAt", ascending: false }]
+    );
   }
 
   const result = await query;
@@ -186,12 +205,123 @@ export async function getBundleWorkOrdersList(
     return result;
   }
 
-  const data = await attachBundleProgress(
-    client,
-    companyId,
-    await attachMasterJobReadableIds(client, companyId, result.data)
+  let data = await attachMasterJobReadableIds(client, companyId, result.data);
+  if (sortByAttributes) {
+    data = await sortBundleWorkOrdersByAttributes(client, companyId, data);
+
+    if (Number.isInteger(args?.offset) && Number.isInteger(args?.limit)) {
+      data = data.slice(args.offset, args.offset + args.limit);
+    }
+  }
+  return {
+    ...result,
+    data: await attachBundleProgress(client, companyId, data)
+  };
+}
+
+/**
+ * Sort a Style's bundles by Color, then by the catalog's Size sortOrder.
+ * Attribute values are intentionally loaded from the source rows instead of
+ * parsing `valuesKey`: custom sizes have company-defined sort orders.
+ */
+async function sortBundleWorkOrdersByAttributes<
+  T extends { itemId?: string | null }
+>(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  rows: T[]
+): Promise<T[]> {
+  const itemIds = [
+    ...new Set(
+      rows.map((row) => row.itemId).filter((id): id is string => Boolean(id))
+    )
+  ];
+  if (itemIds.length === 0) return rows;
+
+  const { data: variants } = await client
+    .from("itemVariant")
+    .select("id, variantItemId")
+    .eq("companyId", companyId)
+    .in("variantItemId", itemIds);
+  const variantIdByItemId = new Map(
+    (variants ?? [])
+      .filter((variant) => variant.id && variant.variantItemId)
+      .map((variant) => [variant.variantItemId!, variant.id!])
   );
-  return { ...result, data };
+  const variantIds = [...new Set(variantIdByItemId.values())];
+  if (variantIds.length === 0) return rows;
+
+  const { data: attributes } = await client
+    .from("itemVariantAttribute")
+    .select(
+      "itemVariantId, itemAttribute:attributeId(code), itemAttributeValue:attributeValueId(code, sortOrder)"
+    )
+    .eq("companyId", companyId)
+    .in("itemVariantId", variantIds);
+
+  type AttributeRow = {
+    itemVariantId: string;
+    itemAttribute: { code: string | null } | null;
+    itemAttributeValue: {
+      code: string | null;
+      sortOrder: number | null;
+    } | null;
+  };
+  const attributesByVariantId = new Map<
+    string,
+    Map<string, { code: string; sortOrder: number | null }>
+  >();
+  for (const attribute of (attributes ?? []) as AttributeRow[]) {
+    const attributeCode = attribute.itemAttribute?.code;
+    const valueCode = attribute.itemAttributeValue?.code;
+    if (!attributeCode || !valueCode) continue;
+    const values =
+      attributesByVariantId.get(attribute.itemVariantId) ?? new Map();
+    values.set(attributeCode, {
+      code: valueCode,
+      sortOrder: attribute.itemAttributeValue?.sortOrder ?? null
+    });
+    attributesByVariantId.set(attribute.itemVariantId, values);
+  }
+
+  const attributesFor = (itemId: string | null | undefined) =>
+    itemId
+      ? attributesByVariantId.get(variantIdByItemId.get(itemId) ?? "")
+      : undefined;
+  const compareAttribute = (
+    left: { code: string; sortOrder: number | null } | undefined,
+    right: { code: string; sortOrder: number | null } | undefined,
+    useSortOrder: boolean
+  ) => {
+    if (
+      useSortOrder &&
+      (left?.sortOrder ?? Infinity) !== (right?.sortOrder ?? Infinity)
+    ) {
+      return (left?.sortOrder ?? Infinity) - (right?.sortOrder ?? Infinity);
+    }
+    return (left?.code ?? "").localeCompare(right?.code ?? "");
+  };
+
+  return [...rows].sort((left, right) => {
+    const leftAttributes = attributesFor(left.itemId);
+    const rightAttributes = attributesFor(right.itemId);
+    // Color catalog values share sortOrder, so its stable code is the tie-breaker.
+    const color = compareAttribute(
+      leftAttributes?.get("Color"),
+      rightAttributes?.get("Color"),
+      false
+    );
+    if (color !== 0) return color;
+
+    const size = compareAttribute(
+      leftAttributes?.get("Size"),
+      rightAttributes?.get("Size"),
+      true
+    );
+    if (size !== 0) return size;
+
+    return (left.itemId ?? "").localeCompare(right.itemId ?? "");
+  });
 }
 
 async function attachBundleProgress<
