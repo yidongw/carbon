@@ -1,0 +1,34 @@
+import { assertIsPost, error } from "@carbon/auth";
+import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
+import type { ActionFunctionArgs } from "react-router";
+import { data } from "react-router";
+import { updateJobOperationSupplierProcess } from "~/modules/production";
+
+export async function action({ request }: ActionFunctionArgs) {
+  assertIsPost(request);
+  const { client, userId } = await requirePermissions(request, {
+    update: "production"
+  });
+
+  const formData = await request.formData();
+  const id = formData.get("id") as string;
+  const operationSupplierProcessId = formData.get(
+    "operationSupplierProcessId"
+  ) as string | null;
+
+  const update = await updateJobOperationSupplierProcess(
+    client,
+    id,
+    operationSupplierProcessId || null,
+    userId
+  );
+  if (update.error) {
+    return data(
+      {},
+      await flash(request, error(update.error, "Failed to update supplier"))
+    );
+  }
+
+  return {};
+}

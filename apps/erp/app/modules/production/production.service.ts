@@ -2458,6 +2458,24 @@ export async function updateJobOperationDueDate(
     .single();
 }
 
+export async function updateJobOperationSupplierProcess(
+  client: SupabaseClient<Database>,
+  id: string,
+  operationSupplierProcessId: string | null,
+  updatedBy: string
+) {
+  return client
+    .from("jobOperation")
+    .update({
+      operationSupplierProcessId,
+      updatedBy,
+      updatedAt: new Date().toISOString()
+    })
+    .eq("id", id)
+    .select()
+    .single();
+}
+
 export async function updateProcedureStepOrder(
   client: SupabaseClient<Database>,
   updates: {
