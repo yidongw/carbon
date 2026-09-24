@@ -52,3 +52,14 @@ history, and one of the states `completed | unassigned | mine | other`:
   satisfy `ReleasedBundle`.
 - `insertScrapQuantity` (operations.service.ts) takes an optional `scrapReasonId`
   (null for these quick floor reports; the ERP scrap form still requires one).
+
+## Invalidated reports and operation visibility
+
+`sync_update_job_operation_quantities` keeps an operation's stored quantities in
+sync with live `productionQuantity` rows. When an invalidated report reduces a
+previously auto-completed operation below its target, migration
+`20260916123917_reopen-operation-after-quantity-invalidation.sql` changes its
+status from `Done` to `In Progress`. The migration also repairs existing stale
+rows, but only if they have an invalidated report, so deliberately completed
+operations remain `Done`. This matters because the MES assignee report excludes
+`Done` operations.
