@@ -2,6 +2,10 @@
 
 Patterns learned from corrections. Review at the start of each session.
 
+## Confirm sort direction from the intended user outcome
+
+- Do not infer ascending versus descending solely from an earlier phrase. For list ordering, validate the concrete expected position of a newly created record; “newest at the top” requires `createdAt` descending. When changing a default sort, expose the date column if the user needs to inspect the result.
+
 ## PostgREST max_rows=1000 — always paginate exclusion lists
 - Symptom: Style pickers (Master WO create, etc.) showed variant SKUs (`1182-BN-2XL`) next to Style parents.
 - Root cause: items-store hydrate filtered children via a plain `.from("itemVariant").select(...)` which stops at PostgREST `max_rows=1000`. Production had more variants; leftover children stayed in the nanostore. Realtime `item` INSERT also added newly synced SKUs with no `itemVariant` follow-up strip.

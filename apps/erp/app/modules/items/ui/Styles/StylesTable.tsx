@@ -384,7 +384,6 @@ const StylesTable = memo(
             description: false,
             active: false,
             createdBy: false,
-            createdAt: false,
             updatedBy: false,
             updatedAt: false
           }}

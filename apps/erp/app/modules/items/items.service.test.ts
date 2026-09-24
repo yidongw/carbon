@@ -1,6 +1,40 @@
 import { describe, expect, it, vi } from "vitest";
-import { updateOperationOrder } from "./items.service";
+import { getStyles, updateOperationOrder } from "./items.service";
 import { STYLE_CUTTING_OPERATION_TAG } from "./styleMethod.service";
+
+describe("getStyles", () => {
+  it("sorts by creation time from newest to oldest by default", async () => {
+    const order = vi.fn();
+    const range = vi.fn(async () => ({ data: [], error: null, count: 0 }));
+    const query: Record<string, ReturnType<typeof vi.fn>> = {} as Record<
+      string,
+      ReturnType<typeof vi.fn>
+    >;
+
+    for (const method of ["select", "eq", "or", "contains"]) {
+      query[method] = vi.fn(() => query);
+    }
+    query.order = vi.fn((...args) => {
+      order(...args);
+      return query;
+    });
+    query.range = range;
+
+    await getStyles({ from: vi.fn(() => query) } as any, "company-1", {
+      search: null,
+      supplierId: null,
+      limit: 100,
+      offset: 0,
+      sorts: [],
+      filters: []
+    });
+
+    expect(order).toHaveBeenCalledWith(
+      "createdAt",
+      expect.objectContaining({ ascending: false })
+    );
+  });
+});
 
 function createMethodOperationClient(args: {
   operationsById: Array<{
