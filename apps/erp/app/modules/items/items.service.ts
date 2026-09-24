@@ -2004,7 +2004,7 @@ export async function getStyles(
   }
 
   const result = await setGenericQueryFilters(query, args, [
-    { column: "readableIdWithRevision", ascending: true }
+    { column: "createdAt", ascending: false }
   ]);
 
   if (result.error || !result.data) return result;
