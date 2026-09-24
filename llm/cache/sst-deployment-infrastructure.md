@@ -116,11 +116,6 @@ declare module "sst" {
 
 **Location**: `.github/workflows/deploy.yml`
 
-`AWS_REGION` is normally supplied as a repository secret. The workflow falls
-back to the existing GovCloud build region (`us-gov-east-1`) when that secret is
-absent, for both ECR image builds and AWS credential setup; the per-workspace
-deploy still receives its own region from the workspace configuration.
-
 The deployment process consists of two jobs:
 
 #### 1. Build Job
