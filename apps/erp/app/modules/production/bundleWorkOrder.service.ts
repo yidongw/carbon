@@ -90,6 +90,10 @@ export type BundleWorkOrder = NonNullable<
 >[number] & {
   /** Enriched by getBundleWorkOrdersList for the Master WO column. */
   masterJobReadableId?: string | null;
+  /** The least completed quantity across this bundle's processes. */
+  processQuantityComplete?: number;
+  /** Bundle quantity not yet completed by every process. */
+  processQuantityRemaining?: number;
 };
 
 /** All bundle work orders belonging to a master work order (ordered by sequence). */
@@ -98,12 +102,19 @@ export async function getBundleWorkOrders(
   masterWorkOrderId: string,
   companyId: string
 ) {
-  return client
+  const result = await client
     .from("bundleWorkOrders")
     .select("*")
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
     .order("sequence", { ascending: true });
+
+  if (result.error || !result.data) return result;
+
+  return {
+    ...result,
+    data: await attachBundleProgress(client, companyId, result.data)
+  };
 }
 
 /**
@@ -175,8 +186,67 @@ export async function getBundleWorkOrdersList(
     return result;
   }
 
-  const data = await attachMasterJobReadableIds(client, companyId, result.data);
+  const data = await attachBundleProgress(
+    client,
+    companyId,
+    await attachMasterJobReadableIds(client, companyId, result.data)
+  );
   return { ...result, data };
+}
+
+async function attachBundleProgress<
+  T extends { jobId?: string | null; quantity?: number | null }
+>(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  rows: T[]
+): Promise<
+  Array<
+    T & {
+      processQuantityComplete: number;
+      processQuantityRemaining: number;
+    }
+  >
+> {
+  const jobIds = [
+    ...new Set(
+      rows.map((row) => row.jobId).filter((id): id is string => Boolean(id))
+    )
+  ];
+  if (jobIds.length === 0) {
+    return rows.map((row) => ({
+      ...row,
+      processQuantityComplete: 0,
+      processQuantityRemaining: Number(row.quantity ?? 0)
+    }));
+  }
+
+  const { data: operations } = await client
+    .from("jobOperation")
+    .select("jobId, quantityComplete")
+    .eq("companyId", companyId)
+    .in("jobId", jobIds);
+
+  const completedByJobId = new Map<string, number[]>();
+  for (const operation of operations ?? []) {
+    if (!operation.jobId) continue;
+    const completed = completedByJobId.get(operation.jobId) ?? [];
+    completed.push(Number(operation.quantityComplete ?? 0));
+    completedByJobId.set(operation.jobId, completed);
+  }
+
+  return rows.map((row) => {
+    const completed = completedByJobId.get(row.jobId ?? "") ?? [];
+    const processQuantityComplete =
+      completed.length > 0 ? Math.min(...completed) : 0;
+    const quantity = Number(row.quantity ?? 0);
+
+    return {
+      ...row,
+      processQuantityComplete,
+      processQuantityRemaining: quantity - processQuantityComplete
+    };
+  });
 }
 
 async function attachMasterJobReadableIds<
