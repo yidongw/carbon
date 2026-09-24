@@ -6,6 +6,7 @@ import {
   requestProductionPayApproval
 } from "~/modules/shared";
 import { replaceMasterCuttingSplitRows } from "./bundleWorkOrder.service";
+import { maybeMintGarmentRfidOnCareLabelDone } from "./garmentRfidCode.service";
 import {
   getJobVariantQuantities,
   jobVariantQuantitiesToTable
@@ -419,6 +420,13 @@ export async function createProductionQuantityReport(
     });
   }
 
+  // Care-label op Done (via quantity trigger) → mint RFID codes for the bundle.
+  await maybeMintGarmentRfidOnCareLabelDone(client, {
+    jobOperationId: args.jobOperationId,
+    companyId: args.companyId,
+    userId: args.userId
+  });
+
   return {
     data: {
       ...report,
@@ -566,6 +574,12 @@ export async function replaceProductionQuantityReportLines(
       });
     }
   }
+
+  await maybeMintGarmentRfidOnCareLabelDone(client, {
+    jobOperationId: report.data.jobOperationId,
+    companyId: args.companyId,
+    userId: args.userId
+  });
 
   const { count: historyCount } = await client
     .from("productionQuantity")

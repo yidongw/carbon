@@ -96,7 +96,11 @@ import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { useTags } from "~/hooks/useTags";
-import { isStyleCuttingOperation } from "~/modules/items/styleMethod.service";
+import {
+  isStyleCareLabelBindOperation,
+  isStyleCareLabelOperation,
+  isStyleCuttingOperation
+} from "~/modules/items/styleMethod.service";
 import {
   defaultOperationTypeFromProcess,
   disablesOutsideBopDetailTabs,
@@ -364,7 +368,9 @@ const BillOfProcess = ({
     allVariantOptions.length > 0 &&
     operation.id &&
     !temporaryItems[operation.id] &&
-    !isStyleCuttingOperation({ tags: operation.tags ?? [] }) ? (
+    !isStyleCuttingOperation({ tags: operation.tags ?? [] }) &&
+    !isStyleCareLabelOperation({ tags: operation.tags ?? [] }) &&
+    !isStyleCareLabelBindOperation({ tags: operation.tags ?? [] }) ? (
       <VariantScopeBadge
         actionPath={`/x/items/methods/operation/apply-on-variants/${operation.id}`}
         valueIds={readApplyOnVariantValueIds(operation)}

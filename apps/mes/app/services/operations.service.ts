@@ -11,6 +11,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
 import { sanitize } from "~/utils/supabase";
+import { maybeMintGarmentRfidOnCareLabelDone } from "./garmentRfidCode.service";
 import { getPickedQuantitiesByJobMaterial } from "./inventory.service";
 import type {
   documentTypes,
@@ -162,6 +163,12 @@ export async function finishJobOperation(
     .eq("id", args.jobOperationId);
 
   if (!result.error) {
+    await maybeMintGarmentRfidOnCareLabelDone(client, {
+      jobOperationId: args.jobOperationId,
+      companyId: args.companyId,
+      userId: args.userId
+    });
+
     client
       .from("productionEvent")
       .select("id")

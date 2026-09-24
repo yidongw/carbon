@@ -25,6 +25,7 @@ import {
   LuShirt,
   LuSlidersHorizontal,
   LuSplit,
+  LuTag,
   LuUser
 } from "react-icons/lu";
 import { useFetcher, useRevalidator } from "react-router";
@@ -388,6 +389,22 @@ const BundleWorkOrdersTable = memo(
       setPrintCandidates(selectedRows.length > 0 ? selectedRows : data);
     }, [selectedRows, data]);
 
+    // Generate a unique RFID code for every garment piece (one per unit of each
+    // bundle's quantity). Idempotent — re-running only tops up missing codes.
+    const rfidFetcher = useFetcher<{ ok: boolean; generated: number }>();
+    const isGeneratingRfid = rfidFetcher.state !== "idle";
+    const generateRfidCodes = useCallback(() => {
+      const targets = selectedRows.length > 0 ? selectedRows : data;
+      const formData = new FormData();
+      for (const bundle of targets) {
+        if (bundle.id) formData.append("bundleWorkOrderId", bundle.id);
+      }
+      rfidFetcher.submit(formData, {
+        method: "post",
+        action: path.to.rfidCodesGenerate
+      });
+    }, [selectedRows, data, rfidFetcher]);
+
     const openReportCutting = useCallback(() => {
       if (!masterJobId || !cuttingOperationId) return;
       openOverlay(
@@ -730,6 +747,19 @@ const BundleWorkOrdersTable = memo(
                   ? t`Print ${selectedRows.length} Tickets`
                   : t`Print Tickets`}
               </Button>
+              {permissions.can("create", "production") ? (
+                <Button
+                  leftIcon={<LuTag />}
+                  variant="secondary"
+                  onClick={generateRfidCodes}
+                  isDisabled={data.length === 0 || isGeneratingRfid}
+                  isLoading={isGeneratingRfid}
+                >
+                  {selectedRows.length > 0
+                    ? t`Generate RFID Codes (${selectedRows.length})`
+                    : t`Generate RFID Codes`}
+                </Button>
+              ) : null}
               {cuttingOperationId && permissions.can("update", "production") ? (
                 <>
                   <Button

@@ -28,6 +28,7 @@ import {
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import {
+  ensureStyleMethodScaffold,
   getItemFiles,
   getMakeMethodById,
   getMakeMethods,
@@ -55,13 +56,20 @@ export const handle: Handle = {
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "parts",
     bypassRls: true
   });
 
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
+
+  // Backfill cutting +「打印水洗唛」system ops on existing styles when opened.
+  await ensureStyleMethodScaffold(client, {
+    itemId,
+    companyId,
+    userId
+  });
 
   const [styleSummary, makeMethods, tags, attributeState, supplierParts] =
     await Promise.all([
