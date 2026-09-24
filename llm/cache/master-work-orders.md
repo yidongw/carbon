@@ -46,3 +46,12 @@ List **工序** count and `getMasterProcessBreakdown` use the same union:
 So after garment split, **缝制** still shows (and counts) even when it only lives on bundles. Cutting-only Style BOP → count stays 1. Non-cutting processes with bundle children take reported qty from bundles only (avoids double-count when leftover sewing still sits on an old master job).
 
 Helpers: `masterProcessDescriptions.ts`, `getMasterProcessCounts`, `getStyleMethodOperationSeeds` in `masterWorkOrder.service.ts`. Loader: `x+/production+/master-work-orders.tsx`.
+
+## Bundle work-order progress
+
+`BundleWorkOrdersTable` shows **Completed** and **Remaining** for every bundle,
+both on the company-wide list and within a Master WO. `attachBundleProgress` in
+`bundleWorkOrder.service.ts` loads the current page's `jobOperation` rows in one
+batch: completed is the minimum `quantityComplete` across the bundle's
+processes, and remaining is `bundle.quantity - completed`. A bundle with no
+processes has completed quantity 0.
