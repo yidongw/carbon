@@ -52,6 +52,7 @@ import type { FlatTreeItem } from "~/components/TreeView";
 import { LevelLine, TreeView, useTree } from "~/components/TreeView";
 import { useIntegrations } from "~/hooks/useIntegrations";
 import type { MethodItemType } from "~/modules/shared";
+import { $bomSelectedMaterialId } from "~/stores/bom-selected-material";
 import { generateBomIds } from "~/utils/bom";
 import { path } from "~/utils/path";
 import type { MakeMethod, Method, MethodOperation } from "../../types";
@@ -472,12 +473,44 @@ const BoMExplorer = ({
                         }
                         if (!itemId || !methodId) return;
 
-                        const targetMakeMethodId =
-                          node.data.replenishmentSystem !== "Buy"
-                            ? node.data.materialMakeMethodId
-                            : node.data.makeMethodId;
+                        // Only a Made subassembly (e.g. 成布) has its own
+                        // BoM/process to drill into. Everything else — Pull from
+                        // Inventory, Buy, Pick — is a leaf whose details live
+                        // inline in the right BillOfMaterial card, so clicking it
+                        // opens that card in place (no route change).
+                        //
+                        // NB: key off methodType, NOT materialMakeMethodId:
+                        // get_method_tree coalesces a materialMakeMethodId onto
+                        // Pull rows (pointing at the pulled item's active method),
+                        // so its presence does NOT mean the row is drillable.
+                        const isMakeSubassembly =
+                          node.data.methodType === "Make to Order" &&
+                          !!node.data.materialMakeMethodId;
 
-                        if (!node.data.isRoot && !targetMakeMethodId) return;
+                        // eslint-disable-next-line no-console
+                        console.log("[BoM click]", {
+                          desc: node.data.description,
+                          isRoot: node.data.isRoot,
+                          methodType: node.data.methodType,
+                          methodMaterialId: node.data.methodMaterialId,
+                          materialMakeMethodId: node.data.materialMakeMethodId,
+                          isMakeSubassembly,
+                          branch:
+                            !node.data.isRoot && !isMakeSubassembly
+                              ? "LEAF->expand card"
+                              : node.data.isRoot
+                                ? "root->details"
+                                : "make->drill in"
+                        });
+
+                        // Leaf material: open its card in the right panel
+                        // (same page) via the shared store — no route to drill.
+                        if (!node.data.isRoot && !isMakeSubassembly) {
+                          $bomSelectedMaterialId.set(
+                            node.data.methodMaterialId
+                          );
+                          return;
+                        }
 
                         const nodePath = node.data.isRoot
                           ? getRootLink(itemType, itemId, methodId)
@@ -485,7 +518,7 @@ const BoMExplorer = ({
                               itemType,
                               itemId,
                               methodId,
-                              targetMakeMethodId,
+                              node.data.materialMakeMethodId as string,
                               node
                             );
 
@@ -826,6 +859,8 @@ function getRootLink(
   switch (itemType) {
     case "Part":
       return `${path.to.partDetails(itemId)}?methodId=${methodId}`;
+    case "Style":
+      return `${path.to.styleDetails(itemId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolDetails(itemId)}?methodId=${methodId}`;
     case "Consumable":
@@ -845,6 +880,11 @@ function getMaterialLink(
   switch (itemType) {
     case "Part":
       return `${path.to.partMake(itemId, makeMethodId)}?methodId=${methodId}`;
+    case "Style":
+      // Styles drill into a subassembly's make method on a dedicated make
+      // route, like parts. Carry the child makeMethodId in the path so the
+      // route can load and render that method's BoM/BoP.
+      return `${path.to.styleMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Tool":
       return `${path.to.toolMake(itemId, makeMethodId)}?methodId=${methodId}`;
     case "Consumable":
