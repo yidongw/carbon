@@ -162,3 +162,20 @@ return data;
 - `packages/database/src/types.ts` and `packages/database/supabase/functions/lib/types.ts` are generated — never hand-edit.
 - Regenerate with `pnpm run db:types` (root script, `scripts/generate-db-types.ts`). Requires the local Supabase DB running (`SUPABASE_DB_URL` in `.env`/`.env.local`, localhost only) with all migrations applied.
 - After merging branches that add migrations, regenerate types or typecheck will fail with `SelectQueryError` / "excessively deep" errors in packages that query the new tables.
+
+## PostgREST 1000-row cap (max_rows) — paginate company-wide selects
+
+- `packages/database/supabase/config.toml` sets `max_rows = 1000`. Any `.select()`
+  that can return >1000 rows is silently truncated (no error) — production
+  companies routinely exceed this.
+- Fix: use `fetchAllFromTable` / `fetchAllRecords` from `@carbon/database`
+  (`packages/database/src/utils.ts`), which range-paginate past the cap. Already
+  used in `RealtimeDataProvider.tsx`, items/sales/inventory/production services.
+- Known trap: queries that fetch *one row per child value* then dedup in JS
+  (e.g. `itemAttributeSelection` has one row per color/size value) hit the cap
+  long before the distinct-item count does — the newest items get dropped.
+- `app/routes/api+/items.configurable.ts` (feeds `useConfigurableItems()` in
+  `components/Form/Item.tsx`, which gates the per-variant Quantity grid) was
+  truncating this way, so a just-created style's MWO Quantity field fell back to
+  a plain number input. Fixed by paginating both branches (attributes +
+  legacy `configurationParameter`).
